@@ -25,6 +25,8 @@
             IsBackButtonEnabled="False"
             IsBackButtonVisible="False"
             IsPaneToggleButtonVisible="False"
-            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}" />
+            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}" >
+            
+        </TitleBar>
     </Grid>
 </Window>

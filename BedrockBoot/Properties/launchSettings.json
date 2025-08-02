@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BedrockBoot (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "BedrockBoot (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

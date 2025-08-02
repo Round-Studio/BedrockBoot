@@ -26,6 +26,9 @@ namespace BedrockBoot
         public MainWindow()
         {
             InitializeComponent();
+            ExtendsContentIntoTitleBar = true;
+            AppTitleBar.IsBackButtonVisible = false;
+            SetTitleBar(AppTitleBar);
         }
     }
 }

@@ -3,6 +3,7 @@
     x:Class="BedrockBoot.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot"
@@ -12,10 +13,39 @@
     mc:Ignorable="d">
 
     <Window.SystemBackdrop>
-        <MicaBackdrop />    
+        <MicaBackdrop />
     </Window.SystemBackdrop>
 
     <Grid>
+        <TitleBar
+            x:Name="AppTitleBar"
+            Title="{x:Bind dev:ProcessInfoHelper.ProductName}"
+            Height="48"
+            Margin="46,0,0,0"
+            VerticalAlignment="Top"
+            Canvas.ZIndex="1"
+            IsBackButtonEnabled="True"
+            IsBackButtonVisible="False"
+            IsPaneToggleButtonVisible="False"
+            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}">
+            <TitleBar.LeftHeader>
+                <Button
+                    x:Name="BackButton"
+                    Width="42"
+                    Height="36"
+                    Padding="8"
+                    Style="{ThemeResource SubtleButtonStyle}">
+                    <AnimatedIcon x:Name="SearchAnimatedIcon">
+                        <AnimatedIcon.Source>
+                            <animatedvisuals:AnimatedBackVisualSource />
+                        </AnimatedIcon.Source>
+                        <AnimatedIcon.FallbackIconSource>
+                            <SymbolIconSource Symbol="Find" />
+                        </AnimatedIcon.FallbackIconSource>
+                    </AnimatedIcon>
+                </Button>
+            </TitleBar.LeftHeader>
+        </TitleBar>
         <NavigationView
             x:Name="NavView"
             Grid.Row="1"
@@ -25,11 +55,11 @@
             ExpandedModeThresholdWidth="800"
             IsBackButtonVisible="Collapsed"
             IsPaneToggleButtonVisible="True"
-            IsTitleBarAutoPaddingEnabled="True"
             IsSettingsVisible="False"
-            SelectionChanged="NavView_SelectionChanged"
+            IsTitleBarAutoPaddingEnabled="True"
             OpenPaneLength="260"
-            PaneDisplayMode="Auto">
+            PaneDisplayMode="Auto"
+            SelectionChanged="NavView_SelectionChanged">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
                 <Brush x:Key="NavigationViewContentGridBorderBrush">Transparent</Brush>
@@ -42,8 +72,8 @@
                 <NavigationViewItem
                     x:Name="HomePageNavItem"
                     Content="主页"
-                    IsSelected="True"
                     Icon="{dev:FontIcon Glyph=&#xE80F;}"
+                    IsSelected="True"
                     Tag="HomePage" />
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>

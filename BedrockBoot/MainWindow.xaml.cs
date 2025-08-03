@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using MinecraftBoot;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,6 +29,8 @@ namespace BedrockBoot
         {
             InitializeComponent();
             ExtendsContentIntoTitleBar = true;
+            AppTitleBar.IsBackButtonVisible = false;
+            SetTitleBar(AppTitleBar);
 
             /*
             * 不要启用此代码，除非你想使用 DevWinUI-JSON 的导航服务，但事实上我根本没写好这个服务。:)

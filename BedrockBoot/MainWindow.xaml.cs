@@ -30,5 +30,10 @@ namespace BedrockBoot
             AppTitleBar.IsBackButtonVisible = false;
             SetTitleBar(AppTitleBar);
         }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:developers"));
+        }
     }
 }

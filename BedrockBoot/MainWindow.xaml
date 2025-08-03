@@ -25,8 +25,12 @@
             IsBackButtonEnabled="False"
             IsBackButtonVisible="False"
             IsPaneToggleButtonVisible="False"
-            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}" >
-            
+            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}">
+            <TitleBar.RightHeader>
+                <StackPanel Orientation="Horizontal">
+                    <Button Click="Button_Click" Content="开发者模式" />
+                </StackPanel>
+            </TitleBar.RightHeader>
         </TitleBar>
     </Grid>
 </Window>

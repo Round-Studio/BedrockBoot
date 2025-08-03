@@ -32,17 +32,26 @@ namespace BedrockBoot
             AppTitleBar.IsBackButtonVisible = false;
             SetTitleBar(AppTitleBar);
 
-            App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
+            /*App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
                                   .ConfigureDefaultPage(typeof(HomePage));
             App.Current.NavService.ConfigureSettingsPage(typeof(SettingsPage));
             App.Current.NavService.ConfigureTitleBar(AppTitleBar)
-                                  .ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
+                                  .ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);*/
 
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:developers"));
+        }
+
+        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));
+
+            var selectedItem = (NavigationViewItem)args.SelectedItem;
+            if ((string)selectedItem.Tag == "HomePage") NavFrame.Navigate(typeof(HomePage));
+            else if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
         }
     }
 }

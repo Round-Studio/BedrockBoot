@@ -44,21 +44,24 @@
             IsPaneToggleButtonVisible="True"
             IsTitleBarAutoPaddingEnabled="True"
             OpenPaneLength="260"
-            PaneDisplayMode="Auto">
+            PaneDisplayMode="Auto"
+            SelectionChanged="NavView_SelectionChanged">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
                 <Brush x:Key="NavigationViewContentGridBorderBrush">Transparent</Brush>
                 <x:Double x:Key="NavigationViewContentGridCornerRadius">0</x:Double>
             </NavigationView.Resources>
-            <NavigationView.Header>
-                <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
-            </NavigationView.Header>
             <NavigationView.MenuItems>
                 <NavigationViewItem
                     x:Name="HomePageNavItem"
                     Content="主页"
                     Icon="{dev:FontIcon Glyph=&#xE80F;}"
                     Tag="HomePage" />
+                <NavigationViewItem
+                    x:Name="OOBE"
+                    Content="OOBE"
+                    Icon="{dev:FontIcon Glyph=&#xF133;}"
+                    Tag="OOBE" />
             </NavigationView.MenuItems>
             <Frame
                 x:Name="NavFrame"

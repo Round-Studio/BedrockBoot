@@ -27,11 +27,20 @@ namespace BedrockBoot
     {
         public new static App Current => (App)Application.Current;
         private Window? _window;
+        public static Window MainWindow = Window.Current;
         public JsonNavigationService NavService { get; set; }
+        public IThemeService AppThemeService { get; set; }
+
         public App()
         {
             InitializeComponent();
             NavService = new JsonNavigationService();
+            MainWindow = new MainWindow();
+
+            MainWindow.Title = MainWindow.AppWindow.Title = ProcessInfoHelper.ProductNameAndVersion;
+            AppThemeService = new ThemeService(MainWindow);
+            AppThemeService.AutoInitialize(MainWindow);
+            AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
         }
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {

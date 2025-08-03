@@ -27,6 +27,7 @@
             IsPaneToggleButtonVisible="True"
             IsTitleBarAutoPaddingEnabled="True"
             IsSettingsVisible="False"
+            SelectionChanged="NavView_SelectionChanged"
             OpenPaneLength="260"
             PaneDisplayMode="Auto">
             <NavigationView.Resources>

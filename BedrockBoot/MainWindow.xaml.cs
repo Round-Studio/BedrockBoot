@@ -31,10 +31,12 @@ namespace BedrockBoot
             InitializeComponent();
             ExtendsContentIntoTitleBar = true;
 
+            /*
+            * 不要启用此代码，除非你想使用 DevWinUI-JSON 的导航服务，但事实上我根本没写好这个服务。:)
             App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
                                   .ConfigureDefaultPage(typeof(HomePage));
             App.Current.NavService.ConfigureSettingsPage(typeof(SettingsPage));
-            App.Current.NavService.ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
+            App.Current.NavService.ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);*/
 
         }
 

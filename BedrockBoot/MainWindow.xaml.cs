@@ -31,7 +31,7 @@ namespace BedrockBoot
             InitializeComponent();
             ExtendsContentIntoTitleBar = true;
 
-            App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
+            /*App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
                                   .ConfigureDefaultPage(typeof(HomePage));
             App.Current.NavService.ConfigureSettingsPage(typeof(SettingsPage));
             App.Current.NavService.ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
@@ -52,6 +52,15 @@ namespace BedrockBoot
                 NavFrame.Navigate(page.GetType());
             }
             catch { }
+        }
+
+        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));
+
+            var selectedItem = (NavigationViewItem)args.SelectedItem;
+            if ((string)selectedItem.Tag == "HomePage") NavFrame.Navigate(typeof(HomePage));
+            else if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
         }
     }
 }

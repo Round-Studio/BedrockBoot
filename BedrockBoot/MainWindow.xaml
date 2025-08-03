@@ -28,19 +28,12 @@
             IsTitleBarAutoPaddingEnabled="True"
             IsSettingsVisible="False"
             OpenPaneLength="260"
-            SelectionChanged="NavView_SelectionChanged"
             PaneDisplayMode="Auto">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
                 <Brush x:Key="NavigationViewContentGridBorderBrush">Transparent</Brush>
                 <x:Double x:Key="NavigationViewContentGridCornerRadius">0</x:Double>
             </NavigationView.Resources>
-            <NavigationView.AutoSuggestBox>
-                <AutoSuggestBox 
-                    x:Name="NavViewSearchBox"
-                    PlaceholderText="搜索"
-                    QueryIcon="Find"/>
-            </NavigationView.AutoSuggestBox>
             <NavigationView.Header>
                 <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
             </NavigationView.Header>
@@ -51,16 +44,6 @@
                     IsSelected="True"
                     Icon="{dev:FontIcon Glyph=&#xE80F;}"
                     Tag="HomePage" />
-                <NavigationViewItem
-                    x:Name="DownloadPageNavItem"
-                    Content="下载"
-                    Icon="{dev:FontIcon Glyph=&#xE896;}"
-                    Tag="DownloadPage" />
-                <NavigationViewItem
-                    x:Name="ManagePageNavItem"
-                    Content="实例"
-                    Icon="{dev:FontIcon Glyph=&#xE8FD;}"
-                    Tag="ManagePage" />
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem

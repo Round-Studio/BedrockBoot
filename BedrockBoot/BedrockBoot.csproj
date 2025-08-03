@@ -19,6 +19,7 @@
     <None Remove="Assets\AppReference\Bloom.html" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\OOBEPage.xaml" />
+    <None Remove="Pages\SettingPage\AppearancePage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
   </ItemGroup>
 
@@ -57,6 +58,12 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Pages\SettingsPage\Appearance.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\SettingPage\AppearancePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="T4Templates\BreadcrumbPageMappings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BreadcrumbPageMappings.cs</LastGenOutput>

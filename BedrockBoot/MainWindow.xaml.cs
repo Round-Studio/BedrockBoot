@@ -32,29 +32,24 @@ namespace BedrockBoot
             AppTitleBar.IsBackButtonVisible = false;
             SetTitleBar(AppTitleBar);
 
-            /*
-            * 不要启用此代码，除非你想使用 DevWinUI-JSON 的导航服务，但事实上我根本没写好这个服务。:)
+            
+            /* 不要启用此代码，除非你想使用 DevWinUI-JSON 的导航服务，但事实上我根本没写好这个服务。:)
             App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
                                   .ConfigureDefaultPage(typeof(HomePage));
             App.Current.NavService.ConfigureSettingsPage(typeof(SettingsPage));
-            App.Current.NavService.ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);*/
-
+            App.Current.NavService.ConfigureJsonFile("Assets/NavViewMenu/AppData.json")
+                                  .ConfigureTitleBar(AppTitleBar)
+                                  .ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
+            */
         }
-
-        private HomePage HomePage { get; set; } = new();
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            try
-            {
-                var tag = ((NavigationViewItem)((NavView.SelectedItem))).Tag.ToString();
+            if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));
 
-                var page = tag switch
-                {
-                    "HomePage" => HomePage
-                };
-                NavFrame.Navigate(page.GetType());
-            }
-            catch { }
+            var selectedItem = (NavigationViewItem)args.SelectedItem;
+            if ((string)selectedItem.Tag == "HomePage") NavFrame.Navigate(typeof(HomePage));
+            else if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
+
         }
     }
 }

@@ -1,0 +1,22 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/Ghost1372/DevWinUI/refs/heads/main/AppData.Schema.json",
+  "Groups": [
+    {
+      "UniqueId": "BedrockBoot",
+      "Title": "BedrockBoot",
+      "ImagePath": "ms-appx:///Assets/StoreIcon.png",
+      "IsSpecialSection": false,
+      "ShowItemsWithoutGroup": true,
+      "IsExpanded": false,
+      "Items": [
+        {
+          "UniqueId": "BedrockBoot.Pages.HomePage",
+          "Title": "Home",
+          "Subtitle": "BedrockBoot",
+          "ImagePath": "ms-appx:///Assets/StoreIcon.png",
+          "HideItem": false
+        }
+      ]
+    }
+  ]
+}

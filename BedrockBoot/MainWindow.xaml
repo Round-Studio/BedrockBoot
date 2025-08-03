@@ -68,7 +68,8 @@
             <NavigationView.Header>
                 <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
             </NavigationView.Header>
-            <NavigationView.MenuItems>
+
+            <!--NavigationView.MenuItems>
                 <NavigationViewItem
                     x:Name="HomePageNavItem"
                     Content="主页"
@@ -87,7 +88,7 @@
                     Content="设置"
                     Icon="{dev:FontIcon Glyph=&#xE713;}"
                     Tag="SettingPage" />
-            </NavigationView.FooterMenuItems>
+            </NavigationView.FooterMenuItems-->
             <Frame
                 x:Name="NavFrame"
                 Margin="0,0,0,0"

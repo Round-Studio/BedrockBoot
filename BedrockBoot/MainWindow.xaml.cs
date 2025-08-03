@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using BedrockBoot.Pages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -10,6 +6,12 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using MinecraftBoot;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -29,6 +31,13 @@ namespace BedrockBoot
             ExtendsContentIntoTitleBar = true;
             AppTitleBar.IsBackButtonVisible = false;
             SetTitleBar(AppTitleBar);
+
+            App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
+                                  .ConfigureDefaultPage(typeof(HomePage));
+            App.Current.NavService.ConfigureSettingsPage(typeof(SettingsPage));
+            App.Current.NavService.ConfigureTitleBar(AppTitleBar)
+                                  .ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
+
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)

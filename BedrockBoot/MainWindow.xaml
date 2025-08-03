@@ -38,7 +38,6 @@
             Grid.Row="1"
             Margin="0,0,0,0"
             Padding="0,32,0,0"
-            BorderBrush="AliceBlue"
             Canvas.ZIndex="0"
             ExpandedModeThresholdWidth="800"
             IsBackButtonVisible="Collapsed"
@@ -54,6 +53,13 @@
             <NavigationView.Header>
                 <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
             </NavigationView.Header>
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    x:Name="HomePageNavItem"
+                    Content="主页"
+                    Icon="{dev:FontIcon Glyph=&#xE80F;}"
+                    Tag="HomePage" />
+            </NavigationView.MenuItems>
             <Frame
                 x:Name="NavFrame"
                 Margin="0,0,0,0"

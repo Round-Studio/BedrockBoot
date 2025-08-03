@@ -12,27 +12,10 @@
     mc:Ignorable="d">
 
     <Window.SystemBackdrop>
-        <MicaBackdrop />
+        <MicaBackdrop />    
     </Window.SystemBackdrop>
 
     <Grid>
-        <TitleBar
-            x:Name="AppTitleBar"
-            Title="{x:Bind dev:ProcessInfoHelper.ProductName}"
-            Height="42"
-            Margin="46,0,0,0"
-            VerticalAlignment="Top"
-            Canvas.ZIndex="1"
-            IsBackButtonEnabled="True"
-            IsBackButtonVisible="False"
-            IsPaneToggleButtonVisible="False"
-            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}">
-            <TitleBar.RightHeader>
-                <StackPanel Orientation="Horizontal">
-                    <Button Click="Button_Click" Content="开发者模式" />
-                </StackPanel>
-            </TitleBar.RightHeader>
-        </TitleBar>
         <NavigationView
             x:Name="NavView"
             Grid.Row="1"
@@ -43,13 +26,21 @@
             IsBackButtonVisible="Collapsed"
             IsPaneToggleButtonVisible="True"
             IsTitleBarAutoPaddingEnabled="True"
+            IsSettingsVisible="False"
             OpenPaneLength="260"
+            SelectionChanged="NavView_SelectionChanged"
             PaneDisplayMode="Auto">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
                 <Brush x:Key="NavigationViewContentGridBorderBrush">Transparent</Brush>
                 <x:Double x:Key="NavigationViewContentGridCornerRadius">0</x:Double>
             </NavigationView.Resources>
+            <NavigationView.AutoSuggestBox>
+                <AutoSuggestBox 
+                    x:Name="NavViewSearchBox"
+                    PlaceholderText="搜索"
+                    QueryIcon="Find"/>
+            </NavigationView.AutoSuggestBox>
             <NavigationView.Header>
                 <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
             </NavigationView.Header>
@@ -57,9 +48,32 @@
                 <NavigationViewItem
                     x:Name="HomePageNavItem"
                     Content="主页"
+                    IsSelected="True"
                     Icon="{dev:FontIcon Glyph=&#xE80F;}"
                     Tag="HomePage" />
+                <NavigationViewItem
+                    x:Name="DownloadPageNavItem"
+                    Content="下载"
+                    Icon="{dev:FontIcon Glyph=&#xE896;}"
+                    Tag="DownloadPage" />
+                <NavigationViewItem
+                    x:Name="ManagePageNavItem"
+                    Content="实例"
+                    Icon="{dev:FontIcon Glyph=&#xE8FD;}"
+                    Tag="ManagePage" />
             </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem
+                    x:Name="TaskPageNavItem"
+                    Content="任务"
+                    Icon="{dev:FontIcon Glyph=&#xE945;}"
+                    Tag="TaskPage" />
+                <NavigationViewItem
+                    x:Name="SettingPageNavItem"
+                    Content="设置"
+                    Icon="{dev:FontIcon Glyph=&#xE713;}"
+                    Tag="SettingPage" />
+            </NavigationView.FooterMenuItems>
             <Frame
                 x:Name="NavFrame"
                 Margin="0,0,0,0"

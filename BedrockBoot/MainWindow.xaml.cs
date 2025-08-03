@@ -1,4 +1,5 @@
 using BedrockBoot.Pages;
+using DevWinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -29,20 +30,28 @@ namespace BedrockBoot
         {
             InitializeComponent();
             ExtendsContentIntoTitleBar = true;
-            AppTitleBar.IsBackButtonVisible = false;
-            SetTitleBar(AppTitleBar);
 
             App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
                                   .ConfigureDefaultPage(typeof(HomePage));
             App.Current.NavService.ConfigureSettingsPage(typeof(SettingsPage));
-            App.Current.NavService.ConfigureTitleBar(AppTitleBar)
-                                  .ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
+            App.Current.NavService.ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
 
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private HomePage HomePage { get; set; } = new();
+        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:developers"));
+            try
+            {
+                var tag = ((NavigationViewItem)((NavView.SelectedItem))).Tag.ToString();
+
+                var page = tag switch
+                {
+                    "HomePage" => HomePage
+                };
+                NavFrame.Navigate(page.GetType());
+            }
+            catch { }
         }
     }
 }

@@ -19,7 +19,10 @@
     <None Remove="Assets\AppReference\Bloom.html" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\OOBEPage.xaml" />
+    <None Remove="Pages\SettingPage\AboutPage.xaml" />
     <None Remove="Pages\SettingPage\AppearancePage.xaml" />
+    <None Remove="Pages\SettingPage\BehaviorPage.xaml" />
+    <None Remove="Pages\SettingPage\DevelopersPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +103,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Pages\SettingPage\AboutPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\SettingPage\BehaviorPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\SettingPage\DevelopersPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

@@ -32,7 +32,6 @@ namespace BedrockBoot
             AppTitleBar.IsBackButtonVisible = false;
             SetTitleBar(AppTitleBar);
 
-            
             /* 不要启用此代码，除非你想使用 DevWinUI-JSON 的导航服务，但事实上我根本没写好这个服务。:)
             App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
                                   .ConfigureDefaultPage(typeof(HomePage));

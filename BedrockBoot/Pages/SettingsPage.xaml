@@ -20,15 +20,28 @@
             Margin="10"
             dev:PanelAttach.ChildrenTransitions="Default"
             Spacing="4">
+
             <dev:SettingsCard
-                Description="探索自定义应用程序外观和行为的不同方法。您可以更改材料、主题和更多选项，以适应您的风格和偏好。"
+                Description="自定义应用程序外观。您可以更改材料、主题和更多选项，以适应您的风格和偏好。"
                 Header="外观"
                 HeaderIcon="{dev:FontIcon Glyph=&#xE771;}"
                 IsClickEnabled="True" />
+
+            <dev:SettingsCard
+                Description="自定义应用程序行为"
+                Header="行为"
+                HeaderIcon="{dev:FontIcon Glyph=&#xEABB;}"
+                IsClickEnabled="True" />
+
             <dev:SettingsCard
                 Description="关于 BedrockBoot 以及开发者"
                 Header="关于"
                 HeaderIcon="{dev:FontIcon Glyph=&#xE946;}"
+                IsClickEnabled="True" />
+
+            <dev:SettingsCard
+                Header="开发者工具"
+                HeaderIcon="{dev:FontIcon Glyph=&#xEC7A;}"
                 IsClickEnabled="True" />
 
         </StackPanel>

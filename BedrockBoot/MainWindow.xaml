@@ -20,9 +20,10 @@
             x:Name="AppTitleBar"
             Title="{x:Bind dev:ProcessInfoHelper.ProductName}"
             Height="42"
+            Margin="46,0,0,0"
             VerticalAlignment="Top"
             Canvas.ZIndex="1"
-            IsBackButtonEnabled="False"
+            IsBackButtonEnabled="True"
             IsBackButtonVisible="False"
             IsPaneToggleButtonVisible="False"
             Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}">
@@ -32,5 +33,31 @@
                 </StackPanel>
             </TitleBar.RightHeader>
         </TitleBar>
+        <NavigationView
+            x:Name="NavView"
+            Grid.Row="1"
+            Margin="0,0,0,0"
+            Padding="0,32,0,0"
+            BorderBrush="AliceBlue"
+            Canvas.ZIndex="0"
+            ExpandedModeThresholdWidth="800"
+            IsBackButtonVisible="Collapsed"
+            IsPaneToggleButtonVisible="True"
+            IsTitleBarAutoPaddingEnabled="True"
+            OpenPaneLength="260"
+            PaneDisplayMode="Auto">
+            <NavigationView.Resources>
+                <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
+                <Brush x:Key="NavigationViewContentGridBorderBrush">Transparent</Brush>
+                <x:Double x:Key="NavigationViewContentGridCornerRadius">0</x:Double>
+            </NavigationView.Resources>
+            <NavigationView.Header>
+                <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
+            </NavigationView.Header>
+            <Frame
+                x:Name="NavFrame"
+                Margin="0,0,0,0"
+                CacheSize="0" />
+        </NavigationView>
     </Grid>
 </Window>

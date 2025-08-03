@@ -24,6 +24,7 @@
     <None Remove="Pages\SettingPage\BehaviorPage.xaml" />
     <None Remove="Pages\SettingPage\DevelopersPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
+    <None Remove="Pages\TaskPage.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="Styles\Styles.xaml" />
@@ -110,6 +111,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\SettingPage\DevelopersPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\TaskPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Styles\Styles.xaml">

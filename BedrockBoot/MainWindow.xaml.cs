@@ -49,6 +49,7 @@ namespace BedrockBoot
             if ((string)selectedItem.Tag == "SettingPage") NavFrame.Navigate(typeof(SettingsPage));
             if ((string)selectedItem.Tag == "HomePage") NavFrame.Navigate(typeof(HomePage));
             else if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
+            else if ((string)selectedItem.Tag == "TaskPage") NavFrame.Navigate(typeof(TaskPage));
 
         }
     }

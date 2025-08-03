@@ -55,7 +55,7 @@
             ExpandedModeThresholdWidth="800"
             IsBackButtonVisible="Collapsed"
             IsPaneToggleButtonVisible="True"
-            IsSettingsVisible="False"
+            IsSettingsVisible="True"
             IsTitleBarAutoPaddingEnabled="True"
             OpenPaneLength="260"
             PaneDisplayMode="Auto"

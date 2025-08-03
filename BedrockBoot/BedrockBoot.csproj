@@ -22,6 +22,10 @@
     <None Remove="Pages\SettingPage\AppearancePage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Remove="Styles\Styles.xaml" />
+    <Page Remove="Styles\ThemeResources.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -96,6 +100,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Styles\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Styles\ThemeResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="T4Templates\BreadcrumbPageMappings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BreadcrumbPageMappings.cs</LastGenOutput>

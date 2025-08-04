@@ -38,6 +38,7 @@ namespace BedrockBoot.Pages.DownloadPages
             try
             {
                 //fuck ring 什么鬼ring 搞了我半小时😅👉
+                // DM: 用XAML会快一点
                 var progressRing = new ProgressRing
                 {
                     IsActive = true,

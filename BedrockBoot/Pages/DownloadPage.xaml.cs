@@ -29,7 +29,7 @@ namespace BedrockBoot.Pages
             global_cfg._downloadPage = this;
             InitializeComponent();
 
-            SubPageFrame.Navigate(typeof(DownloadClientsPage));
+            SubPageFrame.Navigate(typeof(VersionsShowPages));
             BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例" };
         }
 
@@ -43,7 +43,7 @@ namespace BedrockBoot.Pages
         {
             if(args.Index == 0)
             {
-                SubPageFrame.Navigate(typeof(DownloadClientsPage));
+                SubPageFrame.Navigate(typeof(VersionsShowPagesame));
                 BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例" };
             }
         }

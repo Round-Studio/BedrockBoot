@@ -100,6 +100,10 @@ namespace BedrockBoot.Pages.DownloadPages
 
         private void DisplayVersions(List<VersionInformation> versions)
         {
+            //* 为什么不用ItemRepeater？
+            //* ItemRepeater可比直接用ListView更高效，但在某些情况下可能会导致性能问题，尤其是在需要频繁更新UI时。
+            //* 但逝这又不会怎么频繁更新UI，为什么不用ItemRepeater？
+            // TODO: SPADD -> ItemRepeater
             VersionList.Children.Clear();
 
             if (versions == null || versions.Count == 0)

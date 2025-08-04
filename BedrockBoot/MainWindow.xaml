@@ -91,6 +91,11 @@
                     Content="任务"
                     Icon="{dev:FontIcon Glyph=&#xE945;}"
                     Tag="TaskPage" />
+                <NavigationViewItem
+                    x:Name="OOBEPageNavItem"
+                    Content="OOBE"
+                    Icon="{dev:FontIcon Glyph=&#xF133;}"
+                    Tag="OOBE" />
             </NavigationView.FooterMenuItems>
             <Frame
                 x:Name="NavFrame"

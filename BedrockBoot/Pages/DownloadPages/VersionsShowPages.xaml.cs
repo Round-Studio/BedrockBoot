@@ -36,7 +36,7 @@ namespace BedrockBoot.Pages.DownloadPages
             Unloaded += OnPageUnloaded;
         }
 
-        private async void ShowDownloadGameContentDialog(string ver)
+        private async Task<ContentDialogResult> ShowDownloadGameContentDialog(string ver)
         {
             ContentDialog dialog = new ContentDialog();
 
@@ -51,8 +51,8 @@ namespace BedrockBoot.Pages.DownloadPages
             dialog.CloseButtonText = "取消";
             dialog.DefaultButton = ContentDialogButton.Primary;
 
-
             var result = await dialog.ShowAsync();
+            return result;
         }
 
         private async Task LoadVersionsAsync_()
@@ -150,7 +150,26 @@ namespace BedrockBoot.Pages.DownloadPages
 
         private void SettingsCard_Click(object sender, RoutedEventArgs e)
         {
-            ShowDownloadGameContentDialog((string)(((SettingsCard)sender).Header));
+            var showDownloadGameContentDialog = ShowDownloadGameContentDialog((string)(((SettingsCard)sender).Header));
+        }
+
+        private void VersionType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            VersionItems.Clear();
+            string str = VersionType.SelectedIndex switch
+            {
+                0=>"Release",
+                1=>"Preview",
+                2=>"Beta",
+            };
+                    foreach (var version in _allVersions)
+                    {
+                        if (version.Type == str)
+                        {
+                    VersionItems.Add(version);
+                }
+                     
+                    }
         }
     }
 }

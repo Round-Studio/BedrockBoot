@@ -49,7 +49,9 @@
                     x:Name="VersionType"
                     Margin="5"
                     SelectedIndex="0"
-                    SelectionMode="Single">
+                    SelectionMode="Single"
+                    SelectionChanged="VersionType_OnSelectionChanged"
+                    >
                     <controls:SegmentedItem Icon="{ui:FontIcon Glyph=&#xE7FC;}" ToolTipService.ToolTip="正式版" />
                     <controls:SegmentedItem Icon="{ui:FontIcon Glyph=&#xE8A1;}" ToolTipService.ToolTip="预览版" />
                     <controls:SegmentedItem Icon="{ui:FontIcon Glyph=&#xEA8D;}" ToolTipService.ToolTip="测试版" />

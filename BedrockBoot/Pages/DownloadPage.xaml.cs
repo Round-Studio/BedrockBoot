@@ -43,7 +43,7 @@ namespace BedrockBoot.Pages
         {
             if(args.Index == 0)
             {
-                SubPageFrame.Navigate(typeof(VersionsShowPagesame));
+                SubPageFrame.Navigate(typeof(VersionsShowPages));
                 BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例" };
             }
         }

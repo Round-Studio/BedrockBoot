@@ -1,14 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="BedrockBoot.Pages.DownloadPages.DownloadClientsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:BedrockBoot.Pages.DownloadPages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dev="using:DevWinUI"
+    xmlns:local="using:BedrockBoot.Pages.DownloadPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:types="using:BedrockBoot.Type"
     mc:Ignorable="d">
 
-    <StackPanel x:Name="VersionList" HorizontalAlignment="Stretch">
+    <Page.Resources>
+        <!--  使用ItemsRepeater  -->
+        <DataTemplate x:Key="VersionCardTemplate" x:DataType="types:VersionType">
+            <dev:SettingsCard
+                Margin="10,5,10,0"
+                Description="{x:Bind Date}"
+                Header="{x:Bind Version}"
+                IsClickEnabled="True" />
+        </DataTemplate>
+    </Page.Resources>
 
-    </StackPanel>
+    <StackPanel x:Name="VersionList" HorizontalAlignment="Stretch" />
 </Page>

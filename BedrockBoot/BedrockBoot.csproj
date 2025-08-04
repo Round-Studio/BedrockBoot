@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\AppReference\Bloom.html" />
+    <None Remove="Controls\DownloadCardContent.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
     <None Remove="Pages\DownloadPages\DownloadClientsPage.xaml" />
     <None Remove="Pages\DownloadPages\InstallClientPage.xaml" />
@@ -130,6 +131,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\DownloadPage\InstallClientPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\DownloadCardContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Styles\Styles.xaml">

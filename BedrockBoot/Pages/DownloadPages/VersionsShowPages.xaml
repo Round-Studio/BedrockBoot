@@ -15,7 +15,6 @@
         <DataTemplate x:Key="VersionCardTemplate" x:DataType="jsonHandle:VersionInformation">
             <dev:SettingsCard
                 Margin="10,5,10,0"
-                Click="ButtonBase_OnClick"
                 Description="{x:Bind Date}"
                 Header="{x:Bind ID}"
                 IsClickEnabled="True"

@@ -1,3 +1,4 @@
+using BedrockBoot.Controls;
 using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Network;
 using CommunityToolkit.WinUI;
@@ -33,6 +34,21 @@ namespace BedrockBoot.Pages.DownloadPages
             _cancellationTokenSource = new CancellationTokenSource();
             Unloaded += OnPageUnloaded;
         }
+
+        private async void ShowDownloadGameContentDialog()
+        {
+            ContentDialog dialog = new ContentDialog();
+
+            // 如果 ContentDialog 在桌面应用程序中运行，则必须设置 XamlRoot
+            dialog.XamlRoot = this.Content.XamlRoot;
+            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            // dialog.Background = new SolidColorBrush(Colors.Transparent);
+            dialog.DefaultButton = ContentDialogButton.Primary;
+            dialog.Content = new DefaultContentDialogFrame();
+
+            var result = await dialog.ShowAsync();
+        }
+
         private async Task LoadVersionsAsync_()
         {
             try

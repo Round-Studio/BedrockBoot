@@ -7,7 +7,7 @@
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Pages.DownloadPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:types="using:BedrockBoot.Type"
+    xmlns:types="using:BedrockBoot.Types"
     mc:Ignorable="d">
 
     <Page.Resources>

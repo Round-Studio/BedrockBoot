@@ -10,7 +10,7 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
 
-    <Grid Margin="40,0,40,0" Padding="0">
+    <Grid Margin="40,32,40,0" Padding="0">
         <Grid
             Height="80"
             MaxWidth="1000"

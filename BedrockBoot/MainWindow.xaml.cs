@@ -39,6 +39,8 @@ namespace BedrockBoot
             App.Current.NavService.ConfigureJsonFile("Assets/NavViewMenu/AppData.json")
                                   .ConfigureTitleBar(AppTitleBar)
                                   .ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
+
+            byd 没写好还加上来 可以在这留言，我看能留言多长 😡😡😡
             */
         }
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -47,6 +49,7 @@ namespace BedrockBoot
 
             var selectedItem = (NavigationViewItem)args.SelectedItem;
             if ((string)selectedItem.Tag == "SettingPage") NavFrame.Navigate(typeof(SettingsPage));
+            if ((string)selectedItem.Tag == "DownloadPage") NavFrame.Navigate(typeof(DownloadPage));
             if ((string)selectedItem.Tag == "HomePage") NavFrame.Navigate(typeof(HomePage));
             else if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
             else if ((string)selectedItem.Tag == "TaskPage") NavFrame.Navigate(typeof(TaskPage));

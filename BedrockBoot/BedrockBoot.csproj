@@ -19,6 +19,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\AppReference\Bloom.html" />
+    <None Remove="Pages\DownloadPage.xaml" />
+    <None Remove="Pages\DownloadPages\DownloadClientsPage.xaml" />
+    <None Remove="Pages\DownloadPages\InstallClientPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\OOBEPage.xaml" />
     <None Remove="Pages\SettingPage\AboutPage.xaml" />
@@ -117,6 +120,15 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\TaskPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\DownloadPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\DownloadPage\DownloadClientsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\DownloadPage\InstallClientPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Styles\Styles.xaml">

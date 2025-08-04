@@ -21,7 +21,7 @@
             x:Name="AppTitleBar"
             Title="{x:Bind dev:ProcessInfoHelper.ProductName}"
             Height="48"
-            Margin="46,0,0,0"
+            Margin="54,0,0,0"
             VerticalAlignment="Top"
             Canvas.ZIndex="1"
             IsBackButtonEnabled="True"
@@ -76,6 +76,12 @@
                     Icon="{dev:FontIcon Glyph=&#xE80F;}"
                     IsSelected="True"
                     Tag="HomePage" />
+                <NavigationViewItem
+                    x:Name="DownloadPageNavItem"
+                    Content="下载"
+                    Icon="{dev:FontIcon Glyph=&#xE896;}"
+                    IsSelected="True"
+                    Tag="DownloadPage" />
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem

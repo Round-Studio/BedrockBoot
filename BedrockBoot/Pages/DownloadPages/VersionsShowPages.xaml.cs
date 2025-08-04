@@ -156,20 +156,15 @@ namespace BedrockBoot.Pages.DownloadPages
         private void VersionType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             VersionItems.Clear();
-            string str = VersionType.SelectedIndex switch
+            var str = VersionType.SelectedIndex switch
             {
-                0=>"Release",
-                1=>"Preview",
-                2=>"Beta",
+                0 => "Release",
+                1 => "Preview",
+                2 => "Beta"
             };
-                    foreach (var version in _allVersions)
-                    {
-                        if (version.Type == str)
-                        {
+            foreach (var version in _allVersions)
+                if (version.Type == str)
                     VersionItems.Add(version);
-                }
-                     
-                    }
         }
     }
 }

@@ -19,9 +19,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\AppReference\Bloom.html" />
+    <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
-    <None Remove="Pages\DownloadPages\InstallClientPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\OOBEPage.xaml" />
     <None Remove="Pages\SettingPage\AboutPage.xaml" />
@@ -133,6 +133,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\DefaultContentDialogFrame.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ContentDialogContent\DownloadGameContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Styles\Styles.xaml">

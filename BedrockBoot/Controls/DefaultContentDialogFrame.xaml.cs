@@ -32,11 +32,19 @@ namespace BedrockBoot.Controls
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             /// * TODO: 让这个关闭按钮真的能关闭
+            /// A Way: Who is fatner's father?
+            ((ContentDialog)(((UserControl)(((DefaultContentDialogFrame)(((Grid)(((Grid)(((Button)sender).Parent)).Parent)).Parent)).Parent)).Parent)).Hide();
         }
 
         private void FinishButton_Click(object sender, RoutedEventArgs e)
         {
+            ((ContentDialog)(((UserControl)(((DefaultContentDialogFrame)(((Grid)(((Grid)(((Button)sender).Parent)).Parent)).Parent)).Parent)).Parent)).Hide();
+        }
 
+        public event RoutedEventHandler Click
+        {
+            add { }
+            remove { }
         }
     }
 }

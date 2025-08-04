@@ -1,4 +1,5 @@
 using BedrockBoot.Controls;
+using BedrockBoot.Controls.ContentDialogContent;
 using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Network;
 using CommunityToolkit.WinUI;
@@ -44,7 +45,7 @@ namespace BedrockBoot.Pages.DownloadPages
             dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             // dialog.Background = new SolidColorBrush(Colors.Transparent);
             dialog.DefaultButton = ContentDialogButton.Primary;
-            dialog.Content = new DefaultContentDialogFrame();
+            dialog.Content = new DownloadGameContent("A Version");
 
             var result = await dialog.ShowAsync();
         }

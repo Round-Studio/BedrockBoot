@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="BedrockBoot.Controls.ContentDialogContent.DownloadGameContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="using:BedrockBoot.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:BedrockBoot.Controls.ContentDialogContent"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <b:DefaultContentDialogFrame Header="{x:Bind ver}">
+        <b:DefaultContentDialogFrame.Content>
+            <StackPanel
+                Margin="0,0,0,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Spacing="8" />
+        </b:DefaultContentDialogFrame.Content>
+    </b:DefaultContentDialogFrame>
+</Page>

@@ -12,7 +12,7 @@
     mc:Ignorable="d">
 
     <ScrollView
-        Margin="40,0,40,0"
+        Margin="40,48,40,0"
         Padding="0"
         HorizontalAlignment="Stretch"
         VerticalScrollBarVisibility="Auto">

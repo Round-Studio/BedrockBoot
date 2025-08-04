@@ -34,7 +34,7 @@ namespace BedrockBoot
         public App()
         {
             InitializeComponent();
-            NavService = new JsonNavigationService();
+            NavService = new JsonNavigationService(); // JsonNav特有的删不干净
             MainWindow = new MainWindow();
 
             MainWindow.Title = MainWindow.AppWindow.Title = ProcessInfoHelper.ProductNameAndVersion;

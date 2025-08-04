@@ -20,6 +20,7 @@ namespace BedrockBoot.Pages
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
+    /// 有什么新东西就放在这里
     /// </summary>
     public sealed partial class OOBEPage : Page
     {

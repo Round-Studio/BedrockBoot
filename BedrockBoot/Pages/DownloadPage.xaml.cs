@@ -21,6 +21,7 @@ namespace BedrockBoot.Pages
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
+    /// 来自Dimeの馈赠
     /// </summary>
     public sealed partial class DownloadPage : Page
     {

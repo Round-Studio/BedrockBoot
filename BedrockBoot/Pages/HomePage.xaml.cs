@@ -20,6 +20,7 @@ namespace BedrockBoot.Pages;
 
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
+/// DM: 没想好这个页面的作用是什么，先留着吧
 /// </summary>
 public sealed partial class HomePage : Page
 {

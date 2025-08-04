@@ -17,6 +17,7 @@
                 Margin="10,5,10,0"
                 Description="{x:Bind Date}"
                 Header="{x:Bind Version}"
+                HeaderIcon="{x:Bind Icon}"
                 IsClickEnabled="True" />
         </DataTemplate>
     </Page.Resources>

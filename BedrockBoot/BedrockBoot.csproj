@@ -21,7 +21,6 @@
     <None Remove="Assets\AppReference\Bloom.html" />
     <None Remove="Controls\DownloadCardContent.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
-    <None Remove="Pages\DownloadPages\DownloadClientsPage.xaml" />
     <None Remove="Pages\DownloadPages\InstallClientPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
     <None Remove="Pages\OOBEPage.xaml" />

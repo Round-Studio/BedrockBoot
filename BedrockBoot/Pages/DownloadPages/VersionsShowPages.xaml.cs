@@ -12,14 +12,14 @@ using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
 
 namespace BedrockBoot.Pages.DownloadPages
 {
-    public sealed partial class DownloadClientsPage : Page
+    public sealed partial class VersionsShowPages : Page
     {
         private readonly DispatcherQueue _dispatcherQueue;
         private static List<VersionInformation> _versions;
         private static readonly SemaphoreSlim _loadSemaphore = new SemaphoreSlim(1, 1);
         private CancellationTokenSource _cancellationTokenSource;
 
-        public DownloadClientsPage()
+        public VersionsShowPages()
         {
             InitializeComponent();
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();

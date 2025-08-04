@@ -34,6 +34,7 @@
                     Width="42"
                     Height="36"
                     Padding="8"
+                    Click="BackButton_Click"
                     Style="{ThemeResource SubtleButtonStyle}">
                     <AnimatedIcon x:Name="SearchAnimatedIcon">
                         <AnimatedIcon.Source>

@@ -45,6 +45,14 @@ namespace BedrockBoot
         }
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
+            if (NavFrame.CanGoBack)
+            {
+                BackButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                BackButton.Visibility = Visibility.Collapsed;
+            }
             // DM: 越老，越好用
             if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));
 
@@ -54,6 +62,14 @@ namespace BedrockBoot
             if ((string)selectedItem.Tag == "HomePage") NavFrame.Navigate(typeof(HomePage));
             if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
             if ((string)selectedItem.Tag == "TaskPage") NavFrame.Navigate(typeof(TaskPage));
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavFrame.CanGoBack)
+            {
+                NavFrame.GoBack();
+            }
         }
     }
 }

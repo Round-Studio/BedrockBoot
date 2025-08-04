@@ -36,16 +36,21 @@ namespace BedrockBoot.Pages.DownloadPages
             Unloaded += OnPageUnloaded;
         }
 
-        private async void ShowDownloadGameContentDialog()
+        private async void ShowDownloadGameContentDialog(string ver)
         {
             ContentDialog dialog = new ContentDialog();
 
             // 如果 ContentDialog 在桌面应用程序中运行，则必须设置 XamlRoot
             dialog.XamlRoot = this.Content.XamlRoot;
-            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             // dialog.Background = new SolidColorBrush(Colors.Transparent);
+            dialog.Content = new DownloadGameContent();
+            dialog.XamlRoot = this.XamlRoot;
+            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            dialog.Title = ver;
+            dialog.PrimaryButtonText = "下载";
+            dialog.CloseButtonText = "取消";
             dialog.DefaultButton = ContentDialogButton.Primary;
-            dialog.Content = new DownloadGameContent("A Version");
+
 
             var result = await dialog.ShowAsync();
         }
@@ -143,5 +148,9 @@ namespace BedrockBoot.Pages.DownloadPages
             return tcs.Task;
         }
 
+        private void SettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            ShowDownloadGameContentDialog((string)(((SettingsCard)sender).Header));
+        }
     }
 }

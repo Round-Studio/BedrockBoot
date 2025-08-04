@@ -23,11 +23,9 @@ namespace BedrockBoot.Controls.ContentDialogContent
     /// </summary>
     public sealed partial class DownloadGameContent : Page
     {
-        private string ver = "ERROR";
-        public DownloadGameContent(string VersionID)
+        public DownloadGameContent()
         {
             InitializeComponent();
-            ver = VersionID;
         }
     }
 }

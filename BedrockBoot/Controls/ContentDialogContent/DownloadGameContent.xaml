@@ -9,13 +9,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <b:DefaultContentDialogFrame Header="{x:Bind ver}">
-        <b:DefaultContentDialogFrame.Content>
-            <StackPanel
-                Margin="0,0,0,0"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Spacing="8" />
-        </b:DefaultContentDialogFrame.Content>
-    </b:DefaultContentDialogFrame>
+    <Grid>
+        <StackPanel
+            Margin="0,0,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Spacing="8">
+            <TextBox HorizontalAlignment="Stretch" Header="名称" />
+            <TextBox HorizontalAlignment="Stretch" Header="下载路径" />
+        </StackPanel>
+    </Grid>
 </Page>

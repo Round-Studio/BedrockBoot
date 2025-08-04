@@ -9,21 +9,26 @@
     xmlns:local="using:BedrockBoot.Pages.DownloadPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:types="using:BedrockBoot.Types" xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:jsonHandle="using:BedrockLauncher.Core.JsonHandle"
     mc:Ignorable="d">
-
     <Page.Resources>
-        <!--  使用ItemsRepeater  -->
-        <DataTemplate x:Key="VersionCardTemplate" x:DataType="types:VersionType">
+        <DataTemplate x:Key="VersionCardTemplate" x:DataType="jsonHandle:VersionInformation">
             <dev:SettingsCard
                 Margin="10,5,10,0"
                 Description="{x:Bind Date}"
-                Header="{x:Bind Version}"
-                HeaderIcon="{x:Bind Icon}"
-                IsClickEnabled="True" />
+                Header="{x:Bind ID}"
+                IsClickEnabled="True"
+                Tag="{x:Bind}"
+                Click="ButtonBase_OnClick"
+                >
+                <dev:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE77B;" />
+                </dev:SettingsCard.HeaderIcon>
+            </dev:SettingsCard>
         </DataTemplate>
     </Page.Resources>
-
     <Grid>
+        <Grid>
         <StackPanel
             Margin="5"
             HorizontalAlignment="Left"
@@ -52,6 +57,18 @@
             </controls:Segmented>
 
         </StackPanel>
-        <StackPanel Margin="0,48,0,0" x:Name="VersionList" HorizontalAlignment="Stretch" />
+        <Grid Margin="0,48,0,0">
+            <ScrollViewer HorizontalAlignment="Stretch">
+                <ItemsRepeater 
+                    x:Name="VersionList" 
+                    ItemsSource="{x:Bind VersionItems, Mode=OneWay}"
+                    ItemTemplate="{StaticResource VersionCardTemplate}">
+                    <ItemsRepeater.Layout>
+                        <StackLayout Spacing="5"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
     </Grid>
 </Page>

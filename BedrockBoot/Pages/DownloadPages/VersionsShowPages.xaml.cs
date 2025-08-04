@@ -1,13 +1,18 @@
 using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Network;
+using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.UI.Core;
 using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
 
 namespace BedrockBoot.Pages.DownloadPages
@@ -15,20 +20,79 @@ namespace BedrockBoot.Pages.DownloadPages
     public sealed partial class VersionsShowPages : Page
     {
         private readonly DispatcherQueue _dispatcherQueue;
-        private static List<VersionInformation> _versions;
-        private static readonly SemaphoreSlim _loadSemaphore = new SemaphoreSlim(1, 1);
         private CancellationTokenSource _cancellationTokenSource;
+        public ObservableCollection<VersionInformation> VersionItems { get; set; } = new();
+        private List<VersionInformation> _allVersions = new();
 
         public VersionsShowPages()
         {
             InitializeComponent();
+            this.DataContext = this;
+          _ =  LoadVersionsAsync_();
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
             _cancellationTokenSource = new CancellationTokenSource();
-            Loaded += OnPageLoaded;
             Unloaded += OnPageUnloaded;
         }
+        private async Task LoadVersionsAsync_()
+        {
+            try
+            {
+                //fuck ring 什么鬼ring 搞了我半小时😅👉
+                var progressRing = new ProgressRing
+                {
+                    IsActive = true,
+                    Width = 40,
+                    Height = 40
+                };
+                VersionList.ItemsSource = null; 
+                (VersionList.Parent as Panel)?.Children.Remove(VersionList);
+                (this.Content as Grid)?.Children.Add(progressRing);
 
-        private void OnPageLoaded(object sender, RoutedEventArgs e) => LoadVersionsAsync().ConfigureAwait(false);
+              
+                var versions = await Task.Run(() =>
+                {
+                    VersionItems.Clear();
+                    return VersionHelper.GetVersions(
+                        "https://raw.gitcode.com/gcw_lJgzYtGB/RecycleObjects/raw/main/data.json");
+                });
+
+                Task.Run((() =>
+                {
+                    foreach (var version in versions)
+                    {
+                        if (string.IsNullOrEmpty(version.ID)) continue;
+                        _allVersions.Add(version);
+                    }
+                    _allVersions.Sort((x, y) =>
+                    {
+                        try
+                        {
+                            var versionX = new Version(x.ID);
+                            var versionY = new Version(y.ID);
+                            return versionY.CompareTo(versionX); // 降序：y.CompareTo(x)
+                        }
+                        catch
+                        {
+                            return 0;
+                        }
+                    });
+                    _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
+                    {
+                        (this.Content as Grid)?.Children.Remove(progressRing);
+                        _allVersions.ForEach((information =>
+                        {
+                            VersionItems.Add(information);
+                        }));
+                    }));
+                }));
+
+            }
+            catch (Exception ex)
+            {
+                // 处理错误
+            }
+        }
+
 
         private void OnPageUnloaded(object sender, RoutedEventArgs e)
         {
@@ -36,106 +100,7 @@ namespace BedrockBoot.Pages.DownloadPages
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
         }
-
-        private async Task LoadVersionsAsync()
-        {
-            try
-            {
-                // ��ʾ����״̬
-                await UpdateUIAsync(() =>
-                {
-                    VersionList.Children.Clear();
-                    VersionList.Children.Add(new ProgressRing
-                    {
-                        IsActive = true,
-                        Width = 40,
-                        Height = 40
-                    });
-                });
-
-                // ʹ���ź���ȷ���̰߳�ȫ
-                await _loadSemaphore.WaitAsync(_cancellationTokenSource.Token);
-
-                try
-                {
-                    if (_versions == null)
-                    {
-                        // ʹ��Task.Run�ں�̨�߳�ִ��IO����
-                        _versions = await Task.Run(() =>
-                        {
-                            _cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                            return VersionHelper.GetVersions(
-                                "https://raw.gitcode.com/gcw_lJgzYtGB/RecycleObjects/raw/main/data.json");
-                        }, _cancellationTokenSource.Token);
-
-                        _versions?.Reverse();
-                    }
-
-                    // ��ʾ����
-                    await UpdateUIAsync(() => DisplayVersions(_versions));
-                }
-                finally
-                {
-                    _loadSemaphore.Release();
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // ����ȡ������������
-            }
-            catch (Exception ex)
-            {
-                await UpdateUIAsync(() =>
-                {
-                    VersionList.Children.Clear();
-                    VersionList.Children.Add(new TextBlock
-                    {
-                        Text = $"����ʧ��: {ex.Message}",
-                        Foreground = (Brush)Application.Current.Resources["SystemErrorTextColor"],
-                        Style = (Style)Application.Current.Resources["BodyTextBlockStyle"]
-                    });
-                });
-            }
-        }
-
-        private void DisplayVersions(List<VersionInformation> versions)
-        {
-            //* 为什么不用ItemRepeater？
-            //* ItemRepeater可比直接用ListView更高效，但在某些情况下可能会导致性能问题，尤其是在需要频繁更新UI时。
-            //* 但逝这又不会怎么频繁更新UI，为什么不用ItemRepeater？
-            // TODO: SPADD -> ItemRepeater
-            VersionList.Children.Clear();
-
-            if (versions == null || versions.Count == 0)
-            {
-                VersionList.Children.Add(new TextBlock
-                {
-                    Text = "û�п��õİ汾",
-                    Style = (Style)Application.Current.Resources["BodyTextBlockStyle"]
-                });
-                return;
-            }
-
-            foreach (var version in versions)
-            {
-                if (string.IsNullOrEmpty(version.ID)) continue;
-
-                var card = new SettingsCard
-                {
-                    Header = version.ID,
-                    Description = version.Date,
-                    IsClickEnabled = true,
-                    Margin = new Thickness(10, 5, 10, 0),
-                    Style = (Style)Application.Current.Resources["DefaultSettingsCardStyle"]
-                };
-                card.Click += (s, e) =>
-                {
-                    global_cfg._downloadPage.Navigate(new InstallClientPage(), version.ID);
-                };
-
-                VersionList.Children.Add(card);
-            }
-        }
+        
 
         private Task UpdateUIAsync(Action action)
         {
@@ -160,18 +125,5 @@ namespace BedrockBoot.Pages.DownloadPages
             return tcs.Task;
         }
 
-        // �ṩ��̬����ˢ������
-        public static async Task RefreshVersionsAsync()
-        {
-            await _loadSemaphore.WaitAsync();
-            try
-            {
-                _versions = null;
-            }
-            finally
-            {
-                _loadSemaphore.Release();
-            }
-        }
     }
 }

@@ -5,6 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="using:BedrockBoot.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dev="using:DevWinUI"
+    xmlns:glow="using:Riverside.Toolkit.Controls"
     xmlns:local="using:BedrockBoot.Controls.ContentDialogContent"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -16,7 +18,12 @@
             VerticalAlignment="Stretch"
             Spacing="8">
             <TextBox HorizontalAlignment="Stretch" Header="名称" />
-            <TextBox HorizontalAlignment="Stretch" Header="下载路径" />
+
+            <TextBlock Text="下载路径" />
+            <dev:ElementGroup HorizontalAlignment="Stretch">
+                <TextBox Width="225" />
+                <Button Content="{dev:FontIcon Glyph=&#xE838;}" />
+            </dev:ElementGroup>
         </StackPanel>
     </Grid>
 </Page>

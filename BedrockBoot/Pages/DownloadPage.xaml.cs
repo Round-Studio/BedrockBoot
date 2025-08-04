@@ -30,12 +30,12 @@ namespace BedrockBoot.Pages
             InitializeComponent();
 
             SubPageFrame.Navigate(typeof(DownloadClientsPage));
-            BreadcrumbBar.ItemsSource = new string[] { "���� Minecraft ʵ��" };
+            BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例" };
         }
 
         public void Navigate(Page page,string title)
         {
-            BreadcrumbBar.ItemsSource = new string[] { "���� Minecraft ʵ��",title };
+            BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例", title };
             SubPageFrame.Navigate(page.GetType());
         }
 
@@ -44,7 +44,7 @@ namespace BedrockBoot.Pages
             if(args.Index == 0)
             {
                 SubPageFrame.Navigate(typeof(DownloadClientsPage));
-                BreadcrumbBar.ItemsSource = new string[] { "���� Minecraft ʵ��" };
+                BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例" };
             }
         }
     }

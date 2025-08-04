@@ -65,9 +65,11 @@
                 <Brush x:Key="NavigationViewContentGridBorderBrush">Transparent</Brush>
                 <x:Double x:Key="NavigationViewContentGridCornerRadius">0</x:Double>
             </NavigationView.Resources>
-            <NavigationView.Header>
+            <!--NavigationView.Header>
                 <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
-            </NavigationView.Header>
+            </NavigationView.Header
+            DM: 这东西没用，本来是给DevWinUI的BreadcrumbNavigator用的，但它不管用，所以暂时注释掉了。
+            -->
 
             <NavigationView.MenuItems>
                 <NavigationViewItem

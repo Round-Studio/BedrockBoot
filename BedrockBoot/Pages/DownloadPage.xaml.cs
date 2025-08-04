@@ -30,12 +30,12 @@ namespace BedrockBoot.Pages
             InitializeComponent();
 
             SubPageFrame.Navigate(typeof(DownloadClientsPage));
-            BreadcrumbBar.ItemsSource = new string[] { "ÏÂÔØ Minecraft ÊµÀý" };
+            BreadcrumbBar.ItemsSource = new string[] { "ï¿½ï¿½ï¿½ï¿½ Minecraft Êµï¿½ï¿½" };
         }
 
         public void Navigate(Page page,string title)
         {
-            BreadcrumbBar.ItemsSource = new string[] { "ÏÂÔØ Minecraft ÊµÀý",title };
+            BreadcrumbBar.ItemsSource = new string[] { "ï¿½ï¿½ï¿½ï¿½ Minecraft Êµï¿½ï¿½",title };
             SubPageFrame.Navigate(page.GetType());
         }
 
@@ -44,7 +44,7 @@ namespace BedrockBoot.Pages
             if(args.Index == 0)
             {
                 SubPageFrame.Navigate(typeof(DownloadClientsPage));
-                BreadcrumbBar.ItemsSource = new string[] { "ÏÂÔØ Minecraft ÊµÀý" };
+                BreadcrumbBar.ItemsSource = new string[] { "ï¿½ï¿½ï¿½ï¿½ Minecraft Êµï¿½ï¿½" };
             }
         }
     }

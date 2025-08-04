@@ -41,7 +41,7 @@ namespace BedrockBoot.Pages.DownloadPages
         {
             try
             {
-                // ÏÔÊ¾¼ÓÔØ×´Ì¬
+                // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½×´Ì¬
                 await UpdateUIAsync(() =>
                 {
                     VersionList.Children.Clear();
@@ -53,14 +53,14 @@ namespace BedrockBoot.Pages.DownloadPages
                     });
                 });
 
-                // Ê¹ÓÃÐÅºÅÁ¿È·±£Ïß³Ì°²È«
+                // Ê¹ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ß³Ì°ï¿½È«
                 await _loadSemaphore.WaitAsync(_cancellationTokenSource.Token);
 
                 try
                 {
                     if (_versions == null)
                     {
-                        // Ê¹ÓÃTask.RunÔÚºóÌ¨Ïß³ÌÖ´ÐÐIO²Ù×÷
+                        // Ê¹ï¿½ï¿½Task.Runï¿½Úºï¿½Ì¨ï¿½ß³ï¿½Ö´ï¿½ï¿½IOï¿½ï¿½ï¿½ï¿½
                         _versions = await Task.Run(() =>
                         {
                             _cancellationTokenSource.Token.ThrowIfCancellationRequested();
@@ -71,7 +71,7 @@ namespace BedrockBoot.Pages.DownloadPages
                         _versions?.Reverse();
                     }
 
-                    // ÏÔÊ¾Êý¾Ý
+                    // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
                     await UpdateUIAsync(() => DisplayVersions(_versions));
                 }
                 finally
@@ -81,7 +81,7 @@ namespace BedrockBoot.Pages.DownloadPages
             }
             catch (OperationCanceledException)
             {
-                // Õý³£È¡Ïû£¬²»×ö´¦Àí
+                // ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace BedrockBoot.Pages.DownloadPages
                     VersionList.Children.Clear();
                     VersionList.Children.Add(new TextBlock
                     {
-                        Text = $"¼ÓÔØÊ§°Ü: {ex.Message}",
+                        Text = $"ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½: {ex.Message}",
                         Foreground = (Brush)Application.Current.Resources["SystemErrorTextColor"],
                         Style = (Style)Application.Current.Resources["BodyTextBlockStyle"]
                     });
@@ -106,7 +106,7 @@ namespace BedrockBoot.Pages.DownloadPages
             {
                 VersionList.Children.Add(new TextBlock
                 {
-                    Text = "Ã»ÓÐ¿ÉÓÃµÄ°æ±¾",
+                    Text = "Ã»ï¿½Ð¿ï¿½ï¿½ÃµÄ°æ±¾",
                     Style = (Style)Application.Current.Resources["BodyTextBlockStyle"]
                 });
                 return;
@@ -150,13 +150,13 @@ namespace BedrockBoot.Pages.DownloadPages
                 }
             }))
             {
-                tcs.SetException(new InvalidOperationException("ÎÞ·¨µ÷¶Èµ½UIÏß³Ì"));
+                tcs.SetException(new InvalidOperationException("ï¿½Þ·ï¿½ï¿½ï¿½ï¿½Èµï¿½UIï¿½ß³ï¿½"));
             }
 
             return tcs.Task;
         }
 
-        // Ìá¹©¾²Ì¬·½·¨Ë¢ÐÂÊý¾Ý
+        // ï¿½á¹©ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         public static async Task RefreshVersionsAsync()
         {
             await _loadSemaphore.WaitAsync();

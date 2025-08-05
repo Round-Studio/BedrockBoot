@@ -27,5 +27,5 @@ public sealed partial class SettingsPage : Page
     {
         InitializeComponent();
     }
-    // TODO: 所以什么时候才能写SettingsCard导航？----DM
+    // TODO: 所以什么时候才能写SettingsCard导航？----DM,马上马上
 }

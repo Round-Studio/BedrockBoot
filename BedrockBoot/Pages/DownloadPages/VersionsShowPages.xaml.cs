@@ -10,11 +10,14 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
+using WinRT;
 using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
 
 namespace BedrockBoot.Pages.DownloadPages
@@ -108,7 +111,6 @@ namespace BedrockBoot.Pages.DownloadPages
                         }));
                     }));
                 }));
-
             }
             catch (Exception ex)
             {
@@ -150,7 +152,9 @@ namespace BedrockBoot.Pages.DownloadPages
 
         private void SettingsCard_Click(object sender, RoutedEventArgs e)
         {
-            var showDownloadGameContentDialog = ShowDownloadGameContentDialog((string)(((SettingsCard)sender).Header));
+            var frameworkElement = sender as FrameworkElement;
+           // var showDownloadGameContentDialog = ShowDownloadGameContentDialog((string)(((SettingsCard)sender).Header)).Result;
+            global_cfg.InstallTasksAsync("test", Path.Combine(Directory.GetCurrentDirectory(), "test"), (frameworkElement.Tag as VersionInformation));
         }
 
         private void VersionType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

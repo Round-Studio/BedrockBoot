@@ -10,29 +10,44 @@
     xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:task="using:BedrockBoot.Controls"
-    xmlns:type="using:BedrockBoot.Types"
     mc:Ignorable="d">
 
-    <Page.Resources>
-        <DataTemplate x:Key="TaskTemplate" x:DataType="type:TaskType">
-            <task:TaskCard
-                Description="{x:Bind Description}"
-                Header="{x:Bind Header}"
-                Progress="{x:Bind Progress}" />
-        </DataTemplate>
-    </Page.Resources>
-
-    <Grid Margin="40,48,40,0">
-        <task:TaskCard />
-        <ScrollViewer
-            HorizontalScrollBarVisibility="Auto"
-            HorizontalScrollMode="Auto"
-            IsVerticalScrollChainingEnabled="False">
-            <ItemsRepeater
-                ItemTemplate="{StaticResource TaskTemplate}"
-                ItemsSource="{x:Bind TaskList}"
-                Layout="{StaticResource VerticalStackLayout}" />
+    <Grid Margin="40,48,40,0" Padding="0">
+        <Grid
+            Height="80"
+            MaxWidth="1000"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            <BreadcrumbBar
+                x:Name="BreadcrumbBar"
+                Margin="10,0,10,4"
+                FontSize="30"
+                >
+                <BreadcrumbBar.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock FontSize="30" Text="{Binding}" />
+                    </DataTemplate>
+                </BreadcrumbBar.ItemTemplate>
+            </BreadcrumbBar>
+        </Grid>
+        <ScrollViewer MaxWidth="1000"
+                      Margin="0,50,0,0"
+                      HorizontalAlignment="Stretch">
+            <StackPanel x:Name="TaskContainer" 
+                        HorizontalAlignment="Stretch">
+            </StackPanel>
         </ScrollViewer>
-
     </Grid>
+    <!--<Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer HorizontalAlignment="Stretch"  Margin="20" Grid.Row="1">
+            <StackPanel x:Name="TaskContainer" 
+                        HorizontalAlignment="Stretch">
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>-->
 </Page>

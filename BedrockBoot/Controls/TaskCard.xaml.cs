@@ -65,7 +65,11 @@ namespace BedrockBoot.Controls
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "已注册Minecraft"; }));
                                 break;
                             case InstallStates.registering:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "注册Minecraft中...请耐心等待"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
+                                {
+                                    Button.IsEnabled = false;
+                                    Process_Text.Text = "注册Minecraft中...请耐心等待";
+                                }));
                                 break;
                             case InstallStates.unzipng:
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "解压中..."; }));
@@ -135,6 +139,7 @@ namespace BedrockBoot.Controls
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             CancellationToken.Cancel();
+            global_cfg.tasksPool.Remove(this);
         }
 
         public void Dispose()

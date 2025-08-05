@@ -17,12 +17,12 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Spacing="8">
-            <TextBox HorizontalAlignment="Stretch" Header="名称" />
+            <TextBox x:Name="NameBox" HorizontalAlignment="Stretch" Header="名称" />
 
             <TextBlock Text="下载路径" />
             <dev:ElementGroup HorizontalAlignment="Stretch">
-                <TextBox Width="225" />
-                <Button Content="{dev:FontIcon Glyph=&#xE838;}" />
+                <TextBox x:Name="TextBox" Width="225" />
+                <Button Click="ButtonBase_OnClick" Content="{dev:FontIcon Glyph=&#xE838;}" />
             </dev:ElementGroup>
         </StackPanel>
     </Grid>

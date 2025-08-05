@@ -26,7 +26,7 @@ namespace BedrockBoot
     public partial class App : Application
     {
         public new static App Current => (App)Application.Current;
-        private Window? _window;
+        public static Window? _window;
         public static Window MainWindow = Window.Current;
         public JsonNavigationService NavService { get; set; }
         public IThemeService AppThemeService { get; set; }

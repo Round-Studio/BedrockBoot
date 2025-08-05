@@ -39,7 +39,7 @@ namespace BedrockBoot.Pages.DownloadPages
             Unloaded += OnPageUnloaded;
         }
 
-        private async Task<ContentDialogResult> ShowDownloadGameContentDialog(string ver)
+        private async Task<ContentDialogResult> ShowDownloadGameContentDialog(string ver,VersionInformation version)
         {
             ContentDialog dialog = new ContentDialog();
 
@@ -55,6 +55,11 @@ namespace BedrockBoot.Pages.DownloadPages
             dialog.DefaultButton = ContentDialogButton.Primary;
 
             var result = await dialog.ShowAsync();
+
+            if (string.IsNullOrEmpty(((DownloadGameContent)dialog.Content).Path) || string.IsNullOrEmpty(((DownloadGameContent)dialog.Content).Name))
+            {
+                await MessageBox.ShowAsync("错误", "内容不应为空");
+            }
             return result;
         }
 
@@ -107,28 +112,21 @@ namespace BedrockBoot.Pages.DownloadPages
                     _dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
                     {
                         (this.Content as Grid)?.Children.Remove(progressRing);
-                        _allVersions.ForEach((information =>
-                        {
-                            VersionItems.Add(information);
-                        }));
+                        VersionType_OnSelectionChanged(null,null);
                     }));
                 }));
             }
             catch (Exception ex)
             {
-                // 处理错误
+                MessageBox.ShowAsync(ex);
             }
         }
-
-
         private void OnPageUnloaded(object sender, RoutedEventArgs e)
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
         }
-        
-
         private Task UpdateUIAsync(Action action)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -155,8 +153,8 @@ namespace BedrockBoot.Pages.DownloadPages
         private void SettingsCard_Click(object sender, RoutedEventArgs e)
         {
             var frameworkElement = sender as FrameworkElement;
-           // var showDownloadGameContentDialog = ShowDownloadGameContentDialog((string)(((SettingsCard)sender).Header)).Result;
-            global_cfg.InstallTasksAsync("test", Path.Combine(Directory.GetCurrentDirectory(), "test"), (frameworkElement.Tag as VersionInformation));
+            var showDownloadGameContentDialog = ShowDownloadGameContentDialog((string)(((SettingsCard)sender).Header), (frameworkElement.Tag as VersionInformation));
+            //global_cfg.InstallTasksAsync("test", Path.Combine(Directory.GetCurrentDirectory(), "test"), (frameworkElement.Tag as VersionInformation));
         }
 
         private void VersionType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -20,9 +20,17 @@ namespace BedrockBoot.Controls
 {
     public sealed partial class TaskCard : UserControl
     {
+        public string Header { get; set; } = "Header";
+        public string Description { get; set; } = "Description";
+        public double Progress { get; set; } = 0;
         public TaskCard()
         {
             InitializeComponent();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

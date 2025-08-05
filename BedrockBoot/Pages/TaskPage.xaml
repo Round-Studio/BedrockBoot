@@ -6,11 +6,13 @@
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:controls2="using:Riverside.Toolkit.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:task="using:BedrockBoot.Controls"
     mc:Ignorable="d">
 
-    <Grid>
-        <controls2:SettingsDisplayControl />
+    <Grid Margin="40,48,40,0">
+        <task:TaskCard />
     </Grid>
 </Page>

@@ -3,6 +3,7 @@
     x:Class="BedrockBoot.Controls.TaskCard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Controls"
@@ -10,7 +11,7 @@
     Width="364"
     mc:Ignorable="d">
 
-    <Grid BorderBrush="Black" BorderThickness="1">
+    <!--Grid BorderBrush="Black" BorderThickness="1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -20,7 +21,6 @@
             <RowDefinition Height="58" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <!--  TitleBar  -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="42" />
                 <ColumnDefinition Width="*" />
@@ -42,10 +42,8 @@
                                        Glyph=&#xE711;}" />
         </Grid>
         <Grid Grid.Row="1">
-            <!--  Content  -->
         </Grid>
         <Grid Grid.Row="2">
-            <!--  ButtonFrame  -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="136" />
@@ -74,5 +72,25 @@
                 Content="完成"
                 Style="{ThemeResource AccentButtonStyle}" />
         </Grid>
-    </Grid>
+    </Grid-->
+
+    <controls:SettingsExpander
+        HorizontalAlignment="Stretch"
+        Header="{x:Bind Header}"
+        HeaderIcon="{dev:FontIcon Glyph=&#xE821;}">
+        <Button
+            Padding="4"
+            HorizontalAlignment="Stretch"
+            Click="CloseButton_Click"
+            Content="{dev:FontIcon Glyph=&#xE711;}"
+            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+            Style="{ThemeResource ChromelessButtonStyle}"
+            ToolTipService.ToolTip="取消该任务" />
+        <controls:SettingsExpander.Description>
+            <StackPanel Orientation="Vertical">
+                <ProgressBar Margin="0,4,0,4" Value="{x:Bind Progress}" />
+                <TextBlock Text="{x:Bind Description}" />
+            </StackPanel>
+        </controls:SettingsExpander.Description>
+    </controls:SettingsExpander>
 </UserControl>

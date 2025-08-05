@@ -62,8 +62,10 @@ namespace BedrockBoot.Pages.DownloadPages
         {
             try
             {
-                //fuck ring 什么鬼ring 搞了我半小时😅👉
+                // fuck ring 什么鬼ring 搞了我半小时😅👉
                 // DM: 用XAML会快一点
+                // 傻逼 ↑ 🤣🤣🤣
+
                 var progressRing = new ProgressRing
                 {
                     IsActive = true,
@@ -86,7 +88,7 @@ namespace BedrockBoot.Pages.DownloadPages
                 {
                     foreach (var version in versions)
                     {
-                        if (string.IsNullOrEmpty(version.ID)) continue;
+                        if (string.IsNullOrEmpty(version.ID) || string.IsNullOrEmpty(version.Date)) continue;
                         _allVersions.Add(version);
                     }
                     _allVersions.Sort((x, y) =>
@@ -169,6 +171,46 @@ namespace BedrockBoot.Pages.DownloadPages
             foreach (var version in _allVersions)
                 if (version.Type == str)
                     VersionItems.Add(version);
+        }
+
+        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            // 获取搜索关键词（忽略大小写）
+            string searchText = SearchBox?.Text?.Trim() ?? string.Empty;
+
+            // 清空当前显示列表
+            VersionItems.Clear();
+
+            // 如果没有输入关键词，则显示当前筛选类型的全部版本
+            if (string.IsNullOrEmpty(searchText))
+            {
+                var currentType = VersionType.SelectedIndex switch
+                {
+                    0 => "Release",
+                    1 => "Preview",
+                    2 => "Beta",
+                    _ => null
+                };
+
+                foreach (var version in _allVersions)
+                {
+                    if (currentType == null || version.Type == currentType)
+                        VersionItems.Add(version);
+                }
+                return;
+            }
+
+            // 根据关键词过滤（匹配 ID 或 Date）
+            var filteredVersions = _allVersions.Where(v =>
+                (v.ID?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (v.Date?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false
+            ));
+
+            // 添加筛选结果
+            foreach (var version in filteredVersions)
+            {
+                VersionItems.Add(version);
+            }
         }
     }
 }

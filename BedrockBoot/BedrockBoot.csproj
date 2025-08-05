@@ -16,6 +16,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\AppReference\Bloom.html" />
+    <Content Remove="Assets\MCSquare44x44Logo.scale-100.png" />
+    <Content Remove="Assets\MCSquare44x44Logo.scale-200.png" />
+    <Content Remove="Assets\MC_Release_Icon.png" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\AppReference\Bloom.html" />

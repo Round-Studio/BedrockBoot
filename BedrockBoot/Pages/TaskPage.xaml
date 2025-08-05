@@ -29,7 +29,7 @@
             HorizontalScrollMode="Auto"
             IsVerticalScrollChainingEnabled="False">
             <ItemsRepeater
-                ItemTemplate="{StaticResource HorizontalBarTemplate}"
+                ItemTemplate="{StaticResource TaskTemplate}"
                 ItemsSource="{x:Bind TaskList}"
                 Layout="{StaticResource VerticalStackLayout}" />
         </ScrollViewer>

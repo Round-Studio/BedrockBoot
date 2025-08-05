@@ -14,7 +14,12 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <DataTemplate x:Key="TaskTemplate" x:DataType="type:TaskType" />
+        <DataTemplate x:Key="TaskTemplate" x:DataType="type:TaskType">
+            <task:TaskCard
+                Description="{x:Bind Description}"
+                Header="{x:Bind Header}"
+                Progress="{x:Bind Progress}" />
+        </DataTemplate>
     </Page.Resources>
 
     <Grid Margin="40,48,40,0">

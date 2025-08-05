@@ -10,9 +10,24 @@
     xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:task="using:BedrockBoot.Controls"
+    xmlns:type="using:BedrockBoot.Types"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <DataTemplate x:Key="TaskTemplate" x:DataType="type:TaskType" />
+    </Page.Resources>
 
     <Grid Margin="40,48,40,0">
         <task:TaskCard />
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollMode="Auto"
+            IsVerticalScrollChainingEnabled="False">
+            <ItemsRepeater
+                ItemTemplate="{StaticResource HorizontalBarTemplate}"
+                ItemsSource="{x:Bind TaskList}"
+                Layout="{StaticResource VerticalStackLayout}" />
+        </ScrollViewer>
+
     </Grid>
 </Page>

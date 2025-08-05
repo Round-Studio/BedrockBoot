@@ -24,7 +24,7 @@ namespace BedrockBoot.Pages
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// DM: 这是个什么东西？
     /// </summary>
-    class TaskPage : Page
+    public partial class TaskPage : Page
     {
         public ObservableCollection<TaskType> TaskList { get; set; } = new ObservableCollection<TaskType>();
         public TaskPage()

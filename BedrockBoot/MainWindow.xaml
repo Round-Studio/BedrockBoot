@@ -80,10 +80,16 @@
                     IsSelected="True"
                     Tag="HomePage" />
                 <NavigationViewItem
+                    x:Name="VersionPageNavItem"
+                    Content="已安装版本"
+                    Icon="{dev:FontIcon Glyph=&#xE7FC;}"
+                    IsSelected="False"
+                    Tag="VersionPage" />
+                <NavigationViewItem
                     x:Name="DownloadPageNavItem"
                     Content="下载"
                     Icon="{dev:FontIcon Glyph=&#xE896;}"
-                    IsSelected="True"
+                    IsSelected="False"
                     Tag="DownloadPage" />
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>

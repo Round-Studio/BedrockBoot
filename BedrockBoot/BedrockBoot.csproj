@@ -40,6 +40,7 @@
     <None Remove="Pages\SettingPage\DevelopersPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
     <None Remove="Pages\TaskPage.xaml" />
+    <None Remove="Pages\VersionPage.xaml" />
     <None Remove="Styles\CubeThemeDictionary.xaml" />
     <None Remove="Styles\CubeUI.xaml" />
   </ItemGroup>
@@ -161,6 +162,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Styles\CubeUI.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\VersionPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Styles\Styles.xaml">

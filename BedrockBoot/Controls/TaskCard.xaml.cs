@@ -57,32 +57,32 @@ namespace BedrockBoot.Controls
                         switch (states)
                         {
                             case InstallStates.getingDownloadUri:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "��ȡUri��..."; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "获取Uri中..."; }));
                                 break;
                             case InstallStates.gotDownloadUri:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "�ѻ�ȡUri"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "已获取Uri"; }));
                                 break;
                             case InstallStates.registered:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "��ע��Minecraft"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "已注册Minecraft"; }));
                                 break;
                             case InstallStates.registering:
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
                                 {
                                     Button.IsEnabled = false;
-                                    Process_Text.Text = "ע��Minecraft��...�����ĵȴ�";
+                                    Process_Text.Text = "注册Minecraft中...";
                                 }));
                                 break;
                             case InstallStates.unzipng:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "��ѹ��..."; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "解压中..."; }));
                                 break;
                             case InstallStates.unziped:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "��ѹ�ɹ�"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "解压成功"; }));
                                 break;
                             case InstallStates.downloading:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "������..."; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "下载中..."; }));
                                 break;
                             case InstallStates.downloaded:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "�������"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "下载完成"; }));
                                 break;
                         }
                     }),

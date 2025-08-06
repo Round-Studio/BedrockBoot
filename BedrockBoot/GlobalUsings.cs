@@ -11,20 +11,22 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BedrockBoot;
 
 public static class global_cfg
 {
     public static BedrockCore core = new BedrockCore();
     public static DownloadPage _downloadPage;
     public static ObservableCollection<TaskCard> tasksPool = new ObservableCollection<TaskCard>();
-    public static string AppxDir = "./";
+    public static Config cfg = new Config();
     public static void InstallTasksAsync(string taskname,string installdir,VersionInformation ver)
     {
         var taskCard = new TaskCard()
         {
             Version = ver
         };
-        taskCard.DoInstallAsync(taskname,installdir,Path.Combine(Directory.GetCurrentDirectory(),ver.ID+".appx"));
+        taskCard.Header = taskname;
+        taskCard.DoInstallAsync(taskname,installdir,Path.Combine(cfg.JsonCfg.appxDir,cfg.JsonCfg.appxName));
         tasksPool.Add(taskCard);
     }
 }

@@ -56,10 +56,22 @@ namespace BedrockBoot.Pages.DownloadPages
 
             var result = await dialog.ShowAsync();
 
+            if (result == ContentDialogResult.Primary)
+            {
+                global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path,version);
+            }
+            else
+            {
+                return result;
+            }
+
             if (string.IsNullOrEmpty(((DownloadGameContent)dialog.Content).Path) || string.IsNullOrEmpty(((DownloadGameContent)dialog.Content).Name))
             {
                 await MessageBox.ShowAsync("错误", "内容不应为空");
             }
+
+            MessageBox.ShowAsync("提示", "已加入任务列表");
+
             return result;
         }
 
@@ -154,7 +166,6 @@ namespace BedrockBoot.Pages.DownloadPages
         {
             var frameworkElement = sender as FrameworkElement;
             var showDownloadGameContentDialog = ShowDownloadGameContentDialog((string)(((SettingsCard)sender).Header), (frameworkElement.Tag as VersionInformation));
-            //global_cfg.InstallTasksAsync("test", Path.Combine(Directory.GetCurrentDirectory(), "test"), (frameworkElement.Tag as VersionInformation));
         }
 
         private void VersionType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

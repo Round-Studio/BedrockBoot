@@ -76,20 +76,20 @@
 
     <controls:SettingsExpander
         HorizontalAlignment="Stretch"
-        x:Name="Title"
+        Header="{x:Bind Header}"
         HeaderIcon="{dev:FontIcon Glyph=&#xE821;}">
         <Button
+            x:Name="Button"
             Padding="4"
             HorizontalAlignment="Stretch"
             Click="CloseButton_Click"
-            x:Name="Button"
             Content="{dev:FontIcon Glyph=&#xE711;}"
             Foreground="{ThemeResource SystemFillColorCriticalBrush}"
             Style="{ThemeResource ChromelessButtonStyle}"
             ToolTipService.ToolTip="取消该任务" />
         <controls:SettingsExpander.Description>
             <StackPanel Orientation="Vertical">
-                <ProgressBar Margin="0,4,0,4"  x:Name="Process" />
+                <ProgressBar x:Name="Process" Margin="0,4,0,4" />
                 <TextBlock x:Name="Process_Text" />
             </StackPanel>
         </controls:SettingsExpander.Description>

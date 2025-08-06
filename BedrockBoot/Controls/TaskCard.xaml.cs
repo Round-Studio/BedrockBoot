@@ -27,6 +27,7 @@ namespace BedrockBoot.Controls
 {
     public sealed partial class TaskCard : UserControl,IDisposable
     {
+        public string Header {get; set; } = "TaskCard";
         public CancellationTokenSource CancellationToken = new CancellationTokenSource();
         public  VersionInformation Version { get; set; }
 
@@ -56,32 +57,32 @@ namespace BedrockBoot.Controls
                         switch (states)
                         {
                             case InstallStates.getingDownloadUri:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "»ñÈ¡UriÖÐ..."; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ï¿½ï¿½È¡Uriï¿½ï¿½..."; }));
                                 break;
                             case InstallStates.gotDownloadUri:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ÒÑ»ñÈ¡Uri"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ï¿½Ñ»ï¿½È¡Uri"; }));
                                 break;
                             case InstallStates.registered:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ÒÑ×¢²áMinecraft"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ï¿½ï¿½×¢ï¿½ï¿½Minecraft"; }));
                                 break;
                             case InstallStates.registering:
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
                                 {
                                     Button.IsEnabled = false;
-                                    Process_Text.Text = "×¢²áMinecraftÖÐ...ÇëÄÍÐÄµÈ´ý";
+                                    Process_Text.Text = "×¢ï¿½ï¿½Minecraftï¿½ï¿½...ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÈ´ï¿½";
                                 }));
                                 break;
                             case InstallStates.unzipng:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "½âÑ¹ÖÐ..."; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ï¿½ï¿½Ñ¹ï¿½ï¿½..."; }));
                                 break;
                             case InstallStates.unziped:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "½âÑ¹³É¹¦"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ï¿½ï¿½Ñ¹ï¿½É¹ï¿½"; }));
                                 break;
                             case InstallStates.downloading:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ÏÂÔØÖÐ..."; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½..."; }));
                                 break;
                             case InstallStates.downloaded:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ÏÂÔØÍê³É"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"; }));
                                 break;
                         }
                     }),

@@ -17,11 +17,11 @@ public static class global_cfg
 {
     public static BedrockCore core = new BedrockCore();
     public static DownloadPage _downloadPage;
-    public static ObservableCollection<TaskCard> tasksPool = new ObservableCollection<TaskCard>();
+    public static ObservableCollection<TaskExpander> tasksPool = new ObservableCollection<TaskExpander>();
     public static Config cfg = new Config();
     public static void InstallTasksAsync(string taskname,string installdir,VersionInformation ver)
     {
-        var taskCard = new TaskCard()
+        var taskCard = new TaskExpander()
         {
             Version = ver
         };

@@ -17,6 +17,13 @@
     </Window.SystemBackdrop>
 
     <Grid>
+        <TeachingTip
+            x:Name="NewTaskTeachingTip"
+            Title="已创建新的任务"
+            IsLightDismissEnabled="True"
+            PlacementMargin="20"
+            PreferredPlacement="Auto" />
+
         <TitleBar
             x:Name="AppTitleBar"
             Title="{x:Bind dev:ProcessInfoHelper.ProductName}"
@@ -98,8 +105,6 @@
                     Content="任务"
                     Icon="{dev:FontIcon Glyph=&#xE945;}"
                     Tag="TaskPage" />
-
-                <TeachingTip x:Name="TaskTeachingTip" Title="新建了一个任务" />
 
                 <NavigationViewItem
                     x:Name="OOBEPageNavItem"

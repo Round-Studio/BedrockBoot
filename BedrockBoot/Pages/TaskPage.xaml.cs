@@ -28,7 +28,7 @@ namespace BedrockBoot.Pages
     /// </summary>
    public sealed partial class TaskPage : Page
     {
-        public ObservableCollection<TaskCard> TaskList { get; set; } = global_cfg.tasksPool;
+        public ObservableCollection<TaskExpander> TaskList { get; set; } = global_cfg.tasksPool;
         public TaskPage()
         {
             InitializeComponent();
@@ -53,7 +53,7 @@ namespace BedrockBoot.Pages
             {
                 foreach (var eOldItem in e.OldItems)
                 {
-                    TaskContainer.Children.Remove((TaskCard)eOldItem);
+                    TaskContainer.Children.Remove((TaskExpander)eOldItem);
                 }
 
                 GC.Collect(GC.MaxGeneration);

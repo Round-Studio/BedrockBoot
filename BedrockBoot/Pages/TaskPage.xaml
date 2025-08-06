@@ -21,8 +21,7 @@
             <BreadcrumbBar
                 x:Name="BreadcrumbBar"
                 Margin="10,0,10,4"
-                FontSize="30"
-                >
+                FontSize="30">
                 <BreadcrumbBar.ItemTemplate>
                     <DataTemplate>
                         <TextBlock FontSize="30" Text="{Binding}" />
@@ -30,12 +29,11 @@
                 </BreadcrumbBar.ItemTemplate>
             </BreadcrumbBar>
         </Grid>
-        <ScrollViewer MaxWidth="1000"
-                      Margin="0,50,0,0"
-                      HorizontalAlignment="Stretch">
-            <StackPanel x:Name="TaskContainer" 
-                        HorizontalAlignment="Stretch">
-            </StackPanel>
+        <ScrollViewer
+            MaxWidth="1000"
+            Margin="0,50,0,0"
+            HorizontalAlignment="Stretch">
+            <StackPanel x:Name="TaskContainer" HorizontalAlignment="Stretch" />
         </ScrollViewer>
     </Grid>
     <!--<Grid>
@@ -45,7 +43,7 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer HorizontalAlignment="Stretch"  Margin="20" Grid.Row="1">
-            <StackPanel x:Name="TaskContainer" 
+            <StackPanel x:Name="TaskContainer"
                         HorizontalAlignment="Stretch">
             </StackPanel>
         </ScrollViewer>

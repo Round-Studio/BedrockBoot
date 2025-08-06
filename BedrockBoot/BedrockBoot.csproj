@@ -155,7 +155,7 @@
     <Page Update="Controls\ContentDialogContent\DownloadGameContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="Controls\TaskCard.xaml">
+    <Page Update="Controls\TaskExpander.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Styles\CubeThemeDictionary.xaml">
@@ -165,6 +165,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\VersionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\TaskCard.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Styles\Styles.xaml">

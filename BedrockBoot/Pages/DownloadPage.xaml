@@ -10,7 +10,7 @@
     xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
 
-    <Grid Margin="5,48,5,0" Padding="0">
+    <Grid Margin="40,48,40,0" Padding="0">
         <Grid
             Height="80"
             MaxWidth="1000"
@@ -29,8 +29,9 @@
             </BreadcrumbBar>
         </Grid>
 
-        <Frame x:Name="SubPageFrame" 
+        <Frame
+            x:Name="SubPageFrame"
             Margin="0,50,0,0"
-            HorizontalAlignment="Stretch"/>
+            HorizontalAlignment="Stretch" />
     </Grid>
 </Page>

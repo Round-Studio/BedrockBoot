@@ -210,4 +210,7 @@
   <ItemGroup>
     <PRIResource Remove="Assets\AppReference\**" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CubeKit.UI\CubeKit.UI.csproj" />
+  </ItemGroup>
 </Project>

@@ -98,6 +98,9 @@
                     Content="任务"
                     Icon="{dev:FontIcon Glyph=&#xE945;}"
                     Tag="TaskPage" />
+
+                <TeachingTip x:Name="TaskTeachingTip" Title="新建了一个任务" />
+
                 <NavigationViewItem
                     x:Name="OOBEPageNavItem"
                     Content="OOBE"

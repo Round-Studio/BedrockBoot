@@ -15,19 +15,22 @@
 	  <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Assets\AppReference\**" />
     <Compile Remove="Types\**" />
+    <Content Remove="Assets\AppReference\**" />
+    <EmbeddedResource Remove="Assets\AppReference\**" />
     <EmbeddedResource Remove="Types\**" />
+    <None Remove="Assets\AppReference\**" />
     <None Remove="Types\**" />
+    <Page Remove="Assets\AppReference\**" />
     <Page Remove="Types\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Assets\AppReference\Bloom.html" />
     <Content Remove="Assets\MCSquare44x44Logo.scale-100.png" />
     <Content Remove="Assets\MCSquare44x44Logo.scale-200.png" />
     <Content Remove="Assets\MC_Release_Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Assets\AppReference\Bloom.html" />
     <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\TaskCard.xaml" />
@@ -57,12 +60,6 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\AppReference\Bloom.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -209,5 +206,8 @@
     <Content Update="Assets\Release_Icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Assets\AppReference\**" />
   </ItemGroup>
 </Project>

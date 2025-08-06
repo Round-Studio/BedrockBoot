@@ -21,13 +21,11 @@
     <Page Remove="Types\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Assets\AppReference\Bloom.html" />
     <Content Remove="Assets\MCSquare44x44Logo.scale-100.png" />
     <Content Remove="Assets\MCSquare44x44Logo.scale-200.png" />
     <Content Remove="Assets\MC_Release_Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Assets\AppReference\Bloom.html" />
     <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\TaskCard.xaml" />
@@ -42,7 +40,6 @@
     <None Remove="Pages\TaskPage.xaml" />
     <None Remove="Pages\VersionPage.xaml" />
     <None Remove="Styles\CubeThemeDictionary.xaml" />
-    <None Remove="Styles\CubeUI.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="Styles\Styles.xaml" />
@@ -57,12 +54,6 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\AppReference\Bloom.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -85,9 +76,6 @@
     <PackageReference Include="DevWinUI.Controls" Version="8.9.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
-    <PackageReference Include="Riverside.GlowUI.WinUI.Styles" Version="2.0.0" />
-    <PackageReference Include="Riverside.Toolkit.WinUI.Controls.Crimson" Version="2.0.0" />
-    <PackageReference Include="Riverside.Toolkit.WinUI.Controls.Settings" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\SettingsPage\Appearance.xaml">
@@ -161,9 +149,6 @@
     <Page Update="Styles\CubeThemeDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="Styles\CubeUI.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="Pages\VersionPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -204,5 +189,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="Types\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CubeKit.UI\CubeKit.UI.csproj" />
   </ItemGroup>
 </Project>

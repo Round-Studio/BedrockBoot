@@ -3,11 +3,12 @@
     x:Class="BedrockBoot.Pages.OOBEPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cubeMaterials="using:CubeKit.UI.Materials"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Margin="0,48,0,0" />
+    <cubeMaterials:BloomView />
 </Page>

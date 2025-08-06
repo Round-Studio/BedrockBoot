@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36203.30 d17.14
+VisualStudioVersion = 17.14.36203.30
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot", "BedrockBoot\BedrockBoot.csproj", "{AB767BB8-7139-4DC3-ABDE-58FF82D06AFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubeKit.UI", "CubeKit.UI\CubeKit.UI.csproj", "{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,18 @@ Global
 		{AB767BB8-7139-4DC3-ABDE-58FF82D06AFF}.Release|x86.ActiveCfg = Release|x86
 		{AB767BB8-7139-4DC3-ABDE-58FF82D06AFF}.Release|x86.Build.0 = Release|x86
 		{AB767BB8-7139-4DC3-ABDE-58FF82D06AFF}.Release|x86.Deploy.0 = Release|x86
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Debug|x64.Build.0 = Debug|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Debug|x86.Build.0 = Debug|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Release|ARM64.Build.0 = Release|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Release|x64.ActiveCfg = Release|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Release|x64.Build.0 = Release|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Release|x86.ActiveCfg = Release|Any CPU
+		{9BB6DAEF-9169-3E4D-473D-7B87B6BD8A37}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

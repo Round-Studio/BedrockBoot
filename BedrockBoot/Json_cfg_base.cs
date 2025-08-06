@@ -24,6 +24,5 @@ namespace BedrockBoot
         /// 开发者模式
         /// </summary>
         public bool DevelopMentMode { get; set; }
-
     }
 }

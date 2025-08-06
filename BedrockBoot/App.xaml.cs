@@ -33,6 +33,7 @@ namespace BedrockBoot
 
         public App()
         {
+            global_cfg.InitConfig();
             InitializeComponent();
             NavService = new JsonNavigationService(); // JsonNav特有的删不干净
             MainWindow = new MainWindow();

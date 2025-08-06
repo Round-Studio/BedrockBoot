@@ -31,7 +31,7 @@ namespace BedrockBoot
             ExtendsContentIntoTitleBar = true; // 让标题栏扩展到内容区域
             AppTitleBar.IsBackButtonVisible = false; // 不显示返回按钮
             SetTitleBar(AppTitleBar); // 设置自定义标题栏
-
+            this.Closed += MainWindow_Closed;
             /* 不要启用此代码，除非你想使用 DevWinUI-JSON 的导航服务，但事实上我根本没写好这个服务。:)
             App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
                                   .ConfigureDefaultPage(typeof(HomePage));
@@ -42,6 +42,10 @@ namespace BedrockBoot
             byd 没写好还加上来 可以在这留言，我看能留言多长 😡😡😡
             六百六十六
             */
+        }
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
+        {
+            Environment.Exit(0);
         }
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {

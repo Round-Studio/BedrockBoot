@@ -24,7 +24,6 @@
                 FontSize="30">
                 <BreadcrumbBar.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock FontSize="30" Text="{Binding}" />
                     </DataTemplate>
                 </BreadcrumbBar.ItemTemplate>
             </BreadcrumbBar>

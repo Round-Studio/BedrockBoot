@@ -1,3 +1,7 @@
+using BedrockBoot.Versions;
+using BedrockLauncher.Core;
+using BedrockLauncher.Core.JsonHandle;
+using BedrockLauncher.Core.Native;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -11,14 +15,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using BedrockLauncher.Core;
-using BedrockLauncher.Core.JsonHandle;
-using BedrockLauncher.Core.Native;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -34,11 +36,9 @@ namespace BedrockBoot.Controls
         public UIElement HeaderItems { get; set; }
         public UIElement Items { get; set; }
         public UIElement FooterItems { get; set; }
-
         private IconElement _HeaderIcon { get; set; } = new FontIcon() { Glyph = "\uF63C" };
-
         public Action<TaskExpander> completeCallback;
-
+        public NowVersions nowVersions;
         public TaskExpander()
         {
             InitializeComponent();
@@ -50,6 +50,7 @@ namespace BedrockBoot.Controls
             {
                 // Debug.WriteLine($"Error setting HeaderIcon: {e.Message}");
                 // TODO: 这里应该有一个日志记录
+                // 6666666666666666666666666666
                 _HeaderIcon = new FontIcon() { Glyph = "\uE821" }; // Fallback icon
             }
 
@@ -59,6 +60,12 @@ namespace BedrockBoot.Controls
         {
             new Thread((() =>
             {
+                nowVersions = new NowVersions()
+                {
+                    Version_Path = Install_dir,
+                    VersionName = Name
+                };
+                global_cfg.VersionsList.Add(nowVersions);
                 var installCallback = new InstallCallback()
                 {
                     CancellationToken = CancellationToken.Token,
@@ -119,14 +126,18 @@ namespace BedrockBoot.Controls
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                             {
                                 global_cfg.tasksPool.Remove(this);
+                                global_cfg.VersionsList.Remove(nowVersions);
                             }));
-                        
                         }
                         else if (status == AsyncStatus.Completed)
                         {
-                            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
+                            nowVersions.RealVersion = Version.ID;
+                            nowVersions.Type = Version.Type;
+                            nowVersions.hasRegeister = true;
+                            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                             {
                                 global_cfg.tasksPool.Remove(this);
+                                global_cfg.cfg.SaveVersion(nowVersions);
                             }));
                         }
                     }),
@@ -138,27 +149,29 @@ namespace BedrockBoot.Controls
                         }));
                     })))
                 };
-
                 try
                 {
                     global_cfg.core.InstallVersion(Version,Install_dir,appx_path,installCallback);
+                    var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
+                        global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));
+                    File.Delete(s);
                 }
                 catch (Exception e)
                 {
-                    MessageBox.ShowAsync(e);
-
                     DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
                     {
+                        MessageBox.ShowAsync(e.ToString(), "错误");
                         global_cfg.tasksPool.Remove(this);
+                        global_cfg.VersionsList.Remove(nowVersions);
                     }));
                 }
-
             })).Start();
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             CancellationToken.Cancel();
             global_cfg.tasksPool.Remove(this);
+            global_cfg.VersionsList.Remove(nowVersions);
         }
 
         public void Dispose()

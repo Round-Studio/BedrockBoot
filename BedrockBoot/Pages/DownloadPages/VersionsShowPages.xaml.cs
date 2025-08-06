@@ -58,7 +58,17 @@ namespace BedrockBoot.Pages.DownloadPages
 
             if (result == ContentDialogResult.Primary)
             {
-                global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path,version);
+                
+                    string name = ((DownloadGameContent)dialog.Content).Name;
+                    foreach (var versions in global_cfg.VersionsList)
+                    {
+                     if (versions.VersionName == name || versions.Version_Path == ((DownloadGameContent)dialog.Content).Path)
+                     {
+                        MessageBox.ShowAsync("错误", "已存在相同版本");
+                        return result;
+                     }
+                    }
+                    global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, version);
             }
             else
             {

@@ -7,14 +7,70 @@
     xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tk="using:CommunityToolkit.WinUI.Controls"
+    xmlns:devWinUi="using:DevWinUI"
+    xmlns:vers="using:BedrockBoot.Versions"
     mc:Ignorable="d">
-
-    <StackPanel Orientation="Vertical">
-        <StackPanel.Resources>
-            <DataTemplate x:Key="VersionCard">
-                <tk:SettingsCard />
-            </DataTemplate>
-        </StackPanel.Resources>
-        <ItemsRepeater />
-    </StackPanel>
+    <Page.Resources>
+        <DataTemplate x:Key="VersionCard" x:DataType="vers:NowVersions">
+            <devWinUi:SettingsExpander Description="{x:Bind Version_Path}"
+                                  Header="{x:Bind DisPlayName}">
+                <devWinUi:SettingsExpander.HeaderIcon>
+                    <ImageIcon Source="/Assets/Release_Icon.png"
+                               Width="48" Height="48"/>
+                </devWinUi:SettingsExpander.HeaderIcon>
+                <Button Click="ButtonBase_OnClick" Content="启动"
+                        Tag="{x:Bind}"
+                        Style="{StaticResource AccentButtonStyle}" />
+                <devWinUi:SettingsExpander.Items>
+                    <devWinUi:SettingsCard Header="删除该版本">
+                        <Button Content="删除"
+                                Tag="{x:Bind}"
+                                Click="ButtonBase_OnClick"
+                                Background="Red" />
+                    </devWinUi:SettingsCard>
+                </devWinUi:SettingsExpander.Items>
+            </devWinUi:SettingsExpander>
+        </DataTemplate>
+    </Page.Resources>
+        <Grid Margin="40,48,40,0" Padding="0">
+        <Grid
+            Height="80"
+            MaxWidth="1000"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            <BreadcrumbBar
+                x:Name="BreadcrumbBar"
+                Margin="10,0,10,4"
+                FontSize="30">
+                <BreadcrumbBar.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock FontSize="30" Text="{Binding}" />
+                    </DataTemplate>
+                </BreadcrumbBar.ItemTemplate>
+            </BreadcrumbBar>
+        </Grid>
+        <Grid Margin="0,64,0,10">
+            <ScrollViewer HorizontalAlignment="Stretch">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <!-- 主内容区域占70% -->
+                        <ColumnDefinition Width="7*" MaxWidth="1000" />
+                        <ColumnDefinition Width="1.5*"/>
+                    </Grid.ColumnDefinitions>
+                    <ItemsRepeater
+                        Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        x:Name="VersionList"
+                        ItemTemplate="{StaticResource VersionCard}"
+                        ItemsSource="{x:Bind VersionsList, Mode=OneWay}"
+                        MaxWidth="1000">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Spacing="5" />
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </Page>

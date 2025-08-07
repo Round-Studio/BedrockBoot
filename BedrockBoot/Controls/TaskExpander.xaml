@@ -73,8 +73,30 @@
                 Style="{ThemeResource AccentButtonStyle}" />
         </Grid>
     </Grid-->
+    <dev:SettingsCard                  IsEnabled="true"
+                      HorizontalAlignment="Stretch"
+                      Header="{x:Bind Header}"
+                      >
+        <dev:SettingsCard.Description>
+            <StackPanel Orientation="Vertical">
+                <ProgressBar x:Name="Process" Margin="0,4,0,4" />
+                <TextBlock x:Name="Process_Text" />
+            </StackPanel>
+        </dev:SettingsCard.Description>
+        <dev:SettingsCard.HeaderIcon>
+            <FontIcon Glyph="&#xE745;" />
+        </dev:SettingsCard.HeaderIcon>
+        <Button x:Name="Button"
+                Padding="4"
+                HorizontalAlignment="Stretch"
+                Click="CloseButton_Click"
+                Content="{dev:FontIcon Glyph=&#xE711;}"
+                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                Style="{ThemeResource ChromelessButtonStyle}"
+                ToolTipService.ToolTip="取消该任务" />
+    </dev:SettingsCard>
 
-    <controls:SettingsExpander
+    <!--<dev:SettingsExpander
         HorizontalAlignment="Stretch"
         Header="{x:Bind Header}"
         HeaderIcon="{x:Bind _HeaderIcon}">
@@ -87,14 +109,16 @@
             Foreground="{ThemeResource SystemFillColorCriticalBrush}"
             Style="{ThemeResource ChromelessButtonStyle}"
             ToolTipService.ToolTip="取消该任务" />
-        <controls:SettingsExpander.Description>
+        <dev:SettingsExpander.Description>
             <StackPanel Orientation="Vertical">
                 <ProgressBar x:Name="Process" Margin="0,4,0,4" />
                 <TextBlock x:Name="Process_Text" />
             </StackPanel>
-        </controls:SettingsExpander.Description>
-
-        <controls:SettingsExpander.ItemsHeader>
+        </dev:SettingsExpander.Description>
+        <dev:SettingsExpander.Items>
+          <TextBox Text="这里啥也米有~~~"></TextBox>
+        </dev:SettingsExpander.Items>
+        --><!--<controls:SettingsExpander.ItemsHeader>
             <ContentControl Margin="0,0,0,0" Content="{x:Bind HeaderItems, Mode=TwoWay}" />
         </controls:SettingsExpander.ItemsHeader>
 
@@ -104,6 +128,6 @@
 
         <controls:SettingsExpander.ItemsFooter>
             <ContentControl Margin="0,0,0,0" Content="{x:Bind FooterItems, Mode=TwoWay}" />
-        </controls:SettingsExpander.ItemsFooter>
-    </controls:SettingsExpander>
+        </controls:SettingsExpander.ItemsFooter>--><!--
+    </dev:SettingsExpander>-->
 </UserControl>

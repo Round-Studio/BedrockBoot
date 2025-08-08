@@ -28,19 +28,19 @@ namespace BedrockBoot
         public MainWindow()
         {
             InitializeComponent();
-            ExtendsContentIntoTitleBar = true; // è®©æ ‡é¢˜æ æ‰©å±•åˆ°å†…å®¹åŒºåŸŸ
-            AppTitleBar.IsBackButtonVisible = false; // ä¸æ˜¾ç¤ºè¿”å›æŒ‰é’®
-            SetTitleBar(AppTitleBar); // è®¾ç½®è‡ªå®šä¹‰æ ‡é¢˜æ 
+            ExtendsContentIntoTitleBar = true; // ÈÃ±êÌâÀ¸À©Õ¹µ½ÄÚÈİÇøÓò
+            AppTitleBar.IsBackButtonVisible = false; // ²»ÏÔÊ¾·µ»Ø°´Å¥
+            SetTitleBar(AppTitleBar); // ÉèÖÃ×Ô¶¨Òå±êÌâÀ¸
             this.Closed += MainWindow_Closed;
-            /* ä¸è¦å¯ç”¨æ­¤ä»£ç ï¼Œé™¤éä½ æƒ³ä½¿ç”¨ DevWinUI-JSON çš„å¯¼èˆªæœåŠ¡ï¼Œä½†äº‹å®ä¸Šæˆ‘æ ¹æœ¬æ²¡å†™å¥½è¿™ä¸ªæœåŠ¡ã€‚:)
+            /* ²»ÒªÆôÓÃ´Ë´úÂë£¬³ı·ÇÄãÏëÊ¹ÓÃ DevWinUI-JSON µÄµ¼º½·şÎñ£¬µ«ÊÂÊµÉÏÎÒ¸ù±¾Ã»Ğ´ºÃÕâ¸ö·şÎñ¡£:)
             App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
                                   .ConfigureDefaultPage(typeof(HomePage));
             App.Current.NavService.ConfigureSettingsPage(typeof(SettingsPage));
             App.Current.NavService.ConfigureJsonFile("Assets/NavViewMenu/AppData.json")
                                   .ConfigureTitleBar(AppTitleBar)
                                   .ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
-            byd æ²¡å†™å¥½è¿˜åŠ ä¸Šæ¥ å¯ä»¥åœ¨è¿™ç•™è¨€ï¼Œæˆ‘çœ‹èƒ½ç•™è¨€å¤šé•¿ ğŸ˜¡ğŸ˜¡ğŸ˜¡
-            å…­ç™¾å…­åå…­
+            byd Ã»Ğ´ºÃ»¹¼ÓÉÏÀ´ ¿ÉÒÔÔÚÕâÁôÑÔ£¬ÎÒ¿´ÄÜÁôÑÔ¶à³¤ ??????
+            Áù°ÙÁùÊ®Áù
             */
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
@@ -49,15 +49,15 @@ namespace BedrockBoot
         }
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            if (NavFrame.CanGoBack)
+            /*if (NavFrame.CanGoBack)
             {
                 BackButton.Visibility = Visibility.Visible;
             }
             else
             {
                 BackButton.Visibility = Visibility.Collapsed;
-            }
-            // DM: è¶Šè€ï¼Œè¶Šå¥½ç”¨
+            }*/
+            // DM: Ô½ÀÏ£¬Ô½ºÃÓÃ
             if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));
             var selectedItem = (NavigationViewItem)args.SelectedItem;
             if ((string)selectedItem.Tag == "SettingPage") NavFrame.Navigate(typeof(SettingsPage));

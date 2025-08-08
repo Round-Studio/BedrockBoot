@@ -19,7 +19,7 @@
     <Grid>
         <TeachingTip
             x:Name="NewTaskTeachingTip"
-            Title="å·²åˆ›å»ºæ–°çš„ä»»åŠ¡"
+            Title="ÒÑ´´½¨ĞÂµÄÈÎÎñ"
             IsLightDismissEnabled="True"
             PlacementMargin="20"
             PreferredPlacement="Auto" />
@@ -28,14 +28,14 @@
             x:Name="AppTitleBar"
             Title="{x:Bind dev:ProcessInfoHelper.ProductName}"
             Height="48"
-            Margin="54,0,0,0"
+            Margin="72,0,0,0"
             VerticalAlignment="Top"
             Canvas.ZIndex="1"
             IsBackButtonEnabled="True"
             IsBackButtonVisible="False"
             IsPaneToggleButtonVisible="False"
             Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}">
-            <TitleBar.LeftHeader>
+            <!--TitleBar.LeftHeader>
                 <Button
                     x:Name="BackButton"
                     Width="42"
@@ -52,7 +52,7 @@
                         </AnimatedIcon.FallbackIconSource>
                     </AnimatedIcon>
                 </Button>
-            </TitleBar.LeftHeader>
+            </TitleBar.LeftHeader-->
         </TitleBar>
         <NavigationView
             x:Name="NavView"
@@ -62,12 +62,12 @@
             Canvas.ZIndex="0"
             ExpandedModeThresholdWidth="800"
             IsBackButtonVisible="Collapsed"
-            IsPaneToggleButtonVisible="True"
+            IsPaneToggleButtonVisible="False"
             IsSettingsVisible="True"
             IsTitleBarAutoPaddingEnabled="True"
-            OpenPaneLength="260"
             PaneDisplayMode="Auto"
-            SelectionChanged="NavView_SelectionChanged">
+            SelectionChanged="NavView_SelectionChanged"
+            Style="{StaticResource NavigationViewStoreStyle}">
             <NavigationView.Resources>
                 <Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
                 <Brush x:Key="NavigationViewContentGridBorderBrush">Transparent</Brush>
@@ -76,25 +76,25 @@
             <!--NavigationView.Header>
                 <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
             </NavigationView.Header
-            DM: è¿™ä¸œè¥¿æ²¡ç”¨ï¼Œæœ¬æ¥æ˜¯ç»™DevWinUIçš„BreadcrumbNavigatorç”¨çš„ï¼Œä½†å®ƒä¸ç®¡ç”¨ï¼Œæ‰€ä»¥æš‚æ—¶æ³¨é‡Šæ‰äº†ã€‚
+            DM: Õâ¶«Î÷Ã»ÓÃ£¬±¾À´ÊÇ¸øDevWinUIµÄBreadcrumbNavigatorÓÃµÄ£¬µ«Ëü²»¹ÜÓÃ£¬ËùÒÔÔİÊ±×¢ÊÍµôÁË¡£
             -->
 
             <NavigationView.MenuItems>
                 <NavigationViewItem
                     x:Name="HomePageNavItem"
-                    Content="ä¸»é¡µ"
+                    Content="Ö÷Ò³"
                     Icon="{dev:FontIcon Glyph=&#xE80F;}"
                     IsSelected="True"
                     Tag="HomePage" />
                 <NavigationViewItem
                     x:Name="VersionPageNavItem"
-                    Content="å·²å®‰è£…ç‰ˆæœ¬"
+                    Content="ÒÑ°²×°°æ±¾"
                     Icon="{dev:FontIcon Glyph=&#xE7FC;}"
                     IsSelected="False"
                     Tag="VersionPage" />
                 <NavigationViewItem
                     x:Name="DownloadPageNavItem"
-                    Content="ä¸‹è½½"
+                    Content="ÏÂÔØ"
                     Icon="{dev:FontIcon Glyph=&#xE896;}"
                     IsSelected="False"
                     Tag="DownloadPage" />
@@ -102,7 +102,7 @@
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem
                     x:Name="TaskPageNavItem"
-                    Content="ä»»åŠ¡"
+                    Content="ÈÎÎñ"
                     Icon="{dev:FontIcon Glyph=&#xE945;}"
                     Tag="TaskPage" />
 

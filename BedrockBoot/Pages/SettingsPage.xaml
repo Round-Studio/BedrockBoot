@@ -8,7 +8,7 @@
     xmlns:local="using:BedrockBoot"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     dev:BreadcrumbNavigator.IsHeaderVisible="True"
-    dev:BreadcrumbNavigator.PageTitle="设置"
+    dev:BreadcrumbNavigator.PageTitle="????"
     mc:Ignorable="d">
 
     <ScrollView
@@ -22,27 +22,32 @@
             Spacing="4">
 
             <dev:SettingsCard
-                Description="自定义应用程序外观。您可以更改材料、主题和更多选项，以适应您的风格和偏好。"
-                Header="外观"
+                Description="Description"
+                Header="Header"
                 HeaderIcon="{dev:FontIcon Glyph=&#xE771;}"
-                IsClickEnabled="True" />
+                IsClickEnabled="True"
+                Tag="Appearance" />
 
             <dev:SettingsCard
-                Description="自定义应用程序行为"
-                Header="行为"
+                Description="Description"
+                Header="Header"
                 HeaderIcon="{dev:FontIcon Glyph=&#xEABB;}"
-                IsClickEnabled="True" />
+                IsClickEnabled="True"
+                Tag="Behavior" />
 
             <dev:SettingsCard
-                Description="关于 BedrockBoot 以及开发者"
-                Header="关于"
+                Description="Description"
+                Header="Header"
                 HeaderIcon="{dev:FontIcon Glyph=&#xE946;}"
-                IsClickEnabled="True" />
+                IsClickEnabled="True"
+                Tag="About" />
 
             <dev:SettingsCard
-                Header="开发者工具"
+                Description="Description"
+                Header="Header"
                 HeaderIcon="{dev:FontIcon Glyph=&#xEC7A;}"
-                IsClickEnabled="True" />
+                IsClickEnabled="True"
+                Tag="DevTools" />
 
         </StackPanel>
     </ScrollView>

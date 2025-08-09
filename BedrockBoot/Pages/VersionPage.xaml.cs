@@ -51,11 +51,19 @@ public sealed partial class VersionPage : Page
         {
             Task.Run((() =>
             {
-                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
-                {
-                    MessageBox.ShowAsync("提示", "启动中");
-                }));
-             
+                //DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+                //{
+                //    Growl.InfoGlobal(new GrowlInfo
+                //    {
+                //        ShowDateTime = true,
+                //        StaysOpen = true,
+                //        IsClosable = true,
+                //        Title = "Info",
+                //        Message = "正在启动",
+                //        UseBlueColorForInfo = true,
+                //    });
+                //}));
+             globalTools.ShowInfo("正在启动 " + versionInfo.DisPlayName);
                 var installCallback = new InstallCallback()
                 {
                     registerProcess_percent = ((s, u) =>

@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot;
 using BedrockBoot.Versions;
+using Microsoft.UI.Dispatching;
 
 public static class global_cfg
 {
@@ -37,5 +38,25 @@ public static class global_cfg
         taskCard.Header = taskname;
         taskCard.DoInstallAsync(taskname,installdir,Path.Combine(cfg.JsonCfg.appxDir,cfg.JsonCfg.appxName.Replace("{0}",ver.ID)));
         tasksPool.Add(taskCard);
+    }
+}
+
+public static class globalTools
+{
+    public static void ShowInfo(string text)
+    {
+        App._window.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, () =>
+        {
+            Growl.InfoGlobal(new GrowlInfo
+            {
+                ShowDateTime = true,
+                StaysOpen = true,
+                IsClosable = true,
+                Title = "Info",
+                Message = text,
+                UseBlueColorForInfo = true,
+            });
+        });
+      
     }
 }

@@ -32,6 +32,18 @@ namespace BedrockBoot
             AppTitleBar.IsBackButtonVisible = false; 
             SetTitleBar(AppTitleBar);
             this.Closed += MainWindow_Closed;
+
+            Growl.Success(new GrowlInfo
+            {
+                ShowDateTime = true,
+                StaysOpen = true,
+                IsClosable = false,
+                Title = "Hello",
+                Message = "Success with GrowlInfo",
+                Token = "Test"
+            });
+
+
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {

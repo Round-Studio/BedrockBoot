@@ -8,7 +8,7 @@
     xmlns:local="using:BedrockBoot"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     dev:BreadcrumbNavigator.IsHeaderVisible="True"
-    dev:BreadcrumbNavigator.PageTitle="????"
+    dev:BreadcrumbNavigator.PageTitle="设置"
     mc:Ignorable="d">
 
     <ScrollView

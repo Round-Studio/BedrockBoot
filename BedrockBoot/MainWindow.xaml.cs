@@ -28,20 +28,10 @@ namespace BedrockBoot
         public MainWindow()
         {
             InitializeComponent();
-            ExtendsContentIntoTitleBar = true; // 让标题栏扩展到内容区域
-            AppTitleBar.IsBackButtonVisible = false; // 不显示返回按钮
-            SetTitleBar(AppTitleBar); // 设置自定义标题栏
+            ExtendsContentIntoTitleBar = true;
+            AppTitleBar.IsBackButtonVisible = false; 
+            SetTitleBar(AppTitleBar);
             this.Closed += MainWindow_Closed;
-            /* 不要启用此代码，除非你想使用 DevWinUI-JSON 的导航服务，但事实上我根本没写好这个服务。:)
-            App.Current.NavService.Initialize(NavView, NavFrame, NavigationPageMappings.PageDictionary)
-                                  .ConfigureDefaultPage(typeof(HomePage));
-            App.Current.NavService.ConfigureSettingsPage(typeof(SettingsPage));
-            App.Current.NavService.ConfigureJsonFile("Assets/NavViewMenu/AppData.json")
-                                  .ConfigureTitleBar(AppTitleBar)
-                                  .ConfigureBreadcrumbBar(BreadCrumbNav, BreadcrumbPageMappings.PageDictionary);
-            byd 没写好还加上来 可以在这留言，我看能留言多长 ??????
-            六百六十六
-            */
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
@@ -57,7 +47,7 @@ namespace BedrockBoot
             {
                 BackButton.Visibility = Visibility.Collapsed;
             }*/
-            // DM: 越老，越好用
+            //
             if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));
             var selectedItem = (NavigationViewItem)args.SelectedItem;
             if ((string)selectedItem.Tag == "SettingPage") NavFrame.Navigate(typeof(SettingsPage));

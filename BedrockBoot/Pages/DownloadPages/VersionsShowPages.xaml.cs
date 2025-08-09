@@ -107,8 +107,21 @@ namespace BedrockBoot.Pages.DownloadPages
                 var versions = await Task.Run(() =>
                 {
                     VersionItems.Clear();
-                    return VersionHelper.GetVersions(
-                        "https://raw.gitcode.com/gcw_lJgzYtGB/RecycleObjects/raw/main/data.json");
+                    try
+                    {
+                        var list = VersionHelper.GetVersions(
+                            "https://raw.gitcode.com/gcw_lJgzYtGB/RecycleObjects/raw/main/data.json");
+                        return list;
+                    }
+                    catch (Exception e)
+                    {
+                        DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                        {
+                            MessageBox.ShowAsync(e.ToString(), "错误");
+                        }));
+                        return new List<VersionInformation>();
+                    }
+                   
                 });
 
                 Task.Run((() =>
@@ -140,7 +153,10 @@ namespace BedrockBoot.Pages.DownloadPages
             }
             catch (Exception ex)
             {
-                MessageBox.ShowAsync(ex);
+                DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                {
+                    MessageBox.ShowAsync(ex.ToString(), "错误");
+                }));
             }
         }
         private void OnPageUnloaded(object sender, RoutedEventArgs e)
@@ -148,28 +164,6 @@ namespace BedrockBoot.Pages.DownloadPages
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
-        }
-        private Task UpdateUIAsync(Action action)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-
-            if (!_dispatcherQueue.TryEnqueue(() =>
-            {
-                try
-                {
-                    action();
-                    tcs.SetResult(true);
-                }
-                catch (Exception ex)
-                {
-                    tcs.SetException(ex);
-                }
-            }))
-            {
-                tcs.SetException(new InvalidOperationException("�޷����ȵ�UI�߳�"));
-            }
-
-            return tcs.Task;
         }
 
         private void SettingsCard_Click(object sender, RoutedEventArgs e)

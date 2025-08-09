@@ -22,6 +22,11 @@
                         Tag="{x:Bind}"
                         Style="{StaticResource AccentButtonStyle}" />
                 <devWinUi:SettingsExpander.Items>
+                    <devWinUi:SettingsCard Header="管理Mod">
+                        <Button Content="管理Mod"
+                                Tag="{x:Bind}"
+                                Click="ModManagerButton"/>
+                    </devWinUi:SettingsCard>
                     <devWinUi:SettingsCard Header="删除该版本">
                         <Button Content="删除"
                                 Tag="{x:Bind}"

@@ -42,7 +42,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
             var folder = await picker.PickSingleFolderAsync();
             if (folder != null)
             {
-                TextBox.Text = folder.Path;
+                TextBox.Text = System.IO.Path.Combine(folder.Path,Name);
             }
         }
     }

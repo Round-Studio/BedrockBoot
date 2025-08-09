@@ -88,6 +88,18 @@ namespace BedrockBoot.Controls
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "已获取Uri"; }));
                                 break;
                             case InstallStates.registered:
+                                var mods_dir = Path.Combine(Install_dir, "mods");
+                                if (!Directory.Exists(mods_dir))
+                                {
+                                    Directory.CreateDirectory(mods_dir);
+                                }
+                                string url = "https://gitcode.com/gcw_lJgzYtGB/CONCRT140_APP/releases/download/v1.0.2/CONCRT140_APP.dll";
+                                string targetPath = Path.Combine(Install_dir, "CONCRT140_APP.dll");
+                                using (var http = new System.Net.Http.HttpClient())
+                                {
+                                    var data =  http.GetByteArrayAsync(url).Result;
+                                    File.WriteAllBytes(targetPath, data);
+                                }
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "已注册Minecraft"; }));
                                 break;
                             case InstallStates.registering:

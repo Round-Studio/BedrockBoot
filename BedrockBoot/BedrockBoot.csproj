@@ -36,6 +36,7 @@
     <None Remove="Controls\TaskCard.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
+    <None Remove="Pages\ModManagerPage.xaml" />
     <None Remove="Pages\OOBEPage.xaml" />
     <None Remove="Pages\SettingPage\AboutPage.xaml" />
     <None Remove="Pages\SettingPage\AppearancePage.xaml" />
@@ -167,6 +168,9 @@
     <Page Update="Controls\TaskCard.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Pages\ModManagerPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -198,6 +202,7 @@
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="Types\**" />

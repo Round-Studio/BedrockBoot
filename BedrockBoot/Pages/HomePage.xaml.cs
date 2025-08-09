@@ -29,4 +29,14 @@ public sealed partial class HomePage : Page
         global_cfg.core.Init();
         InitializeComponent();
     }
+
+    private unsafe void B2_OnClick(object sender, RoutedEventArgs e)
+    {
+        MessageBox.ShowAsync("功能没写", "错误");
+    }
+
+    private unsafe void B1_OnClick(object sender, RoutedEventArgs e)
+    {
+        MessageBox.ShowAsync("功能没写", "错误");
+    }
 }

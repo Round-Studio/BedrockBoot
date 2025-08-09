@@ -1,20 +1,22 @@
 ﻿global using DevWinUI;
 global using Microsoft.UI.Xaml;
 global using Microsoft.UI.Xaml.Controls;
+using BedrockBoot;
 using BedrockBoot.Controls;
 using BedrockBoot.Pages;
+using BedrockBoot.Versions;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.JsonHandle;
+using Microsoft.UI.Dispatching;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BedrockBoot;
-using BedrockBoot.Versions;
-using Microsoft.UI.Dispatching;
 
 public static class global_cfg
 {
@@ -40,7 +42,21 @@ public static class global_cfg
         tasksPool.Add(taskCard);
     }
 }
+public class DllFileInfo
+{
+    public string FullPath { get; set; }
+    public string FileName { get; set; }
+    public string Directory { get; set; }
+    public DateTime CreationTime { get; set; }
+    public DateTime LastWriteTime { get; set; }
+    public DateTime LastAccessTime { get; set; }
+    public long FileSize { get; set; } // 文件大小（字节）
 
+    public override string ToString()
+    {
+        return $"{FileName} - {LastWriteTime:yyyy-MM-dd HH:mm:ss} - {FullPath}";
+    }
+}
 public static class globalTools
 {
     public static void ShowInfo(string text)
@@ -58,5 +74,70 @@ public static class globalTools
             });
         });
       
+    }
+    public static List<DllFileInfo> GetDllFiles(string directoryPath,
+                                               bool includeSubdirectories = true,
+                                               bool sortByLastWriteTime = true)
+    {
+        var dllFiles = new List<DllFileInfo>();
+
+        try
+        {
+            // 验证目录
+            if (string.IsNullOrWhiteSpace(directoryPath))
+            {
+                throw new ArgumentException("目录路径不能为空", nameof(directoryPath));
+            }
+
+            if (!Directory.Exists(directoryPath))
+            {
+                throw new DirectoryNotFoundException($"目录不存在: {directoryPath}");
+            }
+
+            // 设置搜索选项
+            var searchOption = includeSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+            // 获取所有 .dll 文件
+            var dllFilePaths = Directory.GetFiles(directoryPath, "*.dll", searchOption);
+
+            // 处理每个文件
+            foreach (var filePath in dllFilePaths)
+            {
+                try
+                {
+                    var fileInfo = new FileInfo(filePath);
+
+                    dllFiles.Add(new DllFileInfo
+                    {
+                        FullPath = fileInfo.FullName,
+                        FileName = fileInfo.Name,
+                        Directory = fileInfo.DirectoryName,
+                        CreationTime = fileInfo.CreationTime,
+                        LastWriteTime = fileInfo.LastWriteTime,
+                        LastAccessTime = fileInfo.LastAccessTime,
+                        FileSize = fileInfo.Length
+                    });
+                }
+                catch (Exception fileEx)
+                {
+                    // 处理单个文件访问异常（如权限问题）
+                    Console.WriteLine($"无法访问文件 {filePath}: {fileEx.Message}");
+                    continue;
+                }
+            }
+
+            // 排序
+            if (sortByLastWriteTime)
+            {
+                dllFiles = dllFiles.OrderByDescending(f => f.LastWriteTime).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"获取 DLL 文件信息时出错: {ex.Message}");
+            throw;
+        }
+
+        return dllFiles;
     }
 }

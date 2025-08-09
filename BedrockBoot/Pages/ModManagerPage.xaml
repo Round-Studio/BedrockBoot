@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="BedrockBoot.Pages.ModManagerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:devWinUi="using:DevWinUI"
+    xmlns:jsonHandle="using:BedrockBoot"
+    xmlns:global="using:"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="VersionCardTemplate" >
+            <devWinUi:SettingsExpander Margin="20"
+                                  Description="The SettingsExpander can use ItemsSource to define its Items."
+                                  Header="Settings Expander with ItemsSource">
+                <devWinUi:SettingsExpander.HeaderIcon>
+                    <FontIcon Glyph="&#xEA37;" />
+                </devWinUi:SettingsExpander.HeaderIcon>
+            </devWinUi:SettingsExpander>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid Margin="40,48,40,0" Padding="0">
+        <Grid
+            Height="80"
+            MaxWidth="1000"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            <TextBlock
+                x:Name="BreadcrumbBar"
+                HorizontalAlignment="Center"
+                Margin="10,0,10,4"
+                FontSize="30">
+            </TextBlock>
+            <Button HorizontalAlignment="Left" Click="ButtonBaseLeft_OnClick" Margin="10,0,10,4">刷新</Button>
+            <Button HorizontalAlignment="Right" Click="ButtonBase_OnClick" Margin="10,0,10,4">打开Mod文件夹</Button>
+        </Grid>
+        <ScrollViewer
+            MaxWidth="1000"
+            Margin="0,50,0,0"
+            HorizontalAlignment="Stretch">
+            <StackPanel x:Name="TaskContainer" HorizontalAlignment="Stretch" />
+        </ScrollViewer>
+    </Grid>
+</Page>

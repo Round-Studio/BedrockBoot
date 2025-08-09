@@ -28,6 +28,7 @@ namespace BedrockBoot
         public new static App Current => (App)Application.Current;
         public static Window? _window;
         public static Window MainWindow = Window.Current;
+        public static MainWindow MWindow;
         public JsonNavigationService NavService { get; set; }
         public IThemeService AppThemeService { get; set; }
 
@@ -36,8 +37,9 @@ namespace BedrockBoot
             global_cfg.InitConfig();
             InitializeComponent();
             NavService = new JsonNavigationService(); // JsonNav特有的删不干净
-            MainWindow = new MainWindow();
-
+            MainWindow mainWindow = new MainWindow();
+            MainWindow = mainWindow;
+            MWindow = mainWindow;
             MainWindow.Title = MainWindow.AppWindow.Title = ProcessInfoHelper.ProductNameAndVersion;
             AppThemeService = new ThemeService(MainWindow);
             AppThemeService.AutoInitialize(MainWindow);

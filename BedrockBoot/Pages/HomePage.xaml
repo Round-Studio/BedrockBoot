@@ -9,5 +9,59 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid />
+    <Grid>
+        <!-- 左下角的按钮组 -->
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                       Background="#0078D4"
+                       Foreground="White"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       MinWidth="200"
+                       MinHeight="70"
+                       Margin="0,0,0,4"
+                       >
+                <StackPanel Orientation="Vertical" Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="1.14.514" FontSize="28" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Homo Version" FontSize="12" Foreground="#B3FFFFFF" HorizontalAlignment="Center"/>
+                    <ProgressBar x:Name="Bar" IsIndeterminate="false" ></ProgressBar>
+                </StackPanel>
+            </Button>
+
+            <Button Grid.Row="1" Grid.Column="0"
+                    Content="下载版本"
+                    x:Name="b1"
+                    Click="B1_OnClick"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       MinWidth="100"
+                       MinHeight="35"
+                       Margin="0,0,2,0"
+                      >
+            </Button>
+
+            <Button Grid.Row="1" Grid.Column="1"
+                    Content="管理版本"
+                    x:Name="b2"
+                    Click="B2_OnClick"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       MinWidth="100"
+                       MinHeight="35" />
+
+        </Grid>
+        </Grid>
 </Page>

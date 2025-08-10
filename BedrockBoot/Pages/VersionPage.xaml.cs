@@ -21,6 +21,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Management.Deployment;
 using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -71,7 +72,29 @@ public sealed partial class VersionPage : Page
                 {
                     Directory.CreateDirectory(Path.Combine(versionInfo.Version_Path, "mods"));
                 }
-                globalTools.ShowInfo("正在启动 " + versionInfo.DisPlayName);
+
+                var packageManager = new PackageManager();
+                var findPackages = packageManager.FindPackages();
+                bool hasPackage = false;
+                foreach (var package in findPackages)
+                {
+                    if (package.InstalledPath == versionInfo.Version_Path)
+                    {
+                        hasPackage = true;
+                    }
+                }
+               
+                if (hasPackage == true)
+                {
+                    globalTools.ShowInfo("正在启动 " + versionInfo.DisPlayName);
+                    global_cfg.core.LaunchGame(versionInfo.Type switch
+                    {
+                        "Release" => VersionType.Release,
+                        "Preview" => VersionType.Preview,
+                        "Beta" => VersionType.Beta
+                    });
+                    return;
+                }
                 var installCallback = new InstallCallback()
                 {
                     registerProcess_percent = ((s, u) =>
@@ -82,14 +105,24 @@ public sealed partial class VersionPage : Page
                     {
                         if (exception!=null)
                         {
+                            Debug.WriteLine(exception);
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                             {
                                 MessageBox.ShowAsync("错误", exception.ToString());
                             }));
-                        }
+                        } 
                     })
                 };
-                global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
+                globalTools.ShowInfo("更改版本中 " + versionInfo.DisPlayName);
+                global_cfg.core.RemoveGame(versionInfo.Type switch
+                {
+                    "Release" => VersionType.Release,
+                    "Preview" => VersionType.Preview,
+                    "Beta" => VersionType.Beta
+                });
+                var changeVersion = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
+                Debug.WriteLine(changeVersion);
+                globalTools.ShowInfo("正在启动 " + versionInfo.DisPlayName);
                 global_cfg.core.LaunchGame(versionInfo.Type switch
                 {
                     "Release"=>VersionType.Release,

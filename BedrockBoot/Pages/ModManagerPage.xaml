@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:devWinUi="using:DevWinUI"
     xmlns:jsonHandle="using:BedrockBoot"
-    xmlns:global="using:"
     mc:Ignorable="d">
     <Page.Resources>
         <DataTemplate x:Key="VersionCardTemplate" >

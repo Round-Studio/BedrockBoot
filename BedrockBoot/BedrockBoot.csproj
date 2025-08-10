@@ -11,7 +11,6 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
-	  <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 	  <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
@@ -203,6 +202,7 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <ApplicationIcon>Assets\Bedrock_Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="Types\**" />
@@ -214,8 +214,5 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Assets\AppReference\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CubeKit.UI\CubeKit.UI.csproj" />
   </ItemGroup>
 </Project>

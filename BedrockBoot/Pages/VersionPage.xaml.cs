@@ -39,7 +39,7 @@ public sealed partial class VersionPage : Page
     public VersionPage()
     {
         InitializeComponent();
-        BreadcrumbBar.ItemsSource = new string[] { "管理 Minecraft 实例" };
+        BreadcrumbBar.ItemsSource = new string[] { "已安装版本" };
         global_cfg.VersionsList.ForEach((versions =>
         {
             if (string.IsNullOrEmpty(versions.Type))
@@ -64,7 +64,7 @@ public sealed partial class VersionPage : Page
                 //        StaysOpen = true,
                 //        IsClosable = true,
                 //        Title = "Info",
-                //        Message = "正在启动",
+                //        Message = "???????",
                 //        UseBlueColorForInfo = true,
                 //    });
                 //}));
@@ -86,7 +86,7 @@ public sealed partial class VersionPage : Page
                
                 if (hasPackage == true)
                 {
-                    globalTools.ShowInfo("正在启动 " + versionInfo.DisPlayName);
+                    globalTools.ShowInfo("??????? " + versionInfo.DisPlayName);
                     global_cfg.core.LaunchGame(versionInfo.Type switch
                     {
                         "Release" => VersionType.Release,
@@ -108,12 +108,12 @@ public sealed partial class VersionPage : Page
                             Debug.WriteLine(exception);
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                             {
-                                MessageBox.ShowAsync("错误", exception.ToString());
+                                MessageBox.ShowAsync("????", exception.ToString());
                             }));
                         } 
                     })
                 };
-                globalTools.ShowInfo("更改版本中 " + versionInfo.DisPlayName);
+                globalTools.ShowInfo("?????? " + versionInfo.DisPlayName);
                 global_cfg.core.RemoveGame(versionInfo.Type switch
                 {
                     "Release" => VersionType.Release,
@@ -122,7 +122,7 @@ public sealed partial class VersionPage : Page
                 });
                 var changeVersion = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
                 Debug.WriteLine(changeVersion);
-                globalTools.ShowInfo("正在启动 " + versionInfo.DisPlayName);
+                globalTools.ShowInfo("??????? " + versionInfo.DisPlayName);
                 global_cfg.core.LaunchGame(versionInfo.Type switch
                 {
                     "Release"=>VersionType.Release,
@@ -145,7 +145,7 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions selectedVersion)
         {
-            // 开启新窗口显示 Mod 管理页面
+            // ???????????? Mod ???????
             OpenModManagerWindow(selectedVersion);
         }
     }
@@ -153,36 +153,36 @@ public sealed partial class VersionPage : Page
     {
         try
         {
-            // 创建新窗口
+            // ?????????
             var window = new Window();
-            window.Title = $"Mod 管理 - {version.DisPlayName}";
+            window.Title = $"Mod ???? - {version.DisPlayName}";
 
             window.ExtendsContentIntoTitleBar = true;
-            // 创建 Mod 管理页面实例并传递参数
+            // ???? Mod ???????????????????
             var modManagerPage = new ModManagerPage(version);
-            // 设置窗口内容
+            // ???????????
             window.Content = modManagerPage;
             IThemeService AppThemeService;
             AppThemeService = new ThemeService(window);
             AppThemeService.AutoInitialize(window);
             AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
-            // 设置窗口大小
+            // ????????
             var hWnd = WindowNative.GetWindowHandle(window);
             var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
             var appWindow = AppWindow.GetFromWindowId(windowId);
 
             if (appWindow != null)
             {
-                // 设置窗口大小
+                // ????????
                 appWindow.Resize(new Windows.Graphics.SizeInt32(800, 600));
             }
 
-            // 激活窗口
+            // ??????
             window.Activate();
         }
         catch (Exception ex)
         {
-            MessageBox.ShowAsync(ex.ToString(), "错误，请截图给开发者");
+            MessageBox.ShowAsync(ex.ToString(), "????????????????");
         }
     }
 }

@@ -13,11 +13,15 @@ namespace BedrockBoot.Pages
     {
         private NowVersions _selectedVersion;
         public  ModManager Manager = ModManager.Instance;
-
+        public bool delayInject = false;
         public string mods_dir => Path.Combine(_selectedVersion.Version_Path, "mods");
+        public string delay_mods_dir => Path.Combine(_selectedVersion.Version_Path, "d_mods");
+
+        public object deleteLock;
         // 添加构造函数接收版本参数
-        public ModManagerPage(NowVersions version)
+        public ModManagerPage(NowVersions version,bool delayinject)
         {
+            this.delayInject = delayinject;
             this.InitializeComponent();
             _selectedVersion = version;
             BreadcrumbBar.Text=$"Mods管理{_selectedVersion.DisPlayName}";
@@ -25,32 +29,43 @@ namespace BedrockBoot.Pages
             {
                 Directory.CreateDirectory(mods_dir);
             }
-
-           LoadMods();
+            if (!Directory.Exists(delay_mods_dir))
+            {
+                Directory.CreateDirectory(delay_mods_dir);
+            }
+            LoadMods(delayinject);
         }
-
-        public void LoadMods()
+        public void LoadMods(bool delayInject)
         {
             Manager.ModsList.Clear();
             TaskContainer.Children.Clear();
-            var dllFileInfos = globalTools.GetDllFiles(mods_dir);
-
+            List<DllFileInfo> dllFileInfos;
+            if (delayInject != true)
+            {
+                 dllFileInfos = globalTools.GetDllFiles(mods_dir);
+            }
+            else
+            {
+                dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
+            }
+            
             Button newButton(DllFileInfo info, SettingsExpander data)
             {
                 var button = new Button();
                 button.Content = "删除mod";
                 button.Click += (s, e) =>
                 {
-                    var removeMod = Manager.RemoveMod(info);
-                    if (removeMod != true)
-                    {
-                        globalTools.ShowInfo("删除失败");
-                    }
-                    else
-                    {
-                        globalTools.ShowInfo("删除成功");
-                        TaskContainer.Children.Remove(data);
-                    }
+                        var removeMod = Manager.RemoveMod(info);
+                        if (removeMod != true)
+                        {
+                            globalTools.ShowInfo("删除失败");
+                        }
+                        else
+                        {
+                            globalTools.ShowInfo("删除成功");
+                            TaskContainer.Children.Remove(data);
+                        }
+                   
                 };
                 return button;
             }
@@ -84,13 +99,21 @@ namespace BedrockBoot.Pages
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var storageFolder = await  StorageFolder.GetFolderFromPathAsync(mods_dir); 
-           await Launcher.LaunchFolderAsync(storageFolder);
+            if (!delayInject)
+            {
+                var storageFolder = await StorageFolder.GetFolderFromPathAsync(mods_dir);
+                await Launcher.LaunchFolderAsync(storageFolder);
+            }
+            else
+            {
+                var storageFolder = await StorageFolder.GetFolderFromPathAsync(delay_mods_dir);
+                await Launcher.LaunchFolderAsync(storageFolder);
+            }
         }
 
         private void ButtonBaseLeft_OnClick(object sender, RoutedEventArgs e)
         {
-           LoadMods();
+           LoadMods(delayInject);
         }
     }
 }

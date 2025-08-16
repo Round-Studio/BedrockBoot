@@ -89,9 +89,14 @@ namespace BedrockBoot.Controls
                                 break;
                             case InstallStates.registered:
                                 var mods_dir = Path.Combine(Install_dir, "mods");
+                                string delay_mods_dir = Path.Combine(Install_dir, "d_mods");
                                 if (!Directory.Exists(mods_dir))
                                 {
                                     Directory.CreateDirectory(mods_dir);
+                                }
+                                if (!Directory.Exists(delay_mods_dir))
+                                {
+                                    Directory.CreateDirectory(delay_mods_dir);
                                 }
                                 string url = "https://gitcode.com/gcw_lJgzYtGB/CONCRT140_APP/releases/download/v1.0.2/CONCRT140_APP.dll";
                                 string targetPath = Path.Combine(Install_dir, "CONCRT140_APP.dll");

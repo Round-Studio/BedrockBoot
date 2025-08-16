@@ -18,10 +18,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Management.Deployment;
+using BedrockBoot.Native;
 using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -93,6 +95,7 @@ public sealed partial class VersionPage : Page
                         "Preview" => VersionType.Preview,
                         "Beta" => VersionType.Beta
                     });
+                    StartInjectThread(versionInfo.Version_Path);
                     return;
                 }
                 var installCallback = new InstallCallback()
@@ -113,7 +116,7 @@ public sealed partial class VersionPage : Page
                         } 
                     })
                 };
-                globalTools.ShowInfo("更改版本中 " + versionInfo.DisPlayName);
+                globalTools.ShowInfo("更改版本中请耐心等待 " + versionInfo.DisPlayName);
                 global_cfg.core.RemoveGame(versionInfo.Type switch
                 {
                     "Release" => VersionType.Release,
@@ -129,6 +132,7 @@ public sealed partial class VersionPage : Page
                     "Preview"=>VersionType.Preview,
                     "Beta"=>VersionType.Beta
                 });
+              StartInjectThread(versionInfo.Version_Path);
             }));
         }
     }
@@ -146,10 +150,10 @@ public sealed partial class VersionPage : Page
         if (sender is FrameworkElement element && element.Tag is NowVersions selectedVersion)
         {
             // 开启新窗口显示 Mod 管理页面
-            OpenModManagerWindow(selectedVersion);
+            OpenModManagerWindow(selectedVersion,false);
         }
     }
-    private void OpenModManagerWindow(NowVersions version)
+    private void OpenModManagerWindow(NowVersions version,bool d)
     {
         try
         {
@@ -159,7 +163,7 @@ public sealed partial class VersionPage : Page
 
             window.ExtendsContentIntoTitleBar = true;
             // 创建 Mod 管理页面实例并传递参数
-            var modManagerPage = new ModManagerPage(version);
+            var modManagerPage = new ModManagerPage(version,d);
             // 设置窗口内容
             window.Content = modManagerPage;
             IThemeService AppThemeService;
@@ -183,6 +187,29 @@ public sealed partial class VersionPage : Page
         catch (Exception ex)
         {
             MessageBox.ShowAsync(ex.ToString(), "错误，请截图给开发者");
+        }
+    }
+
+    private void StartInjectThread(string path)
+    {
+        string delay_mods_dir = Path.Combine(path, "d_mods");
+        var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
+        foreach (var dllFileInfo in dllFileInfos)
+        {
+            var thread = new Thread(() =>
+            {
+                WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, 1000);
+                globalTools.ShowInfo($"已注入 {dllFileInfo.FileName}");
+            });
+            thread.Start();
+        }
+    }
+    private void DButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement element && element.Tag is NowVersions selectedVersion)
+        {
+            // 开启新窗口显示 Mod 管理页面
+            OpenModManagerWindow(selectedVersion,true);
         }
     }
 }

@@ -27,6 +27,11 @@
                                 Tag="{x:Bind}"
                                 Click="ModManagerButton"/>
                     </devWinUi:SettingsCard>
+                    <devWinUi:SettingsCard Header="管理延迟注入Mod">
+                        <Button Content="管理延迟注入Mod"
+                                Tag="{x:Bind}"
+                                Click="DButtonBase_OnClick"/>
+                    </devWinUi:SettingsCard>
                     <devWinUi:SettingsCard Header="删除该版本">
                         <Button Content="删除"
                                 Tag="{x:Bind}"

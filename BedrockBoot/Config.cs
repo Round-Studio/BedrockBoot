@@ -13,7 +13,7 @@ namespace BedrockBoot
 {
     public class Config
     {
-        private static string CFG_DIR = "./BedrockBoot/";
+        private static string CFG_DIR = Path.Combine(Directory.GetCurrentDirectory(),"BedrockBoot");
         public static Version cfg_Version = new Version("0.0.1");
         public static string CFG_FILE = $"{CFG_DIR}config.json";
         public static string DATA_FILE = $"{CFG_DIR}data.json";

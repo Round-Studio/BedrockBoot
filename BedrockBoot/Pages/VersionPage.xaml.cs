@@ -41,7 +41,7 @@ public sealed partial class VersionPage : Page
     public VersionPage()
     {
         InitializeComponent();
-        BreadcrumbBar.ItemsSource = new string[] { "¹ÜÀí Minecraft ÊµÀý" };
+        BreadcrumbBar.ItemsSource = new string[] { "ï¿½Ñ°ï¿½×°ï¿½æ±¾" };
         global_cfg.VersionsList.ForEach((versions =>
         {
             if (string.IsNullOrEmpty(versions.Type))
@@ -66,7 +66,7 @@ public sealed partial class VersionPage : Page
                 //        StaysOpen = true,
                 //        IsClosable = true,
                 //        Title = "Info",
-                //        Message = "ÕýÔÚÆô¶¯",
+                //        Message = "???????",
                 //        UseBlueColorForInfo = true,
                 //    });
                 //}));
@@ -88,7 +88,7 @@ public sealed partial class VersionPage : Page
                
                 if (hasPackage == true)
                 {
-                    globalTools.ShowInfo("ÕýÔÚÆô¶¯ " + versionInfo.DisPlayName);
+                    globalTools.ShowInfo("??????? " + versionInfo.DisPlayName);
                     global_cfg.core.LaunchGame(versionInfo.Type switch
                     {
                         "Release" => VersionType.Release,
@@ -111,12 +111,12 @@ public sealed partial class VersionPage : Page
                             Debug.WriteLine(exception);
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                             {
-                                MessageBox.ShowAsync("´íÎó", exception.ToString());
+                                MessageBox.ShowAsync("????", exception.ToString());
                             }));
                         } 
                     })
                 };
-                globalTools.ShowInfo("¸ü¸Ä°æ±¾ÖÐÇëÄÍÐÄµÈ´ý " + versionInfo.DisPlayName);
+                globalTools.ShowInfo("ï¿½ï¿½ï¿½Ä°æ±¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÈ´ï¿½ " + versionInfo.DisPlayName);
                 global_cfg.core.RemoveGame(versionInfo.Type switch
                 {
                     "Release" => VersionType.Release,
@@ -125,7 +125,7 @@ public sealed partial class VersionPage : Page
                 });
                 var changeVersion = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
                 Debug.WriteLine(changeVersion);
-                globalTools.ShowInfo("ÕýÔÚÆô¶¯ " + versionInfo.DisPlayName);
+                globalTools.ShowInfo("??????? " + versionInfo.DisPlayName);
                 global_cfg.core.LaunchGame(versionInfo.Type switch
                 {
                     "Release"=>VersionType.Release,
@@ -149,7 +149,7 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions selectedVersion)
         {
-            // ¿ªÆôÐÂ´°¿ÚÏÔÊ¾ Mod ¹ÜÀíÒ³Ãæ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ Mod ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½
             OpenModManagerWindow(selectedVersion,false);
         }
     }
@@ -157,36 +157,36 @@ public sealed partial class VersionPage : Page
     {
         try
         {
-            // ´´½¨ÐÂ´°¿Ú
+            // ?????????
             var window = new Window();
-            window.Title = $"Mod ¹ÜÀí - {version.DisPlayName}";
+            window.Title = $"Mod ???? - {version.DisPlayName}";
 
             window.ExtendsContentIntoTitleBar = true;
-            // ´´½¨ Mod ¹ÜÀíÒ³ÃæÊµÀý²¢´«µÝ²ÎÊý
+            // ï¿½ï¿½ï¿½ï¿½ Mod ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½
             var modManagerPage = new ModManagerPage(version,d);
-            // ÉèÖÃ´°¿ÚÄÚÈÝ
+            // ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             window.Content = modManagerPage;
             IThemeService AppThemeService;
             AppThemeService = new ThemeService(window);
             AppThemeService.AutoInitialize(window);
             AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
-            // ÉèÖÃ´°¿Ú´óÐ¡
+            // ????????
             var hWnd = WindowNative.GetWindowHandle(window);
             var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
             var appWindow = AppWindow.GetFromWindowId(windowId);
 
             if (appWindow != null)
             {
-                // ÉèÖÃ´°¿Ú´óÐ¡
+                // ????????
                 appWindow.Resize(new Windows.Graphics.SizeInt32(800, 600));
             }
 
-            // ¼¤»î´°¿Ú
+            // ??????
             window.Activate();
         }
         catch (Exception ex)
         {
-            MessageBox.ShowAsync(ex.ToString(), "´íÎó£¬Çë½ØÍ¼¸ø¿ª·¢Õß");
+            MessageBox.ShowAsync(ex.ToString(), "????????????????");
         }
     }
 
@@ -199,7 +199,7 @@ public sealed partial class VersionPage : Page
             var thread = new Thread(() =>
             {
                 WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, 1000);
-                globalTools.ShowInfo($"ÒÑ×¢Èë {dllFileInfo.FileName}");
+                globalTools.ShowInfo($"ï¿½ï¿½×¢ï¿½ï¿½ {dllFileInfo.FileName}");
             });
             thread.Start();
         }
@@ -208,7 +208,7 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions selectedVersion)
         {
-            // ¿ªÆôÐÂ´°¿ÚÏÔÊ¾ Mod ¹ÜÀíÒ³Ãæ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ Mod ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½
             OpenModManagerWindow(selectedVersion,true);
         }
     }

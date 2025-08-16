@@ -10,8 +10,10 @@
     mc:Ignorable="d">
 
     <Grid>
-        <!-- 左下角的按钮组 -->
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="12">
+        <Grid
+            Margin="12"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="*" />
@@ -21,47 +23,62 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                       Background="#0078D4"
-                       Foreground="White"
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                       MinWidth="200"
-                       MinHeight="70"
-                       Margin="0,0,0,4"
-                       >
-                <StackPanel Orientation="Vertical" Spacing="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="1.14.514" FontSize="28" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Homo Version" FontSize="12" Foreground="#B3FFFFFF" HorizontalAlignment="Center"/>
-                    <ProgressBar x:Name="Bar" IsIndeterminate="false" ></ProgressBar>
+            <Button
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                MinWidth="200"
+                MinHeight="70"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="#0078D4"
+                CornerRadius="8,8,0,0"
+                Foreground="White">
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Orientation="Vertical"
+                    Spacing="2">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="28"
+                        Text="1.14.514" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="12"
+                        Text="Homo Version" />
+                    <ProgressBar x:Name="Bar" IsIndeterminate="false" />
                 </StackPanel>
             </Button>
 
-            <Button Grid.Row="1" Grid.Column="0"
-                    Content="下载版本"
-                    x:Name="b1"
-                    Click="B1_OnClick"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                       MinWidth="100"
-                       MinHeight="35"
-                       Margin="0,0,2,0"
-                      >
-            </Button>
+            <Button
+                x:Name="b1"
+                Grid.Row="1"
+                Grid.Column="0"
+                MinWidth="100"
+                MinHeight="35"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="B1_OnClick"
+                Content="下载版本"
+                CornerRadius="0,0,0,8" />
 
-            <Button Grid.Row="1" Grid.Column="1"
-                    Content="管理版本"
-                    x:Name="b2"
-                    Click="B2_OnClick"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                       MinWidth="100"
-                       MinHeight="35" />
+            <Button
+                x:Name="b2"
+                Grid.Row="1"
+                Grid.Column="1"
+                MinWidth="100"
+                MinHeight="35"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="B2_OnClick"
+                Content="管理版本"
+                CornerRadius="0,0,8,0" />
 
         </Grid>
-        </Grid>
+    </Grid>
 </Page>

@@ -41,7 +41,7 @@ public sealed partial class VersionPage : Page
     public VersionPage()
     {
         InitializeComponent();
-        BreadcrumbBar.ItemsSource = new string[] { "�Ѱ�װ�汾" };
+        BreadcrumbBar.ItemsSource = new string[] { "管理版本" };
         global_cfg.VersionsList.ForEach((versions =>
         {
             if (string.IsNullOrEmpty(versions.Type))
@@ -88,7 +88,7 @@ public sealed partial class VersionPage : Page
                
                 if (hasPackage == true)
                 {
-                    globalTools.ShowInfo("??????? " + versionInfo.DisPlayName);
+                    globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
                     global_cfg.core.LaunchGame(versionInfo.Type switch
                     {
                         "Release" => VersionType.Release,
@@ -111,12 +111,12 @@ public sealed partial class VersionPage : Page
                             Debug.WriteLine(exception);
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                             {
-                                MessageBox.ShowAsync("????", exception.ToString());
+                                MessageBox.ShowAsync(exception.ToString(),"错误");
                             }));
                         } 
                     })
                 };
-                globalTools.ShowInfo("���İ汾�������ĵȴ� " + versionInfo.DisPlayName);
+                globalTools.ShowInfo("正扎起更改版本中请耐心等待" + versionInfo.DisPlayName);
                 global_cfg.core.RemoveGame(versionInfo.Type switch
                 {
                     "Release" => VersionType.Release,
@@ -125,7 +125,7 @@ public sealed partial class VersionPage : Page
                 });
                 var changeVersion = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
                 Debug.WriteLine(changeVersion);
-                globalTools.ShowInfo("??????? " + versionInfo.DisPlayName);
+                globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
                 global_cfg.core.LaunchGame(versionInfo.Type switch
                 {
                     "Release"=>VersionType.Release,
@@ -159,7 +159,7 @@ public sealed partial class VersionPage : Page
         {
             // ?????????
             var window = new Window();
-            window.Title = $"Mod ???? - {version.DisPlayName}";
+            window.Title = $"Mod 管理 - {version.DisPlayName}";
 
             window.ExtendsContentIntoTitleBar = true;
             // ���� Mod ����ҳ��ʵ�������ݲ���
@@ -186,7 +186,7 @@ public sealed partial class VersionPage : Page
         }
         catch (Exception ex)
         {
-            MessageBox.ShowAsync(ex.ToString(), "????????????????");
+            MessageBox.ShowAsync(ex.ToString(), "错误");
         }
     }
 
@@ -199,7 +199,7 @@ public sealed partial class VersionPage : Page
             var thread = new Thread(() =>
             {
                 WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, 1000);
-                globalTools.ShowInfo($"��ע�� {dllFileInfo.FileName}");
+                globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
             });
             thread.Start();
         }

@@ -110,7 +110,7 @@ namespace BedrockBoot.Pages.DownloadPages
                     try
                     {
                         var list = VersionHelper.GetVersions(
-                            "https://raw.gitcode.com/gcw_lJgzYtGB/RecycleObjects/raw/main/data.json");
+                            "https://raw.gitcode.com/gcw_lJgzYtGB/-MineCraft-Bedrock-Download-SU/raw/main/bedrock.json");
                         return list;
                     }
                     catch (Exception e)

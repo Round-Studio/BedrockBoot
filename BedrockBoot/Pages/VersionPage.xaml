@@ -35,7 +35,7 @@
                     <devWinUi:SettingsCard Header="删除该版本">
                         <Button Content="删除"
                                 Tag="{x:Bind}"
-                                Click="ButtonBase_OnClick"
+                                Click="DeleteButton"
                                 Background="Red" />
                     </devWinUi:SettingsCard>
                 </devWinUi:SettingsExpander.Items>

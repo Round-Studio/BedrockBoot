@@ -212,4 +212,15 @@ public sealed partial class VersionPage : Page
             OpenModManagerWindow(selectedVersion,true);
         }
     }
+
+    private void DeleteButton(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
+        {
+            VersionsList.Remove(versionInfo);
+            global_cfg.VersionsList.Remove(versionInfo);
+            global_cfg.cfg.SaveVersion(versionInfo);
+            globalTools.ShowInfo("已删除");
+        }
+    }
 }

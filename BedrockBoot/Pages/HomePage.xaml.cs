@@ -24,6 +24,9 @@ namespace BedrockBoot.Pages;
 /// </summary>
 public sealed partial class HomePage : Page
 {
+    public static Action OnVerionPageAction { get; set; }
+    public static Action OnSettingsPageAction { get; set; }
+    public static Action OnStartAction { get; set; }
     public HomePage()
     {
         global_cfg.core.Init();
@@ -32,11 +35,16 @@ public sealed partial class HomePage : Page
 
     private unsafe void B2_OnClick(object sender, RoutedEventArgs e)
     {
-        MessageBox.ShowAsync("功能没写", "错误");
+        OnSettingsPageAction();
     }
 
     private unsafe void B1_OnClick(object sender, RoutedEventArgs e)
     {
-        MessageBox.ShowAsync("功能没写", "错误");
+        OnVerionPageAction();
+    }
+
+    private void HomeButton(object sender, RoutedEventArgs e)
+    {
+        OnStartAction();
     }
 }

@@ -32,6 +32,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Background="#0078D4"
+                Click="HomeButton"
                 CornerRadius="8,8,0,0"
                 Foreground="White">
                 <StackPanel
@@ -42,11 +43,11 @@
                     <TextBlock
                         HorizontalAlignment="Center"
                         FontSize="28"
-                        Text="1.14.514" />
+                        Text="启动游戏" />
                     <TextBlock
                         HorizontalAlignment="Center"
                         FontSize="12"
-                        Text="Homo Version" />
+                        Text="Homo" />
                     <ProgressBar x:Name="Bar" IsIndeterminate="false" />
                 </StackPanel>
             </Button>
@@ -76,7 +77,7 @@
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Click="B2_OnClick"
-                Content="管理版本"
+                Content="管理设置"
                 CornerRadius="0,0,8,0" />
 
         </Grid>

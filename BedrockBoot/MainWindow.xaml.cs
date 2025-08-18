@@ -32,18 +32,22 @@ namespace BedrockBoot
             AppTitleBar.IsBackButtonVisible = false; 
             SetTitleBar(AppTitleBar);
             this.Closed += MainWindow_Closed;
-
-            Growl.Success(new GrowlInfo
+            HomePage.OnSettingsPageAction+= () =>
             {
-                ShowDateTime = true,
-                StaysOpen = true,
-                IsClosable = false,
-                Title = "Hello",
-                Message = "Success with GrowlInfo",
-                Token = "Test"
-            });
-
-
+                NavView.SelectedItem = NavView.SettingsItem;
+                NavFrame.Navigate(typeof(SettingsPage));
+                
+            };
+            HomePage.OnVerionPageAction+= () =>
+            {
+                NavView.SelectedItem = NavView.MenuItems[2];
+                NavFrame.Navigate(typeof(DownloadPage));
+            };
+            HomePage.OnStartAction+= () =>
+            {
+                NavView.SelectedItem = NavView.MenuItems[1];
+                NavFrame.Navigate(typeof(VersionPage));
+            };
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {

@@ -31,7 +31,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
     {
         public string Path=> TextBox.Text;
         public string Name => NameBox.Text;
-        public string BackColor => RgbToHex(colorPicker.Color.R,colorPicker.Color.G, colorPicker.Color.B);
+        public string BackColor => RgbToHex(colorPicker.SelectedColor.R,colorPicker.SelectedColor.G, colorPicker.SelectedColor.B);
         public string ImgBack => imgback.Text;
         public static string RgbToHex(byte red, byte green, byte blue)
         {

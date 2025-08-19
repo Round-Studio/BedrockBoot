@@ -4,7 +4,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
-    xmlns:controls2="using:Riverside.Toolkit.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Pages"
@@ -23,8 +22,7 @@
                 Margin="10,0,10,4"
                 FontSize="30">
                 <BreadcrumbBar.ItemTemplate>
-                    <DataTemplate>
-                    </DataTemplate>
+                    <DataTemplate />
                 </BreadcrumbBar.ItemTemplate>
             </BreadcrumbBar>
         </Grid>

@@ -4,45 +4,52 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:devWinUi="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tk="using:CommunityToolkit.WinUI.Controls"
-    xmlns:devWinUi="using:DevWinUI"
     xmlns:vers="using:BedrockBoot.Versions"
     mc:Ignorable="d">
     <Page.Resources>
         <DataTemplate x:Key="VersionCard" x:DataType="vers:NowVersions">
-            <devWinUi:SettingsExpander Description="{x:Bind Version_Path}"
-                                  Header="{x:Bind DisPlayName}">
+            <devWinUi:SettingsExpander Description="{x:Bind Version_Path}" Header="{x:Bind DisPlayName}">
                 <devWinUi:SettingsExpander.HeaderIcon>
-                    <ImageIcon Source="/Assets/Release_Icon.png"
-                               Width="48" Height="48"/>
+                    <ImageIcon
+                        Width="48"
+                        Height="48"
+                        Source="/Assets/Release_Icon.png" />
                 </devWinUi:SettingsExpander.HeaderIcon>
-                <Button Click="ButtonBase_OnClick" Content="启动"
-                        Tag="{x:Bind}"
-                        Style="{StaticResource AccentButtonStyle}" />
+                <Button
+                    Click="ButtonBase_OnClick"
+                    Content="启动"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Tag="{x:Bind}" />
                 <devWinUi:SettingsExpander.Items>
-                    <devWinUi:SettingsCard Header="管理Mod">
-                        <Button Content="管理Mod"
-                                Tag="{x:Bind}"
-                                Click="ModManagerButton"/>
-                    </devWinUi:SettingsCard>
-                    <devWinUi:SettingsCard Header="管理延迟注入Mod">
-                        <Button Content="管理延迟注入Mod"
-                                Tag="{x:Bind}"
-                                Click="DButtonBase_OnClick"/>
-                    </devWinUi:SettingsCard>
-                    <devWinUi:SettingsCard Header="删除该版本">
-                        <Button Content="删除"
-                                Tag="{x:Bind}"
-                                Click="DeleteButton"
-                                Background="Red" />
-                    </devWinUi:SettingsCard>
+                    <devWinUi:SettingsCard
+                        ActionIcon="{devWinUi:FontIcon Glyph=&#xE8A7;}"
+                        BorderBrush="Red"
+                        Click="ModManagerButton"
+                        Header="管理Mod"
+                        IsClickEnabled="True"
+                        Tag="{x:Bind}" />
+                    <devWinUi:SettingsCard
+                        ActionIcon="{devWinUi:FontIcon Glyph=&#xE8A7;}"
+                        Click="DButtonBase_OnClick"
+                        Header="管理延迟注入Mod"
+                        IsClickEnabled="True"
+                        Tag="{x:Bind}" />
+                    <devWinUi:SettingsCard
+                        ActionIcon="{devWinUi:FontIcon Glyph=&#xE74D;}"
+                        Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}"
+                        Click="DeleteButton"
+                        Header="删除该版本"
+                        IsClickEnabled="True"
+                        Tag="{x:Bind}" />
                 </devWinUi:SettingsExpander.Items>
             </devWinUi:SettingsExpander>
         </DataTemplate>
     </Page.Resources>
-        <Grid Margin="40,48,40,0" Padding="0">
+    <Grid Margin="40,48,40,0" Padding="0">
         <Grid
             Height="80"
             MaxWidth="1000"
@@ -63,18 +70,18 @@
             <ScrollViewer HorizontalAlignment="Stretch">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.5*"/>
-                        <!-- 主内容区域占70% -->
+                        <ColumnDefinition Width="1.5*" />
+                        <!--  主内容区域占70%  -->
                         <ColumnDefinition Width="7*" MaxWidth="1000" />
-                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="1.5*" />
                     </Grid.ColumnDefinitions>
                     <ItemsRepeater
-                        Grid.Column="1"
-                        HorizontalAlignment="Stretch"
                         x:Name="VersionList"
+                        Grid.Column="1"
+                        MaxWidth="1000"
+                        HorizontalAlignment="Stretch"
                         ItemTemplate="{StaticResource VersionCard}"
-                        ItemsSource="{x:Bind VersionsList, Mode=OneWay}"
-                        MaxWidth="1000">
+                        ItemsSource="{x:Bind VersionsList, Mode=OneWay}">
                         <ItemsRepeater.Layout>
                             <StackLayout Spacing="5" />
                         </ItemsRepeater.Layout>

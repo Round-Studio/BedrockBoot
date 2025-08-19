@@ -29,16 +29,7 @@
             </dev:ElementGroup>
 
             <TextBlock Text="启动页面颜色" />
-            <Button HorizontalAlignment="Stretch">
-                <Button.Content>
-                    <FontIcon Glyph="&#xE790;" />
-                </Button.Content>
-                <Button.Flyout>
-                    <Flyout>
-                        <controls:ColorPicker x:Name="colorPicker" Color="#EF323D"/>
-                    </Flyout>
-                </Button.Flyout>
-            </Button>
+            <controls:ColorPickerButton x:Name="colorPicker" SelectedColor="#EF323D" HorizontalAlignment="Stretch"/>
 
             <TextBlock Text="启动页面图片(空则默认)" />
             <dev:ElementGroup HorizontalAlignment="Stretch">

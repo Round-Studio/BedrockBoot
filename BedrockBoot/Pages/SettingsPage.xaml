@@ -3,6 +3,7 @@
     x:Class="BedrockBoot.Pages.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:BedrockBoot.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot"
@@ -29,7 +30,11 @@
                 Tag="Appearance">
                 <dev:SettingsExpander.Items>
                     <dev:SettingsCard Header="下载线程">
-                        <TextBox MinWidth="200" HorizontalAlignment="Right" x:Name="DownloadThreads" Width="400"/>
+                        <TextBox
+                            x:Name="DownloadThreads"
+                            Width="400"
+                            MinWidth="200"
+                            HorizontalAlignment="Right" />
                     </dev:SettingsCard>
                 </dev:SettingsExpander.Items>
 
@@ -42,12 +47,16 @@
                 Tag="Appearance">
                 <dev:SettingsExpander.Items>
                     <dev:SettingsCard Header="延迟注入时间 (ms)">
-                        <dev:TextBox MinWidth="200" HorizontalAlignment="Left" x:Name="DelayTime" Width="400"></dev:TextBox>
+                        <dev:TextBox
+                            x:Name="DelayTime"
+                            Width="400"
+                            MinWidth="200"
+                            HorizontalAlignment="Left" />
                     </dev:SettingsCard>
                 </dev:SettingsExpander.Items>
 
             </dev:SettingsExpander>
-            
+
             <!--<dev:SettingsCard
                 Description="Description"
                 Header="Header"
@@ -69,12 +78,27 @@
                 IsClickEnabled="True"
                 Tag="About" />-->
 
-            <dev:SettingsCard
+            <TextBlock
+                Margin="0,10,0,0"
+                Style="{StaticResource Subtitle}"
+                Text="关于" />
+            <dev:SettingsExpander
                 Description="© 2025 RoundStudio 版权所有"
                 Header="关于"
                 HeaderIcon="{dev:FontIcon Glyph=&#xEC7A;}"
-                IsClickEnabled="True"
-                Tag="DevTools" />
+                Tag="About">
+                <dev:SettingsExpander.Items>
+                    <dev:SettingsCard Header="开发者">
+                        <dev:SettingsCard.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <controls:PersonPictureButton />
+                                <controls:PersonPictureButton />
+                                <controls:PersonPictureButton />
+                            </StackPanel>
+                        </dev:SettingsCard.Content>
+                    </dev:SettingsCard>
+                </dev:SettingsExpander.Items>
+            </dev:SettingsExpander>
 
         </StackPanel>
     </ScrollView>

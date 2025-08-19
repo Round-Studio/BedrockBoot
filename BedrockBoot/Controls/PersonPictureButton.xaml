@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="BedrockBoot.Controls.PersonPictureButton"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:BedrockBoot.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+
+    <Button
+        Width="42"
+        Height="42"
+        Margin="4"
+        Padding="0"
+        Style="{ThemeResource SubtleButtonStyle}">
+        <PersonPicture
+            Width="32"
+            Height="32"
+            Margin="0,0,0,0"
+            ProfilePicture="{x:Bind ProfilePictureSource}" />
+        <Button.Flyout>
+            <Flyout>
+                <ContentControl Content="{x:Bind FlyoutContent}" />
+            </Flyout>
+        </Button.Flyout>
+
+    </Button>
+</UserControl>

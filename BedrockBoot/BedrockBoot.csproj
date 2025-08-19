@@ -32,6 +32,7 @@
   <ItemGroup>
     <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
+    <None Remove="Controls\PersonPictureButton.xaml" />
     <None Remove="Controls\TaskCard.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
@@ -168,6 +169,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Pages\ModManagerPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\PersonPictureButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Styles\Styles.xaml">

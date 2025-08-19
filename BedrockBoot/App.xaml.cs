@@ -35,6 +35,7 @@ namespace BedrockBoot
         public App()
         {
             global_cfg.InitConfig();
+            global_cfg.core.Downloader = new ImprovedFlexibleMultiThreadDownloader(global_cfg.cfg.JsonCfg.DownThread);
             InitializeComponent();
             NavService = new JsonNavigationService(); // JsonNav特有的删不干净
             MainWindow mainWindow = new MainWindow();

@@ -198,7 +198,7 @@ public sealed partial class VersionPage : Page
         {
             var thread = new Thread(() =>
             {
-                WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, 1000);
+                WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, global_cfg.cfg.JsonCfg.DelayTimes);
                 globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
             });
             thread.Start();

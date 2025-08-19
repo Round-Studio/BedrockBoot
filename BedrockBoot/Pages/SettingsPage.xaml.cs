@@ -25,10 +25,33 @@ namespace BedrockBoot.Pages;
 /// </summary>
 public sealed partial class SettingsPage : Page
 {
+    public int DownThread = global_cfg.cfg.JsonCfg.DownThread;
+    public int DelayTimes = global_cfg.cfg.JsonCfg.DelayTimes;
     public SettingsPage()
     {
         InitializeComponent();
+        DownloadThreads.Text = DownThread.ToString();
+        DelayTime.Text = DelayTimes.ToString();
+        Unloaded += SettingsPage_Unloaded;
     }
+
+    private void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            DownThread = int.Parse(DownloadThreads.Text);
+            DelayTimes = int.Parse(DelayTime.Text);
+            global_cfg.cfg.JsonCfg.DownThread = DownThread;
+            global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;
+            global_cfg.cfg.SaveConfig();
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+            throw;
+        }
+    }
+
     // TODO: 所以什么时候才能写SettingsCard导航？----DM,马上马上
     // BYD,我写了
 

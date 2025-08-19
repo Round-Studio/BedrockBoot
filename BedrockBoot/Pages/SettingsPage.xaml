@@ -20,7 +20,10 @@
             Margin="10"
             dev:PanelAttach.ChildrenTransitions="Default"
             Spacing="4">
-
+            <TextBlock>延迟注入时间(ms)</TextBlock>
+            <dev:TextBox MinWidth="200" HorizontalAlignment="Left" x:Name="DelayTime"></dev:TextBox>
+            <TextBlock>下载线程</TextBlock>
+            <TextBox MinWidth="200" HorizontalAlignment="Left" x:Name="DownloadThreads"/>
             <!--<dev:SettingsCard
                 Description="Description"
                 Header="Header"
@@ -43,8 +46,8 @@
                 Tag="About" />-->
 
             <dev:SettingsCard
-                Description="Description"
-                Header="Header"
+                Description="© 2025 RoundStudio 版权所有"
+                Header="关于"
                 HeaderIcon="{dev:FontIcon Glyph=&#xEC7A;}"
                 IsClickEnabled="True"
                 Tag="DevTools" />

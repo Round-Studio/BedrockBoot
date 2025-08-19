@@ -14,7 +14,7 @@ namespace BedrockBoot
     public class Config
     {
         private static string CFG_DIR = Path.Combine(Directory.GetCurrentDirectory(),"BedrockBoot");
-        public static Version cfg_Version = new Version("0.0.2");
+        public static Version cfg_Version = new Version("0.0.3");
         public static string CFG_FILE = $"{CFG_DIR}\\config.json";
         public static string DATA_FILE = $"{CFG_DIR}\\data.json";
         public JsonCFG JsonCfg;
@@ -64,6 +64,10 @@ namespace BedrockBoot
                 var dataVersion = JsonSerializer.Deserialize<DATAVersion>(s);
                 global_cfg.VersionsList = dataVersion.VersionsList;
             }
+        }
+        public void SaveConfig()
+        {
+            File.WriteAllTextAsync(CFG_FILE,JsonSerializer.Serialize(JsonCfg));
         }
 
         public void SaveVersion(NowVersions ver)

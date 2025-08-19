@@ -23,6 +23,13 @@
             dev:PanelAttach.ChildrenTransitions="Default"
             Spacing="4">
 
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="设置" />
+
+            <TextBlock
+                Margin="0,10,0,0"
+                Style="{StaticResource Subtitle}"
+                Text="行为" />
+
             <dev:SettingsExpander
                 Description="启动器的下载行为"
                 Header="下载"

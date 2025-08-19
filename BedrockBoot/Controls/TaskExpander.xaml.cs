@@ -170,19 +170,25 @@ namespace BedrockBoot.Controls
                 };
                 try
                 {
-                    var directoryName = Path.GetDirectoryName(Path.Combine(Install_dir, Path.GetFileName(backImg)));
-                    Directory.CreateDirectory(directoryName);
-                    File.Copy(backImg,Path.Combine(Install_dir,Path.GetFileName(backImg)));
-                    var gameBackGroundEditer = new GameBackGroundEditer()
-                    {
-                        file =  Path.GetFileName(backImg),
-                        color = backColor,
-                        isOpen = true
-                    };
-                    if (string.IsNullOrEmpty(backImg)| string.IsNullOrEmpty(backColor))
+                    GameBackGroundEditer gameBackGroundEditer = null;
+                    if (string.IsNullOrEmpty(backImg) | string.IsNullOrEmpty(backColor))
                     {
                         gameBackGroundEditer = null;
                     }
+                    else
+                    {
+                        var directoryName = Path.GetDirectoryName(Path.Combine(Install_dir, Path.GetFileName(backImg)));
+                        Directory.CreateDirectory(directoryName);
+                        File.Copy(backImg, Path.Combine(Install_dir, Path.GetFileName(backImg)));
+                        gameBackGroundEditer = new GameBackGroundEditer()
+                        {
+                            file = Path.GetFileName(backImg),
+                            color = backColor,
+                            isOpen = true
+                        };
+                    }
+                 
+                    
                     global_cfg.core.InstallVersion(Version,Install_dir,appx_path,installCallback,gameBackGroundEditer);
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));

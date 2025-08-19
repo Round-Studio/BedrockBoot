@@ -4,9 +4,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="using:BedrockBoot.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dev="using:DevWinUI"
-    xmlns:glow="using:Riverside.Toolkit.Controls"
     xmlns:local="using:BedrockBoot.Controls.ContentDialogContent"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -17,7 +17,10 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Spacing="8">
-            <TextBox x:Name="NameBox" HorizontalAlignment="Stretch" Header="实例名称" />
+            <TextBox
+                x:Name="NameBox"
+                HorizontalAlignment="Stretch"
+                Header="实例名称" />
 
             <TextBlock Text="下载路径" />
             <dev:ElementGroup HorizontalAlignment="Stretch">
@@ -26,9 +29,22 @@
             </dev:ElementGroup>
 
             <TextBlock Text="启动页面颜色" />
-            <ColorPicker Color="#EF323D"
-                         Orientation="Vertical"
-                         x:Name="colorPicker"></ColorPicker>
+            <Button HorizontalAlignment="Stretch">
+                <Button.Content>
+                    <FontIcon Glyph="&#xE790;" />
+                </Button.Content>
+                <Button.Flyout>
+                    <Flyout>
+                        <controls:ColorPicker x:Name="colorPicker" />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <!--
+                ColorPicker
+                x:Name="colorPicker"
+                Orientation="Vertical"
+                Color="#EF323D" /
+            -->
 
             <TextBlock Text="启动页面图片(空则默认)" />
             <dev:ElementGroup HorizontalAlignment="Stretch">

@@ -25,25 +25,26 @@
                     Style="{StaticResource AccentButtonStyle}"
                     Tag="{x:Bind}" />
                 <devWinUi:SettingsExpander.Items>
-                    <devWinUi:SettingsCard Header="管理Mod">
-                        <Button
-                            Click="ModManagerButton"
-                            Content="管理Mod"
-                            Tag="{x:Bind}" />
-                    </devWinUi:SettingsCard>
-                    <devWinUi:SettingsCard Header="管理延迟注入Mod">
-                        <Button
-                            Click="DButtonBase_OnClick"
-                            Content="管理延迟注入Mod"
-                            Tag="{x:Bind}" />
-                    </devWinUi:SettingsCard>
-                    <devWinUi:SettingsCard Header="删除该版本">
-                        <Button
-                            Background="Red"
-                            Click="DeleteButton"
-                            Content="删除"
-                            Tag="{x:Bind}" />
-                    </devWinUi:SettingsCard>
+                    <devWinUi:SettingsCard
+                        ActionIcon="{devWinUi:FontIcon Glyph=&#xE8A7;}"
+                        BorderBrush="Red"
+                        Click="ModManagerButton"
+                        Header="管理Mod"
+                        IsClickEnabled="True"
+                        Tag="{x:Bind}" />
+                    <devWinUi:SettingsCard
+                        ActionIcon="{devWinUi:FontIcon Glyph=&#xE8A7;}"
+                        Click="DButtonBase_OnClick"
+                        Header="管理延迟注入Mod"
+                        IsClickEnabled="True"
+                        Tag="{x:Bind}" />
+                    <devWinUi:SettingsCard
+                        ActionIcon="{devWinUi:FontIcon Glyph=&#xE74D;}"
+                        Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}"
+                        Click="DeleteButton"
+                        Header="删除该版本"
+                        IsClickEnabled="True"
+                        Tag="{x:Bind}" />
                 </devWinUi:SettingsExpander.Items>
             </devWinUi:SettingsExpander>
         </DataTemplate>

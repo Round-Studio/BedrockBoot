@@ -15,6 +15,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using CommunityToolkit.WinUI.Helpers;
 using WinRT.Interop;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -30,8 +31,12 @@ namespace BedrockBoot.Controls.ContentDialogContent
     {
         public string Path=> TextBox.Text;
         public string Name => NameBox.Text;
-        public string BackColor => colorPicker.Color.ToString();
+        public string BackColor => RgbToHex(colorPicker.Color.R,colorPicker.Color.G, colorPicker.Color.B);
         public string ImgBack => imgback.Text;
+        public static string RgbToHex(byte red, byte green, byte blue)
+        {
+            return $"#{red:X2}{green:X2}{blue:X2}";
+        }
         public DownloadGameContent(string name)
         {
             InitializeComponent();

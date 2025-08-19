@@ -173,7 +173,12 @@ namespace BedrockBoot.Controls
                     GameBackGroundEditer gameBackGroundEditer = null;
                     if (string.IsNullOrEmpty(backImg) | string.IsNullOrEmpty(backColor))
                     {
-                        gameBackGroundEditer = null;
+                         gameBackGroundEditer = new GameBackGroundEditer()
+                        {
+                            file = "UAP.Assets\\minecraft\\icons\\MCSplashScreen.png",
+                            color = backColor ?? "#EF323D",
+                            isOpen = true
+                        };
                     }
                     else
                     {
@@ -187,8 +192,6 @@ namespace BedrockBoot.Controls
                             isOpen = true
                         };
                     }
-                 
-                    
                     global_cfg.core.InstallVersion(Version,Install_dir,appx_path,installCallback,gameBackGroundEditer);
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));

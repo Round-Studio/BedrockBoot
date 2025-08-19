@@ -32,7 +32,7 @@
 
             <TextBlock Text="启动页面图片(空则默认)" />
             <dev:ElementGroup HorizontalAlignment="Stretch">
-                <TextBox x:Name="imgback"  Width="267" />
+                <TextBox x:Name="imgback" Width="267" />
                 <Button Click="ButtonBaseImg_OnClick" Content="{dev:FontIcon Glyph=&#xE838;}" />
             </dev:ElementGroup>
         </StackPanel>

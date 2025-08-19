@@ -179,6 +179,10 @@ namespace BedrockBoot.Controls
                         color = backColor,
                         isOpen = true
                     };
+                    if (string.IsNullOrEmpty(backImg)| string.IsNullOrEmpty(backColor))
+                    {
+                        gameBackGroundEditer = null;
+                    }
                     global_cfg.core.InstallVersion(Version,Install_dir,appx_path,installCallback,gameBackGroundEditer);
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));

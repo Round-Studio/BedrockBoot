@@ -13,7 +13,7 @@
     mc:Ignorable="d">
 
     <Window.SystemBackdrop>
-        <MicaBackdrop />
+        <MicaBackdrop Kind="BaseAlt" />
     </Window.SystemBackdrop>
 
     <Grid>
@@ -76,7 +76,7 @@
             <!--NavigationView.Header>
                 <dev:BreadcrumbNavigator x:Name="BreadCrumbNav" />
             </NavigationView.Header
-           kkkkk            -->
+           kkkkk-->
 
             <NavigationView.MenuItems>
                 <NavigationViewItem

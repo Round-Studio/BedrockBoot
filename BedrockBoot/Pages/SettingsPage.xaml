@@ -83,10 +83,11 @@
                 Style="{StaticResource Subtitle}"
                 Text="关于" />
             <dev:SettingsExpander
-                Description="© 2025 RoundStudio 版权所有"
+                Description="© 2025 Round-Studio 版权没有（开源软件都要盗吗）"
                 Header="关于"
                 HeaderIcon="{dev:FontIcon Glyph=&#xEC7A;}"
                 Tag="About">
+                <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockBoot">BedrockBoot - Github</HyperlinkButton>
                 <dev:SettingsExpander.Items>
                     <dev:SettingsCard Header="开发者">
                         <dev:SettingsCard.Content>
@@ -94,6 +95,64 @@
                                 <controls:PersonPictureButton />
                                 <controls:PersonPictureButton />
                                 <controls:PersonPictureButton />
+                            </StackPanel>
+                        </dev:SettingsCard.Content>
+                    </dev:SettingsCard>
+                </dev:SettingsExpander.Items>
+            </dev:SettingsExpander>
+            <dev:SettingsExpander
+                Description="我们使用的开源项目 (※ 为自开发项目)"
+                Header="开源项目"
+                HeaderIcon="{dev:FontIcon Glyph=&#xE8F1;}"
+                Tag="About">
+                <dev:SettingsExpander.Items>
+                    <dev:SettingsCard Header="WinUI">
+                        <dev:SettingsCard.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <HyperlinkButton NavigateUri="https://learn.microsoft.com/zh-cn/windows/apps/winui/">MSDN</HyperlinkButton>
+                            </StackPanel>
+                        </dev:SettingsCard.Content>
+                    </dev:SettingsCard>
+                    <dev:SettingsCard Header="DevWinUI">
+                        <dev:SettingsCard.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <HyperlinkButton NavigateUri="https://github.com/ghost1372/DevWinUI">Github</HyperlinkButton>
+                            </StackPanel>
+                        </dev:SettingsCard.Content>
+                    </dev:SettingsCard>
+                    <dev:SettingsCard Header="WindowsCommunityToolkit">
+                        <dev:SettingsCard.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <HyperlinkButton NavigateUri="https://github.com/CommunityToolkit/WindowsCommunityToolkit">Github</HyperlinkButton>
+                            </StackPanel>
+                        </dev:SettingsCard.Content>
+                    </dev:SettingsCard>
+                    <dev:SettingsCard Header="WindowsAppSDK">
+                        <dev:SettingsCard.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <HyperlinkButton NavigateUri="https://github.com/microsoft/WindowsAppSDK">Github</HyperlinkButton>
+                            </StackPanel>
+                        </dev:SettingsCard.Content>
+                    </dev:SettingsCard>
+                    <dev:SettingsCard Header="※ BedrockLauncher.Core">
+                        <dev:SettingsCard.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <HyperlinkButton NavigateUri="https://docs.roundstudio.top/docs/%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/BedrockLauncher.Core/Introduct">Docs</HyperlinkButton>
+                                <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockLauncher.Core">Github</HyperlinkButton>
+                            </StackPanel>
+                        </dev:SettingsCard.Content>
+                    </dev:SettingsCard>
+                    <dev:SettingsCard Header="※ Uwp.Injector">
+                        <dev:SettingsCard.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <HyperlinkButton NavigateUri="https://github.com/Round-Studio/Uwp.Injector">Github</HyperlinkButton>
+                            </StackPanel>
+                        </dev:SettingsCard.Content>
+                    </dev:SettingsCard>
+                    <dev:SettingsCard Header="CONCRT140_APP">
+                        <dev:SettingsCard.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <HyperlinkButton NavigateUri="https://github.com/QYCottage/CONCRT140_APP">Github</HyperlinkButton>
                             </StackPanel>
                         </dev:SettingsCard.Content>
                     </dev:SettingsCard>

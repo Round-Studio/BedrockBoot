@@ -35,16 +35,10 @@
                 </Button.Content>
                 <Button.Flyout>
                     <Flyout>
-                        <controls:ColorPicker x:Name="colorPicker" />
+                        <controls:ColorPicker x:Name="colorPicker" Color="#EF323D"/>
                     </Flyout>
                 </Button.Flyout>
             </Button>
-            <!--
-                ColorPicker
-                x:Name="colorPicker"
-                Orientation="Vertical"
-                Color="#EF323D" /
-            -->
 
             <TextBlock Text="启动页面图片(空则默认)" />
             <dev:ElementGroup HorizontalAlignment="Stretch">

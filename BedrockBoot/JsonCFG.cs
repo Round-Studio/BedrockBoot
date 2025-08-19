@@ -8,6 +8,8 @@ namespace BedrockBoot
 {
     public class JsonCFG : Json_cfg_base
     {
+        public string backColor { get; set; }
+        public string backimg { get; set; }
 
         public static JsonCFG FromJson_cfg_base(Json_cfg_base cfg)
         {

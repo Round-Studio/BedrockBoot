@@ -56,14 +56,16 @@ namespace BedrockBoot.Controls
 
         }
 
-        public void DoInstallAsync(string Name,string Install_dir,string appx_path)
+        public void DoInstallAsync(string Name,string Install_dir,string appx_path,string backColor,string backImg)
         {
             new Thread((() =>
             {
                 nowVersions = new NowVersions()
                 {
                     Version_Path = Install_dir,
-                    VersionName = Name
+                    VersionName = Name,
+                    BackColor = backColor,
+                    ImgBack = backImg
                 };
                 global_cfg.VersionsList.Add(nowVersions);
                 var installCallback = new InstallCallback()
@@ -139,9 +141,9 @@ namespace BedrockBoot.Controls
                     {
                         if (exception!=null)
                         {
-                            MessageBox.ShowAsync(exception);
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                             {
+                                MessageBox.ShowAsync(exception);
                                 global_cfg.tasksPool.Remove(this);
                                 global_cfg.VersionsList.Remove(nowVersions);
                             }));
@@ -168,7 +170,16 @@ namespace BedrockBoot.Controls
                 };
                 try
                 {
-                    global_cfg.core.InstallVersion(Version,Install_dir,appx_path,installCallback);
+                    var directoryName = Path.GetDirectoryName(Path.Combine(Install_dir, Path.GetFileName(backImg)));
+                    Directory.CreateDirectory(directoryName);
+                    File.Copy(backImg,Path.Combine(Install_dir,Path.GetFileName(backImg)));
+                    var gameBackGroundEditer = new GameBackGroundEditer()
+                    {
+                        file =  Path.GetFileName(backImg),
+                        color = backColor,
+                        isOpen = true
+                    };
+                    global_cfg.core.InstallVersion(Version,Install_dir,appx_path,installCallback,gameBackGroundEditer);
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));
                     File.Delete(s);

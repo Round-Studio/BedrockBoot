@@ -19,6 +19,13 @@
             Spacing="8">
             <TextBox x:Name="NameBox" HorizontalAlignment="Stretch" Header="名称" />
 
+            <TextBox x:Name="imgcolor" Text="#EF323D" HorizontalAlignment="Stretch" Header="启动页面颜色(带上#7位)" />
+            
+            <dev:ElementGroup HorizontalAlignment="Stretch">
+                <TextBox x:Name="imgback"  Width="225" Header="启动页面图片(空则默认)" />
+                <Button Click="ButtonBaseImg_OnClick" Margin="0,28,0,0" Content="{dev:FontIcon Glyph=&#xE838;}" />
+            </dev:ElementGroup>
+          
             <TextBlock Text="下载路径" />
             <dev:ElementGroup HorizontalAlignment="Stretch">
                 <TextBox x:Name="TextBox" Width="225" />

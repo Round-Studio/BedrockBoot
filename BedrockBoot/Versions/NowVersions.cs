@@ -9,6 +9,8 @@ namespace BedrockBoot.Versions
 {
     public class NowVersions
     {
+        public string BackColor { get; set; }
+        public string ImgBack { get; set; }
         public string VersionName { get; set; }
         public string Version_Path { get; set; }
         public string RealVersion { get; set; }
@@ -18,4 +20,5 @@ namespace BedrockBoot.Versions
         [JsonIgnore]
         public string DisPlayName => $"{VersionName}|{RealVersion}";
     }
+ 
 }

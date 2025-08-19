@@ -31,14 +31,14 @@ public static class global_cfg
     {
         cfg = new Config();
     }
-    public static void InstallTasksAsync(string taskname,string installdir,VersionInformation ver)
+    public static void InstallTasksAsync(string taskname,string installdir,string backColor,string backImg,VersionInformation ver)
     {
         var taskCard = new TaskExpander()
         {
             Version = ver
         };
         taskCard.Header = taskname;
-        taskCard.DoInstallAsync(taskname,installdir,Path.Combine(cfg.JsonCfg.appxDir,cfg.JsonCfg.appxName.Replace("{0}",ver.ID)));
+        taskCard.DoInstallAsync(taskname,installdir,Path.Combine(cfg.JsonCfg.appxDir,cfg.JsonCfg.appxName.Replace("{0}",ver.ID)),backColor, backImg);
         tasksPool.Add(taskCard);
     }
 }
@@ -91,7 +91,7 @@ public static class globalTools
 
             if (!Directory.Exists(directoryPath))
             {
-                throw new DirectoryNotFoundException($"目录不存在: {directoryPath}");
+                Directory.CreateDirectory(directoryPath);
             }
 
             // 设置搜索选项

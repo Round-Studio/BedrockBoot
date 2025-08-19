@@ -116,7 +116,7 @@ public sealed partial class VersionPage : Page
                         } 
                     })
                 };
-                globalTools.ShowInfo("正更改版本中请耐心等待" + versionInfo.DisPlayName);
+                globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
                 global_cfg.core.RemoveGame(versionInfo.Type switch
                 {
                     "Release" => VersionType.Release,

@@ -68,7 +68,7 @@ namespace BedrockBoot.Pages.DownloadPages
                         return result;
                      }
                     }
-                    global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, version);
+                    global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, ((DownloadGameContent)dialog.Content).BackColor, ((DownloadGameContent)dialog.Content).ImgBack, version);
             }
             else
             {

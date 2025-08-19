@@ -21,7 +21,7 @@
             dev:PanelAttach.ChildrenTransitions="Default"
             Spacing="4">
 
-            <dev:SettingsCard
+            <!--<dev:SettingsCard
                 Description="Description"
                 Header="Header"
                 HeaderIcon="{dev:FontIcon Glyph=&#xE771;}"
@@ -40,7 +40,7 @@
                 Header="Header"
                 HeaderIcon="{dev:FontIcon Glyph=&#xE946;}"
                 IsClickEnabled="True"
-                Tag="About" />
+                Tag="About" />-->
 
             <dev:SettingsCard
                 Description="Description"

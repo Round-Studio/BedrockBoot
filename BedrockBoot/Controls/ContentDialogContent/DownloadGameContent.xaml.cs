@@ -30,6 +30,8 @@ namespace BedrockBoot.Controls.ContentDialogContent
     {
         public string Path=> TextBox.Text;
         public string Name => NameBox.Text;
+        public string BackColor => imgcolor.Text;
+        public string ImgBack => imgback.Text;
         public DownloadGameContent()
         {
             InitializeComponent();
@@ -43,6 +45,21 @@ namespace BedrockBoot.Controls.ContentDialogContent
             if (folder != null)
             {
                 TextBox.Text = System.IO.Path.Combine(folder.Path,Name);
+            }
+        }
+
+        private async void ButtonBaseImg_OnClick(object sender, RoutedEventArgs e)
+        {
+            var picker = new FilePicker(WindowNative.GetWindowHandle(App.MainWindow));
+            picker.FileTypeChoices = new Dictionary<string, IList<string>>
+            {
+                { "Images", new List<string> { "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif" } },
+            };
+
+            var file = await picker.PickSingleFileAsync();
+            if (file != null)
+            {
+                imgback.Text = file.Path;
             }
         }
     }

@@ -17,6 +17,13 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Spacing="8">
+            <StackPanel.Resources>
+                <Style x:Key="ColorPickerButtonColorPickerStyle" TargetType="ColorPicker">
+                    <Setter Property="IsAlphaEnabled" Value="False" />
+                    <Setter Property="IsAlphaSliderVisible" Value="False" />
+                    <Setter Property="IsAlphaTextInputVisible" Value="False" />
+                </Style>
+            </StackPanel.Resources>
             <TextBox
                 x:Name="NameBox"
                 HorizontalAlignment="Stretch"
@@ -29,7 +36,11 @@
             </dev:ElementGroup>
 
             <TextBlock Text="启动页面颜色" />
-            <controls:ColorPickerButton x:Name="colorPicker" SelectedColor="#EF323D" HorizontalAlignment="Stretch"/>
+            <controls:ColorPickerButton
+                x:Name="colorPicker"
+                HorizontalAlignment="Stretch"
+                ColorPickerStyle="{StaticResource ColorPickerButtonColorPickerStyle}"
+                SelectedColor="#EF323D" />
 
             <TextBlock Text="启动页面图片(空则默认)" />
             <dev:ElementGroup HorizontalAlignment="Stretch">

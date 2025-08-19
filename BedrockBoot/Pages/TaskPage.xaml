@@ -23,8 +23,7 @@
                 Margin="10,0,10,4"
                 FontSize="30">
                 <BreadcrumbBar.ItemTemplate>
-                    <DataTemplate>
-                    </DataTemplate>
+                    <DataTemplate />
                 </BreadcrumbBar.ItemTemplate>
             </BreadcrumbBar>
         </Grid>

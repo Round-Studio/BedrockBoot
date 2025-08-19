@@ -30,11 +30,16 @@
                 Tag="Appearance">
                 <dev:SettingsExpander.Items>
                     <dev:SettingsCard Header="下载线程">
-                        <TextBox
+                        <NumberBox
                             x:Name="DownloadThreads"
                             Width="400"
                             MinWidth="200"
-                            HorizontalAlignment="Right" />
+                            HorizontalAlignment="Right"
+                            AcceptsExpression="True"
+                            Maximum="128"
+                            Minimum="1"
+                            SpinButtonPlacementMode="Inline"
+                            Value="12" />
                     </dev:SettingsCard>
                 </dev:SettingsExpander.Items>
 

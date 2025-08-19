@@ -83,9 +83,6 @@
     <PackageReference Include="DevWinUI.Controls" Version="8.9.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
-    <PackageReference Include="Riverside.GlowUI.WinUI.Styles" Version="2.0.0" />
-    <PackageReference Include="Riverside.Toolkit.WinUI.Controls.Crimson" Version="2.0.0" />
-    <PackageReference Include="Riverside.Toolkit.WinUI.Controls.Settings" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\SettingsPage\Appearance.xaml">

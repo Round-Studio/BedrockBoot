@@ -30,11 +30,13 @@ namespace BedrockBoot.Controls.ContentDialogContent
     {
         public string Path=> TextBox.Text;
         public string Name => NameBox.Text;
-        public string BackColor => imgcolor.Text;
+        public string BackColor => colorPicker.Color.ToString();
         public string ImgBack => imgback.Text;
-        public DownloadGameContent()
+        public DownloadGameContent(string name)
         {
             InitializeComponent();
+
+            NameBox.Text = name;
         }
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)

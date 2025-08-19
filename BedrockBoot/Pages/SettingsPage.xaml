@@ -17,13 +17,37 @@
         HorizontalAlignment="Stretch"
         VerticalScrollBarVisibility="Auto">
         <StackPanel
+            MaxWidth="1200"
             Margin="10"
             dev:PanelAttach.ChildrenTransitions="Default"
             Spacing="4">
-            <TextBlock>延迟注入时间(ms)</TextBlock>
-            <dev:TextBox MinWidth="200" HorizontalAlignment="Left" x:Name="DelayTime"></dev:TextBox>
-            <TextBlock>下载线程</TextBlock>
-            <TextBox MinWidth="200" HorizontalAlignment="Left" x:Name="DownloadThreads"/>
+
+            <dev:SettingsExpander
+                Description="启动器的下载行为"
+                Header="下载"
+                HeaderIcon="{dev:FontIcon Glyph=&#xE896;}"
+                Tag="Appearance">
+                <dev:SettingsExpander.Items>
+                    <dev:SettingsCard Header="下载线程">
+                        <TextBox MinWidth="200" HorizontalAlignment="Right" x:Name="DownloadThreads" Width="400"/>
+                    </dev:SettingsCard>
+                </dev:SettingsExpander.Items>
+
+            </dev:SettingsExpander>
+
+            <dev:SettingsExpander
+                Description="启动器的注入行为"
+                Header="注入"
+                HeaderIcon="{dev:FontIcon Glyph=&#xE840;}"
+                Tag="Appearance">
+                <dev:SettingsExpander.Items>
+                    <dev:SettingsCard Header="延迟注入时间 (ms)">
+                        <dev:TextBox MinWidth="200" HorizontalAlignment="Left" x:Name="DelayTime" Width="400"></dev:TextBox>
+                    </dev:SettingsCard>
+                </dev:SettingsExpander.Items>
+
+            </dev:SettingsExpander>
+            
             <!--<dev:SettingsCard
                 Description="Description"
                 Header="Header"

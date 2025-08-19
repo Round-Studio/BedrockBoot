@@ -46,29 +46,30 @@ namespace BedrockBoot.Pages.DownloadPages
             // 如果 ContentDialog 在桌面应用程序中运行，则必须设置 XamlRoot
             dialog.XamlRoot = this.Content.XamlRoot;
             // dialog.Background = new SolidColorBrush(Colors.Transparent);
-            dialog.Content = new DownloadGameContent();
+            dialog.Content = new DownloadGameContent(ver);
             dialog.XamlRoot = this.XamlRoot;
             dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             dialog.Title = ver;
             dialog.PrimaryButtonText = "下载";
             dialog.CloseButtonText = "取消";
+            dialog.MinWidth = 800;
             dialog.DefaultButton = ContentDialogButton.Primary;
 
             var result = await dialog.ShowAsync();
 
             if (result == ContentDialogResult.Primary)
             {
-                
-                    string name = ((DownloadGameContent)dialog.Content).Name;
-                    foreach (var versions in global_cfg.VersionsList)
+
+                string name = ((DownloadGameContent)dialog.Content).Name;
+                foreach (var versions in global_cfg.VersionsList)
+                {
+                    if (versions.VersionName == name || versions.Version_Path == ((DownloadGameContent)dialog.Content).Path)
                     {
-                     if (versions.VersionName == name || versions.Version_Path == ((DownloadGameContent)dialog.Content).Path)
-                     {
                         MessageBox.ShowAsync("错误", "已存在相同版本");
                         return result;
-                     }
                     }
-                    global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, ((DownloadGameContent)dialog.Content).BackColor, ((DownloadGameContent)dialog.Content).ImgBack, version);
+                }
+                global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, ((DownloadGameContent)dialog.Content).BackColor, ((DownloadGameContent)dialog.Content).ImgBack, version);
             }
             else
             {
@@ -92,6 +93,7 @@ namespace BedrockBoot.Pages.DownloadPages
                 // fuck ring 什么鬼ring 搞了我半小时😅👉
                 // DM: 用XAML会快一点
                 // 傻逼 ↑ 🤣🤣🤣
+                // 2025 8 19 见证上方傻逼
 
                 var progressRing = new ProgressRing
                 {

@@ -26,53 +26,64 @@ using Windows.Management.Deployment;
 using BedrockBoot.Native;
 using WinRT.Interop;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace BedrockBoot.Pages;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
 public sealed partial class VersionPage : Page
 {
-    public ObservableCollection<NowVersions> VersionsList = new ObservableCollection<NowVersions>();
+    public ObservableCollection<NowVersions> VersionsList { get; set; } = new ObservableCollection<NowVersions>();
     public bool IsEdit = false;
+
     public VersionPage()
     {
         InitializeComponent();
-        UpdateUI();
+        Loaded += async (s, e) => await LoadVersionsAsync();
+    }
+
+    private async Task LoadVersionsAsync()
+    {
+        await Task.Run(() => UpdateUI());
     }
 
     private void UpdateUI()
     {
         IsEdit = false;
 
-        VersionsList = new ObservableCollection<NowVersions>();
-        ChooseGameFolderComboBox.Items.Clear();
-
-        List<string> versionsList = new List<string>();
-        var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path;
-        globalTools.SearchVersionJson(path, ref versionsList, 0, 3);
-        foreach (var c in versionsList)
+        // 在 UI 线程上清空并重新填充集合
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
         {
-            var fullPath = Path.GetFullPath(c);
-            var nowVersions = JsonSerializer.Deserialize<NowVersions>(File.ReadAllText(fullPath));
-            if (nowVersions == null)
-            {
-                continue;
-            }
-            if (string.IsNullOrEmpty(nowVersions.Type))
-            {
-                continue;
-            }
-            VersionsList.Add(nowVersions);
-        }
+            VersionsList.Clear();
 
-        global_cfg.cfg.JsonCfg.GameFolders.ForEach(x => ChooseGameFolderComboBox.Items.Add(new ComboBoxItem() { Content = $"{x.Name} - {x.Path}" }));
-        ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
+            List<string> versionsList = new List<string>();
+            var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path;
+            globalTools.SearchVersionJson(path, ref versionsList, 0, 3);
 
-        IsEdit = true;
+            foreach (var c in versionsList)
+            {
+                var fullPath = Path.GetFullPath(c);
+                try
+                {
+                    var nowVersions = JsonSerializer.Deserialize<NowVersions>(File.ReadAllText(fullPath));
+                    if (nowVersions != null && !string.IsNullOrEmpty(nowVersions.Type))
+                    {
+                        VersionsList.Add(nowVersions);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"加载版本 {fullPath} 失败: {ex.Message}");
+                }
+            }
+        });
+
+        // 更新 ComboBox
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+        {
+            ChooseGameFolderComboBox.Items.Clear();
+            global_cfg.cfg.JsonCfg.GameFolders.ForEach(x =>
+                ChooseGameFolderComboBox.Items.Add(new ComboBoxItem() { Content = $"{x.Name} - {x.Path}" }));
+            ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
+            IsEdit = true;
+        });
     }
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -81,18 +92,6 @@ public sealed partial class VersionPage : Page
         {
             Task.Run((() =>
             {
-                //DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
-                //{
-                //    Growl.InfoGlobal(new GrowlInfo
-                //    {
-                //        ShowDateTime = true,
-                //        StaysOpen = true,
-                //        IsClosable = true,
-                //        Title = "Info",
-                //        Message = "???????",
-                //        UseBlueColorForInfo = true,
-                //    });
-                //}));
                 if (!Directory.Exists(Path.Combine(versionInfo.Version_Path, "mods")))
                 {
                     Directory.CreateDirectory(Path.Combine(versionInfo.Version_Path, "mods"));
@@ -108,7 +107,7 @@ public sealed partial class VersionPage : Page
                         hasPackage = true;
                     }
                 }
-               
+
                 if (hasPackage == true)
                 {
                     globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
@@ -129,14 +128,14 @@ public sealed partial class VersionPage : Page
                     }),
                     result_callback = ((status, exception) =>
                     {
-                        if (exception!=null)
+                        if (exception != null)
                         {
                             Debug.WriteLine(exception);
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                             {
-                                MessageBox.ShowAsync(exception.ToString(),"错误");
+                                MessageBox.ShowAsync(exception.ToString(), "错误");
                             }));
-                        } 
+                        }
                     })
                 };
                 globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
@@ -151,11 +150,11 @@ public sealed partial class VersionPage : Page
                 globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
                 global_cfg.core.LaunchGame(versionInfo.Type switch
                 {
-                    "Release"=>VersionType.Release,
-                    "Preview"=>VersionType.Preview,
-                    "Beta"=>VersionType.Beta
+                    "Release" => VersionType.Release,
+                    "Preview" => VersionType.Preview,
+                    "Beta" => VersionType.Beta
                 });
-              StartInjectThread(versionInfo.Version_Path);
+                StartInjectThread(versionInfo.Version_Path);
             }));
         }
     }
@@ -164,7 +163,7 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
-          
+
         }
     }
 
@@ -172,39 +171,35 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions selectedVersion)
         {
-            // �����´�����ʾ Mod ����ҳ��
-            OpenModManagerWindow(selectedVersion,false);
+            OpenModManagerWindow(selectedVersion, false);
         }
     }
-    private void OpenModManagerWindow(NowVersions version,bool d)
+
+    private void OpenModManagerWindow(NowVersions version, bool d)
     {
         try
         {
-            // ?????????
             var window = new Window();
             window.Title = $"Mod 管理 - {version.DisPlayName}";
-
             window.ExtendsContentIntoTitleBar = true;
-            // ���� Mod ����ҳ��ʵ�������ݲ���
-            var modManagerPage = new ModManagerPage(version,d);
-            // ���ô�������
+
+            var modManagerPage = new ModManagerPage(version, d);
             window.Content = modManagerPage;
+
             IThemeService AppThemeService;
             AppThemeService = new ThemeService(window);
             AppThemeService.AutoInitialize(window);
             AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
-            // ????????
+
             var hWnd = WindowNative.GetWindowHandle(window);
             var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
             var appWindow = AppWindow.GetFromWindowId(windowId);
 
             if (appWindow != null)
             {
-                // ????????
                 appWindow.Resize(new Windows.Graphics.SizeInt32(800, 600));
             }
 
-            // ??????
             window.Activate();
         }
         catch (Exception ex)
@@ -227,12 +222,12 @@ public sealed partial class VersionPage : Page
             thread.Start();
         }
     }
+
     private void DButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions selectedVersion)
         {
-            // �����´�����ʾ Mod ����ҳ��
-            OpenModManagerWindow(selectedVersion,true);
+            OpenModManagerWindow(selectedVersion, true);
         }
     }
 
@@ -240,9 +235,21 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
-            VersionsList.Remove(versionInfo);
-           File.Delete(versionInfo.Version_Path);
-            globalTools.ShowInfo("已删除");
+            // 在 UI 线程上移除项
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                VersionsList.Remove(versionInfo);
+            });
+
+            try
+            {
+                File.Delete(versionInfo.Version_Path);
+                globalTools.ShowInfo("已删除");
+            }
+            catch (Exception ex)
+            {
+                globalTools.ShowInfo($"删除失败: {ex.Message}");
+            }
         }
     }
 
@@ -252,7 +259,15 @@ public sealed partial class VersionPage : Page
         {
             global_cfg.cfg.JsonCfg.ChooseFolderIndex = ChooseGameFolderComboBox.SelectedIndex;
             global_cfg.cfg.SaveConfig();
-            UpdateUI();
+
+            // 异步重新加载版本列表
+            Task.Run(() => UpdateUI());
         }
+    }
+
+    // 添加刷新按钮的方法（可选）
+    private void RefreshButton_Click(object sender, RoutedEventArgs e)
+    {
+        Task.Run(() => UpdateUI());
     }
 }

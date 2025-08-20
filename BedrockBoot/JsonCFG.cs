@@ -12,6 +12,7 @@ namespace BedrockBoot
         public string backimg { get; set; }
         public int DownThread { get; set; } = 12;
         public int DelayTimes { get; set; } = 1000;
+        public bool SaveAppx { get; set; } = false; 
         public static JsonCFG FromJson_cfg_base(Json_cfg_base cfg)
         {
             var jsonCfg = new JsonCFG();

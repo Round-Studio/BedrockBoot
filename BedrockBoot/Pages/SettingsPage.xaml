@@ -29,7 +29,6 @@
                 Margin="0,10,0,0"
                 Style="{StaticResource Subtitle}"
                 Text="行为" />
-
             <dev:SettingsExpander
                 Description="启动器的下载行为"
                 Header="下载"
@@ -49,7 +48,7 @@
                             Value="12" />
                     </dev:SettingsCard>
                     <dev:SettingsCard Header="安装完成保留 Appx 文件">
-                        <ToggleSwitch OnContent="" OffContent=""></ToggleSwitch>
+                        <ToggleSwitch OnContent="" x:Name="SavaAppx" OffContent=""></ToggleSwitch>
                     </dev:SettingsCard>
                 </dev:SettingsExpander.Items>
 

@@ -199,7 +199,10 @@ namespace BedrockBoot.Controls
                     global_cfg.core.InstallVersion(Version,Install_dir,appx_path,installCallback,gameBackGroundEditer);
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));
-                    File.Delete(s);
+                    if (!global_cfg.cfg.JsonCfg.SaveAppx)
+                    {
+                        File.Delete(s);
+                    }
                 }
                 catch (Exception e)
                 {

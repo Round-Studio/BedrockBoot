@@ -33,6 +33,7 @@ public sealed partial class SettingsPage : Page
         DownloadThreads.Text = DownThread.ToString();
         DelayTime.Text = DelayTimes.ToString();
         Unloaded += SettingsPage_Unloaded;
+        SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
     }
 
     private void SettingsPage_Unloaded(object sender, RoutedEventArgs e)
@@ -41,6 +42,7 @@ public sealed partial class SettingsPage : Page
         {
             DownThread = int.Parse(DownloadThreads.Text);
             DelayTimes = int.Parse(DelayTime.Text);
+            global_cfg.cfg.JsonCfg.SaveAppx = SavaAppx.IsOn;
             global_cfg.cfg.JsonCfg.DownThread = DownThread;
             global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;
             global_cfg.cfg.SaveConfig();

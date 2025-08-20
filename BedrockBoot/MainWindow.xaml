@@ -26,15 +26,14 @@
 
         <TitleBar
             x:Name="AppTitleBar"
-            Title="{x:Bind dev:ProcessInfoHelper.ProductName}"
+            Title="BedrockBoot"
             Height="48"
             Margin="72,0,0,0"
             VerticalAlignment="Top"
             Canvas.ZIndex="1"
             IsBackButtonEnabled="True"
             IsBackButtonVisible="False"
-            IsPaneToggleButtonVisible="False"
-            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}">
+            IsPaneToggleButtonVisible="False">
             <!--TitleBar.LeftHeader>
                 <Button
                     x:Name="BackButton"

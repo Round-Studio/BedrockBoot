@@ -48,6 +48,9 @@
                             SpinButtonPlacementMode="Inline"
                             Value="12" />
                     </dev:SettingsCard>
+                    <dev:SettingsCard Header="安装完成保留 Appx 文件">
+                        <ToggleSwitch OnContent="" OffContent=""></ToggleSwitch>
+                    </dev:SettingsCard>
                 </dev:SettingsExpander.Items>
 
             </dev:SettingsExpander>
@@ -68,27 +71,6 @@
                 </dev:SettingsExpander.Items>
 
             </dev:SettingsExpander>
-
-            <!--<dev:SettingsCard
-                Description="Description"
-                Header="Header"
-                HeaderIcon="{dev:FontIcon Glyph=&#xE771;}"
-                IsClickEnabled="True"
-                Tag="Appearance" />
-
-            <dev:SettingsCard
-                Description="Description"
-                Header="Header"
-                HeaderIcon="{dev:FontIcon Glyph=&#xEABB;}"
-                IsClickEnabled="True"
-                Tag="Behavior" />
-
-            <dev:SettingsCard
-                Description="Description"
-                Header="Header"
-                HeaderIcon="{dev:FontIcon Glyph=&#xE946;}"
-                IsClickEnabled="True"
-                Tag="About" />-->
 
             <TextBlock
                 Margin="0,10,0,0"

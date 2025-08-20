@@ -84,6 +84,7 @@
     <PackageReference Include="DevWinUI.Controls" Version="8.9.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
+    <PackageReference Include="WinUIEx" Version="2.6.0" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\SettingsPage\Appearance.xaml">

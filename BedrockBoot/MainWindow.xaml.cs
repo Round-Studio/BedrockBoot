@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,6 +33,13 @@ namespace BedrockBoot
             AppTitleBar.IsBackButtonVisible = false; 
             SetTitleBar(AppTitleBar);
             this.Closed += MainWindow_Closed;
+
+            var manager = WinUIEx.WindowManager.Get(this);
+            manager.MinHeight = 720;
+            manager.MinWidth = 1200;
+            manager.Width = 1200;
+            manager.Height = 700;
+
             HomePage.OnSettingsPageAction+= () =>
             {
                 NavView.SelectedItem = NavView.SettingsItem;

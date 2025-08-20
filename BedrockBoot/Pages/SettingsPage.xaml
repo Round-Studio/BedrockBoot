@@ -84,13 +84,15 @@
                     Tag="Appearance">
                 <dev:SettingsExpander.Items>
                     <dev:SettingsCard Header="默认下载目录">
-                        <ComboBox Width="400"></ComboBox>
+                        <ComboBox Width="400" x:Name="GameFoldersChooseBox"
+                                  SelectionChanged="GameFoldersChooseBox_SelectionChanged"></ComboBox>
                     </dev:SettingsCard>
 
                     <dev:SettingsCard Header="操作">
                         <StackPanel Orientation="Horizontal">
                             <Button Margin="0,0,5,0" Width="120">删除所选目录</Button>
-                            <Button Margin="5,0,0,0" Width="270" Style="{StaticResource AccentButtonStyle}">导入 Bedrock 数据目录</Button>
+                            <Button Margin="5,0,0,0" Width="270" Style="{StaticResource AccentButtonStyle}" Name="ImportGameFolder"
+                                    Click="ImportGameFolder_Click">导入 Bedrock 数据目录</Button>
                         </StackPanel>
                     </dev:SettingsCard>
                 </dev:SettingsExpander.Items>

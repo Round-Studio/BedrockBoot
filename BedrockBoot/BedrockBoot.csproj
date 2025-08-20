@@ -30,7 +30,6 @@
     <Content Remove="Assets\MC_Release_Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Controls\ContentDialogContent\AddNewGameFolderContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\PersonPictureButton.xaml" />
@@ -172,9 +171,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\PersonPictureButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\ContentDialogContent\AddNewGameFolderContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Styles\Styles.xaml">

@@ -9,12 +9,11 @@
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Controls.ContentDialogContent"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="323"
     mc:Ignorable="d">
 
     <ScrollViewer>
         <StackPanel
-            Margin="0,0,0,0"
+            Margin="0,0,15,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Spacing="8">
@@ -30,8 +29,11 @@
                 HorizontalAlignment="Stretch"
                 Header="实例名称" />
 
-            <ComboBox Header="下载目录" HorizontalAlignment="Stretch"
-                      x:Name="ChooseDownloadFolderPathComboBox"></ComboBox>
+            <TextBlock Text="下载路径" />
+            <dev:ElementGroup HorizontalAlignment="Stretch">
+                <TextBox x:Name="TextBox" Width="267" />
+                <Button Click="ButtonBase_OnClick" Content="{dev:FontIcon Glyph=&#xE838;}" />
+            </dev:ElementGroup>
 
             <TextBlock Text="启动页面颜色" />
             <controls:ColorPickerButton
@@ -42,7 +44,7 @@
 
             <TextBlock Text="启动页面图片(空则默认)" />
             <dev:ElementGroup HorizontalAlignment="Stretch">
-                <TextBox x:Name="imgback" Width="278"/>
+                <TextBox x:Name="imgback" Width="267" />
                 <Button Click="ButtonBaseImg_OnClick" Content="{dev:FontIcon Glyph=&#xE838;}" />
             </dev:ElementGroup>
         </StackPanel>

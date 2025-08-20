@@ -18,7 +18,7 @@ namespace BedrockBoot.Versions
 
         public bool hasRegeister { get; set; }
         [JsonIgnore]
-        public string DisPlayName => $"{VersionName} | {RealVersion}";
+        public string DisPlayName => $"{VersionName}|{RealVersion}";
     }
  
 }

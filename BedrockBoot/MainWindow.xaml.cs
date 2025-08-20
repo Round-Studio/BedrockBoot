@@ -34,9 +34,6 @@ namespace BedrockBoot
             SetTitleBar(AppTitleBar);
             this.Closed += MainWindow_Closed;
 
-            AppTitleBar.Title = $"BedrockBoot";
-            AppTitleBar.Subtitle = $"v{Config.cfg_Version}";
-
             var manager = WinUIEx.WindowManager.Get(this);
             manager.MinHeight = 720;
             manager.MinWidth = 1200;

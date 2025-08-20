@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:ui="using:CommunityToolkit.WinUI" xmlns:downloadpages="using:BedrockBoot.Pages.DownloadPages"
     mc:Ignorable="d">
 
     <Grid Margin="40,48,40,0" Padding="0">
@@ -16,22 +16,21 @@
             MaxWidth="1000"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top">
-            <BreadcrumbBar
+            <TextBlock
                 x:Name="BreadcrumbBar"
                 Margin="10,0,10,4"
                 FontSize="30"
-                ItemClicked="BreadcrumbBar_ItemClicked">
-                <BreadcrumbBar.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock FontSize="30" Text="{Binding}" />
-                    </DataTemplate>
-                </BreadcrumbBar.ItemTemplate>
-            </BreadcrumbBar>
+                Text="下载 Minecraft 实例">
+            </TextBlock>
         </Grid>
 
         <Frame
             x:Name="SubPageFrame"
             Margin="0,50,0,0"
-            HorizontalAlignment="Stretch" />
+            HorizontalAlignment="Stretch">
+            <Frame.Content>
+                <downloadpages:VersionsShowPages></downloadpages:VersionsShowPages>
+            </Frame.Content>
+        </Frame>
     </Grid>
 </Page>

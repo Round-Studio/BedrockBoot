@@ -55,16 +55,12 @@
             MaxWidth="1000"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top">
-            <BreadcrumbBar
+            <TextBlock
                 x:Name="BreadcrumbBar"
-                Margin="10,0,10,4"
-                FontSize="30">
-                <BreadcrumbBar.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock FontSize="30" Text="{Binding}" />
-                    </DataTemplate>
-                </BreadcrumbBar.ItemTemplate>
-            </BreadcrumbBar>
+                Margin="0,0,10,4"
+                FontSize="30"
+                Text="管理版本">
+            </TextBlock>
         </Grid>
         <Grid Margin="0,64,0,10">
             <ScrollViewer HorizontalAlignment="Stretch">

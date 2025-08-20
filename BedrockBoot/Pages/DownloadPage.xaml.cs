@@ -29,24 +29,6 @@ namespace BedrockBoot.Pages
         {
             global_cfg._downloadPage = this;
             InitializeComponent();
-
-            SubPageFrame.Navigate(typeof(VersionsShowPages));
-            BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例" };
-        }
-
-        public void Navigate(Page page,string title)
-        {
-            BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例", title };
-            SubPageFrame.Navigate(page.GetType());
-        }
-
-        private void BreadcrumbBar_ItemClicked(BreadcrumbBar sender, BreadcrumbBarItemClickedEventArgs args)
-        {
-            if(args.Index == 0)
-            {
-                SubPageFrame.Navigate(typeof(VersionsShowPages));
-                BreadcrumbBar.ItemsSource = new string[] { "下载 Minecraft 实例" };
-            }
         }
     }
 }

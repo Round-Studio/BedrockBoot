@@ -41,7 +41,6 @@ public sealed partial class VersionPage : Page
     public VersionPage()
     {
         InitializeComponent();
-        BreadcrumbBar.ItemsSource = new string[] { "管理版本" };
         List<string> versionsList = new List<string>();
         var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path;
         globalTools.SearchVersionJson(path,ref versionsList,0,3);

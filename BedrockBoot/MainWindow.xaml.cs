@@ -35,8 +35,10 @@ namespace BedrockBoot
             this.Closed += MainWindow_Closed;
 
             var manager = WinUIEx.WindowManager.Get(this);
-            manager.MinHeight = 600;
-            manager.MinWidth = 800;
+            manager.MinHeight = 720;
+            manager.MinWidth = 1200;
+            manager.Width = 1200;
+            manager.Height = 700;
 
             HomePage.OnSettingsPageAction+= () =>
             {

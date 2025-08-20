@@ -29,7 +29,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
     /// </summary>
     public sealed partial class DownloadGameContent : Page
     {
-        public string Path=> TextBox.Text;
+        public string Path => global_cfg.cfg.JsonCfg.GameFolders[ChooseDownloadFolderPathComboBox.SelectedIndex].Path;
         public string Name => NameBox.Text;
         public string BackColor => RgbToHex(colorPicker.SelectedColor.R,colorPicker.SelectedColor.G, colorPicker.SelectedColor.B);
         public string ImgBack => imgback.Text;
@@ -42,17 +42,11 @@ namespace BedrockBoot.Controls.ContentDialogContent
             InitializeComponent();
 
             NameBox.Text = name;
-        }
-
-        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-
-            var picker = new DevWinUI.FolderPicker(App.MainWindow);
-            var folder = await picker.PickSingleFolderAsync();
-            if (folder != null)
+            global_cfg.cfg.JsonCfg.GameFolders.ForEach(folder => ChooseDownloadFolderPathComboBox.Items.Add(new ComboBoxItem()
             {
-                TextBox.Text = System.IO.Path.Combine(folder.Path,Name);
-            }
+                Content = $"{folder.Name} - {folder.Path}"
+            }));
+            ChooseDownloadFolderPathComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
         }
 
         private async void ButtonBaseImg_OnClick(object sender, RoutedEventArgs e)

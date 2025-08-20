@@ -74,6 +74,33 @@
             <TextBlock
                 Margin="0,10,0,0"
                 Style="{StaticResource Subtitle}"
+                Text="游戏" />
+            
+            <dev:SettingsExpander
+                    Description="游戏存储根目录"
+                    Header="游戏目录"
+                    HeaderIcon="{dev:FontIcon Glyph=&#xE8B7;}"
+                    Tag="Appearance">
+                <dev:SettingsExpander.Items>
+                    <dev:SettingsCard Header="默认下载目录">
+                        <ComboBox Width="400" x:Name="GameFoldersChooseBox"
+                                  SelectionChanged="GameFoldersChooseBox_SelectionChanged"></ComboBox>
+                    </dev:SettingsCard>
+
+                    <dev:SettingsCard Header="操作">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Margin="0,0,5,0" Width="120">删除所选目录</Button>
+                            <Button Margin="5,0,0,0" Width="270" Style="{StaticResource AccentButtonStyle}" Name="ImportGameFolder"
+                                    Click="ImportGameFolder_Click">导入 Bedrock 数据目录</Button>
+                        </StackPanel>
+                    </dev:SettingsCard>
+                </dev:SettingsExpander.Items>
+
+            </dev:SettingsExpander>
+
+            <TextBlock
+                Margin="0,10,0,0"
+                Style="{StaticResource Subtitle}"
                 Text="关于" />
             <dev:SettingsExpander
                 Description="© 2025 Round-Studio 版权没有（开源软件都要盗吗）"

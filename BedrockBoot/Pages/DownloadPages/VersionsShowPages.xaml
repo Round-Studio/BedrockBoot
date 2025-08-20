@@ -59,6 +59,7 @@
                         <controls:SegmentedItem Icon="{ui:FontIcon Glyph=&#xE8A1;}" ToolTipService.ToolTip="预览版" />
                         <controls:SegmentedItem Icon="{ui:FontIcon Glyph=&#xEA8D;}" ToolTipService.ToolTip="测试版" />
                     </controls:Segmented>
+                    <Button>导入Appx</Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
                             Margin="5"

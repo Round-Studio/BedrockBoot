@@ -119,7 +119,6 @@ public sealed partial class SettingsPage : Page
         {
             var folderpath = ((AddNewGameFolderContent)dialog.Content).FolderPath;
             var foldername = ((AddNewGameFolderContent)dialog.Content).FolderName;
-
             if (!string.IsNullOrEmpty(folderpath))
             {
                 global_cfg.cfg.JsonCfg.GameFolders.Add(new Models.Entry.GameFolderInfoEntry()
@@ -128,6 +127,10 @@ public sealed partial class SettingsPage : Page
                     Path = folderpath,
                 });
                 global_cfg.cfg.SaveConfig();
+                if(!Directory.Exists(folderpath))
+                    {
+                    Directory.CreateDirectory(folderpath);
+                }
                 UpdateUI();
             }
         }

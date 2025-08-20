@@ -1,5 +1,6 @@
 using BedrockBoot.Controls;
 using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Versions;
 using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Network;
 using CommunityToolkit.WinUI;
@@ -13,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -56,31 +58,59 @@ namespace BedrockBoot.Pages.DownloadPages
             dialog.DefaultButton = ContentDialogButton.Primary;
 
             var result = await dialog.ShowAsync();
+            var content = (DownloadGameContent)dialog.Content;
+            if (!Directory.Exists(content.SeleteDir))
+            {
+                Directory.CreateDirectory(content.SeleteDir);
+            }
+
+            if (!Directory.Exists(content.APPX_dir))
+            {
+                Directory.CreateDirectory(content.APPX_dir);
+            }
 
             if (result == ContentDialogResult.Primary)
             {
-
-                string name = ((DownloadGameContent)dialog.Content).Name;
-                foreach (var versions in global_cfg.VersionsList)
+//TODO
+                List<string> versionList = new List<string>();
+                globalTools.SearchVersionJson(content.SeleteDir, ref versionList, 0, 3);
+                foreach (var c in versionList)
                 {
-                    if (versions.VersionName == name || versions.Version_Path == ((DownloadGameContent)dialog.Content).Path)
+                    var fullPath = Path.GetFullPath(c);
+                    var nowVersions = JsonSerializer.Deserialize<NowVersions>(File.ReadAllText(fullPath));
+                    if (nowVersions == null)
                     {
-                        MessageBox.ShowAsync("错误", "已存在相同版本");
+                        continue;
+                    }
+                    if (string.IsNullOrEmpty(nowVersions.Type))
+                    {
+                        continue;
+                    }
+                    if (nowVersions.VersionName == ((DownloadGameContent)dialog.Content).Name)
+                    {
+                        await MessageBox.ShowAsync("错误", "该版本已存在");
                         return result;
                     }
                 }
-                global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, ((DownloadGameContent)dialog.Content).BackColor, ((DownloadGameContent)dialog.Content).ImgBack, version);
+                foreach (var expander in global_cfg.tasksPool)
+                {
+                    if (expander.nowVersions.VersionName == ((DownloadGameContent)dialog.Content).Name)
+                    {
+                        await MessageBox.ShowAsync("错误", "该版本已存在");
+                        return result;
+                    }
+                }
+                string name = ((DownloadGameContent)dialog.Content).Name;
+                global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, ((DownloadGameContent)dialog.Content).BackColor, ((DownloadGameContent)dialog.Content).ImgBack, version, ((DownloadGameContent)dialog.Content).APPX_dir, ((DownloadGameContent)dialog.Content).IsUseAppx);
             }
             else
             {
                 return result;
             }
-
             if (string.IsNullOrEmpty(((DownloadGameContent)dialog.Content).Path) || string.IsNullOrEmpty(((DownloadGameContent)dialog.Content).Name))
             {
                 await MessageBox.ShowAsync("错误", "内容不应为空");
             }
-
             MessageBox.ShowAsync("提示", "已加入任务列表");
 
             return result;

@@ -183,8 +183,12 @@ namespace BedrockBoot.Controls
                     else
                     {
                         var directoryName = Path.GetDirectoryName(Path.Combine(Install_dir, Path.GetFileName(backImg)));
-                        Directory.CreateDirectory(directoryName);
-                        File.Copy(backImg, Path.Combine(Install_dir, Path.GetFileName(backImg)));
+                        if (!Directory.Exists(directoryName))
+                        {
+                            Directory.CreateDirectory(directoryName);
+                        }
+                    
+                        File.Copy(backImg, Path.Combine(Install_dir, Path.GetFileName(backImg)),true);
                         gameBackGroundEditer = new GameBackGroundEditer()
                         {
                             file = Path.GetFileName(backImg),

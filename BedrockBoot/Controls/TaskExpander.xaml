@@ -85,7 +85,7 @@
             </StackPanel>
         </dev:SettingsCard.Description>
         <dev:SettingsCard.HeaderIcon>
-            <FontIcon Glyph="&#xE745;" />
+            <FontIcon Glyph="&#xEBD3;" />
         </dev:SettingsCard.HeaderIcon>
         <Button x:Name="Button"
                 Padding="4"

@@ -29,11 +29,11 @@
             <ScrollView
                     HorizontalAlignment="Stretch"
                     VerticalScrollBarVisibility="Auto">
-                    <StackPanel
-                        MaxWidth="1000"
-                        Margin="10"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="4">
+                <StackPanel
+                    MaxWidth="1000"
+                    Margin="10"
+                    dev:PanelAttach.ChildrenTransitions="Default"
+                    Spacing="4">
 
                         <TextBlock
                             Margin="0,10,0,0"
@@ -88,37 +88,37 @@
                             Style="{StaticResource Subtitle}"
                             Text="游戏" />
                         
-                        <dev:SettingsExpander
-                                Description="游戏存储根目录"
-                                Header="游戏目录"
-                                HeaderIcon="{dev:FontIcon Glyph=&#xE8B7;}"
-                                Tag="Appearance">
-                            <dev:SettingsExpander.Items>
-                                <dev:SettingsCard Header="默认下载目录">
-                                    <ComboBox Width="400" x:Name="GameFoldersChooseBox"
-                                            SelectionChanged="GameFoldersChooseBox_SelectionChanged"></ComboBox>
-                                </dev:SettingsCard>
+                    <dev:SettingsExpander
+                        Description="游戏存储根目录"
+                        Header="游戏目录"
+                        HeaderIcon="{dev:FontIcon Glyph=&#xE8B7;}"
+                        Tag="Appearance">
+                        <dev:SettingsExpander.Items>
+                            <dev:SettingsCard Header="默认下载目录">
+                                <ComboBox Width="400" x:Name="GameFoldersChooseBox"
+                                          SelectionChanged="GameFoldersChooseBox_SelectionChanged"></ComboBox>
+                            </dev:SettingsCard>
 
-                                <dev:SettingsCard Header="操作">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Margin="0,0,5,0" Width="120">删除所选目录</Button>
-                                        <Button Margin="5,0,0,0" Width="270" Style="{StaticResource AccentButtonStyle}" Name="ImportGameFolder"
-                                                Click="ImportGameFolder_Click">导入 Bedrock 数据目录</Button>
-                                    </StackPanel>
-                                </dev:SettingsCard>
-                            </dev:SettingsExpander.Items>
+                            <dev:SettingsCard Header="操作">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Margin="0,0,5,0" Width="120">删除所选目录</Button>
+                                    <Button Margin="5,0,0,0" Width="270" Style="{StaticResource AccentButtonStyle}" Name="ImportGameFolder"
+                                            Click="ImportGameFolder_Click">导入 Bedrock 数据目录</Button>
+                                </StackPanel>
+                            </dev:SettingsCard>
+                        </dev:SettingsExpander.Items>
 
-                        </dev:SettingsExpander>
+                    </dev:SettingsExpander>
 
-                        <TextBlock
-                            Margin="0,10,0,0"
-                            Style="{StaticResource Subtitle}"
-                            Text="关于" />
-                        <dev:SettingsExpander
-                            Description="© 2025 Round-Studio 版权没有（开源软件都要盗吗）"
-                            Header="关于"
-                            HeaderIcon="{dev:FontIcon Glyph=&#xEC7A;}"
-                            Tag="About">
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        Style="{StaticResource Subtitle}"
+                        Text="关于" />
+                    <dev:SettingsExpander
+                        Description="© 2025 Round-Studio 版权没有（开源软件都要盗吗）"
+                        Header="关于"
+                        HeaderIcon="{dev:FontIcon Glyph=&#xEC7A;}"
+                        Tag="About">
                             <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockBoot">BedrockBoot - Github</HyperlinkButton>
                             <dev:SettingsExpander.Items>
                                 <dev:SettingsCard Header="开发者">
@@ -132,11 +132,11 @@
                                 </dev:SettingsCard>
                             </dev:SettingsExpander.Items>
                         </dev:SettingsExpander>
-                        <dev:SettingsExpander
-                            Description="我们使用的开源项目 (※ 为自开发项目)"
-                            Header="开源项目"
-                            HeaderIcon="{dev:FontIcon Glyph=&#xE8F1;}"
-                            Tag="About">
+                    <dev:SettingsExpander
+                        Description="我们使用的开源项目 (※ 为自开发项目)"
+                        Header="开源项目"
+                        HeaderIcon="{dev:FontIcon Glyph=&#xE8F1;}"
+                        Tag="About">
                             <dev:SettingsExpander.Items>
                                 <dev:SettingsCard Header="WinUI">
                                     <dev:SettingsCard.Content>
@@ -190,9 +190,25 @@
                                 </dev:SettingsCard>
                             </dev:SettingsExpander.Items>
                         </dev:SettingsExpander>
-
-                    </StackPanel>
-                </ScrollView>
+                        
+                    <dev:SettingsExpander
+                        Description="本项目用到的服务"
+                        Header="鸣谢"
+                        HeaderIcon="{dev:FontIcon Glyph=&#xEBDA;}"
+                        Tag="About">   
+                        <dev:SettingsExpander.Items>
+                            <dev:SettingsCard Header="MCAPPX"
+                                              Description="游戏列表源服务技术提供">
+                                <dev:SettingsCard.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <HyperlinkButton NavigateUri="https://www.mcappx.com">Website</HyperlinkButton>
+                                    </StackPanel>
+                                </dev:SettingsCard.Content>
+                            </dev:SettingsCard>
+                        </dev:SettingsExpander.Items>
+                    </dev:SettingsExpander>
+                </StackPanel>
+            </ScrollView>
         </Grid>
     </Grid>
 </Page>

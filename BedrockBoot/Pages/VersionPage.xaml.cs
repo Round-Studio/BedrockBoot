@@ -30,7 +30,8 @@ namespace BedrockBoot.Pages;
 
 public sealed partial class VersionPage : Page
 {
-    public ObservableCollection<NowVersions> VersionsList { get; set; } = new ObservableCollection<NowVersions>();
+    // 不再需要 ObservableCollection，改为使用 List 存储数据
+    private List<NowVersions> _versionsData = new List<NowVersions>();
     public bool IsEdit = false;
 
     public VersionPage()
@@ -48,31 +49,46 @@ public sealed partial class VersionPage : Page
     {
         IsEdit = false;
 
-        // 在 UI 线程上清空并重新填充集合
-        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+        // 清空数据
+        _versionsData.Clear();
+
+        List<string> versionsList = new List<string>();
+        var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path;
+        globalTools.SearchVersionJson(path, ref versionsList, 0, 3);
+
+        // 收集数据
+        foreach (var c in versionsList)
         {
-            VersionsList.Clear();
-
-            List<string> versionsList = new List<string>();
-            var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path;
-            globalTools.SearchVersionJson(path, ref versionsList, 0, 3);
-
-            foreach (var c in versionsList)
+            var fullPath = Path.GetFullPath(c);
+            try
             {
-                var fullPath = Path.GetFullPath(c);
-                try
+                var nowVersions = JsonSerializer.Deserialize<NowVersions>(File.ReadAllText(fullPath));
+                if (nowVersions != null && !string.IsNullOrEmpty(nowVersions.Type))
                 {
-                    var nowVersions = JsonSerializer.Deserialize<NowVersions>(File.ReadAllText(fullPath));
-                    if (nowVersions != null && !string.IsNullOrEmpty(nowVersions.Type))
-                    {
-                        VersionsList.Add(nowVersions);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"加载版本 {fullPath} 失败: {ex.Message}");
+                    _versionsData.Add(nowVersions);
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"加载版本 {fullPath} 失败: {ex.Message}");
+            }
+        }
+
+        // 在 UI 线程上动态创建和添加项
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+        {
+            // 清空现有的 UI 元素
+            VersionListRepeater.ItemsSource = null;
+
+            // 手动创建 UI 元素并添加到 ItemsRepeater
+            var items = new List<NowVersions>();
+            foreach (var version in _versionsData)
+            {
+                items.Add(version);
+            }
+
+            // 设置 ItemsSource 来触发 UI 更新
+            VersionListRepeater.ItemsSource = items;
         });
 
         // 更新 ComboBox
@@ -174,7 +190,6 @@ public sealed partial class VersionPage : Page
             OpenModManagerWindow(selectedVersion, false);
         }
     }
-
     private void OpenModManagerWindow(NowVersions version, bool d)
     {
         try
@@ -231,14 +246,19 @@ public sealed partial class VersionPage : Page
         }
     }
 
+
     private void DeleteButton(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
-            // 在 UI 线程上移除项
+            // 从数据列表中移除
+            _versionsData.Remove(versionInfo);
+
+            // 在 UI 线程上重新加载 UI
             DispatcherQueue.TryEnqueue(() =>
             {
-                VersionsList.Remove(versionInfo);
+                // 重新设置 ItemsSource 来更新 UI
+                VersionListRepeater.ItemsSource = _versionsData.ToList();
             });
 
             try
@@ -265,9 +285,33 @@ public sealed partial class VersionPage : Page
         }
     }
 
-    // 添加刷新按钮的方法（可选）
+    // 刷新按钮的方法
     private void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
         Task.Run(() => UpdateUI());
+    }
+
+    // 手动添加版本的方法（如果需要）
+    private void AddVersionManually(NowVersions version)
+    {
+        _versionsData.Add(version);
+
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            // 重新设置 ItemsSource 来更新 UI
+            VersionListRepeater.ItemsSource = _versionsData.ToList();
+        });
+    }
+
+    // 手动移除版本的方法
+    private void RemoveVersionManually(NowVersions version)
+    {
+        _versionsData.Remove(version);
+
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            // 重新设置 ItemsSource 来更新 UI
+            VersionListRepeater.ItemsSource = _versionsData.ToList();
+        });
     }
 }

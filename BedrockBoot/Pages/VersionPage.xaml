@@ -66,6 +66,16 @@
             <Grid MaxWidth="1000"
                   VerticalAlignment="Top"
                   HorizontalAlignment="Stretch">
+
+                <!-- 添加刷新按钮 -->
+                <Button
+                    x:Name="RefreshButton"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Click="RefreshButton_Click"
+                    Content="刷新"
+                    Margin="0,0,0,0" />
+                
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Left"
                             Margin="2,0,0,0">
@@ -81,13 +91,13 @@
             <ScrollViewer HorizontalAlignment="Stretch"
                           Margin="0,48,0,0">
                 <Grid>
+                    <!-- 移除 ItemsSource 绑定 -->
                     <ItemsRepeater
-                        x:Name="VersionList"
+                        x:Name="VersionListRepeater"
                         Grid.Column="1"
                         MaxWidth="1000"
                         HorizontalAlignment="Stretch"
-                        ItemTemplate="{StaticResource VersionCard}"
-                        ItemsSource="{x:Bind VersionsList, Mode=OneWay}">
+                        ItemTemplate="{StaticResource VersionCard}">
                         <ItemsRepeater.Layout>
                             <StackLayout Spacing="5" />
                         </ItemsRepeater.Layout>
@@ -96,4 +106,4 @@
             </ScrollViewer>
         </Grid>
     </Grid>
-</Page>
+</Page> 

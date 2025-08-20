@@ -32,7 +32,7 @@
 
             <ComboBox Header="下载目录" HorizontalAlignment="Stretch"
                       x:Name="ChooseDownloadFolderPathComboBox"></ComboBox>
-            <ToggleSwitch x:Name="UseAppx">使用appx</ToggleSwitch>
+
             <TextBlock Text="启动页面颜色" />
             <controls:ColorPickerButton
                 x:Name="colorPicker"
@@ -45,6 +45,8 @@
                 <TextBox x:Name="imgback" Width="278"/>
                 <Button Click="ButtonBaseImg_OnClick" Content="{dev:FontIcon Glyph=&#xE838;}" />
             </dev:ElementGroup>
+            
+            <ToggleSwitch x:Name="UseAppx" IsOn="False" IsEnabled="False">使用 Appx 缓存 (即使用已保存的相同版本的 Appx 安装，无需重新下载)</ToggleSwitch>
         </StackPanel>
     </ScrollViewer>
 </Page>

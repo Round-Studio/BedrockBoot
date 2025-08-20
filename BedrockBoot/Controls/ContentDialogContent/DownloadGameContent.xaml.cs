@@ -30,7 +30,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
     /// </summary>
     public sealed partial class DownloadGameContent : Page
     {
-        public string Path => System.IO.Path.Combine(global_cfg.cfg.JsonCfg.GameFolders[ChooseDownloadFolderPathComboBox.SelectedIndex].Path, NameBox.Text);
+        public string Path => System.IO.Path.Combine(global_cfg.cfg.JsonCfg.GameFolders[ChooseDownloadFolderPathComboBox.SelectedIndex].Path, "bedrock_versions" ,  NameBox.Text);
         public string Name => NameBox.Text;
         public string BackColor => RgbToHex(colorPicker.SelectedColor.R,colorPicker.SelectedColor.G, colorPicker.SelectedColor.B);
         public string ImgBack => imgback.Text;
@@ -59,6 +59,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
                 if (File.Exists(s))
                 {
                     UseAppx.IsEnabled = true;
+                    UseAppx.IsOn = true;
                 }
             });
             ChooseDownloadFolderPathComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;

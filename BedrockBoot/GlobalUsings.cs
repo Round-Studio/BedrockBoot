@@ -59,8 +59,9 @@ public class DllFileInfo
 public static class globalTools
 {
 
-   public static void SearchVersionJson(string currentPath,ref List<string> textList, int currentDepth, int maxDepth)
+   public static void SearchVersionJson(string currentPath1,ref List<string> textList, int currentDepth, int maxDepth)
     {
+        var currentPath = Path.GetFullPath(currentPath1);
         try
         {
             if (!Directory.Exists(currentPath))

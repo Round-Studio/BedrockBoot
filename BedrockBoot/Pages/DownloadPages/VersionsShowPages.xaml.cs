@@ -18,6 +18,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.System.Profile;
 using Windows.UI.Core;
 using WinRT;
 using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
@@ -88,7 +89,7 @@ namespace BedrockBoot.Pages.DownloadPages
                     }
                     if (nowVersions.VersionName == ((DownloadGameContent)dialog.Content).Name)
                     {
-                        await MessageBox.ShowAsync("错误", "该版本已存在");
+                        await MessageBox.ShowAsync("该版本已存在", "错误");
                         return result;
                     }
                 }
@@ -96,20 +97,21 @@ namespace BedrockBoot.Pages.DownloadPages
                 {
                     if (expander.nowVersions.VersionName == ((DownloadGameContent)dialog.Content).Name)
                     {
-                        await MessageBox.ShowAsync("错误", "该版本已存在");
+                        await MessageBox.ShowAsync("该版本已存在", "错误");
                         return result;
                     }
                 }
                 string name = ((DownloadGameContent)dialog.Content).Name;
+                if (string.IsNullOrEmpty(name))
+                {
+                    await MessageBox.ShowAsync("名称不得为空", "错误");
+                    return result;
+                }
                 global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, ((DownloadGameContent)dialog.Content).BackColor, ((DownloadGameContent)dialog.Content).ImgBack, version, ((DownloadGameContent)dialog.Content).APPX_dir, ((DownloadGameContent)dialog.Content).IsUseAppx);
             }
             else
             {
                 return result;
-            }
-            if (string.IsNullOrEmpty(((DownloadGameContent)dialog.Content).Path) || string.IsNullOrEmpty(((DownloadGameContent)dialog.Content).Name))
-            {
-                await MessageBox.ShowAsync("错误", "内容不应为空");
             }
             MessageBox.ShowAsync("提示", "已加入任务列表");
 

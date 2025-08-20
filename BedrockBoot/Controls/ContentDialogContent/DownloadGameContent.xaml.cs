@@ -54,7 +54,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
             var picker = new FilePicker(WindowNative.GetWindowHandle(App.MainWindow));
             picker.FileTypeChoices = new Dictionary<string, IList<string>>
             {
-                { "Images", new List<string> { "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif" } },
+                { "Images", new List<string> { "*.png", "*.jpg", "*.jpeg", "*.bmp" } },
             };
 
             var file = await picker.PickSingleFileAsync();

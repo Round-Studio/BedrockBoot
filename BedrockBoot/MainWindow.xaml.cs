@@ -77,6 +77,7 @@ namespace BedrockBoot
             //
             if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));
             var selectedItem = (NavigationViewItem)args.SelectedItem;
+            global_cfg.cfg.SaveConfig();
             if ((string)selectedItem.Tag == "SettingPage") NavFrame.Navigate(typeof(SettingsPage));
             if ((string)selectedItem.Tag == "DownloadPage") NavFrame.Navigate(typeof(DownloadPage));
             if ((string)selectedItem.Tag == "HomePage") NavFrame.Navigate(typeof(HomePage));

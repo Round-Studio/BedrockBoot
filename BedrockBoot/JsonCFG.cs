@@ -14,7 +14,7 @@ namespace BedrockBoot
         public string backimg { get; set; }
         public int DownThread { get; set; } = 12;
         public int DelayTimes { get; set; } = 1000;
-        public bool SaveAppx { get; set; } = false; 
+        public bool SaveAppx { get; set; } = true; 
         public List<GameFolderInfoEntry> GameFolders { get; set; } = new List<GameFolderInfoEntry>()
         {
             new GameFolderInfoEntry

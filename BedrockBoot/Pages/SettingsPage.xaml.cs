@@ -32,11 +32,11 @@ public sealed partial class SettingsPage : Page
     public SettingsPage()
     {
         InitializeComponent();
-        DownloadThreads.Text = DownThread.ToString();
-        DelayTime.Text = DelayTimes.ToString();
+
+        DownloadThreads.Value = DownThread;
+        DelayTime.Value = DelayTimes;
         Unloaded += SettingsPage_Unloaded;
-        SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
-    
+        SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;    
 
         UpdateUI();
     }
@@ -59,8 +59,8 @@ public sealed partial class SettingsPage : Page
     {
         try
         {
-            DownThread = int.Parse(DownloadThreads.Text);
-            DelayTimes = int.Parse(DelayTime.Text);
+            DownThread = (int)DownloadThreads.Value;
+            DelayTimes = (int)DelayTime.Value;
             global_cfg.cfg.JsonCfg.SaveAppx = SavaAppx.IsOn;
             global_cfg.cfg.JsonCfg.DownThread = DownThread;
             global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;
@@ -75,6 +75,7 @@ public sealed partial class SettingsPage : Page
 
     // TODO: 所以什么时候才能写SettingsCard导航？----DM,马上马上
     // BYD,我写了
+    // 难绷难绷
 
     private void NavigationTo(SettingsCard sender)
     {

@@ -14,7 +14,7 @@
     <Page.Resources>
         <DataTemplate x:Key="VersionCardTemplate" x:DataType="jsonHandle:VersionInformation">
             <dev:SettingsCard
-                Margin="5,5,5,0"
+                Margin="5,0,5,0"
                 Click="SettingsCard_Click"
                 Description="{x:Bind Date}"
                 Header="{x:Bind ID}"
@@ -77,12 +77,6 @@
             <Grid Margin="0,64,0,10">
                 <ScrollViewer HorizontalAlignment="Stretch">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1.5*"/>
-                            <!-- 主内容区域占70% -->
-                            <ColumnDefinition Width="7*" MaxWidth="1000" />
-                            <ColumnDefinition Width="1.5*"/>
-                        </Grid.ColumnDefinitions>
                         <ItemsRepeater
                             Grid.Column="1"
                             HorizontalAlignment="Stretch"

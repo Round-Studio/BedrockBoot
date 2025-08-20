@@ -33,7 +33,6 @@ namespace BedrockBoot.Pages
         {
             InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
-            BreadcrumbBar.ItemsSource = new string[] { "任务列表" };
             Loaded += TaskPage_Loaded;
             Unloaded += TaskPage_Unloaded;
             global_cfg.tasksPool.CollectionChanged += TasksPool_CollectionChanged;

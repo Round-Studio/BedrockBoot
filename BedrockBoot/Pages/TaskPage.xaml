@@ -17,20 +17,17 @@
             MaxWidth="1000"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top">
-            <BreadcrumbBar
+            <TextBlock
                 x:Name="BreadcrumbBar"
-                Margin="10,0,10,4"
-                FontSize="30">
-                <BreadcrumbBar.ItemTemplate>
-                    <DataTemplate />
-                </BreadcrumbBar.ItemTemplate>
-            </BreadcrumbBar>
+                Margin="0,0,10,4"
+                FontSize="30"
+                Text="任务">
+            </TextBlock>
         </Grid>
         <ScrollViewer
-            MaxWidth="1000"
-            Margin="0,50,0,0"
+            Margin="0,72,0,0"
             HorizontalAlignment="Stretch">
-            <StackPanel x:Name="TaskContainer" HorizontalAlignment="Stretch" />
+            <StackPanel x:Name="TaskContainer" HorizontalAlignment="Stretch" MaxWidth="1000"/>
         </ScrollViewer>
     </Grid>
     <!--<Grid>

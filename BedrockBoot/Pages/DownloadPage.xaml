@@ -18,7 +18,7 @@
             VerticalAlignment="Top">
             <TextBlock
                 x:Name="BreadcrumbBar"
-                Margin="10,0,10,4"
+                Margin="0,0,10,4"
                 FontSize="30"
                 Text="下载 Minecraft 实例">
             </TextBlock>
@@ -26,7 +26,7 @@
 
         <Frame
             x:Name="SubPageFrame"
-            Margin="0,50,0,0"
+            Margin="0,52,0,0"
             HorizontalAlignment="Stretch">
             <Frame.Content>
                 <downloadpages:VersionsShowPages></downloadpages:VersionsShowPages>

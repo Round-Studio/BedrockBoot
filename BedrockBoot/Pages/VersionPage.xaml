@@ -62,15 +62,25 @@
                 Text="管理版本">
             </TextBlock>
         </Grid>
-        <Grid Margin="0,64,0,10">
-            <ScrollViewer HorizontalAlignment="Stretch">
+        <Grid Margin="0,72,0,10">
+            <Grid MaxWidth="1000"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            Margin="2,0,0,0">
+                    <FontIcon Glyph="&#xE8B7;" Foreground="Gray"/>
+                    <TextBlock VerticalAlignment="Center"
+                               Margin="10,0"
+                               Foreground="Gray">游戏目录</TextBlock>
+                    <ComboBox Width="500"
+                              x:Name="ChooseGameFolderComboBox"
+                              SelectionChanged="ChooseGameFolderComboBox_SelectionChanged"></ComboBox>
+                </StackPanel>
+            </Grid>
+            <ScrollViewer HorizontalAlignment="Stretch"
+                          Margin="0,48,0,0">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.5*" />
-                        <!--  主内容区域占70%  -->
-                        <ColumnDefinition Width="7*" MaxWidth="1000" />
-                        <ColumnDefinition Width="1.5*" />
-                    </Grid.ColumnDefinitions>
                     <ItemsRepeater
                         x:Name="VersionList"
                         Grid.Column="1"

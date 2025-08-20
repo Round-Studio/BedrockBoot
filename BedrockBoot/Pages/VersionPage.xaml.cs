@@ -37,18 +37,28 @@ namespace BedrockBoot.Pages;
 public sealed partial class VersionPage : Page
 {
     public ObservableCollection<NowVersions> VersionsList = new ObservableCollection<NowVersions>();
-
+    public bool IsEdit = false;
     public VersionPage()
     {
         InitializeComponent();
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
+        IsEdit = false;
+
+        VersionsList = new ObservableCollection<NowVersions>();
+        ChooseGameFolderComboBox.Items.Clear();
+
         List<string> versionsList = new List<string>();
         var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path;
-        globalTools.SearchVersionJson(path,ref versionsList,0,3);
+        globalTools.SearchVersionJson(path, ref versionsList, 0, 3);
         foreach (var c in versionsList)
         {
             var fullPath = Path.GetFullPath(c);
             var nowVersions = JsonSerializer.Deserialize<NowVersions>(File.ReadAllText(fullPath));
-            if (nowVersions==null)
+            if (nowVersions == null)
             {
                 continue;
             }
@@ -58,7 +68,11 @@ public sealed partial class VersionPage : Page
             }
             VersionsList.Add(nowVersions);
         }
-      
+
+        global_cfg.cfg.JsonCfg.GameFolders.ForEach(x => ChooseGameFolderComboBox.Items.Add(new ComboBoxItem() { Content = $"{x.Name} - {x.Path}" }));
+        ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
+
+        IsEdit = true;
     }
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -229,6 +243,16 @@ public sealed partial class VersionPage : Page
             VersionsList.Remove(versionInfo);
            File.Delete(versionInfo.Version_Path);
             globalTools.ShowInfo("已删除");
+        }
+    }
+
+    private void ChooseGameFolderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            global_cfg.cfg.JsonCfg.ChooseFolderIndex = ChooseGameFolderComboBox.SelectedIndex;
+            global_cfg.cfg.SaveConfig();
+            UpdateUI();
         }
     }
 }

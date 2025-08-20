@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -41,14 +42,24 @@ public sealed partial class VersionPage : Page
     {
         InitializeComponent();
         BreadcrumbBar.ItemsSource = new string[] { "管理版本" };
-        global_cfg.VersionsList.ForEach((versions =>
+        List<string> versionsList = new List<string>();
+        var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path;
+        globalTools.SearchVersionJson(path,ref versionsList,0,3);
+        foreach (var c in versionsList)
         {
-            if (string.IsNullOrEmpty(versions.Type))
+            var fullPath = Path.GetFullPath(c);
+            var nowVersions = JsonSerializer.Deserialize<NowVersions>(File.ReadAllText(fullPath));
+            if (nowVersions==null)
             {
-                return;
+                continue;
             }
-            VersionsList.Add(versions);
-        }));
+            if (string.IsNullOrEmpty(nowVersions.Type))
+            {
+                continue;
+            }
+            VersionsList.Add(nowVersions);
+        }
+      
     }
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -217,8 +228,7 @@ public sealed partial class VersionPage : Page
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
             VersionsList.Remove(versionInfo);
-            global_cfg.VersionsList.Remove(versionInfo);
-            global_cfg.cfg.SaveVersion(versionInfo);
+           File.Delete(versionInfo.Version_Path);
             globalTools.ShowInfo("已删除");
         }
     }

@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -56,7 +57,7 @@ namespace BedrockBoot.Controls
 
         }
 
-        public void DoInstallAsync(string Name,string Install_dir,string appx_path,string backColor,string backImg)
+        public void DoInstallAsync(string Name,string Install_dir,string appx_path,string backColor,string backImg,bool useAppx=false)
         {
             new Thread((() =>
             {
@@ -65,9 +66,11 @@ namespace BedrockBoot.Controls
                     Version_Path = Install_dir,
                     VersionName = Name,
                     BackColor = backColor,
-                    ImgBack = backImg
+                    ImgBack = backImg,
+                    Type = Version.Type,
+                    RealVersion = Version.ID
                 };
-                global_cfg.VersionsList.Add(nowVersions);
+               
                 var installCallback = new InstallCallback()
                 {
                     CancellationToken = CancellationToken.Token,
@@ -145,7 +148,6 @@ namespace BedrockBoot.Controls
                             {
                                 MessageBox.ShowAsync(exception);
                                 global_cfg.tasksPool.Remove(this);
-                                global_cfg.VersionsList.Remove(nowVersions);
                             }));
                         }
                         else if (status == AsyncStatus.Completed)
@@ -156,7 +158,6 @@ namespace BedrockBoot.Controls
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                             {
                                 global_cfg.tasksPool.Remove(this);
-                                global_cfg.cfg.SaveVersion(nowVersions);
                             }));
                         }
                     }),
@@ -175,8 +176,8 @@ namespace BedrockBoot.Controls
                     {
                          gameBackGroundEditer = new GameBackGroundEditer()
                         {
-                            file = "UAP.Assets\\minecraft\\icons\\MCSplashScreen.png",
-                            color = backColor ?? "#EF323D",
+                            file = backImg,
+                            color = backColor,
                             isOpen = true
                         };
                     }
@@ -196,9 +197,18 @@ namespace BedrockBoot.Controls
                             isOpen = true
                         };
                     }
-                    global_cfg.core.InstallVersion(Version,Install_dir,appx_path,installCallback,gameBackGroundEditer);
+                   if (useAppx)
+                   {
+                       global_cfg.core.InstallVersionByappx(appx_path,nowVersions.VersionName,Install_dir,installCallback,gameBackGroundEditer);
+                    }
+                   else
+                   {
+                       global_cfg.core.InstallVersion(Version,appx_path, nowVersions.VersionName,Install_dir, installCallback, gameBackGroundEditer);
+                    }
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));
+                    var combine = Path.Combine(Install_dir, "version.json");
+                    File.WriteAllText(combine,JsonSerializer.Serialize(nowVersions));
                     if (!global_cfg.cfg.JsonCfg.SaveAppx)
                     {
                         File.Delete(s);
@@ -210,7 +220,7 @@ namespace BedrockBoot.Controls
                     {
                         MessageBox.ShowAsync(e.ToString(), "错误");
                         global_cfg.tasksPool.Remove(this);
-                        global_cfg.VersionsList.Remove(nowVersions);
+                       
                     }));
                 }
             })).Start();
@@ -219,7 +229,6 @@ namespace BedrockBoot.Controls
         {
             CancellationToken.Cancel();
             global_cfg.tasksPool.Remove(this);
-            global_cfg.VersionsList.Remove(nowVersions);
         }
 
         public void Dispose()

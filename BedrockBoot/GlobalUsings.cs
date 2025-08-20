@@ -23,7 +23,6 @@ public static class global_cfg
     public static BedrockCore core = new BedrockCore();
     public static DownloadPage _downloadPage;
     public static ObservableCollection<TaskExpander> tasksPool = new ObservableCollection<TaskExpander>();
-    public static List<NowVersions> VersionsList = new List<NowVersions>();
     public static List<Process> MinecraftProcesses = new List<Process>();
     public static Config cfg = null;
 
@@ -31,14 +30,14 @@ public static class global_cfg
     {
         cfg = new Config();
     }
-    public static void InstallTasksAsync(string taskname,string installdir,string backColor,string backImg,VersionInformation ver)
+    public static void InstallTasksAsync(string taskname,string installdir,string backColor,string backImg,VersionInformation ver,string Appx_dir,bool UseAppx = false)
     {
         var taskCard = new TaskExpander()
         {
             Version = ver
         };
         taskCard.Header = taskname;
-        taskCard.DoInstallAsync(taskname,installdir,Path.Combine(cfg.JsonCfg.appxDir,cfg.JsonCfg.appxName.Replace("{0}",ver.ID)),backColor, backImg);
+        taskCard.DoInstallAsync(taskname,installdir,Path.Combine(Appx_dir,cfg.JsonCfg.appxName.Replace("{0}",ver.ID)),backColor, backImg,UseAppx);
         tasksPool.Add(taskCard);
     }
 }
@@ -59,6 +58,51 @@ public class DllFileInfo
 }
 public static class globalTools
 {
+
+   public static void SearchVersionJson(string currentPath,ref List<string> textList, int currentDepth, int maxDepth)
+    {
+        try
+        {
+            if (!Directory.Exists(currentPath))
+            {
+                return;
+            }
+            // 检查是否超出最大深度
+            if (currentDepth > maxDepth)
+            {
+                return ;
+            }
+
+            // 搜索当前目录下的 version.json 文件
+            string[] files = Directory.GetFiles(currentPath, "version.json", SearchOption.TopDirectoryOnly);
+            foreach (string file in files)
+            {
+                textList.Add(file);
+            }
+
+            // 如果未达到最大深度，继续搜索子目录
+            if (currentDepth < maxDepth)
+            {
+                try
+                {
+                    string[] subDirs = Directory.GetDirectories(currentPath);
+                    foreach (string dir in subDirs)
+                    {
+                        SearchVersionJson(dir,ref textList,currentDepth + 1, maxDepth);
+                    }
+                }
+                catch 
+                {
+                    throw;
+                }
+               
+            }
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
     public static void ShowInfo(string text)
     {
         App._window.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, () =>

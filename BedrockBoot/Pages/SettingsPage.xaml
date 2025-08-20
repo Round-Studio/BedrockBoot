@@ -44,8 +44,7 @@
                             AcceptsExpression="True"
                             Maximum="128"
                             Minimum="1"
-                            SpinButtonPlacementMode="Inline"
-                            Value="12" />
+                            SpinButtonPlacementMode="Inline"/>
                     </dev:SettingsCard>
                     <dev:SettingsCard Header="安装完成保留 Appx 文件">
                         <ToggleSwitch OnContent="" x:Name="SavaAppx" OffContent=""></ToggleSwitch>

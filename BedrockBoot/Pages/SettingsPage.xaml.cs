@@ -36,7 +36,9 @@ public sealed partial class SettingsPage : Page
         DownloadThreads.Value = DownThread;
         DelayTime.Value = DelayTimes;
         Unloaded += SettingsPage_Unloaded;
-        SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;    
+        SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
+
+        MainShortcut.Keys = new List<object> { "F12" };
 
         UpdateUI();
     }

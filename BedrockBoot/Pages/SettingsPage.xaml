@@ -42,8 +42,7 @@
                         <dev:SettingsExpander
                             Description="启动器的下载行为"
                             Header="下载"
-                            HeaderIcon="{dev:FontIcon Glyph=&#xE896;}"
-                            Tag="Appearance">
+                            HeaderIcon="{dev:FontIcon Glyph=&#xE896;}">
                             <dev:SettingsExpander.Items>
                                 <dev:SettingsCard Header="下载线程">
                                     <NumberBox
@@ -66,8 +65,7 @@
                         <dev:SettingsExpander
                             Description="启动器的注入行为"
                             Header="注入"
-                            HeaderIcon="{dev:FontIcon Glyph=&#xE840;}"
-                            Tag="Appearance">
+                            HeaderIcon="{dev:FontIcon Glyph=&#xE840;}">
                             <dev:SettingsExpander.Items>
                                 <dev:SettingsCard Header="延迟注入时间 (ms)">
                                     <NumberBox
@@ -87,12 +85,11 @@
                             Margin="0,10,0,0"
                             Style="{StaticResource Subtitle}"
                             Text="游戏" />
-                        
+
                     <dev:SettingsExpander
                         Description="游戏存储根目录"
                         Header="游戏目录"
-                        HeaderIcon="{dev:FontIcon Glyph=&#xE8B7;}"
-                        Tag="Appearance">
+                        HeaderIcon="{dev:FontIcon Glyph=&#xE8B7;}">
                         <dev:SettingsExpander.Items>
                             <dev:SettingsCard Header="默认下载目录">
                                 <ComboBox Width="400" x:Name="GameFoldersChooseBox"
@@ -108,6 +105,32 @@
                             </dev:SettingsCard>
                         </dev:SettingsExpander.Items>
 
+                    </dev:SettingsExpander>
+
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        Style="{StaticResource Subtitle}"
+                        Text="辅助功能" />
+
+                    <dev:SettingsExpander
+                        Description="锁定鼠标不移出游戏窗口外"
+                        Header="鼠标锁定 (Beta) (功能还没写，没用别看)"
+                        HeaderIcon="{dev:FontIcon Glyph=&#xE962;}">
+                        <ToggleSwitch OnContent="启用" OffContent="禁用"></ToggleSwitch>
+                        <dev:SettingsExpander.Items>
+                            <dev:SettingsCard Header="热键"
+                                              Description="设置控制是否启用的热键">
+                                <dev:Shortcut x:Name="MainShortcut"
+                                              Padding="0"
+                                              Margin="-8"
+                                              Height="40"
+                                              Title="给启用鼠标锁定设置热键"
+                                              ContentDialogTitle="设置热键"
+                                              InfoTitle="设置一个不冲突的热键"
+                                              ErrorTitle="这是不被允许的单独热键！"
+                                              WarningTitle="这个热键可能会影响系统正常工作"/>
+                            </dev:SettingsCard>
+                        </dev:SettingsExpander.Items>
                     </dev:SettingsExpander>
 
                     <TextBlock

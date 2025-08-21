@@ -213,11 +213,11 @@ namespace BedrockBoot.Controls
                    if (useAppx)
                    {
                        global_cfg.core.InstallVersionByappx(appx_path,nowVersions.VersionName,Install_dir,installCallback,gameBackGroundEditer);
-                    }
+                   }
                    else
                    {
-                       global_cfg.core.InstallVersion(Version,appx_path, nowVersions.VersionName,Install_dir, installCallback, gameBackGroundEditer);
-                    }
+                        global_cfg.core.InstallVersion(Version.Variations[0], GetVersionTypeByString(Version.Type), appx_path, nowVersions.VersionName,Install_dir, installCallback, gameBackGroundEditer);
+                   }
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));
                     var combine = Path.Combine(Install_dir, "version.json");
@@ -237,6 +237,25 @@ namespace BedrockBoot.Controls
                     }));
                 }
             })).Start();
+        }
+        private VersionType GetVersionTypeByString(string type)
+        {
+            var result = VersionType.Release;
+
+            switch (type.ToLower())
+            {
+                case "preview":
+                    result = VersionType.Preview;
+                    break;
+                case "release":
+                    result = VersionType.Release;
+                    break;
+                case "beta":
+                    result = VersionType.Beta;
+                    break;
+            }
+
+            return result;
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {

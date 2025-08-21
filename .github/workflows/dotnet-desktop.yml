@@ -1,0 +1,84 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["*"]
+
+jobs:
+  time:
+    runs-on: ubuntu-latest
+    outputs:
+      v: ${{ steps.date.outputs.time }}
+      y: ${{ steps.date.outputs.y }}
+      md: ${{ steps.date.outputs.md }}
+      hm: ${{ steps.date.outputs.hm }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Time
+        id: date
+        run: |
+          echo "::set-output name=time::$(date +'%Y.%m.%d.%H.%M')"
+          echo "::set-output name=y::$(date +'%Y')"
+          echo "::set-output name=md::$(date +'%m%d')"
+          echo "::set-output name=hm::$(date +'%H%M')"
+      - name: EchoTime
+        run: |
+          echo "The current time is: ${{ steps.date.outputs.time }}"
+
+  win:
+    runs-on: windows-latest
+    needs: time
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Dependency-InnoSetup
+        uses: ConorMacBride/install-package@v1
+        with:
+          choco: innosetup
+      - name: Chinesize-InnoSetup
+        run: |
+          Copy-Item "./Default.isl" "C:\Program Files (x86)\Inno Setup 6\Default.isl" -Force
+      - name: Dependency-Pupnet
+        run: |
+          dotnet tool install -g KuiperZone.PupNet
+      - name: Build
+        run: |
+          cd ./BedrockBoot
+          pupnet -r win-x64 -k setup -y -o BedrockBoot.win.x64.installer.exe --app-version ${{ needs.time.outputs.y }}.${{ needs.time.outputs.md }}.${{ needs.time.outputs.hm }}
+      - name: UploadArtifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-artifacts
+          path: |
+            ./BedrockBoot/BedrockBoot.win.x64.installer.exe
+
+  publish:
+    needs: [win, time]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Time
+        id: gdate
+        run: |
+          echo "date=$(date +'%Y-%m-%d.%H-%M-%S')" >> $GITHUB_OUTPUT
+          echo "title=$(date +'%Y.%m.%d.%H.%M')" >> $GITHUB_OUTPUT
+      - name: Download-WindowsArtifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: win-artifacts
+          path: ./Release/
+      - name: List Files
+        run: |
+          ls -la ./Release/
+      - name: Publish Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.TOKEN }}"
+          title: "v${{ needs.time.outputs.v }}"
+          automatic_release_tag: "AutoPublish-${{ steps.gdate.outputs.date }}"
+          prerelease: false
+          files: |
+            ./Release/*.exe

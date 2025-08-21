@@ -27,7 +27,9 @@
         <ScrollViewer
             Margin="0,72,0,0"
             HorizontalAlignment="Stretch">
-            <StackPanel x:Name="TaskContainer" HorizontalAlignment="Stretch" MaxWidth="1000"/>
+            <Grid>
+                <StackPanel x:Name="TaskContainer" HorizontalAlignment="Stretch" MaxWidth="1000"/>
+            </Grid>
         </ScrollViewer>
     </Grid>
     <!--<Grid>

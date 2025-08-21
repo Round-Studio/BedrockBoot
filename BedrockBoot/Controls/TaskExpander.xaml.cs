@@ -1,3 +1,4 @@
+using BedrockBoot.Models.Classes;
 using BedrockBoot.Versions;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.JsonHandle;
@@ -70,7 +71,8 @@ namespace BedrockBoot.Controls
                     Type = Version.Type,
                     RealVersion = Version.ID
                 };
-               
+
+                var speedCalculator = new DownloadSpeedCalculator();
                 var installCallback = new InstallCallback()
                 {
                     CancellationToken = CancellationToken.Token,
@@ -79,6 +81,11 @@ namespace BedrockBoot.Controls
                         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                         {
                             Process.Value = progress.ProgressPercentage;
+                            Process_JD_Text.Text = $"{progress.ProgressPercentage:0.00} %";
+                            Process_File_Text.Text = $"{SpeedCalculatorExtensions.ToFileSizeString(progress.DownloadedBytes)} / {SpeedCalculatorExtensions.ToFileSizeString(progress.TotalBytes)}";
+
+                            double instantSpeed = speedCalculator.CalculateSpeed(progress.DownloadedBytes, progress.TotalBytes);
+                            Process_Speed_Text.Text = $"{instantSpeed:F2} MB/s";
                         }));
 
                     }))),
@@ -129,7 +136,7 @@ namespace BedrockBoot.Controls
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "下载中..."; }));
                                 break;
                             case InstallStates.downloaded:
-                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "下载完成"; }));
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "下载完成，正在等待解压..."; }));
                                 break;
                         }
                     }),
@@ -138,6 +145,9 @@ namespace BedrockBoot.Controls
                         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                         {
                             Process.Value = u;
+                            Process_JD_Text.Text = $"{u:0.00} %";
+                            Process_File_Text.Text = s;
+                            Process_Speed_Text.Text = "0 B/s";
                         }));
                     }),
                     result_callback = ((status, exception) =>
@@ -166,6 +176,9 @@ namespace BedrockBoot.Controls
                         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                         {
                             Process.Value = progress.Percentage;
+                            Process_JD_Text.Text = $"{progress.Percentage:0.00} %";
+                            Process_File_Text.Text = $"{progress.CompletedFiles} / {progress.TotalFiles} Files";
+                            Process_Speed_Text.Text = $"0 B/s";
                         }));
                     })))
                 };

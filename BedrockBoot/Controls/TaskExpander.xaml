@@ -10,78 +10,27 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="364"
     mc:Ignorable="d">
-
-    <!--Grid BorderBrush="Black" BorderThickness="1">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="42" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="58" />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="42" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="42" />
-            </Grid.ColumnDefinitions>
-            <FontIcon
-                Grid.Column="0"
-                Margin="4"
-                Glyph="&#xF156;" />
-            <TextBlock
-                Grid.Column="1"
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="Header" />
-            <Button
-                Grid.Column="2"
-                Margin="4"
-                Content="{dev:FontIcon FontSize=12,
-                                       Glyph=&#xE711;}" />
-        </Grid>
-        <Grid Grid.Row="1">
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="136" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="136" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="32" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Button
-                Grid.Row="1"
-                Grid.Column="1"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Content="关闭"
-                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                Style="{StaticResource SubtleButtonStyle}" />
-            <Button
-                Grid.Row="1"
-                Grid.Column="3"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Content="完成"
-                Style="{ThemeResource AccentButtonStyle}" />
-        </Grid>
-    </Grid-->
-    <!--别改！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！-->
-    <dev:SettingsCard                  IsEnabled="true"
+    <!--别改！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+    
+    ^
+    |
+    
+    我删掉了之前的注释，太几把多了
+    bydbydbyd 几把 DM
+    -->
+    
+    <dev:SettingsCard IsEnabled="True"
                       HorizontalAlignment="Stretch"
-                      Header="{x:Bind Header}"
-                      >
+                      Header="{x:Bind Header}">
         <dev:SettingsCard.Description>
             <StackPanel Orientation="Vertical">
                 <ProgressBar x:Name="Process" Margin="0,4,0,4" />
-                <TextBlock x:Name="Process_Text" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="Process_Text" HorizontalAlignment="Left" Width="200"/>
+                    <TextBlock x:Name="Process_JD_Text" HorizontalAlignment="Left" Width="200"/>
+                    <TextBlock x:Name="Process_File_Text" HorizontalAlignment="Left" Width="200"/>
+                    <TextBlock x:Name="Process_Speed_Text" HorizontalAlignment="Left" Width="200"/>
+                </StackPanel>
             </StackPanel>
         </dev:SettingsCard.Description>
         <dev:SettingsCard.HeaderIcon>
@@ -97,38 +46,7 @@
                 ToolTipService.ToolTip="取消该任务" />
     </dev:SettingsCard>
 
-    <!--<dev:SettingsExpander
-        HorizontalAlignment="Stretch"
-        Header="{x:Bind Header}"
-        HeaderIcon="{x:Bind _HeaderIcon}">
-        <Button
-            x:Name="Button"
-            Padding="4"
-            HorizontalAlignment="Stretch"
-            Click="CloseButton_Click"
-            Content="{dev:FontIcon Glyph=&#xE711;}"
-            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-            Style="{ThemeResource ChromelessButtonStyle}"
-            ToolTipService.ToolTip="取消该任务" />
-        <dev:SettingsExpander.Description>
-            <StackPanel Orientation="Vertical">
-                <ProgressBar x:Name="Process" Margin="0,4,0,4" />
-                <TextBlock x:Name="Process_Text" />
-            </StackPanel>
-        </dev:SettingsExpander.Description>
-        <dev:SettingsExpander.Items>
-          <TextBox Text="这里啥也米有~~~"></TextBox>
-        </dev:SettingsExpander.Items>
-        --><!--<controls:SettingsExpander.ItemsHeader>
-            <ContentControl Margin="0,0,0,0" Content="{x:Bind HeaderItems, Mode=TwoWay}" />
-        </controls:SettingsExpander.ItemsHeader>
-
-        <controls:SettingsExpander.Items>
-            <ContentControl Margin="0,0,0,0" Content="{x:Bind Items, Mode=TwoWay}" />
-        </controls:SettingsExpander.Items>
-
-        <controls:SettingsExpander.ItemsFooter>
-            <ContentControl Margin="0,0,0,0" Content="{x:Bind FooterItems, Mode=TwoWay}" />
-        </controls:SettingsExpander.ItemsFooter>--><!--
-    </dev:SettingsExpander>-->
+    <!--
+    byd 下面的注释也删了，没用的东西留那么久，留着过年吗
+    -->
 </UserControl>

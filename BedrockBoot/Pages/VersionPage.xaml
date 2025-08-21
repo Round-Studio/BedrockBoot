@@ -12,7 +12,14 @@
     mc:Ignorable="d">
     <Page.Resources>
         <DataTemplate x:Key="VersionCard" x:DataType="vers:NowVersions">
-            <devWinUi:SettingsExpander Description="{x:Bind Version_Path}" Header="{x:Bind DisPlayName}">
+            <devWinUi:SettingsExpander Header="{x:Bind VersionName}">
+                <devWinUi:SettingsExpander.Description>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Bind Type}"></TextBlock>
+                        <TextBlock Text=", "></TextBlock>
+                        <TextBlock Text="{x:Bind RealVersion}"></TextBlock>
+                    </StackPanel>
+                </devWinUi:SettingsExpander.Description>
                 <devWinUi:SettingsExpander.HeaderIcon>
                     <ImageIcon
                         Width="48"

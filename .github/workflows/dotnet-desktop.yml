@@ -48,13 +48,13 @@ jobs:
       - name: Build
         run: |
           cd ./BedrockBoot
-          pupnet -r win-x64 -k setup -y -o ./releases/BedrockBoot.win.x64.installer.exe --app-version ${{ needs.time.outputs.y }}.${{ needs.time.outputs.md }}.${{ needs.time.outputs.hm }}
+          pupnet -r win-x64 -k setup -y -o BedrockBoot.win.x64.installer.exe --app-version ${{ needs.time.outputs.y }}.${{ needs.time.outputs.md }}.${{ needs.time.outputs.hm }}
       - name: UploadArtifacts
-        run: |
-          cd BedrockBoot
-          cd Deploy
-          cd OUT
-          ls
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-artifacts
+          path: |
+            ./BedrockBoot/Deploy/OUT/*
 
   publish:
     needs: [win, time]

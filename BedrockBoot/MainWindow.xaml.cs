@@ -62,6 +62,7 @@ namespace BedrockBoot
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
+            MessageBox.ShowAsync("正在关闭", "正在关闭");
             Environment.Exit(0);
         }
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

@@ -78,7 +78,7 @@ jobs:
         with:
           repo_token: "${{ secrets.TOKEN }}"
           title: "v${{ needs.time.outputs.v }}"
-          automatic_release_tag: "AutoPublish-${{ steps.gdate.outputs.date }}"
+          automatic_release_tag: "Release-${{ steps.gdate.outputs.date }}"
           prerelease: false
           files: |
             ./Release/*.exe

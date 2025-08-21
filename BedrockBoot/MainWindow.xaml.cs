@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -29,6 +30,7 @@ namespace BedrockBoot
         public MainWindow()
         {
             InitializeComponent();
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
             ExtendsContentIntoTitleBar = true;
             AppTitleBar.IsBackButtonVisible = false; 
             SetTitleBar(AppTitleBar);

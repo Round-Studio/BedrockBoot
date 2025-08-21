@@ -41,6 +41,7 @@ namespace BedrockBoot.Controls
         private IconElement _HeaderIcon { get; set; } = new FontIcon() { Glyph = "\uF63C" };
         public Action<TaskExpander> completeCallback;
         public NowVersions nowVersions;
+        private bool isError = false;
         public TaskExpander()
         {
             InitializeComponent();
@@ -154,6 +155,7 @@ namespace BedrockBoot.Controls
                     {
                         if (exception!=null)
                         {
+                            isError = true;
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                             {
                                 MessageBox.ShowAsync(exception);
@@ -201,7 +203,6 @@ namespace BedrockBoot.Controls
                         {
                             Directory.CreateDirectory(directoryName);
                         }
-                    
                         File.Copy(backImg, Path.Combine(Install_dir, Path.GetFileName(backImg)),true);
                         gameBackGroundEditer = new GameBackGroundEditer()
                         {
@@ -210,6 +211,7 @@ namespace BedrockBoot.Controls
                             isOpen = true
                         };
                     }
+                    global_cfg.core.RemoveGame(GetVersionTypeByString(Version.Type));
                    if (useAppx)
                    {
                        global_cfg.core.InstallVersionByappx(appx_path,nowVersions.VersionName,Install_dir,installCallback,gameBackGroundEditer);
@@ -217,6 +219,11 @@ namespace BedrockBoot.Controls
                    else
                    {
                         global_cfg.core.InstallVersion(Version.Variations[0], GetVersionTypeByString(Version.Type), appx_path, nowVersions.VersionName,Install_dir, installCallback, gameBackGroundEditer);
+                   }
+
+                   if (isError)
+                   {
+                       return;
                    }
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));

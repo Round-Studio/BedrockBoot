@@ -262,7 +262,7 @@ public sealed partial class VersionPage : Page
 
             try
             {
-                File.Delete(versionInfo.Version_Path);
+                File.Delete(Path.Combine(versionInfo.Version_Path,"version.json"));
                 globalTools.ShowInfo("已删除");
             }
             catch (Exception ex)

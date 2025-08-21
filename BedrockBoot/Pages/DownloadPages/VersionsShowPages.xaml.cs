@@ -113,7 +113,7 @@ namespace BedrockBoot.Pages.DownloadPages
             {
                 return result;
             }
-            MessageBox.ShowAsync("提示", "已加入任务列表");
+            await MessageBox.ShowAsync("提示", "已加入任务列表");
 
             return result;
         }

@@ -38,7 +38,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
 
         public string SeleteDir =>
             global_cfg.cfg.JsonCfg.GameFolders[ChooseDownloadFolderPathComboBox.SelectedIndex].Path;
-        public string APPX_dir = String.Empty;
+        public string APPX_dir = string.Empty;
         public static string RgbToHex(byte red, byte green, byte blue)
         {
             return $"#{red:X2}{green:X2}{blue:X2}";
@@ -47,6 +47,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
         {
             InitializeComponent();
             NameBox.Text = name;
+            ChooseDownloadFolderPathComboBox.SelectionChanged += ChooseDownloadFolderPathComboBox_SelectionChanged;
             UseAppx.IsEnabled = false;
             global_cfg.cfg.JsonCfg.GameFolders.ForEach(folder =>
             {
@@ -63,7 +64,23 @@ namespace BedrockBoot.Controls.ContentDialogContent
                 }
             });
             ChooseDownloadFolderPathComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
+            if (!IsUseAppx)
+            {
+                APPX_dir = System.IO.Path.Combine(
+                    global_cfg.cfg.JsonCfg.GameFolders[ChooseDownloadFolderPathComboBox.SelectedIndex].Path, "Appx");
+            }
         }
+
+        private void ChooseDownloadFolderPathComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsUseAppx)
+            {
+                return;
+            }
+            APPX_dir = System.IO.Path.Combine(
+                global_cfg.cfg.JsonCfg.GameFolders[ChooseDownloadFolderPathComboBox.SelectedIndex].Path, "Appx");
+        }
+
         private async void ButtonBaseImg_OnClick(object sender, RoutedEventArgs e)
         {
             var picker = new FilePicker(WindowNative.GetWindowHandle(App.MainWindow));

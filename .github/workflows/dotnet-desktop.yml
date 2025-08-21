@@ -51,6 +51,7 @@ jobs:
           pupnet -r win-x64 -k setup -y -o ./releases/BedrockBoot.win.x64.installer.exe --app-version ${{ needs.time.outputs.y }}.${{ needs.time.outputs.md }}.${{ needs.time.outputs.hm }}
       - name: UploadArtifacts
         run: |
+          cd BedrockBoot
           ls
 
   publish:

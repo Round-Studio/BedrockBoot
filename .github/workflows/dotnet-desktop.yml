@@ -52,6 +52,8 @@ jobs:
       - name: UploadArtifacts
         run: |
           cd BedrockBoot
+          cd Deploy
+          cd OUT
           ls
 
   publish:

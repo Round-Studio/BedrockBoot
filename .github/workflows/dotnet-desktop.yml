@@ -54,7 +54,7 @@ jobs:
         with:
           name: win-artifacts
           path: |
-             D:\a\BedrockBoot\BedrockBoot\BedrockBoot\Deploy\OUT\.\releases\BedrockBoot.win.x64.installer.exe
+             ./releases/BedrockBoot.win.x64.installer.exe
 
   publish:
     needs: [win, time]

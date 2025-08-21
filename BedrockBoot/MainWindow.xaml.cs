@@ -30,7 +30,7 @@ namespace BedrockBoot
         public MainWindow()
         {
             InitializeComponent();
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
             ExtendsContentIntoTitleBar = true;
             AppTitleBar.IsBackButtonVisible = false; 
             SetTitleBar(AppTitleBar);

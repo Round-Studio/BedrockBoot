@@ -74,7 +74,7 @@ namespace BedrockBoot.Pages.DownloadPages
             {
 //TODO
                 List<string> versionList = new List<string>();
-                globalTools.SearchVersionJson(content.SeleteDir, ref versionList, 0, 3);
+                globalTools.SearchVersionJson(content.SeleteDir, ref versionList, 0, 2);
                 foreach (var c in versionList)
                 {
                     var fullPath = Path.GetFullPath(c);
@@ -195,9 +195,12 @@ namespace BedrockBoot.Pages.DownloadPages
         }
         private void OnPageUnloaded(object sender, RoutedEventArgs e)
         {
+             VersionItems.Clear();
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
+            _allVersions.Clear();
+
         }
 
         private void SettingsCard_Click(object sender, RoutedEventArgs e)

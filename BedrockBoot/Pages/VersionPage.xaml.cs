@@ -37,7 +37,12 @@ public sealed partial class VersionPage : Page
     public VersionPage()
     {
         InitializeComponent();
-        Loaded += async (s, e) => await LoadVersionsAsync();
+        foreach (var x in global_cfg.cfg.JsonCfg.GameFolders)
+        {
+            ChooseGameFolderComboBox.Items.Add($"{x.Name} - {x.Path}");
+        }
+        ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
+      //  Loaded += async (s, e) => await LoadVersionsAsync();
     }
 
     private async Task LoadVersionsAsync()
@@ -47,14 +52,15 @@ public sealed partial class VersionPage : Page
 
     private void UpdateUI()
     {
-        IsEdit = false;
-
-        // 清空数据
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+        {
+            VersionListRepeater.ItemsSource = null;
+        }));
         _versionsData.Clear();
 
         List<string> versionsList = new List<string>();
         var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path;
-        globalTools.SearchVersionJson(path, ref versionsList, 0, 3);
+        globalTools.SearchVersionJson(path, ref versionsList, 0, 2);
 
         // 收集数据
         foreach (var c in versionsList)
@@ -65,7 +71,11 @@ public sealed partial class VersionPage : Page
                 var nowVersions = JsonSerializer.Deserialize<NowVersions>(File.ReadAllText(fullPath));
                 if (nowVersions != null && !string.IsNullOrEmpty(nowVersions.Type))
                 {
-                    _versionsData.Add(nowVersions);
+                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+                    {
+                        _versionsData.Add(nowVersions);
+                    }));
+                   
                 }
             }
             catch (Exception ex)
@@ -86,19 +96,8 @@ public sealed partial class VersionPage : Page
             {
                 items.Add(version);
             }
-
             // 设置 ItemsSource 来触发 UI 更新
             VersionListRepeater.ItemsSource = items;
-        });
-
-        // 更新 ComboBox
-        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
-        {
-            ChooseGameFolderComboBox.Items.Clear();
-            global_cfg.cfg.JsonCfg.GameFolders.ForEach(x =>
-                ChooseGameFolderComboBox.Items.Add(new ComboBoxItem() { Content = $"{x.Name} - {x.Path}" }));
-            ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
-            IsEdit = true;
         });
     }
 
@@ -275,14 +274,10 @@ public sealed partial class VersionPage : Page
 
     private void ChooseGameFolderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (IsEdit)
-        {
             global_cfg.cfg.JsonCfg.ChooseFolderIndex = ChooseGameFolderComboBox.SelectedIndex;
             global_cfg.cfg.SaveConfig();
-
             // 异步重新加载版本列表
             Task.Run(() => UpdateUI());
-        }
     }
 
     // 刷新按钮的方法

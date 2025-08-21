@@ -38,8 +38,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
 
         public string SeleteDir =>
             global_cfg.cfg.JsonCfg.GameFolders[ChooseDownloadFolderPathComboBox.SelectedIndex].Path;
-        public string APPX_dir => System.IO.Path.Combine(
-            global_cfg.cfg.JsonCfg.GameFolders[ChooseDownloadFolderPathComboBox.SelectedIndex].Path, "Appx");
+        public string APPX_dir = String.Empty;
         public static string RgbToHex(byte red, byte green, byte blue)
         {
             return $"#{red:X2}{green:X2}{blue:X2}";
@@ -58,6 +57,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
                 var s = System.IO.Path.Combine(System.IO.Path.Combine(folder.Path,"Appx"),global_cfg.cfg.JsonCfg.appxName.Replace("{0}", name));
                 if (File.Exists(s))
                 {
+                    APPX_dir = System.IO.Path.GetDirectoryName(s);
                     UseAppx.IsEnabled = true;
                     UseAppx.IsOn = true;
                 }

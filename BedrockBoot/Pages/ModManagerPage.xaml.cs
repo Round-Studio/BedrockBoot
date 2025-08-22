@@ -24,7 +24,6 @@ namespace BedrockBoot.Pages
             this.delayInject = delayinject;
             this.InitializeComponent();
             _selectedVersion = version;
-            BreadcrumbBar.Text=$"Mods №ЬАн{_selectedVersion.DisPlayName}";
             if (!Directory.Exists(mods_dir))
             {
                 Directory.CreateDirectory(mods_dir);

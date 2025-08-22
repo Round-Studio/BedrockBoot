@@ -7,6 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:devWinUi="using:DevWinUI"
     xmlns:jsonHandle="using:BedrockBoot"
+    Width="500"
+    Height="300"
     mc:Ignorable="d">
     <Page.Resources>
         <DataTemplate x:Key="VersionCardTemplate" >
@@ -19,24 +21,16 @@
             </devWinUi:SettingsExpander>
         </DataTemplate>
     </Page.Resources>
-    <Grid Margin="10,48,10,0" Padding="0">
+    <Grid Margin="0,0,0,0" Padding="0">
         <Grid
-            Height="90"
-            MaxWidth="1000"
+            Height="48"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top">
-            <TextBlock
-                x:Name="BreadcrumbBar"
-                HorizontalAlignment="Left"
-                Margin="10,0,10,4"
-                FontSize="30">
-            </TextBlock>
-            <Button HorizontalAlignment="Left" Click="ButtonBaseLeft_OnClick" Margin="10,48,10,4">刷新</Button>
-            <Button HorizontalAlignment="Right" Click="ButtonBase_OnClick" Margin="10,48,10,4">打开Mod文件夹</Button>
+            <Button HorizontalAlignment="Left" Click="ButtonBaseLeft_OnClick" Margin="0,0,0,0">刷新</Button>
+            <Button HorizontalAlignment="Right" Click="ButtonBase_OnClick" Margin="0,0,0,0">打开Mod文件夹</Button>
         </Grid>
         <ScrollViewer
-            MaxWidth="1000"
-            Margin="-10,80,-10,0"
+            Margin="-10,48,-10,0"
             HorizontalAlignment="Stretch">
             <StackPanel x:Name="TaskContainer" HorizontalAlignment="Stretch" />
         </ScrollViewer>

@@ -250,32 +250,18 @@ public sealed partial class VersionPage : Page
             OpenModManagerWindow(selectedVersion, false);
         }
     }
-    private void OpenModManagerWindow(NowVersions version, bool d)
+    private async void OpenModManagerWindow(NowVersions version, bool d)
     {
         try
         {
-            var window = new Window();
+            var window = new ContentDialog();
             window.Title = $"Mod 管理 - {version.DisPlayName}";
-            window.ExtendsContentIntoTitleBar = true;
 
             var modManagerPage = new ModManagerPage(version, d);
             window.Content = modManagerPage;
-
-            IThemeService AppThemeService;
-            AppThemeService = new ThemeService(window);
-            AppThemeService.AutoInitialize(window);
-            AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
-
-            var hWnd = WindowNative.GetWindowHandle(window);
-            var windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
-            var appWindow = AppWindow.GetFromWindowId(windowId);
-
-            if (appWindow != null)
-            {
-                appWindow.Resize(new Windows.Graphics.SizeInt32(800, 600));
-            }
-
-            window.Activate();
+            window.CloseButtonText = "关闭";
+            window.XamlRoot = this.XamlRoot;
+            await window.ShowAsync();
         }
         catch (Exception ex)
         {

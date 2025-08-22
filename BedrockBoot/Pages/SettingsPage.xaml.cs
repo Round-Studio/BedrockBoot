@@ -159,6 +159,7 @@ public sealed partial class SettingsPage : Page
             {
                 globalTools.ShowInfo("请耐心等待，直到完成提示出现");
                 global_cfg.core.RemoveGame(VersionType.Release);
+                global_cfg.core.RemoveGame(VersionType.Preview);
                 globalTools.ShowInfo("卸载完成");
             }
             catch (Exception exception)

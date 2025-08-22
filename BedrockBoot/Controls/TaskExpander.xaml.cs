@@ -121,6 +121,9 @@ namespace BedrockBoot.Controls
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() => { Process_Text.Text = "已注册Minecraft"; }));
                                 break;
                             case InstallStates.registering:
+                                var combine = Path.Combine(Install_dir, "version.json");
+                                File.WriteAllText(combine, JsonSerializer.Serialize(nowVersions));
+
                                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
                                 {
                                     Button.IsEnabled = false;
@@ -227,8 +230,6 @@ namespace BedrockBoot.Controls
                    }
                     var s = Path.Combine(global_cfg.cfg.JsonCfg.appxDir,
                         global_cfg.cfg.JsonCfg.appxName.Replace("{0}", Version.ID));
-                    var combine = Path.Combine(Install_dir, "version.json");
-                    File.WriteAllText(combine,JsonSerializer.Serialize(nowVersions));
                     if (!global_cfg.cfg.JsonCfg.SaveAppx)
                     {
                         File.Delete(s);

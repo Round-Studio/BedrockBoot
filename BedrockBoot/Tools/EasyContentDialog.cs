@@ -8,7 +8,8 @@ namespace BedrockBoot.Tools
 {
     internal class EasyContentDialog
     {
-        public async void CreateDialog(
+        public static async void CreateDialog(
+            XamlRoot root,
             string title, 
             string content, 
             string primaryButtonText,
@@ -18,7 +19,7 @@ namespace BedrockBoot.Tools
             ContentDialog dialog = new ContentDialog();
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
+            dialog.XamlRoot = root;
             dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             dialog.Title = title;
             dialog.PrimaryButtonText = primaryButtonText;
@@ -30,7 +31,8 @@ namespace BedrockBoot.Tools
             var result = await dialog.ShowAsync();
 
         }
-        public async void CreateDialog(
+        public static async void CreateDialog(
+            XamlRoot root,
             string title,
             string content,
             string primaryButtonText,
@@ -39,7 +41,7 @@ namespace BedrockBoot.Tools
             ContentDialog dialog = new ContentDialog();
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
+            dialog.XamlRoot = root;
             dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             dialog.Title = title;
             dialog.PrimaryButtonText = primaryButtonText;
@@ -50,7 +52,8 @@ namespace BedrockBoot.Tools
             var result = await dialog.ShowAsync();
 
         }
-        public async void CreateDialog(
+        public static async void CreateDialog(
+            XamlRoot root,
             string title,
             string content,
             string closeButtonText)
@@ -58,29 +61,31 @@ namespace BedrockBoot.Tools
             ContentDialog dialog = new ContentDialog();
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
+            dialog.XamlRoot = root;
             dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             dialog.Title = title;
             dialog.CloseButtonText = closeButtonText;
-            dialog.DefaultButton = ContentDialogButton.Primary;
+            dialog.DefaultButton = ContentDialogButton.Close;
             dialog.Content = new TextBlock() { Text = content };
 
             var result = await dialog.ShowAsync();
 
         }
 
-        public async void CreateDialog(
+        public static async void CreateDialog(
+            XamlRoot root,
             string title,
             string content)
         {
             ContentDialog dialog = new ContentDialog();
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            dialog.XamlRoot = App.MainWindow.Content.XamlRoot;
+            dialog.XamlRoot = root;
             dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             dialog.Title = title;
-            dialog.DefaultButton = ContentDialogButton.Primary;
             dialog.Content = new TextBlock() { Text = content };
+            dialog.CloseButtonText = "确定";
+            dialog.DefaultButton = ContentDialogButton.Close;
 
             var result = await dialog.ShowAsync();
 

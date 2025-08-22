@@ -20,16 +20,23 @@
     -->
     
     <dev:SettingsCard IsEnabled="True"
-                      HorizontalAlignment="Stretch"
-                      Header="{x:Bind Header}">
+                      HorizontalAlignment="Stretch">
+        <dev:SettingsCard.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="下载游戏" Margin="0,0,8,0"></TextBlock>
+                <TextBlock Text="{x:Bind Header}"></TextBlock>
+                <TextBlock Text="-" Margin="8,0,8,0"></TextBlock>
+                <TextBlock Text="{x:Bind RealVersion}"></TextBlock>
+            </StackPanel>
+        </dev:SettingsCard.Header>
         <dev:SettingsCard.Description>
             <StackPanel Orientation="Vertical">
                 <ProgressBar x:Name="Process" Margin="0,4,0,4" />
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="Process_Text" HorizontalAlignment="Left" Width="200"/>
-                    <TextBlock x:Name="Process_JD_Text" HorizontalAlignment="Left" Width="200"/>
-                    <TextBlock x:Name="Process_File_Text" HorizontalAlignment="Left" Width="200"/>
-                    <TextBlock x:Name="Process_Speed_Text" HorizontalAlignment="Left" Width="200"/>
+                    <TextBlock x:Name="Process_Text" HorizontalAlignment="Left" Width="160" Text="请稍后..."/>
+                    <TextBlock x:Name="Process_JD_Text" HorizontalAlignment="Left" Width="160" Text="?.?? %"/>
+                    <TextBlock x:Name="Process_File_Text" HorizontalAlignment="Left" Width="160" Text="? / ?"/>
+                    <TextBlock x:Name="Process_Speed_Text" HorizontalAlignment="Left" Width="160" Text="0 B/s"/>
                 </StackPanel>
             </StackPanel>
         </dev:SettingsCard.Description>

@@ -26,6 +26,9 @@ using Windows.Management.Deployment;
 using BedrockBoot.Native;
 using WinRT.Interop;
 using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Models.Classes.Launch;
+using BedrockBoot.Tools;
+using System.IO.Compression;
 
 namespace BedrockBoot.Pages;
 
@@ -106,80 +109,13 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
-            Task.Run((() =>
+            try
             {
-                if (!Directory.Exists(Path.Combine(versionInfo.Version_Path, "mods")))
-                {
-                    Directory.CreateDirectory(Path.Combine(versionInfo.Version_Path, "mods"));
-                }
-
-                var packageManager = new PackageManager();
-                var findPackages = packageManager.FindPackages();
-                bool hasPackage = false;
-                foreach (var package in findPackages)
-                {
-                    if (package.InstalledPath == versionInfo.Version_Path)
-                    {
-                        hasPackage = true;
-                    }
-                }
-
-                if (hasPackage == true)
-                {
-                    globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
-                    global_cfg.core.LaunchGame(versionInfo.Type switch
-                    {
-                        "Release" => VersionType.Release,
-                        "Preview" => VersionType.Preview,
-                        "Beta" => VersionType.Beta
-                    });
-                    StartInjectThread(versionInfo.Version_Path);
-                    return;
-                }
-                var installCallback = new InstallCallback()
-                {
-                    registerProcess_percent = ((s, u) =>
-                    {
-                        Debug.WriteLine(u);
-                    }),
-                    result_callback = ((status, exception) =>
-                    {
-                        if (exception != null)
-                        {
-                            Debug.WriteLine(exception);
-                            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
-                            {
-                                MessageBox.ShowAsync(exception.ToString(), "错误");
-                            }));
-                        }
-                    })
-                };
-                globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
-                global_cfg.core.RemoveGame(versionInfo.Type switch
-                {
-                    "Release" => VersionType.Release,
-                    "Preview" => VersionType.Preview,
-                    "Beta" => VersionType.Beta
-                });
-                var changeVersion = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
-                Debug.WriteLine(changeVersion);
-                globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
-                global_cfg.core.LaunchGame(versionInfo.Type switch
-                {
-                    "Release" => VersionType.Release,
-                    "Preview" => VersionType.Preview,
-                    "Beta" => VersionType.Beta
-                });
-                StartInjectThread(versionInfo.Version_Path);
-            }));
-        }
-    }
-
-    private void ButtonBaseRem_OnClick(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
-        {
-
+                QuickLaunchGame.LaunchGame(versionInfo);
+            }catch(Exception ex)
+            {
+                EasyContentDialog.CreateDialog(this.XamlRoot, "启动错误", ex.ToString());
+            }
         }
     }
 
@@ -220,21 +156,6 @@ public sealed partial class VersionPage : Page
         catch (Exception ex)
         {
             MessageBox.ShowAsync(ex.ToString(), "错误");
-        }
-    }
-
-    private void StartInjectThread(string path)
-    {
-        string delay_mods_dir = Path.Combine(path, "d_mods");
-        var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
-        foreach (var dllFileInfo in dllFileInfos)
-        {
-            var thread = new Thread(() =>
-            {
-                WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, global_cfg.cfg.JsonCfg.DelayTimes);
-                globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
-            });
-            thread.Start();
         }
     }
 
@@ -330,5 +251,57 @@ public sealed partial class VersionPage : Page
             // 重新设置 ItemsSource 来更新 UI
             VersionListRepeater.ItemsSource = _versionsData.ToList();
         });
+    }
+
+    private async void ImportButton_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new ContentDialog()
+        {
+            XamlRoot = this.XamlRoot,
+            Content = new ImportPackContent(),
+            Title = "导入包",
+            CloseButtonText = "取消",
+            PrimaryButtonText = "开始导入",
+            DefaultButton = ContentDialogButton.Primary
+        };
+        var res = await dialog.ShowAsync();
+
+        if(res == ContentDialogResult.Primary)
+        {
+            var content = ((ImportPackContent)dialog.Content);
+            if (!string.IsNullOrEmpty(content.PackPath))
+            {
+                var path = Path.GetDirectoryName(content.Version);
+                bool unzip = false;
+                if (content.PackType == "资源包")
+                {
+                    path = Path.Combine(path, "data", "resource_packs");
+                    unzip = true;
+                }
+                else if (content.PackType == "普通 Mod")
+                {
+                    path = Path.Combine(path, "mods");
+                }
+                else if (content.PackType == "延迟加载 Mod")
+                {
+                    path = Path.Combine(path, "d_mods");
+                }
+
+                if (unzip)
+                {
+                    Directory.CreateDirectory(Path.Combine(path, Path.GetFileName(content.PackPath)));
+                    ZipFile.ExtractToDirectory(content.PackPath,Path.Combine(path, Path.GetFileName(content.PackPath)),true);
+                }
+                else 
+                {
+                    File.Copy(content.PackPath, Path.Combine(path,Path.GetFileName(content.PackPath)), true);
+                }
+                EasyContentDialog.CreateDialog(this.XamlRoot, "导入成功", $"已成功将包 {content.PackPath} 导入至游戏。\n目标包类型：{content.PackType}");
+            }
+            else
+            {
+                EasyContentDialog.CreateDialog(this.XamlRoot, "值为空", "路径为空");
+            }
+        }
     }
 }

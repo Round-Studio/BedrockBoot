@@ -10,76 +10,26 @@
     mc:Ignorable="d">
 
     <Grid>
-        <Grid
-            Margin="12"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="2*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Button
-                Grid.Row="0"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                MinWidth="200"
-                MinHeight="70"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="#0078D4"
-                Click="HomeButton"
-                CornerRadius="8,8,0,0"
-                Foreground="White">
-                <StackPanel
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Orientation="Vertical"
-                    Spacing="2">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontSize="28"
-                        Text="启动游戏" />
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontSize="12"
-                        Text="Homo" />
-                    <ProgressBar x:Name="Bar" IsIndeterminate="false" />
+        <SplitButton x:Name="LauncherButton"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Bottom"
+                     Margin="15"
+                     Width="180"
+                     Height="52">
+            <SplitButton.Flyout>
+                <Flyout Placement="Auto">
+                    
+                </Flyout>
+            </SplitButton.Flyout>
+            <SplitButton.Content>
+                <StackPanel>
+                    <TextBlock FontSize="16">启动游戏</TextBlock>
+                    <TextBlock FontSize="11" 
+                               HorizontalAlignment="Center"
+                               Margin="0,2,0,0"
+                               Foreground="Gray">Version</TextBlock>
                 </StackPanel>
-            </Button>
-
-            <Button
-                x:Name="b1"
-                Grid.Row="1"
-                Grid.Column="0"
-                MinWidth="100"
-                MinHeight="35"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
-                Click="B1_OnClick"
-                Content="下载版本"
-                CornerRadius="0,0,0,8" />
-
-            <Button
-                x:Name="b2"
-                Grid.Row="1"
-                Grid.Column="1"
-                MinWidth="100"
-                MinHeight="35"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
-                Click="B2_OnClick"
-                Content="管理设置"
-                CornerRadius="0,0,8,0" />
-
-        </Grid>
+            </SplitButton.Content>
+        </SplitButton>
     </Grid>
 </Page>

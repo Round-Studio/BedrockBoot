@@ -70,15 +70,6 @@ namespace BedrockBoot
         }
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            /*if (NavFrame.CanGoBack)
-            {
-                BackButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                BackButton.Visibility = Visibility.Collapsed;
-            }*/
-            //
             if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));
             var selectedItem = (NavigationViewItem)args.SelectedItem;
             global_cfg.cfg.SaveConfig();
@@ -88,14 +79,6 @@ namespace BedrockBoot
             if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
             if ((string)selectedItem.Tag == "TaskPage") NavFrame.Navigate(typeof(TaskPage));
             if ((string)selectedItem.Tag == "VersionPage") NavFrame.Navigate(typeof(VersionPage));
-        }
-
-        private void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavFrame.CanGoBack)
-            {
-                NavFrame.GoBack();
-            }
         }
     }
 }

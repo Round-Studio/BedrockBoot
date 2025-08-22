@@ -74,14 +74,23 @@
                   VerticalAlignment="Top"
                   HorizontalAlignment="Stretch">
 
-                <!-- 添加刷新按钮 -->
-                <Button
-                    x:Name="RefreshButton"
+                <StackPanel
+                    Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Click="RefreshButton_Click"
-                    Content="刷新"
-                    Margin="0,0,0,0" />
+                    VerticalAlignment="Center">
+                    
+                    <Button
+                        x:Name="ImportButton"
+                        Click="ImportButton_Click"
+                        Content="导入..."
+                        Margin="0,0,8,0" />
+                    
+                    <Button
+                        x:Name="RefreshButton"
+                        Click="RefreshButton_Click"
+                        Content="刷新"
+                        Margin="0,0,0,0" />
+                </StackPanel>
                 
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Left"

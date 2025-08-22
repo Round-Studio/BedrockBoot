@@ -15,6 +15,7 @@ namespace BedrockBoot
         public int DownThread { get; set; } = 12;
         public int DelayTimes { get; set; } = 1000;
         public bool SaveAppx { get; set; } = true; 
+        public bool MouseLock { get; set; } = false;
         public List<GameFolderInfoEntry> GameFolders { get; set; } = new List<GameFolderInfoEntry>()
         {
             new GameFolderInfoEntry

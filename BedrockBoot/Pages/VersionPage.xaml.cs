@@ -135,73 +135,103 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
-            try
+            Task.Run((() =>
             {
-                if (!Directory.Exists(Path.Combine(versionInfo.Version_Path, "mods")))
+                try
                 {
-                    Directory.CreateDirectory(Path.Combine(versionInfo.Version_Path, "mods"));
-                }
-
-                var packageManager = new PackageManager();
-                var findPackages = packageManager.FindPackages();
-                bool hasPackage = false;
-                foreach (var package in findPackages)
-                {
-                    if (package.InstalledPath == versionInfo.Version_Path)
+                    int count = 0;
+                    if (File.Exists(Path.Combine(versionInfo.Version_Path, "CONCRT140_APP.dll")))
                     {
-                        hasPackage = true;
+                        File.Delete(Path.Combine(versionInfo.Version_Path, "CONCRT140_APP.dll"));
                     }
-                }
+                    bool is_register = false;
+                    if (!Directory.Exists(Path.Combine(versionInfo.Version_Path, "mods")))
+                    {
+                        Directory.CreateDirectory(Path.Combine(versionInfo.Version_Path, "mods"));
+                    }
 
-                if (hasPackage == true)
-                {
-                    globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
-                    global_cfg.core.LaunchGame(versionInfo.Type switch
+                    var packageManager = new PackageManager();
+                    var findPackages = packageManager.FindPackages();
+                    bool hasPackage = false;
+                    foreach (var package in findPackages)
                     {
-                        "Release" => VersionType.Release,
-                        "Preview" => VersionType.Preview,
-                        "Beta" => VersionType.Beta
-                    });
-                    StartInjectThread(versionInfo.Version_Path);
-                    return;
-                }
-                var installCallback = new InstallCallback()
-                {
-                    registerProcess_percent = ((s, u) =>
-                    {
-                        Debug.WriteLine(u);
-                    }),
-                    result_callback = ((status, exception) =>
-                    {
-                        if (exception != null)
+                        if (package.InstalledPath == versionInfo.Version_Path)
                         {
-                            Debug.WriteLine(exception);
-                            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
-                            {
-                                MessageBox.ShowAsync(exception.ToString(), "错误");
-                            }));
+                            hasPackage = true;
                         }
-                    })
-                };
-                globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
-                global_cfg.core.RemoveGame(versionInfo.Type switch
+                    }
+
+                    if (hasPackage == true)
+                    {
+                        globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
+                        global_cfg.core.LaunchGame(versionInfo.Type switch
+                        {
+                            "Release" => VersionType.Release,
+                            "Preview" => VersionType.Preview,
+                            "Beta" => VersionType.Beta
+                        });
+                        StartInjectDirect(versionInfo.Version_Path);
+                        StartInjectThread(versionInfo.Version_Path);
+                        return;
+                    }
+                    string processName = "Minecraft.Windows"; // 注意：不需要 .exe 扩展名
+                    Process[] processes = Process.GetProcessesByName(processName);
+                    foreach (var process in processes)
+                    {
+                        process.Kill();
+                    }
+
+                    bool Launched = false;
+                    var installCallback = new InstallCallback()
+                    {
+                        registerProcess_percent = ((s, u) =>
+                        {
+                            Debug.WriteLine(u);
+                            if (u >= 95)
+                            {
+                                count++;
+                                if (count >= 2 && !Launched)
+                                {
+                                    global_cfg.core.LaunchGame(versionInfo.Type switch
+                                    {
+                                        "Release" => VersionType.Release,
+                                        "Preview" => VersionType.Preview,
+                                        "Beta" => VersionType.Beta
+                                    });
+                                    DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                                    {
+                                        globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
+                                    }));
+                                    StartInjectDirect(versionInfo.Version_Path);
+                                    StartInjectThread(versionInfo.Version_Path);
+                                    Launched = true;
+                                }
+                            }
+                        }),
+                        result_callback = ((status, exception) =>
+                        {
+                            if (exception != null)
+                            {
+                                Debug.WriteLine(exception);
+                                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+                                {
+                                    MessageBox.ShowAsync(exception.ToString(), "错误");
+                                }));
+                            }
+                        })
+                    };
+                    globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
+
+                    var _ = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
+
+                }
+                catch (Exception exception)
                 {
-                    "Release" => VersionType.Release,
-                    "Preview" => VersionType.Preview,
-                    "Beta" => VersionType.Beta
-                });
-                var changeVersion = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
-                Debug.WriteLine(changeVersion);
-                globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
-                global_cfg.core.LaunchGame(versionInfo.Type switch
-                {
-                    "Release" => VersionType.Release,
-                    "Preview" => VersionType.Preview,
-                    "Beta" => VersionType.Beta
-                });
-                StartInjectThread(versionInfo.Version_Path);
-            }
-            catch { }
+                    
+                }
+                
+
+            }));
         }
     }
 
@@ -268,11 +298,28 @@ public sealed partial class VersionPage : Page
     {
         string delay_mods_dir = Path.Combine(path, "d_mods");
         var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
+        Process process = WaitForMinecraftProcess(global_cfg.cfg.JsonCfg.DelayTimes);
         foreach (var dllFileInfo in dllFileInfos)
         {
             var thread = new Thread(() =>
             {
+
                 WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, global_cfg.cfg.JsonCfg.DelayTimes);
+                globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
+            });
+            thread.Start();
+        }
+    }
+    private void StartInjectDirect(string path)
+    {
+        string delay_mods_dir = Path.Combine(path, "mods");
+        var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
+        Process process = WaitForMinecraftProcess(50);
+        foreach (var dllFileInfo in dllFileInfos)
+        {
+            var thread = new Thread(() =>
+            {
+                Injector.InjectProcess(process, dllFileInfo.FullPath);
                 globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
             });
             thread.Start();

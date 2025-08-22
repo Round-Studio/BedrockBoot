@@ -1,5 +1,7 @@
 using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Pages.SettingPage;
+using BedrockLauncher.Core;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -12,13 +14,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using BedrockLauncher.Core;
-using Microsoft.UI.Dispatching;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,6 +33,8 @@ public sealed partial class SettingsPage : Page
 {
     public int DownThread = global_cfg.cfg.JsonCfg.DownThread;
     public int DelayTimes = global_cfg.cfg.JsonCfg.DelayTimes;
+    public static MouseLocker Locker = new MouseLocker();
+    public static bool IsLock = false;
     public SettingsPage()
     {
         InitializeComponent();
@@ -42,9 +45,33 @@ public sealed partial class SettingsPage : Page
         SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
 
         MainShortcut.Keys = new List<object> { "F12" };
-
+        MainShortcut.KeyUp += MainShortcut_KeyUp;
         UpdateUI();
     }
+
+    private void MainShortcut_KeyUp(object sender, KeyRoutedEventArgs e)
+    {
+        if (!IsLock)
+        {
+            var windows = Locker.FindWindowsByProcess("Minecraft.Windows");
+            if (windows.Count == 0)
+            {
+                return;
+            }
+            else
+            {
+               
+            }
+            IsLock = true;
+        }
+        else
+        {
+            
+            IsLock = false;
+        }
+
+    }
+
     public bool IsEdit = false;
     public void UpdateUI()
     {

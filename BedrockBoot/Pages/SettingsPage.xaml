@@ -111,7 +111,11 @@
                         Margin="0,10,0,0"
                         Style="{StaticResource Subtitle}"
                         Text="辅助功能" />
-
+                    <dev:SettingsCard Description="卸载MC"
+                                      Header="卸载MC"
+                                      >
+                      <Button Click="ButtonBase_OnClick">卸载</Button>
+                    </dev:SettingsCard>
                     <dev:SettingsExpander
                         Description="锁定鼠标不移出游戏窗口外"
                         Header="鼠标锁定 (Beta) (功能还没写，没用别看)"

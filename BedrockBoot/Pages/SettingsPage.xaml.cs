@@ -14,8 +14,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using BedrockLauncher.Core;
+using Microsoft.UI.Dispatching;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -145,5 +148,27 @@ public sealed partial class SettingsPage : Page
             global_cfg.cfg.JsonCfg.ChooseFolderIndex = GameFoldersChooseBox.SelectedIndex;
             global_cfg.cfg.SaveConfig();
         }
+    }
+
+    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        
+        Task.Run((() =>
+        {
+            try
+            {
+                globalTools.ShowInfo("请耐心等待，直到完成提示出现");
+                global_cfg.core.RemoveGame(VersionType.Release);
+                globalTools.ShowInfo("卸载完成");
+            }
+            catch (Exception exception)
+            {
+                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+                {
+                    MessageBox.ShowAsync("错误", exception.ToString());
+                }));
+            }
+           
+        }));
     }
 }

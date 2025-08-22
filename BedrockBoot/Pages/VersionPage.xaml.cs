@@ -303,7 +303,7 @@ public sealed partial class VersionPage : Page
     {
         string delay_mods_dir = Path.Combine(path, "mods");
         var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
-        Process process = WaitForMinecraftProcess(60);
+        Process process = WaitForMinecraftProcess(50);
         foreach (var dllFileInfo in dllFileInfos)
         {
             var thread = new Thread(() =>

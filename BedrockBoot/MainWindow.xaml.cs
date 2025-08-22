@@ -1,6 +1,8 @@
 using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Models.Classes.Style.Background;
 using BedrockBoot.Pages;
 using DevWinUI;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -31,6 +33,8 @@ namespace BedrockBoot
         public MainWindow()
         {
             InitializeComponent();
+
+            global_cfg.MainWindow = this;
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
             ExtendsContentIntoTitleBar = true;
             AppTitleBar.IsBackButtonVisible = false; 

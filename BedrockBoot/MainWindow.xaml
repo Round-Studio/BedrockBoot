@@ -12,10 +12,6 @@
     Title="BedrockBoot"
     mc:Ignorable="d">
 
-    <Window.SystemBackdrop>
-        <MicaBackdrop Kind="BaseAlt" />
-    </Window.SystemBackdrop>
-
     <Grid>
         <TeachingTip
             x:Name="NewTaskTeachingTip"

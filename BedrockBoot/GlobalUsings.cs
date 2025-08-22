@@ -97,7 +97,6 @@ public static class globalTools
                 {
                     throw;
                 }
-               
             }
         }
         catch (Exception ex)
@@ -119,7 +118,6 @@ public static class globalTools
                 UseBlueColorForInfo = true,
             });
         });
-      
     }
     public static List<DllFileInfo> GetDllFiles(string directoryPath,
                                                bool includeSubdirectories = true,

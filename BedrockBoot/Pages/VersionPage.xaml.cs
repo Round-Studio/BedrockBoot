@@ -76,7 +76,6 @@ public sealed partial class VersionPage : Page
                     {
                         _versionsData.Add(nowVersions);
                     }));
-                   
                 }
             }
             catch (Exception ex)
@@ -102,12 +101,46 @@ public sealed partial class VersionPage : Page
         });
     }
 
+    private void StartInject(string path)
+    {
+        Task.Run((() =>
+        {
+            List<DllFileInfo> dllFileInfos = globalTools.GetDllFiles(Path.Combine(path,"d_mods"));
+            Process process = null;
+            while (true)
+            {
+               
+                var firstOrDefault = Process.GetProcessesByName("Minecraft.Windows").FirstOrDefault();
+                if (firstOrDefault == null)
+                {
+                    continue;
+                }
+                else
+                {
+                    process = firstOrDefault;
+                    break;
+                }
+            }
+            foreach (var info in dllFileInfos)
+            {
+                Injector.InjectProcess(process, info.FullPath);
+            }
+        }));
+
+    }
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
             Task.Run((() =>
             {
+
+                int count = 0;
+                if (File.Exists(Path.Combine(versionInfo.Version_Path, "CONCRT140_APP.dll")))
+                {
+                    File.Delete(Path.Combine(versionInfo.Version_Path, "CONCRT140_APP.dll"));
+                }
+                bool is_register = false;
                 if (!Directory.Exists(Path.Combine(versionInfo.Version_Path, "mods")))
                 {
                     Directory.CreateDirectory(Path.Combine(versionInfo.Version_Path, "mods"));
@@ -133,14 +166,43 @@ public sealed partial class VersionPage : Page
                         "Preview" => VersionType.Preview,
                         "Beta" => VersionType.Beta
                     });
+                    StartInjectDirect(versionInfo.Version_Path);
                     StartInjectThread(versionInfo.Version_Path);
                     return;
                 }
+                string processName = "Minecraft.Windows"; // 注意：不需要 .exe 扩展名
+                Process[] processes = Process.GetProcessesByName(processName);
+                foreach (var process in processes)
+                {
+                    process.Kill();
+                }
+
+                bool Launched = false;
                 var installCallback = new InstallCallback()
                 {
                     registerProcess_percent = ((s, u) =>
                     {
-                        Debug.WriteLine(u);
+                       Debug.WriteLine(u);
+                        if (u>=95)
+                        {
+                            count++;
+                            if (count >=2 && !Launched)
+                            {
+                                global_cfg.core.LaunchGame(versionInfo.Type switch
+                                {
+                                    "Release" => VersionType.Release,
+                                    "Preview" => VersionType.Preview,
+                                    "Beta" => VersionType.Beta
+                                });
+                                DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                                {
+                                    globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
+                                }));
+                                StartInjectDirect(versionInfo.Version_Path);
+                                StartInjectThread(versionInfo.Version_Path);
+                                Launched = true;    
+                            }
+                        }
                     }),
                     result_callback = ((status, exception) =>
                     {
@@ -155,22 +217,10 @@ public sealed partial class VersionPage : Page
                     })
                 };
                 globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
-                global_cfg.core.RemoveGame(versionInfo.Type switch
-                {
-                    "Release" => VersionType.Release,
-                    "Preview" => VersionType.Preview,
-                    "Beta" => VersionType.Beta
-                });
+               
                 var changeVersion = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
-                Debug.WriteLine(changeVersion);
-                globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
-                global_cfg.core.LaunchGame(versionInfo.Type switch
-                {
-                    "Release" => VersionType.Release,
-                    "Preview" => VersionType.Preview,
-                    "Beta" => VersionType.Beta
-                });
-                StartInjectThread(versionInfo.Version_Path);
+                  
+                   
             }));
         }
     }
@@ -222,16 +272,43 @@ public sealed partial class VersionPage : Page
             MessageBox.ShowAsync(ex.ToString(), "错误");
         }
     }
-
+    public static Process? WaitForMinecraftProcess(int timeoutSec = 60)
+    {
+        var end = DateTime.Now.AddSeconds(timeoutSec);
+        while (DateTime.Now < end)
+        {
+            var proc = Process.GetProcessesByName("Minecraft.Windows").FirstOrDefault();
+            if (proc != null) return proc;
+            Thread.Sleep(100);
+        }
+        return null;
+    }
     private void StartInjectThread(string path)
     {
         string delay_mods_dir = Path.Combine(path, "d_mods");
         var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
+        Process process = WaitForMinecraftProcess(global_cfg.cfg.JsonCfg.DelayTimes);
         foreach (var dllFileInfo in dllFileInfos)
         {
             var thread = new Thread(() =>
             {
+         
                 WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, global_cfg.cfg.JsonCfg.DelayTimes);
+                globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
+            });
+            thread.Start();
+        }
+    }
+    private void StartInjectDirect(string path)
+    {
+        string delay_mods_dir = Path.Combine(path, "mods");
+        var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
+        Process process = WaitForMinecraftProcess(60);
+        foreach (var dllFileInfo in dllFileInfos)
+        {
+            var thread = new Thread(() =>
+            {
+                Injector.InjectProcess(process, dllFileInfo.FullPath);
                 globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
             });
             thread.Start();

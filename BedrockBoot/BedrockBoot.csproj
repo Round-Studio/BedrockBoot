@@ -229,4 +229,7 @@
   <ItemGroup>
     <PRIResource Remove="Assets\AppReference\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tools\EasyContentDialogResource\" />
+  </ItemGroup>
 </Project>

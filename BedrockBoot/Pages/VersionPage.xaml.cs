@@ -79,7 +79,6 @@ public sealed partial class VersionPage : Page
                     {
                         _versionsData.Add(nowVersions);
                     }));
-                   
                 }
             }
             catch (Exception ex)
@@ -105,17 +104,111 @@ public sealed partial class VersionPage : Page
         });
     }
 
+    private void StartInject(string path)
+    {
+        Task.Run((() =>
+        {
+            List<DllFileInfo> dllFileInfos = globalTools.GetDllFiles(Path.Combine(path,"d_mods"));
+            Process process = null;
+            while (true)
+            {
+               
+                var firstOrDefault = Process.GetProcessesByName("Minecraft.Windows").FirstOrDefault();
+                if (firstOrDefault == null)
+                {
+                    continue;
+                }
+                else
+                {
+                    process = firstOrDefault;
+                    break;
+                }
+            }
+            foreach (var info in dllFileInfos)
+            {
+                Injector.InjectProcess(process, info.FullPath);
+            }
+        }));
+
+    }
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
             try
             {
-                QuickLaunchGame.LaunchGame(versionInfo);
-            }catch(Exception ex)
-            {
-                EasyContentDialog.CreateDialog(this.XamlRoot, "启动错误", ex.ToString());
-            }
+                if (!Directory.Exists(Path.Combine(versionInfo.Version_Path, "mods")))
+                {
+                    Directory.CreateDirectory(Path.Combine(versionInfo.Version_Path, "mods"));
+                }
+
+                var packageManager = new PackageManager();
+                var findPackages = packageManager.FindPackages();
+                bool hasPackage = false;
+                foreach (var package in findPackages)
+                {
+                    if (package.InstalledPath == versionInfo.Version_Path)
+                    {
+                        hasPackage = true;
+                    }
+                }
+
+                if (hasPackage == true)
+                {
+                    globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
+                    global_cfg.core.LaunchGame(versionInfo.Type switch
+                    {
+                        "Release" => VersionType.Release,
+                        "Preview" => VersionType.Preview,
+                        "Beta" => VersionType.Beta
+                    });
+                    StartInjectThread(versionInfo.Version_Path);
+                    return;
+                }
+                var installCallback = new InstallCallback()
+                {
+                    registerProcess_percent = ((s, u) =>
+                    {
+                        Debug.WriteLine(u);
+                    }),
+                    result_callback = ((status, exception) =>
+                    {
+                        if (exception != null)
+                        {
+                            Debug.WriteLine(exception);
+                            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+                            {
+                                MessageBox.ShowAsync(exception.ToString(), "错误");
+                            }));
+                        }
+                    })
+                };
+                globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
+                global_cfg.core.RemoveGame(versionInfo.Type switch
+                {
+                    "Release" => VersionType.Release,
+                    "Preview" => VersionType.Preview,
+                    "Beta" => VersionType.Beta
+                });
+                var changeVersion = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
+                Debug.WriteLine(changeVersion);
+                globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
+                global_cfg.core.LaunchGame(versionInfo.Type switch
+                {
+                    "Release" => VersionType.Release,
+                    "Preview" => VersionType.Preview,
+                    "Beta" => VersionType.Beta
+                });
+                StartInjectThread(versionInfo.Version_Path);
+            }));
+        }
+    }
+
+    private void ButtonBaseRem_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
+        {
+
         }
     }
 
@@ -156,6 +249,32 @@ public sealed partial class VersionPage : Page
         catch (Exception ex)
         {
             MessageBox.ShowAsync(ex.ToString(), "错误");
+        }
+    }
+    public static Process? WaitForMinecraftProcess(int timeoutSec = 60)
+    {
+        var end = DateTime.Now.AddSeconds(timeoutSec);
+        while (DateTime.Now < end)
+        {
+            var proc = Process.GetProcessesByName("Minecraft.Windows").FirstOrDefault();
+            if (proc != null) return proc;
+            Thread.Sleep(100);
+        }
+        return null;
+    }
+
+    private void StartInjectThread(string path)
+    {
+        string delay_mods_dir = Path.Combine(path, "d_mods");
+        var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
+        foreach (var dllFileInfo in dllFileInfos)
+        {
+            var thread = new Thread(() =>
+            {
+                WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, global_cfg.cfg.JsonCfg.DelayTimes);
+                globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
+            });
+            thread.Start();
         }
     }
 

@@ -45,8 +45,21 @@
                 <TextBox x:Name="imgback" Width="278"/>
                 <Button Click="ButtonBaseImg_OnClick" Content="{dev:FontIcon Glyph=&#xE838;}" />
             </dev:ElementGroup>
-            
-            <ToggleSwitch x:Name="UseAppx" IsOn="False" IsEnabled="False">使用 Appx 缓存 (即使用已保存的相同版本的 Appx 安装，无需重新下载)</ToggleSwitch>
+
+
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="使用 Appx 缓存" Margin="0,4,0,0"/>
+                <Button Content="{dev:FontIcon FontSize=16 ,Glyph=&#xE946;}" Height="28" Width="28" Padding="0">
+                    <Button.Flyout>
+                        <Flyout>
+                            <TextBlock TextWrapping="Wrap" MaxWidth="300">
+                                即使用已保存的相同版本的 Appx 安装，无需重新下载，节省时间和带宽。
+                            </TextBlock>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
+            <ToggleSwitch x:Name="UseAppx" IsOn="False" IsEnabled="False"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

@@ -38,6 +38,7 @@
         </dev:SettingsCard.HeaderIcon>
         <Button x:Name="Button"
                 Padding="4"
+                Visibility="{x:Bind _IsCloseButtonVisible}"
                 HorizontalAlignment="Stretch"
                 Click="CloseButton_Click"
                 Content="{dev:FontIcon Glyph=&#xE711;}"

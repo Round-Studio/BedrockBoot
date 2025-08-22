@@ -22,6 +22,10 @@ public sealed partial class TaskCard : UserControl
 {
     public string Header { get; set; } = "TaskCard";
     public string HeaderIcon { get; set; } = "\uE821";
+
+    public bool IsCloseButtonVisible { get; set; } = true;
+
+    private Visibility _IsCloseButtonVisible { get; set; } = Visibility.Visible;
     public UIElement Content { get; set; }
 
     private IconElement _HeaderIcon { get; set; } = new FontIcon() { Glyph = "\uF63C" };
@@ -29,6 +33,15 @@ public sealed partial class TaskCard : UserControl
     public TaskCard()
     {
         InitializeComponent();
+        if (IsCloseButtonVisible)
+        {
+            _IsCloseButtonVisible = Visibility.Visible;
+        }
+        else
+        {
+            _IsCloseButtonVisible = Visibility.Collapsed;
+        }
+
         try
         {
             _HeaderIcon = new FontIcon() { Glyph = HeaderIcon };

@@ -31,6 +31,10 @@ namespace BedrockBoot.Controls
 {
     public sealed partial class TaskExpander : UserControl,IDisposable
     {
+
+        public bool IsCloseButtonVisible { get; set; } = true;
+
+        private Visibility _IsCloseButtonVisible { get; set; } = Visibility.Visible;
         public string Header {get; set; } = "TaskExpander";
         public string HeaderIcon { get; set; } = "\uE821";
         public CancellationTokenSource CancellationToken = new CancellationTokenSource();
@@ -45,6 +49,15 @@ namespace BedrockBoot.Controls
         public TaskExpander()
         {
             InitializeComponent();
+            if (IsCloseButtonVisible)
+            {
+                _IsCloseButtonVisible = Visibility.Visible;
+            }
+            else
+            {
+                _IsCloseButtonVisible = Visibility.Collapsed;
+            }
+
             try
             {
                 _HeaderIcon = new FontIcon() { Glyph = HeaderIcon };

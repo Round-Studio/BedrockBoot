@@ -200,7 +200,8 @@ public sealed partial class VersionPage : Page
                     "Beta" => VersionType.Beta
                 });
                 StartInjectThread(versionInfo.Version_Path);
-            }));
+            }
+            catch { }
         }
     }
 

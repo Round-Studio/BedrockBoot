@@ -1,3 +1,4 @@
+using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Pages;
 using DevWinUI;
 using Microsoft.UI.Xaml;

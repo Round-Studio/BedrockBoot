@@ -128,7 +128,10 @@
                                               ContentDialogTitle="设置热键"
                                               InfoTitle="设置一个不冲突的热键"
                                               ErrorTitle="这是不被允许的单独热键！"
-                                              WarningTitle="这个热键可能会影响系统正常工作"/>
+                                              WarningTitle="这个热键可能会影响系统正常工作"
+                                              SecondaryButtonText="重置"
+                                              PrimaryButtonText="保存"
+                                              CloseButtonText="取消"/>
                             </dev:SettingsCard>
                         </dev:SettingsExpander.Items>
                     </dev:SettingsExpander>

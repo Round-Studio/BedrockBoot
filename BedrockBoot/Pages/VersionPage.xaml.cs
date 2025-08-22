@@ -25,6 +25,7 @@ using Windows.Foundation.Collections;
 using Windows.Management.Deployment;
 using BedrockBoot.Native;
 using WinRT.Interop;
+using BedrockBoot.Controls.ContentDialogContent;
 
 namespace BedrockBoot.Pages;
 
@@ -246,28 +247,49 @@ public sealed partial class VersionPage : Page
     }
 
 
-    private void DeleteButton(object sender, RoutedEventArgs e)
+    private async void DeleteButton(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
+        var dialog_ts = new ContentDialog()
         {
-            // 从数据列表中移除
-            _versionsData.Remove(versionInfo);
+            XamlRoot = this.XamlRoot,
+            Content = "您确定要删除该版本实例吗，此操作无法撤销！",
+            Title = $"确认删除版本实例",
+            CloseButtonText = "取消",
+            PrimaryButtonText = "确定",
+            DefaultButton = ContentDialogButton.Close
+        };
+        var res = await dialog_ts.ShowAsync();
 
-            // 在 UI 线程上重新加载 UI
-            DispatcherQueue.TryEnqueue(() =>
+        if(res == ContentDialogResult.Primary)
+        {
+            if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
             {
-                // 重新设置 ItemsSource 来更新 UI
-                VersionListRepeater.ItemsSource = _versionsData.ToList();
-            });
+                try
+                {
+                    // File.Delete(Path.Combine(versionInfo.Version_Path,"version.json"));
+                    var dialog = new ContentDialog()
+                    {
+                        XamlRoot = this.XamlRoot,
+                        Content = new DelGameVersionContent(versionInfo.Version_Path),
+                        Title = $"删除版本 {versionInfo.VersionName}"
+                    };
+                    await dialog.ShowAsync();
+                    globalTools.ShowInfo("已删除");
+                }
+                catch (Exception ex)
+                {
+                    globalTools.ShowInfo($"删除失败: {ex.Message}");
+                }
 
-            try
-            {
-                File.Delete(Path.Combine(versionInfo.Version_Path,"version.json"));
-                globalTools.ShowInfo("已删除");
-            }
-            catch (Exception ex)
-            {
-                globalTools.ShowInfo($"删除失败: {ex.Message}");
+                // 从数据列表中移除
+                _versionsData.Remove(versionInfo);
+
+                // 在 UI 线程上重新加载 UI
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    // 重新设置 ItemsSource 来更新 UI
+                    VersionListRepeater.ItemsSource = _versionsData.ToList();
+                });
             }
         }
     }

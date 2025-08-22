@@ -1,5 +1,6 @@
 using BedrockBoot.Controls;
 using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Tools;
 using BedrockBoot.Versions;
 using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Network;
@@ -89,7 +90,7 @@ namespace BedrockBoot.Pages.DownloadPages
                     }
                     if (nowVersions.VersionName == ((DownloadGameContent)dialog.Content).Name)
                     {
-                        await MessageBox.ShowAsync("该版本已存在", "错误");
+                        EasyContentDialog.CreateDialog(this.XamlRoot,"错误", "该版本已存在");
                         return result;
                     }
                 }
@@ -97,14 +98,14 @@ namespace BedrockBoot.Pages.DownloadPages
                 {
                     if (expander.nowVersions.VersionName == ((DownloadGameContent)dialog.Content).Name)
                     {
-                        await MessageBox.ShowAsync("该版本已存在", "错误");
+                        EasyContentDialog.CreateDialog(this.XamlRoot, "错误", "该版本已存在");
                         return result;
                     }
                 }
                 string name = ((DownloadGameContent)dialog.Content).Name;
                 if (string.IsNullOrEmpty(name))
                 {
-                    await MessageBox.ShowAsync("名称不得为空", "错误");
+                    EasyContentDialog.CreateDialog(this.XamlRoot, "错误", "名称不得为空");
                     return result;
                 }
                 global_cfg.InstallTasksAsync(((DownloadGameContent)dialog.Content).Name, ((DownloadGameContent)dialog.Content).Path, ((DownloadGameContent)dialog.Content).BackColor, ((DownloadGameContent)dialog.Content).ImgBack, version, ((DownloadGameContent)dialog.Content).APPX_dir, ((DownloadGameContent)dialog.Content).IsUseAppx);
@@ -113,7 +114,7 @@ namespace BedrockBoot.Pages.DownloadPages
             {
                 return result;
             }
-            await MessageBox.ShowAsync("提示", "已加入任务列表");
+            EasyContentDialog.CreateDialog(this.XamlRoot, "提示", "已加入任务列表");
 
             return result;
         }

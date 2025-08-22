@@ -36,6 +36,7 @@ namespace BedrockBoot.Controls
 
         private Visibility _IsCloseButtonVisible { get; set; } = Visibility.Visible;
         public string Header {get; set; } = "TaskExpander";
+        public string RealVersion { get { return Version.ID; } }
         public string HeaderIcon { get; set; } = "\uE821";
         public CancellationTokenSource CancellationToken = new CancellationTokenSource();
         public  VersionInformation Version { get; set; }

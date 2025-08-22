@@ -48,7 +48,7 @@
 
 
             <StackPanel Orientation="Horizontal" Spacing="4">
-                <TextBlock Text="使用 Appx 缓存" Margin="0,4,0,0"/>
+                <TextBlock Text="使用 Appx 缓存" Margin="0,4,8,0"/>
                 <Button Content="{dev:FontIcon FontSize=16 ,Glyph=&#xE946;}" Height="28" Width="28" Padding="0">
                     <Button.Flyout>
                         <Flyout>

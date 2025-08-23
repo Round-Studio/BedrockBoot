@@ -1,4 +1,5 @@
-﻿using BedrockBoot.Native;
+﻿using BedrockBoot.Models.Classes.Helper;
+using BedrockBoot.Native;
 using BedrockBoot.Versions;
 using BedrockLauncher.Core;
 using System;
@@ -18,6 +19,16 @@ namespace BedrockBoot.Models.Classes.Launch
     {
         public static void LaunchGame(NowVersions versionInfo)
         {
+            MouseHelper.StopMouseLock();
+
+            MouseHelper.targetWindowNames.Add(versionInfo.VersionName);
+            MouseHelper.targetWindowNames.Add(versionInfo.RealVersion);
+
+            if (global_cfg.cfg.JsonCfg.MouseLock)
+            {
+                MouseHelper.StartMouseLock();
+            }
+
             Task.Run((() =>
             {
                 if (!Directory.Exists(Path.Combine(versionInfo.Version_Path, "mods")))

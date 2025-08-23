@@ -3,6 +3,7 @@ using BedrockBoot.Versions;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Native;
+using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -34,6 +35,8 @@ namespace BedrockBoot.Controls
 
         public bool IsCloseButtonVisible { get; set; } = true;
 
+        private RainbowFrame rainbowFrameHelper;
+
         private Visibility _IsCloseButtonVisible { get; set; } = Visibility.Visible;
         public string Header {get; set; } = "TaskExpander";
         public string RealVersion { get { return Version.ID; } }
@@ -50,6 +53,7 @@ namespace BedrockBoot.Controls
         public TaskExpander()
         {
             InitializeComponent();
+
             if (IsCloseButtonVisible)
             {
                 _IsCloseButtonVisible = Visibility.Visible;
@@ -203,6 +207,7 @@ namespace BedrockBoot.Controls
                 };
                 try
                 {
+                    throw new Exception("测试错误处理");
                     GameBackGroundEditer gameBackGroundEditer = null;
                     if (string.IsNullOrEmpty(backImg) | string.IsNullOrEmpty(backColor))
                     {
@@ -251,9 +256,17 @@ namespace BedrockBoot.Controls
                 }
                 catch (Exception e)
                 {
-                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
+                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (async () =>
                     {
-                        MessageBox.ShowAsync(e.ToString(), "错误");
+                        rainbowFrameHelper = new RainbowFrame();
+                        rainbowFrameHelper.Initialize(App._window);
+                        rainbowFrameHelper?.StopRainbowFrame();
+                        rainbowFrameHelper?.ChangeFrameColor(Colors.Red);
+                        var mb = await MessageBox.ShowAsync(e.ToString(), "错误");
+                        if (mb == MessageBoxResult.OK)
+                        {
+                            rainbowFrameHelper?.ResetFrameColorToDefault();
+                        }
                         global_cfg.tasksPool.Remove(this);
                        
                     }));

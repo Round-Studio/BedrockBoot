@@ -88,6 +88,7 @@ namespace BedrockBoot.Tools
             dialog.DefaultButton = ContentDialogButton.Close;
 
             var result = await dialog.ShowAsync();
+
         }
     }
 }

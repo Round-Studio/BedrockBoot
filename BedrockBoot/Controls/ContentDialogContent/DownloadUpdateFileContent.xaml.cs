@@ -71,7 +71,8 @@ namespace BedrockBoot.Controls.ContentDialogContent
                     DispatcherQueue.EnqueueAsync(() =>
                     {
                         ((ContentDialog)this.Parent).Hide();
-                        MessageBox.ShowAsync("抱歉，我们出现了一些错误...\n{p.ErrorMessage}");
+                        EasyContentDialog.CreateDialog(global_cfg.MainWindow.Content.XamlRoot, "肥肠抱歉...",
+                            $"抱歉，我们出现了一些错误...\n{p.ErrorMessage}");
                     });
                 }
             });

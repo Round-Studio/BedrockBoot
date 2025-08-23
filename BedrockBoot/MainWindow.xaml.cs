@@ -74,7 +74,7 @@ namespace BedrockBoot
             global_cfg.MainWindow = this;
             UpdateBackground();
 
-            // if(global_cfg.cfg.JsonCfg.AutoCheckUpdate) OnUpdate();
+            if(global_cfg.cfg.JsonCfg.AutoCheckUpdate) OnUpdate();
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
@@ -104,7 +104,7 @@ namespace BedrockBoot
             }));
         }
 
-        public async void OnUpdate()
+        public async Task OnUpdate()
         {
             var update = new Update()
             {

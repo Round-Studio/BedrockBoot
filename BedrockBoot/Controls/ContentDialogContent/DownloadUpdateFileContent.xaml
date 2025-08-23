@@ -17,7 +17,7 @@
                        HorizontalAlignment="Left"
                        Name="Down_ProgressTextBlock">0 %</TextBlock>
             <TextBlock Margin="0,2.5"
-                       HorizontalAlignment="Left"
+                       HorizontalAlignment="Left" 
                        Name="Down_ProgressSpeedTextBlock">0 B/s</TextBlock>
             <TextBlock Margin="0,2.5"
                        HorizontalAlignment="Left"

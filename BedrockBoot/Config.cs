@@ -13,7 +13,7 @@ namespace BedrockBoot
 {
     public class Config
     {
-        private static string CFG_DIR = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"BedrockBoot");
+        public static string CFG_DIR = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"RoundStudio","BedrockBoot");
         public static Version cfg_Version = new Version("0.0.6");
         public static string CFG_FILE = $"{CFG_DIR}\\config.json";
         public JsonCFG JsonCfg;

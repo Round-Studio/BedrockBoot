@@ -105,7 +105,8 @@
                 </StackPanel>
             </Grid>
             <ScrollViewer HorizontalAlignment="Stretch"
-                          Margin="0,48,0,0">
+                          Margin="0,48,0,0"
+                          x:Name="ScrollViewList">
                 <Grid>
                     <!-- 移除 ItemsSource 绑定 -->
                     <ItemsRepeater

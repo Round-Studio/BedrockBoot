@@ -110,12 +110,109 @@
                     <TextBlock
                         Margin="0,10,0,0"
                         Style="{StaticResource Subtitle}"
+                        Text="个性化" />
+
+                    <InfoBar IsOpen="True"
+                             IsClosable="False"
+                             Message="出于技术原因，修改背景需要重新启动 BedrockBoot。"
+                             Title="技术缺失警告"
+                             Severity="Warning"
+                             HorizontalAlignment="Stretch"></InfoBar>
+
+                    <dev:SettingsExpander
+                        Description="启动器背景样式"
+                        Header="背景"
+                        HeaderIcon="{dev:FontIcon Glyph=&#xEF1F;}">
+                        <dev:SettingsExpander.Items>
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         Click="BackgroundModel_Base_OnClick"
+                         x:Name="Background_None_RadioButton"
+                         Tag="None">无</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         Click="BackgroundModel_Base_OnClick"
+                         x:Name="Background_Mica_RadioButton"
+                         Tag="Mica">云母 (Mica)</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         Click="BackgroundModel_Base_OnClick"
+                         x:Name="Background_BaseAlt_RadioButton"
+                         Tag="BaseAlt">通透云母 (BaseAlt)</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         Click="BackgroundModel_Base_OnClick"
+                         x:Name="Background_Acrylic_RadioButton"
+                         Tag="Acrylic">亚克力 (Acrylic)</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         x:Name="Background_Color_RadioButton"
+                         Click="BackgroundModel_Base_OnClick"
+                         Tag="Color"
+                         IsEnabled="False">纯色</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         x:Name="Background_Image_RadioButton"
+                         Click="BackgroundModel_Base_OnClick"
+                         Tag="Image"
+                         IsEnabled="False">图片</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         x:Name="Background_RSkin_RadioButton"
+                         Click="BackgroundModel_Base_OnClick" 
+                         Tag="RSkin"
+                         IsEnabled="False">Round Studio 通用主题包</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+                        </dev:SettingsExpander.Items>
+                    </dev:SettingsExpander>
+
+                    <dev:SettingsCard Description="启动器的这个原图"
+                                      Header="主题"
+                                      HeaderIcon="{dev:FontIcon Glyph=&#xE793;}">
+                        <ComboBox SelectedIndex="2">
+                            <ComboBoxItem>明亮</ComboBoxItem>
+                            <ComboBoxItem>黑暗</ComboBoxItem>
+                            <ComboBoxItem>跟随系统</ComboBoxItem>
+                        </ComboBox>
+                    </dev:SettingsCard>
+
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        Style="{StaticResource Subtitle}"
                         Text="辅助功能" />
-                    <dev:SettingsCard Description="卸载MC"
-                                      Header="卸载MC"
-                                      >
+                    
+                    <dev:SettingsCard Description="强制卸载已安装的 Minecraft Bedrock"
+                                      Header="卸载 MC"
+                                      HeaderIcon="{dev:FontIcon Glyph=&#xE74D;}">
                       <Button Click="ButtonBase_OnClick">卸载</Button>
                     </dev:SettingsCard>
+                    
                     <dev:SettingsExpander
                         Description="锁定鼠标不移出游戏窗口外"
                         Header="鼠标锁定 (Beta) (功能还没写，没用别看)"

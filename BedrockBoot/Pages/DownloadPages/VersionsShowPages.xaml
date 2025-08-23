@@ -75,7 +75,8 @@
                 </StackPanel>
             </Grid>
             <Grid Margin="0,64,0,10">
-                <ScrollViewer HorizontalAlignment="Stretch">
+                <ScrollViewer HorizontalAlignment="Stretch"
+                              x:Name="ScrollViewList">
                     <Grid>
                         <ItemsRepeater
                             Grid.Column="1"

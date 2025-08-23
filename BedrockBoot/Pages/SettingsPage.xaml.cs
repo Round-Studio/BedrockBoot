@@ -51,31 +51,6 @@ public sealed partial class SettingsPage : Page
         MainShortcut.Keys = new List<object> { "F12" };
         MainShortcut.KeyUp += MainShortcut_KeyUp;
         UpdateUI();
-
-        switch (global_cfg.cfg.JsonCfg.BackgroundEnum)
-        {
-            case BackgroundEnum.None:
-                Background_None_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.Mica:
-                Background_Mica_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.BaseAlt:
-                Background_BaseAlt_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.Acrylic:
-                Background_Acrylic_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.Color:
-                Background_Color_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.Image:
-                Background_Image_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.RSkin:
-                Background_RSkin_RadioButton.IsChecked = true;
-                break;
-        }
     }
 
     private void MainShortcut_KeyUp(object sender, KeyRoutedEventArgs e)
@@ -202,29 +177,13 @@ public sealed partial class SettingsPage : Page
            
         }));
     }
-
-    private void BackgroundModel_Base_OnClick(object sender, RoutedEventArgs e)
+    private void CmbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        var until = ((RadioButton)sender);
-        var tag = until.Tag.ToString();
+        App.Current.AppThemeService.OnThemeComboBoxSelectionChanged(sender);
+    }
 
-        BackgroundEnum type = tag switch
-        {
-            "None" => BackgroundEnum.None,
-            "Mica" => BackgroundEnum.Mica,
-            "BaseAlt" => BackgroundEnum.BaseAlt,
-            "Acrylic" => BackgroundEnum.Acrylic,
-            "Color" => BackgroundEnum.Color,
-            "Image" => BackgroundEnum.Image,
-            _ => BackgroundEnum.None,
-        };
-
-        global_cfg.cfg.JsonCfg.BackgroundEnum = type;
-        global_cfg.cfg.SaveConfig();
-
-        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
-        {
-            global_cfg.MainWindow.UpdateBackground();
-        }));
+    private void CmbBackdrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        App.Current.AppThemeService.OnBackdropComboBoxSelectionChanged(sender);
     }
 }

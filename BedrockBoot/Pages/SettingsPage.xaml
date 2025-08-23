@@ -127,7 +127,7 @@
                         <ComboBox Name="cmbTheme" SelectionChanged="cmbTheme_SelectionChanged">
                             <ComboBoxItem Content="浅色" Tag="Light" />
                             <ComboBoxItem Content="深色" Tag="Dark" />
-                            <ComboBoxItem Content="浅色或系统主题" Tag="Default" />
+                            <ComboBoxItem Content="跟随系统" Tag="Default" />
                         </ComboBox>
                     </dev:SettingsCard>
 

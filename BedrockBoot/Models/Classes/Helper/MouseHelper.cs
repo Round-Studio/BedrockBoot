@@ -159,6 +159,8 @@ namespace BedrockBoot.Models.Classes.Helper
                 {
 
                 }
+
+                Thread.Sleep(10);
             }
 
             // 线程结束时恢复鼠标状态

@@ -25,7 +25,7 @@ public static class global_cfg
     public static ObservableCollection<TaskExpander> tasksPool = new ObservableCollection<TaskExpander>();
     public static List<Process> MinecraftProcesses = new List<Process>();
     public static Config cfg = null;
-    public static Window MainWindow;
+    public static MainWindow MainWindow;
     public static int selectIndex;
 
     public static void InitConfig()

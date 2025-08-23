@@ -1,6 +1,10 @@
+using ABI.System;
 using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Models.Classes.Style.Background;
+using BedrockBoot.Models.Enum.Background;
 using BedrockBoot.Pages.SettingPage;
 using BedrockLauncher.Core;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -20,8 +24,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using BedrockBoot.Models.Classes.Style.Background;
-using BedrockBoot.Models.Enum.Background;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -125,36 +127,10 @@ public sealed partial class SettingsPage : Page
             global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;
             global_cfg.cfg.SaveConfig();
         }
-        catch (Exception exception)
+        catch (System.Exception exception)
         {
             Console.WriteLine(exception);
             throw;
-        }
-    }
-
-    // TODO: 所以什么时候才能写SettingsCard导航？----DM,马上马上
-    // BYD,我写了
-    // 难绷难绷
-
-    private void NavigationTo(SettingsCard sender)
-    {
-        var Type = sender.Tag as string;
-        switch (Type)
-        {
-            case "Appearance":
-                Frame.Navigate(typeof(AppearancePage));
-                break;
-            case "Behavior":
-                Frame.Navigate(typeof(BehaviorPage));
-                break;
-            case "About":
-                Frame.Navigate(typeof(AboutPage));
-                break;
-            case "DevTools":
-                Frame.Navigate(typeof(DevelopersPage));
-                break;
-            default:
-                throw new ArgumentException("Unknown settings card type: " + Type);
         }
     }
 
@@ -216,7 +192,7 @@ public sealed partial class SettingsPage : Page
                 global_cfg.core.RemoveGame(VersionType.Preview);
                 globalTools.ShowInfo("卸载完成");
             }
-            catch (Exception exception)
+            catch (System.Exception exception)
             {
                 DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                 {
@@ -245,7 +221,10 @@ public sealed partial class SettingsPage : Page
 
         global_cfg.cfg.JsonCfg.BackgroundEnum = type;
         global_cfg.cfg.SaveConfig();
-        
-        BackgroundManager.UpdateBackground();
+
+        DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+        {
+            global_cfg.MainWindow.UpdateBackground();
+        }));
     }
 }

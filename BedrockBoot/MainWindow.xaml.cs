@@ -1,8 +1,10 @@
 using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Models.Classes.Style.Background;
+using BedrockBoot.Models.Enum.Background;
 using BedrockBoot.Pages;
 using DevWinUI;
 using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -34,7 +36,6 @@ namespace BedrockBoot
         {
             InitializeComponent();
 
-            global_cfg.MainWindow = this;
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
             ExtendsContentIntoTitleBar = true;
             AppTitleBar.IsBackButtonVisible = false; 
@@ -66,11 +67,35 @@ namespace BedrockBoot
                 NavView.SelectedItem = NavView.MenuItems[1];
                 NavFrame.Navigate(typeof(VersionPage));
             };
+            global_cfg.MainWindow = this;
+            UpdateBackground();
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
             MessageBox.ShowAsync("正在关闭", "正在关闭");
             Environment.Exit(0);
+        }
+        public void UpdateBackground()
+        {
+            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+            {
+                global_cfg.MainWindow.SystemBackdrop = new TransparentBackdrop();
+                switch (global_cfg.cfg.JsonCfg.BackgroundEnum)
+                {
+                    case BackgroundEnum.None:
+                        this.SystemBackdrop = null;
+                        break;
+                    case BackgroundEnum.Mica:
+                        this.SystemBackdrop = new DevWinUI.MicaSystemBackdrop();
+                        break;
+                    case BackgroundEnum.BaseAlt:
+                        this.SystemBackdrop = new DevWinUI.MicaSystemBackdrop(MicaKind.BaseAlt);
+                        break;
+                    case BackgroundEnum.Acrylic:
+                        this.SystemBackdrop = new DevWinUI.AcrylicSystemBackdrop();
+                        break;
+                }
+            }));
         }
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {

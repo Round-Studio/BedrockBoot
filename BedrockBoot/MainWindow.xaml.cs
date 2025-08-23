@@ -1,5 +1,7 @@
 using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Models.Classes;
 using BedrockBoot.Models.Classes.Style.Background;
+using BedrockBoot.Models.Classes.Update;
 using BedrockBoot.Models.Enum.Background;
 using BedrockBoot.Pages;
 using DevWinUI;
@@ -21,7 +23,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using BedrockBoot.Models.Classes.Update;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -36,6 +37,7 @@ namespace BedrockBoot
     {
         public MainWindow()
         {
+            GlobalLogger.Initialize();
             InitializeComponent();
 
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;

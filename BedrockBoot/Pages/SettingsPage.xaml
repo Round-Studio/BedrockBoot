@@ -22,69 +22,69 @@
                 x:Name="BreadcrumbBar"
                 Margin="0,0,10,4"
                 FontSize="30"
-                Text="设置" />
+                Text="设置">
+            </TextBlock>
         </Grid>
         <Grid Margin="0,52,0,10">
-            <ScrollView HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+            <ScrollView
+                    HorizontalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto">
                 <StackPanel
                     MaxWidth="1000"
                     Margin="10"
                     dev:PanelAttach.ChildrenTransitions="Default"
                     Spacing="4">
 
-                    <TextBlock
-                        Margin="0,10,0,0"
-                        Style="{StaticResource Subtitle}"
-                        Text="行为" />
-                    <dev:SettingsExpander
-                        Description="启动器的下载行为"
-                        Header="下载"
-                        HeaderIcon="{dev:FontIcon Glyph=&#xE896;}">
-                        <dev:SettingsExpander.Items>
-                            <dev:SettingsCard Header="下载线程">
-                                <NumberBox
-                                    x:Name="DownloadThreads"
-                                    Width="400"
-                                    MinWidth="200"
-                                    HorizontalAlignment="Right"
-                                    AcceptsExpression="True"
-                                    Maximum="128"
-                                    Minimum="1"
-                                    SpinButtonPlacementMode="Inline" />
-                            </dev:SettingsCard>
-                            <dev:SettingsCard Header="安装完成保留 Appx 文件">
-                                <ToggleSwitch
-                                    x:Name="SavaAppx"
-                                    OffContent=""
-                                    OnContent="" />
-                            </dev:SettingsCard>
-                        </dev:SettingsExpander.Items>
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            Style="{StaticResource Subtitle}"
+                            Text="行为" />
+                        <dev:SettingsExpander
+                            Description="启动器的下载行为"
+                            Header="下载"
+                            HeaderIcon="{dev:FontIcon Glyph=&#xE896;}">
+                            <dev:SettingsExpander.Items>
+                                <dev:SettingsCard Header="下载线程">
+                                    <NumberBox
+                                        x:Name="DownloadThreads"
+                                        Width="400"
+                                        MinWidth="200"
+                                        HorizontalAlignment="Right"
+                                        AcceptsExpression="True"
+                                        Maximum="128"
+                                        Minimum="1"
+                                        SpinButtonPlacementMode="Inline"/>
+                                </dev:SettingsCard>
+                                <dev:SettingsCard Header="安装完成保留 Appx 文件">
+                                    <ToggleSwitch OnContent="" x:Name="SavaAppx" OffContent=""></ToggleSwitch>
+                                </dev:SettingsCard>
+                            </dev:SettingsExpander.Items>
 
-                    </dev:SettingsExpander>
+                        </dev:SettingsExpander>
 
-                    <dev:SettingsExpander
-                        Description="启动器的注入行为"
-                        Header="注入"
-                        HeaderIcon="{dev:FontIcon Glyph=&#xE840;}">
-                        <dev:SettingsExpander.Items>
-                            <dev:SettingsCard Header="延迟注入时间 (ms)">
-                                <NumberBox
-                                    x:Name="DelayTime"
-                                    Width="400"
-                                    HorizontalAlignment="Left"
-                                    AcceptsExpression="True"
-                                    Maximum="20000"
-                                    Minimum="800"
-                                    SpinButtonPlacementMode="Inline" />
-                            </dev:SettingsCard>
-                        </dev:SettingsExpander.Items>
+                        <dev:SettingsExpander
+                            Description="启动器的注入行为"
+                            Header="注入"
+                            HeaderIcon="{dev:FontIcon Glyph=&#xE840;}">
+                            <dev:SettingsExpander.Items>
+                                <dev:SettingsCard Header="延迟注入时间 (ms)">
+                                    <NumberBox
+                                        x:Name="DelayTime"
+                                        Width="400"
+                                        Minimum="800"
+                                        Maximum="20000"
+                                        SpinButtonPlacementMode="Inline"
+                                        AcceptsExpression="True"
+                                        HorizontalAlignment="Left" />
+                                </dev:SettingsCard>
+                            </dev:SettingsExpander.Items>
 
-                    </dev:SettingsExpander>
+                        </dev:SettingsExpander>
 
-                    <TextBlock
-                        Margin="0,10,0,0"
-                        Style="{StaticResource Subtitle}"
-                        Text="游戏" />
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            Style="{StaticResource Subtitle}"
+                            Text="游戏" />
 
                     <dev:SettingsExpander
                         Description="游戏存储根目录"
@@ -92,23 +92,15 @@
                         HeaderIcon="{dev:FontIcon Glyph=&#xE8B7;}">
                         <dev:SettingsExpander.Items>
                             <dev:SettingsCard Header="默认下载目录">
-                                <ComboBox
-                                    x:Name="GameFoldersChooseBox"
-                                    Width="400"
-                                    SelectionChanged="GameFoldersChooseBox_SelectionChanged" />
+                                <ComboBox Width="400" x:Name="GameFoldersChooseBox"
+                                          SelectionChanged="GameFoldersChooseBox_SelectionChanged"></ComboBox>
                             </dev:SettingsCard>
 
                             <dev:SettingsCard Header="操作">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Width="120" Margin="0,0,5,0">删除所选目录</Button>
-                                    <Button
-                                        Name="ImportGameFolder"
-                                        Width="270"
-                                        Margin="5,0,0,0"
-                                        Click="ImportGameFolder_Click"
-                                        Style="{StaticResource AccentButtonStyle}">
-                                        导入 Bedrock 数据目录
-                                    </Button>
+                                    <Button Margin="0,0,5,0" Width="120">删除所选目录</Button>
+                                    <Button Margin="5,0,0,0" Width="270" Style="{StaticResource AccentButtonStyle}" Name="ImportGameFolder"
+                                            Click="ImportGameFolder_Click">导入 Bedrock 数据目录</Button>
                                 </StackPanel>
                             </dev:SettingsCard>
                         </dev:SettingsExpander.Items>
@@ -120,37 +112,93 @@
                         Style="{StaticResource Subtitle}"
                         Text="个性化" />
 
-                    <InfoBar
-                        Title="技术缺失警告"
-                        HorizontalAlignment="Stretch"
-                        IsClosable="False"
-                        IsOpen="True"
-                        Message="出于技术原因，修改背景需要重新启动 BedrockBoot。"
-                        Severity="Warning" />
+                    <InfoBar IsOpen="True"
+                             IsClosable="False"
+                             Message="出于技术原因，修改背景需要重新启动 BedrockBoot。"
+                             Title="技术缺失警告"
+                             Severity="Warning"
+                             HorizontalAlignment="Stretch"></InfoBar>
 
-                    <dev:SettingsCard
-                        Description="选择适合您心情和偏好的主题。您可以选择深色、浅色或系统主题。"
-                        Header="应用主题"
-                        HeaderIcon="{dev:FontIcon Glyph=&#xE706;}">
-                        <ComboBox dev:ThemeServiceAttach.ThemeService="{x:Bind local:App.Current.AppThemeService}">
-                            <ComboBoxItem Content="浅色" Tag="Light" />
-                            <ComboBoxItem Content="深色" Tag="Dark" />
-                            <ComboBoxItem Content="默认" Tag="Default" />
-                        </ComboBox>
-                    </dev:SettingsCard>
+                    <dev:SettingsExpander
+                        Description="启动器背景样式"
+                        Header="背景"
+                        HeaderIcon="{dev:FontIcon Glyph=&#xEF1F;}">
+                        <dev:SettingsExpander.Items>
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         Click="BackgroundModel_Base_OnClick"
+                         x:Name="Background_None_RadioButton"
+                         Tag="None">无</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
 
-                    <dev:SettingsCard
-                        Description="更改应用程序后面的背景材料的外观。您可以从云母、亚克力或透明选项中进行选择。"
-                        Header="材质"
-                        HeaderIcon="{dev:FontIcon Glyph=&#xE81E;}">
-                        <ComboBox dev:ThemeServiceAttach.ThemeService="{x:Bind local:App.Current.AppThemeService}">
-                            <ComboBoxItem Content="纯色" Tag="None" />
-                            <ComboBoxItem Content="云母" Tag="Mica" />
-                            <ComboBoxItem Content="厚云母" Tag="MicaAlt" />
-                            <ComboBoxItem Content="厚亚克力" Tag="DesktopAcrylic" />
-                            <ComboBoxItem Content="亚克力" Tag="AcrylicBase" />
-                            <ComboBoxItem Content="薄亚克力" Tag="AcrylicThin" />
-                            <ComboBoxItem Content="透明" Tag="Transparent" />
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         Click="BackgroundModel_Base_OnClick"
+                         x:Name="Background_Mica_RadioButton"
+                         Tag="Mica">云母 (Mica)</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         Click="BackgroundModel_Base_OnClick"
+                         x:Name="Background_BaseAlt_RadioButton"
+                         Tag="BaseAlt">通透云母 (BaseAlt)</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         Click="BackgroundModel_Base_OnClick"
+                         x:Name="Background_Acrylic_RadioButton"
+                         Tag="Acrylic">亚克力 (Acrylic)</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         x:Name="Background_Color_RadioButton"
+                         Click="BackgroundModel_Base_OnClick"
+                         Tag="Color"
+                         IsEnabled="False">纯色</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         x:Name="Background_Image_RadioButton"
+                         Click="BackgroundModel_Base_OnClick"
+                         Tag="Image"
+                         IsEnabled="False">图片</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+
+                            <dev:SettingsCard>
+                                <dev:SettingsCard.Header>
+                                    <RadioButton GroupName="BackgroundModel" 
+                         x:Name="Background_RSkin_RadioButton"
+                         Click="BackgroundModel_Base_OnClick" 
+                         Tag="RSkin"
+                         IsEnabled="False">Round Studio 通用主题包</RadioButton>
+                                </dev:SettingsCard.Header>
+                            </dev:SettingsCard>
+                        </dev:SettingsExpander.Items>
+                    </dev:SettingsExpander>
+
+                    <dev:SettingsCard Description="启动器的这个原图"
+                                      Header="主题"
+                                      HeaderIcon="{dev:FontIcon Glyph=&#xE793;}">
+                        <ComboBox SelectedIndex="2">
+                            <ComboBoxItem>明亮</ComboBoxItem>
+                            <ComboBoxItem>黑暗</ComboBoxItem>
+                            <ComboBoxItem>跟随系统</ComboBoxItem>
                         </ComboBox>
                     </dev:SettingsCard>
 
@@ -158,34 +206,33 @@
                         Margin="0,10,0,0"
                         Style="{StaticResource Subtitle}"
                         Text="辅助功能" />
-
-                    <dev:SettingsCard
-                        Description="强制卸载已安装的 Minecraft Bedrock"
-                        Header="卸载 MC"
-                        HeaderIcon="{dev:FontIcon Glyph=&#xE74D;}">
-                        <Button Click="ButtonBase_OnClick">卸载</Button>
+                    
+                    <dev:SettingsCard Description="强制卸载已安装的 Minecraft Bedrock"
+                                      Header="卸载 MC"
+                                      HeaderIcon="{dev:FontIcon Glyph=&#xE74D;}">
+                      <Button Click="ButtonBase_OnClick">卸载</Button>
                     </dev:SettingsCard>
-
+                    
                     <dev:SettingsExpander
                         Description="锁定鼠标不移出游戏窗口外"
                         Header="鼠标锁定 (Beta) (功能还没写，没用别看)"
                         HeaderIcon="{dev:FontIcon Glyph=&#xE962;}">
-                        <ToggleSwitch OffContent="禁用" OnContent="启用" />
+                        <ToggleSwitch OnContent="启用" OffContent="禁用"></ToggleSwitch>
                         <dev:SettingsExpander.Items>
-                            <dev:SettingsCard Description="设置控制是否启用的热键" Header="热键">
-                                <dev:Shortcut
-                                    x:Name="MainShortcut"
-                                    Title="给启用鼠标锁定设置热键"
-                                    Height="40"
-                                    Margin="-8"
-                                    Padding="0"
-                                    CloseButtonText="取消"
-                                    ContentDialogTitle="设置热键"
-                                    ErrorTitle="这是不被允许的单独热键！"
-                                    InfoTitle="设置一个不冲突的热键"
-                                    PrimaryButtonText="保存"
-                                    SecondaryButtonText="重置"
-                                    WarningTitle="这个热键可能会影响系统正常工作" />
+                            <dev:SettingsCard Header="热键"
+                                              Description="设置控制是否启用的热键">
+                                <dev:Shortcut x:Name="MainShortcut"
+                                              Padding="0"
+                                              Margin="-8"
+                                              Height="40"
+                                              Title="给启用鼠标锁定设置热键"
+                                              ContentDialogTitle="设置热键"
+                                              InfoTitle="设置一个不冲突的热键"
+                                              ErrorTitle="这是不被允许的单独热键！"
+                                              WarningTitle="这个热键可能会影响系统正常工作"
+                                              SecondaryButtonText="重置"
+                                              PrimaryButtonText="保存"
+                                              CloseButtonText="取消"/>
                             </dev:SettingsCard>
                         </dev:SettingsExpander.Items>
                     </dev:SettingsExpander>
@@ -199,85 +246,86 @@
                         Header="关于"
                         HeaderIcon="{dev:FontIcon Glyph=&#xEC7A;}"
                         Tag="About">
-                        <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockBoot">BedrockBoot - Github</HyperlinkButton>
-                        <dev:SettingsExpander.Items>
-                            <dev:SettingsCard Header="开发者">
-                                <dev:SettingsCard.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <controls:PersonPictureButton />
-                                        <controls:PersonPictureButton />
-                                        <controls:PersonPictureButton />
-                                    </StackPanel>
-                                </dev:SettingsCard.Content>
-                            </dev:SettingsCard>
-                        </dev:SettingsExpander.Items>
-                    </dev:SettingsExpander>
+                            <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockBoot">BedrockBoot - Github</HyperlinkButton>
+                            <dev:SettingsExpander.Items>
+                                <dev:SettingsCard Header="开发者">
+                                    <dev:SettingsCard.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <controls:PersonPictureButton />
+                                            <controls:PersonPictureButton />
+                                            <controls:PersonPictureButton />
+                                        </StackPanel>
+                                    </dev:SettingsCard.Content>
+                                </dev:SettingsCard>
+                            </dev:SettingsExpander.Items>
+                        </dev:SettingsExpander>
                     <dev:SettingsExpander
                         Description="我们使用的开源项目 (※ 为自开发项目)"
                         Header="开源项目"
                         HeaderIcon="{dev:FontIcon Glyph=&#xE8F1;}"
                         Tag="About">
-                        <dev:SettingsExpander.Items>
-                            <dev:SettingsCard Header="WinUI">
-                                <dev:SettingsCard.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <HyperlinkButton NavigateUri="https://learn.microsoft.com/zh-cn/windows/apps/winui/">MSDN</HyperlinkButton>
-                                    </StackPanel>
-                                </dev:SettingsCard.Content>
-                            </dev:SettingsCard>
-                            <dev:SettingsCard Header="DevWinUI">
-                                <dev:SettingsCard.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <HyperlinkButton NavigateUri="https://github.com/ghost1372/DevWinUI">Github</HyperlinkButton>
-                                    </StackPanel>
-                                </dev:SettingsCard.Content>
-                            </dev:SettingsCard>
-                            <dev:SettingsCard Header="WindowsCommunityToolkit">
-                                <dev:SettingsCard.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <HyperlinkButton NavigateUri="https://github.com/CommunityToolkit/WindowsCommunityToolkit">Github</HyperlinkButton>
-                                    </StackPanel>
-                                </dev:SettingsCard.Content>
-                            </dev:SettingsCard>
-                            <dev:SettingsCard Header="WindowsAppSDK">
-                                <dev:SettingsCard.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <HyperlinkButton NavigateUri="https://github.com/microsoft/WindowsAppSDK">Github</HyperlinkButton>
-                                    </StackPanel>
-                                </dev:SettingsCard.Content>
-                            </dev:SettingsCard>
-                            <dev:SettingsCard Header="※ BedrockLauncher.Core">
-                                <dev:SettingsCard.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <HyperlinkButton NavigateUri="https://docs.roundstudio.top/docs/%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/BedrockLauncher.Core/Introduct">Docs</HyperlinkButton>
-                                        <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockLauncher.Core">Github</HyperlinkButton>
-                                    </StackPanel>
-                                </dev:SettingsCard.Content>
-                            </dev:SettingsCard>
-                            <dev:SettingsCard Header="※ Uwp.Injector">
-                                <dev:SettingsCard.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <HyperlinkButton NavigateUri="https://github.com/Round-Studio/Uwp.Injector">Github</HyperlinkButton>
-                                    </StackPanel>
-                                </dev:SettingsCard.Content>
-                            </dev:SettingsCard>
-                            <dev:SettingsCard Header="CONCRT140_APP">
-                                <dev:SettingsCard.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <HyperlinkButton NavigateUri="https://github.com/QYCottage/CONCRT140_APP">Github</HyperlinkButton>
-                                    </StackPanel>
-                                </dev:SettingsCard.Content>
-                            </dev:SettingsCard>
-                        </dev:SettingsExpander.Items>
-                    </dev:SettingsExpander>
-
+                            <dev:SettingsExpander.Items>
+                                <dev:SettingsCard Header="WinUI">
+                                    <dev:SettingsCard.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <HyperlinkButton NavigateUri="https://learn.microsoft.com/zh-cn/windows/apps/winui/">MSDN</HyperlinkButton>
+                                        </StackPanel>
+                                    </dev:SettingsCard.Content>
+                                </dev:SettingsCard>
+                                <dev:SettingsCard Header="DevWinUI">
+                                    <dev:SettingsCard.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <HyperlinkButton NavigateUri="https://github.com/ghost1372/DevWinUI">Github</HyperlinkButton>
+                                        </StackPanel>
+                                    </dev:SettingsCard.Content>
+                                </dev:SettingsCard>
+                                <dev:SettingsCard Header="WindowsCommunityToolkit">
+                                    <dev:SettingsCard.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <HyperlinkButton NavigateUri="https://github.com/CommunityToolkit/WindowsCommunityToolkit">Github</HyperlinkButton>
+                                        </StackPanel>
+                                    </dev:SettingsCard.Content>
+                                </dev:SettingsCard>
+                                <dev:SettingsCard Header="WindowsAppSDK">
+                                    <dev:SettingsCard.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <HyperlinkButton NavigateUri="https://github.com/microsoft/WindowsAppSDK">Github</HyperlinkButton>
+                                        </StackPanel>
+                                    </dev:SettingsCard.Content>
+                                </dev:SettingsCard>
+                                <dev:SettingsCard Header="※ BedrockLauncher.Core">
+                                    <dev:SettingsCard.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <HyperlinkButton NavigateUri="https://docs.roundstudio.top/docs/%E6%96%87%E6%A1%A3/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/BedrockLauncher.Core/Introduct">Docs</HyperlinkButton>
+                                            <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockLauncher.Core">Github</HyperlinkButton>
+                                        </StackPanel>
+                                    </dev:SettingsCard.Content>
+                                </dev:SettingsCard>
+                                <dev:SettingsCard Header="※ Uwp.Injector">
+                                    <dev:SettingsCard.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <HyperlinkButton NavigateUri="https://github.com/Round-Studio/Uwp.Injector">Github</HyperlinkButton>
+                                        </StackPanel>
+                                    </dev:SettingsCard.Content>
+                                </dev:SettingsCard>
+                                <dev:SettingsCard Header="CONCRT140_APP">
+                                    <dev:SettingsCard.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <HyperlinkButton NavigateUri="https://github.com/QYCottage/CONCRT140_APP">Github</HyperlinkButton>
+                                        </StackPanel>
+                                    </dev:SettingsCard.Content>
+                                </dev:SettingsCard>
+                            </dev:SettingsExpander.Items>
+                        </dev:SettingsExpander>
+                        
                     <dev:SettingsExpander
                         Description="本项目用到的服务"
                         Header="鸣谢"
                         HeaderIcon="{dev:FontIcon Glyph=&#xEBDA;}"
-                        Tag="About">
+                        Tag="About">   
                         <dev:SettingsExpander.Items>
-                            <dev:SettingsCard Description="游戏列表源服务技术提供" Header="MCAPPX">
+                            <dev:SettingsCard Header="MCAPPX"
+                                              Description="游戏列表源服务技术提供">
                                 <dev:SettingsCard.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <HyperlinkButton NavigateUri="https://www.mcappx.com">Website</HyperlinkButton>

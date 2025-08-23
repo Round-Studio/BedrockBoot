@@ -43,6 +43,7 @@ namespace BedrockBoot
             MWindow = mainWindow;
             MainWindow.Title = MainWindow.AppWindow.Title = ProcessInfoHelper.ProductNameAndVersion;
             AppThemeService = new ThemeService(MainWindow);
+            AppThemeService.AutoInitialize(MainWindow);
             AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
         }
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)

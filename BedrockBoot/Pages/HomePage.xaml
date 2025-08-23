@@ -10,35 +10,24 @@
     mc:Ignorable="d">
 
     <Grid>
-        <dev:LayeredFontIcons>
-            <dev:LayeredFontIcons.FontIcons>
-                <FontIcon
-                    FontSize="64"
-                    Foreground="{ThemeResource SystemBlueLinearGradientBrush}"
-                    Glyph="&#xF305;" />
-                <FontIcon FontSize="64" Glyph="&#xF386;" />
-            </dev:LayeredFontIcons.FontIcons>
-        </dev:LayeredFontIcons>
-        <SplitButton
-            x:Name="LauncherButton"
-            Width="180"
-            Height="52"
-            Margin="15"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom">
+        <SplitButton x:Name="LauncherButton"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Bottom"
+                     Margin="15"
+                     Width="180"
+                     Height="52">
             <SplitButton.Flyout>
-                <Flyout Placement="Auto" />
+                <Flyout Placement="Auto">
+                    
+                </Flyout>
             </SplitButton.Flyout>
             <SplitButton.Content>
                 <StackPanel>
                     <TextBlock FontSize="16">启动游戏</TextBlock>
-                    <TextBlock
-                        Margin="0,2,0,0"
-                        HorizontalAlignment="Center"
-                        FontSize="11"
-                        Foreground="Gray">
-                        Version
-                    </TextBlock>
+                    <TextBlock FontSize="11" 
+                               HorizontalAlignment="Center"
+                               Margin="0,2,0,0"
+                               Foreground="Gray">Version</TextBlock>
                 </StackPanel>
             </SplitButton.Content>
         </SplitButton>

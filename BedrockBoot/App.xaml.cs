@@ -45,6 +45,7 @@ namespace BedrockBoot
             AppThemeService = new ThemeService(MainWindow);
             AppThemeService.AutoInitialize(MainWindow);
             AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
+            AppThemeService.ConfigureBackdrop(BackdropType.AcrylicThin);
         }
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {

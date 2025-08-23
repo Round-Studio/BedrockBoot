@@ -73,7 +73,7 @@ namespace BedrockBoot
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
-            MessageBox.ShowAsync("ÕýÔÚ¹Ø±Õ", "ÕýÔÚ¹Ø±Õ");
+            MessageBox.ShowAsync("���ڹر�", "���ڹر�");
             Environment.Exit(0);
         }
         public void UpdateBackground()
@@ -98,41 +98,6 @@ namespace BedrockBoot
                 }
             }));
         }
-        
-
-        public async Task OnUpdate()
-        {
-            var update = new Update()
-            {
-                OnUpdate = (async (s1, s2,url) =>
-                {
-                    var dialog = new ContentDialog()
-                    {
-                        Title = "ï¿½ï¿½Ç°ï¿½Ð¸ï¿½ï¿½Â¿ï¿½ï¿½ï¿½",
-                        Content =
-                            $"ï¿½ï¿½Ç°ï¿½ï¿½{s1.Replace("0", "").Replace(".", "")}\nï¿½ï¿½ï¿½Â£ï¿½{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
-                        CloseButtonText = "ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½",
-                        PrimaryButtonText = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
-                        DefaultButton = ContentDialogButton.Primary,
-                        XamlRoot = this.Content.XamlRoot
-                    };
-                    var res = await dialog.ShowAsync();
-                    if (res == ContentDialogResult.Primary)
-                    {
-                        var dialog_dow = new ContentDialog()
-                        {
-                            Title = "ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½...",
-                            Content = new DownloadUpdateFileContent(url),
-                            XamlRoot = this.Content.XamlRoot
-                        };
-                        ((DownloadUpdateFileContent)dialog_dow.Content).StartDownload();
-                        await dialog_dow.ShowAsync();
-                    }
-                })
-            };
-            await update.TryCheckUdate();
-        }
-        
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));

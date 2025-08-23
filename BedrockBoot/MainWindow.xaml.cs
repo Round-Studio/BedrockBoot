@@ -104,7 +104,7 @@ namespace BedrockBoot
             }));
         }
 
-        public async void OnUpdate()
+        public async Task OnUpdate()
         {
             var update = new Update()
             {
@@ -112,11 +112,11 @@ namespace BedrockBoot
                 {
                     var dialog = new ContentDialog()
                     {
-                        Title = "µ±Ç°ÓÐ¸üÐÂ¿ÉÓÃ",
+                        Title = "ï¿½ï¿½Ç°ï¿½Ð¸ï¿½ï¿½Â¿ï¿½ï¿½ï¿½",
                         Content =
-                            $"µ±Ç°£º{s1.Replace("0", "").Replace(".", "")}\n¸üÐÂ£º{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
-                        CloseButtonText = "ÔÝ²»¸üÐÂ",
-                        PrimaryButtonText = "Á¢¼´¸üÐÂ",
+                            $"ï¿½ï¿½Ç°ï¿½ï¿½{s1.Replace("0", "").Replace(".", "")}\nï¿½ï¿½ï¿½Â£ï¿½{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
+                        CloseButtonText = "ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½",
+                        PrimaryButtonText = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
                         DefaultButton = ContentDialogButton.Primary,
                         XamlRoot = this.Content.XamlRoot
                     };
@@ -125,7 +125,7 @@ namespace BedrockBoot
                     {
                         var dialog_dow = new ContentDialog()
                         {
-                            Title = "ÏÂÔØ¸üÐÂÖÐ...",
+                            Title = "ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½...",
                             Content = new DownloadUpdateFileContent(url),
                             XamlRoot = this.Content.XamlRoot
                         };

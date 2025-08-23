@@ -1,3 +1,8 @@
+using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Models.Classes.Helper;
+using BedrockBoot.Models.Classes.Launch;
+using BedrockBoot.Native;
+using BedrockBoot.Tools;
 using BedrockBoot.Versions;
 using BedrockLauncher.Core;
 using Microsoft.UI;
@@ -15,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json;
@@ -23,12 +29,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Management.Deployment;
-using BedrockBoot.Native;
 using WinRT.Interop;
-using BedrockBoot.Controls.ContentDialogContent;
-using BedrockBoot.Models.Classes.Launch;
-using BedrockBoot.Tools;
-using System.IO.Compression;
 
 namespace BedrockBoot.Pages;
 
@@ -135,6 +136,16 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
+            MouseHelper.StopMouseLock();
+            MouseHelper.BORDER_MARGIN = global_cfg.cfg.JsonCfg.MouseLockCutPX;
+
+            MouseHelper.AddTargetWindow(versionInfo.VersionName);
+
+            if (global_cfg.cfg.JsonCfg.MouseLock)
+            {
+                MouseHelper.StartMouseLock();
+            }
+
             Task.Run((() =>
             {
                 try

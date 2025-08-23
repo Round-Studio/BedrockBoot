@@ -1,8 +1,10 @@
 using ABI.System;
 using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Models.Classes.Helper;
 using BedrockBoot.Models.Classes.Style.Background;
 using BedrockBoot.Models.Enum.Background;
 using BedrockBoot.Pages.SettingPage;
+using BedrockBoot.Tools;
 using BedrockLauncher.Core;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Dispatching;
@@ -46,10 +48,9 @@ public sealed partial class SettingsPage : Page
         DownloadThreads.Value = DownThread;
         DelayTime.Value = DelayTimes;
         Unloaded += SettingsPage_Unloaded;
+        LockMouseToggleSwitch.IsOn = global_cfg.cfg.JsonCfg.MouseLock;
         SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
-
-        MainShortcut.Keys = new List<object> { "F12" };
-        MainShortcut.KeyUp += MainShortcut_KeyUp;
+        MouseLockCutPX.Value = global_cfg.cfg.JsonCfg.MouseLockCutPX;
         UpdateUI();
 
         switch (global_cfg.cfg.JsonCfg.BackgroundEnum)
@@ -78,29 +79,6 @@ public sealed partial class SettingsPage : Page
         }
     }
 
-    private void MainShortcut_KeyUp(object sender, KeyRoutedEventArgs e)
-    {
-        if (!IsLock)
-        {
-            var windows = Locker.FindWindowsByProcess("Minecraft.Windows");
-            if (windows.Count == 0)
-            {
-                return;
-            }
-            else
-            {
-               
-            }
-            IsLock = true;
-        }
-        else
-        {
-            
-            IsLock = false;
-        }
-
-    }
-
     public bool IsEdit = false;
     public void UpdateUI()
     {
@@ -122,10 +100,21 @@ public sealed partial class SettingsPage : Page
         {
             DownThread = (int)DownloadThreads.Value;
             DelayTimes = (int)DelayTime.Value;
+            global_cfg.cfg.JsonCfg.MouseLockCutPX = (int)MouseLockCutPX.Value;
             global_cfg.cfg.JsonCfg.SaveAppx = SavaAppx.IsOn;
             global_cfg.cfg.JsonCfg.DownThread = DownThread;
             global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;
+            global_cfg.cfg.JsonCfg.MouseLock = LockMouseToggleSwitch.IsOn;
             global_cfg.cfg.SaveConfig();
+
+            if (!global_cfg.cfg.JsonCfg.MouseLock)
+            {
+                MouseHelper.StopMouseLock();
+            }
+            else
+            {
+                MouseHelper.StartMouseLock();
+            }
         }
         catch (System.Exception exception)
         {

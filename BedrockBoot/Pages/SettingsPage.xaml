@@ -50,9 +50,9 @@
                                         Width="400"
                                         MinWidth="200"
                                         HorizontalAlignment="Right"
-                                        AcceptsExpression="True"
                                         Maximum="128"
                                         Minimum="1"
+                                        AcceptsExpression="True"
                                         SpinButtonPlacementMode="Inline"/>
                                 </dev:SettingsCard>
                                 <dev:SettingsCard Header="安装完成保留 Appx 文件">
@@ -192,7 +192,7 @@
                         </dev:SettingsExpander.Items>
                     </dev:SettingsExpander>
 
-                    <dev:SettingsCard Description="启动器的这个原图"
+                    <dev:SettingsCard Description="启动器的主题"
                                       Header="主题"
                                       HeaderIcon="{dev:FontIcon Glyph=&#xE793;}">
                         <ComboBox SelectedIndex="2">
@@ -215,24 +215,16 @@
                     
                     <dev:SettingsExpander
                         Description="锁定鼠标不移出游戏窗口外"
-                        Header="鼠标锁定 (Beta) (功能还没写，没用别看)"
+                        Header="鼠标锁定 (Beta)"
                         HeaderIcon="{dev:FontIcon Glyph=&#xE962;}">
-                        <ToggleSwitch OnContent="启用" OffContent="禁用"></ToggleSwitch>
+                        <ToggleSwitch OnContent="启用" OffContent="禁用" x:Name="LockMouseToggleSwitch"></ToggleSwitch>
                         <dev:SettingsExpander.Items>
-                            <dev:SettingsCard Header="热键"
-                                              Description="设置控制是否启用的热键">
-                                <dev:Shortcut x:Name="MainShortcut"
-                                              Padding="0"
-                                              Margin="-8"
-                                              Height="40"
-                                              Title="给启用鼠标锁定设置热键"
-                                              ContentDialogTitle="设置热键"
-                                              InfoTitle="设置一个不冲突的热键"
-                                              ErrorTitle="这是不被允许的单独热键！"
-                                              WarningTitle="这个热键可能会影响系统正常工作"
-                                              SecondaryButtonText="重置"
-                                              PrimaryButtonText="保存"
-                                              CloseButtonText="取消"/>
+                            <dev:SettingsCard Header="边缘深度 (px)">
+                                <NumberBox Maximum="30" Minimum="5"
+                                           Width="200" Value="15"
+                                           AcceptsExpression="True"
+                                           x:Name="MouseLockCutPX"
+                                           SpinButtonPlacementMode="Inline"></NumberBox>
                             </dev:SettingsCard>
                         </dev:SettingsExpander.Items>
                     </dev:SettingsExpander>

@@ -1,5 +1,6 @@
 ﻿using BedrockBoot.Models.Classes.Helper;
 using BedrockBoot.Native;
+using BedrockBoot.Tools;
 using BedrockBoot.Versions;
 using BedrockLauncher.Core;
 using System;
@@ -21,8 +22,7 @@ namespace BedrockBoot.Models.Classes.Launch
         {
             MouseHelper.StopMouseLock();
 
-            MouseHelper.targetWindowNames.Add(versionInfo.VersionName);
-            MouseHelper.targetWindowNames.Add(versionInfo.RealVersion);
+            MouseHelper.AddTargetWindow(versionInfo.VersionName);
 
             if (global_cfg.cfg.JsonCfg.MouseLock)
             {

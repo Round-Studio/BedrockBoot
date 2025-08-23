@@ -50,6 +50,7 @@ public sealed partial class SettingsPage : Page
         Unloaded += SettingsPage_Unloaded;
         LockMouseToggleSwitch.IsOn = global_cfg.cfg.JsonCfg.MouseLock;
         SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
+        MouseLockCutPX.Value = global_cfg.cfg.JsonCfg.MouseLockCutPX;
         UpdateUI();
 
         switch (global_cfg.cfg.JsonCfg.BackgroundEnum)
@@ -99,6 +100,7 @@ public sealed partial class SettingsPage : Page
         {
             DownThread = (int)DownloadThreads.Value;
             DelayTimes = (int)DelayTime.Value;
+            global_cfg.cfg.JsonCfg.MouseLockCutPX = (int)MouseLockCutPX.Value;
             global_cfg.cfg.JsonCfg.SaveAppx = SavaAppx.IsOn;
             global_cfg.cfg.JsonCfg.DownThread = DownThread;
             global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;

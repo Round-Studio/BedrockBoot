@@ -192,7 +192,7 @@
                         </dev:SettingsExpander.Items>
                     </dev:SettingsExpander>
 
-                    <dev:SettingsCard Description="启动器的这个原图"
+                    <dev:SettingsCard Description="启动器的主题"
                                       Header="主题"
                                       HeaderIcon="{dev:FontIcon Glyph=&#xE793;}">
                         <ComboBox SelectedIndex="2">
@@ -221,8 +221,9 @@
                         <dev:SettingsExpander.Items>
                             <dev:SettingsCard Header="边缘深度 (px)">
                                 <NumberBox Maximum="30" Minimum="5"
-                                           Width="200" Value="20"
+                                           Width="200" Value="15"
                                            AcceptsExpression="True"
+                                           x:Name="MouseLockCutPX"
                                            SpinButtonPlacementMode="Inline"></NumberBox>
                             </dev:SettingsCard>
                         </dev:SettingsExpander.Items>

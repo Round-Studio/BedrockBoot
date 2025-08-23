@@ -33,6 +33,7 @@
     <None Remove="Controls\ContentDialogContent\AddNewGameFolderContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DelGameVersionContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
+    <None Remove="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml" />
     <None Remove="Controls\ContentDialogContent\ImportPackContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\PersonPictureButton.xaml" />
@@ -185,6 +186,9 @@
     <Page Update="Controls\ContentDialogContent\ImportPackContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -235,5 +239,8 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Assets\AppReference\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Classes\Update\" />
   </ItemGroup>
 </Project>

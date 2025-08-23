@@ -63,6 +63,7 @@ public sealed partial class SettingsPage : Page
         Unloaded += SettingsPage_Unloaded;
         LockMouseToggleSwitch.IsOn = global_cfg.cfg.JsonCfg.MouseLock;
         SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
+        AutoCheckUpdate.IsOn = global_cfg.cfg.JsonCfg.AutoCheckUpdate;
         MouseLockCutPX.Value = global_cfg.cfg.JsonCfg.MouseLockCutPX;
         UpdateUI();
     }
@@ -93,6 +94,7 @@ public sealed partial class SettingsPage : Page
             global_cfg.cfg.JsonCfg.DownThread = DownThread;
             global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;
             global_cfg.cfg.JsonCfg.MouseLock = LockMouseToggleSwitch.IsOn;
+            global_cfg.cfg.JsonCfg.AutoCheckUpdate = AutoCheckUpdate.IsOn;
             global_cfg.cfg.SaveConfig();
 
             if (!global_cfg.cfg.JsonCfg.MouseLock)

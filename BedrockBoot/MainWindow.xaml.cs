@@ -104,7 +104,7 @@ namespace BedrockBoot
             }));
         }
 
-        public async Task OnUpdate()
+        public async void OnUpdate()
         {
             var update = new Update()
             {

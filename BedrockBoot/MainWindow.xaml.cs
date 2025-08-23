@@ -112,11 +112,11 @@ namespace BedrockBoot
                 {
                     var dialog = new ContentDialog()
                     {
-                        Title = "��ǰ�и��¿���",
+                        Title = "有更新可用",
                         Content =
-                            $"��ǰ��{s1.Replace("0", "").Replace(".", "")}\n���£�{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
-                        CloseButtonText = "�ݲ�����",
-                        PrimaryButtonText = "��������",
+                            $"当前：{s1.Replace("0", "").Replace(".", "")}\n最新：{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
+                        CloseButtonText = "暂不更新",
+                        PrimaryButtonText = "立即更新",
                         DefaultButton = ContentDialogButton.Primary,
                         XamlRoot = this.Content.XamlRoot
                     };
@@ -125,7 +125,7 @@ namespace BedrockBoot
                     {
                         var dialog_dow = new ContentDialog()
                         {
-                            Title = "���ظ�����...",
+                            Title = "下载更新中...",
                             Content = new DownloadUpdateFileContent(url),
                             XamlRoot = this.Content.XamlRoot
                         };

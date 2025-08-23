@@ -42,10 +42,10 @@ namespace BedrockBoot
             MainWindow = mainWindow;
             MWindow = mainWindow;
             MainWindow.Title = MainWindow.AppWindow.Title = ProcessInfoHelper.ProductNameAndVersion;
-            AppThemeService = new ThemeService(MainWindow);
-            AppThemeService.AutoInitialize(MainWindow);
+            AppThemeService = new ThemeService(_window);
+            AppThemeService.AutoInitialize(_window);
             AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
-            AppThemeService.ConfigureBackdrop(BackdropType.AcrylicThin);
+            // AppThemeService.ConfigureBackdrop(BackdropType.AcrylicThin);
         }
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {

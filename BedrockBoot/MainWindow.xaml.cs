@@ -21,7 +21,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using BedrockBoot.Models.Classes.Update;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -71,15 +70,13 @@ namespace BedrockBoot
             };
             global_cfg.MainWindow = this;
             UpdateBackground();
-
-            if(global_cfg.cfg.JsonCfg.AutoCheckUpdate) OnUpdate();
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
-            global_cfg.cfg.SaveConfig();
+            MessageBox.ShowAsync("正在关闭", "正在关闭");
             Environment.Exit(0);
         }
-        public async void UpdateBackground()
+        public void UpdateBackground()
         {
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
             {
@@ -100,39 +97,6 @@ namespace BedrockBoot
                         break;
                 }
             }));
-        }
-
-        public async void OnUpdate()
-        {
-            var update = new Update()
-            {
-                OnUpdate = (async (s1, s2,url) =>
-                {
-                    var dialog = new ContentDialog()
-                    {
-                        Title = "当前有更新可用",
-                        Content =
-                            $"当前：{s1.Replace("0", "").Replace(".", "")}\n更新：{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
-                        CloseButtonText = "暂不更新",
-                        PrimaryButtonText = "立即更新",
-                        DefaultButton = ContentDialogButton.Primary,
-                        XamlRoot = this.Content.XamlRoot
-                    };
-                    var res = await dialog.ShowAsync();
-                    if (res == ContentDialogResult.Primary)
-                    {
-                        var dialog_dow = new ContentDialog()
-                        {
-                            Title = "下载更新中...",
-                            Content = new DownloadUpdateFileContent(url),
-                            XamlRoot = this.Content.XamlRoot
-                        };
-                        ((DownloadUpdateFileContent)dialog_dow.Content).StartDownload();
-                        await dialog_dow.ShowAsync();
-                    }
-                })
-            };
-            await update.TryCheckUdate();
         }
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {

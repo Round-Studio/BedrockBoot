@@ -52,12 +52,6 @@
                                     Minimum="1"
                                     SpinButtonPlacementMode="Inline" />
                             </dev:SettingsCard>
-                            <dev:SettingsCard Header="自动检查更新">
-                                <ToggleSwitch
-                                    x:Name="AutoCheckUpdate"
-                                    OffContent=""
-                                    OnContent="" />
-                            </dev:SettingsCard>
                             <dev:SettingsCard Header="安装完成保留 Appx 文件">
                                 <ToggleSwitch
                                     x:Name="SavaAppx"

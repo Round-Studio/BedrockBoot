@@ -1,5 +1,7 @@
 using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Models.Classes;
 using BedrockBoot.Models.Classes.Style.Background;
+using BedrockBoot.Models.Classes.Update;
 using BedrockBoot.Models.Enum.Background;
 using BedrockBoot.Pages;
 using DevWinUI;
@@ -35,6 +37,7 @@ namespace BedrockBoot
     {
         public MainWindow()
         {
+            GlobalLogger.Initialize();
             InitializeComponent();
 
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;

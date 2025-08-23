@@ -73,15 +73,13 @@ namespace BedrockBoot
             };
             global_cfg.MainWindow = this;
             UpdateBackground();
-
-            if(global_cfg.cfg.JsonCfg.AutoCheckUpdate) OnUpdate();
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
-            global_cfg.cfg.SaveConfig();
+            MessageBox.ShowAsync("ÕýÔÚ¹Ø±Õ", "ÕýÔÚ¹Ø±Õ");
             Environment.Exit(0);
         }
-        public async void UpdateBackground()
+        public void UpdateBackground()
         {
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
             {
@@ -103,6 +101,7 @@ namespace BedrockBoot
                 }
             }));
         }
+        
 
         public async Task OnUpdate()
         {
@@ -112,11 +111,11 @@ namespace BedrockBoot
                 {
                     var dialog = new ContentDialog()
                     {
-                        Title = "��ǰ�и��¿���",
+                        Title = "ï¿½ï¿½Ç°ï¿½Ð¸ï¿½ï¿½Â¿ï¿½ï¿½ï¿½",
                         Content =
-                            $"��ǰ��{s1.Replace("0", "").Replace(".", "")}\n���£�{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
-                        CloseButtonText = "�ݲ�����",
-                        PrimaryButtonText = "��������",
+                            $"ï¿½ï¿½Ç°ï¿½ï¿½{s1.Replace("0", "").Replace(".", "")}\nï¿½ï¿½ï¿½Â£ï¿½{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
+                        CloseButtonText = "ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½",
+                        PrimaryButtonText = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
                         DefaultButton = ContentDialogButton.Primary,
                         XamlRoot = this.Content.XamlRoot
                     };
@@ -125,7 +124,7 @@ namespace BedrockBoot
                     {
                         var dialog_dow = new ContentDialog()
                         {
-                            Title = "���ظ�����...",
+                            Title = "ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½...",
                             Content = new DownloadUpdateFileContent(url),
                             XamlRoot = this.Content.XamlRoot
                         };
@@ -136,6 +135,7 @@ namespace BedrockBoot
             };
             await update.TryCheckUdate();
         }
+        
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (args.IsSettingsSelected) NavFrame.Navigate(typeof(SettingsPage));

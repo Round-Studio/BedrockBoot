@@ -34,7 +34,8 @@ namespace BedrockBoot
             // 现在你可以遍历所有控件了
             foreach (var control in allControls)
             {
-                DragMoveAndResizeHelper.SetDragMove(App._window, control);
+                // DragMoveAndResizeHelper.SetDragMove(App._window, control); // Everything can be dragged！
+                control.Visibility = Visibility.Collapsed; // Everything is 滚木！
             }
         }
 

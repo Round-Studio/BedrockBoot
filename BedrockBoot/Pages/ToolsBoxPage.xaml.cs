@@ -1,5 +1,7 @@
 using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Models.Classes.Helper;
+using BedrockLauncher.Core;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -65,6 +67,27 @@ namespace BedrockBoot.Pages
             {
                 global_cfg.cfg.JsonCfg.MouseLockCutPX = ((SettingMouseLockPaddingContent)dialog.Content).MouseLockPadding;
             }
+        }
+
+        private void DeleteMinecraft_Click(object sender, RoutedEventArgs e)
+        {
+            Task.Run((() =>
+            {
+                try
+                {
+                    globalTools.ShowInfo("请耐心等待，直到完成提示出现");
+                    global_cfg.core.RemoveGame(VersionType.Release);
+                    global_cfg.core.RemoveGame(VersionType.Preview);
+                    globalTools.ShowInfo("卸载完成");
+                }
+                catch (System.Exception exception)
+                {
+                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
+                    {
+                        MessageBox.ShowAsync("错误", exception.ToString());
+                    }));
+                }
+            }));
         }
     }
 }

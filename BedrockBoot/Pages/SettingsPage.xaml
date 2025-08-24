@@ -158,13 +158,6 @@
                         Style="{StaticResource Subtitle}"
                         Text="辅助功能" />
 
-                    <dev:SettingsCard
-                        Description="强制卸载已安装的 Minecraft Bedrock"
-                        Header="卸载 MC"
-                        HeaderIcon="{dev:FontIcon Glyph=&#xE74D;}">
-                        <Button Click="ButtonBase_OnClick">卸载</Button>
-                    </dev:SettingsCard>
-
                     <TextBlock
                         Margin="0,10,0,0"
                         Style="{StaticResource Subtitle}"

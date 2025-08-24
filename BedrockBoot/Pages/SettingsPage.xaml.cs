@@ -146,29 +146,6 @@ public sealed partial class SettingsPage : Page
         }
     }
 
-    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-    {
-        
-        Task.Run((() =>
-        {
-            try
-            {
-                globalTools.ShowInfo("请耐心等待，直到完成提示出现");
-                global_cfg.core.RemoveGame(VersionType.Release);
-                global_cfg.core.RemoveGame(VersionType.Preview);
-                globalTools.ShowInfo("卸载完成");
-            }
-            catch (System.Exception exception)
-            {
-                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
-                {
-                    MessageBox.ShowAsync("错误", exception.ToString());
-                }));
-            }
-           
-        }));
-    }
-
     private void BackgroundModel_Base_OnClick(object sender, RoutedEventArgs e)
     {
         var until = ((RadioButton)sender);

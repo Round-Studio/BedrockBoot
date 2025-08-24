@@ -54,7 +54,8 @@
                                            Description="卸载来自商店或其他启动器安装的 MC"
                                            SettingButtonVisibility="Collapsed">
                             <controls:ToolItem.CardContent>
-                                <Button>卸载</Button>
+                                <Button x:Name="DeleteMinecraft"
+                                        Click="DeleteMinecraft_Click">卸载</Button>
                             </controls:ToolItem.CardContent>
                         </controls:ToolItem>
                     </GridView>

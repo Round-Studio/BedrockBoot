@@ -127,7 +127,7 @@
                         <ComboBox Name="cmbTheme" SelectionChanged="cmbTheme_SelectionChanged">
                             <ComboBoxItem Content="浅色" Tag="Light" />
                             <ComboBoxItem Content="深色" Tag="Dark" />
-                            <ComboBoxItem Content="浅色或系统主题" Tag="Default" />
+                            <ComboBoxItem Content="系统主题" Tag="Default" />
                         </ComboBox>
                     </dev:SettingsCard>
 
@@ -153,10 +153,16 @@
                         Text="辅助功能" />
 
                     <dev:SettingsCard
+                        BorderBrush="{ThemeResource SystemFillColorCriticalBrush}"
+                        BorderThickness="1"
                         Description="强制卸载已安装的 Minecraft Bedrock"
+                        Foreground="{ThemeResource SystemFillColorCriticalBrush}"
                         Header="卸载 MC"
                         HeaderIcon="{dev:FontIcon Glyph=&#xE74D;}">
-                        <Button Click="ButtonBase_OnClick">卸载</Button>
+                        <Button
+                            Click="ButtonBase_OnClick"
+                            Content="卸载"
+                            Style="{StaticResource WarnButtonStyle}" />
                     </dev:SettingsCard>
 
                     <dev:SettingsExpander

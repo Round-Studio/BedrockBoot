@@ -10,22 +10,6 @@
     mc:Ignorable="d">
 
     <Grid>
-        <dev:LayeredFontIcons>
-            <dev:LayeredFontIcons.Foreground>
-                <LinearGradientBrush>
-                    <LinearGradientBrush.GradientStops>
-                        <GradientStopCollection>
-                            <GradientStop Offset="0.5" Color="#1493DF" />
-                            <GradientStop Offset="1" Color="#0669BC" />
-                        </GradientStopCollection>
-                    </LinearGradientBrush.GradientStops>
-                </LinearGradientBrush>
-            </dev:LayeredFontIcons.Foreground>
-            <dev:LayeredFontIcons.FontIcons>
-                <FontIcon FontSize="64" Glyph="&#xF305;" />
-                <FontIcon FontSize="64" Glyph="&#xF386;" />
-            </dev:LayeredFontIcons.FontIcons>
-        </dev:LayeredFontIcons>
         <dev:ConfettiCannon x:Name="ConfettiCannonSample" />
         <SplitButton
             x:Name="LauncherButton"

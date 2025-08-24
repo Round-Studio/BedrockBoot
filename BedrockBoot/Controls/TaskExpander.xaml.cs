@@ -207,7 +207,6 @@ namespace BedrockBoot.Controls
                 };
                 try
                 {
-                    throw new Exception("测试错误处理");
                     GameBackGroundEditer gameBackGroundEditer = null;
                     if (string.IsNullOrEmpty(backImg) | string.IsNullOrEmpty(backColor))
                     {

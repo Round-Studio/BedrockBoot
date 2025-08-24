@@ -51,10 +51,11 @@ public sealed partial class HomePage : Page
     private void LauncherButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
     {
         Random ran = new Random();
-        int n = ran.Next(100);
+        int n = ran.Next(6);
 
-        switch (n % 3)
+        switch (n)
         {
+            default:
             case 0:
                 ConfettiCannonSample.FireBasic();
                 break;
@@ -63,6 +64,15 @@ public sealed partial class HomePage : Page
                 break;
             case 2:
                 ConfettiCannonSample.FireSchoolPride();
+                break;
+            case 3:
+                ConfettiCannonSample.Fire();
+                break;
+            case 4:
+                ConfettiCannonSample.FireRealistic();
+                break;
+            case 5:
+                ConfettiCannonSample.FireStars();
                 break;
         }
     }

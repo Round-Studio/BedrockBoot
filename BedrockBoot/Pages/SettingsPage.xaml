@@ -166,7 +166,7 @@
                     </dev:SettingsCard>
 
                     <dev:SettingsExpander
-                        Description="锁定鼠标不移出游戏窗口外"
+                        Description="锁定鼠标不移出游戏窗口外快捷键Ctrl+Alt+F1"
                         Header="鼠标锁定 (Beta)"
                         HeaderIcon="{dev:FontIcon Glyph=&#xE962;}">
                         <ToggleSwitch

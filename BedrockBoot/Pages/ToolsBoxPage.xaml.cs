@@ -1,4 +1,4 @@
-using BedrockBoot.Controls.ContentDialogContent;
+ï»¿using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Models.Classes.Helper;
 using BedrockLauncher.Core;
 using Microsoft.UI.Dispatching;
@@ -57,9 +57,9 @@ namespace BedrockBoot.Pages
             {
                 XamlRoot = this.XamlRoot,
                 Content = new SettingMouseLockPaddingContent(),
-                Title = "Êó±êËøÉèÖÃ",
-                PrimaryButtonText = "±£´æ",
-                CloseButtonText = "È¡Ïû",
+                Title = "é¼ æ ‡é”è®¾ç½®",
+                PrimaryButtonText = "ä¿å­˜",
+                CloseButtonText = "å–æ¶ˆ",
                 DefaultButton = ContentDialogButton.Primary
             };
             var res = await dialog.ShowAsync();
@@ -75,16 +75,16 @@ namespace BedrockBoot.Pages
             {
                 try
                 {
-                    globalTools.ShowInfo("ÇëÄÍÐÄµÈ´ý£¬Ö±µ½Íê³ÉÌáÊ¾³öÏÖ");
+                    globalTools.ShowInfo("è¯·è€å¿ƒç­‰å¾…ï¼Œç›´åˆ°å®Œæˆæç¤ºå‡ºçŽ°");
                     global_cfg.core.RemoveGame(VersionType.Release);
                     global_cfg.core.RemoveGame(VersionType.Preview);
-                    globalTools.ShowInfo("Ð¶ÔØÍê³É");
+                    globalTools.ShowInfo("å¸è½½å®Œæˆ");
                 }
                 catch (System.Exception exception)
                 {
                     DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                     {
-                        MessageBox.ShowAsync("´íÎó", exception.ToString());
+                        MessageBox.ShowAsync("é”™è¯¯", exception.ToString());
                     }));
                 }
             }));

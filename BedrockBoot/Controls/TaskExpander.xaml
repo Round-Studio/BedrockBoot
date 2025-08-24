@@ -31,7 +31,7 @@
         </dev:SettingsCard.Header>
         <dev:SettingsCard.Description>
             <StackPanel Orientation="Vertical">
-                <ProgressBar x:Name="Process" Margin="0,4,0,4" />
+                <ProgressBar x:Name="Process" Margin="0,4,0,4" IsIndeterminate="True"/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="Process_Text" HorizontalAlignment="Left" Width="160" Text="请稍后..."/>
                     <TextBlock x:Name="Process_JD_Text" HorizontalAlignment="Left" Width="160" Text="?.?? %"/>

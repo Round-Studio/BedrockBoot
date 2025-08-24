@@ -83,7 +83,7 @@ namespace BedrockBoot.Tools
             dialog.XamlRoot = root;
             dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             dialog.Title = title;
-            dialog.Content = new TextBlock() { Text = content };
+            dialog.Content = new TextBlock() { Text = content,TextTrimming = TextTrimming.WordEllipsis };
             dialog.CloseButtonText = "确定";
             dialog.DefaultButton = ContentDialogButton.Close;
 

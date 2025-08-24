@@ -101,10 +101,6 @@ public sealed partial class SettingsPage : Page
             {
                 MouseHelper.StopMouseLock();
             }
-            else
-            {
-                MouseHelper.StartMouseLock();
-            }
         }
         catch (System.Exception exception)
         {

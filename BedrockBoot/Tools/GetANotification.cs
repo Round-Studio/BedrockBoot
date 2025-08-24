@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace BedrockBoot.Tools
 {
-    internal class GetANotification
+    internal static class GetANotification
     {
-        public AppNotification GetNotification(List<string> notificationsText)
+        public static AppNotification GetNotification(List<string> notificationsText)
         {
             AppNotificationBuilder notification = new AppNotificationBuilder();
             foreach (var item in notificationsText)
@@ -20,7 +20,7 @@ namespace BedrockBoot.Tools
             return notification.BuildNotification();
         }
 
-        public AppNotification GetNotification(List<string> notificationsText, AppNotificationProgressData data)
+        public static AppNotification GetNotification(List<string> notificationsText, AppNotificationProgressData data)
         {
             /// <summary>
             /// 使用进度条的通知，使用较为复杂，导航至原定义查看文档

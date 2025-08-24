@@ -214,7 +214,7 @@ public sealed partial class VersionPage : Page
                                     WindowsApi.LoadFix();
                                     DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
                                     {
-                                        globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);
+                                        GetANotification.GetNotification(new List<string>() { "1111" });
                                     }));
                                     StartInjectDirect(versionInfo.Version_Path);
                                     StartInjectThread(versionInfo.Version_Path);

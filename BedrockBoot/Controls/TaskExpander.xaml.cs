@@ -1,4 +1,6 @@
+using ABI.System;
 using BedrockBoot.Models.Classes;
+using BedrockBoot.Tools;
 using BedrockBoot.Versions;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.JsonHandle;
@@ -63,7 +65,7 @@ namespace BedrockBoot.Controls
             {
                 _HeaderIcon = new FontIcon() { Glyph = HeaderIcon };
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 // Debug.WriteLine($"Error setting HeaderIcon: {e.Message}");
                 // TODO: 这里应该有一个日志记录
@@ -95,6 +97,8 @@ namespace BedrockBoot.Controls
                     {
                         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                         {
+                            if (Process.IsIndeterminate) Process.IsIndeterminate = false;
+
                             Process.Value = progress.ProgressPercentage;
                             Process_JD_Text.Text = $"{progress.ProgressPercentage:0.00} %";
                             Process_File_Text.Text = $"{SpeedCalculatorExtensions.ToFileSizeString(progress.DownloadedBytes)} / {SpeedCalculatorExtensions.ToFileSizeString(progress.TotalBytes)}";
@@ -162,6 +166,7 @@ namespace BedrockBoot.Controls
                     {
                         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                         {
+                            if (Process.IsIndeterminate) Process.IsIndeterminate = false;
                             Process.Value = u;
                             Process_JD_Text.Text = $"{u:0.00} %";
                             Process_File_Text.Text = s;
@@ -175,7 +180,7 @@ namespace BedrockBoot.Controls
                             isError = true;
                             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                             {
-                                MessageBox.ShowAsync(exception);
+                                EasyContentDialog.CreateDialog(this.XamlRoot, "抱歉，我们发生了点错误。", exception.Message);
                                 global_cfg.tasksPool.Remove(this);
                             }));
                         }
@@ -194,6 +199,7 @@ namespace BedrockBoot.Controls
                     {
                         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
                         {
+                            if (Process.IsIndeterminate) Process.IsIndeterminate = false;
                             Process.Value = progress.Percentage;
                             Process_JD_Text.Text = $"{progress.Percentage:0.00} %";
                             Process_File_Text.Text = $"{progress.CompletedFiles} / {progress.TotalFiles} Files";
@@ -249,11 +255,11 @@ namespace BedrockBoot.Controls
                         File.Delete(s);
                     }
                 }
-                catch (Exception e)
+                catch (System.Exception e)
                 {
                     DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
                     {
-                        MessageBox.ShowAsync(e.ToString(), "错误");
+                        EasyContentDialog.CreateDialog(this.XamlRoot, "抱歉，我们发生了点错误。", e.Message);
                         global_cfg.tasksPool.Remove(this);
                        
                     }));

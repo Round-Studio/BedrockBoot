@@ -1,3 +1,4 @@
+using ABI.System;
 using BedrockBoot.Controls;
 using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Tools;
@@ -148,11 +149,11 @@ namespace BedrockBoot.Pages.DownloadPages
                             "https://raw.gitcode.com/gcw_lJgzYtGB/-MineCraft-Bedrock-Download-SU/raw/main/bedrock.json");
                         return list;
                     }
-                    catch (Exception e)
+                    catch (System.Exception e)
                     {
                         DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
                         {
-                            MessageBox.ShowAsync(e.ToString(), "错误");
+                            EasyContentDialog.CreateDialog(this.XamlRoot, "抱歉，我们发生了点错误。", e.Message);
                         }));
                         return new List<VersionInformation>();
                     }
@@ -186,11 +187,11 @@ namespace BedrockBoot.Pages.DownloadPages
                     }));
                 }));
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
                 {
-                    MessageBox.ShowAsync(ex.ToString(), "错误");
+                    EasyContentDialog.CreateDialog(this.XamlRoot, "抱歉，我们发生了点错误。", ex.Message);
                 }));
             }
         }

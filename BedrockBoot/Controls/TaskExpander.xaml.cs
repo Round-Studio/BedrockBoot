@@ -178,9 +178,9 @@ namespace BedrockBoot.Controls
                         if (exception!=null)
                         {
                             isError = true;
-                            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, (() =>
+                            DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                             {
-                                EasyContentDialog.CreateDialog(this.XamlRoot, "抱歉，我们发生了点错误。", exception.Message);
+                                EasyContentDialog.CreateDialog(global_cfg.MainWindow.Content.XamlRoot, "抱歉，我们发生了点错误。", exception.Message);
                                 global_cfg.tasksPool.Remove(this);
                             }));
                         }
@@ -257,9 +257,9 @@ namespace BedrockBoot.Controls
                 }
                 catch (System.Exception e)
                 {
-                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, (() =>
+                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                     {
-                        EasyContentDialog.CreateDialog(this.XamlRoot, "抱歉，我们发生了点错误。", e.Message);
+                        EasyContentDialog.CreateDialog(global_cfg.MainWindow.Content.XamlRoot, "抱歉，我们发生了点错误。",$"{e.Message}\n这可能是您选择的版本 {Version.ID} 已被微软从服务器删除，无法下载导致的出错。");
                         global_cfg.tasksPool.Remove(this);
                        
                     }));

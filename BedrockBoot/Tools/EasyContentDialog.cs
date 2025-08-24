@@ -81,13 +81,19 @@ namespace BedrockBoot.Tools
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
             dialog.XamlRoot = root;
-            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
             dialog.Title = title;
             dialog.Content = new TextBlock() { Text = content,TextTrimming = TextTrimming.WordEllipsis };
             dialog.CloseButtonText = "确定";
             dialog.DefaultButton = ContentDialogButton.Close;
 
-            var result = await dialog.ShowAsync();
+            try
+            {
+                dialog.ShowAsync();
+            }
+            catch
+            {
+                MessageBox.ShowAsync(content, title);
+            }
         }
     }
 }

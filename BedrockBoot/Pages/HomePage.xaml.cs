@@ -27,10 +27,22 @@ public sealed partial class HomePage : Page
     public static Action OnVerionPageAction { get; set; }
     public static Action OnSettingsPageAction { get; set; }
     public static Action OnStartAction { get; set; }
+   
     public HomePage()
     {
         global_cfg.core.Init();
         InitializeComponent();
+       
+    }
+
+    private void MainShortcut_KeyUp(object sender, KeyRoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void MainShortcut_KeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 
     private unsafe void B2_OnClick(object sender, RoutedEventArgs e)

@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using BedrockBoot.Models.Classes.Helper;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -36,11 +37,19 @@ namespace BedrockBoot
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private HotKeyService _hotKeyService;
+        private int _hotKeyId;
         public MainWindow()
         {
+            //throw new Exception("Crash");
             GlobalLogger.Initialize();
             InitializeComponent();
+            _hotKeyService = new HotKeyService(this);
 
+            _hotKeyId = _hotKeyService.RegisterHotKey(
+                HotKeyModifiers.MOD_CONTROL | HotKeyModifiers.MOD_ALT,
+                VirtualKeyCodes.VK_F1,
+                OnGlobalHotKeyPressed);
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
             ExtendsContentIntoTitleBar = true;
             AppTitleBar.IsBackButtonVisible = false; 
@@ -86,8 +95,34 @@ namespace BedrockBoot
                 }
             });
         }
+
+        private bool LockStart = false;
+        private void OnGlobalHotKeyPressed()
+        {
+            // 切换到UI线程执行操作
+            _ = DispatcherQueue.TryEnqueue(() =>
+            {
+               
+                if (global_cfg.cfg.JsonCfg.MouseLock && !MouseHelper.GetRunningState())
+                {
+                    
+                    MouseHelper.StartMouseLock();
+                 
+                }
+                else if (global_cfg.cfg.JsonCfg.MouseLock && MouseHelper.GetRunningState())
+                {
+                    MouseHelper.StopMouseLock();
+                }
+                
+               
+
+              
+              
+            });
+        }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
+            _hotKeyService?.Dispose();
             global_cfg.cfg.SaveConfig();
             Environment.Exit(0);
         }

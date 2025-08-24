@@ -41,41 +41,31 @@ public sealed partial class SettingsPage : Page
     public int DelayTimes = global_cfg.cfg.JsonCfg.DelayTimes;
     public static MouseLocker Locker = new MouseLocker();
     public static bool IsLock = false;
+
+    private void cmbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        App.Current.AppThemeService.OnThemeComboBoxSelectionChanged(sender);
+    }
+    private void cmbBackdrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        App.Current.AppThemeService.OnBackdropComboBoxSelectionChanged(sender);
+    }
+
     public SettingsPage()
     {
         InitializeComponent();
+
+        App.Current.AppThemeService.SetThemeComboBoxDefaultItem(cmbTheme);
+        App.Current.AppThemeService.SetBackdropComboBoxDefaultItem(cmbBackdrop);
 
         DownloadThreads.Value = DownThread;
         DelayTime.Value = DelayTimes;
         Unloaded += SettingsPage_Unloaded;
         LockMouseToggleSwitch.IsOn = global_cfg.cfg.JsonCfg.MouseLock;
         SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
+        AutoCheckUpdate.IsOn = global_cfg.cfg.JsonCfg.AutoCheckUpdate;
+        MouseLockCutPX.Value = global_cfg.cfg.JsonCfg.MouseLockCutPX;
         UpdateUI();
-
-        switch (global_cfg.cfg.JsonCfg.BackgroundEnum)
-        {
-            case BackgroundEnum.None:
-                Background_None_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.Mica:
-                Background_Mica_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.BaseAlt:
-                Background_BaseAlt_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.Acrylic:
-                Background_Acrylic_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.Color:
-                Background_Color_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.Image:
-                Background_Image_RadioButton.IsChecked = true;
-                break;
-            case BackgroundEnum.RSkin:
-                Background_RSkin_RadioButton.IsChecked = true;
-                break;
-        }
     }
 
     public bool IsEdit = false;
@@ -99,10 +89,12 @@ public sealed partial class SettingsPage : Page
         {
             DownThread = (int)DownloadThreads.Value;
             DelayTimes = (int)DelayTime.Value;
+            global_cfg.cfg.JsonCfg.MouseLockCutPX = (int)MouseLockCutPX.Value;
             global_cfg.cfg.JsonCfg.SaveAppx = SavaAppx.IsOn;
             global_cfg.cfg.JsonCfg.DownThread = DownThread;
             global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;
             global_cfg.cfg.JsonCfg.MouseLock = LockMouseToggleSwitch.IsOn;
+            global_cfg.cfg.JsonCfg.AutoCheckUpdate = AutoCheckUpdate.IsOn;
             global_cfg.cfg.SaveConfig();
 
             if (!global_cfg.cfg.JsonCfg.MouseLock)

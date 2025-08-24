@@ -16,7 +16,9 @@ namespace BedrockBoot
         public int DownThread { get; set; } = 12;
         public int DelayTimes { get; set; } = 1000;
         public bool SaveAppx { get; set; } = true;
+        public bool AutoCheckUpdate { get; set; } = true;
         public bool MouseLock { get; set; } = true;
+        public int MouseLockCutPX { get; set; } = 15;
         public BackgroundEnum BackgroundEnum { get; set; } = BackgroundEnum.Acrylic;
         public int ChooseFolderIndex { get; set; } = 0;
         public List<GameFolderInfoEntry> GameFolders { get; set; } = new List<GameFolderInfoEntry>()

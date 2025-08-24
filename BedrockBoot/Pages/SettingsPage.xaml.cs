@@ -61,10 +61,8 @@ public sealed partial class SettingsPage : Page
         DownloadThreads.Value = DownThread;
         DelayTime.Value = DelayTimes;
         Unloaded += SettingsPage_Unloaded;
-        LockMouseToggleSwitch.IsOn = global_cfg.cfg.JsonCfg.MouseLock;
         SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
         AutoCheckUpdate.IsOn = global_cfg.cfg.JsonCfg.AutoCheckUpdate;
-        MouseLockCutPX.Value = global_cfg.cfg.JsonCfg.MouseLockCutPX;
         UpdateUI();
     }
 
@@ -89,22 +87,11 @@ public sealed partial class SettingsPage : Page
         {
             DownThread = (int)DownloadThreads.Value;
             DelayTimes = (int)DelayTime.Value;
-            global_cfg.cfg.JsonCfg.MouseLockCutPX = (int)MouseLockCutPX.Value;
             global_cfg.cfg.JsonCfg.SaveAppx = SavaAppx.IsOn;
             global_cfg.cfg.JsonCfg.DownThread = DownThread;
             global_cfg.cfg.JsonCfg.DelayTimes = DelayTimes;
-            global_cfg.cfg.JsonCfg.MouseLock = LockMouseToggleSwitch.IsOn;
             global_cfg.cfg.JsonCfg.AutoCheckUpdate = AutoCheckUpdate.IsOn;
             global_cfg.cfg.SaveConfig();
-
-            if (!global_cfg.cfg.JsonCfg.MouseLock)
-            {
-                MouseHelper.StopMouseLock();
-            }
-            else
-            {
-                MouseHelper.StartMouseLock();
-            }
         }
         catch (System.Exception exception)
         {

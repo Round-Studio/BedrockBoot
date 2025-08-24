@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="BedrockBoot.Controls.ToolItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BedrockBoot.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d">
+
+    <Grid Width="242" Height="106"
+          Margin="0,4,4,0">
+        <controls:SettingsCard IsClickEnabled="True"
+                               IsActionIconVisible="False"
+                               MaxHeight="106"
+                               MinHeight="106"
+                               Description="{x:Bind Description}">
+            <controls:SettingsCard.Header>
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="{x:Bind HeaderIcon}" FontSize="14"></FontIcon>
+                    <TextBlock Text="{x:Bind Header}" Margin="5,0"></TextBlock>
+                </StackPanel>
+            </controls:SettingsCard.Header>
+            <controls:SettingsCard.Content>
+                <Grid Width="208">
+                    <Button Background="Transparent"
+                            BorderBrush="Transparent"
+                            Visibility="{x:Bind SettingButtonVisibility}"
+                            HorizontalAlignment="Right"
+                            Click="Button_Click"
+                            BorderThickness="0">
+                        <FontIcon Glyph="&#xE713;" FontSize="15"/>
+                    </Button>
+                    <ContentControl Content="{x:Bind CardContent}"
+                                    MaxHeight="32"></ContentControl>
+                </Grid>
+            </controls:SettingsCard.Content>
+        </controls:SettingsCard>
+    </Grid>
+</UserControl>

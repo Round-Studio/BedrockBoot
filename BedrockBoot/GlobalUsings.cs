@@ -117,6 +117,7 @@ public static class globalTools
                 Title = "Info",
                 Message = text,
                 UseBlueColorForInfo = true,
+                WaitTime = new TimeSpan(0, 0, 0, 5)
             });
         });
     }

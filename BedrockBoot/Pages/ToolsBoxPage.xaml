@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="BedrockBoot.Pages.ToolsBoxPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BedrockBoot.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:BedrockBoot.Controls"
+    Unloaded="Page_Unloaded"
+    mc:Ignorable="d">
+
+    <Grid Margin="40,48,40,0" Padding="0">
+        <Grid
+            Height="50"
+            MaxWidth="1000"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            <TextBlock
+                x:Name="BreadcrumbBar"
+                Margin="0,0,10,4"
+                FontSize="30"
+                Text="工具箱">
+            </TextBlock>
+        </Grid>
+        <ScrollViewer HorizontalAlignment="Stretch"
+                      Margin="0,48,0,0"
+                      x:Name="ScrollViewList">
+            <Grid>
+                <StackPanel MaxWidth="1000">
+
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        Style="{StaticResource Subtitle}"
+                        Text="鼠标" />
+                    <GridView SelectionMode="None">
+                        <controls:ToolItem HeaderIcon="&#xE962;" 
+                                           Header="鼠标锁"
+                                           Description="解决基岩版无法锁定鼠标问题"
+                                           OnSetting="MouseLock_Setting">
+                            <controls:ToolItem.CardContent>
+                                <ToggleSwitch OnContent="" OffContent="" Margin="-12,0,0,0"
+                                              x:Name="MouseLockToggleSwitch"></ToggleSwitch>
+                            </controls:ToolItem.CardContent>
+                        </controls:ToolItem>
+                    </GridView>
+
+                    <TextBlock
+                        Margin="0,10,0,0"
+                        Style="{StaticResource Subtitle}"
+                        Text="系统" />
+                    <GridView SelectionMode="None">
+                        <controls:ToolItem HeaderIcon="&#xE74D;" 
+                                           Header="卸载 Minecraft"
+                                           Description="卸载来自商店或其他启动器安装的 MC"
+                                           SettingButtonVisibility="Collapsed">
+                            <controls:ToolItem.CardContent>
+                                <Button>卸载</Button>
+                            </controls:ToolItem.CardContent>
+                        </controls:ToolItem>
+                    </GridView>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

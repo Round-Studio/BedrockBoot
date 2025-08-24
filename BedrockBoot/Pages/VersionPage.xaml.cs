@@ -279,7 +279,7 @@ public sealed partial class VersionPage : Page
         }
         catch (Exception ex)
         {
-            MessageBox.ShowAsync(ex.ToString(), "错误");
+            EasyContentDialog.CreateDialog(this.XamlRoot, "错误", ex.Message);
         }
     }
     public static Process? WaitForMinecraftProcess(int timeoutSec = 60)
@@ -362,11 +362,11 @@ public sealed partial class VersionPage : Page
                         Title = $"删除版本 {versionInfo.VersionName}"
                     };
                     await dialog.ShowAsync();
-                    globalTools.ShowInfo("已删除");
+                    EasyContentDialog.CreateDialog(this.XamlRoot, "删除", "已删除");
                 }
                 catch (Exception ex)
                 {
-                    globalTools.ShowInfo($"删除失败: {ex.Message}");
+                    EasyContentDialog.CreateDialog(this.XamlRoot, "删除失败", ex.Message);
                 }
 
                 // 从数据列表中移除

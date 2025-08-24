@@ -1,3 +1,4 @@
+using BedrockBoot.Tools;
 using BedrockBoot.Versions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -54,17 +55,17 @@ namespace BedrockBoot.Pages
                 button.Content = "É¾³ýmod";
                 button.Click += (s, e) =>
                 {
-                        var removeMod = Manager.RemoveMod(info);
-                        if (removeMod != true)
-                        {
-                            globalTools.ShowInfo("É¾³ýÊ§°Ü");
-                        }
-                        else
-                        {
-                            globalTools.ShowInfo("É¾³ý³É¹¦");
-                            TaskContainer.Children.Remove(data);
-                        }
-                   
+                    var removeMod = Manager.RemoveMod(info);
+                    if (removeMod != true)
+                    {
+                        EasyContentDialog.CreateDialog(this.XamlRoot, "É¾³ý", "É¾³ýÊ§°Ü");
+                    }
+                    else
+                    {
+                        EasyContentDialog.CreateDialog(this.XamlRoot, "É¾³ý", "É¾³ý³É¹¦");
+                        TaskContainer.Children.Remove(data);
+                    }
+
                 };
                 return button;
             }

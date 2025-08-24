@@ -92,6 +92,12 @@
                     Icon="{dev:FontIcon Glyph=&#xE896;}"
                     IsSelected="False"
                     Tag="DownloadPage" />
+                <NavigationViewItem
+                    x:Name="ToolsBoxPageNavItem"
+                    Content="工具箱"
+                    Icon="{dev:FontIcon Glyph=&#xEC7A;}"
+                    IsSelected="False"
+                    Tag="ToolsBoxPage" />
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem

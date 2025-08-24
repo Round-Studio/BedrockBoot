@@ -165,28 +165,6 @@
                         <Button Click="ButtonBase_OnClick">卸载</Button>
                     </dev:SettingsCard>
 
-                    <dev:SettingsExpander
-                        Description="锁定鼠标不移出游戏窗口外"
-                        Header="鼠标锁定 (Beta)"
-                        HeaderIcon="{dev:FontIcon Glyph=&#xE962;}">
-                        <ToggleSwitch
-                            x:Name="LockMouseToggleSwitch"
-                            OffContent="禁用"
-                            OnContent="启用" />
-                        <dev:SettingsExpander.Items>
-                            <dev:SettingsCard Header="边缘深度 (px)">
-                                <NumberBox
-                                    x:Name="MouseLockCutPX"
-                                    Width="200"
-                                    AcceptsExpression="True"
-                                    Maximum="30"
-                                    Minimum="5"
-                                    SpinButtonPlacementMode="Inline"
-                                    Value="15" />
-                            </dev:SettingsCard>
-                        </dev:SettingsExpander.Items>
-                    </dev:SettingsExpander>
-
                     <TextBlock
                         Margin="0,10,0,0"
                         Style="{StaticResource Subtitle}"

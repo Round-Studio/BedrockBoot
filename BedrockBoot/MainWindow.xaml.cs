@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -75,6 +76,15 @@ namespace BedrockBoot
             UpdateBackground();
 
             if(global_cfg.cfg.JsonCfg.AutoCheckUpdate) OnUpdate();
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    global_cfg.cfg.SaveConfig();
+                    Thread.Sleep(100);
+                }
+            });
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
@@ -147,6 +157,7 @@ namespace BedrockBoot
             if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
             if ((string)selectedItem.Tag == "TaskPage") NavFrame.Navigate(typeof(TaskPage));
             if ((string)selectedItem.Tag == "VersionPage") NavFrame.Navigate(typeof(VersionPage));
+            if ((string)selectedItem.Tag == "ToolsBoxPage") NavFrame.Navigate(typeof(ToolsBoxPage));
         }
     }
 }

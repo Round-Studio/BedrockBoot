@@ -33,6 +33,7 @@
     <None Remove="Controls\ContentDialogContent\AddNewGameFolderContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DelGameVersionContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
+    <None Remove="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml" />
     <None Remove="Controls\ContentDialogContent\ImportPackContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\PersonPictureButton.xaml" />
@@ -87,6 +88,11 @@
     <PackageReference Include="DevWinUI.Controls" Version="8.9.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
+    <PackageReference Include="Serilog" Version="4.2.1-dev-02352" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.1-dev-00953" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="WinUIEx" Version="2.6.0" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +191,9 @@
     <Page Update="Controls\ContentDialogContent\ImportPackContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -235,5 +244,8 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Assets\AppReference\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Classes\Update\" />
   </ItemGroup>
 </Project>

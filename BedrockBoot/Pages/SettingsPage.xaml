@@ -52,6 +52,12 @@
                                     Minimum="1"
                                     SpinButtonPlacementMode="Inline" />
                             </dev:SettingsCard>
+                            <dev:SettingsCard Header="自动检查更新">
+                                <ToggleSwitch
+                                    x:Name="AutoCheckUpdate"
+                                    OffContent=""
+                                    OnContent="" />
+                            </dev:SettingsCard>
                             <dev:SettingsCard Header="安装完成保留 Appx 文件">
                                 <ToggleSwitch
                                     x:Name="SavaAppx"
@@ -127,7 +133,7 @@
                         <ComboBox Name="cmbTheme" SelectionChanged="cmbTheme_SelectionChanged">
                             <ComboBoxItem Content="浅色" Tag="Light" />
                             <ComboBoxItem Content="深色" Tag="Dark" />
-                            <ComboBoxItem Content="系统主题" Tag="Default" />
+                            <ComboBoxItem Content="跟随系统" Tag="Default" />
                         </ComboBox>
                     </dev:SettingsCard>
 

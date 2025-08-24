@@ -72,7 +72,7 @@ namespace BedrockBoot.Tools
 
         }
 
-        public static async void CreateDialog(
+        public static async Task CreateDialog(
             XamlRoot root,
             string title,
             string content)
@@ -88,7 +88,7 @@ namespace BedrockBoot.Tools
 
             try
             {
-                dialog.ShowAsync();
+                await dialog.ShowAsync();
             }
             catch
             {

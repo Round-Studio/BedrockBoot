@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="BedrockBoot.Pages.DownloadPages.VersionsShowPages"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -59,7 +59,15 @@
                         <controls:SegmentedItem Icon="{ui:FontIcon Glyph=&#xE8A1;}" ToolTipService.ToolTip="预览版" />
                         <controls:SegmentedItem Icon="{ui:FontIcon Glyph=&#xEA8D;}" ToolTipService.ToolTip="测试版" />
                     </controls:Segmented>
-                    <Button>导入Appx</Button>
+                    <Button IsEnabled="False">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>导入Appx</TextBlock>
+                            <Border CornerRadius="4" Background="{StaticResource AccentFillColorTertiaryBrush}" VerticalAlignment="Center"
+                                    Margin="8,0,0,0">
+                                <TextBlock Margin="4,0" FontSize="11">Beta</TextBlock>
+                            </Border>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
                             Margin="5"

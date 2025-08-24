@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="BedrockBoot.Pages.ToolsBoxPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -23,18 +23,19 @@
             </TextBlock>
         </Grid>
         <ScrollViewer HorizontalAlignment="Stretch"
-                      Margin="0,48,0,0"
+                      Margin="0,52,0,10"
                       x:Name="ScrollViewList">
             <Grid>
-                <StackPanel MaxWidth="1000">
+                <StackPanel MaxWidth="1000"
+                    Margin="10"
+                    Spacing="4">
 
                     <TextBlock
-                        Margin="0,10,0,0"
                         Style="{StaticResource Subtitle}"
-                        Text="鼠标" />
+                        Text="游戏" />
                     <GridView SelectionMode="None">
                         <controls:ToolItem HeaderIcon="&#xE962;" 
-                                           Header="鼠标锁"
+                                           Header="鼠标锁 (Beta)"
                                            Description="解决基岩版无法锁定鼠标问题"
                                            OnSetting="MouseLock_Setting">
                             <controls:ToolItem.CardContent>
@@ -45,7 +46,6 @@
                     </GridView>
 
                     <TextBlock
-                        Margin="0,10,0,0"
                         Style="{StaticResource Subtitle}"
                         Text="系统" />
                     <GridView SelectionMode="None">

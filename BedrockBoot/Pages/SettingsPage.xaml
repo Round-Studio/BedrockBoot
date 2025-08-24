@@ -156,11 +156,6 @@
                     <TextBlock
                         Margin="0,10,0,0"
                         Style="{StaticResource Subtitle}"
-                        Text="辅助功能" />
-
-                    <TextBlock
-                        Margin="0,10,0,0"
-                        Style="{StaticResource Subtitle}"
                         Text="关于" />
                     <dev:SettingsExpander
                         Description="© 2025 Round-Studio 版权没有（开源软件都要盗吗）"

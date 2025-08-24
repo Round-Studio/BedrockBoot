@@ -10,7 +10,7 @@ namespace BedrockBoot.Models.Classes.Update;
 public class Update
 {
     public string Url { get; private set; }
-    public Action<string, string, string> OnUpdate { get; set; }
+    public Action<string, string,string , string> OnUpdate { get; set; }
     public Action OnUnUpdate { get; set; }
     public Update(
         string updateUrl = "https://api.github.com/repos/Round-Studio/BedrockBoot/releases/latest")
@@ -68,7 +68,7 @@ public class Update
                 .Replace(".", "")
                 .Replace("v", ""))
         {
-            OnUpdate.Invoke(nowVersion, githubRelease.Name, githubRelease.Assets[0].BrowserDownloadUrl);
+            OnUpdate.Invoke(nowVersion, githubRelease.Name, githubRelease.Body, githubRelease.Assets[0].BrowserDownloadUrl);
         }
         else
         {

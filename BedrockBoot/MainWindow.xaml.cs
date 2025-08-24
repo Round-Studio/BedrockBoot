@@ -118,13 +118,13 @@ namespace BedrockBoot
         {
             var update = new Update()
             {
-                OnUpdate = (async (s1, s2,url) =>
+                OnUpdate = (async (s1, s2,body , url) =>
                 {
                     var dialog = new ContentDialog()
                     {
                         Title = "有更新可用",
                         Content =
-                            $"当前：{s1.Replace("0", "").Replace(".", "")}\n最新：{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
+                            $"当前：{s1.Replace("0", "").Replace(".", "")}\n最新：{s2.Replace("0", "").Replace(".", "").Replace("v", "")}\n内容：{body}",
                         CloseButtonText = "暂不更新",
                         PrimaryButtonText = "立即更新",
                         DefaultButton = ContentDialogButton.Primary,

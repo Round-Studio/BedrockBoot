@@ -12,54 +12,66 @@
     Width="323"
     mc:Ignorable="d">
 
-    <ScrollViewer>
-        <StackPanel
-            Margin="0,0,0,0"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Spacing="8">
-            <StackPanel.Resources>
-                <Style x:Key="ColorPickerButtonColorPickerStyle" TargetType="ColorPicker">
-                    <Setter Property="IsAlphaEnabled" Value="False" />
-                    <Setter Property="IsAlphaSliderVisible" Value="False" />
-                    <Setter Property="IsAlphaTextInputVisible" Value="False" />
-                </Style>
-            </StackPanel.Resources>
-            <TextBox
-                x:Name="NameBox"
+    <Grid>
+        <ScrollViewer>
+            <StackPanel
+                Margin="0,0,0,0"
                 HorizontalAlignment="Stretch"
-                Header="实例名称" />
+                VerticalAlignment="Stretch"
+                Spacing="8">
+                <StackPanel.Resources>
+                    <Style x:Key="ColorPickerButtonColorPickerStyle" TargetType="ColorPicker">
+                        <Setter Property="IsAlphaEnabled" Value="False" />
+                        <Setter Property="IsAlphaSliderVisible" Value="False" />
+                        <Setter Property="IsAlphaTextInputVisible" Value="False" />
+                    </Style>
+                </StackPanel.Resources>
+                <TextBox
+                    x:Name="NameBox"
+                    HorizontalAlignment="Stretch"
+                    Header="实例名称" />
 
-            <ComboBox Header="下载目录" HorizontalAlignment="Stretch"
-                      x:Name="ChooseDownloadFolderPathComboBox"></ComboBox>
+                <ComboBox
+                    x:Name="ChooseDownloadFolderPathComboBox"
+                    HorizontalAlignment="Stretch"
+                    Header="下载目录" />
 
-            <TextBlock Text="启动页面颜色" />
-            <controls:ColorPickerButton
-                x:Name="colorPicker"
-                HorizontalAlignment="Stretch"
-                ColorPickerStyle="{StaticResource ColorPickerButtonColorPickerStyle}"
-                SelectedColor="#EF323D" />
+                <TextBlock Text="启动页面颜色" />
+                <controls:ColorPickerButton
+                    x:Name="colorPicker"
+                    HorizontalAlignment="Stretch"
+                    ColorPickerStyle="{StaticResource ColorPickerButtonColorPickerStyle}"
+                    SelectedColor="#EF323D" />
 
-            <TextBlock Text="启动页面图片(空则默认)" />
-            <dev:ElementGroup HorizontalAlignment="Stretch">
-                <TextBox x:Name="imgback" Width="278"/>
-                <Button Click="ButtonBaseImg_OnClick" Content="{dev:FontIcon Glyph=&#xE838;}" />
-            </dev:ElementGroup>
+                <TextBlock Text="启动页面图片(空则默认)" />
+                <dev:ElementGroup HorizontalAlignment="Stretch">
+                    <TextBox x:Name="imgback" Width="278" />
+                    <Button Click="ButtonBaseImg_OnClick" Content="{dev:FontIcon Glyph=&#xE838;}" />
+                </dev:ElementGroup>
 
 
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <TextBlock Text="使用 Appx 缓存" Margin="0,4,8,0"/>
-                <Button Content="{dev:FontIcon FontSize=16 ,Glyph=&#xE946;}" Height="28" Width="28" Padding="0">
-                    <Button.Flyout>
-                        <Flyout>
-                            <TextBlock TextWrapping="Wrap" MaxWidth="300">
-                                即使用已保存的相同版本的 Appx 安装，无需重新下载，节省时间和带宽。
-                            </TextBlock>
-                        </Flyout>
-                    </Button.Flyout>
-                </Button>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Margin="0,4,8,0" Text="使用 Appx 缓存" />
+                    <Button
+                        Width="28"
+                        Height="28"
+                        Padding="0"
+                        Content="{dev:FontIcon FontSize=16,
+                                               Glyph=&#xE946;}">
+                        <Button.Flyout>
+                            <Flyout>
+                                <TextBlock MaxWidth="300" TextWrapping="Wrap">
+                                    即使用已保存的相同版本的 Appx 安装，无需重新下载，节省时间和带宽。
+                                </TextBlock>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                </StackPanel>
+                <ToggleSwitch
+                    x:Name="UseAppx"
+                    IsEnabled="False"
+                    IsOn="False" />
             </StackPanel>
-            <ToggleSwitch x:Name="UseAppx" IsOn="False" IsEnabled="False"/>
-        </StackPanel>
-    </ScrollViewer>
+        </ScrollViewer>
+    </Grid>
 </Page>

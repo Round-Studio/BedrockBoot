@@ -102,7 +102,7 @@ namespace BedrockBoot
         {
             _window = new MainWindow();
             _window.Activate();
-            TraverseAllControls(_window.Content);
+            // TraverseAllControls(_window.Content);
         }
     }
 }

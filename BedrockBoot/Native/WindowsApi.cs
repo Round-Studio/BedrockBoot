@@ -18,5 +18,7 @@ namespace BedrockBoot.Native
             string dll_path,
             [MarshalAs(UnmanagedType.Bool)] bool delay_inject,
             int time_m);
+        [DllImport("MinimiseFix.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int LoadFix();
     }
 }

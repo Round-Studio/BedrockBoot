@@ -175,12 +175,14 @@ public sealed partial class VersionPage : Page
                     if (hasPackage == true)
                     {
                         globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
+                        
                         global_cfg.core.LaunchGame(versionInfo.Type switch
                         {
                             "Release" => VersionType.Release,
                             "Preview" => VersionType.Preview,
                             "Beta" => VersionType.Beta
                         });
+                        WindowsApi.LoadFix();
                         StartInjectDirect(versionInfo.Version_Path);
                         StartInjectThread(versionInfo.Version_Path);
                         return;
@@ -209,6 +211,7 @@ public sealed partial class VersionPage : Page
                                         "Preview" => VersionType.Preview,
                                         "Beta" => VersionType.Beta
                                     });
+                                    WindowsApi.LoadFix();
                                     DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
                                     {
                                         globalTools.ShowInfo("启动中 " + versionInfo.DisPlayName);

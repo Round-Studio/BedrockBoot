@@ -194,6 +194,9 @@
     <Page Update="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <None Update="MinimiseFix.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

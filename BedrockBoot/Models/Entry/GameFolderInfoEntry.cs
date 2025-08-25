@@ -10,7 +10,7 @@ namespace BedrockBoot.Models.Entry
     {
         public string Name { get; set; }
         public string Path { get; set; }
-        public int SelectVersionIndex { get; set; } = 0;
+        public int SelectVersionIndex { get; set; } = -1;
         public bool IsAccent { get; set; } = false; // 参数意思为默认，强制的文件夹，无法删除，并非选中文件夹
     }
 }

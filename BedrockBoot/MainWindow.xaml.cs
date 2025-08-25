@@ -1,4 +1,4 @@
-using BedrockBoot.Controls.ContentDialogContent;
+﻿using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Models.Classes;
 using BedrockBoot.Models.Classes.Style.Background;
 using BedrockBoot.Models.Classes.Update;
@@ -44,15 +44,15 @@ namespace BedrockBoot
             //throw new Exception("Crash");
             GlobalLogger.Initialize();
             InitializeComponent();
-            _hotKeyService = new HotKeyService(this);
+            /*_hotKeyService = new HotKeyService(this);
 
             _hotKeyId = _hotKeyService.RegisterHotKey(
                 HotKeyModifiers.MOD_CONTROL | HotKeyModifiers.MOD_ALT,
                 VirtualKeyCodes.VK_F1,
-                OnGlobalHotKeyPressed);
+                OnGlobalHotKeyPressed);*/
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
             ExtendsContentIntoTitleBar = true;
-            AppTitleBar.IsBackButtonVisible = false; 
+            AppTitleBar.IsBackButtonVisible = false;
             SetTitleBar(AppTitleBar);
             this.Closed += MainWindow_Closed;
 
@@ -65,26 +65,17 @@ namespace BedrockBoot
             manager.Width = 1200;
             manager.Height = 700;
 
-            HomePage.OnSettingsPageAction+= () =>
-            {
-                NavView.SelectedItem = NavView.SettingsItem;
-                NavFrame.Navigate(typeof(SettingsPage));
-                
-            };
-            HomePage.OnVerionPageAction+= () =>
+            HomePage.OnDownload += () =>
             {
                 NavView.SelectedItem = NavView.MenuItems[2];
                 NavFrame.Navigate(typeof(DownloadPage));
             };
-            HomePage.OnStartAction+= () =>
-            {
-                NavView.SelectedItem = NavView.MenuItems[1];
-                NavFrame.Navigate(typeof(VersionPage));
-            };
             global_cfg.MainWindow = this;
             UpdateBackground();
 
+#if !DEBUG  // 为开发版取消自动更新
             if(global_cfg.cfg.JsonCfg.AutoCheckUpdate) OnUpdate();
+#endif
 
             Task.Run(() =>
             {
@@ -102,22 +93,17 @@ namespace BedrockBoot
             // 切换到UI线程执行操作
             _ = DispatcherQueue.TryEnqueue(() =>
             {
-               
+
                 if (global_cfg.cfg.JsonCfg.MouseLock && !MouseHelper.GetRunningState())
                 {
-                    
+
                     MouseHelper.StartMouseLock();
-                 
+
                 }
                 else if (global_cfg.cfg.JsonCfg.MouseLock && MouseHelper.GetRunningState())
                 {
                     MouseHelper.StopMouseLock();
                 }
-                
-               
-
-              
-              
             });
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
@@ -153,7 +139,7 @@ namespace BedrockBoot
         {
             var update = new Update()
             {
-                OnUpdate = (async (s1, s2,body , url) =>
+                OnUpdate = (async (s1, s2, body, url) =>
                 {
                     var dialog = new ContentDialog()
                     {

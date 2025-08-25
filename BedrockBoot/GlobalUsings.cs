@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,8 +61,13 @@ public class DllFileInfo
 }
 public static class globalTools
 {
+    public static T GetJsonFileEntry<T>(string file)
+    {
+        if (!File.Exists(file)) throw new FileNotFoundException();
+        return JsonSerializer.Deserialize<T>(File.ReadAllText(file));
+    }
 
-   public static void SearchVersionJson(string currentPath1,ref List<string> textList, int currentDepth, int maxDepth)
+    public static void SearchVersionJson(string currentPath1,ref List<string> textList, int currentDepth, int maxDepth)
     {
         var currentPath = Path.GetFullPath(currentPath1);
         try

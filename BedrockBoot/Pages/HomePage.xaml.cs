@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using BedrockBoot.Controls.ListItem;
+using BedrockBoot.Models.Classes.Launch;
+using BedrockBoot.Models.Classes.Listen;
+using BedrockBoot.Tools;
+using BedrockBoot.Versions;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -12,6 +11,16 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.VisualBasic;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.Gaming.Preview.GamesEnumeration;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -24,39 +33,65 @@ namespace BedrockBoot.Pages;
 /// </summary>
 public sealed partial class HomePage : Page
 {
-    public static Action OnVerionPageAction { get; set; }
-    public static Action OnSettingsPageAction { get; set; }
-    public static Action OnStartAction { get; set; }
-   
+    public Thread UpdateVersionThread;
+    public bool IsLoad = true;
+    public bool IsLaunch = false;
+    public static Action OnDownload;
     public HomePage()
     {
         global_cfg.core.Init();
         InitializeComponent();
-       
+
+        UpdateVersionThread = new Thread(UpdateVersion);
+        UpdateVersionThread.Start();
+
+        this.Unloaded += new RoutedEventHandler((s, e) =>
+        {
+            IsLoad = false;
+        });
+    }
+    private NowVersions NowVersion { get; set; }
+    private void UpdateVersion()
+    {
+        while (IsLoad)
+        {
+            try
+            {
+                List<string> games = new List<string>();
+                globalTools.SearchVersionJson(global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path, ref games, 0, 2);
+
+                IsLaunch = true;
+                var entry = globalTools.GetJsonFileEntry<NowVersions>(games[global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].SelectVersionIndex]);
+                NowVersion = entry;
+                DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                {
+                    ChooseVersionName.Text = entry.VersionName;
+                    BigLaunchBtnTitle.Text = "启动游戏";
+                }));
+            }
+            catch
+            {
+                IsLaunch = false;
+                DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                {
+                    BigLaunchBtnTitle.Text = "下载游戏";
+                    ChooseVersionName.Text = "当前没有游戏可用";
+                }));
+            }
+
+            Thread.Sleep(200);
+        }
     }
 
-    private void MainShortcut_KeyUp(object sender, KeyRoutedEventArgs e)
+    private void LauncherButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
     {
-        throw new NotImplementedException();
-    }
-
-    private void MainShortcut_KeyDown(object sender, KeyRoutedEventArgs e)
-    {
-        throw new NotImplementedException();
-    }
-
-    private unsafe void B2_OnClick(object sender, RoutedEventArgs e)
-    {
-        OnSettingsPageAction();
-    }
-
-    private unsafe void B1_OnClick(object sender, RoutedEventArgs e)
-    {
-        OnVerionPageAction();
-    }
-
-    private void HomeButton(object sender, RoutedEventArgs e)
-    {
-        OnStartAction();
+        if (IsLaunch)
+        {
+            QuickLaunchGame.LaunchGame(NowVersion);
+        }
+        else
+        {
+            OnDownload.Invoke();
+        }
     }
 }

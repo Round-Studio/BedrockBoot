@@ -37,6 +37,8 @@
     <None Remove="Controls\ContentDialogContent\ImportPackContent.xaml" />
     <None Remove="Controls\ContentDialogContent\SettingMouseLockPaddingContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
+    <None Remove="Controls\FlyoutContent\EazyChooseGameContent.xaml" />
+    <None Remove="Controls\ListItem\GameVersionItem.xaml" />
     <None Remove="Controls\PersonPictureButton.xaml" />
     <None Remove="Controls\TaskCard.xaml" />
     <None Remove="Controls\ToolItem.xaml" />
@@ -201,6 +203,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\ContentDialogContent\SettingMouseLockPaddingContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\FlyoutContent\EazyChooseGameContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ListItem\GameVersionItem.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="MinimiseFix.dll">

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
     x:Class="BedrockBoot.Controls.TaskExpander"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -20,6 +20,7 @@
     -->
     
     <dev:SettingsCard IsEnabled="True"
+                      Margin="0,6,0,0"
                       HorizontalAlignment="Stretch">
         <dev:SettingsCard.Header>
             <StackPanel Orientation="Horizontal">

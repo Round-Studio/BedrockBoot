@@ -63,17 +63,23 @@
                     IsSelected="True"
                     Tag="HomePage" />
                 <NavigationViewItem
-                    x:Name="VersionPageNavItem"
-                    Content="已安装版本"
-                    Icon="{dev:FontIcon Glyph=&#xE7FC;}"
-                    IsSelected="False"
-                    Tag="VersionPage" />
-                <NavigationViewItem
                     x:Name="DownloadPageNavItem"
                     Content="下载版本"
                     Icon="{dev:FontIcon Glyph=&#xE896;}"
                     IsSelected="False"
                     Tag="DownloadPage" />
+                <NavigationViewItem
+                    x:Name="VersionPageNavItem"
+                    Content="管理实例"
+                    Icon="{dev:FontIcon Glyph=&#xE7FC;}"
+                    IsSelected="False"
+                    Tag="VersionPage" />
+                <NavigationViewItem
+                    x:Name="ManagerPageNavItem"
+                    Content="管理包"
+                    Icon="{dev:FontIcon Glyph=&#xE7B8;}"
+                    IsSelected="False"
+                    Tag="ManagerPage" />
                 <NavigationViewItem
                     x:Name="ToolsBoxPageNavItem"
                     Content="工具箱"

@@ -31,6 +31,7 @@ namespace BedrockBoot.Tools
             var result = await dialog.ShowAsync();
 
         }
+
         public static async void CreateDialog(
             XamlRoot root,
             string title,

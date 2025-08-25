@@ -89,5 +89,23 @@ namespace BedrockBoot.Pages
                 }
             }));
         }
+
+        private async void InmportMCPackBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new ContentDialog()
+            {
+                XamlRoot = this.XamlRoot,
+                Content = new ImportMCPackContent(),
+                Title = "导入资源",
+                PrimaryButtonText = "导入",
+                CloseButtonText = "取消",
+                DefaultButton = ContentDialogButton.Primary
+            };
+            var res = await dialog.ShowAsync();
+            if (res == ContentDialogResult.Primary)
+            {
+                ((ImportMCPackContent)dialog.Content).StartImport();
+            }
+        }
     }
 }

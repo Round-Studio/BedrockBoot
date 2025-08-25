@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Gaming.Preview.GamesEnumeration;
@@ -87,7 +88,20 @@ public sealed partial class HomePage : Page
     {
         if (IsLaunch)
         {
-            QuickLaunchGame.LaunchGame(NowVersion);
+            Task.Run(() =>
+            {
+                try
+                {
+                    QuickLaunchGame.LaunchGame(NowVersion);
+                }
+                catch (Exception ex)
+                {
+                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+                    {
+                        EasyContentDialog.CreateDialog(this.XamlRoot, "发生了错误", ex.Message);
+                    });
+                }
+            });
         }
         else
         {

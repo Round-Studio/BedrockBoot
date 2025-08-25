@@ -20,8 +20,9 @@ namespace BedrockBoot.Controls
 {
     public sealed partial class PersonPictureButton : UserControl
     {
-        public ImageSource ProfilePictureSource { get; set; }
-        public Object FlyoutContent { get; set; }
+        public ImageSource? ProfilePictureSource { get; set; }
+        public string? PersonName { get; set; }
+        public Object? FlyoutContent { get; set; }
         public PersonPictureButton()
         {
             InitializeComponent();

@@ -167,9 +167,9 @@
                             <dev:SettingsCard Header="开发者">
                                 <dev:SettingsCard.Content>
                                     <StackPanel Orientation="Horizontal">
-                                        <controls:PersonPictureButton />
-                                        <controls:PersonPictureButton />
-                                        <controls:PersonPictureButton />
+                                        <controls:PersonPictureButton PersonName="DaMing" />
+                                        <controls:PersonPictureButton PersonName="Dime" ProfilePictureSource="/Assets/PersonPicture/Dime.jpg" />
+                                        <controls:PersonPictureButton PersonName="YoumiHa" />
                                     </StackPanel>
                                 </dev:SettingsCard.Content>
                             </dev:SettingsCard>

@@ -22,24 +22,32 @@ namespace BedrockBoot
             if (!Directory.Exists(CFG_DIR))
             {
                 Directory.CreateDirectory(CFG_DIR);
-            } 
+            }
             if (!File.Exists(CFG_FILE))
             {
-             File.Create(CFG_FILE).Dispose();
-            var jsonCfg = new JsonCFG();
-            jsonCfg.cfg_ver = cfg_Version.ToString();
-            jsonCfg.DevelopMentMode = false;
-            jsonCfg.appxName = "{0}.appx";
-            jsonCfg.appxDir = Directory.GetCurrentDirectory();
-            JsonCfg = jsonCfg;
-            File.WriteAllText(CFG_FILE, JsonSerializer.Serialize(jsonCfg));
-            }else {
+                File.Create(CFG_FILE).Dispose();
+                var jsonCfg = new JsonCFG();
+                jsonCfg.cfg_ver = cfg_Version.ToString();
+                jsonCfg.DevelopMentMode = false;
+                jsonCfg.appxName = "{0}.appx";
+                jsonCfg.appxDir = Directory.GetCurrentDirectory();
+                JsonCfg = jsonCfg;
+                File.WriteAllText(CFG_FILE, JsonSerializer.Serialize(jsonCfg));
+            }
+            else
+            {
                 var readAllText = File.ReadAllText(CFG_FILE);
-                var jsonCfgBase = JsonSerializer.Deserialize<Json_cfg_base>(readAllText);
+                var jsonCfgBase = new JsonCFG();
+                try
+                {
+                    jsonCfgBase = JsonSerializer.Deserialize<JsonCFG>(readAllText);
+                }
+                catch { }
+
                 if (cfg_Version > new Version(jsonCfgBase.cfg_ver))
                 {
                     JsonCFG cfg = JsonCFG.FromJson_cfg_base(jsonCfgBase);
-                    File.WriteAllText(CFG_FILE,JsonSerializer.Serialize(cfg));
+                    File.WriteAllText(CFG_FILE, JsonSerializer.Serialize(cfg));
                     JsonCfg = cfg;
                     return;
                 }

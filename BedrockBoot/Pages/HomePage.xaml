@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="BedrockBoot.Pages.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -6,7 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Pages"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:flyoutcontent="using:BedrockBoot.Controls.FlyoutContent"
     mc:Ignorable="d">
 
     <Grid>
@@ -15,19 +16,23 @@
                      VerticalAlignment="Bottom"
                      Margin="15"
                      Width="180"
-                     Height="52">
+                     Height="52"
+                     Click="LauncherButton_Click">
             <SplitButton.Flyout>
                 <Flyout Placement="Auto">
-                    
+                    <flyoutcontent:EazyChooseGameContent></flyoutcontent:EazyChooseGameContent>
                 </Flyout>
             </SplitButton.Flyout>
             <SplitButton.Content>
                 <StackPanel>
-                    <TextBlock FontSize="16">启动游戏</TextBlock>
+                    <TextBlock FontSize="16" HorizontalAlignment="Center"
+                               x:Name="BigLaunchBtnTitle">启动游戏</TextBlock>
                     <TextBlock FontSize="11" 
                                HorizontalAlignment="Center"
                                Margin="0,2,0,0"
-                               Foreground="Gray">Version</TextBlock>
+                               Foreground="Gray"
+                               TextTrimming="CharacterEllipsis"
+                               x:Name="ChooseVersionName"></TextBlock>
                 </StackPanel>
             </SplitButton.Content>
         </SplitButton>

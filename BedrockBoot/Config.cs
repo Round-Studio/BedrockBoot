@@ -1,20 +1,21 @@
-﻿using System;
+﻿using BedrockBoot.Versions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using BedrockBoot.Versions;
 
 namespace BedrockBoot
 {
     public class Config
     {
         public static string CFG_DIR = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"RoundStudio","BedrockBoot");
-        public static Version cfg_Version = new Version("0.0.7");
+        public static Version cfg_Version = Assembly.GetEntryAssembly()?.GetName().Version;
         public static string CFG_FILE = $"{CFG_DIR}\\config.json";
         public JsonCFG JsonCfg;
         public Config()
@@ -44,18 +45,8 @@ namespace BedrockBoot
                 }
                 catch { }
 
-                if (cfg_Version > new Version(jsonCfgBase.cfg_ver))
-                {
-                    JsonCFG cfg = JsonCFG.FromJson_cfg_base(jsonCfgBase);
-                    File.WriteAllText(CFG_FILE, JsonSerializer.Serialize(cfg));
-                    JsonCfg = cfg;
-                    return;
-                }
-                else if (cfg_Version == new Version(jsonCfgBase.cfg_ver))
-                {
-                    var jsonCfg = JsonSerializer.Deserialize<JsonCFG>(readAllText);
-                    JsonCfg = jsonCfg;
-                }
+                var jsonCfg = JsonSerializer.Deserialize<JsonCFG>(readAllText);
+                JsonCfg = jsonCfg;
             }
         }
         public void SaveConfig()

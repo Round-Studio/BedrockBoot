@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Window
     x:Class="BedrockBoot.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -30,24 +30,6 @@
             IsBackButtonEnabled="True"
             IsBackButtonVisible="False"
             IsPaneToggleButtonVisible="False">
-            <!--TitleBar.LeftHeader>
-                <Button
-                    x:Name="BackButton"
-                    Width="42"
-                    Height="36"
-                    Padding="8"
-                    Click="BackButton_Click"
-                    Style="{ThemeResource SubtleButtonStyle}">
-                    <AnimatedIcon x:Name="SearchAnimatedIcon">
-                        <AnimatedIcon.Source>
-                            <animatedvisuals:AnimatedBackVisualSource />
-                        </AnimatedIcon.Source>
-                        <AnimatedIcon.FallbackIconSource>
-                            <SymbolIconSource Symbol="Find" />
-                        </AnimatedIcon.FallbackIconSource>
-                    </AnimatedIcon>
-                </Button>
-            </TitleBar.LeftHeader-->
         </TitleBar>
         <NavigationView
             x:Name="NavView"

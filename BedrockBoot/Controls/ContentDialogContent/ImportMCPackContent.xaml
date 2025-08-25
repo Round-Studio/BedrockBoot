@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="BedrockBoot.Controls.ContentDialogContent.ImportMCPackContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BedrockBoot.Controls.ContentDialogContent"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:dev="using:DevWinUI"
+    mc:Ignorable="d">
+
+    <StackPanel>
+        <TextBlock Text="包路径" Margin="0,0,0,8"/>
+        <dev:ElementGroup HorizontalAlignment="Stretch">
+            <TextBox x:Name="Pack_Path_Box" Width="278"/>
+            <Button Content="{dev:FontIcon Glyph=&#xE838;}"
+            Click="Button_Click"/>
+        </dev:ElementGroup>
+    </StackPanel>
+</Page>

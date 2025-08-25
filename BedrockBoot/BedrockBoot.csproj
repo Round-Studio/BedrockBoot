@@ -34,7 +34,7 @@
     <None Remove="Controls\ContentDialogContent\DelGameVersionContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml" />
-    <None Remove="Controls\ContentDialogContent\ImportPackContent.xaml" />
+    <None Remove="Controls\ContentDialogContent\ImportMCPackContent.xaml" />
     <None Remove="Controls\ContentDialogContent\SettingMouseLockPaddingContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\FlyoutContent\EazyChooseGameContent.xaml" />
@@ -193,7 +193,7 @@
     <Page Update="Controls\ContentDialogContent\DelGameVersionContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="Controls\ContentDialogContent\ImportPackContent.xaml">
+    <Page Update="Controls\ContentDialogContent\ImportModPackContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml">
@@ -209,6 +209,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\ListItem\GameVersionItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ContentDialogContent\ImportMCPackContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="MinimiseFix.dll">

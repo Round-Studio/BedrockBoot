@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <UserControl
-    x:Class="BedrockBoot.Controls.PersonPictureButton"
+    x:Class="BedrockBoot.Controls.FontIconButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dev="using:DevWinUI"
     xmlns:local="using:BedrockBoot.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:media="using:ABI.Microsoft.UI.Xaml.Media"
     mc:Ignorable="d">
+
 
     <Button
         Width="42"
@@ -21,7 +21,7 @@
             Width="32"
             Height="32"
             Margin="0,0,0,0"
-            ProfilePicture="{x:Bind ProfilePictureSource}" />
+            ProfilePicture="{x:Null}" />
         <Button.Flyout>
             <Flyout>
                 <Grid
@@ -29,16 +29,9 @@
                     Height="128"
                     Margin="-24,-24,-24,-24"
                     Padding="0">
-                    <Grid.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop x:Name="GradientStop1" Offset="0.0" Color="{x:Bind MainColor}" />
-                            <GradientStop x:Name="GradientStop3" Offset="2" Color="Transparent" />
-                        </LinearGradientBrush>
-                    </Grid.Background>
                     <StackPanel Margin="16" Orientation="Vertical">
                         <TextBlock
                             Margin="0,0,0,8"
-                            Foreground="{x:Bind TextColor}"
                             Style="{ThemeResource SubtitleTextBlockStyle}"
                             Text="{x:Bind PersonName}" />
                         <ContentControl Content="{x:Bind FlyoutContent}" />
@@ -56,13 +49,13 @@
                                 <GradientStop Offset="0.2" Color="Transparent" />
                             </LinearGradientBrush>
                         </dev:OpacityMaskView.OpacityMask>
-                        <Image
+                        <FontIcon
                             Width="128"
                             Height="128"
-                            Margin="0"
+                            Margin="0,0,-16,0"
                             HorizontalAlignment="Right"
-                            Source="{x:Bind ProfilePictureSource}"
-                            Stretch="UniformToFill" />
+                            FontSize="32"
+                            Glyph="{x:Bind ShowIcon}" />
                     </dev:OpacityMaskView>
                 </Grid>
             </Flyout>

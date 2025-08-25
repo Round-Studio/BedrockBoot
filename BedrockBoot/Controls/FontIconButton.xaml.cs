@@ -20,17 +20,16 @@ using Windows.UI;
 
 namespace BedrockBoot.Controls
 {
-    public sealed partial class PersonPictureButton : UserControl
+    public sealed partial class FontIconButton : UserControl
     {
-        public ImageSource? ProfilePictureSource { get; set; }
-
-        public Brush TextColor { get; set; } = new SolidColorBrush(Colors.Black);
+        public string? ShowIcon { get; set; } = "\uE77B";
+        public Color TextColor { get; set; } = Colors.Black;
 
         public Color MainColor { get; set; } = Colors.Transparent;
         private Brush MainBrush => new SolidColorBrush(MainColor);
         public string? PersonName { get; set; }
         public Object? FlyoutContent { get; set; }
-        public PersonPictureButton()
+        public FontIconButton()
         {
             InitializeComponent();
         }

@@ -167,9 +167,20 @@
                             <dev:SettingsCard Header="开发者">
                                 <dev:SettingsCard.Content>
                                     <StackPanel Orientation="Horizontal">
-                                        <controls:PersonPictureButton PersonName="DaMing" />
-                                        <controls:PersonPictureButton PersonName="Dime" ProfilePictureSource="/Assets/PersonPicture/Dime.jpg" />
-                                        <controls:PersonPictureButton PersonName="YoumiHa" />
+                                        <controls:FontIconButton PersonName="DaMing">
+                                            <controls:FontIconButton.FlyoutContent>
+                                                <Button Content="滚木" />
+                                            </controls:FontIconButton.FlyoutContent>
+                                        </controls:FontIconButton>
+                                        <controls:PersonPictureButton
+                                            MainColor="#fef9f2"
+                                            PersonName="Dime"
+                                            ProfilePictureSource="/Assets/PersonPicture/Dime.jpg" />
+                                        <controls:PersonPictureButton
+                                            MainColor="#516a73"
+                                            PersonName="YoumiHa"
+                                            ProfilePictureSource="/Assets/PersonPicture/YoumiHa.png"
+                                            TextColor="White" />
                                     </StackPanel>
                                 </dev:SettingsCard.Content>
                             </dev:SettingsCard>

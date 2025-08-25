@@ -14,7 +14,8 @@
         Height="42"
         Margin="4"
         Padding="0"
-        Style="{ThemeResource SubtleButtonStyle}">
+        Style="{ThemeResource SubtleButtonStyle}"
+        ToolTipService.ToolTip="{x:Bind PersonName}">
         <PersonPicture
             Width="32"
             Height="32"

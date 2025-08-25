@@ -28,6 +28,7 @@
     <Content Remove="Assets\MCSquare44x44Logo.scale-100.png" />
     <Content Remove="Assets\MCSquare44x44Logo.scale-200.png" />
     <Content Remove="Assets\MC_Release_Icon.png" />
+    <Content Remove="Assets\PersonPicture\Dime.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Controls\ContentDialogContent\AddNewGameFolderContent.xaml" />

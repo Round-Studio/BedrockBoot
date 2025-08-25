@@ -45,18 +45,8 @@ namespace BedrockBoot
                 }
                 catch { }
 
-                if (cfg_Version > new Version(jsonCfgBase.cfg_ver))
-                {
-                    JsonCFG cfg = JsonCFG.FromJson_cfg_base(jsonCfgBase);
-                    File.WriteAllText(CFG_FILE, JsonSerializer.Serialize(cfg));
-                    JsonCfg = cfg;
-                    return;
-                }
-                else if (cfg_Version == new Version(jsonCfgBase.cfg_ver))
-                {
-                    var jsonCfg = JsonSerializer.Deserialize<JsonCFG>(readAllText);
-                    JsonCfg = jsonCfg;
-                }
+                var jsonCfg = JsonSerializer.Deserialize<JsonCFG>(readAllText);
+                JsonCfg = jsonCfg;
             }
         }
         public void SaveConfig()

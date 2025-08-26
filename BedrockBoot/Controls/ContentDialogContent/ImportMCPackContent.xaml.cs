@@ -55,7 +55,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
                 string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 string minecraftPath = System.IO.Path.Combine(localAppData, "Packages",
                     "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
-                    "LocalState", "games", "com.mojang", "resource_packs");
+                    "LocalState", "games", "com.mojang", "resource_packs",System.IO.Path.GetFileName(Path));
 
                 if (!Directory.Exists(minecraftPath)) Directory.CreateDirectory(minecraftPath);
 

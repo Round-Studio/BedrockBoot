@@ -22,12 +22,15 @@ namespace BedrockBoot.Models.Classes.Helper.Pack
             {
                 Directory.GetDirectories(minecraftPath).ToList().ForEach(folder =>
                 {
-                    var jsonPath = Path.Combine(folder, "manifest.json");
-                    var entry = globalTools.GetJsonFileEntry<ResourcePackManifestEntry>(jsonPath);
-                    entry.IconPath = Path.Combine(folder, "pack_icon.png");
-                    entry.Path = folder;
+                    try
+                    {
+                        var jsonPath = Path.Combine(folder, "manifest.json");
+                        var entry = globalTools.GetJsonFileEntry<ResourcePackManifestEntry>(jsonPath);
+                        entry.IconPath = Path.Combine(folder, "pack_icon.png");
+                        entry.Path = folder;
 
-                    res.Add(entry);
+                        res.Add(entry);
+                    }catch{ }
                 });
             }
 

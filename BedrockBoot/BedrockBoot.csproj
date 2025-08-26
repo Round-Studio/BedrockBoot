@@ -28,13 +28,15 @@
     <Content Remove="Assets\MCSquare44x44Logo.scale-100.png" />
     <Content Remove="Assets\MCSquare44x44Logo.scale-200.png" />
     <Content Remove="Assets\MC_Release_Icon.png" />
+    <Content Remove="Assets\PersonPicture\Dime.jpg" />
+    <Content Remove="Assets\PersonPicture\YoumiHa.png" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Controls\ContentDialogContent\AddNewGameFolderContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DelGameVersionContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DownloadGameContent.xaml" />
     <None Remove="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml" />
-    <None Remove="Controls\ContentDialogContent\ImportPackContent.xaml" />
+    <None Remove="Controls\ContentDialogContent\ImportMCPackContent.xaml" />
     <None Remove="Controls\ContentDialogContent\SettingMouseLockPaddingContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\FlyoutContent\EazyChooseGameContent.xaml" />
@@ -44,12 +46,11 @@
     <None Remove="Controls\ToolItem.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
     <None Remove="Pages\HomePage.xaml" />
+    <None Remove="Pages\ManagerPackPage.xaml" />
+    <None Remove="Pages\ManagerPages\ManagerResourcePacksPage.xaml" />
+    <None Remove="Pages\ManagerPages\ManagerWorldsPage.xaml" />
     <None Remove="Pages\ModManagerPage.xaml" />
     <None Remove="Pages\OOBEPage.xaml" />
-    <None Remove="Pages\SettingPage\AboutPage.xaml" />
-    <None Remove="Pages\SettingPage\AppearancePage.xaml" />
-    <None Remove="Pages\SettingPage\BehaviorPage.xaml" />
-    <None Remove="Pages\SettingPage\DevelopersPage.xaml" />
     <None Remove="Pages\SettingsPage.xaml" />
     <None Remove="Pages\TaskPage.xaml" />
     <None Remove="Pages\ToolsBoxPage.xaml" />
@@ -104,9 +105,6 @@
     <Page Update="Pages\SettingsPage\Appearance.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="Pages\SettingPage\AppearancePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\SettingsPage.xaml">
@@ -139,15 +137,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Pages\SettingPage\AboutPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Pages\SettingPage\BehaviorPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Pages\SettingPage\DevelopersPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="Pages\TaskPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -193,7 +182,7 @@
     <Page Update="Controls\ContentDialogContent\DelGameVersionContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="Controls\ContentDialogContent\ImportPackContent.xaml">
+    <Page Update="Controls\ContentDialogContent\ImportModPackContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml">
@@ -211,9 +200,27 @@
     <Page Update="Controls\ListItem\GameVersionItem.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\ContentDialogContent\ImportMCPackContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <None Update="Assets\PersonPicture\Dime.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\PersonPicture\YoumiHa.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="MinimiseFix.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Pages\ManagerPages\ManagerWorldsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\ManagerPages\ManagerResourcePacksPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\ManagerPackPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Pages\ToolsBoxPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -19,7 +19,7 @@
                      Height="52"
                      Click="LauncherButton_Click">
             <SplitButton.Flyout>
-                <Flyout Placement="Auto">
+                <Flyout Placement="TopEdgeAlignedRight">
                     <flyoutcontent:EazyChooseGameContent></flyoutcontent:EazyChooseGameContent>
                 </Flyout>
             </SplitButton.Flyout>

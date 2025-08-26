@@ -1,4 +1,4 @@
-using BedrockBoot.Versions;
+锘縰sing BedrockBoot.Versions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -25,19 +25,19 @@ namespace BedrockBoot.Controls.ContentDialogContent
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class ImportPackContent : Page
+    public sealed partial class ImportModPackContent : Page
     {
         public string PackPath => Pack_Path_Box.Text;
         public string PackType => ((ComboBoxItem)PackType_Box.SelectedItem).Content.ToString();
         public string Version => versionsList[VersionsList.SelectedIndex];
         private List<string> versionsList = new();
-        public ImportPackContent()
+        public ImportModPackContent()
         {
             InitializeComponent();
 
             var path = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex];
             globalTools.SearchVersionJson(path.Path, ref versionsList, 0, 2);
-            // 收集数据
+            // 鏀堕泦鏁版嵁
             foreach (var c in versionsList)
             {
                 var fullPath = Path.GetFullPath(c);
@@ -51,7 +51,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"加载版本 {fullPath} 失败: {ex.Message}");
+                    Debug.WriteLine($"鍔犺浇鐗堟湰 {fullPath} 澶辫触: {ex.Message}");
                 }
             }
             if(versionsList.Count > 0)
@@ -65,8 +65,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
             var picker = new FilePicker(WindowNative.GetWindowHandle(App.MainWindow));
             picker.FileTypeChoices = new Dictionary<string, IList<string>>
             {
-                { "资源部", new List<string> { "*.mcpack"} },
-                { "Mod 文件", new List<string> { "*.dll"} }
+                { "Mod 鏂囦欢", new List<string> { "*.dll"} }
             };
 
             var file = await picker.PickSingleFileAsync();

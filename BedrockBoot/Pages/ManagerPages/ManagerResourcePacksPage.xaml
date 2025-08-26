@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="BedrockBoot.Pages.ManagerPages.ManagerResourcePacksPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BedrockBoot.Pages.ManagerPages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:pack="using:BedrockBoot.Models.Entry.Pack"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="VersionCardTemplate" x:DataType="pack:ResourcePackManifestEntry">
+            <controls:SettingsCard
+                IsActionIconVisible="False"
+                Margin="5,0,5,0"
+                Header="{x:Bind Header.Name}"
+                IsClickEnabled="True"
+                Tag="{x:Bind}">
+                <controls:SettingsCard.Description>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Width="28" Height="28" Padding="0"
+                                Margin="0,4,8,4">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <TextBlock Text="{x:Bind Header.Description}"></TextBlock>
+                                </Flyout>
+                            </Button.Flyout>
+                            <FontIcon Glyph="&#xE946;" FontSize="16"/>
+                        </Button>
+                        <TextBlock VerticalAlignment="Center" Text="{x:Bind ShortDescription}"></TextBlock>
+                    </StackPanel>
+                </controls:SettingsCard.Description>
+                <controls:SettingsCard.HeaderIcon>
+                    <ImageIcon Source="{x:Bind IconPath}"
+                               Margin="-12"
+                               Width="48" Height="48"/>
+                </controls:SettingsCard.HeaderIcon>
+                <controls:SettingsCard.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Margin="4,4,4,4"
+                                Tag="{x:Bind}"
+                                x:Name="SavePackBtn"
+                                Click="SavePackBtn_OnClick">导出</Button>
+                        <Button Margin="4,4,0,4"
+                                Style="{ThemeResource WarnButtonStyle}"
+                                Content="删除">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <StackPanel>
+                                        <TextBlock Text="您确认要删除吗？"></TextBlock>
+                                        <Button Margin="0,12,0,0"
+                                                Tag="{x:Bind}"
+                                                x:Name="DeleteBtn"
+                                                Click="DeleteBtn_OnClick"
+                                                HorizontalAlignment="Right">仍然删除</Button>
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                    </StackPanel>
+                </controls:SettingsCard.Content>
+            </controls:SettingsCard>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <ScrollViewer>
+            <Grid>
+                <ItemsRepeater
+                    HorizontalAlignment="Stretch"
+                    x:Name="VersionList"
+                    ItemTemplate="{StaticResource VersionCardTemplate}"
+                    ItemsSource="{x:Bind PackItems, Mode=OneWay}"
+                    MaxWidth="1000">
+                    <ItemsRepeater.Layout>
+                        <StackLayout Spacing="5" />
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

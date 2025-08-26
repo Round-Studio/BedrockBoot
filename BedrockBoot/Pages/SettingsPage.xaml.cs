@@ -1,9 +1,8 @@
-using ABI.System;
+﻿using ABI.System;
 using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Models.Classes.Helper;
 using BedrockBoot.Models.Classes.Style.Background;
 using BedrockBoot.Models.Enum.Background;
-using BedrockBoot.Pages.SettingPage;
 using BedrockBoot.Tools;
 using BedrockLauncher.Core;
 using Microsoft.UI.Composition.SystemBackdrops;

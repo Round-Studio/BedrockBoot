@@ -8,8 +8,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel>
-        <TextBlock FontSize="15" Text="{x:Bind VersionName}"></TextBlock>
-        <TextBlock FontSize="11" Text="{x:Bind VersionRealName}"></TextBlock>
+    <StackPanel Orientation="Horizontal">
+        <Border Width="32" Height="32" CornerRadius="6">
+            <Border.Background>
+                <ImageBrush ImageSource="/Assets/Release_Icon.png"></ImageBrush>
+            </Border.Background>
+        </Border>
+        <StackPanel Margin="8">
+            <TextBlock FontSize="15" Text="{x:Bind VersionName}"></TextBlock>
+            <TextBlock FontSize="11" Text="{x:Bind VersionRealName}"></TextBlock>
+        </StackPanel>
     </StackPanel>
 </UserControl>

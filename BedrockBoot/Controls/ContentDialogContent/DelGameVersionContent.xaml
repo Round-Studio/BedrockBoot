@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="BedrockBoot.Controls.ContentDialogContent.DelGameVersionContent"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -13,9 +13,10 @@
         <StackPanel Width="300" VerticalAlignment="Top">
             <TextBlock Margin="0,5"
                HorizontalAlignment="Left"
-               Name="Del_ProgressTextBlock">0 %</TextBlock>
+               Name="Del_ProgressTextBlock">正在准备文件...</TextBlock>
             <ProgressBar HorizontalAlignment="Stretch"
                  Name="Del_ProgressBar"
+                 IsIndeterminate="True"
                  Margin="0,5"></ProgressBar>
         </StackPanel>
     </StackPanel>

@@ -1,4 +1,4 @@
-using BedrockBoot.Tools;
+ï»¿using BedrockBoot.Tools;
 using BedrockBoot.Versions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -19,7 +19,7 @@ namespace BedrockBoot.Pages
         public string delay_mods_dir => Path.Combine(_selectedVersion.Version_Path, "d_mods");
 
         public object deleteLock;
-        // Ìí¼Ó¹¹Ôìº¯Êı½ÓÊÕ°æ±¾²ÎÊı
+        // æ·»åŠ æ„é€ å‡½æ•°æ¥æ”¶ç‰ˆæœ¬å‚æ•°
         public ModManagerPage(NowVersions version,bool delayinject)
         {
             this.delayInject = delayinject;
@@ -52,17 +52,17 @@ namespace BedrockBoot.Pages
             Button newButton(DllFileInfo info, SettingsExpander data)
             {
                 var button = new Button();
-                button.Content = "É¾³ımod";
+                button.Content = "åˆ é™¤ Mod";
                 button.Click += (s, e) =>
                 {
                     var removeMod = Manager.RemoveMod(info);
                     if (removeMod != true)
                     {
-                        EasyContentDialog.CreateDialog(this.XamlRoot, "É¾³ı", "É¾³ıÊ§°Ü");
+                        EasyContentDialog.CreateDialog(this.XamlRoot, "åˆ é™¤", "åˆ é™¤å¤±è´¥");
                     }
                     else
                     {
-                        EasyContentDialog.CreateDialog(this.XamlRoot, "É¾³ı", "É¾³ı³É¹¦");
+                        EasyContentDialog.CreateDialog(this.XamlRoot, "åˆ é™¤", "åˆ é™¤æˆåŠŸ");
                         TaskContainer.Children.Remove(data);
                     }
 
@@ -83,7 +83,7 @@ namespace BedrockBoot.Pages
                 {
                     new SettingsCard()
                     {
-                        Header = "É¾³ımod",
+                        Header = "åˆ é™¤mod",
                         Content = newButton(dllFileInfo, settingsExpander)
                     }
                 };
@@ -91,7 +91,7 @@ namespace BedrockBoot.Pages
                 Manager.ModsList.Add(dllFileInfo);
             }
         }
-        // ÎŞ²Î¹¹Ôìº¯Êı£¨Èç¹ûĞèÒª£©
+        // æ— å‚æ„é€ å‡½æ•°ï¼ˆå¦‚æœéœ€è¦ï¼‰
         public ModManagerPage()
         {
             this.InitializeComponent();

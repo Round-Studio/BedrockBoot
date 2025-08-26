@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Window
     x:Class="BedrockBoot.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -30,28 +30,9 @@
             IsBackButtonEnabled="True"
             IsBackButtonVisible="False"
             IsPaneToggleButtonVisible="False">
-            <!--TitleBar.LeftHeader>
-                <Button
-                    x:Name="BackButton"
-                    Width="42"
-                    Height="36"
-                    Padding="8"
-                    Click="BackButton_Click"
-                    Style="{ThemeResource SubtleButtonStyle}">
-                    <AnimatedIcon x:Name="SearchAnimatedIcon">
-                        <AnimatedIcon.Source>
-                            <animatedvisuals:AnimatedBackVisualSource />
-                        </AnimatedIcon.Source>
-                        <AnimatedIcon.FallbackIconSource>
-                            <SymbolIconSource Symbol="Find" />
-                        </AnimatedIcon.FallbackIconSource>
-                    </AnimatedIcon>
-                </Button>
-            </TitleBar.LeftHeader-->
         </TitleBar>
         <NavigationView
             x:Name="NavView"
-            Grid.Row="1"
             Margin="0,0,0,0"
             Padding="0,32,0,0"
             Canvas.ZIndex="0"
@@ -81,17 +62,23 @@
                     IsSelected="True"
                     Tag="HomePage" />
                 <NavigationViewItem
-                    x:Name="VersionPageNavItem"
-                    Content="已安装版本"
-                    Icon="{dev:FontIcon Glyph=&#xE7FC;}"
-                    IsSelected="False"
-                    Tag="VersionPage" />
-                <NavigationViewItem
                     x:Name="DownloadPageNavItem"
                     Content="下载版本"
                     Icon="{dev:FontIcon Glyph=&#xE896;}"
                     IsSelected="False"
                     Tag="DownloadPage" />
+                <NavigationViewItem
+                    x:Name="VersionPageNavItem"
+                    Content="管理实例"
+                    Icon="{dev:FontIcon Glyph=&#xE7FC;}"
+                    IsSelected="False"
+                    Tag="VersionPage" />
+                <NavigationViewItem
+                    x:Name="ManagerPageNavItem"
+                    Content="管理包"
+                    Icon="{dev:FontIcon Glyph=&#xE7B8;}"
+                    IsSelected="False"
+                    Tag="ManagerPage" />
                 <NavigationViewItem
                     x:Name="ToolsBoxPageNavItem"
                     Content="工具箱"
@@ -114,10 +101,10 @@
                     Tag="OOBE" />
                 -->
             </NavigationView.FooterMenuItems>
-            <Frame
-                x:Name="NavFrame"
-                Margin="0,0,0,0"
-                CacheSize="0" />
         </NavigationView>
+        <Frame
+            x:Name="NavFrame"
+            Margin="70,0,0,0"
+            CacheSize="0" />
     </Grid>
 </Window>

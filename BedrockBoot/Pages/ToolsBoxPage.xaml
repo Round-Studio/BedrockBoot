@@ -43,6 +43,16 @@
                                               x:Name="MouseLockToggleSwitch"></ToggleSwitch>
                             </controls:ToolItem.CardContent>
                         </controls:ToolItem>
+
+                        <controls:ToolItem HeaderIcon="&#xE8A0;" 
+                                           Header="导入包"
+                                           Description="导入资源包，存档等到 MC"
+                                           SettingButtonVisibility="Collapsed">
+                            <controls:ToolItem.CardContent>
+                                <Button x:Name="InmportMCPackBtn"
+                                        Click="InmportMCPackBtn_Click">开始导入</Button>
+                            </controls:ToolItem.CardContent>
+                        </controls:ToolItem>
                     </GridView>
 
                     <TextBlock

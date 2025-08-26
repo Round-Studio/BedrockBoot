@@ -20,12 +20,12 @@
                       SelectionChanged="FolderChooseBox_SelectionChanged"></ComboBox>
         </StackPanel>
 
-        <ListBox Height="280" 
-                 Width="280"
-                 Grid.Row="1"
-                 Margin="0,20,0,0"
-                 Background="Transparent"
-                 SelectionChanged="GamesList_SelectionChanged"
-                 x:Name="GamesList"></ListBox>
+        <ListView Height="280" 
+                  Width="280"
+                  Grid.Row="1"
+                  Margin="0,20,0,0"
+                  Background="Transparent"
+                  SelectionChanged="GamesList_SelectionChanged"
+                  x:Name="GamesList"></ListView>
     </Grid>
 </Page>

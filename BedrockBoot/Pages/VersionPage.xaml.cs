@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -110,7 +111,20 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
-            QuickLaunchGame.LaunchGame(versionInfo);
+            Task.Run(() =>
+            {
+                try
+                {
+                    QuickLaunchGame.LaunchGame(versionInfo);
+                }
+                catch (Exception ex)
+                {
+                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+                    {
+                        EasyContentDialog.CreateDialog(this.XamlRoot, "发生了错误", ex.Message);
+                    });
+                }
+            });
         }
     }
 
@@ -282,7 +296,7 @@ public sealed partial class VersionPage : Page
         var dialog = new ContentDialog()
         {
             XamlRoot = this.XamlRoot,
-            Content = new ImportPackContent(),
+            Content = new ImportModPackContent(),
             Title = "导入包",
             CloseButtonText = "取消",
             PrimaryButtonText = "开始导入",
@@ -292,17 +306,11 @@ public sealed partial class VersionPage : Page
 
         if(res == ContentDialogResult.Primary)
         {
-            var content = ((ImportPackContent)dialog.Content);
+            var content = ((ImportModPackContent)dialog.Content);
             if (!string.IsNullOrEmpty(content.PackPath))
             {
                 var path = Path.GetDirectoryName(content.Version);
-                bool unzip = false;
-                if (content.PackType == "资源包")
-                {
-                    path = Path.Combine(path, "data", "resource_packs");
-                    unzip = true;
-                }
-                else if (content.PackType == "普通 Mod")
+                if (content.PackType == "普通 Mod")
                 {
                     path = Path.Combine(path, "mods");
                 }
@@ -311,15 +319,7 @@ public sealed partial class VersionPage : Page
                     path = Path.Combine(path, "d_mods");
                 }
 
-                if (unzip)
-                {
-                    Directory.CreateDirectory(Path.Combine(path, Path.GetFileName(content.PackPath)));
-                    ZipFile.ExtractToDirectory(content.PackPath,Path.Combine(path, Path.GetFileName(content.PackPath)),true);
-                }
-                else 
-                {
-                    File.Copy(content.PackPath, Path.Combine(path,Path.GetFileName(content.PackPath)), true);
-                }
+                File.Copy(content.PackPath, Path.Combine(path, Path.GetFileName(content.PackPath)), true);
                 EasyContentDialog.CreateDialog(this.XamlRoot, "导入成功", $"已成功将包 {content.PackPath} 导入至游戏。\n目标包类型：{content.PackType}");
             }
             else

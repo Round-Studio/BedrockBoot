@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="BedrockBoot.Pages.VersionPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -82,7 +82,7 @@
                     <Button
                         x:Name="ImportButton"
                         Click="ImportButton_Click"
-                        Content="导入..."
+                        Content="导入 Mod"
                         Margin="0,0,8,0" />
                     
                     <Button

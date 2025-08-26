@@ -67,7 +67,7 @@ namespace BedrockBoot
 
             HomePage.OnDownload += () =>
             {
-                NavView.SelectedItem = NavView.MenuItems[2];
+                NavView.SelectedItem = NavView.MenuItems[1];
                 NavFrame.Navigate(typeof(DownloadPage));
             };
             global_cfg.MainWindow = this;
@@ -108,8 +108,8 @@ namespace BedrockBoot
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
-            _hotKeyService?.Dispose();
-            global_cfg.cfg.SaveConfig();
+            // _hotKeyService?.Dispose();
+            // global_cfg.cfg.SaveConfig();
             Environment.Exit(0);
         }
         public async void UpdateBackground()
@@ -175,10 +175,10 @@ namespace BedrockBoot
             if ((string)selectedItem.Tag == "SettingPage") NavFrame.Navigate(typeof(SettingsPage));
             if ((string)selectedItem.Tag == "DownloadPage") NavFrame.Navigate(typeof(DownloadPage));
             if ((string)selectedItem.Tag == "HomePage") NavFrame.Navigate(typeof(HomePage));
-            if ((string)selectedItem.Tag == "OOBE") NavFrame.Navigate(typeof(OOBEPage));
             if ((string)selectedItem.Tag == "TaskPage") NavFrame.Navigate(typeof(TaskPage));
             if ((string)selectedItem.Tag == "VersionPage") NavFrame.Navigate(typeof(VersionPage));
             if ((string)selectedItem.Tag == "ToolsBoxPage") NavFrame.Navigate(typeof(ToolsBoxPage));
+            if ((string)selectedItem.Tag == "ManagerPage") NavFrame.Navigate(typeof(ManagerPackPage));
         }
     }
 }

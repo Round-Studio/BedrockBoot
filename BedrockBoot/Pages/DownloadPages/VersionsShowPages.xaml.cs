@@ -1,4 +1,4 @@
-using ABI.System;
+﻿using ABI.System;
 using BedrockBoot.Controls;
 using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Tools;
@@ -38,7 +38,7 @@ namespace BedrockBoot.Pages.DownloadPages
         {
             InitializeComponent();
             this.DataContext = this;
-          _ =  LoadVersionsAsync_();
+            _ =  LoadVersionsAsync_();
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
             _cancellationTokenSource = new CancellationTokenSource();
             Unloaded += OnPageUnloaded;
@@ -61,6 +61,7 @@ namespace BedrockBoot.Pages.DownloadPages
             dialog.DefaultButton = ContentDialogButton.Primary;
 
             var result = await dialog.ShowAsync();
+            
             var content = (DownloadGameContent)dialog.Content;
             if (!Directory.Exists(content.SeleteDir))
             {
@@ -74,7 +75,6 @@ namespace BedrockBoot.Pages.DownloadPages
 
             if (result == ContentDialogResult.Primary)
             {
-//TODO
                 List<string> versionList = new List<string>();
                 globalTools.SearchVersionJson(content.SeleteDir, ref versionList, 0, 2);
                 foreach (var c in versionList)

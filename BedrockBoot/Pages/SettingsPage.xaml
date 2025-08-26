@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="BedrockBoot.Pages.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -106,7 +106,12 @@
 
                             <dev:SettingsCard Header="操作">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Width="120" Margin="0,0,5,0">删除所选目录</Button>
+                                    <Button
+                                        Width="120"
+                                        Margin="0,0,5,0"
+                                        Style="{ThemeResource WarnButtonStyle}">
+                                        删除所选目录
+                                    </Button>
                                     <Button
                                         Name="ImportGameFolder"
                                         Width="270"
@@ -167,9 +172,49 @@
                             <dev:SettingsCard Header="开发者">
                                 <dev:SettingsCard.Content>
                                     <StackPanel Orientation="Horizontal">
-                                        <controls:PersonPictureButton />
-                                        <controls:PersonPictureButton />
-                                        <controls:PersonPictureButton />
+                                        <controls:PersonPictureButton
+                                            MainColor="#F7E7B4"
+                                            PersonName="DrMing"
+                                            PersonWork="传奇前端，整活大师"
+                                            ProfilePictureSource="/Assets/PersonPicture/DrMing.jpg">
+                                            <controls:PersonPictureButton.FlyoutContent>
+                                                <Grid>
+                                                    <StackPanel Margin="4,10,0,0" Orientation="Horizontal">
+                                                        <HyperlinkButton Foreground="{StaticResource SystemAccentColor}" NavigateUri="https://github.com/0x44614D696E67">
+                                                            Github
+                                                        </HyperlinkButton>
+                                                        <HyperlinkButton Foreground="{StaticResource SystemAccentColor}" NavigateUri="https://space.bilibili.com/1362650227">
+                                                            BiliBili
+                                                        </HyperlinkButton>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </controls:PersonPictureButton.FlyoutContent>
+                                        </controls:PersonPictureButton>
+                                        <controls:PersonPictureButton
+                                            MainColor="#fef9f2"
+                                            PersonName="Dime"
+                                            PersonWork="前后端工作，功能研发"
+                                            ProfilePictureSource="/Assets/PersonPicture/Dime.jpg">
+                                            <controls:PersonPictureButton.FlyoutContent>
+                                                <StackPanel Margin="4,10,0,0" Orientation="Horizontal">
+                                                    <HyperlinkButton Foreground="{StaticResource SystemAccentColor}" NavigateUri="https://github.com/MinecraftYJQ">Github</HyperlinkButton>
+                                                    <HyperlinkButton Foreground="{StaticResource SystemAccentColor}" NavigateUri="https://space.bilibili.com/1527364468">bilibili</HyperlinkButton>
+                                                </StackPanel>
+                                            </controls:PersonPictureButton.FlyoutContent>
+                                        </controls:PersonPictureButton>
+                                        <controls:PersonPictureButton
+                                            MainColor="#516a73"
+                                            PersonName="YoumiHa"
+                                            PersonWork="后端工作，功能研发"
+                                            ProfilePictureSource="/Assets/PersonPicture/YoumiHa.png"
+                                            TextColor="White">
+                                            <controls:PersonPictureButton.FlyoutContent>
+                                                <StackPanel Margin="4,10,0,0" Orientation="Horizontal">
+                                                    <HyperlinkButton NavigateUri="https://github.com/MikuniDOMI">Github</HyperlinkButton>
+                                                    <HyperlinkButton NavigateUri="https://space.bilibili.com/3546612917864627">bilibili</HyperlinkButton>
+                                                </StackPanel>
+                                            </controls:PersonPictureButton.FlyoutContent>
+                                        </controls:PersonPictureButton>
                                     </StackPanel>
                                 </dev:SettingsCard.Content>
                             </dev:SettingsCard>

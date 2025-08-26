@@ -38,7 +38,7 @@ namespace BedrockBoot.Pages.DownloadPages
         {
             InitializeComponent();
             this.DataContext = this;
-          _ =  LoadVersionsAsync_();
+            _ =  LoadVersionsAsync_();
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
             _cancellationTokenSource = new CancellationTokenSource();
             Unloaded += OnPageUnloaded;

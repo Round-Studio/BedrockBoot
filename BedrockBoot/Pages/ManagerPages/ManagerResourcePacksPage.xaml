@@ -6,14 +6,37 @@
     xmlns:local="using:BedrockBoot.Pages.ManagerPages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:pack="using:BedrockBoot.Models.Entry.Pack"
     mc:Ignorable="d">
-
+    <Page.Resources>
+        <DataTemplate x:Key="VersionCardTemplate" x:DataType="pack:ResourcePackManifestEntry">
+            <controls:SettingsCard
+                Margin="5,0,5,0"
+                Description="{x:Bind Header.Description}"
+                Header="{x:Bind Header.Name}"
+                IsClickEnabled="True"
+                Tag="{x:Bind}">
+                <controls:SettingsCard.HeaderIcon>
+                    <ImageIcon Source="/Assets/Release_Icon.png"
+                               Width="48" Height="48"/>
+                </controls:SettingsCard.HeaderIcon>
+            </controls:SettingsCard>
+        </DataTemplate>
+    </Page.Resources>
     <Grid>
         <ScrollViewer>
             <Grid>
-                <StackPanel MaxWidth="1000">
-                    
-                </StackPanel>
+                <ItemsRepeater
+                    HorizontalAlignment="Stretch"
+                    x:Name="VersionList"
+                    ItemTemplate="{StaticResource VersionCardTemplate}"
+                    ItemsSource="{x:Bind PackItems, Mode=OneWay}"
+                    MaxWidth="1000">
+                    <ItemsRepeater.Layout>
+                        <StackLayout Spacing="5" />
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
             </Grid>
         </ScrollViewer>
     </Grid>

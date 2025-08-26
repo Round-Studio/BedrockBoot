@@ -87,7 +87,6 @@
                               x:Name="ScrollViewList">
                     <Grid>
                         <ItemsRepeater
-                            Grid.Column="1"
                             HorizontalAlignment="Stretch"
                             x:Name="VersionList"
                             ItemTemplate="{StaticResource VersionCardTemplate}"

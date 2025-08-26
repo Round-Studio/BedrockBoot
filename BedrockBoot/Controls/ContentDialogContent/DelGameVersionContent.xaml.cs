@@ -1,4 +1,4 @@
-using CommunityToolkit.WinUI;
+ï»¿using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -39,14 +39,14 @@ namespace BedrockBoot.Controls.ContentDialogContent
                 {
                     var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).ToList();
 
-                    // ¸üÐÂUI
+                    // æ›´æ–°UI
                     await DispatcherQueue.EnqueueAsync(() =>
                     {
                         Del_ProgressBar.Maximum = files.Count;
                         Del_ProgressBar.Value = 0;
                     });
 
-                    // ·ÖÅú´¦ÀíÒÔ±ÜÃâÆµ·±µÄUI¸üÐÂ
+                    // åˆ†æ‰¹å¤„ç†ä»¥é¿å…é¢‘ç¹çš„UIæ›´æ–°
                     int processed = 0;
                     foreach (string file in files)
                     {
@@ -55,11 +55,12 @@ namespace BedrockBoot.Controls.ContentDialogContent
                             File.Delete(file);
                             processed++;
 
-                            // Ã¿´¦Àí10¸öÎÄ¼þ¸üÐÂÒ»´ÎUI£¬¼õÉÙUIÏß³ÌÑ¹Á¦
-                            if (processed % 10 == 0 || processed == files.Count)
+                            // æ¯å¤„ç†50ä¸ªæ–‡ä»¶æ›´æ–°ä¸€æ¬¡UIï¼Œå‡å°‘UIçº¿ç¨‹åŽ‹åŠ›
+                            if (processed % 50 == 0 || processed == files.Count)
                             {
                                 await DispatcherQueue.EnqueueAsync(() =>
                                 {
+                                    Del_ProgressBar.IsIndeterminate = false;
                                     Del_ProgressBar.Value = processed; 
                                     Del_ProgressTextBlock.Text = $"{(processed * 100.0 / files.Count):0.00} %";
                                 });
@@ -67,19 +68,19 @@ namespace BedrockBoot.Controls.ContentDialogContent
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"É¾³ýÊ§°Ü {file}: {ex.Message}");
+                            Console.WriteLine($"åˆ é™¤å¤±è´¥ {file}: {ex.Message}");
                         }
                     }
                 });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"²Ù×÷Ê§°Ü: {ex.Message}");
+                Console.WriteLine($"æ“ä½œå¤±è´¥: {ex.Message}");
             }
             finally
             {
                 Directory.Delete(path, true);
-                // ¹Ø±Õ¶Ô»°¿ò
+                // å…³é—­å¯¹è¯æ¡†
                 await DispatcherQueue.EnqueueAsync(() =>
                 {
                     ((ContentDialog)this.Parent)?.Hide();

@@ -108,9 +108,9 @@ namespace BedrockBoot
         }
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
-            _hotKeyService?.Dispose();
-            global_cfg.cfg.SaveConfig();
-            Environment.Exit(0);
+            // _hotKeyService?.Dispose();
+            // global_cfg.cfg.SaveConfig();
+            // Environment.Exit(0);
         }
         public async void UpdateBackground()
         {

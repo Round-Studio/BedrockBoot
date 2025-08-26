@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BedrockBoot.Tools
 {
-    internal class EasyContentDialog
+    public class EasyContentDialog
     {
         public static async void CreateDialog(
             XamlRoot root,

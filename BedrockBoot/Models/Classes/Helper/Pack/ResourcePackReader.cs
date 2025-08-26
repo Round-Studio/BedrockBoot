@@ -27,6 +27,7 @@ namespace BedrockBoot.Models.Classes.Helper.Pack
                         var jsonPath = Path.Combine(folder, "manifest.json");
                         var entry = globalTools.GetJsonFileEntry<ResourcePackManifestEntry>(jsonPath);
                         entry.IconPath = Path.Combine(folder, "pack_icon.png");
+                        entry.ShortDescription = $"{StringHelper.RemoveEscapeCharacters(entry.Header.Description.Substring(0, 50))}...";
                         entry.Path = folder;
 
                         res.Add(entry);

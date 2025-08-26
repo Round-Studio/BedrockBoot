@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
     x:Class="BedrockBoot.Controls.PersonPictureButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -35,12 +35,17 @@
                             <GradientStop x:Name="GradientStop3" Offset="2" Color="Transparent" />
                         </LinearGradientBrush>
                     </Grid.Background>
-                    <StackPanel Margin="16" Orientation="Vertical">
+                    <StackPanel Margin="16">
                         <TextBlock
-                            Margin="0,0,0,8"
+                            Margin="4,0,0,0"
                             Foreground="{x:Bind TextColor}"
                             Style="{ThemeResource SubtitleTextBlockStyle}"
                             Text="{x:Bind PersonName}" />
+                        <TextBlock
+                            Margin="4,2,0,0"
+                            Foreground="{x:Bind TextColor}"
+                            FontSize="12"
+                            Text="{x:Bind PersonWork}" />
                         <ContentControl Content="{x:Bind FlyoutContent}" />
                     </StackPanel>
                     <dev:OpacityMaskView

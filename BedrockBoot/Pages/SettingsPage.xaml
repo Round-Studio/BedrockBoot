@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="BedrockBoot.Pages.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -172,20 +172,43 @@
                             <dev:SettingsCard Header="开发者">
                                 <dev:SettingsCard.Content>
                                     <StackPanel Orientation="Horizontal">
-                                        <controls:FontIconButton PersonName="DaMing">
-                                            <controls:FontIconButton.FlyoutContent>
-                                                <Button Content="滚木" />
-                                            </controls:FontIconButton.FlyoutContent>
-                                        </controls:FontIconButton>
+                                        <controls:PersonPictureButton
+                                            MainColor="#F7E7B4"
+                                            PersonName="DrMing"
+                                            PersonWork="前端工作，整活大师"
+                                            ProfilePictureSource="/Assets/PersonPicture/DrMing.jpg" >
+                                            <controls:PersonPictureButton.FlyoutContent>
+                                                <StackPanel Orientation="Horizontal" Margin="4,10,0,0">
+                                                    <HyperlinkButton Foreground="{StaticResource SystemAccentColor}" NavigateUri="https://github.com/0x44614D696E67">Github</HyperlinkButton>
+                                                    <HyperlinkButton Foreground="{StaticResource SystemAccentColor}"  NavigateUri="https://space.bilibili.com/1362650227">bilibili</HyperlinkButton>
+                                                </StackPanel>
+                                            </controls:PersonPictureButton.FlyoutContent>
+                                        </controls:PersonPictureButton>
                                         <controls:PersonPictureButton
                                             MainColor="#fef9f2"
                                             PersonName="Dime"
-                                            ProfilePictureSource="/Assets/PersonPicture/Dime.jpg" />
+                                            PersonWork="前后端工作，功能研发"
+                                            ProfilePictureSource="/Assets/PersonPicture/Dime.jpg" >
+                                            <controls:PersonPictureButton.FlyoutContent>
+                                                <StackPanel Orientation="Horizontal" Margin="4,10,0,0">
+                                                    <HyperlinkButton Foreground="{StaticResource SystemAccentColor}"  NavigateUri="https://github.com/MinecraftYJQ">Github</HyperlinkButton>
+                                                    <HyperlinkButton Foreground="{StaticResource SystemAccentColor}"  NavigateUri="https://space.bilibili.com/1527364468">bilibili</HyperlinkButton>
+                                                </StackPanel>
+                                            </controls:PersonPictureButton.FlyoutContent>
+                                        </controls:PersonPictureButton>
                                         <controls:PersonPictureButton
                                             MainColor="#516a73"
                                             PersonName="YoumiHa"
+                                            PersonWork="后端工作，功能研发"
                                             ProfilePictureSource="/Assets/PersonPicture/YoumiHa.png"
-                                            TextColor="White" />
+                                            TextColor="White" >
+                                            <controls:PersonPictureButton.FlyoutContent>
+                                                <StackPanel Orientation="Horizontal" Margin="4,10,0,0">
+                                                    <HyperlinkButton NavigateUri="https://github.com/MikuniDOMI">Github</HyperlinkButton>
+                                                    <HyperlinkButton NavigateUri="https://space.bilibili.com/3546612917864627">bilibili</HyperlinkButton>
+                                                </StackPanel>
+                                            </controls:PersonPictureButton.FlyoutContent>
+                                        </controls:PersonPictureButton>
                                     </StackPanel>
                                 </dev:SettingsCard.Content>
                             </dev:SettingsCard>

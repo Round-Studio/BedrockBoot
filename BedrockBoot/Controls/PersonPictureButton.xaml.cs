@@ -1,4 +1,4 @@
-using Microsoft.UI;
+﻿using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -29,6 +29,7 @@ namespace BedrockBoot.Controls
         public Color MainColor { get; set; } = Colors.Transparent;
         private Brush MainBrush => new SolidColorBrush(MainColor);
         public string? PersonName { get; set; }
+        public string? PersonWork { get; set; }
         public Object? FlyoutContent { get; set; }
         public PersonPictureButton()
         {

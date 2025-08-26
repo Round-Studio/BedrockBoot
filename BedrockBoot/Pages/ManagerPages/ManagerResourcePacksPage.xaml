@@ -18,7 +18,8 @@
                 IsClickEnabled="True"
                 Tag="{x:Bind}">
                 <controls:SettingsCard.HeaderIcon>
-                    <ImageIcon Source="/Assets/Release_Icon.png"
+                    <ImageIcon Source="{x:Bind IconPath}"
+                               Margin="-12"
                                Width="48" Height="48"/>
                 </controls:SettingsCard.HeaderIcon>
             </controls:SettingsCard>

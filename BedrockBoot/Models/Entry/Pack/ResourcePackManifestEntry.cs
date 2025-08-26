@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Resources;
 using System.Text.Json.Serialization;
 
 namespace BedrockBoot.Models.Entry.Pack;
@@ -19,6 +20,9 @@ public class ResourcePackManifestEntry
 
     [JsonPropertyName("capabilities")]
     public List<string> Capabilities { get; set; } = new List<string>();
+
+    [JsonIgnore]
+    public string IconPath { get; set; }
 
 
 

@@ -33,7 +33,6 @@
         </TitleBar>
         <NavigationView
             x:Name="NavView"
-            Grid.Row="1"
             Margin="0,0,0,0"
             Padding="0,32,0,0"
             Canvas.ZIndex="0"
@@ -102,10 +101,10 @@
                     Tag="OOBE" />
                 -->
             </NavigationView.FooterMenuItems>
-            <Frame
-                x:Name="NavFrame"
-                Margin="0,0,0,0"
-                CacheSize="0" />
         </NavigationView>
+        <Frame
+            x:Name="NavFrame"
+            Margin="70,0,0,0"
+            CacheSize="0" />
     </Grid>
 </Window>

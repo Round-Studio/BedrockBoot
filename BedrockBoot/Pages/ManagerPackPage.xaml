@@ -36,7 +36,8 @@
 
                     </NavigationViewItem>
                     <NavigationViewItem Content="存档"
-                                            Tag="World">
+                                            Tag="World"
+                                            IsEnabled="False">
 
                     </NavigationViewItem>
                 </NavigationView.MenuItems>

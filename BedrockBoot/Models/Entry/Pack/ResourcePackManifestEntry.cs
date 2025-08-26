@@ -23,6 +23,8 @@ public class ResourcePackManifestEntry
 
     [JsonIgnore]
     public string IconPath { get; set; }
+    [JsonIgnore]
+    public string Path { get; set; }
 
 
 

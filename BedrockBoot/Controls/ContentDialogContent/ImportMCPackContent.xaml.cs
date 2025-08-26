@@ -57,6 +57,8 @@ namespace BedrockBoot.Controls.ContentDialogContent
                     "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
                     "LocalState", "games", "com.mojang", "resource_packs");
 
+                if (!Directory.Exists(minecraftPath)) Directory.CreateDirectory(minecraftPath);
+
                 ZipFile.ExtractToDirectory(Path, minecraftPath, true);
             }
             else
@@ -65,6 +67,8 @@ namespace BedrockBoot.Controls.ContentDialogContent
                 string minecraftPath = System.IO.Path.Combine(localAppData, "Packages",
                     "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
                     "LocalState", "games", "com.mojang", "minecraftWorlds", $"{RandomStringGenerator.GenerateRandomString()}=");
+
+                if (!Directory.Exists(minecraftPath)) Directory.CreateDirectory(minecraftPath);
 
                 ZipFile.ExtractToDirectory(Path, minecraftPath, true);
 

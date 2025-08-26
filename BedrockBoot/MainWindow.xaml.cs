@@ -110,6 +110,7 @@ namespace BedrockBoot
         {
             // _hotKeyService?.Dispose();
             // global_cfg.cfg.SaveConfig();
+           
             Environment.Exit(0);
         }
         public async void UpdateBackground()
@@ -145,7 +146,7 @@ namespace BedrockBoot
                     {
                         Title = "有更新可用",
                         Content =
-                            $"当前：{s1.Replace("0", "").Replace(".", "")}\n最新：{s2.Replace("0", "").Replace(".", "").Replace("v", "")}\n内容：{body}",
+                            $"当前：{s1.Replace("0", "").Replace(".", "")}\n最新：{s2.Replace("0", "").Replace(".", "").Replace("v", "")}",
                         CloseButtonText = "暂不更新",
                         PrimaryButtonText = "立即更新",
                         DefaultButton = ContentDialogButton.Primary,

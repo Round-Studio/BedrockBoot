@@ -22,7 +22,7 @@ namespace BedrockBoot
             }
             AppDomain.CurrentDomain.UnhandledException += (o, e) =>
             {
-                string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")));
+                string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff")));
                 MiniDump.Write(dumpFile);
             };
           
@@ -35,7 +35,7 @@ namespace BedrockBoot
             });
             Application.Current.UnhandledException += (o, e) =>
             {
-                string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")));
+                string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff")));
                 MiniDump.Write(dumpFile);
             };
         }

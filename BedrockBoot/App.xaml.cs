@@ -37,7 +37,7 @@ namespace BedrockBoot
         {
             AppDomain.CurrentDomain.FirstChanceException += ((sender, eventArgs) =>
             {
-                string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")));
+                string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff")));
                 MiniDump.Write(dumpFile);
             });
             UnhandledException += App_UnhandledException;
@@ -57,7 +57,7 @@ namespace BedrockBoot
 
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")));
+            string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff")));
             MiniDump.Write(dumpFile);
         }
 

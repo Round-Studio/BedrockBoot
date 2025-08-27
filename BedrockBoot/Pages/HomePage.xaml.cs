@@ -61,14 +61,44 @@ public sealed partial class HomePage : Page
                 List<string> games = new List<string>();
                 globalTools.SearchVersionJson(global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path, ref games, 0, 2);
 
+
                 IsLaunch = true;
-                var entry = globalTools.GetJsonFileEntry<NowVersions>(games[global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].SelectVersionIndex]);
-                NowVersion = entry;
-                DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                var chooseFolderIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
+                var folders = global_cfg.cfg.JsonCfg.GameFolders;
+                if (folders.Count - 1 >= chooseFolderIndex)
                 {
-                    ChooseVersionName.Text = entry.VersionName;
-                    BigLaunchBtnTitle.Text = "启动游戏";
-                }));
+                    var gameIndex = folders[chooseFolderIndex].SelectVersionIndex;
+                    if (gameIndex <= games.Count - 1 && gameIndex >= 0)
+                    {
+                        var entry = globalTools.GetJsonFileEntry<NowVersions>(games[gameIndex]);
+                        NowVersion = entry;
+                        DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                        {
+                            ChooseVersionName.Text = entry.VersionName;
+                            BigLaunchBtnTitle.Text = "启动游戏";
+                        }));
+                    }
+                    else
+                    {
+
+                        IsLaunch = false;
+                        DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                        {
+                            BigLaunchBtnTitle.Text = "下载游戏";
+                            ChooseVersionName.Text = "当前没有游戏可用";
+                        }));
+                    }
+                }
+                else
+                {
+
+                    IsLaunch = false;
+                    DispatcherQueue.TryEnqueue((DispatcherQueuePriority.High), (() =>
+                    {
+                        BigLaunchBtnTitle.Text = "下载游戏";
+                        ChooseVersionName.Text = "当前没有游戏可用";
+                    }));
+                }
             }
             catch
             {

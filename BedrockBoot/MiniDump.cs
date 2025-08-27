@@ -84,7 +84,7 @@ namespace BedrockBoot
 
         public static bool Write(string fileName)
         {
-            return Write(fileName, DumpType.MiniDumpWithHandleData);
+            return Write(fileName,DumpType.MiniDumpWithProcessThreadData);
         }
 
         public static bool Write(string fileName, DumpType dumpType)

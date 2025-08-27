@@ -102,12 +102,8 @@ namespace BedrockBoot
         {
             // _hotKeyService?.Dispose();
             // global_cfg.cfg.SaveConfig();
-<<<<<<< Updated upstream
            
             Environment.Exit(0);
-=======
-         //   Environment.Exit(0);
->>>>>>> Stashed changes
         }
         public async void UpdateBackground()
         {

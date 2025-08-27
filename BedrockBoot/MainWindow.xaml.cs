@@ -102,6 +102,8 @@ namespace BedrockBoot
         {
             // _hotKeyService?.Dispose();
             // global_cfg.cfg.SaveConfig();
+           
+            Environment.Exit(0);
         }
         public async void UpdateBackground()
         {

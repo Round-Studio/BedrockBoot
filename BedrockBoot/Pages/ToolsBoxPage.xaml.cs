@@ -76,8 +76,8 @@ namespace BedrockBoot.Pages
                 try
                 {
                     globalTools.ShowInfo("请耐心等待，直到完成提示出现");
-                    global_cfg.core.RemoveGame(VersionType.Release);
-                    global_cfg.core.RemoveGame(VersionType.Preview);
+                    global_cfg.core.RemoveGameClearly(VersionType.Release);
+                    global_cfg.core.RemoveGameClearly(VersionType.Preview);
                     globalTools.ShowInfo("卸载完成");
                 }
                 catch (System.Exception exception)

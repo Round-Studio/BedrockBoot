@@ -269,6 +269,9 @@
     <PRIResource Remove="Types\**" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Assets\PersonPicture\DrMing.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Assets\Release_Icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -1,4 +1,5 @@
-﻿using BedrockBoot.Pages.ManagerPages;
+﻿using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Pages.ManagerPages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -34,6 +35,25 @@ namespace BedrockBoot.Pages
             var selectedItem = (NavigationViewItem)args.SelectedItem;
             if ((string)selectedItem.Tag == "ResourcePack") NavFrame.Navigate(typeof(ManagerResourcePacksPage));
             if ((string)selectedItem.Tag == "World") NavFrame.Navigate(typeof(ManagerWorldsPage));
+        }
+
+        private async void ImportPack_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new ContentDialog()
+            {
+                XamlRoot = this.XamlRoot,
+                Content = new ImportMCPackContent(),
+                Title = "导入资源",
+                PrimaryButtonText = "导入",
+                CloseButtonText = "取消",
+                DefaultButton = ContentDialogButton.Primary
+            };
+            var res = await dialog.ShowAsync();
+            if (res == ContentDialogResult.Primary)
+            {
+                ((ImportMCPackContent)dialog.Content).StartImport();
+            }
+            NavFrame.Navigate(typeof(ManagerResourcePacksPage));
         }
     }
 }

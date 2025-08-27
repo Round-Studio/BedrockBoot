@@ -1,11 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="BedrockBoot.Pages.ToolsBoxPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:BedrockBoot.Pages"
+    xmlns:controls="using:BedrockBoot.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:BedrockBoot.Controls"
+    xmlns:local="using:BedrockBoot.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
@@ -19,53 +20,44 @@
                 x:Name="BreadcrumbBar"
                 Margin="0,0,10,4"
                 FontSize="30"
-                Text="工具箱">
-            </TextBlock>
+                Text="工具箱" />
         </Grid>
-        <ScrollViewer HorizontalAlignment="Stretch"
-                      Margin="0,52,0,10"
-                      x:Name="ScrollViewList">
+        <ScrollViewer
+            x:Name="ScrollViewList"
+            Margin="0,52,0,10"
+            HorizontalAlignment="Stretch">
             <Grid>
-                <StackPanel MaxWidth="1000"
+                <StackPanel
+                    MaxWidth="1000"
                     Margin="10"
                     Spacing="4">
 
-                    <TextBlock
-                        Style="{StaticResource Subtitle}"
-                        Text="游戏" />
+                    <TextBlock Style="{StaticResource Subtitle}" Text="游戏" />
                     <GridView SelectionMode="None">
-                        <controls:ToolItem HeaderIcon="&#xE962;" 
-                                           Header="鼠标锁 (Beta)"
-                                           Description="解决基岩版无法锁定鼠标问题"
-                                           OnSetting="MouseLock_Setting">
+                        <controls:ToolItem
+                            Description="解决基岩版无法锁定鼠标问题"
+                            Header="鼠标锁 (Beta)"
+                            HeaderIcon="&#xE962;"
+                            OnSetting="MouseLock_Setting">
                             <controls:ToolItem.CardContent>
-                                <ToggleSwitch OnContent="" OffContent="" Margin="-12,0,0,0"
-                                              x:Name="MouseLockToggleSwitch"></ToggleSwitch>
-                            </controls:ToolItem.CardContent>
-                        </controls:ToolItem>
-
-                        <controls:ToolItem HeaderIcon="&#xE8A0;" 
-                                           Header="导入包"
-                                           Description="导入资源包，存档等到 MC"
-                                           SettingButtonVisibility="Collapsed">
-                            <controls:ToolItem.CardContent>
-                                <Button x:Name="InmportMCPackBtn"
-                                        Click="InmportMCPackBtn_Click">开始导入</Button>
+                                <ToggleSwitch
+                                    x:Name="MouseLockToggleSwitch"
+                                    Margin="-12,0,0,0"
+                                    OffContent=""
+                                    OnContent="" />
                             </controls:ToolItem.CardContent>
                         </controls:ToolItem>
                     </GridView>
 
-                    <TextBlock
-                        Style="{StaticResource Subtitle}"
-                        Text="系统" />
+                    <TextBlock Style="{StaticResource Subtitle}" Text="系统" />
                     <GridView SelectionMode="None">
-                        <controls:ToolItem HeaderIcon="&#xE74D;" 
-                                           Header="卸载 Minecraft"
-                                           Description="卸载来自商店或其他启动器安装的 MC"
-                                           SettingButtonVisibility="Collapsed">
+                        <controls:ToolItem
+                            Description="卸载来自商店或其他启动器安装的 MC"
+                            Header="卸载 Minecraft"
+                            HeaderIcon="&#xE74D;"
+                            SettingButtonVisibility="Collapsed">
                             <controls:ToolItem.CardContent>
-                                <Button x:Name="DeleteMinecraft"
-                                        Click="DeleteMinecraft_Click">卸载</Button>
+                                <Button x:Name="DeleteMinecraft" Click="DeleteMinecraft_Click">卸载</Button>
                             </controls:ToolItem.CardContent>
                         </controls:ToolItem>
                     </GridView>

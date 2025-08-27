@@ -39,6 +39,7 @@ public sealed partial class VersionPage : Page
     // 不再需要 ObservableCollection，改为使用 List 存储数据
     private List<NowVersions> _versionsData = new List<NowVersions>();
     public bool IsEdit = false;
+    public bool IsChooseUpdate = false;
 
     public VersionPage()
     {
@@ -50,31 +51,34 @@ public sealed partial class VersionPage : Page
     private void UpdateUI()
     {
         IsEdit = false;
-        ChooseGameFolderComboBox.Items.Clear();
-        foreach (var x in global_cfg.cfg.JsonCfg.GameFolders)
+        if (!IsChooseUpdate)
         {
-            ChooseGameFolderComboBox.Items.Add(new ListViewItem()
+            ChooseGameFolderComboBox.Items.Clear();
+            foreach (var x in global_cfg.cfg.JsonCfg.GameFolders)
             {
-                Content = new StackPanel()
+                ChooseGameFolderComboBox.Items.Add(new ListViewItem()
                 {
-                    Children =
+                    Content = new StackPanel()
                     {
-                        new TextBlock()
+                        Children =
                         {
-                            Text = $"{x.Name}"
+                            new TextBlock()
+                            {
+                                Text = $"{x.Name}"
+                            },
+                            new TextBlock()
+                            {
+                                Text = $"{x.Path}",
+                                TextTrimming = TextTrimming.CharacterEllipsis,
+                                FontSize = 9
+                            }
                         },
-                        new TextBlock()
-                        {
-                            Text = $"{x.Path}",
-                            TextTrimming = TextTrimming.CharacterEllipsis,
-                            FontSize = 9
-                        }
-                    },
-                    Margin = new Thickness(8)
-                }
-            });
+                        Margin = new Thickness(8)
+                    }
+                });
+            }
+            ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
         }
-        ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
 
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
         {
@@ -231,10 +235,12 @@ public sealed partial class VersionPage : Page
     {
         if (IsEdit)
         {
+            IsChooseUpdate = true;
             global_cfg.cfg.JsonCfg.ChooseFolderIndex = ChooseGameFolderComboBox.SelectedIndex;
             global_cfg.cfg.SaveConfig();
-            // 异步重新加载版本列表
+
             UpdateUI();
+            IsChooseUpdate = false;
         }
     }
 

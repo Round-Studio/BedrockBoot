@@ -77,14 +77,6 @@ namespace BedrockBoot
             if(global_cfg.cfg.JsonCfg.AutoCheckUpdate) OnUpdate();
 #endif
 
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    global_cfg.cfg.SaveConfig();
-                    Thread.Sleep(100);
-                }
-            });
         }
 
         private bool LockStart = false;
@@ -110,8 +102,12 @@ namespace BedrockBoot
         {
             // _hotKeyService?.Dispose();
             // global_cfg.cfg.SaveConfig();
+<<<<<<< Updated upstream
            
             Environment.Exit(0);
+=======
+         //   Environment.Exit(0);
+>>>>>>> Stashed changes
         }
         public async void UpdateBackground()
         {

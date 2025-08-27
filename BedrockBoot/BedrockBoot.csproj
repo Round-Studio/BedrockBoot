@@ -12,6 +12,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
 	  <WindowsPackageType>None</WindowsPackageType>
+	  <StartupObject>BedrockBoot.StartUp</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Assets\AppReference\**" />

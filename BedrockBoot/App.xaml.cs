@@ -35,6 +35,12 @@ namespace BedrockBoot
 
         public App()
         {
+            AppDomain.CurrentDomain.FirstChanceException += ((sender, eventArgs) =>
+            {
+                string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")));
+                MiniDump.Write(dumpFile);
+            });
+            UnhandledException += App_UnhandledException;
             global_cfg.InitConfig();
             global_cfg.core.Downloader = new ImprovedFlexibleMultiThreadDownloader(global_cfg.cfg.JsonCfg.DownThread);
             InitializeComponent();
@@ -48,8 +54,16 @@ namespace BedrockBoot
             AppThemeService.AutoUpdateTitleBarCaptionButtonsColor();
             // AppThemeService.ConfigureBackdrop(BackdropType.AcrylicThin);
         }
+
+        private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            string dumpFile = System.IO.Path.Combine(System.Environment.CurrentDirectory, string.Format("crashdump\\crash-dump-{0}.dmp", DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")));
+            MiniDump.Write(dumpFile);
+        }
+
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            
             _window = new MainWindow();
             _window.Activate();
         }

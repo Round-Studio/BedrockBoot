@@ -86,6 +86,7 @@ public sealed partial class HomePage : Page
 
     private void LauncherButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
     {
+      
         if (IsLaunch)
         {
             Task.Run(() =>

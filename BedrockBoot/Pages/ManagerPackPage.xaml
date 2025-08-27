@@ -1,52 +1,56 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="BedrockBoot.Pages.ManagerPackPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:BedrockBoot.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Grid Margin="40,48,40,0" Padding="0">
-        <Grid Height="50"
-              MaxWidth="1000"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Top">
+        <Grid
+            Height="50"
+            MaxWidth="1000"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
             <TextBlock
                 x:Name="BreadcrumbBar"
                 Margin="0,0,10,4"
                 FontSize="30"
-                Text="管理包">
-            </TextBlock>
+                Text="管理包" />
         </Grid>
-        <Grid HorizontalAlignment="Stretch"
-                  Margin="0,52,0,10">
-            <NavigationView MaxWidth="1000"
-                                PaneDisplayMode="Top"
-                                IsBackButtonVisible="Collapsed"
-                                IsSettingsVisible="False"
-                                Margin="-18,0,0,0"
-                                VerticalAlignment="Top"
-                                SelectionChanged="NavigationView_SelectionChanged">
+        <Grid Margin="0,52,0,10" HorizontalAlignment="Stretch">
+            <NavigationView
+                MaxWidth="1000"
+                Margin="-18,0,0,0"
+                VerticalAlignment="Top"
+                IsBackButtonVisible="Collapsed"
+                IsSettingsVisible="False"
+                PaneDisplayMode="Top"
+                SelectionChanged="NavigationView_SelectionChanged">
                 <NavigationView.MenuItems>
-                    <NavigationViewItem Content="资源包"
-                                            Tag="ResourcePack"
-                                            IsSelected="True">
-
-                    </NavigationViewItem>
-                    <NavigationViewItem Content="存档"
-                                            Tag="World"
-                                            IsEnabled="False">
-
-                    </NavigationViewItem>
+                    <NavigationViewItem
+                        Content="资源包"
+                        IsSelected="True"
+                        Tag="ResourcePack" />
+                    <NavigationViewItem
+                        Content="存档"
+                        IsEnabled="False"
+                        Tag="World" />
                 </NavigationView.MenuItems>
+                <NavigationView.PaneFooter>
+                    <Button
+                        x:Name="ImportPack"
+                        Click="ImportPack_Click"
+                        Content="导入包" />
+                </NavigationView.PaneFooter>
             </NavigationView>
 
             <Frame
-                    x:Name="NavFrame"
-                    Margin="0,52,0,0"
-                    CacheSize="0" />
+                x:Name="NavFrame"
+                Margin="0,52,0,0"
+                CacheSize="0" />
         </Grid>
     </Grid>
 </Page>

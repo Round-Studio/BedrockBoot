@@ -5,9 +5,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:downloadpages="using:BedrockBoot.Pages.DownloadPages"
     xmlns:local="using:BedrockBoot.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="using:CommunityToolkit.WinUI" xmlns:downloadpages="using:BedrockBoot.Pages.DownloadPages"
+    xmlns:ui="using:CommunityToolkit.WinUI"
     mc:Ignorable="d">
 
     <Grid Margin="40,48,40,0" Padding="0">
@@ -20,8 +21,7 @@
                 x:Name="BreadcrumbBar"
                 Margin="0,0,10,4"
                 FontSize="30"
-                Text="下载 Minecraft 实例">
-            </TextBlock>
+                Text="下载 Minecraft 实例" />
         </Grid>
 
         <Frame
@@ -29,7 +29,7 @@
             Margin="0,52,0,0"
             HorizontalAlignment="Stretch">
             <Frame.Content>
-                <downloadpages:VersionsShowPages></downloadpages:VersionsShowPages>
+                <downloadpages:VersionsShowPages />
             </Frame.Content>
         </Frame>
     </Grid>

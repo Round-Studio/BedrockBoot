@@ -94,33 +94,41 @@
                 
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Left"
-                            Margin="2,0,0,0">
-                    <FontIcon Glyph="&#xE8B7;" Foreground="Gray"/>
-                    <TextBlock VerticalAlignment="Center"
-                               Margin="10,0"
-                               Foreground="Gray">游戏目录</TextBlock>
-                    <ComboBox Width="500"
-                              x:Name="ChooseGameFolderComboBox"
-                              SelectionChanged="ChooseGameFolderComboBox_SelectionChanged"></ComboBox>
+                            Margin="0,0,0,0">
+                    <Button Padding="8,0" Height="32"
+                            x:Name="AddFolder"
+                            Click="AddFolder_OnClick">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xECC8;" Margin="0,0,8,0"/>
+                            <TextBlock>添加目录</TextBlock>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </Grid>
-            <ScrollViewer HorizontalAlignment="Stretch"
-                          Margin="0,48,0,0"
-                          x:Name="ScrollViewList">
-                <Grid>
-                    <!-- 移除 ItemsSource 绑定 -->
-                    <ItemsRepeater
-                        x:Name="VersionListRepeater"
-                        Grid.Column="1"
-                        MaxWidth="1000"
-                        HorizontalAlignment="Stretch"
-                        ItemTemplate="{StaticResource VersionCard}">
-                        <ItemsRepeater.Layout>
-                            <StackLayout Spacing="5" />
-                        </ItemsRepeater.Layout>
-                    </ItemsRepeater>
+            <Grid MaxWidth="1000" Margin="0,48,0,0">
+                <Grid Margin="-4,-1,0,0"
+                      Width="264"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Left">
+                    <ListView x:Name="ChooseGameFolderComboBox"
+                              SelectionChanged="ChooseGameFolderComboBox_SelectionChanged"></ListView>
                 </Grid>
-            </ScrollViewer>
+                <ScrollViewer HorizontalAlignment="Stretch"
+                              Margin="270,0,0,0"
+                              x:Name="ScrollViewList">
+                    <Grid>
+                        <!-- 移除 ItemsSource 绑定 -->
+                        <ItemsRepeater
+                            x:Name="VersionListRepeater"
+                            HorizontalAlignment="Stretch"
+                            ItemTemplate="{StaticResource VersionCard}">
+                            <ItemsRepeater.Layout>
+                                <StackLayout Spacing="5" />
+                            </ItemsRepeater.Layout>
+                        </ItemsRepeater>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
         </Grid>
     </Grid>
 </Page> 

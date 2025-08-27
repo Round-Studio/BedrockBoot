@@ -43,21 +43,39 @@ public sealed partial class VersionPage : Page
     public VersionPage()
     {
         InitializeComponent();
-        foreach (var x in global_cfg.cfg.JsonCfg.GameFolders)
-        {
-            ChooseGameFolderComboBox.Items.Add($"{x.Name} - {x.Path}");
-        }
-        ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
-      //  Loaded += async (s, e) => await LoadVersionsAsync();
-    }
 
-    private async Task LoadVersionsAsync()
-    {
-        await Task.Run(() => UpdateUI());
+        UpdateUI();
     }
 
     private void UpdateUI()
     {
+        IsEdit = false;
+        ChooseGameFolderComboBox.Items.Clear();
+        foreach (var x in global_cfg.cfg.JsonCfg.GameFolders)
+        {
+            ChooseGameFolderComboBox.Items.Add(new ListViewItem()
+            {
+                Content = new StackPanel()
+                {
+                    Children =
+                    {
+                        new TextBlock()
+                        {
+                            Text = $"{x.Name}"
+                        },
+                        new TextBlock()
+                        {
+                            Text = $"{x.Path}",
+                            TextTrimming = TextTrimming.CharacterEllipsis,
+                            FontSize = 9
+                        }
+                    },
+                    Margin = new Thickness(8)
+                }
+            });
+        }
+        ChooseGameFolderComboBox.SelectedIndex = global_cfg.cfg.JsonCfg.ChooseFolderIndex;
+
         DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
         {
             VersionListRepeater.ItemsSource = null;
@@ -104,6 +122,7 @@ public sealed partial class VersionPage : Page
             // 设置 ItemsSource 来触发 UI 更新
             VersionListRepeater.ItemsSource = items;
         });
+        IsEdit = true;
     }
 
     
@@ -153,49 +172,6 @@ public sealed partial class VersionPage : Page
             EasyContentDialog.CreateDialog(this.XamlRoot, "错误", ex.Message);
         }
     }
-    public static Process? WaitForMinecraftProcess(int timeoutSec = 60)
-    {
-        var end = DateTime.Now.AddSeconds(timeoutSec);
-        while (DateTime.Now < end)
-        {
-            var proc = Process.GetProcessesByName("Minecraft.Windows").FirstOrDefault();
-            if (proc != null) return proc;
-            Thread.Sleep(100);
-        }
-        return null;
-    }
-
-    private void StartInjectThread(string path)
-    {
-        string delay_mods_dir = Path.Combine(path, "d_mods");
-        var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
-        Process process = WaitForMinecraftProcess(global_cfg.cfg.JsonCfg.DelayTimes);
-        foreach (var dllFileInfo in dllFileInfos)
-        {
-            var thread = new Thread(() =>
-            {
-
-                WindowsApi.Inject("Minecraft.Windows.exe", dllFileInfo.FullPath, true, global_cfg.cfg.JsonCfg.DelayTimes);
-                globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
-            });
-            thread.Start();
-        }
-    }
-    private void StartInjectDirect(string path)
-    {
-        string delay_mods_dir = Path.Combine(path, "mods");
-        var dllFileInfos = globalTools.GetDllFiles(delay_mods_dir);
-        Process process = WaitForMinecraftProcess(50);
-        foreach (var dllFileInfo in dllFileInfos)
-        {
-            var thread = new Thread(() =>
-            {
-                Injector.InjectProcess(process, dllFileInfo.FullPath);
-                globalTools.ShowInfo($"注入 {dllFileInfo.FileName}");
-            });
-            thread.Start();
-        }
-    }
 
     private void DButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
@@ -204,8 +180,6 @@ public sealed partial class VersionPage : Page
             OpenModManagerWindow(selectedVersion, true);
         }
     }
-
-
     private async void DeleteButton(object sender, RoutedEventArgs e)
     {
         var dialog_ts = new ContentDialog()
@@ -255,40 +229,19 @@ public sealed partial class VersionPage : Page
 
     private void ChooseGameFolderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (IsEdit)
+        {
             global_cfg.cfg.JsonCfg.ChooseFolderIndex = ChooseGameFolderComboBox.SelectedIndex;
             global_cfg.cfg.SaveConfig();
             // 异步重新加载版本列表
-            Task.Run(() => UpdateUI());
+            UpdateUI();
+        }
     }
 
     // 刷新按钮的方法
     private void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
-        Task.Run(() => UpdateUI());
-    }
-
-    // 手动添加版本的方法（如果需要）
-    private void AddVersionManually(NowVersions version)
-    {
-        _versionsData.Add(version);
-
-        DispatcherQueue.TryEnqueue(() =>
-        {
-            // 重新设置 ItemsSource 来更新 UI
-            VersionListRepeater.ItemsSource = _versionsData.ToList();
-        });
-    }
-
-    // 手动移除版本的方法
-    private void RemoveVersionManually(NowVersions version)
-    {
-        _versionsData.Remove(version);
-
-        DispatcherQueue.TryEnqueue(() =>
-        {
-            // 重新设置 ItemsSource 来更新 UI
-            VersionListRepeater.ItemsSource = _versionsData.ToList();
-        });
+        UpdateUI();
     }
 
     private async void ImportButton_Click(object sender, RoutedEventArgs e)
@@ -325,6 +278,43 @@ public sealed partial class VersionPage : Page
             else
             {
                 EasyContentDialog.CreateDialog(this.XamlRoot, "值为空", "路径为空");
+            }
+        }
+    }
+
+    private async void AddFolder_OnClick(object sender, RoutedEventArgs e)
+    {
+        ContentDialog dialog = new ContentDialog();
+
+        // 如果 ContentDialog 在桌面应用程序中运行，则必须设置 XamlRoot
+        dialog.XamlRoot = this.Content.XamlRoot;
+        // dialog.Background = new SolidColorBrush(Colors.Transparent);
+        dialog.Content = new AddNewGameFolderContent();
+        dialog.XamlRoot = this.XamlRoot;
+        dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+        dialog.Title = "新增游戏目录";
+        dialog.PrimaryButtonText = "新增";
+        dialog.CloseButtonText = "取消";
+        dialog.DefaultButton = ContentDialogButton.Primary;
+
+        var result = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary)
+        {
+            var folderpath = ((AddNewGameFolderContent)dialog.Content).FolderPath;
+            var foldername = ((AddNewGameFolderContent)dialog.Content).FolderName;
+            if (!string.IsNullOrEmpty(folderpath))
+            {
+                global_cfg.cfg.JsonCfg.GameFolders.Add(new Models.Entry.GameFolderInfoEntry()
+                {
+                    Name = foldername,
+                    Path = folderpath,
+                });
+                global_cfg.cfg.SaveConfig();
+                if (!Directory.Exists(folderpath))
+                {
+                    Directory.CreateDirectory(folderpath);
+                }
+                UpdateUI();
             }
         }
     }

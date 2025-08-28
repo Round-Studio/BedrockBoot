@@ -281,9 +281,16 @@
 
                     <dev:SettingsExpander
                         Description="本项目用到的服务"
-                        Header="鸣谢"
                         HeaderIcon="{dev:FontIcon Glyph=&#xEBDA;}"
                         Tag="About">
+                        <dev:SettingsExpander.Header>
+                            <HyperlinkButton
+                                Padding="0"
+                                Click="HyperlinkButton_Click"
+                                Content="鸣谢"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Style="{ThemeResource HyperlinkButtonStyle}" />
+                        </dev:SettingsExpander.Header>
                         <dev:SettingsExpander.Items>
                             <dev:SettingsCard Description="游戏列表源服务技术提供" Header="MCAPPX">
                                 <dev:SettingsCard.Content>

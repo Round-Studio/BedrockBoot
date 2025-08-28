@@ -42,7 +42,7 @@ namespace BedrockBoot
         public MainWindow()
         {
             //throw new Exception("Crash");
-            GlobalLogger.Initialize();
+            //GlobalLogger.Initialize();
             InitializeComponent();
             /*_hotKeyService = new HotKeyService(this);
 

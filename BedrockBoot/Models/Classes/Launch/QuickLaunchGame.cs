@@ -31,8 +31,7 @@ namespace BedrockBoot.Models.Classes.Launch
                 MouseHelper.StartMouseLock();
             }
 
-            Task.Run(() =>
-            {
+           
                 int count = 0;
                 if (File.Exists(Path.Combine(versionInfo.Version_Path, "CONCRT140_APP.dll")))
                 {
@@ -114,7 +113,7 @@ namespace BedrockBoot.Models.Classes.Launch
 
                 var _ = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
 
-            });
+            
            
         }
 

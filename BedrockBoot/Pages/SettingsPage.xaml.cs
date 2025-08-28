@@ -25,6 +25,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using BedrockBoot.Models.Enum;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -62,6 +63,7 @@ public sealed partial class SettingsPage : Page
         Unloaded += SettingsPage_Unloaded;
         SavaAppx.IsOn = global_cfg.cfg.JsonCfg.SaveAppx;
         AutoCheckUpdate.IsOn = global_cfg.cfg.JsonCfg.AutoCheckUpdate;
+        ListSourceBox.SelectedIndex = (int)global_cfg.cfg.JsonCfg.VersionsListSourceEnum;
         UpdateUI();
     }
 
@@ -168,5 +170,14 @@ public sealed partial class SettingsPage : Page
         {
             global_cfg.MainWindow.UpdateBackground();
         }));
+    }
+
+    private void ListSourceBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            global_cfg.cfg.JsonCfg.VersionsListSourceEnum = (ListSourceEnum)ListSourceBox.SelectedIndex;
+            global_cfg.cfg.SaveConfig();
+        }
     }
 }

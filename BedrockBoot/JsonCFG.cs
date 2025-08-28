@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BedrockBoot.Models.Enum;
 using BedrockBoot.Models.Enum.Background;
 
 namespace BedrockBoot
@@ -20,6 +21,7 @@ namespace BedrockBoot
         public bool MouseLock { get; set; } = true;
         public int MouseLockCutPX { get; set; } = 15;
         public BackgroundEnum BackgroundEnum { get; set; } = BackgroundEnum.Acrylic;
+        public ListSourceEnum VersionsListSourceEnum { get; set; } = ListSourceEnum.GitCode;
         public int ChooseFolderIndex { get; set; } = 0;
         public List<GameFolderInfoEntry> GameFolders { get; set; } = new List<GameFolderInfoEntry>()
         {

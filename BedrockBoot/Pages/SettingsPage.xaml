@@ -225,7 +225,7 @@
                                             MainColor="#516a73"
                                             PersonName="YoumiHa"
                                             PersonWork="后端工作，功能研发"
-                                            ProfilePictureSource="/Assets/PersonPicture/YoumiHa.png"
+                                            ProfilePictureSource="/Assets/PersonPicture/YoumiHa_2.jpg"
                                             TextColor="White">
                                             <controls:PersonPictureButton.FlyoutContent>
                                                 <StackPanel Margin="4,10,0,0" Orientation="Horizontal">

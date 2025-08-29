@@ -180,4 +180,21 @@ public sealed partial class SettingsPage : Page
             global_cfg.cfg.SaveConfig();
         }
     }
+
+    private async void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+    {
+        ContentDialog dialog = new ContentDialog();
+
+        // 如果 ContentDialog 在桌面应用程序中运行，则必须设置 XamlRoot
+        dialog.XamlRoot = this.Content.XamlRoot;
+        // dialog.Background = new SolidColorBrush(Colors.Transparent);
+        dialog.Content = new EggPage();
+        dialog.XamlRoot = this.XamlRoot;
+        dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+        dialog.Title = "\U0001f95c，你发现了盲点";
+        dialog.CloseButtonText = "取消";
+        dialog.DefaultButton = ContentDialogButton.Close;
+
+        var result = await dialog.ShowAsync();
+    }
 }

@@ -52,6 +52,17 @@
                                     Minimum="1"
                                     SpinButtonPlacementMode="Inline" />
                             </dev:SettingsCard>
+                            <dev:SettingsCard Header="列表源">
+                                <ComboBox
+                                    Width="400"
+                                    SelectedIndex="2"
+                                    x:Name="ListSourceBox"
+                                    SelectionChanged="ListSourceBox_OnSelectionChanged">
+                                    <ComboBoxItem>McAppx 源 (不支持使用 VPN 访问)</ComboBoxItem>
+                                    <ComboBoxItem>GitCode 源 (怎么样都可以访问，但是容易崩.jpg)</ComboBoxItem>
+                                    <ComboBoxItem>Github 源 (需要 VPN 访问)</ComboBoxItem>
+                                </ComboBox>
+                            </dev:SettingsCard>
                             <dev:SettingsCard Header="自动检查更新">
                                 <ToggleSwitch
                                     x:Name="AutoCheckUpdate"
@@ -111,6 +122,14 @@
                                         Margin="0,0,5,0"
                                         Style="{ThemeResource WarnButtonStyle}">
                                         删除所选目录
+                                        <Button.Flyout>
+                                            <Flyout>
+                                                <StackPanel>
+                                                    <TextBlock>你确定要删除吗？这只会在列表中删除，并不会删除文件</TextBlock>
+                                                    <Button Margin="0,12,0,0">仍然删除</Button>
+                                                </StackPanel>
+                                            </Flyout>
+                                        </Button.Flyout>
                                     </Button>
                                     <Button
                                         Name="ImportGameFolder"
@@ -206,7 +225,7 @@
                                             MainColor="#516a73"
                                             PersonName="YoumiHa"
                                             PersonWork="后端工作，功能研发"
-                                            ProfilePictureSource="/Assets/PersonPicture/YoumiHa.png"
+                                            ProfilePictureSource="/Assets/PersonPicture/YoumiHa_2.jpg"
                                             TextColor="White">
                                             <controls:PersonPictureButton.FlyoutContent>
                                                 <StackPanel Margin="4,10,0,0" Orientation="Horizontal">

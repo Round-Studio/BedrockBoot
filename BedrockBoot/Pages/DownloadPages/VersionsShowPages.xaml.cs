@@ -22,6 +22,8 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System.Profile;
 using Windows.UI.Core;
+using BedrockBoot.Controls.FlyoutContent;
+using BedrockBoot.Models.Public;
 using WinRT;
 using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
 
@@ -145,8 +147,7 @@ namespace BedrockBoot.Pages.DownloadPages
                     VersionItems.Clear();
                     try
                     {
-                        var list = VersionHelper.GetVersions(
-                            "https://data.mcappx.com/v1/bedrock.json");
+                        var list = VersionHelper.GetVersions(Source.ListSources[global_cfg.cfg.JsonCfg.VersionsListSourceEnum]);
                         return list;
                     }
                     catch (System.Exception e)

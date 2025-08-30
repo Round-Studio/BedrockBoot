@@ -134,20 +134,17 @@ public sealed partial class VersionPage : Page
     {
         if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
         {
-            Task.Run(() =>
+            try
             {
-                try
+                LaunchGameContent.LaunchGame(this.XamlRoot, versionInfo);
+            }
+            catch (Exception ex)
+            {
+                DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
                 {
-                    LaunchGameContent.LaunchGame(versionInfo);
-                }
-                catch (Exception ex)
-                {
-                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
-                    {
-                        EasyContentDialog.CreateDialog(this.XamlRoot, "发生了错误", ex.Message);
-                    });
-                }
-            });
+                    EasyContentDialog.CreateDialog(this.XamlRoot, "发生了错误", ex.Message);
+                });
+            }
         }
     }
 

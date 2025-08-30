@@ -90,7 +90,7 @@ namespace BedrockBoot.Models.Classes.Launch
                 registerProcess_percent = ((s, u) =>
                 {
                     Debug.WriteLine(u);
-                    launchCallBack(s, (int)(u * 0.8));
+                    launchCallBack.Invoke(s, (int)(u * 0.8));
                     if (u >= 95)
                     {
                         count++;
@@ -114,16 +114,16 @@ namespace BedrockBoot.Models.Classes.Launch
                     switch (status)
                     {
                         case AsyncStatus.Canceled:
-                            launchCallBack("已取消", 100);
+                            launchCallBack.Invoke("已取消", 100);
                             break;
                         case AsyncStatus.Completed:
-                            launchCallBack("已中断", 100);
+                            launchCallBack.Invoke("已中断", 100);
                             break;
                         case AsyncStatus.Error:
-                            launchCallBack("出现错误", 100);
+                            launchCallBack.Invoke("出现错误", 100);
                             break;
                         case AsyncStatus.Started:
-                            launchCallBack("已启动", 100);
+                            launchCallBack.Invoke("已启动", 100);
                             break;
                     }
                     if (exception != null)

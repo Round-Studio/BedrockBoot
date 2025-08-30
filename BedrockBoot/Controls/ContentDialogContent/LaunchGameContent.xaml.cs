@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using BedrockBoot.Models.Classes.Launch;
@@ -30,7 +31,7 @@ namespace BedrockBoot.Controls.ContentDialogContent
             InitializeComponent();
         }
 
-        public void Launch(NowVersions versionInfo)
+        public async Task Launch(NowVersions versionInfo)
         {
             QuickLaunchGame.LaunchGame(versionInfo, (s, pr) =>
             {
@@ -46,20 +47,17 @@ namespace BedrockBoot.Controls.ContentDialogContent
             });
         }
 
-        public static void LaunchGame(NowVersions versionInfo)
+        public static async void LaunchGame(XamlRoot xamlRoot,NowVersions versionInfo)
         {
-            App._window.DispatcherQueue.TryEnqueue(() =>
+            var body = new LaunchGameContent();
+            var dialog = new ContentDialog()
             {
-                var body = new LaunchGameContent();
-                var dialog = new ContentDialog()
-                {
-                    Title = $"启动游戏 {versionInfo.VersionName}",
-                    Content = body,
-                    XamlRoot = global_cfg.MainWindow.Content.XamlRoot
-                };
-                dialog.ShowAsync();
-                body.Launch(versionInfo);
-            });
+                XamlRoot = xamlRoot,
+                Title = $"启动游戏 {versionInfo.VersionName}",
+                Content = body,
+            };
+            body.Launch(versionInfo);
+            await dialog.ShowAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BedrockBoot.Controls.ListItem;
+﻿using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Controls.ListItem;
 using BedrockBoot.Models.Classes.Launch;
 using BedrockBoot.Models.Classes.Listen;
 using BedrockBoot.Tools;
@@ -119,20 +120,14 @@ public sealed partial class HomePage : Page
       
         if (IsLaunch)
         {
-            Task.Run(() =>
+            try
             {
-                try
-                {
-                    QuickLaunchGame.LaunchGame(NowVersion);
-                }
-                catch (Exception ex)
-                {
-                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
-                    {
-                        EasyContentDialog.CreateDialog(this.XamlRoot, "发生了错误", ex.Message);
-                    });
-                }
-            });
+                LaunchGameContent.LaunchGame(this.XamlRoot,NowVersion);
+            }
+            catch (Exception ex)
+            {
+                EasyContentDialog.CreateDialog(this.XamlRoot, "发生了错误", ex.Message);
+            }
         }
         else
         {

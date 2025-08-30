@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.VoiceCommands;
 using Windows.Foundation;
 using Windows.Management.Deployment;
+using BedrockBoot.Controls.FlyoutContent;
 
 namespace BedrockBoot.Models.Classes.Launch
 {
@@ -61,7 +62,7 @@ namespace BedrockBoot.Models.Classes.Launch
 
             if (hasPackage == true)
             {
-                globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
+                // globalTools.ShowInfo("正在启动中 " + versionInfo.DisPlayName);
 
                 global_cfg.core.LaunchGame(versionInfo.Type switch
                 {
@@ -69,17 +70,14 @@ namespace BedrockBoot.Models.Classes.Launch
                     "Preview" => VersionType.Preview,
                     "Beta" => VersionType.Beta
                 });
+                launchCallBack.Invoke("已启动",100);
                 WindowsApi.LoadFix();
                 StartInjectDirect(versionInfo.Version_Path);
                 StartInjectThread(versionInfo.Version_Path);
                 return;
             }
-
-            string processName = "Minecraft.Windows"; // 注意：不需要 .exe 扩展名
-                                                      // ↑ 谁问你了
-
-            Process[] processes = Process.GetProcessesByName(processName);
-            foreach (var process in processes)
+                    
+            foreach (var process in Process.GetProcessesByName("\"Minecraft.Windows"))  // 注意：不需要 .exe 扩展名 // ↑ 谁问你了
             {
                 process.Kill();
             }
@@ -126,13 +124,16 @@ namespace BedrockBoot.Models.Classes.Launch
                             launchCallBack.Invoke("已启动", 100);
                             break;
                     }
+
                     if (exception != null)
                     {
-                        Debug.WriteLine(exception); throw exception;
+                        // Debug.WriteLine(exception);
+                        launchCallBack.Invoke("出现错误", 100);
+                        MessageBox.ShowAsync(exception.ToString(), "抱歉，我们出现了错误");
                     }
                 })
             };
-            globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
+            // globalTools.ShowInfo("正在注册版本中请耐心等待" + versionInfo.DisPlayName);
 
             var _ = global_cfg.core.ChangeVersion(versionInfo.Version_Path, installCallback);
         }

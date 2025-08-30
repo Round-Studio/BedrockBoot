@@ -11,10 +11,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using BedrockBoot.Models.Classes.Launch;
+using BedrockBoot.Tools;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,12 +39,23 @@ namespace BedrockBoot.Controls.ContentDialogContent
             {
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    if (!Laun_ProgressBar.IsIndeterminate)
+                    if (Laun_ProgressBar.IsIndeterminate)
                     {
                         Laun_ProgressBar.IsIndeterminate = false;
                     }
                     Laun_ProgressTextBlock.Text = s;
                     Laun_ProgressBar.Value = pr;
+
+                    if (pr == 100)
+                    {
+                        if(this.Parent != null)
+                        {
+                            if (this.Parent.GetType() == typeof(ContentDialog))
+                            {
+                                ((ContentDialog)this.Parent).Hide();
+                            }
+                        }
+                    }
                 });
             });
         }
@@ -56,8 +69,20 @@ namespace BedrockBoot.Controls.ContentDialogContent
                 Title = $"启动游戏 {versionInfo.VersionName}",
                 Content = body,
             };
-            body.Launch(versionInfo);
-            await dialog.ShowAsync();
+            dialog.ShowAsync();
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+
+                try
+                {
+                    body.Launch(versionInfo);
+                }
+                catch(Exception ex)
+                {
+                    EasyContentDialog.CreateDialog(xamlRoot, "错误", ex.ToString());
+                }
+            });
         }
     }
 }

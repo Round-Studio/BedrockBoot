@@ -138,7 +138,7 @@ public sealed partial class VersionPage : Page
             {
                 try
                 {
-                    QuickLaunchGame.LaunchGame(versionInfo);
+                    LaunchGameContent.LaunchGame(versionInfo);
                 }
                 catch (Exception ex)
                 {

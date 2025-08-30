@@ -1,4 +1,5 @@
-﻿using BedrockBoot.Controls.ListItem;
+﻿using BedrockBoot.Controls.ContentDialogContent;
+using BedrockBoot.Controls.ListItem;
 using BedrockBoot.Models.Classes.Launch;
 using BedrockBoot.Models.Classes.Listen;
 using BedrockBoot.Tools;
@@ -123,7 +124,7 @@ public sealed partial class HomePage : Page
             {
                 try
                 {
-                    QuickLaunchGame.LaunchGame(NowVersion);
+                    LaunchGameContent.LaunchGame(NowVersion);
                 }
                 catch (Exception ex)
                 {

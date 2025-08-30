@@ -31,6 +31,7 @@
     <Content Remove="Assets\MC_Release_Icon.png" />
     <Content Remove="Assets\PersonPicture\Dime.jpg" />
     <Content Remove="Assets\PersonPicture\YoumiHa.png" />
+    <Content Remove="Assets\PersonPicture\YoumiHa_2.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Controls\ContentDialogContent\AddNewGameFolderContent.xaml" />
@@ -209,6 +210,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Assets\PersonPicture\YoumiHa.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\PersonPicture\YoumiHa_2.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Page Update="Controls\ContentDialogContent\EggPage.xaml">

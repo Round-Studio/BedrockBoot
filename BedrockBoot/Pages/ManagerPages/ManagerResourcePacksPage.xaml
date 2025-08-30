@@ -12,28 +12,15 @@
     <Page.Resources>
         <DataTemplate x:Key="VersionCardTemplate" x:DataType="pack:ResourcePackManifestEntry">
             <controls:SettingsCard
-                Margin="5,0,5,0"
+                Margin="2.5,0,2.5,5"
                 Header="{x:Bind Header.Name}"
+                Width="490"
+                Height="150"
+                MinHeight="150"
                 IsActionIconVisible="False"
                 IsClickEnabled="True"
+                Description="{x:Bind Header.Description}"
                 Tag="{x:Bind}">
-                <controls:SettingsCard.Description>
-                    <StackPanel Orientation="Horizontal">
-                        <Button
-                            Width="28"
-                            Height="28"
-                            Margin="0,4,8,4"
-                            Padding="0">
-                            <Button.Flyout>
-                                <Flyout>
-                                    <TextBlock Text="{x:Bind Header.Description}" />
-                                </Flyout>
-                            </Button.Flyout>
-                            <FontIcon FontSize="16" Glyph="&#xE946;" />
-                        </Button>
-                        <TextBlock VerticalAlignment="Center" Text="{x:Bind ShortDescription}" />
-                    </StackPanel>
-                </controls:SettingsCard.Description>
                 <controls:SettingsCard.HeaderIcon>
                     <ImageIcon
                         Width="48"
@@ -85,7 +72,7 @@
                     ItemTemplate="{StaticResource VersionCardTemplate}"
                     ItemsSource="{x:Bind PackItems, Mode=OneWay}">
                     <ItemsRepeater.Layout>
-                        <StackLayout Spacing="5" />
+                        <controls:WrapLayout />
                     </ItemsRepeater.Layout>
                 </ItemsRepeater>
             </Grid>

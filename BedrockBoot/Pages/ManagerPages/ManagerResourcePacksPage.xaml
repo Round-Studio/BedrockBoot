@@ -15,11 +15,10 @@
                 Margin="2.5,0,2.5,5"
                 Header="{x:Bind Header.Name}"
                 Width="490"
-                Height="150"
-                MinHeight="150"
+                MinHeight="80"
                 IsActionIconVisible="False"
                 IsClickEnabled="True"
-                Description="{x:Bind Header.Description}"
+                Description="{x:Bind ShortDescription}"
                 Tag="{x:Bind}">
                 <controls:SettingsCard.HeaderIcon>
                     <ImageIcon

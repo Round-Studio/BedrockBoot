@@ -1,5 +1,5 @@
 name: Bug 反馈
-description: 在使用 RMCL 的过程中遇到了 Bug。
+description: 在使用 BedrockBoot 的过程中遇到了 Bug。
 title: （将此栏【替换】为你的标题）
 labels: ["漏洞", "未查看"]
 type: Bug

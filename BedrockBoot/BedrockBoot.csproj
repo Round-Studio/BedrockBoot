@@ -91,7 +91,6 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BedrockLauncher.Core" Version="25.8.27.529" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.ColorPicker" Version="8.2.250402" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.250402" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
@@ -294,5 +293,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Classes\Update\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BedrockLauncher.Core\BedrockLauncher.Core\BedrockLauncher.Core.csproj" />
   </ItemGroup>
 </Project>

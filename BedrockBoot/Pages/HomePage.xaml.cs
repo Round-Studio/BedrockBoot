@@ -139,4 +139,9 @@ public sealed partial class HomePage : Page
             OnDownload.Invoke();
         }
     }
+
+    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        SaveMConformityContent.OpenSave(this.XamlRoot);
+    }
 }

@@ -11,6 +11,7 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Button Click="ButtonBase_OnClick">test</Button>
         <SplitButton x:Name="LauncherButton"
                      HorizontalAlignment="Right"
                      VerticalAlignment="Bottom"

@@ -40,6 +40,8 @@
     <None Remove="Controls\ContentDialogContent\DownloadUpdateFileContent.xaml" />
     <None Remove="Controls\ContentDialogContent\EggPage.xaml" />
     <None Remove="Controls\ContentDialogContent\ImportMCPackContent.xaml" />
+    <None Remove="Controls\ContentDialogContent\LaunchGameContent.xaml" />
+    <None Remove="Controls\ContentDialogContent\SaveMConformityContent.xaml" />
     <None Remove="Controls\ContentDialogContent\SettingMouseLockPaddingContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\FlyoutContent\EazyChooseGameContent.xaml" />
@@ -215,6 +217,12 @@
     <None Update="Assets\PersonPicture\YoumiHa_2.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Controls\ContentDialogContent\SaveMConformityContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ContentDialogContent\LaunchGameContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Controls\ContentDialogContent\EggPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

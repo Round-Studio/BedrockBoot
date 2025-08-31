@@ -31,10 +31,28 @@ partial class Form2
     /// </summary>
     private void InitializeComponent()
     {
-        this.components = new Container();
-        this.AutoScaleMode = AutoScaleMode.Font;
-        this.ClientSize = new Size(800, 450);
-        this.Text = "Form2";
+        SuspendLayout();
+        // 
+        // Form2
+        // 
+        AutoScaleDimensions = new SizeF(7F, 17F);
+        AutoScaleMode = AutoScaleMode.Font;
+        ClientSize = new Size(0, 0);
+        ControlBox = false;
+        Enabled = false;
+        FormBorderStyle = FormBorderStyle.None;
+        MaximizeBox = false;
+        MdiChildrenMinimizedAnchorBottom = false;
+        MinimizeBox = false;
+        Name = "Form2";
+        Opacity = 0D;
+        ShowIcon = false;
+        ShowInTaskbar = false;
+        StartPosition = FormStartPosition.Manual;
+        Text = "BedrockBoot 进程监控";
+        TopMost = true;
+        WindowState = FormWindowState.Minimized;
+        ResumeLayout(false);
     }
 
     #endregion

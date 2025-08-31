@@ -137,6 +137,7 @@ public sealed partial class HomePage : Page
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
+        throw new NullReferenceException();
         SaveMConformityContent.OpenSave(this.XamlRoot);
     }
 }

@@ -44,10 +44,25 @@ public class SaveIntegration
 
         fileList.ForEach(file =>
         {
-            var foldFilePath = file.Replace(_integrationInfo.VersionOntologyInfo.BasePath, "");
-            File.Copy(file, Path.Combine(WorkFolder, "version",foldFilePath));
+            // 获取相对于基础路径的相对路径
+            string relativePath = Path.GetRelativePath(_integrationInfo.VersionOntologyInfo.BasePath, file);
+
+            // 构建目标文件路径
+            string targetFile = Path.Combine(WorkFolder, "version", relativePath);
+
+            // 确保目标目录存在
+            string targetDirectory = Path.GetDirectoryName(targetFile);
+            if (!Directory.Exists(targetDirectory))
+            {
+                Directory.CreateDirectory(targetDirectory);
+            }
+
+            // 复制文件（覆盖已存在的文件）
+            File.Copy(file, targetFile, true);
+
             finishCount++;
-            progress.Report((finishCount * 0.4,$"复制文件中 ({finishCount}/{fileList.Count})..."));
+            progress.Report((((double)finishCount / fileList.Count * 0.4 * 100) + 20,
+                $"复制文件中 ({finishCount}/{fileList.Count})..."));
         });
 
         #endregion

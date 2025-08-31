@@ -12,6 +12,6 @@ public class IntegrationInfo
     [JsonIgnore] public bool UseMods { get; set; } = true;
     [JsonIgnore] public bool UseDMods { get; set; } = true;
     [JsonIgnore] public bool UseWorlds { get; set; } = true;
-    [JsonIgnore] public bool UsResPacks { get; set; } = true;
+    [JsonIgnore] public bool UseResPacks { get; set; } = true;
     [JsonIgnore] public VersionOntologyInfo VersionOntologyInfo { get; set; } = null!;
 }

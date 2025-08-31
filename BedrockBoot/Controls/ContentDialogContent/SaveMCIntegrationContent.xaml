@@ -22,15 +22,17 @@
                      x:Name="Pack_Writer"
                      Text="BedrockBoot"></TextBox>
 
-            <CheckBox IsChecked="True">免下载游戏实例</CheckBox>
+            <TextBox Header="整合包版本"
+                     x:Name="Pack_Version"
+                     Text="1.0.0"></TextBox>
 
-            <CheckBox IsChecked="True">包含 Mods</CheckBox>
+            <CheckBox IsChecked="True" x:Name="Pack_Mods">包含 Mods</CheckBox>
 
-            <CheckBox IsChecked="True">包含延迟注入 Mods</CheckBox>
+            <CheckBox IsChecked="True" x:Name="Pack_DMods">包含延迟注入 Mods</CheckBox>
 
-            <CheckBox IsChecked="True">包含资源包</CheckBox>
+            <CheckBox IsChecked="True" x:Name="Pack_ResPacks">包含资源包</CheckBox>
 
-            <CheckBox IsChecked="True">包含存档</CheckBox>
+            <CheckBox IsChecked="True" x:Name="Pack_Worlds">包含存档</CheckBox>
         </StackPanel>
     </ScrollViewer>
 </Page>

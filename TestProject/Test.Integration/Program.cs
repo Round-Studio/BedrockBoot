@@ -20,7 +20,7 @@ namespace Test.Integration
             {
                 Console.WriteLine($"{tuple.Item1:0.00} | {tuple.Item2}");
             };
-            save.StartMake(progress);
+            save.StartMakeAndGetPackPath(progress);
         }
     }
 }

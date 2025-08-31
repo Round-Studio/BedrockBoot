@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\BedrockBoot.Integration\BedrockBoot.Integration.csproj" />
+  </ItemGroup>
+
 </Project>

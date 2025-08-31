@@ -46,6 +46,13 @@
                         IsClickEnabled="True"
                         Tag="{x:Bind}" />
                     <devWinUi:SettingsCard
+                        ActionIcon="{devWinUi:FontIcon Glyph=&#xE74E;}"
+                        x:Name="SavePack"
+                        Click="SavePack_OnClick"
+                        Header="导出整合包"
+                        IsClickEnabled="True"
+                        Tag="{x:Bind}" />
+                    <devWinUi:SettingsCard
                         ActionIcon="{devWinUi:FontIcon Glyph=&#xE74D;}"
                         Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}"
                         Click="DeleteButton"

@@ -242,7 +242,7 @@ namespace BedrockBoot.Controls
                    }
                    else
                    {
-                        global_cfg.core.InstallVersion(Version, GetVersionTypeByString(Version.Type), appx_path, nowVersions.VersionName,Install_dir, installCallback, gameBackGroundEditer, DownloadSource.Microsoft);
+                       global_cfg.core.InstallVersion(Version.Variations[0], GetVersionTypeByString(Version.Type), appx_path, nowVersions.VersionName, Install_dir, installCallback, gameBackGroundEditer);
                    }
 
                    if (isError)

@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Management.Deployment;
+using BedrockBoot.Integration.Entry;
 using WinRT.Interop;
 
 namespace BedrockBoot.Pages;
@@ -319,6 +320,18 @@ public sealed partial class VersionPage : Page
                 }
                 UpdateUI();
             }
+        }
+    }
+
+    private void SavePack_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement element && element.Tag is NowVersions versionInfo)
+        {
+            SaveMCIntegrationContent.OpenSave(this.XamlRoot, new VersionOntologyInfo()
+            {
+                Name = versionInfo.VersionName,
+                FolderPath = global_cfg.cfg.JsonCfg.GameFolders[global_cfg.cfg.JsonCfg.ChooseFolderIndex].Path
+            });
         }
     }
 }

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36203.30
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot", "BedrockBoot\BedrockBoot.csproj", "{AB767BB8-7139-4DC3-ABDE-58FF82D06AFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.ProcessMonitor", "BedrockBoot.ProcessMonitor\BedrockBoot.ProcessMonitor.csproj", "{34350679-FB63-4B04-BA11-BD36B3E1B090}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -33,6 +35,18 @@ Global
 		{AB767BB8-7139-4DC3-ABDE-58FF82D06AFF}.Release|x86.ActiveCfg = Release|x86
 		{AB767BB8-7139-4DC3-ABDE-58FF82D06AFF}.Release|x86.Build.0 = Release|x86
 		{AB767BB8-7139-4DC3-ABDE-58FF82D06AFF}.Release|x86.Deploy.0 = Release|x86
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Debug|x64.Build.0 = Debug|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Debug|x86.Build.0 = Debug|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|ARM64.Build.0 = Release|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|x64.ActiveCfg = Release|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|x64.Build.0 = Release|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|x86.ActiveCfg = Release|Any CPU
+		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

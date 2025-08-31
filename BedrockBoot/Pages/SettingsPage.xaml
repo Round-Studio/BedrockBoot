@@ -58,7 +58,7 @@
                                     SelectedIndex="2"
                                     x:Name="ListSourceBox"
                                     SelectionChanged="ListSourceBox_OnSelectionChanged">
-                                    <ComboBoxItem>McAppx 源 (不支持使用 VPN 访问)</ComboBoxItem>
+                                    <ComboBoxItem>McAppx 源 (美国等地区无法访问)</ComboBoxItem>
                                     <ComboBoxItem>GitCode 源 (怎么样都可以访问，但是容易崩.jpg)</ComboBoxItem>
                                     <ComboBoxItem>Github 源 (需要 VPN 访问)</ComboBoxItem>
                                 </ComboBox>

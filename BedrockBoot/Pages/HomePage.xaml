@@ -11,6 +11,7 @@
     mc:Ignorable="d">
 
     <Grid>
+        
         <SplitButton x:Name="LauncherButton"
                      HorizontalAlignment="Right"
                      VerticalAlignment="Bottom"

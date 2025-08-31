@@ -41,6 +41,7 @@
     <None Remove="Controls\ContentDialogContent\EggPage.xaml" />
     <None Remove="Controls\ContentDialogContent\ImportMCPackContent.xaml" />
     <None Remove="Controls\ContentDialogContent\LaunchGameContent.xaml" />
+    <None Remove="Controls\ContentDialogContent\SaveMConformityContent.xaml" />
     <None Remove="Controls\ContentDialogContent\SettingMouseLockPaddingContent.xaml" />
     <None Remove="Controls\DefaultContentDialogFrame.xaml" />
     <None Remove="Controls\FlyoutContent\EazyChooseGameContent.xaml" />

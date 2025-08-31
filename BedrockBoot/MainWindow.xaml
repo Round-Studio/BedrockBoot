@@ -104,7 +104,7 @@
         </NavigationView>
         <Frame
             x:Name="NavFrame"
-            Margin="70,0,0,0"
+            Margin="74,0,0,0"
             CacheSize="0" />
     </Grid>
 </Window>

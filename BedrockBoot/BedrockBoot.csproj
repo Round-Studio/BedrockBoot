@@ -300,6 +300,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BedrockBoot.Integration\BedrockBoot.Integration.csproj" />
-    <ProjectReference Include="..\BedrockLauncher.Core\BedrockLauncher.Core\BedrockLauncher.Core.csproj" />
   </ItemGroup>
 </Project>

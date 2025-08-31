@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot", "BedrockBoot\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.ProcessMonitor", "BedrockBoot.ProcessMonitor\BedrockBoot.ProcessMonitor.csproj", "{34350679-FB63-4B04-BA11-BD36B3E1B090}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockLauncher.Core", "BedrockLauncher.Core\BedrockLauncher.Core\BedrockLauncher.Core.csproj", "{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.Integration", "BedrockBoot.Integration\BedrockBoot.Integration.csproj", "{A252BF0F-6FA9-619A-3D51-BF02ADD3AF85}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProject", "TestProject", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
@@ -55,18 +53,6 @@ Global
 		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|x64.Build.0 = Release|Any CPU
 		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|x86.ActiveCfg = Release|Any CPU
 		{34350679-FB63-4B04-BA11-BD36B3E1B090}.Release|x86.Build.0 = Release|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Debug|x64.Build.0 = Debug|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Debug|x86.Build.0 = Debug|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Release|ARM64.Build.0 = Release|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Release|x64.ActiveCfg = Release|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Release|x64.Build.0 = Release|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Release|x86.ActiveCfg = Release|Any CPU
-		{1DB408EF-86FA-0DCF-FBB0-895ACCA6C261}.Release|x86.Build.0 = Release|Any CPU
 		{A252BF0F-6FA9-619A-3D51-BF02ADD3AF85}.Debug|ARM64.ActiveCfg = Debug|Any CPU
 		{A252BF0F-6FA9-619A-3D51-BF02ADD3AF85}.Debug|ARM64.Build.0 = Debug|Any CPU
 		{A252BF0F-6FA9-619A-3D51-BF02ADD3AF85}.Debug|x64.ActiveCfg = Debug|Any CPU

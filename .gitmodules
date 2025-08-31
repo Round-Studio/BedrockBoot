@@ -1,0 +1,3 @@
+[submodule "BedrockLauncher.Core"]
+	path = BedrockLauncher.Core
+	url = https://github.com/Round-Studio/BedrockLauncher.Core.git

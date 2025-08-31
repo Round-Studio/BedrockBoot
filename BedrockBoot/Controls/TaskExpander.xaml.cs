@@ -1,4 +1,4 @@
-using ABI.System;
+﻿using ABI.System;
 using BedrockBoot.Models.Classes;
 using BedrockBoot.Tools;
 using BedrockBoot.Versions;
@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using BedrockLauncher.Core.Enum;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -241,7 +242,7 @@ namespace BedrockBoot.Controls
                    }
                    else
                    {
-                        global_cfg.core.InstallVersion(Version.Variations[0], GetVersionTypeByString(Version.Type), appx_path, nowVersions.VersionName,Install_dir, installCallback, gameBackGroundEditer);
+                        global_cfg.core.InstallVersion(Version, GetVersionTypeByString(Version.Type), appx_path, nowVersions.VersionName,Install_dir, installCallback, gameBackGroundEditer, DownloadSource.Microsoft);
                    }
 
                    if (isError)

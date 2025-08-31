@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="BedrockBoot.Controls.ContentDialogContent.SaveMCIntegrationContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BedrockBoot.Controls.ContentDialogContent"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel
+            Margin="0,0,0,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Spacing="8">
+
+            <TextBox Header="整合包名称"
+                     x:Name="Pack_Name"></TextBox>
+
+            <TextBox Header="整合包作者"
+                     x:Name="Pack_Writer"
+                     Text="BedrockBoot"></TextBox>
+
+            <CheckBox IsChecked="True">免下载游戏实例</CheckBox>
+
+            <CheckBox IsChecked="True">包含 Mods</CheckBox>
+
+            <CheckBox IsChecked="True">包含延迟注入 Mods</CheckBox>
+
+            <CheckBox IsChecked="True">包含资源包</CheckBox>
+
+            <CheckBox IsChecked="True">包含存档</CheckBox>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

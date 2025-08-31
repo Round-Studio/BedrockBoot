@@ -23,7 +23,7 @@ body:
           required: true
         - label: 我已在 [Issues](https://github.com/Round-Studio/BedrockBoot/issues?q=label%3A新功能) 和 [BedrockBoot 文档](https://docs.roundstudio.top)中检索，确认我想要的功能未被提交过。
           required: true
-        - label: 我认为我想要的功能是用户广泛需要的，插件不能替代的，且没有超出 RMCL 作为**我的世界启动器**的开发目标，而非添加与我的世界启动无关的内容。（您可以学习[编写插件](https://docs.roundstudio.top)来实现特殊的需求）。
+        - label: 我认为我想要的功能是用户广泛需要的，插件不能替代的，且没有超出 BedrockBoot 作为**我的世界启动器**的开发目标，而非添加与我的世界启动无关的内容。（您可以学习[编写插件](https://docs.roundstudio.top)来实现特殊的需求）。
           required: true
         - label: 我已知晓由于开发者时间精力有限，加上已经积压了大量的功能请求，我提交的功能请求可能需要比较久的时间才能实现。
           required: true

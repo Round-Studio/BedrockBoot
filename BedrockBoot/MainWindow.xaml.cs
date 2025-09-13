@@ -38,7 +38,8 @@ namespace BedrockBoot
     public sealed partial class MainWindow : Window
     {
         private HotKeyService _hotKeyService;
-        private int _hotKeyId;
+		public ModernSystemMenu modernSystemMenu;
+		private int _hotKeyId;
         public MainWindow()
         {
             //throw new Exception("Crash");
@@ -58,8 +59,9 @@ namespace BedrockBoot
 
             AppTitleBar.Title = $"BedrockBoot";
             AppTitleBar.Subtitle = $"v{Config.cfg_Version}";
+			modernSystemMenu = new ModernSystemMenu(this, TitlebarMenuFlyout);
 
-            var manager = WinUIEx.WindowManager.Get(this);
+			var manager = WinUIEx.WindowManager.Get(this);
             manager.MinHeight = 720;
             manager.MinWidth = 1200;
             manager.Width = 1200;

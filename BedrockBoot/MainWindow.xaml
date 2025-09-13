@@ -12,8 +12,63 @@
     Title="BedrockBoot"
     mc:Ignorable="d">
 
-    <Grid>
-        <TeachingTip
+	<Grid>
+		<Grid.Resources>
+			<MenuFlyout x:Key="TitlebarMenuFlyout" Placement="BottomEdgeAlignedLeft" x:Name="TitlebarMenuFlyout">
+				<MenuFlyoutItem Command="{x:Bind modernSystemMenu.RestoreCommand}"
+                            Style="{StaticResource AppTitleBarMenuFlyoutItemStyle}"
+                            Text="还原">
+					<MenuFlyoutItem.Icon>
+						<FontIcon Glyph="&#xE923;" />
+					</MenuFlyoutItem.Icon>
+				</MenuFlyoutItem>
+
+				<MenuFlyoutItem x:Name="MenuMove"
+                            Command="{x:Bind modernSystemMenu.MoveCommand}"
+                            CommandParameter="{x:Bind MenuMove}"
+                            Style="{StaticResource AppTitleBarMenuFlyoutItemStyle}"
+                            Text="移动" />
+
+				<MenuFlyoutItem x:Name="MenuSize"
+                            Command="{x:Bind modernSystemMenu.SizeCommand}"
+                            CommandParameter="{x:Bind MenuSize}"
+                            Style="{StaticResource AppTitleBarMenuFlyoutItemStyle}"
+                            Text="大小" />
+
+				<MenuFlyoutItem Command="{x:Bind modernSystemMenu.MinimizeCommand}"
+                            Style="{StaticResource AppTitleBarMenuFlyoutItemStyle}"
+                            Text="最小化">
+					<MenuFlyoutItem.Icon>
+						<FontIcon Glyph="&#xE921;" />
+					</MenuFlyoutItem.Icon>
+				</MenuFlyoutItem>
+
+				<MenuFlyoutItem Command="{x:Bind modernSystemMenu.MaximizeCommand}"
+                            Style="{StaticResource AppTitleBarMenuFlyoutItemStyle}"
+                            Text="最大化">
+
+					<MenuFlyoutItem.Icon>
+						<FontIcon Glyph="&#xE922;" />
+					</MenuFlyoutItem.Icon>
+				</MenuFlyoutItem>
+
+				<MenuFlyoutSeparator Width="200" />
+
+				<MenuFlyoutItem Command="{x:Bind modernSystemMenu.CloseCommand}"
+                            Style="{StaticResource AppTitleBarMenuFlyoutItemStyle}"
+								Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                            Text="关闭">
+					<MenuFlyoutItem.Icon>
+						<FontIcon Glyph="&#xE8BB;" />
+					</MenuFlyoutItem.Icon>
+					<MenuFlyoutItem.KeyboardAccelerators>
+						<KeyboardAccelerator Key="F4"
+                                        Modifiers="Menu" />
+					</MenuFlyoutItem.KeyboardAccelerators>
+				</MenuFlyoutItem>
+			</MenuFlyout>
+		</Grid.Resources>
+		<TeachingTip
             x:Name="NewTaskTeachingTip"
             Title="已创建新的任务"
             IsLightDismissEnabled="True"

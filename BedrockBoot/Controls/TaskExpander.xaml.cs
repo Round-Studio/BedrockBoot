@@ -260,7 +260,7 @@ namespace BedrockBoot.Controls
                 {
                     DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, (() =>
                     {
-                        EasyContentDialog.CreateDialog(global_cfg.MainWindow.Content.XamlRoot, "抱歉，我们发生了点错误。",$"{e.Message}\n这可能是您选择的版本 {Version.ID} 已被微软从服务器删除，无法下载导致的出错。");
+                        EasyContentDialog.CreateDialog(global_cfg.MainWindow.Content.XamlRoot, "抱歉，我们发生了点错误。",$"{e.Message}\n请检查本地网络环境是否正常。\n\n或检查您电脑上是否安装有 Microsoft Store 下载的 Minecraft Bedrock。\n如果有，请将其卸载。");
                         global_cfg.tasksPool.Remove(this);
                        
                     }));

@@ -16,16 +16,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Assets\AppReference\**" />
-    <Compile Remove="Types\**" />
     <Content Remove="Assets\AppReference\**" />
     <EmbeddedResource Remove="Assets\AppReference\**" />
-    <EmbeddedResource Remove="Types\**" />
     <None Remove="Assets\AppReference\**" />
-    <None Remove="Types\**" />
     <Page Remove="Assets\AppReference\**" />
-    <Page Remove="Types\**" />
   </ItemGroup>
   <ItemGroup>
+    <Content Remove="Assets\JumpListIcon\none.png" />
     <Content Remove="Assets\MCSquare44x44Logo.scale-100.png" />
     <Content Remove="Assets\MCSquare44x44Logo.scale-200.png" />
     <Content Remove="Assets\MC_Release_Icon.png" />
@@ -282,9 +279,6 @@
     <ApplicationIcon>Assets\Bedrock_Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <PRIResource Remove="Types\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Update="Assets\PersonPicture\DrMing.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -296,6 +290,7 @@
     <PRIResource Remove="Assets\AppReference\**" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\JumpListIcon\" />
     <Folder Include="Models\Classes\Update\" />
   </ItemGroup>
   <ItemGroup>

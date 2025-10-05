@@ -54,9 +54,9 @@
                             </dev:SettingsCard>
                             <dev:SettingsCard Header="列表源">
                                 <ComboBox
+                                    x:Name="ListSourceBox"
                                     Width="400"
                                     SelectedIndex="2"
-                                    x:Name="ListSourceBox"
                                     SelectionChanged="ListSourceBox_OnSelectionChanged">
                                     <ComboBoxItem>McAppx 源 (美国等地区无法访问)</ComboBoxItem>
                                     <ComboBoxItem>GitCode 源 (怎么样都可以访问，但是容易崩.jpg)</ComboBoxItem>

@@ -54,7 +54,6 @@
                         Tag="{x:Bind}" />
                     <devWinUi:SettingsCard
                         ActionIcon="{devWinUi:FontIcon Glyph=&#xE74D;}"
-                        Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}"
                         Click="DeleteButton"
                         Header="删除该版本"
                         IsClickEnabled="True"
@@ -113,20 +112,25 @@
                 </StackPanel>
             </Grid>
             <Grid MaxWidth="1000" Margin="0,48,0,0">
-                <Grid Margin="-4,-1,0,0"
+                <Grid Margin="0,0,0,0"
+					  Padding="0,0,0,11"
                       Width="264"
+					  Style="{ThemeResource GridPanel}"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left">
                     <ListView x:Name="ChooseGameFolderComboBox"
+                    Margin="0,2,0,0"
                               SelectionChanged="ChooseGameFolderComboBox_SelectionChanged"></ListView>
                 </Grid>
                 <ScrollViewer HorizontalAlignment="Stretch"
                               Margin="270,0,0,0"
                               x:Name="ScrollViewList">
-                    <Grid>
+					<Grid
+					  Style="{ThemeResource GridCardPanel}">
                         <!-- 移除 ItemsSource 绑定 -->
                         <ItemsRepeater
                             x:Name="VersionListRepeater"
+                            Margin="0,-1,0,0"
                             HorizontalAlignment="Stretch"
                             ItemTemplate="{StaticResource VersionCard}">
                             <ItemsRepeater.Layout>

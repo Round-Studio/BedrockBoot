@@ -1,5 +1,6 @@
 ﻿using BedrockBoot.Controls.ContentDialogContent;
 using BedrockBoot.Models.Classes;
+using BedrockBoot.Models.Classes.Helper;
 using BedrockBoot.Models.Classes.Style.Background;
 using BedrockBoot.Models.Classes.Update;
 using BedrockBoot.Models.Enum.Background;
@@ -24,7 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using BedrockBoot.Models.Classes.Helper;
+using Windows.UI.StartScreen;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -38,7 +39,9 @@ namespace BedrockBoot
     public sealed partial class MainWindow : Window
     {
         private HotKeyService _hotKeyService;
-        private int _hotKeyId;
+		public ModernSystemMenu modernSystemMenu;
+		private int _hotKeyId;
+
         public MainWindow()
         {
             //throw new Exception("Crash");
@@ -58,8 +61,9 @@ namespace BedrockBoot
 
             AppTitleBar.Title = $"BedrockBoot";
             AppTitleBar.Subtitle = $"v{Config.cfg_Version}";
+			modernSystemMenu = new ModernSystemMenu(this, TitlebarMenuFlyout);
 
-            var manager = WinUIEx.WindowManager.Get(this);
+			var manager = WinUIEx.WindowManager.Get(this);
             manager.MinHeight = 720;
             manager.MinWidth = 1200;
             manager.Width = 1200;

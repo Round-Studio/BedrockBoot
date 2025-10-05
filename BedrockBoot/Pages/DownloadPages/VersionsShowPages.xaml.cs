@@ -166,6 +166,16 @@ namespace BedrockBoot.Pages.DownloadPages
                     foreach (var version in versions)
                     {
                         if (string.IsNullOrEmpty(version.ID) || string.IsNullOrEmpty(version.Date)) continue;
+                        
+                        bool isCon = false;
+
+                        foreach (var v in version.Variations)
+                        {
+                            if(v.UpdateIds.Count <= 0) isCon = true;
+                        }
+
+                        if (isCon) continue;
+                        
                         _allVersions.Add(version);
                     }
                     _allVersions.Sort((x, y) =>

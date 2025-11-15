@@ -9,7 +9,7 @@
                 x:DataType="vm:MainWindowViewModel"
                 Width="1140" Height="630"
                 MinWidth="1140" MinHeight="630"
-                Icon="/Assets/avalonia-logo.ico"
+                Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
                 Title="BedrockBoot">
         <windowFrame:OnePointWindow.MainContent>
                 

@@ -11,60 +11,152 @@
         <Grid Margin="15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3.5*"
-                               MinHeight="190"></RowDefinition>
+                               MinHeight="220"
+                               MaxHeight="280"></RowDefinition>
                 <RowDefinition Height="6.5*"></RowDefinition>
             </Grid.RowDefinitions>
             
             <Grid Grid.Row="0"
-                  ColumnDefinitions="6*,4*">
+                  ColumnDefinitions="7*,3*">
                 
-                <items:BorderCard Grid.Column="0"
-                                  Margin="5"
-                                  Padding="0">
+                <Grid Grid.Column="0"
+                      Margin="5">
                     <asyncImageLoader:AdvancedImage Source="avares://BedrockBoot/Assets/Image/wallpaper_minecraft_java_edition_2560x1440.png" 
                                                     Stretch="UniformToFill"
-                                                    CornerRadius="6">
-                        <asyncImageLoader:AdvancedImage.Effect>
-                            <BlurEffect Radius="20"></BlurEffect>
-                        </asyncImageLoader:AdvancedImage.Effect>
+                                                    CornerRadius="7">
                     </asyncImageLoader:AdvancedImage>
-                </items:BorderCard>
+                    <items:BorderCard Padding="15">
+                        <Grid RowDefinitions="Auto,Auto,*">
+                            <onePointControls:LabelBox Grid.Row="0"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="5"
+                                                       Text="版本总览"
+                                                       FontSize="11"></onePointControls:LabelBox>
+                            
+                            <TextBlock Grid.Row="1"
+                                       Text="1.12.2"
+                                       Margin="5,0,5,5"
+                                       FontSize="36"></TextBlock>
+                            
+                            <Grid Grid.Row="2">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Bottom">
+                                    <Button Padding="8"
+                                            Height="32"
+                                            Classes="NoBorder">
+                                        <StackPanel Orientation="Horizontal">
+                                            <onePointControls:FontIcon VerticalAlignment="Center"
+                                                                       Glyph="&#xE713;"
+                                                                       Margin="0,0,6,0"></onePointControls:FontIcon>
+                                            <TextBlock>设置</TextBlock>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </items:BorderCard>
+                </Grid>
                 
                 <items:BorderCard Grid.Column="1"
+                                  Padding="15"
                                   Margin="5">
-                    <Grid RowDefinitions="Auto,Auto,*"
-                          VerticalAlignment="Center">
-                        <TextBlock Grid.Row="0"
-                                   FontSize="20"
-                                   HorizontalAlignment="Center">当前选择</TextBlock>
-                        
-                        <ComboBox Grid.Row="1"
-                                  HorizontalAlignment="Center"
-                                  Width="200"
-                                  Margin="5,20,5,10"></ComboBox>
-                        
-                        <Button Grid.Row="2"
-                                Height="52"
-                                Width="200"
-                                Classes="NoBorder"
-                                Background="{DynamicResource AccentBackgroundBrush}">
-                            <StackPanel Orientation="Horizontal">
-                                <onePointControls:FontIcon Glyph="&#xE768;"
-                                                           FontSize="20"
-                                                           FontWeight="Bold"
+                    <Grid RowDefinitions="*,Auto">
+                        <Grid Grid.Row="0"
+                              RowDefinitions="Auto,6*,4*"
+                              Margin="0,0,0,10">
+                            <StackPanel Grid.Row="0"
+                                        Orientation="Horizontal"
+                                        Margin="0,0,0,10">
+                                <onePointControls:FontIcon Glyph="&#xF22C;"
                                                            VerticalAlignment="Center"
-                                                           Foreground="White"
-                                                           Margin="0,0,0,0"/>
-                                    
-                                <TextBlock Text="启动"
-                                           Foreground="White"
-                                           FontSize="18"
-                                           Name="LaunchText"
+                                                           FontSize="16"></onePointControls:FontIcon>
+                                
+                                <TextBlock FontSize="12"
                                            Margin="8,0,0,0"
-                                           VerticalAlignment="Center"
-                                           FontWeight="Bold"/>
+                                           VerticalAlignment="Center">启动</TextBlock>
                             </StackPanel>
-                        </Button>
+                            
+                            <Button Grid.Row="1" Classes="NoBorder"
+                                    Background="{DynamicResource AccentBackgroundBrush}"
+                                    Padding="17,16"
+                                    HorizontalAlignment="Stretch">
+                                <StackPanel Orientation="Horizontal">
+                                    <onePointControls:FontIcon Glyph="&#xE768;"
+                                                               FontSize="20"
+                                                               FontWeight="Bold"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="White"
+                                                               Margin="0,0,0,0"/>
+                                    
+                                    <TextBlock Text="启动"
+                                               Foreground="White"
+                                               FontSize="18"
+                                               Name="LaunchText"
+                                               Margin="8,0,0,0"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <Grid Grid.Row="2"
+                                  Margin="0,8,0,0"
+                                  ColumnDefinitions="*,*">
+                                <Button Grid.Column="0" Padding="0,4"
+                                        Margin="0,0,5,0"
+                                        Classes="NoBorder">
+                                    <StackPanel Orientation="Horizontal">
+                                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                                   Glyph="&#xE8A9;"
+                                                                   Margin="0,0,6,0"></onePointControls:FontIcon>
+                                        <TextBlock>实例选择</TextBlock>
+                                    </StackPanel>
+                                </Button>
+                                <Button Grid.Column="1" Padding="0,4"
+                                        Margin="4,0,0,0"
+                                        Classes="NoBorder">
+                                    <StackPanel Orientation="Horizontal">
+                                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                                   Glyph="&#xE7B8;"
+                                                                   Margin="0,0,6,0"></onePointControls:FontIcon>
+                                        <TextBlock>包管理器</TextBlock>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        
+                        <Grid Grid.Row="1"
+                              ColumnDefinitions="*,Auto,*">
+                            <Border Grid.Column="1"
+                                    Width="1"
+                                    VerticalAlignment="Stretch"
+                                    Margin="0,0,0,0"
+                                    Background="Gray"></Border>
+                            
+                            <Grid Grid.Column="0"
+                                  RowDefinitions="*,*">
+                                <TextBlock Grid.Row="0"
+                                           Margin="0,2,0,8"
+                                           Foreground="Gray">Type</TextBlock>
+                                
+                                <TextBlock Grid.Row="1"
+                                           Margin="0,0,0,2"
+                                           FontSize="18"
+                                           HorizontalAlignment="Center">Vanilla</TextBlock>
+                            </Grid>
+                            
+                            <Grid Grid.Column="2"
+                                  Margin="15,0,0,0"
+                                  RowDefinitions="*,*">
+                                <TextBlock Grid.Row="0"
+                                           Margin="0,2,0,8"
+                                           Foreground="Gray">Version</TextBlock>
+                                
+                                <TextBlock Grid.Row="1"
+                                           Margin="0,0,0,2"
+                                           FontSize="18"
+                                           HorizontalAlignment="Center">1.12.2</TextBlock>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </items:BorderCard>
             </Grid>

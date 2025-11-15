@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="BedrockBoot.App"
              xmlns:local="using:BedrockBoot"
+             xmlns:core="clr-namespace:OnePointUI.Avalonia.Style.Core;assembly=OnePointUI.Avalonia"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -10,6 +11,6 @@
     </Application.DataTemplates>
   
     <Application.Styles>
-        <FluentTheme />
+        <core:OnePointTheme AccentColor="Green"/>
     </Application.Styles>
 </Application>

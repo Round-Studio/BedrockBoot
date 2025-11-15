@@ -6,6 +6,7 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.ViewModels;
 using BedrockBoot.Views;
+using OnePointUI.Avalonia.Style.Core;
 
 namespace BedrockBoot;
 
@@ -13,6 +14,7 @@ public partial class App : Application
 {
     public override void Initialize()
     {
+        ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
     }
 

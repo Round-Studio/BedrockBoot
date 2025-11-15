@@ -12,5 +12,6 @@
   
     <Application.Styles>
         <core:OnePointTheme AccentColor="Green"/>
+        <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
     </Application.Styles>
 </Application>

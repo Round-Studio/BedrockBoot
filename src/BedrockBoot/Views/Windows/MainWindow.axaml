@@ -4,14 +4,15 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
+                xmlns:pages="clr-namespace:BedrockBoot.Views.Pages"
                 mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
-                x:Class="BedrockBoot.Views.MainWindow"
+                x:Class="BedrockBoot.Views.Windows.MainWindow"
                 x:DataType="vm:MainWindowViewModel"
-                Width="1140" Height="630"
-                MinWidth="1140" MinHeight="630"
+                Width="900" Height="520"
+                MinWidth="900" MinHeight="520"
                 Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
                 Title="BedrockBoot">
         <windowFrame:OnePointWindow.MainContent>
-                
+                <pages:MainPage />
         </windowFrame:OnePointWindow.MainContent>
 </windowFrame:OnePointWindow>

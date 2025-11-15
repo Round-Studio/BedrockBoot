@@ -6,6 +6,7 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.ViewModels;
 using BedrockBoot.Views;
+using BedrockBoot.Views.Windows;
 using OnePointUI.Avalonia.Style.Core;
 
 namespace BedrockBoot;

@@ -1,0 +1,73 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.MainSubPage.MainHomePage">
+    <Grid>
+        <Grid Margin="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3.5*"
+                               MinHeight="190"></RowDefinition>
+                <RowDefinition Height="6.5*"></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="6*,4*">
+                
+                <items:BorderCard Grid.Column="0"
+                                  Margin="5"
+                                  Padding="0">
+                    <asyncImageLoader:AdvancedImage Source="avares://BedrockBoot/Assets/Image/wallpaper_minecraft_java_edition_2560x1440.png" 
+                                                    Stretch="UniformToFill"
+                                                    CornerRadius="6">
+                        <asyncImageLoader:AdvancedImage.Effect>
+                            <BlurEffect Radius="20"></BlurEffect>
+                        </asyncImageLoader:AdvancedImage.Effect>
+                    </asyncImageLoader:AdvancedImage>
+                </items:BorderCard>
+                
+                <items:BorderCard Grid.Column="1"
+                                  Margin="5">
+                    <Grid RowDefinitions="Auto,Auto,*"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Row="0"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center">当前选择</TextBlock>
+                        
+                        <ComboBox Grid.Row="1"
+                                  HorizontalAlignment="Center"
+                                  Width="200"
+                                  Margin="5,20,5,10"></ComboBox>
+                        
+                        <Button Grid.Row="2"
+                                Height="52"
+                                Width="200"
+                                Classes="NoBorder"
+                                Background="{DynamicResource AccentBackgroundBrush}">
+                            <StackPanel Orientation="Horizontal">
+                                <onePointControls:FontIcon Glyph="&#xE768;"
+                                                           FontSize="20"
+                                                           FontWeight="Bold"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="White"
+                                                           Margin="0,0,0,0"/>
+                                    
+                                <TextBlock Text="启动"
+                                           Foreground="White"
+                                           FontSize="18"
+                                           Name="LaunchText"
+                                           Margin="8,0,0,0"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </items:BorderCard>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

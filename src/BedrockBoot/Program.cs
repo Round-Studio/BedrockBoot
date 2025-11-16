@@ -1,7 +1,9 @@
 ﻿using Avalonia;
 using System;
 using System.IO;
+using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
+using Round.SDK.Entity;
 using Round.SDK.Logger;
 
 namespace BedrockBoot;
@@ -14,6 +16,9 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+        GlobalModel.Config.Load();
+        
         ConsoleRedirector consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
             $"[BedrockBoot.Logger] {DateTime.Now.ToString("yyyy.MM.dd HHmmss.fff")}.log"));
 

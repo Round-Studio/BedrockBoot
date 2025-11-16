@@ -12,7 +12,9 @@
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
             <Button Padding="12,8"
-                    Margin="5">
+                    Margin="5"
+                    Name="AddFolderBtn"
+                    Click="AddFolderBtn_OnClick">
                 <StackPanel Orientation="Horizontal">
                     <onePointControls:FontIcon Glyph="&#xE710;"
                                                VerticalAlignment="Center"/>
@@ -32,9 +34,12 @@
                 <Grid>
                     <notice:InfoCard HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
+                                     IsVisible="False"
+                                     Name="FolderNull"
                                      BigTitle="空"
                                      Message="点击上方 添加目录&#x0A;以添加目录"/>
-                    <ListBox>
+                    <ListBox Name="FolderList"
+                             SelectionChanged="FolderList_OnSelectionChanged">
                     
                     </ListBox>
                 </Grid>
@@ -45,11 +50,13 @@
                 <Grid>
                     <notice:InfoCard HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
+                                     Name="GamesNull"
                                      BigTitle="没有实例"
                                      Message="请前往 下载 页面下载游戏"/>
-                    <ListBox>
-                    
-                    </ListBox>
+                    <ScrollViewer>
+                        <StackPanel Margin="10"
+                                    Name="GameList"></StackPanel>
+                    </ScrollViewer>
                 </Grid>
             </items:BorderCard>
         </Grid>

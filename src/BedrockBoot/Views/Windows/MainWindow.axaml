@@ -5,6 +5,7 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
                 xmlns:pages="clr-namespace:BedrockBoot.Views.Pages"
+                xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
                 mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
                 x:Class="BedrockBoot.Views.Windows.MainWindow"
                 x:DataType="vm:MainWindowViewModel"
@@ -13,9 +14,31 @@
                 Width="900" Height="520"
                 MinWidth="900" MinHeight="520"
                 Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
-                Title="BedrockBoot (v2 Beta)">
+                Title="BedrockBoot">
+        <windowFrame:OnePointWindow.TitleBarContent>
+                <StackPanel Orientation="Horizontal">
+                        <onePointControls:LabelBox Text="2"
+                                                   FontSize="14"
+                                                   Foreground="White"
+                                                   Margin="0,0,5,0"
+                                                   VerticalAlignment="Center"/>
+                        
+                        <onePointControls:LabelBox Text="Beta"
+                                                   FontSize="14"
+                                                   Foreground="White"
+                                                   Background="Orange"
+                                                   Margin="0,0,5,0"
+                                                   VerticalAlignment="Center"/>
+                        
+                        <onePointControls:LabelBox Text="Dev"
+                                                   FontSize="14"
+                                                   Foreground="White"
+                                                   Background="DarkRed"
+                                                   Margin="0,0,5,0"
+                                                   VerticalAlignment="Center"/>
+                </StackPanel>
+        </windowFrame:OnePointWindow.TitleBarContent>
         <windowFrame:OnePointWindow.MainContent>
-                
                 <pages:MainPage />
         </windowFrame:OnePointWindow.MainContent>
 </windowFrame:OnePointWindow>

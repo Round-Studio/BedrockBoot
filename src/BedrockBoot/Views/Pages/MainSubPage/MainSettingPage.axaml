@@ -2,7 +2,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MainSubPage.MainSettingPage">
-    Welcome to Avalonia!
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="15,15,15,15">
+                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                              Header="个性化"
+                                              Description="启动器的个性化设置"
+                                              IsClickable="True"
+                                              Glyph="&#xEE56;"/>
+                
+                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                              Header="下载"
+                                              Description="BedrockBoot 的下载行为"
+                                              IsClickable="True"
+                                              Glyph="&#xE896;"/>
+                
+                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                              Header="游戏"
+                                              Description="操作游戏的基本设置"
+                                              IsClickable="True"
+                                              Glyph="&#xE7FC;"/>
+                
+                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                              Header="关于"
+                                              Description="关于 BedrockBoot"
+                                              IsClickable="True"
+                                              Glyph="&#xE946;"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

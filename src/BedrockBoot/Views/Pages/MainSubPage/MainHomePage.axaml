@@ -8,7 +8,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MainSubPage.MainHomePage">
     <Grid>
-        <Grid Margin="15">
+        <Grid Margin="15,1,15,15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3.5*"
                                MinHeight="220"
@@ -93,7 +93,7 @@
                                                                Foreground="White"
                                                                Margin="0,0,0,0"/>
                                     
-                                    <TextBlock Text="启动"
+                                    <TextBlock Text="开始游戏"
                                                Foreground="White"
                                                FontSize="18"
                                                Name="LaunchText"

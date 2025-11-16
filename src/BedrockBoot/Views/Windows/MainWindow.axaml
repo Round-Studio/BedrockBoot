@@ -6,6 +6,7 @@
                 xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
                 xmlns:pages="clr-namespace:BedrockBoot.Views.Pages"
                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
                 mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
                 x:Class="BedrockBoot.Views.Windows.MainWindow"
                 x:DataType="vm:MainWindowViewModel"
@@ -39,6 +40,6 @@
                 </StackPanel>
         </windowFrame:OnePointWindow.TitleBarContent>
         <windowFrame:OnePointWindow.MainContent>
-                <pages:MainPage />
+            <navigation:NavigationFrame Name="MainFrame"/>
         </windowFrame:OnePointWindow.MainContent>
 </windowFrame:OnePointWindow>

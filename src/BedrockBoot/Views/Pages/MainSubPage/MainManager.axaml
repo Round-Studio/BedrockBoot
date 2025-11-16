@@ -2,7 +2,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MainSubPage.MainManager">
-    Welcome to Avalonia!
+    <Grid RowDefinitions="Auto,*"
+          Margin="15,0,15,15">
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal">
+            <Button Padding="12,8"
+                    Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <onePointControls:FontIcon Glyph="&#xE710;"
+                                               VerticalAlignment="Center"/>
+                    <TextBlock Margin="4,0,0,0">添加目录</TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="7*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <items:BorderCard Grid.Column="0"
+                              Margin="5">
+                <Grid>
+                    <notice:InfoCard HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     BigTitle="空"
+                                     Message="点击上方 添加目录&#x0A;以添加目录"/>
+                    <ListBox>
+                    
+                    </ListBox>
+                </Grid>
+            </items:BorderCard>
+            
+            <items:BorderCard Grid.Column="1"
+                              Margin="5">
+                <Grid>
+                    <notice:InfoCard HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     BigTitle="没有实例"
+                                     Message="请前往 下载 页面下载游戏"/>
+                    <ListBox>
+                    
+                    </ListBox>
+                </Grid>
+            </items:BorderCard>
+        </Grid>
+    </Grid>
 </UserControl>

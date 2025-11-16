@@ -3,7 +3,7 @@
              x:Class="BedrockBoot.App"
              xmlns:local="using:BedrockBoot"
              xmlns:core="clr-namespace:OnePointUI.Avalonia.Style.Core;assembly=OnePointUI.Avalonia"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Dark">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
@@ -11,7 +11,8 @@
     </Application.DataTemplates>
   
     <Application.Styles>
-        <core:OnePointTheme AccentColor="#486860"/>
+        <core:OnePointTheme AccentColor="#486860"
+                            ThemeVariant="Dark"/>
         <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
     </Application.Styles>
 </Application>

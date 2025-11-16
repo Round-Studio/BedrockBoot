@@ -4,14 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MainPage">
     <Grid RowDefinitions="Auto,*">
-        <TextBlock Grid.Row="0"
+        <onePointControls:LineTextBlock Grid.Row="0"
                    Margin="20,15,0,0"
                    VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
                    FontSize="28"
-                   FontWeight="Heavy">你好，欢迎回来！</TextBlock>
+                   FontWeight="Heavy"
+                   Text="你好，欢迎回来"></onePointControls:LineTextBlock>
         
         <items:BorderCard Grid.Row="0"
                           Margin="20,20,20,5"

@@ -9,6 +9,17 @@
         <ApplicationIcon>Assets\Icon\BedrockBoot.Icon.512x.ico</ApplicationIcon>
     </PropertyGroup>
 
+    <PropertyGroup>
+      <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+        <_Parameter1>BuildTimestamp</_Parameter1>
+        <_Parameter2>$(BuildTimestamp)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>

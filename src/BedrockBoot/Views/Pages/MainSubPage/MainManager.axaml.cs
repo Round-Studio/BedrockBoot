@@ -82,6 +82,16 @@ public partial class MainManager : UserControl
 
     public void UpdateGameList()
     {
+        if (!Directory.Exists(Path.Combine(
+                GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath,
+                "bedrock_versions")))
+        {
+            GamesNull.IsVisible = true;
+            GameScro.IsVisible = false;
+            
+            return;
+        }
+        
         var lst = Directory.GetDirectories(Path.Combine(
             GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath,
             "bedrock_versions"));
@@ -91,12 +101,12 @@ public partial class MainManager : UserControl
         if (lst.Length > 0)
         {
             GamesNull.IsVisible = false;
-            GameList.IsVisible = true;
+            GameScro.IsVisible = true;
         }
         else
         {
             GamesNull.IsVisible = true;
-            GameList.IsVisible = false;
+            GameScro.IsVisible = false;
         }
 
         lst.ToList().ForEach(x =>

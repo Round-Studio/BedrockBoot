@@ -48,15 +48,16 @@
             <items:BorderCard Grid.Column="1"
                               Margin="5">
                 <Grid>
+                    <ScrollViewer Name="GameScro">
+                        <StackPanel Margin="10"
+                                    Name="GameList"></StackPanel>
+                    </ScrollViewer>
+                    
                     <notice:InfoCard HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
                                      Name="GamesNull"
                                      BigTitle="没有实例"
                                      Message="请前往 下载 页面下载游戏"/>
-                    <ScrollViewer>
-                        <StackPanel Margin="10"
-                                    Name="GameList"></StackPanel>
-                    </ScrollViewer>
                 </Grid>
             </items:BorderCard>
         </Grid>

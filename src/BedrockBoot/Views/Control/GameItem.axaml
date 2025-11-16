@@ -7,10 +7,13 @@
              x:Class="BedrockBoot.Views.Control.GameItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
+                                  Margin="0,5"
                                   Glyph="&#xE7FC;"
                                   Header="VersionName"
                                   Description="Release Version">
         <Button Padding="12,8"
-                Classes="Accent">启动</Button>
+                Classes="Accent"
+                Name="LaunchBtn"
+                Click="LaunchBtn_OnClick">启动</Button>
     </onePointControls:SettingCard>
 </UserControl>

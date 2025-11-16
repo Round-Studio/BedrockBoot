@@ -4,3 +4,6 @@
 [submodule "src/Round.SDK"]
 	path = src/Round.SDK
 	url = https://github.com/Round-Studio/Round.SDK.git
+[submodule "src/BedrockLauncher.Core"]
+	path = src/BedrockLauncher.Core
+	url = https://github.com/Round-Studio/BedrockLauncher.Core.git

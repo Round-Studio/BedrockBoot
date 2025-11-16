@@ -12,12 +12,16 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="3.5*"
                                MinHeight="220"
-                               MaxHeight="280"></RowDefinition>
+                               MaxHeight="240"></RowDefinition>
                 <RowDefinition Height="6.5*"></RowDefinition>
             </Grid.RowDefinitions>
             
-            <Grid Grid.Row="0"
-                  ColumnDefinitions="7*,3*">
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"
+                                      MaxWidth="320"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
                 
                 <Grid Grid.Column="0"
                       Margin="5">
@@ -25,6 +29,7 @@
                                                     Stretch="UniformToFill"
                                                     CornerRadius="7">
                     </asyncImageLoader:AdvancedImage>
+                    
                     <items:BorderCard Padding="15">
                         <Grid RowDefinitions="Auto,Auto,*">
                             <onePointControls:LabelBox Grid.Row="0"

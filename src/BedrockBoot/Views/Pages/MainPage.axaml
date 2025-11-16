@@ -17,11 +17,17 @@
                           Margin="20,20,20,5"
                           MaxHeight="48"
                           HorizontalAlignment="Right">
-            <TabControl Margin="0,2,0,0">
-                <TabItem Header="主页"></TabItem>
-                <TabItem Header="实例"></TabItem>
-                <TabItem Header="下载"></TabItem>
-                <TabItem Header="设置"></TabItem>
+            <TabControl Margin="0,2,0,0"
+                        SelectionChanged="SelTag_OnSelectionChanged"
+                        Name="SelTag">
+                <TabItem Header="主页"
+                         Tag="Home"></TabItem>
+                <TabItem Header="实例"
+                         Tag="Manager"></TabItem>
+                <TabItem Header="下载"
+                         Tag="Download"></TabItem>
+                <TabItem Header="设置"
+                         Tag="Setting"></TabItem>
             </TabControl>
         </items:BorderCard>
         

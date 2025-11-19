@@ -37,6 +37,14 @@
                                                    Background="DarkRed"
                                                    Margin="0,0,5,0"
                                                    VerticalAlignment="Center"/>
+                        
+                        <onePointControls:LabelBox Text="Build Time"
+                                                   FontSize="14"
+                                                   Foreground="Black"
+                                                   Background="White"
+                                                   Name="BuildTime"
+                                                   Margin="0,0,5,0"
+                                                   VerticalAlignment="Center"/>
                 </StackPanel>
         </windowFrame:OnePointWindow.TitleBarContent>
         <windowFrame:OnePointWindow.MainContent>

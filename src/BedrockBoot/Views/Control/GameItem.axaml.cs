@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
 
@@ -34,7 +35,7 @@ public partial class GameItem : UserControl
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainWindow.BedrockCore.ChangeVersion(VersionInfo.Version_Path,new InstallCallback()
+        GlobalModel.BedrockCore.ChangeVersion(VersionInfo.Version_Path,new InstallCallback()
         {
             result_callback = new Action<AsyncStatus, Exception>((s,e) =>
             {
@@ -45,6 +46,11 @@ public partial class GameItem : UserControl
                 
             })
         });
-        MainWindow.BedrockCore.LaunchGame(VersionType.Release);
+        GlobalModel.BedrockCore.LaunchGame(VersionType.Release);
+    }
+
+    private void Card_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GlobalModel.MainWindow.OpenDraw("",$"{VersionInfo.VersionName} - {VersionInfo.RealVersion}");
     }
 }

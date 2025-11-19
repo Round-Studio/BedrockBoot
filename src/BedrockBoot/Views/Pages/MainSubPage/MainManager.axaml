@@ -39,6 +39,7 @@
                                      BigTitle="空"
                                      Message="点击上方 添加目录&#x0A;以添加目录"/>
                     <ListBox Name="FolderList"
+                             Margin="5,0"
                              SelectionChanged="FolderList_OnSelectionChanged">
                     
                     </ListBox>
@@ -49,7 +50,7 @@
                               Margin="5">
                 <Grid>
                     <ScrollViewer Name="GameScro">
-                        <StackPanel Margin="10"
+                        <StackPanel Margin="5"
                                     Name="GameList"></StackPanel>
                     </ScrollViewer>
                     

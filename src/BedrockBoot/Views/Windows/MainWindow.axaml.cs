@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages;
 using BedrockLauncher.Core;
+using BedrockLauncher.Core.Network;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -31,6 +32,10 @@ public partial class MainWindow : OnePointWindow
             {
                 GlobalModel.BedrockCore.Init();
                 Console.WriteLine("初始化核心完毕");
+                
+                var lst = VersionHelper.GetVersions(
+                    "https://raw.gitcode.com/gcw_lJgzYtGB/-MineCraft-Bedrock-Download-SU/raw/main/bedrock.json");
+                Console.WriteLine("版本列表获取完毕");
             }
             catch
             {

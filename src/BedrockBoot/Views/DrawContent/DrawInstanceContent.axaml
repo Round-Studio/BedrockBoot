@@ -1,0 +1,23 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DrawContent.DrawInstanceContent">
+    <Grid RowDefinitions="Auto,*">
+        <TabControl Grid.Row="0"
+                    Name="InstanceTabControl"
+                    SelectedIndex="0"
+                    SelectionChanged="InstanceTabControl_OnSelectionChanged"
+                    Margin="10,0,10,0">
+            <TabItem Header="实例详情" Tag="Info"></TabItem>
+            <TabItem Header="模组管理" Tag="Mods"></TabItem>
+            <TabItem Header="操作" Tag="Controls"></TabItem>
+        </TabControl>
+        
+        <navigation:NavigationFrame Grid.Row="1"
+                                    Margin="10,5,10,0"
+                                    Name="InstanceFrame"/>
+    </Grid>
+</UserControl>

@@ -7,14 +7,37 @@
              x:Class="BedrockBoot.Views.Control.GameItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
-                                  Click="Card_OnClick"
                                   Margin="0,0,0,10"
                                   Glyph="&#xE7FC;"
+                                  IsFontIcon="False"
+                                  IsShowActionIcon="False"
+                                  ImageIcon="avares://BedrockBoot/Assets/Icon/Minecraft/草方块.png"
                                   Header="VersionName"
                                   Description="Release Version">
-        <Button Padding="12,8"
-                Classes="Accent"
-                Name="LaunchBtn"
-                Click="LaunchBtn_OnClick">启动</Button>
+        <StackPanel Orientation="Horizontal">
+            <Button Width="32" Height="32"
+                    Classes="NoBorder"
+                    Name="SettingBtn"
+                    Margin="0,0,8,0"
+                    Click="Card_OnClick">
+                <onePointControls:FontIcon Glyph="&#xE713;"
+                                           FontSize="16"></onePointControls:FontIcon>
+            </Button>
+            
+            <Button Padding="16,8"
+                    Classes="NoBorder"
+                    Background="{DynamicResource AccentBackgroundBrush}"
+                    Name="LaunchBtn"
+                    Click="LaunchBtn_OnClick">
+                <StackPanel Orientation="Horizontal">
+                    <onePointControls:FontIcon Glyph="&#xE709;"
+                                               VerticalAlignment="Center"
+                                               FontSize="16"
+                                               Margin="0,0,8,0"></onePointControls:FontIcon>
+                    <TextBlock Text="启动"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
     </onePointControls:SettingCard>
 </UserControl>

@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
 
@@ -51,6 +52,6 @@ public partial class GameItem : UserControl
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.MainWindow.OpenDraw("",$"{VersionInfo.VersionName} - {VersionInfo.RealVersion}");
+        GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(VersionInfo),$"{VersionInfo.VersionName} - {VersionInfo.RealVersion}");
     }
 }

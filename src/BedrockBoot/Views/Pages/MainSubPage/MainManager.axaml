@@ -1,18 +1,18 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
-             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Pages.MainSubPage.MainManager">
-    <Grid RowDefinitions="Auto,*"
-          Margin="15,0,15,15">
-        <StackPanel Grid.Row="0"
-                    Orientation="Horizontal">
+﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainManager">
+    <entry:BedrockBootPage.HeaderView>
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center">
             <Button Padding="12,8"
-                    Margin="5"
+                    Margin="0,0,5,0"
                     Name="AddFolderBtn"
                     Click="AddFolderBtn_OnClick">
                 <StackPanel Orientation="Horizontal">
@@ -22,8 +22,9 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        
-        <Grid Grid.Row="1">
+    </entry:BedrockBootPage.HeaderView>
+    <Grid Margin="15,10,15,15">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"></ColumnDefinition>
                 <ColumnDefinition Width="7*"></ColumnDefinition>
@@ -63,4 +64,4 @@
             </items:BorderCard>
         </Grid>
     </Grid>
-</UserControl>
+</entry:BedrockBootPage>

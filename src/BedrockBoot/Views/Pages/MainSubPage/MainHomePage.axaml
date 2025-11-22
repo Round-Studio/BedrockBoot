@@ -1,14 +1,24 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Pages.MainSubPage.MainHomePage">
+﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+                 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainHomePage">
+    <entry:BedrockBootPage.HeaderView>
+        <onePointControls:LineTextBlock Grid.Row="0"
+                                        Margin="0"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        FontSize="28"
+                                        FontWeight="Heavy"
+                                        Text="你好，欢迎回来"></onePointControls:LineTextBlock>
+    </entry:BedrockBootPage.HeaderView>
     <Grid>
-        <Grid Margin="15,1,15,15">
+        <Grid Margin="15,10,15,15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3.5*"
                                MinHeight="220"
@@ -43,7 +53,8 @@
                                        Margin="5,0,5,5"
                                        FontSize="36"></TextBlock>
                             
-                            <Grid Grid.Row="2">
+                            <Grid Grid.Row="2"
+                                  HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal"
                                             VerticalAlignment="Bottom">
                                     <Button Padding="8"
@@ -56,6 +67,15 @@
                                             <TextBlock>设置</TextBlock>
                                         </StackPanel>
                                     </Button>
+                                </StackPanel>
+                            </Grid>
+                            
+                            <Grid Grid.Row="2"
+                                  HorizontalAlignment="Right">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Bottom">
+                                    <ComboBox Height="32"
+                                              Width="180"></ComboBox>
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -167,4 +187,4 @@
             </Grid>
         </Grid>
     </Grid>
-</UserControl>
+</entry:BedrockBootPage>

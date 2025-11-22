@@ -10,13 +10,14 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using BedrockBoot.Base.Entry;
 using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Network;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
 
-public partial class MainDownloadPage : UserControl
+public partial class MainDownloadPage : BedrockBootPage
 {
     private CancellationTokenSource _currentLoadingCancellation = new();
     private string _type = "Release";

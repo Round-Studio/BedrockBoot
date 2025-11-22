@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using BedrockBoot.Base.Entry;
 using BedrockBoot.Views.Pages.MainSubPage;
 
 namespace BedrockBoot.Views.Pages;
@@ -12,9 +13,8 @@ public partial class MainPage : UserControl
     {
         InitializeComponent();
 
-        MainFrame.NavigateTo(new MainHomePage());
-
         IsEditMode = true;
+        SelTag_OnSelectionChanged(null, null);
     }
 
     private void SelTag_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -24,21 +24,30 @@ public partial class MainPage : UserControl
             var item = (TabItem)SelTag.SelectedItem;
             var tag = item.Tag as string;
 
+            BedrockBootPage page = null;
+
             switch (tag)
             {
                 case "Home":
-                    MainFrame.NavigateTo(new MainHomePage());
+                    page = new MainHomePage();
                     break;
                 case "Manager":
-                    MainFrame.NavigateTo(new MainManager());
+                    page = new MainManager();
                     break;
                 case "Download":
-                    MainFrame.NavigateTo(new MainDownloadPage());
+                    page = new MainDownloadPage();
                     break;
                 case "Setting":
-                    MainFrame.NavigateTo(new MainSettingPage());
+                    page = new MainSettingPage();
                     break;
             }
+
+            if (page.HeaderView != null)
+            {
+                HeaderContent.NavigateTo(page.HeaderView);
+            }
+            
+            MainFrame.NavigateTo(page);
         }
     }
 }

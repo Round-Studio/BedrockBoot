@@ -19,7 +19,7 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
 
-public partial class MainManager : UserControl
+public partial class MainManager : BedrockBootPage
 {
     public bool IsEditMode { get; set; } = false;
     public MainManager()

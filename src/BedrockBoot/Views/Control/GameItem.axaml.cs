@@ -14,14 +14,14 @@ namespace BedrockBoot.Views.Control;
 
 public partial class GameItem : UserControl
 {
-    public VersionInfo VersionInfo { get; set; }
+    public VersionConfig VersionInfo { get; set; }
 
     public GameItem()
     {
         InitializeComponent();
     }
 
-    public GameItem(VersionInfo info) : this()
+    public GameItem(VersionConfig info) : this()
     {
         VersionInfo = info;
         
@@ -30,13 +30,13 @@ public partial class GameItem : UserControl
 
     public void Update()
     {
-        Card.Header = VersionInfo.VersionName;
-        Card.Description = $"{VersionInfo.Type} {VersionInfo.RealVersion}";
+        Card.Header = VersionInfo.Info.VersionName;
+        Card.Description = $"{VersionInfo.Info.VersionType}, {VersionInfo.Info.Version}";
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.BedrockCore.ChangeVersion(VersionInfo.Version_Path,new InstallCallback()
+        GlobalModel.BedrockCore.ChangeVersion(VersionInfo.VersionPath,new InstallCallback()
         {
             result_callback = new Action<AsyncStatus, Exception>((s,e) =>
             {
@@ -52,6 +52,6 @@ public partial class GameItem : UserControl
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(VersionInfo),$"{VersionInfo.VersionName} - {VersionInfo.RealVersion}");
+        GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(VersionInfo),$"{VersionInfo.Info.VersionName} - {VersionInfo.Info.Version}");
     }
 }

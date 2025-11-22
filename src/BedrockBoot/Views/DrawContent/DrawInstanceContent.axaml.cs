@@ -8,7 +8,7 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawInstanceContent : UserControl
 {
-    public VersionInfo VersionInfo { get; set; }
+    public VersionConfig VersionInfo { get; set; }
     public bool IsEditMode { get; set; } = false;
 
     public DrawInstanceContent()
@@ -19,7 +19,7 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = true;
     }
 
-    public DrawInstanceContent(VersionInfo info) : this()
+    public DrawInstanceContent(VersionConfig info) : this()
     {
         VersionInfo = info;
         
@@ -40,7 +40,7 @@ public partial class DrawInstanceContent : UserControl
             switch (tag)
             {
                 case "Info":
-                    InstanceFrame.NavigateTo(new InstanceInfo());
+                    InstanceFrame.NavigateTo(new InstanceInfo(VersionInfo));
                     break;
                 case "Mods":
                     InstanceFrame.NavigateTo(new InstanceMods());

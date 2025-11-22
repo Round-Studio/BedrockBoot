@@ -113,8 +113,8 @@ public partial class MainManager : BedrockBootPage
         {
             try
             {
-                var info = GameInfoHelper.GetVersionInfo(x);
-                Console.WriteLine(info.VersionName);
+                var info = GameInfoHelper.GetVersionConfig(x);
+                Console.WriteLine(info.Info.VersionName);
 
                 GameList.Children.Add(new GameItem(info));
             }

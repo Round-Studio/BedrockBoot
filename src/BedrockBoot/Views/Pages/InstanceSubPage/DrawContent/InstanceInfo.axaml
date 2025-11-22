@@ -12,14 +12,14 @@
                            FontWeight="Bold"
                            FontSize="14">基础设置</TextBlock>
                 
-                <onePointControls:SettingCard Margin="5,5,5,10"
+                <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE8AC;"
                                               Header="实例名称"
                                               Description="实例在启动器内显示的名称">
                     <TextBox Width="400"></TextBox>
                 </onePointControls:SettingCard>
                 
-                <onePointControls:SettingCard Margin="5,5,5,10"
+                <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xEB9F;"
                                               Header="图标"
                                               Description="实例在启动器中显示的图标">
@@ -36,21 +36,21 @@
                            FontWeight="Bold"
                            FontSize="14">启动设置</TextBlock>
                 
-                <onePointControls:SettingCard Margin="5,5,5,10"
+                <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xEC06;"
                                               Header="参数"
                                               Description="启动游戏时的额外命令行参数">
                     <TextBox Width="400"></TextBox>
                 </onePointControls:SettingCard>
                 
-                <onePointControls:SettingCard Margin="5,5,5,10"
+                <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE70F;"
                                               Header="编辑模式"
                                               Description="启动基岩版的创作者编辑模式">
                     <ToggleSwitch></ToggleSwitch>
                 </onePointControls:SettingCard>
                 
-                <onePointControls:SettingCard Margin="5,5,5,10"
+                <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE756;"
                                               Header="控制台"
                                               Description="启动时拉起游戏控制台">
@@ -61,7 +61,7 @@
                            FontWeight="Bold"
                            FontSize="14">高级设置</TextBlock>
                 
-                <onePointControls:SettingCard Margin="5,5,5,10"
+                <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE7B8;"
                                               Header="版本隔离"
                                               Description="启用版本隔离">

@@ -5,8 +5,9 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DrawContent.DrawDownloadGameContent">
-    <Grid Margin="10,0,10,10">
-        <ScrollViewer>
+    <Grid Margin="10,0,10,10"
+          RowDefinitions="*,Auto">
+        <ScrollViewer Grid.Row="0">
             <StackPanel Margin="15,0,15,15">
                 <TextBlock Margin="5"
                            FontWeight="Bold"
@@ -40,5 +41,25 @@
                 </onePointControls:SettingCard>
             </StackPanel>
         </ScrollViewer>
+        
+        <Grid Grid.Row="1"
+              Margin="15,0,15,5">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Margin="5"
+                        Padding="28,0"
+                        Height="48"
+                        Classes="NoBorder"
+                        Background="{DynamicResource AccentBackgroundBrush}">
+                    <StackPanel Orientation="Horizontal">
+                        <onePointControls:FontIcon Glyph="&#xE896;"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,12,0"
+                                                   FontSize="16"></onePointControls:FontIcon>
+                        <TextBlock FontSize="14">开始安装</TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

@@ -29,5 +29,6 @@ public class VersionConfig
         [JsonPropertyName("isEditModel")] public bool IsEditModel { get; set; } = false;
         [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
         [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
+        [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
     }
 }

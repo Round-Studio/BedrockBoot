@@ -10,7 +10,7 @@ public class GameInfoHelper
 {
     public static VersionInfo GetVersionInfo(string gamePath)
     {
-        var jsonFile = Path.Combine(gamePath,"version.json");
+        var jsonFile = Path.Combine(gamePath, "version.json");
         if (!File.Exists(jsonFile))
             return null;
 
@@ -37,13 +37,13 @@ public class GameInfoHelper
     {
         var bedrockBootJson = Path.Combine(gamePath, "config", "BedrockBoot2", "config.json");
         ConfigEntity<VersionConfig> bodyConfig = null;
-        
+
         if (!File.Exists(bedrockBootJson)) // 没有 BedrockBoot 2 的配置文件时
         {
             Directory.CreateDirectory(Path.Combine(gamePath, "config", "BedrockBoot2"));
             bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);
             bodyConfig.Load();
-            
+
             var oldBedrockBootConfig = new ConfigEntity<VersionInfo>(Path.Combine(gamePath, "version.json"));
             oldBedrockBootConfig.Load();
 
@@ -54,7 +54,7 @@ public class GameInfoHelper
                 BuildType = GameBuildType.Uwp, // 旧版 BedrockBoot 也只能安装 UWP 版本，所以这个鬼地方写死就行了 orz...
                 VersionType = GetGameVersionType(oldBedrockBootConfig.Data.Type)
             };
-            
+
             bodyConfig.Save();
         }
         else
@@ -66,5 +66,17 @@ public class GameInfoHelper
         bodyConfig.Data.VersionPath = gamePath;
 
         return bodyConfig.Data;
+    }
+
+    public static void SaveVersionConfig(VersionConfig config)
+    {
+        var bedrockBootJson = Path.Combine(config.VersionPath, "config", "BedrockBoot2", "config.json");
+
+        if (!Directory.Exists(Path.Combine(config.VersionPath, "config", "BedrockBoot2")))
+            Directory.CreateDirectory(Path.Combine(config.VersionPath, "config", "BedrockBoot2"));
+
+        var cfg = new ConfigEntity<VersionConfig>(bedrockBootJson);
+        cfg.Data = config;
+        cfg.Save();
     }
 }

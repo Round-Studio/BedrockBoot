@@ -16,7 +16,9 @@
                                               Glyph="&#xE8AC;"
                                               Header="实例名称"
                                               Description="实例在启动器内显示的名称">
-                    <TextBox Width="400"></TextBox>
+                    <TextBox Width="400"
+                             Name="InstanceName"
+                             TextChanged="TextTypeConfig_OnChanged"></TextBox>
                 </onePointControls:SettingCard>
                 
                 <onePointControls:SettingCard Margin="5"
@@ -40,21 +42,25 @@
                                               Glyph="&#xEC06;"
                                               Header="参数"
                                               Description="启动游戏时的额外命令行参数">
-                    <TextBox Width="400"></TextBox>
+                    <TextBox Width="400"
+                             Name="InstanceArgs"
+                             TextChanged="TextTypeConfig_OnChanged"></TextBox>
                 </onePointControls:SettingCard>
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE70F;"
                                               Header="编辑模式"
                                               Description="启动基岩版的创作者编辑模式">
-                    <ToggleSwitch></ToggleSwitch>
+                    <ToggleSwitch Name="InstanceEdit"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
                 </onePointControls:SettingCard>
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE756;"
                                               Header="控制台"
                                               Description="启动时拉起游戏控制台">
-                    <ToggleSwitch></ToggleSwitch>
+                    <ToggleSwitch Name="InstanceConsole"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
                 </onePointControls:SettingCard>
                 
                 <TextBlock Margin="5"
@@ -65,7 +71,9 @@
                                               Glyph="&#xE7B8;"
                                               Header="版本隔离"
                                               Description="启用版本隔离">
-                    <ToggleSwitch IsChecked="True"></ToggleSwitch>
+                    <ToggleSwitch IsChecked="True"
+                                  Name="InstanceIsolated"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
                 </onePointControls:SettingCard>
             </StackPanel>
         </ScrollViewer>

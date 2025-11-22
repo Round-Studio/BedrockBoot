@@ -14,7 +14,6 @@ public partial class DrawInstanceContent : UserControl
     public DrawInstanceContent()
     {
         InitializeComponent();
-        InstanceFrame.NavigateTo(new InstanceInfo());
 
         IsEditMode = true;
     }
@@ -28,7 +27,7 @@ public partial class DrawInstanceContent : UserControl
 
     public void Update()
     {
-        
+        InstanceFrame.NavigateTo(new InstanceInfo(VersionInfo));
     }
 
     private void InstanceTabControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

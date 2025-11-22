@@ -37,6 +37,9 @@ public partial class MainPage : UserControl
                 case "Download":
                     page = new MainDownloadPage();
                     break;
+                case "Task":
+                    page = new MainTaskPage();
+                    break;
                 case "Setting":
                     page = new MainSettingPage();
                     break;

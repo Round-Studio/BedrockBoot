@@ -31,6 +31,8 @@
                              Tag="Manager"></TabItem>
                     <TabItem Header="下载"
                              Tag="Download"></TabItem>
+                    <TabItem Header="任务"
+                             Tag="Task"></TabItem>
                     <TabItem Header="设置"
                              Tag="Setting"></TabItem>
                 </TabControl>

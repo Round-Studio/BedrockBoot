@@ -11,6 +11,8 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Network;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -209,6 +211,11 @@ public partial class MainDownloadPage : BedrockBootPage
                     Margin = new Thickness(5, 0, 5, 10),
                     IsFontIcon = false,
                     ImageIcon = GetImage("avares://BedrockBoot/Assets/Icon/Minecraft/草方块.png")
+                };
+
+                item.Click += (sender, args) =>
+                {
+                    GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(), $"下载游戏：{x.ID}");
                 };
 
                 ItemsPanel.Children.Add(item);

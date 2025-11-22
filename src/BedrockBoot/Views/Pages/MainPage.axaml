@@ -8,31 +8,34 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MainPage">
     <Grid RowDefinitions="Auto,*">
-        <navigation:NavigationFrame Grid.Row="0"
-                                    Name="HeaderContent"
-                                    Margin="20,15,0,0"
-                                    NavigationFrameDirection="Right"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Left"></navigation:NavigationFrame>
+        <Grid Row="0"
+              ColumnDefinitions="*,Auto">
+            <navigation:NavigationFrame Grid.Column="0"
+                                        Name="HeaderContent"
+                                        Margin="20,15,0,0"
+                                        NavigationFrameDirection="Right"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Stretch"></navigation:NavigationFrame>
         
-        <items:BorderCard Grid.Row="0"
-                          Margin="20,20,20,5"
-                          MaxHeight="48"
-                          HorizontalAlignment="Right">
-            <TabControl Margin="0,2,0,0"
-                        SelectedIndex="0"
-                        SelectionChanged="SelTag_OnSelectionChanged"
-                        Name="SelTag">
-                <TabItem Header="主页"
-                         Tag="Home"></TabItem>
-                <TabItem Header="实例"
-                         Tag="Manager"></TabItem>
-                <TabItem Header="下载"
-                         Tag="Download"></TabItem>
-                <TabItem Header="设置"
-                         Tag="Setting"></TabItem>
-            </TabControl>
-        </items:BorderCard>
+            <items:BorderCard Grid.Column="1"
+                              Margin="20,20,20,5"
+                              MaxHeight="48"
+                              HorizontalAlignment="Right">
+                <TabControl Margin="0,2,0,0"
+                            SelectedIndex="0"
+                            SelectionChanged="SelTag_OnSelectionChanged"
+                            Name="SelTag">
+                    <TabItem Header="主页"
+                             Tag="Home"></TabItem>
+                    <TabItem Header="实例"
+                             Tag="Manager"></TabItem>
+                    <TabItem Header="下载"
+                             Tag="Download"></TabItem>
+                    <TabItem Header="设置"
+                             Tag="Setting"></TabItem>
+                </TabControl>
+            </items:BorderCard>
+        </Grid>
         
         <navigation:NavigationFrame Grid.Row="1"
                                     Name="MainFrame"/>

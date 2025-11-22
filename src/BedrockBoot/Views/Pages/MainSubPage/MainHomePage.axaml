@@ -141,9 +141,9 @@
                                         Classes="NoBorder">
                                     <StackPanel Orientation="Horizontal">
                                         <onePointControls:FontIcon VerticalAlignment="Center"
-                                                                   Glyph="&#xE7B8;"
+                                                                   Glyph="&#xE82D;"
                                                                    Margin="0,0,6,0"></onePointControls:FontIcon>
-                                        <TextBlock>包管理器</TextBlock>
+                                        <TextBlock>游戏新闻</TextBlock>
                                     </StackPanel>
                                 </Button>
                             </Grid>

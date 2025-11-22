@@ -8,7 +8,8 @@
                  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                  x:Class="BedrockBoot.Views.Pages.MainSubPage.MainDownloadPage">
     <entry:BedrockBootPage.HeaderView>
-        <Grid Width="400">
+        <Grid Width="400"
+              HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="7*"></ColumnDefinition>
                 <ColumnDefinition Width="3*"></ColumnDefinition>

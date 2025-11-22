@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DrawContent.DrawInstanceContent">
     <Grid RowDefinitions="Auto,*">
@@ -15,6 +16,27 @@
             <TabItem Header="模组管理" Tag="Mods"></TabItem>
             <TabItem Header="操作" Tag="Controls"></TabItem>
         </TabControl>
+        
+        <StackPanel Grid.Row="0"
+                    Margin="0,0,25,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+            <Button Padding="16,8"
+                    Margin="5"
+                    Classes="NoBorder"
+                    Background="{DynamicResource AccentBackgroundBrush}"
+                    Name="LaunchBtn">
+                <StackPanel Orientation="Horizontal">
+                    <onePointControls:FontIcon Glyph="&#xE709;"
+                                               VerticalAlignment="Center"
+                                               FontSize="16"
+                                               Margin="0,0,8,0"></onePointControls:FontIcon>
+                    <TextBlock Text="启动"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
         
         <navigation:NavigationFrame Grid.Row="1"
                                     Margin="10,5,10,0"

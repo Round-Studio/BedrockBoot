@@ -45,6 +45,15 @@
                                                    Name="BuildTime"
                                                    Margin="0,0,5,0"
                                                    VerticalAlignment="Center"/>
+                        
+                        <onePointControls:LabelBox Text="Debug"
+                                                   FontSize="14"
+                                                   Foreground="White"
+                                                   Background="Green"
+                                                   Name="DebugModule"
+                                                   IsVisible="False"
+                                                   Margin="0,0,5,0"
+                                                   VerticalAlignment="Center"/>
                 </StackPanel>
         </windowFrame:OnePointWindow.TitleBarContent>
         <windowFrame:OnePointWindow.MainContent>

@@ -2,7 +2,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceInfo">
-    Welcome to Avalonia!
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="15,0,15,15">
+                <TextBlock Margin="5"
+                           FontWeight="Bold"
+                           FontSize="14">基础设置</TextBlock>
+                
+                <onePointControls:SettingCard Margin="5,5,5,10"
+                                              Glyph="&#xE8AC;"
+                                              Header="实例名称"
+                                              Description="实例在启动器内显示的名称">
+                    <TextBox Width="400"></TextBox>
+                </onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Margin="5,5,5,10"
+                                              Glyph="&#xEB9F;"
+                                              Header="图标"
+                                              Description="实例在启动器中显示的图标">
+                    <ComboBox Width="400"
+                              SelectedIndex="0">
+                        <ComboBoxItem>草方块</ComboBoxItem>
+                        <ComboBoxItem>土径</ComboBoxItem>
+                        <ComboBoxItem>末地石</ComboBoxItem>
+                        <ComboBoxItem>工作台</ComboBoxItem>
+                    </ComboBox>
+                </onePointControls:SettingCard>
+                
+                <TextBlock Margin="5"
+                           FontWeight="Bold"
+                           FontSize="14">启动设置</TextBlock>
+                
+                <onePointControls:SettingCard Margin="5,5,5,10"
+                                              Glyph="&#xEC06;"
+                                              Header="参数"
+                                              Description="启动游戏时的额外命令行参数">
+                    <TextBox Width="400"></TextBox>
+                </onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Margin="5,5,5,10"
+                                              Glyph="&#xE70F;"
+                                              Header="编辑模式"
+                                              Description="启动基岩版的创作者编辑模式">
+                    <ToggleSwitch></ToggleSwitch>
+                </onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Margin="5,5,5,10"
+                                              Glyph="&#xE756;"
+                                              Header="控制台"
+                                              Description="启动时拉起游戏控制台">
+                    <ToggleSwitch></ToggleSwitch>
+                </onePointControls:SettingCard>
+                
+                <TextBlock Margin="5"
+                           FontWeight="Bold"
+                           FontSize="14">高级设置</TextBlock>
+                
+                <onePointControls:SettingCard Margin="5,5,5,10"
+                                              Glyph="&#xE7B8;"
+                                              Header="版本隔离"
+                                              Description="启用版本隔离">
+                    <ToggleSwitch IsChecked="True"></ToggleSwitch>
+                </onePointControls:SettingCard>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

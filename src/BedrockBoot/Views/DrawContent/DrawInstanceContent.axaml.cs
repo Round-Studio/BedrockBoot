@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
+using BedrockBoot.Views.TaskItem;
 
 namespace BedrockBoot.Views.DrawContent;
 
@@ -61,6 +62,6 @@ public partial class DrawInstanceContent : UserControl
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogLaunchGameContent.Launch(VersionInfo);
+        TaskLaunchGameItem.Launch(VersionInfo);
     }
 }

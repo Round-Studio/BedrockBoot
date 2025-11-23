@@ -1,4 +1,5 @@
 ﻿using BedrockBoot.Base.Entry;
+using BedrockBoot.Models.Task;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
@@ -10,4 +11,5 @@ public class GlobalModel
     public static ConfigEntity<ConfigEntry> Config;
     public static MainWindow MainWindow;
     public static BedrockCore BedrockCore { get; set; }
+    public static TaskManager TaskManager { get; set; } = new();
 }

@@ -9,26 +9,28 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
+using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
-namespace BedrockBoot.Views.DialogContent;
+namespace BedrockBoot.Views.TaskItem;
 
-public partial class DialogLaunchGameContent : UserControl
+public partial class TaskLaunchGameItem : UserControl
 {
     public VersionConfig VersionInfo { get; set; }
     public bool IsCancel = false;
-    public DialogLaunchGameContent()
+    public TaskLaunchGameItem()
     {
         InitializeComponent();
     }
 
-    public DialogLaunchGameContent(VersionConfig info) : this()
+    public TaskLaunchGameItem(VersionConfig info) : this()
     {
         VersionInfo = info;
     }
 
     public void Launch(Action launchCompleted)
     {
+        CardTitle.Text = $"启动游戏 {VersionInfo.Info.VersionName}";
         Console.WriteLine($"正在启动：{VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) Type：{VersionInfo.Info.VersionType} {VersionInfo.Info.BuildType}");
 
         Task.Run(() =>
@@ -71,21 +73,16 @@ public partial class DialogLaunchGameContent : UserControl
 
     public static void Launch(VersionConfig gameInfo)
     {
-        var body = new DialogLaunchGameContent(gameInfo);
-        DialogHost.Show(new ()
+        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
         {
-            CloseButtonText = "取消",
-            CloseAction = () =>
-            {
-                body.IsCancel = true;
-            },
-            Title = $"启动 {gameInfo.Info.VersionName}",
-            Content = body
+            Title = "启动游戏",
+            Message = $"游戏 {gameInfo.Info.VersionName} 已将其启动任务添加至任务列表。",
+            NoticeType = NoticeType.Info
         });
+        
+        var body = new TaskLaunchGameItem(gameInfo);
+        var tuid = GlobalModel.TaskManager.AddTask(body);
 
-        body.Launch((() =>
-        {
-            Dispatcher.UIThread.Invoke(DialogHost.Close);
-        }));
+        body.Launch(() => { GlobalModel.TaskManager.RemoveTask(tuid); });
     }
 }

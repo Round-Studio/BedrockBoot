@@ -8,6 +8,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
+using BedrockBoot.Views.TaskItem;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
 
@@ -37,7 +38,7 @@ public partial class GameItem : UserControl
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogLaunchGameContent.Launch(VersionInfo);
+        TaskLaunchGameItem.Launch(VersionInfo);
     }
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)

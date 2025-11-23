@@ -23,5 +23,13 @@
                          BigTitle="太棒啦！"
                          Message="当前任务列表中没有任何一项任务"
                          Name="NoneBox"> </notice:InfoCard>
+        
+        <ScrollViewer Name="TaskViewer"
+                      IsVisible="False">
+            <StackPanel Margin="15,10,15,15"
+                        Name="TaskList">
+                
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </entry:BedrockBootPage>

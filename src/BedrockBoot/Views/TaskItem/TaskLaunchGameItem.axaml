@@ -3,20 +3,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d"
-             x:Class="BedrockBoot.Views.DialogContent.DialogLaunchGameContent">
-    <Grid>
-        <StackPanel Orientation="Horizontal">
-            <onePointControls:ProgressRing Width="36"
+             x:Class="BedrockBoot.Views.TaskItem.TaskLaunchGameItem">
+    <items:BorderCard>
+        <Grid ColumnDefinitions="Auto,*">
+            <onePointControls:ProgressRing Grid.Column="0" 
+                                           Width="36"
                                            Height="36"
+                                           Margin="4,0,0,0"
                                            Background="Transparent"></onePointControls:ProgressRing>
             
-            <StackPanel Margin="15,0,0,0">
-                <TextBlock FontSize="16">正在启动游戏...</TextBlock>
+            <StackPanel Grid.Column="1" Margin="15,0,10,0"
+                        HorizontalAlignment="Stretch">
+                <TextBlock FontSize="16" 
+                           Name="CardTitle">正在启动游戏...</TextBlock>
                 
-                <StackPanel Margin="0,8,0,0">
-                    <ProgressBar Width="200"
-                                 IsIndeterminate="True"
+                <StackPanel Margin="0,8,0,0"
+                            HorizontalAlignment="Stretch">
+                    <ProgressBar IsIndeterminate="True"
+                                 HorizontalAlignment="Stretch"
                                  Name="LaunchProgressBar"></ProgressBar>
                     
                     <TextBlock Foreground="Gray"
@@ -25,6 +31,6 @@
                                Name="LaunchProgressText">步骤：准备部署中...</TextBlock>
                 </StackPanel>
             </StackPanel>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </items:BorderCard>
 </UserControl>

@@ -50,5 +50,9 @@
         <DependentUpon>MainWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\TaskItem\TaskLaunchGameItem.axaml.cs">
+        <DependentUpon>DialogLaunchGameContent.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

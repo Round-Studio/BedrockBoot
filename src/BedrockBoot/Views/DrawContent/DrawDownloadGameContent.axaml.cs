@@ -37,5 +37,7 @@ public partial class DrawDownloadGameContent : UserControl
     {
         TaskDownloadGameItem.Install(VersionInformation,
             GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath, InstallName.Text);
+        
+        GlobalModel.MainWindow.CloseDraw();
     }
 }

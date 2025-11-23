@@ -24,7 +24,7 @@
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE8B7;"
                                               Header="安装路径"
-                                              Description="实例安装的位置                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ">
+                                              Description="实例安装的位置">
                     <ComboBox Width="400"
                               Name="InstallFolder"></ComboBox>
                 </onePointControls:SettingCard>
@@ -35,8 +35,8 @@
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE821;"
-                                              Header="使用 Appx 缓存"
-                                              Description="是否使用先前缓存过的 Appx 进行游戏安装">
+                                              Header="使用 安装包 缓存"
+                                              Description="是否使用先前缓存过的 游戏安装包 进行游戏安装">
                     <ToggleSwitch IsEnabled="False"></ToggleSwitch>
                 </onePointControls:SettingCard>
             </StackPanel>

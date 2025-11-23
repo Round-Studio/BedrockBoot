@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using BedrockBoot.Base.Enum.Game;
+using BedrockLauncher.Core;
 
 namespace BedrockBoot.Base.Entry.Game;
 
@@ -22,7 +23,7 @@ public class VersionConfig
         public string VersionName { get; set; }
     
         [JsonPropertyName("versionType")]
-        public GameVersionType VersionType { get; set; }
+        public VersionType VersionType { get; set; }
     }
     public class VersionConfigEntry
     {

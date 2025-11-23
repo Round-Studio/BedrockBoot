@@ -14,6 +14,8 @@
                     Margin="10,0,10,0">
             <TabItem Header="实例详情" Tag="Info"></TabItem>
             <TabItem Header="模组管理" Tag="Mods"></TabItem>
+            <TabItem Header="资源包 / 行为包" Tag="Pack"></TabItem>
+            <TabItem Header="存档" Tag="Save"></TabItem>
             <TabItem Header="操作" Tag="Controls"></TabItem>
         </TabControl>
         
@@ -26,7 +28,8 @@
                     Margin="5"
                     Classes="NoBorder"
                     Background="{DynamicResource AccentBackgroundBrush}"
-                    Name="LaunchBtn">
+                    Name="LaunchBtn"
+                    Click="LaunchBtn_OnClick">
                 <StackPanel Orientation="Horizontal">
                     <onePointControls:FontIcon Glyph="&#xE709;"
                                                VerticalAlignment="Center"

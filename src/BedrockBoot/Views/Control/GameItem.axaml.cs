@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
@@ -36,18 +37,7 @@ public partial class GameItem : UserControl
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.BedrockCore.ChangeVersion(VersionInfo.VersionPath,new InstallCallback()
-        {
-            result_callback = new Action<AsyncStatus, Exception>((s,e) =>
-            {
-                
-            }),
-            registerProcess_percent = new Action<string, uint>((s, e) =>
-            {
-                
-            })
-        });
-        GlobalModel.BedrockCore.LaunchGame(VersionType.Release);
+        DialogLaunchGameContent.Launch(VersionInfo);
     }
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)

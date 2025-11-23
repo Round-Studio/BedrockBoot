@@ -2,6 +2,7 @@
 using System.Text.Json;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum.Game;
+using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Helper;
@@ -18,18 +19,18 @@ public class GameInfoHelper
         return JsonSerializer.Deserialize<VersionInfo>(json);
     }
 
-    public static GameVersionType GetGameVersionType(string typeStr)
+    public static VersionType GetGameVersionType(string typeStr)
     {
         switch (typeStr)
         {
             case "Release":
-                return GameVersionType.Release;
+                return VersionType.Release;
             case "Preview":
-                return GameVersionType.Preview;
+                return VersionType.Preview;
             case "Beta":
-                return GameVersionType.Beta;
+                return VersionType.Beta;
             default:
-                return GameVersionType.Release;
+                return VersionType.Release;
         }
     }
 

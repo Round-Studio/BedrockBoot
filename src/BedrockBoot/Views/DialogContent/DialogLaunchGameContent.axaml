@@ -1,0 +1,30 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.DialogLaunchGameContent">
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <onePointControls:ProgressRing Width="36"
+                                           Height="36"
+                                           Background="Transparent"></onePointControls:ProgressRing>
+            
+            <StackPanel Margin="15,0,0,0">
+                <TextBlock FontSize="16">正在启动游戏...</TextBlock>
+                
+                <StackPanel Margin="0,8,0,0">
+                    <ProgressBar Width="200"
+                                 IsIndeterminate="True"
+                                 Name="LaunchProgressBar"></ProgressBar>
+                    
+                    <TextBlock Foreground="Gray"
+                               FontSize="9"
+                               Margin="0,2,0,0"
+                               Name="LaunchProgressText">步骤：准备部署中...</TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

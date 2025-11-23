@@ -1,7 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 namespace BedrockBoot.Views.DrawContent;
@@ -44,10 +46,21 @@ public partial class DrawInstanceContent : UserControl
                 case "Mods":
                     InstanceFrame.NavigateTo(new InstanceMods());
                     break;
+                case "Pack":
+                    InstanceFrame.NavigateTo(new InstancePack());
+                    break;
+                case "Save":
+                    InstanceFrame.NavigateTo(new InstanceSave());
+                    break;
                 case "Controls":
                     InstanceFrame.NavigateTo(new InstanceControls());
                     break;
             }
         }
+    }
+
+    private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogLaunchGameContent.Launch(VersionInfo);
     }
 }

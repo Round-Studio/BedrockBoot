@@ -24,7 +24,7 @@
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE8B7;"
                                               Header="安装路径"
-                                              Description="安装在哪些地方">
+                                              Description="实例安装的位置                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ">
                     <ComboBox Width="400"
                               Name="InstallFolder"></ComboBox>
                 </onePointControls:SettingCard>

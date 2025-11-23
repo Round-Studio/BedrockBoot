@@ -1,0 +1,71 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="400"
+             x:Class="BedrockBoot.Views.TaskItem.TaskDownloadGameItem">
+    <items:BorderCard>
+        <Grid ColumnDefinitions="Auto,*">
+            <onePointControls:ProgressRing Grid.Column="0" 
+                                           Width="36"
+                                           Height="36"
+                                           VerticalAlignment="Top"
+                                           Margin="4,4,0,0"
+                                           Background="Transparent"></onePointControls:ProgressRing>
+            
+            <StackPanel Grid.Column="1" Margin="15,0,10,0"
+                        HorizontalAlignment="Stretch">
+                <TextBlock FontSize="16" 
+                           Name="CardTitle">正在安装游戏...</TextBlock>
+                
+                <StackPanel Margin="0,8,0,0"
+                            HorizontalAlignment="Stretch">
+                    <ProgressBar IsIndeterminate="True"
+                                 HorizontalAlignment="Stretch"
+                                 Margin="0,0,0,8"
+                                 Name="MainProgressBar"></ProgressBar>
+                    
+                    <DockPanel>
+                        <TextBlock Width="100">获取地址</TextBlock>
+                        <ProgressBar HorizontalAlignment="Stretch"
+                                     Name="InsGetUrlBar"></ProgressBar>
+                    </DockPanel>
+                    
+                    <DockPanel>
+                        <TextBlock Width="100">下载游戏</TextBlock>
+                        <ProgressBar HorizontalAlignment="Stretch"
+                                     Name="InsDownGameBar"></ProgressBar>
+                    </DockPanel>
+                    
+                    <DockPanel>
+                        <TextBlock Width="100">解压文件</TextBlock>
+                        <ProgressBar HorizontalAlignment="Stretch"
+                                     Name="InsUnZipBar"></ProgressBar>
+                    </DockPanel>
+                    
+                    <DockPanel>
+                        <TextBlock Width="100">部署游戏</TextBlock>
+                        <ProgressBar HorizontalAlignment="Stretch"
+                                     Name="InsInstallGameBar"></ProgressBar>
+                    </DockPanel>
+                    
+                    <Grid ColumnDefinitions="*,*">
+                        <TextBlock Grid.Column="0" 
+                                   Foreground="Gray"
+                                   FontSize="9"
+                                   Margin="0,2,0,0"
+                                   Name="MainText">步骤：下载准备中... (0%)</TextBlock>
+                        
+                        <TextBlock Grid.Column="1"
+                                   Foreground="Gray"
+                                   FontSize="9"
+                                   Margin="0,2,0,0"
+                                   Name="MainSpeedText">0 B/s</TextBlock>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </items:BorderCard>
+</UserControl>

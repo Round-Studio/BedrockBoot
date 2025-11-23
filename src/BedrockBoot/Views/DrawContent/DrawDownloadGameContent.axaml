@@ -50,6 +50,8 @@
                         Padding="28,0"
                         Height="48"
                         Classes="NoBorder"
+                        Name="InstallBtn"
+                        Click="InstallBtn_OnClick"
                         Background="{DynamicResource AccentBackgroundBrush}">
                     <StackPanel Orientation="Horizontal">
                         <onePointControls:FontIcon Glyph="&#xE896;"

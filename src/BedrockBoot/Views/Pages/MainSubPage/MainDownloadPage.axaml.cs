@@ -215,7 +215,7 @@ public partial class MainDownloadPage : BedrockBootPage
 
                 item.Click += (sender, args) =>
                 {
-                    GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(), $"下载游戏：{x.ID}");
+                    GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(x), $"下载游戏：{x.ID}");
                 };
 
                 ItemsPanel.Children.Add(item);

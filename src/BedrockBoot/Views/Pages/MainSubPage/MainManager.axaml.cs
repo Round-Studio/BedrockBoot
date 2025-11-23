@@ -54,7 +54,7 @@ public partial class MainManager : BedrockBootPage
             _configWatcher = new FileSystemWatcher
             {
                 Path = gameFolderPath,
-                Filter = "*.json",
+                Filter = "config.json",
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
                 IncludeSubdirectories = true // 监听子目录
             };

@@ -1,8 +1,8 @@
 @echo off
-echo ¼´½«¿ªÊ¼¹¹½¨...
+echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½...
 
 cd ./src/BedrockBoot
 
-dotnet publish -c Debug -r win-x86 /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true -o "./../../debug-publish/" -p:DebugType=none -p:DebugSymbols=false
+dotnet publish -c Debug -r win-x86 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true -o "./../../debug-publish/" -p:DebugType=none -p:DebugSymbols=false
 
-echo ÏîÄ¿¹¹½¨Íê±Ï¡£
+echo ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¡ï¿½

@@ -5,6 +5,7 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:cornerSelectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.CornerSelectBar;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MainPage">
     <Grid RowDefinitions="Auto,*">
@@ -19,23 +20,27 @@
         
             <items:BorderCard Grid.Column="1"
                               Margin="20,20,20,5"
-                              MaxHeight="48"
                               HorizontalAlignment="Right">
-                <TabControl Margin="0,2,0,0"
-                            SelectedIndex="0"
-                            SelectionChanged="SelTag_OnSelectionChanged"
-                            Name="SelTag">
-                    <TabItem Header="主页"
-                             Tag="Home"></TabItem>
-                    <TabItem Header="实例"
-                             Tag="Manager"></TabItem>
-                    <TabItem Header="下载"
-                             Tag="Download"></TabItem>
-                    <TabItem Header="任务"
-                             Tag="Task"></TabItem>
-                    <TabItem Header="设置"
-                             Tag="Setting"></TabItem>
-                </TabControl>
+                <cornerSelectBar:CornerSelectBar 
+                                 SelectedIndex="0"
+                                 SelectionChanged="SelTag_OnSelectionChanged"
+                                 Name="SelTag">
+                    <cornerSelectBar:CornerSelectBarItem ItemText="主页"
+                                                         Glyph="&#xE80F;"
+                                         Tag="Home"></cornerSelectBar:CornerSelectBarItem>
+                    <cornerSelectBar:CornerSelectBarItem ItemText="实例"
+                                                         Glyph="&#xECAA;"
+                                                         Tag="Manager"></cornerSelectBar:CornerSelectBarItem>
+                    <cornerSelectBar:CornerSelectBarItem ItemText="下载"
+                                                         Glyph="&#xE896;"
+                                                         Tag="Download"></cornerSelectBar:CornerSelectBarItem>
+                    <cornerSelectBar:CornerSelectBarItem ItemText="任务"
+                                                         Glyph="&#xE7C4;"
+                                                         Tag="Task"></cornerSelectBar:CornerSelectBarItem>
+                    <cornerSelectBar:CornerSelectBarItem ItemText="设置"
+                                                         Glyph="&#xE713;"
+                                                         Tag="Setting"></cornerSelectBar:CornerSelectBarItem>
+                </cornerSelectBar:CornerSelectBar>
             </items:BorderCard>
         </Grid>
         

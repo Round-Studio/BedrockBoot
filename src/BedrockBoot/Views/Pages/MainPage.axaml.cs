@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Views.Pages.MainSubPage;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.CornerSelectBar;
 
 namespace BedrockBoot.Views.Pages;
 
@@ -21,7 +22,7 @@ public partial class MainPage : UserControl
     {
         if (IsEditMode)
         {
-            var item = (TabItem)SelTag.SelectedItem;
+            var item = (CornerSelectBarItem)SelTag.SelectedItem;
             var tag = item.Tag as string;
 
             BedrockBootPage page = null;

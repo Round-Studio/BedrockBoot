@@ -21,10 +21,14 @@
             <items:BorderCard Grid.Column="1"
                               Margin="20,20,20,5"
                               HorizontalAlignment="Right">
+                <!--<items:BorderCard.Effect>
+                    <BlurEffect Radius="50"></BlurEffect>
+                </items:BorderCard.Effect>-->
+                
                 <cornerSelectBar:CornerSelectBar 
-                                 SelectedIndex="0"
-                                 SelectionChanged="SelTag_OnSelectionChanged"
-                                 Name="SelTag">
+                    SelectedIndex="0"
+                    SelectionChanged="SelTag_OnSelectionChanged"
+                    Name="SelTag">
                     <cornerSelectBar:CornerSelectBarItem ItemText="主页"
                                                          Glyph="&#xE80F;"
                                          Tag="Home"></cornerSelectBar:CornerSelectBarItem>

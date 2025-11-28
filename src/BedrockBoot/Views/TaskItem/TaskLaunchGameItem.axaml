@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.TaskItem.TaskLaunchGameItem">
     <items:BorderCard>
-        <Grid ColumnDefinitions="Auto,*">
+        <Grid ColumnDefinitions="Auto,*,Auto">
             <onePointControls:ProgressRing Grid.Column="0" 
                                            Width="36"
                                            Height="36"
@@ -31,6 +31,16 @@
                                Name="LaunchProgressText">步骤：准备部署中...</TextBlock>
                 </StackPanel>
             </StackPanel>
+            
+            <Button Grid.Column="2"
+                    Classes="NoBorder"
+                    Width="32" Height="32"
+                    Name="CancelBtn"
+                    Click="CancelBtn_OnClick">
+                <onePointControls:FontIcon Glyph="&#xE711;"
+                                           Foreground="DarkRed"
+                                           FontSize="16"></onePointControls:FontIcon>
+            </Button>
         </Grid>
     </items:BorderCard>
 </UserControl>

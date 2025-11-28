@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
@@ -18,6 +19,7 @@ public partial class TaskLaunchGameItem : UserControl
 {
     public VersionConfig VersionInfo { get; set; }
     public bool IsCancel = false;
+    public Action LaunchCompleted;
     public TaskLaunchGameItem()
     {
         InitializeComponent();
@@ -30,6 +32,7 @@ public partial class TaskLaunchGameItem : UserControl
 
     public void Launch(Action launchCompleted)
     {
+        LaunchCompleted = launchCompleted;
         CardTitle.Text = $"启动游戏 {VersionInfo.Info.VersionName}";
         Console.WriteLine($"正在启动：{VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) Type：{VersionInfo.Info.VersionType} {VersionInfo.Info.BuildType}");
 
@@ -55,7 +58,7 @@ public partial class TaskLaunchGameItem : UserControl
 
                         Thread.Sleep(1200);
 
-                        launchCompleted();
+                        LaunchCompleted();
                     }
                 }),
                 registerProcess_percent = new Action<string, uint>((s, e) =>
@@ -84,5 +87,11 @@ public partial class TaskLaunchGameItem : UserControl
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
         body.Launch(() => { GlobalModel.TaskManager.RemoveTask(tuid); });
+    }
+
+    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        this.IsCancel = true;
+        LaunchCompleted();
     }
 }

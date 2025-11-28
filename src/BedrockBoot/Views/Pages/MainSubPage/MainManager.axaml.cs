@@ -61,9 +61,6 @@ public partial class MainManager : BedrockBootPage
             
             // 注册事件处理
             _configWatcher.Changed += OnConfigFileChanged;
-            _configWatcher.Deleted += OnConfigFileChanged;
-            _configWatcher.Created += OnConfigFileChanged;
-            _configWatcher.Renamed += OnConfigFileChanged;
             
             // 开始监听
             _configWatcher.EnableRaisingEvents = true;
@@ -87,9 +84,6 @@ public partial class MainManager : BedrockBootPage
 
     private async void OnConfigFileChanged(object sender, FileSystemEventArgs e)
     {
-        // 由于文件可能被锁定，需要重试机制
-        await Task.Delay(100);
-        
         try
         {
             // 只在文件在 bedrock_versions 目录或其子目录中时刷新

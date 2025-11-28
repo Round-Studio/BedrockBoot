@@ -30,7 +30,11 @@ public partial class DrawInstanceContent : UserControl
 
     public void Update()
     {
+        IsEditMode = false;
+        
         InstanceFrame.NavigateTo(new InstanceInfo(VersionInfo));
+        
+        IsEditMode = true;
     }
 
     private void InstanceTabControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

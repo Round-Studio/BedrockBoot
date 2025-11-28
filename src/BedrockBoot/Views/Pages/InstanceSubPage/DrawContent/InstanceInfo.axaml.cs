@@ -1,8 +1,11 @@
 ﻿using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Helper;
 
@@ -14,6 +17,8 @@ public partial class InstanceInfo : UserControl
     public VersionConfig VersionInfo { get; set; }
     public InstanceInfo()
     {
+        IsEdit = false;
+        
         InitializeComponent();
     }
 
@@ -26,19 +31,27 @@ public partial class InstanceInfo : UserControl
 
     public void UpdateUI()
     {
-        IsEdit = false;
-        
-        InstanceName.Text = VersionInfo.Info.VersionName;
+        Task.Run(() =>
+        {
+            IsEdit = false;
+            Thread.Sleep(500);
 
-        if (VersionInfo.Config == null)
-            VersionInfo.Config = new ();
-        
-        InstanceArgs.Text = VersionInfo.Config.OtherCommand;
-        InstanceConsole.IsChecked = VersionInfo.Config.IsConsole;
-        InstanceEdit.IsChecked = VersionInfo.Config.IsEditModel;
-        InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                InstanceName.Text = VersionInfo.Info.VersionName;
 
-        IsEdit = true;
+                if (VersionInfo.Config == null)
+                    VersionInfo.Config = new();
+
+                InstanceArgs.Text = VersionInfo.Config.OtherCommand;
+                InstanceConsole.IsChecked = VersionInfo.Config.IsConsole;
+                InstanceEdit.IsChecked = VersionInfo.Config.IsEditModel;
+                InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
+            });
+
+            Thread.Sleep(500);
+            IsEdit = true;
+        });
     }
 
     private void TextTypeConfig_OnChanged(object? sender, TextChangedEventArgs e)

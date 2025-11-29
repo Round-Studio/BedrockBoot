@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using BedrockBoot.Base.Enum.Game;
 using BedrockLauncher.Core;
 
@@ -7,7 +7,7 @@ namespace BedrockBoot.Base.Entry.Game;
 public class VersionConfig
 {
     [JsonPropertyName("info")] public VersionInfo Info { get; set; }
-    [JsonPropertyName("Config")] public VersionConfigEntry Config { get; set; } = new ();
+    [JsonPropertyName("config")] public VersionConfigEntry Config { get; set; } = new ();
         
     [JsonIgnore] public string VersionPath { get; set; }
     

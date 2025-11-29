@@ -1,0 +1,133 @@
+* text=auto
+
+*.editorconfig text eol=lf
+*.gitignore text eol=lf
+*.prettierrc.json text eol=lf
+*.json text eol=lf
+*.jsonc text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+*.env text eol=lf
+
+*.md text eol=lf
+*.txt text eol=lf
+*.log text eol=lf
+
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.sass text eol=lf
+*.less text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.vue text eol=lf
+*.glsl text eol=lf
+*.shader text eol=lf
+
+*.cs text eol=lf
+*.csproj text eol=lf
+*.sln text eol=lf
+*.xaml text eol=lf
+*.axaml text eol=lf
+*.props text eol=lf
+*.targets text eol=lf
+
+*.py text eol=lf
+*.rs text eol=lf
+*.go text eol=lf
+*.java text eol=lf
+*.c text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+*.rb text eol=lf
+*.php text eol=lf
+*.swift text eol=lf
+*.kt text eol=lf
+*.dart text eol=lf
+*.sh text eol=lf
+*.bat text eol=lf
+*.cmd text eol=lf
+*.ps1 text eol=lf
+*.sql text eol=lf
+
+*.lock text eol=lf
+*.code-workspace text eol=lf
+
+*.exe binary
+*.dll binary
+*.pdb binary
+*.snk binary
+*.nupkg binary
+*.resources binary
+*.pri binary
+*.appx binary
+*.appxbundle binary
+*.msix binary
+*.msixbundle binary
+*.vsix binary
+*.zip binary
+*.rar binary
+*.7z binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.xz binary
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.tiff binary
+*.ico binary
+*.webp binary
+
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+
+*.mp3 binary
+*.wav binary
+*.ogg binary
+*.flac binary
+*.mp4 binary
+*.avi binary
+*.mov binary
+*.mkv binary
+*.webm binary
+
+*.pdf binary
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+
+*.obj binary
+*.lib binary
+*.a binary
+*.so binary
+*.dylib binary
+*.wasm binary
+*.bin binary
+*.out binary
+
+*.bak binary
+*.tmp binary
+*.swp binary
+*.swo binary
+*.dat binary
+*.db binary
+*.sqlite binary
+*.cur binary

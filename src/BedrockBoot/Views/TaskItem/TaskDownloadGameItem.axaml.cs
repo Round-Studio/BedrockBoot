@@ -161,16 +161,19 @@ public partial class TaskDownloadGameItem : UserControl
         {
             FileList.ForEach(file =>
             {
-                file.Hash = FileHashCalculator.CalculateHash(Path.Combine(InstallFolder, GameName, file.FilePath),
-                    FileHashCalculator.HashType.MD5);
+                if (File.Exists(Path.Combine(InstallFolder, "bedrock_versions", GameName, file.FilePath)))
+                    file.Hash = FileHashCalculator.CalculateHash(
+                        Path.Combine(InstallFolder, "bedrock_versions", GameName, file.FilePath),
+                        FileHashCalculator.HashType.MD5);
             });
 
-            var entry = new ConfigEntity<List<GameFileInfo>>(Path.Combine(InstallFolder, GameName, "config",
+            var entry = new ConfigEntity<List<GameFileInfo>>(Path.Combine(InstallFolder, "bedrock_versions", GameName,
+                "config",
                 "BedrockBoot2", "index.json"));
 
             entry.Data = FileList;
             entry.Save();
-            
+
             installed?.Invoke();
         });
     }

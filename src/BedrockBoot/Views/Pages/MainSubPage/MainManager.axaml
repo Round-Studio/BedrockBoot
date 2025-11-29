@@ -48,10 +48,12 @@
             </items:BorderCard>
             
             <items:BorderCard Grid.Column="1"
+                              Padding="0"
                               Margin="5">
                 <Grid>
-                    <ScrollViewer Name="GameScro">
-                        <StackPanel Margin="5"
+                    <ScrollViewer Name="GameScro"
+                                  Margin="8,8,0,8">
+                        <StackPanel Margin="5,5,13,5"
                                     Name="GameList"></StackPanel>
                     </ScrollViewer>
                     

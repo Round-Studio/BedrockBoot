@@ -11,7 +11,7 @@
                                   Glyph="&#xE7FC;"
                                   IsFontIcon="False"
                                   IsShowActionIcon="False"
-                                  ImageIcon="avares://Round.Avalonia.Assets/Image/Icon/Minecraft/草方块.png"
+                                  ImageIcon="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock.png"
                                   Header="VersionName"
                                   Description="Release Version">
         <StackPanel Orientation="Horizontal">

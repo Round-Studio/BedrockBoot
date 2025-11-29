@@ -4,7 +4,7 @@
 
 <div align="center">
 
-# BedrockBoot
+# BedrockBoot v2
 
 为 Windows 平台开发的 Minecraft Bedrock 启动器 
 

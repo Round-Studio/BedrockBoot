@@ -1,0 +1,18 @@
+﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainToolsBoxPage">
+    <entry:BedrockBootPage.HeaderView>
+        <onePointControls:LineTextBlock Grid.Row="0"
+                                        Margin="0"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        FontSize="28"
+                                        FontWeight="Heavy"
+                                        Text="工具箱"></onePointControls:LineTextBlock>
+    </entry:BedrockBootPage.HeaderView>
+</entry:BedrockBootPage>

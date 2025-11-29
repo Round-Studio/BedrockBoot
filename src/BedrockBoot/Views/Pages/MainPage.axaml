@@ -41,7 +41,7 @@
                     <cornerSelectBar:CornerSelectBarItem ItemText="任务"
                                                          Glyph="&#xE7C4;"
                                                          Tag="Task"></cornerSelectBar:CornerSelectBarItem>
-                    <cornerSelectBar:CornerSelectBarItem ItemText="工具箱"
+                    <cornerSelectBar:CornerSelectBarItem ItemText="工具"
                                                          Glyph="&#xEC7A;"
                                                          Tag="ToolsBox"></cornerSelectBar:CornerSelectBarItem>
                     <cornerSelectBar:CornerSelectBarItem ItemText="设置"

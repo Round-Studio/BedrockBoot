@@ -28,6 +28,8 @@
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="关于"
                                           Description="关于 BedrockBoot"
+                                          Name="AboutUs"
+                                          Click="AboutUs_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE946;"/>
         </StackPanel>

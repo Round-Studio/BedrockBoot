@@ -41,6 +41,9 @@ public partial class MainPage : UserControl
                 case "Task":
                     page = new MainTaskPage();
                     break;
+                case "ToolsBox":
+                    page = new MainToolsBoxPage();
+                    break;
                 case "Setting":
                     page = new MainSettingPage();
                     break;

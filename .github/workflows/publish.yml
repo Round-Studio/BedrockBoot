@@ -1,0 +1,45 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["2.0-develop"]
+
+jobs:
+  time:
+    runs-on: ubuntu-latest
+    outputs:
+      v: ${{ steps.date.outputs.time }}
+      y: ${{ steps.date.outputs.y }}
+      md: ${{ steps.date.outputs.md }}
+      hm: ${{ steps.date.outputs.hm }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Time
+        id: date
+        run: |
+          echo "::set-output name=time::$(date +'%Y.%m.%d.%H.%M')"
+          echo "::set-output name=y::$(date +'%Y')"
+          echo "::set-output name=md::$(date +'%m%d')"
+          echo "::set-output name=hm::$(date +'%H%M')"
+      - name: EchoTime
+        run: |
+          echo "The current time is: ${{ steps.date.outputs.time }}"
+
+  win:
+    runs-on: windows-latest
+    needs: time
+    steps:
+      - name: Build
+        run: |
+          cd ./src/BedrockBoot
+          dotnet publish -c Debug -r win-x86 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true -o "./../../debug-publish/" -p:DebugType=none -p:DebugSymbols=false
+      - name: UploadArtifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: BedrockBoot.Publish.24h.Debug
+          path: |
+            ./debug-publish/*

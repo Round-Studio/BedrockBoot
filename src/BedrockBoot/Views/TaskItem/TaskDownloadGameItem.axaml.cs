@@ -157,14 +157,35 @@ public partial class TaskDownloadGameItem : UserControl
     {
         InsBuildIndex.Maximum = FileList.Count;
         MainText.Text = $"步骤：构建引索 (0%)";
+        InsInstallGameBar.IsIndeterminate = false;
+    
         Task.Run(() =>
         {
+            int processedCount = 0;
+            int totalFiles = FileList.Count;
+        
             FileList.ForEach(file =>
             {
                 if (File.Exists(Path.Combine(InstallFolder, "bedrock_versions", GameName, file.FilePath)))
                     file.Hash = FileHashCalculator.CalculateHash(
                         Path.Combine(InstallFolder, "bedrock_versions", GameName, file.FilePath),
                         FileHashCalculator.HashType.MD5);
+            
+                processedCount++;
+            
+                // 每处理20个文件或处理完所有文件时更新进度
+                if (processedCount % 20 == 0 || processedCount == totalFiles)
+                {
+                    // 计算进度百分比
+                    double progress = (double)processedCount / totalFiles * 100;
+                
+                    // 由于在后台线程，需要使用Dispatcher来更新UI
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        InsBuildIndex.Value = processedCount;
+                        MainText.Text = $"步骤：构建引索 ({progress:F1}%)";
+                    });
+                }
             });
 
             var entry = new ConfigEntity<List<GameFileInfo>>(Path.Combine(InstallFolder, "bedrock_versions", GameName,

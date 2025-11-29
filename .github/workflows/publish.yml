@@ -41,12 +41,11 @@ jobs:
         with:
           dotnet-version: |
             10.0.x
-            8.0.x
       
-      - name: Verify .NET installation
+      - name: Sub-Module
         run: |
-          dotnet --list-sdks
-          dotnet --info
+          git pull
+          git submodule update --init --recursive --remote
       
       - name: Build
         run: |

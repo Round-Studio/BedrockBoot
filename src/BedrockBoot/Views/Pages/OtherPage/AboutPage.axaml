@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.OtherPage.AboutPage">
     <ScrollViewer>
-        <StackPanel Margin="15">
+        <StackPanel Margin="20">
             <Grid>
                 <StackPanel Orientation="Horizontal"
                             Margin="0,0,0,20">

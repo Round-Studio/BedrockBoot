@@ -51,6 +51,12 @@
                                      Name="InsInstallGameBar"></ProgressBar>
                     </DockPanel>
                     
+                    <DockPanel>
+                        <TextBlock Width="100">构建引索</TextBlock>
+                        <ProgressBar HorizontalAlignment="Stretch"
+                                     Name="InsBuildIndex"></ProgressBar>
+                    </DockPanel>
+                    
                     <Grid ColumnDefinitions="*,*">
                         <TextBlock Grid.Column="0" 
                                    Foreground="Gray"

@@ -16,6 +16,8 @@ using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Native;
 using BedrockLauncher.Core.Network;
 using OnePointUI.Avalonia.Base.Entry;
+using Round.SDK.Entity;
+using Round.SDK.Helper.IO;
 
 namespace BedrockBoot.Views.TaskItem;
 
@@ -24,6 +26,7 @@ public partial class TaskDownloadGameItem : UserControl
     public string InstallFolder { get; set; }
     public string GameName { get; set; }
     public VersionInformation VersionInformation { get; set; }
+    public List<GameFileInfo> FileList { get; set; } = new();
     public TaskDownloadGameItem()
     {
         InitializeComponent();
@@ -57,6 +60,10 @@ public partial class TaskDownloadGameItem : UserControl
             zipProgress = new Progress<ZipProgress>((progress =>
             {
                 Console.WriteLine(progress.ToString());
+                FileList.Add(new GameFileInfo()
+                {
+                    FilePath = progress.CurrentFileName
+                });
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     InsUnZipBar.Value = progress.Percentage;
@@ -96,7 +103,7 @@ public partial class TaskDownloadGameItem : UserControl
             {
                 if (status == AsyncStatus.Completed)
                 {
-                    installed.Invoke();
+                    Dispatcher.UIThread.Invoke(() => BuildIndex(installed));
                 }
             }),
             install_states = (states =>
@@ -143,6 +150,28 @@ public partial class TaskDownloadGameItem : UserControl
             GlobalModel.BedrockCore.InstallVersion(VersionInformation.Variations[0],
                 GameInfoHelper.GetGameVersionType(VersionInformation.Type), $"./{VersionInformation.ID}.appx", GameName,
                 Path.Combine(InstallFolder, "bedrock_versions", GameName), callback);
+        });
+    }
+
+    public void BuildIndex(Action installed)
+    {
+        InsBuildIndex.Maximum = FileList.Count;
+        MainText.Text = $"步骤：构建引索 (0%)";
+        Task.Run(() =>
+        {
+            FileList.ForEach(file =>
+            {
+                file.Hash = FileHashCalculator.CalculateHash(Path.Combine(InstallFolder, GameName, file.FilePath),
+                    FileHashCalculator.HashType.MD5);
+            });
+
+            var entry = new ConfigEntity<List<GameFileInfo>>(Path.Combine(InstallFolder, GameName, "config",
+                "BedrockBoot2", "index.json"));
+
+            entry.Data = FileList;
+            entry.Save();
+            
+            installed?.Invoke();
         });
     }
 

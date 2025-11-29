@@ -36,10 +36,21 @@ public partial class MainWindow : OnePointWindow
             {
                 GlobalModel.BedrockCore.Init();
                 Console.WriteLine("初始化核心完毕");
-                
+
                 var lst = VersionHelper.GetVersions(
                     "https://raw.gitcode.com/gcw_lJgzYtGB/-MineCraft-Bedrock-Download-SU/raw/main/bedrock.json");
                 Console.WriteLine("版本列表获取完毕");
+            }
+            catch (InvalidOperationException invEx)
+            {
+                Console.WriteLine("无法连接至清单服务器");
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = "Emm...",
+                    Content = "偶，您好像没有连接网络.jpg\n" +
+                              "请尝试重新连接网络或切换网络环境后重试。",
+                    CloseButtonText = "确定"
+                });
             }
             catch
             {

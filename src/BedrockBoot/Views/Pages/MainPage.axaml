@@ -31,7 +31,7 @@
                     Name="SelTag">
                     <cornerSelectBar:CornerSelectBarItem ItemText="主页"
                                                          Glyph="&#xE80F;"
-                                         Tag="Home"></cornerSelectBar:CornerSelectBarItem>
+                                                         Tag="Home"></cornerSelectBar:CornerSelectBarItem>
                     <cornerSelectBar:CornerSelectBarItem ItemText="实例"
                                                          Glyph="&#xECAA;"
                                                          Tag="Manager"></cornerSelectBar:CornerSelectBarItem>
@@ -41,6 +41,9 @@
                     <cornerSelectBar:CornerSelectBarItem ItemText="任务"
                                                          Glyph="&#xE7C4;"
                                                          Tag="Task"></cornerSelectBar:CornerSelectBarItem>
+                    <cornerSelectBar:CornerSelectBarItem ItemText="工具箱"
+                                                         Glyph="&#xEC7A;"
+                                                         Tag="ToolsBox"></cornerSelectBar:CornerSelectBarItem>
                     <cornerSelectBar:CornerSelectBarItem ItemText="设置"
                                                          Glyph="&#xE713;"
                                                          Tag="Setting"></cornerSelectBar:CornerSelectBarItem>

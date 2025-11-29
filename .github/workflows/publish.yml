@@ -37,7 +37,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Build
         run: |
-          ./BuildPrview.bat
+          cd ./src/BedrockBoot
+          dotnet publish -c Debug -r win-x86 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true -o "./../../debug-publish/" -p:DebugType=none -p:DebugSymbols=false
       - name: UploadArtifacts
         uses: actions/upload-artifact@v4
         with:

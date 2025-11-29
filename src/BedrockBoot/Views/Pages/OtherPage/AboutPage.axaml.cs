@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -20,5 +21,6 @@ public partial class AboutPage : UserControl
                 ItemClickAction = (info) => MainSettingPage.NavigationFrame.NavigateTo(new AboutPage())
             }
         });
+        VersionCard.Description = Assembly.GetExecutingAssembly().GetName().Version.ToString();
     }
 }

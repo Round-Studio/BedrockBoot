@@ -28,6 +28,7 @@ public partial class MainWindow : OnePointWindow
 #endif
 
         MainFrame.NavigateTo(new LoadingPage());
+        VersionBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         BuildTime.Text = $"Build.2.{((DateTime)(CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly()))).ToString("yy.MMdd.HHmmss")}";
         Task.Run(() =>
         {

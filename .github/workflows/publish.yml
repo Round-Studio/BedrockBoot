@@ -97,17 +97,12 @@ jobs:
             - 构建时间: ${{ needs.version.outputs.time }}
             - 提交: ${{ github.sha }}
             
-            **最近更新**
-            ${{ steps.commits.outputs.changelog }}
-            
-            **最新提交**
-            ${{ steps.commits.outputs.latest_commit }}
-            
             ---
-            *自动化构建发布*
+            *自动化构建发布*  
+            *该版本在 24h 后将会失效。*
           draft: false
           prerelease: true
           files: |
-            ./release-artifacts/*
+            ./release-artifacts/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

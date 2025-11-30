@@ -1,4 +1,4 @@
-name: Publish and Release
+name: 自动构建并推送 Release
 
 on:
   workflow_dispatch:

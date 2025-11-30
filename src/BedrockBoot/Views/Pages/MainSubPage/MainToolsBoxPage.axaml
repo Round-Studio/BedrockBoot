@@ -4,6 +4,8 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
                  xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
                  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                  x:Class="BedrockBoot.Views.Pages.MainSubPage.MainToolsBoxPage">
     <entry:BedrockBootPage.HeaderView>
@@ -15,4 +17,20 @@
                                         FontWeight="Heavy"
                                         Text="工具箱"></onePointControls:LineTextBlock>
     </entry:BedrockBootPage.HeaderView>
+    
+    <Grid>
+        <WrapPanel Margin="15,10,15,15">
+            <!--<items:BorderCard Width="240"
+                              Height="120">
+                <Grid>
+                    
+                </Grid>
+            </items:BorderCard>-->
+        </WrapPanel>
+        
+        <notice:InfoCard HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         BigTitle="某野喔"
+                         Message="工具箱内没有工具 awa&#x0A;可以催促开发者火速添加.jpg"/>
+    </Grid>
 </entry:BedrockBootPage>

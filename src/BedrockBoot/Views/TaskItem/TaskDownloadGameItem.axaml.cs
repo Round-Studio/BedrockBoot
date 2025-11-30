@@ -16,6 +16,7 @@ using BedrockLauncher.Core.JsonHandle;
 using BedrockLauncher.Core.Native;
 using BedrockLauncher.Core.Network;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
 using Round.SDK.Helper.IO;
 
@@ -42,17 +43,6 @@ public partial class TaskDownloadGameItem : UserControl
     public void Install(Action installed)
     {
         CardTitle.Text = $"下载游戏 {VersionInformation.ID}";
-        GameInfoHelper.SaveVersionConfig(new VersionConfig()
-        {
-            VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
-            Info = new VersionConfig.VersionInfo()
-            {
-                BuildType = GameBuildType.Uwp,
-                Version = VersionInformation.ID,
-                VersionName = GameName,
-                VersionType = GameInfoHelper.GetGameVersionType(VersionInformation.Type)
-            }
-        });
         
         var cls = new DownloadSpeedCalculator();
         InstallCallback callback = new InstallCallback()
@@ -101,10 +91,34 @@ public partial class TaskDownloadGameItem : UserControl
             }),
             result_callback = ((status, exception) =>
             {
-                if (status == AsyncStatus.Completed)
+                if (status == AsyncStatus.Error)
                 {
-                    Dispatcher.UIThread.Invoke(() => BuildIndex(installed));
+                    Console.WriteLine(exception);
+                    Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo()
+                    {
+                        Title = "发生错误",
+                        Content = $"很抱歉，在下载游戏 {VersionInformation.ID} 过程中发生了点错误。\n" +
+                                  $"您可以尝试切换需要下载的版本，也可以尝试更换网络环境。\n" +
+                                  $"\n" +
+                                  $"{exception.Message}",
+                        CloseButtonText = "确定"
+                    }));
                 }
+
+                if (status == AsyncStatus.Completed)
+                    GameInfoHelper.SaveVersionConfig(new VersionConfig()
+                    {
+                        VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
+                        Info = new VersionConfig.VersionInfo()
+                        {
+                            BuildType = GameBuildType.Uwp,
+                            Version = VersionInformation.ID,
+                            VersionName = GameName,
+                            VersionType = GameInfoHelper.GetGameVersionType(VersionInformation.Type)
+                        }
+                    });
+
+                Dispatcher.UIThread.Invoke(() => BuildIndex(installed));
             }),
             install_states = (states =>
             {
@@ -147,9 +161,27 @@ public partial class TaskDownloadGameItem : UserControl
 
         Task.Run(() =>
         {
-            GlobalModel.BedrockCore.InstallVersion(VersionInformation.Variations[0],
-                GameInfoHelper.GetGameVersionType(VersionInformation.Type), $"./{VersionInformation.ID}.appx", GameName,
-                Path.Combine(InstallFolder, "bedrock_versions", GameName), callback);
+            try
+            {
+                GlobalModel.BedrockCore.InstallVersion(VersionInformation.Variations[0],
+                    GameInfoHelper.GetGameVersionType(VersionInformation.Type), $"./{VersionInformation.ID}.appx",
+                    GameName,
+                    Path.Combine(InstallFolder, "bedrock_versions", GameName), callback);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                Dispatcher.UIThread.Invoke(() => BuildIndex(installed));
+                Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo()
+                {
+                    Title = "发生错误",
+                    Content = $"很抱歉，在下载游戏 {VersionInformation.ID} 过程中发生了点错误。\n" +
+                              $"您可以尝试切换需要下载的版本，也可以尝试更换网络环境。\n" +
+                              $"\n" +
+                              $"{exception.Message}",
+                    CloseButtonText = "确定"
+                }));
+            }
         });
     }
 

@@ -177,6 +177,13 @@ public partial class MainManager : BedrockBootPage
             return;
         }
 
+        if (GlobalModel.Config.Data.GameFolderSelIndex == -1)
+        {
+            GlobalModel.Config.Data.GameFolderSelIndex = 0;
+            
+            GlobalModel.Config.Save();
+        }
+        
         var currentFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
         var versionsPath = Path.Combine(currentFolder.GameFolderPath, "bedrock_versions");
         

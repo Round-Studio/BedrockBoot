@@ -190,31 +190,45 @@ public partial class MainManager : BedrockBootPage
         var lst = Directory.GetDirectories(versionsPath);
         
         GameList.Children.Clear();
-
+        
         if (lst.Length > 0)
         {
             GamesNull.IsVisible = false;
-            GameScro.IsVisible = true;
+            GameScro.IsVisible = false;
         }
         else
         {
             GamesNull.IsVisible = true;
             GameScro.IsVisible = false;
+            
+            return;
         }
 
-        lst.ToList().ForEach(x =>
+        GamesLoad.IsVisible = true;
+        Task.Run(() =>
         {
-            try
+            lst.ToList().ForEach(x =>
             {
-                var info = GameInfoHelper.GetVersionConfig(x);
-                Console.WriteLine($"读取到实例：{info.Info.VersionName} : {info.Info.Version}");
+                try
+                {
+                    var info = GameInfoHelper.GetVersionConfig(x);
+                    Console.WriteLine($"读取到实例：{info.Info.VersionName} : {info.Info.Version}");
 
-                GameList.Children.Add(new GameItem(info));
-            }
-            catch
+                    if (!GameInfoHelper.IsInvalidVersion(info))
+                        Directory.Delete(x, true);
+                    else
+                        Dispatcher.UIThread.Invoke(() => GameList.Children.Add(new GameItem(info)));
+                }
+                catch
+                {
+                    // 忽略加载失败的版本
+                }
+            });
+            Dispatcher.UIThread.Invoke(() =>
             {
-                // 忽略加载失败的版本
-            }
+                GamesLoad.IsVisible = false;
+                GameScro.IsVisible = true;
+            });
         });
     }
 

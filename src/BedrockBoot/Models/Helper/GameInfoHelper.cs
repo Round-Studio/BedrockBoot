@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum.Game;
@@ -67,6 +68,24 @@ public class GameInfoHelper
         bodyConfig.Data.VersionPath = gamePath;
 
         return bodyConfig.Data;
+    }
+
+    public static bool IsInvalidVersion(VersionConfig config)
+    {
+        var indexJson = Path.Combine(config.VersionPath, "config", "BedrockBoot2", "index.json");
+        
+        if (!File.Exists(indexJson))
+            return false;
+        if (string.IsNullOrEmpty(File.ReadAllText(indexJson)))
+            return false;
+
+        var body = new ConfigEntity<List<GameFileInfo>>(indexJson);
+        body.Load();
+
+        if (body.Data.Count <= 0)
+            return false;
+        
+        return true;
     }
 
     public static void SaveVersionConfig(VersionConfig config)

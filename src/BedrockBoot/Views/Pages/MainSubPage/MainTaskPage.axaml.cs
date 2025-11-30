@@ -21,6 +21,7 @@ public partial class MainTaskPage : BedrockBootPage
 
     public void UpdateUI()
     {
+        TaskList.Children.Clear();
         TaskViewer.IsVisible = true;
         NoneBox.IsVisible = false;
         

@@ -62,6 +62,13 @@
                                      Name="GamesNull"
                                      BigTitle="没有实例"
                                      Message="请前往 下载 页面下载游戏"/>
+                    
+                    <notice:LoadCard HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     IsVisible="False"
+                                     Name="GamesLoad"
+                                     BigTitle="列队中"
+                                     Message="正在加载版本..."></notice:LoadCard>
                 </Grid>
             </items:BorderCard>
         </Grid>

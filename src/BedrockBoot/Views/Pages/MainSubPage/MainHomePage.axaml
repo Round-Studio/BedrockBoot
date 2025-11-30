@@ -49,7 +49,8 @@
                                                        FontSize="11"></onePointControls:LabelBox>
                             
                             <TextBlock Grid.Row="1"
-                                       Text="1.12.2"
+                                       Name="GameTitle"
+                                       Text="请选择游戏"
                                        Margin="5,0,5,5"
                                        FontSize="36"></TextBlock>
                             
@@ -59,6 +60,7 @@
                                             VerticalAlignment="Bottom">
                                     <Button Padding="8"
                                             Height="32"
+                                            IsEnabled="False"
                                             Classes="NoBorder">
                                         <StackPanel Orientation="Horizontal">
                                             <onePointControls:FontIcon VerticalAlignment="Center"
@@ -75,7 +77,12 @@
                                 <StackPanel Orientation="Horizontal"
                                             VerticalAlignment="Bottom">
                                     <ComboBox Height="32"
-                                              Width="180"></ComboBox>
+                                              Width="300"
+                                              SelectedIndex="0"
+                                              SelectionChanged="OnGameSelectionChanged"
+                                              Name="GameListChoose">
+                                        <ComboBoxItem>无实例</ComboBoxItem>
+                                    </ComboBox>
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -83,6 +90,8 @@
                 </Grid>
                 
                 <items:BorderCard Grid.Column="1"
+                                  IsEnabled="False"
+                                  Name="SetupCard"
                                   Padding="15"
                                   Margin="5">
                     <Grid RowDefinitions="*,Auto">
@@ -104,6 +113,8 @@
                             <Button Grid.Row="1" Classes="NoBorder"
                                     Background="{DynamicResource AccentBackgroundBrush}"
                                     Padding="17,16"
+                                    Name="LaunchGameBtn"
+                                    Click="LaunchGameBtn_OnClick"
                                     HorizontalAlignment="Stretch">
                                 <StackPanel Orientation="Horizontal">
                                     <onePointControls:FontIcon Glyph="&#xE768;"
@@ -128,16 +139,19 @@
                                   ColumnDefinitions="*,*">
                                 <Button Grid.Column="0" Padding="0,4"
                                         Margin="0,0,5,0"
+                                        Name="GameSettingBtn"
+                                        Click="GameSettingBtn_OnClick"
                                         Classes="NoBorder">
                                     <StackPanel Orientation="Horizontal">
                                         <onePointControls:FontIcon VerticalAlignment="Center"
-                                                                   Glyph="&#xE8A9;"
+                                                                   Glyph="&#xE713;"
                                                                    Margin="0,0,6,0"></onePointControls:FontIcon>
-                                        <TextBlock>实例选择</TextBlock>
+                                        <TextBlock>实例设置</TextBlock>
                                     </StackPanel>
                                 </Button>
                                 <Button Grid.Column="1" Padding="0,4"
                                         Margin="4,0,0,0"
+                                        IsEnabled="False"
                                         Classes="NoBorder">
                                     <StackPanel Orientation="Horizontal">
                                         <onePointControls:FontIcon VerticalAlignment="Center"
@@ -166,7 +180,8 @@
                                 <TextBlock Grid.Row="1"
                                            Margin="0,0,0,2"
                                            FontSize="18"
-                                           HorizontalAlignment="Center">Vanilla</TextBlock>
+                                           Name="GameType"
+                                           HorizontalAlignment="Center">...</TextBlock>
                             </Grid>
                             
                             <Grid Grid.Column="2"
@@ -179,7 +194,8 @@
                                 <TextBlock Grid.Row="1"
                                            Margin="0,0,0,2"
                                            FontSize="18"
-                                           HorizontalAlignment="Center">1.12.2</TextBlock>
+                                           Name="GameVersion"
+                                           HorizontalAlignment="Center">...</TextBlock>
                             </Grid>
                         </Grid>
                     </Grid>

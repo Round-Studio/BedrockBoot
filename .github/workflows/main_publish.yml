@@ -100,7 +100,7 @@ jobs:
             ---
             *自动化构建发布*  
           draft: false
-          prerelease: true
+          prerelease: false
           files: |
             ./release-artifacts/*.exe
         env:

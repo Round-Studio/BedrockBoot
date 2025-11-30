@@ -1,4 +1,4 @@
-name: Publish and Release
+name: 验证代码
 
 on:
   workflow_dispatch:
@@ -64,45 +64,3 @@ jobs:
           name: BedrockBoot.Publish.24h.Debug
           path: |
             ./debug-publish/*
-
-  # release:
-  #   runs-on: ubuntu-latest
-  #   needs: [version, win]
-    
-  #   steps:
-  #     - name: Download Artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: BedrockBoot.Publish.24h.Debug
-  #         path: ./release-artifacts
-      
-  #     - name: Get commit messages
-  #       id: commits
-  #       run: |
-  #         # 获取最近一次提交的信息
-  #         echo "latest_commit=$(git log -1 --pretty=format:%s)" >> $GITHUB_OUTPUT
-  #         # 获取最近3次提交的信息作为变更日志
-  #         echo "changelog=$(git log -3 --pretty=format:"- %s (%h)" --reverse)" >> $GITHUB_OUTPUT
-      
-  #     - name: Create Release
-  #       uses: softprops/action-gh-release@v1
-  #       with:
-  #         tag_name: ${{ needs.version.outputs.tag }}
-  #         release_name: "Release ${{ needs.version.outputs.tag }}"
-  #         body: |
-  #           ## BedrockBoot ${{ needs.version.outputs.v }}
-            
-  #           **构建信息**
-  #           - 版本: ${{ needs.version.outputs.v }}
-  #           - 构建时间: ${{ needs.version.outputs.time }}
-  #           - 提交: ${{ github.sha }}
-            
-  #           ---
-  #           *自动化构建发布*  
-  #           *该版本在 24h 后将会失效。*
-  #         draft: false
-  #         prerelease: true
-  #         files: |
-  #           ./release-artifacts/*.exe
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.TOKEN }}

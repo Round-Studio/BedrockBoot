@@ -1,0 +1,107 @@
+name: 自动构建并推送 Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["2.0-main"]
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      v: ${{ steps.version.outputs.value }}
+      tag: ${{ steps.version.outputs.tag }}
+      time: ${{ steps.time.outputs.value }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Generate version
+        id: version
+        run: |
+          echo "value=2.0.0.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "tag=v2.0.0.${{ github.run_number }}" >> $GITHUB_OUTPUT
+      
+      - name: Get current time
+        id: time
+        run: |
+          echo "value=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+      
+      - name: Show version info
+        run: |
+          echo "Build version: ${{ steps.version.outputs.value }}"
+          echo "Tag: ${{ steps.version.outputs.tag }}"
+          echo "Build time: ${{ steps.time.outputs.value }}"
+
+  win:
+    runs-on: windows-latest
+    needs: version
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            10.0.x
+      
+      - name: Sub-Module
+        run: |
+          git pull
+          git submodule update --init --recursive --remote
+      
+      - name: Build
+        run: |
+          cd ./src/BedrockBoot
+          dotnet publish -c Release -r win-x86 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=true -o "./../../Release-publish/" /p:Version=${{ needs.version.outputs.v }}
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: BedrockBoot.Publish.24h.Release
+          path: |
+            ./Release-publish/*
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [version, win]
+    
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: BedrockBoot.Publish
+          path: ./release-artifacts
+      
+      - name: Get commit messages
+        id: commits
+        run: |
+          # 获取最近一次提交的信息
+          echo "latest_commit=$(git log -1 --pretty=format:%s)" >> $GITHUB_OUTPUT
+          # 获取最近3次提交的信息作为变更日志
+          echo "changelog=$(git log -3 --pretty=format:"- %s (%h)" --reverse)" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.version.outputs.tag }}
+          release_name: "Release ${{ needs.version.outputs.tag }}"
+          body: |
+            ## BedrockBoot ${{ needs.version.outputs.v }}
+            
+            **构建信息**
+            - 版本: ${{ needs.version.outputs.v }}
+            - 构建时间: ${{ needs.version.outputs.time }}
+            - 提交: ${{ github.sha }}
+            
+            ---
+            *自动化构建发布*  
+          draft: false
+          prerelease: false
+          files: |
+            ./release-artifacts/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}

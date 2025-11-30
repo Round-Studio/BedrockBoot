@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum.Game;
@@ -33,6 +34,15 @@ public class GameInfoHelper
             default:
                 return VersionType.Release;
         }
+    }
+
+    public static List<VersionConfig> GetVersionConfigs(string gameFolder)
+    {
+        var result = new List<VersionConfig>();
+        var versions = Directory.GetDirectories(Path.Combine(gameFolder, "bedrock_versions")).ToList();
+
+        versions.ForEach(x => result.Add(GetVersionConfig(x)));
+        return result;
     }
 
     public static VersionConfig GetVersionConfig(string gamePath)

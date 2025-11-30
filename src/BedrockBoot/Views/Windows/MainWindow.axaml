@@ -10,7 +10,7 @@
                 mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
                 x:Class="BedrockBoot.Views.Windows.MainWindow"
                 x:DataType="vm:MainWindowViewModel"
-                TransparencyLevelHint="Mica"
+                TransparencyLevelHint="AcrylicBlur"
                 Background="Transparent"
                 Width="900" Height="520"
                 MinWidth="900" MinHeight="520"

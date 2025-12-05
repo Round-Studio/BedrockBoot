@@ -29,10 +29,12 @@ public partial class MainWindow : OnePointWindow
 
         MainFrame.NavigateTo(new LoadingPage());
         VersionBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        BuildTime.Text = $"Build.2.{((DateTime)(CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly()))).ToString("yy.MMdd.HHmmss")}";
+        BuildTime.Text =
+            $"Build.2.{((DateTime)(CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly()))).ToString("yy.MMdd.HHmmss")}";
         Task.Run(() =>
         {
-            GlobalModel.BedrockCore = new  BedrockCore();
+            GlobalModel.BedrockCore = new BedrockCore();
+            
             try
             {
                 GlobalModel.BedrockCore.Init();
@@ -53,21 +55,26 @@ public partial class MainWindow : OnePointWindow
                     CloseButtonText = "确定"
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                Console.WriteLine("无法自动打开开发者模式");
-                DialogHost.Show(new DialogInfo()
+                Console.WriteLine($"发生初始化错误：{ex}");
+
+                if (!GlobalModel.BedrockCore.GetWindowsDevelopmentState())
                 {
-                    Title = "开发者模式",
-                    Content = "我们貌似无法帮您打开开发者模式，请您手动前往设置中打开。",
-                    CloseButtonText = "确定"
-                });
+                    Console.WriteLine("无法自动打开开发者模式");
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Title = "开发者模式",
+                        Content = "我们貌似无法帮您打开开发者模式，请您手动前往设置中打开。",
+                        CloseButtonText = "确定"
+                    });
+                }
             }
             finally
             {
                 Console.WriteLine("跳转主页面.jpg");
                 Dispatcher.UIThread.Invoke(() => MainFrame.NavigateTo(new MainPage()));
-                
+
 #if DEBUG
                 var date = CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly());
                 var zt = CheckVersion.CheckTimeAndExecute24Hour((DateTime)date);

@@ -20,8 +20,7 @@ public partial class AboutPage : UserControl
         {
             new ()
             {
-                ItemName = "关于我们",
-                ItemClickAction = (info) => MainSettingPage.NavigationFrame.NavigateTo(new AboutPage())
+                ItemName = "关于我们"
             }
         });
         VersionCard.Description = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -39,5 +38,10 @@ public partial class AboutPage : UserControl
         await MainPage.Update(true);
         CheckUpdateBtn.IsEnabled = true;
         CheckUpdateBtn.Content = "检查更新";
+    }
+
+    private void OpenSourceBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigationFrame.NavigateTo(new AboutOpenSource());
     }
 }

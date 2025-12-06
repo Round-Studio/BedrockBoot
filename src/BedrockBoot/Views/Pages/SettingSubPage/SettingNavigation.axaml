@@ -11,11 +11,14 @@
                                           Header="个性化"
                                           Description="启动器的个性化设置"
                                           IsClickable="True"
+                                          IsEnabled="False"
                                           Glyph="&#xEE56;"/>
                 
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="下载"
                                           Description="BedrockBoot 的下载行为"
+                                          Name="SetDownload"
+                                          Click="SetDownload_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE896;"/>
                 

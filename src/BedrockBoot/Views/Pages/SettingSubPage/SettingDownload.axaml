@@ -1,0 +1,45 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingDownload">
+    <ScrollViewer>
+        <StackPanel Margin="15">
+            <TextBlock Margin="5,0,5,10"
+                       FontWeight="Bold"
+                       FontSize="14">基础下载</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="下载分块"
+                                          Description="BedrockBoot 的下载分片数量"
+                                          Glyph="&#xF158;">
+                <Slider Width="200"
+                        Classes="Number"
+                        Minimum="8"
+                        Maximum="256"
+                        Value="64"></Slider>
+            </onePointControls:SettingCard>
+            
+            <TextBlock Margin="5,0,5,10"
+                       FontWeight="Bold"
+                       FontSize="14">实例下载</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="自动缓存游戏安装包"
+                                          Description="首次下载一个版本的时候将会缓存游戏安装包，以方便下次安装相同版本"
+                                          Glyph="&#xE7B8;">
+                <ToggleSwitch IsChecked="True"
+                              Name="IsAutoCacheGamePack"></ToggleSwitch>
+            </onePointControls:SettingCard>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="实例文件夹"
+                                          Description="游戏存放的根目录 单击此项前往设置"
+                                          IsClickable="True"
+                                          Glyph="&#xE8B7;">
+            </onePointControls:SettingCard>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

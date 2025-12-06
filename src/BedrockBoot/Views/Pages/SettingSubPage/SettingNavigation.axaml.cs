@@ -18,4 +18,9 @@ public partial class SettingNavigation : UserControl
     {
         MainSettingPage.NavigationFrame.NavigateTo(new AboutPage());
     }
+
+    private void SetDownload_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigationFrame.NavigateTo(new SettingDownload());
+    }
 }

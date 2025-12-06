@@ -59,6 +59,7 @@
                                           Header="第三方组件库"
                                           Description="BedrockBoot 使用的第三方开源库"
                                           Name="OpenSourceBtn"
+                                          Click="OpenSourceBtn_OnClick"
                                           IsClickable="True">
             </onePointControls:SettingCard>
             

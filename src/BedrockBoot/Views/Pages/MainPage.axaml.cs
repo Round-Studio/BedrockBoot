@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Models;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.CornerSelectBar;
 
@@ -16,6 +17,8 @@ public partial class MainPage : UserControl
 
         IsEditMode = true;
         SelTag_OnSelectionChanged(null, null);
+
+        CheckUpdate.Update();
     }
 
     private void SelTag_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

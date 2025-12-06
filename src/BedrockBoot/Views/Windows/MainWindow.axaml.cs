@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
@@ -22,6 +23,19 @@ public partial class MainWindow : OnePointWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
+        
+        if (GlobalModel.Config.Data.WindowInfo.X != -1 && GlobalModel.Config.Data.WindowInfo.Y != -1)
+        {
+            this.WindowStartupLocation = WindowStartupLocation.Manual;
+            this.Position = new PixelPoint(x: GlobalModel.Config.Data.WindowInfo.X,
+                y: GlobalModel.Config.Data.WindowInfo.Y);
+
+            this.Width = GlobalModel.Config.Data.WindowInfo.Width;
+            this.Height = GlobalModel.Config.Data.WindowInfo.Height;
+
+            Console.WriteLine(
+                $@"Main Window: Width {GlobalModel.Config.Data.WindowInfo.Width}, Height {GlobalModel.Config.Data.WindowInfo.Height}");
+        }
 
 #if DEBUG
         DebugModule.IsVisible = true;
@@ -134,5 +148,18 @@ public partial class MainWindow : OnePointWindow
                 }
             }
         });
+    }
+
+    private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        GlobalModel.Config.Data.WindowInfo = new ()
+        {
+            Width = this.Bounds.Width,
+            Height = this.Bounds.Height,
+            X = this.Position.X,
+            Y = this.Position.Y
+        };
+        
+        GlobalModel.Config.Save();
     }
 }

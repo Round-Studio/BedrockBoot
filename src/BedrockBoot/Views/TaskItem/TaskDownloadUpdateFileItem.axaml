@@ -1,0 +1,36 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.TaskItem.TaskDownloadUpdateFileItem">
+    <items:BorderCard>
+        <Grid ColumnDefinitions="Auto,*">
+            <onePointControls:ProgressRing Grid.Column="0" 
+                                           Width="36"
+                                           Height="36"
+                                           Margin="4,0,0,0"
+                                           Background="Transparent"></onePointControls:ProgressRing>
+            
+            <StackPanel Grid.Column="1" Margin="15,0,10,0"
+                        HorizontalAlignment="Stretch">
+                <TextBlock FontSize="16" 
+                           Name="CardTitle">下载更新文件</TextBlock>
+                
+                <StackPanel Margin="0,8,0,0"
+                            HorizontalAlignment="Stretch">
+                    <ProgressBar IsIndeterminate="True"
+                                 HorizontalAlignment="Stretch"
+                                 Name="UpdateProgressBar"></ProgressBar>
+                    
+                    <TextBlock Foreground="Gray"
+                               FontSize="9"
+                               Margin="0,2,0,0"
+                               Name="UpdateProgressText">步骤：下载中...</TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </items:BorderCard>
+</UserControl>

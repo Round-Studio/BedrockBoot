@@ -37,9 +37,22 @@
             
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="实例文件夹"
-                                          Description="游戏存放的根目录 单击此项前往设置"
+                                          Description="游戏存放的根目录"
                                           IsClickable="True"
+                                          IsEnabled="False"
                                           Glyph="&#xE8B7;">
+            </onePointControls:SettingCard>
+            
+            <TextBlock Margin="5,0,5,10"
+                       FontWeight="Bold"
+                       FontSize="14">高级</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="软件更新"
+                                          Description="BedrockBoot 的更新设置"
+                                          IsClickable="True"
+                                          IsEnabled="False"
+                                          Glyph="&#xE895;">
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

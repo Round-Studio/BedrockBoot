@@ -210,7 +210,7 @@ public partial class MainDownloadPage : BedrockBootPage
                     IsClickable = true,
                     Margin = new Thickness(5, 0, 5, 10),
                     IsFontIcon = false,
-                    ImageIcon = GetImage("avares://Round.Avalonia.Assets/Image/Icon/Minecraft/草方块.png")
+                    ImageIcon = GetImage("avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock.png")
                 };
 
                 item.Click += (sender, args) =>

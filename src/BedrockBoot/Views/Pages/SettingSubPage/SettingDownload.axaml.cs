@@ -24,6 +24,7 @@ public partial class SettingDownload : UserControl
         });
 
         IsAutoCacheGamePack.IsChecked = GlobalModel.Config.Data.IsAutoCacheGamePack;
+        IsEdit = true;
     }
 
     private void IsAutoCacheGamePack_OnIsCheckedChanged(object? sender, RoutedEventArgs e)

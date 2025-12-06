@@ -4,6 +4,8 @@ using System.IO;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
 using Round.SDK.Entity;
+using Round.SDK.Enum;
+using Round.SDK.Global;
 using Round.SDK.Logger;
 
 namespace BedrockBoot;
@@ -16,6 +18,8 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
+        
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
         

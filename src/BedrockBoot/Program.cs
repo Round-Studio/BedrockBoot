@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.JsonContext;
 using BedrockBoot.Models.Global;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
@@ -15,15 +18,16 @@ namespace BedrockBoot;
 
 sealed class Program
 {
+
     // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
-    [STAThread]
+	// SynchronizationContext-reliant code before AppMain is called: things aren't initialized
+	// yet and stuff might break.
+	[STAThread]
     public static void Main(string[] args)
     {
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
-    
-        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+		Console.OutputEncoding = Encoding.UTF8;
+        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath,BedrockBootJsonContext.Default.ConfigEntry);
         GlobalModel.Config.Load();
     
         ConsoleRedirector consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,

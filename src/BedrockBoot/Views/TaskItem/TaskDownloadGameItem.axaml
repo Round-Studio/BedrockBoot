@@ -5,6 +5,7 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="400"
+             x:CompileBindings="True"
              x:Class="BedrockBoot.Views.TaskItem.TaskDownloadGameItem">
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*">

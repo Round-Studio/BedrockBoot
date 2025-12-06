@@ -7,8 +7,29 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <ApplicationIcon>Assets\Icon\BedrockBoot.Icon.512x.ico</ApplicationIcon>
-    </PropertyGroup>
+		
+       <LangVersion>14.0</LangVersion>
+      <!-- 设置裁剪级别 -->
+      <!-- 可选值：full（完全裁剪）, partial（部分裁剪）, none（不裁剪） -->
+      <TrimMode>none</TrimMode>
 
+      <!-- 启用裁剪警告，帮助识别问题 -->
+      <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+
+      <!-- 启用单文件分析 -->
+      <EnableSingleFileAnalysis>true</EnableSingleFileAnalysis>
+    </PropertyGroup>
+  <PropertyGroup>
+    <PublishAot>true</PublishAot>
+    <!-- Necessary before Avalonia 12.0, was used for accessiblity APIs -->
+    <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+  </PropertyGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\Icon\Minecraft\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
+  </ItemGroup>
     <PropertyGroup>
       <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
     </PropertyGroup>
@@ -21,7 +42,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
 
     <ItemGroup>

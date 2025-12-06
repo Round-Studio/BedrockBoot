@@ -25,7 +25,6 @@ sealed class Program
     public static void Main(string[] args)
     {
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
-		Console.OutputEncoding = Encoding.UTF8;
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
     

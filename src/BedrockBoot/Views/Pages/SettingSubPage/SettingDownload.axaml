@@ -31,7 +31,8 @@
                                           Description="首次下载一个版本的时候将会缓存游戏安装包，以方便下次安装相同版本"
                                           Glyph="&#xE7B8;">
                 <ToggleSwitch IsChecked="True"
-                              Name="IsAutoCacheGamePack"></ToggleSwitch>
+                              Name="IsAutoCacheGamePack"
+                              IsCheckedChanged="IsAutoCacheGamePack_OnIsCheckedChanged"></ToggleSwitch>
             </onePointControls:SettingCard>
             
             <onePointControls:SettingCard Margin="5, 0, 5, 10"

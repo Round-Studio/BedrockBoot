@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
@@ -26,18 +27,22 @@ public partial class MainPage : UserControl
 
     private async void Update()
     {
-        var result = await CheckUpdate.Update();
-        DialogHost.Show(new DialogInfo()
+        try
         {
-            Content = $"我们有新的更新：\n\n{result.Body}",
-            Title = $"更新 {result.TagName}",
-            CloseButtonText = "现在更新",
-            PrimaryButtonText = "取消",
-            CloseAction = () =>
+            var result = await CheckUpdate.Update();
+            DialogHost.Show(new DialogInfo()
             {
-                TaskDownloadUpdateFileItem.Update(result);
-            }
-        });
+                Content = $"我们有新的更新：\n\n{result.Body}",
+                Title = $"更新 {result.TagName}",
+                CloseButtonText = "现在更新",
+                PrimaryButtonText = "取消",
+                CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"更新失败：{ex.Message}");
+        }
     }
 
     private void SelTag_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<linker>
+	<assembly fullname="BedrockBoot">
+		<type fullname="BedrockBoot.ViewModels*" preserve="all"/>
+	</assembly>
+		<assembly fullname="OnePointUI.Avalonia" preserve="all" />
+</linker>

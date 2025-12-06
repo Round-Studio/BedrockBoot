@@ -9,6 +9,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum.Game;
+using BedrockBoot.Base.JsonContext;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockLauncher.Core;
@@ -222,7 +223,7 @@ public partial class TaskDownloadGameItem : UserControl
 
             var entry = new ConfigEntity<List<GameFileInfo>>(Path.Combine(InstallFolder, "bedrock_versions", GameName,
                 "config",
-                "BedrockBoot2", "index.json"));
+                "BedrockBoot2", "index.json"),BedrockBootJsonContext.Default.ListGameFileInfo);
 
             entry.Data = FileList;
             entry.Save();

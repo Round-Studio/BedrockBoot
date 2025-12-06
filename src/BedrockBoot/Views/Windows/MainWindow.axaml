@@ -13,6 +13,7 @@
                 Width="900" Height="520"
                 MinWidth="900" MinHeight="520"
                 Closing="Window_OnClosing"
+                x:CompileBindings="True"
                 Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
                 Title="BedrockBoot">
         <windowFrame:OnePointWindow.TitleBarContent>

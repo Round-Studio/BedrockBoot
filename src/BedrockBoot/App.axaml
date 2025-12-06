@@ -3,9 +3,7 @@
              x:Class="BedrockBoot.App"
              xmlns:local="using:BedrockBoot"
              xmlns:core="clr-namespace:OnePointUI.Avalonia.Style.Core;assembly=OnePointUI.Avalonia"
-             RequestedThemeVariant="Dark"
-             x:CompileBindings="True"
-			 >
+             RequestedThemeVariant="Dark">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>

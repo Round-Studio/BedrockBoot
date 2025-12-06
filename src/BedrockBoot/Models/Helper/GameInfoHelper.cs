@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum.Game;
-using BedrockBoot.Base.JsonContext;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
@@ -52,15 +49,14 @@ public class GameInfoHelper
     {
         var bedrockBootJson = Path.Combine(gamePath, "config", "BedrockBoot2", "config.json");
         ConfigEntity<VersionConfig> bodyConfig = null;
-        var config = BedrockBootJsonContext.Default.VersionConfig;
-        
+
         if (!File.Exists(bedrockBootJson)) // 没有 BedrockBoot 2 的配置文件时
         {
             Directory.CreateDirectory(Path.Combine(gamePath, "config", "BedrockBoot2"));
-            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson,BedrockBootJsonContext.Default.VersionConfig);
+            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);
             bodyConfig.Load();
 
-            var oldBedrockBootConfig = new ConfigEntity<VersionInfo>(Path.Combine(gamePath, "version.json"),BedrockBootJsonContext.Default.VersionInfo);
+            var oldBedrockBootConfig = new ConfigEntity<VersionInfo>(Path.Combine(gamePath, "version.json"));
             oldBedrockBootConfig.Load();
 
             bodyConfig.Data.Info = new VersionConfig.VersionInfo()
@@ -75,7 +71,7 @@ public class GameInfoHelper
         }
         else
         {
-            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson,BedrockBootJsonContext.Default.VersionConfig);
+            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);
             bodyConfig.Load();
         }
 
@@ -93,7 +89,7 @@ public class GameInfoHelper
         if (string.IsNullOrEmpty(File.ReadAllText(indexJson)))
             return false;
 
-        var body = new ConfigEntity<List<GameFileInfo>>(indexJson,BedrockBootJsonContext.Default.ListGameFileInfo);
+        var body = new ConfigEntity<List<GameFileInfo>>(indexJson);
         body.Load();
 
         if (body.Data.Count <= 0)
@@ -109,7 +105,7 @@ public class GameInfoHelper
         if (!Directory.Exists(Path.Combine(config.VersionPath, "config", "BedrockBoot2")))
             Directory.CreateDirectory(Path.Combine(config.VersionPath, "config", "BedrockBoot2"));
 
-        var cfg = new ConfigEntity<VersionConfig>(bedrockBootJson,BedrockBootJsonContext.Default.VersionConfig);
+        var cfg = new ConfigEntity<VersionConfig>(bedrockBootJson);
         cfg.Data = config;
         cfg.Save();
     }

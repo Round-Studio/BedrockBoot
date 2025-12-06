@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -22,22 +23,32 @@ public partial class MainPage : UserControl
         IsEditMode = true;
         SelTag_OnSelectionChanged(null, null);
 
+#if !DEBUG
         Update();
+#endif 
     }
 
-    private async void Update()
+    public static async Task Update(bool isShowNeo = false)
     {
         try
         {
             var result = await CheckUpdate.Update();
-            DialogHost.Show(new DialogInfo()
-            {
-                Content = $"我们有新的更新：\n\n{result.Body}",
-                Title = $"更新 {result.TagName}",
-                CloseButtonText = "现在更新",
-                PrimaryButtonText = "取消",
-                CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
-            });
+            if (result != null)
+                DialogHost.Show(new DialogInfo()
+                {
+                    Content = $"我们有新的更新：\n\n{result.Body}",
+                    Title = $"更新 {result.TagName}",
+                    CloseButtonText = "现在更新",
+                    PrimaryButtonText = "取消",
+                    CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
+                });
+            else if(isShowNeo)
+                DialogHost.Show(new DialogInfo()
+                {
+                    Content = $"当前已是最新版本",
+                    Title = $"检查更新",
+                    CloseButtonText = "确定"
+                });
         }
         catch (Exception ex)
         {

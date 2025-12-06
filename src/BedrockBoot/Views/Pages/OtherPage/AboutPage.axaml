@@ -68,7 +68,9 @@
                                           Header="内部版本号"
                                           Description="1.0.0.0">
                 <Button Padding="8"
-                        IsEnabled="False">检查更新</Button>
+                        Height="36" Width="100"
+                        Name="CheckUpdateBtn"
+                        Click="CheckUpdateBtn_OnClick">检查更新</Button>
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

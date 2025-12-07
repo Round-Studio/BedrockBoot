@@ -51,7 +51,7 @@
             <TextBlock Margin="20,1" Text="BedrockBoot 使用了 OnePointUI 作为用户交互风格"></TextBlock>
             <TextBlock Margin="20,1">(https://github.com/Round-Studio/OnePointUI.Avalonia/)</TextBlock>
             
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用了 BedrockLauncher.Core 作为用户交互风格"></TextBlock>
+            <TextBlock Margin="20,1" Text="BedrockBoot 使用了 BedrockLauncher.Core 游戏启动核心"></TextBlock>
             <TextBlock Margin="20,1">(https://github.com/Round-Studio/BedrockLauncher.Core/)</TextBlock>
             
             <onePointControls:SettingCard Margin="5,20,5,5"

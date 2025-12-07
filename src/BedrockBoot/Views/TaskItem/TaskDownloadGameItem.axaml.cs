@@ -15,6 +15,7 @@ using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
 using Round.SDK.Helper.IO;
@@ -67,41 +68,69 @@ public partial class TaskDownloadGameItem : UserControl
             var path = Path.Combine(InstallFolder, "version_save", $"{BuildInfo.ID}.insPack");
 
             if (!File.Exists(path))
-                await GlobalModel.BedrockCore.GetGamePackage(new GameOnlinePackageOptions()
+                try
                 {
-                    BuildInfo = BuildInfo,
-                    SaveFilePath = path,
-                    DownloadProgress = new Progress<DownloadProgress>(state =>
+                    await GlobalModel.BedrockCore.GetGamePackage(new GameOnlinePackageOptions()
                     {
-                        Console.WriteLine($"{state.Phase} - {state.Progress * 100}");
-
-                        if (state.Phase == DownloadStage.Downloading)
+                        BuildInfo = BuildInfo,
+                        SaveFilePath = path,
+                        DownloadProgress = new Progress<DownloadProgress>(state =>
                         {
-                            Dispatcher.UIThread.Invoke(() =>
+                            Console.WriteLine($"{state.Phase} - {state.Progress * 100}");
+
+                            if (state.Phase == DownloadStage.Downloading)
                             {
-                                if (InsGetUrlBar.IsIndeterminate)
+                                Dispatcher.UIThread.Invoke(() =>
                                 {
-                                    InsGetUrlBar.IsIndeterminate = false;
-                                    InsGetUrlBar.Value = 100;
-                                }
+                                    if (InsGetUrlBar.IsIndeterminate)
+                                    {
+                                        InsGetUrlBar.IsIndeterminate = false;
+                                        InsGetUrlBar.Value = 100;
+                                    }
 
-                                InsDownGameBar.Value = state.Progress * 100;
-                                MainText.Text = $"步骤：下载游戏 ({state.Progress * 100.00:F2}%)";
-                                MainSpeedText.Text = $"{FormatBytes(state.Speed)} / s";
-                            });
-                        }
-                        else if (state.Phase == DownloadStage.Merging)
+                                    InsDownGameBar.Value = state.Progress * 100;
+                                    MainText.Text = $"步骤：下载游戏 ({state.Progress * 100.00:F2}%)";
+                                    MainSpeedText.Text = $"{FormatBytes(state.Speed)} / s";
+                                });
+                            }
+                            else if (state.Phase == DownloadStage.Merging)
+                            {
+                                Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = true);
+                            }
+                            else if (state.Phase == DownloadStage.Merged)
+                            {
+                                Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = false);
+                                Dispatcher.UIThread.Invoke(() => InsMergeBar.Value = 100);
+                            }
+                        }),
+                        DownloadThread = 4
+                    });
+                }
+                catch(Exception ex)
+                {
+                    Dispatcher.UIThread.Invoke(() => 
+                        installed?.Invoke());
+
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        DialogHost.Show(new DialogInfo()
                         {
-                            Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = true);
-                        }
-                        else if (state.Phase == DownloadStage.Merged)
-                        {
-                            Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = false);
-                            Dispatcher.UIThread.Invoke(() => InsMergeBar.Value = 100);
-                        }
-                    }),
-                    DownloadThread = 4
-                });
+                            Title = $"下载错误：{BuildInfo.ID}",
+                            Content = $"抱歉，我们发生了一些错误。\n" +
+                                      $"这可能是微软已经把该版本删除，也有可能是您的网络问题。\n\n" +
+                                      $"{ex.Message}",
+                            CloseButtonText = "确定",
+                            AccountButton = DialogButtons.CloseButton
+                        });
+                    });
+
+                    if (Directory.Exists(Path.Combine(InstallFolder, "bedrock_versions", GameName)))
+                    {
+                        Directory.Delete(Path.Combine(InstallFolder, "bedrock_versions", GameName), true);
+                    }
+                    
+                    return;
+                }
 
             await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions()
             {

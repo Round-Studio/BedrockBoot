@@ -51,7 +51,6 @@
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE70F;"
-                                              IsEnabled="False"
                                               Header="编辑模式"
                                               Description="启动基岩版的创作者编辑模式">
                     <ToggleSwitch Name="InstanceEdit"

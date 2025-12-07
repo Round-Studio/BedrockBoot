@@ -55,6 +55,10 @@ public partial class TaskLaunchGameItem : UserControl
                     CancelBtn.IsEnabled = true;
                 });
 
+                var args = "";
+
+                if (VersionInfo.Config.IsEditModel) args += "minecraft://creator/?Editor=true";
+
                 MinecraftProcess = await GlobalModel.BedrockCore.StartGameAsync(new LaunchOptions()
                 {
                     GameFolder = VersionInfo.VersionPath,
@@ -72,7 +76,8 @@ public partial class TaskLaunchGameItem : UserControl
                     Progress = new Progress<LaunchState>((state =>
                     {
                         Console.WriteLine(state);
-                    }))
+                    })),
+                    LaunchArgs = args
                 });
 
                 if (MinecraftProcess != null && !MinecraftProcess.HasExited)

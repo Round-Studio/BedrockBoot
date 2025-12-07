@@ -34,6 +34,9 @@ public partial class GameItem : UserControl
     {
         Card.Header = VersionInfo.Info.VersionName;
         Card.Description = $"{VersionInfo.Info.VersionType}, {VersionInfo.Info.BuildType}, {VersionInfo.Info.Version}";
+
+        if (VersionInfo.Config.IsEditModel)
+            EditModule.IsVisible = true;
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)

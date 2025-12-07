@@ -168,7 +168,7 @@ public partial class MainManager : BedrockBootPage
         IsEditMode = true;
     }
 
-    public void UpdateGameList()
+    public async Task UpdateGameList()
     {
         if (GlobalModel.Config.Data.GameFolders.Count == 0)
         {
@@ -212,28 +212,24 @@ public partial class MainManager : BedrockBootPage
         }
 
         GamesLoad.IsVisible = true;
-        Task.Run(() =>
+        
+        lst.ToList().ForEach(x =>
         {
-            lst.ToList().ForEach(x =>
+            try
             {
-                try
-                {
-                    var info = GameInfoHelper.GetVersionConfig(x);
-                    Console.WriteLine($"读取到实例：{info.Info.VersionName} : {info.Info.Version}");
+                var info = GameInfoHelper.GetVersionConfig(x);
+                Console.WriteLine($"读取到实例：{info.Info.VersionName} : {info.Info.Version}");
 
-                    Dispatcher.UIThread.Invoke(() => GameList.Children.Add(new GameItem(info)));
-                }
-                catch
-                {
-                    // 忽略加载失败的版本
-                }
-            });
-            Dispatcher.UIThread.Invoke(() =>
+                GameList.Children.Add(new GameItem(info));
+            }
+            catch
             {
-                GamesLoad.IsVisible = false;
-                GameScro.IsVisible = true;
-            });
+                // 忽略加载失败的版本
+            }
         });
+        
+        GamesLoad.IsVisible = false;
+        GameScro.IsVisible = true;
     }
 
     private void AddFolderBtn_OnClick(object? sender, RoutedEventArgs e)

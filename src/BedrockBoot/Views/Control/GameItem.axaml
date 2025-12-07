@@ -11,10 +11,19 @@
                                   Glyph="&#xE7FC;"
                                   IsFontIcon="False"
                                   IsShowActionIcon="False"
-                                  ImageIcon="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock.png"
+                                  ImageIcon="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"
                                   Header="VersionName"
                                   Description="Release Version">
         <StackPanel Orientation="Horizontal">
+            <onePointControls:LabelBox Text="编辑模式"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       Background="Purple"
+                                       Name="EditModule"
+                                       IsVisible="False"
+                                       Margin="0,0,8,0"
+                                       VerticalAlignment="Center"/>
+            
             <Button Width="32" Height="32"
                     Classes="NoBorder"
                     Name="SettingBtn"
@@ -34,6 +43,7 @@
                                                VerticalAlignment="Center"
                                                FontSize="16"
                                                Margin="0,0,8,0"></onePointControls:FontIcon>
+                    
                     <TextBlock Text="启动"
                                VerticalAlignment="Center"/>
                 </StackPanel>

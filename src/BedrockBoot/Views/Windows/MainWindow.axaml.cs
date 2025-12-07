@@ -37,12 +37,6 @@ public partial class MainWindow : OnePointWindow
                 $@"Main Window: Width {GlobalModel.Config.Data.WindowInfo.Width}, Height {GlobalModel.Config.Data.WindowInfo.Height}");
         }
 
-        Task.Run(() =>
-        {
-            Thread.Sleep(1000);
-            throw new NullReferenceException();
-        });
-
 #if DEBUG
         DebugModule.IsVisible = true;
 #endif

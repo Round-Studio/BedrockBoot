@@ -7,7 +7,6 @@ using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.TaskItem;
-using BedrockLauncher.Core.JsonHandle;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -16,16 +15,16 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawDownloadGameContent : UserControl
 {
-    public VersionInformation VersionInformation { get; set; }
+    public BuildInfo BuildInfo { get; set; }
 
     public DrawDownloadGameContent()
     {
         InitializeComponent();
     }
 
-    public DrawDownloadGameContent(VersionInformation info) : this()
+    public DrawDownloadGameContent(BuildInfo info) : this()
     {
-        VersionInformation = info;
+        BuildInfo = info;
 
         UpdateUI();
     }
@@ -36,7 +35,7 @@ public partial class DrawDownloadGameContent : UserControl
             InstallFolder.Items.Add($"[{folder.GameFolderName}] {folder.GameFolderPath}"));
 
         InstallFolder.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
-        InstallName.Text = VersionInformation.ID;
+        InstallName.Text = BuildInfo.ID;
     }
 
     private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -70,7 +69,7 @@ public partial class DrawDownloadGameContent : UserControl
                     
                         UpdateUI();
                         
-                        TaskDownloadGameItem.Install(VersionInformation,
+                        TaskDownloadGameItem.Install(BuildInfo,
                             GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath, InstallName.Text);
         
                         GlobalModel.MainWindow.CloseDraw();
@@ -80,7 +79,7 @@ public partial class DrawDownloadGameContent : UserControl
         }
         else
         {
-            TaskDownloadGameItem.Install(VersionInformation,
+            TaskDownloadGameItem.Install(BuildInfo,
                 GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath, InstallName.Text);
         
             GlobalModel.MainWindow.CloseDraw();

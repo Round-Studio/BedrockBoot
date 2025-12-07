@@ -40,21 +40,21 @@
                     </DockPanel>
                     
                     <DockPanel>
+                        <TextBlock Width="100">合并文件</TextBlock>
+                        <ProgressBar HorizontalAlignment="Stretch"
+                                     Name="InsMergeBar"></ProgressBar>
+                    </DockPanel>
+                    
+                    <DockPanel>
                         <TextBlock Width="100">解压文件</TextBlock>
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsUnZipBar"></ProgressBar>
                     </DockPanel>
                     
-                    <DockPanel>
+                    <DockPanel Name="InsInstallGamePanel">
                         <TextBlock Width="100">部署游戏</TextBlock>
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsInstallGameBar"></ProgressBar>
-                    </DockPanel>
-                    
-                    <DockPanel>
-                        <TextBlock Width="100">构建引索</TextBlock>
-                        <ProgressBar HorizontalAlignment="Stretch"
-                                     Name="InsBuildIndex"></ProgressBar>
                     </DockPanel>
                     
                     <Grid ColumnDefinitions="*,*">

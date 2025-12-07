@@ -36,6 +36,7 @@
                     Classes="NoBorder"
                     Width="32" Height="32"
                     Name="CancelBtn"
+                    IsEnabled="False"
                     Click="CancelBtn_OnClick">
                 <onePointControls:FontIcon Glyph="&#xE711;"
                                            Foreground="DarkRed"

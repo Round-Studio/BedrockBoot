@@ -35,6 +35,7 @@
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.0-rc.1" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Downloader" Version="4.0.3" />
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
@@ -42,7 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BedrockLauncher.Core\BedrockLauncher.Core\BedrockLauncher.Core.csproj" />
       <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />

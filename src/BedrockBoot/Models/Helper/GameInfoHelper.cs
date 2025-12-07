@@ -21,18 +21,18 @@ public class GameInfoHelper
         return JsonSerializer.Deserialize<VersionInfo>(json);
     }
 
-    public static VersionType GetGameVersionType(string typeStr)
+    public static MinecraftGameTypeVersion GetGameVersionType(string typeStr)
     {
         switch (typeStr)
         {
             case "Release":
-                return VersionType.Release;
+                return MinecraftGameTypeVersion.Release;
             case "Preview":
-                return VersionType.Preview;
+                return MinecraftGameTypeVersion.Preview;
             case "Beta":
-                return VersionType.Beta;
+                return MinecraftGameTypeVersion.Beta;
             default:
-                return VersionType.Release;
+                return MinecraftGameTypeVersion.Release;
         }
     }
 
@@ -63,7 +63,7 @@ public class GameInfoHelper
             {
                 Version = oldBedrockBootConfig.Data.RealVersion,
                 VersionName = oldBedrockBootConfig.Data.VersionName,
-                BuildType = GameBuildType.Uwp, // 旧版 BedrockBoot 也只能安装 UWP 版本，所以这个鬼地方写死就行了 orz...
+                BuildType = MinecraftBuildTypeVersion.UWP, // 旧版 BedrockBoot 也只能安装 UWP 版本，所以这个鬼地方写死就行了 orz...
                 VersionType = GetGameVersionType(oldBedrockBootConfig.Data.Type)
             };
 

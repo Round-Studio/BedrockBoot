@@ -33,7 +33,7 @@ public partial class GameItem : UserControl
     public void Update()
     {
         Card.Header = VersionInfo.Info.VersionName;
-        Card.Description = $"{VersionInfo.Info.VersionType}, {VersionInfo.Info.Version}";
+        Card.Description = $"{VersionInfo.Info.VersionType}, {VersionInfo.Info.BuildType}, {VersionInfo.Info.Version}";
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)

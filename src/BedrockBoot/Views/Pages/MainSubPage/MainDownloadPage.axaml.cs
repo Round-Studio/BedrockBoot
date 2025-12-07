@@ -11,10 +11,11 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Enum.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
-using BedrockLauncher.Core.JsonHandle;
-using BedrockLauncher.Core.Network;
+using BedrockLauncher.Core;
+using BedrockLauncher.Core.VersionJsons;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
@@ -22,18 +23,18 @@ namespace BedrockBoot.Views.Pages.MainSubPage;
 public partial class MainDownloadPage : BedrockBootPage
 {
     private CancellationTokenSource _currentLoadingCancellation = new();
-    private string _type = "Release";
-    private string _key = "*";
+    private MinecraftGameTypeVersion _type = MinecraftGameTypeVersion.Release;
+    private string _key = "";
     public bool IsEdit { get; set; } = false;
 
     public MainDownloadPage()
     {
         InitializeComponent();
-        UpdateUI();
+        UpdateUI(MinecraftGameTypeVersion.Release);
         IsEdit = true;
     }
 
-    public async void UpdateUI(string type = "*", string key = "*")
+    public async void UpdateUI(MinecraftGameTypeVersion type, string key = "")
     {
         // 取消之前的加载任务
         _currentLoadingCancellation.Cancel();
@@ -64,7 +65,7 @@ public partial class MainDownloadPage : BedrockBootPage
         }
     }
 
-    private async Task LoadVersionsAsync(string type, string key, CancellationToken cancellationToken)
+    private async Task LoadVersionsAsync(MinecraftGameTypeVersion type, string key, CancellationToken cancellationToken)
     {
         Console.WriteLine($@"Version Type: {type} | Key Word: {key}");
 
@@ -74,28 +75,28 @@ public partial class MainDownloadPage : BedrockBootPage
             try
             {
                 Console.WriteLine(@"正在加载基岩版版本列表...");
-                var lst = VersionHelper.GetVersions(
-                    "https://raw.gitcode.com/gcw_lJgzYtGB/-MineCraft-Bedrock-Download-SU/raw/main/bedrock.json");
+                var lst = VersionsHelper.GetBuildDatabaseAsync(
+                    "https://data.mcappx.com/v2/bedrock.json").Result.Builds;
                 Console.WriteLine(@"基岩版版本列表加载完成");
 
                 Console.WriteLine(@"开始序列化");
 
                 // 预处理：为每个项预先计算 Version 对象
-                var versionCache = new List<(VersionInformation item, Version? version)>();
+                var versionCache = new List<(BuildInfo item, Version? version)>();
 
                 foreach (var item in lst)
                 {
                     // 检查取消请求
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (string.IsNullOrEmpty(item.ID)) continue;
-                    if (item.Variations.Count <= 0) continue;
+                    if (string.IsNullOrEmpty(item.Value.ID)) continue;
+                    if (item.Value.Variations.Count <= 0) continue;
 
                     bool isCon = false;
 
-                    foreach (var v in item.Variations)
+                    foreach (var v in item.Value.Variations)
                     {
-                        if (v.UpdateIds.Count <= 0) isCon = true;
+                        if (v.MetaData.Count <= 0) isCon = true;
                     }
 
                     if (isCon) continue;
@@ -103,22 +104,22 @@ public partial class MainDownloadPage : BedrockBootPage
                     Version? version = null;
                     try
                     {
-                        version = new Version(item.ID);
+                        version = new Version(item.Value.ID);
                     }
                     catch
                     {
                     }
 
-                    if (item.Type == type || type == "*")
+                    if (item.Value.Type == type || type == null)
                     {
-                        if (key != "*")
+                        if (key != null)
                         {
-                            if (item.ID.Contains(key))
-                                versionCache.Add((item, version));
+                            if (item.Value.ID.Contains(key))
+                                versionCache.Add((item.Value, version));
                         }
                         else
                         {
-                            versionCache.Add((item, version));
+                            versionCache.Add((item.Value, version));
                         }
                     }
                 }
@@ -149,12 +150,12 @@ public partial class MainDownloadPage : BedrockBootPage
             catch (WebException ex)
             {
                 Console.WriteLine($@"网络错误: {ex.Message}");
-                return (new List<VersionInformation>(), false);
+                return (new List<BuildInfo>(), false);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($@"处理版本数据时出错: {ex.Message}");
-                return (new List<VersionInformation>(), false);
+                return (new List<BuildInfo>(), false);
             }
         });
 
@@ -165,7 +166,7 @@ public partial class MainDownloadPage : BedrockBootPage
         await UpdateUIAsync(versions, hasItems);
     }
 
-    private async Task UpdateUIAsync(List<VersionInformation> versions, bool hasItems)
+    private async Task UpdateUIAsync(List<BuildInfo> versions, bool hasItems)
     {
         Console.WriteLine(@"开始动态修改 UI");
 
@@ -187,7 +188,7 @@ public partial class MainDownloadPage : BedrockBootPage
         Console.WriteLine(@"UI 修改完毕");
     }
 
-    private async Task AddItemsBatchAsync(List<VersionInformation> versions)
+    private async Task AddItemsBatchAsync(List<BuildInfo> versions)
     {
         const int batchSize = 10; // 每批添加的项目数量
         var totalCount = versions.Count;
@@ -204,7 +205,8 @@ public partial class MainDownloadPage : BedrockBootPage
                     Header = x.ID,
                     Description = string.Join(", ", new string?[]
                     {
-                        x.Type,
+                        x.Type.ToString(),
+                        x.BuildType.ToString(),
                         x.Date
                     }),
                     IsClickable = true,
@@ -249,7 +251,7 @@ public partial class MainDownloadPage : BedrockBootPage
     {
         if (IsEdit && ComboBox.SelectedIndex >= 0)
         {
-            _type = new string[] { "*","Release", "Preview", "Beta" }[ComboBox.SelectedIndex];
+            _type = (MinecraftGameTypeVersion)ComboBox.SelectedIndex;
             UpdateUI(_type, _key);
         }
     }

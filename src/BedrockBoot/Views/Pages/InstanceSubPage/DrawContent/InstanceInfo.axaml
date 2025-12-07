@@ -23,6 +23,7 @@
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xEB9F;"
+                                              IsEnabled="False"
                                               Header="图标"
                                               Description="实例在启动器中显示的图标">
                     <ComboBox Width="400"
@@ -40,6 +41,7 @@
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xEC06;"
+                                              IsEnabled="False"
                                               Header="参数"
                                               Description="启动游戏时的额外命令行参数">
                     <TextBox Width="400"
@@ -49,6 +51,7 @@
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE70F;"
+                                              IsEnabled="False"
                                               Header="编辑模式"
                                               Description="启动基岩版的创作者编辑模式">
                     <ToggleSwitch Name="InstanceEdit"
@@ -57,6 +60,7 @@
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE756;"
+                                              IsEnabled="False"
                                               Header="控制台"
                                               Description="启动时拉起游戏控制台">
                     <ToggleSwitch Name="InstanceConsole"
@@ -69,6 +73,7 @@
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE7B8;"
+                                              IsEnabled="False"
                                               Header="版本隔离"
                                               Description="启用版本隔离（仅隔离存档，资源包等。模组文件无需隔离）">
                     <ToggleSwitch IsChecked="True"

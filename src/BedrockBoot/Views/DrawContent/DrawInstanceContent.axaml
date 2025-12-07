@@ -13,10 +13,10 @@
                     SelectionChanged="InstanceTabControl_OnSelectionChanged"
                     Margin="10,0,10,0">
             <TabItem Header="实例详情" Tag="Info"></TabItem>
-            <TabItem Header="模组管理" Tag="Mods"></TabItem>
-            <TabItem Header="资源包 / 行为包" Tag="Pack"></TabItem>
-            <TabItem Header="存档" Tag="Save"></TabItem>
-            <TabItem Header="操作" Tag="Controls"></TabItem>
+            <TabItem Header="模组管理" Tag="Mods" IsEnabled="False"></TabItem>
+            <TabItem Header="资源包 / 行为包" Tag="Pack" IsEnabled="False"></TabItem>
+            <TabItem Header="存档" Tag="Save" IsEnabled="False"></TabItem>
+            <TabItem Header="操作" Tag="Controls" IsEnabled="False"></TabItem>
         </TabControl>
         
         <StackPanel Grid.Row="0"

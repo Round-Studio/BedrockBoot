@@ -17,13 +17,13 @@ public class VersionConfig
         public string Version { get; set; }
     
         [JsonPropertyName("buildType")]
-        public GameBuildType BuildType { get; set; }
+        public MinecraftBuildTypeVersion BuildType { get; set; }
     
         [JsonPropertyName("versionName")]
         public string VersionName { get; set; }
     
         [JsonPropertyName("versionType")]
-        public VersionType VersionType { get; set; }
+        public MinecraftGameTypeVersion VersionType { get; set; }
     }
     public class VersionConfigEntry
     {

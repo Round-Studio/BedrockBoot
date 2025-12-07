@@ -36,15 +36,14 @@
                       Margin="5,0"
                       VerticalAlignment="Center"
                       Height="32"
-                      SelectedIndex="0"
+                      SelectedIndex="1"
                       Name="ComboBox"
                       SelectionChanged="ComboBox_OnSelectionChanged"
                       VerticalContentAlignment="Center"
                       HorizontalAlignment="Stretch">
                 <ComboBox.Items>
-                    <ComboBoxItem Content="所有"></ComboBoxItem>
-                    <ComboBoxItem Content="正式版"></ComboBoxItem>
                     <ComboBoxItem Content="预览版"></ComboBoxItem>
+                    <ComboBoxItem Content="正式版"></ComboBoxItem>
                     <ComboBoxItem Content="Beta 版"></ComboBoxItem>
                 </ComboBox.Items>
             </ComboBox>

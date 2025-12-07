@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Avalonia;
+using Windows.Management.Deployment;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockLauncher.Core;
-using BedrockLauncher.Core.JsonHandle;
-using BedrockLauncher.Core.Native;
-using BedrockLauncher.Core.Network;
+using BedrockLauncher.Core.CoreOption;
+using BedrockLauncher.Core.Utils;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
@@ -26,212 +25,179 @@ public partial class TaskDownloadGameItem : UserControl
 {
     public string InstallFolder { get; set; }
     public string GameName { get; set; }
-    public VersionInformation VersionInformation { get; set; }
+    public BuildInfo BuildInfo { get; set; }
     public List<GameFileInfo> FileList { get; set; } = new();
     public TaskDownloadGameItem()
     {
         InitializeComponent();
     }
 
-    public TaskDownloadGameItem(VersionInformation info, string dir, string gameName) : this()
+    public TaskDownloadGameItem(BuildInfo info, string dir, string gameName) : this()
     {
-        VersionInformation = info;
+        BuildInfo = info;
         InstallFolder = dir;
         GameName = gameName;
     }
+    static string FormatBytes(double bytes)
+    {
+        string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
+        int counter = 0;
+        double number = bytes;
 
+        while (number >= 1024 && counter < suffixes.Length - 1)
+        {
+            number /= 1024;
+            counter++;
+        }
+
+        return $"{number:F1} {suffixes[counter]}";
+    }
     public void Install(Action installed)
     {
-        CardTitle.Text = $"下载游戏 {VersionInformation.ID}";
+        CardTitle.Text = $"下载游戏 {BuildInfo.ID}";
+
+        InsGetUrlBar.IsIndeterminate = true;
+        if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
+            InsInstallGamePanel.IsVisible = false;
         
-        var cls = new DownloadSpeedCalculator();
-        InstallCallback callback = new InstallCallback()
+        Task.Run(async () =>
         {
-            zipProgress = new Progress<ZipProgress>((progress =>
-            {
-                Console.WriteLine(progress.ToString());
-                FileList.Add(new GameFileInfo()
-                {
-                    FilePath = progress.CurrentFileName
-                });
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    InsUnZipBar.Value = progress.Percentage;
-                    MainText.Text = $"步骤：解压文件 ({progress.Percentage:F2}%)";
-                });
-            })),
-            downloadProgress = (new Progress<DownloadProgress>((p =>
-            {
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    InsDownGameBar.Value = p.ProgressPercentage;
-                    MainText.Text = $"步骤：下载文件 ({p.ProgressPercentage:F2}%)";
-                    MainSpeedText.Text = $"{(int)cls.UpdateSpeed(p.DownloadedBytes, p.TotalBytes)} Kb/s";
-                });
+            if (!Directory.Exists(Path.Combine(InstallFolder, "version_save")))
+                Directory.CreateDirectory(Path.Combine(InstallFolder, "version_save"));
+            var path = Path.Combine(InstallFolder, "version_save", $"{BuildInfo.ID}.insPack");
 
-                if (p.TotalBytes > 0)
+            if (!File.Exists(path))
+                await GlobalModel.BedrockCore.GetGamePackage(new GameOnlinePackageOptions()
                 {
-                    Console.WriteLine(
-                        $"下载进度: {p.ProgressPercentage:F2}% ({p.DownloadedBytes / (1024.0 * 1024):F2} MB / {p.TotalBytes / (1024.0 * 1024):F2} MB)");
-                }
-                else
-                {
-                    Console.WriteLine($"已下载: {p.DownloadedBytes / (1024.0 * 1024):F2} MB (总大小未知)");
-                }
-            }))),
-            registerProcess_percent = ((s, u) =>
-            {
-                Console.WriteLine(s + u);
-
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    InsInstallGameBar.Value = u;
-                    MainText.Text = $"步骤：部署游戏 ({s} [{u}%])";
-                });
-            }),
-            result_callback = ((status, exception) =>
-            {
-                if (status == AsyncStatus.Error)
-                {
-                    Console.WriteLine(exception);
-                    Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo()
+                    BuildInfo = BuildInfo,
+                    SaveFilePath = path,
+                    DownloadProgress = new Progress<DownloadProgress>(state =>
                     {
-                        Title = "发生错误",
-                        Content = $"很抱歉，在下载游戏 {VersionInformation.ID} 过程中发生了点错误。\n" +
-                                  $"您可以尝试切换需要下载的版本，也可以尝试更换网络环境。\n" +
-                                  $"\n" +
-                                  $"{exception.Message}",
-                        CloseButtonText = "确定"
-                    }));
-                }
+                        Console.WriteLine($"{state.Phase} - {state.Progress * 100}");
 
-                if (status == AsyncStatus.Completed)
-                    GameInfoHelper.SaveVersionConfig(new VersionConfig()
-                    {
-                        VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
-                        Info = new VersionConfig.VersionInfo()
+                        if (state.Phase == DownloadStage.Downloading)
                         {
-                            BuildType = GameBuildType.Uwp,
-                            Version = VersionInformation.ID,
-                            VersionName = GameName,
-                            VersionType = GameInfoHelper.GetGameVersionType(VersionInformation.Type)
+                            Dispatcher.UIThread.Invoke(() =>
+                            {
+                                if (InsGetUrlBar.IsIndeterminate)
+                                {
+                                    InsGetUrlBar.IsIndeterminate = false;
+                                    InsGetUrlBar.Value = 100;
+                                }
+
+                                InsDownGameBar.Value = state.Progress * 100;
+                                MainText.Text = $"步骤：下载游戏 ({state.Progress * 100.00:F2}%)";
+                                MainSpeedText.Text = $"{FormatBytes(state.Speed)} / s";
+                            });
                         }
-                    });
-
-                Dispatcher.UIThread.Invoke(() => BuildIndex(installed));
-            }),
-            install_states = (states =>
-            {
-                Console.WriteLine(states);
-
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    if (states == InstallStates.getingDownloadUri)
-                        InsGetUrlBar.IsIndeterminate = true;
-                    else if (states == InstallStates.gotDownloadUri)
-                    {
-                        InsGetUrlBar.Value = 100;
-                        InsGetUrlBar.IsIndeterminate = false;
-                        InsDownGameBar.IsIndeterminate = true;
-                    }
-                    else if (states == InstallStates.downloading)
-                    {
-                        InsDownGameBar.IsIndeterminate = false;
-                    }
-                    else if (states == InstallStates.downloaded)
-                    {
-                        InsUnZipBar.IsIndeterminate = true;
-                        MainSpeedText.Text = $"0 B/s";
-                    }
-                    else if (states == InstallStates.unzipng)
-                    {
-                        InsUnZipBar.IsIndeterminate = false;
-                    }
-                    else if (states == InstallStates.registered)
-                    {
-                        InsInstallGameBar.IsIndeterminate = true;
-                    }
-                    else if (states == InstallStates.registering)
-                    {
-                        InsInstallGameBar.IsIndeterminate = false;
-                    }
+                        else if (state.Phase == DownloadStage.Merging)
+                        {
+                            Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = true);
+                        }
+                        else if (state.Phase == DownloadStage.Merged)
+                        {
+                            Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = false);
+                            Dispatcher.UIThread.Invoke(() => InsMergeBar.Value = 100);
+                        }
+                    }),
+                    DownloadThread = 4
                 });
-            })
-        };
 
-        Task.Run(() =>
-        {
-            try
+            await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions()
             {
-                GlobalModel.BedrockCore.InstallVersion(VersionInformation.Variations[0],
-                    GameInfoHelper.GetGameVersionType(VersionInformation.Type), $"./{VersionInformation.ID}.appx",
-                    GameName,
-                    Path.Combine(InstallFolder, "bedrock_versions", GameName), callback);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                Dispatcher.UIThread.Invoke(() => BuildIndex(installed));
-                Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo()
+                FileFullPath = path,
+                GameName = GameName,
+                InstallDstFolder = Path.Combine(InstallFolder, "bedrock_versions", GameName),
+                GameTypeVersion = BuildInfo.Type,
+                Type = BuildInfo.BuildType,
+                ExtractionProgress = new Progress<DecompressProgress>(ext =>
                 {
-                    Title = "发生错误",
-                    Content = $"很抱歉，在下载游戏 {VersionInformation.ID} 过程中发生了点错误。\n" +
-                              $"您可以尝试切换需要下载的版本，也可以尝试更换网络环境。\n" +
-                              $"\n" +
-                              $"{exception.Message}",
-                    CloseButtonText = "确定"
-                }));
-            }
-        });
-    }
-
-    public void BuildIndex(Action installed)
-    {
-        InsBuildIndex.Maximum = FileList.Count;
-        MainText.Text = $"步骤：构建引索 (0%)";
-        InsInstallGameBar.IsIndeterminate = false;
-    
-        Task.Run(() =>
-        {
-            int processedCount = 0;
-            int totalFiles = FileList.Count;
-        
-            FileList.ForEach(file =>
-            {
-                if (File.Exists(Path.Combine(InstallFolder, "bedrock_versions", GameName, file.FilePath)))
-                    file.Hash = FileHashCalculator.CalculateHash(
-                        Path.Combine(InstallFolder, "bedrock_versions", GameName, file.FilePath),
-                        FileHashCalculator.HashType.MD5);
-            
-                processedCount++;
-            
-                // 每处理20个文件或处理完所有文件时更新进度
-                if (processedCount % 20 == 0 || processedCount == totalFiles)
-                {
-                    // 计算进度百分比
-                    double progress = (double)processedCount / totalFiles * 100;
-                
-                    // 由于在后台线程，需要使用Dispatcher来更新UI
+                    FileList.Add(new GameFileInfo()
+                    {
+                        FilePath = ext.FileName
+                    });
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        InsBuildIndex.Value = processedCount;
-                        MainText.Text = $"步骤：构建引索 ({progress:F1}%)";
+                        InsUnZipBar.Value = ext.Percentage;
+                        MainText.Text = $"步骤：解压文件 ({ext.Percentage:F2}%)";
                     });
-                }
+                }),
+                DeployProgress = new Progress<DeploymentProgress>(((s) =>
+                {
+                    Console.WriteLine($"{s.state} - {s.percentage}");
+
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        InsInstallGameBar.Value = s.percentage;
+                        MainText.Text = $"步骤：部署游戏 ({s} [{s.percentage}%])";
+                    });
+                })),
+                InstallStates = new Progress<InstallStates>((states) =>
+                {
+                    Console.WriteLine(states);
+
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        if (states == InstallStates.Extracting)
+                        {
+                            InsUnZipBar.IsIndeterminate = false;
+                        }
+                        else if (states == InstallStates.Extracted)
+                        {
+                            InsUnZipBar.Value = 100;
+
+                            if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
+                            {
+                                GameInfoHelper.SaveVersionConfig(new VersionConfig()
+                                {
+                                    VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
+                                    Info = new VersionConfig.VersionInfo()
+                                    {
+                                        BuildType = BuildInfo.BuildType,
+                                        Version = BuildInfo.ID,
+                                        VersionName = GameName,
+                                        VersionType = BuildInfo.Type
+                                    }
+                                });
+
+                                Dispatcher.UIThread.Invoke(() => 
+                                    installed?.Invoke());
+                            }
+                        }
+                        else if (states == InstallStates.Cleared)
+                        {
+                            InsInstallGameBar.IsIndeterminate = true;
+                        }
+                        else if (states == InstallStates.Registering)
+                        {
+                            InsInstallGameBar.IsIndeterminate = false;
+                        }
+                        else if (states == InstallStates.Registered)
+                        {
+                            InsInstallGameBar.Value = 100;
+                            
+                            GameInfoHelper.SaveVersionConfig(new VersionConfig()
+                            {
+                                VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
+                                Info = new VersionConfig.VersionInfo()
+                                {
+                                    BuildType = BuildInfo.BuildType,
+                                    Version = BuildInfo.ID,
+                                    VersionName = GameName,
+                                    VersionType = BuildInfo.Type
+                                }
+                            });
+
+                            Dispatcher.UIThread.Invoke(() => 
+                                installed?.Invoke());
+                        }
+                    });
+                })
             });
-
-            var entry = new ConfigEntity<List<GameFileInfo>>(Path.Combine(InstallFolder, "bedrock_versions", GameName,
-                "config",
-                "BedrockBoot2", "index.json"));
-
-            entry.Data = FileList;
-            entry.Save();
-
-            installed?.Invoke();
         });
     }
 
-    public static void Install(VersionInformation info, string dir, string gameName)
+    public static void Install(BuildInfo info, string dir, string gameName)
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
         {

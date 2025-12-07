@@ -221,10 +221,7 @@ public partial class MainManager : BedrockBootPage
                     var info = GameInfoHelper.GetVersionConfig(x);
                     Console.WriteLine($"读取到实例：{info.Info.VersionName} : {info.Info.Version}");
 
-                    if (!GameInfoHelper.IsInvalidVersion(info))
-                        Directory.Delete(x, true);
-                    else
-                        Dispatcher.UIThread.Invoke(() => GameList.Children.Add(new GameItem(info)));
+                    Dispatcher.UIThread.Invoke(() => GameList.Children.Add(new GameItem(info)));
                 }
                 catch
                 {

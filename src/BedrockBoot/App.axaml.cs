@@ -57,7 +57,7 @@ public partial class App : Application
             var time = DateTime.Now;
             Dispatcher.UIThread.Invoke(() =>
             {
-                new ExceptionWindow().Show();
+                new ExceptionWindow(ex.ToString()).Show();
             });
         }
         catch (Exception dialogEx)

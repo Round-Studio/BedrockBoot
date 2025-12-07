@@ -23,7 +23,7 @@
     </windowFrame:OnePointWindow.TitleBarContent>
     
     <windowFrame:OnePointWindow.MainContent>
-        <Grid Margin="20">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -32,7 +32,7 @@
             </Grid.RowDefinitions>
             
             <!-- 错误图标和标题 -->
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="2,0,0,0">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="22,20,20,0">
                 <onePointControls:FontIcon Glyph="&#xE814;" 
                                            FontSize="38" 
                                            Foreground="Orange"
@@ -48,32 +48,41 @@
             <TextBlock Grid.Row="1" 
                        Text="BedrockBoot 遇到了一个无法恢复的错误，需要关闭。"
                        Foreground="Gray"
-                       Margin="0,5,0,15"/>
+                       Margin="20,5,20,0"/>
             
             <!-- 错误详情区域 -->
-            <Border Grid.Row="2" 
-                    Margin="0,0,0,20">
-                
-            </Border>
+            <ScrollViewer Grid.Row="2" 
+                          Margin="5,0,5,20">
+                <StackPanel Margin="15">
+                    <TextBlock TextWrapping="WrapWithOverflow"
+                               FontFamily="Consolas"
+                               Name="LogBox"></TextBlock>
+                </StackPanel>
+            </ScrollViewer>
             
             <!-- 操作按钮 -->
             <StackPanel Grid.Row="3" 
+                        Margin="20"
                         Orientation="Horizontal" 
                         HorizontalAlignment="Right"
                         Spacing="10">
+                <TextBlock Foreground="Gray">截图此窗口进行反馈，随后即可关闭此窗口</TextBlock>
                 <Button Name="CopyButton"
+                        IsVisible="False"
                         Content="复制错误信息"
                         Padding="15,8"
                         MinWidth="120"
                         Classes="NoBorder"/>
                 
                 <Button Name="RestartButton"
+                        IsVisible="False"
                         Content="重新启动应用"
                         Padding="15,8"
                         MinWidth="120"
                         Classes="NoBorder"/>
                 
                 <Button Name="CloseButton"
+                        IsVisible="False"
                         Content="退出应用"
                         Padding="15,8"
                         MinWidth="120"

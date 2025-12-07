@@ -40,7 +40,7 @@ public partial class MainWindow : OnePointWindow
         Task.Run(() =>
         {
             Thread.Sleep(1000);
-            // throw new NullReferenceException();
+            throw new NullReferenceException();
         });
 
 #if DEBUG

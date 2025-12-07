@@ -14,16 +14,24 @@
                                               Description="在每次启动时都检测更新"
                                               Margin="5"
                                               Glyph="&#xE965;">
-                    <ToggleSwitch IsChecked="True"></ToggleSwitch>
+                    <ToggleSwitch IsChecked="True"
+                                  Name="IsAutoCheckUpdate"
+                                  IsCheckedChanged="IsAutoCheckUpdate_OnIsCheckedChanged"></ToggleSwitch>
                 </onePointControls:SettingCard>
             </StackPanel>
             
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1"
+                  RowDefinitions="*,Auto">
                 <notice:InfoCard HorizontalAlignment="Center"
                                  VerticalAlignment="Center"
                                  Glyph="&#xEC61;"
                                  BigTitle="当前已是最新版本"
                                  Message="尽情享用吧~"/>
+                
+                <notice:InfoBar Grid.Row="1" State="Error"
+                                Margin="5"
+                                Title="警告"
+                                Message="该功能在此 BedrockBoot 上暂不可用"></notice:InfoBar>
             </Grid>
         </Grid>
     </ScrollViewer>

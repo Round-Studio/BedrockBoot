@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
@@ -16,6 +17,7 @@ namespace BedrockBoot.Views.Pages;
 public partial class MainPage : UserControl
 {
     public bool IsEditMode { get; set; } = false;
+
     public MainPage()
     {
         InitializeComponent();
@@ -23,9 +25,7 @@ public partial class MainPage : UserControl
         IsEditMode = true;
         SelTag_OnSelectionChanged(null, null);
 
-#if !DEBUG
-        Update();
-#endif 
+        if (GlobalModel.Config.Data.IsAutoCheckUpdate) Update();
     }
 
     public static async Task Update(bool isShowNeo = false)

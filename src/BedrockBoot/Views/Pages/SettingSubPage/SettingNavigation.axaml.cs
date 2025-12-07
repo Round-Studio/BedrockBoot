@@ -23,4 +23,9 @@ public partial class SettingNavigation : UserControl
     {
         MainSettingPage.NavigationFrame.NavigateTo(new SettingDownload());
     }
+
+    private void Universal_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigationFrame.NavigateTo(new SettingUniversal());
+    }
 }

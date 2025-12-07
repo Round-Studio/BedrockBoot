@@ -32,8 +32,9 @@
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="通用"
                                           Description="启动器本体通用设置"
+                                          Name="Universal"
+                                          Click="Universal_OnClick"
                                           IsClickable="True"
-                                          IsEnabled="False"
                                           Glyph="&#xE71D;"/>
                 
             <onePointControls:SettingCard Margin="5, 0, 5, 10"

@@ -1,0 +1,36 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversal">
+    <ScrollViewer>
+        <StackPanel Margin="15">
+            <TextBlock Margin="5,0,5,10"
+                       FontWeight="Bold"
+                       FontSize="14">辅助功能</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="任务栏快捷菜单"
+                                          Description="当程序固定在任务栏时，右键其固定项时显示最近启动"
+                                          IsEnabled="False"
+                                          Glyph="&#xE8FC;">
+                <ToggleSwitch IsChecked="False"></ToggleSwitch>
+            </onePointControls:SettingCard>
+            
+            <TextBlock Margin="5,0,5,10"
+                       FontWeight="Bold"
+                       FontSize="14">高级</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="软件更新"
+                                          Description="BedrockBoot 的更新设置"
+                                          IsClickable="True"
+                                          Name="SoftwareUpdate"
+                                          Click="SoftwareUpdate_OnClick"
+                                          Glyph="&#xE895;">
+            </onePointControls:SettingCard>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

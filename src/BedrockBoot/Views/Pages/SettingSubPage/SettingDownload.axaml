@@ -51,7 +51,8 @@
                                           Header="软件更新"
                                           Description="BedrockBoot 的更新设置"
                                           IsClickable="True"
-                                          IsEnabled="False"
+                                          Name="SoftwareUpdate"
+                                          Click="SoftwareUpdate_OnClick"
                                           Glyph="&#xE895;">
             </onePointControls:SettingCard>
         </StackPanel>

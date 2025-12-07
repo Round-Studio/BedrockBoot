@@ -3,38 +3,24 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 
-public partial class SettingDownload : UserControl
+public partial class SettingUniversal : UserControl
 {
-    public bool IsEdit = false;
-    public SettingDownload()
+    public SettingUniversal()
     {
         InitializeComponent();
         MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
         {
             new ()
             {
-                ItemName = "下载"
+                ItemName = "通用"
             }
         });
-
-        IsAutoCacheGamePack.IsChecked = GlobalModel.Config.Data.IsAutoCacheGamePack;
-        IsEdit = true;
-    }
-
-    private void IsAutoCacheGamePack_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
-    {
-        if (IsEdit)
-        {
-             GlobalModel.Config.Data.IsAutoCacheGamePack = (bool)IsAutoCacheGamePack.IsChecked;
-             GlobalModel.Config.Save();
-        }
     }
 
     private void SoftwareUpdate_OnClick(object? sender, RoutedEventArgs e)

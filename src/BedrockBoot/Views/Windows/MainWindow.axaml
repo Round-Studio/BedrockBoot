@@ -44,6 +44,7 @@
                                                    Foreground="Black"
                                                    Background="White"
                                                    Name="BuildTime"
+                                                   IsVisible="False"
                                                    Margin="0,0,5,0"
                                                    VerticalAlignment="Center"/>
                         

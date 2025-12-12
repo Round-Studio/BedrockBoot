@@ -39,6 +39,9 @@ public partial class TaskLaunchGameItem : UserControl
 
     public void Launch(Action launchCompleted)
     {
+        if (VersionInfo.Config.IsEditModel)
+            EditModule.IsVisible = true;
+        
         LaunchCompleted = launchCompleted;
         CardTitle.Text = $"启动游戏 {VersionInfo.Info.VersionName}";
         Console.WriteLine($"正在启动：{VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) Type：{VersionInfo.Info.VersionType} {VersionInfo.Info.BuildType}");

@@ -45,7 +45,7 @@ public partial class MainWindow : OnePointWindow
         VersionBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         BuildTime.Text =
             $"Build.2.{((DateTime)(CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly()))).ToString("yy.MMdd.HHmmss")}";
-        Task.Run(() =>
+        Task.Run(async () =>
         {
             GlobalModel.BedrockCore = new BedrockCore();
             
@@ -53,7 +53,7 @@ public partial class MainWindow : OnePointWindow
             {
                 Console.WriteLine("初始化核心完毕");
 
-                var lst = VersionsHelper.GetBuildDatabaseAsync(
+                var lst = await VersionsHelper.GetBuildDatabaseAsync(
                     "https://data.mcappx.com/v2/bedrock.json");
                 Console.WriteLine("版本列表获取完毕");
             }

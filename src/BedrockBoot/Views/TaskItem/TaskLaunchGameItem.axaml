@@ -16,8 +16,21 @@
             
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
-                <TextBlock FontSize="16" 
-                           Name="CardTitle">正在启动游戏...</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <onePointControls:LabelBox Text="编辑"
+                                               FontSize="14"
+                                               Foreground="White"
+                                               Background="Purple"
+                                               Name="EditModule"
+                                               IsVisible="False"
+                                               Margin="0,0,8,0"
+                                               VerticalAlignment="Center"/>
+                    
+                    <TextBlock FontSize="16" 
+                               Name="CardTitle">正在启动游戏...</TextBlock>
+                </StackPanel>
+                
+                
                 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">

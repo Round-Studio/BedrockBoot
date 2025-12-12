@@ -238,7 +238,7 @@ public partial class MainManager : BedrockBootPage
          
         DialogHost.Show(new DialogInfo()
         {
-            Title = "Add Game Folder",
+            Title = "添加游戏根目录",
             Content = dialog,
             CloseButtonText = "添加",
             SecondaryButtonText = "取消",
@@ -276,5 +276,23 @@ public partial class MainManager : BedrockBootPage
             
             UpdateGameList();
         }
+    }
+
+    private void ImportGameBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new DialogImportGameContent();
+         
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "导入游戏",
+            Content = dialog,
+            CloseButtonText = "开始导入",
+            SecondaryButtonText = "取消",
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = () =>
+            {
+                
+            }
+        });
     }
 }

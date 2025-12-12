@@ -1,0 +1,69 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="300"
+             MinHeight="300" Height="300"
+             x:Class="BedrockBoot.Views.DialogContent.DialogImportGameContent">
+    <ScrollViewer>
+        <StackPanel Margin="0,0,20,0">
+            <notice:InfoBar State="Warning"
+                            Margin="0,5,0,5"
+                            Height="64"
+                            Title="提示"
+                            Message="这个功能其实我根本不想加，因为加了肯定会有一大堆问题.jpg&#x0A;如果导入进去的游戏出了问题，启动不了，那就是你自己导入时的配置有问题。&#x0A;请前往你下载游戏安装包的地方核对信息..."/>
+            
+            <notice:InfoBar State="Error"
+                            Margin="0,5,0,5"
+                            Height="48"
+                            Title="警告"
+                            Message="带 * 号的选项就是那种填错了直接会导致无法启动的东西...&#x0A;嗯，对。请一定要仔细核对！！！"></notice:InfoBar>
+            
+            <TextBlock Margin="0,5,0,5"
+                       HorizontalAlignment="Left">安装包路径：</TextBlock>
+            
+            <DockPanel>
+                <Button DockPanel.Dock="Right"
+                        Margin="5,5,0,5"
+                        Padding="12,0"
+                        Classes="NoBorder"
+                        Name="OpenChooseFileBtn">浏览</Button>
+                
+                <TextBox Margin="0,5,5,5"
+                         Name="PathInputBox"></TextBox>
+            </DockPanel>
+            
+            <TextBlock Margin="0,5,0,5"
+                       HorizontalAlignment="Left">安装名称（自定义）：</TextBlock>
+            <TextBox Margin="0,5,0,5"
+                     Name="NameInputBox"></TextBox>
+            
+            <TextBlock Margin="0,5,0,5"
+                       HorizontalAlignment="Left">* 实际版本（官方版本号）：</TextBlock>
+            <TextBox Margin="0,5,0,5"
+                     Name="RealNameInputBox"></TextBox>
+            
+            <TextBlock Margin="0,5,0,5"
+                       HorizontalAlignment="Left">* 实际版本类型（官方版本类型）：</TextBlock>
+            <ComboBox Margin="0,5,0,5"
+                     Name="RealGameTypeInputBox"
+                     SelectedIndex="0"
+                     HorizontalAlignment="Stretch">
+                <ComboBoxItem>Release</ComboBoxItem>
+                <ComboBoxItem>Preview</ComboBoxItem>
+                <ComboBoxItem>Beta</ComboBoxItem>
+            </ComboBox>
+            
+            <TextBlock Margin="0,5,0,5"
+                       HorizontalAlignment="Left">* 实际构建类型（官方构建类型）：</TextBlock>
+            <ComboBox Margin="0,5,0,5"
+                      Name="RealGameBuildTypeInputBox"
+                      SelectedIndex="0"
+                      HorizontalAlignment="Stretch">
+                <ComboBoxItem>UWP</ComboBoxItem>
+                <ComboBoxItem>GDK</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

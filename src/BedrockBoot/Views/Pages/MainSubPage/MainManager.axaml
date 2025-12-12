@@ -12,13 +12,24 @@
         <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Center">
             <Button Padding="12,8"
-                    Margin="0,0,5,0"
+                    Margin="0,0,8,0"
                     Name="AddFolderBtn"
                     Click="AddFolderBtn_OnClick">
                 <StackPanel Orientation="Horizontal">
                     <onePointControls:FontIcon Glyph="&#xE710;"
                                                VerticalAlignment="Center"/>
                     <TextBlock Margin="4,0,0,0">添加目录</TextBlock>
+                </StackPanel>
+            </Button>
+            
+            <Button Padding="12,8"
+                    Margin="0,0,8,0"
+                    Name="ImportGameBtn"
+                    Click="ImportGameBtn_OnClick">
+                <StackPanel Orientation="Horizontal">
+                    <onePointControls:FontIcon Glyph="&#xE78B;"
+                                               VerticalAlignment="Center"/>
+                    <TextBlock Margin="4,0,0,0">导入游戏</TextBlock>
                 </StackPanel>
             </Button>
         </StackPanel>

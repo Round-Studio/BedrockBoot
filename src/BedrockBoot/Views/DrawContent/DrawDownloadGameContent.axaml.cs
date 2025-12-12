@@ -46,7 +46,7 @@ public partial class DrawDownloadGameContent : UserControl
          
             DialogHost.Show(new DialogInfo()
             {
-                Title = "Add Game Folder",
+                Title = "添加游戏根目录",
                 Content = dialog,
                 CloseButtonText = "添加",
                 SecondaryButtonText = "取消",

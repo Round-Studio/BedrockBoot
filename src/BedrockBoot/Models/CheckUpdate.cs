@@ -16,9 +16,9 @@ public class CheckUpdate
         // 获取指定仓库的所有发布
         var owner = "Round-Studio";
         var repo = "BedrockBoot";
-        var releases = await github.Repository.Release.GetAll(owner, repo);
+        var releases = await github.Repository.Release.GetLatest(owner, repo);
         
-        var latest = releases[0];
+        var latest = releases;
         Console.WriteLine($"最新版本: {latest.TagName}");
 
         if (!latest.TagName.EndsWith(Assembly.GetExecutingAssembly().GetName().Version.ToString()))

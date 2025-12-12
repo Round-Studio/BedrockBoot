@@ -30,6 +30,8 @@
                     <onePointControls:FontIcon Glyph="&#xE78B;"
                                                VerticalAlignment="Center"/>
                     <TextBlock Margin="4,0,0,0">导入游戏</TextBlock>
+                    <onePointControls:LabelBox Text="Beta"
+                                               Margin="8,0,0,0"></onePointControls:LabelBox>
                 </StackPanel>
             </Button>
         </StackPanel>

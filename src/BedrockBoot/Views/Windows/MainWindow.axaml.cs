@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +10,10 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Service.Protocol;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages;
+using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
 using OnePointUI.Avalonia.Base.Entry;
@@ -23,9 +28,6 @@ public partial class MainWindow : OnePointWindow
 {
     public MainWindow()
     {
-        GlobalModel.FunctionOption = new JsonResourceEntity()
-            .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json")
-            .Result;
         GlobalModel.MainWindow = this;
         InitializeComponent();
         
@@ -61,6 +63,29 @@ public partial class MainWindow : OnePointWindow
                 var lst = await VersionsHelper.GetBuildDatabaseAsync(
                     "https://data.mcappx.com/v2/bedrock.json");
                 Console.WriteLine("版本列表获取完毕");
+
+                var pro = new ProtocolRegister();
+                pro.ProtocolName = "BedrockBoot";
+                pro.ProtocolDescription = "BedrockBoot 协议";
+                pro.RegisterProtocol(Process.GetCurrentProcess().MainModule.FileName);
+
+                GlobalModel.ProtocolService.StartAsync();
+                GlobalModel.ProtocolService.Get("/shell",async (context, parameters) =>
+                {
+                    parameters.TryGetQuery("command", out var command);
+                    Console.WriteLine(command);
+
+                    var comm = command.Replace("bedrockboot://", "").Split('/');
+                    ProtocolCommand.OnCommand(comm);
+                    
+                    await ProtocolService.WriteResponseAsync(context, 200, "ok");
+                });
+                
+                Console.WriteLine("协议服务器启动成功！");
+                
+                GlobalModel.FunctionOption = new JsonResourceEntity()
+                    .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json")
+                    .Result;
             }
             catch (InvalidOperationException invEx)
             {

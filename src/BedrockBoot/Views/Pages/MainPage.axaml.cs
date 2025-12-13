@@ -16,11 +16,14 @@ namespace BedrockBoot.Views.Pages;
 
 public partial class MainPage : UserControl
 {
+    public static MainPage Instance;
     public bool IsEditMode { get; set; } = false;
 
     public MainPage()
     {
         InitializeComponent();
+
+        Instance = this;
 
         IsEditMode = true;
         SelTag_OnSelectionChanged(null, null);

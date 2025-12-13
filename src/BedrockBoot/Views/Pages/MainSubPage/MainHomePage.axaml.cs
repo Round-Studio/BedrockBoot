@@ -22,18 +22,6 @@ public partial class MainHomePage : BedrockBootPage
     
     public MainHomePage()
     {
-        PackageIdentity identity = PackageIdentity.ParseFromXml(File.ReadAllText(@"D:\BedrockBoot\bedrock_versions\1.21.11401\AppxManifest.xml"));
-        
-        if (identity != null)
-        {
-            Console.WriteLine($"名称: {identity.Name}");
-            Console.WriteLine($"发布者: {identity.Publisher}");
-            Console.WriteLine($"版本: {identity.Version}");
-            Console.WriteLine($"处理器架构: {identity.ProcessorArchitecture}");
-        }
-
-        Console.WriteLine(PackAnalysis.GetPackBuildTypeWithFileHeader(@"D:\BedrockBoot\version_save\1.21.11401.insPack"));
-        
         InitializeComponent();
         UpdateUI();
     }

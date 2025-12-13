@@ -4,6 +4,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
@@ -37,6 +39,26 @@ public partial class GameItem : UserControl
 
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
+        
+        var image = "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png";
+        if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
+        {
+            image = "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png";
+        }
+        
+        Card.ImageIcon = GetImage(image);
+    }
+    
+    public Bitmap GetImage(string url)
+    {
+        var uri = new Uri(url);
+
+        // 2. 使用 AssetLoader.Open 获取流
+        using (var stream = AssetLoader.Open(uri))
+        {
+            // 3. 将流解码为 Bitmap
+            return new Bitmap(stream);
+        }
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)

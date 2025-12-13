@@ -199,6 +199,12 @@ public partial class MainDownloadPage : BedrockBootPage
             // 在UI线程添加一批项目
             foreach (var x in batch)
             {
+                var image = "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png";
+                if (x.Type != MinecraftGameTypeVersion.Release)
+                {
+                    image = "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png";
+                }
+                
                 var item = new SettingCard()
                 {
                     Header = x.ID,
@@ -211,7 +217,7 @@ public partial class MainDownloadPage : BedrockBootPage
                     IsClickable = true,
                     Margin = new Thickness(5, 0, 5, 10),
                     IsFontIcon = false,
-                    ImageIcon = GetImage("avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png")
+                    ImageIcon = GetImage(image)
                 };
 
                 item.Click += (sender, args) =>

@@ -76,10 +76,12 @@
                             
                             <ComboBox DockPanel.Dock="Right"
                                       SelectedIndex="0"
+                                      Name="GameTypeSel"
+                                      SelectionChanged="GameTypeSel_OnSelectionChanged"
                                       HorizontalAlignment="Stretch">
-                                <ComboBoxItem>全部类型</ComboBoxItem>
-                                <ComboBoxItem>正式版</ComboBoxItem>
-                                <ComboBoxItem>预览版 / Beta 版</ComboBoxItem>
+                                <ComboBoxItem Tag="">全部类型</ComboBoxItem>
+                                <ComboBoxItem Tag="Release">正式版</ComboBoxItem>
+                                <ComboBoxItem Tag="Preview">预览版 / Beta 版</ComboBoxItem>
                             </ComboBox>
                         </DockPanel>
                         

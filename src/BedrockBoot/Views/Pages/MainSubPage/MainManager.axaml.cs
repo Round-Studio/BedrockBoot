@@ -16,6 +16,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Control;
 using BedrockBoot.Views.DialogContent;
+using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -176,7 +177,7 @@ public partial class MainManager : BedrockBootPage
         IsEditMode = true;
     }
 
-    public async Task UpdateGameList()
+    public void UpdateGameList()
     {
         IsEditMode = false;
         if (GlobalModel.Config.Data.GameFolders.Count == 0)
@@ -217,7 +218,15 @@ public partial class MainManager : BedrockBootPage
                     info.Info.VersionName.Contains(SearchKey) ||
                     info.Info.Version.Contains(SearchKey))
                 {
-                    lst.Add(info);
+                    var type = "Release";
+                    if (info.Info.VersionType != MinecraftGameTypeVersion.Release)
+                        type = "Preview";
+                    
+                    if (string.IsNullOrEmpty(GameType) || 
+                        GameType == type)
+                    {
+                        lst.Add(info);
+                    }
                 }
             }
             catch
@@ -322,5 +331,26 @@ public partial class MainManager : BedrockBootPage
         SearchKey = SearchBox.Text;
 
         UpdateGameList();
+    }
+
+    private void GameTypeSel_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        var tag = "";
+        if (GameTypeSel != null)
+            if (GameTypeSel.SelectedItem != null)
+            {
+                var item = (ComboBoxItem)GameTypeSel.SelectedItem;
+                tag = item.Tag.ToString();
+            }
+
+        GameType = tag;
+        try
+        {
+            UpdateGameList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"刷新实例失败：{ex}");
+        }
     }
 }

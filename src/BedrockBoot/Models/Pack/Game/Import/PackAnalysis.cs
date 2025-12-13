@@ -1,23 +1,23 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using BedrockBoot.Base.Enum.Game;
+using BedrockLauncher.Core;
 
 namespace BedrockBoot.Models.Pack.Game.Import;
 
 public class PackAnalysis
 {
-    public static GameBuildType GetPackBuildTypeWithFileHeader(string filePath)
+    public static MinecraftBuildTypeVersion GetPackBuildTypeWithFileHeader(string filePath)
     {
         var header = GetFileHeader(filePath).Replace(" ","");
 
         if (header.StartsWith("ABC261F8"))
-            return GameBuildType.Gdk;
+            return MinecraftBuildTypeVersion.GDK;
         
         if(header.StartsWith("504B0304"))
-            return GameBuildType.Uwp;
+            return MinecraftBuildTypeVersion.UWP;
 
-        return GameBuildType.Uwp;
+        return MinecraftBuildTypeVersion.UNKNOWN;
     }
     
     public static string GetFileHeader(string filePath, int bytesToRead = 8)

@@ -11,7 +11,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Enum.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;

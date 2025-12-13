@@ -8,7 +8,6 @@ using Windows.Management.Deployment;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockLauncher.Core;
@@ -27,7 +26,6 @@ public partial class TaskDownloadGameItem : UserControl
     public string InstallFolder { get; set; }
     public string GameName { get; set; }
     public BuildInfo BuildInfo { get; set; }
-    public List<GameFileInfo> FileList { get; set; } = new();
     public TaskDownloadGameItem()
     {
         InitializeComponent();
@@ -141,10 +139,6 @@ public partial class TaskDownloadGameItem : UserControl
                 Type = BuildInfo.BuildType,
                 ExtractionProgress = new Progress<DecompressProgress>(ext =>
                 {
-                    FileList.Add(new GameFileInfo()
-                    {
-                        FilePath = ext.FileName
-                    });
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         InsUnZipBar.Value = ext.Percentage;

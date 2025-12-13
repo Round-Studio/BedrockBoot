@@ -1,4 +1,6 @@
 ﻿using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Manifest;
+using BedrockBoot.Entity;
 using BedrockBoot.Models.Task;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
@@ -13,4 +15,5 @@ public class GlobalModel
     public static BedrockCore BedrockCore { get; set; }
     public static TaskManager TaskManager { get; set; } = new();
     public static bool IsAbleToLaunchGame { get; set; } = false;
+    public static FunctionOptionEntry FunctionOption { get; set; }
 }

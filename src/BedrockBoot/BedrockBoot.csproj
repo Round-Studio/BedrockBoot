@@ -22,6 +22,8 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
+        <None Remove="Manifest\Function\FunctionOption.json" />
+        <AvaloniaResource Include="Manifest\Function\FunctionOption.json" />
     </ItemGroup>
 
     <ItemGroup>

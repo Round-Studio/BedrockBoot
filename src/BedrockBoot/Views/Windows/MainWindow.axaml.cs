@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using BedrockBoot.Base.Entry.Manifest;
+using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages;
 using BedrockLauncher.Core;
@@ -21,6 +23,9 @@ public partial class MainWindow : OnePointWindow
 {
     public MainWindow()
     {
+        GlobalModel.FunctionOption = new JsonResourceEntity()
+            .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json")
+            .Result;
         GlobalModel.MainWindow = this;
         InitializeComponent();
         

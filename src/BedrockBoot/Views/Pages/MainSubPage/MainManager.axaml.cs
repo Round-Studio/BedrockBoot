@@ -35,6 +35,10 @@ public partial class MainManager : BedrockBootPage
         InitializeComponent();
         
         UpdateUI();
+
+#if RELEASE
+        ImportGameBtn.IsVisible = GlobalModel.FunctionOption.IsImportGamePack;
+#endif
     }
 
     private void InitializeConfigWatcher()

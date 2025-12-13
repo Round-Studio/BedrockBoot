@@ -284,7 +284,7 @@ public partial class MainManager : BedrockBootPage
          
         DialogHost.Show(new DialogInfo()
         {
-            Title = "导入游戏",
+            Title = "导入游戏安装包",
             Content = dialog,
             CloseButtonText = "开始导入",
             SecondaryButtonText = "取消",

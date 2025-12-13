@@ -85,6 +85,7 @@ public partial class TaskLaunchGameItem : UserControl
 
                 if (MinecraftProcess != null && !MinecraftProcess.HasExited)
                 {
+                    Console.WriteLine($"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         LaunchProgressText.Text = "步骤：已启动，请等待游戏窗口显示";
@@ -123,6 +124,7 @@ public partial class TaskLaunchGameItem : UserControl
         {
             await process.WaitForExitAsync(_cancellationTokenSource.Token);
             
+            Console.WriteLine($"游戏进程 PID：{MinecraftProcess.Id} 已退出");
             // 进程正常退出
             Console.WriteLine($"进程已退出，退出代码: {process.ExitCode}");
             Dispatcher.UIThread.Post(() => LaunchCompleted?.Invoke());
@@ -184,6 +186,7 @@ public partial class TaskLaunchGameItem : UserControl
             try
             {
                 MinecraftProcess.Kill(true);
+                Console.WriteLine($"游戏进程 PID：{MinecraftProcess.Id} 已退出");
             }
             catch (Exception ex)
             {

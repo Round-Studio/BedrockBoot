@@ -185,6 +185,7 @@ public partial class MainManager : BedrockBootPage
         {
             GamesNull.IsVisible = true;
             GameScro.IsVisible = false;
+            IsEditMode = true;
             return;
         }
 
@@ -202,6 +203,7 @@ public partial class MainManager : BedrockBootPage
         {
             GamesNull.IsVisible = true;
             GameScro.IsVisible = false;
+            IsEditMode = true;
             return;
         }
         
@@ -302,7 +304,7 @@ public partial class MainManager : BedrockBootPage
 
     private void FolderList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (IsEditMode && FolderList.SelectedIndex >= 0)
+        if (IsEditMode)
         {
             GlobalModel.Config.Data.GameFolderSelIndex = FolderList.SelectedIndex;
             GlobalModel.Config.Save();

@@ -30,7 +30,8 @@
                         Margin="5,5,0,5"
                         Padding="12,0"
                         Classes="NoBorder"
-                        Name="OpenChooseFileBtn">浏览</Button>
+                        Name="OpenChooseFileBtn"
+                        Click="OpenChooseFileBtn_OnClick">浏览</Button>
                 
                 <TextBox Margin="0,5,5,5"
                          Name="PathInputBox"></TextBox>

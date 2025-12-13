@@ -16,6 +16,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Control;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -212,6 +213,11 @@ public partial class MainManager : BedrockBootPage
             try
             {
                 var info = GameInfoHelper.GetVersionConfig(x);
+
+                if (string.IsNullOrEmpty(info.Info.VersionName) || 
+                    string.IsNullOrEmpty(info.Info.Version))
+                    return;
+                
                 Console.WriteLine($"读取到实例：{info.Info.VersionName} : {info.Info.Version}");
 
                 if (string.IsNullOrEmpty(SearchKey) || 
@@ -321,7 +327,42 @@ public partial class MainManager : BedrockBootPage
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
-                
+                var packPath = dialog.PackFile;
+                var installFolder = dialog.PackInstallFolder;
+                var installName = dialog.PackInstallName;
+
+                if (string.IsNullOrEmpty(packPath) || !File.Exists(packPath))
+                {
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                    {
+                        Title = "错误",
+                        Message = $"游戏包 {packPath} 无效",
+                        NoticeType = NoticeType.Info
+                    });
+                    return;
+                }
+                if (string.IsNullOrEmpty(installFolder) || !Directory.Exists(installFolder))
+                {
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                    {
+                        Title = "错误",
+                        Message = $"文件夹 {installFolder} 无效",
+                        NoticeType = NoticeType.Info
+                    });
+                    return;
+                }
+                if (string.IsNullOrEmpty(installName))
+                {
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                    {
+                        Title = "错误",
+                        Message = $"请输入有效的实例名称",
+                        NoticeType = NoticeType.Info
+                    });
+                    return;
+                }
+
+                TaskImportGamePackItem.Install(packPath, installFolder, installName);
             }
         });
     }

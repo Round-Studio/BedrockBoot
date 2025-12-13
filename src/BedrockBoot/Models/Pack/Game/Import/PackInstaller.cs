@@ -2,7 +2,6 @@
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Threading;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
@@ -17,7 +16,8 @@ namespace BedrockBoot.Models.Pack.Game.Import;
 public class PackInstaller
 {
     public string PackFile { get; set; }
-    public MinecraftBuildTypeVersion GameBuildType { get; set; }
+    public MinecraftBuildTypeVersion GameBuildType { get; private set; }
+    public Action ImportedAction { get; set; } = null;
     public IProgress<PackImportProgress> ImportProgress { get; set; } = new Progress<PackImportProgress>();
     public PackInstaller(string filePath)
     {
@@ -81,6 +81,9 @@ public class PackInstaller
             },
             VersionPath = path
         });
+
+        if (ImportedAction != null)
+            ImportedAction.Invoke();
     }
     
     private MinecraftGameTypeVersion GetVersionTypeWithUWP(string packName)
@@ -148,6 +151,9 @@ public class PackInstaller
             },
             VersionPath = path
         });
+
+        if (ImportedAction != null)
+            ImportedAction.Invoke();
     }
     private MinecraftGameTypeVersion GetVersionTypeWithGDK(string packName)
     {

@@ -60,30 +60,76 @@
                 </Grid>
             </items:BorderCard>
             
-            <items:BorderCard Grid.Column="1"
-                              Padding="0"
-                              Margin="5">
-                <Grid>
-                    <ScrollViewer Name="GameScro"
-                                  Margin="8,8,0,8">
-                        <StackPanel Margin="5,5,13,5"
-                                    Name="GameList"></StackPanel>
-                    </ScrollViewer>
+            <Grid Grid.Column="1"
+                  RowDefinitions="Auto,*">
+                <items:BorderCard Grid.Row="0"
+                                  Margin="5">
+                    <Grid ColumnDefinitions="4*,Auto,6*">
+                        <DockPanel Grid.Column="0" 
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Stretch"
+                                   LastChildFill="True">
+                            <onePointControls:FontIcon Glyph="&#xE71C;"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="16"
+                                                       Margin="5,5,12,5"></onePointControls:FontIcon>
+                            
+                            <ComboBox DockPanel.Dock="Right"
+                                      SelectedIndex="0"
+                                      HorizontalAlignment="Stretch">
+                                <ComboBoxItem>全部类型</ComboBoxItem>
+                                <ComboBoxItem>正式版</ComboBoxItem>
+                                <ComboBoxItem>预览版 / Beta 版</ComboBoxItem>
+                            </ComboBox>
+                        </DockPanel>
+                        
+                        <Border Grid.Column="1"
+                                Width="1"
+                                VerticalAlignment="Stretch"
+                                Background="{DynamicResource PrimaryDisabledForegroundBrush}"
+                                Margin="0,5,0,5"></Border>
+                        
+                        <DockPanel Grid.Column="2"
+                                   HorizontalAlignment="Stretch"
+                                   LastChildFill="True">
+                            <onePointControls:FontIcon Glyph="&#xE71E;"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="16"
+                                                       Margin="12,5,12,5"></onePointControls:FontIcon>
+                            <TextBox Name="SearchBox"
+                                     HorizontalAlignment="Stretch"
+                                     DockPanel.Dock="Right"
+                                     TextChanged="SearchBox_OnTextChanged"></TextBox>
+                        </DockPanel>
+                    </Grid>
+                </items:BorderCard>
+                
+                <items:BorderCard
+                    Grid.Row="1"
+                    Padding="0"
+                    Margin="5">
+                    <Grid>
+                        <ScrollViewer Name="GameScro"
+                                      Margin="8,8,0,8">
+                            <StackPanel Margin="5,5,13,5"
+                                        Name="GameList"></StackPanel>
+                        </ScrollViewer>
                     
-                    <notice:InfoCard HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"
-                                     Name="GamesNull"
-                                     BigTitle="没有实例"
-                                     Message="请前往 下载 页面下载游戏"/>
+                        <notice:InfoCard HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Name="GamesNull"
+                                         BigTitle="没有实例"
+                                         Message="关键词无效 或 未下载实例"/>
                     
-                    <notice:LoadCard HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"
-                                     IsVisible="False"
-                                     Name="GamesLoad"
-                                     BigTitle="列队中"
-                                     Message="正在加载版本..."></notice:LoadCard>
-                </Grid>
-            </items:BorderCard>
+                        <notice:LoadCard HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         IsVisible="False"
+                                         Name="GamesLoad"
+                                         BigTitle="列队中"
+                                         Message="正在加载版本..."></notice:LoadCard>
+                    </Grid>
+                </items:BorderCard>
+            </Grid>
         </Grid>
     </Grid>
 </entry:BedrockBootPage>

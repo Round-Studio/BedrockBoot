@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Control;
@@ -25,6 +27,8 @@ public partial class MainManager : BedrockBootPage
 {
     public bool IsEditMode { get; set; } = false;
     private FileSystemWatcher _configWatcher;
+    private string SearchKey = "";
+    private string GameType = "";
 
     public MainManager()
     {
@@ -170,6 +174,7 @@ public partial class MainManager : BedrockBootPage
 
     public async Task UpdateGameList()
     {
+        IsEditMode = false;
         if (GlobalModel.Config.Data.GameFolders.Count == 0)
         {
             GamesNull.IsVisible = true;
@@ -194,11 +199,32 @@ public partial class MainManager : BedrockBootPage
             return;
         }
         
-        var lst = Directory.GetDirectories(versionsPath);
+        var lstDir = Directory.GetDirectories(versionsPath);
+        var lst = new List<VersionConfig>();
+        
+        lstDir.ToList().ForEach(x =>
+        {
+            try
+            {
+                var info = GameInfoHelper.GetVersionConfig(x);
+                Console.WriteLine($"读取到实例：{info.Info.VersionName} : {info.Info.Version}");
+
+                if (string.IsNullOrEmpty(SearchKey) || 
+                    info.Info.VersionName.Contains(SearchKey) ||
+                    info.Info.Version.Contains(SearchKey))
+                {
+                    lst.Add(info);
+                }
+            }
+            catch
+            {
+                // 忽略加载失败的版本
+            }
+        });
         
         GameList.Children.Clear();
         
-        if (lst.Length > 0)
+        if (lst.Count > 0)
         {
             GamesNull.IsVisible = false;
             GameScro.IsVisible = false;
@@ -215,21 +241,12 @@ public partial class MainManager : BedrockBootPage
         
         lst.ToList().ForEach(x =>
         {
-            try
-            {
-                var info = GameInfoHelper.GetVersionConfig(x);
-                Console.WriteLine($"读取到实例：{info.Info.VersionName} : {info.Info.Version}");
-
-                GameList.Children.Add(new GameItem(info));
-            }
-            catch
-            {
-                // 忽略加载失败的版本
-            }
+            GameList.Children.Add(new GameItem(x));
         });
         
         GamesLoad.IsVisible = false;
         GameScro.IsVisible = true;
+        IsEditMode = true;
     }
 
     private void AddFolderBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -294,5 +311,12 @@ public partial class MainManager : BedrockBootPage
                 
             }
         });
+    }
+
+    private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        SearchKey = SearchBox.Text;
+
+        UpdateGameList();
     }
 }

@@ -5,6 +5,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.DialogContent;
 
@@ -33,11 +35,25 @@ public partial class DialogAddGameFolderContent : UserControl
 
         if (folders.Count > 0)
         {
-            string path = folders[0].Path.LocalPath;   // 本地文件系统路径
-            Console.WriteLine($"选择路径：{path}");
-            
-            PathInputBox.Text = path;
-            PathNameInputBox.Text = Path.GetFileName(Path.GetDirectoryName(path));
+            try
+            {
+                string path = folders[0].Path.LocalPath; // 本地文件系统路径
+                Console.WriteLine($"选择路径：{path}");
+
+                PathInputBox.Text = path;
+                PathNameInputBox.Text = Path.GetFileName(Path.GetDirectoryName(path));
+            }
+            catch
+            {
+                Console.WriteLine($"添加目录所选的路径无效");
+                DialogHost.Close();
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = "路径无效",
+                    Content = "您选择的路径是无效路径\n该路径不能是磁盘根目录",
+                    CloseButtonText = "好"
+                });
+            }
         }
     }
 }

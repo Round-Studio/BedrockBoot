@@ -10,14 +10,11 @@ public class PackAnalysis
     public static MinecraftBuildTypeVersion GetPackBuildTypeWithFileHeader(string filePath)
     {
         var header = GetFileHeader(filePath).Replace(" ","");
-
-        if (header.StartsWith("ABC261F8"))
-            return MinecraftBuildTypeVersion.GDK;
         
         if(header.StartsWith("504B0304"))
             return MinecraftBuildTypeVersion.UWP;
-
-        return MinecraftBuildTypeVersion.UNKNOWN;
+        
+        return MinecraftBuildTypeVersion.GDK;
     }
     
     public static string GetFileHeader(string filePath, int bytesToRead = 8)

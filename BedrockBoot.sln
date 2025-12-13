@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Round.Avalonia.Assets", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginTools", "src\Round.SDK\PluginTools\PluginTools.csproj", "{F282AFD6-D55B-4FDD-A9C6-B2FD8AFC9F5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.Test", "src\BedrockBoot.Test\BedrockBoot.Test.csproj", "{B6CA8710-242D-4403-8771-74A153A567FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,12 @@ Global
 		{F282AFD6-D55B-4FDD-A9C6-B2FD8AFC9F5A}.Debug|x86.Build.0 = Debug|Any CPU
 		{F282AFD6-D55B-4FDD-A9C6-B2FD8AFC9F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F282AFD6-D55B-4FDD-A9C6-B2FD8AFC9F5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6CA8710-242D-4403-8771-74A153A567FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6CA8710-242D-4403-8771-74A153A567FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6CA8710-242D-4403-8771-74A153A567FA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B6CA8710-242D-4403-8771-74A153A567FA}.Debug|x86.Build.0 = Debug|Any CPU
+		{B6CA8710-242D-4403-8771-74A153A567FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6CA8710-242D-4403-8771-74A153A567FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8464E128-5D82-426B-9804-B0F1EBE7CCEF} = {36E2D5CB-0BFA-4B63-A135-636CB1DCB8E5}

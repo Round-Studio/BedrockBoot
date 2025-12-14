@@ -14,7 +14,7 @@
             <ColumnDefinition Width="7*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
-            <items:BorderCard Margin="20,10,5,10">
+            <items:BorderCard Margin="20,10,5,20">
                 <Grid>
                     <StackPanel VerticalAlignment="Center">
                         <Border CornerRadius="6"

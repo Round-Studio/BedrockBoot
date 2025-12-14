@@ -40,7 +40,7 @@
             <TextBlock Margin="5" Text="(https://github.com/Round-Studio/BedrockLauncher.Core)"></TextBlock>
             <TextBlock Margin="5" xml:space="preserve"
                        FontSize="9">MIT License
-(https://github.com/Round-Studio/BedrockLauncher.Core/blob/1.0-archive/LICENSE)</TextBlock>
+(https://github.com/Round-Studio/BedrockLauncher.Core/blob/2.0-main/LICENSE)</TextBlock>
             
             
             <TextBlock FontSize="22"
@@ -59,6 +59,15 @@
             <TextBlock Margin="5" xml:space="preserve"
                        FontSize="9">MIT License
 (https://github.com/octokit/octokit.net/blob/main/LICENSE.txt)</TextBlock>
+            
+            
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">fNBT</TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/mstefarov/fNbt)"></TextBlock>
+            <TextBlock Margin="5" xml:space="preserve"
+                       FontSize="9">Other License
+(https://github.com/mstefarov/fNbt/blob/master/docs/LICENSE.txt)</TextBlock>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

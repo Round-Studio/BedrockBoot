@@ -11,16 +11,12 @@
     <entry:BedrockBootPage.HeaderView>
         <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Center">
-            <Button Padding="12,8"
-                    Margin="0,0,8,0"
-                    Name="AddFolderBtn"
-                    Click="AddFolderBtn_OnClick">
-                <StackPanel Orientation="Horizontal">
-                    <onePointControls:FontIcon Glyph="&#xE710;"
-                                               VerticalAlignment="Center"/>
-                    <TextBlock Margin="4,0,0,0">添加目录</TextBlock>
-                </StackPanel>
-            </Button>
+            <onePointControls:LineTextBlock Margin="0,0,8,0"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"
+                                            FontSize="28"
+                                            FontWeight="Heavy"
+                                            Text="实例管理"></onePointControls:LineTextBlock>
             
             <Button Padding="12,8"
                     Margin="0,0,8,0"
@@ -46,17 +42,33 @@
             <items:BorderCard Grid.Column="0"
                               Margin="5">
                 <Grid>
+                    <Grid RowDefinitions="*,Auto">
+                        <ListBox Grid.Row="0"
+                                 Name="FolderList"
+                                 Margin="5,0"
+                                 SelectionChanged="FolderList_OnSelectionChanged">
+                    
+                        </ListBox>
+                    
+                        <Button Grid.Row="1"
+                                Padding="12,10"
+                                Margin="5,5"
+                                Name="AddFolderBtn"
+                                Classes="NoBorder"
+                                Click="AddFolderBtn_OnClick">
+                            <onePointControls:FontIcon Glyph="&#xE710;"
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"/>
+                        </Button>
+                    </Grid>
+                    
                     <notice:InfoCard HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
                                      IsVisible="False"
                                      Name="FolderNull"
                                      BigTitle="空"
-                                     Message="点击上方 添加目录&#x0A;以添加目录"/>
-                    <ListBox Name="FolderList"
-                             Margin="5,0"
-                             SelectionChanged="FolderList_OnSelectionChanged">
-                    
-                    </ListBox>
+                                     Message="点击下方 添加目录&#x0A;以添加目录"/>
                 </Grid>
             </items:BorderCard>
             

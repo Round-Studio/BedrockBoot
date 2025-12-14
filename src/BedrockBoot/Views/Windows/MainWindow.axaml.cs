@@ -58,12 +58,6 @@ public partial class MainWindow : OnePointWindow
             
             try
             {
-                Console.WriteLine("初始化核心完毕");
-
-                var lst = await VersionsHelper.GetBuildDatabaseAsync(
-                    "https://data.mcappx.com/v2/bedrock.json");
-                Console.WriteLine("版本列表获取完毕");
-
                 var pro = new ProtocolRegister();
                 pro.ProtocolName = "BedrockBoot";
                 pro.ProtocolDescription = "BedrockBoot 协议";
@@ -82,6 +76,12 @@ public partial class MainWindow : OnePointWindow
                 });
                 
                 Console.WriteLine("协议服务器启动成功！");
+                
+                Console.WriteLine("初始化核心完毕");
+
+                var lst = await VersionsHelper.GetBuildDatabaseAsync(
+                    "https://data.mcappx.com/v2/bedrock.json");
+                Console.WriteLine("版本列表获取完毕");
                 
                 GlobalModel.FunctionOption = new JsonResourceEntity()
                     .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json")

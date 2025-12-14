@@ -1,0 +1,60 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.Control.ArchiveItem">
+    
+    <items:BorderCard Margin="5"
+                      Width="280"
+                      Height="210">
+        <Grid RowDefinitions="*,Auto">
+            <Border Grid.Row="0"
+                    Name="ImageBox"
+                    CornerRadius="6">
+                <Border.Background>
+                    <ImageBrush Stretch="UniformToFill"
+                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png"></ImageBrush>
+                </Border.Background>
+                <Grid>
+                    <onePointControls:LabelBox HorizontalAlignment="Left"
+                                               VerticalAlignment="Bottom"
+                                               Name="ProjectLabel"
+                                               Margin="8"
+                                               Text="项目"
+                                               FontSize="12"
+                                               Background="Purple"></onePointControls:LabelBox>
+                </Grid>
+            </Border>
+                        
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,Auto">
+                <Border Grid.Column="0"
+                        CornerRadius="6"
+                        Margin="0,8,0,0"
+                        Height="48"
+                        Background="#262626">
+                    <StackPanel VerticalAlignment="Center"
+                                Margin="8,0,0,0">
+                        <TextBlock FontSize="14"
+                                   Name="WorldName">My World</TextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1"
+                        CornerRadius="6"
+                        Margin="8,8,0,0"
+                        Height="48" Width="48"
+                        Background="#262626">
+                    <Button Classes="NoBorder"
+                            CornerRadius="4"
+                            IsEnabled="False">
+                        <onePointControls:FontIcon Glyph="&#xE70F;"
+                                                   FontSize="18"></onePointControls:FontIcon>
+                    </Button>
+                </Border>
+            </Grid>
+        </Grid>
+    </items:BorderCard>
+</UserControl>

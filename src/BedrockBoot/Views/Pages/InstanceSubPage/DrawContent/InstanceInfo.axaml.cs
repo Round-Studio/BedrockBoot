@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -8,6 +10,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Archive;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 

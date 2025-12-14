@@ -29,11 +29,13 @@ public partial class MainManager : BedrockBootPage
 {
     public bool IsEditMode { get; set; } = false;
     private FileSystemWatcher _configWatcher;
+    public static MainManager Instance { get; private set; }
     private string SearchKey = "";
     private string GameType = "";
 
     public MainManager()
     {
+        Instance = this;
         InitializeComponent();
         
         UpdateUI();
@@ -141,26 +143,7 @@ public partial class MainManager : BedrockBootPage
         {
             FolderList.Items.Add(new ListBoxItem()
             {
-                Content = new StackPanel()
-                {
-                    Children =
-                    {
-                        new TextBlock()
-                        {
-                            Text = folder.GameFolderName,
-                            Margin = new Thickness(5, 2, 5, 5),
-                            FontSize = 16
-                        },
-                        new TextBlock()
-                        {
-                            Foreground = Brushes.Gray,
-                            Text = folder.GameFolderPath,
-                            Margin = new Thickness(5, 0, 5, 0),
-                            FontSize = 9,
-                            TextWrapping = TextWrapping.WrapWithOverflow
-                        }
-                    }
-                },
+                Content = new GameFolderItem(folder),
                 VerticalAlignment = VerticalAlignment.Center
             });
         });

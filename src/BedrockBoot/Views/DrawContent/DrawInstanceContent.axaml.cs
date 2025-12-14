@@ -33,6 +33,8 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = false;
         
         InstanceFrame.NavigateTo(new InstanceInfo(VersionInfo));
+        VersionName.Text = VersionInfo.Info.VersionName;
+        VersionReady.Text = $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
         
         IsEditMode = true;
     }

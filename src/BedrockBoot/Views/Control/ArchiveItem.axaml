@@ -8,7 +8,7 @@
              x:Class="BedrockBoot.Views.Control.ArchiveItem">
     
     <items:BorderCard Margin="5"
-                      Width="280"
+                      Width="265"
                       Height="210">
         <Grid RowDefinitions="*,Auto">
             <Border Grid.Row="0"

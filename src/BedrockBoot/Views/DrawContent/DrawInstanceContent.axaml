@@ -4,46 +4,80 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DrawContent.DrawInstanceContent">
-    <Grid RowDefinitions="Auto,*">
-        <TabControl Grid.Row="0"
-                    Name="InstanceTabControl"
-                    SelectedIndex="0"
-                    SelectionChanged="InstanceTabControl_OnSelectionChanged"
-                    Margin="10,0,10,0">
-            <TabItem Header="实例详情" Tag="Info"></TabItem>
-            <TabItem Header="模组管理" Tag="Mods" IsEnabled="False"></TabItem>
-            <TabItem Header="资源包 / 行为包" Tag="Pack" IsEnabled="False"></TabItem>
-            <TabItem Header="存档" Tag="Save"></TabItem>
-            <TabItem Header="截图" Tag="Screenshots" IsEnabled="False"></TabItem>
-            <TabItem Header="操作" Tag="Controls" IsEnabled="False"></TabItem>
-        </TabControl>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"
+                              MaxWidth="300"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <items:BorderCard Margin="20,10,5,10">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <Border CornerRadius="6"
+                                Margin="0,0,0,0"
+                                Width="80"
+                                Height="80">
+                            <Border.Background>
+                                <ImageBrush Source="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"></ImageBrush>
+                            </Border.Background>
+                        </Border>
+                            
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="20"
+                                   Margin="0,20,0,2"
+                                   Name="VersionName"
+                                   FontWeight="Bold">Version Name</TextBlock>
+                            
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="11"
+                                   Foreground="Gray"
+                                   Name="VersionReady">Version Ready Version</TextBlock>
+                            
+                        <Button Padding="16,8"
+                                HorizontalAlignment="Stretch"
+                                Margin="30,30,30,5"
+                                MaxWidth="160"
+                                Classes="NoBorder"
+                                Background="{DynamicResource AccentBackgroundBrush}"
+                                Name="LaunchBtn"
+                                Click="LaunchBtn_OnClick">
+                            <StackPanel Orientation="Horizontal">
+                                <onePointControls:FontIcon Glyph="&#xE768;"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="14"
+                                                           Margin="0,0,20,0"></onePointControls:FontIcon>
+                                <TextBlock Text="启动"
+                                           FontSize="15"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </items:BorderCard>
+        </Grid>
         
-        <StackPanel Grid.Row="0"
-                    Margin="0,0,25,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
-            <Button Padding="16,8"
-                    Margin="5"
-                    Classes="NoBorder"
-                    Background="{DynamicResource AccentBackgroundBrush}"
-                    Name="LaunchBtn"
-                    Click="LaunchBtn_OnClick">
-                <StackPanel Orientation="Horizontal">
-                    <onePointControls:FontIcon Glyph="&#xE709;"
-                                               VerticalAlignment="Center"
-                                               FontSize="16"
-                                               Margin="0,0,8,0"></onePointControls:FontIcon>
-                    <TextBlock Text="启动"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-        </StackPanel>
+        <Grid Grid.Column="1"
+              RowDefinitions="Auto,*">
+            <TabControl Grid.Row="0"
+                        Name="InstanceTabControl"
+                        SelectedIndex="0"
+                        SelectionChanged="InstanceTabControl_OnSelectionChanged"
+                        Margin="5,0,10,0">
+                <TabItem Header="实例详情" Tag="Info"></TabItem>
+                <TabItem Header="模组管理" Tag="Mods" IsEnabled="False"></TabItem>
+                <TabItem Header="资源包 / 行为包" Tag="Pack" IsEnabled="False"></TabItem>
+                <TabItem Header="存档" Tag="Save"></TabItem>
+                <TabItem Header="截图" Tag="Screenshots" IsEnabled="False"></TabItem>
+                <TabItem Header="操作" Tag="Controls" IsEnabled="False"></TabItem>
+            </TabControl>
         
-        <navigation:NavigationFrame Grid.Row="1"
-                                    Margin="10,5,10,0"
-                                    Name="InstanceFrame"/>
+            <navigation:NavigationFrame Grid.Row="1"
+                                        Margin="5,5,10,0"
+                                        Name="InstanceFrame"/>
+        </Grid>
     </Grid>
 </UserControl>

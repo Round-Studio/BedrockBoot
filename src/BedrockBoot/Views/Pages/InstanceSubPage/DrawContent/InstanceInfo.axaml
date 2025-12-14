@@ -16,7 +16,7 @@
                                               Glyph="&#xE8AC;"
                                               Header="实例名称"
                                               Description="实例在启动器内显示的名称">
-                    <TextBox Width="400"
+                    <TextBox Width="200"
                              Name="InstanceName"
                              TextChanged="TextTypeConfig_OnChanged"></TextBox>
                 </onePointControls:SettingCard>
@@ -26,7 +26,7 @@
                                               IsEnabled="False"
                                               Header="图标"
                                               Description="实例在启动器中显示的图标">
-                    <ComboBox Width="400"
+                    <ComboBox Width="200"
                               SelectedIndex="0">
                         <ComboBoxItem>草方块</ComboBoxItem>
                         <ComboBoxItem>土径</ComboBoxItem>
@@ -44,7 +44,7 @@
                                               IsEnabled="False"
                                               Header="参数"
                                               Description="启动游戏时的额外命令行参数">
-                    <TextBox Width="400"
+                    <TextBox Width="200"
                              Name="InstanceArgs"
                              TextChanged="TextTypeConfig_OnChanged"></TextBox>
                 </onePointControls:SettingCard>

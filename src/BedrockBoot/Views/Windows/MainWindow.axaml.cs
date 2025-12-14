@@ -156,12 +156,13 @@ public partial class MainWindow : OnePointWindow
                     {
                         Content =
                             $"欢迎使用 BedrockBoot，\n开始使用即代表您同意此条款：\n\n" +
-                            $"1.此为非官方 Minecraft 启动器\n" +
-                            $"2.您需拥有合法授权的 Minecraft 副本，否则自动进入试玩版\n" +
-                            $"3.禁止任何形式的盗版或作弊行为\n" +
-                            $"4.模组/资源包使用风险自负\n" +
-                            $"5.与 Mojang/Microsoft 无关联\n" +
-                            $"6.本软件为开源软件，使用和分发其副本源码请遵循开源协议 (GPL-v3)\n\n" +
+                            $"1. 此为非官方 Minecraft 启动器\n" +
+                            $"2. 您需拥有合法授权的 Minecraft 副本，否则自动进入试玩版\n" +
+                            $"3. 我们不会 辅助 / 协助 任何破解正版 Minecraft 的行为" +
+                            $"4. 禁止任何形式的盗版或作弊行为\n" +
+                            $"5. 模组 / 资源包 使用风险自负\n" +
+                            $"6. 与 Mojang / Microsoft 无关联\n" +
+                            $"7. 本软件为开源软件，使用和分发其副本源码请遵循开源协议 (GPL-v3)\n\n" +
                             $"继续使用即为接受条款",
                         Title = "BedrockBoot 用户使用协议",
                         CloseButtonText = "我同意",

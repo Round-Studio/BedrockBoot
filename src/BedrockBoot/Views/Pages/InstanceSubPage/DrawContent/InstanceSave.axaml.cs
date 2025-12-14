@@ -15,6 +15,8 @@ public partial class InstanceSave : UserControl
     public bool IsEdit { get; set; } = false;
     public VersionConfig VersionInfo { get; set; }
     public ArchiveManifest ArchiveManifest { get; private set; }
+    private string SearchKey => SearchBox.Text;
+    private int SelIndex => UserChooseBox.SelectedIndex;
     public InstanceSave()
     {
         IsEdit = false;
@@ -56,10 +58,40 @@ public partial class InstanceSave : UserControl
 
     public void UpdateSaves(List<ArchiveInfo> saves)
     {
+        NullBox.IsVisible = saves.Count <= 0;
+        
         SavesBox.Children.Clear();
         saves.ForEach(save =>
         {
             SavesBox.Children.Add(new ArchiveItem(save));
         });
+    }
+
+    public void UpdateSearch()
+    {
+        var lst = ArchiveManifest.Manifest.Values.ToList()[SelIndex];
+        var result = new List<ArchiveInfo>();
+        if (!string.IsNullOrEmpty(SearchKey))
+        {
+            lst.ForEach(save =>
+            {
+                if(save.Name.Contains(SearchKey))
+                    result.Add(save);
+            });
+            
+            UpdateSaves(result);
+        }
+        else 
+            UpdateSaves(lst);
+    }
+
+    private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        UpdateSearch();
+    }
+
+    private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        UpdateSearch();
     }
 }

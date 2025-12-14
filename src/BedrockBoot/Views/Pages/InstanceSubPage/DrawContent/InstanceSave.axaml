@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceSave">
     <Grid RowDefinitions="Auto,*">
@@ -19,6 +20,7 @@
                     
                     <ComboBox HorizontalAlignment="Stretch"
                               Name="UserChooseBox"
+                              SelectionChanged="UserChooseBox_OnSelectionChanged"
                               DockPanel.Dock="Right"></ComboBox>
                 </DockPanel>
                         
@@ -36,6 +38,7 @@
                                                FontSize="16"
                                                Margin="12,5,12,5"></onePointControls:FontIcon>
                     <TextBox Name="SearchBox"
+                             TextChanged="SearchBox_OnTextChanged"
                              HorizontalAlignment="Stretch"
                              DockPanel.Dock="Right"></TextBox>
                 </DockPanel>
@@ -48,5 +51,13 @@
                        Name="SavesBox">
             </WrapPanel>
         </ScrollViewer>
+        
+        <notice:InfoCard Grid.Row="1"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="NullBox"
+                         IsVisible="False"
+                         BigTitle="空空如也"
+                         Message="输入的关键词无效 或 这个用户没有存档"/>
     </Grid>
 </UserControl>

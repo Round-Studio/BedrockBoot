@@ -16,6 +16,7 @@
             <TabItem Header="模组管理" Tag="Mods" IsEnabled="False"></TabItem>
             <TabItem Header="资源包 / 行为包" Tag="Pack" IsEnabled="False"></TabItem>
             <TabItem Header="存档" Tag="Save"></TabItem>
+            <TabItem Header="截图" Tag="Screenshots" IsEnabled="False"></TabItem>
             <TabItem Header="操作" Tag="Controls" IsEnabled="False"></TabItem>
         </TabControl>
         

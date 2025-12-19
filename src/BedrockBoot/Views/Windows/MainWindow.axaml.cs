@@ -15,6 +15,7 @@ using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
+using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.VersionJsons;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -54,7 +55,15 @@ public partial class MainWindow : OnePointWindow
             $"Build.2.{((DateTime)(CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly()))).ToString("yy.MMdd.HHmmss")}";
         Task.Run(async () =>
         {
-            GlobalModel.BedrockCore = new BedrockCore();
+            GlobalModel.BedrockCore = new BedrockCore()
+            {
+                Options = new CoreOptions()
+                {
+                    IsAutoCompleteVC = true,
+                    IsAutoOpenDevelopment = true,
+                    IsCheckMD5 = true
+                }
+            };
             
             try
             {

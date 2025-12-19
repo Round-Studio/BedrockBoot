@@ -2,7 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceControls">
-    Welcome to Avalonia!
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="15,0,15,15">
+                <TextBlock Margin="5"
+                           FontWeight="Bold"
+                           FontSize="14">高危操作</TextBlock>
+                
+                <onePointControls:SettingCard Margin="5"
+                                              Glyph="&#xE74D;"
+                                              Header="删除实例"
+                                              Description="彻底删除该游戏版本">
+                    <Button Padding="8"
+                            Height="36" Width="100"
+                            Name="DeleteBtn"
+                            Classes="NoBorder"
+                            Background="DarkRed"
+                            Click="DeleteBtn_OnClick">立即删除</Button>
+                </onePointControls:SettingCard>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

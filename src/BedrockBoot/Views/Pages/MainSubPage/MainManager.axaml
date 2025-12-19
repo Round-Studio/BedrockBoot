@@ -15,7 +15,7 @@
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Left"
                                             FontSize="28"
-                                            FontWeight="Heavy"
+                                            FontWeight="Bold"
                                             Text="实例管理"></onePointControls:LineTextBlock>
             
             <Button Padding="12,8"

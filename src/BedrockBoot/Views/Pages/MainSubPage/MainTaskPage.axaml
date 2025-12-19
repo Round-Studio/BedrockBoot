@@ -13,7 +13,7 @@
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Left"
                                         FontSize="28"
-                                        FontWeight="Heavy"
+                                        FontWeight="Bold"
                                         Text="任务中心"></onePointControls:LineTextBlock>
     </entry:BedrockBootPage.HeaderView>
     

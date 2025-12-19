@@ -1,3 +1,4 @@
 ﻿{
-  "isImportGamePack": true
+  "isImportGamePack": true,
+  "isGameInstanceControl": false
 }

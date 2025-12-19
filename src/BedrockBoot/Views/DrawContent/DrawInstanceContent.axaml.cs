@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
@@ -19,6 +20,10 @@ public partial class DrawInstanceContent : UserControl
         InitializeComponent();
 
         IsEditMode = true;
+
+#if RELEASE
+        GameControls.IsEnabled = GlobalModel.FunctionOption.IsGameInstanceControl;
+#endif
     }
 
     public DrawInstanceContent(VersionConfig info) : this()

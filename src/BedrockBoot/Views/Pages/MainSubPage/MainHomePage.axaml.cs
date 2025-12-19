@@ -127,6 +127,8 @@ public partial class MainHomePage : BedrockBootPage
             // 验证并设置选中索引
             var validIndex = selectedIndex >= 0 && selectedIndex < versions.Count ? selectedIndex : 0;
             GameListChoose.SelectedIndex = validIndex;
+
+            GlobalModel.IsAbleToLaunchGame = true;
             
             // 更新游戏标题
             if (validIndex < versions.Count)

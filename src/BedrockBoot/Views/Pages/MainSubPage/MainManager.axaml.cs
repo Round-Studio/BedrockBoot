@@ -226,6 +226,7 @@ public partial class MainManager : BedrockBootPage
             }
         });
         
+        
         GameList.Children.Clear();
         
         if (lst.Count > 0)
@@ -361,22 +362,25 @@ public partial class MainManager : BedrockBootPage
 
     private void GameTypeSel_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        var tag = "";
-        if (GameTypeSel != null)
-            if (GameTypeSel.SelectedItem != null)
-            {
-                var item = (ComboBoxItem)GameTypeSel.SelectedItem;
-                tag = item.Tag.ToString();
-            }
+        if (IsEditMode)
+        {
+            var tag = "";
+            if (GameTypeSel != null)
+                if (GameTypeSel.SelectedItem != null)
+                {
+                    var item = (ComboBoxItem)GameTypeSel.SelectedItem;
+                    tag = item.Tag.ToString();
+                }
 
-        GameType = tag;
-        try
-        {
-            UpdateGameList();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"刷新实例失败：{ex}");
+            GameType = tag;
+            try
+            {
+                UpdateGameList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"刷新实例失败：{ex}");
+            }
         }
     }
 }

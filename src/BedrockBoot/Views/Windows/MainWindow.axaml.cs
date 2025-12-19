@@ -55,6 +55,10 @@ public partial class MainWindow : OnePointWindow
             $"Build.2.{((DateTime)(CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly()))).ToString("yy.MMdd.HHmmss")}";
         Task.Run(async () =>
         {
+            GlobalModel.FunctionOption = new JsonResourceEntity()
+                .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json")
+                .Result;
+            
             GlobalModel.BedrockCore = new BedrockCore()
             {
                 Options = new CoreOptions()
@@ -91,10 +95,6 @@ public partial class MainWindow : OnePointWindow
                 var lst = await VersionsHelper.GetBuildDatabaseAsync(
                     "https://data.mcappx.com/v2/bedrock.json");
                 Console.WriteLine("版本列表获取完毕");
-                
-                GlobalModel.FunctionOption = new JsonResourceEntity()
-                    .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json")
-                    .Result;
             }
             catch (InvalidOperationException invEx)
             {

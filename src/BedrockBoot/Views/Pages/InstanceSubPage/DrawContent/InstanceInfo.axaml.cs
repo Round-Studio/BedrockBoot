@@ -37,7 +37,6 @@ public partial class InstanceInfo : UserControl
         Task.Run(() =>
         {
             IsEdit = false;
-            Thread.Sleep(500);
 
             Dispatcher.UIThread.Invoke(() =>
             {

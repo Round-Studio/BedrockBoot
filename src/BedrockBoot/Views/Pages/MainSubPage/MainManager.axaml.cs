@@ -164,6 +164,11 @@ public partial class MainManager : BedrockBootPage
     public void UpdateGameList()
     {
         IsEditMode = false;
+        if (GlobalModel.Config.Data.GameFolderSelIndex + 1 > GlobalModel.Config.Data.GameFolders.Count)
+        {
+            GlobalModel.Config.Data.GameFolderSelIndex = GlobalModel.Config.Data.GameFolders.Count - 1;
+        }
+        
         if (GlobalModel.Config.Data.GameFolders.Count == 0)
         {
             GamesNull.IsVisible = true;

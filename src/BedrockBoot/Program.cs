@@ -20,22 +20,14 @@ namespace BedrockBoot;
 
 sealed class Program
 {
-
+    [DllImport("kernel32.dll")]
+    static extern bool AllocConsole();
     // Initialization code. Don't use any Avalonia, third-party APIs or any
 	// SynchronizationContext-reliant code before AppMain is called: things aren't initialized
 	// yet and stuff might break.
 	[STAThread]
     public static void Main(string[] args)
     {
-        PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
-        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-        GlobalModel.Config.Load();
-    
-        ConsoleRedirector consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
-            $"[BedrockBoot.Logger] {DateTime.Now.ToString("yyyy.MM.dd HHmmss.fff")}.log"));
-    
-        Console.WriteLine($"启动参数长度：{args.Length}");
-    
         // 首先处理可能的更新参数（--update-launcher, --update-replace）
         AppUpdater.ProcessStartupArgs(args);
     
@@ -44,12 +36,19 @@ sealed class Program
         {
             if (!ArgsAnalytical(args.ToList()))
             {
+                PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
+                GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+                GlobalModel.Config.Load();
+                
                 BuildAvaloniaApp()
                     .StartWithClassicDesktopLifetime(args);
             }
         }
         else
         {
+            ConsoleRedirector consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
+                $"[BedrockBoot.Logger] {DateTime.Now.ToString("yyyy.MM.dd HHmmss.fff")}.log"));
+            
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
         }
@@ -97,6 +96,11 @@ sealed class Program
                             Sent(command);
                         });
                     }
+                    break;
+                case "-console":
+                    AllocConsole();
+                    Console.OutputEncoding = Encoding.UTF8;
+                    Console.WriteLine("已开启 Release 中的 Debug 模式，此模式不会生成日志！");
                     break;
             }
         });

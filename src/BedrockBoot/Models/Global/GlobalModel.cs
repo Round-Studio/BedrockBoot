@@ -22,17 +22,10 @@ public class GlobalModel
     public static ProtocolService ProtocolService { get; set; } = new  ProtocolService();
     public static DownloadConfiguration DownloadConfiguration => new DownloadConfiguration()
     {
-        BufferBlockSize = 10240,
         ChunkCount = Config.Data.DownloadChunkCount,
-        MaximumMemoryBufferBytes = 1024 * 1024 * 50,
-        ParallelDownload = true,
-        ParallelCount = 4,
         Timeout = 1000,
-        RangeDownload = false,
-        RangeLow = 0,
-        RangeHigh = 0,
-        ClearPackageOnCompletionWithFailure = true,
-        MinimumSizeOfChunking = 1024,
-        ReserveStorageSpaceBeforeStartingDownload = true
+        ClearPackageOnCompletionWithFailure = false,
+        ReserveStorageSpaceBeforeStartingDownload = false,
+        MinimumSizeOfChunking = 1024
     };
 }

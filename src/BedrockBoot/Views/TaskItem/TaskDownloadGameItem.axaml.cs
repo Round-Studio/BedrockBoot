@@ -7,7 +7,9 @@ using Windows.Foundation;
 using Windows.Management.Deployment;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Models.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockLauncher.Core;
@@ -70,8 +72,9 @@ public partial class TaskDownloadGameItem : UserControl
                 try
                 {
                     var url = GlobalModel.BedrockCore.GetPackageUri(BuildInfo, Architecture.X64).Result;
-                    var downloadService = new DownloadService(GlobalModel.DownloadConfiguration);
-                    downloadService.DownloadStarted += (sender, args) =>
+                    var download = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount);
+                    var cls = new DownloadSpeedCalculator();
+                    await download.DownloadAsync(url, path,new Progress<DownloadProgress>((progress =>
                     {
                         Dispatcher.UIThread.Invoke(() =>
                         {
@@ -81,32 +84,15 @@ public partial class TaskDownloadGameItem : UserControl
                                 InsGetUrlBar.Value = 100;
                             }
 
-                            InsDownGameBar.Value = 0;
-                            MainText.Text = $"步骤：开始下载";
-                            MainSpeedText.Text = $"0 B / s";
+                            InsDownGameBar.Value = progress.ProgressPercentage;
+                            MainText.Text = $"步骤：下载游戏 ({progress.ProgressPercentage:F2}%)";
+                            MainSpeedText.Text = $"{FormatBytes(
+                                cls.UpdateSpeed(progress.DownloadedBytes, progress.TotalBytes))} / s";
                         });
-                    };
-                    downloadService.DownloadProgressChanged += (sender, args) =>
-                    {
-                        Dispatcher.UIThread.Invoke(() =>
-                        {
-                            if (InsGetUrlBar.IsIndeterminate)
-                            {
-                                InsGetUrlBar.IsIndeterminate = false;
-                                InsGetUrlBar.Value = 100;
-                            }
-
-                            InsDownGameBar.Value = args.ProgressPercentage;
-                            MainText.Text = $"步骤：下载游戏 ({args.ProgressPercentage:F2}%)";
-                            MainSpeedText.Text = $"{FormatBytes(args.BytesPerSecondSpeed)} / s";
-                        });
-                    };
-                    downloadService.DownloadFileCompleted += (sender, args) =>
-                    {
-                        Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = false);
-                        Dispatcher.UIThread.Invoke(() => InsMergeBar.Value = 100);
-                    };
-                    await downloadService.DownloadFileTaskAsync(url, path);
+                    })));
+                    
+                    Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = false);
+                    Dispatcher.UIThread.Invoke(() => InsMergeBar.Value = 100);
                 }
                 catch(Exception ex)
                 {

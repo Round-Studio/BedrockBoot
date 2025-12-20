@@ -13,6 +13,7 @@ using BedrockBoot.Models.Helper;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
+using Downloader;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -68,41 +69,44 @@ public partial class TaskDownloadGameItem : UserControl
             if (!File.Exists(path))
                 try
                 {
-                    await GlobalModel.BedrockCore.GetGamePackage(new GameOnlinePackageOptions()
+                    var url = GlobalModel.BedrockCore.GetPackageUri(BuildInfo, Architecture.X64).Result;
+                    var downloadService = new DownloadService(GlobalModel.DownloadConfiguration);
+                    downloadService.DownloadStarted += (sender, args) =>
                     {
-                        BuildInfo = BuildInfo,
-                        SaveFilePath = path,
-                        DownloadProgress = new Progress<DownloadProgress>(state =>
+                        Dispatcher.UIThread.Invoke(() =>
                         {
-                            Console.WriteLine($"{state.Phase} - {state.Progress * 100}");
+                            if (InsGetUrlBar.IsIndeterminate)
+                            {
+                                InsGetUrlBar.IsIndeterminate = false;
+                                InsGetUrlBar.Value = 100;
+                            }
 
-                            if (state.Phase == DownloadStage.Downloading)
+                            InsDownGameBar.Value = 0;
+                            MainText.Text = $"步骤：开始下载";
+                            MainSpeedText.Text = $"0 B / s";
+                        });
+                    };
+                    downloadService.DownloadProgressChanged += (sender, args) =>
+                    {
+                        Dispatcher.UIThread.Invoke(() =>
+                        {
+                            if (InsGetUrlBar.IsIndeterminate)
                             {
-                                Dispatcher.UIThread.Invoke(() =>
-                                {
-                                    if (InsGetUrlBar.IsIndeterminate)
-                                    {
-                                        InsGetUrlBar.IsIndeterminate = false;
-                                        InsGetUrlBar.Value = 100;
-                                    }
+                                InsGetUrlBar.IsIndeterminate = false;
+                                InsGetUrlBar.Value = 100;
+                            }
 
-                                    InsDownGameBar.Value = state.Progress * 100;
-                                    MainText.Text = $"步骤：下载游戏 ({state.Progress * 100.00:F2}%)";
-                                    MainSpeedText.Text = $"{FormatBytes(state.Speed)} / s";
-                                });
-                            }
-                            else if (state.Phase == DownloadStage.Merging)
-                            {
-                                Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = true);
-                            }
-                            else if (state.Phase == DownloadStage.Merged)
-                            {
-                                Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = false);
-                                Dispatcher.UIThread.Invoke(() => InsMergeBar.Value = 100);
-                            }
-                        }),
-                        DownloadThread = 4
-                    });
+                            InsDownGameBar.Value = args.ProgressPercentage;
+                            MainText.Text = $"步骤：下载游戏 ({args.ProgressPercentage:F2}%)";
+                            MainSpeedText.Text = $"{FormatBytes(args.BytesPerSecondSpeed)} / s";
+                        });
+                    };
+                    downloadService.DownloadFileCompleted += (sender, args) =>
+                    {
+                        Dispatcher.UIThread.Invoke(() => InsMergeBar.IsIndeterminate = false);
+                        Dispatcher.UIThread.Invoke(() => InsMergeBar.Value = 100);
+                    };
+                    await downloadService.DownloadFileTaskAsync(url, path);
                 }
                 catch(Exception ex)
                 {

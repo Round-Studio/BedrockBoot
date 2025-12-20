@@ -8,6 +8,7 @@ public class ConfigEntry
     [JsonPropertyName("windowInfo")] public WindowInfo WindowInfo { get; set; } = new WindowInfo();
     [JsonPropertyName("gameFolders")] public List<GameFolderInfo> GameFolders { get; set; } = new();
     [JsonPropertyName("gameFolderSelIndex")] public int GameFolderSelIndex { get; set; } = -1;
+    [JsonPropertyName("downloadChunkCount")] public int DownloadChunkCount { get; set; } = 16;
     [JsonPropertyName("isAutoCacheGamePack")] public bool IsAutoCacheGamePack { get; set; } = true;
     [JsonPropertyName("isAutoCheckUpdate")] public bool IsAutoCheckUpdate { get; set; } = true;
     [JsonPropertyName("isFirstRun")] public bool IsFirstRun { get; set; } = true;

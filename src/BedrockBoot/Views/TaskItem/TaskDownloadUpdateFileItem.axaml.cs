@@ -34,7 +34,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         var url = Release.Assets[0].BrowserDownloadUrl;
         var path = Path.Combine(PathsList.UpdatePath, $"{Release.TagName}.exe");
 
-        var service = new DownloadService();
+        var service = new DownloadService(GlobalModel.DownloadConfiguration);
         // Provide `FileName` and `TotalBytesToReceive` at the start of each downloads
         service.DownloadStarted += (sender, args) =>
         {

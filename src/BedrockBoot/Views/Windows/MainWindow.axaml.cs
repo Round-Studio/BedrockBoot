@@ -43,6 +43,7 @@ public partial class MainWindow : OnePointWindow
 
 #if DEBUG
         DebugModule.IsVisible = true;
+        VersionBox.IsVisible = false;
 #endif
 
         MainFrame.NavigateTo(new LoadingPage());

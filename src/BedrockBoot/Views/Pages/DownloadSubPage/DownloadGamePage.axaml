@@ -1,0 +1,78 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.DownloadSubPage.DownloadGamePage">
+    <Grid RowDefinitions="Auto,*">
+        <items:BorderCard Margin="20,15,20,15">
+            <Grid ColumnDefinitions="3*,Auto,7*">
+                <DockPanel Grid.Column="0" LastChildFill="True">
+                    <onePointControls:FontIcon Glyph="&#xE71C;"
+                                               Foreground="{DynamicResource PrimaryForegroundBrush}"
+                                               FontSize="18"
+                                               Margin="5,0,10,0"
+                                               VerticalAlignment="Center"/>
+                
+                    <ComboBox ClipToBounds="False"
+                              Margin="5,0"
+                              VerticalAlignment="Center"
+                              Height="32"
+                              SelectedIndex="1"
+                              Name="ComboBox"
+                              SelectionChanged="ComboBox_OnSelectionChanged"
+                              VerticalContentAlignment="Center"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.Items>
+                            <ComboBoxItem Content="预览版"></ComboBoxItem>
+                            <ComboBoxItem Content="正式版"></ComboBoxItem>
+                            <ComboBoxItem Content="Beta 版"></ComboBoxItem>
+                        </ComboBox.Items>
+                    </ComboBox>
+                </DockPanel>
+                        
+                <Border Grid.Column="1"
+                        Width="1"
+                        VerticalAlignment="Stretch"
+                        Background="{DynamicResource PrimaryDisabledForegroundBrush}"
+                        Margin="7,5,7,5"></Border>
+                
+                <DockPanel Grid.Column="2" LastChildFill="True">
+                    <onePointControls:FontIcon Glyph="&#xE721;"
+                                               Foreground="{DynamicResource PrimaryForegroundBrush}"
+                                               FontSize="18"
+                                               Margin="5,0,10,0"
+                                               VerticalAlignment="Center"/>
+                
+                    <TextBox Margin="5,0"
+                             VerticalAlignment="Center"
+                             Height="32"
+                             Name="TextBox"
+                             TextChanged="TextBox_OnTextChanged"
+                             HorizontalAlignment="Stretch"></TextBox>
+                </DockPanel>
+            </Grid>
+        </items:BorderCard>
+        
+        <notice:LoadCard Grid.Row="1" HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         BigTitle="收集电子中..."
+                         Message="全体电子，列队！"
+                         Name="LoadingRing"></notice:LoadCard>
+            
+        <notice:InfoCard Grid.Row="1" VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Glyph="&#xE822;"
+                         BigTitle="请...诶？"
+                         Message="您所输入的关键词无效哦"
+                         Name="NoneBox"> </notice:InfoCard>
+            
+        <ScrollViewer Grid.Row="1" Name="ScrollViewer">
+            <StackPanel Name="ItemsPanel"
+                        Margin="15,0,15,15"></StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

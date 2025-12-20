@@ -5,67 +5,54 @@
                  xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
                  xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
                  xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                 xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
                  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                  x:Class="BedrockBoot.Views.Pages.MainSubPage.MainDownloadPage">
     <entry:BedrockBootPage.HeaderView>
         <Grid Width="400"
               HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="7*"></ColumnDefinition>
-                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
-            <DockPanel Grid.Column="0" 
-                       LastChildFill="True">
-                <onePointControls:FontIcon Glyph="&#xE721;"
-                                           Foreground="{DynamicResource PrimaryForegroundBrush}"
-                                           FontSize="18"
-                                           Margin="5,0,10,0"
-                                           VerticalAlignment="Center"/>
-                
-                <TextBox Margin="5,0"
-                         VerticalAlignment="Center"
-                         Height="32"
-                         Name="TextBox"
-                         TextChanged="TextBox_OnTextChanged"
-                         HorizontalAlignment="Stretch"></TextBox>
-            </DockPanel>
+            <onePointControls:LineTextBlock Grid.Column="0"
+                                            Margin="0"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"
+                                            FontSize="28"
+                                            FontWeight="Bold"
+                                            Text="下载"></onePointControls:LineTextBlock>
             
-            <ComboBox Grid.Column="1" 
-                      ClipToBounds="False"
-                      Margin="5,0"
-                      VerticalAlignment="Center"
-                      Height="32"
-                      SelectedIndex="1"
-                      Name="ComboBox"
-                      SelectionChanged="ComboBox_OnSelectionChanged"
-                      VerticalContentAlignment="Center"
-                      HorizontalAlignment="Stretch">
-                <ComboBox.Items>
-                    <ComboBoxItem Content="预览版"></ComboBoxItem>
-                    <ComboBoxItem Content="正式版"></ComboBoxItem>
-                    <ComboBoxItem Content="Beta 版"></ComboBoxItem>
-                </ComboBox.Items>
-            </ComboBox>
+            <ListBox Grid.Column="1"
+                     Classes="Segmented"
+                     Margin="12,0,0,0"
+                     Name="PageSel"
+                     SelectedIndex="0"
+                     SelectionChanged="SelectingItemsControl_OnSelectionChanged">
+                <ListBoxItem Classes="Segmented"
+                             Tag="Game">
+                    <StackPanel Orientation="Horizontal">
+                        <onePointControls:FontIcon Glyph="&#xE7FC;"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="16"></onePointControls:FontIcon>
+                        <TextBlock Margin="8,4,0,4">实例</TextBlock>
+                    </StackPanel>
+                </ListBoxItem>
+                
+                <ListBoxItem Classes="Segmented"
+                             Tag="Assets">
+                    <StackPanel Orientation="Horizontal">
+                        <onePointControls:FontIcon Glyph="&#xE728;"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="16"></onePointControls:FontIcon>
+                        <TextBlock Margin="8,4,0,4">资源</TextBlock>
+                    </StackPanel>
+                </ListBoxItem>
+            </ListBox>
         </Grid>
     </entry:BedrockBootPage.HeaderView>
     <Grid>
-        <notice:LoadCard HorizontalAlignment="Center"
-                         VerticalAlignment="Center"
-                         BigTitle="收集电子中..."
-                         Message="全体电子，列队！"
-                         Name="LoadingRing"></notice:LoadCard>
-            
-        <notice:InfoCard VerticalAlignment="Center"
-                         HorizontalAlignment="Center"
-                         Glyph="&#xE822;"
-                         BigTitle="请...诶？"
-                         Message="您所输入的关键词无效哦"
-                         Name="NoneBox"> </notice:InfoCard>
-            
-        <ScrollViewer Name="ScrollViewer">
-            <StackPanel Name="ItemsPanel"
-                        Margin="15,15,15,15"></StackPanel>
-        </ScrollViewer>
+        <navigation:NavigationFrame Name="NavFrame"/>
     </Grid>
 </entry:BedrockBootPage>

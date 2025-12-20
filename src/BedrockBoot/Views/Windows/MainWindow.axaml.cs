@@ -1,8 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -11,9 +9,7 @@ using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Service.Protocol;
-using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages;
-using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.VersionJsons;

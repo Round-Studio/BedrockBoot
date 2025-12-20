@@ -5,6 +5,8 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.Import;
+using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.DialogContent;
 
@@ -12,6 +14,8 @@ public partial class DialogImportGameContent : UserControl
 {
     public string PackFile => PathInputBox.Text;
     public string PackInstallName => NameInputBox.Text;
+    public bool IsGDK = false;
+    public MinecraftGameTypeVersion GameType => (MinecraftGameTypeVersion)RealGameBuildTypeInputBox.SelectedIndex;
 
     public string PackInstallFolder =>
         GlobalModel.Config.Data.GameFolders[GameInstallFoldersInputBox.SelectedIndex].GameFolderPath;
@@ -45,6 +49,17 @@ public partial class DialogImportGameContent : UserControl
             if (File.Exists(filePath))
             {
                 PathInputBox.Text = filePath;
+                var type = PackAnalysis.GetPackBuildTypeWithFileHeader(filePath);
+                if (type == MinecraftBuildTypeVersion.GDK)
+                {
+                    GDKItem.IsVisible = true;
+                    IsGDK = true;
+                }
+                else
+                {
+                    GDKItem.IsVisible = false;
+                    IsGDK = false;
+                }
             }
         }
     }

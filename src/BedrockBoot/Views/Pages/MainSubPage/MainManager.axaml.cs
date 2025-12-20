@@ -319,6 +319,7 @@ public partial class MainManager : BedrockBootPage
             CloseAction = () =>
             {
                 var packPath = dialog.PackFile;
+                var isGDK = dialog.IsGDK;
                 var installFolder = dialog.PackInstallFolder;
                 var installName = dialog.PackInstallName;
 
@@ -353,7 +354,7 @@ public partial class MainManager : BedrockBootPage
                     return;
                 }
 
-                TaskImportGamePackItem.Install(packPath, installFolder, installName);
+                TaskImportGamePackItem.Install(packPath, installFolder, installName,dialog.GameType);
             }
         });
     }

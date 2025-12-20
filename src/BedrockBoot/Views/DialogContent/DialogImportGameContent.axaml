@@ -50,31 +50,16 @@
             <TextBox Margin="0,5,0,5"
                      Name="NameInputBox"></TextBox>
             
-            <StackPanel IsVisible="False">
+            <StackPanel Name="GDKItem"
+                        IsVisible="False">
                 <TextBlock Margin="0,5,0,5"
-                           HorizontalAlignment="Left">* 实际版本（官方版本号）：</TextBlock>
-                <TextBox Margin="0,5,0,5"
-                         Name="RealNameInputBox"></TextBox>
-            
-                <TextBlock Margin="0,5,0,5"
-                           HorizontalAlignment="Left">* 实际版本类型（官方版本类型）：</TextBlock>
-                <ComboBox Margin="0,5,0,5"
-                          Name="RealGameTypeInputBox"
-                          SelectedIndex="0"
-                          HorizontalAlignment="Stretch">
-                    <ComboBoxItem>Release</ComboBoxItem>
-                    <ComboBoxItem>Preview</ComboBoxItem>
-                    <ComboBoxItem>Beta</ComboBoxItem>
-                </ComboBox>
-            
-                <TextBlock Margin="0,5,0,5"
-                           HorizontalAlignment="Left">* 实际构建类型（官方构建类型）：</TextBlock>
+                           HorizontalAlignment="Left">实际版本类型（GDK 必须选择此项，填错无法启动）：</TextBlock>
                 <ComboBox Margin="0,5,0,5"
                           Name="RealGameBuildTypeInputBox"
                           SelectedIndex="0"
                           HorizontalAlignment="Stretch">
-                    <ComboBoxItem>UWP</ComboBoxItem>
-                    <ComboBoxItem>GDK</ComboBoxItem>
+                    <ComboBoxItem>Preview</ComboBoxItem>
+                    <ComboBoxItem>Release</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
         </StackPanel>

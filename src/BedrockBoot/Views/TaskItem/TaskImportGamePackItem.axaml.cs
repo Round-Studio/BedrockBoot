@@ -5,6 +5,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Import;
+using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.TaskItem;
 
@@ -13,21 +14,26 @@ public partial class TaskImportGamePackItem : UserControl
     public string PackFile { get; set; }
     public string InstallFolder { get; set; }
     public string InstallName { get; set; }
+    public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
     public TaskImportGamePackItem()
     {
         InitializeComponent();
     }
 
-    public TaskImportGamePackItem(string packFile, string installFolder, string installName) : this()
+    public TaskImportGamePackItem(string packFile, string installFolder, string installName, MinecraftGameTypeVersion type) : this()
     {
         PackFile = packFile;
         InstallName = installName;
         InstallFolder = installFolder;
+        GDKGameType = type;
     }
 
     public async void Install(Action installed)
     {
-        var body = new PackInstaller(PackFile);
+        var body = new PackInstaller(PackFile)
+        {
+            GDKGameType = GDKGameType
+        };
         double lastProgress = -1;
         body.ImportProgress = new Progress<PackImportProgress>((s) =>
         {
@@ -55,9 +61,9 @@ public partial class TaskImportGamePackItem : UserControl
         Task.Run(() => body.Install(InstallFolder, InstallName));
     }
 
-    public static void Install(string packFile, string installFolder, string installName)
+    public static void Install(string packFile, string installFolder, string installName, MinecraftGameTypeVersion type)
     {
-        var body = new TaskImportGamePackItem(packFile, installFolder, installName);
+        var body = new TaskImportGamePackItem(packFile, installFolder, installName, type);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
         body.Install(() => { GlobalModel.TaskManager.RemoveTask(tuid); });

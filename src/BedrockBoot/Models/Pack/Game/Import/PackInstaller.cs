@@ -17,6 +17,7 @@ public class PackInstaller
 {
     public string PackFile { get; set; }
     public MinecraftBuildTypeVersion GameBuildType { get; private set; }
+    public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
     public Action ImportedAction { get; set; } = null;
     public IProgress<PackImportProgress> ImportProgress { get; set; } = new Progress<PackImportProgress>();
     public PackInstaller(string filePath)
@@ -125,7 +126,7 @@ public class PackInstaller
             GameName = gameName,
             Type = MinecraftBuildTypeVersion.GDK,
             InstallDstFolder = path,
-            GameTypeVersion = MinecraftGameTypeVersion.Release,
+            GameTypeVersion = GDKGameType,
             FileFullPath = PackFile,
             ExtractionProgress = new Progress<DecompressProgress>((s) =>
             {

@@ -30,16 +30,17 @@ sealed class Program
     {
         // 首先处理可能的更新参数（--update-launcher, --update-replace）
         AppUpdater.ProcessStartupArgs(args);
+        
+        PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
+        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+        GlobalModel.Config.Load();
+
     
         // 然后处理原有的 -update 参数
         if (args.Length > 0)
         {
             if (!ArgsAnalytical(args.ToList()))
             {
-                PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
-                GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-                GlobalModel.Config.Load();
-                
                 BuildAvaloniaApp()
                     .StartWithClassicDesktopLifetime(args);
             }

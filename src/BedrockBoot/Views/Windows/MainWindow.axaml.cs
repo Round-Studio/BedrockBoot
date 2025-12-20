@@ -67,24 +67,12 @@ public partial class MainWindow : OnePointWindow
             
             try
             {
-                var pro = new ProtocolRegister();
-                pro.ProtocolName = "BedrockBoot";
-                pro.ProtocolDescription = "BedrockBoot 协议";
-                pro.RegisterProtocol(Process.GetCurrentProcess().MainModule.FileName);
-
-                GlobalModel.ProtocolService.StartAsync();
-                GlobalModel.ProtocolService.Get("/shell",async (context, parameters) =>
-                {
-                    parameters.TryGetQuery("command", out var command);
-                    Console.WriteLine(command);
-
-                    var comm = command.Replace("bedrockboot://", "").Split('/');
-                    ProtocolCommand.OnCommand(comm);
-                    
-                    await ProtocolService.WriteResponseAsync(context, 200, "ok");
-                });
-                
-                Console.WriteLine("协议服务器启动成功！");
+#if RELEASE
+                if (GlobalModel.FunctionOption.IsEnableWebProtocol)
+                    OpenProtocol();
+#else
+                OpenProtocol();
+#endif
                 
                 Console.WriteLine("初始化核心完毕");
 
@@ -183,6 +171,28 @@ public partial class MainWindow : OnePointWindow
                 }
             }
         });
+    }
+
+    public void OpenProtocol()
+    {
+        var pro = new ProtocolRegister();
+        pro.ProtocolName = "BedrockBoot";
+        pro.ProtocolDescription = "BedrockBoot 协议";
+        pro.RegisterProtocol(Process.GetCurrentProcess().MainModule.FileName);
+
+        GlobalModel.ProtocolService.StartAsync();
+        GlobalModel.ProtocolService.Get("/shell",async (context, parameters) =>
+        {
+            parameters.TryGetQuery("command", out var command);
+            Console.WriteLine(command);
+
+            var comm = command.Replace("bedrockboot://", "").Split('/');
+            ProtocolCommand.OnCommand(comm);
+                    
+            await ProtocolService.WriteResponseAsync(context, 200, "ok");
+        });
+                
+        Console.WriteLine("协议服务器启动成功！");
     }
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)

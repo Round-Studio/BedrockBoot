@@ -1,4 +1,5 @@
 ﻿{
   "isImportGamePack": true,
-  "isGameInstanceControl": false
+  "isGameInstanceControl": false,
+  "isEnableWebProtocol": false
 }

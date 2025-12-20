@@ -14,13 +14,14 @@
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="下载分块"
                                           Description="BedrockBoot 的下载分片数量"
-                                          IsEnabled="False"
                                           Glyph="&#xF158;">
                 <Slider Width="200"
+                        Name="ChunkCountSlider"
                         Classes="Number"
-                        Minimum="2"
-                        Maximum="16"
-                        Value="64"></Slider>
+                        ValueChanged="ChunkCountSlider_OnValueChanged"
+                        Minimum="4"
+                        Maximum="256"
+                        Value="16"></Slider>
             </onePointControls:SettingCard>
             
             <TextBlock Margin="5,0,5,10"

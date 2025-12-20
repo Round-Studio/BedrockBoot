@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Global;
@@ -13,18 +14,20 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 public partial class SettingDownload : UserControl
 {
     public bool IsEdit = false;
+
     public SettingDownload()
     {
         InitializeComponent();
         MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
         {
-            new ()
+            new()
             {
                 ItemName = "下载"
             }
         });
 
         IsAutoCacheGamePack.IsChecked = GlobalModel.Config.Data.IsAutoCacheGamePack;
+        ChunkCountSlider.Value = GlobalModel.Config.Data.DownloadChunkCount;
         IsEdit = true;
     }
 
@@ -32,13 +35,25 @@ public partial class SettingDownload : UserControl
     {
         if (IsEdit)
         {
-             GlobalModel.Config.Data.IsAutoCacheGamePack = (bool)IsAutoCacheGamePack.IsChecked;
-             GlobalModel.Config.Save();
+            GlobalModel.Config.Data.IsAutoCacheGamePack = (bool)IsAutoCacheGamePack.IsChecked;
+            GlobalModel.Config.Save();
         }
     }
 
     private void SoftwareUpdate_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigationFrame.NavigateTo(new UniversalSoftwareUpdate());
+    }
+
+    private void ChunkCountSlider_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            if ((int)ChunkCountSlider.Value != GlobalModel.Config.Data.DownloadChunkCount)
+            {
+                GlobalModel.Config.Data.DownloadChunkCount = (int)ChunkCountSlider.Value;
+                GlobalModel.Config.Save();
+            }
+        }
     }
 }

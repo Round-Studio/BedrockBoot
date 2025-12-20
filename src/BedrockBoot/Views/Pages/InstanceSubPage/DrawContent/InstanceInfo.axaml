@@ -41,7 +41,6 @@
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xEC06;"
-                                              IsEnabled="False"
                                               Header="参数"
                                               Description="启动游戏时的额外命令行参数">
                     <TextBox Width="200"

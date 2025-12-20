@@ -60,7 +60,8 @@ public partial class TaskLaunchGameItem : UserControl
 
                 var args = "";
 
-                if (VersionInfo.Config.IsEditModel) args += "minecraft://creator/?Editor=true";
+                if (VersionInfo.Config.IsEditModel) args += "minecraft://creator/?Editor=true ";
+                args += VersionInfo.Config.OtherCommand;
 
                 MinecraftProcess = await GlobalModel.BedrockCore.StartGameAsync(new LaunchOptions()
                 {

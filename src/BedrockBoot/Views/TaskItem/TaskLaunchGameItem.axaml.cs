@@ -81,7 +81,7 @@ public partial class TaskLaunchGameItem : UserControl
                     {
                         Console.WriteLine(state);
                     })),
-                    LaunchArgs = args
+                    LaunchArgs = string.IsNullOrEmpty(args) ? null : args
                 });
 
                 if (MinecraftProcess != null && !MinecraftProcess.HasExited)

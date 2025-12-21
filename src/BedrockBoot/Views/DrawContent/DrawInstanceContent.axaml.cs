@@ -22,7 +22,7 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = true;
 
 #if RELEASE
-        GameControls.IsEnabled = GlobalModel.FunctionOption.IsGameInstanceControl;
+        GameControls.IsEnabled = GlobalModel.FunctionOption.IsEnableGameInstanceControl;
 #endif
     }
 

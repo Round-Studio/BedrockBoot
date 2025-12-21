@@ -41,7 +41,7 @@ public partial class MainManager : BedrockBootPage
         UpdateUI();
 
 #if RELEASE
-        ImportGameBtn.IsVisible = GlobalModel.FunctionOption.IsImportGamePack;
+        ImportGameBtn.IsVisible = GlobalModel.FunctionOption.IsEnableImportGamePack;
 #endif
     }
 

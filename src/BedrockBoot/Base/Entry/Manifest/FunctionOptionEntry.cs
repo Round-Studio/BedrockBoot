@@ -4,7 +4,9 @@ namespace BedrockBoot.Base.Entry.Manifest;
 
 public class FunctionOptionEntry
 {
-    [JsonPropertyName("isImportGamePack")] public bool IsImportGamePack { get; set; }
-    [JsonPropertyName("isGameInstanceControl")] public bool IsGameInstanceControl { get; set; }
+    [JsonPropertyName("isEnableImportGamePack")] public bool IsEnableImportGamePack { get; set; }
+    [JsonPropertyName("isEnableGameInstanceControl")] public bool IsEnableGameInstanceControl { get; set; }
     [JsonPropertyName("isEnableWebProtocol")] public bool IsEnableWebProtocol { get; set; }
+    [JsonPropertyName("isEnableInstanceIndependent")] public bool IsEnableInstanceIndependent { get; set; }
+    [JsonPropertyName("isEnableSettingPersonalization")] public bool IsEnableSettingPersonalization { get; set; }
 }

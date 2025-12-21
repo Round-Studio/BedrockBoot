@@ -11,7 +11,7 @@
         WindowStartupLocation="CenterOwner"
         Width="800" Height="500"
         MinWidth="800" MinHeight="500"
-        Title="BedrockBoot - 错误报告">
+        Title="BedrockBoot">
     
     <windowFrame:OnePointWindow.TitleBarContent>
         <onePointControls:LabelBox Text="异常处理"
@@ -46,13 +46,13 @@
             
             <!-- 错误消息 -->
             <TextBlock Grid.Row="1" 
-                       Text="BedrockBoot 遇到了一个无法恢复的错误，需要关闭。"
+                       Text="BedrockBoot 遇到了一个致命错误，需要进行反馈。"
                        Foreground="Gray"
                        Margin="20,5,20,0"/>
             
             <!-- 错误详情区域 -->
             <ScrollViewer Grid.Row="2" 
-                          Margin="5,0,5,20">
+                          Margin="5,0,5,0">
                 <StackPanel Margin="15">
                     <TextBlock TextWrapping="WrapWithOverflow"
                                FontFamily="Consolas"
@@ -66,29 +66,34 @@
                         Orientation="Horizontal" 
                         HorizontalAlignment="Right"
                         Spacing="10">
-                <TextBlock Foreground="Gray">截图此窗口进行反馈，随后即可关闭此窗口</TextBlock>
-                <Button Name="CopyButton"
-                        IsVisible="False"
-                        Content="复制错误信息"
-                        Padding="15,8"
-                        MinWidth="120"
-                        Classes="NoBorder"/>
-                
-                <Button Name="RestartButton"
-                        IsVisible="False"
-                        Content="重新启动应用"
-                        Padding="15,8"
-                        MinWidth="120"
-                        Classes="NoBorder"/>
-                
                 <Button Name="CloseButton"
-                        IsVisible="False"
-                        Content="退出应用"
-                        Padding="15,8"
+                        Content="返回本体"
+                        Padding="15,10"
                         MinWidth="120"
+                        Click="CloseButton_OnClick"
                         Classes="NoBorder"
                         Background="DarkRed"
                         Foreground="White"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="3" 
+                        Margin="20"
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Left"
+                        Spacing="10">
+                <Button Name="CopyButton"
+                        Content="复制错误信息"
+                        Padding="15,10"
+                        MinWidth="120"
+                        Click="CopyButton_OnClick"
+                        Classes="NoBorder"/>
+
+                <Button Name="GithubBtn"
+                        Content="Github Issues"
+                        Padding="15,10"
+                        MinWidth="120"
+                        Click="GithubBtn_OnClick"
+                        Classes="NoBorder"/>
             </StackPanel>
         </Grid>
     </windowFrame:OnePointWindow.MainContent>

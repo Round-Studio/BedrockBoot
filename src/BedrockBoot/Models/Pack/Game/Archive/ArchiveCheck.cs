@@ -37,13 +37,15 @@ public class ArchiveCheck
                 var saves = Directory.GetDirectories(us.Value).ToList();
                 saves.ForEach(save =>
                 {
+                    if (!File.Exists(Path.Combine(save, "levelname.txt"))) return;
                     var name = File.ReadAllText(Path.Combine(save, "levelname.txt"));
+
                     var icon = Path.Combine(save, "world_icon.jpeg");
                     var isProject = false;
 
                     if (Directory.Exists(Path.Combine(save, "editor")))
                         isProject = true;
-                        
+
                     acts.Add(new ArchiveInfo()
                     {
                         Name = name,

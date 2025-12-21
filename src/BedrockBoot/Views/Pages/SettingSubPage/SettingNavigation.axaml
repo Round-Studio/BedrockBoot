@@ -10,8 +10,9 @@
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="个性化"
                                           Description="启动器的个性化设置"
+                                          Name="SetPersonalization"
+                                          Click="SetPersonalization_OnClick"
                                           IsClickable="True"
-                                          IsEnabled="False"
                                           Glyph="&#xEE56;"/>
                 
             <onePointControls:SettingCard Margin="5, 0, 5, 10"

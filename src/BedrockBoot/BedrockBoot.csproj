@@ -61,9 +61,4 @@
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Base\Enum\" />
-      <Folder Include="Views\Pages\PersonalizationSubPage\" />
-    </ItemGroup>
 </Project>

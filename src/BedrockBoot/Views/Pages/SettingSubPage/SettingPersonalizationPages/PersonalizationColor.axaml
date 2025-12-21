@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationColor">
+    <ScrollViewer>
+        <StackPanel Margin="15">
+            <onePointControls:SettingCard Header="主题模式"
+                                          Margin="5"
+                                          Description="浅色 or 深色"
+                                          Glyph="&#xE793;">
+                <ListBox Name="ChooseTheme"
+                         Classes="Segmented"
+                         SelectedIndex="0"
+                         SelectionChanged="ChooseTheme_OnSelectionChanged">
+                    <ListBoxItem Content="深色"
+                                 Classes="Segmented"></ListBoxItem>
+                    
+                    <ListBoxItem Content="浅色"
+                                 Classes="Segmented"></ListBoxItem>
+                </ListBox>
+            </onePointControls:SettingCard>
+            
+            <view:ItemView Name="ColorsView"
+                           MaxWidth="540"
+                           HorizontalAlignment="Left"
+                           SelectionChanged="ColorsView_OnSelectionChanged"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

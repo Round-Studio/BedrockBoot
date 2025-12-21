@@ -6,8 +6,10 @@ using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Style;
 using BedrockBoot.ViewModels;
 using BedrockBoot.Views;
 using BedrockBoot.Views.Windows;
@@ -28,6 +30,7 @@ public partial class App : Application
         Dispatcher.UIThread.UnhandledException += UIThread_UnhandledException;
         
         Console.WriteLine("异常订阅已完毕");
+        LoadColor();
     }
     
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -106,5 +109,11 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
+    }
+    
+    public static void LoadColor()
+    {
+        ThemeManager.Instance.SetAccentColor(
+            Color.Parse(AccentColor.Colors[GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
     }
 }

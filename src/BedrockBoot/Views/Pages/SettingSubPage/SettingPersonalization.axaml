@@ -2,7 +2,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalization">
-    Welcome to Avalonia!
+    <ScrollViewer>
+        <StackPanel Margin="15">
+            <TextBlock Margin="5,0,5,10"
+                       FontWeight="Bold"
+                       FontSize="14">基本主题</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="背景"
+                                          Description="详细背景设置"
+                                          Name="SetBackground"
+                                          IsClickable="True"
+                                          Glyph="&#xE91B;"/>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="颜色"
+                                          Description="启动器主题颜色设置"
+                                          Name="SetColor"
+                                          Click="SetColor_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xE790;"/>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

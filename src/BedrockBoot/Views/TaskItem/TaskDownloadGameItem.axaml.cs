@@ -21,6 +21,7 @@ using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
 using Round.SDK.Helper.IO;
+using DownloadProgress = BedrockBoot.Base.Entry.DownloadProgress;
 
 namespace BedrockBoot.Views.TaskItem;
 
@@ -72,7 +73,7 @@ public partial class TaskDownloadGameItem : UserControl
                 try
                 {
                     var url = GlobalModel.BedrockCore.GetPackageUri(BuildInfo, Architecture.X64).Result;
-                    var download = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount);
+                    var download = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
                     var cls = new DownloadSpeedCalculator();
                     await download.DownloadAsync(url, path,new Progress<DownloadProgress>((progress =>
                     {

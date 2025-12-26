@@ -9,4 +9,6 @@ public class FunctionOptionEntry
     [JsonPropertyName("isEnableWebProtocol")] public bool IsEnableWebProtocol { get; set; }
     [JsonPropertyName("isEnableInstanceIndependent")] public bool IsEnableInstanceIndependent { get; set; }
     [JsonPropertyName("isEnableSettingPersonalization")] public bool IsEnableSettingPersonalization { get; set; }
+    [JsonPropertyName("isEnableSettingBackground")] public bool IsEnableSettingBackground { get; set; }
+    [JsonPropertyName("isEnableSettingColor")] public bool IsEnableSettingColor { get; set; }
 }

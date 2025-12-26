@@ -3,5 +3,7 @@
   "isEnableGameInstanceControl": false,
   "isEnableWebProtocol": false,
   "isEnableInstanceIndependent": false,
-  "isEnableSettingPersonalization": false
+  "isEnableSettingPersonalization": false,
+  "isEnableSettingBackground": false,
+  "isEnableSettingColor": true
 }

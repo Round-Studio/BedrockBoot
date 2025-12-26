@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -21,6 +22,11 @@ public partial class SettingPersonalization : UserControl
                 ItemName = "个性化"
             }
         });
+
+#if RELEASE
+        SetBackground.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingBackground;
+        SetColor.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingColor;
+#endif
     }
 
     private void SetColor_OnClick(object? sender, RoutedEventArgs e)

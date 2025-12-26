@@ -35,7 +35,9 @@
                         CornerRadius="6"
                         Margin="0,8,0,0"
                         Height="48"
-                        Background="#262626">
+                        Background="{DynamicResource PrimaryBackgroundBrush}"
+                        BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                        BorderThickness="1">
                     <StackPanel VerticalAlignment="Center"
                                 Margin="8,0,0,0">
                         <TextBlock FontSize="14"
@@ -46,7 +48,9 @@
                         CornerRadius="6"
                         Margin="8,8,0,0"
                         Height="48" Width="48"
-                        Background="#262626">
+                        Background="{DynamicResource PrimaryBackgroundBrush}"
+                        BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                        BorderThickness="1">
                     <Button Classes="NoBorder"
                             CornerRadius="4"
                             IsEnabled="False">

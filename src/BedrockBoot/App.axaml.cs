@@ -7,7 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
 using BedrockBoot.ViewModels;
@@ -115,5 +117,6 @@ public partial class App : Application
     {
         ThemeManager.Instance.SetAccentColor(
             Color.Parse(AccentColor.Colors[GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
+        ThemeManager.Instance.SetThemeModel(GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light ? ThemeVariant.Light : ThemeVariant.Dark);
     }
 }

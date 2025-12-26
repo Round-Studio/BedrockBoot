@@ -45,7 +45,7 @@ public partial class PersonalizationColor : ISetting
             GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseTheme.SelectedIndex;
             GlobalModel.Config.Save();
             
-            ThemeManager.Instance.SetThemeModel(GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light ? ThemeVariant.Light : ThemeVariant.Dark);
+            App.LoadColor();
         }
     }
 

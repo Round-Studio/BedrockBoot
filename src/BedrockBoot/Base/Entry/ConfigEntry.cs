@@ -24,5 +24,5 @@ public class StyleConfig
     [JsonPropertyName("backgroundImageOpacity")] public int BackgroundImageOpacity { get; set; } = 100;
     [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 0;
     [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.AccentColor;
-    [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 16;
+    [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
 }

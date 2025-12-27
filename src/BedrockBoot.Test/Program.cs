@@ -8,10 +8,6 @@ public class Program
 {
     static async Task Main()
     {
-        ArchiveSerializer nbt = new ArchiveSerializer(@"C:\Users\ahadd\AppData\Roaming\Minecraft Bedrock\Users\2818413420751248947\games\com.mojang\minecraftWorlds\ZPm5oHr3PJs=");
-        nbt.LoadInfo();
         
-        Console.WriteLine("测试完成，按任意键退出...");
-        Console.ReadKey();
     }
 }

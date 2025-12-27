@@ -9,6 +9,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Helper.PEFile;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
@@ -49,7 +50,7 @@ public class PackInstaller
         var path = Path.Combine(dir, "bedrock_versions", gameName);
         var manifest = PackageIdentity.ParseFromXml(ExtractAppxManifestFromAppx(PackFile));
         var gameType = GetVersionTypeWithUWP(manifest.Name);
-        
+
         // 确保目标目录的父目录存在
         var parentDir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(parentDir) && !Directory.Exists(parentDir))
@@ -137,170 +138,223 @@ public class PackInstaller
     private async System.Threading.Tasks.Task<MinecraftGameTypeVersion> TryParseGDKGameType(
         MinecraftGameTypeVersion gameType = MinecraftGameTypeVersion.Beta)
     {
-        // 不再使用Beta作为默认值
-        gameType = gameType == MinecraftGameTypeVersion.Beta ? MinecraftGameTypeVersion.Release : gameType;
+        // 从 Release 开始尝试
+        var allTypes = new[] { MinecraftGameTypeVersion.Release, MinecraftGameTypeVersion.Preview };
 
-        string fileKey = $"{PackFile}_{gameType}";
-        if (_processedFiles.Contains(fileKey))
+        foreach (var typeToTry in allTypes)
         {
-            return MinecraftGameTypeVersion.Release; // 默认返回Release
-        }
-
-        await _fileLock.WaitAsync();
-
-        try
-        {
-            Console.WriteLine($"开始尝试检测 {gameType} 版本类型...");
-
-            string tempGameName = $"_temp_{Guid.NewGuid():N}";
-            string tempInstallPath = Path.Combine(PathsList.TempPath, tempGameName);
-
-            // 确保临时目录存在
-            if (!Directory.Exists(tempInstallPath))
+            string fileKey = $"{PackFile}_{typeToTry}";
+            if (_processedFiles.Contains(fileKey))
             {
-                Directory.CreateDirectory(tempInstallPath);
+                // 如果已经处理过，跳过
+                continue;
             }
 
-            bool shouldCleanup = true;
+            await _fileLock.WaitAsync();
 
             try
             {
-                // 创建快速取消的令牌
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                Console.WriteLine($"开始尝试检测 {typeToTry} 版本类型...");
 
-                bool installationStarted = false;
-                bool detectedSuccess = false;
+                // 创建文件副本以避免占用问题
+                string tempPackPath = await CreateTempFileCopy(PackFile);
 
-                var progressHandler = new Progress<DecompressProgress>((progress) =>
+                string tempGameName = $"_temp_{Guid.NewGuid():N}";
+                string tempInstallPath = Path.Combine(PathsList.TempPath, tempGameName);
+
+                // 确保临时目录存在
+                if (!Directory.Exists(tempInstallPath))
                 {
-                    // 只要有进度就开始，然后立即取消
-                    if (progress.Percentage > 0.1 && !installationStarted)
-                    {
-                        installationStarted = true;
-                        detectedSuccess = true;
-                        Console.WriteLine($"检测到 {gameType} 版本类型有效");
+                    Directory.CreateDirectory(tempInstallPath);
+                }
 
-                        // 立即请求取消
-                        if (!cts.IsCancellationRequested)
-                        {
-                            cts.Cancel();
-                        }
-                    }
-                });
-
-                var installTask = GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions()
-                {
-                    GameName = tempGameName,
-                    Type = MinecraftBuildTypeVersion.GDK,
-                    InstallDstFolder = tempInstallPath,
-                    GameTypeVersion = gameType,
-                    FileFullPath = PackFile,
-                    ExtractionProgress = progressHandler,
-                    CancellationToken = cts.Token
-                });
+                bool shouldCleanup = true;
 
                 try
                 {
-                    await installTask;
+                    // 创建快速取消的令牌
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
-                    // 如果完整安装完成（理论上不会发生）
-                    if (detectedSuccess)
+                    bool detectedValidExe = false;
+
+                    var progressHandler = new Progress<DecompressProgress>((progress) =>
                     {
-                        Console.WriteLine($"完整安装完成，确认 {gameType} 版本有效");
-                        _processedFiles.Add(fileKey);
-                        return gameType;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"安装完成但未检测到有效进度，{gameType} 可能无效");
-                        throw new InvalidOperationException("安装测试未检测到有效进度");
-                    }
-                }
-                catch (OperationCanceledException) when (cts.IsCancellationRequested)
-                {
-                    if (detectedSuccess)
-                    {
-                        Console.WriteLine($"版本类型检测成功: {gameType}");
-                        _processedFiles.Add(fileKey);
-                        return gameType;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"安装被取消但未检测到进度");
-                        throw;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"版本 {gameType} 检测失败: {ex.Message}");
-
-                // 如果是文件访问错误，标记为已处理并尝试其他类型
-                if (ex is IOException && ex.Message.Contains("being used by another process"))
-                {
-                    Console.WriteLine("文件被占用，等待后继续其他类型检测");
-                    _processedFiles.Add(fileKey);
-                    shouldCleanup = false; // 不清理，可能还在使用
-
-                    // 等待一段时间让文件可能被释放
-                    await System.Threading.Tasks.Task.Delay(1000);
-
-                    // 强制释放文件句柄（通过GC）
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
-
-                    // 尝试下一个版本类型
-                    if (gameType == MinecraftGameTypeVersion.Release)
-                    {
-                        Console.WriteLine("所有版本类型检测都遇到文件占用问题，返回默认值");
-                        return MinecraftGameTypeVersion.Release;
-                    }
-
-                    var nextType = gameType == MinecraftGameTypeVersion.Preview
-                        ? MinecraftGameTypeVersion.Release
-                        : MinecraftGameTypeVersion.Preview;
-
-                    Console.WriteLine($"尝试 {nextType} 版本类型...");
-                    return await TryParseGDKGameType(nextType);
-                }
-
-                throw;
-            }
-            finally
-            {
-                if (shouldCleanup)
-                {
-                    // 延迟清理临时目录
-                    System.Threading.Tasks.Task.Delay(2000).ContinueWith(async _ =>
-                    {
-                        for (int i = 0; i < 3; i++)
+                        // 当进度超过10%时，检查 Minecraft.Windows.exe 是否有效
+                        if (progress.Percentage > 10 && !detectedValidExe)
                         {
-                            try
+                            string minecraftExePath = Path.Combine(tempInstallPath, "Minecraft.Windows.exe");
+                            if (File.Exists(minecraftExePath))
                             {
-                                if (Directory.Exists(tempInstallPath))
+                                if (PEFileValidator.IsValidEffectivePEFile(minecraftExePath))
                                 {
-                                    Directory.Delete(tempInstallPath, true);
-                                    Console.WriteLine($"已清理临时目录: {tempInstallPath}");
-                                    break;
+                                    detectedValidExe = true;
+                                    Console.WriteLine($"检测到有效的 Minecraft.Windows.exe 文件，{typeToTry} 版本类型有效");
+                                    // 立即请求取消，因为已经找到有效文件
+                                    if (!cts.IsCancellationRequested)
+                                    {
+                                        cts.Cancel();
+                                    }
                                 }
-                            }
-                            catch (IOException) when (i < 2)
-                            {
-                                await System.Threading.Tasks.Task.Delay(500);
-                            }
-                            catch (Exception ex2)
-                            {
-                                Console.WriteLine($"清理临时目录失败: {ex2.Message}");
-                                break;
                             }
                         }
                     });
+
+                    var installTask = GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions()
+                    {
+                        GameName = tempGameName,
+                        Type = MinecraftBuildTypeVersion.GDK,
+                        InstallDstFolder = tempInstallPath,
+                        GameTypeVersion = typeToTry,
+                        FileFullPath = tempPackPath, // 使用临时文件副本
+                        ExtractionProgress = progressHandler,
+                        CancellationToken = cts.Token
+                    });
+
+                    try
+                    {
+                        await installTask;
+                        // 如果完整安装完成而没有取消，也检查exe文件
+                        if (!detectedValidExe)
+                        {
+                            string minecraftExePath = Path.Combine(tempInstallPath, "Minecraft.Windows.exe");
+                            if (File.Exists(minecraftExePath) &&
+                                PEFileValidator.IsValidEffectivePEFile(minecraftExePath))
+                            {
+                                detectedValidExe = true;
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException) when (cts.IsCancellationRequested)
+                    {
+                        // 任务被取消，这是预期的，因为我们只想要解压10%
+                    }
+
+                    // 检查是否检测到有效exe
+                    if (detectedValidExe)
+                    {
+                        Console.WriteLine($"{typeToTry} 版本类型检测成功");
+                        _processedFiles.Add(fileKey);
+                        return typeToTry; // 返回有效的版本类型
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{typeToTry} 版本类型无效，继续尝试下一个...");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{typeToTry} 版本检测过程中发生异常: {ex.Message}");
+
+                    // 如果是文件访问错误，标记为已处理
+                    if (ex is IOException && ex.Message.Contains("being used by another process"))
+                    {
+                        _processedFiles.Add(fileKey);
+                        shouldCleanup = false;
+                        // 等待后继续下一个类型
+                        await System.Threading.Tasks.Task.Delay(1000);
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+                    }
+                    else
+                    {
+                        // 其他异常则抛出
+                        throw;
+                    }
+                }
+                finally
+                {
+                    if (shouldCleanup)
+                    {
+                        // 延迟清理临时目录
+                        System.Threading.Tasks.Task.Delay(2000).ContinueWith(async _ =>
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                try
+                                {
+                                    if (Directory.Exists(tempInstallPath))
+                                    {
+                                        Directory.Delete(tempInstallPath, true);
+                                        Console.WriteLine($"已清理临时目录: {tempInstallPath}");
+                                    }
+                                }
+                                catch (Exception cleanupEx)
+                                {
+                                    Console.WriteLine($"清理临时目录失败: {cleanupEx.Message}");
+                                }
+                            }
+
+                            // 清理临时包文件
+                            await CleanupTempFile(tempPackPath);
+                        });
+                    }
+                    else
+                    {
+                        // 即使shouldCleanup为false，也尝试清理临时包文件
+                        await CleanupTempFile(tempPackPath);
+                    }
                 }
             }
+            finally
+            {
+                _fileLock.Release();
+            }
         }
-        finally
+
+        // 如果所有类型都无效，返回Beta表示包无效
+        Console.WriteLine("所有版本类型检测都失败，包无效");
+        return MinecraftGameTypeVersion.Beta;
+    }
+
+    private async System.Threading.Tasks.Task<string> CreateTempFileCopy(string originalFilePath)
+    {
+        string tempPath = Path.Combine(PathsList.TempPath,
+            $"temp_pack_{Guid.NewGuid()}{Path.GetExtension(originalFilePath)}");
+
+        try
         {
-            _fileLock.Release();
+            // 尝试复制文件，最多重试3次
+            for (int i = 0; i < 3; i++)
+            {
+                try
+                {
+                    File.Copy(originalFilePath, tempPath, true);
+                    Console.WriteLine($"创建临时文件副本: {tempPath}");
+                    return tempPath;
+                }
+                catch (IOException) when (i < 2)
+                {
+                    Console.WriteLine($"复制文件失败，等待后重试 ({i + 1}/3)...");
+                    await System.Threading.Tasks.Task.Delay(500);
+                }
+            }
+
+            throw new IOException($"无法创建文件副本: {originalFilePath}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"创建临时文件副本失败: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async System.Threading.Tasks.Task CleanupTempFile(string tempFilePath)
+    {
+        try
+        {
+            // 等待一段时间确保文件不再被使用
+            await System.Threading.Tasks.Task.Delay(1000);
+
+            if (File.Exists(tempFilePath))
+            {
+                File.Delete(tempFilePath);
+                Console.WriteLine($"已清理临时文件: {tempFilePath}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"清理临时文件失败: {ex.Message}");
+            // 不抛出异常，因为这只是一个清理操作
         }
     }
 
@@ -308,7 +362,7 @@ public class PackInstaller
     {
         // 创建文件副本以避免占用问题
         string tempFilePath = await CreateTempFileCopy(PackFile);
-        
+
         try
         {
             var path = Path.Combine(dir, "bedrock_versions", gameName);
@@ -325,7 +379,7 @@ public class PackInstaller
             if (IsGDKUnknownBuildType)
             {
                 Console.WriteLine("开始自动检测GDK版本类型...");
-                
+
                 gameTypeVersion = await TryParseGDKGameType();
 
                 // 如果还是未知，尝试检测
@@ -387,59 +441,8 @@ public class PackInstaller
         }
     }
 
-    private async System.Threading.Tasks.Task<string> CreateTempFileCopy(string originalFilePath)
-    {
-        string tempPath = Path.Combine(PathsList.TempPath,
-            $"temp_pack_{Guid.NewGuid()}{Path.GetExtension(originalFilePath)}");
-        
-        try
-        {
-            // 尝试复制文件，最多重试3次
-            for (int i = 0; i < 3; i++)
-            {
-                try
-                {
-                    File.Copy(originalFilePath, tempPath, true);
-                    Console.WriteLine($"创建临时文件副本: {tempPath}");
-                    return tempPath;
-                }
-                catch (IOException) when (i < 2)
-                {
-                    Console.WriteLine($"复制文件失败，等待后重试 ({i + 1}/3)...");
-                    await System.Threading.Tasks.Task.Delay(500);
-                }
-            }
-
-            throw new IOException($"无法创建文件副本: {originalFilePath}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"创建临时文件副本失败: {ex.Message}");
-            throw;
-        }
-    }
-
-    private async System.Threading.Tasks.Task CleanupTempFile(string tempFilePath)
-    {
-        try
-        {
-            // 等待一段时间确保文件不再被使用
-            await System.Threading.Tasks.Task.Delay(1000);
-
-            if (File.Exists(tempFilePath))
-            {
-                File.Delete(tempFilePath);
-                Console.WriteLine($"已清理临时文件: {tempFilePath}");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"清理临时文件失败: {ex.Message}");
-            // 不抛出异常，因为这只是一个清理操作
-        }
-    }
-
-    private async System.Threading.Tasks.Task VerifyInstallation(string installPath, string gameName, MinecraftGameTypeVersion gameType)
+    private async System.Threading.Tasks.Task VerifyInstallation(string installPath, string gameName,
+        MinecraftGameTypeVersion gameType)
     {
         var manifestPath = Path.Combine(installPath, "appxmanifest.xml");
 
@@ -466,7 +469,7 @@ public class PackInstaller
                 BuildType = MinecraftBuildTypeVersion.GDK,
                 Version = manifest.Version,
                 VersionName = gameName,
-                VersionType = GetVersionTypeWithGDK(manifest.Name)
+                VersionType = GDKGameType
             },
             VersionPath = installPath
         });

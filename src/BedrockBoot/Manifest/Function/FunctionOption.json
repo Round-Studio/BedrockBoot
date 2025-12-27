@@ -4,6 +4,6 @@
   "isEnableWebProtocol": false,
   "isEnableInstanceIndependent": false,
   "isEnableSettingPersonalization": true,
-  "isEnableSettingBackground": false,
+  "isEnableSettingBackground": true,
   "isEnableSettingColor": true
 }

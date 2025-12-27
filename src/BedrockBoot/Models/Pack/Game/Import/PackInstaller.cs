@@ -481,11 +481,8 @@ public class PackInstaller
 
         packName = packName.ToLowerInvariant();
 
-        if (packName.Contains("preview") || packName.Contains("insider"))
+        if (packName.Contains("preview") || packName.Contains("beta"))
             return MinecraftGameTypeVersion.Preview;
-
-        if (packName.Contains("beta"))
-            return MinecraftGameTypeVersion.Beta;
 
         return MinecraftGameTypeVersion.Release;
     }

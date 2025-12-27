@@ -163,7 +163,7 @@ public partial class PersonalizationBackground : ISetting
             GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
         
             GlobalModel.Config.Save();
-            GlobalModel.MainWindow.UpdateBack();
+            GlobalModel.MainWindow.SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
         }
     }
 }

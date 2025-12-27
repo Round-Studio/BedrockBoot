@@ -51,7 +51,7 @@
                                               Margin="5"
                                               IsClickable="False">
                     <Slider Width="200"
-                            Minimum="0"
+                            Minimum="1"
                             Maximum="100"
                             Name="BlurBar"
                             ValueChanged="OptBar_OnValueChanged"></Slider>

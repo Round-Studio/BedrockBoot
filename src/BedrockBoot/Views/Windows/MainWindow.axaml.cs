@@ -283,5 +283,6 @@ public partial class MainWindow : OnePointWindow
             Radius = num
         };
         BackgroundBox.Margin = new Thickness(-num);
+        BackgroundImageOpacity.Opacity = (100 - GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
     }
 }

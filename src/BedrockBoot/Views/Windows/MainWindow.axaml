@@ -53,22 +53,28 @@
                 </StackPanel>
         </windowFrame:OnePointWindow.TitleBarContent>
         <windowFrame:OnePointWindow.MainContent>
-            <Grid>
-                <Grid Name="AccentBackgroundBox"
-                      Background="{DynamicResource AccentBackgroundBrush}"
-                      IsVisible="False"></Grid>
+            <Panel>
+                <Grid>
+                    <Grid Name="AccentBackgroundBox"
+                          Background="{DynamicResource AccentBackgroundBrush}"
+                          IsVisible="False"></Grid>
             
-                <Grid Name="BackgroundBox"
-                      IsVisible="False">
-                    <Grid.Effect>
-                        <BlurEffect Radius="0"></BlurEffect>
-                    </Grid.Effect>
-                    <Grid Name="BackgroundImage"></Grid>
-                    <Grid Name="BackgroundImageOpacity"
-                          Opacity="0"
-                          Background="{DynamicResource BackgroundBrush}"></Grid>
+                    <Grid Name="BackgroundBox"
+                          IsVisible="False">
+                        <Grid.Effect>
+                            <BlurEffect Radius="0"></BlurEffect>
+                        </Grid.Effect>
+                        <Grid Name="BackgroundImage"></Grid>
+                        <Grid Name="BackgroundImageOpacity"
+                              Opacity="0"
+                              Background="{DynamicResource BackgroundBrush}"></Grid>
+                    </Grid>
                 </Grid>
-                <navigation:NavigationFrame Name="MainFrame"/>
-            </Grid>
+                
+                <navigation:NavigationFrame Name="MainFrame"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Margin="0"/>
+            </Panel>
         </windowFrame:OnePointWindow.MainContent>
 </windowFrame:OnePointWindow>

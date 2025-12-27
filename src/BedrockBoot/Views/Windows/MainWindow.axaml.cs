@@ -55,17 +55,33 @@ public partial class MainWindow : OnePointWindow
             GlobalModel.FunctionOption = new JsonResourceEntity()
                 .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json")
                 .Result;
-            
-            GlobalModel.BedrockCore = new BedrockCore()
+
+            try
             {
-                Options = new CoreOptions()
+                GlobalModel.BedrockCore = new BedrockCore()
                 {
-                    IsAutoCompleteVC = true,
-                    IsAutoOpenDevelopment = true,
-                    IsCheckMD5 = true
-                }
-            };
-            
+                    Options = new CoreOptions()
+                    {
+                        IsAutoCompleteVC = true,
+                        IsAutoOpenDevelopment = true,
+                        IsCheckMD5 = true
+                    }
+                };
+                Console.WriteLine("初始化核心完毕");
+            }
+            catch
+            {
+                Console.WriteLine("不支持该系统");
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = "当前系统不支持",
+                    Content = "根据我们的最低支持标准，系统版本号需要大于等于 19041\n" +
+                              "请尝试升级系统后再次尝试",
+                    CloseButtonText = "退出",
+                    CloseAction = (() => Environment.Exit(1))
+                });
+            }
+
             try
             {
 #if RELEASE
@@ -74,8 +90,6 @@ public partial class MainWindow : OnePointWindow
 #else
                 OpenProtocol();
 #endif
-                
-                Console.WriteLine("初始化核心完毕");
 
                 var lst = await VersionsHelper.GetBuildDatabaseAsync(
                     "https://data.mcappx.com/v2/bedrock.json");

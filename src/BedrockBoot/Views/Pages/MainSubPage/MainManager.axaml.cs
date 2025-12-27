@@ -320,6 +320,7 @@ public partial class MainManager : BedrockBootPage
             {
                 var packPath = dialog.PackFile;
                 var isGDK = dialog.IsGDK;
+                var knowGameTypeCheckBox = dialog.DontKnowGameType;
                 var installFolder = dialog.PackInstallFolder;
                 var installName = dialog.PackInstallName;
 
@@ -354,7 +355,8 @@ public partial class MainManager : BedrockBootPage
                     return;
                 }
 
-                TaskImportGamePackItem.Install(packPath, installFolder, installName,dialog.GameType);
+                TaskImportGamePackItem.Install(packPath, installFolder, installName, dialog.GameType,
+                    knowGameTypeCheckBox);
             }
         });
     }

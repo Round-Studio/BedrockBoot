@@ -61,6 +61,11 @@
                     <ComboBoxItem>Preview</ComboBoxItem>
                     <ComboBoxItem>Release</ComboBoxItem>
                 </ComboBox>
+                
+                <CheckBox Content="我并不知道该版本类型，上面的选项是随便选的"
+                          Margin="0,5,0,5"
+                          IsChecked="True"
+                          Name="DontKnowGameTypeCheckBox"></CheckBox>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

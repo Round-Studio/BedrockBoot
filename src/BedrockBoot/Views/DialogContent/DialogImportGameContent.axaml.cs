@@ -15,6 +15,7 @@ public partial class DialogImportGameContent : UserControl
     public string PackFile => PathInputBox.Text;
     public string PackInstallName => NameInputBox.Text;
     public bool IsGDK = false;
+    public bool DontKnowGameType => (bool)DontKnowGameTypeCheckBox.IsChecked;
     public MinecraftGameTypeVersion GameType => (MinecraftGameTypeVersion)RealGameBuildTypeInputBox.SelectedIndex;
 
     public string PackInstallFolder =>

@@ -1,0 +1,46 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Control.BackgroundChooseItem">
+    <Grid ColumnDefinitions="64,*,120">
+        <Border BorderThickness="2"
+                Width="48" Height="48"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="8"
+                Name="ImageBox"
+                BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                CornerRadius="6">
+            <onePointControls:FontIcon Glyph="&#xE91B;"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource PrimaryForegroundBrush}"
+                                       FontSize="22"></onePointControls:FontIcon>
+        </Border>
+        
+        <StackPanel Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Margin="0,0,12,0">
+            <TextBlock FontSize="18"
+                       Name="FileName"
+                       FontWeight="Heavy">File Name</TextBlock>
+            
+            <TextBlock FontSize="12"
+                       Name="FilePath"
+                       FontWeight="Heavy">File Path</TextBlock>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+            <Button  Padding="24,0"
+                     Margin="0,0,8,0" 
+                     Height="32"
+                     IsEnabled="False">删除</Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

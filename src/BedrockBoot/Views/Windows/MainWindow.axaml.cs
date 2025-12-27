@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Manifest;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Service.Protocol;
@@ -27,6 +31,8 @@ public partial class MainWindow : OnePointWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
+
+        UpdateBack();
         
         if (GlobalModel.Config.Data.WindowInfo.X != -1 && GlobalModel.Config.Data.WindowInfo.Y != -1)
         {
@@ -221,5 +227,61 @@ public partial class MainWindow : OnePointWindow
         };
         
         GlobalModel.Config.Save();
+    }
+
+    public async Task UpdateBack()
+    {
+        #region 更新背景
+
+        this.TransparencyLevelHint = new List<WindowTransparencyLevel>() { WindowTransparencyLevel.Transparent };
+        BackgroundBox.IsVisible = false;
+        AccentBackgroundBox.IsVisible = false;
+        if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Mica)
+        {
+            this.TransparencyLevelHint = new List<WindowTransparencyLevel>() { WindowTransparencyLevel.Mica };
+        }
+        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Blur)
+        {
+            this.TransparencyLevelHint = new List<WindowTransparencyLevel>() { WindowTransparencyLevel.AcrylicBlur };
+        }
+        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image)
+        {
+            BackgroundImageOpacity.Opacity = (100 - GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
+
+            var index = GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex;
+            if (index != -1)
+            {
+                if (GlobalModel.Config.Data.StyleConfig.BackgroundImages.Count >= 0)
+                {
+                    BackgroundBox.IsVisible = true;
+                    SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
+
+                    BackgroundImage.Background = new ImageBrush()
+                    {
+                        Stretch = Stretch.UniformToFill,
+                        Source = new Bitmap(
+                            GlobalModel.Config.Data.StyleConfig.BackgroundImages[
+                                GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex])
+                    };
+                }
+            }
+
+        }
+        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.AccentColor)
+        {
+            AccentBackgroundBox.IsVisible = true;
+            AccentBackgroundBox.Opacity = 0.7;
+        }
+
+        #endregion
+    }
+
+    public void SetBackgroundBlur(int num)
+    {
+        BackgroundBox.Effect = new BlurEffect()
+        {
+            Radius = num
+        };
+        BackgroundBox.Margin = new Thickness(-num);
     }
 }

@@ -20,6 +20,19 @@ public partial class PersonalizationColor : ISetting
     public PersonalizationColor()
     {
         InitializeComponent();
+        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
+        {
+            new()
+            {
+                ItemName = "个性化",
+                ItemClickAction = (info) =>
+                    MainSettingPage.NavigationFrame.NavigateTo(new SettingPersonalization())
+            },
+            new()
+            {
+                ItemName = "颜色"
+            }
+        });
         ChooseTheme.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.LightThemeType;
 
         AccentColor.Colors.ForEach(c => ColorsView.Items.Add(new ItemViewItem()

@@ -15,6 +15,7 @@
                                           Header="背景"
                                           Description="详细背景设置"
                                           Name="SetBackground"
+                                          Click="SetBackground_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE91B;"/>
             

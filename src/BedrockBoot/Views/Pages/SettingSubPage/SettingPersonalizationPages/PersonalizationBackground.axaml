@@ -1,0 +1,68 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationBackground">
+    <ScrollViewer>
+        <StackPanel Margin="15">
+            <onePointControls:SettingCard Header="背景模式"
+                                          Margin="5"
+                                          Description="窗体的背景模式"
+                                          Glyph="&#xEC26;">
+                <ComboBox Width="200"
+                          Name="BackgroundTypeBox"
+                          SelectionChanged="BackgroundTypeBox_OnSelectionChanged">
+                    <ComboBoxItem Name="MicaModel">Mica (Win11+)</ComboBoxItem>
+                    <ComboBoxItem Name="BlurModel">Blur (Win10+)</ComboBoxItem>
+                    <ComboBoxItem>Image</ComboBoxItem>
+                    <ComboBoxItem>Accent Color</ComboBoxItem>
+                </ComboBox>
+            </onePointControls:SettingCard>
+            
+            <StackPanel Name="BackgroundImageBox">
+                <onePointControls:SettingCard Header="选择壁纸"
+                                              Description="选择你需要的壁纸"
+                                              Glyph="&#xE8B0;"
+                                              Margin="5"
+                                              IsClickable="False">
+                    <Button Padding="24,0"
+                            Height="32"
+                            Name="ImportBackgroundBtn"
+                            Click="ImportBackgroundBtn_OnClick">浏览</Button>
+                </onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Header="壁纸透明度"
+                                              Description="壁纸的透明度设置"
+                                              Glyph="&#xE81E;"
+                                              Margin="5"
+                                              IsClickable="False">
+                    <Slider Width="200"
+                            Minimum="0"
+                            Maximum="100"
+                            Name="OptBar"
+                            ValueChanged="OptBar_OnValueChanged"></Slider>
+                </onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Header="壁纸模糊"
+                                              Description="壁纸的模糊效果"
+                                              Glyph="&#xF5EF;"
+                                              Margin="5"
+                                              IsClickable="False">
+                    <Slider Width="200"
+                            Minimum="0"
+                            Maximum="100"
+                            Name="BlurBar"
+                            ValueChanged="OptBar_OnValueChanged"></Slider>
+                </onePointControls:SettingCard>
+                
+                <ListBox Name="BackgroundsList"
+                         SelectionChanged="BackgroundsList_OnSelectionChanged"
+                         Margin="5">
+                    
+                </ListBox>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

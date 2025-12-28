@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using BedrockBoot.Base.Entry;
+using BedrockBoot.Models.Download;
 using BedrockBoot.Models.Global;
 using Downloader;
 using Octokit;
@@ -32,31 +36,58 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     {
         CardTitle.Text = $"下载更新文件：{Release.TagName}";
         var url = Release.Assets[0].BrowserDownloadUrl;
-        var path = Path.Combine(PathsList.UpdatePath, $"{Release.TagName}.exe");
-
-        var service = new DownloadService(GlobalModel.DownloadConfiguration);
-        // Provide `FileName` and `TotalBytesToReceive` at the start of each downloads
-        service.DownloadStarted += (sender, args) =>
-        {
-            Dispatcher.UIThread.Invoke(() => UpdateProgressBar.IsIndeterminate = false);
-        };
-        service.DownloadProgressChanged += (sender, args) =>
-        {
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                UpdateProgressBar.Value = (int)args.ProgressPercentage;
-                UpdateProgressText.Text = $"步骤：下载文件 ({args.ProgressPercentage:F} %)";
-            });
-        };
-        service.DownloadFileCompleted += (sender, args) =>
-        {
-            Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
-            Thread.Sleep(100);
-            
-            Environment.Exit(0);
-        };
         
-        service.DownloadFileTaskAsync(url, path);
+        SourceList.UpdateDownloadSources.ToList().ForEach(src =>
+        {
+            var thisUrl = src.Value.Replace("{url}", url);
+            var path = Path.Combine(PathsList.UpdatePath, $"{src.Key}_{Release.TagName}.exe");
+            var progress = new ProgressBar()
+            {
+                IsIndeterminate = true,
+            };
+            var item = new DockPanel()
+            {
+                LastChildFill = true,
+                Children =
+                {
+                    new TextBlock()
+                    {
+                        MinWidth = 120,
+                        Text = src.Key
+                    },
+                    progress
+                }
+            };
+
+
+            Task.Run(async () =>
+            {
+                var download = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
+
+                await download.DownloadAsync(thisUrl, path, new Progress<DownloadProgress>((xprogress =>
+                {
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        if (progress.IsIndeterminate)
+                        {
+                            progress.IsIndeterminate = false;
+                            progress.Value = 100;
+                        }
+
+                        progress.Value = xprogress.ProgressPercentage;
+                    });
+                })));
+                
+                Thread.Sleep(100);
+                            
+                Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
+                Thread.Sleep(100);
+
+                Environment.Exit(0);
+            });
+            
+            this.SourceListBox.Children.Add(item);
+        });
     }
 
     public static void Update(Release release)

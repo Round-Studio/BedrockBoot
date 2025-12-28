@@ -32,8 +32,6 @@ sealed class Program
         AppUpdater.ProcessStartupArgs(args);
         
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
-        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-        GlobalModel.Config.Load();
 
     
         // 然后处理原有的 -update 参数

@@ -9,6 +9,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
@@ -16,6 +17,7 @@ using BedrockBoot.ViewModels;
 using BedrockBoot.Views;
 using BedrockBoot.Views.Windows;
 using OnePointUI.Avalonia.Style.Core;
+using Round.SDK.Entity;
 
 namespace BedrockBoot;
 
@@ -23,6 +25,9 @@ public partial class App : Application
 {
     public override void Initialize()
     {
+        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+        GlobalModel.Config.Load();
+        
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
         
@@ -112,11 +117,20 @@ public partial class App : Application
             BindingPlugins.DataValidators.Remove(plugin);
         }
     }
-    
+
     public static void LoadColor()
     {
-        ThemeManager.Instance.SetAccentColor(
-            Color.Parse(AccentColor.Colors[GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
-        ThemeManager.Instance.SetThemeModel(GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light ? ThemeVariant.Light : ThemeVariant.Dark);
+        try
+        {
+            ThemeManager.Instance.SetAccentColor(
+                Color.Parse(AccentColor.Colors[GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
+            ThemeManager.Instance.SetThemeModel(
+                GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
+                    ? ThemeVariant.Light
+                    : ThemeVariant.Dark);
+        }
+        catch
+        {
+        }
     }
 }

@@ -61,12 +61,14 @@
                                                            Text="UWP"
                                                            Name="BuildTypeLabel"
                                                            Background="Chocolate"
+                                                           IsVisible="False"
                                                            FontSize="9"></onePointControls:LabelBox>
                                 
                                 <onePointControls:LabelBox Margin="5,0,0,0"
                                                            Text="编辑模式"
                                                            Name="EditLabel"
                                                            Background="Purple"
+                                                           IsVisible="False"
                                                            FontSize="9"></onePointControls:LabelBox>
                             </StackPanel>
                             

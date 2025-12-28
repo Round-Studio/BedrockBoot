@@ -1,0 +1,13 @@
+{
+  "packName": "ToolsBox",
+  "packIconPath": "",
+  "packVersion": "1.0.0",
+  "packAuthor": "Dime",
+  "packDescription": "BedrockBoot 工具箱",
+  "packLicense": "",
+  "packLicenseUrl": "",
+  "packScreenshots": [],
+  "buildProjectFilePath": "./src/Plugin/Plugin.ToolsBox/Plugin.ToolsBox.csproj",
+  "buildOutputPath": "./build/Plugin.ToolsBox/publish",
+  "bodyFile": "Plugin.ToolsBox.dll"
+}

@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalDebug">
+    <ScrollViewer>
+        <StackPanel Margin="15">
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="控制台"
+                                          Description="BedrockBoot 本体的控制台（需要重启）"
+                                          Glyph="&#xE756;">
+                <ToggleSwitch IsChecked="False"
+                              Name="IsConsoleModel"
+                              IsCheckedChanged="CheckBox_Change"></ToggleSwitch>
+            </onePointControls:SettingCard>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

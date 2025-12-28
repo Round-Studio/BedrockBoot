@@ -27,4 +27,9 @@ public partial class SettingUniversal : UserControl
     {
         MainSettingPage.NavigationFrame.NavigateTo(new UniversalSoftwareUpdate());
     }
+
+    private void DebugBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigationFrame.NavigateTo(new UniversalDebug());
+    }
 }

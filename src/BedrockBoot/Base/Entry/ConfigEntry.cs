@@ -10,11 +10,12 @@ public class ConfigEntry
     [JsonPropertyName("gameFolders")] public List<GameFolderInfo> GameFolders { get; set; } = new();
     [JsonPropertyName("gameFolderSelIndex")] public int GameFolderSelIndex { get; set; } = -1;
     [JsonPropertyName("downloadChunkCount")] public int DownloadChunkCount { get; set; } = 4;
+    [JsonPropertyName("styleConfig")] public StyleConfig StyleConfig { get; set; } = new();
     [JsonPropertyName("isAutoCacheGamePack")] public bool IsAutoCacheGamePack { get; set; } = true;
     [JsonPropertyName("isAutoCheckUpdate")] public bool IsAutoCheckUpdate { get; set; } = true;
     [JsonPropertyName("isFirstRun")] public bool IsFirstRun { get; set; } = true;
     [JsonPropertyName("isAgreeTerms")] public bool IsAgreeTerms { get; set; } = false;
-    [JsonPropertyName("styleConfig")] public StyleConfig StyleConfig { get; set; } = new();
+    [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
 }
 public class StyleConfig
 {

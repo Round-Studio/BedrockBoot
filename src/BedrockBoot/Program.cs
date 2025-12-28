@@ -25,15 +25,25 @@ sealed class Program
     // Initialization code. Don't use any Avalonia, third-party APIs or any
 	// SynchronizationContext-reliant code before AppMain is called: things aren't initialized
 	// yet and stuff might break.
-	[STAThread]
+    [STAThread]
     public static void Main(string[] args)
     {
+        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+        GlobalModel.Config.Load();
+
+        if (GlobalModel.Config.Data.IsConsole)
+        {
+            AllocConsole();
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine("已开启 Release 中的 Debug 模式，此模式不会生成日志！");
+        }
+        
         // 首先处理可能的更新参数（--update-launcher, --update-replace）
         AppUpdater.ProcessStartupArgs(args);
-        
+
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
 
-    
+
         // 然后处理原有的 -update 参数
         if (args.Length > 0)
         {
@@ -47,7 +57,7 @@ sealed class Program
         {
             ConsoleRedirector consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
                 $"[BedrockBoot.Logger] {DateTime.Now.ToString("yyyy.MM.dd HHmmss.fff")}.log"));
-            
+
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
         }

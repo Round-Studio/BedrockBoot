@@ -25,8 +25,11 @@ public partial class App : Application
 {
     public override void Initialize()
     {
-        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-        GlobalModel.Config.Load();
+        if(GlobalModel.Config == null)
+        {
+            GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+            GlobalModel.Config.Load();
+        }
         
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);

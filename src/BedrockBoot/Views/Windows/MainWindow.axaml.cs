@@ -281,11 +281,19 @@ public partial class MainWindow : OnePointWindow
 
     public void SetBackgroundBlur(int num)
     {
-        BackgroundBox.Effect = new BlurEffect()
+        if(num != 0)
         {
-            Radius = num
-        };
-        BackgroundBox.Margin = new Thickness(-num);
+            BackgroundBox.Effect = new BlurEffect()
+            {
+                Radius = num
+            };
+            BackgroundBox.Margin = new Thickness(-num);
+        }
+        else
+        {
+            BackgroundBox.Effect = null;
+            BackgroundBox.Margin = new Thickness(0);
+        }
         BackgroundImageOpacity.Opacity = (100 - GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
     }
 }

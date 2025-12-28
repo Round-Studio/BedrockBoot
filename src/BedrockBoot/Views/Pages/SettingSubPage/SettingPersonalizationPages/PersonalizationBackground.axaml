@@ -41,6 +41,7 @@
                     <Slider Width="200"
                             Minimum="0"
                             Maximum="100"
+                            Classes="Number"
                             Name="OptBar"
                             ValueChanged="OptBar_OnValueChanged"></Slider>
                 </onePointControls:SettingCard>
@@ -51,8 +52,9 @@
                                               Margin="5"
                                               IsClickable="False">
                     <Slider Width="200"
-                            Minimum="1"
+                            Minimum="0"
                             Maximum="100"
+                            Classes="Number"
                             Name="BlurBar"
                             ValueChanged="OptBar_OnValueChanged"></Slider>
                 </onePointControls:SettingCard>

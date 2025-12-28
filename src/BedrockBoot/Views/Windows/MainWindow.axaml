@@ -60,6 +60,7 @@
                           IsVisible="False"></Grid>
             
                     <Grid Name="BackgroundBox"
+                          Margin="0"
                           IsVisible="False">
                         <Grid.Effect>
                             <BlurEffect Radius="0"></BlurEffect>

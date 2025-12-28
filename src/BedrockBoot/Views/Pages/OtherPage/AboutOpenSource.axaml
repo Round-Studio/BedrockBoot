@@ -45,15 +45,6 @@
             
             <TextBlock FontSize="22"
                        FontWeight="Bold"
-                       Margin="5,20,5,8">Downloader</TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/bezzad/Downloader)"></TextBlock>
-            <TextBlock Margin="5" xml:space="preserve"
-                       FontSize="9">MIT License
-(https://github.com/bezzad/Downloader/blob/master/LICENSE)</TextBlock>
-            
-            
-            <TextBlock FontSize="22"
-                       FontWeight="Bold"
                        Margin="5,20,5,8">Octokit</TextBlock>
             <TextBlock Margin="5" Text="(https://github.com/octokit/octokit.net)"></TextBlock>
             <TextBlock Margin="5" xml:space="preserve"

@@ -6,7 +6,6 @@ using BedrockBoot.Models.Task;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
-using Downloader;
 using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Global;
@@ -20,12 +19,4 @@ public class GlobalModel
     public static bool IsAbleToLaunchGame { get; set; } = false;
     public static FunctionOptionEntry FunctionOption { get; set; }
     public static ProtocolService ProtocolService { get; set; } = new  ProtocolService();
-    public static DownloadConfiguration DownloadConfiguration => new DownloadConfiguration()
-    {
-        ChunkCount = Config.Data.DownloadChunkCount,
-        Timeout = 1000,
-        ClearPackageOnCompletionWithFailure = false,
-        ReserveStorageSpaceBeforeStartingDownload = false,
-        MinimumSizeOfChunking = 1024
-    };
 }

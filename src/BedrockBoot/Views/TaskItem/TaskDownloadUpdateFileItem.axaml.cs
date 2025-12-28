@@ -11,7 +11,6 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Download;
 using BedrockBoot.Models.Global;
-using Downloader;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using Path = System.IO.Path;

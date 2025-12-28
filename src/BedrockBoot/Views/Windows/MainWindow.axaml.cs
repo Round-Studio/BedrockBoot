@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia;
@@ -33,6 +34,8 @@ public partial class MainWindow : OnePointWindow
         InitializeComponent();
 
         UpdateBack();
+
+        if (!Directory.Exists(PathsList.TempPath)) Directory.CreateDirectory(PathsList.TempPath);
         
         if (GlobalModel.Config.Data.WindowInfo.X != -1 && GlobalModel.Config.Data.WindowInfo.Y != -1)
         {

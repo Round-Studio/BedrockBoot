@@ -35,6 +35,9 @@
             <TextBlock Margin="20,1" Text="BedrockBoot 使用的版本列表源来自 MCAPPX 网站"></TextBlock>
             <TextBlock Margin="20,1">(https://www.mcappx.com/)</TextBlock>
             
+            <TextBlock Margin="20,1" Text="BedrockBoot 下载更新的部分公益源来自 github.akams.cn"></TextBlock>
+            <TextBlock Margin="20,1">(https://github.akams.cn/)</TextBlock>
+            
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
                        Text="灵感"></TextBlock>

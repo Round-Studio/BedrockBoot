@@ -7,6 +7,7 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
@@ -77,6 +78,11 @@ public partial class MainPage : UserControl
         RegisterService.API.RegisterTopBarItem = RegisterTopItem;
 
         if (GlobalModel.Config.Data.IsAutoCheckUpdate) Update();
+
+        this.Loaded += (sender, args) =>
+        {
+            PluginLoader.LoadAll();
+        };
     }
 
     public static async Task Update(bool isShowNeo = false)

@@ -40,6 +40,27 @@
                                           Click="DebugBtn_OnClick"
                                           Glyph="&#xEBE8;">
             </onePointControls:SettingCard>
+            
+            <StackPanel Name="PluginPanel">
+                <TextBlock Margin="5,0,5,10"
+                           FontWeight="Bold"
+                           FontSize="14">插件</TextBlock>
+            
+                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                              Header="启用插件"
+                                              Description="是否启用第三方插件"
+                                              Glyph="&#xE8EC;">
+                    <ToggleSwitch IsChecked="True"></ToggleSwitch>
+                </onePointControls:SettingCard>
+            
+                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                              Header="插件"
+                                              Description="本体插件管理"
+                                              IsClickable="True"
+                                              Name="PluginBtn"
+                                              Glyph="&#xEA86;">
+                </onePointControls:SettingCard>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

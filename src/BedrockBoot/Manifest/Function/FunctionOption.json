@@ -5,5 +5,6 @@
   "isEnableInstanceIndependent": false,
   "isEnableSettingPersonalization": true,
   "isEnableSettingBackground": true,
-  "isEnableSettingColor": true
+  "isEnableSettingColor": true,
+  "isEnablePlugin": false
 }

@@ -12,4 +12,5 @@ public class PathsList
     public static readonly string LogPath = Path.Combine(RootConfigPath, "BedrockBoot.Log");
     public static readonly string UpdatePath = Path.Combine(RootConfigPath, "BedrockBoot.Update");
     public static readonly string TempPath = Path.Combine(RootConfigPath, "BedrockBoot.Temp");
+    public static readonly string PluginPath = Path.Combine(RootConfigPath, "BedrockBoot.Plugin");
 }

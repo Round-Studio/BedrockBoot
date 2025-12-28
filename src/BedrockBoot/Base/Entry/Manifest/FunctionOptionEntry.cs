@@ -11,4 +11,5 @@ public class FunctionOptionEntry
     [JsonPropertyName("isEnableSettingPersonalization")] public bool IsEnableSettingPersonalization { get; set; }
     [JsonPropertyName("isEnableSettingBackground")] public bool IsEnableSettingBackground { get; set; }
     [JsonPropertyName("isEnableSettingColor")] public bool IsEnableSettingColor { get; set; }
+    [JsonPropertyName("isEnablePlugin")] public bool IsEnablePlugin { get; set; }
 }

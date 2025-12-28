@@ -61,6 +61,7 @@
                                                            Text="UWP"
                                                            Name="BuildTypeLabel"
                                                            Background="Chocolate"
+                                                           Foreground="White"
                                                            IsVisible="False"
                                                            FontSize="9"></onePointControls:LabelBox>
                                 
@@ -68,6 +69,7 @@
                                                            Text="编辑模式"
                                                            Name="EditLabel"
                                                            Background="Purple"
+                                                           Foreground="White"
                                                            IsVisible="False"
                                                            FontSize="9"></onePointControls:LabelBox>
                             </StackPanel>

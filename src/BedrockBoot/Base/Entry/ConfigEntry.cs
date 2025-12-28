@@ -9,7 +9,7 @@ public class ConfigEntry
     [JsonPropertyName("windowInfo")] public WindowInfo WindowInfo { get; set; } = new WindowInfo();
     [JsonPropertyName("gameFolders")] public List<GameFolderInfo> GameFolders { get; set; } = new();
     [JsonPropertyName("gameFolderSelIndex")] public int GameFolderSelIndex { get; set; } = -1;
-    [JsonPropertyName("downloadChunkCount")] public int DownloadChunkCount { get; set; } = 16;
+    [JsonPropertyName("downloadChunkCount")] public int DownloadChunkCount { get; set; } = 4;
     [JsonPropertyName("isAutoCacheGamePack")] public bool IsAutoCacheGamePack { get; set; } = true;
     [JsonPropertyName("isAutoCheckUpdate")] public bool IsAutoCheckUpdate { get; set; } = true;
     [JsonPropertyName("isFirstRun")] public bool IsFirstRun { get; set; } = true;
@@ -22,7 +22,7 @@ public class StyleConfig
     [JsonPropertyName("backgroundImages")] public List<string> BackgroundImages { get; set; } = new List<string>();
     [JsonPropertyName("backgroundImageSelectedIndex")] public int BackgroundImageSelectedIndex { get; set; } = -1;
     [JsonPropertyName("backgroundImageOpacity")] public int BackgroundImageOpacity { get; set; } = 100;
-    [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 0;
+    [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 1;
     [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.AccentColor;
     [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
 }

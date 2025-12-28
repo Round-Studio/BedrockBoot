@@ -93,12 +93,12 @@ public partial class MainWindow : OnePointWindow
 
             try
             {
-#if RELEASE
+/*#if RELEASE
                 if (GlobalModel.FunctionOption.IsEnableWebProtocol)
                     OpenProtocol();
 #else
                 OpenProtocol();
-#endif
+#endif*/
 
                 var lst = await VersionsHelper.GetBuildDatabaseAsync(
                     "https://data.mcappx.com/v2/bedrock.json");

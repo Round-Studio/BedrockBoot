@@ -20,7 +20,7 @@
                         Classes="Number"
                         ValueChanged="ChunkCountSlider_OnValueChanged"
                         Minimum="4"
-                        Maximum="256"
+                        Maximum="32"
                         Value="16"></Slider>
             </onePointControls:SettingCard>
             

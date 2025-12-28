@@ -72,6 +72,8 @@ public partial class MainHomePage : BedrockBootPage
     /// </summary>
     private void SetupGameSelectionUI()
     {
+        EditLabel.IsVisible = false;
+        BuildTypeLabel.Text = "未知";
         var config = GlobalModel.Config.Data;
         var selectedGameFolder = config.GameFolders[config.GameFolderSelIndex];
         
@@ -135,6 +137,10 @@ public partial class MainHomePage : BedrockBootPage
             {
                 var selectedVersion = versions[validIndex];
                 GameTitle.Text = $"{selectedVersion.Info.VersionName}";
+                
+                EditLabel.IsVisible = selectedVersion.Config.IsEditModel;
+                BuildTypeLabel.Text = selectedVersion.Info.BuildType.ToString();
+                
                 UpdateSetupCard(selectedVersion);
             }
         }
@@ -208,7 +214,12 @@ public partial class MainHomePage : BedrockBootPage
                 // 更新游戏标题
                 if (comboBox.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag is VersionConfig content)
                 {
+                    EditLabel.IsVisible = false;
+                    BuildTypeLabel.Text = "未知";
+                    
                     GameTitle.Text = content.Info.VersionName;
+                    EditLabel.IsVisible = content.Config.IsEditModel;
+                    BuildTypeLabel.Text = content.Info.BuildType.ToString();
                     UpdateSetupCard(content);
                 }
                 

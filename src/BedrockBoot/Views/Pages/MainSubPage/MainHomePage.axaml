@@ -41,20 +41,36 @@
                     </asyncImageLoader:AdvancedImage>
                     
                     <items:BorderCard Padding="15">
-                        <Grid RowDefinitions="Auto,Auto,*">
+                        <Grid RowDefinitions="Auto,Auto,Auto,*">
                             <onePointControls:LabelBox Grid.Row="0"
                                                        HorizontalAlignment="Left"
                                                        Margin="5"
                                                        Text="版本总览"
-                                                       FontSize="11"></onePointControls:LabelBox>
+                                                       FontSize="13"></onePointControls:LabelBox>
                             
                             <TextBlock Grid.Row="1"
                                        Name="GameTitle"
                                        Text="请选择游戏"
-                                       Margin="5,0,5,5"
+                                       Margin="5,0,5,0"
                                        FontSize="36"></TextBlock>
                             
-                            <Grid Grid.Row="2"
+                            <StackPanel Grid.Row="2"
+                                        Orientation="Horizontal"
+                                        Margin="0,5,0,0">
+                                <onePointControls:LabelBox Margin="5,0,0,0"
+                                                           Text="UWP"
+                                                           Name="BuildTypeLabel"
+                                                           Background="Chocolate"
+                                                           FontSize="9"></onePointControls:LabelBox>
+                                
+                                <onePointControls:LabelBox Margin="5,0,0,0"
+                                                           Text="编辑模式"
+                                                           Name="EditLabel"
+                                                           Background="Purple"
+                                                           FontSize="9"></onePointControls:LabelBox>
+                            </StackPanel>
+                            
+                            <Grid Grid.Row="3"
                                   HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal"
                                             VerticalAlignment="Bottom">
@@ -72,7 +88,7 @@
                                 </StackPanel>
                             </Grid>
                             
-                            <Grid Grid.Row="2"
+                            <Grid Grid.Row="3"
                                   HorizontalAlignment="Right">
                                 <StackPanel Orientation="Horizontal"
                                             VerticalAlignment="Bottom">

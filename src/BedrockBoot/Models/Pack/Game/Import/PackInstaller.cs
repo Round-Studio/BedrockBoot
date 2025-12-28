@@ -24,12 +24,10 @@ public class PackInstaller
     public Action? ImportedAction { get; set; } = null;
     public IProgress<PackImportProgress> ImportProgress { get; set; } = new Progress<PackImportProgress>();
     public bool IsGDKUnknownBuildType { get; set; } = false;
-
     public PackInstaller(string filePath)
     {
         PackFile = filePath;
     }
-
     public async System.Threading.Tasks.Task Install(string dir, string gameName)
     {
         ImportProgress.Report(new PackImportProgress() { Progress = 10, StatusMessage = "判断文件类型..." });

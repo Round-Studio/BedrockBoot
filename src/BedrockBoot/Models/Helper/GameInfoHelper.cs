@@ -40,7 +40,15 @@ public class GameInfoHelper
         var result = new List<VersionConfig>();
         var versions = Directory.GetDirectories(Path.Combine(gameFolder, "bedrock_versions")).ToList();
 
-        versions.ForEach(x => result.Add(GetVersionConfig(x)));
+        versions.ForEach(x =>
+        {
+            var body = GetVersionConfig(x);
+            if (!string.IsNullOrEmpty(body.Info.VersionName) &&
+                !string.IsNullOrEmpty(body.Info.Version))
+            {
+                result.Add(body);
+            }
+        });
         return result;
     }
 

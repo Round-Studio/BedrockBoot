@@ -73,6 +73,7 @@ public partial class MainHomePage : BedrockBootPage
     private void SetupGameSelectionUI()
     {
         EditLabel.IsVisible = false;
+        BuildTypeLabel.IsVisible = false;
         BuildTypeLabel.Text = "未知";
         var config = GlobalModel.Config.Data;
         var selectedGameFolder = config.GameFolders[config.GameFolderSelIndex];
@@ -139,6 +140,7 @@ public partial class MainHomePage : BedrockBootPage
                 GameTitle.Text = $"{selectedVersion.Info.VersionName}";
                 
                 EditLabel.IsVisible = selectedVersion.Config.IsEditModel;
+                BuildTypeLabel.IsVisible = true;
                 BuildTypeLabel.Text = selectedVersion.Info.BuildType.ToString();
                 
                 UpdateSetupCard(selectedVersion);
@@ -219,6 +221,7 @@ public partial class MainHomePage : BedrockBootPage
                     
                     GameTitle.Text = content.Info.VersionName;
                     EditLabel.IsVisible = content.Config.IsEditModel;
+                    BuildTypeLabel.IsVisible = true;
                     BuildTypeLabel.Text = content.Info.BuildType.ToString();
                     UpdateSetupCard(content);
                 }

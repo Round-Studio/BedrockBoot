@@ -1,6 +1,7 @@
 ﻿{
   "isEnableImportGamePack": true,
   "isEnableGameInstanceControl": true,
+  "isEnableGameInstanceMods": false,
   "isEnableWebProtocol": false,
   "isEnableInstanceIndependent": false,
   "isEnableSettingPersonalization": true,

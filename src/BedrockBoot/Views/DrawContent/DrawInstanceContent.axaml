@@ -68,7 +68,7 @@
                         SelectionChanged="InstanceTabControl_OnSelectionChanged"
                         Margin="5,0,10,0">
                 <TabItem Header="实例详情" Tag="Info"></TabItem>
-                <TabItem Header="模组管理" Tag="Mods" IsEnabled="False"></TabItem>
+                <TabItem Header="模组管理" Tag="Mods" Name="GameModes"></TabItem>
                 <TabItem Header="资源包 / 行为包" Tag="Pack" IsEnabled="False"></TabItem>
                 <TabItem Header="存档" Tag="Save"></TabItem>
                 <TabItem Header="截图" Tag="Screenshots" IsEnabled="False"></TabItem>

@@ -23,6 +23,7 @@ public partial class DrawInstanceContent : UserControl
 
 #if RELEASE
         GameControls.IsEnabled = GlobalModel.FunctionOption.IsEnableGameInstanceControl;
+        GameModes.IsEnabled = GlobalModel.FunctionOption.IsEnableGameInstanceMods;
 #endif
     }
 

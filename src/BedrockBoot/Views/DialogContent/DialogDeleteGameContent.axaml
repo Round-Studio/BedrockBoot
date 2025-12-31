@@ -1,0 +1,22 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.DialogDeleteGameContent">
+    <StackPanel Orientation="Horizontal">
+        <onePointControls:ProgressRing Height="36" Width="36"
+                                       Background="Transparent"></onePointControls:ProgressRing>
+        
+        <StackPanel Margin="12,0,0,0"
+                    VerticalAlignment="Center">
+            <TextBlock FontSize="16"
+                       Name="DeleteProgressText">进度：0 %</TextBlock>
+            <ProgressBar IsIndeterminate="True"
+                         Name="DeleteProgressBar"
+                         Margin="0,8,0,0"
+                         MinWidth="200"></ProgressBar>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

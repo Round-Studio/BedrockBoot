@@ -65,7 +65,7 @@ public partial class DrawInstanceContent : UserControl
                     InstanceFrame.NavigateTo(new InstanceSave(VersionInfo));
                     break;
                 case "Controls":
-                    InstanceFrame.NavigateTo(new InstanceControls());
+                    InstanceFrame.NavigateTo(new InstanceControls(VersionInfo));
                     break;
             }
         }

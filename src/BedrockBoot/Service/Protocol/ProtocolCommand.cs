@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
@@ -17,7 +18,7 @@ public class ProtocolCommand
 {
     public static void OnCommand(string[] command)
     {
-        if (command.Contains("about"))
+        if (command.ToList().Contains("about"))
         {
             Dispatcher.UIThread.Invoke(() =>
             {

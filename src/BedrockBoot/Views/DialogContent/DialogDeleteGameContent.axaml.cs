@@ -24,17 +24,17 @@ public partial class DialogDeleteGameContent : UserControl
         Delete();
     }
 
-    public async Task Delete()
+    public void Delete()
     {
-        var path = VersionInfo.VersionPath;
-        Console.WriteLine($"即将删除文件夹：{path}");
-        
-        var files = Directory.GetFiles(path,"*", SearchOption.AllDirectories);
-        Console.WriteLine($"总数目：{files.Length}");
-        DeleteProgressBar.Maximum = files.Length;
-
-        await Task.Run(() =>
+        Task.Run(() =>
         {
+            var path = VersionInfo.VersionPath;
+            Console.WriteLine($"即将删除文件夹：{path}");
+        
+            var files = Directory.GetFiles(path,"*", SearchOption.AllDirectories);
+            Console.WriteLine($"总数目：{files.Length}");
+            Dispatcher.UIThread.Invoke(() => DeleteProgressBar.Maximum = files.Length);
+            
             Dispatcher.UIThread.Invoke(() => DeleteProgressBar.IsIndeterminate = false);
             
             var jd = 0;

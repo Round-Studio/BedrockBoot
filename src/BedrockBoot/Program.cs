@@ -9,8 +9,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Platform;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
+using PeNet;
+using PeNet.FileParser;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
 using Round.SDK.Global;
@@ -27,8 +30,11 @@ sealed class Program
 	// yet and stuff might break.
     [STAThread]
     public static void Main(string[] args)
-    {
-        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+	{
+      
+
+      
+GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
 
         if (GlobalModel.Config.Data.IsConsole)

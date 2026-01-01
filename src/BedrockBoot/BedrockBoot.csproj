@@ -21,9 +21,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Include="Assets\**" />
         <None Remove="Manifest\Function\FunctionOption.json" />
         <AvaloniaResource Include="Manifest\Function\FunctionOption.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Assets\PreloadCpp.dll" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,6 +51,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
       <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj" />
+      <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />
     </ItemGroup>

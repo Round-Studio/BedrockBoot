@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Management.Deployment;
 using Avalonia.Controls;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
@@ -18,6 +19,8 @@ using BedrockLauncher.Core.Utils;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using PeNet;
+using PeNet.FileParser;
 using Round.SDK.Entity;
 using Round.SDK.Helper;
 using Round.SDK.Helper.IO;
@@ -115,93 +118,111 @@ public partial class TaskDownloadGameItem : UserControl
                 await downloadPack();
 
             if (CheckMD5(path).Result)
-                await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions()
-                {
-                    FileFullPath = path,
-                    GameName = GameName,
-                    InstallDstFolder = Path.Combine(InstallFolder, "bedrock_versions", GameName),
-                    GameTypeVersion = BuildInfo.Type,
-                    Type = BuildInfo.BuildType,
-                    ExtractionProgress = new Progress<DecompressProgress>(ext =>
-                    {
-                        Dispatcher.UIThread.Invoke(() =>
-                        {
-                            InsUnZipBar.Value = ext.Percentage;
-                            MainText.Text = $"步骤：解压文件 ({ext.Percentage:F2}%)";
-                        });
-                    }),
-                    DeployProgress = new Progress<DeploymentProgress>(((s) =>
-                    {
-                        Console.WriteLine($"{s.state} - {s.percentage}");
+            {
+	            string install_dir = Path.Combine(InstallFolder, "bedrock_versions", GameName);
 
-                        Dispatcher.UIThread.Invoke(() =>
-                        {
-                            InsInstallGameBar.Value = s.percentage;
-                            MainText.Text = $"步骤：部署游戏 ({s} [{s.percentage}%])";
-                        });
-                    })),
-                    InstallStates = new Progress<InstallStates>((states) =>
-                    {
-                        Console.WriteLine(states);
+				await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions()
+	            {
+		            FileFullPath = path,
+		            GameName = GameName,
+		            InstallDstFolder = install_dir,
+		            GameTypeVersion = BuildInfo.Type,
+		            Type = BuildInfo.BuildType,
+		            ExtractionProgress = new Progress<DecompressProgress>(ext =>
+		            {
+			            Dispatcher.UIThread.Invoke(() =>
+			            {
+				            InsUnZipBar.Value = ext.Percentage;
+				            MainText.Text = $"步骤：解压文件 ({ext.Percentage:F2}%)";
+			            });
+		            }),
+		            DeployProgress = new Progress<DeploymentProgress>(((s) =>
+		            {
+			            Console.WriteLine($"{s.state} - {s.percentage}");
 
-                        Dispatcher.UIThread.Invoke(() =>
-                        {
-                            if (states == InstallStates.Extracting)
-                            {
-                                InsUnZipBar.IsIndeterminate = false;
-                            }
-                            else if (states == InstallStates.Extracted)
-                            {
-                                InsUnZipBar.Value = 100;
+			            Dispatcher.UIThread.Invoke(() =>
+			            {
+				            InsInstallGameBar.Value = s.percentage;
+				            MainText.Text = $"步骤：部署游戏 ({s} [{s.percentage}%])";
+			            });
+		            })),
+		            InstallStates = new Progress<InstallStates>((states) =>
+		            {
+			            Console.WriteLine(states);
 
-                                if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
-                                {
-                                    GameInfoHelper.SaveVersionConfig(new VersionConfig()
-                                    {
-                                        VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
-                                        Info = new VersionConfig.VersionInfo()
-                                        {
-                                            BuildType = BuildInfo.BuildType,
-                                            Version = BuildInfo.ID,
-                                            VersionName = GameName,
-                                            VersionType = BuildInfo.Type
-                                        }
-                                    });
+			            Dispatcher.UIThread.Invoke(() =>
+			            {
+				            if (states == InstallStates.Extracting)
+				            {
+					            InsUnZipBar.IsIndeterminate = false;
+				            }
+				            else if (states == InstallStates.Extracted)
+				            {
+					            InsUnZipBar.Value = 100;
 
-                                    Dispatcher.UIThread.Invoke(() =>
-                                        installed?.Invoke());
-                                }
-                            }
-                            else if (states == InstallStates.Cleared)
-                            {
-                                InsInstallGameBar.IsIndeterminate = true;
-                            }
-                            else if (states == InstallStates.Registering)
-                            {
-                                InsInstallGameBar.IsIndeterminate = false;
-                            }
-                            else if (states == InstallStates.Registered)
-                            {
-                                InsInstallGameBar.Value = 100;
+					            if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
+					            {
+						            GameInfoHelper.SaveVersionConfig(new VersionConfig()
+						            {
+							            VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
+							            Info = new VersionConfig.VersionInfo()
+							            {
+								            BuildType = BuildInfo.BuildType,
+								            Version = BuildInfo.ID,
+								            VersionName = GameName,
+								            VersionType = BuildInfo.Type
+							            }
+						            });
 
-                                GameInfoHelper.SaveVersionConfig(new VersionConfig()
-                                {
-                                    VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
-                                    Info = new VersionConfig.VersionInfo()
-                                    {
-                                        BuildType = BuildInfo.BuildType,
-                                        Version = BuildInfo.ID,
-                                        VersionName = GameName,
-                                        VersionType = BuildInfo.Type
-                                    }
-                                });
+						            Dispatcher.UIThread.Invoke(() =>
+							            installed?.Invoke());
+					            }
+				            }
+				            else if (states == InstallStates.Cleared)
+				            {
+					            InsInstallGameBar.IsIndeterminate = true;
+				            }
+				            else if (states == InstallStates.Registering)
+				            {
+					            InsInstallGameBar.IsIndeterminate = false;
+				            }
+				            else if (states == InstallStates.Registered)
+				            {
+					            InsInstallGameBar.Value = 100;
 
-                                Dispatcher.UIThread.Invoke(() =>
-                                    installed?.Invoke());
-                            }
-                        });
-                    })
-                });
+					            GameInfoHelper.SaveVersionConfig(new VersionConfig()
+					            {
+						            VersionPath = Path.Combine(InstallFolder, "bedrock_versions", GameName),
+						            Info = new VersionConfig.VersionInfo()
+						            {
+							            BuildType = BuildInfo.BuildType,
+							            Version = BuildInfo.ID,
+							            VersionName = GameName,
+							            VersionType = BuildInfo.Type
+						            }
+					            });
+
+					            Dispatcher.UIThread.Invoke(() =>
+						            installed?.Invoke());
+				            }
+			            });
+		            })
+	            });
+				string file_path = Path.Combine(install_dir, "Minecraft.Windows.exe");
+				if (File.Exists(file_path))
+				{
+					using (PeFile peFile = new PeFile(File.Open(file_path, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+					using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
+					using (var memoryStream = new MemoryStream())
+					{
+						stream.CopyTo(memoryStream);
+						peFile.AddImport("PreloadCpp.dll", "Load");
+						peFile.Flush();
+						var fullPath = Path.Combine(install_dir, "PreloadCpp.dll");
+						File.WriteAllBytes(fullPath, memoryStream.ToArray());
+					}
+				}
+            }                     
         });
     }
     public static void Install(BuildInfo info, string dir, string gameName)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -8,6 +9,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
@@ -16,6 +18,7 @@ using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using PeNet;
 
 namespace BedrockBoot.Views.TaskItem;
 
@@ -63,7 +66,20 @@ public partial class TaskLaunchGameItem : UserControl
 
                 if (VersionInfo.Config.IsEditModel) args += "minecraft://creator/?Editor=true ";
                 args += VersionInfo.Config.OtherCommand;
-
+                string file_path = Path.Combine(VersionInfo.VersionPath, "Minecraft.Windows.exe");
+                var fullPath = Path.Combine(VersionInfo.VersionPath, "PreloadCpp.dll");
+                if (!File.Exists(fullPath))
+                {
+                    using (PeFile peFile = new PeFile(File.Open(file_path, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+                    using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        stream.CopyTo(memoryStream);
+                        peFile.AddImport("PreloadCpp.dll", "Load");
+                        peFile.Flush();
+                        File.WriteAllBytes(fullPath, memoryStream.ToArray());
+                    }
+                }
                 MinecraftProcess = await GlobalModel.BedrockCore.StartGameAsync(new LaunchOptions()
                 {
                     GameFolder = VersionInfo.VersionPath,

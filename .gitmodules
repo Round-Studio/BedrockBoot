@@ -4,3 +4,6 @@
 [submodule "src/Round.SDK"]
 	path = src/Round.SDK
 	url = https://github.com/Round-Studio/Round.SDK.git
+[submodule "src/PeNet"]
+	path = src/PeNet
+	url = https://github.com/Round-Studio/PeNet.git

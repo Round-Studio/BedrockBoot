@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Windows.Management.Deployment;
+using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
 using BedrockBoot.Models.Global;
@@ -13,6 +15,9 @@ using BedrockBoot.Models.Helper.PEFile;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
+using PeNet;
+using PeNet.FileParser;
+using SkiaSharp;
 
 namespace BedrockBoot.Models.Pack.Game.Import;
 
@@ -81,7 +86,24 @@ public class PackInstaller
             })
         });
 
-        GameInfoHelper.SaveVersionConfig(new VersionConfig()
+
+        string file_path = Path.Combine(path, "Minecraft.Windows.exe");
+        if (File.Exists(file_path))
+        {
+            using (PeFile peFile = new PeFile(File.Open(file_path, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+            using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                peFile.AddImport("PreloadCpp.dll", "Load");
+                peFile.Flush();
+                var fullPath = Path.Combine(path, "PreloadCpp.dll");
+                File.WriteAllBytes(fullPath, memoryStream.ToArray());
+            }
+        }
+
+
+		GameInfoHelper.SaveVersionConfig(new VersionConfig()
         {
             Config = new VersionConfig.VersionConfigEntry(),
             Info = new VersionConfig.VersionInfo()
@@ -207,8 +229,21 @@ public class PackInstaller
                         ExtractionProgress = progressHandler,
                         CancellationToken = cts.Token
                     });
-
-                    try
+                    string file_path = Path.Combine(tempInstallPath, "Minecraft.Windows.exe");
+                    if (File.Exists(file_path))
+                    {
+                        using (PeFile peFile = new PeFile(File.Open(file_path, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+                        using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            stream.CopyTo(memoryStream);
+                            peFile.AddImport("PreloadCpp.dll", "Load");
+                            peFile.Flush();
+                            var fullPath = Path.Combine(tempInstallPath, "PreloadCpp.dll");
+                            File.WriteAllBytes(fullPath, memoryStream.ToArray());
+                        }
+                    }
+try
                     {
                         await installTask;
                         // 如果完整安装完成而没有取消，也检查exe文件
@@ -414,7 +449,20 @@ public class PackInstaller
 
             // 验证安装结果
             await VerifyInstallation(path, gameName, gameTypeVersion);
-
+			string file_path = Path.Combine(path, "Minecraft.Windows.exe");
+            if (File.Exists(file_path))
+            {
+                using (PeFile peFile = new PeFile(File.Open(file_path, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+                using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
+                using (var memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    peFile.AddImport("PreloadCpp.dll", "Load");
+                    peFile.Flush();
+                    var fullPath = Path.Combine(path, "PreloadCpp.dll");
+                    File.WriteAllBytes(fullPath, memoryStream.ToArray());
+                }
+            }
             Console.WriteLine($"GDK 版本安装成功: {gameName}");
 
             // 触发导入完成事件

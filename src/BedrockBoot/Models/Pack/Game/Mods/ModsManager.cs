@@ -61,4 +61,9 @@ public class ModsManager
         ModsConfig.Data.Add(mod);
         ModsConfig.Save();
     }
+
+    public void InjectAll(int processId)
+    {
+        Mods.ForEach(x => System.Threading.Tasks.Task.Run(() => x.Inject(processId)));
+    }
 }

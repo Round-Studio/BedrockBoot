@@ -11,8 +11,4 @@
       <None Remove="Inject.dll" />
     </ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="Inject.dll" />
-    </ItemGroup>
-
 </Project>

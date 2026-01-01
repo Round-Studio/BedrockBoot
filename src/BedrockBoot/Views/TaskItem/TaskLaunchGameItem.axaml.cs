@@ -11,6 +11,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
@@ -92,6 +93,13 @@ public partial class TaskLaunchGameItem : UserControl
                         LaunchProgressText.Text = "步骤：已启动，请等待游戏窗口显示";
                         LaunchProgressBar.IsIndeterminate = true;
                     });
+
+                    if (VersionInfo.Config.IsModes)
+                    {
+                        var ModsManager = new ModsManager(VersionInfo);
+                        ModsManager.RefreshMods();
+                        ModsManager.InjectAll(MinecraftProcess.Id);
+                    }
                     
                     // 正确注册退出事件
                     MinecraftProcess.EnableRaisingEvents = true;

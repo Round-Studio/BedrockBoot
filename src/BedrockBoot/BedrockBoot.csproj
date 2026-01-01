@@ -61,4 +61,8 @@
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaResource Include="Assets\Inject.dll" />
+    </ItemGroup>
 </Project>

@@ -2,6 +2,8 @@
 using System.IO;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Avalonia;
+using Avalonia.Platform;
 
 namespace BedrockBoot.Base.Entry.Game.Pack.Mods;
 
@@ -21,11 +23,40 @@ public class ModInfo
 
     public void Inject(int processId)
     {
-        var executingAssembly = Assembly.GetExecutingAssembly();
-        var manifestResourceStream = executingAssembly.GetManifestResourceStream(name: "BedrockBoot.Inject.Inject.dll");
-        byte[] bytes = new Byte[manifestResourceStream.Length];
-        manifestResourceStream.ReadExactly(bytes);
+        byte[] bytes = GetAssetBytes("avares://BedrockBoot/Assets/Inject.dll");
         BedrockBoot.Inject.Native.Init(bytes);
         BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0, InjectDelay);
+    }
+    private byte[] GetAssetBytes(string uri)
+    {
+        try
+        {
+            // 确保URI格式正确
+            if (!uri.StartsWith("avares://"))
+            {
+                uri = $"avares://{uri.TrimStart('/')}";
+            }
+
+            // 使用AssetLoader的静态方法
+            var uriObj = new Uri(uri);
+            
+            // 检查资源是否存在
+            if (!AssetLoader.Exists(uriObj))
+            {
+                throw new FileNotFoundException($"Asset not found: {uri}");
+            }
+            
+            // 打开资源流
+            using (var stream = AssetLoader.Open(uriObj))
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new IOException($"Failed to load asset from URI: {uri}", ex);
+        }
     }
 }

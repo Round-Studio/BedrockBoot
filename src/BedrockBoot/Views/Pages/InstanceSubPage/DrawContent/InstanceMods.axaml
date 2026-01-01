@@ -28,7 +28,15 @@
             <items:BorderCard Grid.Column="1"
                               Margin="0,8,20,10">
                 <Grid>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                        <Button Classes="NoBorder"
+                                Width="32"
+                                Height="32">
+                            <onePointControls:FontIcon Glyph="&#xE8B7;"
+                                                       VerticalAlignment="Center"></onePointControls:FontIcon>
+                        </Button>
+                        
                         <Button Classes="NoBorder"
                                 Padding="12,8">
                             <StackPanel Orientation="Horizontal">

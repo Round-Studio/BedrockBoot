@@ -1,0 +1,34 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="400"
+             x:Class="BedrockBoot.Views.Control.GameModItem">
+    <onePointControls:SettingCard IsClickable="True"
+                                  Name="Card"
+                                  Margin="5,0,5,10"
+                                  Glyph="&#xE7C3;"
+                                  IsShowActionIcon="False"
+                                  Header="FileName"
+                                  Description="FileSize">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="8">
+            <onePointControls:LabelBox Text="禁用"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       Background="DarkRed"
+                                       Name="EnableModule"
+                                       IsVisible="False"
+                                       Margin="0,0,8,0"
+                                       VerticalAlignment="Center"/>
+            
+            <Button Width="32" Height="32"
+                    Classes="NoBorder"
+                    Name="SettingBtn">
+                <onePointControls:FontIcon Glyph="&#xE713;"
+                                           FontSize="16"></onePointControls:FontIcon>
+            </Button>
+        </StackPanel>
+    </onePointControls:SettingCard>
+</UserControl>

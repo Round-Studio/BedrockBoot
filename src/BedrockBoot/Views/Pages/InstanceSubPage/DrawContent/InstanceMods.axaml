@@ -41,6 +41,8 @@
                         </Button>
                         
                         <Button Classes="NoBorder"
+                                Name="ImportModBtn"
+                                Click="ImportModBtn_OnClick"
                                 Padding="12,8">
                             <StackPanel Orientation="Horizontal">
                                 <onePointControls:FontIcon Glyph="&#xE710;"

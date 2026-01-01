@@ -1,17 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Documents;
 using System.Windows.Shapes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Transformation;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockBoot.Views.Control;
+using BedrockBoot.Views.DialogContent;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Path = System.IO.Path;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
@@ -77,5 +83,37 @@ public partial class InstanceMods : ISetting
     private void FolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         Process.Start("explorer", new[] { Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods") });
+    }
+
+    private void ImportModBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new DialogImportModContent();
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "添加 Mod 文件",
+            Content = dialog,
+            CloseButtonText = "添加",
+            PrimaryButtonText = "取消",
+            CloseAction = () =>
+            {
+                if (string.IsNullOrEmpty(dialog.ModFile) || 
+                    !File.Exists(dialog.ModFile))
+                {
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                    {
+                        Message = "无效路径，无法添加模组",
+                        Title = "无效路径"
+                    });
+                    return;
+                }
+                
+                ModsManager.AddMod(new ModInfo()
+                {
+                    File = dialog.ModFile,
+                    InjectDelay = dialog.ModDelay
+                });
+                UpdateUI();
+            }
+        });
     }
 }

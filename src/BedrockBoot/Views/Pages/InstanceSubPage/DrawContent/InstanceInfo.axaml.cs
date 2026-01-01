@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
 
@@ -23,6 +24,10 @@ public partial class InstanceInfo : UserControl
         IsEdit = false;
         
         InitializeComponent();
+
+#if RELEASE
+        InstanceMod.IsVisible = GlobalModel.FunctionOption.IsEnableGameInstanceMods;
+#endif
     }
 
     public InstanceInfo(VersionConfig versionInfo) : this()
@@ -48,6 +53,7 @@ public partial class InstanceInfo : UserControl
                 InstanceArgs.Text = VersionInfo.Config.OtherCommand;
                 InstanceConsole.IsChecked = VersionInfo.Config.IsConsole;
                 InstanceEdit.IsChecked = VersionInfo.Config.IsEditModel;
+                InstanceMod.IsChecked = VersionInfo.Config.IsModes;
                 InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
             });
 
@@ -76,6 +82,7 @@ public partial class InstanceInfo : UserControl
             VersionInfo.Config.IsConsole = (bool)InstanceConsole.IsChecked!;
             VersionInfo.Config.IsEditModel = (bool)InstanceEdit.IsChecked!;
             VersionInfo.Config.IsVersionIsolated = (bool)InstanceIsolated.IsChecked!;
+            VersionInfo.Config.IsModes = (bool)InstanceMod.IsChecked!;
 
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }

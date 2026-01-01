@@ -30,8 +30,6 @@
                                Name="CardTitle">正在启动游戏...</TextBlock>
                 </StackPanel>
                 
-                
-                
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">
                     <ProgressBar IsIndeterminate="True"

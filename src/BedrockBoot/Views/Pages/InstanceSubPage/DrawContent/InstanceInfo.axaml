@@ -57,6 +57,14 @@
                 </onePointControls:SettingCard>
                 
                 <onePointControls:SettingCard Margin="5"
+                                              Glyph="&#xE822;"
+                                              Header="启用 Mods"
+                                              Description="是否启用在出现游戏进程后自动注入 Mods">
+                    <ToggleSwitch Name="InstanceMod"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
+                </onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE756;"
                                               IsEnabled="False"
                                               Header="控制台"

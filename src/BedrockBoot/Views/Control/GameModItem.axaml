@@ -22,7 +22,13 @@
                                        IsVisible="False"
                                        Margin="0,0,8,0"
                                        VerticalAlignment="Center"/>
-            
+            <Button Width="32" Height="32"
+                    Classes="NoBorder"
+                    Name="DeleteBtn">
+                <onePointControls:FontIcon Glyph="&#xE74D;"
+                                           FontSize="16"
+                                           Foreground="DarkRed"></onePointControls:FontIcon>
+            </Button>
             <Button Width="32" Height="32"
                     Classes="NoBorder"
                     IsEnabled="False"

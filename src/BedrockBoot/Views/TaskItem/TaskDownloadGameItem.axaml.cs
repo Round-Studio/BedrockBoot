@@ -19,6 +19,7 @@ using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
+using Round.SDK.Helper;
 using Round.SDK.Helper.IO;
 using DownloadProgress = BedrockBoot.Base.Entry.DownloadProgress;
 
@@ -38,20 +39,6 @@ public partial class TaskDownloadGameItem : UserControl
         BuildInfo = info;
         InstallFolder = dir;
         GameName = gameName;
-    }
-    static string FormatBytes(double bytes)
-    {
-        string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
-        int counter = 0;
-        double number = bytes;
-
-        while (number >= 1024 && counter < suffixes.Length - 1)
-        {
-            number /= 1024;
-            counter++;
-        }
-
-        return $"{number:F1} {suffixes[counter]}";
     }
     public void Install(Action installed)
     {
@@ -86,7 +73,7 @@ public partial class TaskDownloadGameItem : UserControl
 
                             InsDownGameBar.Value = progress.ProgressPercentage;
                             MainText.Text = $"步骤：下载游戏 ({progress.ProgressPercentage:F2}%)";
-                            MainSpeedText.Text = $"{FormatBytes(
+                            MainSpeedText.Text = $"{SizeHelper.FormatBytes(
                                 cls.UpdateSpeed(progress.DownloadedBytes, progress.TotalBytes))} / s";
                         });
                     })));

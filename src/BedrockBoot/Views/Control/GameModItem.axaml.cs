@@ -1,8 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
+using BedrockBoot.Models.Pack.Game.Mods;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
 
 namespace BedrockBoot.Views.Control;
@@ -10,6 +15,7 @@ namespace BedrockBoot.Views.Control;
 public partial class GameModItem : UserControl
 {
     public ModInfo ModInfo { get; set; }
+    public ModsManager ModsManager { get; set; }
 
     public GameModItem()
     {
@@ -27,5 +33,35 @@ public partial class GameModItem : UserControl
     {
         Card.Header = Path.GetFileName(ModInfo.File);
         Card.Description = $"{SizeHelper.FormatBytes(new FileInfo(ModInfo.File).Length)}，{ModInfo.InjectDelay} ms";
-    }    
+    }
+
+    private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "删除模组",
+            Content = $"您确定要删除模组 {Path.GetFileName(ModInfo.File)} 吗\n" +
+                      $"这将永远无法恢复。",
+            CloseButtonText = "确定",
+            PrimaryButtonText = "取消",
+            CloseAction = () =>
+            {
+                try
+                {
+                    File.Delete(ModInfo.File);
+                    ModsManager.RefreshMods(true);
+                }
+                catch (Exception e)
+                {
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Title = "出现错误",
+                        Content = $"删除模组 {Path.GetFileName(ModInfo.File)} 时\n" +
+                                  $"出现错误：{e.Message}",
+                        CloseButtonText = "确定"
+                    });
+                }
+            }
+        });
+    }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
@@ -12,6 +13,7 @@ public class ModsManager
     public VersionConfig VersionInfo { get; set; }
     public List<ModInfo> Mods => ModsConfig.Data;
     public ConfigEntity<List<ModInfo>> ModsConfig { get; private set; }
+    public Action? RefreshCallBack { get; set; }
 
     public ModsManager(VersionConfig versionInfo)
     {
@@ -22,7 +24,7 @@ public class ModsManager
         ModsConfig.Load();
     }
 
-    public List<ModInfo> RefreshMods()
+    public List<ModInfo> RefreshMods(bool isRefresh = false)
     {
         ModsConfig.Load();
         var path = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods");
@@ -50,6 +52,7 @@ public class ModsManager
         });
         ModsConfig.Save();
 
+        if (isRefresh) RefreshCallBack?.Invoke();
         return Mods;
     }
 

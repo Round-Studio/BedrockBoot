@@ -37,7 +37,10 @@ public partial class InstanceMods : ISetting
     public InstanceMods(VersionConfig versionInfo) : this()
     {
         VersionInfo = versionInfo;
-        ModsManager = new(VersionInfo);
+        ModsManager = new(VersionInfo)
+        {
+            RefreshCallBack = UpdateUI
+        };
         
         UpdateUI();
     }
@@ -67,7 +70,10 @@ public partial class InstanceMods : ISetting
         {
             resultMods.ForEach(info =>
             {
-                ResultBox.Children.Add(new GameModItem(info));
+                ResultBox.Children.Add(new GameModItem(info)
+                {
+                    ModsManager = this.ModsManager
+                });
             });
         }
 
@@ -106,10 +112,14 @@ public partial class InstanceMods : ISetting
                     });
                     return;
                 }
+
+                var path = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
+                    Path.GetFileName(dialog.ModFile));
+                File.Copy(dialog.ModFile, path);
                 
                 ModsManager.AddMod(new ModInfo()
                 {
-                    File = dialog.ModFile,
+                    File = path,
                     InjectDelay = dialog.ModDelay
                 });
                 UpdateUI();

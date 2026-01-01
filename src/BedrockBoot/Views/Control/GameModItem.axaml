@@ -25,6 +25,7 @@
             
             <Button Width="32" Height="32"
                     Classes="NoBorder"
+                    IsEnabled="False"
                     Name="SettingBtn">
                 <onePointControls:FontIcon Glyph="&#xE713;"
                                            FontSize="16"></onePointControls:FontIcon>

@@ -1,4 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace BedrockBoot.Base.Entry.Game.Pack.Mods;
 
@@ -15,4 +18,14 @@ public class ModInfo
     /// </summary>
     [JsonPropertyName("injectDelay")]
     public int InjectDelay { get; set; } = 0;
+
+    public void Inject(int processId)
+    {
+        var executingAssembly = Assembly.GetExecutingAssembly();
+        var manifestResourceStream = executingAssembly.GetManifestResourceStream(name: "BedrockBoot.Inject.Inject.dll");
+        byte[] bytes = new Byte[manifestResourceStream.Length];
+        manifestResourceStream.ReadExactly(bytes);
+        BedrockBoot.Inject.Native.Init(bytes);
+        BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0, InjectDelay);
+    }
 }

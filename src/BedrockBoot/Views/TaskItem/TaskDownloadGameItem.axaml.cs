@@ -208,20 +208,6 @@ public partial class TaskDownloadGameItem : UserControl
 			            });
 		            })
 	            });
-				string file_path = Path.Combine(install_dir, "Minecraft.Windows.exe");
-				if (File.Exists(file_path))
-				{
-					using (PeFile peFile = new PeFile(File.Open(file_path, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
-					using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
-					using (var memoryStream = new MemoryStream())
-					{
-						stream.CopyTo(memoryStream);
-						peFile.AddImport("PreloadCpp.dll", "Load");
-						peFile.Flush();
-						var fullPath = Path.Combine(install_dir, "PreloadCpp.dll");
-						File.WriteAllBytes(fullPath, memoryStream.ToArray());
-					}
-				}
             }                     
         });
     }

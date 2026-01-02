@@ -29,7 +29,8 @@ public partial class TaskLaunchGameItem : UserControl
     public Action LaunchCompleted;
     private Process MinecraftProcess;
     private CancellationTokenSource _cancellationTokenSource;
-    
+    private ModsCore _core;
+
     public TaskLaunchGameItem()
     {
         InitializeComponent();
@@ -43,20 +44,23 @@ public partial class TaskLaunchGameItem : UserControl
 
     public void Launch(Action launchCompleted)
     {
+        _core = new ModsCore(VersionInfo);
+        
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
-        
+
         LaunchCompleted = launchCompleted;
         CardTitle.Text = $"启动游戏 {VersionInfo.Info.VersionName}";
-        Console.WriteLine($"正在启动：{VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) Type：{VersionInfo.Info.VersionType} {VersionInfo.Info.BuildType}");
+        Console.WriteLine(
+            $"正在启动：{VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) Type：{VersionInfo.Info.VersionType} {VersionInfo.Info.BuildType}");
 
         Task.Run(async () =>
         {
             try
             {
                 if (IsCancel) return;
-                
-                Dispatcher.UIThread.Invoke(() => 
+
+                Dispatcher.UIThread.Invoke(() =>
                 {
                     LaunchProgressBar.IsIndeterminate = false;
                     CancelBtn.IsEnabled = true;
@@ -66,20 +70,9 @@ public partial class TaskLaunchGameItem : UserControl
 
                 if (VersionInfo.Config.IsEditModel) args += "minecraft://creator/?Editor=true ";
                 args += VersionInfo.Config.OtherCommand;
-                string file_path = Path.Combine(VersionInfo.VersionPath, "Minecraft.Windows.exe");
-                var fullPath = Path.Combine(VersionInfo.VersionPath, "PreloadCpp.dll");
-                if (!File.Exists(fullPath))
-                {
-                    using (PeFile peFile = new PeFile(File.Open(file_path, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
-                    using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        stream.CopyTo(memoryStream);
-                        peFile.AddImport("PreloadCpp.dll", "Load");
-                        peFile.Flush();
-                        File.WriteAllBytes(fullPath, memoryStream.ToArray());
-                    }
-                }
+                
+                _core.PreLoad(); // 启动 PreLoad
+                
                 MinecraftProcess = await GlobalModel.BedrockCore.StartGameAsync(new LaunchOptions()
                 {
                     GameFolder = VersionInfo.VersionPath,
@@ -94,10 +87,7 @@ public partial class TaskLaunchGameItem : UserControl
                             LaunchProgressBar.Value = s.percentage;
                         });
                     }),
-                    Progress = new Progress<LaunchState>((state =>
-                    {
-                        Console.WriteLine(state);
-                    })),
+                    Progress = new Progress<LaunchState>((state => { Console.WriteLine(state); })),
                     LaunchArgs = string.IsNullOrEmpty(args) ? null : args
                 });
 
@@ -112,15 +102,13 @@ public partial class TaskLaunchGameItem : UserControl
 
                     if (VersionInfo.Config.IsModes)
                     {
-                        var ModsManager = new ModsManager(VersionInfo);
-                        ModsManager.RefreshMods();
-                        ModsManager.InjectAll(MinecraftProcess.Id);
+                        _core.LoadAll(MinecraftProcess.Id);
                     }
-                    
+
                     // 正确注册退出事件
                     MinecraftProcess.EnableRaisingEvents = true;
                     MinecraftProcess.Exited += OnProcessExited;
-                    
+
                     // 也可以使用异步等待方式
                     await WaitForProcessExitAsync(MinecraftProcess);
                 }
@@ -142,13 +130,13 @@ public partial class TaskLaunchGameItem : UserControl
             }
         });
     }
-    
+
     private async Task WaitForProcessExitAsync(Process process)
     {
         try
         {
             await process.WaitForExitAsync(_cancellationTokenSource.Token);
-            
+
             Console.WriteLine($"游戏进程 PID：{MinecraftProcess.Id} 已退出");
             // 进程正常退出
             Console.WriteLine($"进程已退出，退出代码: {process.ExitCode}");
@@ -163,17 +151,14 @@ public partial class TaskLaunchGameItem : UserControl
             }
         }
     }
-    
+
     private void OnProcessExited(object sender, EventArgs e)
     {
         Console.WriteLine($"进程已退出 (事件触发)，退出代码: {MinecraftProcess?.ExitCode}");
-        
+
         // 确保在UI线程调用回调
-        Dispatcher.UIThread.Post(() => 
-        {
-            LaunchCompleted?.Invoke();
-        });
-        
+        Dispatcher.UIThread.Post(() => { LaunchCompleted?.Invoke(); });
+
         // 清理事件处理器
         if (MinecraftProcess != null)
         {
@@ -189,23 +174,20 @@ public partial class TaskLaunchGameItem : UserControl
             Message = $"游戏 {gameInfo.Info.VersionName} 已将其启动任务添加至任务列表。",
             NoticeType = NoticeType.Info
         });
-        
+
         var body = new TaskLaunchGameItem(gameInfo);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
-        body.Launch(() => 
-        { 
-            GlobalModel.TaskManager.RemoveTask(tuid); 
-        });
+        body.Launch(() => { GlobalModel.TaskManager.RemoveTask(tuid); });
     }
 
     private void CancelBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         this.IsCancel = true;
-        
+
         // 取消相关操作
         _cancellationTokenSource?.Cancel();
-        
+
         if (MinecraftProcess != null && !MinecraftProcess.HasExited)
         {
             try
@@ -218,30 +200,30 @@ public partial class TaskLaunchGameItem : UserControl
                 Console.WriteLine($"终止进程时出错: {ex.Message}");
             }
         }
-        
+
         // 清理资源
         MinecraftProcess?.Dispose();
         MinecraftProcess = null;
-        
+
         // 调用完成回调
         LaunchCompleted?.Invoke();
     }
-    
+
     // 添加 Process 的 WaitForExitAsync 扩展方法
     public static class ProcessExtensions
     {
         public static Task WaitForExitAsync(Process process, CancellationToken cancellationToken = default)
         {
             var tcs = new TaskCompletionSource<bool>();
-            
+
             process.EnableRaisingEvents = true;
             process.Exited += OnExited;
-            
+
             if (process.HasExited)
             {
                 tcs.TrySetResult(true);
             }
-            
+
             cancellationToken.Register(() =>
             {
                 if (!process.HasExited)
@@ -249,9 +231,9 @@ public partial class TaskLaunchGameItem : UserControl
                     tcs.TrySetCanceled(cancellationToken);
                 }
             });
-            
+
             return tcs.Task;
-            
+
             void OnExited(object sender, EventArgs e)
             {
                 process.Exited -= OnExited;

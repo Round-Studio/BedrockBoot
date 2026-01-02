@@ -64,6 +64,12 @@ public class ModsManager
 
     public void InjectAll(int processId)
     {
-        Mods.ForEach(x => System.Threading.Tasks.Task.Run(() => x.Inject(processId)));
+        Mods.ForEach(x =>
+        {
+            if (!x.IsPreLoad)
+            {
+                System.Threading.Tasks.Task.Run(() => x.Inject(processId));
+            }
+        });
     }
 }

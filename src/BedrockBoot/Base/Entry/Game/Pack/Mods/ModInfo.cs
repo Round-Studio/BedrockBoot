@@ -21,12 +21,22 @@ public class ModInfo
     [JsonPropertyName("injectDelay")]
     public int InjectDelay { get; set; } = 0;
 
+    /// <summary>
+    /// IsPreLoad 为是否启用预加载
+    /// </summary>
+    [JsonPropertyName("isPreLoad")]
+    public bool IsPreLoad { get; set; } = false;
+
     public void Inject(int processId)
     {
+        if(IsPreLoad)
+            throw new Exception("This mod is PreLoad mod.");
+        
         byte[] bytes = GetAssetBytes("avares://BedrockBoot/Assets/Inject.dll");
         BedrockBoot.Inject.Native.Init(bytes);
         BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0, InjectDelay);
     }
+
     private byte[] GetAssetBytes(string uri)
     {
         try
@@ -39,13 +49,13 @@ public class ModInfo
 
             // 使用AssetLoader的静态方法
             var uriObj = new Uri(uri);
-            
+
             // 检查资源是否存在
             if (!AssetLoader.Exists(uriObj))
             {
                 throw new FileNotFoundException($"Asset not found: {uri}");
             }
-            
+
             // 打开资源流
             using (var stream = AssetLoader.Open(uriObj))
             using (var memoryStream = new MemoryStream())

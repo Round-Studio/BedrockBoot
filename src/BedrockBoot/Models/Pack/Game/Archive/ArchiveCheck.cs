@@ -51,7 +51,8 @@ public class ArchiveCheck
                         Name = name,
                         Path = Path.Combine(save),
                         IconPath = File.Exists(icon) ? icon : "",
-                        IsProject = isProject
+                        IsProject = isProject,
+                        LevelWorldData = new ArchiveSerializer(save).Parser()
                     });
                 });
             }

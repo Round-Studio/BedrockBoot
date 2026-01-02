@@ -5,12 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.LevelNbt;
+using BedrockBoot.LevelNbt.Base.Entry;
+
 namespace BedrockBoot.Models.Pack.Game.Archive;
 
-public class ArchiveSerializer : ArchiveInfo
+public class ArchiveSerializer
 {
+    private LevelDatParser _datParser;
     public ArchiveSerializer(string levelPath)
     {
-        Path = levelPath;
+        _datParser = new LevelDatParser(Path.Combine(levelPath, "level.dat"));
     }
+
+    public LevelWorldData Parser() => _datParser.WorldData;
 }

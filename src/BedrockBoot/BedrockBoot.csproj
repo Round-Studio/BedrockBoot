@@ -41,7 +41,7 @@
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="BedrockLauncher.Core" Version="2.0.0" />
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.1" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
         <PackageReference Include="Octokit" Version="14.0.0" />
@@ -49,6 +49,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
+      <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
       <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj" />
       <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj" />

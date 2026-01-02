@@ -42,6 +42,9 @@
                                 Margin="8,0,0,0">
                         <TextBlock FontSize="14"
                                    Name="WorldName">My World</TextBlock>
+                        <TextBlock FontSize="11"
+                                   Foreground="Gray"
+                                   Name="WorldLastPlayed">LastPlayed Time</TextBlock>
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="1"

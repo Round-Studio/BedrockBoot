@@ -12,4 +12,11 @@ public class SourceList
         { "gh-proxy.top", "https://gh-proxy.top/{url}" },
         { "gh-proxy.net", "https://gh-proxy.net/{url}" }
     };
+    
+    public static Dictionary<string, string> VersionDataSources { get; set; } = new Dictionary<string, string>()
+    {
+        { "McAppx 源", "https://data.mcappx.com/v2/bedrock.json" },
+        { "BedrockBoot 源 ①", "https://mcappx.52caecb8.er.aliyun-esa.net" },
+        { "BMCBL 源", "https://mcappx.chlna6666.com" }
+    };
 }

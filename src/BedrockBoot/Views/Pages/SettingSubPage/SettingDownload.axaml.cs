@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -28,6 +29,11 @@ public partial class SettingDownload : UserControl
 
         IsAutoCacheGamePack.IsChecked = GlobalModel.Config.Data.IsAutoCacheGamePack;
         ChunkCountSlider.Value = GlobalModel.Config.Data.DownloadChunkCount;
+        SourceList.VersionDataSources.ToList().ForEach(s => SourceBox.Items.Add(new ComboBoxItem()
+        {
+            Content = s.Key
+        }));
+        SourceBox.SelectedIndex = GlobalModel.Config.Data.VersionSourceIndex;
         IsEdit = true;
     }
 
@@ -54,6 +60,15 @@ public partial class SettingDownload : UserControl
                 GlobalModel.Config.Data.DownloadChunkCount = (int)ChunkCountSlider.Value;
                 GlobalModel.Config.Save();
             }
+        }
+    }
+
+    private void SourceBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.VersionSourceIndex = SourceBox.SelectedIndex;
+            GlobalModel.Config.Save();
         }
     }
 }

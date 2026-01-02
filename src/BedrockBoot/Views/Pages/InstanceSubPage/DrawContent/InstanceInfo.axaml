@@ -74,11 +74,13 @@
                 
                 <TextBlock Margin="5"
                            FontWeight="Bold"
+                           IsVisible="False"
                            FontSize="14">高级设置</TextBlock>
                 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE7B8;"
                                               IsEnabled="False"
+                                              IsVisible="False"
                                               Header="版本隔离"
                                               Description="启用版本隔离（仅隔离存档，资源包等。模组文件无需隔离）">
                     <ToggleSwitch IsChecked="True"

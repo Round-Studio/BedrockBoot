@@ -47,6 +47,19 @@
             
             <TextBlock Margin="5,0,5,10"
                        FontWeight="Bold"
+                       FontSize="14">源</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="版本列表源"
+                                          Description="BedrockBoot 使用的版本列表源"
+                                          Glyph="&#xE8F1;">
+                <ComboBox Width="200"
+                          Name="SourceBox"
+                          SelectionChanged="SourceBox_OnSelectionChanged"></ComboBox>
+            </onePointControls:SettingCard>
+            
+            <TextBlock Margin="5,0,5,10"
+                       FontWeight="Bold"
                        FontSize="14">高级</TextBlock>
             
             <onePointControls:SettingCard Margin="5, 0, 5, 10"

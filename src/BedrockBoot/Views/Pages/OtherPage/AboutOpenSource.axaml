@@ -45,6 +45,16 @@
             
             <TextBlock FontSize="22"
                        FontWeight="Bold"
+                       Margin="5,20,5,8">PeNet</TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/secana/PeNet)"></TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/PeNet)"></TextBlock>
+            <TextBlock Margin="5" xml:space="preserve"
+                       FontSize="9">Apache License
+(https://github.com/secana/PeNet/blob/master/LICENSE)</TextBlock>
+            
+            
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
                        Margin="5,20,5,8">Octokit</TextBlock>
             <TextBlock Margin="5" Text="(https://github.com/octokit/octokit.net)"></TextBlock>
             <TextBlock Margin="5" xml:space="preserve"

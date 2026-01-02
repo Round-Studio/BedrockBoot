@@ -9,6 +9,7 @@ public class VersionConfig
     [JsonPropertyName("config")] public VersionConfigEntry Config { get; set; } = new ();
         
     [JsonIgnore] public string VersionPath { get; set; }
+    [JsonIgnore] public string BodyFile { get; set; }
     
     public class VersionInfo
     {

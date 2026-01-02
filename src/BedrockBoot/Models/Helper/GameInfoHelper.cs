@@ -83,8 +83,18 @@ public class GameInfoHelper
         }
 
         bodyConfig.Data.VersionPath = gamePath;
+        bodyConfig.Data.BodyFile = GetBodyFile(gamePath);
 
         return bodyConfig.Data;
+    }
+
+    public static string GetBodyFile(string gamePath)
+    {
+        var files = Directory.GetFiles(gamePath, "*.exe");
+        if (files.Length > 1)
+            throw new FileNotFoundException("为什么你的目录会多出一个 exe 呢.jpg");
+        
+        return Path.GetFileName(files[0]);
     }
 
     public static bool IsInvalidVersion(VersionConfig config)

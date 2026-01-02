@@ -35,7 +35,7 @@ public class ModsCore
         File.WriteAllText(gameConf, $"console_open = {open}");
         
         var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", "Minecraft.Windows.exe");
-        var body = Path.Combine(VersionInfo.VersionPath, "Minecraft.Windows.exe");
+        var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");
 
         if (!Directory.Exists(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row")))

@@ -25,16 +25,17 @@ sealed class Program
 {
     [DllImport("kernel32.dll")]
     static extern bool AllocConsole();
+
     // Initialization code. Don't use any Avalonia, third-party APIs or any
-	// SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-	// yet and stuff might break.
+    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
+    // yet and stuff might break.
     [STAThread]
     public static void Main(string[] args)
-	{
-      
+    {
 
-      
-GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+
+
+        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
 
         if (GlobalModel.Config.Data.IsConsole)
@@ -43,7 +44,7 @@ GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
             Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine("已开启 Release 中的 Debug 模式，此模式不会生成日志！");
         }
-        
+
         // 首先处理可能的更新参数（--update-launcher, --update-replace）
         AppUpdater.ProcessStartupArgs(args);
 
@@ -85,17 +86,17 @@ GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
                 case "-shell":
                     // 查找 -shell 参数的索引
                     int shellIndex = args.FindIndex(x => x == "-shell");
-    
+
                     // 检查是否提供了命令参数
                     if (shellIndex + 1 >= args.Count)
                     {
                         Console.WriteLine("错误：-shell 参数后需要指定命令");
                         break;
                     }
-    
+
                     string command = args[shellIndex + 1];
                     Console.WriteLine($"触发 bb 协议：{command}");
-    
+
                     try
                     {
                         Sent(command);
@@ -111,6 +112,7 @@ GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
                             Sent(command);
                         });
                     }
+
                     break;
                 case "-console":
                     AllocConsole();
@@ -130,17 +132,17 @@ GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         {
             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         };
-        
+
         // 使用 HttpClient
         using var httpClient = new HttpClient(handler);
-        
+
         // URL 编码命令参数
         string encodedCommand = Uri.EscapeDataString(command);
         string url = $"http://127.0.0.1:43956/shell?command={encodedCommand}";
-        
+
         // 异步发送请求
         var response = httpClient.GetAsync(url).Result;
-        
+
         // 如果需要，可以读取响应
         if (response.IsSuccessStatusCode)
         {

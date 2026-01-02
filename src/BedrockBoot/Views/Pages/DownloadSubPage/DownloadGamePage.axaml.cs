@@ -71,8 +71,9 @@ public partial class DownloadGamePage : UserControl
             try
             {
                 Console.WriteLine(@"正在加载基岩版版本列表...");
-                var lst = VersionsHelper.GetBuildDatabaseAsync(
-                    "https://data.mcappx.com/v2/bedrock.json").Result.Builds.ToListAsync().Result;
+                var lst = VersionsHelper.GetBuildDatabaseAsync("https://data.mcappx.com/v2/bedrock.json")
+                    .Result!.Builds
+                    .ToListAsync().Result;
                 Console.WriteLine(@"基岩版版本列表加载完成");
 
                 Console.WriteLine(@"开始序列化");

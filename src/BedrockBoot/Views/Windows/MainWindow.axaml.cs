@@ -100,9 +100,6 @@ public partial class MainWindow : OnePointWindow
 #else
                 OpenProtocol();
 #endif*/
-
-                var lst = await VersionsHelper.GetBuildDatabaseAsync(
-                    "https://data.mcappx.com/v2/bedrock.json");
                 Console.WriteLine("版本列表获取完毕");
             }
             catch (InvalidOperationException invEx)

@@ -22,12 +22,7 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" />
-        <None Remove="Manifest\Function\FunctionOption.json" />
         <AvaloniaResource Include="Manifest\Function\FunctionOption.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="Assets\PreloadCpp.dll" />
     </ItemGroup>
 
     <ItemGroup>
@@ -54,20 +49,5 @@
       <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Views\Windows\MainWindow.axaml.cs">
-        <DependentUpon>MainWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\TaskItem\TaskLaunchGameItem.axaml.cs">
-        <DependentUpon>DialogLaunchGameContent.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-      <AvaloniaResource Include="Assets\Inject.dll" />
     </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@ public partial class DialogImportModContent : UserControl
 {
     public string ModFile => PathInputBox.Text;
     public int ModDelay => (int)InjectionDelay.Value;
+    public bool IsPreLoad => (bool)EnablePreLoad.IsChecked;
     public DialogImportModContent()
     {
         InitializeComponent();

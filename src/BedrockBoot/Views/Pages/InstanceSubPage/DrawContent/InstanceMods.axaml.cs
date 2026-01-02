@@ -120,7 +120,8 @@ public partial class InstanceMods : ISetting
                 ModsManager.AddMod(new ModInfo()
                 {
                     File = path,
-                    InjectDelay = dialog.ModDelay
+                    InjectDelay = dialog.ModDelay,
+                    IsPreLoad = dialog.IsPreLoad
                 });
                 UpdateUI();
             }

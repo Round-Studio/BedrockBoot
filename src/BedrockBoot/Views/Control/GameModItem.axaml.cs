@@ -31,8 +31,14 @@ public partial class GameModItem : UserControl
 
     public void UpdateUI()
     {
-        Card.Header = Path.GetFileName(ModInfo.File);
-        Card.Description = $"{SizeHelper.FormatBytes(new FileInfo(ModInfo.File).Length)}，{ModInfo.InjectDelay} ms";
+        FileName.Text = Path.GetFileName(ModInfo.File);
+        
+        if(!ModInfo.IsPreLoad)
+            Card.Description = $"{SizeHelper.FormatBytes(new FileInfo(ModInfo.File).Length)}，{ModInfo.InjectDelay} ms";
+        else
+            Card.Description = $"{SizeHelper.FormatBytes(new FileInfo(ModInfo.File).Length)}";
+
+        PreLoadBox.IsVisible = ModInfo.IsPreLoad;
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)

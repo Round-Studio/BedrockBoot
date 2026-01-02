@@ -10,18 +10,20 @@
                                   Margin="5,0,5,10"
                                   Glyph="&#xE7C3;"
                                   IsShowActionIcon="False"
-                                  Header="FileName"
                                   Description="FileSize">
+        <onePointControls:SettingCard.Header>
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock Name="FileName"></TextBlock>
+                <onePointControls:LabelBox Text="预加载"
+                                           Background="Orange"
+                                           Foreground="White"
+                                           Name="PreLoadBox"
+                                           VerticalAlignment="Center"></onePointControls:LabelBox>
+            </StackPanel>
+        </onePointControls:SettingCard.Header>
         <StackPanel Orientation="Horizontal"
                     Spacing="8">
-            <onePointControls:LabelBox Text="禁用"
-                                       FontSize="14"
-                                       Foreground="White"
-                                       Background="DarkRed"
-                                       Name="EnableModule"
-                                       IsVisible="False"
-                                       Margin="0,0,8,0"
-                                       VerticalAlignment="Center"/>
             <Button Width="32" Height="32"
                     Classes="NoBorder"
                     Click="DeleteBtn_OnClick"

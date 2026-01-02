@@ -37,6 +37,7 @@ public class ModsCore
         var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", "Minecraft.Windows.exe");
         var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");
+        var fullPath = Path.Combine(VersionInfo.VersionPath, "PreloadCpp.dll");
 
         if (!Directory.Exists(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row")))
             Directory.CreateDirectory(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row"));
@@ -104,23 +105,29 @@ public class ModsCore
         
         PreLoadMods.ForEach(f =>
         {
-            File.Copy(f.File, Path.Combine(preLoadPath, Path.GetFileName(f.File)));
+            if (!FileCheck.IsFileLocked(Path.Combine(preLoadPath, Path.GetFileName(f.File))))
+            {
+                File.Copy(f.File, Path.Combine(preLoadPath, Path.GetFileName(f.File)));
+            }
         });
 
-        if (!FileCheck.IsFileLocked(body))
+        if (!FileCheck.IsFileLocked(body) &&
+            !FileCheck.IsFileLocked(fullPath))
         {
-            string file_path = body;
-            if (File.Exists(file_path))
+            using (PeFile peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+            using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
+            using (var memoryStream = new MemoryStream())
             {
-                using (PeFile peFile = new PeFile(File.Open(file_path, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
-                using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
-                using (var memoryStream = new MemoryStream())
+                stream.CopyTo(memoryStream);
+                peFile.AddImport("PreloadCpp.dll", "Load");
+                peFile.Flush();
+                try
                 {
-                    stream.CopyTo(memoryStream);
-                    peFile.AddImport("PreloadCpp.dll", "Load");
-                    peFile.Flush();
-                    var fullPath = Path.Combine(VersionInfo.VersionPath, "PreloadCpp.dll");
                     File.WriteAllBytes(fullPath, memoryStream.ToArray());
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"释放注入 dll 失败：{ex.Message}");
                 }
             }
         }

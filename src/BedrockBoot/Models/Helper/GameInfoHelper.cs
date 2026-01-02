@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -93,6 +94,8 @@ public class GameInfoHelper
         var files = Directory.GetFiles(gamePath, "*.exe");
         if (files.Length > 1)
             throw new FileNotFoundException("为什么你的目录会多出一个 exe 呢.jpg");
+        
+        Console.WriteLine($"目标实例本体文件：{files[0]}");
         
         return Path.GetFileName(files[0]);
     }

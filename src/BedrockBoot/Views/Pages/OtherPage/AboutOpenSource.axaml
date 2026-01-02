@@ -64,15 +64,6 @@
             
             <TextBlock FontSize="22"
                        FontWeight="Bold"
-                       Margin="5,20,5,8">fNBT</TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/mstefarov/fNbt)"></TextBlock>
-            <TextBlock Margin="5" xml:space="preserve"
-                       FontSize="9">Custom License
-(https://github.com/mstefarov/fNbt/blob/master/docs/LICENSE.txt)</TextBlock>
-            
-            
-            <TextBlock FontSize="22"
-                       FontWeight="Bold"
                        Margin="5,20,5,8">Windows.APICodePack</TextBlock>
             <TextBlock Margin="5" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1)"></TextBlock>
             <TextBlock Margin="5" xml:space="preserve"

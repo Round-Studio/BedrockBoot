@@ -76,6 +76,7 @@ public partial class MainWindow : OnePointWindow
                         IsCheckMD5 = true
                     }
                 };
+                await GlobalModel.BedrockCore.InitAsync();
                 Console.WriteLine("初始化核心完毕");
             }
             catch

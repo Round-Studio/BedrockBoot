@@ -73,7 +73,7 @@ public partial class TaskLaunchGameItem : UserControl
                 
                 _core.PreLoad(); // 启动 PreLoad
                 
-                MinecraftProcess = await GlobalModel.BedrockCore.StartGameAsync(new LaunchOptions()
+                MinecraftProcess = await GlobalModel.BedrockCore.LaunchGameAsync(new LaunchOptions()
                 {
                     GameFolder = VersionInfo.VersionPath,
                     GameType = VersionInfo.Info.VersionType,

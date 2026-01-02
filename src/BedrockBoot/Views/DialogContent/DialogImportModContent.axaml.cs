@@ -20,12 +20,19 @@ public partial class DialogImportModContent : UserControl
 
     private async void OpenChooseFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var topLevel = TopLevel.GetTopLevel(this); 
+        var topLevel = TopLevel.GetTopLevel(this);
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "请选择文件",
+            Title = "请选择 DLL 文件",
             AllowMultiple = false,
+            FileTypeFilter = new[] 
+            {
+                new FilePickerFileType("DLL 文件")
+                {
+                    Patterns = new[] { "*.dll" }
+                }
+            }
         });
 
         if (files != null && files.Count >= 1)

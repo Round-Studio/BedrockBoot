@@ -75,7 +75,8 @@
                                     Spacing="4">
                             <TextBlock>模组管理</TextBlock>
                             <onePointControls:LabelBox Text="Beta"
-                                                       VerticalAlignment="Center"></onePointControls:LabelBox>
+                                                       VerticalAlignment="Center"
+                                                       FontWeight="Normal"></onePointControls:LabelBox>
                         </StackPanel>
                     </TabItem.Header>
                 </TabItem>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using BedrockBoot.Base.Entry.Task;
 
-namespace BedrockBoot.Models.Task;
+namespace BedrockBoot.Models;
 
 public class TaskManager
 {

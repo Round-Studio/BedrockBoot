@@ -14,11 +14,13 @@ public partial class GameResourcePackItem : UserControl
     {
         InitializeComponent();
     }
-    public GameResourcePackItem(ResourcePackManifest maf):this()
+
+    public GameResourcePackItem(ResourcePackManifest maf, bool isImport = false) : this()
     {
         ResourcePackManifest = maf;
-        
+
         Update();
+        ControlBox.IsVisible = !isImport;
     }
 
     public void Update()

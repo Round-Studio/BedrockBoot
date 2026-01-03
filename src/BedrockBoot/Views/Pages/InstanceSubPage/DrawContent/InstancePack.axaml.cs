@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -8,6 +9,8 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control;
+using BedrockBoot.Views.DialogContent;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
@@ -41,7 +44,7 @@ public partial class InstancePack : UserControl
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "导入 Minecraft Bedrock 包",
-            AllowMultiple = false,
+            AllowMultiple = true,
             FileTypeFilter = new[]
             {
                 new FilePickerFileType("Minecraft 支持包")
@@ -53,13 +56,17 @@ public partial class InstancePack : UserControl
 
         if (files != null && files.Count >= 1)
         {
-            IStorageFile selectedFile = files[0];
-            string filePath = selectedFile.Path.LocalPath;
+            var selectedFiles = files.Select(f => f.Path.LocalPath).ToList();
 
-            if (File.Exists(filePath))
+            var body = new DialogImportResourcePackContent();
+            DialogHost.Show(new()
             {
-                // todo
-            }
+                Title = "导入包",
+                Content = body,
+                CloseButtonText = "导入",
+                PrimaryButtonText = "取消"
+            });
+            body.Import(selectedFiles);
         }
     }
 }

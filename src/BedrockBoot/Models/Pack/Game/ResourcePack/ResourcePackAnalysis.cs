@@ -33,11 +33,12 @@ public class ResourcePackAnalysis
     {
         ZipHelper.ExtractZipFile(FilePath, _tempPath);
         var num = Directory.GetDirectories(_tempPath).Length;
-        if (num == 2)
+        if (num == 2 &&
+            !File.Exists(Path.Combine(_tempPath, "manifest.json")))
         {
             return ResourcePackType.Addon; // 直接返回 Addon
         }
-         if (num > 2 &&
+        if (num > 2 &&
              !File.Exists(Path.Combine(_tempPath, "manifest.json")))
         {
             return ResourcePackType.Unknown;

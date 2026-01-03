@@ -128,7 +128,7 @@ public partial class DownloadAssetsPage : UserControl
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     NoneBox.IsVisible = true;
-                    Console.WriteLine($"搜索失败: {ex.Message}");
+                    Console.WriteLine($"搜索失败: {ex}");
                 });
             }
             finally

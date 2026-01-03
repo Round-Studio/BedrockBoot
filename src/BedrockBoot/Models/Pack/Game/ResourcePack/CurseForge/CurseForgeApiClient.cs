@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
@@ -11,20 +12,44 @@ namespace BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 
 public class CurseForgeApiClient
 {
-    private static readonly HttpClient _sharedHttpClient;
+    private static HttpClient _sharedHttpClient;
     private readonly string _apiKey;
+    private static readonly object _lock = new object();
 
     // 静态构造函数，只初始化一次 HttpClient
     static CurseForgeApiClient()
     {
-        _sharedHttpClient = new HttpClient
+        InitializeHttpClient();
+    }
+
+    private static void InitializeHttpClient()
+    {
+        var handler = new SocketsHttpHandler
         {
-            Timeout = TimeSpan.FromSeconds(30),
-            BaseAddress = new Uri("https://api.curseforge.com/"),
-            // 强制使用 HTTP/1.1 避免 HTTP/2 问题
-            DefaultRequestVersion = HttpVersion.Version11
+            // 配置SSL/TLS选项
+            SslOptions = new System.Net.Security.SslClientAuthenticationOptions
+            {
+                // 启用所有TLS版本，让服务器选择
+                EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 | 
+                                      System.Security.Authentication.SslProtocols.Tls13 | 
+                                      System.Security.Authentication.SslProtocols.Tls11 | 
+                                      System.Security.Authentication.SslProtocols.Tls
+            },
+            ConnectTimeout = TimeSpan.FromSeconds(30),
+            PooledConnectionLifetime = TimeSpan.FromMinutes(2), // 缩短连接生命周期
+            MaxConnectionsPerServer = 5, // 限制每个服务器的连接数
+            UseProxy = true,
+            AllowAutoRedirect = true,
+            MaxAutomaticRedirections = 3
         };
-        
+    
+        _sharedHttpClient = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
+            BaseAddress = new Uri("https://api.curseforge.com/"),
+            DefaultRequestVersion = HttpVersion.Version20
+        };
+    
         // 设置默认请求头
         _sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"BedrockBoot/{GlobalModel.BodyVersion}");
         _sharedHttpClient.DefaultRequestHeaders.Accept.Add(
@@ -36,6 +61,16 @@ public class CurseForgeApiClient
         _apiKey = apiKey;
     }
 
+    // 重新初始化HttpClient的方法，用于处理连接问题
+    private static void ReinitializeHttpClient()
+    {
+        lock (_lock)
+        {
+            _sharedHttpClient?.Dispose();
+            InitializeHttpClient();
+        }
+    }
+
     public async Task<CurseForgeResponse> SearchModsAsync(
         string searchFilter,
         int gameId = 78022, 
@@ -45,65 +80,95 @@ public class CurseForgeApiClient
         int? index = null,
         string modLoader = null)
     {
-        try
+        int retryCount = 0;
+        const int maxRetries = 3;
+
+        while (retryCount <= maxRetries)
         {
-            // 构建参数
-            var queryParams = new System.Text.StringBuilder();
-            queryParams.Append($"?gameId={gameId}");
-            
-            if (!string.IsNullOrEmpty(searchFilter))
-                queryParams.Append($"&searchFilter={Uri.EscapeDataString(searchFilter)}");
-                
-            queryParams.Append($"&pageSize={pageSize}");
-            
-            if (!string.IsNullOrEmpty(gameVersion))
-                queryParams.Append($"&gameVersion={Uri.EscapeDataString(gameVersion)}");
-                
-            if (classId.HasValue)
-                queryParams.Append($"&classId={classId.Value}");
-                
-            if (index.HasValue)
-                queryParams.Append($"&index={index.Value}");
-                
-            if (!string.IsNullOrEmpty(modLoader))
-                queryParams.Append($"&modLoader={Uri.EscapeDataString(modLoader)}");
-            
-            string url = $"v1/mods/search{queryParams}&sortOrder=desc";
-            
-            // 创建请求
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.Add("x-api-key", _apiKey);
-            
-            var response = await _sharedHttpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            
-            string json = await response.Content.ReadAsStringAsync();
-            
-            var options = new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true,
-                WriteIndented = false,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            
-            var curseForgeResponse = JsonSerializer.Deserialize<CurseForgeResponse>(json, options);
-            return curseForgeResponse;
+                // 构建参数
+                var queryParams = new System.Text.StringBuilder();
+                queryParams.Append($"?gameId={gameId}");
+                
+                if (!string.IsNullOrEmpty(searchFilter))
+                    queryParams.Append($"&searchFilter={Uri.EscapeDataString(searchFilter)}");
+                    
+                queryParams.Append($"&pageSize={pageSize}");
+                
+                if (!string.IsNullOrEmpty(gameVersion))
+                    queryParams.Append($"&gameVersion={Uri.EscapeDataString(gameVersion)}");
+                    
+                if (classId.HasValue)
+                    queryParams.Append($"&classId={classId.Value}");
+                    
+                if (index.HasValue)
+                    queryParams.Append($"&index={index.Value}");
+                    
+                if (!string.IsNullOrEmpty(modLoader))
+                    queryParams.Append($"&modLoader={Uri.EscapeDataString(modLoader)}");
+                
+                string url = $"v1/mods/search{queryParams}&sortOrder=desc";
+                
+                // 创建请求
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("x-api-key", _apiKey);
+                
+                var response = await _sharedHttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                
+                string json = await response.Content.ReadAsStringAsync();
+                
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    WriteIndented = false,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+                
+                var curseForgeResponse = JsonSerializer.Deserialize<CurseForgeResponse>(json, options);
+                return curseForgeResponse;
+            }
+            catch (HttpRequestException ex) when (retryCount < maxRetries && 
+                (ex.Message.Contains("SSL connection could not be established") || 
+                 ex.Message.Contains("remote host closed") || 
+                 ex.Message.Contains("Connection was closed")))
+            {
+                retryCount++;
+                Console.WriteLine($"HTTP请求错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                
+                // 如果是SSL连接问题，重新初始化HttpClient
+                if (ex.Message.Contains("SSL connection could not be established"))
+                {
+                    ReinitializeHttpClient();
+                }
+                
+                // 等待一段时间后重试
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP请求错误: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                }
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON解析错误: {ex.Message}");
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"请求超时: {ex.Message}");
+                throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
+            }
         }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"HTTP请求错误: {ex.Message}");
-            throw;
-        }
-        catch (JsonException ex)
-        {
-            Console.WriteLine($"JSON解析错误: {ex.Message}");
-            throw;
-        }
-        catch (TaskCanceledException ex)
-        {
-            Console.WriteLine($"请求超时: {ex.Message}");
-            throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
-        }
+
+        // 如果重试后仍然失败，抛出异常
+        throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
     
     public async Task<CurseForgeResponse> GetFeaturedModsAsync(int gameId = 78022)
@@ -143,6 +208,10 @@ public class CurseForgeApiClient
         catch (HttpRequestException ex)
         {
             Console.WriteLine($"获取推荐内容错误: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+            }
             throw;
         }
         catch (JsonException ex)
@@ -166,54 +235,84 @@ public class CurseForgeApiClient
         int? index = null,
         string gameVersion = null)
     {
-        try
+        int retryCount = 0;
+        const int maxRetries = 3;
+
+        while (retryCount <= maxRetries)
         {
-            // 构建参数
-            var queryParams = new System.Text.StringBuilder();
-            queryParams.Append($"?pageSize={pageSize}");
-            
-            if (index.HasValue)
-                queryParams.Append($"&index={index.Value}");
-                
-            if (!string.IsNullOrEmpty(gameVersion))
-                queryParams.Append($"&gameVersion={Uri.EscapeDataString(gameVersion)}");
-            
-            string url = $"v1/mods/{modId}/files{queryParams}";
-            
-            // 创建请求
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.Add("x-api-key", _apiKey);
-            
-            var response = await _sharedHttpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            
-            string json = await response.Content.ReadAsStringAsync();
-            
-            var options = new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true,
-                WriteIndented = false,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            
-            var filesResponse = JsonSerializer.Deserialize<CurseForgeResponse.ModFilesResponse>(json, options);
-            return filesResponse;
+                // 构建参数
+                var queryParams = new System.Text.StringBuilder();
+                queryParams.Append($"?pageSize={pageSize}");
+                
+                if (index.HasValue)
+                    queryParams.Append($"&index={index.Value}");
+                    
+                if (!string.IsNullOrEmpty(gameVersion))
+                    queryParams.Append($"&gameVersion={Uri.EscapeDataString(gameVersion)}");
+                
+                string url = $"v1/mods/{modId}/files{queryParams}";
+                
+                // 创建请求
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("x-api-key", _apiKey);
+                
+                var response = await _sharedHttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                
+                string json = await response.Content.ReadAsStringAsync();
+                
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    WriteIndented = false,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+                
+                var filesResponse = JsonSerializer.Deserialize<CurseForgeResponse.ModFilesResponse>(json, options);
+                return filesResponse;
+            }
+            catch (HttpRequestException ex) when (retryCount < maxRetries && 
+                (ex.Message.Contains("SSL connection could not be established") || 
+                 ex.Message.Contains("remote host closed") || 
+                 ex.Message.Contains("Connection was closed")))
+            {
+                retryCount++;
+                Console.WriteLine($"获取文件列表错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                
+                // 如果是SSL连接问题，重新初始化HttpClient
+                if (ex.Message.Contains("SSL connection could not be established"))
+                {
+                    ReinitializeHttpClient();
+                }
+                
+                // 等待一段时间后重试
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"获取文件列表错误: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                }
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON解析错误: {ex.Message}");
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"请求超时: {ex.Message}");
+                throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
+            }
         }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"获取文件列表错误: {ex.Message}");
-            throw;
-        }
-        catch (JsonException ex)
-        {
-            Console.WriteLine($"JSON解析错误: {ex.Message}");
-            throw;
-        }
-        catch (TaskCanceledException ex)
-        {
-            Console.WriteLine($"请求超时: {ex.Message}");
-            throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
-        }
+
+        // 如果重试后仍然失败，抛出异常
+        throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 
     /// <summary>
@@ -223,44 +322,74 @@ public class CurseForgeApiClient
     /// <returns>文件详细信息</returns>
     public async Task<CurseForgeResponse.ModFile> GetFileDetailsAsync(int fileId)
     {
-        try
+        int retryCount = 0;
+        const int maxRetries = 3;
+
+        while (retryCount <= maxRetries)
         {
-            string url = $"v1/mods/files/{fileId}";
-            
-            // 创建请求
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.Add("x-api-key", _apiKey);
-            
-            var response = await _sharedHttpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            
-            string json = await response.Content.ReadAsStringAsync();
-            
-            var options = new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true,
-                WriteIndented = false,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            
-            var fileResponse = JsonSerializer.Deserialize<CurseForgeResponse.SingleFileResponse>(json, options);
-            return fileResponse?.Data;
+                string url = $"v1/mods/files/{fileId}";
+                
+                // 创建请求
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("x-api-key", _apiKey);
+                
+                var response = await _sharedHttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                
+                string json = await response.Content.ReadAsStringAsync();
+                
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    WriteIndented = false,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+                
+                var fileResponse = JsonSerializer.Deserialize<CurseForgeResponse.SingleFileResponse>(json, options);
+                return fileResponse?.Data;
+            }
+            catch (HttpRequestException ex) when (retryCount < maxRetries && 
+                (ex.Message.Contains("SSL connection could not be established") || 
+                 ex.Message.Contains("remote host closed") || 
+                 ex.Message.Contains("Connection was closed")))
+            {
+                retryCount++;
+                Console.WriteLine($"获取文件详情错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                
+                // 如果是SSL连接问题，重新初始化HttpClient
+                if (ex.Message.Contains("SSL connection could not be established"))
+                {
+                    ReinitializeHttpClient();
+                }
+                
+                // 等待一段时间后重试
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"获取文件详情错误: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                }
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON解析错误: {ex.Message}");
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"请求超时: {ex.Message}");
+                throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
+            }
         }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"获取文件详情错误: {ex.Message}");
-            throw;
-        }
-        catch (JsonException ex)
-        {
-            Console.WriteLine($"JSON解析错误: {ex.Message}");
-            throw;
-        }
-        catch (TaskCanceledException ex)
-        {
-            Console.WriteLine($"请求超时: {ex.Message}");
-            throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
-        }
+
+        // 如果重试后仍然失败，抛出异常
+        throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 
     /// <summary>
@@ -270,53 +399,83 @@ public class CurseForgeApiClient
     /// <returns>文件详细信息列表</returns>
     public async Task<List<CurseForgeResponse.ModFile>> GetMultipleFilesAsync(int[] fileIds)
     {
-        try
+        int retryCount = 0;
+        const int maxRetries = 3;
+
+        while (retryCount <= maxRetries)
         {
-            // 构建请求体
-            var requestBody = new
+            try
             {
-                fileIds = fileIds
-            };
-            
-            var jsonBody = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
-            
-            // 创建请求
-            using var request = new HttpRequestMessage(HttpMethod.Post, "v1/mods/files")
+                // 构建请求体
+                var requestBody = new
+                {
+                    fileIds = fileIds
+                };
+                
+                var jsonBody = JsonSerializer.Serialize(requestBody);
+                var content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
+                
+                // 创建请求
+                using var request = new HttpRequestMessage(HttpMethod.Post, "v1/mods/files")
+                {
+                    Content = content
+                };
+                request.Headers.Add("x-api-key", _apiKey);
+                
+                var response = await _sharedHttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                
+                string json = await response.Content.ReadAsStringAsync();
+                
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    WriteIndented = false,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+                
+                var filesResponse = JsonSerializer.Deserialize<CurseForgeResponse.ModFilesResponse>(json, options);
+                return filesResponse?.Data ?? new List<CurseForgeResponse.ModFile>();
+            }
+            catch (HttpRequestException ex) when (retryCount < maxRetries && 
+                (ex.Message.Contains("SSL connection could not be established") || 
+                 ex.Message.Contains("remote host closed") || 
+                 ex.Message.Contains("Connection was closed")))
             {
-                Content = content
-            };
-            request.Headers.Add("x-api-key", _apiKey);
-            
-            var response = await _sharedHttpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            
-            string json = await response.Content.ReadAsStringAsync();
-            
-            var options = new JsonSerializerOptions
+                retryCount++;
+                Console.WriteLine($"获取多个文件错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                
+                // 如果是SSL连接问题，重新初始化HttpClient
+                if (ex.Message.Contains("SSL connection could not be established"))
+                {
+                    ReinitializeHttpClient();
+                }
+                
+                // 等待一段时间后重试
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+            }
+            catch (HttpRequestException ex)
             {
-                PropertyNameCaseInsensitive = true,
-                WriteIndented = false,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            
-            var filesResponse = JsonSerializer.Deserialize<CurseForgeResponse.ModFilesResponse>(json, options);
-            return filesResponse?.Data ?? new List<CurseForgeResponse.ModFile>();
+                Console.WriteLine($"获取多个文件错误: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                }
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON解析错误: {ex.Message}");
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"请求超时: {ex.Message}");
+                throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
+            }
         }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"获取多个文件错误: {ex.Message}");
-            throw;
-        }
-        catch (JsonException ex)
-        {
-            Console.WriteLine($"JSON解析错误: {ex.Message}");
-            throw;
-        }
-        catch (TaskCanceledException ex)
-        {
-            Console.WriteLine($"请求超时: {ex.Message}");
-            throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
-        }
+
+        // 如果重试后仍然失败，抛出异常
+        throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 }

@@ -10,6 +10,28 @@
                                   Margin="5,0,5,10"
                                   Glyph="&#xE734;"
                                   Description="信息"
+                                  IsShowActionIcon="False"
                                   Header="Name">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="8">
+            <Button Classes="NoBorder"
+                    Name="SaveBtn"
+                    Click="SaveBtn_OnClick"
+                    Padding="10">
+                <onePointControls:FontIcon Glyph="&#xE74E;"
+                                           FontSize="14"></onePointControls:FontIcon>
+            </Button>
+            <Button Classes="NoBorder"
+                    Padding="12,8"
+                    IsEnabled="False"
+                    Background="{DynamicResource AccentBackgroundBrush}">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <onePointControls:FontIcon Glyph="&#xE896;"
+                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                    <TextBlock>下载</TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
     </onePointControls:SettingCard>
 </UserControl>

@@ -2,6 +2,7 @@
 using System.Windows.Forms.VisualStyles;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Manifest;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
@@ -19,4 +20,5 @@ public class GlobalModel
     public static FunctionOptionEntry FunctionOption { get; set; }
     public static string BodyVersion => Assembly.GetExecutingAssembly().GetName().Version!.ToString();
     public static ProtocolService ProtocolService { get; set; } = new  ProtocolService();
+    public static ImageLoader ImageLoader { get; set; } = new();
 }

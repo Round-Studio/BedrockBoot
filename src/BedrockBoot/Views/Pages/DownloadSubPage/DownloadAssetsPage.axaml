@@ -2,7 +2,61 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DownloadSubPage.DownloadAssetsPage">
-    Welcome to Avalonia!
+    <Grid RowDefinitions="Auto,*">
+        <items:BorderCard Margin="20,15,20,15">
+            <Grid>
+                <DockPanel LastChildFill="True">
+                    <onePointControls:FontIcon Glyph="&#xE721;"
+                                               Foreground="{DynamicResource PrimaryForegroundBrush}"
+                                               FontSize="18"
+                                               Margin="5,0,10,0"
+                                               VerticalAlignment="Center"/>
+                    
+                    <Button DockPanel.Dock="Right"
+                            Classes="NoBorder"
+                            Margin="5,0"
+                            Padding="12,8"
+                            Name="SearchBtn"
+                            Click="SearchBtn_OnClick">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8">
+                            <onePointControls:FontIcon Glyph="&#xE71E;"
+                                                       FontSize="16"
+                                                       VerticalAlignment="Center"></onePointControls:FontIcon>
+                            <TextBlock>搜索</TextBlock>
+                        </StackPanel>
+                    </Button>
+                
+                    <TextBox Margin="5,0"
+                             VerticalAlignment="Center"
+                             Height="32"
+                             Name="TextBox"
+                             HorizontalAlignment="Stretch"></TextBox>
+                </DockPanel>
+            </Grid>
+        </items:BorderCard>
+        
+        <notice:LoadCard Grid.Row="1" HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         BigTitle="收集电子中..."
+                         Message="全体电子，列队！"
+                         Name="LoadingRing"></notice:LoadCard>
+            
+        <notice:InfoCard Grid.Row="1" VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Glyph="&#xE822;"
+                         BigTitle="请...诶？"
+                         Message="您所输入的关键词无效哦"
+                         Name="NoneBox"> </notice:InfoCard>
+            
+        <ScrollViewer Grid.Row="1" Name="ScrollViewer">
+            <StackPanel Name="ItemsPanel"
+                        Margin="15,0,15,15"></StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace BedrockBoot.Base.Entry.Game.Pack.Mods.CurseForge;
+namespace BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 
 public class CurseForgeResponse
 {
@@ -205,8 +205,7 @@ public class CurseForgeResponse
 
         [JsonPropertyName("isFeatured")] public bool IsFeatured { get; set; }
 
-        [JsonPropertyName("primaryCategoryId")]
-        public int PrimaryCategoryId { get; set; }
+        [JsonPropertyName("primaryCategoryId")] public int PrimaryCategoryId { get; set; }
 
         [JsonPropertyName("categories")] public List<Category> Categories { get; set; }
 

@@ -17,7 +17,7 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.DownloadSubPage;
 
-public partial class DownloadGamePage : UserControl
+public partial class DownloadGamePage : UserControl, IDisposable
 {
     private CancellationTokenSource _currentLoadingCancellation = new();
     private MinecraftGameTypeVersion _type = MinecraftGameTypeVersion.Release;
@@ -28,6 +28,8 @@ public partial class DownloadGamePage : UserControl
         InitializeComponent();
         UpdateUI(MinecraftGameTypeVersion.Release);
         IsEdit = true;
+
+        this.Unloaded += (sender, args) => Dispose();
     }
 
     public async void UpdateUI(MinecraftGameTypeVersion type, string key = "")
@@ -275,5 +277,6 @@ public partial class DownloadGamePage : UserControl
     {
         _currentLoadingCancellation?.Cancel();
         _currentLoadingCancellation?.Dispose();
+        ItemsPanel.Children.Clear();
     }
 }

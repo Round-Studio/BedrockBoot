@@ -44,12 +44,10 @@ public class CurseForgeApiClient
             MaxAutomaticRedirections = 3
         };
         
-        var url = SourceList.CurseForgeSource.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex].Value
-            .Replace("{url}", "https://api.curseforge.com/");
         _sharedHttpClient = new HttpClient(handler)
         {
             Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
-            BaseAddress = new Uri(url),
+            BaseAddress = new Uri("https://api.curseforge.com/"),
             DefaultRequestVersion = HttpVersion.Version20
         };
     

@@ -95,22 +95,6 @@ public class CurseForgeResponse
         [JsonPropertyName("relationType")] public int RelationType { get; set; }
     }
 
-    public class SortableGameVersion
-    {
-        [JsonPropertyName("gameVersionName")] public string GameVersionName { get; set; }
-
-        [JsonPropertyName("gameVersionPadded")]
-        public string GameVersionPadded { get; set; }
-
-        [JsonPropertyName("gameVersion")] public string GameVersion { get; set; }
-
-        [JsonPropertyName("gameVersionReleaseDate")]
-        public DateTime GameVersionReleaseDate { get; set; }
-
-        [JsonPropertyName("gameVersionTypeId")]
-        public int GameVersionTypeId { get; set; }
-    }
-
     public class Module
     {
         [JsonPropertyName("name")] public string Name { get; set; }
@@ -205,7 +189,8 @@ public class CurseForgeResponse
 
         [JsonPropertyName("isFeatured")] public bool IsFeatured { get; set; }
 
-        [JsonPropertyName("primaryCategoryId")] public int PrimaryCategoryId { get; set; }
+        [JsonPropertyName("primaryCategoryId")]
+        public int PrimaryCategoryId { get; set; }
 
         [JsonPropertyName("categories")] public List<Category> Categories { get; set; }
 
@@ -256,6 +241,101 @@ public class CurseForgeResponse
         [JsonPropertyName("resultCount")] public int ResultCount { get; set; }
 
         [JsonPropertyName("totalCount")] public int TotalCount { get; set; }
+    }
+
+    // 在 CurseForgeResponse 类所在的文件中添加这些类
+    public class FileHash
+    {
+        [JsonPropertyName("value")] public string Value { get; set; }
+
+        [JsonPropertyName("algo")] public int Algo { get; set; }
+    }
+
+    public class SortableGameVersion
+    {
+        [JsonPropertyName("gameVersionName")] public string GameVersionName { get; set; }
+
+        [JsonPropertyName("gameVersionPadded")]
+        public string GameVersionPadded { get; set; }
+
+        [JsonPropertyName("gameVersion")] public string GameVersion { get; set; }
+
+        [JsonPropertyName("gameVersionReleaseDate")]
+        public DateTime GameVersionReleaseDate { get; set; }
+
+        [JsonPropertyName("gameVersionTypeId")]
+        public int GameVersionTypeId { get; set; }
+    }
+    public class SingleFileResponse
+    {
+        [JsonPropertyName("data")]
+        public ModFile Data { get; set; }
+    }
+    public class FileDependency
+    {
+        [JsonPropertyName("modId")] public int ModId { get; set; }
+
+        [JsonPropertyName("relationType")] public int RelationType { get; set; }
+    }
+
+    public class FileModule
+    {
+        [JsonPropertyName("name")] public string Name { get; set; }
+
+        [JsonPropertyName("fingerprint")] public long Fingerprint { get; set; }
+    }
+
+    public class ModFile
+    {
+        [JsonPropertyName("id")] public int Id { get; set; }
+
+        [JsonPropertyName("gameId")] public int GameId { get; set; }
+
+        [JsonPropertyName("modId")] public int ModId { get; set; }
+
+        [JsonPropertyName("isAvailable")] public bool IsAvailable { get; set; }
+
+        [JsonPropertyName("displayName")] public string DisplayName { get; set; }
+
+        [JsonPropertyName("fileName")] public string FileName { get; set; }
+
+        [JsonPropertyName("releaseType")] public int ReleaseType { get; set; }
+
+        [JsonPropertyName("fileStatus")] public int FileStatus { get; set; }
+
+        [JsonPropertyName("hashes")] public List<FileHash> Hashes { get; set; } = new List<FileHash>();
+
+        [JsonPropertyName("fileDate")] public DateTime FileDate { get; set; }
+
+        [JsonPropertyName("fileLength")] public long FileLength { get; set; }
+
+        [JsonPropertyName("downloadCount")] public int DownloadCount { get; set; }
+
+        [JsonPropertyName("downloadUrl")] public string DownloadUrl { get; set; }
+
+        [JsonPropertyName("gameVersions")] public List<string> GameVersions { get; set; } = new List<string>();
+
+        [JsonPropertyName("sortableGameVersions")]
+        public List<SortableGameVersion> SortableGameVersions { get; set; } = new List<SortableGameVersion>();
+
+        [JsonPropertyName("dependencies")]
+        public List<FileDependency> Dependencies { get; set; } = new List<FileDependency>();
+
+        [JsonPropertyName("alternateFileId")] public int AlternateFileId { get; set; }
+
+        [JsonPropertyName("isServerPack")] public bool IsServerPack { get; set; }
+
+        [JsonPropertyName("fileFingerprint")] public long FileFingerprint { get; set; }
+
+        [JsonPropertyName("modules")] public List<FileModule> Modules { get; set; } = new List<FileModule>();
+    }
+
+    // 文件列表响应类
+    public class ModFilesResponse
+    {
+        [JsonPropertyName("data")] public List<ModFile> Data { get; set; } = new List<ModFile>();
+
+        [JsonPropertyName("pagination")] public PaginationEntry Pagination { get; set; } = new PaginationEntry();
     }
 
     [JsonPropertyName("data")] public List<ModData> Data { get; set; }

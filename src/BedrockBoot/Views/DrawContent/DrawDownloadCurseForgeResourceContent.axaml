@@ -1,0 +1,86 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DrawContent.DrawDownloadCurseForgeResourceContent">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"
+                              MaxWidth="300"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <items:BorderCard Margin="20,10,5,20">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <Border CornerRadius="6"
+                                Margin="0,0,0,0"
+                                Name="IconBox"
+                                Width="80"
+                                Height="80">
+                            <Grid Name="NullImage">
+                                <onePointControls:FontIcon Glyph="&#xE91B;"
+                                                           FontSize="64"
+                                                           VerticalAlignment="Center"
+                                                           HorizontalAlignment="Center"></onePointControls:FontIcon>
+                            </Grid>
+                        </Border>
+                            
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="20"
+                                   Margin="0,8,0,12"
+                                   Name="PackName"
+                                   TextWrapping="WrapWithOverflow"
+                                   TextAlignment="Center"
+                                   FontWeight="Bold">PackName</TextBlock>
+                        
+                        <Grid ColumnDefinitions="*,Auto,*"
+                              HorizontalAlignment="Center">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Name="RankingBox">0</TextBlock>
+                                <TextBlock Foreground="Gray">排行</TextBlock>
+                            </StackPanel>
+                            
+                            <Border Grid.Column="1"
+                                    Width="1"
+                                    VerticalAlignment="Stretch"
+                                    Background="{DynamicResource PrimaryDisabledForegroundBrush}"
+                                    Margin="12,5,12,5"></Border>
+                            
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Name="DownCountBox">>0</TextBlock>
+                                <TextBlock Foreground="Gray">下载</TextBlock>
+                            </StackPanel>
+                        </Grid>
+                            
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="11"
+                                   Margin="0,18,0,0"
+                                   Foreground="Gray"
+                                   TextWrapping="WrapWithOverflow"
+                                   TextAlignment="Center"
+                                   Name="PackDescription">PackDescription</TextBlock>
+                    </StackPanel>
+                </Grid>
+            </items:BorderCard>
+        </Grid>
+        
+        <Grid Grid.Column="1"
+              RowDefinitions="Auto,*">
+            <TabControl Grid.Row="0"
+                        Name="InstanceTabControl"
+                        SelectedIndex="0"
+                        Margin="5,0,10,0">
+                <TabItem Header="构建文件" Tag="Download"></TabItem>
+            </TabControl>
+        
+            <navigation:NavigationFrame Grid.Row="1"
+                                        Margin="5,5,10,0"
+                                        Name="InstanceFrame"/>
+        </Grid>
+    </Grid>
+</UserControl>

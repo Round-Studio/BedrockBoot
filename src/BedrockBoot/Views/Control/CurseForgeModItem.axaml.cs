@@ -2,10 +2,12 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DrawContent;
 
 namespace BedrockBoot.Views.Control;
 
@@ -37,5 +39,10 @@ public partial class CurseForgeModItem : UserControl
                 Card.ImageIcon = image;
             });
         });
+    }
+
+    private void Card_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(ModData),$"下载资源 {ModData.Name}");
     }
 }

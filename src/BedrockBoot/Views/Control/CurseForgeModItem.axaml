@@ -7,6 +7,7 @@
              x:Class="BedrockBoot.Views.Control.CurseForgeModItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
+                                  Click="Card_OnClick"
                                   Margin="5,0,5,10"
                                   Glyph="&#xE91B;"
                                   Description="相关包信息">

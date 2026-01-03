@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
+using BedrockBoot.Views.Control;
 
 namespace BedrockBoot.Views.Pages.DownloadSubPage.CurseForge;
 
@@ -28,25 +29,28 @@ public partial class CurseForgePackBuildFile : UserControl
     private void Update()
     {
         Console.WriteLine($"查看模组详细信息：{ModData.Id}");
+        NoneBox.IsVisible = false;
 
         Task.Run(() =>
         {
-            var files = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
-                .GetModFilesAsync(ModData.Id,
-                    pageSize: 50).Result;
-
-            Dispatcher.UIThread.Invoke(() =>
+            try
             {
-                files.Data.ForEach(f =>
-                {
-                    List.Children.Add(new TextBlock()
-                    {
-                        Text = f.DisplayName
-                    });
-                });
+                var files = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
+                    .GetModFilesAsync(ModData.Id,
+                        pageSize: 50).Result;
 
-                LoadingRing.IsVisible = false;
-            });
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    files.Data.ForEach(f => { List.Children.Add(new CurseForgeModBuildFileItem(f)); });
+
+                    LoadingRing.IsVisible = false;
+                });
+            }
+            catch
+            {
+                Dispatcher.UIThread.Invoke(() => LoadingRing.IsVisible = false);
+                Dispatcher.UIThread.Invoke(() => NoneBox.IsVisible = true);
+            }
         });
     }
 }

@@ -33,11 +33,12 @@ public partial class CurseForgeModItem : UserControl
         Task.Run(() =>
         {
             var image = GlobalModel.ImageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl).Result;
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                Card.IsFontIcon = false;
-                Card.ImageIcon = image;
-            });
+            if (image != null)
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    Card.IsFontIcon = false;
+                    Card.ImageIcon = image;
+                });
         });
     }
 

@@ -7,14 +7,21 @@
              x:Class="BedrockBoot.Views.Pages.DownloadSubPage.CurseForge.CurseForgePackBuildFile">
     <Grid>
         <ScrollViewer>
-            <StackPanel Margin="15"
+            <StackPanel Margin="15,0,15,15"
                         Name="List"></StackPanel>
         </ScrollViewer>
         
-        <notice:LoadCard Grid.Row="1" HorizontalAlignment="Center"
+        <notice:LoadCard HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          BigTitle="收集电子中..."
                          Message="全体电子，列队！"
                          Name="LoadingRing"></notice:LoadCard>
+            
+        <notice:InfoCard VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Glyph="&#xE822;"
+                         BigTitle="出现了错误"
+                         Message="这有可能是您的网络波动导致的请求错误"
+                         Name="NoneBox"></notice:InfoCard>
     </Grid>
 </UserControl>

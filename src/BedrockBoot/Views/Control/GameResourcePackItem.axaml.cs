@@ -23,8 +23,9 @@ public partial class GameResourcePackItem : UserControl
 
     public void Update()
     {
-        Card.ImageIcon = new Bitmap(Path.Combine(ResourcePackManifest.PackRootPath, "pack_icon.png"));
+        Card.ImageIcon = new Bitmap(ResourcePackManifest.PackIcon!);
         PackName.MinecraftText = ResourcePackManifest.Header.Name;
         PackDescription.MinecraftText = ResourcePackManifest.Header.Description;
+        PackType.Text = ResourcePackManifest.PackType.ToString();
     }
 }

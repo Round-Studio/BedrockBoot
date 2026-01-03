@@ -49,6 +49,7 @@ public class ResourcePackManager
         {
             var conf = new ConfigEntity<ResourcePackManifest>(file).Data;
             conf.PackRootPath = Path.GetDirectoryName(file);
+            conf.PackType = ResourcePackAnalysis.GetPackType(conf);
             result.Add(conf);
         });
 

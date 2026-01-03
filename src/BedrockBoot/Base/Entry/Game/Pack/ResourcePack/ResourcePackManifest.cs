@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Text.Json.Serialization;
+using BedrockBoot.Base.Enum;
 
 namespace BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 
@@ -7,6 +9,9 @@ public class ResourcePackManifest
 {
     [JsonIgnore]
     public string? PackRootPath { get; set; }
+    [JsonIgnore] public string? PackIcon => Path.Combine(PackRootPath!, "pack_icon.png");
+    [JsonIgnore]
+    public ResourcePackType PackType { get; set; } = ResourcePackType.Unknown;
     
     [JsonPropertyName("format_version")]
     public int FormatVersion { get; set; }
@@ -68,6 +73,6 @@ public class ResourcePackManifest
         public string ModuleName { get; set; }
         
         [JsonPropertyName("version")]
-        public string Version { get; set; }
+        public object Version { get; set; }
     }
 }

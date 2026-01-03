@@ -116,11 +116,10 @@ public partial class DownloadAssetsPage : UserControl
                             new DownloadAssetsResultPage(items.Data),
                             _totalPages,
                             _currentPage);
-                        
-                        NoneBox.IsVisible = false;
-                        
-                        // 更新分页控件状态
-                        UpdatePaginationState();
+                    }
+                    else
+                    {
+                        NoneBox.IsVisible = true;
                     }
                 });
             }
@@ -141,19 +140,6 @@ public partial class DownloadAssetsPage : UserControl
                 });
             }
         });
-    }
-
-    /// <summary>
-    /// 更新分页控件状态
-    /// </summary>
-    private void UpdatePaginationState()
-    {
-        // 如果有分页控件，可以在这里更新状态
-        // 例如：禁用/启用上一页/下一页按钮
-        
-        // 这里可以添加代码来更新UI状态，比如：
-        // PreviousButton.IsEnabled = _currentPage > 1;
-        // NextButton.IsEnabled = _currentPage < _totalPages;
     }
 
     /// <summary>

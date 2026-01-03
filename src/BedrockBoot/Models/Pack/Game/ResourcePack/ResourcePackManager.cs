@@ -14,7 +14,7 @@ namespace BedrockBoot.Models.Pack.Game.ResourcePack;
 public class ResourcePackManager
 {
     public VersionConfig VersionConfig { get; set; }
-    public List<ResourcePackManifest> Packs => GetAllPack();
+    public List<ResourcePackManifest> Packs { get; private set; }
     public ResourcePackManager(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
@@ -54,6 +54,8 @@ public class ResourcePackManager
             result.Add(conf);
         });
 
+        Packs = result;
+
         return result;
     }
 
@@ -89,25 +91,31 @@ public class ResourcePackManager
     
     public void AddRangePacks(List<string> files)
     {
+        var ids = Packs.Select(p=>p.Header.Uuid).ToList();
         files.ForEach(file =>
         {
             var confs = new ResourcePackAnalysis(file).GetPackManifests();
             confs.ForEach(pack =>
             {
-                if (pack.PackType == ResourcePackType.Resource)
+                if (!ids.Contains(pack.Header.Uuid))
                 {
-                    GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
+                    if (pack.PackType == ResourcePackType.Resource)
                     {
-                        CopyDirectory(pack.PackRootPath, Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
-                    });
-                }
+                        GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
+                        {
+                            if(folder.Contains("Shared"))
+                                CopyDirectory(pack.PackRootPath, Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
+                        });
+                    }
 
-                if (pack.PackType == ResourcePackType.Behavior)
-                {
-                    GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
+                    if (pack.PackType == ResourcePackType.Behavior)
                     {
-                        CopyDirectory(pack.PackRootPath, Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
-                    });
+                        GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
+                        {
+                            if(folder.Contains("Shared"))
+                                CopyDirectory(pack.PackRootPath, Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
+                        });
+                    }
                 }
             });
         });
@@ -133,16 +141,21 @@ public class ResourcePackManager
                     "Users"
                 );
 
-                if (Directory.Exists(dir))
+                if(!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                
+                var users = Directory.GetDirectories(dir).ToList();
+                users.ForEach(user =>
                 {
-                    var users = Directory.GetDirectories(dir).ToList();
-                    users.ForEach(user =>
+                    var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
+                    if (Path.Exists(path))
+                        result.Add(Path.GetFileName(user), path);
+                    else
                     {
-                        var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
-                        if (Path.Exists(path))
-                            result.Add(Path.GetFileName(user), path);
-                    });
-                }
+                        Directory.CreateDirectory(path);
+                        result.Add(Path.GetFileName(user), path);
+                    }
+                });
             }
             else
             {
@@ -151,17 +164,22 @@ public class ResourcePackManager
                     @"Minecraft Bedrock Preview",
                     "Users"
                 );
-
-                if (Directory.Exists(dir))
+                
+                if(!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                
+                var users = Directory.GetDirectories(dir).ToList();
+                users.ForEach(user =>
                 {
-                    var users = Directory.GetDirectories(dir).ToList();
-                    users.ForEach(user =>
+                    var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
+                    if (Path.Exists(path))
+                        result.Add(Path.GetFileName(user), path);
+                    else
                     {
-                        var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
-                        if (Path.Exists(path))
-                            result.Add(Path.GetFileName(user), path);
-                    });
-                }
+                        Directory.CreateDirectory(path);
+                        result.Add(Path.GetFileName(user), path);
+                    }
+                });
             }
         }
 
@@ -186,17 +204,22 @@ public class ResourcePackManager
                     @"Minecraft Bedrock",
                     "Users"
                 );
-
-                if (Directory.Exists(dir))
+                
+                if(!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                
+                var users = Directory.GetDirectories(dir).ToList();
+                users.ForEach(user =>
                 {
-                    var users = Directory.GetDirectories(dir).ToList();
-                    users.ForEach(user =>
+                    var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
+                    if (Path.Exists(path))
+                        result.Add(Path.GetFileName(user), path);
+                    else
                     {
-                        var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
-                        if (Path.Exists(path))
-                            result.Add(Path.GetFileName(user), path);
-                    });
-                }
+                        Directory.CreateDirectory(path);
+                        result.Add(Path.GetFileName(user), path);
+                    }
+                });
             }
             else
             {
@@ -205,17 +228,22 @@ public class ResourcePackManager
                     @"Minecraft Bedrock Preview",
                     "Users"
                 );
-
-                if (Directory.Exists(dir))
+                
+                if(!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                
+                var users = Directory.GetDirectories(dir).ToList();
+                users.ForEach(user =>
                 {
-                    var users = Directory.GetDirectories(dir).ToList();
-                    users.ForEach(user =>
+                    var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
+                    if (Path.Exists(path))
+                        result.Add(Path.GetFileName(user), path);
+                    else
                     {
-                        var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
-                        if (Path.Exists(path))
-                            result.Add(Path.GetFileName(user), path);
-                    });
-                }
+                        Directory.CreateDirectory(path);
+                        result.Add(Path.GetFileName(user), path);
+                    }
+                });
             }
         }
 

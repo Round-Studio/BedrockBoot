@@ -32,6 +32,7 @@
                     Spacing="8">
             <Button Width="32" Height="32"
                     Classes="NoBorder"
+                    Click="DeleteBtn_OnClick"
                     Name="DeleteBtn">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
                                            FontSize="16"

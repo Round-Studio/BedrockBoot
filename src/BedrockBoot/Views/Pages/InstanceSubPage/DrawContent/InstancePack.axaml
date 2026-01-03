@@ -21,6 +21,7 @@
                                                    Margin="5,5,12,5"></onePointControls:FontIcon>
                         <TextBox Name="SearchBox"
                                  HorizontalAlignment="Stretch"
+                                 TextChanged="SearchBox_OnTextChanged"
                                  DockPanel.Dock="Right"></TextBox>
                     </DockPanel>
                 </Grid>

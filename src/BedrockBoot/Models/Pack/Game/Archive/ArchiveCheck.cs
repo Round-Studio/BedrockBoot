@@ -83,16 +83,22 @@ public class ArchiveCheck
                     @"Minecraft Bedrock",
                     "Users"
                 );
-
-                if (Directory.Exists(dir))
+                
+                if(!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                
+                var users = Directory.GetDirectories(dir).ToList();
+                users.ForEach(user =>
                 {
-                    var users = Directory.GetDirectories(dir).ToList();
-                    users.ForEach(user =>
-                    {
-                        var path = Path.Combine(user, "games", "com.mojang", "minecraftWorlds");
+                    var path = Path.Combine(user, "games", "com.mojang", "minecraftWorlds");
+                    if (Path.Exists(path))
                         result.Add(Path.GetFileName(user), path);
-                    });
-                }
+                    else
+                    {
+                        Directory.CreateDirectory(path);
+                        result.Add(Path.GetFileName(user), path);
+                    }
+                });
             }
             else
             {
@@ -101,16 +107,22 @@ public class ArchiveCheck
                     @"Minecraft Bedrock Preview",
                     "Users"
                 );
-
-                if (Directory.Exists(dir))
+                
+                if(!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                
+                var users = Directory.GetDirectories(dir).ToList();
+                users.ForEach(user =>
                 {
-                    var users = Directory.GetDirectories(dir).ToList();
-                    users.ForEach(user =>
-                    {
-                        var path = Path.Combine(user, "games", "com.mojang", "minecraftWorlds");
+                    var path = Path.Combine(user, "games", "com.mojang", "minecraftWorlds");
+                    if (Path.Exists(path))
                         result.Add(Path.GetFileName(user), path);
-                    });
-                }
+                    else
+                    {
+                        Directory.CreateDirectory(path);
+                        result.Add(Path.GetFileName(user), path);
+                    }
+                });
             }
         }
 

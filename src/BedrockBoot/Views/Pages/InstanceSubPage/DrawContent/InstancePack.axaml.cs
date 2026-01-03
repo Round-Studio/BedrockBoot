@@ -35,14 +35,23 @@ public partial class InstancePack : UserControl
 
     public void Update()
     {
+        ResultBox.Children.Clear();
         ResourcePackManager = new ResourcePackManager(VersionInfo);
-        ResourcePackManager.GetAllPack().ForEach(x =>
+        ResourcePackManager.GetAllPack();
+        var pack = ResourcePackManager.Packs;
+
+        NullBox.IsVisible = pack.Count == 0;
+        
+        pack.ForEach(x =>
         {
             if (x != null &&
                 x.Header != null)
             {
                 Console.WriteLine($"找到包：{x.Header.Name}");
-                ResultBox.Children.Add(new GameResourcePackItem(x));
+                ResultBox.Children.Add(new GameResourcePackItem(x)
+                {
+                    RefreshCallBack = Update
+                });
             }
         });
     }
@@ -93,5 +102,25 @@ public partial class InstancePack : UserControl
             });
             body.Import(selectedFiles);
         }
+    }
+
+    private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        var pack = ResourcePackManager.Packs.Where(p => p.Header.Name.Contains(SearchBox.Text)).ToList();
+        NullBox.IsVisible = pack.Count == 0;
+        ResultBox.Children.Clear();
+        
+        pack.ForEach(x =>
+        {
+            if (x != null &&
+                x.Header != null)
+            {
+                Console.WriteLine($"找到包：{x.Header.Name}");
+                ResultBox.Children.Add(new GameResourcePackItem(x)
+                {
+                    RefreshCallBack = Update
+                });
+            }
+        });
     }
 }

@@ -19,4 +19,10 @@ public class SourceList
         { "BedrockBoot 源 ①", "https://mcappx.52caecb8.er.aliyun-esa.net" },
         { "BMCBL 源", "https://mcappx.chlna6666.com" }
     };
+
+    public static Dictionary<string, string> CurseForgeSource { get; set; } = new Dictionary<string, string>()
+    {
+        { "CurseForge 官方源", "{url}" },
+        { "加速源 ①", "https://blog.zink.dpdns.org/advanced-proxy?url=\"{url}\"" }
+    };
 }

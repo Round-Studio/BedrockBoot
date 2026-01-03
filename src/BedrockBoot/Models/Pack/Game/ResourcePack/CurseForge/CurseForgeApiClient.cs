@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -42,11 +43,13 @@ public class CurseForgeApiClient
             AllowAutoRedirect = true,
             MaxAutomaticRedirections = 3
         };
-    
+        
+        var url = SourceList.CurseForgeSource.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex].Value
+            .Replace("{url}", "https://api.curseforge.com/");
         _sharedHttpClient = new HttpClient(handler)
         {
             Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
-            BaseAddress = new Uri("https://api.curseforge.com/"),
+            BaseAddress = new Uri(url),
             DefaultRequestVersion = HttpVersion.Version20
         };
     

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -37,8 +38,10 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
     {
         var download = new SingleThreadDownloader(1, 1024);
 
-        Console.WriteLine($"下载文件：{ModFile.DownloadUrl}");
-        await download.DownloadAsync(ModFile.DownloadUrl, savePath, new Progress<SingleThreadDownloader.DownloadProgress>((xprogress =>
+        var url = SourceList.CurseForgeSource.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex].Value
+            .Replace("{url}", ModFile.DownloadUrl);
+        Console.WriteLine($"下载文件：{url}");
+        await download.DownloadAsync(url, savePath, new Progress<SingleThreadDownloader.DownloadProgress>((xprogress =>
         {
             Dispatcher.UIThread.Invoke(() =>
             {

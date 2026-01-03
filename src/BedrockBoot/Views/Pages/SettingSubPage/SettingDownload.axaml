@@ -58,6 +58,15 @@
                           SelectionChanged="SourceBox_OnSelectionChanged"></ComboBox>
             </onePointControls:SettingCard>
             
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="CurseForge 源"
+                                          Description="BedrockBoot 使用的 CurseForge 源"
+                                          Glyph="&#xE8F1;">
+                <ComboBox Width="200"
+                          Name="CurseForgeSourceBox"
+                          SelectionChanged="CurseForgeSourceBox_OnSelectionChanged"></ComboBox>
+            </onePointControls:SettingCard>
+            
             <TextBlock Margin="5,0,5,10"
                        FontWeight="Bold"
                        FontSize="14">高级</TextBlock>

@@ -34,6 +34,11 @@ public partial class SettingDownload : UserControl
             Content = s.Key
         }));
         SourceBox.SelectedIndex = GlobalModel.Config.Data.VersionSourceIndex;
+        SourceList.CurseForgeSource.ToList().ForEach(s => CurseForgeSourceBox.Items.Add(new ComboBoxItem()
+        {
+            Content = s.Key
+        }));
+        CurseForgeSourceBox.SelectedIndex = GlobalModel.Config.Data.CurseForgeSourceIndex;
         IsEdit = true;
     }
 
@@ -68,6 +73,15 @@ public partial class SettingDownload : UserControl
         if (IsEdit)
         {
             GlobalModel.Config.Data.VersionSourceIndex = SourceBox.SelectedIndex;
+            GlobalModel.Config.Save();
+        }
+    }
+
+    private void CurseForgeSourceBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.CurseForgeSourceIndex = CurseForgeSourceBox.SelectedIndex;
             GlobalModel.Config.Save();
         }
     }

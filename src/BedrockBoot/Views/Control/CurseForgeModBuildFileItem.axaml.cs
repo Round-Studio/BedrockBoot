@@ -37,12 +37,12 @@ public partial class CurseForgeModBuildFileItem : UserControl
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "下载资源包",
-            SuggestedFileName = ModFile.DisplayName,
+            SuggestedFileName = ModFile.FileName,
             FileTypeChoices = new[]
             {
                 new FilePickerFileType("Minecraft Bedrock 资源文件")
                 {
-                    Patterns = new[] { Path.GetExtension( ModFile.DisplayName) }
+                    Patterns = new[] { Path.GetExtension( ModFile.FileName) }
                 }
             }
         });

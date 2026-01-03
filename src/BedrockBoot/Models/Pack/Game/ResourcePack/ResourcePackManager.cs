@@ -1,0 +1,166 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Documents;
+using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
+using BedrockLauncher.Core;
+using Round.SDK.Entity;
+
+namespace BedrockBoot.Models.Pack.Game.ResourcePack;
+
+public class ResourcePackManager
+{
+    public VersionConfig VersionConfig { get; set; }
+    public List<ResourcePackManifest> Packs => GetAllPack();
+    public ResourcePackManager(VersionConfig versionConfig)
+    {
+        VersionConfig = versionConfig;
+    }
+
+    public List<ResourcePackManifest> GetAllPack()
+    {
+        var files = new List<string>();
+        var result = new List<ResourcePackManifest>();
+        GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
+        {
+            var dirs = Directory.GetDirectories(folder).ToList();
+            dirs.ForEach(dir =>
+            {
+                var manifestFile = Path.Combine(dir, "manifest.json");
+                if(File.Exists(manifestFile))
+                    files.Add(manifestFile);
+            });
+        });
+        
+        GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
+        {
+            var dirs = Directory.GetDirectories(folder).ToList();
+            dirs.ForEach(dir =>
+            {
+                var manifestFile = Path.Combine(dir, "manifest.json");
+                if(File.Exists(manifestFile))
+                    files.Add(manifestFile);
+            });
+        });
+        
+        files.ForEach(file =>
+        {
+            var conf = new ConfigEntity<ResourcePackManifest>(file).Data;
+            conf.PackRootPath = Path.GetDirectoryName(file);
+            result.Add(conf);
+        });
+
+        return result;
+    }
+    
+    private Dictionary<string, string> GetInstanceResourcePackPath()
+    {
+        var result = new Dictionary<string, string>();
+        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+        {
+            result.Add("Shared", Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\resource_packs"
+            ));
+        }
+        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+        {
+            if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
+            {
+                var dir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    @"Minecraft Bedrock",
+                    "Users"
+                );
+
+                if (Directory.Exists(dir))
+                {
+                    var users = Directory.GetDirectories(dir).ToList();
+                    users.ForEach(user =>
+                    {
+                        var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
+                        if (Path.Exists(path))
+                            result.Add(Path.GetFileName(user), path);
+                    });
+                }
+            }
+            else
+            {
+                var dir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    @"Minecraft Bedrock Preview",
+                    "Users"
+                );
+
+                if (Directory.Exists(dir))
+                {
+                    var users = Directory.GetDirectories(dir).ToList();
+                    users.ForEach(user =>
+                    {
+                        var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
+                        if (Path.Exists(path))
+                            result.Add(Path.GetFileName(user), path);
+                    });
+                }
+            }
+        }
+
+        return result;
+    }
+    private Dictionary<string, string> GetInstanceBehaviorPackPath()
+    {
+        var result = new Dictionary<string, string>();
+        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+        {
+            result.Add("Shared", Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\behavior_packs"
+            ));
+        }
+        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+        {
+            if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
+            {
+                var dir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    @"Minecraft Bedrock",
+                    "Users"
+                );
+
+                if (Directory.Exists(dir))
+                {
+                    var users = Directory.GetDirectories(dir).ToList();
+                    users.ForEach(user =>
+                    {
+                        var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
+                        if (Path.Exists(path))
+                            result.Add(Path.GetFileName(user), path);
+                    });
+                }
+            }
+            else
+            {
+                var dir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    @"Minecraft Bedrock Preview",
+                    "Users"
+                );
+
+                if (Directory.Exists(dir))
+                {
+                    var users = Directory.GetDirectories(dir).ToList();
+                    users.ForEach(user =>
+                    {
+                        var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
+                        if (Path.Exists(path))
+                            result.Add(Path.GetFileName(user), path);
+                    });
+                }
+            }
+        }
+
+        return result;
+    }
+}

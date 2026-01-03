@@ -50,9 +50,4 @@
       <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Base\Entry\Game\Pack\ResourcePack\" />
-      <Folder Include="Models\Pack\Game\ResourcePack\" />
-    </ItemGroup>
 </Project>

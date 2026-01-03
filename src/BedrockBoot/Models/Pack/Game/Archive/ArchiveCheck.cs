@@ -14,8 +14,9 @@ public class ArchiveCheck
 
     public ArchiveCheck()
     {
-        
+
     }
+
     public ArchiveCheck(VersionConfig versionConfig) : this()
     {
         VersionConfig = versionConfig;
@@ -26,9 +27,9 @@ public class ArchiveCheck
         if (VersionConfig == null)
             throw new NullReferenceException("实例配置为空");
 
-        var path = GetInstancePackPath();
+        var path = GetInstanceWorldPackPath();
         var result = new ArchiveManifest();
-        
+
         path.ToList().ForEach(us =>
         {
             var acts = new List<ArchiveInfo>();
@@ -59,11 +60,11 @@ public class ArchiveCheck
 
             result.Manifest.Add(us.Key, acts);
         });
-        
+
         return result;
     }
 
-    private Dictionary<string, string> GetInstancePackPath()
+    private Dictionary<string, string> GetInstanceWorldPackPath()
     {
         var result = new Dictionary<string, string>();
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
@@ -72,7 +73,8 @@ public class ArchiveCheck
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\minecraftWorlds"
             ));
-        }else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+        }
+        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
             if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
             {
@@ -81,7 +83,7 @@ public class ArchiveCheck
                     @"Minecraft Bedrock",
                     "Users"
                 );
-                
+
                 if (Directory.Exists(dir))
                 {
                     var users = Directory.GetDirectories(dir).ToList();

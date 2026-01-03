@@ -1,15 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control;
 using BedrockBoot.Views.DialogContent;
+using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
@@ -17,6 +20,7 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 public partial class InstancePack : UserControl
 {
     public VersionConfig VersionInfo { get; set; }
+    public ResourcePackManager ResourcePackManager { get; set; }
 
     public InstancePack()
     {
@@ -26,7 +30,13 @@ public partial class InstancePack : UserControl
     public InstancePack(VersionConfig versionConfig) : this()
     {
         VersionInfo = versionConfig;
-        new ResourcePackManager(VersionInfo).GetAllPack().ForEach(x =>
+        Update();
+    }
+
+    public void Update()
+    {
+        ResourcePackManager = new ResourcePackManager(VersionInfo);
+        ResourcePackManager.GetAllPack().ForEach(x =>
         {
             if (x != null &&
                 x.Header != null)
@@ -64,7 +74,22 @@ public partial class InstancePack : UserControl
                 Title = "导入包",
                 Content = body,
                 CloseButtonText = "导入",
-                PrimaryButtonText = "取消"
+                PrimaryButtonText = "取消",
+                CloseAction = () =>
+                {
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Title = "导入包...",
+                        Content = "正在导入包..."
+                    });
+                    Task.Run(() =>
+                    {
+                        ResourcePackManager.AddRangePacks(selectedFiles);
+
+                        Dispatcher.UIThread.Invoke((() => DialogHost.Close()));
+                        Dispatcher.UIThread.Invoke(Update);
+                    });
+                }
             });
             body.Import(selectedFiles);
         }

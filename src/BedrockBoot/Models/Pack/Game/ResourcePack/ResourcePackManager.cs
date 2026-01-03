@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Documents;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
+using BedrockBoot.Base.Enum;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
@@ -54,6 +55,62 @@ public class ResourcePackManager
         });
 
         return result;
+    }
+
+    public static void CopyDirectory(string sourceDir, string destinationDir, bool recursive = true)
+    {
+        // 获取源目录信息
+        var dir = new DirectoryInfo(sourceDir);
+    
+        // 检查源目录是否存在
+        if (!dir.Exists)
+            throw new DirectoryNotFoundException($"源目录不存在: {dir.FullName}");
+    
+        // 确保目标目录存在
+        Directory.CreateDirectory(destinationDir);
+    
+        // 复制所有文件
+        foreach (FileInfo file in dir.GetFiles())
+        {
+            string targetFilePath = Path.Combine(destinationDir, file.Name);
+            file.CopyTo(targetFilePath, true);
+        }
+    
+        // 如果需要递归复制子目录
+        if (recursive)
+        {
+            foreach (DirectoryInfo subDir in dir.GetDirectories())
+            {
+                string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                CopyDirectory(subDir.FullName, newDestinationDir, true);
+            }
+        }
+    }
+    
+    public void AddRangePacks(List<string> files)
+    {
+        files.ForEach(file =>
+        {
+            var confs = new ResourcePackAnalysis(file).GetPackManifests();
+            confs.ForEach(pack =>
+            {
+                if (pack.PackType == ResourcePackType.Resource)
+                {
+                    GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
+                    {
+                        CopyDirectory(pack.PackRootPath, Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
+                    });
+                }
+
+                if (pack.PackType == ResourcePackType.Behavior)
+                {
+                    GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
+                    {
+                        CopyDirectory(pack.PackRootPath, Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
+                    });
+                }
+            });
+        });
     }
     
     private Dictionary<string, string> GetInstanceResourcePackPath()

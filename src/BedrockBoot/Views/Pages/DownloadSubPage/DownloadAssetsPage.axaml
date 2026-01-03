@@ -5,6 +5,7 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DownloadSubPage.DownloadAssetsPage">
     <Grid RowDefinitions="Auto,*">
@@ -52,11 +53,9 @@
                          Glyph="&#xE822;"
                          BigTitle="请...诶？"
                          Message="您所输入的关键词无效哦"
-                         Name="NoneBox"> </notice:InfoCard>
-            
-        <ScrollViewer Grid.Row="1" Name="ScrollViewer">
-            <StackPanel Name="ItemsPanel"
-                        Margin="15,0,15,15"></StackPanel>
-        </ScrollViewer>
+                         Name="NoneBox"></notice:InfoCard>
+        
+        <navigation:LotsPageFrame Grid.Row="1"
+                                  Name="ResultPage"/>
     </Grid>
 </UserControl>

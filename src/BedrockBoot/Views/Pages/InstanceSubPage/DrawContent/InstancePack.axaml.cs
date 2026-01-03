@@ -21,8 +21,12 @@ public partial class InstancePack : UserControl
         VersionInfo = versionConfig;
         new ResourcePackManager(VersionInfo).GetAllPack().ForEach(x =>
         {
-            Console.WriteLine($"找到包：{x.Header.Name}");
-            ResultBox.Children.Add(new GameResourcePackItem(x));
+            if (x != null &&
+                x.Header != null)
+            {
+                Console.WriteLine($"找到包：{x.Header.Name}");
+                ResultBox.Children.Add(new GameResourcePackItem(x));
+            }
         });
     }
 }

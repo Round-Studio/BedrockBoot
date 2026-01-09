@@ -48,10 +48,7 @@ public class ResourcePackManager
         
         files.ForEach(file =>
         {
-            var conf = new ConfigEntity<ResourcePackManifest>(file).Data;
-            conf.PackRootPath = Path.GetDirectoryName(file);
-            conf.PackType = ResourcePackAnalysis.GetPackType(conf);
-            result.Add(conf);
+            result.Add(ResourcePackAnalysis.GetPackManifest(file));
         });
 
         Packs = result;

@@ -27,6 +27,7 @@ public partial class DialogImportResourcePackContent : UserControl
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         PacksList.Children.Add(new GameResourcePackItem(conf, true));
+                        LoadingRing.IsVisible = false;
                     });
                 });
             });

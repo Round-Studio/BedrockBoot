@@ -2,16 +2,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d"
              MaxHeight="450"
+             MinHeight="260"
+             
+             MaxWidth="600"
+             MinWidth="600"
              x:Class="BedrockBoot.Views.DialogContent.DialogImportResourcePackContent">
-    <Grid RowDefinitions="Auto,*">
-        <TextBlock Grid.Row="0"
-                   Margin="10">您将导入以下包：</TextBlock>
+    <Grid>
+        <onePointControls:ProgressRing Background="Transparent"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Width="48"
+                                       Height="48"
+                                       Name="LoadingRing"/>
         
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Margin="15,0,15,5"
-                        Name="PacksList"></StackPanel>
-        </ScrollViewer>
+        <Grid RowDefinitions="Auto,*">
+            <TextBlock Grid.Row="0"
+                       Margin="5">您将导入以下包：</TextBlock>
+        
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Margin="0,8,0,5"
+                            Name="PacksList"></StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

@@ -35,7 +35,9 @@ public class PluginLoader
                 // 执行方法
                 loader.InitializePlugin();
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
 }

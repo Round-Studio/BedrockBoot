@@ -15,6 +15,7 @@ public class ResourcePackManager
 {
     public VersionConfig VersionConfig { get; set; }
     public List<ResourcePackManifest> Packs { get; private set; }
+
     public ResourcePackManager(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
@@ -30,26 +31,23 @@ public class ResourcePackManager
             dirs.ForEach(dir =>
             {
                 var manifestFile = Path.Combine(dir, "manifest.json");
-                if(File.Exists(manifestFile))
+                if (File.Exists(manifestFile))
                     files.Add(manifestFile);
             });
         });
-        
+
         GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
         {
             var dirs = Directory.GetDirectories(folder).ToList();
             dirs.ForEach(dir =>
             {
                 var manifestFile = Path.Combine(dir, "manifest.json");
-                if(File.Exists(manifestFile))
+                if (File.Exists(manifestFile))
                     files.Add(manifestFile);
             });
         });
-        
-        files.ForEach(file =>
-        {
-            result.Add(ResourcePackAnalysis.GetPackManifest(file));
-        });
+
+        files.ForEach(file => { result.Add(ResourcePackAnalysis.GetPackManifest(file)); });
 
         Packs = result;
 
@@ -60,21 +58,21 @@ public class ResourcePackManager
     {
         // 获取源目录信息
         var dir = new DirectoryInfo(sourceDir);
-    
+
         // 检查源目录是否存在
         if (!dir.Exists)
             throw new DirectoryNotFoundException($"源目录不存在: {dir.FullName}");
-    
+
         // 确保目标目录存在
         Directory.CreateDirectory(destinationDir);
-    
+
         // 复制所有文件
         foreach (FileInfo file in dir.GetFiles())
         {
             string targetFilePath = Path.Combine(destinationDir, file.Name);
             file.CopyTo(targetFilePath, true);
         }
-    
+
         // 如果需要递归复制子目录
         if (recursive)
         {
@@ -85,10 +83,10 @@ public class ResourcePackManager
             }
         }
     }
-    
+
     public void AddRangePacks(List<string> files)
     {
-        var ids = Packs.Select(p=>p.Header.Uuid).ToList();
+        var ids = Packs.Select(p => p.Header.Uuid).ToList();
         files.ForEach(file =>
         {
             var confs = new ResourcePackAnalysis(file).GetPackManifests();
@@ -100,8 +98,9 @@ public class ResourcePackManager
                     {
                         GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
                         {
-                            if(folder.Contains("Shared"))
-                                CopyDirectory(pack.PackRootPath, Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
+                            if (folder.Contains("Shared"))
+                                CopyDirectory(pack.PackRootPath,
+                                    Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
                         });
                     }
 
@@ -109,15 +108,16 @@ public class ResourcePackManager
                     {
                         GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
                         {
-                            if(folder.Contains("Shared"))
-                                CopyDirectory(pack.PackRootPath, Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
+                            if (folder.Contains("Shared"))
+                                CopyDirectory(pack.PackRootPath,
+                                    Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
                         });
                     }
                 }
             });
         });
     }
-    
+
     private Dictionary<string, string> GetInstanceResourcePackPath()
     {
         var result = new Dictionary<string, string>();
@@ -138,9 +138,9 @@ public class ResourcePackManager
                     "Users"
                 );
 
-                if(!Directory.Exists(dir))
+                if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
-                
+
                 var users = Directory.GetDirectories(dir).ToList();
                 users.ForEach(user =>
                 {
@@ -161,10 +161,10 @@ public class ResourcePackManager
                     @"Minecraft Bedrock Preview",
                     "Users"
                 );
-                
-                if(!Directory.Exists(dir))
+
+                if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
-                
+
                 var users = Directory.GetDirectories(dir).ToList();
                 users.ForEach(user =>
                 {
@@ -182,6 +182,7 @@ public class ResourcePackManager
 
         return result;
     }
+
     private Dictionary<string, string> GetInstanceBehaviorPackPath()
     {
         var result = new Dictionary<string, string>();
@@ -201,10 +202,10 @@ public class ResourcePackManager
                     @"Minecraft Bedrock",
                     "Users"
                 );
-                
-                if(!Directory.Exists(dir))
+
+                if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
-                
+
                 var users = Directory.GetDirectories(dir).ToList();
                 users.ForEach(user =>
                 {
@@ -225,10 +226,10 @@ public class ResourcePackManager
                     @"Minecraft Bedrock Preview",
                     "Users"
                 );
-                
-                if(!Directory.Exists(dir))
+
+                if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
-                
+
                 var users = Directory.GetDirectories(dir).ToList();
                 users.ForEach(user =>
                 {

@@ -13,7 +13,7 @@ public class MinecraftColorCode
     public string AnsiCode { get; set; } = string.Empty;
     public bool IsBedrockExclusive { get; set; }
     public bool IsJavaExclusive { get; set; }
-    
+
     // 基础16色 + 特殊格式
     public static readonly Dictionary<string, MinecraftColorCode> ColorCodes = new()
     {
@@ -34,29 +34,73 @@ public class MinecraftColorCode
         ["§d"] = new() { Code = "§d", Name = "light_purple", HexColor = "#FF55FF", Color = Color.Parse("#FF55FF") },
         ["§e"] = new() { Code = "§e", Name = "yellow", HexColor = "#FFFF55", Color = Color.Parse("#FFFF55") },
         ["§f"] = new() { Code = "§f", Name = "white", HexColor = "#FFFFFF", Color = Colors.White },
-        
+
         // BE独占颜色
-        ["§g"] = new() { Code = "§g", Name = "minecoin_gold", HexColor = "#DDD605", Color = Color.Parse("#DDD605"), IsBedrockExclusive = true },
-        ["§h"] = new() { Code = "§h", Name = "material_quartz", HexColor = "#E3D4D1", Color = Color.Parse("#E3D4D1"), IsBedrockExclusive = true },
-        ["§i"] = new() { Code = "§i", Name = "material_iron", HexColor = "#CECACA", Color = Color.Parse("#CECACA"), IsBedrockExclusive = true },
-        ["§j"] = new() { Code = "§j", Name = "material_netherite", HexColor = "#443A3B", Color = Color.Parse("#443A3B"), IsBedrockExclusive = true },
-        ["§m"] = new() { Code = "§m", Name = "material_redstone", HexColor = "#971607", Color = Color.Parse("#971607"), IsBedrockExclusive = true },
-        ["§n"] = new() { Code = "§n", Name = "material_copper", HexColor = "#B4684D", Color = Color.Parse("#B4684D"), IsBedrockExclusive = true },
-        ["§p"] = new() { Code = "§p", Name = "material_gold", HexColor = "#DEB12D", Color = Color.Parse("#DEB12D"), IsBedrockExclusive = true },
-        ["§q"] = new() { Code = "§q", Name = "material_emerald", HexColor = "#47A036", Color = Color.Parse("#47A036"), IsBedrockExclusive = true },
-        ["§s"] = new() { Code = "§s", Name = "material_diamond", HexColor = "#2CBAA8", Color = Color.Parse("#2CBAA8"), IsBedrockExclusive = true },
-        ["§t"] = new() { Code = "§t", Name = "material_lapis", HexColor = "#21497B", Color = Color.Parse("#21497B"), IsBedrockExclusive = true },
-        ["§u"] = new() { Code = "§u", Name = "material_amethyst", HexColor = "#9A5CC6", Color = Color.Parse("#9A5CC6"), IsBedrockExclusive = true },
+        ["§g"] = new()
+        {
+            Code = "§g", Name = "minecoin_gold", HexColor = "#DDD605", Color = Color.Parse("#DDD605"),
+            IsBedrockExclusive = true
+        },
+        ["§h"] = new()
+        {
+            Code = "§h", Name = "material_quartz", HexColor = "#E3D4D1", Color = Color.Parse("#E3D4D1"),
+            IsBedrockExclusive = true
+        },
+        ["§i"] = new()
+        {
+            Code = "§i", Name = "material_iron", HexColor = "#CECACA", Color = Color.Parse("#CECACA"),
+            IsBedrockExclusive = true
+        },
+        ["§j"] = new()
+        {
+            Code = "§j", Name = "material_netherite", HexColor = "#443A3B", Color = Color.Parse("#443A3B"),
+            IsBedrockExclusive = true
+        },
+        ["§m"] = new()
+        {
+            Code = "§m", Name = "material_redstone", HexColor = "#971607", Color = Color.Parse("#971607"),
+            IsBedrockExclusive = true
+        },
+        ["§n"] = new()
+        {
+            Code = "§n", Name = "material_copper", HexColor = "#B4684D", Color = Color.Parse("#B4684D"),
+            IsBedrockExclusive = true
+        },
+        ["§p"] = new()
+        {
+            Code = "§p", Name = "material_gold", HexColor = "#DEB12D", Color = Color.Parse("#DEB12D"),
+            IsBedrockExclusive = true
+        },
+        ["§q"] = new()
+        {
+            Code = "§q", Name = "material_emerald", HexColor = "#47A036", Color = Color.Parse("#47A036"),
+            IsBedrockExclusive = true
+        },
+        ["§s"] = new()
+        {
+            Code = "§s", Name = "material_diamond", HexColor = "#2CBAA8", Color = Color.Parse("#2CBAA8"),
+            IsBedrockExclusive = true
+        },
+        ["§t"] = new()
+        {
+            Code = "§t", Name = "material_lapis", HexColor = "#21497B", Color = Color.Parse("#21497B"),
+            IsBedrockExclusive = true
+        },
+        ["§u"] = new()
+        {
+            Code = "§u", Name = "material_amethyst", HexColor = "#9A5CC6", Color = Color.Parse("#9A5CC6"),
+            IsBedrockExclusive = true
+        },
     };
-    
+
     // 格式代码
     public static readonly Dictionary<string, string> FormatCodes = new()
     {
-        ["§k"] = "obfuscated",    // 混淆/随机字符
-        ["§l"] = "bold",          // 粗体
+        ["§k"] = "obfuscated", // 混淆/随机字符
+        ["§l"] = "bold", // 粗体
         ["§m"] = "strikethrough", // 删除线
-        ["§n"] = "underline",     // 下划线
-        ["§o"] = "italic",        // 斜体
-        ["§r"] = "reset",         // 重置所有格式
+        ["§n"] = "underline", // 下划线
+        ["§o"] = "italic", // 斜体
+        ["§r"] = "reset", // 重置所有格式
     };
 }

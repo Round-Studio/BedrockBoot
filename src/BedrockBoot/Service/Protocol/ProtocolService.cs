@@ -18,20 +18,20 @@ namespace BedrockBoot.Service.Protocol
     {
         public int ServicePort { get; set; } = 43956;
         public string ServiceHost { get; set; } = "127.0.0.1";
-        
+
         private HttpListener _listener;
         private CancellationTokenSource _cancellationTokenSource;
         private bool _isRunning;
-        
+
         // 路由字典：路由路径 -> 处理函数
         private readonly ConcurrentDictionary<string, RouteHandler> _routes = new();
-        
+
         // 中间件列表
         private readonly List<Func<HttpListenerContext, Func<Task>, Task>> _middlewares = new();
-        
+
         // 默认路由处理
         private RouteHandler _defaultRouteHandler;
-        
+
         /// <summary>
         /// 路由处理委托
         /// </summary>
@@ -39,7 +39,7 @@ namespace BedrockBoot.Service.Protocol
         /// <param name="parameters">查询参数和路由参数</param>
         /// <returns>返回 Task</returns>
         public delegate Task RouteHandler(HttpListenerContext context, RouteParameters parameters);
-        
+
         /// <summary>
         /// 路由参数
         /// </summary>
@@ -49,27 +49,27 @@ namespace BedrockBoot.Service.Protocol
             /// 查询参数（URL 中的 ?key=value）
             /// </summary>
             public IReadOnlyDictionary<string, string> Query { get; }
-            
+
             /// <summary>
             /// 路由参数（路径中的占位符，如 /users/{id}）
             /// </summary>
             public IReadOnlyDictionary<string, string> Route { get; }
-            
+
             /// <summary>
             /// 请求体（如果有）
             /// </summary>
             public string Body { get; }
-            
+
             /// <summary>
             /// 完整的 URL
             /// </summary>
             public Uri Url { get; }
-            
+
             /// <summary>
             /// HTTP 方法
             /// </summary>
             public string Method { get; }
-            
+
             public RouteParameters(
                 IReadOnlyDictionary<string, string> query,
                 IReadOnlyDictionary<string, string> route,
@@ -83,7 +83,7 @@ namespace BedrockBoot.Service.Protocol
                 Url = url;
                 Method = method;
             }
-            
+
             /// <summary>
             /// 获取查询参数值
             /// </summary>
@@ -91,7 +91,7 @@ namespace BedrockBoot.Service.Protocol
             {
                 return Query.TryGetValue(key, out var value) ? value : defaultValue;
             }
-            
+
             /// <summary>
             /// 获取路由参数值
             /// </summary>
@@ -99,7 +99,7 @@ namespace BedrockBoot.Service.Protocol
             {
                 return Route.TryGetValue(key, out var value) ? value : defaultValue;
             }
-            
+
             /// <summary>
             /// 尝试获取查询参数值
             /// </summary>
@@ -107,7 +107,7 @@ namespace BedrockBoot.Service.Protocol
             {
                 return Query.TryGetValue(key, out value);
             }
-            
+
             /// <summary>
             /// 尝试获取路由参数值
             /// </summary>
@@ -115,7 +115,7 @@ namespace BedrockBoot.Service.Protocol
             {
                 return Route.TryGetValue(key, out value);
             }
-            
+
             /// <summary>
             /// 解析请求体为 JSON 对象
             /// </summary>
@@ -123,11 +123,11 @@ namespace BedrockBoot.Service.Protocol
             {
                 if (string.IsNullOrEmpty(Body))
                     return default;
-                    
+
                 return JsonSerializer.Deserialize<T>(Body, options);
             }
         }
-        
+
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -144,7 +144,7 @@ namespace BedrockBoot.Service.Protocol
                 });
             };
         }
-        
+
         /// <summary>
         /// 启动 HTTP 服务器
         /// </summary>
@@ -152,18 +152,18 @@ namespace BedrockBoot.Service.Protocol
         {
             if (_isRunning)
                 throw new InvalidOperationException("Server is already running");
-            
+
             try
             {
                 _listener = new HttpListener();
                 _listener.Prefixes.Add($"http://{ServiceHost}:{ServicePort}/");
-                
+
                 _cancellationTokenSource = new CancellationTokenSource();
                 _isRunning = true;
-                
+
                 _listener.Start();
                 Console.WriteLine($"HTTP Server started on http://{ServiceHost}:{ServicePort}/");
-                
+
                 // 开始监听请求
                 await StartListeningAsync(_cancellationTokenSource.Token);
             }
@@ -174,7 +174,7 @@ namespace BedrockBoot.Service.Protocol
                 throw;
             }
         }
-        
+
         /// <summary>
         /// 停止 HTTP 服务器
         /// </summary>
@@ -182,19 +182,19 @@ namespace BedrockBoot.Service.Protocol
         {
             if (!_isRunning)
                 return;
-                
+
             _cancellationTokenSource?.Cancel();
             _isRunning = false;
-            
+
             if (_listener != null && _listener.IsListening)
             {
                 _listener.Stop();
                 _listener.Close();
             }
-            
+
             await Task.CompletedTask;
         }
-        
+
         /// <summary>
         /// 注册 GET 路由
         /// </summary>
@@ -204,7 +204,7 @@ namespace BedrockBoot.Service.Protocol
         {
             RegisterRoute("GET", path, handler);
         }
-        
+
         /// <summary>
         /// 注册 POST 路由
         /// </summary>
@@ -212,7 +212,7 @@ namespace BedrockBoot.Service.Protocol
         {
             RegisterRoute("POST", path, handler);
         }
-        
+
         /// <summary>
         /// 注册 PUT 路由
         /// </summary>
@@ -220,7 +220,7 @@ namespace BedrockBoot.Service.Protocol
         {
             RegisterRoute("PUT", path, handler);
         }
-        
+
         /// <summary>
         /// 注册 DELETE 路由
         /// </summary>
@@ -228,7 +228,7 @@ namespace BedrockBoot.Service.Protocol
         {
             RegisterRoute("DELETE", path, handler);
         }
-        
+
         /// <summary>
         /// 注册任意 HTTP 方法的路由
         /// </summary>
@@ -239,22 +239,22 @@ namespace BedrockBoot.Service.Protocol
         {
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentNullException(nameof(path));
-                
+
             if (handler == null)
                 throw new ArgumentNullException(nameof(handler));
-                
+
             // 标准化路径
             path = NormalizePath(path);
-            
+
             // 创建路由键：方法 + 路径
             var routeKey = $"{method.ToUpper()}:{path}";
-            
+
             // 添加或更新路由
             _routes[routeKey] = handler;
-            
+
             Console.WriteLine($"Registered route: {method} {path}");
         }
-        
+
         /// <summary>
         /// 注册中间件
         /// </summary>
@@ -262,7 +262,7 @@ namespace BedrockBoot.Service.Protocol
         {
             _middlewares.Add(middleware);
         }
-        
+
         /// <summary>
         /// 设置默认路由处理（404 处理）
         /// </summary>
@@ -270,7 +270,7 @@ namespace BedrockBoot.Service.Protocol
         {
             _defaultRouteHandler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
-        
+
         /// <summary>
         /// 开始监听请求
         /// </summary>
@@ -282,7 +282,7 @@ namespace BedrockBoot.Service.Protocol
                 {
                     // 异步获取上下文
                     var context = await _listener.GetContextAsync();
-                    
+
                     // 处理请求（不阻塞监听循环）
                     _ = Task.Run(async () =>
                     {
@@ -319,7 +319,7 @@ namespace BedrockBoot.Service.Protocol
                 }
             }
         }
-        
+
         /// <summary>
         /// 处理 HTTP 请求
         /// </summary>
@@ -327,10 +327,10 @@ namespace BedrockBoot.Service.Protocol
         {
             // 执行中间件
             await ExecuteMiddlewares(context);
-            
+
             var request = context.Request;
             var response = context.Response;
-            
+
             // 读取请求体（如果有）
             string body = null;
             if (request.HasEntityBody)
@@ -340,13 +340,13 @@ namespace BedrockBoot.Service.Protocol
                     body = await reader.ReadToEndAsync();
                 }
             }
-            
+
             // 解析查询参数
             var queryParams = ParseQueryString(request.Url.Query);
-            
+
             // 尝试匹配路由
             var (routeHandler, routeParams) = FindRouteHandler(request.HttpMethod, request.Url.AbsolutePath);
-            
+
             // 创建路由参数对象
             var parameters = new RouteParameters(
                 queryParams,
@@ -355,7 +355,7 @@ namespace BedrockBoot.Service.Protocol
                 request.Url,
                 request.HttpMethod
             );
-            
+
             // 执行路由处理函数
             if (routeHandler != null)
             {
@@ -367,7 +367,7 @@ namespace BedrockBoot.Service.Protocol
                 await _defaultRouteHandler(context, parameters);
             }
         }
-        
+
         /// <summary>
         /// 执行中间件链
         /// </summary>
@@ -375,7 +375,7 @@ namespace BedrockBoot.Service.Protocol
         {
             if (_middlewares.Count == 0)
                 return;
-                
+
             int index = 0;
             Func<Task> next = null;
             next = async () =>
@@ -386,69 +386,69 @@ namespace BedrockBoot.Service.Protocol
                     await middleware(context, next);
                 }
             };
-            
+
             await next();
         }
-        
+
         /// <summary>
         /// 查找匹配的路由处理函数
         /// </summary>
-        private (RouteHandler handler, IReadOnlyDictionary<string, string> routeParams) 
+        private (RouteHandler handler, IReadOnlyDictionary<string, string> routeParams)
             FindRouteHandler(string method, string requestPath)
         {
             // 标准化请求路径
             requestPath = NormalizePath(requestPath);
-            
+
             // 精确匹配
             var exactKey = $"{method.ToUpper()}:{requestPath}";
             if (_routes.TryGetValue(exactKey, out var exactHandler))
             {
                 return (exactHandler, new Dictionary<string, string>());
             }
-            
+
             // 通配符/参数匹配
             foreach (var kvp in _routes)
             {
                 var routeKey = kvp.Key;
                 var routeMethod = routeKey.Split(':')[0];
-                
+
                 // 检查方法是否匹配
                 if (method.ToUpper() != routeMethod)
                     continue;
-                    
+
                 var routePath = routeKey.Substring(routeMethod.Length + 1);
-                
+
                 // 尝试匹配带参数的路由
                 if (TryMatchRouteWithParams(routePath, requestPath, out var routeParams))
                 {
                     return (kvp.Value, routeParams);
                 }
             }
-            
+
             return (null, null);
         }
-        
+
         /// <summary>
         /// 尝试匹配带参数的路由
         /// </summary>
-        private bool TryMatchRouteWithParams(string routePath, string requestPath, 
+        private bool TryMatchRouteWithParams(string routePath, string requestPath,
             out IReadOnlyDictionary<string, string> routeParams)
         {
             routeParams = null;
-            
+
             var routeSegments = routePath.Split('/');
             var requestSegments = requestPath.Split('/');
-            
+
             if (routeSegments.Length != requestSegments.Length)
                 return false;
-                
+
             var paramsDict = new Dictionary<string, string>();
-            
+
             for (int i = 0; i < routeSegments.Length; i++)
             {
                 var routeSeg = routeSegments[i];
                 var requestSeg = requestSegments[i];
-                
+
                 if (routeSeg.StartsWith("{") && routeSeg.EndsWith("}"))
                 {
                     // 参数段
@@ -461,25 +461,25 @@ namespace BedrockBoot.Service.Protocol
                     return false;
                 }
             }
-            
+
             routeParams = paramsDict;
             return true;
         }
-        
+
         /// <summary>
         /// 解析查询字符串
         /// </summary>
         private IReadOnlyDictionary<string, string> ParseQueryString(string query)
         {
             var result = new Dictionary<string, string>();
-            
+
             if (string.IsNullOrEmpty(query) || query == "?")
                 return result;
-                
+
             // 去掉开头的 ?
             if (query.StartsWith("?"))
                 query = query.Substring(1);
-                
+
             var pairs = query.Split('&');
             foreach (var pair in pairs)
             {
@@ -496,10 +496,10 @@ namespace BedrockBoot.Service.Protocol
                     result[key] = string.Empty;
                 }
             }
-            
+
             return result;
         }
-        
+
         /// <summary>
         /// 标准化路径
         /// </summary>
@@ -507,18 +507,18 @@ namespace BedrockBoot.Service.Protocol
         {
             if (string.IsNullOrEmpty(path))
                 return "/";
-                
+
             // 确保以 / 开头
             if (!path.StartsWith("/"))
                 path = "/" + path;
-                
+
             // 去掉末尾的 /
             if (path.EndsWith("/") && path.Length > 1)
                 path = path.TrimEnd('/');
-                
+
             return path;
         }
-        
+
         /// <summary>
         /// 写入 JSON 响应
         /// </summary>
@@ -527,40 +527,42 @@ namespace BedrockBoot.Service.Protocol
             var response = context.Response;
             response.StatusCode = statusCode;
             response.ContentType = "application/json";
-            
+
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             });
-            
+
             var buffer = Encoding.UTF8.GetBytes(json);
             response.ContentLength64 = buffer.Length;
-            
+
             await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
             response.OutputStream.Close();
         }
-        
+
         /// <summary>
         /// 写入文本响应
         /// </summary>
-        public static async Task WriteTextResponseAsync(HttpListenerContext context, int statusCode, string text, string contentType = "text/plain")
+        public static async Task WriteTextResponseAsync(HttpListenerContext context, int statusCode, string text,
+            string contentType = "text/plain")
         {
             var response = context.Response;
             response.StatusCode = statusCode;
             response.ContentType = contentType;
-            
+
             var buffer = Encoding.UTF8.GetBytes(text);
             response.ContentLength64 = buffer.Length;
-            
+
             await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
             response.OutputStream.Close();
         }
-        
+
         /// <summary>
         /// 写入错误响应
         /// </summary>
-        public static async Task WriteErrorResponseAsync(HttpListenerContext context, int statusCode, string error, string message = null)
+        public static async Task WriteErrorResponseAsync(HttpListenerContext context, int statusCode, string error,
+            string message = null)
         {
             await WriteResponseAsync(context, statusCode, new
             {
@@ -569,7 +571,7 @@ namespace BedrockBoot.Service.Protocol
                 timestamp = DateTime.UtcNow
             });
         }
-        
+
         /// <summary>
         /// 重定向
         /// </summary>
@@ -580,19 +582,19 @@ namespace BedrockBoot.Service.Protocol
             response.RedirectLocation = url;
             response.Close();
         }
-        
+
         /// <summary>
         /// 获取所有已注册的路由
         /// </summary>
         public IEnumerable<string> GetRegisteredRoutes()
         {
-            return _routes.Keys.Select(key => 
+            return _routes.Keys.Select(key =>
             {
                 var parts = key.Split(':');
                 return $"{parts[0]} {parts[1]}";
             }).OrderBy(r => r);
         }
-        
+
         public void Dispose()
         {
             StopAsync().Wait();

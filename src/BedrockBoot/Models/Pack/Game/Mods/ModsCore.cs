@@ -29,11 +29,11 @@ public class ModsCore
     public void PreLoad()
     {
         _manager.RefreshMods();
-        
+
         var gameConf = Path.Combine(VersionInfo.VersionPath, "game.conf");
         var open = VersionInfo.Config.IsConsole ? "1" : "0";
         File.WriteAllText(gameConf, $"console_open = {open}");
-        
+
         var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", "Minecraft.Windows.exe");
         var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");
@@ -58,7 +58,7 @@ public class ModsCore
                 return;
             }
         }
-        
+
         // 检查body文件是否被占用
         if (!FileCheck.IsFileLocked(body))
         {
@@ -94,15 +94,15 @@ public class ModsCore
                 PreLoadMods.Add(m);
             }
         });
-        
-        Directory.GetFiles(preLoadPath).ToList().ForEach((f)=>
+
+        Directory.GetFiles(preLoadPath).ToList().ForEach((f) =>
         {
             if (!FileCheck.IsFileLocked(f))
             {
                 File.Delete(f);
             }
         });
-        
+
         PreLoadMods.ForEach(f =>
         {
             if (!FileCheck.IsFileLocked(Path.Combine(preLoadPath, Path.GetFileName(f.File))))
@@ -125,7 +125,7 @@ public class ModsCore
                 {
                     File.WriteAllBytes(fullPath, memoryStream.ToArray());
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine($"释放注入 dll 失败：{ex.Message}");
                 }
@@ -134,36 +134,36 @@ public class ModsCore
     }
 
     public void LoadAll(int pid) => _manager.InjectAll(pid);
-    
+
     private static bool AreFilesIdentical(string filePath1, string filePath2)
     {
         if (!File.Exists(filePath1) || !File.Exists(filePath2))
             return false;
-        
+
         // 如果文件大小不同，直接返回false
         FileInfo info1 = new FileInfo(filePath1);
         FileInfo info2 = new FileInfo(filePath2);
-        
+
         if (info1.Length != info2.Length)
             return false;
-        
+
         try
         {
             // 计算两个文件的哈希值进行比较
             using (var sha256 = SHA256.Create())
             {
                 byte[] hash1, hash2;
-                
+
                 using (var stream1 = File.OpenRead(filePath1))
                 {
                     hash1 = sha256.ComputeHash(stream1);
                 }
-                
+
                 using (var stream2 = File.OpenRead(filePath2))
                 {
                     hash2 = sha256.ComputeHash(stream2);
                 }
-                
+
                 return BitConverter.ToString(hash1) == BitConverter.ToString(hash2);
             }
         }
@@ -173,31 +173,31 @@ public class ModsCore
             return CompareFilesByteByByte(filePath1, filePath2);
         }
     }
-    
+
     /// <summary>
     /// 逐字节比较文件（哈希比较失败时的备选方案）
     /// </summary>
     private static bool CompareFilesByteByByte(string filePath1, string filePath2)
     {
         const int bufferSize = 4096 * 4;
-        
+
         using (var fs1 = new FileStream(filePath1, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize))
         using (var fs2 = new FileStream(filePath2, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize))
         {
             byte[] buffer1 = new byte[bufferSize];
             byte[] buffer2 = new byte[bufferSize];
-            
+
             while (true)
             {
                 int count1 = fs1.Read(buffer1, 0, bufferSize);
                 int count2 = fs2.Read(buffer2, 0, bufferSize);
-                
+
                 if (count1 != count2)
                     return false;
-                
+
                 if (count1 == 0)
                     return true;
-                
+
                 // 比较读取的字节
                 for (int i = 0; i < count1; i++)
                 {

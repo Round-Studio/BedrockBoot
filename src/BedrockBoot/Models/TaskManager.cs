@@ -16,12 +16,12 @@ public class TaskManager
         {
             Item = item
         };
-        
-        
+
+
         Tasks.Add(entry);
 
         if (OnChanged != null) OnChanged.Invoke();
-        
+
         return entry.TUID;
     }
 

@@ -29,10 +29,12 @@ public class PackInstaller
     public Action? ImportedAction { get; set; } = null;
     public IProgress<PackImportProgress> ImportProgress { get; set; } = new Progress<PackImportProgress>();
     public bool IsGDKUnknownBuildType { get; set; } = false;
+
     public PackInstaller(string filePath)
     {
         PackFile = filePath;
     }
+
     public async System.Threading.Tasks.Task Install(string dir, string gameName)
     {
         ImportProgress.Report(new PackImportProgress() { Progress = 10, StatusMessage = "判断文件类型..." });
@@ -87,7 +89,7 @@ public class PackInstaller
         });
 
 
-		GameInfoHelper.SaveVersionConfig(new VersionConfig()
+        GameInfoHelper.SaveVersionConfig(new VersionConfig()
         {
             Config = new VersionConfig.VersionConfigEntry(),
             Info = new VersionConfig.VersionInfo()
@@ -213,7 +215,7 @@ public class PackInstaller
                         ExtractionProgress = progressHandler,
                         CancellationToken = cts.Token
                     });
-try
+                    try
                     {
                         await installTask;
                         // 如果完整安装完成而没有取消，也检查exe文件

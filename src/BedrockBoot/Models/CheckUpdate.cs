@@ -17,7 +17,7 @@ public class CheckUpdate
         var owner = "Round-Studio";
         var repo = "BedrockBoot";
         var releases = await github.Repository.Release.GetLatest(owner, repo);
-        
+
         var latest = releases;
         Console.WriteLine($"最新版本: {latest.TagName}");
 

@@ -83,10 +83,10 @@ public class ArchiveCheck
                     @"Minecraft Bedrock",
                     "Users"
                 );
-                
-                if(!Directory.Exists(dir))
+
+                if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
-                
+
                 var users = Directory.GetDirectories(dir).ToList();
                 users.ForEach(user =>
                 {
@@ -107,10 +107,10 @@ public class ArchiveCheck
                     @"Minecraft Bedrock Preview",
                     "Users"
                 );
-                
-                if(!Directory.Exists(dir))
+
+                if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
-                
+
                 var users = Directory.GetDirectories(dir).ToList();
                 users.ForEach(user =>
                 {

@@ -104,12 +104,26 @@ public class ResourcePackAnalysis
     {
         var textFolder = Path.Combine(folder, "texts");
         var textManifest = Path.Combine(textFolder, "languages.json");
-        if (!File.Exists(textManifest))
+        
+        if(!Directory.Exists(textFolder))
             return langKey;
+        
+        var langFiles = new List<string>();
 
-        var langConf = new ConfigEntity<List<string>>(textManifest);
+        if (!File.Exists(textManifest))
+        {
+            var files = Directory.GetFiles(textFolder)
+                .Select(f => Path.GetFileName(f).Split('.')[0])
+                .ToList();
+            langFiles = files;
+        }
+        else
+        {
+            var langConf = new ConfigEntity<List<string>>(textManifest);
+            langFiles = langConf.Data;
+        }
 
-        var lang = FindBestMatchLanguage(langConf.Data);
+        var lang = FindBestMatchLanguage(langFiles);
         var langFile = Path.Combine(textFolder, $"{lang}.lang");
 
         var langs = File.ReadAllLines(langFile);

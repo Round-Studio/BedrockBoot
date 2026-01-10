@@ -12,6 +12,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.Mods;
@@ -31,7 +32,6 @@ public partial class TaskLaunchGameItem : UserControl
     public Action LaunchCompleted;
     private Process MinecraftProcess;
     private CancellationTokenSource _cancellationTokenSource;
-    private ModsCore _core;
 
     public TaskLaunchGameItem()
     {
@@ -46,8 +46,6 @@ public partial class TaskLaunchGameItem : UserControl
 
     public void Launch(Action launchCompleted)
     {
-        _core = new ModsCore(VersionInfo);
-        
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
 
@@ -68,24 +66,18 @@ public partial class TaskLaunchGameItem : UserControl
                     CancelBtn.IsEnabled = true;
                 });
 
-                var args = "";
 
-                if (VersionInfo.Config.IsEditModel) args += "minecraft://creator/?Editor=true ";
-                args += VersionInfo.Config.OtherCommand;
-                
-                _core.PreLoad(); // 启动 PreLoad
+                var lc = new EasyLauncher(VersionInfo);
 
-                try
+                // 设置迁移回调
+                lc.OnMigration = () =>
                 {
-                    var iso = new IsolationCore(VersionInfo);
-                    iso.Init();
-                }
-                catch
-                {
-                    Dispatcher.UIThread.Post(() => LaunchCompleted?.Invoke());
+                    // 触发启动完成回调（如果需要关闭启动界面）
+                    LaunchCompleted?.Invoke();
+
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        DialogHost.Show(new()
+                        DialogHost.Show(new DialogInfo()
                         {
                             Title = "迁移通知",
                             Content = "该版本需要迁移\n" +
@@ -102,53 +94,43 @@ public partial class TaskLaunchGameItem : UserControl
                             }
                         });
                     });
-                    return;
-                }
-                
-                MinecraftProcess = await GlobalModel.BedrockCore.LaunchGameAsync(new LaunchOptions()
-                {
-                    GameFolder = VersionInfo.VersionPath,
-                    GameType = VersionInfo.Info.VersionType,
-                    MinecraftBuildType = VersionInfo.Info.BuildType,
-                    RegisterProgress = new Progress<DeploymentProgress>((s) =>
-                    {
-                        Console.WriteLine($"registerProcess_percent: {s.percentage} - {s.state}");
-                        Dispatcher.UIThread.Invoke(() =>
-                        {
-                            LaunchProgressText.Text = $"步骤：{s.state} ({s.percentage:F2}%)";
-                            LaunchProgressBar.Value = s.percentage;
-                        });
-                    }),
-                    Progress = new Progress<LaunchState>((state => { Console.WriteLine(state); })),
-                    LaunchArgs = string.IsNullOrEmpty(args) ? null : args
-                });
+                };
 
-                if (MinecraftProcess != null && !MinecraftProcess.HasExited)
+                // 设置进度更新回调
+                lc.UpdateProgress = (status, percentage) =>
                 {
-                    Console.WriteLine($"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        LaunchProgressText.Text = "步骤：已启动，请等待游戏窗口显示";
-                        LaunchProgressBar.IsIndeterminate = true;
+                        LaunchProgressText.Text = $"{status} ({percentage:F2}%)";
+                        LaunchProgressBar.Value = percentage;
                     });
+                };
 
-                    if (VersionInfo.Config.IsModes)
-                    {
-                        _core.LoadAll(MinecraftProcess.Id);
-                    }
-
-                    // 正确注册退出事件
-                    MinecraftProcess.EnableRaisingEvents = true;
-                    MinecraftProcess.Exited += OnProcessExited;
-
-                    // 也可以使用异步等待方式
-                    await WaitForProcessExitAsync(MinecraftProcess);
-                }
-                else
+                // 设置进度文本更新回调
+                lc.UpdateProgressText = (text) =>
                 {
-                    // 进程启动失败或立即退出
-                    Dispatcher.UIThread.Post(() => LaunchCompleted?.Invoke());
-                }
+                    Dispatcher.UIThread.Invoke(() => { LaunchProgressText.Text = text; });
+                };
+
+                // 设置进度条模式回调
+                lc.SetProgressIndeterminate = (isIndeterminate) =>
+                {
+                    Dispatcher.UIThread.Invoke(() => { LaunchProgressBar.IsIndeterminate = isIndeterminate; });
+                };
+
+                // 设置启动完成回调
+                lc.LaunchCompleted = () => { Dispatcher.UIThread.Invoke(() => { LaunchCompleted?.Invoke(); }); };
+
+                // 设置游戏启动回调
+                lc.Launched = (process) =>
+                {
+                    Console.WriteLine($"游戏已启动，进程ID: {process.Id}");
+                    // 可以在这里执行游戏启动后的其他操作
+                    MinecraftProcess = process;
+                };
+
+                // 启动游戏
+                await lc.Launch();
             }
             catch (TaskCanceledException)
             {

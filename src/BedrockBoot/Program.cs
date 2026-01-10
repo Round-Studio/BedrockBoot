@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Avalonia.Platform;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Win32;
 using PeNet;
 using PeNet.FileParser;
 using Round.SDK.Entity;
@@ -32,9 +33,6 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
-
-
-
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
 
@@ -49,8 +47,7 @@ sealed class Program
         AppUpdater.ProcessStartupArgs(args);
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
-
-
+        
         // 然后处理原有的 -update 参数
         if (args.Length > 0)
         {
@@ -118,6 +115,16 @@ sealed class Program
                     AllocConsole();
                     Console.OutputEncoding = Encoding.UTF8;
                     Console.WriteLine("已开启 Release 中的 Debug 模式，此模式不会生成日志！");
+                    break;
+                case "-jump":
+                    Console.WriteLine("快捷启动");
+                    args.ForEach(Console.WriteLine);
+
+                    ApplicationConfiguration.Initialize();
+                    var win = new LaunchWindow(args.ToList());
+                    System.Windows.Forms.Application.Run(win);
+                    
+                    result = true;
                     break;
             }
         });

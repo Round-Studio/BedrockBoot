@@ -50,4 +50,10 @@
       <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Win32\Windows\LaunchWindow.cs">
+        <SubType>Form</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>

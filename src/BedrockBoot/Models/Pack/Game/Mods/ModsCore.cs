@@ -111,26 +111,29 @@ public class ModsCore
             }
         });
 
-        if (!FileCheck.IsFileLocked(body) &&
-            !FileCheck.IsFileLocked(fullPath))
+        try
         {
-            using (PeFile peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
-            using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
-            using (var memoryStream = new MemoryStream())
+            if (!FileCheck.IsFileLocked(body) &&
+                !FileCheck.IsFileLocked(fullPath))
             {
-                stream.CopyTo(memoryStream);
-                peFile.AddImport("PreloadCpp.dll", "Load");
-                peFile.Flush();
-                try
+                using (PeFile peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+                using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
+                using (var memoryStream = new MemoryStream())
                 {
-                    File.WriteAllBytes(fullPath, memoryStream.ToArray());
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"释放注入 dll 失败：{ex.Message}");
+                    stream.CopyTo(memoryStream);
+                    peFile.AddImport("PreloadCpp.dll", "Load");
+                    peFile.Flush();
+                    try
+                    {
+                        File.WriteAllBytes(fullPath, memoryStream.ToArray());
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"释放注入 dll 失败：{ex.Message}");
+                    }
                 }
             }
-        }
+        }catch{ }
     }
 
     public void LoadAll(int pid) => _manager.InjectAll(pid);

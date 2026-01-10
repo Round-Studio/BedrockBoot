@@ -22,7 +22,8 @@ public class SourceList
 
     public static Dictionary<string, string> CurseForgeSource { get; set; } = new Dictionary<string, string>()
     {
-        { "CurseForge 官方源", "{url}" },
-        { "加速源 ①", "https://blog.zink.dpdns.org/advanced-proxy?url=\"{url}\"" }
+        { "CurseForge 官方源", "https://api.curseforge.com/" },
+        /*{ "加速源 ①", "https://blog.zink.dpdns.org/advanced-proxy?url=\"https://api.curseforge.com/{url}\"" },
+        { "MCIM 源", "https://mod.mcimirror.top/curseforge/" }*/
     };
 }

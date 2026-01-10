@@ -13,17 +13,11 @@ namespace BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 
 public class CurseForgeApiClient
 {
-    private static HttpClient _sharedHttpClient;
+    private HttpClient _sharedHttpClient;
     private readonly string _apiKey;
     private static readonly object _lock = new object();
 
-    // 静态构造函数，只初始化一次 HttpClient
-    static CurseForgeApiClient()
-    {
-        InitializeHttpClient();
-    }
-
-    private static void InitializeHttpClient()
+    private void InitializeHttpClient()
     {
         var handler = new SocketsHttpHandler
         {
@@ -47,7 +41,7 @@ public class CurseForgeApiClient
         _sharedHttpClient = new HttpClient(handler)
         {
             Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
-            BaseAddress = new Uri("https://api.curseforge.com/"),
+            BaseAddress = new Uri(SourceList.CurseForgeSource.Values.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex]),
             DefaultRequestVersion = HttpVersion.Version20
         };
     
@@ -60,10 +54,11 @@ public class CurseForgeApiClient
     public CurseForgeApiClient(string apiKey)
     {
         _apiKey = apiKey;
+        InitializeHttpClient();
     }
 
     // 重新初始化HttpClient的方法，用于处理连接问题
-    private static void ReinitializeHttpClient()
+    private void ReinitializeHttpClient()
     {
         lock (_lock)
         {
@@ -243,17 +238,7 @@ public class CurseForgeApiClient
         {
             try
             {
-                // 构建参数
-                var queryParams = new System.Text.StringBuilder();
-                queryParams.Append($"?pageSize={pageSize}");
-                
-                if (index.HasValue)
-                    queryParams.Append($"&index={index.Value}");
-                    
-                if (!string.IsNullOrEmpty(gameVersion))
-                    queryParams.Append($"&gameVersion={Uri.EscapeDataString(gameVersion)}");
-                
-                string url = $"v1/mods/{modId}/files{queryParams}";
+                string url = $"v1/mods/{modId}/files";
                 
                 // 创建请求
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);

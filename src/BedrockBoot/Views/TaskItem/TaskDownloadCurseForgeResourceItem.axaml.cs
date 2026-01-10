@@ -38,8 +38,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
     {
         var download = new SingleThreadDownloader(1, 1024);
 
-        var url = SourceList.CurseForgeSource.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex].Value
-            .Replace("{url}", ModFile.DownloadUrl);
+        var url = ModFile.DownloadUrl;
         Console.WriteLine($"下载文件：{url}");
         await download.DownloadAsync(url, savePath, new Progress<SingleThreadDownloader.DownloadProgress>((xprogress =>
         {

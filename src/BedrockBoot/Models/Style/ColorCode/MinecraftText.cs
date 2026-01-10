@@ -41,7 +41,25 @@ namespace BedrockBoot.Models.Style
 
         public MinecraftTextBlock()
         {
-            this.Foreground = Brushes.White;
+            IBrush GetFontColorResourceFromApp()
+            {
+                // Application.Current 是一个全局的入口点
+                var app = Application.Current;
+    
+                if (app != null)
+                {
+                    // 从应用程序的资源中查找 :cite[1]
+                    // 注意：这里查找的是 Application.Resources 里定义的资源
+                    if (app.TryFindResource("PrimaryForegroundBrush", out var resourceValue))
+                    {
+                        return resourceValue as IBrush;
+                    }
+                }
+    
+                return new SolidColorBrush(Colors.Gray);
+            }
+            
+            this.Foreground = GetFontColorResourceFromApp();
             this.TextWrapping = TextWrapping.Wrap;
         }
 

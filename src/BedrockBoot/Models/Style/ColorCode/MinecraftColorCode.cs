@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media;
 
 namespace BedrockBoot.Models.Style;
@@ -13,6 +15,24 @@ public class MinecraftColorCode
     public string AnsiCode { get; set; } = string.Empty;
     public bool IsBedrockExclusive { get; set; }
     public bool IsJavaExclusive { get; set; }
+    
+    public static IBrush GetFontColorResourceFromApp()
+    {
+        // Application.Current 是一个全局的入口点
+        var app = Application.Current;
+    
+        if (app != null)
+        {
+            // 从应用程序的资源中查找 :cite[1]
+            // 注意：这里查找的是 Application.Resources 里定义的资源
+            if (app.TryFindResource("PrimaryForegroundBrush", out var resourceValue))
+            {
+                return resourceValue as IBrush;
+            }
+        }
+    
+        return new SolidColorBrush(Colors.Gray);
+    }
 
     // 基础16色 + 特殊格式
     public static readonly Dictionary<string, MinecraftColorCode> ColorCodes = new()
@@ -33,7 +53,7 @@ public class MinecraftColorCode
         ["§c"] = new() { Code = "§c", Name = "red", HexColor = "#FF5555", Color = Color.Parse("#FF5555") },
         ["§d"] = new() { Code = "§d", Name = "light_purple", HexColor = "#FF55FF", Color = Color.Parse("#FF55FF") },
         ["§e"] = new() { Code = "§e", Name = "yellow", HexColor = "#FFFF55", Color = Color.Parse("#FFFF55") },
-        ["§f"] = new() { Code = "§f", Name = "white", HexColor = "#FFFFFF", Color = Colors.White },
+        ["§f"] = new() { Code = "§f", Name = "white", HexColor = "#FFFFFF", Color = Color.Parse(GetFontColorResourceFromApp().ToString()) },
 
         // BE独占颜色
         ["§g"] = new()

@@ -99,7 +99,8 @@ public class ResourcePackManager
                     {
                         GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
                         {
-                            if (folder.Contains("Shared"))
+                            if (folder.Contains("Shared") ||
+                                VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
                                 CopyDirectory(pack.PackRootPath,
                                     Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
                         });
@@ -109,7 +110,8 @@ public class ResourcePackManager
                     {
                         GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
                         {
-                            if (folder.Contains("Shared"))
+                            if (folder.Contains("Shared") ||
+                                VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
                                 CopyDirectory(pack.PackRootPath,
                                     Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
                         });

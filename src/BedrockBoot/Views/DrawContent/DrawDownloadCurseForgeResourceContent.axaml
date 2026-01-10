@@ -52,10 +52,15 @@
                                     Margin="12,5,12,5"></Border>
                             
                             <StackPanel Grid.Column="2">
-                                <TextBlock Name="DownCountBox">>0</TextBlock>
+                                <TextBlock Name="DownCountBox">0</TextBlock>
                                 <TextBlock Foreground="Gray">下载</TextBlock>
                             </StackPanel>
                         </Grid>
+                        
+                        <WrapPanel Name="TypesBox"
+                                   ItemsAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,18,0,0"></WrapPanel>
                             
                         <TextBlock HorizontalAlignment="Center"
                                    FontSize="11"

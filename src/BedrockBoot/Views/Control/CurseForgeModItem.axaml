@@ -13,14 +13,10 @@
                                   Description="相关包信息">
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"
+                        Name="HeaderBox"
                         Spacing="8">
                 <TextBlock Name="PackName"
                            Text="PackName"></TextBlock>
-                <onePointControls:LabelBox Text="包类型"
-                                           Background="Orange"
-                                           Foreground="White"
-                                           Name="PackTypeBox"
-                                           VerticalAlignment="Center"></onePointControls:LabelBox>
             </StackPanel>
         </onePointControls:SettingCard.Header>
     </onePointControls:SettingCard>

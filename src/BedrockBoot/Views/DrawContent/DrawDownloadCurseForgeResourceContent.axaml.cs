@@ -1,12 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.DownloadSubPage.CurseForge;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.DrawContent;
 
@@ -31,6 +33,16 @@ public partial class DrawDownloadCurseForgeResourceContent : UserControl
         RankingBox.Text = ModData.GamePopularityRank.ToString();
         DownCountBox.Text = ModData.DownloadCount.ToString();
         InstanceFrame.NavigateTo(new CurseForgePackBuildFile(ModData));
+        
+        ModData.Categories.ForEach(cat =>
+        {
+            TypesBox.Children.Add(new LabelBox()
+            {
+                Text = cat.Name,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(2.5)
+            });
+        });
         
         Task.Run(() =>
         {

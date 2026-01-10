@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Control;
 
@@ -28,8 +30,15 @@ public partial class CurseForgeModItem : UserControl
     public async Task Update()
     {
         PackName.Text = ModData.Name;
-        PackTypeBox.IsVisible = false;
         Card.Description = $"{string.Join(", ", ModData.Authors.Select(x => x.Name))}, 下载量：{ModData.DownloadCount}";
+        ModData.Categories.ForEach(cat =>
+        {
+            HeaderBox.Children.Add(new LabelBox()
+            {
+                Text = cat.Name,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+        });
         Task.Run(() =>
         {
             var image = GlobalModel.ImageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl).Result;

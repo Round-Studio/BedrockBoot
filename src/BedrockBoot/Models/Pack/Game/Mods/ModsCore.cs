@@ -133,7 +133,10 @@ public class ModsCore
                     }
                 }
             }
-        }catch{ }
+        }
+        catch
+        {
+        }
     }
 
     public void LoadAll(int pid) => _manager.InjectAll(pid);

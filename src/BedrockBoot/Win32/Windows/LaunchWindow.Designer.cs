@@ -57,9 +57,9 @@ partial class LaunchWindow
         // 
         // LaunchProgressBar
         // 
-        LaunchProgressBar.Location = new System.Drawing.Point(12, 40);
+        LaunchProgressBar.Location = new System.Drawing.Point(12, 46);
         LaunchProgressBar.Name = "LaunchProgressBar";
-        LaunchProgressBar.Size = new System.Drawing.Size(340, 23);
+        LaunchProgressBar.Size = new System.Drawing.Size(340, 20);
         LaunchProgressBar.TabIndex = 1;
         // 
         // ProgressBox

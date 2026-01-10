@@ -13,6 +13,7 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
@@ -72,6 +73,9 @@ public partial class TaskLaunchGameItem : UserControl
                 args += VersionInfo.Config.OtherCommand;
                 
                 _core.PreLoad(); // 启动 PreLoad
+
+                var iso = new IsolationCore(VersionInfo);
+                iso.Init();
                 
                 MinecraftProcess = await GlobalModel.BedrockCore.LaunchGameAsync(new LaunchOptions()
                 {

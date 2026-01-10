@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using Microsoft.WindowsAPICodePack.Shell;
@@ -8,11 +9,13 @@ public class JumpListManager
 {
     public static void ConfigureJumpList()
     {
-        if (!GlobalModel.Config.Data.IsTaskBarJumpItem)
-            return;
-
         var jumpList = JumpList.CreateJumpList();
-        jumpList.ClearAllUserTasks();
+        if (!GlobalModel.Config.Data.IsTaskBarJumpItem)
+        {
+            jumpList.ClearAllUserTasks();
+            jumpList.Refresh();
+            return;
+        }
 
         JumpListCustomCategory myToolsCategory = new JumpListCustomCategory("快捷启动");
 
@@ -29,6 +32,8 @@ public class JumpListManager
                         Arguments = $"-jump \"{v.VersionPath}\"",
                         IconReference = new IconReference(Process.GetCurrentProcess().MainModule.FileName, 0),
                     });
+                
+                Console.WriteLine($"添加任务栏快捷启动项 {v.Info.VersionName}");
             });
         }
         catch

@@ -6,6 +6,7 @@ using System.Windows.Documents;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
@@ -124,8 +125,8 @@ public class ResourcePackManager
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
             result.Add("Shared", Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\resource_packs"
+                IsolationCore.GetRealPath(VersionConfig),
+                @"LocalState\games\com.mojang\resource_packs"
             ));
         }
         else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
@@ -133,8 +134,7 @@ public class ResourcePackManager
             if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
             {
                 var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Minecraft Bedrock",
+                    IsolationCore.GetRealPath(VersionConfig),
                     "Users"
                 );
 
@@ -157,8 +157,7 @@ public class ResourcePackManager
             else
             {
                 var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Minecraft Bedrock Preview",
+                    IsolationCore.GetRealPath(VersionConfig),
                     "Users"
                 );
 
@@ -189,8 +188,8 @@ public class ResourcePackManager
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
             result.Add("Shared", Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\behavior_packs"
+                IsolationCore.GetRealPath(VersionConfig),
+                @"LocalState\games\com.mojang\behavior_packs"
             ));
         }
         else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
@@ -198,8 +197,7 @@ public class ResourcePackManager
             if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
             {
                 var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Minecraft Bedrock",
+                    IsolationCore.GetRealPath(VersionConfig),
                     "Users"
                 );
 
@@ -222,8 +220,7 @@ public class ResourcePackManager
             else
             {
                 var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Minecraft Bedrock Preview",
+                    IsolationCore.GetRealPath(VersionConfig),
                     "Users"
                 );
 

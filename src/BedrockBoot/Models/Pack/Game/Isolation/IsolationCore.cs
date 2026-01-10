@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
 using Round.SDK.Enum;
 using Round.SDK.Helper.IO;
@@ -12,8 +13,8 @@ namespace BedrockBoot.Models.Pack.Game.Isolation;
 public class IsolationCore
 {
     public VersionConfig VersionConfig { get; set; }
-    public string RealRootPath => Path.Combine(VersionConfig.VersionPath, "config", "BedrockBoot2", "isolation");
-    public string RootPath => GetInstanceConfigRootPath();
+    public string RealRootPath => GetRealPath(VersionConfig);
+    public string RootPath => GetInstanceConfigRootPath(VersionConfig);
 
     public IsolationCore(VersionConfig versionConfig)
     {
@@ -34,20 +35,31 @@ public class IsolationCore
             Directory.Delete(RootPath, true);
             Directory.CreateSymbolicLink(RootPath, RealRootPath);
         }
+        
+        if(!Directory.Exists(RootPath))
+            Directory.CreateSymbolicLink(RootPath, RealRootPath);
+    }
+
+    public static string GetRealPath(VersionConfig versionConfig)
+    {
+        if (versionConfig.Config.IsVersionIsolated)
+            return Path.Combine(versionConfig.VersionPath, "config", "BedrockBoot2", "isolation");
+
+        return PathsList.GamePublicRootPath;
     }
     
-    private string GetInstanceConfigRootPath()
+    public static string GetInstanceConfigRootPath(VersionConfig versionConfig)
     {
-        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe"
             );
         }
-        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+        else if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
+            if (versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
             {
                 var dir = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

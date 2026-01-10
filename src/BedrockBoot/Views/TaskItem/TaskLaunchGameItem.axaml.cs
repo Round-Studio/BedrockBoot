@@ -15,6 +15,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.Mods;
+using BedrockBoot.Views.DialogContent;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
@@ -74,8 +75,35 @@ public partial class TaskLaunchGameItem : UserControl
                 
                 _core.PreLoad(); // 启动 PreLoad
 
-                var iso = new IsolationCore(VersionInfo);
-                iso.Init();
+                try
+                {
+                    var iso = new IsolationCore(VersionInfo);
+                    iso.Init();
+                }
+                catch
+                {
+                    Dispatcher.UIThread.Post(() => LaunchCompleted?.Invoke());
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        DialogHost.Show(new()
+                        {
+                            Title = "迁移通知",
+                            Content = "该版本需要迁移\n" +
+                                      "请问是否立即启动迁移？",
+                            CloseButtonText = "启动迁移",
+                            PrimaryButtonText = "不了",
+                            CloseAction = () =>
+                            {
+                                DialogHost.Show(new DialogInfo()
+                                {
+                                    Title = "迁移版本",
+                                    Content = new DialogMigrationGameRootConfigContent(VersionInfo)
+                                });
+                            }
+                        });
+                    });
+                    return;
+                }
                 
                 MinecraftProcess = await GlobalModel.BedrockCore.LaunchGameAsync(new LaunchOptions()
                 {

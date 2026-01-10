@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 
 namespace BedrockBoot.Models.Pack.Game.Archive;
@@ -70,8 +71,8 @@ public class ArchiveCheck
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
             result.Add("Shared", Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\minecraftWorlds"
+                IsolationCore.GetRealPath(VersionConfig),
+                @"LocalState\games\com.mojang\minecraftWorlds"
             ));
         }
         else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
@@ -79,8 +80,7 @@ public class ArchiveCheck
             if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
             {
                 var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Minecraft Bedrock",
+                    IsolationCore.GetRealPath(VersionConfig),
                     "Users"
                 );
 
@@ -103,8 +103,7 @@ public class ArchiveCheck
             else
             {
                 var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Minecraft Bedrock Preview",
+                    IsolationCore.GetRealPath(VersionConfig),
                     "Users"
                 );
 

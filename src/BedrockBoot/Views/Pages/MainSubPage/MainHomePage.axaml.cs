@@ -13,6 +13,8 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Pack.Game.Import;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
 
@@ -32,7 +34,7 @@ public partial class MainHomePage : BedrockBootPage
     public void UpdateUI()
     {
         _isEditing = false;
-        
+
         try
         {
             // 检查是否有可用的游戏文件夹
@@ -44,6 +46,15 @@ public partial class MainHomePage : BedrockBootPage
             {
                 SetupEmptyStateUI();
             }
+        }
+        catch (FileNotFoundException ex)
+        {
+            DialogHost.Show(new DialogInfo()
+            {
+                Title = "发生错误",
+                Content = ex.Message,
+                CloseButtonText = "好的"
+            });
         }
         catch (Exception ex)
         {

@@ -93,7 +93,8 @@ public class GameInfoHelper
     {
         var files = Directory.GetFiles(gamePath, "*.exe");
         if (files.Length > 1)
-            throw new FileNotFoundException("为什么你的目录会多出一个 exe 呢.jpg");
+            throw new FileNotFoundException(
+                $"无法找到对应的 EXE 文件，原因是该目录中有 {files.Length} 个 EXE，有很大概率是蠕虫病毒的感染，请尝试查杀病毒或删除对应文件以解决该问题。\nFiles:\n{string.Join('\n', files)}");
         
         Console.WriteLine($"目标实例本体文件：{files[0]}");
         

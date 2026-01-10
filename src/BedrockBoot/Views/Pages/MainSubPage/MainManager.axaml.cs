@@ -224,6 +224,15 @@ public partial class MainManager : BedrockBootPage
 
                 lst.Add(info);
             }
+            catch (FileNotFoundException ex)
+            {
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = "发生错误",
+                    Content = ex.Message,
+                    CloseButtonText = "好的"
+                });
+            }
             catch (Exception ex)
             {
                 // 可选：记录日志，但不要中断

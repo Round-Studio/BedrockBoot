@@ -50,6 +50,7 @@ public partial class DialogImportGameContent : UserControl
             if (File.Exists(filePath))
             {
                 PathInputBox.Text = filePath;
+                NameInputBox.Text = Path.GetFileName(filePath);
                 var type = PackAnalysis.GetPackBuildTypeWithFileHeader(filePath);
                 if (type == MinecraftBuildTypeVersion.GDK)
                 {

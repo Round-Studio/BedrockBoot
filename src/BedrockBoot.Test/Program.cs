@@ -9,11 +9,6 @@ public class Program
 {
     static async Task Main()
     {
-        var body = new ResourcePackAnalysis(@"E:\Bedrock\WorldEdit_0.10.4.mcaddon");
-        Console.WriteLine(body.GetPackType());
-        body.GetPackManifests().ForEach(maf =>
-        {
-            Console.WriteLine($"{maf.Header.Name} - {maf.PackType}");
-        });
+        Directory.CreateSymbolicLink(@"E:\Bedrock_GDK",@"D:\Bedrock_GDK");
     }
 }

@@ -40,7 +40,7 @@ public class PackInstaller
         ImportProgress.Report(new PackImportProgress() { Progress = 10, StatusMessage = "判断文件类型..." });
         GameBuildType = PackAnalysis.GetPackBuildTypeWithFileHeader(PackFile);
 
-        ImportProgress.Report(new PackImportProgress() { Progress = 100, StatusMessage = "判断文件类型完毕" });
+        ImportProgress.Report(new PackImportProgress() { Progress = 20, StatusMessage = "判断文件类型..." });
 
         if (GameBuildType == MinecraftBuildTypeVersion.GDK)
             await InstallWithGDK(dir, gameName);
@@ -396,6 +396,8 @@ public class PackInstaller
 
             Console.WriteLine($"最终确定的版本类型: {gameTypeVersion}");
 
+            ImportProgress.Report(new PackImportProgress() { Progress = 100, StatusMessage = "文件判断完毕" });
+
             var jd = 0.00;
             // 使用临时文件进行安装
             await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions()
@@ -473,7 +475,7 @@ public class PackInstaller
                 BuildType = MinecraftBuildTypeVersion.GDK,
                 Version = manifest.Version,
                 VersionName = gameName,
-                VersionType = GDKGameType
+                VersionType = GetVersionTypeWithGDK(manifest.Name)
             },
             VersionPath = installPath
         });

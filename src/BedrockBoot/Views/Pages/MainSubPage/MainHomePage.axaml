@@ -52,7 +52,8 @@
                                        Name="GameTitle"
                                        Text="请选择游戏"
                                        Margin="5,0,5,0"
-                                       FontSize="36"></TextBlock>
+                                       FontSize="32"
+                                       FontWeight="Bold"></TextBlock>
                             
                             <StackPanel Grid.Row="2"
                                         Orientation="Horizontal"

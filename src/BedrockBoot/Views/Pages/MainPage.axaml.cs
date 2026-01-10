@@ -82,6 +82,8 @@ public partial class MainPage : UserControl
         this.Loaded += (sender, args) =>
         {
             PluginLoader.LoadAll();
+        
+            JumpListManager.ConfigureJumpList();
         };
     }
 

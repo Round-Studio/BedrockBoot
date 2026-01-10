@@ -14,9 +14,10 @@
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="任务栏快捷菜单"
                                           Description="当程序固定在任务栏时，右键其固定项时显示最近启动"
-                                          IsEnabled="False"
                                           Glyph="&#xE8FC;">
-                <ToggleSwitch IsChecked="False"></ToggleSwitch>
+                <ToggleSwitch IsChecked="False"
+                              Name="TaskBarJumpItem"
+                              IsCheckedChanged="TaskBarJumpItem_OnIsCheckedChanged"></ToggleSwitch>
             </onePointControls:SettingCard>
             
             <TextBlock Margin="5,0,5,10"

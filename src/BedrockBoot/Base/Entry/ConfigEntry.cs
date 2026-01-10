@@ -18,6 +18,7 @@ public class ConfigEntry
     [JsonPropertyName("isFirstRun")] public bool IsFirstRun { get; set; } = true;
     [JsonPropertyName("isAgreeTerms")] public bool IsAgreeTerms { get; set; } = false;
     [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
+    [JsonPropertyName("isTaskBarJumpItem")] public bool IsTaskBarJumpItem { get; set; } = true;
 }
 public class StyleConfig
 {

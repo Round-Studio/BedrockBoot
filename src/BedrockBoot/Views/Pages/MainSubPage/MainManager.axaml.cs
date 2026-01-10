@@ -318,6 +318,7 @@ public partial class MainManager : BedrockBootPage
             InitializeConfigWatcher();
 
             UpdateGameList();
+            JumpListManager.ConfigureJumpList();
         }
     }
 

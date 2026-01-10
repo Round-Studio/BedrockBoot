@@ -33,6 +33,8 @@ public partial class InstancePack : UserControl
         Update();
     }
 
+    private string _type = "resource";
+
     public void Update()
     {
         ResultBox.Children.Clear();
@@ -47,11 +49,14 @@ public partial class InstancePack : UserControl
             if (x != null &&
                 x.Header != null)
             {
-                Console.WriteLine($"找到包：{x.Header.Name}");
-                ResultBox.Children.Add(new GameResourcePackItem(x)
+                if (x.PackType.ToString().ToLower() == _type)
                 {
-                    RefreshCallBack = Update
-                });
+                    Console.WriteLine($"找到包：{x.Header.Name}");
+                    ResultBox.Children.Add(new GameResourcePackItem(x)
+                    {
+                        RefreshCallBack = Update
+                    });
+                }
             }
         });
     }
@@ -122,5 +127,17 @@ public partial class InstancePack : UserControl
                 });
             }
         });
+    }
+
+    private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        try
+        {
+            _type = ((ListBoxItem)TypeSel.SelectedItem).Tag.ToString().ToLower();
+            Update();
+        }
+        catch
+        {
+        }
     }
 }

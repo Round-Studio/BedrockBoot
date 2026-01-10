@@ -9,9 +9,35 @@
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstancePack">
     <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto">
+              ColumnDefinitions="Auto,*,Auto">
             <items:BorderCard Grid.Column="0"
                               Margin="20,8,12,10">
+                <ListBox Classes="Segmented"
+                         Name="TypeSel"
+                         SelectedIndex="0"
+                         SelectionChanged="SelectingItemsControl_OnSelectionChanged">
+                    <ListBoxItem Classes="Segmented"
+                                 Tag="Resource">
+                        <StackPanel Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xF133;"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="16"></onePointControls:FontIcon>
+                            <TextBlock Margin="8,4,0,4">资源包</TextBlock>
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Classes="Segmented"
+                                 Tag="Behavior">
+                        <StackPanel Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xF156;"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="16"></onePointControls:FontIcon>
+                            <TextBlock Margin="8,4,0,4">行为包</TextBlock>
+                        </StackPanel>
+                    </ListBoxItem>
+                </ListBox>
+            </items:BorderCard>
+            <items:BorderCard Grid.Column="1"
+                              Margin="0,8,12,10">
                 <Grid ColumnDefinitions="*">
                     <DockPanel HorizontalAlignment="Stretch"
                                LastChildFill="True">
@@ -26,7 +52,7 @@
                     </DockPanel>
                 </Grid>
             </items:BorderCard>
-            <items:BorderCard Grid.Column="1"
+            <items:BorderCard Grid.Column="2"
                               Margin="0,8,20,10">
                 <Grid>
                     <StackPanel Orientation="Horizontal"

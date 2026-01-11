@@ -84,6 +84,8 @@ public class ResourcePackAnalysis
     public static ResourcePackManifest GetPackManifest(string file)
     {
         var conf = new ConfigEntity<ResourcePackManifest>(file).Data;
+        if (conf.Header == null)
+            return null;
         conf.PackRootPath = Path.GetDirectoryName(file);
         conf.PackType = GetPackType(conf);
 

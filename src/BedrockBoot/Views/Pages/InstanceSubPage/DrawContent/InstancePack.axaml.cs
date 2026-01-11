@@ -73,7 +73,7 @@ public partial class InstancePack : UserControl
             {
                 new FilePickerFileType("Minecraft 支持包")
                 {
-                    Patterns = new[] { "*.mcpack", "*.mcaddon" }
+                    Patterns = new[] { "*.mcpack", "*.mcaddon", "*.zip" }
                 }
             }
         });

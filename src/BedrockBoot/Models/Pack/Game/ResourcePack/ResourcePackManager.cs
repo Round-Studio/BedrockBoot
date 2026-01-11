@@ -22,6 +22,11 @@ public class ResourcePackManager
         VersionConfig = versionConfig;
     }
 
+    private List<string> GetManifests(string dir)
+    {
+        return Directory.GetFiles(dir, "manifest.json", SearchOption.AllDirectories).ToList();
+    }
+
     public List<ResourcePackManifest> GetAllPack()
     {
         var files = new List<string>();
@@ -31,9 +36,7 @@ public class ResourcePackManager
             var dirs = Directory.GetDirectories(folder).ToList();
             dirs.ForEach(dir =>
             {
-                var manifestFile = Path.Combine(dir, "manifest.json");
-                if (File.Exists(manifestFile))
-                    files.Add(manifestFile);
+                files.AddRange(GetManifests(dir));
             });
         });
 
@@ -42,13 +45,16 @@ public class ResourcePackManager
             var dirs = Directory.GetDirectories(folder).ToList();
             dirs.ForEach(dir =>
             {
-                var manifestFile = Path.Combine(dir, "manifest.json");
-                if (File.Exists(manifestFile))
-                    files.Add(manifestFile);
+                files.AddRange(GetManifests(dir));
             });
         });
 
-        files.ForEach(file => { result.Add(ResourcePackAnalysis.GetPackManifest(file)); });
+        files.ForEach(file =>
+        {
+            var con = ResourcePackAnalysis.GetPackManifest(file);
+            if (con != null)
+                result.Add(ResourcePackAnalysis.GetPackManifest(file));
+        });
 
         Packs = result;
 

@@ -20,14 +20,14 @@
         
             <items:BorderCard Grid.Column="1"
                               Margin="20,20,20,5"
+                              Padding="8,4"
                               HorizontalAlignment="Right">
-                
-                <cornerSelectBar:CornerSelectBar 
+                <ListBox Classes="Segmented"
                     SelectedIndex="0"
                     SelectionChanged="SelTag_OnSelectionChanged"
                     Name="SelTag">
                     
-                </cornerSelectBar:CornerSelectBar>
+                </ListBox>
             </items:BorderCard>
         </Grid>
         

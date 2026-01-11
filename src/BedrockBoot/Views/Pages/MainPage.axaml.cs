@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models;
@@ -11,6 +12,7 @@ using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.CornerSelectBar;
 using Round.SDK.Entry.BedrockBoot;
@@ -123,11 +125,28 @@ public partial class MainPage : UserControl
 
         TopBarItem.Add(item.Tag, item);
 
-        SelTag.Items.Add(new CornerSelectBarItem()
+        SelTag.Items.Add(new ListBoxItem()
         {
             Tag = item.Tag,
-            ItemText = item.ItemText,
-            Glyph = item.ItemGlyph,
+            Classes = { "Segmented" },
+            Content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 4,
+                Children =
+                {
+                    new FontIcon()
+                    {
+                        Glyph = item.ItemGlyph,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        FontSize = 14
+                    },
+                    new TextBlock()
+                    {
+                        Text = item.ItemText
+                    }
+                }
+            }
         });
 
         IsEditMode = true;
@@ -139,7 +158,7 @@ public partial class MainPage : UserControl
         {
             try
             {
-                var item = (CornerSelectBarItem)SelTag.SelectedItem;
+                var item = (ListBoxItem)SelTag.SelectedItem;
                 var tag = item.Tag as string;
 
                 BedrockBootPage page = null;

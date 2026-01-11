@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -103,5 +104,10 @@ public partial class DrawInstanceContent : UserControl
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         TaskLaunchGameItem.Launch(VersionInfo);
+    }
+
+    private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        Process.Start("explorer", new[] { VersionInfo.VersionPath });
     }
 }

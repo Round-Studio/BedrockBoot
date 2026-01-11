@@ -22,7 +22,14 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" />
+        <AvaloniaResource Remove="Assets\Inject.dll" />
+        <AvaloniaResource Remove="Assets\PreloadCpp.dll" />
         <AvaloniaResource Include="Manifest\Function\FunctionOption.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Assets\Inject.dll" />
+      <EmbeddedResource Include="Assets\PreloadCpp.dll" />
     </ItemGroup>
 
     <ItemGroup>

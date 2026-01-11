@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Windows.Documents;
 using Avalonia.Platform;
@@ -114,29 +115,37 @@ public class ModsCore
         try
         {
             if (!FileCheck.IsFileLocked(body) &&
-                !FileCheck.IsFileLocked(fullPath))
+                !FileCheck.IsFileLocked(fullPath) ||
+                !File.Exists(fullPath))
             {
-                using (PeFile peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
-                using (var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/PreloadCpp.dll")))
-                using (var memoryStream = new MemoryStream())
+                if (!File.Exists(fullPath))
                 {
-                    stream.CopyTo(memoryStream);
-                    peFile.AddImport("PreloadCpp.dll", "Load");
-                    peFile.Flush();
-                    try
+                    var assembly = Assembly.GetExecutingAssembly();
+
+                    string resourceName = "BedrockBoot.Assets.PreloadCpp.dll";
+
+                    using (var stream = assembly.GetManifestResourceStream(resourceName))
                     {
-                        File.WriteAllBytes(fullPath, memoryStream.ToArray());
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"释放注入 dll 失败：{ex.Message}");
+                        if (stream != null)
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                stream.CopyTo(memoryStream);
+                                File.WriteAllBytes(fullPath, memoryStream.ToArray());
+                            }
+                        }
                     }
                 }
+                
+                using (PeFile peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+                {
+                    peFile.AddImport("PreloadCpp.dll", "Load");
+                    peFile.Flush();
+                }
+                
             }
         }
-        catch
-        {
-        }
+        catch { }
     }
 
     public void LoadAll(int pid) => _manager.InjectAll(pid);

@@ -56,6 +56,18 @@
                                            VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
+                        
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="5"
+                                    HorizontalAlignment="Center"
+                                    Margin="5">
+                            <Button Width="24" Height="24"
+                                    Name="OpenFolderBtn"
+                                    Click="OpenFolderBtn_OnClick"
+                                    Classes="NoBorder">
+                                <onePointControls:FontIcon Glyph="&#xE8B7;"/>
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </items:BorderCard>

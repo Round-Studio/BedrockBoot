@@ -32,9 +32,22 @@ public class ModInfo
         if(IsPreLoad)
             throw new Exception("This mod is PreLoad mod.");
         
-        byte[] bytes = GetAssetBytes("avares://BedrockBoot/Assets/Inject.dll");
-        BedrockBoot.Inject.Native.Init(bytes);
-        BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0, InjectDelay);
+        var assembly = Assembly.GetExecutingAssembly();
+
+        string resourceName = "BedrockBoot.Assets.PreloadCpp.dll";
+
+        using (var stream = assembly.GetManifestResourceStream(resourceName))
+        {
+            if (stream != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    BedrockBoot.Inject.Native.Init(memoryStream.ToArray());
+                    BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0, InjectDelay);
+                }
+            }
+        }
     }
 
     private byte[] GetAssetBytes(string uri)

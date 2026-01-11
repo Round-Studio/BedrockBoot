@@ -9,7 +9,7 @@
 
     <PropertyGroup>
       <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
-      <Win32Resource>G:\BedrockBoot\src\BedrockBoot\Icons.res</Win32Resource>
+      <Win32Resource>Icons.res</Win32Resource>
     </PropertyGroup>
 
     <ItemGroup>

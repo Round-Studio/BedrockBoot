@@ -33,11 +33,11 @@ public partial class LaunchWindow : Form
             // 确保在 UI 线程上更新控件
             if (GameNameBox.InvokeRequired)
             {
-                GameNameBox.Invoke(new Action(() => GameNameBox.Text = VersionInfo.Info.VersionName));
+                GameNameBox.Invoke(new Action(() => GameNameBox.Text = $"启动游戏 {VersionInfo.Info.VersionName}"));
             }
             else
             {
-                GameNameBox.Text = VersionInfo.Info.VersionName;
+                GameNameBox.Text = $"启动游戏 {VersionInfo.Info.VersionName}";
             }
         }
         catch

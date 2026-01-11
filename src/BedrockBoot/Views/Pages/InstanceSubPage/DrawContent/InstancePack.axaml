@@ -74,7 +74,7 @@
             </items:BorderCard>
         </Grid>
         
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer Grid.Row="1" Name="ScBox">
             <StackPanel Margin="15,0,15,15"
                        HorizontalAlignment="Stretch"
                        Name="ResultBox">
@@ -88,5 +88,12 @@
                          IsVisible="False"
                          BigTitle="空空如也"
                          Message="输入的关键词无效 或 这个实例没有包"/>
+        
+        <notice:LoadCard Grid.Row="1"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="LoadBox"
+                         BigTitle="请稍后"
+                         Message="正在加载包..."></notice:LoadCard>
     </Grid>
 </UserControl>

@@ -29,12 +29,12 @@ public class ModInfo
 
     public void Inject(int processId)
     {
-        if(IsPreLoad)
+        if (IsPreLoad)
             throw new Exception("This mod is PreLoad mod.");
-        
+
         var assembly = Assembly.GetExecutingAssembly();
 
-        string resourceName = "BedrockBoot.Assets.PreloadCpp.dll";
+        string resourceName = "BedrockBoot.Assets.Inject.dll";
 
         using (var stream = assembly.GetManifestResourceStream(resourceName))
         {
@@ -44,7 +44,8 @@ public class ModInfo
                 {
                     stream.CopyTo(memoryStream);
                     BedrockBoot.Inject.Native.Init(memoryStream.ToArray());
-                    BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0, InjectDelay);
+                    BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0,
+                        InjectDelay);
                 }
             }
         }

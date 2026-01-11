@@ -21,6 +21,9 @@ public partial class InstancePack : UserControl
 {
     public VersionConfig VersionInfo { get; set; }
     public ResourcePackManager ResourcePackManager { get; set; }
+    
+    private string _type = "resource";
+    private string _searchText = string.Empty;
 
     public InstancePack()
     {
@@ -30,34 +33,54 @@ public partial class InstancePack : UserControl
     public InstancePack(VersionConfig versionConfig) : this()
     {
         VersionInfo = versionConfig;
-        Update();
+        UpdateUI();
     }
 
-    private string _type = "resource";
-
-    public void Update()
+    private void UpdateUI()
     {
+        // 清空当前显示
         ResultBox.Children.Clear();
-        ResourcePackManager = new ResourcePackManager(VersionInfo);
-        ResourcePackManager.GetAllPack();
-        var pack = ResourcePackManager.Packs;
-
-        NullBox.IsVisible = pack.Count == 0;
+        ScBox.IsVisible = false;
+        LoadBox.IsVisible = true;
         
-        pack.ForEach(x =>
+        Task.Run(() =>
         {
-            if (x != null &&
-                x.Header != null)
+            if (ResourcePackManager == null)
             {
-                if (x.PackType.ToString().ToLower() == _type)
+                ResourcePackManager = new ResourcePackManager(VersionInfo);
+                ResourcePackManager.GetAllPack();
+            }
+
+            var filteredPacks = ResourcePackManager.Packs
+                .Where(x => x != null && x.Header != null)
+                .Where(x => x.PackType.ToString().ToLower() == _type)
+                .Where(x => string.IsNullOrWhiteSpace(_searchText) || 
+                           x.Header.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                NullBox.IsVisible = filteredPacks.Count == 0;
+                ScBox.IsVisible = false;
+            });
+            
+            // 如果有包，添加它们
+            if (filteredPacks.Count > 0)
+            {
+                foreach (var pack in filteredPacks)
                 {
-                    Console.WriteLine($"找到包：{x.Header.Name}");
-                    ResultBox.Children.Add(new GameResourcePackItem(x)
+                    Dispatcher.UIThread.Invoke(() => ResultBox.Children.Add(new GameResourcePackItem(pack)
                     {
-                        RefreshCallBack = Update
-                    });
+                        RefreshCallBack = UpdateUI
+                    }));
                 }
             }
+            
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                ScBox.IsVisible = true;
+                LoadBox.IsVisible = false;
+            });
         });
     }
 
@@ -89,19 +112,23 @@ public partial class InstancePack : UserControl
                 Content = body,
                 CloseButtonText = "导入",
                 PrimaryButtonText = "取消",
-                CloseAction = () =>
+                CloseAction = async () =>
                 {
                     DialogHost.Show(new DialogInfo()
                     {
                         Title = "导入包...",
                         Content = "正在导入包..."
                     });
-                    Task.Run(() =>
+                    
+                    await Task.Run(() =>
                     {
                         ResourcePackManager.AddRangePacks(selectedFiles);
+                    });
 
-                        Dispatcher.UIThread.Invoke((() => DialogHost.Close()));
-                        Dispatcher.UIThread.Invoke(Update);
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        DialogHost.Close();
+                        UpdateUI();
                     });
                 }
             });
@@ -111,22 +138,8 @@ public partial class InstancePack : UserControl
 
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        var pack = ResourcePackManager.Packs.Where(p => p.Header.Name.Contains(SearchBox.Text)).ToList();
-        NullBox.IsVisible = pack.Count == 0;
-        ResultBox.Children.Clear();
-        
-        pack.ForEach(x =>
-        {
-            if (x != null &&
-                x.Header != null)
-            {
-                Console.WriteLine($"找到包：{x.Header.Name}");
-                ResultBox.Children.Add(new GameResourcePackItem(x)
-                {
-                    RefreshCallBack = Update
-                });
-            }
-        });
+        _searchText = SearchBox.Text ?? string.Empty;
+        UpdateUI();
     }
 
     private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -134,10 +147,21 @@ public partial class InstancePack : UserControl
         try
         {
             _type = ((ListBoxItem)TypeSel.SelectedItem).Tag.ToString().ToLower();
-            Update();
+            UpdateUI();
         }
         catch
         {
+            // 保持当前类型
         }
+    }
+    
+    // 如果需要手动刷新数据（比如从其他页面返回时）
+    public void RefreshData()
+    {
+        if (ResourcePackManager != null)
+        {
+            ResourcePackManager.GetAllPack();
+        }
+        UpdateUI();
     }
 }

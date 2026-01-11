@@ -33,6 +33,9 @@ public class ResourcePackManager
         var result = new List<ResourcePackManifest>();
         GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
         {
+            if(!Path.Exists(folder))
+                return;
+            
             var dirs = Directory.GetDirectories(folder).ToList();
             dirs.ForEach(dir =>
             {
@@ -42,6 +45,9 @@ public class ResourcePackManager
 
         GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
         {
+            if(!Path.Exists(folder))
+                return;
+            
             var dirs = Directory.GetDirectories(folder).ToList();
             dirs.ForEach(dir =>
             {

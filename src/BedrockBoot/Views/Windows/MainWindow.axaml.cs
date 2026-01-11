@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -79,7 +80,7 @@ public partial class MainWindow : OnePointWindow
                 await GlobalModel.BedrockCore.InitAsync();
                 Console.WriteLine("初始化核心完毕");
             }
-            catch
+            catch(Exception ex)
             {
                 Console.WriteLine("不支持该系统");
                 DialogHost.Show(new DialogInfo()

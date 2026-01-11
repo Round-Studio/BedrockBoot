@@ -44,7 +44,8 @@ public class GameInfoHelper
         versions.ForEach(x =>
         {
             var body = GetVersionConfig(x);
-            if (!string.IsNullOrEmpty(body.Info.VersionName) &&
+            if (body != null &&
+                !string.IsNullOrEmpty(body.Info.VersionName) &&
                 !string.IsNullOrEmpty(body.Info.Version))
             {
                 result.Add(body);
@@ -83,8 +84,13 @@ public class GameInfoHelper
             bodyConfig.Load();
         }
 
+        var bodyFile = GetBodyFile(gamePath);
+
+        if (string.IsNullOrEmpty(bodyFile))
+            return null;
+        
         bodyConfig.Data.VersionPath = gamePath;
-        bodyConfig.Data.BodyFile = GetBodyFile(gamePath);
+        bodyConfig.Data.BodyFile = bodyFile;
 
         return bodyConfig.Data;
     }
@@ -92,6 +98,9 @@ public class GameInfoHelper
     public static string GetBodyFile(string gamePath)
     {
         var files = Directory.GetFiles(gamePath, "*.exe");
+
+        if (files.Length <= 0)
+            return string.Empty;
         if (files.Length > 1)
             throw new FileNotFoundException(
                 $"无法找到对应的 EXE 文件，原因是该目录中有 {files.Length} 个 EXE，有很大概率是蠕虫病毒的感染，请尝试查杀病毒或删除对应文件以解决该问题。\nFiles:\n{string.Join('\n', files)}");

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -198,46 +199,26 @@ public partial class MainManager : BedrockBootPage
         GamesNull.IsVisible = false;
         GameScro.IsVisible = false;
 
-        var lstDir = Directory.GetDirectories(versionsPath);
         var lst = new List<VersionConfig>();
 
-        foreach (var dir in lstDir)
+        foreach (var info in GameInfoHelper.GetVersionConfigs(currentFolder.GameFolderPath))
         {
-            try
-            {
-                var info = GameInfoHelper.GetVersionConfig(dir);
+            if (string.IsNullOrEmpty(info?.Info?.VersionName) ||
+                string.IsNullOrEmpty(info?.Info?.Version))
+                continue;
 
-                if (string.IsNullOrEmpty(info?.Info?.VersionName) ||
-                    string.IsNullOrEmpty(info?.Info?.Version))
-                    continue;
+            // 搜索过滤
+            if (!string.IsNullOrEmpty(SearchKey) &&
+                !info.Info.VersionName.Contains(SearchKey, StringComparison.OrdinalIgnoreCase) &&
+                !info.Info.Version.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
+                continue;
 
-                // 搜索过滤
-                if (!string.IsNullOrEmpty(SearchKey) &&
-                    !info.Info.VersionName.Contains(SearchKey, StringComparison.OrdinalIgnoreCase) &&
-                    !info.Info.Version.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
-                    continue;
+            // 类型过滤
+            var type = info.Info.VersionType == MinecraftGameTypeVersion.Release ? "Release" : "Preview";
+            if (!string.IsNullOrEmpty(GameType) && GameType != type)
+                continue;
 
-                // 类型过滤
-                var type = info.Info.VersionType == MinecraftGameTypeVersion.Release ? "Release" : "Preview";
-                if (!string.IsNullOrEmpty(GameType) && GameType != type)
-                    continue;
-
-                lst.Add(info);
-            }
-            catch (FileNotFoundException ex)
-            {
-                DialogHost.Show(new DialogInfo()
-                {
-                    Title = "发生错误",
-                    Content = ex.Message,
-                    CloseButtonText = "好的"
-                });
-            }
-            catch (Exception ex)
-            {
-                // 可选：记录日志，但不要中断
-                Console.WriteLine($"加载版本目录失败: {dir}, 错误: {ex.Message}");
-            }
+            lst.Add(info);
         }
 
         // 更新 UI

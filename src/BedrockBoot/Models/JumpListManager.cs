@@ -35,14 +35,14 @@ public class JumpListManager
                 
                 Console.WriteLine($"添加任务栏快捷启动项 {v.Info.VersionName}");
             });
+
+            jumpList.AddCustomCategories(myToolsCategory);
+            jumpList.KnownCategoryToDisplay = JumpListKnownCategoryType.Frequent;
+
+            jumpList.Refresh();
         }
         catch
         {
         }
-
-        jumpList.AddCustomCategories(myToolsCategory);
-        jumpList.KnownCategoryToDisplay = JumpListKnownCategoryType.Frequent;
-
-        jumpList.Refresh();
     }
 }

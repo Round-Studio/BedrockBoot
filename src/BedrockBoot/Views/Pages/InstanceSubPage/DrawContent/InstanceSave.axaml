@@ -10,7 +10,7 @@
     <Grid RowDefinitions="Auto,*">
         <items:BorderCard Grid.Row="0"
                           Margin="20,8,20,10">
-            <Grid ColumnDefinitions="3*,Auto,7*">
+            <Grid ColumnDefinitions="4*,Auto,6*">
                 <DockPanel Grid.Column="0"
                            Margin="0,0,12,0">
                     <onePointControls:FontIcon Glyph="&#xEBDA;"

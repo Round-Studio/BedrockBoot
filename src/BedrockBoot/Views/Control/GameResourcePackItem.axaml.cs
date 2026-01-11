@@ -36,7 +36,6 @@ public partial class GameResourcePackItem : UserControl
         Card.ImageIcon = new Bitmap(ResourcePackManifest.PackIcon!);
         PackName.MinecraftText = ResourcePackManifest.Header.Name;
         PackDescription.MinecraftText = ResourcePackManifest.Header.Description;
-        PackType.Text = ResourcePackManifest.PackType.ToString();
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)

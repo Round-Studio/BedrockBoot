@@ -129,10 +129,18 @@ public class ResourcePackAnalysis
         var langFile = Path.Combine(textFolder, $"{lang}.lang");
 
         var langs = File.ReadAllLines(langFile);
-        return langs.First(t => t.Contains(langKey))
-            .Replace("#", "")
-            .Split('=')[1]
-            .Replace("\\n", "\n");
+
+        try
+        {
+            return langs.First(t => t.Contains(langKey))
+                .Replace("#", "")
+                .Split('=')[1]
+                .Replace("\\n", "\n");
+        }
+        catch
+        {
+            return langKey;
+        }
     }
 
     private static string FindBestMatchLanguage(List<string> supportedLanguages)

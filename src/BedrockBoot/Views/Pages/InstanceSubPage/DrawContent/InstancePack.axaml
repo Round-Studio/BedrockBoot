@@ -7,7 +7,7 @@
              xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstancePack">
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*,Auto">
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto,*,Auto">
             <items:BorderCard Grid.Column="0"
@@ -95,5 +95,13 @@
                          Name="LoadBox"
                          BigTitle="请稍后"
                          Message="正在加载包..."></notice:LoadCard>
+        
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*"
+              Margin="20,4,20,20">
+            <TextBlock Text="共 ??? 项"
+                       Name="NumberBox"
+                       Foreground="Gray"></TextBlock>
+        </Grid>
     </Grid>
 </UserControl>

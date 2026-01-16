@@ -50,6 +50,7 @@ public partial class InstancePack : UserControl
                 ResourcePackManager = new ResourcePackManager(VersionInfo);
                 ResourcePackManager.GetAllPack();
             }
+            ResourcePackManager.GetAllPack();
 
             var filteredPacks = ResourcePackManager.Packs
                 .Where(x => x != null && x.Header != null)

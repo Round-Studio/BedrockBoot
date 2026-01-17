@@ -9,5 +9,5 @@
   "isEnablePlugin": false,
   "isEnableToolsBox": false,
   "isEnableMouseLock": false,
-  "isEnableMcPackOpenWithBody": false
+  "isEnableMcPackOpenWithBody": true
 }

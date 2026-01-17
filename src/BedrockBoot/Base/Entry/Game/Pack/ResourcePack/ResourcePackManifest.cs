@@ -9,7 +9,13 @@ public class ResourcePackManifest
 {
     [JsonIgnore]
     public string? PackRootPath { get; set; }
-    [JsonIgnore] public string? PackIcon => Path.Combine(PackRootPath!, "pack_icon.png");
+
+    [JsonIgnore]
+    public string? PackIcon => File.Exists(Path.Combine(PackRootPath!, "pack_icon.png"))
+        ? Path.Combine(PackRootPath!, "pack_icon.png")
+        : File.Exists(Path.Combine(PackRootPath!, "pack.png"))
+            ? Path.Combine(PackRootPath!, "pack.png")
+            : string.Empty;
     [JsonIgnore]
     public ResourcePackType PackType { get; set; } = ResourcePackType.Unknown;
     

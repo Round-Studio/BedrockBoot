@@ -50,6 +50,7 @@ public partial class InstancePack : UserControl
                 ResourcePackManager = new ResourcePackManager(VersionInfo);
                 ResourcePackManager.GetAllPack();
             }
+            ResourcePackManager.GetAllPack();
 
             var filteredPacks = ResourcePackManager.Packs
                 .Where(x => x != null && x.Header != null)
@@ -62,6 +63,7 @@ public partial class InstancePack : UserControl
             {
                 NullBox.IsVisible = filteredPacks.Count == 0;
                 ScBox.IsVisible = false;
+                NumberBox.Text = $"共 {filteredPacks.Count} 项";
             });
             
             // 如果有包，添加它们

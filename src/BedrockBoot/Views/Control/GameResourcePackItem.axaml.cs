@@ -33,7 +33,8 @@ public partial class GameResourcePackItem : UserControl
 
     public void Update()
     {
-        Card.ImageIcon = new Bitmap(ResourcePackManifest.PackIcon!);
+        if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon!))
+            Card.ImageIcon = new Bitmap(ResourcePackManifest.PackIcon!);
         PackName.MinecraftText = ResourcePackManifest.Header.Name;
         PackDescription.MinecraftText = ResourcePackManifest.Header.Description;
     }

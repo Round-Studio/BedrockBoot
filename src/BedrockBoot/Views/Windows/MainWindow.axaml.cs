@@ -186,7 +186,8 @@ public partial class MainWindow : OnePointWindow
                             $"4. 禁止任何形式的盗版或作弊行为\n" +
                             $"5. 模组 / 资源包 使用风险自负\n" +
                             $"6. 与 Mojang / Microsoft 无关联\n" +
-                            $"7. 本软件为开源软件，使用和分发其副本源码请遵循开源协议 (GPL-v3)\n\n" +
+                            $"7. 本软件会修改注册表相关配置\n" +
+                            $"8. 本软件为开源软件，使用和分发其副本源码请遵循开源协议 (GPL-v3)\n\n" +
                             $"继续使用即为接受条款",
                         Title = "BedrockBoot 用户使用协议",
                         CloseButtonText = "我同意",

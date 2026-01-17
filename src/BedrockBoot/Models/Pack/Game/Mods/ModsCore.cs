@@ -35,7 +35,7 @@ public class ModsCore
         var open = VersionInfo.Config.IsConsole ? "1" : "0";
         File.WriteAllText(gameConf, $"console_open = {open}");
 
-        var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", "Minecraft.Windows.exe");
+        var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", VersionInfo.BodyFile);
         var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");
         var fullPath = Path.Combine(VersionInfo.VersionPath, "PreloadCpp.dll");
@@ -106,9 +106,13 @@ public class ModsCore
 
         PreLoadMods.ForEach(f =>
         {
-            if (!FileCheck.IsFileLocked(Path.Combine(preLoadPath, Path.GetFileName(f.File))))
+            var file = Path.Combine(preLoadPath, Path.GetFileName(f.File));
+            try
             {
-                File.Copy(f.File, Path.Combine(preLoadPath, Path.GetFileName(f.File)));
+                File.Copy(f.File, file);
+            }
+            catch
+            {
             }
         });
 

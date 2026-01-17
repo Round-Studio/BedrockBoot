@@ -38,43 +38,49 @@
                 <TextBlock Margin="5"
                            FontWeight="Bold"
                            FontSize="14">启动设置</TextBlock>
+        
+                <onePointControls:SettingExpander Header="启动设置"
+                                                  Description="实例的启动相关设置"
+                                                  Margin="5"
+                                                  Glyph="&#xECAD;">
+                    <StackPanel>
+                        <onePointControls:SettingCard Glyph="&#xEC06;"
+                                                      Header="参数"
+                                                      Description="启动游戏时的额外命令行参数"
+                                                      Classes="Item">
+                            <TextBox Width="200"
+                                     Name="InstanceArgs"
+                                     TextChanged="TextTypeConfig_OnChanged"></TextBox>
+                        </onePointControls:SettingCard>
                 
-                <onePointControls:SettingCard Margin="5"
-                                              Glyph="&#xEC06;"
-                                              Header="参数"
-                                              Description="启动游戏时的额外命令行参数">
-                    <TextBox Width="200"
-                             Name="InstanceArgs"
-                             TextChanged="TextTypeConfig_OnChanged"></TextBox>
-                </onePointControls:SettingCard>
+                        <onePointControls:SettingCard Glyph="&#xE70F;"
+                                                      Header="编辑模式"
+                                                      Description="启动基岩版的创作者编辑模式"
+                                                      Classes="Item">
+                            <ToggleSwitch Name="InstanceEdit"
+                                          IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
+                        </onePointControls:SettingCard>
                 
-                <onePointControls:SettingCard Margin="5"
-                                              Glyph="&#xE70F;"
-                                              Header="编辑模式"
-                                              Description="启动基岩版的创作者编辑模式">
-                    <ToggleSwitch Name="InstanceEdit"
-                                  IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
-                </onePointControls:SettingCard>
+                        <onePointControls:SettingCard Glyph="&#xE822;"
+                                                      Header="启用 Mods"
+                                                      Description="是否启用在出现游戏进程后自动注入 Mods"
+                                                      Classes="Item">
+                            <ToggleSwitch Name="InstanceMod"
+                                          IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
+                        </onePointControls:SettingCard>
                 
-                <onePointControls:SettingCard Margin="5"
-                                              Glyph="&#xE822;"
-                                              Header="启用 Mods"
-                                              Description="是否启用在出现游戏进程后自动注入 Mods">
-                    <ToggleSwitch Name="InstanceMod"
-                                  IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
-                </onePointControls:SettingCard>
-                
-                <onePointControls:SettingCard Margin="5"
-                                              Glyph="&#xE756;"
-                                              Header="控制台"
-                                              Description="启动时拉起游戏控制台">
-                    <ToggleSwitch Name="InstanceConsole"
-                                  IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
-                </onePointControls:SettingCard>
+                        <onePointControls:SettingCard Glyph="&#xE756;"
+                                                      Header="控制台"
+                                                      Description="启动时拉起游戏控制台"
+                                                      Classes="Item">
+                            <ToggleSwitch Name="InstanceConsole"
+                                          IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
+                        </onePointControls:SettingCard>
+                    </StackPanel>
+                </onePointControls:SettingExpander>
                 
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           IsVisible="False"
                            FontSize="14">高级设置</TextBlock>
                 
                 <onePointControls:SettingCard Margin="5"

@@ -175,7 +175,7 @@ public partial class InstanceControls : ISetting
                 shortcut.Arguments = arguments;
                 shortcut.WorkingDirectory = Path.GetDirectoryName(targetPath) ?? string.Empty;
                 shortcut.Description = $"BedrockBoot 快捷启动\n{VersionInfo.Info.VersionName}";
-                shortcut.IconLocation = $"{targetPath},1";
+                shortcut.IconLocation = $"{targetPath},{SourceList.MinecraftIconID}";
 
                 shortcut.Save();
                 
@@ -246,7 +246,7 @@ public partial class InstanceControls : ISetting
         link.SetArguments(arguments);
         link.SetWorkingDirectory(Path.GetDirectoryName(targetPath));
         link.SetDescription($"BedrockBoot 快捷启动 - {VersionInfo.Info.VersionName}");
-        link.SetIconLocation(targetPath, 1);
+        link.SetIconLocation(targetPath, SourceList.MinecraftIconID);
 
         // 保存快捷方式
         var persistFile = (IPersistFile)link;
@@ -275,7 +275,7 @@ $Shortcut.TargetPath = '{targetPath.Replace("'", "''")}'
 $Shortcut.Arguments = '{arguments.Replace("'", "''")}'
 $Shortcut.WorkingDirectory = '{Path.GetDirectoryName(targetPath)?.Replace("'", "''")}'
 $Shortcut.Description = 'BedrockBoot 快捷启动 - {VersionInfo.Info.VersionName.Replace("'", "''")}'
-$Shortcut.IconLocation = '{targetPath.Replace("'", "''")},1'
+$Shortcut.IconLocation = '{targetPath.Replace("'", "''")},{SourceList.MinecraftIconID}'
 $Shortcut.Save()
 ";
 
@@ -430,7 +430,7 @@ if %errorLevel% == 0 (
         
         string vbsContent = $@"
 Set UAC = CreateObject(""Shell.Application"")
-UAC.ShellExecute ""{targetPath}"", ""-jump """"{VersionInfo.VersionPath}"""""", """", ""runas"", 1
+UAC.ShellExecute ""{targetPath}"", ""-jump """"{VersionInfo.VersionPath}"""""", """", ""runas"", {SourceList.MinecraftIconID}
 ";
         
         File.WriteAllText(vbsPath, vbsContent);

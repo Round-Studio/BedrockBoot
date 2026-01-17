@@ -30,7 +30,7 @@ public class JumpListManager
                     new JumpListLink(Process.GetCurrentProcess().MainModule.FileName, v.Info.VersionName)
                     {
                         Arguments = $"-jump \"{v.VersionPath}\"",
-                        IconReference = new IconReference(Process.GetCurrentProcess().MainModule.FileName, 0),
+                        IconReference = new IconReference(Process.GetCurrentProcess().MainModule.FileName, SourceList.MinecraftIconID),
                     });
                 
                 Console.WriteLine($"添加任务栏快捷启动项 {v.Info.VersionName}");

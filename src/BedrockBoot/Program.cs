@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Avalonia.Platform;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Win32;
 using PeNet;
 using PeNet.FileParser;
@@ -35,6 +36,8 @@ sealed class Program
     {
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
+        
+        // OpenAgreement.RegisterAssociation();
 
         if (GlobalModel.Config.Data.IsConsole)
         {
@@ -121,8 +124,18 @@ sealed class Program
                     args.ForEach(Console.WriteLine);
 
                     ApplicationConfiguration.Initialize();
-                    var win = new LaunchWindow(args.ToList());
-                    System.Windows.Forms.Application.Run(win);
+                    var winJump = new LaunchWindow(args.ToList());
+                    System.Windows.Forms.Application.Run(winJump);
+                    
+                    result = true;
+                    break;
+                case "-open":
+                    Console.WriteLine("导入资源");
+                    args.ForEach(Console.WriteLine);
+
+                    ApplicationConfiguration.Initialize();
+                    var winOpen = new ImportResourcePack(args.ToList());
+                    System.Windows.Forms.Application.Run(winOpen);
                     
                     result = true;
                     break;

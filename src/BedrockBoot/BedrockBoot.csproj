@@ -68,5 +68,11 @@
       <Compile Update="Win32\Windows\LaunchWindow.cs">
         <SubType>Form</SubType>
       </Compile>
+      <Compile Update="Win32\Windows\ImportResourcePack.cs">
+        <SubType>Form</SubType>
+      </Compile>
+      <Compile Update="Win32\Controls\PackItem.cs">
+        <SubType>UserControl</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

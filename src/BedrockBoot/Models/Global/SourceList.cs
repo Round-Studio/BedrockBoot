@@ -4,6 +4,10 @@ namespace BedrockBoot.Models.Global;
 
 public class SourceList
 {
+    public static int MinecraftIconID => 2;
+    public static int PackIconID => 1;
+    public static int BodyIconID => 0;
+    
     public static Dictionary<string, string> UpdateDownloadSources { get; set; } = new Dictionary<string, string>()
     {
         { "Github", "{url}" },

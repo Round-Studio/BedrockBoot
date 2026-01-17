@@ -32,9 +32,10 @@ partial class PackItem
     /// </summary>
     private void InitializeComponent()
     {
-        PackIcon = new PictureBox();
-        PackName = new Label();
-        ((ISupportInitialize)PackIcon).BeginInit();
+        PackIcon = new System.Windows.Forms.PictureBox();
+        PackName = new System.Windows.Forms.Label();
+        PackDes = new System.Windows.Forms.Label();
+        ((System.ComponentModel.ISupportInitialize)PackIcon).BeginInit();
         SuspendLayout();
         // 
         // PackIcon
@@ -54,18 +55,29 @@ partial class PackItem
         PackName.TabIndex = 1;
         PackName.Text = "label1";
         // 
+        // PackDes
+        // 
+        PackDes.AutoSize = true;
+        PackDes.Location = new System.Drawing.Point(73, 20);
+        PackDes.Name = "PackDes";
+        PackDes.Size = new System.Drawing.Size(43, 17);
+        PackDes.TabIndex = 2;
+        PackDes.Text = "label1";
+        // 
         // PackItem
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-        AutoScaleMode = AutoScaleMode.Font;
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        Controls.Add(PackDes);
         Controls.Add(PackName);
         Controls.Add(PackIcon);
-        Name = "PackItem";
         Size = new System.Drawing.Size(612, 70);
-        ((ISupportInitialize)PackIcon).EndInit();
+        ((System.ComponentModel.ISupportInitialize)PackIcon).EndInit();
         ResumeLayout(false);
         PerformLayout();
     }
+
+    private System.Windows.Forms.Label PackDes;
 
     #endregion
 

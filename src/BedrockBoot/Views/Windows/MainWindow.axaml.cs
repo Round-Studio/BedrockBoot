@@ -14,6 +14,7 @@ using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Pages;
 using BedrockLauncher.Core;
@@ -65,6 +66,13 @@ public partial class MainWindow : OnePointWindow
             GlobalModel.FunctionOption = new JsonResourceEntity()
                 .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json")
                 .Result;
+
+#if RELEASE
+            if (GlobalModel.FunctionOption.IsEnableMcPackOpenWithBody)
+                OpenAgreement.RegisterAssociation();
+#else
+            OpenAgreement.RegisterAssociation();
+#endif
 
             try
             {

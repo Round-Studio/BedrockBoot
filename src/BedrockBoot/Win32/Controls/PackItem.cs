@@ -11,6 +11,8 @@ public partial class PackItem : UserControl
         InitializeComponent();
 
         PackName.Text = maf.Header.Name;
+        PackDes.Text = maf.Header.Description;
         PackIcon.Image = new Bitmap(maf.PackIcon);
+        PackIcon.SizeMode = PictureBoxSizeMode.StretchImage;
     }
 }

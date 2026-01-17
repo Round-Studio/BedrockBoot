@@ -36,8 +36,6 @@ sealed class Program
     {
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
-        
-        // OpenAgreement.RegisterAssociation();
 
         if (GlobalModel.Config.Data.IsConsole)
         {

@@ -14,4 +14,5 @@ public class FunctionOptionEntry
     [JsonPropertyName("isEnablePlugin")] public bool IsEnablePlugin { get; set; }
     [JsonPropertyName("isEnableToolsBox")] public bool IsEnableToolsBox { get; set; }
     [JsonPropertyName("isEnableMouseLock")] public bool IsEnableMouseLock { get; set; }
+    [JsonPropertyName("isEnableMcPackOpenWithBody")] public bool IsEnableMcPackOpenWithBody { get; set; }
 }

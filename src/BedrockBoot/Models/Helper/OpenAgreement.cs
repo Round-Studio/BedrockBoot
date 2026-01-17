@@ -14,6 +14,11 @@ public class OpenAgreement
         using (var extKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\.mcpack"))
         {
             extKey.SetValue("", progId);
+        }        
+        
+        using (var extKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\.mcaddon"))
+        {
+            extKey.SetValue("", progId);
         }
 
         using (var progIdKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{progId}"))

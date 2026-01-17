@@ -8,5 +8,6 @@
   "isEnableSettingColor": true,
   "isEnablePlugin": false,
   "isEnableToolsBox": false,
-  "isEnableMouseLock": false
+  "isEnableMouseLock": false,
+  "isEnableMcPackOpenWithBody": false
 }

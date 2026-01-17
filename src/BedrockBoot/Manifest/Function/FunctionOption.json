@@ -7,5 +7,6 @@
   "isEnableSettingBackground": true,
   "isEnableSettingColor": true,
   "isEnablePlugin": false,
-  "isEnableToolsBox": false
+  "isEnableToolsBox": false,
+  "isEnableMouseLock": false
 }

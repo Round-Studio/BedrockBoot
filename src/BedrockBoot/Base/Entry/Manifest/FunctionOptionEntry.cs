@@ -13,4 +13,5 @@ public class FunctionOptionEntry
     [JsonPropertyName("isEnableSettingColor")] public bool IsEnableSettingColor { get; set; }
     [JsonPropertyName("isEnablePlugin")] public bool IsEnablePlugin { get; set; }
     [JsonPropertyName("isEnableToolsBox")] public bool IsEnableToolsBox { get; set; }
+    [JsonPropertyName("isEnableMouseLock")] public bool IsEnableMouseLock { get; set; }
 }

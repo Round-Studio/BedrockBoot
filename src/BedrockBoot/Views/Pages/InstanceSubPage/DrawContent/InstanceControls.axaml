@@ -13,6 +13,7 @@
                            FontSize="14">辅助功能</TextBlock>
                 
                 <onePointControls:SettingExpander Margin="5"
+                                                  Name="MouseLock"
                                                   Header="鼠标锁"
                                                   Description="针对 UWP 版本的 Bedrock 进行的鼠标优化"
                                                   Glyph="&#xE72E;">

@@ -38,14 +38,14 @@ public partial class DialogAddGameFolderContent : UserControl
             try
             {
                 string path = folders[0].Path.LocalPath; // 本地文件系统路径
-                Console.WriteLine($"选择路径：{path}");
+                Console.WriteLine($@"选择路径：{path}");
 
                 PathInputBox.Text = path;
                 PathNameInputBox.Text = Path.GetFileName(Path.GetDirectoryName(path));
             }
             catch
             {
-                Console.WriteLine($"添加目录所选的路径无效");
+                Console.WriteLine($@"添加目录所选的路径无效");
                 DialogHost.Close();
                 DialogHost.Show(new DialogInfo()
                 {

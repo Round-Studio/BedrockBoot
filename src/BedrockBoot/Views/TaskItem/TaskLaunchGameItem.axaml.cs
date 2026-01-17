@@ -52,7 +52,7 @@ public partial class TaskLaunchGameItem : UserControl
         LaunchCompleted = launchCompleted;
         CardTitle.Text = $"启动游戏 {VersionInfo.Info.VersionName}";
         Console.WriteLine(
-            $"正在启动：{VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) Type：{VersionInfo.Info.VersionType} {VersionInfo.Info.BuildType}");
+            $@"正在启动：{VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) Type：{VersionInfo.Info.VersionType} {VersionInfo.Info.BuildType}");
 
         Task.Run(async () =>
         {
@@ -124,7 +124,7 @@ public partial class TaskLaunchGameItem : UserControl
                 // 设置游戏启动回调
                 lc.Launched = (process) =>
                 {
-                    Console.WriteLine($"游戏已启动，进程ID: {process.Id}");
+                    Console.WriteLine($@"游戏已启动，进程ID: {process.Id}");
                     // 可以在这里执行游戏启动后的其他操作
                     MinecraftProcess = process;
                 };
@@ -135,11 +135,11 @@ public partial class TaskLaunchGameItem : UserControl
             catch (TaskCanceledException)
             {
                 // 用户取消操作
-                Console.WriteLine("启动任务被取消");
+                Console.WriteLine(@"启动任务被取消");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"启动失败: {ex.Message}");
+                Console.WriteLine($@"启动失败: {ex.Message}");
                 Dispatcher.UIThread.Post(() => LaunchCompleted?.Invoke());
             }
         });
@@ -151,9 +151,9 @@ public partial class TaskLaunchGameItem : UserControl
         {
             await process.WaitForExitAsync(_cancellationTokenSource.Token);
 
-            Console.WriteLine($"游戏进程 PID：{MinecraftProcess.Id} 已退出");
+            Console.WriteLine($@"游戏进程 PID：{MinecraftProcess.Id} 已退出");
             // 进程正常退出
-            Console.WriteLine($"进程已退出，退出代码: {process.ExitCode}");
+            Console.WriteLine($@"进程已退出，退出代码: {process.ExitCode}");
             Dispatcher.UIThread.Post(() => LaunchCompleted?.Invoke());
         }
         catch (TaskCanceledException)
@@ -168,7 +168,7 @@ public partial class TaskLaunchGameItem : UserControl
 
     private void OnProcessExited(object sender, EventArgs e)
     {
-        Console.WriteLine($"进程已退出 (事件触发)，退出代码: {MinecraftProcess?.ExitCode}");
+        Console.WriteLine($@"进程已退出 (事件触发)，退出代码: {MinecraftProcess?.ExitCode}");
 
         // 确保在UI线程调用回调
         Dispatcher.UIThread.Post(() => { LaunchCompleted?.Invoke(); });
@@ -207,11 +207,11 @@ public partial class TaskLaunchGameItem : UserControl
             try
             {
                 MinecraftProcess.Kill(true);
-                Console.WriteLine($"游戏进程 PID：{MinecraftProcess.Id} 已退出");
+                Console.WriteLine($@"游戏进程 PID：{MinecraftProcess.Id} 已退出");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"终止进程时出错: {ex.Message}");
+                Console.WriteLine($@"终止进程时出错: {ex.Message}");
             }
         }
 

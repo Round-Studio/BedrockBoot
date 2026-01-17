@@ -50,7 +50,7 @@ public partial class TaskImportGamePackItem : UserControl
             if (Math.Abs(currentProgress - lastProgress) > 0.0001) // 浮点数比较容差
             {
                 lastProgress = currentProgress;
-                Console.WriteLine($"{s.StatusMessage} - {currentProgress:F2} %");
+                Console.WriteLine($@"{s.StatusMessage} - {currentProgress:F2} %");
 
                 Dispatcher.UIThread.Invoke(() =>
                 {

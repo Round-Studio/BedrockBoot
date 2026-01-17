@@ -90,9 +90,9 @@ namespace BedrockBoot.Models.Download
                 var fileInfo = await GetFileInfoAsync(encodedUrl, cancellationToken);
                 long? contentLength = fileInfo.contentLength;
                 
-                Console.WriteLine($"开始下载: {url}");
-                Console.WriteLine($"文件大小: {(contentLength.HasValue ? FormatBytes(contentLength.Value) : "未知")}");
-                Console.WriteLine($"保存到: {filePath}");
+                Console.WriteLine($@"开始下载: {url}");
+                Console.WriteLine($@"文件大小: {(contentLength.HasValue ? FormatBytes(contentLength.Value) : "未知")}");
+                Console.WriteLine($@"保存到: {filePath}");
                 
                 // 创建目录
                 var directory = Path.GetDirectoryName(filePath);
@@ -106,12 +106,12 @@ namespace BedrockBoot.Models.Download
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
-                Console.WriteLine("下载已取消");
+                Console.WriteLine(@"下载已取消");
                 return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"下载失败: {ex.Message}");
+                Console.WriteLine($@"下载失败: {ex.Message}");
                 throw new Exception($"下载失败: {ex.Message}", ex);
             }
         }
@@ -138,7 +138,7 @@ namespace BedrockBoot.Models.Download
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"HEAD请求失败，尝试GET: {ex.Message}");
+                Console.WriteLine($@"HEAD请求失败，尝试GET: {ex.Message}");
             }
             
             // HEAD失败，尝试GET请求前几个字节
@@ -158,7 +158,7 @@ namespace BedrockBoot.Models.Download
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"带Range的GET请求失败: {ex.Message}");
+                Console.WriteLine($@"带Range的GET请求失败: {ex.Message}");
             }
             
             return (null, false);
@@ -205,7 +205,7 @@ namespace BedrockBoot.Models.Download
                 });
             }
             
-            Console.WriteLine($"下载完成: {FormatBytes(totalDownloaded)}");
+            Console.WriteLine($@"下载完成: {FormatBytes(totalDownloaded)}");
             return true;
         }
 

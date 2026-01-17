@@ -78,11 +78,11 @@ public partial class MainWindow : OnePointWindow
                     }
                 };
                 await GlobalModel.BedrockCore.InitAsync();
-                Console.WriteLine("初始化核心完毕");
+                Console.WriteLine(@"初始化核心完毕");
             }
             catch(Exception ex)
             {
-                Console.WriteLine("不支持该系统");
+                Console.WriteLine(@"不支持该系统");
                 DialogHost.Show(new DialogInfo()
                 {
                     Title = "当前系统不支持",
@@ -101,11 +101,11 @@ public partial class MainWindow : OnePointWindow
 #else
                 OpenProtocol();
 #endif*/
-                Console.WriteLine("版本列表获取完毕");
+                Console.WriteLine(@"版本列表获取完毕");
             }
             catch (InvalidOperationException invEx)
             {
-                Console.WriteLine("无法连接至清单服务器");
+                Console.WriteLine(@"无法连接至清单服务器");
                 DialogHost.Show(new DialogInfo()
                 {
                     Title = "Emm...",
@@ -116,11 +116,11 @@ public partial class MainWindow : OnePointWindow
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"发生初始化错误：{ex}");
+                Console.WriteLine($@"发生初始化错误：{ex}");
 
                 if (!GlobalModel.BedrockCore.GetWindowsDevelopmentState())
                 {
-                    Console.WriteLine("无法自动打开开发者模式");
+                    Console.WriteLine(@"无法自动打开开发者模式");
                     DialogHost.Show(new DialogInfo()
                     {
                         Title = "开发者模式",
@@ -131,7 +131,7 @@ public partial class MainWindow : OnePointWindow
             }
             finally
             {
-                Console.WriteLine("跳转主页面.jpg");
+                Console.WriteLine(@"跳转主页面.jpg");
                 Dispatcher.UIThread.Invoke(() => MainFrame.NavigateTo(new MainPage()));
 
 #if DEBUG
@@ -215,7 +215,7 @@ public partial class MainWindow : OnePointWindow
             await ProtocolService.WriteResponseAsync(context, 200, "ok");
         });
                 
-        Console.WriteLine("协议服务器启动成功！");
+        Console.WriteLine(@"协议服务器启动成功！");
     }
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)

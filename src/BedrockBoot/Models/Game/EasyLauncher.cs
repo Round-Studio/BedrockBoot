@@ -73,7 +73,7 @@ public class EasyLauncher
                 MinecraftBuildType = VersionInfo.Info.BuildType,
                 RegisterProgress = new Progress<DeploymentProgress>((progress) =>
                 {
-                    Console.WriteLine($"registerProcess_percent: {progress.percentage} - {progress.state}");
+                    Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
                     
                     // 使用回调更新进度，而不是直接操作 UI
                     UpdateProgress?.Invoke($"步骤：{progress.state}", progress.percentage);
@@ -88,7 +88,7 @@ public class EasyLauncher
 
             if (MinecraftProcess != null && !MinecraftProcess.HasExited)
             {
-                Console.WriteLine($"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
+                Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
                 
                 // 触发游戏启动回调
                 Launched?.Invoke(MinecraftProcess);
@@ -117,14 +117,14 @@ public class EasyLauncher
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"启动游戏时发生错误: {ex}");
+            Console.WriteLine($@"启动游戏时发生错误: {ex}");
             LaunchCompleted?.Invoke();
         }
     }
 
     private void OnProcessExited(object sender, EventArgs e)
     {
-        Console.WriteLine("游戏进程已退出");
+        Console.WriteLine(@"游戏进程已退出");
         LaunchCompleted?.Invoke();
     }
 
@@ -133,12 +133,12 @@ public class EasyLauncher
         try
         {
             await Task.Run(() => process.WaitForExit());
-            Console.WriteLine("游戏进程已退出（异步等待）");
+            Console.WriteLine(@"游戏进程已退出（异步等待）");
             LaunchCompleted?.Invoke();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"等待进程退出时发生错误: {ex.Message}");
+            Console.WriteLine($@"等待进程退出时发生错误: {ex.Message}");
             LaunchCompleted?.Invoke();
         }
     }

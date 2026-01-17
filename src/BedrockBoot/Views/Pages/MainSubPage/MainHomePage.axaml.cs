@@ -198,7 +198,7 @@ public partial class MainHomePage : BedrockBootPage
     private void HandleUIUpdateError(Exception ex)
     {
         // 这里可以添加日志记录
-        Console.WriteLine($"UI更新失败: {ex.Message}");
+        Console.WriteLine($@"UI更新失败: {ex.Message}");
         
         // 设置错误状态
         GameTitle.Text = "无可用游戏版本";

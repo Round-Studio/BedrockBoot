@@ -19,7 +19,7 @@ public class CheckUpdate
         var releases = await github.Repository.Release.GetLatest(owner, repo);
 
         var latest = releases;
-        Console.WriteLine($"最新版本: {latest.TagName}");
+        Console.WriteLine($@"最新版本: {latest.TagName}");
 
         if (!latest.TagName.EndsWith(Assembly.GetExecutingAssembly().GetName().Version.ToString()))
         {
@@ -27,7 +27,7 @@ public class CheckUpdate
         }
         else
         {
-            Console.WriteLine($"当前为最新版本 {latest.TagName}，无需启动更新。");
+            Console.WriteLine($@"当前为最新版本 {latest.TagName}，无需启动更新。");
         }
 
         return null;

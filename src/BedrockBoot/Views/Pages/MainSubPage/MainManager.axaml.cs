@@ -81,7 +81,7 @@ public partial class MainManager : BedrockBootPage
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"初始化配置文件监听失败: {ex.Message}");
+            Console.WriteLine($@"初始化配置文件监听失败: {ex.Message}");
         }
     }
 
@@ -106,14 +106,14 @@ public partial class MainManager : BedrockBootPage
                 // 在主线程中更新UI
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    Console.WriteLine($"检测到文件变化: {e.ChangeType} - {e.FullPath}");
+                    Console.WriteLine($@"检测到文件变化: {e.ChangeType} - {e.FullPath}");
                     UpdateGameList();
                 });
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"配置文件变化处理失败: {ex.Message}");
+            Console.WriteLine($@"配置文件变化处理失败: {ex.Message}");
         }
     }
 
@@ -387,7 +387,7 @@ public partial class MainManager : BedrockBootPage
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"刷新实例失败：{ex}");
+                Console.WriteLine($@"刷新实例失败：{ex}");
             }
         }
     }

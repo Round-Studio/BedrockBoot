@@ -39,7 +39,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
         var download = new SingleThreadDownloader(1, 1024);
 
         var url = ModFile.DownloadUrl;
-        Console.WriteLine($"下载文件：{url}");
+        Console.WriteLine($@"下载文件：{url}");
         await download.DownloadAsync(url, savePath, new Progress<SingleThreadDownloader.DownloadProgress>((xprogress =>
         {
             Dispatcher.UIThread.Invoke(() =>

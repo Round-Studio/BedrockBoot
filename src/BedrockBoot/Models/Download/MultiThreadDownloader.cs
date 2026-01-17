@@ -65,7 +65,7 @@ public class MultiThreadDownloader : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"HEAD 请求失败: {ex.Message}");
+            Console.WriteLine($@"HEAD 请求失败: {ex.Message}");
         }
 
         try
@@ -83,7 +83,7 @@ public class MultiThreadDownloader : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"带 Range 的 GET 请求失败: {ex.Message}");
+            Console.WriteLine($@"带 Range 的 GET 请求失败: {ex.Message}");
         }
 
         try
@@ -98,7 +98,7 @@ public class MultiThreadDownloader : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"完整 GET 请求失败: {ex.Message}");
+            Console.WriteLine($@"完整 GET 请求失败: {ex.Message}");
         }
 
         return (-1, false);
@@ -147,26 +147,26 @@ public class MultiThreadDownloader : IDisposable
 
             if (fileSize > 0 && supportsRange)
             {
-                Console.WriteLine($"服务器支持断点续传且文件大小已知 ({fileSize} bytes)，使用多线程下载...");
+                Console.WriteLine($@"服务器支持断点续传且文件大小已知 ({fileSize} bytes)，使用多线程下载...");
                 await DownloadMultiPartAsync(uri, filePath, fileSize, progress, cancellationToken);
             }
             else if (fileSize > 0 && !supportsRange)
             {
-                Console.WriteLine($"文件大小已知 ({fileSize} bytes) 但服务器不支持断点续传，使用单线程下载...");
+                Console.WriteLine($@"文件大小已知 ({fileSize} bytes) 但服务器不支持断点续传，使用单线程下载...");
                 await DownloadSinglePartAsync(uri, filePath, fileSize, progress, cancellationToken);
             }
             else
             {
-                Console.WriteLine("无法获取文件大小或服务器不支持必要的功能，使用流式单线程下载 (无法显示进度百分比)...");
+                Console.WriteLine(@"无法获取文件大小或服务器不支持必要的功能，使用流式单线程下载 (无法显示进度百分比)...");
                 await DownloadAsStreamAsync(uri, filePath, progress, cancellationToken);
             }
 
-            Console.WriteLine($"文件已成功下载并保存到: {filePath}");
+            Console.WriteLine($@"文件已成功下载并保存到: {filePath}");
             return true;
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            Console.WriteLine("下载已被取消");
+            Console.WriteLine(@"下载已被取消");
             return false;
         }
         catch (System.Threading.Tasks.TaskCanceledException ex) when (ex.InnerException is TimeoutException || (ex.InnerException == null && ex.CancellationToken == default))
@@ -186,7 +186,7 @@ public class MultiThreadDownloader : IDisposable
     private async System.Threading.Tasks.Task DownloadMultiPartAsync(Uri uri, string filePath, long fileSize, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
     {
         var actualParts = _maxConcurrency;
-        Console.WriteLine($"使用 {actualParts} 个分段进行下载 (文件大小: {fileSize} bytes)");
+        Console.WriteLine($@"使用 {actualParts} 个分段进行下载 (文件大小: {fileSize} bytes)");
 
         // 创建临时文件
         var tempDir = Path.GetTempPath();
@@ -248,13 +248,13 @@ public class MultiThreadDownloader : IDisposable
             try { await monitorTask; } catch { /* 忽略取消异常 */ }
 
             // 合并临时文件
-            Console.WriteLine("开始合并临时文件...");
+            Console.WriteLine(@"开始合并临时文件...");
             await MergeTempFilesAsync(tempFiles, filePath, cancellationToken);
 
             // 报告最终进度
             progressManager.ReportFinalProgress();
 
-            Console.WriteLine("文件合并完成");
+            Console.WriteLine(@"文件合并完成");
         }
         catch (Exception)
         {
@@ -285,7 +285,7 @@ public class MultiThreadDownloader : IDisposable
             }
             catch (Exception ex) when (retry < maxRetries)
             {
-                Console.WriteLine($"分段 {partIndex} 下载失败，第 {retry + 1} 次重试: {ex.Message}");
+                Console.WriteLine($@"分段 {partIndex} 下载失败，第 {retry + 1} 次重试: {ex.Message}");
                 
                 // 从进度管理中减去已下载的部分
                 progressManager.SubtractDownloaded(downloadInfo.Downloaded);
@@ -353,12 +353,12 @@ public class MultiThreadDownloader : IDisposable
                 
                 if (speed < 1024 && partDownloaded < (end - start + 1) * 0.9)
                 {
-                    Console.WriteLine($"分段 {partIndex} 下载速度较慢: {speed:F2} B/s");
+                    Console.WriteLine($@"分段 {partIndex} 下载速度较慢: {speed:F2} B/s");
                 }
             }
         }
 
-        Console.WriteLine($"分段 {partIndex} 下载完成: {partDownloaded} bytes, 耗时: {stopwatch.Elapsed.TotalSeconds:F2}s");
+        Console.WriteLine($@"分段 {partIndex} 下载完成: {partDownloaded} bytes, 耗时: {stopwatch.Elapsed.TotalSeconds:F2}s");
     }
 
     private async System.Threading.Tasks.Task MonitorDownloadProgress(PartDownloadInfo[] downloadInfos, CancellationToken cancellationToken)
@@ -378,10 +378,10 @@ public class MultiThreadDownloader : IDisposable
                 
                 if (stalledParts.Any())
                 {
-                    Console.WriteLine($"警告: 检测到 {stalledParts.Count} 个分段下载停滞:");
+                    Console.WriteLine($@"警告: 检测到 {stalledParts.Count} 个分段下载停滞:");
                     foreach (var info in stalledParts)
                     {
-                        Console.WriteLine($"  分段 {info.PartIndex}: 已下载 {info.Downloaded}/{info.End - info.Start + 1} bytes, 最后活动: {info.LastActivity:HH:mm:ss}");
+                        Console.WriteLine($@"  分段 {info.PartIndex}: 已下载 {info.Downloaded}/{info.End - info.Start + 1} bytes, 最后活动: {info.LastActivity:HH:mm:ss}");
                     }
                 }
             }
@@ -391,7 +391,7 @@ public class MultiThreadDownloader : IDisposable
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"监控任务出错: {ex.Message}");
+                Console.WriteLine($@"监控任务出错: {ex.Message}");
             }
         }
     }
@@ -473,7 +473,7 @@ public class MultiThreadDownloader : IDisposable
                         if (_totalBytes > 0)
                         {
                             var percentage = (double)downloaded / _totalBytes * 100;
-                            Console.WriteLine($"进度: {downloaded}/{_totalBytes} bytes ({percentage:F2}%)");
+                            Console.WriteLine($@"进度: {downloaded}/{_totalBytes} bytes ({percentage:F2}%)");
                         }
                     }
                 }
@@ -541,7 +541,7 @@ public class MultiThreadDownloader : IDisposable
         for (int i = 0; i < result.Count; i++)
         {
             var (start, end) = result[i];
-            Console.WriteLine($"分段 {i}: {start}-{end}, 大小: {end - start + 1} bytes");
+            Console.WriteLine($@"分段 {i}: {start}-{end}, 大小: {end - start + 1} bytes");
         }
 
         return result;
@@ -561,7 +561,7 @@ public class MultiThreadDownloader : IDisposable
             }
             catch (Exception ex) when (retry < maxRetries)
             {
-                Console.WriteLine($"分段 {partIndex} 下载失败，第 {retry + 1} 次重试: {ex.Message}");
+                Console.WriteLine($@"分段 {partIndex} 下载失败，第 {retry + 1} 次重试: {ex.Message}");
                 
                 // 重置下载信息
                 downloadInfo.Downloaded = 0;
@@ -625,7 +625,7 @@ public class MultiThreadDownloader : IDisposable
                 
                 if (speed < 1024 && partDownloaded < (end - start + 1) * 0.9)
                 {
-                    Console.WriteLine($"分段 {partIndex} 下载速度较慢: {speed:F2} B/s");
+                    Console.WriteLine($@"分段 {partIndex} 下载速度较慢: {speed:F2} B/s");
                 }
             }
             
@@ -633,7 +633,7 @@ public class MultiThreadDownloader : IDisposable
             reportProgress(false);
         }
 
-        Console.WriteLine($"分段 {partIndex} 下载完成: {partDownloaded} bytes, 耗时: {stopwatch.Elapsed.TotalSeconds:F2}s");
+        Console.WriteLine($@"分段 {partIndex} 下载完成: {partDownloaded} bytes, 耗时: {stopwatch.Elapsed.TotalSeconds:F2}s");
     }
 
     private HttpClient CreatePartHttpClient()
@@ -756,7 +756,7 @@ public class MultiThreadDownloader : IDisposable
         {
             cancellationToken.ThrowIfCancellationRequested();
         
-            Console.WriteLine($"正在合并文件: {fileInfo.FullName}, 大小: {fileInfo.Length} bytes");
+            Console.WriteLine($@"正在合并文件: {fileInfo.FullName}, 大小: {fileInfo.Length} bytes");
         
             using var inputStream = new BufferedStream(
                 new FileStream(fileInfo.FullName, FileMode.Open,
@@ -789,7 +789,7 @@ public class MultiThreadDownloader : IDisposable
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"删除临时文件失败 {tempFile}: {ex.Message}");
+                    Console.WriteLine($@"删除临时文件失败 {tempFile}: {ex.Message}");
                 }
             }
         }

@@ -37,10 +37,10 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             try
             {
                 var path = IsolationCore.GetInstanceConfigRootPath(VersionInfo);
-                Console.WriteLine($"即将迁移文件夹：{path}");
+                Console.WriteLine($@"即将迁移文件夹：{path}");
             
                 var files = Directory.GetFiles(path,"*", SearchOption.AllDirectories);
-                Console.WriteLine($"总数目：{files.Length}");
+                Console.WriteLine($@"总数目：{files.Length}");
 
                 CopyDirectory(path, PathsList.GamePublicRootPath, true);
                 
@@ -55,7 +55,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"迁移过程中发生错误：{ex.Message}");
+                Console.WriteLine($@"迁移过程中发生错误：{ex.Message}");
                 // 可以选择在这里显示错误信息给用户
             }
         });
@@ -89,7 +89,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"复制文件 {file.Name} 时出错: {ex.Message}");
+                Console.WriteLine($@"复制文件 {file.Name} 时出错: {ex.Message}");
                 // 继续处理其他文件
             }
         }
@@ -106,7 +106,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"复制目录 {subdir.Name} 时出错: {ex.Message}");
+                    Console.WriteLine($@"复制目录 {subdir.Name} 时出错: {ex.Message}");
                     // 继续处理其他目录
                 }
             }
@@ -129,7 +129,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             }
             catch (IOException ex) when (retry < maxRetries - 1)
             {
-                Console.WriteLine($"删除目录时出错 (尝试 {retry + 1}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"删除目录时出错 (尝试 {retry + 1}/{maxRetries}): {ex.Message}");
                 
                 // 如果文件被占用，等待后重试
                 if (ex.Message.Contains("被另一个进程使用") || ex.Message.Contains("正在使用"))
@@ -145,7 +145,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             }
             catch (UnauthorizedAccessException ex) when (retry < maxRetries - 1)
             {
-                Console.WriteLine($"权限错误 (尝试 {retry + 1}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"权限错误 (尝试 {retry + 1}/{maxRetries}): {ex.Message}");
                 
                 // 尝试重置文件属性
                 ResetFileAttributes(path);
@@ -154,7 +154,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
         }
         
         // 如果所有重试都失败，记录日志但不抛出异常
-        Console.WriteLine($"无法删除目录: {path}");
+        Console.WriteLine($@"无法删除目录: {path}");
     }
     
     // 手动删除目录内容

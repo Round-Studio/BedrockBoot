@@ -116,14 +116,14 @@ public class PEFileValidator
         {
             if (!File.Exists(filePath))
             {
-                Console.WriteLine($"文件不存在: {filePath}");
+                Console.WriteLine($@"文件不存在: {filePath}");
                 return false;
             }
 
             var fileInfo = new FileInfo(filePath);
             if (fileInfo.Length < 64)
             {
-                Console.WriteLine($"文件太小，不是一个有效的PE文件: {filePath}");
+                Console.WriteLine($@"文件太小，不是一个有效的PE文件: {filePath}");
                 return false;
             }
 
@@ -134,7 +134,7 @@ public class PEFileValidator
 
                 if (dosHeader.e_magic != DOS_SIGNATURE)
                 {
-                    Console.WriteLine($"DOS签名无效: 0x{dosHeader.e_magic:X4} (期望: 0x{DOS_SIGNATURE:X4}) - {filePath}");
+                    Console.WriteLine($@"DOS签名无效: 0x{dosHeader.e_magic:X4} (期望: 0x{DOS_SIGNATURE:X4}) - {filePath}");
                     return false;
                 }
 
@@ -145,7 +145,7 @@ public class PEFileValidator
                 // PE头通常不会在DOS头（64字节）之前，也不会超出文件范围
                 if (e_lfanew < 0x40 || e_lfanew >= fileInfo.Length)
                 {
-                    Console.WriteLine($"PE头偏移无效或超出文件范围: {e_lfanew} (文件大小: {fileInfo.Length}) - {filePath}");
+                    Console.WriteLine($@"PE头偏移无效或超出文件范围: {e_lfanew} (文件大小: {fileInfo.Length}) - {filePath}");
                     return false;
                 }
 
@@ -154,7 +154,7 @@ public class PEFileValidator
                 uint peSignature = br.ReadUInt32();
                 if (peSignature != PE_SIGNATURE)
                 {
-                    Console.WriteLine($"PE签名无效: 0x{peSignature:X8} (期望: 0x{PE_SIGNATURE:X8}) - {filePath}");
+                    Console.WriteLine($@"PE签名无效: 0x{peSignature:X8} (期望: 0x{PE_SIGNATURE:X8}) - {filePath}");
                     return false;
                 }
 
@@ -163,13 +163,13 @@ public class PEFileValidator
                 if (fileHeader.Machine != IMAGE_FILE_MACHINE_AMD64)
                 {
                     Console.WriteLine(
-                        $"机器类型不是64位: 0x{fileHeader.Machine:X4} (期望: 0x{IMAGE_FILE_MACHINE_AMD64:X4}) - {filePath}");
+                        $@"机器类型不是64位: 0x{fileHeader.Machine:X4} (期望: 0x{IMAGE_FILE_MACHINE_AMD64:X4}) - {filePath}");
                     return false;
                 }
 
                 if (fileHeader.NumberOfSections == 0)
                 {
-                    Console.WriteLine($"区段数量为0，不是一个有效的PE文件: {filePath}");
+                    Console.WriteLine($@"区段数量为0，不是一个有效的PE文件: {filePath}");
                     return false;
                 }
 
@@ -177,7 +177,7 @@ public class PEFileValidator
                 if (optionalHeaderMagic != NT_OPTIONAL_64_MAGIC)
                 {
                     Console.WriteLine(
-                        $"可选头魔数不是64位: 0x{optionalHeaderMagic:X4} (期望: 0x{NT_OPTIONAL_64_MAGIC:X4}) - {filePath}");
+                        $@"可选头魔数不是64位: 0x{optionalHeaderMagic:X4} (期望: 0x{NT_OPTIONAL_64_MAGIC:X4}) - {filePath}");
                     return false;
                 }
 
@@ -185,35 +185,35 @@ public class PEFileValidator
 
                 if (optionalHeader.Subsystem == 0 || optionalHeader.Subsystem > 14)
                 {
-                    Console.WriteLine($"子系统类型无效: {optionalHeader.Subsystem} - {filePath}");
+                    Console.WriteLine($@"子系统类型无效: {optionalHeader.Subsystem} - {filePath}");
                     return false;
                 }
 
                 if (optionalHeader.ImageBase == 0)
                 {
-                    Console.WriteLine($"镜像基址为0 - {filePath}");
+                    Console.WriteLine($@"镜像基址为0 - {filePath}");
                     return false;
                 }
 
                 if (optionalHeader.AddressOfEntryPoint == 0)
                 {
-                    Console.WriteLine($"入口点地址为0 - {filePath}");
+                    Console.WriteLine($@"入口点地址为0 - {filePath}");
                     return false;
                 }
 
                 if (!ValidateSections(br, fileHeader.NumberOfSections, (int)fileInfo.Length))
                 {
-                    Console.WriteLine($"区段信息无效: {filePath}");
+                    Console.WriteLine($@"区段信息无效: {filePath}");
                     return false;
                 }
 
-                Console.WriteLine($"64位PE文件验证通过: {filePath}");
+                Console.WriteLine($@"64位PE文件验证通过: {filePath}");
                 return true;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"验证64位PE文件时发生错误: {ex.Message}");
+            Console.WriteLine($@"验证64位PE文件时发生错误: {ex.Message}");
             return false;
         }
     }
@@ -346,13 +346,13 @@ public class PEFileValidator
                     sectionHeader.PointerToRawData + sectionHeader.SizeOfRawData > fileSize)
                 {
                     Console.WriteLine(
-                        $"区段数据超出文件范围: 偏移={sectionHeader.PointerToRawData}, 大小={sectionHeader.SizeOfRawData}, 文件大小={fileSize}");
+                        $@"区段数据超出文件范围: 偏移={sectionHeader.PointerToRawData}, 大小={sectionHeader.SizeOfRawData}, 文件大小={fileSize}");
                     return false;
                 }
 
                 if (sectionHeader.SizeOfRawData > fileSize)
                 {
-                    Console.WriteLine($"区段大小超出文件大小: {sectionHeader.SizeOfRawData} > {fileSize}");
+                    Console.WriteLine($@"区段大小超出文件大小: {sectionHeader.SizeOfRawData} > {fileSize}");
                     return false;
                 }
             }

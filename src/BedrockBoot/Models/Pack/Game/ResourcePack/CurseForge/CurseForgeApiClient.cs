@@ -131,7 +131,7 @@ public class CurseForgeApiClient
                  ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($"HTTP请求错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"HTTP请求错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
                 
                 // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established"))
@@ -144,21 +144,21 @@ public class CurseForgeApiClient
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"HTTP请求错误: {ex.Message}");
+                Console.WriteLine($@"HTTP请求错误: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                    Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 }
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex.Message}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex.Message}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
         }
@@ -203,16 +203,16 @@ public class CurseForgeApiClient
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"获取推荐内容错误: {ex.Message}");
+            Console.WriteLine($@"获取推荐内容错误: {ex.Message}");
             if (ex.InnerException != null)
             {
-                Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
             }
             throw;
         }
         catch (JsonException ex)
         {
-            Console.WriteLine($"JSON解析错误: {ex.Message}");
+            Console.WriteLine($@"JSON解析错误: {ex.Message}");
             throw;
         }
     }
@@ -265,7 +265,7 @@ public class CurseForgeApiClient
                  ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($"获取文件列表错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"获取文件列表错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
                 
                 // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established"))
@@ -278,21 +278,21 @@ public class CurseForgeApiClient
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"获取文件列表错误: {ex.Message}");
+                Console.WriteLine($@"获取文件列表错误: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                    Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 }
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex.Message}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex.Message}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
         }
@@ -342,7 +342,7 @@ public class CurseForgeApiClient
                  ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($"获取文件详情错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"获取文件详情错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
                 
                 // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established"))
@@ -355,21 +355,21 @@ public class CurseForgeApiClient
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"获取文件详情错误: {ex.Message}");
+                Console.WriteLine($@"获取文件详情错误: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                    Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 }
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex.Message}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex.Message}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
         }
@@ -429,7 +429,7 @@ public class CurseForgeApiClient
                  ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($"获取多个文件错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"获取多个文件错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
                 
                 // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established"))
@@ -442,21 +442,21 @@ public class CurseForgeApiClient
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"获取多个文件错误: {ex.Message}");
+                Console.WriteLine($@"获取多个文件错误: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                    Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 }
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex.Message}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex.Message}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
         }

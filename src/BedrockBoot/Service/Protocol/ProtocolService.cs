@@ -162,7 +162,7 @@ namespace BedrockBoot.Service.Protocol
                 _isRunning = true;
 
                 _listener.Start();
-                Console.WriteLine($"HTTP Server started on http://{ServiceHost}:{ServicePort}/");
+                Console.WriteLine($@"HTTP Server started on http://{ServiceHost}:{ServicePort}/");
 
                 // 开始监听请求
                 await StartListeningAsync(_cancellationTokenSource.Token);
@@ -170,7 +170,7 @@ namespace BedrockBoot.Service.Protocol
             catch (Exception ex)
             {
                 _isRunning = false;
-                Console.WriteLine($"Failed to start server: {ex.Message}");
+                Console.WriteLine($@"Failed to start server: {ex.Message}");
                 throw;
             }
         }
@@ -252,7 +252,7 @@ namespace BedrockBoot.Service.Protocol
             // 添加或更新路由
             _routes[routeKey] = handler;
 
-            Console.WriteLine($"Registered route: {method} {path}");
+            Console.WriteLine($@"Registered route: {method} {path}");
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace BedrockBoot.Service.Protocol
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error processing request: {ex.Message}");
+                            Console.WriteLine($@"Error processing request: {ex.Message}");
                             await WriteResponseAsync(context, 500, new
                             {
                                 error = "Internal Server Error",
@@ -314,7 +314,7 @@ namespace BedrockBoot.Service.Protocol
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error in listener: {ex.Message}");
+                    Console.WriteLine($@"Error in listener: {ex.Message}");
                     await Task.Delay(1000); // 避免快速重试
                 }
             }

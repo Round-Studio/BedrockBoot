@@ -10,7 +10,26 @@
             <StackPanel Margin="15,0,15,15">
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">快捷启动</TextBlock>
+                           FontSize="14">辅助功能</TextBlock>
+                
+                <onePointControls:SettingExpander Margin="5"
+                                                  Header="鼠标锁"
+                                                  Description="针对 UWP 版本的 Bedrock 进行的鼠标优化"
+                                                  Glyph="&#xE72E;">
+                    <onePointControls:SettingExpander.ItemContent>
+                        <ToggleSwitch></ToggleSwitch>
+                    </onePointControls:SettingExpander.ItemContent>
+                    <StackPanel>
+                        <onePointControls:SettingCard Classes="Item"
+                                                      Glyph="&#xF577;"
+                                                      Header="剪切范围"
+                                                      Description="鼠标锁对游戏的限制范围">
+                            <Slider Width="200"
+                                    Classes="Number"
+                                    Maximum="50"></Slider>
+                        </onePointControls:SettingCard>
+                    </StackPanel>
+                </onePointControls:SettingExpander>
                 
                 <onePointControls:SettingCard Margin="5"
                                               IsClickable="True"

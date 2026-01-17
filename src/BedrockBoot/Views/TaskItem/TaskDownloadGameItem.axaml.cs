@@ -138,7 +138,7 @@ public partial class TaskDownloadGameItem : UserControl
 		            }),
 		            DeployProgress = new Progress<DeploymentProgress>(((s) =>
 		            {
-			            Console.WriteLine($"{s.state} - {s.percentage}");
+			            Console.WriteLine($@"{s.state} - {s.percentage}");
 
 			            Dispatcher.UIThread.Invoke(() =>
 			            {

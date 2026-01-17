@@ -43,7 +43,7 @@ sealed class Program
         {
             AllocConsole();
             Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine("已开启 Release 中的 Debug 模式，此模式不会生成日志！");
+            Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
         }
 
         // 首先处理可能的更新参数（--update-launcher, --update-replace）
@@ -78,7 +78,7 @@ sealed class Program
             switch (arg)
             {
                 case "-update":
-                    Console.WriteLine("触发更新，本次启动将不会拉起窗体。");
+                    Console.WriteLine(@"触发更新，本次启动将不会拉起窗体。");
                     // 修改为调用新的更新方法
                     AppUpdater.StartUpdateFromOldVersion(args[args.FindIndex(x => x == "-update") + 1]);
                     result = true;
@@ -90,12 +90,12 @@ sealed class Program
                     // 检查是否提供了命令参数
                     if (shellIndex + 1 >= args.Count)
                     {
-                        Console.WriteLine("错误：-shell 参数后需要指定命令");
+                        Console.WriteLine(@"错误：-shell 参数后需要指定命令");
                         break;
                     }
 
                     string command = args[shellIndex + 1];
-                    Console.WriteLine($"触发 bb 协议：{command}");
+                    Console.WriteLine($@"触发 bb 协议：{command}");
 
                     try
                     {
@@ -104,7 +104,7 @@ sealed class Program
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"请求出错：{ex.Message}");
+                        Console.WriteLine($@"请求出错：{ex.Message}");
 
                         Task.Run(() =>
                         {
@@ -117,10 +117,10 @@ sealed class Program
                 case "-console":
                     AllocConsole();
                     Console.OutputEncoding = Encoding.UTF8;
-                    Console.WriteLine("已开启 Release 中的 Debug 模式，此模式不会生成日志！");
+                    Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
                     break;
                 case "-jump":
-                    Console.WriteLine("快捷启动");
+                    Console.WriteLine(@"快捷启动");
                     args.ForEach(Console.WriteLine);
 
                     ApplicationConfiguration.Initialize();
@@ -130,7 +130,7 @@ sealed class Program
                     result = true;
                     break;
                 case "-open":
-                    Console.WriteLine("导入资源");
+                    Console.WriteLine(@"导入资源");
                     args.ForEach(Console.WriteLine);
 
                     ApplicationConfiguration.Initialize();
@@ -167,11 +167,11 @@ sealed class Program
         if (response.IsSuccessStatusCode)
         {
             string responseContent = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine($"服务器响应：{responseContent}");
+            Console.WriteLine($@"服务器响应：{responseContent}");
         }
         else
         {
-            Console.WriteLine($"请求失败，状态码：{response.StatusCode}");
+            Console.WriteLine($@"请求失败，状态码：{response.StatusCode}");
         }
     }
 
@@ -181,7 +181,7 @@ sealed class Program
         {
             if (!File.Exists(oldVersionPath))
             {
-                Console.WriteLine("旧版本文件不存在，无需更新");
+                Console.WriteLine(@"旧版本文件不存在，无需更新");
                 return;
             }
 
@@ -189,18 +189,18 @@ sealed class Program
             string currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
             if (string.IsNullOrEmpty(currentExePath) || !File.Exists(currentExePath))
             {
-                Console.WriteLine("无法获取当前程序路径");
+                Console.WriteLine(@"无法获取当前程序路径");
                 return;
             }
 
             // 检查是否是同一个文件
             if (string.Equals(currentExePath, oldVersionPath, StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine("新旧文件路径相同，无需更新");
+                Console.WriteLine(@"新旧文件路径相同，无需更新");
                 return;
             }
 
-            Console.WriteLine($"开始更新：从 {currentExePath} 到 {oldVersionPath}");
+            Console.WriteLine($@"开始更新：从 {currentExePath} 到 {oldVersionPath}");
 
             // 1. 复制新版本到临时位置
             string tempFile = oldVersionPath + ".new";
@@ -220,7 +220,7 @@ sealed class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"更新失败: {ex.Message}");
+            Console.WriteLine($@"更新失败: {ex.Message}");
             // 可以选择重新抛出或记录日志
         }
     }

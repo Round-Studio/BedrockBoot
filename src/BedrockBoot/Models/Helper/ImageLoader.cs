@@ -69,7 +69,7 @@ public class ImageLoader : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"加载图片失败: {imageUrl}, 错误: {ex.Message}");
+            Console.WriteLine($@"加载图片失败: {imageUrl}, 错误: {ex.Message}");
             return null;
         }
     }
@@ -92,7 +92,7 @@ public class ImageLoader : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"从流加载图片失败: {ex.Message}");
+            Console.WriteLine($@"从流加载图片失败: {ex.Message}");
             return null;
         }
     }

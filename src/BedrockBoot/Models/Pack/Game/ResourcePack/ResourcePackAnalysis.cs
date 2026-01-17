@@ -152,8 +152,8 @@ public class ResourcePackAnalysis
         string currentLanguage = currentCulture.TwoLetterISOLanguageName.ToLower();
         string currentFullLocale = currentCulture.Name; // 例如 "zh-CN"
 
-        Console.WriteLine($"当前系统语言: {currentCulture.DisplayName}");
-        Console.WriteLine($"语言代码: {currentLanguage}, 完整区域: {currentFullLocale}");
+        Console.WriteLine($@"当前系统语言: {currentCulture.DisplayName}");
+        Console.WriteLine($@"语言代码: {currentLanguage}, 完整区域: {currentFullLocale}");
 
         // 3. 优先尝试完全匹配（包括区域）
         string normalizedLocale = currentFullLocale.Replace("-", "_");

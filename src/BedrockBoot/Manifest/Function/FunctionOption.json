@@ -6,5 +6,6 @@
   "isEnableSettingPersonalization": true,
   "isEnableSettingBackground": true,
   "isEnableSettingColor": true,
-  "isEnablePlugin": false
+  "isEnablePlugin": false,
+  "isEnableToolsBox": false
 }

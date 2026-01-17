@@ -39,7 +39,7 @@ public partial class App : Application
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         Dispatcher.UIThread.UnhandledException += UIThread_UnhandledException;
         
-        Console.WriteLine("异常订阅已完毕");
+        Console.WriteLine(@"异常订阅已完毕");
         LoadColor();
     }
     
@@ -76,13 +76,13 @@ public partial class App : Application
         catch (Exception dialogEx)
         {
             // 如果对话框本身出错，至少记录到控制台
-            Console.WriteLine($"显示错误对话框时出错: {dialogEx}");
+            Console.WriteLine($@"显示错误对话框时出错: {dialogEx}");
         }
     }
 
     private void LogException(Exception ex, string source)
     {
-        Console.WriteLine($"{source} 异常: {ex?.ToString() ?? "未知异常"}");
+        Console.WriteLine($@"{source} 异常: {ex?.ToString() ?? "未知异常"}");
     }
 
     private void UIThread_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

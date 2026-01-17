@@ -33,7 +33,7 @@ public class JumpListManager
                         IconReference = new IconReference(Process.GetCurrentProcess().MainModule.FileName, SourceList.MinecraftIconID),
                     });
                 
-                Console.WriteLine($"添加任务栏快捷启动项 {v.Info.VersionName}");
+                Console.WriteLine($@"添加任务栏快捷启动项 {v.Info.VersionName}");
             });
 
             jumpList.AddCustomCategories(myToolsCategory);

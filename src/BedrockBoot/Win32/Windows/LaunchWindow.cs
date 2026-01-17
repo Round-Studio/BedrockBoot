@@ -127,7 +127,7 @@ public partial class LaunchWindow : Form
             // 设置游戏启动回调
             _launcher.Launched = (process) =>
             {
-                Console.WriteLine($"游戏已启动，进程ID: {process.Id}");
+                Console.WriteLine($@"游戏已启动，进程ID: {process.Id}");
                 // 可以更新 UI 显示游戏已启动
                 this.BeginInvoke(new Action(() =>
                 {

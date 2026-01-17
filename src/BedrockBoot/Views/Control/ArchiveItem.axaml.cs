@@ -28,7 +28,7 @@ public partial class ArchiveItem : UserControl
     {
         if (ArchiveInfo == null) throw new NullReferenceException();
 
-        Console.WriteLine($"存档：{ArchiveInfo.Name} 路径：{ArchiveInfo.Path}");
+        Console.WriteLine($@"存档：{ArchiveInfo.Name} 路径：{ArchiveInfo.Path}");
         WorldName.Text = ArchiveInfo.Name;
         WorldLastPlayed.Text =
             $"{UnixTimeConverter.UnixTimeStampToDateTime(ArchiveInfo.LevelWorldData.LastPlayed).ToShortDateString()} " +

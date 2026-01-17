@@ -56,6 +56,7 @@ public partial class MainPage : UserControl
             Tag = "Task",
             Page = typeof(MainTaskPage)
         });
+#if DEBUG
         RegisterTopItem(new TopBarItemInfo()
         {
             ItemGlyph = "",
@@ -63,6 +64,17 @@ public partial class MainPage : UserControl
             Tag = "ToolsBox",
             Page = typeof(MainToolsBoxPage)
         });
+#endif
+#if RELEASE
+        if (GlobalModel.FunctionOption.IsEnableToolsBox)
+            RegisterTopItem(new TopBarItemInfo()
+            {
+                ItemGlyph = "",
+                ItemText = "工具",
+                Tag = "ToolsBox",
+                Page = typeof(MainToolsBoxPage)
+            });
+#endif
         RegisterTopItem(new TopBarItemInfo()
         {
             ItemGlyph = "",
@@ -113,7 +125,7 @@ public partial class MainPage : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"更新失败：{ex.Message}");
+            Console.WriteLine($@"更新失败：{ex.Message}");
         }
     }
 

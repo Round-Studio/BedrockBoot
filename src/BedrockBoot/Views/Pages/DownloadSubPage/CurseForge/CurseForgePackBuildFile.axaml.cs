@@ -28,7 +28,7 @@ public partial class CurseForgePackBuildFile : UserControl
 
     private void Update()
     {
-        Console.WriteLine($"查看模组详细信息：{ModData.Id}");
+        Console.WriteLine($@"查看模组详细信息：{ModData.Id}");
         NoneBox.IsVisible = false;
 
         Task.Run(() =>

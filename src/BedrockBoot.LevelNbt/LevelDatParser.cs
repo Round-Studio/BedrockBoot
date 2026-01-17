@@ -67,7 +67,7 @@ public class LevelDatParser : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"解析NBT时出错: {ex.Message}");
+            Console.WriteLine($@"解析NBT时出错: {ex.Message}");
             throw;
         }
     }
@@ -80,8 +80,8 @@ public class LevelDatParser : IDisposable
     {
         var worldData = new LevelWorldData();
 
-        Console.WriteLine($"调试: 根标签包含 {rootTag.Count} 个子标签");
-        Console.WriteLine($"调试: 根标签的键: {string.Join(", ", rootTag.Keys.Take(10))}...");
+        Console.WriteLine($@"调试: 根标签包含 {rootTag.Count} 个子标签");
+        Console.WriteLine($@"调试: 根标签的键: {string.Join(", ", rootTag.Keys.Take(10))}...");
 
         // 直接尝试从根标签读取
         ExtractWorldDataFromDictionary(rootTag, worldData);
@@ -89,14 +89,14 @@ public class LevelDatParser : IDisposable
         // 如果没有找到关键数据，尝试在嵌套结构中查找
         if (string.IsNullOrEmpty(worldData.LevelName))
         {
-            Console.WriteLine("调试: 尝试在嵌套结构中查找世界数据...");
+            Console.WriteLine(@"调试: 尝试在嵌套结构中查找世界数据...");
 
             // 查找可能的嵌套CompoundTag
             foreach (var kvp in rootTag)
             {
                 if (kvp.Value is Dictionary<string, object> nestedDict)
                 {
-                    Console.WriteLine($"调试: 检查嵌套标签 '{kvp.Key}'");
+                    Console.WriteLine($@"调试: 检查嵌套标签 '{kvp.Key}'");
                     ExtractWorldDataFromDictionary(nestedDict, worldData);
 
                     // 如果找到关键数据就停止
@@ -120,7 +120,7 @@ public class LevelDatParser : IDisposable
             if (levelNameObj is string levelName)
             {
                 worldData.LevelName = levelName;
-                Console.WriteLine($"调试: 找到 LevelName = {levelName}");
+                Console.WriteLine($@"调试: 找到 LevelName = {levelName}");
             }
         }
 
@@ -129,12 +129,12 @@ public class LevelDatParser : IDisposable
             if (seedObj is long seedLong)
             {
                 worldData.RandomSeed = seedLong;
-                Console.WriteLine($"调试: 找到 RandomSeed = {seedLong}");
+                Console.WriteLine($@"调试: 找到 RandomSeed = {seedLong}");
             }
             else if (seedObj is int seedInt)
             {
                 worldData.RandomSeed = seedInt;
-                Console.WriteLine($"调试: 找到 RandomSeed = {seedInt}");
+                Console.WriteLine($@"调试: 找到 RandomSeed = {seedInt}");
             }
             else if (seedObj is byte seedByte)
             {
@@ -147,7 +147,7 @@ public class LevelDatParser : IDisposable
             if (gameTypeObj is int gameTypeInt)
             {
                 worldData.GameType = gameTypeInt;
-                Console.WriteLine($"调试: 找到 GameType = {gameTypeInt}");
+                Console.WriteLine($@"调试: 找到 GameType = {gameTypeInt}");
             }
             else if (gameTypeObj is byte gameTypeByte)
             {
@@ -160,7 +160,7 @@ public class LevelDatParser : IDisposable
             if (cheatsEnabledObj is byte cheatsByte)
             {
                 worldData.CheatsEnabled = cheatsByte != 0;
-                Console.WriteLine($"调试: 找到 cheatsEnabled = {cheatsByte != 0}");
+                Console.WriteLine($@"调试: 找到 cheatsEnabled = {cheatsByte != 0}");
             }
         }
 
@@ -169,7 +169,7 @@ public class LevelDatParser : IDisposable
             if (commandsEnabledObj is byte commandsByte)
             {
                 worldData.CommandsEnabled = commandsByte != 0;
-                Console.WriteLine($"调试: 找到 commandsEnabled = {commandsByte != 0}");
+                Console.WriteLine($@"调试: 找到 commandsEnabled = {commandsByte != 0}");
             }
         }
 
@@ -178,7 +178,7 @@ public class LevelDatParser : IDisposable
             if (isHardcoreObj is byte hardcoreByte)
             {
                 worldData.IsHardCore = hardcoreByte != 0;
-                Console.WriteLine($"调试: 找到 isHardcore = {hardcoreByte != 0}");
+                Console.WriteLine($@"调试: 找到 isHardcore = {hardcoreByte != 0}");
             }
         }
         // 也尝试用驼峰命名的版本
@@ -187,7 +187,7 @@ public class LevelDatParser : IDisposable
             if (IsHardcoreObj is byte hardcoreByte)
             {
                 worldData.IsHardCore = hardcoreByte != 0;
-                Console.WriteLine($"调试: 找到 IsHardcore = {hardcoreByte != 0}");
+                Console.WriteLine($@"调试: 找到 IsHardcore = {hardcoreByte != 0}");
             }
         }
 
@@ -196,7 +196,7 @@ public class LevelDatParser : IDisposable
             flatWorldLayersObj is string flatWorldLayers)
         {
             worldData.FlatWorldLayers = flatWorldLayers;
-            Console.WriteLine($"调试: 找到 FlatWorldLayers (长度={flatWorldLayers.Length})");
+            Console.WriteLine($@"调试: 找到 FlatWorldLayers (长度={flatWorldLayers.Length})");
         }
 
         // 提取更多有用的标签
@@ -205,7 +205,7 @@ public class LevelDatParser : IDisposable
             if (spawnXObj is int spawnX)
             {
                 worldData.SpawnX = spawnX;
-                Console.WriteLine($"调试: 找到 SpawnX = {spawnX}");
+                Console.WriteLine($@"调试: 找到 SpawnX = {spawnX}");
             }
         }
 
@@ -214,7 +214,7 @@ public class LevelDatParser : IDisposable
             if (spawnYObj is int spawnY)
             {
                 worldData.SpawnY = spawnY;
-                Console.WriteLine($"调试: 找到 SpawnY = {spawnY}");
+                Console.WriteLine($@"调试: 找到 SpawnY = {spawnY}");
             }
         }
 
@@ -223,7 +223,7 @@ public class LevelDatParser : IDisposable
             if (spawnZObj is int spawnZ)
             {
                 worldData.SpawnZ = spawnZ;
-                Console.WriteLine($"调试: 找到 SpawnZ = {spawnZ}");
+                Console.WriteLine($@"调试: 找到 SpawnZ = {spawnZ}");
             }
         }
 
@@ -232,7 +232,7 @@ public class LevelDatParser : IDisposable
             if (timeObj is long timeLong)
             {
                 worldData.Time = timeLong;
-                Console.WriteLine($"调试: 找到 Time = {timeLong}");
+                Console.WriteLine($@"调试: 找到 Time = {timeLong}");
             }
         }
 
@@ -241,7 +241,7 @@ public class LevelDatParser : IDisposable
             if (lastPlayedObj is long lastPlayedLong)
             {
                 worldData.LastPlayed = lastPlayedLong;
-                Console.WriteLine($"调试: 找到 LastPlayed = {lastPlayedLong}");
+                Console.WriteLine($@"调试: 找到 LastPlayed = {lastPlayedLong}");
             }
         }
     }

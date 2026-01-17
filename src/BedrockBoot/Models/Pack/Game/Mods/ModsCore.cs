@@ -51,11 +51,11 @@ public class ModsCore
             if (File.Exists(body))
             {
                 File.Copy(body, rawBody, true);
-                Console.WriteLine($"创建了原始备份文件: {rawBody}");
+                Console.WriteLine($@"创建了原始备份文件: {rawBody}");
             }
             else
             {
-                Console.WriteLine($"源文件不存在: {body}");
+                Console.WriteLine($@"源文件不存在: {body}");
                 return;
             }
         }
@@ -70,21 +70,21 @@ public class ModsCore
                 {
                     // 文件内容不同，用raw覆盖body
                     File.Copy(rawBody, body, true);
-                    Console.WriteLine($"文件内容不同，已用备份覆盖: {body}");
+                    Console.WriteLine($@"文件内容不同，已用备份覆盖: {body}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"覆盖文件失败: {ex.Message}");
+                    Console.WriteLine($@"覆盖文件失败: {ex.Message}");
                 }
             }
             else
             {
-                Console.WriteLine("文件内容相同，无需操作");
+                Console.WriteLine(@"文件内容相同，无需操作");
             }
         }
         else
         {
-            Console.WriteLine($"文件被占用，跳过处理: {body}");
+            Console.WriteLine($@"文件被占用，跳过处理: {body}");
         }
 
         PreLoadMods = new();

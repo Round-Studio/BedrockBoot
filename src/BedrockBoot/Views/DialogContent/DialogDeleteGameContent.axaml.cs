@@ -29,10 +29,10 @@ public partial class DialogDeleteGameContent : UserControl
         Task.Run(() =>
         {
             var path = VersionInfo.VersionPath;
-            Console.WriteLine($"即将删除文件夹：{path}");
+            Console.WriteLine($@"即将删除文件夹：{path}");
         
             var files = Directory.GetFiles(path,"*", SearchOption.AllDirectories);
-            Console.WriteLine($"总数目：{files.Length}");
+            Console.WriteLine($@"总数目：{files.Length}");
             Dispatcher.UIThread.Invoke(() => DeleteProgressBar.Maximum = files.Length);
             
             Dispatcher.UIThread.Invoke(() => DeleteProgressBar.IsIndeterminate = false);

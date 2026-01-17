@@ -160,7 +160,7 @@ public class PackInstaller
 
             try
             {
-                Console.WriteLine($"开始尝试检测 {typeToTry} 版本类型...");
+                Console.WriteLine($@"开始尝试检测 {typeToTry} 版本类型...");
 
                 // 创建文件副本以避免占用问题
                 string tempPackPath = await CreateTempFileCopy(PackFile);
@@ -194,7 +194,7 @@ public class PackInstaller
                                 if (PEFileValidator.IsValidEffectivePEFile(minecraftExePath))
                                 {
                                     detectedValidExe = true;
-                                    Console.WriteLine($"检测到有效的 Minecraft.Windows.exe 文件，{typeToTry} 版本类型有效");
+                                    Console.WriteLine($@"检测到有效的 Minecraft.Windows.exe 文件，{typeToTry} 版本类型有效");
                                     // 立即请求取消，因为已经找到有效文件
                                     if (!cts.IsCancellationRequested)
                                     {
@@ -237,18 +237,18 @@ public class PackInstaller
                     // 检查是否检测到有效exe
                     if (detectedValidExe)
                     {
-                        Console.WriteLine($"{typeToTry} 版本类型检测成功");
+                        Console.WriteLine($@"{typeToTry} 版本类型检测成功");
                         _processedFiles.Add(fileKey);
                         return typeToTry; // 返回有效的版本类型
                     }
                     else
                     {
-                        Console.WriteLine($"{typeToTry} 版本类型无效，继续尝试下一个...");
+                        Console.WriteLine($@"{typeToTry} 版本类型无效，继续尝试下一个...");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"{typeToTry} 版本检测过程中发生异常: {ex.Message}");
+                    Console.WriteLine($@"{typeToTry} 版本检测过程中发生异常: {ex.Message}");
 
                     // 如果是文件访问错误，标记为已处理
                     if (ex is IOException && ex.Message.Contains("being used by another process"))
@@ -280,12 +280,12 @@ public class PackInstaller
                                     if (Directory.Exists(tempInstallPath))
                                     {
                                         Directory.Delete(tempInstallPath, true);
-                                        Console.WriteLine($"已清理临时目录: {tempInstallPath}");
+                                        Console.WriteLine($@"已清理临时目录: {tempInstallPath}");
                                     }
                                 }
                                 catch (Exception cleanupEx)
                                 {
-                                    Console.WriteLine($"清理临时目录失败: {cleanupEx.Message}");
+                                    Console.WriteLine($@"清理临时目录失败: {cleanupEx.Message}");
                                 }
                             }
 
@@ -307,7 +307,7 @@ public class PackInstaller
         }
 
         // 如果所有类型都无效，返回Beta表示包无效
-        Console.WriteLine("所有版本类型检测都失败，包无效");
+        Console.WriteLine(@"所有版本类型检测都失败，包无效");
         return MinecraftGameTypeVersion.Beta;
     }
 
@@ -324,12 +324,12 @@ public class PackInstaller
                 try
                 {
                     File.Copy(originalFilePath, tempPath, true);
-                    Console.WriteLine($"创建临时文件副本: {tempPath}");
+                    Console.WriteLine($@"创建临时文件副本: {tempPath}");
                     return tempPath;
                 }
                 catch (IOException) when (i < 2)
                 {
-                    Console.WriteLine($"复制文件失败，等待后重试 ({i + 1}/3)...");
+                    Console.WriteLine($@"复制文件失败，等待后重试 ({i + 1}/3)...");
                     await System.Threading.Tasks.Task.Delay(500);
                 }
             }
@@ -338,7 +338,7 @@ public class PackInstaller
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"创建临时文件副本失败: {ex.Message}");
+            Console.WriteLine($@"创建临时文件副本失败: {ex.Message}");
             throw;
         }
     }
@@ -353,12 +353,12 @@ public class PackInstaller
             if (File.Exists(tempFilePath))
             {
                 File.Delete(tempFilePath);
-                Console.WriteLine($"已清理临时文件: {tempFilePath}");
+                Console.WriteLine($@"已清理临时文件: {tempFilePath}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"清理临时文件失败: {ex.Message}");
+            Console.WriteLine($@"清理临时文件失败: {ex.Message}");
             // 不抛出异常，因为这只是一个清理操作
         }
     }
@@ -383,7 +383,7 @@ public class PackInstaller
             var gameTypeVersion = GDKGameType;
             if (IsGDKUnknownBuildType)
             {
-                Console.WriteLine("开始自动检测GDK版本类型...");
+                Console.WriteLine(@"开始自动检测GDK版本类型...");
 
                 gameTypeVersion = await TryParseGDKGameType();
 
@@ -394,7 +394,7 @@ public class PackInstaller
                 }
             }
 
-            Console.WriteLine($"最终确定的版本类型: {gameTypeVersion}");
+            Console.WriteLine($@"最终确定的版本类型: {gameTypeVersion}");
 
             ImportProgress.Report(new PackImportProgress() { Progress = 100, StatusMessage = "文件判断完毕" });
 
@@ -423,14 +423,14 @@ public class PackInstaller
 
             // 验证安装结果
             await VerifyInstallation(path, gameName, gameTypeVersion);
-            Console.WriteLine($"GDK 版本安装成功: {gameName}");
+            Console.WriteLine($@"GDK 版本安装成功: {gameName}");
 
             // 触发导入完成事件
             ImportedAction?.Invoke();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"GDK 安装失败: {ex}");
+            Console.WriteLine($@"GDK 安装失败: {ex}");
 
             // 如果是文件占用错误，给出更明确的提示
             if (ex is IOException && ex.Message.Contains("being used by another process"))
@@ -480,7 +480,7 @@ public class PackInstaller
             VersionPath = installPath
         });
 
-        Console.WriteLine($"安装验证完成: {gameName} (版本: {manifest.Version}, 类型: {gameType})");
+        Console.WriteLine($@"安装验证完成: {gameName} (版本: {manifest.Version}, 类型: {gameType})");
     }
 
     private MinecraftGameTypeVersion GetVersionTypeWithGDK(string packName)

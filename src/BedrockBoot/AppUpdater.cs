@@ -51,18 +51,18 @@ namespace BedrockBoot
         {
             try
             {
-                Console.WriteLine($"开始更新流程，目标文件: {oldVersionFullPath}");
+                Console.WriteLine($@"开始更新流程，目标文件: {oldVersionFullPath}");
 
                 if (!File.Exists(oldVersionFullPath))
                 {
-                    Console.WriteLine("旧版本文件不存在，无法更新");
+                    Console.WriteLine(@"旧版本文件不存在，无法更新");
                     return;
                 }
 
                 string currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
                 if (string.IsNullOrEmpty(currentExePath) || !File.Exists(currentExePath))
                 {
-                    Console.WriteLine("无法获取当前程序路径");
+                    Console.WriteLine(@"无法获取当前程序路径");
                     return;
                 }
 
@@ -70,7 +70,7 @@ namespace BedrockBoot
                 if (Path.GetFullPath(currentExePath).Equals(
                     Path.GetFullPath(oldVersionFullPath), StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine("新旧文件路径相同，跳过更新");
+                    Console.WriteLine(@"新旧文件路径相同，跳过更新");
                     return;
                 }
 
@@ -84,11 +84,11 @@ namespace BedrockBoot
                     WindowStyle = ProcessWindowStyle.Normal
                 };
 
-                Console.WriteLine($"启动更新引导程序: {currentExePath}");
+                Console.WriteLine($@"启动更新引导程序: {currentExePath}");
                 Process.Start(launcherInfo);
 
                 // 当前旧版本程序可以在这里退出，让新引导程序接管
-                Console.WriteLine("更新引导程序已启动，当前进程即将退出");
+                Console.WriteLine(@"更新引导程序已启动，当前进程即将退出");
                 Environment.Exit(0);
             }
             catch (Exception ex)
@@ -109,7 +109,7 @@ namespace BedrockBoot
                 string tempExeName = $"BedrockBoot_Update_{Guid.NewGuid():N}.exe";
                 string tempExePath = Path.Combine(tempDir, tempExeName);
 
-                Console.WriteLine($"引导程序：复制到临时位置 {tempExePath}");
+                Console.WriteLine($@"引导程序：复制到临时位置 {tempExePath}");
 
                 // 复制当前程序到临时位置
                 File.Copy(currentExePath, tempExePath, true);
@@ -124,11 +124,11 @@ namespace BedrockBoot
                     CreateNoWindow = true    // 静默执行替换
                 };
 
-                Console.WriteLine($"启动替换程序来更新 {targetExePath}");
+                Console.WriteLine($@"启动替换程序来更新 {targetExePath}");
                 Process.Start(replaceInfo);
 
                 // 引导程序完成任务，退出
-                Console.WriteLine("更新引导程序退出");
+                Console.WriteLine(@"更新引导程序退出");
             }
             catch (Exception ex)
             {
@@ -145,7 +145,7 @@ namespace BedrockBoot
             {
                 string currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
 
-                Console.WriteLine($"替换程序：准备替换 {oldExePath}");
+                Console.WriteLine($@"替换程序：准备替换 {oldExePath}");
 
                 // 确保原进程已退出，重试多次
                 bool replaced = false;
@@ -157,12 +157,12 @@ namespace BedrockBoot
                         File.Delete(oldExePath); // 删除旧文件
                         File.Move(currentExePath, oldExePath); // 移动新文件到目标位置
                         replaced = true;
-                        Console.WriteLine($"文件替换成功 (第{i + 1}次尝试)");
+                        Console.WriteLine($@"文件替换成功 (第{i + 1}次尝试)");
                         break;
                     }
                     catch (IOException ioEx) when (i < 4) // 前4次失败重试
                     {
-                        Console.WriteLine($"文件被占用，等待后重试... (错误: {ioEx.Message})");
+                        Console.WriteLine($@"文件被占用，等待后重试... (错误: {ioEx.Message})");
                         Thread.Sleep(500 * (i + 1)); // 递增等待
                     }
                 }
@@ -177,13 +177,13 @@ namespace BedrockBoot
                         WindowStyle = ProcessWindowStyle.Normal
                     };
 
-                    Console.WriteLine($"启动更新后的程序: {oldExePath}");
+                    Console.WriteLine($@"启动更新后的程序: {oldExePath}");
                     Process.Start(finalStartInfo);
-                    Console.WriteLine("更新流程完成");
+                    Console.WriteLine(@"更新流程完成");
                 }
                 else
                 {
-                    Console.WriteLine("文件替换失败，可能被其他进程锁定");
+                    Console.WriteLine(@"文件替换失败，可能被其他进程锁定");
                 }
             }
             catch (Exception ex)

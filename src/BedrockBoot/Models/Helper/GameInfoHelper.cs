@@ -97,13 +97,15 @@ public class GameInfoHelper
 
     public static string GetBodyFile(string gamePath)
     {
-        var files = Directory.GetFiles(gamePath, "*.exe");
+        var files = Directory.GetFiles(gamePath, "*.exe")
+            .Where(x => Path.GetFileName(x).StartsWith("Minecraft"))
+            .ToList();
 
-        if (files.Length <= 0)
+        if (files.Count() <= 0)
             return string.Empty;
-        if (files.Length > 1)
+        if (files.Count() > 1)
             throw new FileNotFoundException(
-                $"无法找到对应的 EXE 文件，原因是该目录中有 {files.Length} 个 EXE，有很大概率是蠕虫病毒的感染，请尝试查杀病毒或删除对应文件以解决该问题。\nFiles:\n{string.Join('\n', files)}");
+                $"无法找到对应的 EXE 文件，原因是该目录中有 {files.Count()} 个 EXE，有很大概率是蠕虫病毒的感染，请尝试查杀病毒或删除对应文件以解决该问题。\nFiles:\n{string.Join('\n', files)}");
         
         Console.WriteLine($"目标实例本体文件：{files[0]}");
         

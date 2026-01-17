@@ -50,7 +50,7 @@ public class ResourcePackAnalysis
         }
 
         var manifestFile = Path.Combine(_tempPath, "manifest.json");
-        var conf = new ConfigEntity<ResourcePackManifest>(manifestFile).Data;
+        var conf = new ConfigEntity<ResourcePackManifest>(manifestFile, false).Data;
 
         return GetPackType(conf);
     }
@@ -83,7 +83,7 @@ public class ResourcePackAnalysis
 
     public static ResourcePackManifest GetPackManifest(string file)
     {
-        var conf = new ConfigEntity<ResourcePackManifest>(file).Data;
+        var conf = new ConfigEntity<ResourcePackManifest>(file, false).Data;
         if (conf.Header == null)
             return null;
         conf.PackRootPath = Path.GetDirectoryName(file);
@@ -106,10 +106,10 @@ public class ResourcePackAnalysis
     {
         var textFolder = Path.Combine(folder, "texts");
         var textManifest = Path.Combine(textFolder, "languages.json");
-        
-        if(!Directory.Exists(textFolder))
+
+        if (!Directory.Exists(textFolder))
             return langKey;
-        
+
         var langFiles = new List<string>();
 
         if (!File.Exists(textManifest))
@@ -121,7 +121,7 @@ public class ResourcePackAnalysis
         }
         else
         {
-            var langConf = new ConfigEntity<List<string>>(textManifest);
+            var langConf = new ConfigEntity<List<string>>(textManifest, false);
             langFiles = langConf.Data;
         }
 

@@ -33,26 +33,20 @@ public class ResourcePackManager
         var result = new List<ResourcePackManifest>();
         GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
         {
-            if(!Path.Exists(folder))
+            if (!Path.Exists(folder))
                 return;
-            
+
             var dirs = Directory.GetDirectories(folder).ToList();
-            dirs.ForEach(dir =>
-            {
-                files.AddRange(GetManifests(dir));
-            });
+            dirs.ForEach(dir => { files.AddRange(GetManifests(dir)); });
         });
 
         GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
         {
-            if(!Path.Exists(folder))
+            if (!Path.Exists(folder))
                 return;
-            
+
             var dirs = Directory.GetDirectories(folder).ToList();
-            dirs.ForEach(dir =>
-            {
-                files.AddRange(GetManifests(dir));
-            });
+            dirs.ForEach(dir => { files.AddRange(GetManifests(dir)); });
         });
 
         files.ForEach(file =>
@@ -208,52 +202,26 @@ public class ResourcePackManager
         }
         else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
+            var dir = Path.Combine(
+                IsolationCore.GetRealPath(VersionConfig),
+                "Users"
+            );
+
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            var users = Directory.GetDirectories(dir).ToList();
+            users.ForEach(user =>
             {
-                var dir = Path.Combine(
-                    IsolationCore.GetRealPath(VersionConfig),
-                    "Users"
-                );
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                var users = Directory.GetDirectories(dir).ToList();
-                users.ForEach(user =>
+                var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
+                if (Path.Exists(path))
+                    result.Add(Path.GetFileName(user), path);
+                else
                 {
-                    var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
-                    if (Path.Exists(path))
-                        result.Add(Path.GetFileName(user), path);
-                    else
-                    {
-                        Directory.CreateDirectory(path);
-                        result.Add(Path.GetFileName(user), path);
-                    }
-                });
-            }
-            else
-            {
-                var dir = Path.Combine(
-                    IsolationCore.GetRealPath(VersionConfig),
-                    "Users"
-                );
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                var users = Directory.GetDirectories(dir).ToList();
-                users.ForEach(user =>
-                {
-                    var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
-                    if (Path.Exists(path))
-                        result.Add(Path.GetFileName(user), path);
-                    else
-                    {
-                        Directory.CreateDirectory(path);
-                        result.Add(Path.GetFileName(user), path);
-                    }
-                });
-            }
+                    Directory.CreateDirectory(path);
+                    result.Add(Path.GetFileName(user), path);
+                }
+            });
         }
 
         return result;

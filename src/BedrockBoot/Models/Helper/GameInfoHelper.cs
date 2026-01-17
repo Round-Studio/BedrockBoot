@@ -80,7 +80,7 @@ public class GameInfoHelper
         }
         else
         {
-            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);
+            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson,false);
             bodyConfig.Load();
         }
 

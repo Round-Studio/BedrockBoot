@@ -21,8 +21,8 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          echo "value=2.0.5.${{ github.run_number }}" >> $GITHUB_OUTPUT
-          echo "tag=v2.0.5.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "value=2.0.6.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "tag=v2.0.6.${{ github.run_number }}" >> $GITHUB_OUTPUT
       
       - name: Get current time
         id: time

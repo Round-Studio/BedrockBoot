@@ -82,6 +82,7 @@ public partial class MainWindow : OnePointWindow
                     {
                         IsAutoCompleteVC = true,
                         IsAutoOpenDevelopment = true,
+                        IsAutoCompleteGameInput = true,
                         IsCheckMD5 = true
                     }
                 };

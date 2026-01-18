@@ -17,6 +17,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Control;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
@@ -266,6 +267,7 @@ public partial class MainManager : BedrockBootPage
             Content = dialog,
             CloseButtonText = "添加",
             SecondaryButtonText = "取消",
+            PrimaryButtonText = "导入其他启动器配置",
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
@@ -284,6 +286,10 @@ public partial class MainManager : BedrockBootPage
 
                     UpdateUI();
                 }
+            },
+            PrimaryAction = () =>
+            {
+                GlobalModel.MainWindow.OpenDraw(new DrawImportOtherLauncherContent(), "导入其他启动器目录");
             }
         });
     }

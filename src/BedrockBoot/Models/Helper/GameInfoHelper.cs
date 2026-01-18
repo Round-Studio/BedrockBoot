@@ -59,7 +59,8 @@ public class GameInfoHelper
         var bedrockBootJson = Path.Combine(gamePath, "config", "BedrockBoot2", "config.json");
         ConfigEntity<VersionConfig> bodyConfig = null;
 
-        if (!File.Exists(bedrockBootJson)) // 没有 BedrockBoot 2 的配置文件时
+        if (!File.Exists(bedrockBootJson) && 
+             File.Exists(Path.Combine(gamePath, "appxmanifest.xml"))) // 没有 BedrockBoot 2 的配置文件时
         {
             Directory.CreateDirectory(Path.Combine(gamePath, "config", "BedrockBoot2"));
             bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);

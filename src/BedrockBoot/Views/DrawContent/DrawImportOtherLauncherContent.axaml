@@ -8,7 +8,7 @@
     <Grid>
         <ScrollViewer>
             <StackPanel Name="LaunchersBox"
-                        Spacing="5"
+                        Spacing="10"
                         Margin="20">
                 
             </StackPanel>

@@ -65,22 +65,24 @@ public class GameInfoHelper
             bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);
             bodyConfig.Load();
 
-            var oldBedrockBootConfig = new ConfigEntity<VersionInfo>(Path.Combine(gamePath, "version.json"));
-            oldBedrockBootConfig.Load();
+            var manifest =
+                PackageIdentity.ParseFromXml(File.ReadAllText(Path.Combine(gamePath, "appxmanifest.xml")));
 
             bodyConfig.Data.Info = new VersionConfig.VersionInfo()
             {
-                Version = oldBedrockBootConfig.Data.RealVersion,
-                VersionName = oldBedrockBootConfig.Data.VersionName,
-                BuildType = MinecraftBuildTypeVersion.UWP, // 旧版 BedrockBoot 也只能安装 UWP 版本，所以这个鬼地方写死就行了 orz...
-                VersionType = GetGameVersionType(oldBedrockBootConfig.Data.Type)
+                Version = manifest.Version,
+                VersionName = Path.GetFileName(gamePath),
+                BuildType = File.Exists(Path.Combine(gamePath, "MicrosoftGame.Config"))
+                    ? MinecraftBuildTypeVersion.GDK
+                    : MinecraftBuildTypeVersion.UWP,
+                VersionType = GetVersionTypeWithPackName(manifest.Name)
             };
 
             bodyConfig.Save();
         }
         else
         {
-            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson,false);
+            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson, false);
             bodyConfig.Load();
         }
 
@@ -88,11 +90,24 @@ public class GameInfoHelper
 
         if (string.IsNullOrEmpty(bodyFile))
             return null;
-        
+
         bodyConfig.Data.VersionPath = gamePath;
         bodyConfig.Data.BodyFile = bodyFile;
 
         return bodyConfig.Data;
+    }
+
+    public static MinecraftGameTypeVersion GetVersionTypeWithPackName(string packName)
+    {
+        if (string.IsNullOrEmpty(packName))
+            return MinecraftGameTypeVersion.Release;
+
+        packName = packName.ToLowerInvariant();
+
+        if (packName.Contains("preview") || packName.Contains("beta"))
+            return MinecraftGameTypeVersion.Preview;
+
+        return MinecraftGameTypeVersion.Release;
     }
 
     public static string GetBodyFile(string gamePath)

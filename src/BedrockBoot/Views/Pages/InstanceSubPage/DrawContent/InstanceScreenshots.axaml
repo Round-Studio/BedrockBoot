@@ -2,7 +2,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceScreenshots">
-    Welcome to Avalonia!
+   <Grid RowDefinitions="Auto,*">
+        <items:BorderCard Grid.Row="0"
+                          Width="400"
+                          HorizontalAlignment="Left"
+                          Margin="20,8,20,10">
+            <Grid ColumnDefinitions="4*">
+                <DockPanel Grid.Column="0"
+                           Margin="0,0,0,0">
+                    <onePointControls:FontIcon Glyph="&#xEBDA;"
+                                               VerticalAlignment="Center"
+                                               FontSize="16"
+                                               Margin="5,5,12,5"></onePointControls:FontIcon>
+                    
+                    <ComboBox HorizontalAlignment="Stretch"
+                              Name="UserChooseBox"
+                              SelectionChanged="UserChooseBox_OnSelectionChanged"
+                              SelectedIndex="0"
+                              DockPanel.Dock="Right"></ComboBox>
+                </DockPanel>
+            </Grid>
+        </items:BorderCard>
+        
+        <ScrollViewer Grid.Row="1">
+            <WrapPanel Margin="15,0,15,15"
+                       HorizontalAlignment="Stretch"
+                       Name="ScreenshotsBox">
+            </WrapPanel>
+        </ScrollViewer>
+        
+        <notice:InfoCard Grid.Row="1"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="NullBox"
+                         IsVisible="False"
+                         Glyph="&#xE91B;"
+                         BigTitle="空空如也"
+                         Message="还没有任何一张截图.jpg"/>
+    </Grid>
 </UserControl>

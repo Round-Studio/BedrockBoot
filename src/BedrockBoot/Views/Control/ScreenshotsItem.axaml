@@ -1,0 +1,58 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Control.ScreenshotsItem">
+    <items:BorderCard Margin="5"
+                      Width="265"
+                      Height="210">
+        <Grid RowDefinitions="*,Auto">
+            <Border Grid.Row="0"
+                    Name="ImageBox"
+                    CornerRadius="6">
+                <Border.Background>
+                    <ImageBrush Stretch="UniformToFill"
+                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png"></ImageBrush>
+                </Border.Background>
+            </Border>
+                        
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,Auto">
+                <Border Grid.Column="0"
+                        CornerRadius="6"
+                        Margin="0,8,0,0"
+                        Height="48"
+                        Background="{DynamicResource PrimaryBackgroundBrush}"
+                        BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                        BorderThickness="1">
+                    <StackPanel VerticalAlignment="Center"
+                                Margin="8,0,0,0">
+                        <TextBlock FontSize="14"
+                                   Name="ShotTime"></TextBlock>
+                        <TextBlock FontSize="11"
+                                   Foreground="Gray"
+                                   Name="ShotYear"></TextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1"
+                        CornerRadius="6"
+                        Margin="8,8,0,0"
+                        Height="48" Width="48"
+                        Background="{DynamicResource PrimaryBackgroundBrush}"
+                        BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                        BorderThickness="1">
+                    <Button Classes="NoBorder"
+                            Name="SaveBtn"
+                            Click="SaveBtn_OnClick"
+                            CornerRadius="4">
+                        <onePointControls:FontIcon Glyph="&#xE74E;"
+                                                   FontSize="18"></onePointControls:FontIcon>
+                    </Button>
+                </Border>
+            </Grid>
+        </Grid>
+    </items:BorderCard>
+</UserControl>

@@ -43,6 +43,12 @@ public partial class InstanceScreenshots : ISetting
         var screenshots = users.Values.ToList()[UserChooseBox.SelectedIndex];
         ScreenshotsBox.Children.Clear();
         screenshots.ForEach(ph => ScreenshotsBox.Children.Add(new ScreenshotsItem(ph)));
+        NullBox.IsVisible = false;
+
+        if (screenshots.Count <= 0)
+        {
+            NullBox.IsVisible = true;
+        }
     }
 
     private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

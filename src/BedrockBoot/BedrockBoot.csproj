@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <Authors>Round-Studio</Authors>
+        <Company>Round-Studio</Company>
     </PropertyGroup>
 
     <PropertyGroup>

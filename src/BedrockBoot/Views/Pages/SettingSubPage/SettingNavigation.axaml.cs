@@ -38,4 +38,9 @@ public partial class SettingNavigation : UserControl
     {
         MainSettingPage.NavigationFrame.NavigateTo(new SettingPersonalization());
     }
+
+    private void SetGame_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigationFrame.NavigateTo(new SettingGame());
+    }
 }

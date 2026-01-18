@@ -8,6 +8,8 @@ using System.Windows.Documents;
 using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
+using BedrockBoot.Base.Enum;
+using BedrockBoot.Models.Global;
 using PeNet;
 using Round.SDK.Helper.IO;
 
@@ -33,7 +35,10 @@ public class ModsCore
 
         var gameConf = Path.Combine(VersionInfo.VersionPath, "game.conf");
         var open = VersionInfo.Config.IsConsole ? "1" : "0";
-        File.WriteAllText(gameConf, $"console_open = {open}");
+        var redirctor = GlobalModel.Config.Data.IsolationModel == IsolationType.Hook ? "1" : "0";
+        File.WriteAllText(gameConf,
+            $"console_open = {open}\n" +
+            $"redirctor = {redirctor}");
 
         var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", VersionInfo.BodyFile);
         var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
@@ -118,38 +123,45 @@ public class ModsCore
 
         try
         {
-            if (!FileCheck.IsFileLocked(body) &&
-                !FileCheck.IsFileLocked(fullPath) ||
-                !File.Exists(fullPath))
+            // 先处理文件写入（无论是否存在都覆盖）
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = "BedrockBoot.Assets.PreloadCpp.dll";
+
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
-                if (!File.Exists(fullPath))
+                if (stream != null)
                 {
-                    var assembly = Assembly.GetExecutingAssembly();
-
-                    string resourceName = "BedrockBoot.Assets.PreloadCpp.dll";
-
-                    using (var stream = assembly.GetManifestResourceStream(resourceName))
+                    using (var memoryStream = new MemoryStream())
                     {
-                        if (stream != null)
+                        stream.CopyTo(memoryStream);
+                        try
                         {
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                stream.CopyTo(memoryStream);
-                                File.WriteAllBytes(fullPath, memoryStream.ToArray());
-                            }
+                            File.WriteAllBytes(fullPath, memoryStream.ToArray());
+                        }
+                        catch
+                        {
                         }
                     }
                 }
-                
+            }
+
+            // 然后修改 PE 文件
+            if (!FileCheck.IsFileLocked(body))
+            {
                 using (PeFile peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
                 {
                     peFile.AddImport("PreloadCpp.dll", "Load");
                     peFile.Flush();
                 }
-                
+            }
+            else
+            {
+                throw new IOException($"文件 {body} 被锁定，无法修改");
             }
         }
-        catch { }
+        catch
+        {
+        }
     }
 
     public void LoadAll(int pid) => _manager.InjectAll(pid);

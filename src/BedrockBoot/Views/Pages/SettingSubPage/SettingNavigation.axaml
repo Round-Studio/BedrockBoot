@@ -26,8 +26,9 @@
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="游戏"
                                           Description="操作游戏的基本设置"
+                                          Name="SetGame"
+                                          Click="SetGame_OnClick"
                                           IsClickable="True"
-                                          IsEnabled="False"
                                           Glyph="&#xE7FC;"/>
                 
             <onePointControls:SettingCard Margin="5, 0, 5, 10"

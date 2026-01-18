@@ -19,7 +19,9 @@ public class ConfigEntry
     [JsonPropertyName("isAgreeTerms")] public bool IsAgreeTerms { get; set; } = false;
     [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
     [JsonPropertyName("isTaskBarJumpItem")] public bool IsTaskBarJumpItem { get; set; } = true;
+    [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.SymbolicLink;
 }
+
 public class StyleConfig
 {
     [JsonPropertyName("lightThemeType")] public ThemeModelEnum LightThemeType { get; set; } = ThemeModelEnum.Dark;

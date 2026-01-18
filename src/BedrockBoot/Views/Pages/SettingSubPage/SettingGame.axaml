@@ -1,0 +1,27 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingGame">
+    <ScrollViewer>
+        <StackPanel Margin="15">
+            <TextBlock Margin="5,0,5,10"
+                       FontWeight="Bold"
+                       FontSize="14">基础设置</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Header="版本隔离"
+                                          Description="版本隔离使用的技术类型"
+                                          Glyph="&#xE7B8;">
+                <ComboBox Width="300"
+                          Name="IsolationTypeBox"
+                          SelectionChanged="IsolationTypeBox_OnSelectionChanged">
+                    <ComboBoxItem Content="单一模式（Symbolic Link）"></ComboBoxItem>
+                    <ComboBoxItem Content="混合模式（Hook + Symbolic Link）"></ComboBoxItem>
+                </ComboBox>
+            </onePointControls:SettingCard>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

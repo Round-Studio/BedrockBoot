@@ -18,8 +18,9 @@ public partial class DialogImportGameContent : UserControl
     public bool DontKnowGameType => (bool)DontKnowGameTypeCheckBox.IsChecked;
     public MinecraftGameTypeVersion GameType => (MinecraftGameTypeVersion)RealGameBuildTypeInputBox.SelectedIndex;
 
-    public string PackInstallFolder =>
-        GlobalModel.Config.Data.GameFolders[GameInstallFoldersInputBox.SelectedIndex].GameFolderPath;
+    public string PackInstallFolder => GlobalModel.Config.Data.GameFolders.Count != 0 ?
+        GlobalModel.Config.Data.GameFolders[GameInstallFoldersInputBox.SelectedIndex].GameFolderPath :
+        string.Empty;
     public DialogImportGameContent()
     {
         InitializeComponent();

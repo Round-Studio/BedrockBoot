@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SetupPage.SetupWelcome">
+    <StackPanel VerticalAlignment="Center"
+                Margin="45">
+        <StackPanel HorizontalAlignment="Left"
+                    VerticalAlignment="Top">
+            <onePointControls:FontIcon Margin="5"
+                                       FontSize="28"
+                                       Glyph="&#xE909;"
+                                       Foreground="{DynamicResource PrimaryForegroundBrush}"/>
+            <TextBlock FontSize="22"
+                       Margin="5,10,0,0"
+                       Text="欢迎"></TextBlock>
+            <TextBlock Margin="5"
+                       Text="欢迎使用 BedrockBoot v2，这是初次使用向导"></TextBlock>
+        </StackPanel>
+        
+        <Grid Margin="0,10,0,0">
+        </Grid>
+    </StackPanel>
+</UserControl>

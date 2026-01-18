@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -30,6 +31,8 @@ public partial class App : Application
             GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
             GlobalModel.Config.Load();
         }
+        
+        ServicePointManager.DefaultConnectionLimit = 1024;
         
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);

@@ -1,0 +1,22 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DrawContent.DrawImportOtherLauncherContent">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Name="LaunchersBox"
+                        Spacing="5"
+                        Margin="20">
+                
+            </StackPanel>
+        </ScrollViewer>
+        <notice:InfoCard BigTitle="没有可用配置"
+                         Message="当前系统中没有可用的第三方基岩版启动器配置文件"
+                         Name="NoneBox"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

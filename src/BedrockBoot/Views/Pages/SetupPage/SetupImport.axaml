@@ -1,0 +1,44 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SetupPage.SetupImport">
+    <StackPanel VerticalAlignment="Center"
+                Margin="45">
+        <StackPanel HorizontalAlignment="Left"
+                    VerticalAlignment="Top">
+            <onePointControls:FontIcon Margin="5"
+                                       FontSize="28"
+                                       Glyph="&#xE8B7;"
+                                       Foreground="{DynamicResource PrimaryForegroundBrush}"/>
+            <TextBlock FontSize="22"
+                       Margin="5,10,0,0"
+                       Text="导入"></TextBlock>
+            <TextBlock Margin="5"
+                       Text="在初次使用 BedrockBoot 时，需要您进行一些操作。"></TextBlock>
+        </StackPanel>
+        
+        <Grid Margin="0,10,0,0">
+            <StackPanel Margin="5"
+                        HorizontalAlignment="Left"
+                        Width="460"
+                        Spacing="10">
+                <onePointControls:SettingCard Header="导入实例目录"
+                                              Description="导入一个新的实例目录"
+                                              Glyph="&#xECC8;"
+                                              Name="ImportFolderBtn"
+                                              Click="ImportFolderBtn_OnClick"
+                                              IsClickable="True"></onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Header="导入其他启动器配置"
+                                              Description="导入其他第三方启动器的配置文件，例如 LeviLauncher"
+                                              Glyph="&#xE835;"
+                                              Name="ImportOtherLauncherBtn"
+                                              Click="ImportOtherLauncherBtn_OnClick"
+                                              IsClickable="True"></onePointControls:SettingCard>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

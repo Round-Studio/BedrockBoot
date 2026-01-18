@@ -59,8 +59,14 @@ public partial class DialogDeleteGameContent : UserControl
                     });
                 }
             });
-            
-            Directory.Delete(path, true);
+
+            try
+            {
+                Directory.Delete(path, true);
+            }
+            catch
+            {
+            }
 
             Dispatcher.UIThread.Invoke(DialogHost.Close);
             Dispatcher.UIThread.Invoke(GlobalModel.MainWindow.CloseDraw);

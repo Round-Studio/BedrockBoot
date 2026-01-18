@@ -17,6 +17,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Pages;
+using BedrockBoot.Views.Pages.SetupPage;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.VersionJsons;
@@ -140,8 +141,16 @@ public partial class MainWindow : OnePointWindow
             }
             finally
             {
-                Console.WriteLine(@"跳转主页面.jpg");
-                Dispatcher.UIThread.Invoke(() => MainFrame.NavigateTo(new MainPage()));
+                if (GlobalModel.Config.Data.IsFirstRun)
+                {
+                    Console.WriteLine(@"跳转初始化向导页面.jpg");
+                    Dispatcher.UIThread.Invoke(() => MainFrame.NavigateTo(new SetupRoot()));
+                }
+                else
+                {
+                    Console.WriteLine(@"跳转主页面.jpg");
+                    Dispatcher.UIThread.Invoke(() => MainFrame.NavigateTo(new MainPage()));
+                }
 
 #if DEBUG
                 var date = CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly());

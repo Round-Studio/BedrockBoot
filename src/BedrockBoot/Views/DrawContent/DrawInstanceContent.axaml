@@ -95,6 +95,7 @@
                 <TabItem Header="资源包 / 行为包" Tag="Pack"></TabItem>
                 <TabItem Header="存档" Tag="Save"></TabItem>
                 <TabItem Header="截图" Tag="Screenshots"></TabItem>
+                <TabItem Header="服务器" Tag="Server"></TabItem>
                 <TabItem Header="操作" Tag="Controls" Name="GameControls"></TabItem>
             </TabControl>
         

@@ -9,6 +9,7 @@ public class Program
 {
     static async Task Main()
     {
-        Directory.CreateSymbolicLink(@"E:\Bedrock_GDK",@"D:\Bedrock_GDK");
+        var bedrockCore = new BedrockCore();
+        bedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release).Wait();
     }
 }

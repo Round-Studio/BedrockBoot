@@ -185,10 +185,6 @@ public partial class TaskDownloadGameItem : UserControl
 				            else if (states == InstallStates.Registering)
 				            {
 					            InsInstallGameBar.IsIndeterminate = false;
-				            }
-				            else if (states == InstallStates.Registered)
-				            {
-					            InsInstallGameBar.Value = 100;
 
 					            GameInfoHelper.SaveVersionConfig(new VersionConfig()
 					            {
@@ -201,6 +197,10 @@ public partial class TaskDownloadGameItem : UserControl
 							            VersionType = BuildInfo.Type
 						            }
 					            });
+				            }
+				            else if (states == InstallStates.Registered)
+				            {
+					            InsInstallGameBar.Value = 100;
 
 					            Dispatcher.UIThread.Invoke(() =>
 						            installed?.Invoke());

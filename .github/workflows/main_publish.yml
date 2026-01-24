@@ -80,7 +80,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.TOKEN }}
-          title: "Release ${{ needs.version.outputs.tag }}"
+          title: "v${{ needs.version.outputs.tag }}"
           automatic_release_tag: ${{ needs.version.outputs.tag }}
           prerelease: false
           files: |

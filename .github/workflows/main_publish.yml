@@ -76,12 +76,30 @@ jobs:
           name: BedrockBoot.Publish
           path: ./release-artifacts
       
+      - name: Get commit messages
+        id: commits
+        run: |
+          # 获取最近一次提交的信息
+          echo "latest_commit=$(git log -1 --pretty=format:%s)" >> $GITHUB_OUTPUT
+          # 获取最近3次提交的信息作为变更日志
+          echo "changelog=$(git log -3 --pretty=format:"- %s (%h)" --reverse)" >> $GITHUB_OUTPUT
+      
       - name: Create Release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v1
         with:
-          repo_token: ${{ secrets.TOKEN }}
-          title: "v${{ needs.version.outputs.tag }}"
-          automatic_release_tag: ${{ needs.version.outputs.tag }}
+          tag_name: ${{ needs.version.outputs.tag }}
+          release_name: "Release ${{ needs.version.outputs.tag }}"
+          body: |
+            ## BedrockBoot ${{ needs.version.outputs.v }}
+            
+            **构建信息**
+            - 版本: ${{ needs.version.outputs.v }}
+            - 构建时间: ${{ needs.version.outputs.time }}
+            - 提交: ${{ github.sha }}
+            
+            ---
+            *自动化构建发布*  
+          draft: false
           prerelease: false
           files: |
             ./release-artifacts/*.exe

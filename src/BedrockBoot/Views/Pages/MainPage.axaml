@@ -6,32 +6,65 @@
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:cornerSelectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.CornerSelectBar;assembly=OnePointUI.Avalonia"
+             xmlns:selectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MainPage">
-    <Grid RowDefinitions="Auto,*">
-        <Grid Row="0"
-              ColumnDefinitions="*,Auto">
-            <navigation:NavigationFrame Grid.Column="0"
-                                        Name="HeaderContent"
-                                        Margin="20,15,0,0"
-                                        NavigationFrameDirection="Right"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Stretch"></navigation:NavigationFrame>
-        
-            <items:BorderCard Grid.Column="1"
-                              Margin="20,20,20,5"
-                              Padding="8,4"
-                              HorizontalAlignment="Right">
-                <ListBox Classes="Segmented"
-                    SelectedIndex="0"
-                    SelectionChanged="SelTag_OnSelectionChanged"
-                    Name="SelTag">
-                    
-                </ListBox>
-            </items:BorderCard>
-        </Grid>
+    <Grid RowDefinitions="Auto,*,Auto">
+        <navigation:NavigationFrame Grid.Row="0"
+                                    Name="HeaderContent"
+                                    Margin="20,20,0,0"
+                                    NavigationFrameDirection="Right"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"></navigation:NavigationFrame>
         
         <navigation:NavigationFrame Grid.Row="1"
                                     Name="MainFrame"/>
+        
+        <items:BorderCard Grid.Row="2"
+                          Height="48"
+                          Padding="0"
+                          CornerRadius="0"
+                          HorizontalAlignment="Stretch">
+            <Grid Height="48">
+                <StackPanel HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            Spacing="6"
+                            Orientation="Horizontal"
+                            Margin="6">
+                    <Button Padding="22,0"
+                            Classes="NoBorder"
+                            Background="{DynamicResource AccentBackgroundBrush}">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8">
+                            <onePointControls:FontIcon VerticalAlignment="Center"
+                                                       FontSize="17"
+                                                       Foreground="White"
+                                                       Glyph="&#xE709;"></onePointControls:FontIcon>
+                        
+                            <TextBlock Text="启动"
+                                       Foreground="White"
+                                       FontSize="15"></TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button Padding="8,0"
+                            Classes="NoBorder">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="GameName"></TextBlock>
+                            <TextBlock Text="GameInfo"
+                                       FontSize="9"></TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                
+                <selectBar:SelectBar SelectedIndex="0"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Stretch"
+                                     Margin="0"
+                                     SelectionChanged="SelTag_OnSelectionChanged"
+                                     Name="SelTag">
+                    
+                </selectBar:SelectBar>
+            </Grid>
+        </items:BorderCard>
     </Grid>
 </UserControl>

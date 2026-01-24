@@ -15,6 +15,7 @@ using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.CornerSelectBar;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;
 using Round.SDK.Entry.BedrockBoot;
 using Round.SDK.Plugin.BedrockBoot.Register;
 
@@ -137,28 +138,10 @@ public partial class MainPage : UserControl
 
         TopBarItem.Add(item.Tag, item);
 
-        SelTag.Items.Add(new ListBoxItem()
+        SelTag.Items.Add(new SelectBarItem()
         {
             Tag = item.Tag,
-            Classes = { "Segmented" },
-            Content = new StackPanel()
-            {
-                Orientation = Orientation.Horizontal,
-                Spacing = 4,
-                Children =
-                {
-                    new FontIcon()
-                    {
-                        Glyph = item.ItemGlyph,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        FontSize = 14
-                    },
-                    new TextBlock()
-                    {
-                        Text = item.ItemText
-                    }
-                }
-            }
+            Glyph = item.ItemGlyph
         });
 
         IsEditMode = true;
@@ -170,7 +153,7 @@ public partial class MainPage : UserControl
         {
             try
             {
-                var item = (ListBoxItem)SelTag.SelectedItem;
+                var item = (SelectBarItem)SelTag.SelectedItem;
                 var tag = item.Tag as string;
 
                 BedrockBootPage page = null;

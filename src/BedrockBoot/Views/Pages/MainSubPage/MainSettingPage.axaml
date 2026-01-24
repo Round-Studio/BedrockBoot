@@ -16,46 +16,7 @@
                                   Name="BreadcrumbBar">
         </breadcrumb:BreadcrumbBar>
     </entry:BedrockBootPage.HeaderView>
-    <Grid RowDefinitions="*,Auto">
-        <navigation:NavigationFrame Grid.Row="0" Name="SettingFrame"/>
-        
-        <Grid Grid.Row="1">
-            <items:BorderCard Margin="20,10,20,20"
-                              Padding="8,4,8,4">
-                <Grid ColumnDefinitions="Auto,*,*">
-                    <onePointControls:FontIcon Grid.Column="0"
-                                               FontSize="22"
-                                               VerticalAlignment="Center"
-                                               Margin="0,0,8,0"
-                                               Glyph="&#xE713;"></onePointControls:FontIcon>
-                    
-                    <StackPanel Grid.Column="1"
-                                VerticalAlignment="Center">
-                        <TextBlock FontSize="15">BedrockBoot</TextBlock>
-                        <TextBlock FontSize="9"
-                                   Foreground="Gray">2.0 评估设置页面</TextBlock>
-                    </StackPanel>
-                    
-                    <StackPanel Grid.Column="2"
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Right">
-                        <onePointControls:LabelBox Text="Beta"
-                                                   FontSize="14"
-                                                   Foreground="White"
-                                                   Background="Orange"
-                                                   Margin="0,0,5,0"
-                                                   VerticalAlignment="Center"/>
-                        
-                        <onePointControls:LabelBox Text="Build Time"
-                                                   FontSize="14"
-                                                   Foreground="Black"
-                                                   Background="White"
-                                                   Name="BuildTime"
-                                                   Margin="0,0,5,0"
-                                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Grid>
-            </items:BorderCard>
-        </Grid>
+    <Grid>
+        <navigation:NavigationFrame Name="SettingFrame"/>
     </Grid>
 </entry:BedrockBootPage>

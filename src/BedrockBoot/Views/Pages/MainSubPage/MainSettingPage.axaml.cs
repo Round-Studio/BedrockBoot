@@ -18,8 +18,6 @@ public partial class MainSettingPage : BedrockBootPage
     public MainSettingPage()
     {
         InitializeComponent();
-        BuildTime.Text =
-            $"Build.2.{((DateTime)(CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly()))).ToString("yy.MMdd.HHmmss")}";
         SettingBreadcrumbBar = this.BreadcrumbBar;
         this.BreadcrumbBar.RootItemClick = () =>
             SettingFrame.NavigateTo(new SettingNavigation());

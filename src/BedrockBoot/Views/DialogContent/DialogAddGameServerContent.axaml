@@ -1,0 +1,24 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.DialogAddGameServerContent">
+    <StackPanel>
+        <TextBlock Margin="0,5,0,5"
+                   HorizontalAlignment="Left">服务器名称（自定义）：</TextBlock>
+        <TextBox Margin="0,5,0,5" Width="320"
+                 Watermark="第三方服务器"
+                 Name="ServerNameInputBox"></TextBox>
+        <TextBlock Margin="0,5,0,5"
+                   HorizontalAlignment="Left">服务器地址：</TextBlock>
+        <TextBox Margin="0,5,0,5" Width="320"
+                 Watermark="play.example.com"
+                 Name="ServerAddressInputBox"></TextBox>
+        <TextBlock Margin="0,5,0,5"
+                   HorizontalAlignment="Left">服务器端口：</TextBlock>
+        <TextBox Margin="0,5,0,5" Width="320"
+                 Watermark="19132"
+                 Name="ServerPortInputBox"></TextBox>
+    </StackPanel>
+</UserControl>

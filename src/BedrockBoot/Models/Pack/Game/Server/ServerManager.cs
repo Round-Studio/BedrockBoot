@@ -16,6 +16,35 @@ public class ServerManager
         VersionConfig = versionInfo;
     }
 
+    public void AddServer(string user, ServerItemInfo server)
+    {
+        var configFile = GetServerConfigFilesPath().Where(co => co.Key == user).First().Value;
+        var lines = File.Exists(configFile) ? File.ReadAllLines(configFile).ToList() : new();
+        var lineIndex = lines.Count + 1;
+        lines.Add($"{lineIndex}:{GetServerConfigLine(server)}");
+
+        if (!Directory.Exists(Path.GetDirectoryName(configFile)))
+            Directory.CreateDirectory(Path.GetDirectoryName(configFile));
+
+        File.WriteAllLines(configFile, lines);
+    }
+    
+    public void DeleteServer(string user,ServerItemInfo info)
+    {
+        var configFile = GetServerConfigFilesPath().Where(co => co.Key == user).First().Value;
+        var lines = File.Exists(configFile) ? File.ReadAllLines(configFile).ToList() : new();
+        
+        lines.RemoveAll(line => line.Split(':')[0].Contains(info.Id.ToString()));
+
+        if (!Directory.Exists(Path.GetDirectoryName(configFile)))
+            Directory.CreateDirectory(Path.GetDirectoryName(configFile));
+
+        File.WriteAllLines(configFile, lines);
+    }
+
+    public string GetServerConfigLine(ServerItemInfo server)
+        => $"{server.ServerName}:{server.ServerAddress}:{server.ServerPort}";
+
     public Dictionary<string, List<ServerItemInfo>> GetServers()
     {
         var result = new Dictionary<string, List<ServerItemInfo>>();
@@ -33,7 +62,8 @@ public class ServerManager
                     {
                         ServerName = split[1],
                         ServerAddress = split[2],
-                        ServerPort = int.Parse(split[3])
+                        ServerPort = int.Parse(split[3]),
+                        Id = int.Parse(split[0])
                     });
                 });
             }

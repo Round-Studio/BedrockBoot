@@ -8,40 +8,64 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceServer">
     <Grid RowDefinitions="Auto,*">
-        <items:BorderCard Grid.Row="0"
-                          Margin="20,8,20,10">
-            <Grid ColumnDefinitions="4*,Auto,6*">
-                <DockPanel Grid.Column="0"
-                           Margin="0,0,12,0">
-                    <onePointControls:FontIcon Glyph="&#xEBDA;"
-                                               VerticalAlignment="Center"
-                                               FontSize="16"
-                                               Margin="5,5,12,5"></onePointControls:FontIcon>
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto">
+            <items:BorderCard Grid.Column="0"
+                              Margin="20,8,12,10">
+                <Grid ColumnDefinitions="4*,Auto,6*">
+                    <DockPanel Grid.Column="0"
+                               Margin="0,0,12,0">
+                        <onePointControls:FontIcon Glyph="&#xEBDA;"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="16"
+                                                   Margin="5,5,12,5"></onePointControls:FontIcon>
                     
-                    <ComboBox HorizontalAlignment="Stretch"
-                              Name="UserChooseBox"
-                              DockPanel.Dock="Right"></ComboBox>
-                </DockPanel>
+                        <ComboBox HorizontalAlignment="Stretch"
+                                  Name="UserChooseBox"
+                                  SelectionChanged="UserChooseBox_OnSelectionChanged"
+                                  DockPanel.Dock="Right"></ComboBox>
+                    </DockPanel>
                         
-                <Border Grid.Column="1"
-                        Width="1"
-                        VerticalAlignment="Stretch"
-                        Background="{DynamicResource PrimaryDisabledForegroundBrush}"
-                        Margin="0,5,0,5"></Border>
+                    <Border Grid.Column="1"
+                            Width="1"
+                            VerticalAlignment="Stretch"
+                            Background="{DynamicResource PrimaryDisabledForegroundBrush}"
+                            Margin="0,5,0,5"></Border>
                         
-                <DockPanel Grid.Column="2"
-                           HorizontalAlignment="Stretch"
-                           LastChildFill="True">
-                    <onePointControls:FontIcon Glyph="&#xE71E;"
-                                               VerticalAlignment="Center"
-                                               FontSize="16"
-                                               Margin="12,5,12,5"></onePointControls:FontIcon>
-                    <TextBox Name="SearchBox"
-                             HorizontalAlignment="Stretch"
-                             DockPanel.Dock="Right"></TextBox>
-                </DockPanel>
-            </Grid>
-        </items:BorderCard>
+                    <DockPanel Grid.Column="2"
+                               HorizontalAlignment="Stretch"
+                               LastChildFill="True">
+                        <onePointControls:FontIcon Glyph="&#xE71E;"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="16"
+                                                   Margin="12,5,12,5"></onePointControls:FontIcon>
+                        <TextBox Name="SearchBox"
+                                 TextChanged="SearchBox_OnTextChanged"
+                                 HorizontalAlignment="Stretch"
+                                 DockPanel.Dock="Right"></TextBox>
+                    </DockPanel>
+                </Grid>
+            </items:BorderCard>
+            <items:BorderCard Grid.Column="1"
+                              Margin="0,8,20,10">
+                <Grid>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                        <Button Classes="NoBorder"
+                                Name="AddServerBtn"
+                                Click="AddServerBtn_OnClick"
+                                Padding="12,8">
+                            <StackPanel Orientation="Horizontal">
+                                <onePointControls:FontIcon Glyph="&#xE710;"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,1,8,0"></onePointControls:FontIcon>
+                                <TextBlock>添加服务器</TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </items:BorderCard>
+        </Grid>
         
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="15,0,15,15"

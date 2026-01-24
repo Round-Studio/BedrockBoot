@@ -195,7 +195,7 @@ public partial class MainWindow : OnePointWindow
                             $"欢迎使用 BedrockBoot，\n开始使用即代表您同意此条款：\n\n" +
                             $"1. 此为非官方 Minecraft 启动器\n" +
                             $"2. 您需拥有合法授权的 Minecraft 副本，否则自动进入试玩版\n" +
-                            $"3. 我们不会 辅助 / 协助 任何破解正版 Minecraft 的行为" +
+                            $"3. 我们不会 辅助 / 协助 任何破解正版 Minecraft 的行为\n" +
                             $"4. 禁止任何形式的盗版或作弊行为\n" +
                             $"5. 模组 / 资源包 使用风险自负\n" +
                             $"6. 与 Mojang / Microsoft 无关联\n" +

@@ -30,12 +30,13 @@
             </StackPanel>
         </onePointControls:SettingCard.Header>
         <onePointControls:SettingCard.Description>
-            <StackPanel Spacing="8">
+            <StackPanel Spacing="4">
                 <TextBlock Name="ServerDescription"
                            Text="ServerDescription"></TextBlock>
                 
                 <style:MinecraftTextBlock Name="ServerMotd"
                                           IsVisible="False"
+                                          Margin="0"
                                           HorizontalAlignment="Left"
                                           TextWrapping="Wrap"></style:MinecraftTextBlock>
             </StackPanel>

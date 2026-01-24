@@ -16,9 +16,6 @@ public class SourceList
         { "gh-proxy.top", "https://gh-proxy.top/{url}" },
         { "gh-proxy.net", "https://gh-proxy.net/{url}" }
     };
-
-    public static string ServerStatusApi =
-        "https://motd.minebbs.com/api/status?ip={ip}&port={port}&stype=be";
     
     public static Dictionary<string, string> VersionDataSources { get; set; } = new Dictionary<string, string>()
     {

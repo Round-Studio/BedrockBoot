@@ -29,6 +29,9 @@ public partial class MainPage : UserControl
     public MainPage()
     {
         InitializeComponent();
+
+        #region 注册导航项
+        
         RegisterTopItem(new TopBarItemInfo()
         {
             ItemGlyph = "",
@@ -84,6 +87,8 @@ public partial class MainPage : UserControl
             Page = typeof(MainSettingPage)
         });
 
+        #endregion
+
         Instance = this;
 
         IsEditMode = true;
@@ -103,8 +108,24 @@ public partial class MainPage : UserControl
 
         GlobalModel.Config.AfterSave += (sender, args) =>
         {
-            
+            UpdateUI();
         };
+    }
+
+    public void UpdateUI()
+    {
+        void NullFunc()
+        {
+            GameListChoose.Items.Clear();
+            GameListChoose.Items.Add("无可用实例");
+        }
+        IsEditMode = false;
+        
+        GameListChoose.Items.Clear();
+        
+        GlobalModel.Config.Data.GameFolders.ForEach(f=>GameListChoose.Items.Add($"{f.GameFolderName} - {f.GameFolderPath}"));
+        
+        IsEditMode = true;
     }
 
     public static async Task Update(bool isShowNeo = false)
@@ -134,9 +155,7 @@ public partial class MainPage : UserControl
             Console.WriteLine($@"更新失败：{ex.Message}");
         }
     }
-
     public Dictionary<string, TopBarItemInfo> TopBarItem { get; private set; } = new();
-
     public void RegisterTopItem(TopBarItemInfo item)
     {
         IsEditMode = false;
@@ -151,7 +170,6 @@ public partial class MainPage : UserControl
 
         IsEditMode = true;
     }
-
     private void SelTag_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (IsEditMode)

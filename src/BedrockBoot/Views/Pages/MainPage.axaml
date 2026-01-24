@@ -64,6 +64,16 @@
                                      Name="SelTag">
                     
                 </selectBar:SelectBar>
+                
+                <ComboBox Height="32"
+                          Width="260"
+                          SelectedIndex="0"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Right"
+                          Margin="6"
+                          Name="GameListChoose">
+                    <ComboBoxItem>无实例</ComboBoxItem>
+                </ComboBox>
             </Grid>
         </items:BorderCard>
     </Grid>

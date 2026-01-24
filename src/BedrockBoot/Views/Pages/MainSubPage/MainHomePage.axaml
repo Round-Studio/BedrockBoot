@@ -18,7 +18,8 @@
                                         Text="你好，欢迎回来"></onePointControls:LineTextBlock>
     </entry:BedrockBootPage.HeaderView>
     <Grid>
-        <Grid Margin="15,10,15,15">
+        <Grid Margin="15,10,15,15"
+              IsVisible="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3.5*"
                                MinHeight="220"

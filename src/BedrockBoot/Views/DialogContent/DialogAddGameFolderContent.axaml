@@ -7,7 +7,8 @@
     <StackPanel>
         <TextBlock Margin="0,5,0,5"
                    HorizontalAlignment="Left">目录名（自定义）：</TextBlock>
-        <TextBox Margin="0,5,0,5" Width="320"
+        <TextBox Margin="0,5,0,5" MinWidth="320"
+                 HorizontalAlignment="Stretch"
                  Name="PathNameInputBox"></TextBox>
         <TextBlock Margin="0,5,0,5"
                    HorizontalAlignment="Left">目录路径：</TextBlock>

@@ -8,20 +8,6 @@
              x:Class="BedrockBoot.Views.DialogContent.DialogImportGameContent">
     <ScrollViewer>
         <StackPanel Margin="0,0,0,0">
-            <notice:InfoBar State="Warning"
-                            Margin="0,5,0,5"
-                            Height="64"
-                            IsVisible="False"
-                            Title="提示"
-                            Message="这个功能其实我根本不想加，因为加了肯定会有一大堆问题.jpg&#x0A;如果导入进去的游戏出了问题，启动不了，那就是你自己导入时的配置有问题。&#x0A;请前往你下载游戏安装包的地方核对信息..."/>
-            
-            <notice:InfoBar State="Error"
-                            Margin="0,5,0,5"
-                            Height="48"
-                            IsVisible="False"
-                            Title="警告"
-                            Message="带 * 号的选项就是那种填错了直接会导致无法启动的东西...&#x0A;嗯，对。请一定要仔细核对！！！"></notice:InfoBar>
-            
             <TextBlock Margin="0,5,0,5"
                        HorizontalAlignment="Left">安装包路径：</TextBlock>
             

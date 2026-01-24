@@ -100,6 +100,11 @@ public partial class MainPage : UserControl
         
             JumpListManager.ConfigureJumpList();
         };
+
+        GlobalModel.Config.AfterSave += (sender, args) =>
+        {
+            
+        };
     }
 
     public static async Task Update(bool isShowNeo = false)

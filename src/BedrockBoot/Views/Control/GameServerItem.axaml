@@ -51,6 +51,19 @@
                                            FontSize="16"
                                            Foreground="DarkRed"></onePointControls:FontIcon>
             </Button>
+            
+            <Button Height="32"
+                    Classes="NoBorder"
+                    Background="{DynamicResource AccentBackgroundBrush}"
+                    Padding="10,0">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="6">
+                    <onePointControls:FontIcon Glyph="&#xE709;"
+                                               FontSize="16"></onePointControls:FontIcon>
+                    
+                    <TextBlock Text="启动"></TextBlock>
+                </StackPanel>
+            </Button>
         </StackPanel>
     </onePointControls:SettingCard>
 </UserControl>

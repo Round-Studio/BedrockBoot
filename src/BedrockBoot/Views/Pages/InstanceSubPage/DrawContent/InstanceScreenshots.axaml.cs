@@ -39,6 +39,8 @@ public partial class InstanceScreenshots : ISetting
 
     public void UpdateScreenshots()
     {
+        if (UserChooseBox.SelectedIndex <= -1)
+            return;
         var users = new ScreenshotsManager(VersionInfo).GetScreenshots();
         var screenshots = users.Values.ToList()[UserChooseBox.SelectedIndex];
         ScreenshotsBox.Children.Clear();

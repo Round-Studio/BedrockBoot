@@ -39,6 +39,8 @@ public class GameInfoHelper
     public static List<VersionConfig> GetVersionConfigs(string gameFolder)
     {
         var result = new List<VersionConfig>();
+        if (!Directory.Exists(Path.Combine(gameFolder, "bedrock_versions")))
+            return result;
         var versions = Directory.GetDirectories(Path.Combine(gameFolder, "bedrock_versions")).ToList();
 
         versions.ForEach(x =>

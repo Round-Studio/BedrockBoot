@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
+using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
@@ -106,26 +109,16 @@ public partial class MainPage : UserControl
             JumpListManager.ConfigureJumpList();
         };
 
+        var sel = -1;
         GlobalModel.Config.AfterSave += (sender, args) =>
         {
-            UpdateUI();
+            if (args.Config.Data.GameFolderSelIndex != sel)
+            {
+                sel = args.Config.Data.GameFolderSelIndex;
+                UpdateUI();
+            }
         };
-    }
-
-    public void UpdateUI()
-    {
-        void NullFunc()
-        {
-            GameListChoose.Items.Clear();
-            GameListChoose.Items.Add("无可用实例");
-        }
-        IsEditMode = false;
-        
-        GameListChoose.Items.Clear();
-        
-        GlobalModel.Config.Data.GameFolders.ForEach(f=>GameListChoose.Items.Add($"{f.GameFolderName} - {f.GameFolderPath}"));
-        
-        IsEditMode = true;
+        UpdateUI();
     }
 
     public static async Task Update(bool isShowNeo = false)
@@ -206,5 +199,95 @@ public partial class MainPage : UserControl
             {
             }
         }
+    }
+    public void UpdateUI()
+    {
+        void NullFunc()
+        {
+            GameListChoose.Items.Clear();
+            GameListChoose.Items.Add("无可用实例");
+            GameListChoose.SelectedIndex = 0;
+            GameControls.IsEnabled = false;
+            GameInfo.Text = "";
+            GameName.Text = "";
+            GameSettingBtn.IsVisible = false;
+
+            IsEditMode = true;
+        }
+        
+        IsEditMode = false;
+        
+        GameListChoose.Items.Clear();
+        GameControls.IsEnabled = true;
+        GameSettingBtn.IsVisible = true;
+
+        if (GlobalModel.Config.Data.GameFolders.Count <= 0)
+        {
+            NullFunc();
+            return;
+        }
+
+        var versions = GameInfoHelper.GetVersionConfigs(GlobalModel.Config.Data
+            .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath);
+        
+        if (versions.Count <= 0)
+        {
+            NullFunc();
+            return;
+        }
+        
+        versions.ForEach(v =>
+        {
+            GameListChoose.Items.Add($"{v.Info.VersionName} [{v.Info.Version}]");
+        });
+
+        GameListChoose.SelectedIndex = GlobalModel.Config.Data
+            .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex;
+
+        UpdateGameInfo();
+        
+        IsEditMode = true;
+    }
+
+    public void UpdateGameInfo()
+    {
+        var version = GameInfoHelper.GetVersionConfigs(GlobalModel.Config.Data
+            .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath)[GlobalModel.Config.Data
+            .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex];
+
+        GameInfo.Text = $"{version.Info.VersionType} {version.Info.Version}";
+        GameName.Text = version.Info.VersionName;
+        GameBuildType.Text = version.Info.BuildType.ToString();
+    }
+
+    private void GameListChoose_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEditMode)
+        {
+            var selIndex = GameListChoose.SelectedIndex;
+            GlobalModel.Config.Data
+                .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex = selIndex;
+            GlobalModel.Config.Save();
+            
+            UpdateGameInfo();
+        }
+    }
+
+    private void GameSettingBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var version = GameInfoHelper.GetVersionConfigs(GlobalModel.Config.Data
+            .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath)[GlobalModel.Config.Data
+            .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex];
+        
+        GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(version),$"{version.Info.VersionName} - {version.Info.Version}");
+    }
+
+    private void GameLaunchBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var version = GameInfoHelper.GetVersionConfigs(GlobalModel.Config.Data
+            .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath)[GlobalModel.Config.Data
+            .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex];
+        
+        TaskLaunchGameItem.Launch(version);
     }
 }

@@ -55,7 +55,7 @@
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
-                         BigTitle="唔...没人陪你玩么？"
+                         BigTitle="没有任何一个第三方服务器 wa..."
                          Message="输入的关键词无效 或 这个用户没有服务器"/>
     </Grid>
 </UserControl>

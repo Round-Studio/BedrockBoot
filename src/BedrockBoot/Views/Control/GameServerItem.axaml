@@ -1,0 +1,55 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:style="clr-namespace:BedrockBoot.Models.Style"
+             mc:Ignorable="d" d:DesignWidth="800"
+             x:Class="BedrockBoot.Views.Control.GameServerItem">
+    <onePointControls:SettingCard IsClickable="True"
+                                  Name="Card"
+                                  Margin="5,0,5,10"
+                                  Glyph="&#xEDA2;"
+                                  IsShowActionIcon="False">
+        <onePointControls:SettingCard.Header>
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock Name="ServerName"
+                           VerticalAlignment="Center"
+                           Text="ServerName"></TextBlock>
+                
+                <onePointControls:LabelBox VerticalAlignment="Center"
+                                           Name="DelayBox"
+                                           Text="-1 ms"></onePointControls:LabelBox>
+                
+                <onePointControls:LabelBox VerticalAlignment="Center"
+                                           Name="PlayerBox"
+                                           Background="Green"
+                                           IsVisible="False"
+                                           Text="???"></onePointControls:LabelBox>
+            </StackPanel>
+        </onePointControls:SettingCard.Header>
+        <onePointControls:SettingCard.Description>
+            <StackPanel Spacing="8">
+                <TextBlock Name="ServerDescription"
+                           Text="ServerDescription"></TextBlock>
+                
+                <style:MinecraftTextBlock Name="ServerMotd"
+                                          IsVisible="False"
+                                          HorizontalAlignment="Left"
+                                          TextWrapping="Wrap"></style:MinecraftTextBlock>
+            </StackPanel>
+        </onePointControls:SettingCard.Description>
+        
+        <StackPanel Spacing="8"
+                    Orientation="Horizontal">
+            <Button Width="32" Height="32"
+                    Classes="NoBorder"
+                    Name="DeleteBtn">
+                <onePointControls:FontIcon Glyph="&#xE74D;"
+                                           FontSize="16"
+                                           Foreground="DarkRed"></onePointControls:FontIcon>
+            </Button>
+        </StackPanel>
+    </onePointControls:SettingCard>
+</UserControl>

@@ -92,15 +92,18 @@ public partial class MainWindow : OnePointWindow
             }
             catch(Exception ex)
             {
-                Console.WriteLine(@"不支持该系统");
-                DialogHost.Show(new DialogInfo()
+                Console.WriteLine(ex);
+                if (ex.Message.Contains("Not Support Windows Version"))
                 {
-                    Title = "当前系统不支持",
-                    Content = "根据我们的最低支持标准，系统版本号需要大于等于 19041\n" +
-                              "请尝试升级系统后再次尝试",
-                    CloseButtonText = "退出",
-                    CloseAction = (() => Environment.Exit(1))
-                });
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Title = "当前系统不支持",
+                        Content = "根据我们的最低支持标准，系统版本号需要大于等于 19041\n" +
+                                  "请尝试升级系统后再次尝试",
+                        CloseButtonText = "退出",
+                        CloseAction = (() => Environment.Exit(1))
+                    });
+                }
             }
 
             try

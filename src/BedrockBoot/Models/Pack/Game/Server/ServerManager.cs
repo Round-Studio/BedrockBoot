@@ -36,9 +36,9 @@ public class ServerManager
                         ServerPort = int.Parse(split[3])
                     });
                 });
-            
-                result.Add(user.Key, lst);
             }
+            
+            result.Add(user.Key, lst);
         });
         
         return result;
@@ -56,48 +56,25 @@ public class ServerManager
         }
         else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
+            var dir = Path.Combine(
+                IsolationCore.GetRealPath(VersionConfig),
+                "Users"
+            );
+
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            var users = Directory.GetDirectories(dir).ToList();
+            users.ForEach(user =>
             {
-                var dir = Path.Combine(
-                    IsolationCore.GetRealPath(VersionConfig),
-                    "Users"
-                );
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                var users = Directory.GetDirectories(dir).ToList();
-                users.ForEach(user =>
-                {
-                    var path = Path.Combine(user,
-                        "games", "com.mojang",
-                        @"LocalState\games\com.mojang\minecraftpe",
-                        "external_servers.txt");
-                    if (Path.Exists(path))
-                        result.Add(Path.GetFileName(user), path);
-                });
-            }
-            else
-            {
-                var dir = Path.Combine(
-                    IsolationCore.GetRealPath(VersionConfig),
-                    "Users"
-                );
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                var users = Directory.GetDirectories(dir).ToList();
-                users.ForEach(user =>
-                {
-                    var path = Path.Combine(user,
-                        "games", "com.mojang",
-                        @"LocalState\games\com.mojang\minecraftpe",
-                        "external_servers.txt");
-                    if (Path.Exists(path))
-                        result.Add(Path.GetFileName(user), path);
-                });
-            }
+                var path = Path.Combine(user,
+                    "games", "com.mojang",
+                    @"minecraftpe",
+                    "external_servers.txt");
+                    
+                if(Path.GetFileName(user) != "Shared")
+                    result.Add(Path.GetFileName(user), path);
+            });
         }
 
         return result;

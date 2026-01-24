@@ -41,6 +41,9 @@
             <TextBlock Margin="20,1" Text="BedrockBoot 使用的游戏资源下载来自 CurseForge"></TextBlock>
             <TextBlock Margin="20,1">(https://curseforge.com/)</TextBlock>
             
+            <TextBlock Margin="20,1" Text="感谢来自 BMCBL 提供的 MCAPPX 列表源加速站点"></TextBlock>
+            <TextBlock Margin="20,1">(https://www.bmcbl.com/)</TextBlock>
+            
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
                        Text="灵感来源"></TextBlock>

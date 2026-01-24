@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BedrockBoot.Base.Entry.Info;
 
 namespace BedrockBoot.Models.Global;
 
@@ -30,5 +31,29 @@ public class SourceList
         { "CurseForge 官方源", "https://api.curseforge.com/" },
         /*{ "加速源 ①", "https://blog.zink.dpdns.org/advanced-proxy?url=\"https://api.curseforge.com/{url}\"" },
         { "MCIM 源", "https://mod.mcimirror.top/curseforge/" }*/
+    };
+
+    public static List<GameDownloadUrlInfo> GameFileDownloadSource { get; set; } = new List<GameDownloadUrlInfo>()
+    {
+        new()
+        {
+            Host = "assets1.xboxlive.cn",
+            Url = "http://assets1.xboxlive.cn/{router}",
+        },
+        new()
+        {
+            Host = "assets2.xboxlive.cn",
+            Url = "http://assets2.xboxlive.cn/{router}",
+        },
+        new()
+        {
+            Host = "assets1.xboxlive.com",
+            Url = "http://assets1.xboxlive.com/{router}",
+        },
+        new()
+        {
+            Host = "assets2.xboxlive.com",
+            Url = "http://assets2.xboxlive.com/{router}",
+        }
     };
 }

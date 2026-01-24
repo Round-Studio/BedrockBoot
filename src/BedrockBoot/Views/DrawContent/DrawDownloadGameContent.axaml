@@ -39,6 +39,12 @@
                                               Description="是否使用先前缓存过的 游戏安装包 进行游戏安装">
                     <ToggleSwitch IsEnabled="False"></ToggleSwitch>
                 </onePointControls:SettingCard>
+                
+                <TextBlock Margin="5"
+                           FontWeight="Bold"
+                           FontSize="14">选择源</TextBlock>
+                
+                
             </StackPanel>
         </ScrollViewer>
         

@@ -55,7 +55,10 @@
             
             <Button Height="32"
                     Classes="NoBorder"
+                    IsVisible="False"
                     Background="{DynamicResource AccentBackgroundBrush}"
+                    Name="LaunchBtn"
+                    Click="LaunchBtn_OnClick"
                     Padding="10,0">
                 <StackPanel Orientation="Horizontal"
                             Spacing="6">

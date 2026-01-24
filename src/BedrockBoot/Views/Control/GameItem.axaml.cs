@@ -53,10 +53,8 @@ public partial class GameItem : UserControl
     {
         var uri = new Uri(url);
 
-        // 2. 使用 AssetLoader.Open 获取流
         using (var stream = AssetLoader.Open(uri))
         {
-            // 3. 将流解码为 Bitmap
             return new Bitmap(stream);
         }
     }

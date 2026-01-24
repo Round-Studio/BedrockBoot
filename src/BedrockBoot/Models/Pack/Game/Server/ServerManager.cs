@@ -63,7 +63,8 @@ public class ServerManager
                         ServerName = split[1],
                         ServerAddress = split[2],
                         ServerPort = int.Parse(split[3]),
-                        Id = int.Parse(split[0])
+                        Id = int.Parse(split[0]),
+                        VersionConfig = VersionConfig
                     });
                 });
             }

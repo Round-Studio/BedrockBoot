@@ -9,7 +9,8 @@ public partial class DialogAddGameServerContent : UserControl
     {
         ServerName = !string.IsNullOrEmpty(ServerNameInputBox.Text) ? ServerNameInputBox.Text! : "第三方服务器",
         ServerAddress = ServerAddressInputBox.Text!,
-        ServerPort = !string.IsNullOrEmpty(ServerPortInputBox.Text) ? int.Parse(ServerPortInputBox.Text!) : 19132
+        ServerPort = !string.IsNullOrEmpty(ServerPortInputBox.Text) ? int.Parse(ServerPortInputBox.Text!) : 19132,
+        VersionConfig = null
     };
     public DialogAddGameServerContent()
     {

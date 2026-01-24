@@ -11,6 +11,7 @@ using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Entry.Game.Pack.Server;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Server;
+using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -79,5 +80,14 @@ public partial class GameServerItem : UserControl
                 DeleteServer?.Invoke(ServerItemInfo);
             }
         });
+    }
+
+    private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var versionConf = ServerItemInfo.VersionConfig;
+        versionConf.Config.IsEditModel = false;
+        versionConf.Config.OtherCommand =
+            $"minecraft://connect/?serverUrl={ServerItemInfo.ServerAddress}&serverPort={ServerItemInfo.ServerPort} {versionConf.Config.OtherCommand}";
+        TaskLaunchGameItem.Launch(versionConf);
     }
 }

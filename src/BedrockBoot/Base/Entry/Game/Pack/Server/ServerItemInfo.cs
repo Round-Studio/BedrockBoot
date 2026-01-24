@@ -7,4 +7,5 @@ public class ServerItemInfo
     public required string ServerAddress { get; set; }
     public int ServerPort { get; set; } = 19132;
     public int Id { get; set; }
+    public required VersionConfig VersionConfig { get; set; }
 }

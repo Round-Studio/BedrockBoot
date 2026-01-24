@@ -1,4 +1,4 @@
-﻿using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+﻿using BedrockBoot.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
 

@@ -38,14 +38,19 @@
             <TextBlock Margin="20,1" Text="BedrockBoot 下载更新的部分公益源来自 github.akams.cn"></TextBlock>
             <TextBlock Margin="20,1">(https://github.akams.cn/)</TextBlock>
             
+            <TextBlock Margin="20,1" Text="BedrockBoot 使用的游戏资源下载来自 CurseForge"></TextBlock>
+            <TextBlock Margin="20,1">(https://curseforge.com/)</TextBlock>
+            
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
-                       Text="灵感"></TextBlock>
+                       Text="灵感来源"></TextBlock>
             
             <TextBlock Margin="20,1" Text="BedrockBoot 内部分动画参考自 LauncherX"></TextBlock>
             <TextBlock Margin="20,1">(https://corona.studio/lx)</TextBlock>
-            <TextBlock Margin="20,1" Text="BedrockBoot 内部分页面设计参考自 Polymerium"></TextBlock>
+            <TextBlock Margin="20,1" Text="BedrockBoot 内部分设计参考自 Polymerium"></TextBlock>
             <TextBlock Margin="20,1">(https://github.com/d3ara1n/Polymerium)</TextBlock>
+            <TextBlock Margin="20,1" Text="BedrockBoot 内部分设计参考自 WonderLab"></TextBlock>
+            <TextBlock Margin="20,1">(https://github.com/Lunova-Studio/WonderLab.Override)</TextBlock>
             
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"

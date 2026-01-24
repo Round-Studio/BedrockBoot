@@ -238,7 +238,7 @@ public partial class MainPage : UserControl
         
         versions.ForEach(v =>
         {
-            GameListChoose.Items.Add($"{v.Info.VersionName} [{v.Info.Version}]");
+            GameListChoose.Items.Add($"{v.Info.VersionName}");
         });
 
         GameListChoose.SelectedIndex = GlobalModel.Config.Data

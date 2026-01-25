@@ -85,9 +85,19 @@ public class EasyLauncher
                     Console.WriteLine(state);
                     UpdateProgressText?.Invoke($"状态：{state}");
 
-                    if (state == LaunchState.Launched)
+                    if (state == LaunchState.Launching)
                     {
-                        IsolationCore.Init();
+                        try
+                        {
+                            IsolationCore.Init();
+                        }
+                        catch (Exception ex)
+                        {
+                            // 迁移失败，触发迁移回调
+                            OnMigration?.Invoke();
+                            if (MinecraftProcess != null)
+                                MinecraftProcess.Kill(true);
+                        }
                     }
                 }),
                 LaunchArgs = string.IsNullOrEmpty(args) ? null : args

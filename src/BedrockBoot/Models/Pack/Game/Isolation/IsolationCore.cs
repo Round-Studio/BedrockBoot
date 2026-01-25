@@ -29,17 +29,23 @@ public class IsolationCore
 
         if (folderType == DirectoryType.SymbolicLink)
             Directory.Delete(RootPath);
-        
-        if(!Directory.Exists(RealRootPath))
+
+        if (!Directory.Exists(RealRootPath))
             Directory.CreateDirectory(RealRootPath);
 
         if (folderType == DirectoryType.SymbolicLink)
         {
-            Directory.Delete(RootPath, true);
-            Directory.CreateSymbolicLink(RootPath, RealRootPath);
+            try
+            {
+                Directory.Delete(RootPath, true);
+                Directory.CreateSymbolicLink(RootPath, RealRootPath);
+            }
+            catch
+            {
+            }
         }
-        
-        if(!Directory.Exists(RootPath))
+
+        if (!Directory.Exists(RootPath))
             Directory.CreateSymbolicLink(RootPath, RealRootPath);
 
         if (DirectoryLinkChecker.CheckFolderType(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock")) ==
@@ -94,9 +100,12 @@ public class IsolationCore
 
     public void Clear()
     {
-        var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
+        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+        {
+            var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
 
-        if (folderType == DirectoryType.SymbolicLink)
-            Directory.Delete(RootPath);
+            if (folderType == DirectoryType.SymbolicLink)
+                Directory.Delete(RootPath);
+        }
     }
 }

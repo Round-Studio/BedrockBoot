@@ -20,6 +20,7 @@
         </StackPanel>
         
         <onePointControls:LabelBox Grid.Column="1"
+                                   Name="PingBox"
                                    VerticalAlignment="Center"
                                    Text="-1 ms"></onePointControls:LabelBox>
     </Grid>

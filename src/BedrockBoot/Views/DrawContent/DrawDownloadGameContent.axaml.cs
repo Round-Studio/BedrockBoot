@@ -23,6 +23,7 @@ public partial class DrawDownloadGameContent : UserControl
 {
     public BuildInfo BuildInfo { get; set; }
     public List<GameDownloadUrlInfo>? Sources;
+
     public DrawDownloadGameContent()
     {
         InitializeComponent();
@@ -43,6 +44,8 @@ public partial class DrawDownloadGameContent : UserControl
         InstallFolder.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
         InstallName.Text = BuildInfo.ID;
 
+        var itemList = new List<GameDownloadSourceItem>();
+        var geted = false;
         Task.Run(() =>
         {
             Sources = EasyDownload.GetPackageUrls(BuildInfo).Result;
@@ -50,15 +53,39 @@ public partial class DrawDownloadGameContent : UserControl
             {
                 Sources.ForEach(urlInfo =>
                 {
-                    Dispatcher.UIThread.Invoke(() => SourceSelBox.Items.Add(new ListBoxItem()
+                    Dispatcher.UIThread.Invoke(() =>
                     {
-                        Content = new GameDownloadSourceItem(urlInfo),
-                    }));
+                        var item = new GameDownloadSourceItem(urlInfo);
+                        item.Pinged = index =>
+                        {
+                            if (!geted)
+                            {
+                                geted = true;
+                                Dispatcher.UIThread.Invoke(() =>
+                                {
+                                    LoadRing.IsVisible = false;
+                                    InstallBtn.IsEnabled = true;
+
+                                    SourceSelBox.SelectedIndex = index;
+                                });
+                            }
+                        };
+                        itemList.Add(item);
+
+                        SourceSelBox.Items.Add(new ListBoxItem()
+                        {
+                            Content = item
+                        });
+                    });
                 });
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    LoadRing.IsVisible = false;
-                    InstallBtn.IsEnabled = true;
+                    var iindex = 0;
+                    itemList.ForEach(item =>
+                    {
+                        item.OnPing(iindex);
+                        iindex++;
+                    });
                 });
             }
             else
@@ -68,10 +95,7 @@ public partial class DrawDownloadGameContent : UserControl
                     Title = "发生错误",
                     Content = "该版本无法获取到对应下载地址",
                     CloseButtonText = "确定",
-                    CloseAction = () =>
-                    {
-                        GlobalModel.MainWindow.CloseDraw();
-                    }
+                    CloseAction = () => { GlobalModel.MainWindow.CloseDraw(); }
                 });
             }
         });
@@ -82,7 +106,7 @@ public partial class DrawDownloadGameContent : UserControl
         if (InstallFolder.Items.Count <= 0)
         {
             var dialog = new DialogAddGameFolderContent();
-         
+
             DialogHost.Show(new DialogInfo()
             {
                 Title = "添加游戏根目录",
@@ -97,7 +121,7 @@ public partial class DrawDownloadGameContent : UserControl
                         var name = string.IsNullOrEmpty(dialog.FolderName)
                             ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                             : dialog.FolderName;
-                    
+
                         GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo()
                         {
                             GameFolderPath = dialog.FolderPath,
@@ -105,13 +129,14 @@ public partial class DrawDownloadGameContent : UserControl
                         });
                         GlobalModel.Config.Data.GameFolderSelIndex = 0;
                         GlobalModel.Config.Save();
-                    
+
                         UpdateUI();
 
                         TaskDownloadGameItem.Install(BuildInfo, Sources[SourceSelBox.SelectedIndex].Url,
+                            IsUsePackIns.IsChecked!,
                             GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath,
                             InstallName.Text);
-        
+
                         GlobalModel.MainWindow.CloseDraw();
                     }
                 }
@@ -119,10 +144,26 @@ public partial class DrawDownloadGameContent : UserControl
         }
         else
         {
-            TaskDownloadGameItem.Install(BuildInfo, Sources[SourceSelBox.SelectedIndex].Url,
+            TaskDownloadGameItem.Install(BuildInfo, Sources[SourceSelBox.SelectedIndex].Url, IsUsePackIns.IsChecked!,
                 GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath, InstallName.Text);
-        
+
             GlobalModel.MainWindow.CloseDraw();
         }
+    }
+
+    private void IsUsePackIns_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        SourceGrid.IsVisible = !(bool)IsUsePackIns.IsChecked!;
+    }
+
+    private void InstallFolder_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        var packagePath = Path.Combine(GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath,
+            "version_save", $"{BuildInfo.ID}.insPack");
+
+        var enable = File.Exists(packagePath);
+
+        IsUsePackIns.IsChecked = enable;
+        IsUsePackIns.IsVisible = enable;
     }
 }

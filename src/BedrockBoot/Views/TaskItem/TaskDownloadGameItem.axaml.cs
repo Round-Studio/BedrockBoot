@@ -22,6 +22,7 @@ namespace BedrockBoot.Views.TaskItem
         public string InstallFolder { get; set; }
         public string GameName { get; set; }
         public string Url { get; set; }
+        public bool IsUsePack { get; set; }
         public BuildInfo BuildInfo { get; set; }
 
         public TaskDownloadGameItem()
@@ -29,19 +30,20 @@ namespace BedrockBoot.Views.TaskItem
             InitializeComponent();
         }
 
-        public TaskDownloadGameItem(BuildInfo info, string url, string dir, string gameName) : this()
+        public TaskDownloadGameItem(BuildInfo info, string url, bool? isUsePack, string dir, string gameName) : this()
         {
             BuildInfo = info;
             InstallFolder = dir;
             GameName = gameName;
             Url = url;
+            IsUsePack = (bool)isUsePack!;
 
             InitializeDownloader();
         }
 
         private void InitializeDownloader()
         {
-            _downloader = new EasyDownload(BuildInfo, InstallFolder, GameName)
+            _downloader = new EasyDownload(BuildInfo, IsUsePack, InstallFolder, GameName)
             {
                 DownloadProgress = (text, percentage) =>
                     Dispatcher.UIThread.Invoke(() => UpdateDownloadProgress(text, percentage)),
@@ -79,7 +81,7 @@ namespace BedrockBoot.Views.TaskItem
 
         public void Install(Action installed)
         {
-            CardTitle.Text = $"下载游戏 {BuildInfo.ID}";
+            CardTitle.Text = $"下载游戏 {GameName} [{BuildInfo.ID}]";
 
             InsGetUrlBar.IsIndeterminate = true;
             if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
@@ -160,9 +162,9 @@ namespace BedrockBoot.Views.TaskItem
             });
         }
 
-        public static void Install(BuildInfo info, string url, string dir, string gameName)
+        public static void Install(BuildInfo info, string url, bool? isUsePack, string dir, string gameName)
         {
-            var body = new TaskDownloadGameItem(info, url, dir, gameName);
+            var body = new TaskDownloadGameItem(info, url, isUsePack, dir, gameName);
             var tuid = GlobalModel.TaskManager.AddTask(body);
 
             body.Install(() => { GlobalModel.TaskManager.RemoveTask(tuid); });

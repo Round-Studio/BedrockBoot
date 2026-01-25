@@ -26,7 +26,8 @@
                                               Header="安装路径"
                                               Description="实例安装的位置">
                     <ComboBox Width="400"
-                              Name="InstallFolder"></ComboBox>
+                              Name="InstallFolder"
+                              SelectionChanged="InstallFolder_OnSelectionChanged"></ComboBox>
                 </onePointControls:SettingCard>
                 
                 <Grid Name="SourceGrid">
@@ -54,7 +55,9 @@
               Margin="15,0,15,5">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Left">
-                <CheckBox>使用安装包缓存</CheckBox>
+                <CheckBox Name="IsUsePackIns"
+                          IsVisible="False"
+                          IsCheckedChanged="IsUsePackIns_OnIsCheckedChanged">使用安装包缓存</CheckBox>
             </StackPanel>
             
             <StackPanel Orientation="Horizontal"

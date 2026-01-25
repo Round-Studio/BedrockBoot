@@ -23,7 +23,8 @@ namespace BedrockBoot.Services
         public BuildInfo BuildInfo { get; set; }
         public string InstallFolder { get; set; }
         public string GameName { get; set; }
-        
+        public bool IsUsePack { get; set; }
+
         // 进度报告回调
         public Action<string, double> DownloadProgress { get; set; }
         public Action<string> DownloadSpeed { get; set; }
@@ -35,11 +36,12 @@ namespace BedrockBoot.Services
         public Action<string, string, Exception> ErrorOccurred { get; set; }
         public Action Completed { get; set; }
 
-        public EasyDownload(BuildInfo info, string dir, string gameName)
+        public EasyDownload(BuildInfo info, bool isUsePack, string dir, string gameName)
         {
             BuildInfo = info;
             InstallFolder = dir;
             GameName = gameName;
+            IsUsePack = isUsePack;
         }
 
         public async Task InstallAsync(string url)
@@ -49,22 +51,22 @@ namespace BedrockBoot.Services
             {
                 // 1. 准备下载目录
                 PrepareDownloadDirectory();
-                
+
                 // 2. 下载游戏包
                 var packagePath = await DownloadPackageAsync(url);
-                
+
                 // 3. 验证包完整性
                 if (!await ValidatePackageAsync(packagePath))
                 {
                     return;
                 }
-                
+
                 // 4. 标记合并完成
                 OnMergeComplete();
-                
+
                 // 5. 安装包
                 await InstallPackageAsync(packagePath);
-                
+
                 Completed?.Invoke();
             }
             catch (Exception ex)
@@ -85,25 +87,27 @@ namespace BedrockBoot.Services
         private async Task<string> DownloadPackageAsync(string url)
         {
             var packagePath = Path.Combine(InstallFolder, "version_save", $"{BuildInfo.ID}.insPack");
-            
+
             // 如果文件已存在且MD5校验通过，则跳过下载
-            if (File.Exists(packagePath) && await CheckMD5(packagePath, false))
+            if (File.Exists(packagePath) &&
+                await CheckMD5(packagePath, false) &&
+                IsUsePack)
             {
                 StatusText?.Invoke("使用缓存包");
                 DownloadProgress.Invoke("", 100);
                 OnMergeComplete(); // 使用缓存时也触发合并完成
                 return packagePath;
             }
-            
+
             StatusText?.Invoke("正在下载游戏包...");
             var downloader = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
             var speedCalculator = new DownloadSpeedCalculator();
 
             await downloader.DownloadAsync(url, packagePath, new Progress<DownloadProgress>(progress =>
             {
-                DownloadProgress?.Invoke($"下载游戏 ({progress.ProgressPercentage:F2}%)", 
+                DownloadProgress?.Invoke($"下载游戏 ({progress.ProgressPercentage:F2}%)",
                     progress.ProgressPercentage);
-                
+
                 var speed = SizeHelper.FormatBytes(
                     speedCalculator.UpdateSpeed(progress.DownloadedBytes, progress.TotalBytes));
                 DownloadSpeed?.Invoke($"{speed}/s");
@@ -115,13 +119,13 @@ namespace BedrockBoot.Services
         private async Task<bool> ValidatePackageAsync(string packagePath)
         {
             StatusText?.Invoke("正在验证包完整性...");
-            
+
             if (!await CheckMD5(packagePath))
             {
                 ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
                 return false;
             }
-            
+
             return true;
         }
 
@@ -145,12 +149,12 @@ namespace BedrockBoot.Services
                 Type = BuildInfo.BuildType,
                 ExtractionProgress = new Progress<DecompressProgress>(progress =>
                 {
-                    ExtractionProgress?.Invoke($"解压文件 ({progress.Percentage:F2}%)", 
+                    ExtractionProgress?.Invoke($"解压文件 ({progress.Percentage:F2}%)",
                         progress.Percentage);
                 }),
                 DeployProgress = new Progress<DeploymentProgress>(progress =>
                 {
-                    DeploymentProgress?.Invoke($"部署游戏 ({progress.state} [{progress.percentage}%])", 
+                    DeploymentProgress?.Invoke($"部署游戏 ({progress.state} [{progress.percentage}%])",
                         progress);
                 }),
                 InstallStates = new Progress<InstallStates>(states =>
@@ -171,21 +175,24 @@ namespace BedrockBoot.Services
                         SaveVersionConfig(installDir);
                         Completed?.Invoke();
                     }
+
                     break;
-                    
+
                 case InstallStates.Registering:
                     // 对于非GDK版本，在注册时保存配置
                     if (BuildInfo.BuildType != MinecraftBuildTypeVersion.GDK)
                     {
                         SaveVersionConfig(installDir);
                     }
+
                     break;
-                    
+
                 case InstallStates.Registered:
                     if (BuildInfo.BuildType != MinecraftBuildTypeVersion.GDK)
                     {
                         Completed?.Invoke();
                     }
+
                     break;
             }
         }
@@ -210,7 +217,7 @@ namespace BedrockBoot.Services
             try
             {
                 var fileMD5 = await ComputeFileMD5.ComputeFileMD5Async(file);
-                
+
                 foreach (var variation in BuildInfo.Variations)
                 {
                     if (variation.MD5 == fileMD5)
@@ -218,12 +225,12 @@ namespace BedrockBoot.Services
                         return true;
                     }
                 }
-                
+
                 if (showError)
                 {
                     ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
                 }
-                
+
                 return false;
             }
             catch (Exception ex)
@@ -239,7 +246,7 @@ namespace BedrockBoot.Services
             {
                 var url = await GlobalModel.BedrockCore.GetPackageUri(buildInfo, Architecture.X64);
                 Console.WriteLine($@"原始地址：{url}");
-                
+
                 var res = new List<GameDownloadUrlInfo>();
                 var uri = new Uri(url);
 
@@ -264,7 +271,7 @@ namespace BedrockBoot.Services
                         Url = url
                     });
                 }
-                
+
                 return res;
             }
             catch

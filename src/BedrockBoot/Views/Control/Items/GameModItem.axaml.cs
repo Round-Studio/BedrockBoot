@@ -10,7 +10,7 @@ using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameModItem : UserControl
 {

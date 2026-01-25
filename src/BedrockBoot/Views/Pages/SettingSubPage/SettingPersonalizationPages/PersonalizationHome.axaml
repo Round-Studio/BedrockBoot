@@ -15,7 +15,7 @@
                           Name="HomeTypeBox"
                           SelectionChanged="HomeTypeBox_OnSelectionChanged">
                     <ComboBoxItem>无</ComboBoxItem>
-                    <ComboBoxItem IsEnabled="False">自定义主页</ComboBoxItem>
+                    <ComboBoxItem>自定义主页</ComboBoxItem>
                     <ComboBoxItem>新闻主页</ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>

@@ -7,7 +7,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.Screenshots;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class ScreenshotsItem : UserControl
 {

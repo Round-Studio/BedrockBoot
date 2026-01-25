@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d"
-             x:Class="BedrockBoot.Views.Control.GameFolderItem">
+             x:Class="BedrockBoot.Views.Control.Items.GameFolderItem">
     <Grid ColumnDefinitions="*,Auto">
         <Grid Grid.Column="0"
               RowDefinitions="*,*">

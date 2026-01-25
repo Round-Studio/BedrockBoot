@@ -77,5 +77,49 @@
       <Compile Update="Win32\Controls\PackItem.cs">
         <SubType>UserControl</SubType>
       </Compile>
+      <Compile Update="Views\Control\Items\ArchiveItem.axaml.cs">
+        <DependentUpon>ArchiveItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\BackgroundChooseItem.axaml.cs">
+        <DependentUpon>BackgroundChooseItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\CurseForgeModBuildFileItem.axaml.cs">
+        <DependentUpon>CurseForgeModBuildFileItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\CurseForgeModItem.axaml.cs">
+        <DependentUpon>CurseForgeModItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\GameDownloadSourceItem.axaml.cs">
+        <DependentUpon>GameDownloadSourceItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\GameFolderItem.axaml.cs">
+        <DependentUpon>GameFolderItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\GameItem.axaml.cs">
+        <DependentUpon>GameItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\GameModItem.axaml.cs">
+        <DependentUpon>GameModItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\GameResourcePackItem.axaml.cs">
+        <DependentUpon>GameResourcePackItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\GameServerItem.axaml.cs">
+        <DependentUpon>GameServerItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Control\Items\ScreenshotsItem.axaml.cs">
+        <DependentUpon>ScreenshotsItem.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

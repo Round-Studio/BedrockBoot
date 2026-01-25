@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="400"
-             x:Class="BedrockBoot.Views.Control.GameModItem">
+             x:Class="BedrockBoot.Views.Control.Items.GameModItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
                                   Margin="5,0,5,10"

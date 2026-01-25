@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800"
-             x:Class="BedrockBoot.Views.Control.CurseForgeModItem">
+             x:Class="BedrockBoot.Views.Control.Items.CurseForgeModItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
                                   Click="Card_OnClick"

@@ -12,7 +12,7 @@ using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameResourcePackItem : UserControl
 {

@@ -5,7 +5,7 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Control.ScreenshotsItem">
+             x:Class="BedrockBoot.Views.Control.Items.ScreenshotsItem">
     <items:BorderCard Margin="5"
                       Width="265"
                       Height="210">

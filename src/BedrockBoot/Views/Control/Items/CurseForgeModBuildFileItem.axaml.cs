@@ -8,7 +8,7 @@ using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.TaskItem;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModBuildFileItem : UserControl
 {

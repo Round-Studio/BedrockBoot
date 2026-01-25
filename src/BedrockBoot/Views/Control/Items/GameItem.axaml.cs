@@ -14,7 +14,7 @@ using BedrockBoot.Views.TaskItem;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameItem : UserControl
 {

@@ -10,7 +10,7 @@ using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Services;
-using BedrockBoot.Views.Control;
+using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;

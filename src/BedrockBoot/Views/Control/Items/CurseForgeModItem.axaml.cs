@@ -11,7 +11,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModItem : UserControl
 {

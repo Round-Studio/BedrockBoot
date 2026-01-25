@@ -27,23 +27,19 @@
                                           IsClickable="True"
                                           Glyph="&#xE790;"/>
             
-            <TextBlock Margin="5,0,5,10"
-                       FontWeight="Bold"
-                       FontSize="14">主页</TextBlock>
+            <StackPanel Name="HomePanel">
+                <TextBlock Margin="5,0,5,10"
+                           FontWeight="Bold"
+                           FontSize="14">主页</TextBlock>
             
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
-                                          Header="主页"
-                                          Description="启动器主页显示的内容"
-                                          Name="SetHome"
-                                          Click="SetHome_OnClick"
-                                          IsClickable="True"
-                                          Glyph="&#xE80F;"/>
-            
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
-                                          Header="调试主页"
-                                          Description="主页作者用于制作主页"
-                                          IsClickable="True"
-                                          Glyph="&#xEBE8;"/>
+                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                              Header="主页"
+                                              Description="启动器主页显示的内容"
+                                              Name="SetHome"
+                                              Click="SetHome_OnClick"
+                                              IsClickable="True"
+                                              Glyph="&#xE80F;"/>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

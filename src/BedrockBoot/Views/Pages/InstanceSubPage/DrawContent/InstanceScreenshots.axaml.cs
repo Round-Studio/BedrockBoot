@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Pack.Game.Screenshots;
-using BedrockBoot.Views.Control;
+using BedrockBoot.Views.Control.Items;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 

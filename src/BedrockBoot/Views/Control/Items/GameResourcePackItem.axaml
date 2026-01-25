@@ -5,7 +5,7 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:style="clr-namespace:BedrockBoot.Models.Style"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Control.GameResourcePackItem">
+             x:Class="BedrockBoot.Views.Control.Items.GameResourcePackItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
                                   Margin="5,0,5,10"

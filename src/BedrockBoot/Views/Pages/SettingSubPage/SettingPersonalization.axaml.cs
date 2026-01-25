@@ -26,6 +26,7 @@ public partial class SettingPersonalization : UserControl
 #if RELEASE
         SetBackground.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingBackground;
         SetColor.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingColor;
+        HomePanel.IsVisible = GlobalModel.FunctionOption.IsEnableSettingPersonalizationHome;
 #endif
     }
 

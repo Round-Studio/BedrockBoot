@@ -10,7 +10,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
-using BedrockBoot.Views.Control;
+using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;

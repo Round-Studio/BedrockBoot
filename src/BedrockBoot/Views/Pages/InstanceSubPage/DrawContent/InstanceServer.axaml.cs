@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Pack.Game.Server;
-using BedrockBoot.Views.Control;
+using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;

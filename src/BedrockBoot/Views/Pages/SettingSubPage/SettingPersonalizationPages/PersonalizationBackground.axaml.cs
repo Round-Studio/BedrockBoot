@@ -9,7 +9,7 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Views.Control;
+using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 

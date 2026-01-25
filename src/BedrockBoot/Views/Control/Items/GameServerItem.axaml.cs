@@ -15,7 +15,7 @@ using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameServerItem : UserControl
 {

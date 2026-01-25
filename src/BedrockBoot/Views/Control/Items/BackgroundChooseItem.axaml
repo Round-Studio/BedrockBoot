@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Control.BackgroundChooseItem">
+             x:Class="BedrockBoot.Views.Control.Items.BackgroundChooseItem">
     <Grid ColumnDefinitions="64,*,120">
         <Border BorderThickness="2"
                 Width="48" Height="48"

@@ -15,7 +15,7 @@ using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Views.Control;
+using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;

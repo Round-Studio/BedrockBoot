@@ -9,7 +9,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Info;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameDownloadSourceItem : UserControl
 {

@@ -5,7 +5,7 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800"
              VerticalAlignment="Center"
-             x:Class="BedrockBoot.Views.Control.GameDownloadSourceItem">
+             x:Class="BedrockBoot.Views.Control.Items.GameDownloadSourceItem">
     <Grid ColumnDefinitions="*,Auto">
         <StackPanel Grid.Column="0"
                     VerticalAlignment="Center">

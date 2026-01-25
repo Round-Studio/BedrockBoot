@@ -5,7 +5,7 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d"
-             x:Class="BedrockBoot.Views.Control.ArchiveItem">
+             x:Class="BedrockBoot.Views.Control.Items.ArchiveItem">
     
     <items:BorderCard Margin="5"
                       Width="265"

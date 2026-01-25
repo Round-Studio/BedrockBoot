@@ -7,7 +7,7 @@ using Avalonia.Media.Imaging;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using Round.SDK.Helper;
 
-namespace BedrockBoot.Views.Control;
+namespace BedrockBoot.Views.Control.Items;
 
 public partial class ArchiveItem : UserControl
 {

@@ -1,0 +1,49 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationHome">
+    <ScrollViewer>
+        <StackPanel Margin="15">
+            <onePointControls:SettingCard Header="主页类型"
+                                          Margin="5"
+                                          Description="启动器主页显示的类型"
+                                          Glyph="&#xEC26;">
+                <ComboBox Width="200"
+                          Name="HomeTypeBox"
+                          SelectionChanged="HomeTypeBox_OnSelectionChanged">
+                    <ComboBoxItem>无</ComboBoxItem>
+                    <ComboBoxItem IsEnabled="False">自定义主页</ComboBoxItem>
+                    <ComboBoxItem>新闻主页</ComboBoxItem>
+                </ComboBox>
+            </onePointControls:SettingCard>
+            
+            <StackPanel Name="HomeXmlBox">
+                <onePointControls:SettingExpander Header="自定义主页"
+                                                  Description="使用 Xml 文本进行主页自定义"
+                                                  IsExpanded="True"
+                                                  Margin="5"
+                                                  Glyph="&#xE943;">
+                    <StackPanel>
+                        <onePointControls:SettingCard Header="选择文件"
+                                                      Description="选择你需要的 Xml 文件"
+                                                      Name="AddXmlFile"
+                                                      Click="AddXmlFile_OnClick"
+                                                      Glyph="&#xE8B0;"
+                                                      Classes="Item"
+                                                      IsClickable="True">
+                        </onePointControls:SettingCard>
+                    </StackPanel>
+                </onePointControls:SettingExpander>
+                
+                <ListBox Name="XamlList"
+                         SelectionChanged="XamlList_OnSelectionChanged"
+                         Margin="5">
+                    
+                </ListBox>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

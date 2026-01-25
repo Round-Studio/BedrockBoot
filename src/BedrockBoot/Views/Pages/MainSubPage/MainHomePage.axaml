@@ -17,7 +17,7 @@
                                         FontWeight="Bold"
                                         Text="你好，欢迎回来"></onePointControls:LineTextBlock>
     </entry:BedrockBootPage.HeaderView>
-    <Grid>
+    <Grid Name="MainGrid">
         
     </Grid>
 </entry:BedrockBootPage>

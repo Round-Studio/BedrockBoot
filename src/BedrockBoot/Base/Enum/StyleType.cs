@@ -7,3 +7,10 @@ public enum StyleType
     Image,
     AccentColor
 }
+
+public enum HomeType
+{
+    None,
+    Xml,
+    News
+}

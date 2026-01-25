@@ -38,4 +38,9 @@ public partial class SettingPersonalization : UserControl
     {
         MainSettingPage.NavigationFrame.NavigateTo(new PersonalizationBackground());
     }
+
+    private void SetHome_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigationFrame.NavigateTo(new PersonalizationHome());
+    }
 }

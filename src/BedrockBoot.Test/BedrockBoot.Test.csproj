@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
+      <PackageReference Include="BedrockLauncher.Core" Version="2.0.2" />
     </ItemGroup>
 
 </Project>

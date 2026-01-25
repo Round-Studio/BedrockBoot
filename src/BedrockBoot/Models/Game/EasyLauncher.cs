@@ -21,6 +21,7 @@ public class EasyLauncher
     public Action<string>? UpdateProgressText { get; set; } // 新增：更新进度文本回调
     public Action<bool>? SetProgressIndeterminate { get; set; } // 新增：设置进度条是否为不确定模式
     public Process MinecraftProcess { get; private set; }
+    private IsolationCore IsolationCore;
     private ModsCore _core;
 
     public EasyLauncher(VersionConfig versionConfig)
@@ -43,6 +44,7 @@ public class EasyLauncher
             };
             await GlobalModel.BedrockCore.InitAsync();
         }
+
         _core = new ModsCore(VersionInfo);
 
         var args = "";
@@ -54,8 +56,8 @@ public class EasyLauncher
 
         try
         {
-            var iso = new IsolationCore(VersionInfo);
-            iso.Init();
+            IsolationCore = new IsolationCore(VersionInfo);
+            IsolationCore.Clear();
         }
         catch (Exception ex)
         {
@@ -82,6 +84,11 @@ public class EasyLauncher
                 { 
                     Console.WriteLine(state);
                     UpdateProgressText?.Invoke($"状态：{state}");
+
+                    if (state == LaunchState.Launched)
+                    {
+                        IsolationCore.Init();
+                    }
                 }),
                 LaunchArgs = string.IsNullOrEmpty(args) ? null : args
             });

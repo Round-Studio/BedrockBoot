@@ -26,6 +26,9 @@ public class IsolationCore
         var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
         if (folderType == DirectoryType.Folder)
             throw new Exception("该实例的目标隔离文件需要进行迁移");
+
+        if (folderType == DirectoryType.SymbolicLink)
+            Directory.Delete(RootPath);
         
         if(!Directory.Exists(RealRootPath))
             Directory.CreateDirectory(RealRootPath);
@@ -87,5 +90,13 @@ public class IsolationCore
         }
         
         return string.Empty;
+    }
+
+    public void Clear()
+    {
+        var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
+
+        if (folderType == DirectoryType.SymbolicLink)
+            Directory.Delete(RootPath);
     }
 }

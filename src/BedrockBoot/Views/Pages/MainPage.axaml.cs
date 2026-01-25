@@ -231,7 +231,7 @@ public partial class MainPage : UserControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"NullFunc执行出错: {ex.Message}");
+                Console.WriteLine($@"NullFunc执行出错: {ex.Message}");
                 _isUpdatingGameList = false;
             }
         }
@@ -245,7 +245,7 @@ public partial class MainPage : UserControl
             // 确保控件已初始化
             if (GameListChoose == null)
             {
-                Console.WriteLine("GameListChoose 控件未初始化");
+                Console.WriteLine(@"GameListChoose 控件未初始化");
                 return;
             }
 
@@ -300,7 +300,7 @@ public partial class MainPage : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"UpdateUI执行出错: {ex}");
+            Console.WriteLine($@"UpdateUI执行出错: {ex}");
             // 发生异常时也要确保标志位被重置
             _isUpdatingGameList = false;
             IsEditMode = true;

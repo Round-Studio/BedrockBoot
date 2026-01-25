@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800"
+             VerticalAlignment="Center"
+             x:Class="BedrockBoot.Views.Control.GameDownloadSourceItem">
+    <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0"
+                    VerticalAlignment="Center">
+            <TextBlock Text="SourceHost"
+                       Name="SourceHost"
+                       FontSize="15"></TextBlock>
+            <TextBlock Text="SourceUrl"
+                       Name="SourceUrl"
+                       TextTrimming="CharacterEllipsis"
+                       FontSize="11"
+                       Opacity="0.7"></TextBlock>
+        </StackPanel>
+        
+        <onePointControls:LabelBox Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="-1 ms"></onePointControls:LabelBox>
+    </Grid>
+</UserControl>

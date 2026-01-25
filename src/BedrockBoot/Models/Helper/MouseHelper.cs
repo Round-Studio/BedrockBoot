@@ -154,7 +154,7 @@ public class ProcessMouseLocker
         _mouseControlThread.IsBackground = true;
         _mouseControlThread.Start();
 
-        Console.WriteLine($"鼠标锁定已启动，目标进程ID: {_processId}, 窗口句柄: {_targetWindowHandle}");
+        Console.WriteLine($@"鼠标锁定已启动，目标进程ID: {_processId}, 窗口句柄: {_targetWindowHandle}");
     }
 
     public void StartMouseLockWithWait(TimeSpan timeout)
@@ -173,7 +173,7 @@ public class ProcessMouseLocker
         _mouseControlThread.IsBackground = true;
         _mouseControlThread.Start();
 
-        Console.WriteLine($"鼠标锁定已启动，目标进程ID: {_processId}, 窗口句柄: {_targetWindowHandle}");
+        Console.WriteLine($@"鼠标锁定已启动，目标进程ID: {_processId}, 窗口句柄: {_targetWindowHandle}");
     }
 
     public void StopMouseLock()
@@ -188,7 +188,7 @@ public class ProcessMouseLocker
         ShowCursor(true);
         ClipCursor(IntPtr.Zero);
 
-        Console.WriteLine("鼠标锁定已停止");
+        Console.WriteLine(@"鼠标锁定已停止");
     }
 
     public bool GetRunningState()
@@ -245,7 +245,7 @@ public class ProcessMouseLocker
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"鼠标控制工作线程发生异常: {ex.Message}");
+                Console.WriteLine($@"鼠标控制工作线程发生异常: {ex.Message}");
             }
         }
 
@@ -332,7 +332,7 @@ public class ProcessMouseLocker
                 if (IsSuitableWindow(windowInfo))
                 {
                     _targetWindowHandle = windowInfo.Handle;
-                    Console.WriteLine($"找到候选窗口: 句柄={hWnd}, 进程ID={processId}, 标题={windowInfo.Title}, 时间戳={windowInfo.Timestamp}, 差值={windowInfo.TimestampDifference}");
+                    Console.WriteLine($@"找到候选窗口: 句柄={hWnd}, 进程ID={processId}, 标题={windowInfo.Title}, 时间戳={windowInfo.Timestamp}, 差值={windowInfo.TimestampDifference}");
                 }
             }
 
@@ -341,7 +341,7 @@ public class ProcessMouseLocker
 
         if (_targetWindowHandle != IntPtr.Zero)
         {
-            Console.WriteLine($"已选择目标窗口: 句柄={_targetWindowHandle}");
+            Console.WriteLine($@"已选择目标窗口: 句柄={_targetWindowHandle}");
         }
     }
 
@@ -443,7 +443,7 @@ public class ProcessMouseLocker
 
             if (_targetWindowHandle != IntPtr.Zero)
             {
-                Console.WriteLine($"窗口已找到，PID：{_processId}");
+                Console.WriteLine($@"窗口已找到，PID：{_processId}");
                 return true;
             }
 

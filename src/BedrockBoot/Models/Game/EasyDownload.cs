@@ -44,6 +44,7 @@ namespace BedrockBoot.Services
 
         public async Task InstallAsync(string url)
         {
+            Console.WriteLine($@"下载游戏，地址：{url}");
             try
             {
                 // 1. 准备下载目录
@@ -234,15 +235,42 @@ namespace BedrockBoot.Services
 
         public static async Task<List<GameDownloadUrlInfo>> GetPackageUrls(BuildInfo buildInfo)
         {
-            var url = await GlobalModel.BedrockCore.GetPackageUri(buildInfo, Architecture.X64);
+            try
+            {
+                var url = await GlobalModel.BedrockCore.GetPackageUri(buildInfo, Architecture.X64);
+                Console.WriteLine($@"原始地址：{url}");
+                
+                var res = new List<GameDownloadUrlInfo>();
+                var uri = new Uri(url);
 
-            var uri = new Uri(url);
-            var router = uri.AbsolutePath;
+                if (buildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
+                {
+                    var router = uri.AbsolutePath;
 
-            var res = new List<GameDownloadUrlInfo>();
-            SourceList.GameFileDownloadSource.ForEach(s => s.Url.Replace("{router}", router));
-
-            return res;
+                    SourceList.GameFileDownloadSource.ForEach(s =>
+                    {
+                        res.Add(new GameDownloadUrlInfo()
+                        {
+                            Host = s.Host,
+                            Url = s.Url.Replace("{router}", router)
+                        });
+                    });
+                }
+                else
+                {
+                    res.Add(new GameDownloadUrlInfo()
+                    {
+                        Host = uri.Host,
+                        Url = url
+                    });
+                }
+                
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

@@ -1,10 +1,16 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Services;
+using BedrockBoot.Views.Control;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
@@ -16,7 +22,7 @@ namespace BedrockBoot.Views.DrawContent;
 public partial class DrawDownloadGameContent : UserControl
 {
     public BuildInfo BuildInfo { get; set; }
-
+    public List<GameDownloadUrlInfo>? Sources;
     public DrawDownloadGameContent()
     {
         InitializeComponent();
@@ -36,6 +42,39 @@ public partial class DrawDownloadGameContent : UserControl
 
         InstallFolder.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
         InstallName.Text = BuildInfo.ID;
+
+        Task.Run(() =>
+        {
+            Sources = EasyDownload.GetPackageUrls(BuildInfo).Result;
+            if (Sources != null)
+            {
+                Sources.ForEach(urlInfo =>
+                {
+                    Dispatcher.UIThread.Invoke(() => SourceSelBox.Items.Add(new ListBoxItem()
+                    {
+                        Content = new GameDownloadSourceItem(urlInfo),
+                    }));
+                });
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    LoadRing.IsVisible = false;
+                    InstallBtn.IsEnabled = true;
+                });
+            }
+            else
+            {
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = "发生错误",
+                    Content = "该版本无法获取到对应下载地址",
+                    CloseButtonText = "确定",
+                    CloseAction = () =>
+                    {
+                        GlobalModel.MainWindow.CloseDraw();
+                    }
+                });
+            }
+        });
     }
 
     private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -68,9 +107,10 @@ public partial class DrawDownloadGameContent : UserControl
                         GlobalModel.Config.Save();
                     
                         UpdateUI();
-                        
-                        TaskDownloadGameItem.Install(BuildInfo,
-                            GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath, InstallName.Text);
+
+                        TaskDownloadGameItem.Install(BuildInfo, Sources[SourceSelBox.SelectedIndex].Url,
+                            GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath,
+                            InstallName.Text);
         
                         GlobalModel.MainWindow.CloseDraw();
                     }
@@ -79,7 +119,7 @@ public partial class DrawDownloadGameContent : UserControl
         }
         else
         {
-            TaskDownloadGameItem.Install(BuildInfo,
+            TaskDownloadGameItem.Install(BuildInfo, Sources[SourceSelBox.SelectedIndex].Url,
                 GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath, InstallName.Text);
         
             GlobalModel.MainWindow.CloseDraw();

@@ -38,17 +38,17 @@ public class SourceList
         new()
         {
             Host = "assets1.xboxlive.cn",
-            Url = "http://assets1.xboxlive.cn/{router}",
+            Url = "http://assets1.xboxlive.cn{router}",
         },
         new()
         {
             Host = "assets2.xboxlive.cn",
-            Url = "http://assets2.xboxlive.cn/{router}",
+            Url = "http://assets2.xboxlive.cn{router}",
         },
         new()
         {
             Host = "assets1.xboxlive.com",
-            Url = "http://assets1.xboxlive.com/{router}",
+            Url = "http://assets1.xboxlive.com{router}",
         },
         new()
         {

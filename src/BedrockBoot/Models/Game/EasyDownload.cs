@@ -55,6 +55,7 @@ namespace BedrockBoot.Services
                 // 2. 下载游戏包
                 var packagePath = await DownloadPackageAsync(url);
 
+                MergeProgress?.Invoke("验证包...", 80);
                 // 3. 验证包完整性
                 if (!await ValidatePackageAsync(packagePath))
                 {

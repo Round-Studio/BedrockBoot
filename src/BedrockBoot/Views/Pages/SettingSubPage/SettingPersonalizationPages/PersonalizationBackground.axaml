@@ -18,6 +18,8 @@
                     <ComboBoxItem Name="BlurModel">Blur (Win10+)</ComboBoxItem>
                     <ComboBoxItem>Image</ComboBoxItem>
                     <ComboBoxItem>Accent Color</ComboBoxItem>
+                    <ComboBoxItem>Voronoi</ComboBoxItem>
+                    <ComboBoxItem>Bubble</ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>
             

@@ -12,6 +12,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Views.DrawContent;
+using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
@@ -55,7 +56,7 @@ public partial class MainPage : UserControl
             ItemGlyph = "",
             ItemText = "下载",
             Tag = "Download",
-            Page = typeof(MainDownloadPage)
+            Page = typeof(DownloadRoot)
         });
         RegisterTopItem(new TopBarItemInfo()
         {

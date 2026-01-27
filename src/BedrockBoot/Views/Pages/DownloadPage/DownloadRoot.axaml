@@ -1,0 +1,48 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.DownloadPage.DownloadRoot">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0"
+              Margin="15"
+              ColumnDefinitions="Auto,*,Auto">
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal"
+                        Margin="5"
+                        Spacing="8">
+                <Button CornerRadius="16"
+                        Height="32" Width="32"
+                        HorizontalAlignment="Left"
+                        Classes="NoBorder">
+                    <onePointControls:FontIcon Glyph="&#xE80F;"
+                                               FontSize="15"/>
+                </Button>
+                <Button CornerRadius="16"
+                        Height="32" Width="32"
+                        HorizontalAlignment="Left"
+                        Classes="NoBorder">
+                    <onePointControls:FontIcon Glyph="&#xE72B;"
+                                               FontSize="14"/>
+                </Button>
+            </StackPanel>
+            
+            <TextBox Grid.Column="2"
+                     Width="200"
+                     Margin="5">
+                
+            </TextBox>
+        </Grid>
+        
+        <ScrollViewer Grid.Row="1"
+                      Margin="5"
+                      Padding="15">
+            <navigation:NavigationFrame Name="MainFrame"
+                                        HorizontalAlignment="Center"
+                                        MaxWidth="1000"/>    
+        </ScrollViewer>
+    </Grid>
+</UserControl>

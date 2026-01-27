@@ -5,7 +5,9 @@ public enum StyleType
     Mica,
     Blur,
     Image,
-    AccentColor
+    AccentColor,
+    Voronoi,
+    Bubble
 }
 
 public enum HomeType

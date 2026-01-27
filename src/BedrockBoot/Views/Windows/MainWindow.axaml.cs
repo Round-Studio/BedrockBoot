@@ -260,6 +260,7 @@ public partial class MainWindow : OnePointWindow
         this.TransparencyLevelHint = new List<WindowTransparencyLevel>() { WindowTransparencyLevel.Transparent };
         BackgroundBox.IsVisible = false;
         AccentBackgroundBox.IsVisible = false;
+        AnimationBackground.IsVisible = false;
         if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Mica)
         {
             this.TransparencyLevelHint = new List<WindowTransparencyLevel>() { WindowTransparencyLevel.Mica };
@@ -295,6 +296,16 @@ public partial class MainWindow : OnePointWindow
         {
             AccentBackgroundBox.IsVisible = true;
             AccentBackgroundBox.Opacity = 0.7;
+        }
+        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Voronoi)
+        {
+            AnimationBackground.IsVisible = true;
+            AnimationBackground.BackgroundType = BackgroundType.Voronoi;
+        }
+        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Bubble)
+        {
+            AnimationBackground.IsVisible = true;
+            AnimationBackground.BackgroundType = BackgroundType.Bubble;
         }
 
         #endregion

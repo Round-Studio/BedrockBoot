@@ -34,29 +34,38 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
     {
         Task.Run(async () =>
         {
+            var path = IsolationCore.GetInstanceConfigRootPath(VersionInfo);
+            if (!Directory.Exists(path))
+            {
+                Dispatcher.UIThread.Invoke(DialogHost.Close);
+                Dispatcher.UIThread.Invoke(() => TaskLaunchGameItem.Launch(VersionInfo));
+                
+                return;
+            }
+            
             try
             {
-                var path = IsolationCore.GetInstanceConfigRootPath(VersionInfo);
                 Console.WriteLine($@"即将迁移文件夹：{path}");
-            
-                var files = Directory.GetFiles(path,"*", SearchOption.AllDirectories);
+
+                var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
                 Console.WriteLine($@"总数目：{files.Length}");
 
                 CopyDirectory(path, PathsList.GamePublicRootPath, true);
-                
+
                 // 延迟一段时间确保文件句柄释放
                 await Task.Delay(500);
-                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"迁移过程中发生错误：{ex.Message}");
+            }
+            finally
+            {
                 // 使用更安全的方式删除目录
                 DeleteDirectorySafe(path);
                 
                 Dispatcher.UIThread.Invoke(DialogHost.Close);
                 Dispatcher.UIThread.Invoke(() => TaskLaunchGameItem.Launch(VersionInfo));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"迁移过程中发生错误：{ex.Message}");
-                // 可以选择在这里显示错误信息给用户
             }
         });
     }

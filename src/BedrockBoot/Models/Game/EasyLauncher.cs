@@ -57,10 +57,11 @@ public class EasyLauncher
         try
         {
             IsolationCore = new IsolationCore(VersionInfo);
-            IsolationCore.Clear();
+            IsolationCore.Init();
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             // 迁移失败，触发迁移回调
             OnMigration?.Invoke();
             return;
@@ -82,23 +83,10 @@ public class EasyLauncher
                 }),
                 Progress = new Progress<LaunchState>((state) => 
                 { 
+                    IsolationCore.Clear();
+                    IsolationCore.Init(true);
                     Console.WriteLine(state);
                     UpdateProgressText?.Invoke($"状态：{state}");
-
-                    if (state == LaunchState.Launching)
-                    {
-                        try
-                        {
-                            IsolationCore.Init();
-                        }
-                        catch (Exception ex)
-                        {
-                            // 迁移失败，触发迁移回调
-                            OnMigration?.Invoke();
-                            if (MinecraftProcess != null)
-                                MinecraftProcess.Kill(true);
-                        }
-                    }
                 }),
                 LaunchArgs = string.IsNullOrEmpty(args) ? null : args
             });

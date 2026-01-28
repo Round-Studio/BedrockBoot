@@ -21,13 +21,17 @@ public class IsolationCore
         VersionConfig = versionConfig;
     }
 
-    public void Init()
+    public void Init(bool isForced = false)
     {
         var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
-        if (folderType == DirectoryType.Folder)
+        if (folderType == DirectoryType.Folder &&
+            !isForced)
             throw new Exception("该实例的目标隔离文件需要进行迁移");
 
         if (folderType == DirectoryType.SymbolicLink)
+            Directory.Delete(RootPath);
+        
+        if(!isForced && Directory.Exists(RootPath))
             Directory.Delete(RootPath);
 
         if (!Directory.Exists(RealRootPath))

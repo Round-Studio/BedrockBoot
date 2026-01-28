@@ -18,6 +18,7 @@ namespace BedrockBoot.Views.Control.Items;
 public partial class SearchItem : UserControl
 {
     private static readonly HttpClient _httpClient = new HttpClient();
+    public SearchResultItemInfo SearchResultItemInfo { get; set; }
     
     public SearchItem()
     {
@@ -26,6 +27,7 @@ public partial class SearchItem : UserControl
 
     public SearchItem(SearchResultItemInfo info) : this()
     {
+        SearchResultItemInfo = info;
         ItemName.Text = info.Name;
         Description.Text = info.Description;
 
@@ -84,6 +86,6 @@ public partial class SearchItem : UserControl
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {
-        DownloadRoot.DownloadMainFrame.NavigateTo(new ResultRoot());
+        SearchResultItemInfo.OnClick?.Invoke(SearchResultItemInfo.JsonData);
     }
 }

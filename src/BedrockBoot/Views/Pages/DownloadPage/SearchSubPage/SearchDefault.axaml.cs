@@ -11,6 +11,7 @@ using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
 
@@ -26,10 +27,8 @@ public partial class SearchDefault : UserControl
 
         Task.Run(() =>
         {
-            var lst = VersionHelper.GetVersions();
-            
-            var rele = lst.Find(x => x.Type == MinecraftGameTypeVersion.Release);
-            var prev = lst.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
+            var rele = VersionHelper.GetVersions().Find(x => x.Type == MinecraftGameTypeVersion.Release);
+            var prev = VersionHelper.GetVersions().Find(x => x.Type == MinecraftGameTypeVersion.Preview);
 
             Dispatcher.UIThread.Invoke(() =>
             {
@@ -52,5 +51,17 @@ public partial class SearchDefault : UserControl
         {
             Type = SearchResourceType.Minecraft
         }));
+    }
+
+    private void ReleaseBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var i = VersionHelper.GetVersions().Find(x => x.Type == MinecraftGameTypeVersion.Release);
+        GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),$"下载游戏 {i.ID}");
+    }
+
+    private void PreviewBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var i = VersionHelper.GetVersions().Find(x => x.Type == MinecraftGameTypeVersion.Preview);
+        GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),$"下载游戏 {i.ID}");
     }
 }

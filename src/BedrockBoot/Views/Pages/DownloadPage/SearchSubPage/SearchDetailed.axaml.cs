@@ -13,6 +13,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.Control.Items;
+using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
 using Octokit;
@@ -123,7 +124,7 @@ public partial class SearchDetailed : ISetting
             try
             {
                 var items = new List<SearchResultItemInfo>();
-                if (info.Type == SearchResourceType.Minecraft)
+                if (info.Type == SearchResourceType.Minecraft) // 游戏本体
                 {
                     var allVersions = VersionHelper.GetVersions()
                         .Where(x => (x.ID.ToLower().Contains(info.Key) ||
@@ -148,7 +149,11 @@ public partial class SearchDetailed : ISetting
                             Description = $"{i.BuildType}, {i.Date}",
                             IconUri = i.Type == MinecraftGameTypeVersion.Release
                                 ? "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"
-                                : "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png"
+                                : "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png",
+                            OnClick = (s) =>
+                            {
+                                GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),$"下载游戏 {i.ID}");
+                            }
                         });
                     });
                 }
@@ -173,7 +178,11 @@ public partial class SearchDetailed : ISetting
                             Name = i.Name,
                             Description = $"{authorsresult}, {i.DateReleased}",
                             IconUri = i.Logo.Url,
-                            Labels = categories
+                            Labels = categories,
+                            OnClick = (s) =>
+                            {
+                                GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(i),$"资源详细信息 {i.Name}");
+                            }
                         });
                     });
                 }

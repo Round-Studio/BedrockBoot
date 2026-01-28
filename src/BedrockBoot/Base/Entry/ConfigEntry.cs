@@ -10,7 +10,7 @@ public class ConfigEntry
     [JsonPropertyName("gameFolders")] public List<GameFolderInfo> GameFolders { get; set; } = new();
     [JsonPropertyName("gameFolderSelIndex")] public int GameFolderSelIndex { get; set; } = -1;
     [JsonPropertyName("downloadChunkCount")] public int DownloadChunkCount { get; set; } = 4;
-    [JsonPropertyName("versionSourceIndex")] public int VersionSourceIndex { get; set; } = 1;
+    [JsonPropertyName("versionSourceIndex")] public int VersionSourceIndex { get; set; } = 3;
     [JsonPropertyName("curseForgeSourceIndex")] public int CurseForgeSourceIndex { get; set; } = 0;
     [JsonPropertyName("styleConfig")] public StyleConfig StyleConfig { get; set; } = new();
     [JsonPropertyName("homeConfig")] public HomeConfig HomeConfig { get; set; } = new();

@@ -8,8 +8,12 @@ namespace BedrockBoot.Models.Helper;
 
 public class VersionHelper
 {
+    public static List<BuildInfo> Versions { get; private set; } = null;
+
     public static List<BuildInfo> GetVersions()
     {
+        if (Versions != null) return Versions;
+
         var lst = VersionsHelper
             .GetBuildDatabaseAsync(
                 SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value)
@@ -37,8 +41,10 @@ public class VersionHelper
             {
                 version = new Version(item.Value.ID);
             }
-            catch { }
-            
+            catch
+            {
+            }
+
             versionCache.Add((item.Value, version));
         }
 
@@ -61,6 +67,7 @@ public class VersionHelper
 
         // 提取排序后的结果
         var sortedList = versionCache.Select(x => x.item).ToList();
+        Versions = sortedList;
         return sortedList;
     }
 }

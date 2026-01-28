@@ -3,11 +3,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Views.Pages.DownloadPage;
+using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Control.Items;
@@ -77,5 +80,10 @@ public partial class SearchItem : UserControl
         {
             Console.WriteLine($"下载网络图片失败: {ex.Message}");
         }
+    }
+
+    private void Card_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DownloadRoot.DownloadMainFrame.NavigateTo(new ResultRoot());
     }
 }

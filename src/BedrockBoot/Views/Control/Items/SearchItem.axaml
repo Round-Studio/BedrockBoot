@@ -7,6 +7,7 @@
              x:Class="BedrockBoot.Views.Control.Items.SearchItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
+                                  Click="Card_OnClick"
                                   Glyph="&#xE91B;">
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"

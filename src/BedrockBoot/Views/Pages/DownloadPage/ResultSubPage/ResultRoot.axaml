@@ -1,0 +1,105 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.ResultRoot">
+    <Grid>
+        <ScrollViewer Margin="5,0,5,5">
+            <StackPanel Margin="15"
+                        Spacing="10">
+                <items:BorderCard Padding="12">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <items:BorderCard Grid.Column="0"
+                                          VerticalAlignment="Top"
+                                          Width="90"
+                                          Height="90"></items:BorderCard>
+                        
+                        <StackPanel Grid.Column="1"
+                                    Margin="20,-2,0,0">
+                            <TextBlock FontSize="24"
+                                       FontWeight="Bold"
+                                       Text="Resource"></TextBlock>
+                            
+                            <StackPanel Orientation="Horizontal" 
+                                        Spacing="4"
+                                        Opacity="0.5">
+                                <onePointControls:FontIcon Glyph="&#xE716;"
+                                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="By xxx"></TextBlock>
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal" 
+                                        Margin="0,6,0,0"
+                                        Spacing="4">
+                                <onePointControls:LabelBox Text="Label"></onePointControls:LabelBox>
+                                <onePointControls:LabelBox Text="Label"></onePointControls:LabelBox>
+                                <onePointControls:LabelBox Text="Label"></onePointControls:LabelBox>
+                                <onePointControls:LabelBox Text="Label"></onePointControls:LabelBox>
+                            </StackPanel>
+                            
+                            <TextBlock Text="Description"
+                                       Margin="0,4,0,0"></TextBlock>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="2"
+                                    Margin="0"
+                                    Spacing="8">
+                            <Button Width="120"
+                                    Height="32"
+                                    HorizontalAlignment="Right"
+                                    Classes="NoBorder"
+                                    Background="{DynamicResource AccentBackgroundBrush}">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xE896;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                    <TextBlock Text="获取资源"></TextBlock>
+                                </StackPanel>
+                            </Button>
+                            
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Spacing="8">
+                                <StackPanel Spacing="2">
+                                    <onePointControls:FontIcon Glyph="&#xE896;"
+                                                               Opacity="0.5"></onePointControls:FontIcon>
+                                    <TextBlock Text="114514"></TextBlock>
+                                </StackPanel>
+                                
+                                <Border Height="24"
+                                        Width="1"
+                                        Background="Gray"></Border>
+                                
+                                <StackPanel Spacing="2">
+                                    <onePointControls:FontIcon Glyph="&#xE823;"
+                                                               Opacity="0.5"></onePointControls:FontIcon>
+                                    <TextBlock Text="1 天前"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </items:BorderCard>
+                
+                <items:BorderCard Padding="12">
+                    <Grid RowDefinitions="Auto,Auto,*">
+                        <TextBlock Grid.Row="0"
+                                   Text="预览"
+                                   FontSize="16"
+                                   Opacity="0.7"></TextBlock>
+                        
+                        <Border Grid.Row="1"
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Stretch"
+                                Height="1"
+                                Background="Gray"></Border>
+                        
+                        <Grid Grid.Row="2"></Grid>
+                    </Grid>
+                </items:BorderCard>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

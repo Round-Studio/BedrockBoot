@@ -30,7 +30,7 @@ public class StyleConfig
     [JsonPropertyName("backgroundImageSelectedIndex")] public int BackgroundImageSelectedIndex { get; set; } = -1;
     [JsonPropertyName("backgroundImageOpacity")] public int BackgroundImageOpacity { get; set; } = 100;
     [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 1;
-    [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.AccentColor;
+    [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Voronoi;
     [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
 }
 

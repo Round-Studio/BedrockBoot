@@ -11,6 +11,6 @@ public partial class DownloadRoot : BedrockBootPage
     {
         InitializeComponent();
         
-        MainFrame.NavigateTo(new DownloadDefault());
+        MainFrame.NavigateTo(new DownloadSearch());
     }
 }

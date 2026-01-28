@@ -18,21 +18,27 @@
     </entry:BedrockBootPage.HeaderView>
     <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0"
-              Margin="15,15,15,10"
+              Margin="15,15,15,5"
               ColumnDefinitions="*,Auto">
             <TextBox Grid.Column="0"
                      Margin="5"
                      Watermark="键入关键词以搜索...">
                 
             </TextBox>
-            <ComboBox Grid.Column="1"
-                      Width="120"
-                      Margin="5"
-                      SelectedIndex="0">
-                <ComboBoxItem>Minecraft</ComboBoxItem>
-                <ComboBoxItem>ResourcePack</ComboBoxItem>
-                <ComboBoxItem>WorldPack</ComboBoxItem>
-            </ComboBox>
+            <Button Grid.Column="1"
+                    Width="120"
+                    Margin="5"
+                    Classes="NoBorder"
+                    Background="{DynamicResource AccentBackgroundBrush}">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <onePointControls:FontIcon Glyph="&#xE71E;"
+                                               VerticalAlignment="Center"
+                                               FontSize="15"></onePointControls:FontIcon>
+                    
+                    <TextBlock Text="搜索"></TextBlock>
+                </StackPanel>
+            </Button>
         </Grid>
         
         <ScrollViewer Grid.Row="1"

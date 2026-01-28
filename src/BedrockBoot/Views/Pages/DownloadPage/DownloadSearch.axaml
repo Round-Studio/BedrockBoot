@@ -1,0 +1,65 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.DownloadPage.DownloadSearch">
+    <StackPanel>
+        <StackPanel Margin="0,5,125,0"
+                    Spacing="10"
+                    Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <onePointControls:FontIcon Glyph="&#xE97C;"
+                                           VerticalAlignment="Center"
+                                           FontSize="15"/>
+                
+                <TextBlock VerticalAlignment="Center">资源类型</TextBlock>
+            </StackPanel>
+            
+            <ComboBox Width="120"
+                      HorizontalAlignment="Stretch"
+                      SelectedIndex="0">
+                <ComboBoxItem>Minecraft</ComboBoxItem>
+                <ComboBoxItem>ResourcePack</ComboBoxItem>
+                <ComboBoxItem>WorldPack</ComboBoxItem>
+            </ComboBox>
+            
+            <StackPanel Orientation="Horizontal"
+                        Spacing="10">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <onePointControls:FontIcon Glyph="&#xE71C;"
+                                               VerticalAlignment="Center"
+                                               FontSize="15"/>
+                
+                    <TextBlock VerticalAlignment="Center">发布类型</TextBlock>
+                </StackPanel>
+                
+                <ComboBox Width="120"
+                          HorizontalAlignment="Stretch"
+                          SelectedIndex="0">
+                    <ComboBoxItem>Release</ComboBoxItem>
+                    <ComboBoxItem>Preview</ComboBoxItem>
+                    <ComboBoxItem>Beta</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal"
+                        Spacing="10">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <onePointControls:FontIcon Glyph="&#xF0E2;"
+                                               VerticalAlignment="Center"
+                                               FontSize="15"/>
+                
+                    <TextBlock VerticalAlignment="Center">资源分类</TextBlock>
+                </StackPanel>
+                
+                <ComboBox Width="120"
+                          HorizontalAlignment="Stretch"></ComboBox>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

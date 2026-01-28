@@ -3,12 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" 
              x:Class="BedrockBoot.Views.Control.Items.SearchItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
-                                  Glyph="&#xE91B;"
-                                  Description="Description">
+                                  Glyph="&#xE91B;">
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"
                         Name="HeaderBox"
@@ -17,5 +16,18 @@
                            Text="ItemName"></TextBlock>
             </StackPanel>
         </onePointControls:SettingCard.Header>
+        
+        <onePointControls:SettingCard.Description>
+            <StackPanel Name="DescriptionBox"
+                        Spacing="2">
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,2,0,0"
+                            Spacing="4"
+                            Name="LabelsPanel"
+                            IsVisible="False"></StackPanel>
+                <TextBlock Name="Description"
+                           Text="Description"></TextBlock>
+            </StackPanel>
+        </onePointControls:SettingCard.Description>
     </onePointControls:SettingCard>
 </UserControl>

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.SearchSubPage.SearchDetailed">
     <Grid RowDefinitions="Auto,*">
@@ -54,7 +55,10 @@
             
             <StackPanel Orientation="Horizontal"
                         Name="CurseForgeResTypePanel"
-                        Spacing="10">
+                        Spacing="10"
+                        Opacity="0.5"
+                        IsEnabled="False"
+                        IsVisible="False">
                 <StackPanel Orientation="Horizontal"
                             Spacing="8">
                     <onePointControls:FontIcon Glyph="&#xF0E2;"
@@ -65,7 +69,9 @@
                 </StackPanel>
                 
                 <ComboBox Width="120"
+                          SelectedIndex="0"
                           HorizontalAlignment="Stretch">
+                    <ComboBoxItem>综合资源</ComboBoxItem>
                     <ComboBoxItem>材质包</ComboBoxItem>
                     <ComboBoxItem>行为包</ComboBoxItem>
                     <ComboBoxItem>地图包</ComboBoxItem>
@@ -73,20 +79,25 @@
             </StackPanel>
         </StackPanel>
         
-        <ScrollViewer Grid.Row="1"
-                      Name="ListScrollViewer"
-                      Margin="0,10,0,0">
-            <StackPanel Margin="20,0,20,20"
-                        Spacing="10"
-                        Name="SearchResourceList"></StackPanel>
-        </ScrollViewer>
+        <!-- 分页控件 -->
+        <navigation:LotsPageFrame Grid.Row="1"
+                                  Name="ResultPage"/>
         
-        
+        <!-- 加载动画 -->
         <notice:LoadCard Grid.Row="1" 
                          HorizontalAlignment="Center" 
                          VerticalAlignment="Center"
-                         Name="LoadCard"
-                         Width="48"
-                         Height="48"/>
+                         Name="LoadingRing"
+                         BigTitle="搜索中..."
+                         Message="请稍候..."/>
+        
+        <!-- 无结果提示 -->
+        <notice:InfoCard Grid.Row="1" 
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Glyph="&#xE822;"
+                         BigTitle="未找到结果"
+                         Message="请尝试其他关键词"
+                         Name="NoneBox"/>
     </Grid>
 </UserControl>

@@ -11,7 +11,7 @@
         <StackPanel Spacing="10"
                     IsVisible="False"
                     Name="RecommendationPanel"
-                    Margin="20,10,20,20">
+                    Margin="20,5,20,20">
             <items:BorderCard>
                 <Grid RowDefinitions="Auto,*">
                     <DockPanel Grid.Row="0"

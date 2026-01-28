@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -10,6 +11,7 @@ using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.Control.Items;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
@@ -20,12 +22,41 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 public partial class SearchDetailed : ISetting
 {
     public static SearchInfo SearchInfo { get; set; }
+    
+    // 添加分页相关字段
+    private int _currentPage = 1;
+    private int _totalPages = 0;
+    private int _currentIndex = 0;
+    private int _pageSize = 50;
+    private CurseForgeApiClient _apiClient;
+    
+    // 添加搜索状态
+    private bool _isSearching = false;
 
     public SearchDetailed()
     {
         InitializeComponent();
+        _apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
 
         DownloadSearch.SearchDetailed = this;
+        
+        // 设置上翻页逻辑
+        ResultPage.UpAction = () =>
+        {
+            if (_currentPage > 1 && !_isSearching)
+            {
+                GoToPage(_currentPage - 1);
+            }
+        };
+
+        // 设置下翻页逻辑
+        ResultPage.DownAction = () =>
+        {
+            if (_currentPage < _totalPages && !_isSearching)
+            {
+                GoToPage(_currentPage + 1);
+            }
+        };
     }
 
     public SearchDetailed(SearchInfo info) : this()
@@ -35,10 +66,38 @@ public partial class SearchDetailed : ISetting
 
     public void OnSearch(SearchInfo info)
     {
+        // 重置分页状态
+        _currentPage = 1;
+        _currentIndex = 0;
+        
+        SearchWithPagination(info);
+    }
+
+    /// <summary>
+    /// 跳转到指定页码
+    /// </summary>
+    private void GoToPage(int pageNumber)
+    {
+        if (_isSearching) return;
+        
+        _currentPage = Math.Clamp(pageNumber, 1, _totalPages);
+        _currentIndex = (_currentPage - 1) * _pageSize;
+        
+        SearchWithPagination(SearchInfo);
+    }
+
+    /// <summary>
+    /// 带分页的搜索
+    /// </summary>
+    private void SearchWithPagination(SearchInfo info)
+    {
+        if (_isSearching) return;
+        
         IsEdit = false;
 
         MinecraftTypePanel.IsVisible = false;
         CurseForgeResTypePanel.IsVisible = false;
+        ResultPage.IsVisible = false;
 
         if (info.Type != SearchResourceType.Unknow)
             ResourceTypeBox.SelectedIndex = (int)info.Type;
@@ -54,60 +113,136 @@ public partial class SearchDetailed : ISetting
 
         SearchInfo = info;
 
-        SearchResourceList.Children.Clear();
-        ListScrollViewer.IsVisible = false;
-        LoadCard.IsVisible = true;
-        var items = new List<SearchResultItemInfo>(); // 储存所有结果
-        if (info.Type == SearchResourceType.Minecraft)
-        {
-            Task.Run(() =>
-            {
-                var lst = VersionHelper.GetVersions()
-                    .Where(x => (x.ID.ToLower().Contains(info.Key) ||
-                                 x.BuildType.ToString().ToLower().Contains(info.Key)) &&
-                                x.Type == (MinecraftGameTypeVersion)GameType.SelectedIndex);
+        _isSearching = true;
+        LoadingRing.IsVisible = true;
+        NoneBox.IsVisible = false;
 
-                lst.ToList().ForEach(i =>
+        // 开始搜索
+        Task.Run(() =>
+        {
+            try
+            {
+                var items = new List<SearchResultItemInfo>();
+                if (info.Type == SearchResourceType.Minecraft)
                 {
-                    items.Add(new SearchResultItemInfo()
+                    var allVersions = VersionHelper.GetVersions()
+                        .Where(x => (x.ID.ToLower().Contains(info.Key) ||
+                                     x.BuildType.ToString().ToLower().Contains(info.Key)) &&
+                                    x.Type == (MinecraftGameTypeVersion)GameType.SelectedIndex)
+                        .ToList();
+
+                    // 计算总页数
+                    _totalPages = (int)Math.Ceiling((double)allVersions.Count / _pageSize);
+                    
+                    // 获取当前页的数据
+                    var currentPageVersions = allVersions
+                        .Skip(_currentIndex)
+                        .Take(_pageSize)
+                        .ToList();
+                            
+                    currentPageVersions.ForEach(i =>
                     {
-                        Name = i.ID,
-                        Description = $"{i.BuildType}, {i.Date}",
-                        IconUri = i.Type == MinecraftGameTypeVersion.Release
-                            ? "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"
-                            : "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png"
+                        items.Add(new SearchResultItemInfo()
+                        {
+                            Name = i.ID,
+                            Description = $"{i.BuildType}, {i.Date}",
+                            IconUri = i.Type == MinecraftGameTypeVersion.Release
+                                ? "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"
+                                : "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png"
+                        });
                     });
-                });
+                }
+                else if (info.Type == SearchResourceType.ResourcePack)
+                {
+                    var result = _apiClient.SearchModsAsync(SearchInfo.Key, pageSize: _pageSize, index: _currentIndex).Result;
+                    _totalPages = (int)Math.Ceiling((double)result.Pagination.TotalCount / _pageSize);
+                    
+                    var allResult = result.Data
+                        .Where(x => x.Name.ToLower().Contains(SearchInfo.Key.ToLower()))
+                        .ToList();
+                    
+                    allResult.ForEach(i =>
+                    {
+                        var authorNames = i.Authors.Select(a => a.Name);
+                        var authorsresult = string.Join(", ", authorNames);
+                        
+                        var categories = i.Categories.Select(a => a.Name).ToList();
+                        
+                        items.Add(new SearchResultItemInfo()
+                        {
+                            Name = i.Name,
+                            Description = $"{authorsresult}, {i.DateReleased}",
+                            IconUri = i.Logo.Url,
+                            Labels = categories
+                        });
+                    });
+                }
+                
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    AddItemsBatchAsync(items);
-                    LoadCard.IsVisible = false;
-                    ListScrollViewer.IsVisible = true;
+                    if (items.Count > 0)
+                    {
+                        // 更新分页控件
+                        ResultPage.Update(
+                            CreateSearchResultsPage(items),
+                            _totalPages,
+                            _currentPage);
+                            
+                        LoadingRing.IsVisible = false;
+                        ResultPage.IsVisible = true;
+                    }
+                    else
+                    {
+                        LoadingRing.IsVisible = false;
+                        NoneBox.IsVisible = true;
+                        ResultPage.IsVisible = false;
+                    }
                 });
-            });
-        }
-
-        IsEdit = true;
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    LoadingRing.IsVisible = false;
+                    NoneBox.IsVisible = true;
+                    ResultPage.IsVisible = false;
+                    Console.WriteLine($@"搜索失败: {ex}");
+                });
+            }
+            finally
+            {
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    _isSearching = false;
+                    IsEdit = true;
+                });
+            }
+        });
     }
 
-    private async Task AddItemsBatchAsync(List<SearchResultItemInfo> items)
+    /// <summary>
+    /// 创建搜索结果页面
+    /// </summary>
+    private ScrollViewer CreateSearchResultsPage(List<SearchResultItemInfo> items)
     {
-        const int batchSize = 10; // 每批添加的项目数量
-        var totalCount = items.Count;
-
-        for (int i = 0; i < totalCount; i += batchSize)
+        var stackPanel = new StackPanel
         {
-            var batch = items.Skip(i).Take(batchSize).ToList();
+            Margin = new Thickness(20, 0, 20, 20),
+            Spacing = 10
+        };
 
-            // 在UI线程添加一批项目
-            foreach (var x in batch)
-            {
-                SearchResourceList.Children.Add(new SearchItem(x));
-            }
-
-            // 短暂延迟，让UI有机会更新
-            await Task.Delay(10);
+        foreach (var item in items)
+        {
+            stackPanel.Children.Add(new SearchItem(item));
         }
+
+        var scrollViewer = new ScrollViewer
+        {
+            Content = stackPanel,
+            Margin = new Thickness(0, 10, 0, 0)
+        };
+
+        return scrollViewer;
     }
 
     private void GameType_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

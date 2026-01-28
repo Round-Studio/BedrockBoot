@@ -14,6 +14,7 @@ using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
 using Round.SDK.Helper;
+using ComputeFileMD5 = BedrockBoot.Models.Helper.ComputeFileMD5;
 using DownloadProgress = BedrockBoot.Base.Entry.DownloadProgress;
 
 namespace BedrockBoot.Services

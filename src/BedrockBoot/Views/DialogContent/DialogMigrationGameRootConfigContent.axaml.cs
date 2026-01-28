@@ -19,17 +19,19 @@ namespace BedrockBoot.Views.DialogContent;
 public partial class DialogMigrationGameRootConfigContent : UserControl
 {
     public VersionConfig VersionInfo { get; set; }
+
     public DialogMigrationGameRootConfigContent()
     {
         InitializeComponent();
     }
-    public DialogMigrationGameRootConfigContent(VersionConfig versionInfo):this()
+
+    public DialogMigrationGameRootConfigContent(VersionConfig versionInfo) : this()
     {
         VersionInfo = versionInfo;
 
         Migration();
     }
-    
+
     public void Migration()
     {
         Task.Run(async () =>
@@ -39,10 +41,10 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             {
                 Dispatcher.UIThread.Invoke(DialogHost.Close);
                 Dispatcher.UIThread.Invoke(() => TaskLaunchGameItem.Launch(VersionInfo));
-                
+
                 return;
             }
-            
+
             try
             {
                 Console.WriteLine($@"即将迁移文件夹：{path}");
@@ -63,18 +65,18 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             {
                 // 使用更安全的方式删除目录
                 DeleteDirectorySafe(path);
-                
+
                 Dispatcher.UIThread.Invoke(DialogHost.Close);
                 Dispatcher.UIThread.Invoke(() => TaskLaunchGameItem.Launch(VersionInfo));
             }
         });
     }
-    
+
     public static void CopyDirectory(string sourceDir, string destinationDir, bool copySubDirs = true)
     {
         // 获取源目录的信息
         DirectoryInfo dir = new DirectoryInfo(sourceDir);
-        
+
         if (!dir.Exists)
         {
             throw new DirectoryNotFoundException($"源目录不存在: {sourceDir}");
@@ -121,17 +123,18 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             }
         }
     }
-    
+
     // 更安全的删除目录方法
     private static void DeleteDirectorySafe(string path, int maxRetries = 3)
     {
         if (!Directory.Exists(path))
             return;
-            
+
         for (int retry = 0; retry < maxRetries; retry++)
         {
             try
             {
+                if (!Directory.Exists(path)) return;
                 // 先尝试标准删除
                 Directory.Delete(path, true);
                 return;
@@ -139,7 +142,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             catch (IOException ex) when (retry < maxRetries - 1)
             {
                 Console.WriteLine($@"删除目录时出错 (尝试 {retry + 1}/{maxRetries}): {ex.Message}");
-                
+
                 // 如果文件被占用，等待后重试
                 if (ex.Message.Contains("被另一个进程使用") || ex.Message.Contains("正在使用"))
                 {
@@ -155,17 +158,17 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             catch (UnauthorizedAccessException ex) when (retry < maxRetries - 1)
             {
                 Console.WriteLine($@"权限错误 (尝试 {retry + 1}/{maxRetries}): {ex.Message}");
-                
+
                 // 尝试重置文件属性
                 ResetFileAttributes(path);
                 Task.Delay(500).Wait();
             }
         }
-        
+
         // 如果所有重试都失败，记录日志但不抛出异常
         Console.WriteLine($@"无法删除目录: {path}");
     }
-    
+
     // 手动删除目录内容
     private static void DeleteDirectoryContentsManually(string path)
     {
@@ -185,7 +188,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                     // 忽略无法删除的文件
                 }
             }
-            
+
             // 删除所有子目录（从最深开始）
             var dirs = Directory.GetDirectories(path, "*", SearchOption.AllDirectories)
                 .OrderByDescending(d => d.Length);
@@ -200,7 +203,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                     // 忽略无法删除的目录
                 }
             }
-            
+
             // 最后删除根目录
             Directory.Delete(path, false);
         }
@@ -209,7 +212,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             // 忽略错误
         }
     }
-    
+
     // 重置文件属性（解决只读文件问题）
     private static void ResetFileAttributes(string path)
     {

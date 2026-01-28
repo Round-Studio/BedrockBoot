@@ -121,5 +121,12 @@
         <DependentUpon>ScreenshotsItem.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Pages\DownloadPage\DownloadSearch.axaml.cs">
+        <DependentUpon>DownloadSearch.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\DownloadPage\SearchSubPage\SearchDefault.axaml.cs">
+        <DependentUpon>DownloadDefault.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

@@ -1,0 +1,99 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.DownloadPage.SearchSubPage.SearchDefault">
+    <Grid>
+        <StackPanel Spacing="10"
+                    IsVisible="False"
+                    Name="RecommendationPanel"
+                    Margin="20,10,20,20">
+            <items:BorderCard>
+                <Grid RowDefinitions="Auto,*">
+                    <DockPanel Grid.Row="0"
+                               Margin="0,0,0,8"
+                               LastChildFill="True">
+                        <Button DockPanel.Dock="Right"
+                                Classes="NoBorder"
+                                Name="GameListBtn"
+                                Click="GameListBtn_OnClick"
+                                Padding="6,4">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="4">
+                                <onePointControls:FontIcon VerticalAlignment="Center"
+                                                           Margin="0,0.5,0,0"
+                                                           Glyph="&#xE8FD;"></onePointControls:FontIcon>
+                                <TextBlock>版本列表</TextBlock>
+                            </StackPanel>
+                        </Button>
+                        
+                        <TextBlock DockPanel.Dock="Left"
+                                   Text="最新版本"
+                                   VerticalAlignment="Center"></TextBlock>
+                    </DockPanel>
+                    
+                    <Grid Grid.Row="1"
+                          ColumnDefinitions="*,*">
+                        <Button Grid.Column="0"
+                                Margin="0,0,4,0"
+                                HorizontalContentAlignment="Stretch"
+                                Padding="8">
+                            <Grid ColumnDefinitions="Auto,*"
+                                  Margin="2,0">
+                                <Image Grid.Column="0"
+                                       Width="26"
+                                       Height="26"
+                                       Source="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"></Image>
+                                
+                                <StackPanel Grid.Column="1"
+                                            Margin="5,-1,0,1"
+                                            HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Version"
+                                               Name="ReleaseVersion"></TextBlock>
+                                    <TextBlock Text="Date"
+                                               Name="ReleaseDescription"
+                                               FontSize="9"
+                                               Opacity="0.6"></TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                        
+                        <Button Grid.Column="1" 
+                                Margin="4,0,0,0"
+                                HorizontalContentAlignment="Stretch"
+                                Padding="8">
+                            <Grid ColumnDefinitions="Auto,*"
+                                  Margin="2,0">
+                                <Image Grid.Column="0"
+                                       Width="26"
+                                       Height="26"
+                                       Source="avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png"></Image>
+                                
+                                <StackPanel Grid.Column="1"
+                                            Margin="5,-1,0,1"
+                                            HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Version"
+                                               Name="PreviewVersion"></TextBlock>
+                                    <TextBlock Text="Date"
+                                               Name="PreviewDescription"
+                                               FontSize="9"
+                                               Opacity="0.6"></TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </items:BorderCard>
+        </StackPanel>
+        
+        <onePointControls:ProgressRing HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       Name="LoadRing"
+                                       Width="48"
+                                       Height="48"/>
+    </Grid>
+</UserControl>

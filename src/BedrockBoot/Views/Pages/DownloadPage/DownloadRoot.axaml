@@ -16,36 +16,8 @@
                                         FontWeight="Bold"
                                         Text="下载"></onePointControls:LineTextBlock>
     </entry:BedrockBootPage.HeaderView>
-    <Grid RowDefinitions="Auto,*">
-        <Grid Grid.Row="0"
-              Margin="15,15,15,5"
-              ColumnDefinitions="*,Auto">
-            <TextBox Grid.Column="0"
-                     Margin="5"
-                     Watermark="键入关键词以搜索...">
-                
-            </TextBox>
-            <Button Grid.Column="1"
-                    Width="120"
-                    Margin="5"
-                    Classes="NoBorder"
-                    Background="{DynamicResource AccentBackgroundBrush}">
-                <StackPanel Orientation="Horizontal"
-                            Spacing="8">
-                    <onePointControls:FontIcon Glyph="&#xE71E;"
-                                               VerticalAlignment="Center"
-                                               FontSize="15"></onePointControls:FontIcon>
-                    
-                    <TextBlock Text="搜索"></TextBlock>
-                </StackPanel>
-            </Button>
-        </Grid>
-        
-        <ScrollViewer Grid.Row="1"
-                      Margin="5,0,5,5"
-                      Padding="15,0,15,15">
-            <navigation:NavigationFrame Name="MainFrame"
-                                        HorizontalAlignment="Stretch"/>    
-        </ScrollViewer>
+    <Grid>
+        <navigation:NavigationFrame Name="MainFrame"
+                                    HorizontalAlignment="Stretch"/>    
     </Grid>
 </entry:BedrockBootPage>

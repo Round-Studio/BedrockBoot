@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -203,7 +204,9 @@ public partial class SearchDetailed : ISetting
                             DownloadCount = (uint)i.DownloadCount,
                             IconUri = i.Logo.Url,
                             Labels = categories,
-                            Images = i.Screenshots.Select(a => a.Url).ToList()
+                            Images = i.Screenshots.Select(a => a.Url).ToList(),
+                            SourceWebsite = i.Links.WebsiteUrl,
+                            JsonData = JsonSerializer.Serialize(i)
                         };
                         item.OnClick = (s) =>
                         {

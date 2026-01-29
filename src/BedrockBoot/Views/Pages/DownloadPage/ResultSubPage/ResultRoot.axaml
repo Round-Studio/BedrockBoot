@@ -19,6 +19,7 @@
                                           Height="90">
                             <Grid>
                                 <onePointControls:FontIcon Glyph="&#xE91B;"
+                                                           Name="IconFont"
                                                            FontSize="48"
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"></onePointControls:FontIcon>
@@ -88,7 +89,8 @@
                                     Spacing="12">
                             <Button Width="120"
                                     Height="32"
-                                    HorizontalAlignment="Right"
+                                    Name="GetResourceBtn"
+                                    Click="GetResourceBtn_OnClick"
                                     Classes="NoBorder"
                                     Background="{DynamicResource AccentBackgroundBrush}">
                                 <StackPanel Orientation="Horizontal"
@@ -96,6 +98,19 @@
                                     <onePointControls:FontIcon Glyph="&#xE896;"
                                                                VerticalAlignment="Center"></onePointControls:FontIcon>
                                     <TextBlock Text="获取资源"></TextBlock>
+                                </StackPanel>
+                            </Button>
+                        
+                            <Button Classes="NoBorder"
+                                    Name="OpenSourceWebsite"
+                                    Click="OpenSourceWebsite_OnClick"
+                                    Width="120"
+                                    Height="32">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xE8A7;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                    <TextBlock Text="前往源网站"></TextBlock>
                                 </StackPanel>
                             </Button>
                         </StackPanel>

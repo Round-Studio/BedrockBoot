@@ -5,10 +5,14 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -30,6 +34,7 @@ public partial class SearchItem : UserControl
         SearchResultItemInfo = info;
         ItemName.Text = info.Name;
         Description.Text = info.Description;
+        Authors.Text = string.Join(", ", info.Authors);
 
         if (info.Labels.Count > 0)
         {
@@ -38,51 +43,19 @@ public partial class SearchItem : UserControl
 
         info.Labels.ForEach(s => LabelsPanel.Children.Add(new LabelBox() { Text = s }));
 
-        LoadIconAsync(info.IconUri);
+        Update();
     }
 
-    private async void LoadIconAsync(string iconUri)
+    private async Task Update()
     {
-        if (iconUri.StartsWith("avares://"))
+        var icon = await ImageLoader.LoadIconAsync(SearchResultItemInfo.IconUri);
+        if (icon != null)
         {
-            // 处理本地资源
-            Card.ImageIcon = new Bitmap(AssetLoader.Open(new Uri(iconUri)));
             Card.IsFontIcon = false;
-        }
-        else if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || 
-                 iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-        {
-            // 处理网络图片
-            await LoadNetworkImageAsync(iconUri);
+            Card.ImageIcon = icon;
         }
     }
 
-    private async Task LoadNetworkImageAsync(string url)
-    {
-        try
-        {
-            // 下载图片数据
-            var imageBytes = await _httpClient.GetByteArrayAsync(url);
-            
-            // 创建内存流
-            using (var memoryStream = new System.IO.MemoryStream(imageBytes))
-            {
-                // 创建Bitmap
-                var bitmap = new Bitmap(memoryStream);
-                
-                // 需要在UI线程设置图片
-                Dispatcher.UIThread.Post(() =>
-                {
-                    Card.ImageIcon = bitmap;
-                    Card.IsFontIcon = false;
-                });
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"下载网络图片失败: {ex.Message}");
-        }
-    }
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {

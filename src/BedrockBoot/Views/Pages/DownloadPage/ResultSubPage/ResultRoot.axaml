@@ -14,33 +14,72 @@
                     <Grid ColumnDefinitions="Auto,*,Auto">
                         <items:BorderCard Grid.Column="0"
                                           VerticalAlignment="Top"
+                                          Padding="0"
                                           Width="90"
-                                          Height="90"></items:BorderCard>
+                                          Height="90">
+                            <Grid>
+                                <onePointControls:FontIcon Glyph="&#xE91B;"
+                                                           FontSize="48"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"></onePointControls:FontIcon>
+                                
+                                <Image Name="IconBox"
+                                       Width="90"
+                                       Height="90"></Image>
+                            </Grid>
+                        </items:BorderCard>
                         
                         <StackPanel Grid.Column="1"
                                     Margin="20,-2,0,0">
                             <TextBlock FontSize="24"
                                        FontWeight="Bold"
+                                       Name="ResourceName"
                                        Text="Resource"></TextBlock>
                             
-                            <StackPanel Orientation="Horizontal" 
-                                        Spacing="4"
-                                        Opacity="0.5">
-                                <onePointControls:FontIcon Glyph="&#xE716;"
-                                                           VerticalAlignment="Center"/>
-                                <TextBlock Text="By xxx"></TextBlock>
+                            <StackPanel Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        Margin="0,4,0,0"
+                                        Spacing="8">
+                                <StackPanel Spacing="2">
+                                    <onePointControls:FontIcon Glyph="&#xE896;"
+                                                               Opacity="0.5"></onePointControls:FontIcon>
+                                    <TextBlock Text="114514"
+                                               Name="DownloadCountText"></TextBlock>
+                                </StackPanel>
+                                    
+                                <Border Height="24"
+                                        Width="1"
+                                        Background="Gray"></Border>
+                                    
+                                <StackPanel Spacing="2">
+                                    <onePointControls:FontIcon Glyph="&#xE823;"
+                                                               Opacity="0.5"></onePointControls:FontIcon>
+                                    <TextBlock Text="1 天前"
+                                               Name="UpdataDateText"></TextBlock>
+                                </StackPanel>
+                                    
+                                <Border Height="24"
+                                        Width="1"
+                                        Background="Gray"></Border>
+                                    
+                                <StackPanel Spacing="2">
+                                    <onePointControls:FontIcon Glyph="&#xE716;"
+                                                               Opacity="0.5"></onePointControls:FontIcon>
+                                    <TextBlock Text="By xxx"
+                                               Name="AuthorText"></TextBlock>
+                                </StackPanel>
                             </StackPanel>
                             
                             <StackPanel Orientation="Horizontal" 
                                         Margin="0,6,0,0"
+                                        Name="LabelsBox"
                                         Spacing="4">
-                                <onePointControls:LabelBox Text="Label"></onePointControls:LabelBox>
-                                <onePointControls:LabelBox Text="Label"></onePointControls:LabelBox>
-                                <onePointControls:LabelBox Text="Label"></onePointControls:LabelBox>
                                 <onePointControls:LabelBox Text="Label"></onePointControls:LabelBox>
                             </StackPanel>
                             
                             <TextBlock Text="Description"
+                                       Name="DescriptionText"
+                                       TextWrapping="WrapWithOverflow"
                                        Margin="0,4,0,0"></TextBlock>
                         </StackPanel>
                         
@@ -59,31 +98,13 @@
                                     <TextBlock Text="获取资源"></TextBlock>
                                 </StackPanel>
                             </Button>
-                            
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Center"
-                                        Spacing="8">
-                                <StackPanel Spacing="2">
-                                    <onePointControls:FontIcon Glyph="&#xE896;"
-                                                               Opacity="0.5"></onePointControls:FontIcon>
-                                    <TextBlock Text="114514"></TextBlock>
-                                </StackPanel>
-                                
-                                <Border Height="24"
-                                        Width="1"
-                                        Background="Gray"></Border>
-                                
-                                <StackPanel Spacing="2">
-                                    <onePointControls:FontIcon Glyph="&#xE823;"
-                                                               Opacity="0.5"></onePointControls:FontIcon>
-                                    <TextBlock Text="1 天前"></TextBlock>
-                                </StackPanel>
-                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </items:BorderCard>
                 
-                <items:BorderCard Padding="12">
+                <items:BorderCard Padding="12"
+                                  Name="PreviewCard"
+                                  IsVisible="False">
                     <Grid RowDefinitions="Auto,Auto,*">
                         <TextBlock Grid.Row="0"
                                    Text="预览"
@@ -96,7 +117,16 @@
                                 Height="1"
                                 Background="Gray"></Border>
                         
-                        <Grid Grid.Row="2"></Grid>
+                        <Grid Grid.Row="2"
+                              Margin="0,8,0,0"
+                              Height="180">
+                            <ScrollViewer VerticalScrollBarVisibility="Disabled"
+                                          HorizontalScrollBarVisibility="Visible">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8"
+                                            Name="PreviewList"></StackPanel>
+                            </ScrollViewer>
+                        </Grid>
                     </Grid>
                 </items:BorderCard>
             </StackPanel>

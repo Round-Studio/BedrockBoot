@@ -165,5 +165,7 @@ public partial class DrawDownloadGameContent : UserControl
 
         IsUsePackIns.IsChecked = enable;
         IsUsePackIns.IsVisible = enable;
+
+        if (enable) InstallBtn.IsEnabled = true;
     }
 }

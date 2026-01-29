@@ -14,6 +14,7 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
+using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
 using Octokit;
@@ -33,6 +34,9 @@ public partial class SearchDetailed : ISetting
     
     // 添加搜索状态
     private bool _isSearching = false;
+    
+    // 保存上一次的搜索类型
+    private static SearchResourceType _lastSearchType = SearchResourceType.Unknow;
 
     public SearchDetailed()
     {
@@ -40,6 +44,12 @@ public partial class SearchDetailed : ISetting
         _apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
 
         DownloadSearch.SearchDetailed = this;
+        
+        // 恢复上一次的搜索类型
+        if (ResourceTypeBox != null && _lastSearchType != SearchResourceType.Unknow)
+        {
+            ResourceTypeBox.SelectedIndex = (int)_lastSearchType;
+        }
         
         // 设置上翻页逻辑
         ResultPage.UpAction = () =>
@@ -67,6 +77,17 @@ public partial class SearchDetailed : ISetting
 
     public void OnSearch(SearchInfo info)
     {
+        // 保存搜索类型
+        if (info.Type != SearchResourceType.Unknow)
+        {
+            _lastSearchType = info.Type;
+            // 同时更新UI控件的选择
+            if (ResourceTypeBox != null && ResourceTypeBox.SelectedIndex != (int)info.Type)
+            {
+                ResourceTypeBox.SelectedIndex = (int)info.Type;
+            }
+        }
+        
         // 重置分页状态
         _currentPage = 1;
         _currentIndex = 0;
@@ -168,22 +189,29 @@ public partial class SearchDetailed : ISetting
                     
                     allResult.ForEach(i =>
                     {
-                        var authorNames = i.Authors.Select(a => a.Name);
-                        var authorsresult = string.Join(", ", authorNames);
+                        var authorNames = i.Authors.Select(a => a.Name).ToList();
                         
                         var categories = i.Categories.Select(a => a.Name).ToList();
-                        
-                        items.Add(new SearchResultItemInfo()
+
+                        var item = new SearchResultItemInfo()
                         {
                             Name = i.Name,
-                            Description = $"{authorsresult}, {i.DateReleased}",
+                            Description = $"{i.Summary}",
+                            DateUpdated = i.DateReleased,
+                            DateCreated = i.DateCreated,
+                            Authors = authorNames,
+                            DownloadCount = (uint)i.DownloadCount,
                             IconUri = i.Logo.Url,
                             Labels = categories,
-                            OnClick = (s) =>
-                            {
-                                GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(i),$"资源详细信息 {i.Name}");
-                            }
-                        });
+                            Images = i.Screenshots.Select(a => a.Url).ToList()
+                        };
+                        item.OnClick = (s) =>
+                        {
+                            // GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(i),$"资源详细信息 {i.Name}");
+
+                            DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
+                        };
+                        items.Add(item);
                     });
                 }
                 
@@ -260,6 +288,10 @@ public partial class SearchDetailed : ISetting
         {
             SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;
             SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
+            
+            // 保存搜索类型
+            _lastSearchType = SearchInfo.Type;
+            
             OnSearch(SearchInfo);
         }
     }
@@ -270,7 +302,22 @@ public partial class SearchDetailed : ISetting
         {
             SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;
             SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
+            
+            // 保存搜索类型
+            _lastSearchType = SearchInfo.Type;
+            
             OnSearch(SearchInfo);
         }
+    }
+    
+    // 添加一个方法来获取和设置搜索类型
+    public static SearchResourceType GetLastSearchType()
+    {
+        return _lastSearchType;
+    }
+    
+    public static void SetLastSearchType(SearchResourceType searchType)
+    {
+        _lastSearchType = searchType;
     }
 }

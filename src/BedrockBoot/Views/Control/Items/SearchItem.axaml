@@ -12,9 +12,16 @@
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"
                         Name="HeaderBox"
-                        Spacing="8">
+                        Spacing="4">
                 <TextBlock Name="ItemName"
                            Text="ItemName"></TextBlock>
+                
+                <TextBlock Name="Authors"
+                           FontSize="11"
+                           VerticalAlignment="Bottom"
+                           Opacity="0.5"
+                           Margin="0,0,0,2"
+                           Text="By xxx"></TextBlock>
             </StackPanel>
         </onePointControls:SettingCard.Header>
         
@@ -27,6 +34,8 @@
                             Name="LabelsPanel"
                             IsVisible="False"></StackPanel>
                 <TextBlock Name="Description"
+                           Margin="0,0,50,0"
+                           TextTrimming="CharacterEllipsis"
                            Text="Description"></TextBlock>
             </StackPanel>
         </onePointControls:SettingCard.Description>

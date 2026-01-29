@@ -6,7 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Threading;
+using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Models.Helper;
 
@@ -28,7 +30,7 @@ public class ImageLoader : IDisposable
     /// <summary>
     /// 从 URL 加载图片并创建 ImageBrush
     /// </summary>
-    public async Task<IImage> LoadImageBrushAsync(string imageUrl, 
+    public async Task<Bitmap> LoadImageBrushAsync(string imageUrl, 
         Stretch stretch = Stretch.Uniform, 
         bool useCache = true)
     {
@@ -126,5 +128,20 @@ public class ImageLoader : IDisposable
         _httpClient.Dispose();
         _semaphore.Dispose();
         ClearAllCache();
+    }
+    
+    public static async Task<Bitmap?> LoadIconAsync(string iconUri)
+    {
+        if (iconUri.StartsWith("avares://"))
+        {
+            return new Bitmap(AssetLoader.Open(new Uri(iconUri)));
+        }
+        else if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || 
+                 iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            return await GlobalModel.ImageLoader.LoadImageBrushAsync(iconUri);
+        }
+
+        return null;
     }
 }

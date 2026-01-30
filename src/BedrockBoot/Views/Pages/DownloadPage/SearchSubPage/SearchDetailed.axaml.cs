@@ -268,7 +268,7 @@ public partial class SearchDetailed : ISetting
         var stackPanel = new StackPanel
         {
             Margin = new Thickness(20, 0, 20, 20),
-            Spacing = 10
+            Spacing = 8
         };
 
         foreach (var item in items)

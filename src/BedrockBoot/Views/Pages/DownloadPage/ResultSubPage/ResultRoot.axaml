@@ -8,7 +8,7 @@
              x:Class="BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.ResultRoot">
     <Grid>
         <ScrollViewer Margin="5,0,5,5">
-            <StackPanel Margin="15"
+            <StackPanel Margin="15,15,15,0"
                         Spacing="10">
                 <items:BorderCard Padding="12">
                     <Grid ColumnDefinitions="Auto,*,Auto">
@@ -136,7 +136,7 @@
                               Margin="0,8,0,0"
                               Height="180">
                             <ScrollViewer VerticalScrollBarVisibility="Disabled"
-                                          HorizontalScrollBarVisibility="Visible">
+                                          HorizontalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Horizontal"
                                             Spacing="8"
                                             Name="PreviewList"></StackPanel>

@@ -6,12 +6,13 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingDownload">
     <ScrollViewer>
-        <StackPanel Margin="15">
-            <TextBlock Margin="5,0,5,10"
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14">基础下载</TextBlock>
             
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="下载分块"
                                           Description="BedrockBoot 的下载分片数量"
                                           Glyph="&#xF158;">
@@ -24,11 +25,11 @@
                         Value="16"></Slider>
             </onePointControls:SettingCard>
             
-            <TextBlock Margin="5,0,5,10"
+            <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14">实例下载</TextBlock>
             
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="自动缓存游戏安装包"
                                           Description="首次下载一个版本的时候将会缓存游戏安装包，以方便下次安装相同版本"
                                           Glyph="&#xE7B8;">
@@ -37,7 +38,7 @@
                               IsCheckedChanged="IsAutoCacheGamePack_OnIsCheckedChanged"></ToggleSwitch>
             </onePointControls:SettingCard>
             
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="实例文件夹"
                                           Description="游戏存放的根目录"
                                           IsClickable="True"
@@ -45,11 +46,11 @@
                                           Glyph="&#xE8B7;">
             </onePointControls:SettingCard>
             
-            <TextBlock Margin="5,0,5,10"
+            <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14">源</TextBlock>
             
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="版本列表源"
                                           Description="BedrockBoot 使用的版本列表源"
                                           Glyph="&#xE8F1;">
@@ -58,7 +59,7 @@
                           SelectionChanged="SourceBox_OnSelectionChanged"></ComboBox>
             </onePointControls:SettingCard>
             
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="CurseForge 源"
                                           Description="BedrockBoot 使用的 CurseForge 源"
                                           Glyph="&#xE8F1;">
@@ -67,11 +68,11 @@
                           SelectionChanged="CurseForgeSourceBox_OnSelectionChanged"></ComboBox>
             </onePointControls:SettingCard>
             
-            <TextBlock Margin="5,0,5,10"
+            <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14">高级</TextBlock>
             
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="软件更新"
                                           Description="BedrockBoot 的更新设置"
                                           IsClickable="True"

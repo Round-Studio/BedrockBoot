@@ -126,6 +126,7 @@
                         <ScrollViewer Name="GameScro"
                                       Margin="8,8,0,8">
                             <StackPanel Margin="5,5,13,5"
+                                        Spacing="8"
                                         Name="GameList"></StackPanel>
                         </ScrollViewer>
                     

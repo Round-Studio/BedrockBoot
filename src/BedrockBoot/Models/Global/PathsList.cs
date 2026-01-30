@@ -71,6 +71,7 @@ public class PathsList
         {
             Name = "BMCBL",
             IconUrl = "avares://BedrockBoot/Assets/Icon/Other/BMCBL.png",
+            IsExists = false,
             OnImport = async _ =>
             {
                 var storageProvider = TopLevel.GetTopLevel(GlobalModel.MainWindow); 

@@ -20,7 +20,7 @@ public partial class DrawImportOtherLauncherContent : UserControl
         PathsList.OtherLauncher.ForEach(x =>
         {
             if (File.Exists(x.ConfigFile) ||
-                x.IsExists)
+                !x.IsExists)
             {
                 show = false;
                 var item = new SettingCard()

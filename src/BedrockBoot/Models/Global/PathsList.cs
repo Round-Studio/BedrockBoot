@@ -38,19 +38,12 @@ public class PathsList
                 var conf = new ConfigEntity<ConfigLeviLauncher>(s, false);
                 var realPath = Path.Combine(conf.Data.BaseRoot, "versions");
                 var inPath = Path.Combine(conf.Data.BaseRoot, "bedrock_versions");
-                if (!Directory.Exists(realPath) ||
-                    Directory.Exists(inPath))
+                if (!Directory.Exists(realPath))
                 {
-                    DialogHost.Show(new()
-                    {
-                        Title = "提示",
-                        Content = "该启动器已导入",
-                        CloseButtonText = "确定"
-                    });
-                    return;
+                    Directory.CreateDirectory(realPath);
                 }
 
-                Directory.CreateSymbolicLink(inPath, realPath);
+                if (!Directory.Exists(inPath)) Directory.CreateSymbolicLink(inPath, realPath);
                 GlobalModel.Config.Data.GameFolders.Add(new()
                 {
                     GameFolderName = "LeviLauncher",

@@ -46,10 +46,10 @@
         </items:BorderCard>
         
         <ScrollViewer Grid.Row="1">
-            <WrapPanel Margin="15,0,15,15"
-                       HorizontalAlignment="Stretch"
-                       Name="SavesBox">
-            </WrapPanel>
+            <StackPanel Margin="20,0,20,15"
+                        Spacing="8"
+                        Name="SavesBox">
+            </StackPanel>
         </ScrollViewer>
         
         <notice:InfoCard Grid.Row="1"

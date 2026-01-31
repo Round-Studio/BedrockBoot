@@ -6,13 +6,12 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.Control.Items.ArchiveItem">
-    
-    <items:BorderCard Margin="5"
-                      Width="265"
-                      Height="210">
-        <Grid RowDefinitions="*,Auto">
-            <Border Grid.Row="0"
+    <items:BorderCard>
+        <Grid ColumnDefinitions="Auto,*">
+            <Border Grid.Column="0"
                     Name="ImageBox"
+                    MinHeight="64"
+                    MinWidth="120"
                     CornerRadius="6">
                 <Border.Background>
                     <ImageBrush Stretch="UniformToFill"
@@ -29,39 +28,33 @@
                 </Grid>
             </Border>
                         
-            <Grid Grid.Row="1"
-                  ColumnDefinitions="*,Auto">
-                <Border Grid.Column="0"
-                        CornerRadius="6"
-                        Margin="0,8,0,0"
-                        Height="48"
-                        Background="{DynamicResource PrimaryBackgroundBrush}"
-                        BorderBrush="{DynamicResource PrimaryBorderBrush}"
-                        BorderThickness="1">
-                    <StackPanel VerticalAlignment="Center"
-                                Margin="8,0,0,0">
-                        <TextBlock FontSize="14"
-                                   Name="WorldName">My World</TextBlock>
-                        <TextBlock FontSize="11"
-                                   Foreground="Gray"
-                                   Name="WorldLastPlayed">LastPlayed Time</TextBlock>
-                    </StackPanel>
-                </Border>
-                <Border Grid.Column="1"
-                        CornerRadius="6"
-                        Margin="8,8,0,0"
-                        Height="48" Width="48"
-                        Background="{DynamicResource PrimaryBackgroundBrush}"
-                        BorderBrush="{DynamicResource PrimaryBorderBrush}"
-                        BorderThickness="1">
-                    <Button Classes="NoBorder"
-                            CornerRadius="4"
-                            IsEnabled="False">
-                        <onePointControls:FontIcon Glyph="&#xE70F;"
-                                                   FontSize="18"></onePointControls:FontIcon>
+            <StackPanel Grid.Column="1"
+                        Margin="12,0"
+                        VerticalAlignment="Center"
+                        Spacing="4">
+                <TextBlock FontSize="15"
+                           Name="WorldName">My World</TextBlock>
+                <TextBlock FontSize="11"
+                           Opacity="0.6"
+                           Name="WorldLastPlayed">LastPlayed Time</TextBlock>
+                
+                <StackPanel Orientation="Horizontal"
+                            Spacing="6">
+                    <Button Width="24" Height="24"
+                            Name="OpenFolderBtn"
+                            Click="OpenFolderBtn_OnClick"
+                            Classes="NoBorder">
+                        <onePointControls:FontIcon Glyph="&#xE8B7;"/>
                     </Button>
-                </Border>
-            </Grid>
+                    
+                    <Button Width="24" Height="24"
+                            Name="SaveBtn"
+                            Click="SaveBtn_OnClick"
+                            Classes="NoBorder">
+                        <onePointControls:FontIcon Glyph="&#xE74E;"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </items:BorderCard>
 </UserControl>

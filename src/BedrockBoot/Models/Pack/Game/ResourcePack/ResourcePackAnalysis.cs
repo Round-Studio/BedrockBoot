@@ -35,21 +35,27 @@ public class ResourcePackAnalysis
 
     public ResourcePackType GetPackType()
     {
-        ZipHelper.ExtractZipFile(FilePath, _tempPath);
-        var num = Directory.GetDirectories(_tempPath).Length;
+        var tempPath = _tempPath;
+        ZipHelper.ExtractZipFile(FilePath, tempPath);
+        var num = Directory.GetDirectories(tempPath).Length;
+
+        if (num == 1 &&
+            !File.Exists(Path.Combine(tempPath, "manifest.json")))
+            tempPath = Directory.GetDirectories(tempPath)[0];
+        
         if (num == 2 &&
-            !File.Exists(Path.Combine(_tempPath, "manifest.json")))
+            !File.Exists(Path.Combine(tempPath, "manifest.json")))
         {
             return ResourcePackType.Addon; // 直接返回 Addon
         }
 
         if (num > 2 &&
-            !File.Exists(Path.Combine(_tempPath, "manifest.json")))
+            !File.Exists(Path.Combine(tempPath, "manifest.json")))
         {
             return ResourcePackType.Unknown;
         }
 
-        var manifestFile = Path.Combine(_tempPath, "manifest.json");
+        var manifestFile = Path.Combine(tempPath, "manifest.json");
         var conf = new ConfigEntity<ResourcePackManifest>(manifestFile, false).Data;
 
         return GetPackType(conf);
@@ -60,23 +66,8 @@ public class ResourcePackAnalysis
         var result = new List<ResourcePackManifest>();
         var type = GetPackType();
 
-        if (type == ResourcePackType.Resource ||
-            type == ResourcePackType.Behavior)
-        {
-            var manifestFile = Path.Combine(_tempPath, "manifest.json");
-            result.Add(GetPackManifest(manifestFile));
-        }
-        else if (type == ResourcePackType.Addon)
-        {
-            var folder = Directory.GetDirectories(_tempPath);
-            var files = folder.Select(f => Path.Combine(f, "manifest.json")).ToList();
-
-            files.ForEach(f => { result.Add(GetPackManifest(f)); });
-        }
-        else
-        {
-            return null;
-        }
+        var files = Directory.GetFiles(_tempPath, "manifest.json", SearchOption.AllDirectories);
+        files.ToList().ForEach(f=>result.Add(GetPackManifest(f)));
 
         return result;
     }
@@ -84,7 +75,8 @@ public class ResourcePackAnalysis
     public static ResourcePackManifest GetPackManifest(string file)
     {
         var conf = new ConfigEntity<ResourcePackManifest>(file, false).Data;
-        if (conf.Header == null)
+        if (conf.Header == null ||
+            conf == null)
             return null;
         conf.PackRootPath = Path.GetDirectoryName(file);
         conf.PackType = GetPackType(conf);

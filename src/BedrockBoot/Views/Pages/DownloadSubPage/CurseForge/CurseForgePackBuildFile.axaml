@@ -8,6 +8,7 @@
     <Grid>
         <ScrollViewer>
             <StackPanel Margin="15,0,15,15"
+                        Spacing="8"
                         Name="List"></StackPanel>
         </ScrollViewer>
         

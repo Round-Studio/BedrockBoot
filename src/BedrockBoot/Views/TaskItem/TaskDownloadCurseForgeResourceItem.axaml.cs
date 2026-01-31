@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -6,9 +7,12 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Download;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.ResourcePack;
+using ImprovedDownloadManager;
 using OnePointUI.Avalonia.Base.Entry;
 using Round.SDK.Helper;
 
@@ -18,6 +22,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 {
     public CurseForgeResponse.ModFile ModFile { get; set; }
     public Action CallBack { get; set; }
+
     public TaskDownloadCurseForgeResourceItem()
     {
         InitializeComponent();
@@ -34,13 +39,13 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
         CardTitle.Text = $"下载资源：{ModFile.DisplayName}";
     }
 
-    public async Task Download(string savePath)
+    public async Task Download(string savePath, VersionConfig version = null)
     {
-        var download = new SingleThreadDownloader(1, 1024);
+        var download = new MultiThreadDownloader();
 
-        var url = ModFile.DownloadUrl;
+        var url = new Uri(ModFile.DownloadUrl).AbsoluteUri.Replace("edge.forgecdn.net", "mediafilez.forgecdn.net");
         Console.WriteLine($@"下载文件：{url}");
-        await download.DownloadAsync(url, savePath, new Progress<SingleThreadDownloader.DownloadProgress>((xprogress =>
+        await download.DownloadAsync(url, savePath, new Progress<DownloadProgress>((xprogress =>
         {
             Dispatcher.UIThread.Invoke(() =>
             {
@@ -51,14 +56,25 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
                 DownloadProgressBar.Value = xprogress.ProgressPercentage;
                 MainText.Text = $"进度：{xprogress.ProgressPercentage:F2} %";
-                MainSpeedText.Text = $"{SizeHelper.FormatBytes(xprogress.BytesPerSecond)} / s";
+                MainSpeedText.Text = $"??? / s";
             });
         })));
-        
-        CallBack?.Invoke();
+
+        if (version == null) CallBack?.Invoke();
+
+        DownloadProgressBar.IsIndeterminate = true;
+        MainText.Text = $"进度：正在导入文件... (0 %)";
+        Task.Run(() =>
+        {
+            var manager = new ResourcePackManager(version);
+            manager.GetAllPack();
+            manager.AddRangePacks(new() { savePath });
+
+            if (CallBack != null) Dispatcher.UIThread.Invoke(CallBack);
+        });
     }
-    
-    public static void Download(CurseForgeResponse.ModFile modFile, string savePath)
+
+    public static void Download(CurseForgeResponse.ModFile modFile, string savePath, VersionConfig version = null)
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
         {
@@ -69,8 +85,8 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
         var body = new TaskDownloadCurseForgeResourceItem(modFile);
         var tuid = GlobalModel.TaskManager.AddTask(body);
-        
-        body.CallBack = ()=>GlobalModel.TaskManager.RemoveTask(tuid);
-        body.Download(savePath);
+
+        body.CallBack = () => GlobalModel.TaskManager.RemoveTask(tuid);
+        body.Download(savePath, version);
     }
 }

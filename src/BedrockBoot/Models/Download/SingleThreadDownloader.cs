@@ -3,183 +3,244 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using BedrockBoot.Base.Entry;
 
-namespace BedrockBoot.Models.Download
+namespace ImprovedDownloadManager
 {
     public class SingleThreadDownloader : IDisposable
     {
         private readonly HttpClient _httpClient;
-        private readonly int _bufferSize;
-        private static readonly TimeSpan ProgressReportInterval = TimeSpan.FromMilliseconds(200);
-        
-        /// <summary>
-        /// 下载进度信息
-        /// </summary>
-        public class DownloadProgress
+        private readonly int _maxThreads;
+        private readonly int _chunkSize;
+        private static readonly TimeSpan ProgressReportInterval = TimeSpan.FromMilliseconds(500);
+
+        public class DownloadConfig
         {
-            /// <summary>
-            /// 总字节数（如果未知则为 -1）
-            /// </summary>
-            public long TotalBytes { get; set; }
-            
-            /// <summary>
-            /// 已下载字节数
-            /// </summary>
-            public long DownloadedBytes { get; set; }
-            
-            /// <summary>
-            /// 下载进度百分比（0-100）
-            /// </summary>
-            public double ProgressPercentage => TotalBytes > 0 
-                ? Math.Min(100, Math.Round((double)DownloadedBytes / TotalBytes * 100, 2))
-                : 0;
-            
-            /// <summary>
-            /// 下载速度（字节/秒）
-            /// </summary>
-            public double BytesPerSecond { get; set; }
-            
-            /// <summary>
-            /// 预估剩余时间（秒）
-            /// </summary>
-            public double EstimatedRemainingSeconds { get; set; }
+            public int MaxThreads { get; set; } = 4;
+            public int ChunkSize { get; set; } = 1024 * 1024; // 1MB chunks
+            public int MaxRetries { get; set; } = 3;
+            public TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(10);
+            public string UserAgent { get; set; } = "Mozilla/5.0 (compatible; DownloadManager/1.0)";
         }
 
-        /// <summary>
-        /// 初始化单线程下载器
-        /// </summary>
-        /// <param name="bufferSize">缓冲区大小，默认为 81920 字节（80KB）</param>
-        /// <param name="timeoutSeconds">超时时间（秒），默认为 30 秒</param>
-        public SingleThreadDownloader(int bufferSize = 81920, int timeoutSeconds = 30)
+        public SingleThreadDownloader(DownloadConfig config = null)
         {
-            _httpClient = new HttpClient
+            config = config ?? new DownloadConfig();
+            
+            var handler = new HttpClientHandler()
             {
-                Timeout = TimeSpan.FromSeconds(timeoutSeconds)
+                MaxConnectionsPerServer = config.MaxThreads,
+                UseProxy = false,
+                AllowAutoRedirect = true,
+                MaxAutomaticRedirections = 5,
+                AutomaticDecompression = System.Net.DecompressionMethods.All
+            };
+
+            _httpClient = new HttpClient(handler)
+            {
+                Timeout = config.Timeout
             };
             
-            // 设置默认请求头
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; SingleThreadDownloader/1.0)");
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", config.UserAgent);
+            _httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+            _httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
             
-            _bufferSize = bufferSize;
+            _maxThreads = config.MaxThreads;
+            _chunkSize = config.ChunkSize;
         }
 
-        /// <summary>
-        /// 下载文件并报告进度
-        /// </summary>
-        /// <param name="url">文件URL</param>
-        /// <param name="filePath">保存路径</param>
-        /// <param name="progress">进度回调</param>
-        /// <param name="cancellationToken">取消令牌</param>
-        /// <returns>下载是否成功</returns>
         public async Task<bool> DownloadAsync(string url, string filePath, 
-            IProgress<DownloadProgress>? progress = null, 
+            IProgress<DownloadProgress> progress = null, 
             CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(url))
-                throw new ArgumentException("URL不能为空", nameof(url));
+                throw new ArgumentException("URL cannot be null or empty", nameof(url));
             
             if (string.IsNullOrWhiteSpace(filePath))
-                throw new ArgumentException("文件路径不能为空", nameof(filePath));
-            
-            // 修复URL中的空格
-            string encodedUrl = EncodeUrl(url);
-            
+                throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+
+            // Validate URL format
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uriResult) || 
+                !(uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+            {
+                throw new ArgumentException("Invalid URL format", nameof(url));
+            }
+
             try
             {
-                // 获取文件信息
-                var fileInfo = await GetFileInfoAsync(encodedUrl, cancellationToken);
-                long? contentLength = fileInfo.contentLength;
+                // Get file info
+                var fileInfo = await GetFileInfoAsync(url, cancellationToken);
                 
-                Console.WriteLine($@"开始下载: {url}");
-                Console.WriteLine($@"文件大小: {(contentLength.HasValue ? FormatBytes(contentLength.Value) : "未知")}");
-                Console.WriteLine($@"保存到: {filePath}");
-                
-                // 创建目录
+                // Create directory if not exists
                 var directory = Path.GetDirectoryName(filePath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
+
+                // Download in chunks
+                await DownloadInChunksAsync(url, filePath, fileInfo, progress, cancellationToken);
                 
-                // 执行下载
-                return await DownloadFileAsync(encodedUrl, filePath, contentLength, progress, cancellationToken);
+                Console.WriteLine($"Download completed: {filePath}");
+                return true;
             }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            catch (OperationCanceledException)
             {
-                Console.WriteLine(@"下载已取消");
+                Console.WriteLine("Download was cancelled");
                 return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($@"下载失败: {ex.Message}");
-                throw new Exception($"下载失败: {ex.Message}", ex);
+                Console.WriteLine($"Download failed: {ex.Message}");
+                throw;
             }
         }
 
-        /// <summary>
-        /// 获取文件信息
-        /// </summary>
-        private async Task<(long? contentLength, bool supportsRange)> GetFileInfoAsync(string url, CancellationToken cancellationToken)
+        private async Task<FileInfoResult> GetFileInfoAsync(string url, CancellationToken cancellationToken)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Head, url);
+            using var response = await _httpClient.SendAsync(request, 
+                HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentLength = response.Content.Headers.ContentLength;
+            var acceptRanges = response.Headers.AcceptRanges?.Contains("bytes") ?? false;
+            
+            return new FileInfoResult
+            {
+                ContentLength = contentLength,
+                AcceptRanges = acceptRanges
+            };
+        }
+
+        private async Task DownloadInChunksAsync(string url, string filePath, FileInfoResult fileInfo, 
+            IProgress<DownloadProgress> progress, CancellationToken cancellationToken)
+        {
+            if (!fileInfo.AcceptRanges || !fileInfo.ContentLength.HasValue || fileInfo.ContentLength <= _chunkSize)
+            {
+                // Fallback to single thread download
+                await DownloadSingleThreadAsync(url, filePath, fileInfo, progress, cancellationToken);
+                return;
+            }
+
+            var totalSize = fileInfo.ContentLength.Value;
+            var chunkCount = (int)Math.Ceiling((double)totalSize / _chunkSize);
+            var tasks = new List<Task>();
+            var temporaryFiles = new List<string>();
+            
+            // Create temporary files for each chunk
+            for (int i = 0; i < chunkCount; i++)
+            {
+                var tempFile = Path.GetTempFileName();
+                temporaryFiles.Add(tempFile);
+                
+                var startByte = i * _chunkSize;
+                var endByte = Math.Min(startByte + _chunkSize - 1, totalSize - 1);
+                
+                tasks.Add(DownloadChunkAsync(url, tempFile, startByte, endByte, cancellationToken));
+            }
+
+            // Limit concurrent downloads
+            var semaphore = new SemaphoreSlim(_maxThreads);
+            var limitedTasks = tasks.Select(async task =>
+            {
+                await semaphore.WaitAsync(cancellationToken);
+                try
+                {
+                    await task;
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            }).ToArray();
+            
+            await Task.WhenAll(limitedTasks);
+
+            // Combine chunks
+            await CombineChunksAsync(temporaryFiles, filePath, cancellationToken);
+
+            // Cleanup temporary files
+            foreach (var tempFile in temporaryFiles)
+            {
+                try
+                {
+                    File.Delete(tempFile);
+                }
+                catch
+                {
+                    // Ignore cleanup errors
+                }
+            }
+
+            // Report final progress
+            progress?.Report(new DownloadProgress
+            {
+                TotalBytes = totalSize,
+                DownloadedBytes = totalSize,
+                BytesPerSecond = 0,
+                EstimatedRemainingSeconds = 0
+            });
+        }
+
+        private async Task DownloadChunkAsync(string url, string filePath, long startByte, long endByte, 
+            CancellationToken cancellationToken, int retryCount = 0)
         {
             try
             {
-                // 先尝试HEAD请求
-                using var headRequest = new HttpRequestMessage(HttpMethod.Head, url);
-                using var headResponse = await _httpClient.SendAsync(headRequest, 
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(startByte, endByte);
+                
+                using var response = await _httpClient.SendAsync(request, 
                     HttpCompletionOption.ResponseHeadersRead, cancellationToken);
                 
-                if (headResponse.IsSuccessStatusCode)
-                {
-                    var contentLength = headResponse.Content.Headers.ContentLength;
-                    var supportsRange = headResponse.Headers.AcceptRanges?.Contains("bytes") == true;
-                    
-                    return (contentLength, supportsRange);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"HEAD请求失败，尝试GET: {ex.Message}");
-            }
-            
-            // HEAD失败，尝试GET请求前几个字节
-            try
-            {
-                using var getRequest = new HttpRequestMessage(HttpMethod.Get, url);
-                getRequest.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(0, 0);
+                response.EnsureSuccessStatusCode();
+
+                using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+                using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, 
+                    FileShare.None, _chunkSize, FileOptions.Asynchronous);
                 
-                using var getResponse = await _httpClient.SendAsync(getRequest, 
-                    HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-                
-                if (getResponse.IsSuccessStatusCode && getResponse.StatusCode == System.Net.HttpStatusCode.PartialContent)
-                {
-                    var contentLength = getResponse.Content.Headers.ContentLength;
-                    return (contentLength, true);
-                }
+                await responseStream.CopyToAsync(fileStream, cancellationToken);
             }
-            catch (Exception ex)
+            catch (HttpRequestException) when (retryCount < 3)
             {
-                Console.WriteLine($@"带Range的GET请求失败: {ex.Message}");
+                await Task.Delay(1000 * (retryCount + 1), cancellationToken); // Exponential backoff
+                await DownloadChunkAsync(url, filePath, startByte, endByte, cancellationToken, retryCount + 1);
             }
-            
-            return (null, false);
         }
 
-        /// <summary>
-        /// 执行文件下载
-        /// </summary>
-        private async Task<bool> DownloadFileAsync(string url, string filePath, long? totalBytes,
-            IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
+        private async Task CombineChunksAsync(List<string> chunkFiles, string outputFile, CancellationToken cancellationToken)
+        {
+            using var outputStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write, 
+                FileShare.None, _chunkSize, FileOptions.Asynchronous);
+            
+            foreach (var chunkFile in chunkFiles)
+            {
+                using var inputStream = new FileStream(chunkFile, FileMode.Open, FileAccess.Read, 
+                    FileShare.Read, _chunkSize, FileOptions.Asynchronous);
+                
+                await inputStream.CopyToAsync(outputStream, cancellationToken);
+            }
+        }
+
+        private async Task DownloadSingleThreadAsync(string url, string filePath, FileInfoResult fileInfo, 
+            IProgress<DownloadProgress> progress, CancellationToken cancellationToken)
         {
             using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             response.EnsureSuccessStatusCode();
             
             using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, true);
-            
-            var buffer = new byte[_bufferSize];
+            using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, 
+                FileShare.None, _chunkSize, FileOptions.Asynchronous);
+
+            var buffer = new byte[_chunkSize];
             long totalDownloaded = 0;
-            var lastReportTime = DateTime.Now;
-            long lastReportBytes = 0;
+            var totalSize = fileInfo.ContentLength ?? -1;
+            var lastReportTime = DateTime.UtcNow;
             
             int bytesRead;
             while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
@@ -187,103 +248,32 @@ namespace BedrockBoot.Models.Download
                 await fileStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
                 totalDownloaded += bytesRead;
                 
-                // 报告进度
-                ReportProgress(totalDownloaded, totalBytes, ref lastReportTime, ref lastReportBytes, progress);
+                var now = DateTime.UtcNow;
+                if (now - lastReportTime >= ProgressReportInterval)
+                {
+                    progress?.Report(new DownloadProgress
+                    {
+                        TotalBytes = totalSize,
+                        DownloadedBytes = totalDownloaded,
+                        BytesPerSecond = 0, // Could implement speed calculation here
+                        EstimatedRemainingSeconds = 0
+                    });
+                    lastReportTime = now;
+                }
                 
                 cancellationToken.ThrowIfCancellationRequested();
             }
-            
-            // 最终报告
-            if (progress != null)
-            {
-                progress.Report(new DownloadProgress
-                {
-                    TotalBytes = totalBytes ?? totalDownloaded,
-                    DownloadedBytes = totalDownloaded,
-                    BytesPerSecond = 0,
-                    EstimatedRemainingSeconds = 0
-                });
-            }
-            
-            Console.WriteLine($@"下载完成: {FormatBytes(totalDownloaded)}");
-            return true;
         }
 
-        /// <summary>
-        /// 报告下载进度
-        /// </summary>
-        private void ReportProgress(long downloaded, long? totalBytes, 
-            ref DateTime lastReportTime, ref long lastReportBytes, 
-            IProgress<DownloadProgress>? progress)
-        {
-            if (progress == null) return;
-            
-            var now = DateTime.Now;
-            var timeSinceLastReport = (now - lastReportTime).TotalSeconds;
-            
-            // 至少200ms报告一次
-            if (timeSinceLastReport >= ProgressReportInterval.TotalSeconds)
-            {
-                var bytesSinceLastReport = downloaded - lastReportBytes;
-                var bytesPerSecond = bytesSinceLastReport / timeSinceLastReport;
-                
-                var progressInfo = new DownloadProgress
-                {
-                    TotalBytes = totalBytes ?? downloaded,
-                    DownloadedBytes = downloaded,
-                    BytesPerSecond = bytesPerSecond
-                };
-                
-                // 计算剩余时间
-                if (totalBytes.HasValue && totalBytes.Value > 0 && bytesPerSecond > 0)
-                {
-                    var remainingBytes = totalBytes.Value - downloaded;
-                    progressInfo.EstimatedRemainingSeconds = remainingBytes / bytesPerSecond;
-                }
-                
-                progress.Report(progressInfo);
-                
-                lastReportTime = now;
-                lastReportBytes = downloaded;
-            }
-        }
-
-        /// <summary>
-        /// 编码URL中的特殊字符
-        /// </summary>
-        private string EncodeUrl(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-                return url;
-            
-            // 简单处理：替换空格为%20
-            return url.Replace(" ", "%20");
-        }
-
-        /// <summary>
-        /// 格式化字节数为易读格式
-        /// </summary>
-        private string FormatBytes(long bytes)
-        {
-            string[] sizes = { "B", "KB", "MB", "GB" };
-            int order = 0;
-            double len = bytes;
-            
-            while (len >= 1024 && order < sizes.Length - 1)
-            {
-                order++;
-                len /= 1024;
-            }
-            
-            return $"{len:0.##} {sizes[order]}";
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
         public void Dispose()
         {
             _httpClient?.Dispose();
         }
+    }
+
+    internal class FileInfoResult
+    {
+        public long? ContentLength { get; set; }
+        public bool AcceptRanges { get; set; }
     }
 }

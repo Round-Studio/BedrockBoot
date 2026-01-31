@@ -6,7 +6,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.TaskItem;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Control.Items;
 
@@ -42,7 +45,7 @@ public partial class CurseForgeModBuildFileItem : UserControl
             {
                 new FilePickerFileType("Minecraft Bedrock 资源文件")
                 {
-                    Patterns = new[] { Path.GetExtension( ModFile.FileName) }
+                    Patterns = new[] { Path.GetExtension(ModFile.FileName) }
                 }
             }
         });
@@ -52,5 +55,24 @@ public partial class CurseForgeModBuildFileItem : UserControl
             GlobalModel.MainWindow.CloseDraw();
             TaskDownloadCurseForgeResourceItem.Download(ModFile, file.TryGetLocalPath());
         }
+    }
+
+    private void DownloadBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new DialogChooseGameContent();
+        DialogHost.Show(new DialogInfo()
+        {
+            Content = dialog,
+            Title = "下载资源到...",
+            CloseButtonText = "下载",
+            SecondaryButtonText = "取消",
+            CloseAction = () =>
+            {
+                var conf = dialog.VersionConfig;
+                GlobalModel.MainWindow.CloseDraw();
+                TaskDownloadCurseForgeResourceItem.Download(ModFile,
+                    Path.Combine(PathsList.TempPath, ModFile.FileName), conf);
+            }
+        });
     }
 }

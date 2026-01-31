@@ -36,24 +36,20 @@ public class GameInfoHelper
         }
     }
 
+    // 优化后的GetVersionConfigs方法 - 使用LINQ链式操作提高性能和可读性
     public static List<VersionConfig> GetVersionConfigs(string gameFolder)
     {
-        var result = new List<VersionConfig>();
-        if (!Directory.Exists(Path.Combine(gameFolder, "bedrock_versions")))
-            return result;
-        var versions = Directory.GetDirectories(Path.Combine(gameFolder, "bedrock_versions")).ToList();
+        var bedrockVersionsPath = Path.Combine(gameFolder, "bedrock_versions");
+        
+        if (!Directory.Exists(bedrockVersionsPath))
+            return new List<VersionConfig>();
 
-        versions.ForEach(x =>
-        {
-            var body = GetVersionConfig(x);
-            if (body != null &&
-                !string.IsNullOrEmpty(body.Info.VersionName) &&
-                !string.IsNullOrEmpty(body.Info.Version))
-            {
-                result.Add(body);
-            }
-        });
-        return result;
+        return Directory.GetDirectories(bedrockVersionsPath)
+            .Select(GetVersionConfig)  // 转换每个路径为VersionConfig
+            .Where(config => config != null && 
+                           !string.IsNullOrEmpty(config.Info.VersionName) && 
+                           !string.IsNullOrEmpty(config.Info.Version))  // 过滤有效配置
+            .ToList();  // 转换为列表返回
     }
 
     public static VersionConfig GetVersionConfig(string gamePath)

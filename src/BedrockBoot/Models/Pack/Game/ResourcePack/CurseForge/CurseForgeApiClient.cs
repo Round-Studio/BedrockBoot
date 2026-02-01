@@ -72,7 +72,7 @@ public class CurseForgeApiClient
     }
 
     /// <summary>
-    /// 获取指定 modId 的详细信息
+    ///     获取指定 modId 的详细信息
     /// </summary>
     /// <param name="modId">模组ID</param>
     /// <returns>模组详细信息</returns>
@@ -82,7 +82,6 @@ public class CurseForgeApiClient
         const int maxRetries = 3;
 
         while (retryCount <= maxRetries)
-        {
             try
             {
                 var url = $"v1/mods/{modId}";
@@ -138,7 +137,6 @@ public class CurseForgeApiClient
                 Console.WriteLine($@"请求超时: {ex.Message}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
-        }
 
         // 如果重试后仍然失败，抛出异常
         throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");

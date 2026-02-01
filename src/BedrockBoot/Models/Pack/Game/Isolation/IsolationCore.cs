@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Documents;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
@@ -78,6 +77,7 @@ public class IsolationCore
             }
         });
     }
+
     public void Clear()
     {
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
@@ -96,6 +96,7 @@ public class IsolationCore
 
         return PathsList.GamePublicRootPath;
     }
+
     public static string GetInstancePackPath(VersionConfig versionConfig, string folder)
     {
         var root = GetRealPath(versionConfig);
@@ -104,6 +105,7 @@ public class IsolationCore
 
         return Path.Combine(root, "LocalState", "games", "com.mojang", folder);
     }
+
     public static string GetInstanceConfigRootPath(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
@@ -139,8 +141,9 @@ public class IsolationCore
 
     public static string GetInstanceFolderPath(VersionConfig versionConfig,
         InstanceFolderType folderType = InstanceFolderType.RootFolder,
-        string user = "Shared") =>
-        folderType switch
+        string user = "Shared")
+    {
+        return folderType switch
         {
             InstanceFolderType.RootFolder => GetRealPath(versionConfig),
             InstanceFolderType.ResourcePackFolder => GetInstanceFolderPath(versionConfig, "resource_packs", user),
@@ -157,11 +160,12 @@ public class IsolationCore
             InstanceFolderType.ScreenshotFolder => GetInstanceFolderPath(versionConfig, "Screenshots", user),
             _ => string.Empty
         };
+    }
 
     public static List<string>? GetInstanceUsers(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP) return null;
-        
+
         var userFolder = GetInstanceFolderPath(versionConfig, InstanceFolderType.UserFolder);
         if (Directory.Exists(userFolder))
             return Directory.GetDirectories(userFolder).Select(x => Path.GetFileName(x)).ToList();
@@ -172,17 +176,16 @@ public class IsolationCore
     private static string GetInstanceFolderPath(VersionConfig VersionConfig, string folder, string user = "Shared")
     {
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
             return Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                $@"LocalState\games\com.mojang",
+                GetRealPath(VersionConfig),
+                @"LocalState", "games", "com.mojang",
                 folder
             );
-        }
-        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+
+        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
             var dir = Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
+                GetRealPath(VersionConfig),
                 "Users", user, "games", "com.mojang", folder
             );
 

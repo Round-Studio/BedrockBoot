@@ -5,17 +5,16 @@ namespace BedrockBoot.Models.Pack.Game.Isolation;
 
 public class IsolationMigration
 {
-    public VersionConfig NewConfig { get; set; }
-    public VersionConfig OldConfig { get; set; }
-
-    public IsolationMigration(VersionConfig newConfig,VersionConfig oldConfig)
+    public IsolationMigration(VersionConfig newConfig, VersionConfig oldConfig)
     {
         NewConfig = newConfig;
         OldConfig = oldConfig;
     }
 
+    public VersionConfig NewConfig { get; set; }
+    public VersionConfig OldConfig { get; set; }
+
     public void Migration(MigrationConfig migrationConfig)
     {
-        
     }
 }

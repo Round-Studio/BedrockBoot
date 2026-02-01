@@ -66,8 +66,7 @@ public class IsolationCore
             "skin_packs"
         }.ToList().ForEach(f =>
         {
-            if (DirectoryLinkChecker.CheckFolderType(Path.Combine(VersionConfig.VersionPath, f)) ==
-                DirectoryType.Folder &&
+            if (Directory.Exists(Path.Combine(VersionConfig.VersionPath, f)) &&
                 Directory.Exists(GetInstancePackPath(VersionConfig, f)))
             {
                 Directory.Delete(Path.Combine(VersionConfig.VersionPath, f), true);

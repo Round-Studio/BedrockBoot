@@ -35,8 +35,7 @@ public partial class CurseForgePackBuildFile : UserControl
             try
             {
                 var files = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
-                    .GetModFilesAsync(ModData.Id,
-                        50).Result;
+                    .GetModFilesAsync(ModData.Id).Result;
 
                 Dispatcher.UIThread.Invoke(() =>
                 {

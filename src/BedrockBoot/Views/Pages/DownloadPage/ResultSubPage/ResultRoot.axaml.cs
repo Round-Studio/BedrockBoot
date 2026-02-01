@@ -1,12 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Media;
-using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Helpers;
@@ -20,8 +16,6 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 public partial class ResultRoot : UserControl
 {
-    public SearchResultItemInfo SearchResultItemInfo { get; set; }
-
     public ResultRoot()
     {
         InitializeComponent();
@@ -33,10 +27,12 @@ public partial class ResultRoot : UserControl
         Update();
     }
 
+    public SearchResultItemInfo SearchResultItemInfo { get; set; }
+
     public async Task Update()
     {
         ResourceName.Text = SearchResultItemInfo.Name;
-        AuthorText.Text = $"By {string.Join(", ",SearchResultItemInfo.Authors)}";
+        AuthorText.Text = $"By {string.Join(", ", SearchResultItemInfo.Authors)}";
         DescriptionText.Text = SearchResultItemInfo.Description;
         DownloadCountText.Text = SearchResultItemInfo.DownloadCount.ToString();
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
@@ -50,14 +46,15 @@ public partial class ResultRoot : UserControl
                 Width = 320
             }));
         }
+
         LabelsBox.Children.Clear();
 
         if (SearchResultItemInfo.Labels.Count > 0)
         {
             LabelsBox.IsVisible = true;
-            SearchResultItemInfo.Labels.ForEach(s => LabelsBox.Children.Add(new LabelBox() { Text = s }));
+            SearchResultItemInfo.Labels.ForEach(s => LabelsBox.Children.Add(new LabelBox { Text = s }));
         }
-        
+
         var icon = await ImageLoader.LoadIconAsync(SearchResultItemInfo.IconUri);
         if (icon != null)
         {

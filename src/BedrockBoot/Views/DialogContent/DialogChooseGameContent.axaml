@@ -7,14 +7,18 @@
     <StackPanel Spacing="10"
                 Margin="5,0">
         <TextBlock
-                   HorizontalAlignment="Left">游戏目录</TextBlock>
+            HorizontalAlignment="Left">
+            游戏目录
+        </TextBlock>
         <ComboBox Width="320"
                   Name="GameFolder"
-                  SelectionChanged="GameFolder_OnSelectionChanged"></ComboBox>
-        
+                  SelectionChanged="GameFolder_OnSelectionChanged" />
+
         <TextBlock
-                   HorizontalAlignment="Left">实例：</TextBlock>
+            HorizontalAlignment="Left">
+            实例：
+        </TextBlock>
         <ComboBox Width="320"
-                  Name="GameInstance"></ComboBox>
+                  Name="GameInstance" />
     </StackPanel>
 </UserControl>

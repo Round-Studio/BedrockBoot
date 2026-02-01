@@ -6,7 +6,6 @@ using System.Linq;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
-using Octokit;
 using Round.SDK.Entity;
 using Round.SDK.Helper;
 
@@ -14,13 +13,15 @@ namespace BedrockBoot.Models.Pack.Game.ResourcePack;
 
 public class ResourcePackAnalysis
 {
-    public string FilePath { get; private set; }
-    private string _tempPath = Path.Combine(PathsList.TempPath, $"pack_{Guid.NewGuid().ToString().Replace("-", "")}");
+    private readonly string _tempPath =
+        Path.Combine(PathsList.TempPath, $"pack_{Guid.NewGuid().ToString().Replace("-", "")}");
 
     public ResourcePackAnalysis(string filePath)
     {
         FilePath = filePath;
     }
+
+    public string FilePath { get; }
 
     public static ResourcePackType GetPackType(ResourcePackManifest conf)
     {
@@ -42,18 +43,14 @@ public class ResourcePackAnalysis
         if (num == 1 &&
             !File.Exists(Path.Combine(tempPath, "manifest.json")))
             tempPath = Directory.GetDirectories(tempPath)[0];
-        
+
         if (num == 2 &&
             !File.Exists(Path.Combine(tempPath, "manifest.json")))
-        {
             return ResourcePackType.Addon; // 直接返回 Addon
-        }
 
         if (num > 2 &&
             !File.Exists(Path.Combine(tempPath, "manifest.json")))
-        {
             return ResourcePackType.Unknown;
-        }
 
         var manifestFile = Path.Combine(tempPath, "manifest.json");
         var conf = new ConfigEntity<ResourcePackManifest>(manifestFile, false).Data;
@@ -67,7 +64,7 @@ public class ResourcePackAnalysis
         var type = GetPackType();
 
         var files = Directory.GetFiles(_tempPath, "manifest.json", SearchOption.AllDirectories);
-        files.ToList().ForEach(f=>result.Add(GetPackManifest(f)));
+        files.ToList().ForEach(f => result.Add(GetPackManifest(f)));
 
         return result;
     }
@@ -81,15 +78,10 @@ public class ResourcePackAnalysis
         conf.PackRootPath = Path.GetDirectoryName(file);
         conf.PackType = GetPackType(conf);
 
-        if (conf.Header.Name == "pack.name")
-        {
-            conf.Header.Name = GetLangText(conf.PackRootPath, "pack.name");
-        }
+        if (conf.Header.Name == "pack.name") conf.Header.Name = GetLangText(conf.PackRootPath, "pack.name");
 
         if (conf.Header.Description == "pack.description")
-        {
             conf.Header.Description = GetLangText(conf.PackRootPath, "pack.description");
-        }
 
         return conf;
     }
@@ -138,39 +130,31 @@ public class ResourcePackAnalysis
     private static string FindBestMatchLanguage(List<string> supportedLanguages)
     {
         // 1. 获取当前系统的语言和区域信息
-        CultureInfo currentCulture = CultureInfo.CurrentUICulture; // 或者 CultureInfo.CurrentCulture
+        var currentCulture = CultureInfo.CurrentUICulture; // 或者 CultureInfo.CurrentCulture
 
         // 2. 获取语言代码（不带区域）
-        string currentLanguage = currentCulture.TwoLetterISOLanguageName.ToLower();
-        string currentFullLocale = currentCulture.Name; // 例如 "zh-CN"
+        var currentLanguage = currentCulture.TwoLetterISOLanguageName.ToLower();
+        var currentFullLocale = currentCulture.Name; // 例如 "zh-CN"
 
         Console.WriteLine($@"当前系统语言: {currentCulture.DisplayName}");
         Console.WriteLine($@"语言代码: {currentLanguage}, 完整区域: {currentFullLocale}");
 
         // 3. 优先尝试完全匹配（包括区域）
-        string normalizedLocale = currentFullLocale.Replace("-", "_");
+        var normalizedLocale = currentFullLocale.Replace("-", "_");
         foreach (var lang in supportedLanguages)
-        {
             if (string.Equals(lang, normalizedLocale, StringComparison.OrdinalIgnoreCase))
-            {
                 return lang;
-            }
-        }
 
         // 4. 尝试仅匹配语言代码（不带区域）
         foreach (var lang in supportedLanguages)
-        {
             if (lang.StartsWith(currentLanguage + "_", StringComparison.OrdinalIgnoreCase))
-            {
                 return lang;
-            }
-        }
 
         // 5. 对于中文的特殊处理（因为中文有多个变体）
         if (currentLanguage == "zh")
         {
             // 根据系统区域决定使用哪种中文变体
-            string region = currentFullLocale.Contains("CN") ? "zh_CN" :
+            var region = currentFullLocale.Contains("CN") ? "zh_CN" :
                 currentFullLocale.Contains("TW") ? "zh_TW" :
                 currentFullLocale.Contains("HK") ? "zh_HK" : "zh_CN";
 

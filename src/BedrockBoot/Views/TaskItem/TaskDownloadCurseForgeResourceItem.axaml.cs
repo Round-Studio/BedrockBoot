@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
@@ -12,17 +9,12 @@ using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
-using ImprovedDownloadManager;
 using OnePointUI.Avalonia.Base.Entry;
-using Round.SDK.Helper;
 
 namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadCurseForgeResourceItem : UserControl
 {
-    public CurseForgeResponse.ModFile ModFile { get; set; }
-    public Action CallBack { get; set; }
-
     public TaskDownloadCurseForgeResourceItem()
     {
         InitializeComponent();
@@ -33,6 +25,9 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
         ModFile = modFile;
         Update();
     }
+
+    public CurseForgeResponse.ModFile ModFile { get; set; }
+    public Action CallBack { get; set; }
 
     public void Update()
     {
@@ -45,30 +40,27 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
         var url = new Uri(ModFile.DownloadUrl).AbsoluteUri.Replace("edge.forgecdn.net", "mediafilez.forgecdn.net");
         Console.WriteLine($@"下载文件：{url}");
-        await download.DownloadAsync(url, savePath, new Progress<DownloadProgress>((xprogress =>
+        await download.DownloadAsync(url, savePath, new Progress<DownloadProgress>(xprogress =>
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                if (DownloadProgressBar.IsIndeterminate)
-                {
-                    DownloadProgressBar.IsIndeterminate = false;
-                }
+                if (DownloadProgressBar.IsIndeterminate) DownloadProgressBar.IsIndeterminate = false;
 
                 DownloadProgressBar.Value = xprogress.ProgressPercentage;
                 MainText.Text = $"进度：{xprogress.ProgressPercentage:F2} %";
-                MainSpeedText.Text = $"??? / s";
+                MainSpeedText.Text = "??? / s";
             });
-        })));
+        }));
 
         if (version == null) CallBack?.Invoke();
 
         DownloadProgressBar.IsIndeterminate = true;
-        MainText.Text = $"进度：正在导入文件... (0 %)";
+        MainText.Text = "进度：正在导入文件... (0 %)";
         Task.Run(() =>
         {
             var manager = new ResourcePackManager(version);
             manager.GetAllPack();
-            manager.AddRangePacks(new() { savePath });
+            manager.AddRangePacks(new List<string> { savePath });
 
             if (CallBack != null) Dispatcher.UIThread.Invoke(CallBack);
         });
@@ -76,7 +68,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
     public static void Download(CurseForgeResponse.ModFile modFile, string savePath, VersionConfig version = null)
     {
-        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = "下载资源",
             Message = $"资源 {modFile.DisplayName} 已将其下载任务添加至任务列表。",

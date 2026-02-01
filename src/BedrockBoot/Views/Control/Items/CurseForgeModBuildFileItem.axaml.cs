@@ -60,7 +60,7 @@ public partial class CurseForgeModBuildFileItem : UserControl
     private void DownloadBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogChooseGameContent();
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Content = dialog,
             Title = "下载资源到...",

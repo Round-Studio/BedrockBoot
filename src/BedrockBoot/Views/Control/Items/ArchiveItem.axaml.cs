@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Base.Entry;
@@ -18,7 +15,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class ArchiveItem : UserControl
 {
-    public ArchiveInfo ArchiveInfo { get; set; }
     public ArchiveItem()
     {
         InitializeComponent();
@@ -31,6 +27,8 @@ public partial class ArchiveItem : UserControl
         UpdateUI();
     }
 
+    public ArchiveInfo ArchiveInfo { get; set; }
+
     public void UpdateUI()
     {
         if (ArchiveInfo == null) throw new NullReferenceException();
@@ -42,13 +40,11 @@ public partial class ArchiveItem : UserControl
             $"{UnixTimeConverter.UnixTimeStampToDateTime(ArchiveInfo.LevelWorldData.LastPlayed).ToShortTimeString()}";
         ProjectLabel.IsVisible = ArchiveInfo.IsProject;
         if (!string.IsNullOrEmpty(ArchiveInfo.IconPath))
-        {
-            ImageBox.Background = new ImageBrush()
+            ImageBox.Background = new ImageBrush
             {
                 Stretch = Stretch.UniformToFill,
                 Source = new Bitmap(ArchiveInfo.IconPath)
             };
-        }
     }
 
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -65,7 +61,7 @@ public partial class ArchiveItem : UserControl
     {
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel == null) return;
-        
+
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "导出 Minecraft World Pack",
@@ -78,11 +74,11 @@ public partial class ArchiveItem : UserControl
                 }
             }
         });
-        
+
         if (file != null)
         {
             ArchiveInfo.Save(file.TryGetLocalPath());
-            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
             {
                 Title = "成功",
                 Message = "存档已导出！",

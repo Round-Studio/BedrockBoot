@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Search;
@@ -17,27 +16,23 @@ using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using BedrockLauncher.Core;
-using BedrockLauncher.Core.VersionJsons;
-using Octokit;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
 public partial class SearchDetailed : ISetting
 {
-    public static SearchInfo SearchInfo { get; set; }
-    
-    // 添加分页相关字段
-    private int _currentPage = 1;
-    private int _totalPages = 0;
-    private int _currentIndex = 0;
-    private int _pageSize = 50;
-    private CurseForgeApiClient _apiClient;
-    
-    // 添加搜索状态
-    private bool _isSearching = false;
-    
     // 保存上一次的搜索类型
     private static SearchResourceType _lastSearchType = SearchResourceType.Unknow;
+    private readonly CurseForgeApiClient _apiClient;
+    private readonly int _pageSize = 50;
+    private int _currentIndex;
+
+    // 添加分页相关字段
+    private int _currentPage = 1;
+
+    // 添加搜索状态
+    private bool _isSearching;
+    private int _totalPages;
 
     public SearchDetailed()
     {
@@ -45,29 +40,21 @@ public partial class SearchDetailed : ISetting
         _apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
 
         DownloadSearch.SearchDetailed = this;
-        
+
         // 恢复上一次的搜索类型
         if (ResourceTypeBox != null && _lastSearchType != SearchResourceType.Unknow)
-        {
             ResourceTypeBox.SelectedIndex = (int)_lastSearchType;
-        }
-        
+
         // 设置上翻页逻辑
         ResultPage.UpAction = () =>
         {
-            if (_currentPage > 1 && !_isSearching)
-            {
-                GoToPage(_currentPage - 1);
-            }
+            if (_currentPage > 1 && !_isSearching) GoToPage(_currentPage - 1);
         };
 
         // 设置下翻页逻辑
         ResultPage.DownAction = () =>
         {
-            if (_currentPage < _totalPages && !_isSearching)
-            {
-                GoToPage(_currentPage + 1);
-            }
+            if (_currentPage < _totalPages && !_isSearching) GoToPage(_currentPage + 1);
         };
     }
 
@@ -75,6 +62,8 @@ public partial class SearchDetailed : ISetting
     {
         OnSearch(info);
     }
+
+    public static SearchInfo SearchInfo { get; set; }
 
     public void OnSearch(SearchInfo info)
     {
@@ -84,38 +73,36 @@ public partial class SearchDetailed : ISetting
             _lastSearchType = info.Type;
             // 同时更新UI控件的选择
             if (ResourceTypeBox != null && ResourceTypeBox.SelectedIndex != (int)info.Type)
-            {
                 ResourceTypeBox.SelectedIndex = (int)info.Type;
-            }
         }
-        
+
         // 重置分页状态
         _currentPage = 1;
         _currentIndex = 0;
-        
+
         SearchWithPagination(info);
     }
 
     /// <summary>
-    /// 跳转到指定页码
+    ///     跳转到指定页码
     /// </summary>
     private void GoToPage(int pageNumber)
     {
         if (_isSearching) return;
-        
+
         _currentPage = Math.Clamp(pageNumber, 1, _totalPages);
         _currentIndex = (_currentPage - 1) * _pageSize;
-        
+
         SearchWithPagination(SearchInfo);
     }
 
     /// <summary>
-    /// 带分页的搜索
+    ///     带分页的搜索
     /// </summary>
     private void SearchWithPagination(SearchInfo info)
     {
         if (_isSearching) return;
-        
+
         IsEdit = false;
 
         MinecraftTypePanel.IsVisible = false;
@@ -156,45 +143,46 @@ public partial class SearchDetailed : ISetting
 
                     // 计算总页数
                     _totalPages = (int)Math.Ceiling((double)allVersions.Count / _pageSize);
-                    
+
                     // 获取当前页的数据
                     var currentPageVersions = allVersions
                         .Skip(_currentIndex)
                         .Take(_pageSize)
                         .ToList();
-                            
+
                     currentPageVersions.ForEach(i =>
                     {
-                        items.Add(new SearchResultItemInfo()
+                        items.Add(new SearchResultItemInfo
                         {
                             Name = i.ID,
                             Description = $"{i.BuildType}, {i.Date}",
                             IconUri = i.Type == MinecraftGameTypeVersion.Release
                                 ? "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"
                                 : "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png",
-                            OnClick = (s) =>
+                            OnClick = s =>
                             {
-                                GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),$"下载游戏 {i.ID}");
+                                GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i), $"下载游戏 {i.ID}");
                             }
                         });
                     });
                 }
                 else if (info.Type == SearchResourceType.ResourcePack)
                 {
-                    var result = _apiClient.SearchModsAsync(SearchInfo.Key, pageSize: _pageSize, index: _currentIndex).Result;
+                    var result = _apiClient.SearchModsAsync(SearchInfo.Key, pageSize: _pageSize, index: _currentIndex)
+                        .Result;
                     _totalPages = (int)Math.Ceiling((double)result.Pagination.TotalCount / _pageSize);
-                    
+
                     var allResult = result.Data
                         .Where(x => x.Name.ToLower().Contains(SearchInfo.Key.ToLower()))
                         .ToList();
-                    
+
                     allResult.ForEach(i =>
                     {
                         var authorNames = i.Authors.Select(a => a.Name).ToList();
-                        
+
                         var categories = i.Categories.Select(a => a.Name).ToList();
 
-                        var item = new SearchResultItemInfo()
+                        var item = new SearchResultItemInfo
                         {
                             Name = i.Name,
                             Description = $"{i.Summary}",
@@ -208,7 +196,7 @@ public partial class SearchDetailed : ISetting
                             SourceWebsite = i.Links.WebsiteUrl,
                             JsonData = JsonSerializer.Serialize(i)
                         };
-                        item.OnClick = (s) =>
+                        item.OnClick = s =>
                         {
                             // GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(i),$"资源详细信息 {i.Name}");
 
@@ -217,7 +205,7 @@ public partial class SearchDetailed : ISetting
                         items.Add(item);
                     });
                 }
-                
+
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     if (items.Count > 0)
@@ -227,7 +215,7 @@ public partial class SearchDetailed : ISetting
                             CreateSearchResultsPage(items),
                             _totalPages,
                             _currentPage);
-                            
+
                         LoadingRing.IsVisible = false;
                         ResultPage.IsVisible = true;
                     }
@@ -261,7 +249,7 @@ public partial class SearchDetailed : ISetting
     }
 
     /// <summary>
-    /// 创建搜索结果页面
+    ///     创建搜索结果页面
     /// </summary>
     private ScrollViewer CreateSearchResultsPage(List<SearchResultItemInfo> items)
     {
@@ -271,10 +259,7 @@ public partial class SearchDetailed : ISetting
             Spacing = 8
         };
 
-        foreach (var item in items)
-        {
-            stackPanel.Children.Add(new SearchItem(item));
-        }
+        foreach (var item in items) stackPanel.Children.Add(new SearchItem(item));
 
         var scrollViewer = new ScrollViewer
         {
@@ -291,10 +276,10 @@ public partial class SearchDetailed : ISetting
         {
             SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;
             SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
-            
+
             // 保存搜索类型
             _lastSearchType = SearchInfo.Type;
-            
+
             OnSearch(SearchInfo);
         }
     }
@@ -305,20 +290,20 @@ public partial class SearchDetailed : ISetting
         {
             SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;
             SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
-            
+
             // 保存搜索类型
             _lastSearchType = SearchInfo.Type;
-            
+
             OnSearch(SearchInfo);
         }
     }
-    
+
     // 添加一个方法来获取和设置搜索类型
     public static SearchResourceType GetLastSearchType()
     {
         return _lastSearchType;
     }
-    
+
     public static void SetLastSearchType(SearchResourceType searchType)
     {
         _lastSearchType = searchType;

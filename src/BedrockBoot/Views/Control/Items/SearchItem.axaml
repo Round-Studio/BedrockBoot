@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" 
+             mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.SearchItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
@@ -14,17 +14,17 @@
                         Name="HeaderBox"
                         Spacing="4">
                 <TextBlock Name="ItemName"
-                           Text="ItemName"></TextBlock>
-                
+                           Text="ItemName" />
+
                 <TextBlock Name="Authors"
                            FontSize="11"
                            VerticalAlignment="Bottom"
                            Opacity="0.5"
                            Margin="0,0,0,2"
-                           Text="By xxx"></TextBlock>
+                           Text="By xxx" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
-        
+
         <onePointControls:SettingCard.Description>
             <StackPanel Name="DescriptionBox"
                         Spacing="2">
@@ -32,11 +32,11 @@
                             Margin="0,2,0,0"
                             Spacing="4"
                             Name="LabelsPanel"
-                            IsVisible="False"></StackPanel>
+                            IsVisible="False" />
                 <TextBlock Name="Description"
                            Margin="0,0,50,0"
                            TextTrimming="CharacterEllipsis"
-                           Text="Description"></TextBlock>
+                           Text="Description" />
             </StackPanel>
         </onePointControls:SettingCard.Description>
     </onePointControls:SettingCard>

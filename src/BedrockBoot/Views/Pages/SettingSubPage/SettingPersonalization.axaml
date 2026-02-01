@@ -10,37 +10,41 @@
                     Spacing="8">
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
-                       FontSize="14">基本主题</TextBlock>
-            
+                       FontSize="14">
+                基本主题
+            </TextBlock>
+
             <onePointControls:SettingCard Margin="5, 0"
                                           Header="背景"
                                           Description="详细背景设置"
                                           Name="SetBackground"
                                           Click="SetBackground_OnClick"
                                           IsClickable="True"
-                                          Glyph="&#xE91B;"/>
-            
+                                          Glyph="&#xE91B;" />
+
             <onePointControls:SettingCard Margin="5, 0"
                                           Header="颜色"
                                           Description="启动器主题颜色设置"
                                           Name="SetColor"
                                           Click="SetColor_OnClick"
                                           IsClickable="True"
-                                          Glyph="&#xE790;"/>
-            
+                                          Glyph="&#xE790;" />
+
             <StackPanel Name="HomePanel"
                         Spacing="8">
                 <TextBlock Margin="5, 0"
                            FontWeight="Bold"
-                           FontSize="14">主页</TextBlock>
-            
+                           FontSize="14">
+                    主页
+                </TextBlock>
+
                 <onePointControls:SettingCard Margin="5, 0"
                                               Header="主页"
                                               Description="启动器主页显示的内容"
                                               Name="SetHome"
                                               Click="SetHome_OnClick"
                                               IsClickable="True"
-                                              Glyph="&#xE80F;"/>
+                                              Glyph="&#xE80F;" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

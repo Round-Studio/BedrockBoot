@@ -11,6 +11,7 @@ public class ArchiveInfo
     [JsonPropertyName("iconPath")] public string IconPath { get; set; }
     [JsonPropertyName("isProject")] public bool IsProject { get; set; } = false;
     [JsonPropertyName("levelWorldData")] public LevelWorldData LevelWorldData { get; set; }
+
     public void Save(string saveFile)
     {
         ZipHelper.CreateZipFile(Path, saveFile);

@@ -11,12 +11,12 @@
             <onePointControls:FontIcon Glyph="&#xE91B;"
                                        FontSize="24"
                                        HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"></onePointControls:FontIcon>
-        
+                                       VerticalAlignment="Center" />
+
             <Image HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
                    Stretch="UniformToFill"
-                   Name="ImageBox"></Image>
+                   Name="ImageBox" />
         </Grid>
     </items:BorderCard>
 </UserControl>

@@ -16,8 +16,7 @@ public class MinecraftTextBlock : TextBlock
 
     public static readonly StyledProperty<bool> ShowRawTextProperty =
         AvaloniaProperty.Register<MinecraftTextBlock, bool>(
-            nameof(ShowRawText),
-            false);
+            nameof(ShowRawText));
 
     private List<MinecraftTextParser.TextSegment>? _currentSegments;
 

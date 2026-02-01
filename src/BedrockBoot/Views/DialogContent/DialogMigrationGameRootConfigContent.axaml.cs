@@ -2,15 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Views.TaskItem;
-using Microsoft.VisualBasic.FileIO;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using SearchOption = System.IO.SearchOption;
 
@@ -18,8 +15,6 @@ namespace BedrockBoot.Views.DialogContent;
 
 public partial class DialogMigrationGameRootConfigContent : UserControl
 {
-    public VersionConfig VersionInfo { get; set; }
-
     public DialogMigrationGameRootConfigContent()
     {
         InitializeComponent();
@@ -31,6 +26,8 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
 
         Migration();
     }
+
+    public VersionConfig VersionInfo { get; set; }
 
     public void Migration()
     {
@@ -52,7 +49,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
                 Console.WriteLine($@"总数目：{files.Length}");
 
-                CopyDirectory(path, PathsList.GamePublicRootPath, true);
+                CopyDirectory(path, PathsList.GamePublicRootPath);
 
                 // 延迟一段时间确保文件句柄释放
                 await Task.Delay(500);
@@ -75,27 +72,20 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
     public static void CopyDirectory(string sourceDir, string destinationDir, bool copySubDirs = true)
     {
         // 获取源目录的信息
-        DirectoryInfo dir = new DirectoryInfo(sourceDir);
+        var dir = new DirectoryInfo(sourceDir);
 
-        if (!dir.Exists)
-        {
-            throw new DirectoryNotFoundException($"源目录不存在: {sourceDir}");
-        }
+        if (!dir.Exists) throw new DirectoryNotFoundException($"源目录不存在: {sourceDir}");
 
         // 如果目标目录不存在，则创建它
-        DirectoryInfo[] dirs = dir.GetDirectories();
-        if (!Directory.Exists(destinationDir))
-        {
-            Directory.CreateDirectory(destinationDir);
-        }
+        var dirs = dir.GetDirectories();
+        if (!Directory.Exists(destinationDir)) Directory.CreateDirectory(destinationDir);
 
         // 复制所有文件
-        FileInfo[] files = dir.GetFiles();
-        foreach (FileInfo file in files)
-        {
+        var files = dir.GetFiles();
+        foreach (var file in files)
             try
             {
-                string tempPath = Path.Combine(destinationDir, file.Name);
+                var tempPath = Path.Combine(destinationDir, file.Name);
                 file.CopyTo(tempPath, true);
             }
             catch (Exception ex)
@@ -103,16 +93,13 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 Console.WriteLine($@"复制文件 {file.Name} 时出错: {ex.Message}");
                 // 继续处理其他文件
             }
-        }
 
         // 如果要复制子目录，则递归复制
         if (copySubDirs)
-        {
-            foreach (DirectoryInfo subdir in dirs)
-            {
+            foreach (var subdir in dirs)
                 try
                 {
-                    string tempPath = Path.Combine(destinationDir, subdir.Name);
+                    var tempPath = Path.Combine(destinationDir, subdir.Name);
                     CopyDirectory(subdir.FullName, tempPath, copySubDirs);
                 }
                 catch (Exception ex)
@@ -120,8 +107,6 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                     Console.WriteLine($@"复制目录 {subdir.Name} 时出错: {ex.Message}");
                     // 继续处理其他目录
                 }
-            }
-        }
     }
 
     // 更安全的删除目录方法
@@ -130,8 +115,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
         if (!Directory.Exists(path))
             return;
 
-        for (int retry = 0; retry < maxRetries; retry++)
-        {
+        for (var retry = 0; retry < maxRetries; retry++)
             try
             {
                 if (!Directory.Exists(path)) return;
@@ -163,7 +147,6 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 ResetFileAttributes(path);
                 Task.Delay(500).Wait();
             }
-        }
 
         // 如果所有重试都失败，记录日志但不抛出异常
         Console.WriteLine($@"无法删除目录: {path}");
@@ -177,7 +160,6 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             // 删除所有文件
             var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
             foreach (var file in files)
-            {
                 try
                 {
                     File.SetAttributes(file, FileAttributes.Normal);
@@ -187,13 +169,11 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 {
                     // 忽略无法删除的文件
                 }
-            }
 
             // 删除所有子目录（从最深开始）
             var dirs = Directory.GetDirectories(path, "*", SearchOption.AllDirectories)
                 .OrderByDescending(d => d.Length);
             foreach (var dir in dirs)
-            {
                 try
                 {
                     Directory.Delete(dir, false);
@@ -202,7 +182,6 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 {
                     // 忽略无法删除的目录
                 }
-            }
 
             // 最后删除根目录
             Directory.Delete(path, false);
@@ -220,7 +199,6 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
         {
             var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
             foreach (var file in files)
-            {
                 try
                 {
                     File.SetAttributes(file, FileAttributes.Normal);
@@ -229,7 +207,6 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 {
                     // 忽略错误
                 }
-            }
         }
         catch
         {

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
@@ -9,32 +7,34 @@ using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.DialogContent;
 
-public partial class DialogChooseGameContent : ISetting
+public class DialogChooseGameContent : ISetting
 {
     private List<VersionConfig>? Versions;
-    public VersionConfig VersionConfig => Versions[GameInstance.SelectedIndex];
+
     public DialogChooseGameContent()
     {
         InitializeComponent();
-        
+
         Update();
     }
+
+    public VersionConfig VersionConfig => Versions[GameInstance.SelectedIndex];
 
     public void Update()
     {
         IsEnabled = false;
-        
+
         GameFolder.Items.Clear();
         GlobalModel.Config.Data.GameFolders.ForEach(f =>
         {
-            GameFolder.Items.Add(new ComboBoxItem()
+            GameFolder.Items.Add(new ComboBoxItem
             {
-                Content = $"{f.GameFolderName} - {f.GameFolderPath}",
+                Content = $"{f.GameFolderName} - {f.GameFolderPath}"
             });
         });
         GameFolder.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
         UpdateList();
-        
+
         IsEnabled = true;
     }
 
@@ -46,7 +46,7 @@ public partial class DialogChooseGameContent : ISetting
         Versions = GameInfoHelper.GetVersionConfigs(path);
         Versions.ForEach(v =>
         {
-            GameInstance.Items.Add(new ComboBoxItem()
+            GameInstance.Items.Add(new ComboBoxItem
             {
                 Content = $"{v.Info.VersionName} - {v.Info.Version}",
                 Tag = v

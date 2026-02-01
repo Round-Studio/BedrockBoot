@@ -52,7 +52,7 @@ public partial class DrawDownloadCurseForgeResourceContent : UserControl
                 NullImage.IsVisible = false;
                 IconBox.Background = new ImageBrush
                 {
-                    Source = image as IImageBrushSource
+                    Source = image
                 };
             });
         });

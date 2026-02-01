@@ -1,29 +1,17 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Views.Pages.DownloadPage;
-using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class SearchItem : UserControl
 {
-    private static readonly HttpClient _httpClient = new HttpClient();
-    public SearchResultItemInfo SearchResultItemInfo { get; set; }
-    
+    private static readonly HttpClient _httpClient = new();
+
     public SearchItem()
     {
         InitializeComponent();
@@ -36,15 +24,14 @@ public partial class SearchItem : UserControl
         Description.Text = info.Description;
         Authors.Text = string.Join(", ", info.Authors);
 
-        if (info.Labels.Count > 0)
-        {
-            LabelsPanel.IsVisible = true;
-        }
+        if (info.Labels.Count > 0) LabelsPanel.IsVisible = true;
 
-        info.Labels.ForEach(s => LabelsPanel.Children.Add(new LabelBox() { Text = s }));
+        info.Labels.ForEach(s => LabelsPanel.Children.Add(new LabelBox { Text = s }));
 
         Update();
     }
+
+    public SearchResultItemInfo SearchResultItemInfo { get; set; }
 
     private async Task Update()
     {

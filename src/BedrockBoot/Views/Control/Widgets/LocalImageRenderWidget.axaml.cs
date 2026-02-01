@@ -1,17 +1,16 @@
 ﻿using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.Control.Widgets;
 
-public partial class LocalImageRenderWidget : UserControl
+public class LocalImageRenderWidget : UserControl
 {
     public LocalImageRenderWidget()
     {
         InitializeComponent();
     }
+
     public LocalImageRenderWidget(string uri) : this()
     {
         Update(uri);
@@ -20,9 +19,6 @@ public partial class LocalImageRenderWidget : UserControl
     public async Task Update(string uri)
     {
         var iamge = await ImageLoader.LoadIconAsync(uri);
-        if (iamge != null)
-        {
-            ImageBox.Source = iamge;
-        }
+        if (iamge != null) ImageBox.Source = iamge;
     }
 }

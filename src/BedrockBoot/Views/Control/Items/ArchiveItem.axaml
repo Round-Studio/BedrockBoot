@@ -15,7 +15,7 @@
                     CornerRadius="6">
                 <Border.Background>
                     <ImageBrush Stretch="UniformToFill"
-                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png"></ImageBrush>
+                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png" />
                 </Border.Background>
                 <Grid>
                     <onePointControls:LabelBox HorizontalAlignment="Left"
@@ -24,34 +24,38 @@
                                                Margin="8"
                                                Text="项目"
                                                FontSize="12"
-                                               Background="Purple"></onePointControls:LabelBox>
+                                               Background="Purple" />
                 </Grid>
             </Border>
-                        
+
             <StackPanel Grid.Column="1"
                         Margin="12,0"
                         VerticalAlignment="Center"
                         Spacing="4">
                 <TextBlock FontSize="15"
-                           Name="WorldName">My World</TextBlock>
+                           Name="WorldName">
+                    My World
+                </TextBlock>
                 <TextBlock FontSize="11"
                            Opacity="0.6"
-                           Name="WorldLastPlayed">LastPlayed Time</TextBlock>
-                
+                           Name="WorldLastPlayed">
+                    LastPlayed Time
+                </TextBlock>
+
                 <StackPanel Orientation="Horizontal"
                             Spacing="6">
                     <Button Width="24" Height="24"
                             Name="OpenFolderBtn"
                             Click="OpenFolderBtn_OnClick"
                             Classes="NoBorder">
-                        <onePointControls:FontIcon Glyph="&#xE8B7;"/>
+                        <onePointControls:FontIcon Glyph="&#xE8B7;" />
                     </Button>
-                    
+
                     <Button Width="24" Height="24"
                             Name="SaveBtn"
                             Click="SaveBtn_OnClick"
                             Classes="NoBorder">
-                        <onePointControls:FontIcon Glyph="&#xE74E;"/>
+                        <onePointControls:FontIcon Glyph="&#xE74E;" />
                     </Button>
                 </StackPanel>
             </StackPanel>

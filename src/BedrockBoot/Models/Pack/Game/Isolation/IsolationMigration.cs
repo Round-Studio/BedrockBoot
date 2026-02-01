@@ -12,37 +12,40 @@ namespace BedrockBoot.Models.Pack.Game.Isolation;
 
 public class IsolationMigration
 {
-    public IsolationMigration() {}
-
     public VersionConfig NewConfig { get; set; }
     public VersionConfig OldConfig { get; set; }
     public IProgress<MigrationProgress>? MigrationProgress { get; set; }
 
     public async Task MigrateFoldersAsync(MigrationConfig migrationConfig)
     {
-        var dirsEnable = new List<(bool isEnabled, string newPath, string oldPath)>()
+        var dirsEnable = new List<(bool isEnabled, string newPath, string oldPath)>
         {
             (migrationConfig.IsEnableArchive,
                 IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig, InstanceFolderType.ArchiveFolder),
-                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig, InstanceFolderType.ArchiveFolder)),
+                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig,
+                    InstanceFolderType.ArchiveFolder)),
             (migrationConfig.IsEnableConfig,
                 IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig, InstanceFolderType.OptionFolder),
                 IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig, InstanceFolderType.OptionFolder)),
             (migrationConfig.IsEnableResourcePack,
-                IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig, InstanceFolderType.ResourcePackFolder),
-                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig, InstanceFolderType.ResourcePackFolder)),
+                IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig,
+                    InstanceFolderType.ResourcePackFolder),
+                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig,
+                    InstanceFolderType.ResourcePackFolder)),
             (migrationConfig.IsEnableBehaviorPack,
-                IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig, InstanceFolderType.BehaviorPackFolder),
-                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig, InstanceFolderType.BehaviorPackFolder))
+                IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig,
+                    InstanceFolderType.BehaviorPackFolder),
+                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig,
+                    InstanceFolderType.BehaviorPackFolder))
         };
-        
+
         var enabledItems = dirsEnable.Where(x => x.isEnabled).ToList(); // 获取上面这坨启用的项
         var filesCount = enabledItems
             .Sum(item => Directory.Exists(item.oldPath)
                 ? Directory.GetFiles(item.oldPath, "*", SearchOption.AllDirectories).Length
                 : 0);
 
-        MigrationProgress.Report(new MigrationProgress
+        MigrationProgress?.Report(new MigrationProgress
         {
             FileCountTotal = filesCount,
             CurrentFile = 0,
@@ -120,7 +123,7 @@ public class IsolationMigration
                         catch (Exception ex)
                         {
                             // 记录错误
-                            Console.WriteLine($"文件复制失败: {file}, 错误: {ex.Message}");
+                            Console.WriteLine($@"文件复制失败: {file}, 错误: {ex.Message}");
                         }
                 });
             }

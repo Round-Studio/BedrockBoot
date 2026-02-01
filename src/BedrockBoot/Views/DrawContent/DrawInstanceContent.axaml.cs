@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;

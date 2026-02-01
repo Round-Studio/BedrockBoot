@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Screenshots;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
@@ -47,40 +48,15 @@ public class ScreenshotsManager
     {
         var result = new Dictionary<string, string>();
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
-            result.Add("Shared", Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                @"LocalState\games\com.mojang\Screenshots"
-            ));
-        }
+            result.Add("Shared",
+                IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ScreenshotFolder));
         else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
-        {
-            var dir = Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                "Users"
-            );
-
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            var users = Directory.GetDirectories(dir).ToList();
-            users.ForEach(user =>
+            IsolationCore.GetInstanceUsers(VersionConfig).ForEach(user =>
             {
-                var path = Path.Combine(user, "games", "com.mojang", "Screenshots");
-                if (Path.Exists(path))
-                {
-                    result.Add(Path.GetFileName(user), path);
-                }
-                else
-                {
-                    Directory.CreateDirectory(path);
-                    result.Add(Path.GetFileName(user), path);
-                }
+                result.Add(user,
+                    IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ScreenshotFolder, user));
             });
-        }
 
-        return result
-            .Where(path => Directory.Exists(path.Value))
-            .ToDictionary(path => path.Key, path => path.Value);
+        return result;
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Documents;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
 using Round.SDK.Enum;
@@ -75,6 +78,16 @@ public class IsolationCore
             }
         });
     }
+    public void Clear()
+    {
+        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+        {
+            var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
+
+            if (folderType == DirectoryType.SymbolicLink)
+                Directory.Delete(RootPath);
+        }
+    }
 
     public static string GetRealPath(VersionConfig versionConfig)
     {
@@ -83,7 +96,6 @@ public class IsolationCore
 
         return PathsList.GamePublicRootPath;
     }
-
     public static string GetInstancePackPath(VersionConfig versionConfig, string folder)
     {
         var root = GetRealPath(versionConfig);
@@ -92,7 +104,6 @@ public class IsolationCore
 
         return Path.Combine(root, "LocalState", "games", "com.mojang", folder);
     }
-
     public static string GetInstanceConfigRootPath(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
@@ -126,14 +137,61 @@ public class IsolationCore
         return string.Empty;
     }
 
-    public void Clear()
+    public static string GetInstanceFolderPath(VersionConfig versionConfig,
+        InstanceFolderType folderType = InstanceFolderType.RootFolder,
+        string user = "Shared") =>
+        folderType switch
+        {
+            InstanceFolderType.RootFolder => GetRealPath(versionConfig),
+            InstanceFolderType.ResourcePackFolder => GetInstanceFolderPath(versionConfig, "resource_packs", user),
+            InstanceFolderType.BehaviorPackFolder => GetInstanceFolderPath(versionConfig, "behavior_packs", user),
+            InstanceFolderType.ArchiveFolder => GetInstanceFolderPath(versionConfig, "minecraftWorlds", user),
+            InstanceFolderType.OptionFolder => GetInstanceFolderPath(versionConfig, "minecraftpe", user),
+            InstanceFolderType.SkinPackFolder => GetInstanceFolderPath(versionConfig, "skin_packs", user),
+            InstanceFolderType.UserFolder => new Func<string>(() =>
+            {
+                if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP) return string.Empty;
+
+                return Path.Combine(GetRealPath(versionConfig), "Users");
+            }).Invoke(),
+            InstanceFolderType.ScreenshotFolder => GetInstanceFolderPath(versionConfig, "Screenshots", user),
+            _ => string.Empty
+        };
+
+    public static List<string>? GetInstanceUsers(VersionConfig versionConfig)
+    {
+        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP) return null;
+        
+        var userFolder = GetInstanceFolderPath(versionConfig, InstanceFolderType.UserFolder);
+        if (Directory.Exists(userFolder))
+            return Directory.GetDirectories(userFolder).Select(x => Path.GetFileName(x)).ToList();
+
+        return null;
+    }
+
+    private static string GetInstanceFolderPath(VersionConfig VersionConfig, string folder, string user = "Shared")
     {
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
-            var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
-
-            if (folderType == DirectoryType.SymbolicLink)
-                Directory.Delete(RootPath);
+            return Path.Combine(
+                IsolationCore.GetRealPath(VersionConfig),
+                $@"LocalState\games\com.mojang",
+                folder
+            );
         }
+        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+        {
+            var dir = Path.Combine(
+                IsolationCore.GetRealPath(VersionConfig),
+                "Users", user, "games", "com.mojang", folder
+            );
+
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            return dir;
+        }
+
+        return string.Empty;
     }
 }

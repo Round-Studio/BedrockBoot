@@ -28,23 +28,13 @@ public class ResourcePackManager
     {
         var files = new List<string>();
         var result = new List<ResourcePackManifest>();
-        GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
-        {
-            if (!Path.Exists(folder))
-                return;
 
-            var dirs = Directory.GetDirectories(folder).ToList();
-            dirs.ForEach(dir => { files.AddRange(GetManifests(dir)); });
-        });
-
-        GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
-        {
-            if (!Path.Exists(folder))
-                return;
-
-            var dirs = Directory.GetDirectories(folder).ToList();
-            dirs.ForEach(dir => { files.AddRange(GetManifests(dir)); });
-        });
+        Directory.GetDirectories(IsolationCore.GetInstanceFolderPath(VersionConfig,
+                InstanceFolderType.ResourcePackFolder)).ToList()
+            .ForEach(dir => { files.AddRange(GetManifests(dir)); });
+        Directory.GetDirectories(IsolationCore.GetInstanceFolderPath(VersionConfig,
+                InstanceFolderType.BehaviorPackFolder)).ToList()
+            .ForEach(dir => { files.AddRange(GetManifests(dir)); });
 
         files.ForEach(file =>
         {
@@ -97,130 +87,18 @@ public class ResourcePackManager
                 if (!ids.Contains(pack.Header.Uuid))
                 {
                     if (pack.PackType == ResourcePackType.Resource)
-                        GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
-                        {
-                            if (folder.Contains("Shared") ||
-                                VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-                                CopyDirectory(pack.PackRootPath,
-                                    Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
-                        });
+                        CopyDirectory(pack.PackRootPath,
+                            Path.Combine(
+                                IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                    InstanceFolderType.ResourcePackFolder), Path.GetFileName(pack.PackRootPath)));
 
                     if (pack.PackType == ResourcePackType.Behavior)
-                        GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
-                        {
-                            if (folder.Contains("Shared") ||
-                                VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-                                CopyDirectory(pack.PackRootPath,
-                                    Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
-                        });
+                        CopyDirectory(pack.PackRootPath,
+                            Path.Combine(
+                                IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                    InstanceFolderType.BehaviorPackFolder), Path.GetFileName(pack.PackRootPath)));
                 }
             });
         });
-    }
-
-    private Dictionary<string, string> GetInstanceResourcePackPath()
-    {
-        var result = new Dictionary<string, string>();
-        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
-            result.Add("Shared", Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                @"LocalState\games\com.mojang\resource_packs"
-            ));
-        }
-        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
-        {
-            if (VersionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
-            {
-                var dir = Path.Combine(
-                    IsolationCore.GetRealPath(VersionConfig),
-                    "Users"
-                );
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                var users = Directory.GetDirectories(dir).ToList();
-                users.ForEach(user =>
-                {
-                    var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
-                    if (Path.Exists(path))
-                    {
-                        result.Add(Path.GetFileName(user), path);
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory(path);
-                        result.Add(Path.GetFileName(user), path);
-                    }
-                });
-            }
-            else
-            {
-                var dir = Path.Combine(
-                    IsolationCore.GetRealPath(VersionConfig),
-                    "Users"
-                );
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                var users = Directory.GetDirectories(dir).ToList();
-                users.ForEach(user =>
-                {
-                    var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
-                    if (Path.Exists(path))
-                    {
-                        result.Add(Path.GetFileName(user), path);
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory(path);
-                        result.Add(Path.GetFileName(user), path);
-                    }
-                });
-            }
-        }
-
-        return result;
-    }
-
-    private Dictionary<string, string> GetInstanceBehaviorPackPath()
-    {
-        var result = new Dictionary<string, string>();
-        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
-            result.Add("Shared", Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                @"LocalState\games\com.mojang\behavior_packs"
-            ));
-        }
-        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
-        {
-            var dir = Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                "Users"
-            );
-
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            var users = Directory.GetDirectories(dir).ToList();
-            users.ForEach(user =>
-            {
-                var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
-                if (Path.Exists(path))
-                {
-                    result.Add(Path.GetFileName(user), path);
-                }
-                else
-                {
-                    Directory.CreateDirectory(path);
-                    result.Add(Path.GetFileName(user), path);
-                }
-            });
-        }
-
-        return result;
     }
 }

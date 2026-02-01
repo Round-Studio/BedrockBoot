@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 
@@ -68,37 +69,14 @@ public class ArchiveCheck
     {
         var result = new Dictionary<string, string>();
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
-            result.Add("Shared", Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                @"LocalState\games\com.mojang\minecraftWorlds"
-            ));
-        }
+            result.Add("Shared",
+                IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ArchiveFolder));
         else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
-        {
-            var dir = Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                "Users"
-            );
-
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            var users = Directory.GetDirectories(dir).ToList();
-            users.ForEach(user =>
+            IsolationCore.GetInstanceUsers(VersionConfig).ForEach(user =>
             {
-                var path = Path.Combine(user, "games", "com.mojang", "minecraftWorlds");
-                if (Path.Exists(path))
-                {
-                    result.Add(Path.GetFileName(user), path);
-                }
-                else
-                {
-                    Directory.CreateDirectory(path);
-                    result.Add(Path.GetFileName(user), path);
-                }
+                result.Add(user,
+                    IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ArchiveFolder, user));
             });
-        }
 
         return result;
     }

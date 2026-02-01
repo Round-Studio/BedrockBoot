@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Server;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 
@@ -82,35 +83,18 @@ public class ServerManager
     {
         var result = new Dictionary<string, string>();
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
             result.Add("Shared", Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                @"LocalState\games\com.mojang\minecraftpe",
+                IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.OptionFolder),
                 "external_servers.txt"
             ));
-        }
         else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
-        {
-            var dir = Path.Combine(
-                IsolationCore.GetRealPath(VersionConfig),
-                "Users"
-            );
-
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            var users = Directory.GetDirectories(dir).ToList();
-            users.ForEach(user =>
+            IsolationCore.GetInstanceUsers(VersionConfig).ForEach(user =>
             {
-                var path = Path.Combine(user,
-                    "games", "com.mojang",
-                    @"minecraftpe",
-                    "external_servers.txt");
-
-                if (Path.GetFileName(user) != "Shared")
-                    result.Add(Path.GetFileName(user), path);
+                result.Add(user, Path.Combine(
+                    IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.OptionFolder, user),
+                    "external_servers.txt"
+                ));
             });
-        }
 
         return result;
     }

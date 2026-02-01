@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
@@ -54,6 +55,26 @@ public class IsolationCore
             Directory.Delete(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock"), true);
             Directory.CreateSymbolicLink(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock"), RealRootPath);
         }
+
+        new[]
+        {
+            "resource_packs",
+            "behavior_packs",
+            "minecraftWorlds",
+            "minecraftpe",
+            "custom_skins",
+            "skin_packs"
+        }.ToList().ForEach(f =>
+        {
+            if (DirectoryLinkChecker.CheckFolderType(Path.Combine(VersionConfig.VersionPath, f)) ==
+                DirectoryType.Folder &&
+                Directory.Exists(GetInstancePackPath(VersionConfig, f)))
+            {
+                Directory.Delete(Path.Combine(VersionConfig.VersionPath, f), true);
+                Directory.CreateSymbolicLink(Path.Combine(VersionConfig.VersionPath, f),
+                    GetInstancePackPath(VersionConfig, f));
+            }
+        });
     }
 
     public static string GetRealPath(VersionConfig versionConfig)
@@ -62,6 +83,15 @@ public class IsolationCore
             return Path.Combine(versionConfig.VersionPath, "config", "BedrockBoot2", "isolation");
 
         return PathsList.GamePublicRootPath;
+    }
+
+    public static string GetInstancePackPath(VersionConfig versionConfig, string folder)
+    {
+        var root = GetRealPath(versionConfig);
+        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+            return Path.Combine(root, "Users", "Shared", "games", "com.mojang", folder);
+
+        return Path.Combine(root, "LocalState", "games", "com.mojang", folder);
     }
 
     public static string GetInstanceConfigRootPath(VersionConfig versionConfig)

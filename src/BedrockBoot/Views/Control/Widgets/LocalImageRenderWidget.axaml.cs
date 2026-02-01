@@ -4,7 +4,7 @@ using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.Control.Widgets;
 
-public class LocalImageRenderWidget : UserControl
+public partial class LocalImageRenderWidget : UserControl
 {
     public LocalImageRenderWidget()
     {

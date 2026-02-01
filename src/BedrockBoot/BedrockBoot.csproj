@@ -128,5 +128,8 @@
             <DependentUpon>DownloadDefault.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\DialogContent\DialogChooseGameContent.axaml.cs">
+          <DependentUpon>DialogChooseGameContent.axaml</DependentUpon>
+        </Compile>
     </ItemGroup>
 </Project>

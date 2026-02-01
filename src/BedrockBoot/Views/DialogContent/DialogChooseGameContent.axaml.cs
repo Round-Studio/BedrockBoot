@@ -7,7 +7,7 @@ using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.DialogContent;
 
-public class DialogChooseGameContent : ISetting
+public partial class DialogChooseGameContent : ISetting
 {
     private List<VersionConfig>? Versions;
 

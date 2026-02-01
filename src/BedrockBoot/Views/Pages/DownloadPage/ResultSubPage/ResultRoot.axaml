@@ -86,8 +86,8 @@
 
                         <StackPanel Grid.Column="2"
                                     Margin="0"
-                                    Spacing="12">
-                            <Button Width="120"
+                                    Spacing="6">
+                            <Button Width="130"
                                     Height="32"
                                     Name="GetResourceBtn"
                                     Click="GetResourceBtn_OnClick"
@@ -101,18 +101,32 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button Classes="NoBorder"
-                                    Name="OpenSourceWebsite"
-                                    Click="OpenSourceWebsite_OnClick"
-                                    Width="120"
-                                    Height="32">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="8">
-                                    <onePointControls:FontIcon Glyph="&#xE8A7;"
-                                                               VerticalAlignment="Center" />
-                                    <TextBlock Text="前往源网站" />
-                                </StackPanel>
-                            </Button>
+                            <DockPanel LastChildFill="True">
+                                <Button Classes="NoBorder"
+                                        DockPanel.Dock="Right"
+                                        Name="CopyName"
+                                        Click="CopyName_OnClick"
+                                        Margin="6,0,0,0"
+                                        Height="32"
+                                        Width="32">
+                                    <onePointControls:FontIcon Glyph="&#xE8C8;"
+                                                               VerticalAlignment="Center"
+                                                               HorizontalAlignment="Center"/>
+                                </Button>
+                                
+                                <Button Classes="NoBorder"
+                                        DockPanel.Dock="Left"
+                                        Name="OpenSourceWebsite"
+                                        Click="OpenSourceWebsite_OnClick"
+                                        Height="32">
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="8">
+                                        <onePointControls:FontIcon Glyph="&#xE8A7;"
+                                                                   VerticalAlignment="Center" />
+                                        <TextBlock Text="前往网站" />
+                                    </StackPanel>
+                                </Button>
+                            </DockPanel>
                         </StackPanel>
                     </Grid>
                 </items:BorderCard>

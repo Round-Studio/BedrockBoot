@@ -341,4 +341,10 @@ public class CurseForgeResponse
 
         [JsonPropertyName("pagination")] public PaginationEntry Pagination { get; set; } = new();
     }
+    
+    public class SingleModResponse
+    {
+        [JsonPropertyName("data")] 
+        public ModData Data { get; set; }
+    }
 }

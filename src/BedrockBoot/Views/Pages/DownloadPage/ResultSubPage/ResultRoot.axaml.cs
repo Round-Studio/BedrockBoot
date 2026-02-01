@@ -5,11 +5,14 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Service;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
+using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
@@ -78,5 +81,19 @@ public partial class ResultRoot : UserControl
             new DrawDownloadCurseForgeResourceContent(
                 JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData)),
             $"下载资源 {SearchResultItemInfo.Name}");
+    }
+
+    private void CopyName_OnClick(object? sender, RoutedEventArgs e)
+    {
+        CopyService.SetClipboard($"你的好友向你推荐了一个资源【{SearchResultItemInfo.Name}】\n" +
+                                 $"地址：{SearchResultItemInfo.SourceWebsite}\n" +
+                                 $"前往 [BedrockBoot]，Ctrl+V 即可获取该资源", CopyType.Resource,
+            JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData).Id);
+        
+        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+        {
+            Title = "剪切板",
+            Message = "分享内容已复制，在 BedrockBoot 内按下 Ctrl+V 即可查看该资源"
+        });
     }
 }

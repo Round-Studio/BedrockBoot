@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -15,11 +16,13 @@ using BedrockBoot.Base.Enum;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
+using CommunityToolkit.Mvvm.Input;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -34,6 +37,7 @@ public partial class MainWindow : OnePointWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
+        SetupDynamicHotkey();
 
         UpdateBack();
 
@@ -317,5 +321,26 @@ public partial class MainWindow : OnePointWindow
         }
 
         BackgroundImageOpacity.Opacity = (100 - GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
+    }
+    
+    private void SetupDynamicHotkey()
+    {
+        var ctrlVBinding = new KeyBinding
+        {
+            Gesture = new KeyGesture(Key.V, KeyModifiers.Control)
+        };
+        
+        ctrlVBinding.Command = new RelayCommand(async () =>
+        {
+            await HandlePasteAsync();
+        });
+        
+        this.KeyBindings.Add(ctrlVBinding);
+    }
+
+    private async Task HandlePasteAsync()
+    {
+        Console.WriteLine("Ctrl+V 被按下");
+        CopyService.HandleCopyAction();
     }
 }

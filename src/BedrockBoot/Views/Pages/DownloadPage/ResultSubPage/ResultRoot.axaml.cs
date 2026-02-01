@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -39,7 +40,10 @@ public partial class ResultRoot : UserControl
         DescriptionText.Text = SearchResultItemInfo.Description;
         DownloadCountText.Text = SearchResultItemInfo.DownloadCount.ToString();
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
-        OpenSourceWebsite.IsVisible = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
+        HyperlinkButton.IsVisible = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
+        HyperlinkButton.NavigateUri = string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite)
+            ? new Uri("")
+            : new Uri(SearchResultItemInfo.SourceWebsite);
         if (SearchResultItemInfo.Images != null &&
             SearchResultItemInfo.Images.Count > 0)
         {
@@ -89,8 +93,8 @@ public partial class ResultRoot : UserControl
                                  $"地址：{SearchResultItemInfo.SourceWebsite}\n" +
                                  $"前往 [BedrockBoot]，Ctrl+V 即可获取该资源", CopyType.Resource,
             JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData).Id);
-        
-        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+
+        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = "剪切板",
             Message = "分享内容已复制，在 BedrockBoot 内按下 Ctrl+V 即可查看该资源"

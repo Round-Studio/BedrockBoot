@@ -6,66 +6,80 @@
              x:Class="BedrockBoot.Views.Pages.OtherPage.AboutOpenSource">
     <ScrollViewer>
         <StackPanel Margin="15">
-          <TextBlock FontSize="22"
-                     FontWeight="Bold"
-                     Margin="5,20,5,8">Avalonia</TextBlock>
-          <TextBlock Margin="5,5,0,0" Name="AvaloniaVersion"></TextBlock>
-          <TextBlock Margin="5" Text="(https://github.com/AvaloniaUI/Avalonia)"></TextBlock>
-          <TextBlock Margin="5" xml:space="preserve"
-                     FontSize="9">The MIT License (MIT)
-(https://github.com/AvaloniaUI/Avalonia/blob/master/licence.md)</TextBlock>
-          
-          
-          <TextBlock FontSize="22"
-                     FontWeight="Bold"
-                     Margin="5,20,5,8">OnePointUI.Avalonia</TextBlock>
-          <TextBlock Margin="5" Text="(https://github.com/Round-Studio/OnePointUI.Avalonia)"></TextBlock>
-          <TextBlock Margin="5" xml:space="preserve"
-                     FontSize="9">MIT License
-(https://github.com/Round-Studio/OnePointUI.Avalonia/blob/master/LICENSE)</TextBlock>
-          
-          
-          <TextBlock FontSize="22"
-                     FontWeight="Bold"
-                     Margin="5,20,5,8">Round.SDK</TextBlock>
-          <TextBlock Margin="5" Text="(https://github.com/Round-Studio/Round.SDK)"></TextBlock>
-          <TextBlock Margin="5" xml:space="preserve"
-                     FontSize="9">GNU GENERAL PUBLIC LICENSE
-(https://github.com/Round-Studio/Round.SDK/blob/master/LICENSE)</TextBlock>
-            
-            
             <TextBlock FontSize="22"
                        FontWeight="Bold"
-                       Margin="5,20,5,8">BedrockLauncher.Core</TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/BedrockLauncher.Core)"></TextBlock>
+                       Margin="5,20,5,8">
+                Avalonia
+            </TextBlock>
+            <TextBlock Margin="5,5,0,0" Name="AvaloniaVersion" />
+            <TextBlock Margin="5" Text="(https://github.com/AvaloniaUI/Avalonia)" />
+            <TextBlock Margin="5" xml:space="preserve"
+                       FontSize="9">The MIT License (MIT)
+(https://github.com/AvaloniaUI/Avalonia/blob/master/licence.md)</TextBlock>
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                OnePointUI.Avalonia
+            </TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/OnePointUI.Avalonia)" />
+            <TextBlock Margin="5" xml:space="preserve"
+                       FontSize="9">MIT License
+(https://github.com/Round-Studio/OnePointUI.Avalonia/blob/master/LICENSE)</TextBlock>
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                Round.SDK
+            </TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/Round.SDK)" />
+            <TextBlock Margin="5" xml:space="preserve"
+                       FontSize="9">GNU GENERAL PUBLIC LICENSE
+(https://github.com/Round-Studio/Round.SDK/blob/master/LICENSE)</TextBlock>
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                BedrockLauncher.Core
+            </TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/BedrockLauncher.Core)" />
             <TextBlock Margin="5" xml:space="preserve"
                        FontSize="9">MIT License
 (https://github.com/Round-Studio/BedrockLauncher.Core/blob/2.0-main/LICENSE)</TextBlock>
-            
-            
+
+
             <TextBlock FontSize="22"
                        FontWeight="Bold"
-                       Margin="5,20,5,8">PeNet</TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/secana/PeNet)"></TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/PeNet)"></TextBlock>
+                       Margin="5,20,5,8">
+                PeNet
+            </TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/secana/PeNet)" />
+            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/PeNet)" />
             <TextBlock Margin="5" xml:space="preserve"
                        FontSize="9">Apache License
 (https://github.com/secana/PeNet/blob/master/LICENSE)</TextBlock>
-            
-            
+
+
             <TextBlock FontSize="22"
                        FontWeight="Bold"
-                       Margin="5,20,5,8">Octokit</TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/octokit/octokit.net)"></TextBlock>
+                       Margin="5,20,5,8">
+                Octokit
+            </TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/octokit/octokit.net)" />
             <TextBlock Margin="5" xml:space="preserve"
                        FontSize="9">MIT License
 (https://github.com/octokit/octokit.net/blob/main/LICENSE.txt)</TextBlock>
-            
-            
+
+
             <TextBlock FontSize="22"
                        FontWeight="Bold"
-                       Margin="5,20,5,8">Windows.APICodePack</TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1)"></TextBlock>
+                       Margin="5,20,5,8">
+                Windows.APICodePack
+            </TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1)" />
             <TextBlock Margin="5" xml:space="preserve"
                        FontSize="9">Custom License
 (https://github.com/contre/Windows-API-Code-Pack-1.1/blob/main/LICENSE)</TextBlock>

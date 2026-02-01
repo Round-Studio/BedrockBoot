@@ -9,8 +9,10 @@
         <StackPanel Margin="15">
             <TextBlock Margin="5,0,5,10"
                        FontWeight="Bold"
-                       FontSize="14">基础设置</TextBlock>
-            
+                       FontSize="14">
+                基础设置
+            </TextBlock>
+
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="版本隔离"
                                           Description="版本隔离使用的技术类型"
@@ -18,8 +20,8 @@
                 <ComboBox Width="300"
                           Name="IsolationTypeBox"
                           SelectionChanged="IsolationTypeBox_OnSelectionChanged">
-                    <ComboBoxItem Content="单一模式（Symbolic Link）"></ComboBoxItem>
-                    <ComboBoxItem Content="混合模式（Hook + Symbolic Link）"></ComboBoxItem>
+                    <ComboBoxItem Content="单一模式（Symbolic Link）" />
+                    <ComboBoxItem Content="混合模式（Hook + Symbolic Link）" />
                 </ComboBox>
             </onePointControls:SettingCard>
         </StackPanel>

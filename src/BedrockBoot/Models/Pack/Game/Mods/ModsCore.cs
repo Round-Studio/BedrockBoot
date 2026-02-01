@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Windows.Documents;
-using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Enum;
@@ -17,17 +15,17 @@ namespace BedrockBoot.Models.Pack.Game.Mods;
 
 public class ModsCore
 {
-    private ModsManager _manager;
-
-    public VersionConfig VersionInfo { get; set; }
-    public List<ModInfo> AllMods { get; private set; }
-    public List<ModInfo> PreLoadMods { get; private set; }
+    private readonly ModsManager _manager;
 
     public ModsCore(VersionConfig info)
     {
         VersionInfo = info;
         _manager = new ModsManager(VersionInfo);
     }
+
+    public VersionConfig VersionInfo { get; set; }
+    public List<ModInfo> AllMods { get; private set; }
+    public List<ModInfo> PreLoadMods { get; private set; }
 
     public void PreLoad()
     {
@@ -70,7 +68,6 @@ public class ModsCore
         {
             // 比较两个文件是否相同
             if (!AreFilesIdentical(body, rawBody))
-            {
                 try
                 {
                     // 文件内容不同，用raw覆盖body
@@ -81,32 +78,23 @@ public class ModsCore
                 {
                     Console.WriteLine($@"覆盖文件失败: {ex.Message}");
                 }
-            }
             else
-            {
                 Console.WriteLine(@"文件内容相同，无需操作");
-            }
         }
         else
         {
             Console.WriteLine($@"文件被占用，跳过处理: {body}");
         }
 
-        PreLoadMods = new();
+        PreLoadMods = new List<ModInfo>();
         _manager.Mods.ForEach(m =>
         {
-            if (m.IsPreLoad)
-            {
-                PreLoadMods.Add(m);
-            }
+            if (m.IsPreLoad) PreLoadMods.Add(m);
         });
 
-        Directory.GetFiles(preLoadPath).ToList().ForEach((f) =>
+        Directory.GetFiles(preLoadPath).ToList().ForEach(f =>
         {
-            if (!FileCheck.IsFileLocked(f))
-            {
-                File.Delete(f);
-            }
+            if (!FileCheck.IsFileLocked(f)) File.Delete(f);
         });
 
         PreLoadMods.ForEach(f =>
@@ -125,12 +113,11 @@ public class ModsCore
         {
             // 先处理文件写入（无论是否存在都覆盖）
             var assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "BedrockBoot.Assets.PreloadCpp.dll";
+            var resourceName = "BedrockBoot.Assets.PreloadCpp.dll";
 
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
                 if (stream != null)
-                {
                     using (var memoryStream = new MemoryStream())
                     {
                         stream.CopyTo(memoryStream);
@@ -142,29 +129,27 @@ public class ModsCore
                         {
                         }
                     }
-                }
             }
 
             // 然后修改 PE 文件
             if (!FileCheck.IsFileLocked(body))
-            {
-                using (PeFile peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+                using (var peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
                 {
                     peFile.AddImport("PreloadCpp.dll", "Load");
                     peFile.Flush();
                 }
-            }
             else
-            {
                 throw new IOException($"文件 {body} 被锁定，无法修改");
-            }
         }
         catch
         {
         }
     }
 
-    public void LoadAll(int pid) => _manager.InjectAll(pid);
+    public void LoadAll(int pid)
+    {
+        _manager.InjectAll(pid);
+    }
 
     private static bool AreFilesIdentical(string filePath1, string filePath2)
     {
@@ -172,8 +157,8 @@ public class ModsCore
             return false;
 
         // 如果文件大小不同，直接返回false
-        FileInfo info1 = new FileInfo(filePath1);
-        FileInfo info2 = new FileInfo(filePath2);
+        var info1 = new FileInfo(filePath1);
+        var info2 = new FileInfo(filePath2);
 
         if (info1.Length != info2.Length)
             return false;
@@ -206,7 +191,7 @@ public class ModsCore
     }
 
     /// <summary>
-    /// 逐字节比较文件（哈希比较失败时的备选方案）
+    ///     逐字节比较文件（哈希比较失败时的备选方案）
     /// </summary>
     private static bool CompareFilesByteByByte(string filePath1, string filePath2)
     {
@@ -215,13 +200,13 @@ public class ModsCore
         using (var fs1 = new FileStream(filePath1, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize))
         using (var fs2 = new FileStream(filePath2, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize))
         {
-            byte[] buffer1 = new byte[bufferSize];
-            byte[] buffer2 = new byte[bufferSize];
+            var buffer1 = new byte[bufferSize];
+            var buffer2 = new byte[bufferSize];
 
             while (true)
             {
-                int count1 = fs1.Read(buffer1, 0, bufferSize);
-                int count2 = fs2.Read(buffer2, 0, bufferSize);
+                var count1 = fs1.Read(buffer1, 0, bufferSize);
+                var count2 = fs2.Read(buffer2, 0, bufferSize);
 
                 if (count1 != count2)
                     return false;
@@ -230,11 +215,9 @@ public class ModsCore
                     return true;
 
                 // 比较读取的字节
-                for (int i = 0; i < count1; i++)
-                {
+                for (var i = 0; i < count1; i++)
                     if (buffer1[i] != buffer2[i])
                         return false;
-                }
             }
         }
     }

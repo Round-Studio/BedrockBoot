@@ -7,6 +7,6 @@
     <ScrollViewer Margin="5">
         <WrapPanel Margin="15"
                    ItemSpacing="8"
-                   LineSpacing="8"></WrapPanel>
+                   LineSpacing="8" />
     </ScrollViewer>
 </UserControl>

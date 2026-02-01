@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BedrockBoot.Models.Global;
@@ -23,7 +21,7 @@ public partial class DrawImportOtherLauncherContent : UserControl
                 x.IsExists)
             {
                 show = false;
-                var item = new SettingCard()
+                var item = new SettingCard
                 {
                     IsClickable = true,
                     IsNotFontIcon = true,

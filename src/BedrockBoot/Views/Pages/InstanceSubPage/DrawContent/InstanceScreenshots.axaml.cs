@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using Avalonia;
+﻿using System.Linq;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Pack.Game.Screenshots;
@@ -12,8 +9,6 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceScreenshots : ISetting
 {
-    public VersionConfig VersionInfo { get; set; }
-
     public InstanceScreenshots()
     {
         InitializeComponent();
@@ -24,6 +19,8 @@ public partial class InstanceScreenshots : ISetting
         VersionInfo = versionInfo;
         UpdateUI();
     }
+
+    public VersionConfig VersionInfo { get; set; }
 
     public void UpdateUI()
     {
@@ -47,10 +44,7 @@ public partial class InstanceScreenshots : ISetting
         screenshots.ForEach(ph => ScreenshotsBox.Children.Add(new ScreenshotsItem(ph)));
         NullBox.IsVisible = false;
 
-        if (screenshots.Count <= 0)
-        {
-            NullBox.IsVisible = true;
-        }
+        if (screenshots.Count <= 0) NullBox.IsVisible = true;
     }
 
     private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

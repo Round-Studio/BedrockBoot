@@ -49,9 +49,7 @@ public class GameInfoHelper
             if (body != null &&
                 !string.IsNullOrEmpty(body.Info.VersionName) &&
                 !string.IsNullOrEmpty(body.Info.Version))
-            {
                 result.Add(body);
-            }
         });
         return result;
     }
@@ -61,8 +59,8 @@ public class GameInfoHelper
         var bedrockBootJson = Path.Combine(gamePath, "config", "BedrockBoot2", "config.json");
         ConfigEntity<VersionConfig> bodyConfig = null;
 
-        if (!File.Exists(bedrockBootJson) && 
-             File.Exists(Path.Combine(gamePath, "appxmanifest.xml"))) // 没有 BedrockBoot 2 的配置文件时
+        if (!File.Exists(bedrockBootJson) &&
+            File.Exists(Path.Combine(gamePath, "appxmanifest.xml"))) // 没有 BedrockBoot 2 的配置文件时
         {
             Directory.CreateDirectory(Path.Combine(gamePath, "config", "BedrockBoot2"));
             bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);
@@ -71,7 +69,7 @@ public class GameInfoHelper
             var manifest =
                 PackageIdentity.ParseFromXml(File.ReadAllText(Path.Combine(gamePath, "appxmanifest.xml")));
 
-            bodyConfig.Data.Info = new VersionConfig.VersionInfo()
+            bodyConfig.Data.Info = new VersionConfig.VersionInfo
             {
                 Version = manifest.Version,
                 VersionName = Path.GetFileName(gamePath),
@@ -124,16 +122,16 @@ public class GameInfoHelper
         if (files.Count() > 1)
             throw new FileNotFoundException(
                 $"无法找到对应的 EXE 文件，原因是该目录中有 {files.Count()} 个 EXE，有很大概率是蠕虫病毒的感染，请尝试查杀病毒或删除对应文件以解决该问题。\nFiles:\n{string.Join('\n', files)}");
-        
+
         Console.WriteLine($@"目标实例本体文件：{files[0]}");
-        
+
         return Path.GetFileName(files[0]);
     }
 
     public static bool IsInvalidVersion(VersionConfig config)
     {
         var indexJson = Path.Combine(config.VersionPath, "config", "BedrockBoot2", "index.json");
-        
+
         if (!File.Exists(indexJson))
             return false;
         if (string.IsNullOrEmpty(File.ReadAllText(indexJson)))
@@ -144,7 +142,7 @@ public class GameInfoHelper
 
         if (body.Data.Count <= 0)
             return false;
-        
+
         return true;
     }
 

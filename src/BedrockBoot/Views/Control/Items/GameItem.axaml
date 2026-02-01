@@ -15,8 +15,8 @@
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
-                <TextBlock Name="VersionName"></TextBlock>
-                
+                <TextBlock Name="VersionName" />
+
                 <onePointControls:LabelBox Text="编辑模式"
                                            FontSize="14"
                                            Foreground="White"
@@ -24,7 +24,7 @@
                                            Name="EditModule"
                                            IsVisible="False"
                                            Margin="0,0,8,0"
-                                           VerticalAlignment="Center"/>
+                                           VerticalAlignment="Center" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
         <StackPanel Orientation="Horizontal">
@@ -34,9 +34,9 @@
                     Margin="0,0,8,0"
                     Click="Card_OnClick">
                 <onePointControls:FontIcon Glyph="&#xE713;"
-                                           FontSize="16"></onePointControls:FontIcon>
+                                           FontSize="16" />
             </Button>
-            
+
             <Button Padding="16,8"
                     Classes="NoBorder"
                     Background="{DynamicResource AccentBackgroundBrush}"
@@ -46,10 +46,10 @@
                     <onePointControls:FontIcon Glyph="&#xE768;"
                                                VerticalAlignment="Center"
                                                FontSize="16"
-                                               Margin="0,0,8,0"></onePointControls:FontIcon>
-                    
+                                               Margin="0,0,8,0" />
+
                     <TextBlock Text="启动"
-                               VerticalAlignment="Center"/>
+                               VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
         </StackPanel>

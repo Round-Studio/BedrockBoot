@@ -12,15 +12,14 @@
             <onePointControls:FontIcon Margin="5"
                                        FontSize="28"
                                        Glyph="&#xE909;"
-                                       Foreground="{DynamicResource PrimaryForegroundBrush}"/>
+                                       Foreground="{DynamicResource PrimaryForegroundBrush}" />
             <TextBlock FontSize="22"
                        Margin="5,10,0,0"
-                       Text="欢迎"></TextBlock>
+                       Text="欢迎" />
             <TextBlock Margin="5"
-                       Text="欢迎使用 BedrockBoot v2，这是初次使用向导"></TextBlock>
+                       Text="欢迎使用 BedrockBoot v2，这是初次使用向导" />
         </StackPanel>
-        
-        <Grid Margin="0,10,0,0">
-        </Grid>
+
+        <Grid Margin="0,10,0,0" />
     </StackPanel>
 </UserControl>

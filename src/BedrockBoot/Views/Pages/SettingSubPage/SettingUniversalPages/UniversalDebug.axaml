@@ -13,7 +13,7 @@
                                           Glyph="&#xE756;">
                 <ToggleSwitch IsChecked="False"
                               Name="IsConsoleModel"
-                              IsCheckedChanged="CheckBox_Change"></ToggleSwitch>
+                              IsCheckedChanged="CheckBox_Change" />
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

@@ -8,27 +8,31 @@
              x:Class="BedrockBoot.Views.TaskItem.TaskImportGamePackItem">
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*">
-            <onePointControls:ProgressRing Grid.Column="0" 
+            <onePointControls:ProgressRing Grid.Column="0"
                                            Width="36"
                                            Height="36"
                                            Margin="4,0,0,0"
-                                           Background="Transparent"></onePointControls:ProgressRing>
-            
+                                           Background="Transparent" />
+
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
-                <TextBlock FontSize="16" 
-                           Name="CardTitle">导入游戏包...</TextBlock>
-                
+                <TextBlock FontSize="16"
+                           Name="CardTitle">
+                    导入游戏包...
+                </TextBlock>
+
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">
                     <ProgressBar IsIndeterminate="True"
                                  HorizontalAlignment="Stretch"
-                                 Name="ProgressBar"></ProgressBar>
-                    
+                                 Name="ProgressBar" />
+
                     <TextBlock Foreground="Gray"
                                FontSize="9"
                                Margin="0,2,0,0"
-                               Name="ProgressText">步骤：准备导入中...</TextBlock>
+                               Name="ProgressText">
+                        步骤：准备导入中...
+                    </TextBlock>
                 </StackPanel>
             </StackPanel>
         </Grid>

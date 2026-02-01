@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
@@ -14,6 +12,7 @@ namespace BedrockBoot.Views.Pages.DownloadSubPage.CurseForge;
 public partial class CurseForgePackBuildFile : UserControl
 {
     public CurseForgeResponse.ModData ModData;
+
     public CurseForgePackBuildFile()
     {
         InitializeComponent();
@@ -22,7 +21,7 @@ public partial class CurseForgePackBuildFile : UserControl
     public CurseForgePackBuildFile(CurseForgeResponse.ModData mod) : this()
     {
         ModData = mod;
-        
+
         Update();
     }
 
@@ -37,7 +36,7 @@ public partial class CurseForgePackBuildFile : UserControl
             {
                 var files = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
                     .GetModFilesAsync(ModData.Id,
-                        pageSize: 50).Result;
+                        50).Result;
 
                 Dispatcher.UIThread.Invoke(() =>
                 {

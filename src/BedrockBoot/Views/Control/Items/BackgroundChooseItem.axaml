@@ -18,29 +18,35 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource PrimaryForegroundBrush}"
-                                       FontSize="22"></onePointControls:FontIcon>
+                                       FontSize="22" />
         </Border>
-        
+
         <StackPanel Grid.Column="1"
                     VerticalAlignment="Center"
                     Margin="0,0,12,0">
             <TextBlock FontSize="18"
                        Name="FileName"
-                       FontWeight="Heavy">File Name</TextBlock>
-            
+                       FontWeight="Heavy">
+                File Name
+            </TextBlock>
+
             <TextBlock FontSize="12"
                        Name="FilePath"
-                       FontWeight="Heavy">File Path</TextBlock>
+                       FontWeight="Heavy">
+                File Path
+            </TextBlock>
         </StackPanel>
-        
+
         <StackPanel Grid.Column="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center">
-            <Button  Padding="24,0"
-                     Margin="0,0,8,0" 
-                     Height="32"
-                     IsEnabled="False">删除</Button>
+            <Button Padding="24,0"
+                    Margin="0,0,8,0"
+                    Height="32"
+                    IsEnabled="False">
+                删除
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -14,8 +14,8 @@ public class ImageLoader : IDisposable
 {
     private readonly HttpClient _httpClient;
     private readonly Dictionary<string, Bitmap> _imageCache;
-    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-    
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
+
     public ImageLoader()
     {
         _httpClient = new HttpClient
@@ -24,47 +24,45 @@ public class ImageLoader : IDisposable
         };
         _imageCache = new Dictionary<string, Bitmap>();
     }
-    
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        _semaphore.Dispose();
+        ClearAllCache();
+    }
+
     /// <summary>
-    /// 从 URL 加载图片并创建 ImageBrush
+    ///     从 URL 加载图片并创建 ImageBrush
     /// </summary>
-    public async Task<IImage> LoadImageBrushAsync(string imageUrl, 
-        Stretch stretch = Stretch.Uniform, 
+    public async Task<IImage> LoadImageBrushAsync(string imageUrl,
+        Stretch stretch = Stretch.Uniform,
         bool useCache = true)
     {
         // 检查缓存
-        if (useCache && _imageCache.TryGetValue(imageUrl, out var cachedBitmap))
-        {
-            return cachedBitmap;
-        }
-        
+        if (useCache && _imageCache.TryGetValue(imageUrl, out var cachedBitmap)) return cachedBitmap;
+
         try
         {
             // 限制并发访问
             // await _semaphore.WaitAsync();
-            
+
             // 再次检查缓存（防止重复加载）
-            if (useCache && _imageCache.TryGetValue(imageUrl, out cachedBitmap))
-            {
-                return cachedBitmap;
-            }
-            
+            if (useCache && _imageCache.TryGetValue(imageUrl, out cachedBitmap)) return cachedBitmap;
+
             // 下载图片
-            byte[] imageData = await _httpClient.GetByteArrayAsync(imageUrl);
-            
+            var imageData = await _httpClient.GetByteArrayAsync(imageUrl);
+
             // 在 UI 线程上创建 Bitmap（Bitmap 需要在 UI 线程创建）
-            Bitmap bitmap = await Dispatcher.UIThread.InvokeAsync(() =>
+            var bitmap = await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 using var memoryStream = new MemoryStream(imageData);
                 return new Bitmap(memoryStream);
             });
-            
+
             // 缓存图片
-            if (useCache)
-            {
-                _imageCache[imageUrl] = bitmap;
-            }
-            
+            if (useCache) _imageCache[imageUrl] = bitmap;
+
             return bitmap;
         }
         catch (Exception ex)
@@ -73,21 +71,18 @@ public class ImageLoader : IDisposable
             return null;
         }
     }
-    
+
     /// <summary>
-    /// 从流创建 ImageBrush
+    ///     从流创建 ImageBrush
     /// </summary>
-    public async Task<IImage> LoadImageBrushFromStreamAsync(Stream stream, 
+    public async Task<IImage> LoadImageBrushFromStreamAsync(Stream stream,
         Stretch stretch = Stretch.Uniform)
     {
         try
         {
             // 在 UI 线程上创建 Bitmap
-            var bitmap = await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                return new Bitmap(stream);
-            });
-            
+            var bitmap = await Dispatcher.UIThread.InvokeAsync(() => { return new Bitmap(stream); });
+
             return bitmap;
         }
         catch (Exception ex)
@@ -96,9 +91,9 @@ public class ImageLoader : IDisposable
             return null;
         }
     }
-    
+
     /// <summary>
-    /// 清除指定 URL 的缓存
+    ///     清除指定 URL 的缓存
     /// </summary>
     public void ClearCache(string imageUrl)
     {
@@ -108,23 +103,13 @@ public class ImageLoader : IDisposable
             _imageCache.Remove(imageUrl);
         }
     }
-    
+
     /// <summary>
-    /// 清除所有缓存
+    ///     清除所有缓存
     /// </summary>
     public void ClearAllCache()
     {
-        foreach (var bitmap in _imageCache.Values)
-        {
-            bitmap.Dispose();
-        }
+        foreach (var bitmap in _imageCache.Values) bitmap.Dispose();
         _imageCache.Clear();
-    }
-    
-    public void Dispose()
-    {
-        _httpClient.Dispose();
-        _semaphore.Dispose();
-        ClearAllCache();
     }
 }

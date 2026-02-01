@@ -1,6 +1,6 @@
-﻿using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
+using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 
 namespace BedrockBoot.Win32.Controls;
 

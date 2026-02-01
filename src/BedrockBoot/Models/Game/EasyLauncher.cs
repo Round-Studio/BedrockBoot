@@ -13,7 +13,15 @@ namespace BedrockBoot.Models.Game;
 
 public class EasyLauncher
 {
-    public VersionConfig VersionInfo { get; private set; }
+    private ModsCore _core;
+    private IsolationCore IsolationCore;
+
+    public EasyLauncher(VersionConfig versionConfig)
+    {
+        VersionInfo = versionConfig;
+    }
+
+    public VersionConfig VersionInfo { get; }
     public Action? OnMigration { get; set; }
     public Action<Process>? Launched { get; set; }
     public Action? LaunchCompleted { get; set; }
@@ -21,21 +29,14 @@ public class EasyLauncher
     public Action<string>? UpdateProgressText { get; set; } // 新增：更新进度文本回调
     public Action<bool>? SetProgressIndeterminate { get; set; } // 新增：设置进度条是否为不确定模式
     public Process MinecraftProcess { get; private set; }
-    private IsolationCore IsolationCore;
-    private ModsCore _core;
-
-    public EasyLauncher(VersionConfig versionConfig)
-    {
-        VersionInfo = versionConfig;
-    }
 
     public async Task Launch()
     {
         if (GlobalModel.BedrockCore == null)
         {
-            GlobalModel.BedrockCore = new BedrockCore()
+            GlobalModel.BedrockCore = new BedrockCore
             {
-                Options = new CoreOptions()
+                Options = new CoreOptions
                 {
                     IsAutoCompleteVC = true,
                     IsAutoOpenDevelopment = true,
@@ -69,20 +70,20 @@ public class EasyLauncher
 
         try
         {
-            MinecraftProcess = await GlobalModel.BedrockCore.LaunchGameAsync(new LaunchOptions()
+            MinecraftProcess = await GlobalModel.BedrockCore.LaunchGameAsync(new LaunchOptions
             {
                 GameFolder = VersionInfo.VersionPath,
                 GameType = VersionInfo.Info.VersionType,
                 MinecraftBuildType = VersionInfo.Info.BuildType,
-                RegisterProgress = new Progress<DeploymentProgress>((progress) =>
+                RegisterProgress = new Progress<DeploymentProgress>(progress =>
                 {
                     Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
-                    
+
                     // 使用回调更新进度，而不是直接操作 UI
                     UpdateProgress?.Invoke($"步骤：{progress.state}", progress.percentage);
                 }),
-                Progress = new Progress<LaunchState>((state) => 
-                { 
+                Progress = new Progress<LaunchState>(state =>
+                {
                     IsolationCore.Clear();
                     IsolationCore.Init(true);
                     Console.WriteLine(state);
@@ -94,18 +95,15 @@ public class EasyLauncher
             if (MinecraftProcess != null && !MinecraftProcess.HasExited)
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
-                
+
                 // 触发游戏启动回调
                 Launched?.Invoke(MinecraftProcess);
-                
+
                 // 更新进度文本
                 UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                 SetProgressIndeterminate?.Invoke(true);
 
-                if (VersionInfo.Config.IsModes)
-                {
-                    _core.LoadAll(MinecraftProcess.Id);
-                }
+                if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
 
                 // 正确注册退出事件
                 MinecraftProcess.EnableRaisingEvents = true;

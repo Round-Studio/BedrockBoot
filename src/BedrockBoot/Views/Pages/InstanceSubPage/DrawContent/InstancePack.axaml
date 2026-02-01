@@ -22,7 +22,7 @@
                         <StackPanel Orientation="Horizontal">
                             <onePointControls:FontIcon Glyph="&#xF133;"
                                                        VerticalAlignment="Center"
-                                                       FontSize="16"></onePointControls:FontIcon>
+                                                       FontSize="16" />
                             <TextBlock Margin="8,4,0,4">资源包</TextBlock>
                         </StackPanel>
                     </ListBoxItem>
@@ -31,7 +31,7 @@
                         <StackPanel Orientation="Horizontal">
                             <onePointControls:FontIcon Glyph="&#xF156;"
                                                        VerticalAlignment="Center"
-                                                       FontSize="16"></onePointControls:FontIcon>
+                                                       FontSize="16" />
                             <TextBlock Margin="8,4,0,4">行为包</TextBlock>
                         </StackPanel>
                     </ListBoxItem>
@@ -45,11 +45,11 @@
                         <onePointControls:FontIcon Glyph="&#xE71E;"
                                                    VerticalAlignment="Center"
                                                    FontSize="16"
-                                                   Margin="5,5,12,5"></onePointControls:FontIcon>
+                                                   Margin="5,5,12,5" />
                         <TextBox Name="SearchBox"
                                  HorizontalAlignment="Stretch"
                                  TextChanged="SearchBox_OnTextChanged"
-                                 DockPanel.Dock="Right"></TextBox>
+                                 DockPanel.Dock="Right" />
                     </DockPanel>
                 </Grid>
             </items:BorderCard>
@@ -65,7 +65,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <onePointControls:FontIcon Glyph="&#xE710;"
                                                            VerticalAlignment="Center"
-                                                           Margin="0,1,8,0"></onePointControls:FontIcon>
+                                                           Margin="0,1,8,0" />
                                 <TextBlock>导入包</TextBlock>
                             </StackPanel>
                         </Button>
@@ -73,35 +73,34 @@
                 </Grid>
             </items:BorderCard>
         </Grid>
-        
+
         <ScrollViewer Grid.Row="1" Name="ScBox">
             <StackPanel Margin="15,0,15,15"
-                       HorizontalAlignment="Stretch"
-                       Name="ResultBox">
-            </StackPanel>
+                        HorizontalAlignment="Stretch"
+                        Name="ResultBox" />
         </ScrollViewer>
-        
+
         <notice:InfoCard Grid.Row="1"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
                          BigTitle="空空如也"
-                         Message="输入的关键词无效 或 这个实例没有包"/>
-        
+                         Message="输入的关键词无效 或 这个实例没有包" />
+
         <notice:LoadCard Grid.Row="1"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="LoadBox"
                          BigTitle="请稍后"
-                         Message="正在加载包..."></notice:LoadCard>
-        
+                         Message="正在加载包..." />
+
         <Grid Grid.Row="2"
               ColumnDefinitions="*"
               Margin="20,4,20,20">
             <TextBlock Text="共 ??? 项"
                        Name="NumberBox"
-                       Foreground="Gray"></TextBlock>
+                       Foreground="Gray" />
         </Grid>
     </Grid>
 </UserControl>

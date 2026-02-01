@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Models.Pack.Game.Archive;
@@ -12,34 +10,35 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceSave : UserControl
 {
-    public bool IsEdit { get; set; } = false;
-    public VersionConfig VersionInfo { get; set; }
-    public ArchiveManifest ArchiveManifest { get; private set; }
-    private string SearchKey => SearchBox.Text;
-    private int SelIndex => UserChooseBox.SelectedIndex;
     public InstanceSave()
     {
         IsEdit = false;
-        
+
         InitializeComponent();
     }
 
     public InstanceSave(VersionConfig versionInfo) : this()
     {
         VersionInfo = versionInfo;
-        
+
         UpdateUI();
     }
+
+    public bool IsEdit { get; set; }
+    public VersionConfig VersionInfo { get; set; }
+    public ArchiveManifest ArchiveManifest { get; private set; }
+    private string SearchKey => SearchBox.Text;
+    private int SelIndex => UserChooseBox.SelectedIndex;
 
     private void UpdateUI()
     {
         IsEdit = false;
         var body = new ArchiveCheck(VersionInfo);
         ArchiveManifest = body.Check();
-        
+
         ArchiveManifest.Manifest.ToList().ForEach(user =>
         {
-            UserChooseBox.Items.Add(new ComboBoxItem()
+            UserChooseBox.Items.Add(new ComboBoxItem
             {
                 Content = user.Key,
                 Tag = user.Value
@@ -52,19 +51,16 @@ public partial class InstanceSave : UserControl
 
             UpdateSaves(ArchiveManifest.Manifest.Values.ToList()[0]);
         }
-        
+
         IsEdit = true;
     }
 
     public void UpdateSaves(List<ArchiveInfo> saves)
     {
         NullBox.IsVisible = saves.Count <= 0;
-        
+
         SavesBox.Children.Clear();
-        saves.ForEach(save =>
-        {
-            SavesBox.Children.Add(new ArchiveItem(save));
-        });
+        saves.ForEach(save => { SavesBox.Children.Add(new ArchiveItem(save)); });
     }
 
     public void UpdateSearch()
@@ -75,14 +71,16 @@ public partial class InstanceSave : UserControl
         {
             lst.ForEach(save =>
             {
-                if(save.Name.Contains(SearchKey))
+                if (save.Name.Contains(SearchKey))
                     result.Add(save);
             });
-            
+
             UpdateSaves(result);
         }
-        else 
+        else
+        {
             UpdateSaves(lst);
+        }
     }
 
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)

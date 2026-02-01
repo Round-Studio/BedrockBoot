@@ -1,11 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
@@ -19,11 +16,9 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstancePack : UserControl
 {
-    public VersionConfig VersionInfo { get; set; }
-    public ResourcePackManager ResourcePackManager { get; set; }
-    
-    private string _type = "resource";
     private string _searchText = string.Empty;
+
+    private string _type = "resource";
 
     public InstancePack()
     {
@@ -36,13 +31,16 @@ public partial class InstancePack : UserControl
         UpdateUI();
     }
 
+    public VersionConfig VersionInfo { get; set; }
+    public ResourcePackManager ResourcePackManager { get; set; }
+
     private void UpdateUI()
     {
         // 清空当前显示
         ResultBox.Children.Clear();
         ScBox.IsVisible = false;
         LoadBox.IsVisible = true;
-        
+
         Task.Run(() =>
         {
             if (ResourcePackManager == null)
@@ -50,13 +48,14 @@ public partial class InstancePack : UserControl
                 ResourcePackManager = new ResourcePackManager(VersionInfo);
                 ResourcePackManager.GetAllPack();
             }
+
             ResourcePackManager.GetAllPack();
 
             var filteredPacks = ResourcePackManager.Packs
                 .Where(x => x != null && x.Header != null)
                 .Where(x => x.PackType.ToString().ToLower() == _type)
-                .Where(x => string.IsNullOrWhiteSpace(_searchText) || 
-                           x.Header.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                .Where(x => string.IsNullOrWhiteSpace(_searchText) ||
+                            x.Header.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             Dispatcher.UIThread.Invoke(() =>
@@ -65,19 +64,15 @@ public partial class InstancePack : UserControl
                 ScBox.IsVisible = false;
                 NumberBox.Text = $"共 {filteredPacks.Count} 项";
             });
-            
+
             // 如果有包，添加它们
             if (filteredPacks.Count > 0)
-            {
                 foreach (var pack in filteredPacks)
-                {
                     Dispatcher.UIThread.Invoke(() => ResultBox.Children.Add(new GameResourcePackItem(pack)
                     {
                         RefreshCallBack = UpdateUI
                     }));
-                }
-            }
-            
+
             Dispatcher.UIThread.Invoke(() =>
             {
                 ScBox.IsVisible = true;
@@ -108,7 +103,7 @@ public partial class InstancePack : UserControl
             var selectedFiles = files.Select(f => f.Path.LocalPath).ToList();
 
             var body = new DialogImportResourcePackContent();
-            DialogHost.Show(new()
+            DialogHost.Show(new DialogInfo
             {
                 Title = "导入包",
                 Content = body,
@@ -116,16 +111,13 @@ public partial class InstancePack : UserControl
                 PrimaryButtonText = "取消",
                 CloseAction = async () =>
                 {
-                    DialogHost.Show(new DialogInfo()
+                    DialogHost.Show(new DialogInfo
                     {
                         Title = "导入包...",
                         Content = "正在导入包..."
                     });
-                    
-                    await Task.Run(() =>
-                    {
-                        ResourcePackManager.AddRangePacks(selectedFiles);
-                    });
+
+                    await Task.Run(() => { ResourcePackManager.AddRangePacks(selectedFiles); });
 
                     Dispatcher.UIThread.Invoke(() =>
                     {
@@ -156,14 +148,11 @@ public partial class InstancePack : UserControl
             // 保持当前类型
         }
     }
-    
+
     // 如果需要手动刷新数据（比如从其他页面返回时）
     public void RefreshData()
     {
-        if (ResourcePackManager != null)
-        {
-            ResourcePackManager.GetAllPack();
-        }
+        if (ResourcePackManager != null) ResourcePackManager.GetAllPack();
         UpdateUI();
     }
 }

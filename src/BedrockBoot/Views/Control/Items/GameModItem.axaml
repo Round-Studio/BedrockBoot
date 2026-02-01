@@ -14,12 +14,12 @@
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
-                <TextBlock Name="FileName"></TextBlock>
+                <TextBlock Name="FileName" />
                 <onePointControls:LabelBox Text="预加载"
                                            Background="Orange"
                                            Foreground="White"
                                            Name="PreLoadBox"
-                                           VerticalAlignment="Center"></onePointControls:LabelBox>
+                                           VerticalAlignment="Center" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
         <StackPanel Orientation="Horizontal"
@@ -30,14 +30,14 @@
                     Name="DeleteBtn">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
                                            FontSize="16"
-                                           Foreground="DarkRed"></onePointControls:FontIcon>
+                                           Foreground="DarkRed" />
             </Button>
             <Button Width="32" Height="32"
                     Classes="NoBorder"
                     IsEnabled="False"
                     Name="SettingBtn">
                 <onePointControls:FontIcon Glyph="&#xE713;"
-                                           FontSize="16"></onePointControls:FontIcon>
+                                           FontSize="16" />
             </Button>
         </StackPanel>
     </onePointControls:SettingCard>

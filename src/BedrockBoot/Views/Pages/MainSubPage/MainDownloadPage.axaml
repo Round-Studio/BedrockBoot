@@ -1,29 +1,28 @@
 ﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
-                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
-                 xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
-                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainDownloadPage">
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                       xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                       x:Class="BedrockBoot.Views.Pages.MainSubPage.MainDownloadPage">
     <entry:BedrockBootPage.HeaderView>
         <Grid Width="400"
               HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
+
             <onePointControls:LineTextBlock Grid.Column="0"
                                             Margin="0"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Left"
                                             FontSize="28"
                                             FontWeight="Bold"
-                                            Text="下载"></onePointControls:LineTextBlock>
-            
+                                            Text="下载" />
+
             <ListBox Grid.Column="1"
                      Classes="Segmented"
                      Margin="12,0,0,0"
@@ -35,17 +34,17 @@
                     <StackPanel Orientation="Horizontal">
                         <onePointControls:FontIcon Glyph="&#xE7FC;"
                                                    VerticalAlignment="Center"
-                                                   FontSize="16"></onePointControls:FontIcon>
+                                                   FontSize="16" />
                         <TextBlock Margin="8,4,0,4">实例</TextBlock>
                     </StackPanel>
                 </ListBoxItem>
-                
+
                 <ListBoxItem Classes="Segmented"
                              Tag="Assets">
                     <StackPanel Orientation="Horizontal">
                         <onePointControls:FontIcon Glyph="&#xE728;"
                                                    VerticalAlignment="Center"
-                                                   FontSize="16"></onePointControls:FontIcon>
+                                                   FontSize="16" />
                         <TextBlock Margin="8,4,0,4">资源</TextBlock>
                     </StackPanel>
                 </ListBoxItem>
@@ -53,6 +52,6 @@
         </Grid>
     </entry:BedrockBootPage.HeaderView>
     <Grid>
-        <navigation:NavigationFrame Name="NavFrame"/>
+        <navigation:NavigationFrame Name="NavFrame" />
     </Grid>
 </entry:BedrockBootPage>

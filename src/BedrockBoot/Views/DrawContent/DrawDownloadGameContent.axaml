@@ -11,55 +11,60 @@
             <StackPanel Margin="15,0,15,15">
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">基础设置</TextBlock>
-                
+                           FontSize="14">
+                    基础设置
+                </TextBlock>
+
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE8AC;"
                                               Header="实例名称"
                                               Description="实例在启动器内显示的名称">
                     <TextBox Width="400"
-                             Name="InstallName"></TextBox>
+                             Name="InstallName" />
                 </onePointControls:SettingCard>
-                
+
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE8B7;"
                                               Header="安装路径"
                                               Description="实例安装的位置">
                     <ComboBox Width="400"
                               Name="InstallFolder"
-                              SelectionChanged="InstallFolder_OnSelectionChanged"></ComboBox>
+                              SelectionChanged="InstallFolder_OnSelectionChanged" />
                 </onePointControls:SettingCard>
-                
+
                 <Grid Name="SourceGrid">
                     <StackPanel>
                         <TextBlock Margin="5"
                                    FontWeight="Bold"
-                                   FontSize="14">选择源</TextBlock>
-                
+                                   FontSize="14">
+                            选择源
+                        </TextBlock>
+
                         <ListBox HorizontalAlignment="Stretch"
                                  Margin="5"
-                                 Name="SourceSelBox">
-                        </ListBox>
+                                 Name="SourceSelBox" />
                     </StackPanel>
-                    
+
                     <onePointControls:ProgressRing HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
                                                    Margin="0,80,0,-80"
                                                    Width="36" Height="36"
-                                                   Name="LoadRing"></onePointControls:ProgressRing>
+                                                   Name="LoadRing" />
                 </Grid>
             </StackPanel>
         </ScrollViewer>
-        
+
         <Grid Grid.Row="1"
               Margin="15,0,15,5">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Left">
                 <CheckBox Name="IsUsePackIns"
                           IsVisible="False"
-                          IsCheckedChanged="IsUsePackIns_OnIsCheckedChanged">使用安装包缓存</CheckBox>
+                          IsCheckedChanged="IsUsePackIns_OnIsCheckedChanged">
+                    使用安装包缓存
+                </CheckBox>
             </StackPanel>
-            
+
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
                 <Button Margin="5"
@@ -74,7 +79,7 @@
                         <onePointControls:FontIcon Glyph="&#xE896;"
                                                    VerticalAlignment="Center"
                                                    Margin="0,0,12,0"
-                                                   FontSize="16"></onePointControls:FontIcon>
+                                                   FontSize="16" />
                         <TextBlock FontSize="14">开始安装</TextBlock>
                     </StackPanel>
                 </Button>

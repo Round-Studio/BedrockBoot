@@ -26,12 +26,14 @@ public partial class MainHomePage : BedrockBootPage
                 try
                 {
                     MainGrid.Children.Add(DynamicLayoutLoader.LoadXamlFromFile(
-                        GlobalModel.Config.Data.HomeConfig.HomeXmlFiles[GlobalModel.Config.Data.HomeConfig.HomeXmlSelIndex]));
+                        GlobalModel.Config.Data.HomeConfig.HomeXmlFiles[
+                            GlobalModel.Config.Data.HomeConfig.HomeXmlSelIndex]));
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
+
                 break;
             case HomeType.News:
                 MainGrid.Children.Add(new GameUpdateNewsWidget());

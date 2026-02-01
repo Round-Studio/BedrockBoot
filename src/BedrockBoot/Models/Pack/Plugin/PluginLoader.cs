@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using BedrockBoot.Models.Global;
 using Round.SDK.Entry;
 using Round.SDK.Plugin;
@@ -10,9 +11,9 @@ namespace BedrockBoot.Models.Pack.Plugin;
 
 public class PluginLoader
 {
-    public static List<PackConfig> Plugins { get; set; } = new List<PackConfig>();
+    public static List<PackConfig> Plugins { get; set; } = new();
 
-    public static async System.Threading.Tasks.Task LoadAll()
+    public static async Task LoadAll()
     {
         Console.WriteLine(@"开始加载插件。");
         if (!Directory.Exists(PathsList.PluginPath)) Directory.CreateDirectory(PathsList.PluginPath);
@@ -20,7 +21,6 @@ public class PluginLoader
 
         var files = Directory.GetFiles(PathsList.PluginPath, "*.rplck");
         foreach (var file in files)
-        {
             try
             {
                 var loader = new PlugLoader(typeof(IPluginBedrockBoot))
@@ -38,6 +38,5 @@ public class PluginLoader
             catch
             {
             }
-        }
     }
 }

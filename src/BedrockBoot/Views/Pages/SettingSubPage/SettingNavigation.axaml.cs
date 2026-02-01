@@ -1,8 +1,5 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.OtherPage;
 

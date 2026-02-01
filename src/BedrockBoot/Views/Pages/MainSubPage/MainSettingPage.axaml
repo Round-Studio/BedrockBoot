@@ -1,22 +1,19 @@
 ﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             xmlns:breadcrumb="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.Breadcrumb;assembly=OnePointUI.Avalonia"
-             xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
-             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
-             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Pages.MainSubPage.MainSettingPage">
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:breadcrumb="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.Breadcrumb;assembly=OnePointUI.Avalonia"
+                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                       xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                       x:Class="BedrockBoot.Views.Pages.MainSubPage.MainSettingPage">
     <entry:BedrockBootPage.HeaderView>
         <breadcrumb:BreadcrumbBar HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
                                   RootItem="设置"
-                                  Name="BreadcrumbBar">
-        </breadcrumb:BreadcrumbBar>
+                                  Name="BreadcrumbBar" />
     </entry:BedrockBootPage.HeaderView>
     <Grid>
-        <navigation:NavigationFrame Name="SettingFrame"/>
+        <navigation:NavigationFrame Name="SettingFrame" />
     </Grid>
 </entry:BedrockBootPage>

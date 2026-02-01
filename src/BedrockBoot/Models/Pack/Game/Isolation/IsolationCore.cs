@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
@@ -12,14 +10,14 @@ namespace BedrockBoot.Models.Pack.Game.Isolation;
 
 public class IsolationCore
 {
-    public VersionConfig VersionConfig { get; set; }
-    public string RealRootPath => GetRealPath(VersionConfig);
-    public string RootPath => GetInstanceConfigRootPath(VersionConfig);
-
     public IsolationCore(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
     }
+
+    public VersionConfig VersionConfig { get; set; }
+    public string RealRootPath => GetRealPath(VersionConfig);
+    public string RootPath => GetInstanceConfigRootPath(VersionConfig);
 
     public void Init(bool isForced = false)
     {
@@ -30,15 +28,14 @@ public class IsolationCore
 
         if (folderType == DirectoryType.SymbolicLink)
             Directory.Delete(RootPath);
-        
-        if(!isForced && Directory.Exists(RootPath))
+
+        if (!isForced && Directory.Exists(RootPath))
             Directory.Delete(RootPath);
 
         if (!Directory.Exists(RealRootPath))
             Directory.CreateDirectory(RealRootPath);
 
         if (folderType == DirectoryType.SymbolicLink)
-        {
             try
             {
                 Directory.Delete(RootPath, true);
@@ -47,7 +44,6 @@ public class IsolationCore
             catch
             {
             }
-        }
 
         if (!Directory.Exists(RootPath))
             Directory.CreateSymbolicLink(RootPath, RealRootPath);
@@ -67,17 +63,16 @@ public class IsolationCore
 
         return PathsList.GamePublicRootPath;
     }
-    
+
     public static string GetInstanceConfigRootPath(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe"
             );
-        }
-        else if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+
+        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
             if (versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
             {
@@ -98,7 +93,7 @@ public class IsolationCore
                 return dir;
             }
         }
-        
+
         return string.Empty;
     }
 

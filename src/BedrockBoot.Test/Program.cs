@@ -2,7 +2,7 @@
 
 public class Program
 {
-    static async Task Main()
+    private static async Task Main()
     {
         var bedrockCore = new BedrockCore();
         bedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release).Wait();

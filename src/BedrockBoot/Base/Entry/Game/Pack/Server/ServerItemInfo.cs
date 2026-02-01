@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿namespace BedrockBoot.Base.Entry.Game.Pack.Server;
 
-namespace BedrockBoot.Base.Entry.Game.Pack.Server;
 public class ServerItemInfo
 {
     public string ServerName { get; set; } = "第三方服务器";

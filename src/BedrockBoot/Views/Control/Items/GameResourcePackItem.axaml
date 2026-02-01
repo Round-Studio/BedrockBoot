@@ -15,14 +15,14 @@
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <style:MinecraftTextBlock Name="PackName"
-                                          TextWrapping="Wrap"></style:MinecraftTextBlock>
+                                          TextWrapping="Wrap" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
         <onePointControls:SettingCard.Description>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <style:MinecraftTextBlock Name="PackDescription"
-                                          TextWrapping="Wrap"></style:MinecraftTextBlock>
+                                          TextWrapping="Wrap" />
             </StackPanel>
         </onePointControls:SettingCard.Description>
         <StackPanel Orientation="Horizontal"
@@ -34,7 +34,7 @@
                     Name="DeleteBtn">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
                                            FontSize="16"
-                                           Foreground="DarkRed"></onePointControls:FontIcon>
+                                           Foreground="DarkRed" />
             </Button>
         </StackPanel>
     </onePointControls:SettingCard>

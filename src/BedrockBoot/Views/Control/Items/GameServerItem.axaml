@@ -16,32 +16,32 @@
                         Spacing="8">
                 <TextBlock Name="ServerName"
                            VerticalAlignment="Center"
-                           Text="ServerName"></TextBlock>
-                
+                           Text="ServerName" />
+
                 <onePointControls:LabelBox VerticalAlignment="Center"
                                            Name="DelayBox"
-                                           Text="-1 ms"></onePointControls:LabelBox>
-                
+                                           Text="-1 ms" />
+
                 <onePointControls:LabelBox VerticalAlignment="Center"
                                            Name="PlayerBox"
                                            Background="Green"
                                            IsVisible="False"
-                                           Text="???"></onePointControls:LabelBox>
+                                           Text="???" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
         <onePointControls:SettingCard.Description>
             <StackPanel Spacing="4">
                 <TextBlock Name="ServerDescription"
-                           Text="ServerDescription"></TextBlock>
-                
+                           Text="ServerDescription" />
+
                 <style:MinecraftTextBlock Name="ServerMotd"
                                           IsVisible="False"
                                           Margin="0"
                                           HorizontalAlignment="Left"
-                                          TextWrapping="Wrap"></style:MinecraftTextBlock>
+                                          TextWrapping="Wrap" />
             </StackPanel>
         </onePointControls:SettingCard.Description>
-        
+
         <StackPanel Spacing="8"
                     Orientation="Horizontal">
             <Button Width="32" Height="32"
@@ -50,9 +50,9 @@
                     Name="DeleteBtn">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
                                            FontSize="16"
-                                           Foreground="DarkRed"></onePointControls:FontIcon>
+                                           Foreground="DarkRed" />
             </Button>
-            
+
             <Button Height="32"
                     Classes="NoBorder"
                     IsVisible="False"
@@ -63,9 +63,9 @@
                 <StackPanel Orientation="Horizontal"
                             Spacing="6">
                     <onePointControls:FontIcon Glyph="&#xE709;"
-                                               FontSize="16"></onePointControls:FontIcon>
-                    
-                    <TextBlock Text="启动"></TextBlock>
+                                               FontSize="16" />
+
+                    <TextBlock Text="启动" />
                 </StackPanel>
             </Button>
         </StackPanel>

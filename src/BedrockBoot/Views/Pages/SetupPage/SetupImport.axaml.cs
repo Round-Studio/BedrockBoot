@@ -1,8 +1,6 @@
 ﻿using System.IO;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
@@ -24,7 +22,7 @@ public partial class SetupImport : UserControl
     {
         var dialog = new DialogAddGameFolderContent();
 
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "添加游戏根目录",
             Content = dialog,
@@ -39,7 +37,7 @@ public partial class SetupImport : UserControl
                         ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                         : dialog.FolderName;
 
-                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo()
+                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                     {
                         GameFolderPath = dialog.FolderPath,
                         GameFolderName = name

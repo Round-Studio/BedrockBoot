@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 
 namespace BedrockBoot.Views.Pages.SetupPage;
 
 public partial class SetupRoot : UserControl
 {
-    
-    public Dictionary<string, object> PageDictionary = new Dictionary<string, object>()
+    public Dictionary<string, object> PageDictionary = new()
     {
         ["欢迎"] = new SetupWelcome(),
         ["个性化"] = new SetupStyle(),
@@ -18,15 +15,15 @@ public partial class SetupRoot : UserControl
         ["完成"] = new SetupCompleted()
     };
 
-    public int StepIndex = 0;
+    public int StepIndex;
 
     public SetupRoot()
     {
         InitializeComponent();
-        
+
         PageDictionary.ToList().ForEach(x =>
         {
-            TopProgressBar.Items.Add(new TabItem()
+            TopProgressBar.Items.Add(new TabItem
             {
                 Header = x.Key
             });

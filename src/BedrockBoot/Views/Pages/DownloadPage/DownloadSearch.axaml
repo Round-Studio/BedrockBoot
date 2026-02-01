@@ -7,15 +7,14 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.DownloadSearch">
     <Grid RowDefinitions="Auto,*">
-        <Grid Grid.Row="0" 
+        <Grid Grid.Row="0"
               Margin="15,10,15,0"
               ColumnDefinitions="*,Auto">
             <TextBox Grid.Column="0"
                      Margin="5"
                      Name="KeyBox"
-                     Watermark="键入关键词以搜索...">
-            </TextBox>
-            
+                     Watermark="键入关键词以搜索..." />
+
             <Button Grid.Column="1"
                     Width="120"
                     Margin="5"
@@ -27,14 +26,14 @@
                             Spacing="8">
                     <onePointControls:FontIcon Glyph="&#xE71E;"
                                                VerticalAlignment="Center"
-                                               FontSize="15"></onePointControls:FontIcon>
-                    
-                    <TextBlock Text="搜索"></TextBlock>
+                                               FontSize="15" />
+
+                    <TextBlock Text="搜索" />
                 </StackPanel>
             </Button>
         </Grid>
-        
+
         <navigation:NavigationFrame Grid.Row="1"
-                                    Name="NavigationFrame"/>
+                                    Name="NavigationFrame" />
     </Grid>
 </UserControl>

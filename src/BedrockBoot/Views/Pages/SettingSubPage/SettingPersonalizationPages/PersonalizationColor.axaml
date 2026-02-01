@@ -17,17 +17,17 @@
                          SelectedIndex="0"
                          SelectionChanged="ChooseTheme_OnSelectionChanged">
                     <ListBoxItem Content="深色"
-                                 Classes="Segmented"></ListBoxItem>
-                    
+                                 Classes="Segmented" />
+
                     <ListBoxItem Content="浅色"
-                                 Classes="Segmented"></ListBoxItem>
+                                 Classes="Segmented" />
                 </ListBox>
             </onePointControls:SettingCard>
-            
+
             <view:ItemView Name="ColorsView"
                            MaxWidth="540"
                            HorizontalAlignment="Left"
-                           SelectionChanged="ColorsView_OnSelectionChanged"/>
+                           SelectionChanged="ColorsView_OnSelectionChanged" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

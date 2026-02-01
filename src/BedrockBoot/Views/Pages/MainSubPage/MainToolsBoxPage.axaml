@@ -1,13 +1,13 @@
 ﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
-                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                 xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
-                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
-                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainToolsBoxPage">
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                       xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                       xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+                       xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+                       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                       x:Class="BedrockBoot.Views.Pages.MainSubPage.MainToolsBoxPage">
     <entry:BedrockBootPage.HeaderView>
         <onePointControls:LineTextBlock Grid.Row="0"
                                         Margin="0"
@@ -15,16 +15,18 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
-                                        Text="工具箱"></onePointControls:LineTextBlock>
+                                        Text="工具箱" />
     </entry:BedrockBootPage.HeaderView>
-    
+
     <Grid>
         <ScrollViewer>
             <StackPanel Margin="15">
                 <TextBlock Margin="5,0,5,0"
                            FontWeight="Bold"
-                           FontSize="14">帮助</TextBlock>
-            
+                           FontSize="14">
+                    帮助
+                </TextBlock>
+
                 <WrapPanel Margin="5,10,5,5">
                     <items:BorderCard Width="240"
                                       Height="120">
@@ -34,35 +36,41 @@
                                 <onePointControls:FontIcon Grid.Column="0"
                                                            Glyph="&#xECAA;"
                                                            FontSize="42"
-                                                           Margin="5"></onePointControls:FontIcon>
-                            
+                                                           Margin="5" />
+
                                 <StackPanel Grid.Column="1">
                                     <TextBlock Margin="2"
-                                               FontSize="18">游戏框架</TextBlock>
-                                
+                                               FontSize="18">
+                                        游戏框架
+                                    </TextBlock>
+
                                     <TextBlock Margin="2"
-                                               FontSize="11">前往 MCAPPX 网站下载游戏框架</TextBlock>
+                                               FontSize="11">
+                                        前往 MCAPPX 网站下载游戏框架
+                                    </TextBlock>
                                 </StackPanel>
                             </Grid>
-                        
+
                             <StackPanel Grid.Row="1"
                                         HorizontalAlignment="Right"
                                         Orientation="Horizontal">
                                 <Button Padding="12,8"
                                         Margin="5"
                                         Name="OpenGameFrameBtn"
-                                        Click="OpenGameFrameBtn_OnClick">转到链接</Button>
+                                        Click="OpenGameFrameBtn_OnClick">
+                                    转到链接
+                                </Button>
                             </StackPanel>
                         </Grid>
                     </items:BorderCard>
                 </WrapPanel>
             </StackPanel>
         </ScrollViewer>
-        
+
         <notice:InfoCard HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          IsVisible="False"
                          BigTitle="某野喔"
-                         Message="工具箱内没有工具 awa&#x0A;可以催促开发者火速添加.jpg"/>
+                         Message="工具箱内没有工具 awa&#x0A;可以催促开发者火速添加.jpg" />
     </Grid>
 </entry:BedrockBootPage>

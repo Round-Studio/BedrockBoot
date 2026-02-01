@@ -8,17 +8,17 @@ public class PackageIdentity
     public string Publisher { get; set; }
     public string Version { get; set; }
     public string ProcessorArchitecture { get; set; }
-    
+
     public static PackageIdentity ParseFromXml(string xmlContent)
     {
-        XDocument doc = XDocument.Parse(xmlContent);
+        var doc = XDocument.Parse(xmlContent);
         XNamespace ns = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
-        
-        XElement identity = doc.Root?.Element(ns + "Identity");
-        
+
+        var identity = doc.Root?.Element(ns + "Identity");
+
         if (identity == null)
             return null;
-            
+
         return new PackageIdentity
         {
             Name = identity.Attribute("Name")?.Value,

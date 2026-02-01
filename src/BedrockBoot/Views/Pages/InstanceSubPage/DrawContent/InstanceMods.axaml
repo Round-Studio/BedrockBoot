@@ -18,11 +18,11 @@
                         <onePointControls:FontIcon Glyph="&#xE71E;"
                                                    VerticalAlignment="Center"
                                                    FontSize="16"
-                                                   Margin="5,5,12,5"></onePointControls:FontIcon>
+                                                   Margin="5,5,12,5" />
                         <TextBox Name="SearchBox"
                                  HorizontalAlignment="Stretch"
                                  TextChanged="SearchBox_OnTextChanged"
-                                 DockPanel.Dock="Right"></TextBox>
+                                 DockPanel.Dock="Right" />
                     </DockPanel>
                 </Grid>
             </items:BorderCard>
@@ -37,9 +37,9 @@
                                 Width="32"
                                 Height="32">
                             <onePointControls:FontIcon Glyph="&#xE8B7;"
-                                                       VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                       VerticalAlignment="Center" />
                         </Button>
-                        
+
                         <Button Classes="NoBorder"
                                 Name="ImportModBtn"
                                 Click="ImportModBtn_OnClick"
@@ -47,7 +47,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <onePointControls:FontIcon Glyph="&#xE710;"
                                                            VerticalAlignment="Center"
-                                                           Margin="0,1,8,0"></onePointControls:FontIcon>
+                                                           Margin="0,1,8,0" />
                                 <TextBlock>导入模组</TextBlock>
                             </StackPanel>
                         </Button>
@@ -55,20 +55,19 @@
                 </Grid>
             </items:BorderCard>
         </Grid>
-        
+
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="15,0,15,15"
-                       HorizontalAlignment="Stretch"
-                       Name="ResultBox">
-            </StackPanel>
+                        HorizontalAlignment="Stretch"
+                        Name="ResultBox" />
         </ScrollViewer>
-        
+
         <notice:InfoCard Grid.Row="1"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
                          BigTitle="空空如也"
-                         Message="输入的关键词无效 或 这个实例没有模组"/>
+                         Message="输入的关键词无效 或 这个实例没有模组" />
     </Grid>
 </UserControl>

@@ -1,84 +1,83 @@
 <windowFrame:OnePointWindow xmlns="https://github.com/avaloniaui"
-                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:vm="using:BedrockBoot.ViewModels"
-                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
-                xmlns:pages="clr-namespace:BedrockBoot.Views.Pages"
-                xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
-                xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
-                mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
-                x:Class="BedrockBoot.Views.Windows.MainWindow"
-                x:DataType="vm:MainWindowViewModel"
-                Width="900" Height="520"
-                MinWidth="900" MinHeight="520"
-                IsMainWindow="True"
-                Closing="Window_OnClosing"
-                Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
-                Background="Transparent"
-                Title="BedrockBoot">
-        <windowFrame:OnePointWindow.TitleBarContent>
-                <StackPanel Orientation="Horizontal">
-                        <onePointControls:LabelBox Text="2"
-                                                   Name="VersionBox"
-                                                   FontSize="14"
-                                                   Foreground="White"
-                                                   Margin="0,0,5,0"
-                                                   VerticalAlignment="Center"/>
-                        
-                        <onePointControls:LabelBox Text="Beta"
-                                                   FontSize="14"
-                                                   Foreground="White"
-                                                   Background="Orange"
-                                                   Margin="0,0,5,0"
-                                                   VerticalAlignment="Center"/>
-                        
-                        <onePointControls:LabelBox Text="Build Time"
-                                                   FontSize="14"
-                                                   Foreground="Black"
-                                                   Background="White"
-                                                   Name="BuildTime"
-                                                   IsVisible="False"
-                                                   Margin="0,0,5,0"
-                                                   VerticalAlignment="Center"/>
-                        
-                        <onePointControls:LabelBox Text="Debug"
-                                                   FontSize="14"
-                                                   Foreground="White"
-                                                   Background="Green"
-                                                   Name="DebugModule"
-                                                   IsVisible="False"
-                                                   Margin="0,0,5,0"
-                                                   VerticalAlignment="Center"/>
-                </StackPanel>
-        </windowFrame:OnePointWindow.TitleBarContent>
-        <windowFrame:OnePointWindow.MainContent>
-            <Panel>
-                <Grid>
-                    <view:AnimationBackground Name="AnimationBackground"/>
-                    
-                    <Grid Name="AccentBackgroundBox"
-                          Background="{DynamicResource AccentBackgroundBrush}"
-                          IsVisible="False"></Grid>
-            
-                    <Grid Name="BackgroundBox"
-                          Margin="0"
-                          IsVisible="False">
-                        <Grid.Effect>
-                            <BlurEffect Radius="0"></BlurEffect>
-                        </Grid.Effect>
-                        <Grid Name="BackgroundImage"></Grid>
-                        <Grid Name="BackgroundImageOpacity"
-                              Opacity="0"
-                              Background="{DynamicResource BackgroundBrush}"></Grid>
-                    </Grid>
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:vm="using:BedrockBoot.ViewModels"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
+                            xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                            xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                            xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+                            mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
+                            x:Class="BedrockBoot.Views.Windows.MainWindow"
+                            x:DataType="vm:MainWindowViewModel"
+                            Width="900" Height="520"
+                            MinWidth="900" MinHeight="520"
+                            IsMainWindow="True"
+                            Closing="Window_OnClosing"
+                            Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
+                            Background="Transparent"
+                            Title="BedrockBoot">
+    <windowFrame:OnePointWindow.TitleBarContent>
+        <StackPanel Orientation="Horizontal">
+            <onePointControls:LabelBox Text="2"
+                                       Name="VersionBox"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center" />
+
+            <onePointControls:LabelBox Text="Beta"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       Background="Orange"
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center" />
+
+            <onePointControls:LabelBox Text="Build Time"
+                                       FontSize="14"
+                                       Foreground="Black"
+                                       Background="White"
+                                       Name="BuildTime"
+                                       IsVisible="False"
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center" />
+
+            <onePointControls:LabelBox Text="Debug"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       Background="Green"
+                                       Name="DebugModule"
+                                       IsVisible="False"
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center" />
+        </StackPanel>
+    </windowFrame:OnePointWindow.TitleBarContent>
+    <windowFrame:OnePointWindow.MainContent>
+        <Panel>
+            <Grid>
+                <view:AnimationBackground Name="AnimationBackground" />
+
+                <Grid Name="AccentBackgroundBox"
+                      Background="{DynamicResource AccentBackgroundBrush}"
+                      IsVisible="False" />
+
+                <Grid Name="BackgroundBox"
+                      Margin="0"
+                      IsVisible="False">
+                    <Grid.Effect>
+                        <BlurEffect Radius="0" />
+                    </Grid.Effect>
+                    <Grid Name="BackgroundImage" />
+                    <Grid Name="BackgroundImageOpacity"
+                          Opacity="0"
+                          Background="{DynamicResource BackgroundBrush}" />
                 </Grid>
-                
-                <navigation:NavigationFrame Name="MainFrame"
-                                            HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Stretch"
-                                            Margin="0"/>
-            </Panel>
-        </windowFrame:OnePointWindow.MainContent>
+            </Grid>
+
+            <navigation:NavigationFrame Name="MainFrame"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Margin="0" />
+        </Panel>
+    </windowFrame:OnePointWindow.MainContent>
 </windowFrame:OnePointWindow>

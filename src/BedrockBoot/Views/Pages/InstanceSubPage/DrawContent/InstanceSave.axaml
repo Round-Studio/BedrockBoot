@@ -16,48 +16,47 @@
                     <onePointControls:FontIcon Glyph="&#xEBDA;"
                                                VerticalAlignment="Center"
                                                FontSize="16"
-                                               Margin="5,5,12,5"></onePointControls:FontIcon>
-                    
+                                               Margin="5,5,12,5" />
+
                     <ComboBox HorizontalAlignment="Stretch"
                               Name="UserChooseBox"
                               SelectionChanged="UserChooseBox_OnSelectionChanged"
-                              DockPanel.Dock="Right"></ComboBox>
+                              DockPanel.Dock="Right" />
                 </DockPanel>
-                        
+
                 <Border Grid.Column="1"
                         Width="1"
                         VerticalAlignment="Stretch"
                         Background="{DynamicResource PrimaryDisabledForegroundBrush}"
-                        Margin="0,5,0,5"></Border>
-                        
+                        Margin="0,5,0,5" />
+
                 <DockPanel Grid.Column="2"
                            HorizontalAlignment="Stretch"
                            LastChildFill="True">
                     <onePointControls:FontIcon Glyph="&#xE71E;"
                                                VerticalAlignment="Center"
                                                FontSize="16"
-                                               Margin="12,5,12,5"></onePointControls:FontIcon>
+                                               Margin="12,5,12,5" />
                     <TextBox Name="SearchBox"
                              TextChanged="SearchBox_OnTextChanged"
                              HorizontalAlignment="Stretch"
-                             DockPanel.Dock="Right"></TextBox>
+                             DockPanel.Dock="Right" />
                 </DockPanel>
             </Grid>
         </items:BorderCard>
-        
+
         <ScrollViewer Grid.Row="1">
             <WrapPanel Margin="15,0,15,15"
                        HorizontalAlignment="Stretch"
-                       Name="SavesBox">
-            </WrapPanel>
+                       Name="SavesBox" />
         </ScrollViewer>
-        
+
         <notice:InfoCard Grid.Row="1"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
                          BigTitle="空空如也"
-                         Message="输入的关键词无效 或 这个用户没有存档"/>
+                         Message="输入的关键词无效 或 这个用户没有存档" />
     </Grid>
 </UserControl>

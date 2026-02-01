@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Inject.dll" />
+        <None Remove="Inject.dll"/>
     </ItemGroup>
 
 </Project>

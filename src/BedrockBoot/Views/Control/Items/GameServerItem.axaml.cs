@@ -1,15 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Entry.Game.Pack.Server;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Server;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
@@ -19,8 +14,8 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameServerItem : UserControl
 {
-    public Action<ServerItemInfo>? DeleteServer { get; set; }
-    private ServerItemInfo ServerItemInfo;
+    private readonly ServerItemInfo ServerItemInfo;
+
     public GameServerItem()
     {
         InitializeComponent();
@@ -44,13 +39,15 @@ public partial class GameServerItem : UserControl
                     ServerMotd.MinecraftText = string.IsNullOrEmpty(sta.MOTD) ? "" : sta.MOTD;
                     DelayBox.Text = $"{sta.Delay} ms";
                     if (sta.Players != null)
+                    {
                         PlayerBox.Text = $"{sta.Players.Online} / {sta.Players.Max}";
+                    }
                     else
                     {
                         ServerMotd.IsVisible = false;
                         PlayerBox.IsVisible = false;
-                        DelayBox.Text = $"-1 ms";
-                        DelayBox.Text = $"无法连接至服务器";
+                        DelayBox.Text = "-1 ms";
+                        DelayBox.Text = "无法连接至服务器";
                         DelayBox.Background = Brushes.DarkRed;
                     }
                 });
@@ -59,7 +56,7 @@ public partial class GameServerItem : UserControl
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    DelayBox.Text = $"无法连接至服务器";
+                    DelayBox.Text = "无法连接至服务器";
                     DelayBox.Background = Brushes.DarkRed;
                     ServerMotd.IsVisible = false;
                 });
@@ -67,18 +64,17 @@ public partial class GameServerItem : UserControl
         });
     }
 
+    public Action<ServerItemInfo>? DeleteServer { get; set; }
+
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "删除服务器",
             Content = "您确定要删除吗，这将永远无法恢复。",
             CloseButtonText = "确定",
             PrimaryButtonText = "取消",
-            CloseAction = () =>
-            {
-                DeleteServer?.Invoke(ServerItemInfo);
-            }
+            CloseAction = () => { DeleteServer?.Invoke(ServerItemInfo); }
         });
     }
 

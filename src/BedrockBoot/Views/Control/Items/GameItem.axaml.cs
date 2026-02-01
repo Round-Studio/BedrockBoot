@@ -1,25 +1,18 @@
 ﻿using System;
-using Windows.Foundation;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
-using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameItem : UserControl
 {
-    public VersionConfig VersionInfo { get; set; }
-
     public GameItem()
     {
         InitializeComponent();
@@ -28,9 +21,11 @@ public partial class GameItem : UserControl
     public GameItem(VersionConfig info) : this()
     {
         VersionInfo = info;
-        
+
         Update();
     }
+
+    public VersionConfig VersionInfo { get; set; }
 
     public void Update()
     {
@@ -39,16 +34,14 @@ public partial class GameItem : UserControl
 
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
-        
+
         var image = "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png";
         if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
-        {
             image = "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png";
-        }
-        
+
         Card.ImageIcon = GetImage(image);
     }
-    
+
     public Bitmap GetImage(string url)
     {
         var uri = new Uri(url);
@@ -66,6 +59,7 @@ public partial class GameItem : UserControl
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(VersionInfo),$"{VersionInfo.Info.VersionName} - {VersionInfo.Info.Version}");
+        GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(VersionInfo),
+            $"{VersionInfo.Info.VersionName} - {VersionInfo.Info.Version}");
     }
 }

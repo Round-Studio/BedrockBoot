@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Versioning;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
-using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
@@ -22,18 +16,15 @@ using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
 
 public partial class MainManager : BedrockBootPage
 {
-    public bool IsEditMode { get; set; } = false;
     private FileSystemWatcher _configWatcher;
-    public static MainManager Instance { get; private set; }
-    private string SearchKey = "";
     private string GameType = "";
+    private string SearchKey = "";
 
     public MainManager()
     {
@@ -47,6 +38,9 @@ public partial class MainManager : BedrockBootPage
 #endif
     }
 
+    public bool IsEditMode { get; set; }
+    public static MainManager Instance { get; private set; }
+
     private void InitializeConfigWatcher()
     {
         // 先清理现有的监听器
@@ -59,7 +53,7 @@ public partial class MainManager : BedrockBootPage
 
             // 获取当前选中的游戏文件夹路径
             var currentFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
-            string gameFolderPath = currentFolder.GameFolderPath;
+            var gameFolderPath = currentFolder.GameFolderPath;
 
             if (!Directory.Exists(gameFolderPath))
                 return;
@@ -103,14 +97,12 @@ public partial class MainManager : BedrockBootPage
         {
             // 只在文件在 bedrock_versions 目录或其子目录中时刷新
             if (e.FullPath.Contains("bedrock_versions", StringComparison.OrdinalIgnoreCase))
-            {
                 // 在主线程中更新UI
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     Console.WriteLine($@"检测到文件变化: {e.ChangeType} - {e.FullPath}");
                     UpdateGameList();
                 });
-            }
         }
         catch (Exception ex)
         {
@@ -144,7 +136,7 @@ public partial class MainManager : BedrockBootPage
 
         GlobalModel.Config.Data.GameFolders.ForEach(folder =>
         {
-            FolderList.Items.Add(new ListBoxItem()
+            FolderList.Items.Add(new ListBoxItem
             {
                 Content = new GameFolderItem(folder),
                 VerticalAlignment = VerticalAlignment.Center
@@ -171,7 +163,7 @@ public partial class MainManager : BedrockBootPage
         // 安全校验索引
         if (GlobalModel.Config.Data.GameFolders.Count == 0)
         {
-            ShowNoGamesUI(isNullBecauseNoFolder: true);
+            ShowNoGamesUI(true);
             IsEditMode = true;
             return;
         }
@@ -190,7 +182,7 @@ public partial class MainManager : BedrockBootPage
         if (!Directory.Exists(versionsPath))
         {
             // 目录不存在 → 显示“无实例”，但可提示用户
-            ShowNoGamesUI(isNullBecauseNoFolder: false);
+            ShowNoGamesUI(false);
             IsEditMode = true;
             return;
         }
@@ -227,10 +219,7 @@ public partial class MainManager : BedrockBootPage
 
         if (lst.Count > 0)
         {
-            foreach (var item in lst)
-            {
-                GameList.Children.Add(new GameItem(item));
-            }
+            foreach (var item in lst) GameList.Children.Add(new GameItem(item));
 
             GamesLoad.IsVisible = false;
             GameScro.IsVisible = true;
@@ -261,7 +250,7 @@ public partial class MainManager : BedrockBootPage
     {
         var dialog = new DialogAddGameFolderContent();
 
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "添加游戏根目录",
             Content = dialog,
@@ -277,7 +266,7 @@ public partial class MainManager : BedrockBootPage
                         ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                         : dialog.FolderName;
 
-                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo()
+                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                     {
                         GameFolderPath = dialog.FolderPath,
                         GameFolderName = name
@@ -313,7 +302,7 @@ public partial class MainManager : BedrockBootPage
     {
         var dialog = new DialogImportGameContent();
 
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "导入游戏安装包",
             Content = dialog,
@@ -330,7 +319,7 @@ public partial class MainManager : BedrockBootPage
 
                 if (string.IsNullOrEmpty(packPath) || !File.Exists(packPath))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                     {
                         Title = "错误",
                         Message = $"游戏包 {packPath} 无效",
@@ -341,7 +330,7 @@ public partial class MainManager : BedrockBootPage
 
                 if (string.IsNullOrEmpty(installFolder) || !Directory.Exists(installFolder))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                     {
                         Title = "错误",
                         Message = $"文件夹 {installFolder} 无效",
@@ -352,10 +341,10 @@ public partial class MainManager : BedrockBootPage
 
                 if (string.IsNullOrEmpty(installName))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                     {
                         Title = "错误",
-                        Message = $"请输入有效的实例名称",
+                        Message = "请输入有效的实例名称",
                         NoticeType = NoticeType.Info
                     });
                     return;

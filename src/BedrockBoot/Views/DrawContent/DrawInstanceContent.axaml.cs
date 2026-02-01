@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
@@ -18,9 +14,6 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawInstanceContent : UserControl
 {
-    public VersionConfig VersionInfo { get; set; }
-    public bool IsEditMode { get; set; } = false;
-
     public DrawInstanceContent()
     {
         InitializeComponent();
@@ -36,29 +29,31 @@ public partial class DrawInstanceContent : UserControl
     public DrawInstanceContent(VersionConfig info) : this()
     {
         VersionInfo = info;
-        
+
         Update();
     }
+
+    public VersionConfig VersionInfo { get; set; }
+    public bool IsEditMode { get; set; }
 
     public void Update()
     {
         IsEditMode = false;
-        
+
         var image = "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png";
         if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
-        {
             image = "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png";
-        }
 
-        IconBox.Background = new ImageBrush()
+        IconBox.Background = new ImageBrush
         {
             Source = GetImage(image)
         };
-        
+
         InstanceFrame.NavigateTo(new InstanceInfo(VersionInfo));
         VersionName.Text = VersionInfo.Info.VersionName;
-        VersionReady.Text = $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
-        
+        VersionReady.Text =
+            $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
+
         IsEditMode = true;
     }
 
@@ -78,7 +73,7 @@ public partial class DrawInstanceContent : UserControl
     {
         if (IsEditMode)
         {
-            var tag = ((TabItem)(InstanceTabControl.SelectedItem)).Tag.ToString();
+            var tag = ((TabItem)InstanceTabControl.SelectedItem).Tag.ToString();
 
             switch (tag)
             {

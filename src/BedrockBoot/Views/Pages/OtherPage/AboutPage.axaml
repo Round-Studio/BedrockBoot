@@ -13,67 +13,66 @@
                     <Image Source="avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png"
                            Width="64"
                            Height="64"
-                           HorizontalAlignment="Left"></Image>
-                
+                           HorizontalAlignment="Left" />
+
                     <onePointControls:LineTextBlock Text="BedrockBoot"
-                                                    Margin="12,8,0,8"/>
+                                                    Margin="12,8,0,8" />
                 </StackPanel>
             </Grid>
-            
+
             <TextBlock Margin="5,0,0,8"
                        FontSize="16"
-                       Text="开发者"></TextBlock>
-            
-            <TextBlock Margin="20,1" Text="BedrockBoot 本体：Dime，YoumiHa"></TextBlock>
-            <TextBlock Margin="20,1" Text="BedrockBoot 启动核心：YoumiHa"></TextBlock>
-            <TextBlock Margin="20,1" Text="BedrockBoot 用户交互体验：DrMing"></TextBlock>
-            
+                       Text="开发者" />
+
+            <TextBlock Margin="20,1" Text="BedrockBoot 本体：Dime，YoumiHa" />
+            <TextBlock Margin="20,1" Text="BedrockBoot 启动核心：YoumiHa" />
+            <TextBlock Margin="20,1" Text="BedrockBoot 用户交互体验：DrMing" />
+
             <TextBlock Margin="5,20,0,08"
                        FontSize="16"
-                       Text="鸣谢"></TextBlock>
-            
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用的版本列表源来自 MCAPPX 网站"></TextBlock>
+                       Text="鸣谢" />
+
+            <TextBlock Margin="20,1" Text="BedrockBoot 使用的版本列表源来自 MCAPPX 网站" />
             <TextBlock Margin="20,1">(https://www.mcappx.com/)</TextBlock>
-            
-            <TextBlock Margin="20,1" Text="BedrockBoot 下载更新的部分公益源来自 github.akams.cn"></TextBlock>
+
+            <TextBlock Margin="20,1" Text="BedrockBoot 下载更新的部分公益源来自 github.akams.cn" />
             <TextBlock Margin="20,1">(https://github.akams.cn/)</TextBlock>
-            
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用的游戏资源下载来自 CurseForge"></TextBlock>
+
+            <TextBlock Margin="20,1" Text="BedrockBoot 使用的游戏资源下载来自 CurseForge" />
             <TextBlock Margin="20,1">(https://curseforge.com/)</TextBlock>
-            
-            <TextBlock Margin="20,1" Text="感谢来自 BMCBL 提供的 MCAPPX 列表源加速站点"></TextBlock>
+
+            <TextBlock Margin="20,1" Text="感谢来自 BMCBL 提供的 MCAPPX 列表源加速站点" />
             <TextBlock Margin="20,1">(https://www.bmcbl.com/)</TextBlock>
-            
+
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
-                       Text="灵感来源"></TextBlock>
-            
-            <TextBlock Margin="20,1" Text="BedrockBoot 内部分动画参考自 LauncherX"></TextBlock>
+                       Text="灵感来源" />
+
+            <TextBlock Margin="20,1" Text="BedrockBoot 内部分动画参考自 LauncherX" />
             <TextBlock Margin="20,1">(https://corona.studio/lx)</TextBlock>
-            <TextBlock Margin="20,1" Text="BedrockBoot 内部分设计参考自 Polymerium"></TextBlock>
+            <TextBlock Margin="20,1" Text="BedrockBoot 内部分设计参考自 Polymerium" />
             <TextBlock Margin="20,1">(https://github.com/d3ara1n/Polymerium)</TextBlock>
-            <TextBlock Margin="20,1" Text="BedrockBoot 内部分设计参考自 WonderLab"></TextBlock>
+            <TextBlock Margin="20,1" Text="BedrockBoot 内部分设计参考自 WonderLab" />
             <TextBlock Margin="20,1">(https://github.com/Lunova-Studio/WonderLab.Override)</TextBlock>
-            
+
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
-                       Text="组件库"></TextBlock>
-            
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用了 OnePointUI 作为用户交互风格"></TextBlock>
+                       Text="组件库" />
+
+            <TextBlock Margin="20,1" Text="BedrockBoot 使用了 OnePointUI 作为用户交互风格" />
             <TextBlock Margin="20,1">(https://github.com/Round-Studio/OnePointUI.Avalonia/)</TextBlock>
-            
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用了 BedrockLauncher.Core 游戏启动核心"></TextBlock>
+
+            <TextBlock Margin="20,1" Text="BedrockBoot 使用了 BedrockLauncher.Core 游戏启动核心" />
             <TextBlock Margin="20,1">(https://github.com/Round-Studio/BedrockLauncher.Core/)</TextBlock>
-            
+
             <onePointControls:SettingCard Margin="5,20,5,5"
                                           Glyph="&#xE909;"
                                           Header="第三方组件库"
                                           Description="BedrockBoot 使用的第三方开源库"
                                           Name="OpenSourceBtn"
                                           Click="OpenSourceBtn_OnClick"
-                                          IsClickable="True">
-            </onePointControls:SettingCard>
-            
+                                          IsClickable="True" />
+
             <onePointControls:SettingCard Margin="5"
                                           Glyph="&#xE7E3;"
                                           Name="VersionCard"
@@ -82,7 +81,9 @@
                 <Button Padding="8"
                         Height="36" Width="100"
                         Name="CheckUpdateBtn"
-                        Click="CheckUpdateBtn_OnClick">检查更新</Button>
+                        Click="CheckUpdateBtn_OnClick">
+                    检查更新
+                </Button>
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

@@ -2,7 +2,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
@@ -15,6 +14,7 @@ namespace BedrockBoot.Views.DrawContent;
 public partial class DrawDownloadCurseForgeResourceContent : UserControl
 {
     public CurseForgeResponse.ModData ModData;
+
     public DrawDownloadCurseForgeResourceContent()
     {
         InitializeComponent();
@@ -33,24 +33,24 @@ public partial class DrawDownloadCurseForgeResourceContent : UserControl
         RankingBox.Text = ModData.GamePopularityRank.ToString();
         DownCountBox.Text = ModData.DownloadCount.ToString();
         InstanceFrame.NavigateTo(new CurseForgePackBuildFile(ModData));
-        
+
         ModData.Categories.ForEach(cat =>
         {
-            TypesBox.Children.Add(new LabelBox()
+            TypesBox.Children.Add(new LabelBox
             {
                 Text = cat.Name,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(2.5)
             });
         });
-        
+
         Task.Run(() =>
         {
             var image = GlobalModel.ImageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl).Result;
             Dispatcher.UIThread.Invoke(() =>
             {
                 NullImage.IsVisible = false;
-                IconBox.Background = new ImageBrush()
+                IconBox.Background = new ImageBrush
                 {
                     Source = image as IImageBrushSource
                 };

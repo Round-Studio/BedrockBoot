@@ -20,16 +20,26 @@ namespace BedrockBoot.Views.Pages.DownloadSubPage;
 public partial class DownloadGamePage : UserControl, IDisposable
 {
     private CancellationTokenSource _currentLoadingCancellation = new();
-    private MinecraftGameTypeVersion _type = MinecraftGameTypeVersion.Release;
     private string _key = "";
-    public bool IsEdit { get; set; } = false;
+    private MinecraftGameTypeVersion _type = MinecraftGameTypeVersion.Release;
+
     public DownloadGamePage()
     {
         InitializeComponent();
         UpdateUI(MinecraftGameTypeVersion.Release);
         IsEdit = true;
 
-        this.Unloaded += (sender, args) => Dispose();
+        Unloaded += (sender, args) => Dispose();
+    }
+
+    public bool IsEdit { get; set; }
+
+    // 清理资源
+    public void Dispose()
+    {
+        _currentLoadingCancellation?.Cancel();
+        _currentLoadingCancellation?.Dispose();
+        ItemsPanel.Children.Clear();
     }
 
     public async void UpdateUI(MinecraftGameTypeVersion type, string key = "")
@@ -93,12 +103,11 @@ public partial class DownloadGamePage : UserControl, IDisposable
                     if (string.IsNullOrEmpty(item.Value.ID)) continue;
                     if (item.Value.Variations.Count <= 0) continue;
 
-                    bool isCon = false;
+                    var isCon = false;
 
                     foreach (var v in item.Value.Variations)
-                    {
-                        if (v.MetaData.Count <= 0) isCon = true;
-                    }
+                        if (v.MetaData.Count <= 0)
+                            isCon = true;
 
                     if (isCon) continue;
 
@@ -129,10 +138,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
                 versionCache.Sort((x, y) =>
                 {
                     // 两个都有有效版本号
-                    if (x.version != null && y.version != null)
-                    {
-                        return y.version.CompareTo(x.version); // 降序
-                    }
+                    if (x.version != null && y.version != null) return y.version.CompareTo(x.version); // 降序
 
                     // 只有一个有有效版本号，有效版本号排在前面
                     if (x.version != null) return -1;
@@ -178,7 +184,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
         {
             // 分批加载项，避免一次性添加太多导致UI卡顿
             await AddItemsBatchAsync(versions);
-                
+
             await SetLoadingState(false, true, false);
         }
         else
@@ -194,23 +200,21 @@ public partial class DownloadGamePage : UserControl, IDisposable
         const int batchSize = 10; // 每批添加的项目数量
         var totalCount = versions.Count;
 
-        for (int i = 0; i < totalCount; i += batchSize)
+        for (var i = 0; i < totalCount; i += batchSize)
         {
             var batch = versions.Skip(i).Take(batchSize).ToList();
-            
+
             // 在UI线程添加一批项目
             foreach (var x in batch)
             {
                 var image = "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png";
                 if (x.Type != MinecraftGameTypeVersion.Release)
-                {
                     image = "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png";
-                }
-                
-                var item = new SettingCard()
+
+                var item = new SettingCard
                 {
                     Header = x.ID,
-                    Description = string.Join(", ", new string?[]
+                    Description = string.Join(", ", new[]
                     {
                         x.Type.ToString(),
                         x.BuildType.ToString(),
@@ -270,13 +274,5 @@ public partial class DownloadGamePage : UserControl, IDisposable
             _key = TextBox.Text;
             UpdateUI(_type, _key);
         }
-    }
-
-    // 清理资源
-    public void Dispose()
-    {
-        _currentLoadingCancellation?.Cancel();
-        _currentLoadingCancellation?.Dispose();
-        ItemsPanel.Children.Clear();
     }
 }

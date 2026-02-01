@@ -15,10 +15,10 @@
                     CornerRadius="6">
                 <Border.Background>
                     <ImageBrush Stretch="UniformToFill"
-                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png"></ImageBrush>
+                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png" />
                 </Border.Background>
             </Border>
-                        
+
             <Grid Grid.Row="1"
                   ColumnDefinitions="*,Auto">
                 <Border Grid.Column="0"
@@ -31,10 +31,10 @@
                     <StackPanel VerticalAlignment="Center"
                                 Margin="8,0,0,0">
                         <TextBlock FontSize="14"
-                                   Name="ShotTime"></TextBlock>
+                                   Name="ShotTime" />
                         <TextBlock FontSize="11"
                                    Foreground="Gray"
-                                   Name="ShotYear"></TextBlock>
+                                   Name="ShotYear" />
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="1"
@@ -49,7 +49,7 @@
                             Click="SaveBtn_OnClick"
                             CornerRadius="4">
                         <onePointControls:FontIcon Glyph="&#xE74E;"
-                                                   FontSize="18"></onePointControls:FontIcon>
+                                                   FontSize="18" />
                     </Button>
                 </Border>
             </Grid>

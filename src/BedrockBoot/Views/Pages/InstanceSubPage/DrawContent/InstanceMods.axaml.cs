@@ -1,14 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Windows.Documents;
-using System.Windows.Shapes;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Media.Transformation;
-using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Interface;
@@ -24,26 +18,27 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceMods : ISetting
 {
-    public VersionConfig VersionInfo { get; set; }
-    public ModsManager ModsManager { get; set; }
-    private string _searchKey => SearchBox.Text;
     public InstanceMods()
     {
         IsEdit = false;
-        
+
         InitializeComponent();
     }
 
     public InstanceMods(VersionConfig versionInfo) : this()
     {
         VersionInfo = versionInfo;
-        ModsManager = new(VersionInfo)
+        ModsManager = new ModsManager(VersionInfo)
         {
             RefreshCallBack = UpdateUI
         };
-        
+
         UpdateUI();
     }
+
+    public VersionConfig VersionInfo { get; set; }
+    public ModsManager ModsManager { get; set; }
+    private string _searchKey => SearchBox.Text;
 
     private void UpdateUI()
     {
@@ -57,25 +52,19 @@ public partial class InstanceMods : ISetting
         {
             if (string.IsNullOrEmpty(_searchKey) ||
                 info.File.Contains(_searchKey))
-            {
                 resultMods.Add(info);
-            }
         });
 
         if (resultMods.Count <= 0)
-        {
             NullBox.IsVisible = true;
-        }
         else
-        {
             resultMods.ForEach(info =>
             {
                 ResultBox.Children.Add(new GameModItem(info)
                 {
-                    ModsManager = this.ModsManager
+                    ModsManager = ModsManager
                 });
             });
-        }
 
         IsEdit = true;
     }
@@ -94,7 +83,7 @@ public partial class InstanceMods : ISetting
     private void ImportModBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogImportModContent();
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "添加 Mod 文件",
             Content = dialog,
@@ -102,10 +91,10 @@ public partial class InstanceMods : ISetting
             PrimaryButtonText = "取消",
             CloseAction = () =>
             {
-                if (string.IsNullOrEmpty(dialog.ModFile) || 
+                if (string.IsNullOrEmpty(dialog.ModFile) ||
                     !File.Exists(dialog.ModFile))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                     {
                         Message = "无效路径，无法添加模组",
                         Title = "无效路径"
@@ -116,8 +105,8 @@ public partial class InstanceMods : ISetting
                 var path = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
                     Path.GetFileName(dialog.ModFile));
                 File.Copy(dialog.ModFile, path);
-                
-                ModsManager.AddMod(new ModInfo()
+
+                ModsManager.AddMod(new ModInfo
                 {
                     File = path,
                     InjectDelay = dialog.ModDelay,

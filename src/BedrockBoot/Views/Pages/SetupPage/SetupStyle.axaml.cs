@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Controls;
 using Avalonia.Styling;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
@@ -15,7 +13,7 @@ public partial class SetupStyle : ISetting
     {
         InitializeComponent();
         ChooseThemeBox.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.LightThemeType;
-        
+
         IsEdit = true;
     }
 
@@ -25,8 +23,11 @@ public partial class SetupStyle : ISetting
         {
             GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseThemeBox.SelectedIndex;
             GlobalModel.Config.Save();
-            
-            ThemeManager.Instance.SetThemeModel(GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light ? ThemeVariant.Light : ThemeVariant.Dark);
+
+            ThemeManager.Instance.SetThemeModel(
+                GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
+                    ? ThemeVariant.Light
+                    : ThemeVariant.Dark);
         }
     }
 }

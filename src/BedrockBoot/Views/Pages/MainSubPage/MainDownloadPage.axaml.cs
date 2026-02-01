@@ -9,8 +9,8 @@ public partial class MainDownloadPage : BedrockBootPage
     public MainDownloadPage()
     {
         InitializeComponent();
-        this.NavFrame.NavigateTo(new DownloadGamePage());
-        
+        NavFrame.NavigateTo(new DownloadGamePage());
+
         IsEdit = true;
     }
 
@@ -22,10 +22,10 @@ public partial class MainDownloadPage : BedrockBootPage
             switch (tag)
             {
                 case "Game":
-                    this.NavFrame.NavigateTo(new DownloadGamePage());
+                    NavFrame.NavigateTo(new DownloadGamePage());
                     break;
                 case "Assets":
-                    this.NavFrame.NavigateTo(new DownloadAssetsPage());
+                    NavFrame.NavigateTo(new DownloadAssetsPage());
                     break;
             }
         }

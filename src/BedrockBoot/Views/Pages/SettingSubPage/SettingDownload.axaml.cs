@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
@@ -14,12 +12,12 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 
 public partial class SettingDownload : UserControl
 {
-    public bool IsEdit = false;
+    public bool IsEdit;
 
     public SettingDownload()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
+        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
         {
             new()
             {
@@ -29,12 +27,12 @@ public partial class SettingDownload : UserControl
 
         IsAutoCacheGamePack.IsChecked = GlobalModel.Config.Data.IsAutoCacheGamePack;
         ChunkCountSlider.Value = GlobalModel.Config.Data.DownloadChunkCount;
-        SourceList.VersionDataSources.ToList().ForEach(s => SourceBox.Items.Add(new ComboBoxItem()
+        SourceList.VersionDataSources.ToList().ForEach(s => SourceBox.Items.Add(new ComboBoxItem
         {
             Content = s.Key
         }));
         SourceBox.SelectedIndex = GlobalModel.Config.Data.VersionSourceIndex;
-        SourceList.CurseForgeSource.ToList().ForEach(s => CurseForgeSourceBox.Items.Add(new ComboBoxItem()
+        SourceList.CurseForgeSource.ToList().ForEach(s => CurseForgeSourceBox.Items.Add(new ComboBoxItem
         {
             Content = s.Key
         }));
@@ -59,13 +57,11 @@ public partial class SettingDownload : UserControl
     private void ChunkCountSlider_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
         if (IsEdit)
-        {
             if ((int)ChunkCountSlider.Value != GlobalModel.Config.Data.DownloadChunkCount)
             {
                 GlobalModel.Config.Data.DownloadChunkCount = (int)ChunkCountSlider.Value;
                 GlobalModel.Config.Save();
             }
-        }
     }
 
     private void SourceBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

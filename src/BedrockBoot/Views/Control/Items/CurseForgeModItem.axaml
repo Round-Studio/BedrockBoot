@@ -16,7 +16,7 @@
                         Name="HeaderBox"
                         Spacing="8">
                 <TextBlock Name="PackName"
-                           Text="PackName"></TextBlock>
+                           Text="PackName" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
     </onePointControls:SettingCard>

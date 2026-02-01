@@ -1,12 +1,12 @@
 ﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                 xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
-                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
-                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                 x:Class="BedrockBoot.Views.Pages.DownloadPage.DownloadRoot">
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                       xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                       x:Class="BedrockBoot.Views.Pages.DownloadPage.DownloadRoot">
     <entry:BedrockBootPage.HeaderView>
         <onePointControls:LineTextBlock Grid.Row="0"
                                         Margin="0"
@@ -14,10 +14,10 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
-                                        Text="下载"></onePointControls:LineTextBlock>
+                                        Text="下载" />
     </entry:BedrockBootPage.HeaderView>
     <Grid>
         <navigation:NavigationFrame Name="MainFrame"
-                                    HorizontalAlignment="Stretch"/>    
+                                    HorizontalAlignment="Stretch" />
     </Grid>
 </entry:BedrockBootPage>

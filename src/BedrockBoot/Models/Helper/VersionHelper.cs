@@ -8,7 +8,7 @@ namespace BedrockBoot.Models.Helper;
 
 public class VersionHelper
 {
-    public static List<BuildInfo> Versions { get; private set; } = null;
+    public static List<BuildInfo> Versions { get; private set; }
 
     public static List<BuildInfo> GetVersions()
     {
@@ -27,12 +27,11 @@ public class VersionHelper
             if (string.IsNullOrEmpty(item.Value.ID)) continue;
             if (item.Value.Variations.Count <= 0) continue;
 
-            bool isCon = false;
+            var isCon = false;
 
             foreach (var v in item.Value.Variations)
-            {
-                if (v.MetaData.Count <= 0) isCon = true;
-            }
+                if (v.MetaData.Count <= 0)
+                    isCon = true;
 
             if (isCon) continue;
 
@@ -52,10 +51,7 @@ public class VersionHelper
         versionCache.Sort((x, y) =>
         {
             // 两个都有有效版本号
-            if (x.version != null && y.version != null)
-            {
-                return y.version.CompareTo(x.version); // 降序
-            }
+            if (x.version != null && y.version != null) return y.version.CompareTo(x.version); // 降序
 
             // 只有一个有有效版本号，有效版本号排在前面
             if (x.version != null) return -1;

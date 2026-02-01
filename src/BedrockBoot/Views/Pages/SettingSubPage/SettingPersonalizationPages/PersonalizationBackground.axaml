@@ -22,7 +22,7 @@
                     <ComboBoxItem>Bubble</ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>
-            
+
             <StackPanel Name="BackgroundImageBox">
                 <onePointControls:SettingExpander Header="图片背景"
                                                   Description="启动器图片背景相关设置"
@@ -35,9 +35,8 @@
                                                       Glyph="&#xE8B0;"
                                                       Classes="Item"
                                                       IsClickable="True"
-                                                      Click="ImportBackgroundBtn_OnClick">
-                        </onePointControls:SettingCard>
-                
+                                                      Click="ImportBackgroundBtn_OnClick" />
+
                         <onePointControls:SettingCard Header="壁纸透明度"
                                                       Description="壁纸的透明度设置"
                                                       Glyph="&#xE81E;"
@@ -48,9 +47,9 @@
                                     Maximum="100"
                                     Classes="Number"
                                     Name="OptBar"
-                                    ValueChanged="OptBar_OnValueChanged"></Slider>
+                                    ValueChanged="OptBar_OnValueChanged" />
                         </onePointControls:SettingCard>
-                
+
                         <onePointControls:SettingCard Header="壁纸模糊"
                                                       Description="壁纸的模糊效果"
                                                       Glyph="&#xF5EF;"
@@ -61,16 +60,14 @@
                                     Maximum="100"
                                     Classes="Number"
                                     Name="BlurBar"
-                                    ValueChanged="OptBar_OnValueChanged"></Slider>
+                                    ValueChanged="OptBar_OnValueChanged" />
                         </onePointControls:SettingCard>
                     </StackPanel>
                 </onePointControls:SettingExpander>
-                
+
                 <ListBox Name="BackgroundsList"
                          SelectionChanged="BackgroundsList_OnSelectionChanged"
-                         Margin="5">
-                    
-                </ListBox>
+                         Margin="5" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

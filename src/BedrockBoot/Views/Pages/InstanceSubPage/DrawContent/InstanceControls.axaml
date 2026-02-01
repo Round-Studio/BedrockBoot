@@ -10,15 +10,17 @@
             <StackPanel Margin="15,0,15,15">
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">辅助功能</TextBlock>
-                
+                           FontSize="14">
+                    辅助功能
+                </TextBlock>
+
                 <onePointControls:SettingExpander Margin="5"
                                                   Name="MouseLock"
                                                   Header="鼠标锁"
                                                   Description="针对 UWP 版本的 Bedrock 进行的鼠标优化"
                                                   Glyph="&#xE72E;">
                     <onePointControls:SettingExpander.ItemContent>
-                        <ToggleSwitch></ToggleSwitch>
+                        <ToggleSwitch />
                     </onePointControls:SettingExpander.ItemContent>
                     <StackPanel>
                         <onePointControls:SettingCard Classes="Item"
@@ -27,24 +29,25 @@
                                                       Description="鼠标锁对游戏的限制范围">
                             <Slider Width="200"
                                     Classes="Number"
-                                    Maximum="50"></Slider>
+                                    Maximum="50" />
                         </onePointControls:SettingCard>
                     </StackPanel>
                 </onePointControls:SettingExpander>
-                
+
                 <onePointControls:SettingCard Margin="5"
                                               IsClickable="True"
                                               Name="JumpItemBtn"
                                               Click="JumpItemBtn_OnClick"
                                               Glyph="&#xE8A7;"
                                               Header="快捷方式"
-                                              Description="保存一个用于快速启动该实例的快捷方式">
-                </onePointControls:SettingCard>
-                
+                                              Description="保存一个用于快速启动该实例的快捷方式" />
+
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">高危操作</TextBlock>
-                
+                           FontSize="14">
+                    高危操作
+                </TextBlock>
+
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE74D;"
                                               Header="删除实例"
@@ -54,7 +57,9 @@
                             Name="DeleteBtn"
                             Classes="NoBorder"
                             Background="DarkRed"
-                            Click="DeleteBtn_OnClick">立即删除</Button>
+                            Click="DeleteBtn_OnClick">
+                        立即删除
+                    </Button>
                 </onePointControls:SettingCard>
             </StackPanel>
         </ScrollViewer>

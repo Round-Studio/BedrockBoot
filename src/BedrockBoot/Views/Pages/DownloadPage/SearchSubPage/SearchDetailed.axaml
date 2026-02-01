@@ -16,11 +16,11 @@
                         Spacing="8">
                 <onePointControls:FontIcon Glyph="&#xE97C;"
                                            VerticalAlignment="Center"
-                                           FontSize="15"/>
-                
+                                           FontSize="15" />
+
                 <TextBlock VerticalAlignment="Center">资源类型</TextBlock>
             </StackPanel>
-            
+
             <ComboBox Width="120"
                       HorizontalAlignment="Stretch"
                       SelectedIndex="0"
@@ -29,7 +29,7 @@
                 <ComboBoxItem>Minecraft</ComboBoxItem>
                 <ComboBoxItem>资源包</ComboBoxItem>
             </ComboBox>
-            
+
             <StackPanel Orientation="Horizontal"
                         Name="MinecraftTypePanel"
                         Spacing="10">
@@ -37,22 +37,22 @@
                             Spacing="8">
                     <onePointControls:FontIcon Glyph="&#xE71C;"
                                                VerticalAlignment="Center"
-                                               FontSize="15"/>
-                
+                                               FontSize="15" />
+
                     <TextBlock VerticalAlignment="Center">发布类型</TextBlock>
                 </StackPanel>
-                
+
                 <ComboBox Width="120"
                           HorizontalAlignment="Stretch"
                           SelectedIndex="1"
                           SelectionChanged="GameType_OnSelectionChanged"
                           Name="GameType">
-                    <ComboBoxItem Content="预览版"></ComboBoxItem>
-                    <ComboBoxItem Content="正式版"></ComboBoxItem>
-                    <ComboBoxItem Content="Beta 版"></ComboBoxItem>
+                    <ComboBoxItem Content="预览版" />
+                    <ComboBoxItem Content="正式版" />
+                    <ComboBoxItem Content="Beta 版" />
                 </ComboBox>
             </StackPanel>
-            
+
             <StackPanel Orientation="Horizontal"
                         Name="CurseForgeResTypePanel"
                         Spacing="10"
@@ -63,11 +63,11 @@
                             Spacing="8">
                     <onePointControls:FontIcon Glyph="&#xF0E2;"
                                                VerticalAlignment="Center"
-                                               FontSize="15"/>
-                
+                                               FontSize="15" />
+
                     <TextBlock VerticalAlignment="Center">资源分类</TextBlock>
                 </StackPanel>
-                
+
                 <ComboBox Width="120"
                           SelectedIndex="0"
                           HorizontalAlignment="Stretch">
@@ -78,26 +78,26 @@
                 </ComboBox>
             </StackPanel>
         </StackPanel>
-        
+
         <!-- 分页控件 -->
         <navigation:LotsPageFrame Grid.Row="1"
-                                  Name="ResultPage"/>
-        
+                                  Name="ResultPage" />
+
         <!-- 加载动画 -->
-        <notice:LoadCard Grid.Row="1" 
-                         HorizontalAlignment="Center" 
+        <notice:LoadCard Grid.Row="1"
+                         HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="LoadingRing"
                          BigTitle="搜索中..."
-                         Message="请稍候..."/>
-        
+                         Message="请稍候..." />
+
         <!-- 无结果提示 -->
-        <notice:InfoCard Grid.Row="1" 
+        <notice:InfoCard Grid.Row="1"
                          VerticalAlignment="Center"
                          HorizontalAlignment="Center"
                          Glyph="&#xE822;"
                          BigTitle="未找到结果"
                          Message="请尝试其他关键词"
-                         Name="NoneBox"/>
+                         Name="NoneBox" />
     </Grid>
 </UserControl>

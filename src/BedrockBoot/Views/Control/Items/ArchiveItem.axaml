@@ -6,7 +6,7 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.Control.Items.ArchiveItem">
-    
+
     <items:BorderCard Margin="5"
                       Width="265"
                       Height="210">
@@ -16,7 +16,7 @@
                     CornerRadius="6">
                 <Border.Background>
                     <ImageBrush Stretch="UniformToFill"
-                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png"></ImageBrush>
+                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png" />
                 </Border.Background>
                 <Grid>
                     <onePointControls:LabelBox HorizontalAlignment="Left"
@@ -25,10 +25,10 @@
                                                Margin="8"
                                                Text="项目"
                                                FontSize="12"
-                                               Background="Purple"></onePointControls:LabelBox>
+                                               Background="Purple" />
                 </Grid>
             </Border>
-                        
+
             <Grid Grid.Row="1"
                   ColumnDefinitions="*,Auto">
                 <Border Grid.Column="0"
@@ -41,10 +41,14 @@
                     <StackPanel VerticalAlignment="Center"
                                 Margin="8,0,0,0">
                         <TextBlock FontSize="14"
-                                   Name="WorldName">My World</TextBlock>
+                                   Name="WorldName">
+                            My World
+                        </TextBlock>
                         <TextBlock FontSize="11"
                                    Foreground="Gray"
-                                   Name="WorldLastPlayed">LastPlayed Time</TextBlock>
+                                   Name="WorldLastPlayed">
+                            LastPlayed Time
+                        </TextBlock>
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="1"
@@ -58,7 +62,7 @@
                             CornerRadius="4"
                             IsEnabled="False">
                         <onePointControls:FontIcon Glyph="&#xE70F;"
-                                                   FontSize="18"></onePointControls:FontIcon>
+                                                   FontSize="18" />
                     </Button>
                 </Border>
             </Grid>

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
@@ -28,7 +26,7 @@ public partial class PersonalizationBackground : ISetting
         if (OperatingSystem.IsWindows())
         {
             var osVersion = Environment.OSVersion;
-            int buildNumber = osVersion.Version.Build;
+            var buildNumber = osVersion.Version.Build;
 
             // Windows 版本判断逻辑
             if (osVersion.Version.Major == 10)
@@ -44,13 +42,13 @@ public partial class PersonalizationBackground : ISetting
                 }
             }
         }
-        
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
+
+        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "个性化",
-                ItemClickAction = (info) =>
+                ItemClickAction = info =>
                     MainSettingPage.NavigationFrame.NavigateTo(new SettingPersonalization())
             },
             new()
@@ -66,39 +64,36 @@ public partial class PersonalizationBackground : ISetting
     {
         IsEdit = false;
         BackgroundImageBox.IsVisible = false;
-        
+
         if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image)
         {
             BackgroundImageBox.IsVisible = true;
             BackgroundsList.SelectedIndex = -1;
             BackgroundsList.Items.Clear();
-            
+
             GlobalModel.Config.Data.StyleConfig.BackgroundImages.ForEach(image =>
             {
-                var item = new BackgroundChooseItem() { ImagePath = image };
+                var item = new BackgroundChooseItem { ImagePath = image };
                 item.UpdateUI();
                 BackgroundsList.Items.Add(item);
             });
 
             var index = GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex;
             if (index != -1)
-            {
                 if (GlobalModel.Config.Data.StyleConfig.BackgroundImages.Count >= 0)
-                {
                     BackgroundsList.SelectedIndex = index;
-                }
-            }
         }
-        
+
         IsEdit = true;
     }
+
     private void BackgroundTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (IsEdit)
         {
             GlobalModel.Config.Data.StyleConfig.StyleType = (StyleType)BackgroundTypeBox.SelectedIndex;
             GlobalModel.Config.Save();
-            
+
             GlobalModel.MainWindow.UpdateBack();
 
             UpdateUI();
@@ -111,7 +106,7 @@ public partial class PersonalizationBackground : ISetting
         {
             GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex = BackgroundsList.SelectedIndex;
             GlobalModel.Config.Save();
-            
+
             GlobalModel.MainWindow.UpdateBack();
             App.LoadColor();
             UpdateUI();
@@ -121,7 +116,7 @@ public partial class PersonalizationBackground : ISetting
     private async void ImportBackgroundBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
-    
+
         // 2. 配置文件选择器选项
         var filePickerOptions = new FilePickerOpenOptions
         {
@@ -132,27 +127,23 @@ public partial class PersonalizationBackground : ISetting
                 FilePickerFileTypes.ImageAll
             }
         };
-    
+
         // 3. 打开对话框并获取文件
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(filePickerOptions);
-    
+
         // 4. 处理选中的文件
         if (files != null && files.Count > 0)
-        {
             foreach (var file in files)
             {
                 // 获取文件路径
-                string filePath = file.Path.LocalPath;
-                
+                var filePath = file.Path.LocalPath;
+
                 GlobalModel.Config.Data.StyleConfig.BackgroundImages.Add(filePath);
                 UpdateUI();
             }
-        }
         else
-        {
             // 用户取消了选择
             Console.WriteLine(@"未选择文件。");
-        }
     }
 
     private void OptBar_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
@@ -161,7 +152,7 @@ public partial class PersonalizationBackground : ISetting
         {
             GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity = (int)OptBar.Value;
             GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
-        
+
             GlobalModel.Config.Save();
             GlobalModel.MainWindow.SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
         }

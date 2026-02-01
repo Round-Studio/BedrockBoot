@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using Round.SDK.Entity;
@@ -10,11 +11,6 @@ namespace BedrockBoot.Models.Pack.Game.Mods;
 
 public class ModsManager
 {
-    public VersionConfig VersionInfo { get; set; }
-    public List<ModInfo> Mods => ModsConfig.Data;
-    public ConfigEntity<List<ModInfo>> ModsConfig { get; private set; }
-    public Action? RefreshCallBack { get; set; }
-
     public ModsManager(VersionConfig versionInfo)
     {
         VersionInfo = versionInfo;
@@ -23,6 +19,11 @@ public class ModsManager
                 Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods.json"));
         ModsConfig.Load();
     }
+
+    public VersionConfig VersionInfo { get; set; }
+    public List<ModInfo> Mods => ModsConfig.Data;
+    public ConfigEntity<List<ModInfo>> ModsConfig { get; }
+    public Action? RefreshCallBack { get; set; }
 
     public List<ModInfo> RefreshMods(bool isRefresh = false)
     {
@@ -36,19 +37,14 @@ public class ModsManager
         files.ForEach(file =>
         {
             if (!modFiles.Contains(file))
-            {
-                AddMod(new ModInfo()
+                AddMod(new ModInfo
                 {
                     File = file
                 });
-            }
         });
         modFiles.ForEach(file =>
         {
-            if (!files.Contains(file))
-            {
-                ModsConfig.Data.Remove(ModsConfig.Data.Find(m => m.File == file));
-            }
+            if (!files.Contains(file)) ModsConfig.Data.Remove(ModsConfig.Data.Find(m => m.File == file));
         });
         ModsConfig.Save();
 
@@ -66,10 +62,7 @@ public class ModsManager
     {
         Mods.ForEach(x =>
         {
-            if (!x.IsPreLoad)
-            {
-                System.Threading.Tasks.Task.Run(() => x.Inject(processId));
-            }
+            if (!x.IsPreLoad) Task.Run(() => x.Inject(processId));
         });
     }
 }

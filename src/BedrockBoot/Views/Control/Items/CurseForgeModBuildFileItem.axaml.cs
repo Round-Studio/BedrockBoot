@@ -1,8 +1,6 @@
 ﻿using System.IO;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
@@ -12,17 +10,19 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModBuildFileItem : UserControl
 {
-    public CurseForgeResponse.ModFile ModFile { get; set; }
     public CurseForgeModBuildFileItem()
     {
         InitializeComponent();
     }
-    public CurseForgeModBuildFileItem(CurseForgeResponse.ModFile modFile):this()
+
+    public CurseForgeModBuildFileItem(CurseForgeResponse.ModFile modFile) : this()
     {
         ModFile = modFile;
 
         Update();
     }
+
+    public CurseForgeResponse.ModFile ModFile { get; set; }
 
     private void Update()
     {
@@ -42,7 +42,7 @@ public partial class CurseForgeModBuildFileItem : UserControl
             {
                 new FilePickerFileType("Minecraft Bedrock 资源文件")
                 {
-                    Patterns = new[] { Path.GetExtension( ModFile.FileName) }
+                    Patterns = new[] { Path.GetExtension(ModFile.FileName) }
                 }
             }
         });

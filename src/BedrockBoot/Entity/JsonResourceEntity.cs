@@ -15,7 +15,7 @@ public class JsonResourceEntity
         using var reader = new StreamReader(stream, Encoding.UTF8);
         return await reader.ReadToEndAsync();
     }
-    
+
     public async Task<T> LoadJsonResourceAsync<T>(string uri)
     {
         using var stream = AssetLoader.Open(new Uri(uri));

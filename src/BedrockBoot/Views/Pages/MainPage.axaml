@@ -5,7 +5,6 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             xmlns:cornerSelectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.CornerSelectBar;assembly=OnePointUI.Avalonia"
              xmlns:selectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MainPage">
@@ -15,11 +14,11 @@
                                     Margin="20,20,0,0"
                                     NavigationFrameDirection="Right"
                                     VerticalAlignment="Center"
-                                    HorizontalAlignment="Stretch"></navigation:NavigationFrame>
-        
+                                    HorizontalAlignment="Stretch" />
+
         <navigation:NavigationFrame Grid.Row="1"
-                                    Name="MainFrame"/>
-        
+                                    Name="MainFrame" />
+
         <items:BorderCard Grid.Row="2"
                           Height="48"
                           Padding="0"
@@ -42,44 +41,42 @@
                             <onePointControls:FontIcon VerticalAlignment="Center"
                                                        FontSize="17"
                                                        Foreground="White"
-                                                       Glyph="&#xE709;"></onePointControls:FontIcon>
-                        
+                                                       Glyph="&#xE709;" />
+
                             <TextBlock Text="启动"
                                        Foreground="White"
-                                       FontSize="15"></TextBlock>
+                                       FontSize="15" />
                         </StackPanel>
                     </Button>
-                    
+
                     <Button Padding="8,0"
                             Classes="NoBorder"
                             Name="GameSettingBtn"
                             Click="GameSettingBtn_OnClick">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="GameName" Name="GameName"></TextBlock>
+                            <TextBlock Text="GameName" Name="GameName" />
                             <StackPanel Orientation="Horizontal"
                                         Spacing="4">
                                 <onePointControls:LabelBox Name="GameBuildType"
                                                            FontSize="8"
                                                            Background="Chocolate"
-                                                           Foreground="White"></onePointControls:LabelBox>
+                                                           Foreground="White" />
                                 <TextBlock Text="GameInfo" Name="GameInfo"
                                            VerticalAlignment="Center"
                                            Opacity="0.6"
-                                           FontSize="9"></TextBlock>
+                                           FontSize="9" />
                             </StackPanel>
                         </StackPanel>
                     </Button>
                 </StackPanel>
-                
+
                 <selectBar:SelectBar SelectedIndex="0"
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Stretch"
                                      Margin="0"
                                      SelectionChanged="SelTag_OnSelectionChanged"
-                                     Name="SelTag">
-                    
-                </selectBar:SelectBar>
-                
+                                     Name="SelTag" />
+
                 <ComboBox Height="32"
                           Width="260"
                           SelectedIndex="0"

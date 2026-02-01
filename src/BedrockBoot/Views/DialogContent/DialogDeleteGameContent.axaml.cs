@@ -12,17 +12,19 @@ namespace BedrockBoot.Views.DialogContent;
 
 public partial class DialogDeleteGameContent : UserControl
 {
-    public VersionConfig VersionInfo { get; set; }
     public DialogDeleteGameContent()
     {
         InitializeComponent();
     }
-    public DialogDeleteGameContent(VersionConfig versionInfo):this()
+
+    public DialogDeleteGameContent(VersionConfig versionInfo) : this()
     {
         VersionInfo = versionInfo;
 
         Delete();
     }
+
+    public VersionConfig VersionInfo { get; set; }
 
     public void Delete()
     {
@@ -30,15 +32,15 @@ public partial class DialogDeleteGameContent : UserControl
         {
             var path = VersionInfo.VersionPath;
             Console.WriteLine($@"即将删除文件夹：{path}");
-        
-            var files = Directory.GetFiles(path,"*", SearchOption.AllDirectories);
+
+            var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
             Console.WriteLine($@"总数目：{files.Length}");
             Dispatcher.UIThread.Invoke(() => DeleteProgressBar.Maximum = files.Length);
-            
+
             Dispatcher.UIThread.Invoke(() => DeleteProgressBar.IsIndeterminate = false);
-            
+
             var jd = 0;
-            files.ToList().ForEach((file) =>
+            files.ToList().ForEach(file =>
             {
                 try
                 {
@@ -48,16 +50,14 @@ public partial class DialogDeleteGameContent : UserControl
                 {
                     Console.WriteLine(e);
                 }
-                
+
                 jd++;
                 if (jd % 20 == 0)
-                {
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        DeleteProgressText.Text = $"进度：{(jd * 100.0 / files.Length):F2} %";
+                        DeleteProgressText.Text = $"进度：{jd * 100.0 / files.Length:F2} %";
                         DeleteProgressBar.Value = jd;
                     });
-                }
             });
 
             try

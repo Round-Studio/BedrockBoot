@@ -11,17 +11,16 @@ namespace BedrockBoot.Models.Pack.Game.Archive;
 
 public class ArchiveCheck
 {
-    public VersionConfig VersionConfig { get; set; }
-
     public ArchiveCheck()
     {
-
     }
 
     public ArchiveCheck(VersionConfig versionConfig) : this()
     {
         VersionConfig = versionConfig;
     }
+
+    public VersionConfig VersionConfig { get; set; }
 
     public ArchiveManifest Check()
     {
@@ -48,7 +47,7 @@ public class ArchiveCheck
                     if (Directory.Exists(Path.Combine(save, "editor")))
                         isProject = true;
 
-                    acts.Add(new ArchiveInfo()
+                    acts.Add(new ArchiveInfo
                     {
                         Name = name,
                         Path = Path.Combine(save),
@@ -90,7 +89,9 @@ public class ArchiveCheck
             {
                 var path = Path.Combine(user, "games", "com.mojang", "minecraftWorlds");
                 if (Path.Exists(path))
+                {
                     result.Add(Path.GetFileName(user), path);
+                }
                 else
                 {
                     Directory.CreateDirectory(path);

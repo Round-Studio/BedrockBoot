@@ -10,8 +10,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"
-                              MaxWidth="300"></ColumnDefinition>
-            <ColumnDefinition Width="7*"></ColumnDefinition>
+                              MaxWidth="300" />
+            <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <items:BorderCard Margin="20,10,5,20">
@@ -26,66 +26,70 @@
                                 <onePointControls:FontIcon Glyph="&#xE91B;"
                                                            FontSize="64"
                                                            VerticalAlignment="Center"
-                                                           HorizontalAlignment="Center"></onePointControls:FontIcon>
+                                                           HorizontalAlignment="Center" />
                             </Grid>
                         </Border>
-                            
+
                         <TextBlock HorizontalAlignment="Center"
                                    FontSize="20"
                                    Margin="0,8,0,12"
                                    Name="PackName"
                                    TextWrapping="WrapWithOverflow"
                                    TextAlignment="Center"
-                                   FontWeight="Bold">PackName</TextBlock>
-                        
+                                   FontWeight="Bold">
+                            PackName
+                        </TextBlock>
+
                         <Grid ColumnDefinitions="*,Auto,*"
                               HorizontalAlignment="Center">
                             <StackPanel Grid.Column="0">
                                 <TextBlock Name="RankingBox">0</TextBlock>
                                 <TextBlock Foreground="Gray">排行</TextBlock>
                             </StackPanel>
-                            
+
                             <Border Grid.Column="1"
                                     Width="1"
                                     VerticalAlignment="Stretch"
                                     Background="{DynamicResource PrimaryDisabledForegroundBrush}"
-                                    Margin="12,5,12,5"></Border>
-                            
+                                    Margin="12,5,12,5" />
+
                             <StackPanel Grid.Column="2">
                                 <TextBlock Name="DownCountBox">0</TextBlock>
                                 <TextBlock Foreground="Gray">下载</TextBlock>
                             </StackPanel>
                         </Grid>
-                        
+
                         <WrapPanel Name="TypesBox"
                                    ItemsAlignment="Center"
                                    HorizontalAlignment="Center"
-                                   Margin="0,18,0,0"></WrapPanel>
-                            
+                                   Margin="0,18,0,0" />
+
                         <TextBlock HorizontalAlignment="Center"
                                    FontSize="11"
                                    Margin="0,18,0,0"
                                    Foreground="Gray"
                                    TextWrapping="WrapWithOverflow"
                                    TextAlignment="Center"
-                                   Name="PackDescription">PackDescription</TextBlock>
+                                   Name="PackDescription">
+                            PackDescription
+                        </TextBlock>
                     </StackPanel>
                 </Grid>
             </items:BorderCard>
         </Grid>
-        
+
         <Grid Grid.Column="1"
               RowDefinitions="Auto,*">
             <TabControl Grid.Row="0"
                         Name="InstanceTabControl"
                         SelectedIndex="0"
                         Margin="5,0,10,0">
-                <TabItem Header="构建文件" Tag="Download"></TabItem>
+                <TabItem Header="构建文件" Tag="Download" />
             </TabControl>
-        
+
             <navigation:NavigationFrame Grid.Row="1"
                                         Margin="5,5,10,0"
-                                        Name="InstanceFrame"/>
+                                        Name="InstanceFrame" />
         </Grid>
     </Grid>
 </UserControl>

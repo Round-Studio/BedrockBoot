@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -15,12 +12,12 @@ public partial class UniversalDebug : ISetting
     public UniversalDebug()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
+        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "通用",
-                ItemClickAction = (info) =>
+                ItemClickAction = info =>
                     MainSettingPage.NavigationFrame.NavigateTo(new SettingUniversal())
             },
             new()
@@ -38,7 +35,7 @@ public partial class UniversalDebug : ISetting
         if (IsEdit)
         {
             GlobalModel.Config.Data.IsConsole = (bool)IsConsoleModel.IsChecked;
-            
+
             GlobalModel.Config.Save();
         }
     }

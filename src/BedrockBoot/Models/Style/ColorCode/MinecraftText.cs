@@ -1,125 +1,113 @@
 ﻿// MinecraftText.cs
+
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Documents;
 using Avalonia.Media;
-using System.Collections.Generic;
 
-namespace BedrockBoot.Models.Style
+namespace BedrockBoot.Models.Style;
+
+public class MinecraftTextBlock : TextBlock
 {
-    public class MinecraftTextBlock : TextBlock
+    public static readonly StyledProperty<string> MinecraftTextProperty =
+        AvaloniaProperty.Register<MinecraftTextBlock, string>(
+            nameof(MinecraftText),
+            string.Empty);
+
+    public static readonly StyledProperty<bool> ShowRawTextProperty =
+        AvaloniaProperty.Register<MinecraftTextBlock, bool>(
+            nameof(ShowRawText),
+            false);
+
+    private List<MinecraftTextParser.TextSegment>? _currentSegments;
+
+    static MinecraftTextBlock()
     {
-        public static readonly StyledProperty<string> MinecraftTextProperty =
-            AvaloniaProperty.Register<MinecraftTextBlock, string>(
-                nameof(MinecraftText),
-                defaultValue: string.Empty);
+        MinecraftTextProperty.Changed.AddClassHandler<MinecraftTextBlock>((x, e) => x.OnTextChanged());
+        ShowRawTextProperty.Changed.AddClassHandler<MinecraftTextBlock>((x, e) => x.OnTextChanged());
+    }
 
-        public static readonly StyledProperty<bool> ShowRawTextProperty =
-            AvaloniaProperty.Register<MinecraftTextBlock, bool>(
-                nameof(ShowRawText),
-                defaultValue: false);
-
-        private List<MinecraftTextParser.TextSegment>? _currentSegments;
-
-        public string MinecraftText
+    public MinecraftTextBlock()
+    {
+        IBrush GetFontColorResourceFromApp()
         {
-            get => GetValue(MinecraftTextProperty);
-            set => SetValue(MinecraftTextProperty, value);
+            // Application.Current 是一个全局的入口点
+            var app = Application.Current;
+
+            if (app != null)
+                // 从应用程序的资源中查找 :cite[1]
+                // 注意：这里查找的是 Application.Resources 里定义的资源
+                if (app.TryFindResource("PrimaryForegroundBrush", out var resourceValue))
+                    return resourceValue as IBrush;
+
+            return new SolidColorBrush(Colors.Gray);
         }
 
-        public bool ShowRawText
+        Foreground = GetFontColorResourceFromApp();
+        TextWrapping = TextWrapping.Wrap;
+    }
+
+    public string MinecraftText
+    {
+        get => GetValue(MinecraftTextProperty);
+        set => SetValue(MinecraftTextProperty, value);
+    }
+
+    public bool ShowRawText
+    {
+        get => GetValue(ShowRawTextProperty);
+        set => SetValue(ShowRawTextProperty, value);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        CleanupSegments();
+    }
+
+    private void OnTextChanged()
+    {
+        // 清理旧的混淆文本定时器
+        CleanupSegments();
+
+        if (ShowRawText)
         {
-            get => GetValue(ShowRawTextProperty);
-            set => SetValue(ShowRawTextProperty, value);
+            // 显示原始文本
+            Inlines?.Clear();
+            Text = MinecraftText;
         }
-
-        static MinecraftTextBlock()
+        else
         {
-            MinecraftTextProperty.Changed.AddClassHandler<MinecraftTextBlock>((x, e) => x.OnTextChanged());
-            ShowRawTextProperty.Changed.AddClassHandler<MinecraftTextBlock>((x, e) => x.OnTextChanged());
+            // 显示解析后的富文本
+            Text = null;
+
+            // 获取元组，只取第一个元素（InlineCollection）
+            var (inlines, segments) = MinecraftTextParser.ConvertToInlines(MinecraftText);
+            Inlines = inlines;
+
+            // 保存segment引用并启动混淆文本定时器
+            _currentSegments = segments;
+            StartObfuscation();
         }
+    }
 
-        public MinecraftTextBlock()
+    private void StartObfuscation()
+    {
+        if (_currentSegments == null) return;
+
+        foreach (var segment in _currentSegments)
+            if (segment.IsObfuscated)
+                segment.StartObfuscation();
+    }
+
+    private void CleanupSegments()
+    {
+        if (_currentSegments != null)
         {
-            IBrush GetFontColorResourceFromApp()
-            {
-                // Application.Current 是一个全局的入口点
-                var app = Application.Current;
-    
-                if (app != null)
-                {
-                    // 从应用程序的资源中查找 :cite[1]
-                    // 注意：这里查找的是 Application.Resources 里定义的资源
-                    if (app.TryFindResource("PrimaryForegroundBrush", out var resourceValue))
-                    {
-                        return resourceValue as IBrush;
-                    }
-                }
-    
-                return new SolidColorBrush(Colors.Gray);
-            }
-            
-            this.Foreground = GetFontColorResourceFromApp();
-            this.TextWrapping = TextWrapping.Wrap;
-        }
+            foreach (var segment in _currentSegments) segment.Dispose();
 
-        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-        {
-            base.OnDetachedFromVisualTree(e);
-            CleanupSegments();
-        }
-
-        private void OnTextChanged()
-        {
-            // 清理旧的混淆文本定时器
-            CleanupSegments();
-
-            if (ShowRawText)
-            {
-                // 显示原始文本
-                this.Inlines?.Clear();
-                this.Text = MinecraftText;
-            }
-            else
-            {
-                // 显示解析后的富文本
-                this.Text = null;
-
-                // 获取元组，只取第一个元素（InlineCollection）
-                var (inlines, segments) = MinecraftTextParser.ConvertToInlines(MinecraftText);
-                this.Inlines = inlines;
-
-                // 保存segment引用并启动混淆文本定时器
-                _currentSegments = segments;
-                StartObfuscation();
-            }
-        }
-
-        private void StartObfuscation()
-        {
-            if (_currentSegments == null) return;
-
-            foreach (var segment in _currentSegments)
-            {
-                if (segment.IsObfuscated)
-                {
-                    segment.StartObfuscation();
-                }
-            }
-        }
-
-        private void CleanupSegments()
-        {
-            if (_currentSegments != null)
-            {
-                foreach (var segment in _currentSegments)
-                {
-                    segment.Dispose();
-                }
-
-                _currentSegments.Clear();
-                _currentSegments = null;
-            }
+            _currentSegments.Clear();
+            _currentSegments = null;
         }
     }
 }

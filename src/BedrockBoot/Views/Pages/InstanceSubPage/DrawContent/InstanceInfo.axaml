@@ -10,17 +10,19 @@
             <StackPanel Margin="15,0,15,15">
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">基础设置</TextBlock>
-                
+                           FontSize="14">
+                    基础设置
+                </TextBlock>
+
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE8AC;"
                                               Header="实例名称"
                                               Description="实例在启动器内显示的名称">
                     <TextBox Width="200"
                              Name="InstanceName"
-                             TextChanged="TextTypeConfig_OnChanged"></TextBox>
+                             TextChanged="TextTypeConfig_OnChanged" />
                 </onePointControls:SettingCard>
-                
+
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xEB9F;"
                                               IsEnabled="False"
@@ -34,11 +36,13 @@
                         <ComboBoxItem>工作台</ComboBoxItem>
                     </ComboBox>
                 </onePointControls:SettingCard>
-                
+
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">启动设置</TextBlock>
-        
+                           FontSize="14">
+                    启动设置
+                </TextBlock>
+
                 <onePointControls:SettingExpander Header="启动设置"
                                                   Description="实例的启动相关设置"
                                                   Margin="5"
@@ -50,46 +54,48 @@
                                                       Classes="Item">
                             <TextBox Width="200"
                                      Name="InstanceArgs"
-                                     TextChanged="TextTypeConfig_OnChanged"></TextBox>
+                                     TextChanged="TextTypeConfig_OnChanged" />
                         </onePointControls:SettingCard>
-                
+
                         <onePointControls:SettingCard Glyph="&#xE70F;"
                                                       Header="编辑模式"
                                                       Description="启动基岩版的创作者编辑模式"
                                                       Classes="Item">
                             <ToggleSwitch Name="InstanceEdit"
-                                          IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
+                                          IsCheckedChanged="BoolTypeConfig_OnChanged" />
                         </onePointControls:SettingCard>
-                
+
                         <onePointControls:SettingCard Glyph="&#xE822;"
                                                       Header="启用 Mods"
                                                       Description="是否启用在出现游戏进程后自动注入 Mods"
                                                       Classes="Item">
                             <ToggleSwitch Name="InstanceMod"
-                                          IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
+                                          IsCheckedChanged="BoolTypeConfig_OnChanged" />
                         </onePointControls:SettingCard>
-                
+
                         <onePointControls:SettingCard Glyph="&#xE756;"
                                                       Header="控制台"
                                                       Description="启动时拉起游戏控制台"
                                                       Classes="Item">
                             <ToggleSwitch Name="InstanceConsole"
-                                          IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
+                                          IsCheckedChanged="BoolTypeConfig_OnChanged" />
                         </onePointControls:SettingCard>
                     </StackPanel>
                 </onePointControls:SettingExpander>
-                
+
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">高级设置</TextBlock>
-                
+                           FontSize="14">
+                    高级设置
+                </TextBlock>
+
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE7B8;"
                                               Header="版本隔离"
                                               Description="启用版本隔离（仅隔离存档，资源包等。模组文件无需隔离）">
                     <ToggleSwitch IsChecked="True"
                                   Name="InstanceIsolated"
-                                  IsCheckedChanged="BoolTypeConfig_OnChanged"></ToggleSwitch>
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
                 </onePointControls:SettingCard>
             </StackPanel>
         </ScrollViewer>

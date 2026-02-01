@@ -9,8 +9,10 @@
         <StackPanel Margin="15">
             <TextBlock Margin="5,0,5,10"
                        FontWeight="Bold"
-                       FontSize="14">基础下载</TextBlock>
-            
+                       FontSize="14">
+                基础下载
+            </TextBlock>
+
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="下载分块"
                                           Description="BedrockBoot 的下载分片数量"
@@ -21,64 +23,68 @@
                         ValueChanged="ChunkCountSlider_OnValueChanged"
                         Minimum="4"
                         Maximum="32"
-                        Value="16"></Slider>
+                        Value="16" />
             </onePointControls:SettingCard>
-            
+
             <TextBlock Margin="5,0,5,10"
                        FontWeight="Bold"
-                       FontSize="14">实例下载</TextBlock>
-            
+                       FontSize="14">
+                实例下载
+            </TextBlock>
+
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="自动缓存游戏安装包"
                                           Description="首次下载一个版本的时候将会缓存游戏安装包，以方便下次安装相同版本"
                                           Glyph="&#xE7B8;">
                 <ToggleSwitch IsChecked="True"
                               Name="IsAutoCacheGamePack"
-                              IsCheckedChanged="IsAutoCacheGamePack_OnIsCheckedChanged"></ToggleSwitch>
+                              IsCheckedChanged="IsAutoCacheGamePack_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
-            
+
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="实例文件夹"
                                           Description="游戏存放的根目录"
                                           IsClickable="True"
                                           IsEnabled="False"
-                                          Glyph="&#xE8B7;">
-            </onePointControls:SettingCard>
-            
+                                          Glyph="&#xE8B7;" />
+
             <TextBlock Margin="5,0,5,10"
                        FontWeight="Bold"
-                       FontSize="14">源</TextBlock>
-            
+                       FontSize="14">
+                源
+            </TextBlock>
+
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="版本列表源"
                                           Description="BedrockBoot 使用的版本列表源"
                                           Glyph="&#xE8F1;">
                 <ComboBox Width="200"
                           Name="SourceBox"
-                          SelectionChanged="SourceBox_OnSelectionChanged"></ComboBox>
+                          SelectionChanged="SourceBox_OnSelectionChanged" />
             </onePointControls:SettingCard>
-            
+
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="CurseForge 源"
                                           Description="BedrockBoot 使用的 CurseForge 源"
                                           Glyph="&#xE8F1;">
                 <ComboBox Width="200"
                           Name="CurseForgeSourceBox"
-                          SelectionChanged="CurseForgeSourceBox_OnSelectionChanged"></ComboBox>
+                          SelectionChanged="CurseForgeSourceBox_OnSelectionChanged" />
             </onePointControls:SettingCard>
-            
+
             <TextBlock Margin="5,0,5,10"
                        FontWeight="Bold"
-                       FontSize="14">高级</TextBlock>
-            
+                       FontSize="14">
+                高级
+            </TextBlock>
+
             <onePointControls:SettingCard Margin="5, 0, 5, 10"
                                           Header="软件更新"
                                           Description="BedrockBoot 的更新设置"
                                           IsClickable="True"
                                           Name="SoftwareUpdate"
                                           Click="SoftwareUpdate_OnClick"
-                                          Glyph="&#xE895;">
-            </onePointControls:SettingCard>
+                                          Glyph="&#xE895;" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

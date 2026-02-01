@@ -10,16 +10,17 @@ namespace BedrockBoot.Models.Pack.Game.Server;
 
 public class ServerManager
 {
-    public VersionConfig VersionConfig { get; set; }
     public ServerManager(VersionConfig versionInfo)
     {
         VersionConfig = versionInfo;
     }
 
+    public VersionConfig VersionConfig { get; set; }
+
     public void AddServer(string user, ServerItemInfo server)
     {
         var configFile = GetServerConfigFilesPath().Where(co => co.Key == user).First().Value;
-        var lines = File.Exists(configFile) ? File.ReadAllLines(configFile).ToList() : new();
+        var lines = File.Exists(configFile) ? File.ReadAllLines(configFile).ToList() : new List<string>();
         var lineIndex = lines.Count + 1;
         lines.Add($"{lineIndex}:{GetServerConfigLine(server)}");
 
@@ -28,12 +29,12 @@ public class ServerManager
 
         File.WriteAllLines(configFile, lines);
     }
-    
-    public void DeleteServer(string user,ServerItemInfo info)
+
+    public void DeleteServer(string user, ServerItemInfo info)
     {
         var configFile = GetServerConfigFilesPath().Where(co => co.Key == user).First().Value;
-        var lines = File.Exists(configFile) ? File.ReadAllLines(configFile).ToList() : new();
-        
+        var lines = File.Exists(configFile) ? File.ReadAllLines(configFile).ToList() : new List<string>();
+
         lines.RemoveAll(line => line.Split(':')[0].Contains(info.Id.ToString()));
 
         if (!Directory.Exists(Path.GetDirectoryName(configFile)))
@@ -43,7 +44,9 @@ public class ServerManager
     }
 
     public string GetServerConfigLine(ServerItemInfo server)
-        => $"{server.ServerName}:{server.ServerAddress}:{server.ServerPort}";
+    {
+        return $"{server.ServerName}:{server.ServerAddress}:{server.ServerPort}";
+    }
 
     public Dictionary<string, List<ServerItemInfo>> GetServers()
     {
@@ -58,7 +61,7 @@ public class ServerManager
                 lines.ForEach(line =>
                 {
                     var split = line.Split(':');
-                    lst.Add(new()
+                    lst.Add(new ServerItemInfo
                     {
                         ServerName = split[1],
                         ServerAddress = split[2],
@@ -68,12 +71,13 @@ public class ServerManager
                     });
                 });
             }
-            
+
             result.Add(user.Key, lst);
         });
-        
+
         return result;
     }
+
     private Dictionary<string, string> GetServerConfigFilesPath()
     {
         var result = new Dictionary<string, string>();
@@ -102,8 +106,8 @@ public class ServerManager
                     "games", "com.mojang",
                     @"minecraftpe",
                     "external_servers.txt");
-                    
-                if(Path.GetFileName(user) != "Shared")
+
+                if (Path.GetFileName(user) != "Shared")
                     result.Add(Path.GetFileName(user), path);
             });
         }

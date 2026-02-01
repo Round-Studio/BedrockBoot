@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Global;
@@ -16,9 +13,7 @@ using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.CornerSelectBar;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;
 using Round.SDK.Entry.BedrockBoot;
 using Round.SDK.Plugin.BedrockBoot.Register;
@@ -28,8 +23,7 @@ namespace BedrockBoot.Views.Pages;
 public partial class MainPage : UserControl
 {
     public static MainPage Instance;
-    public bool IsEditMode { get; set; } = false;
-    private bool _isUpdatingGameList = false; // 添加：控制游戏列表更新的标志
+    private bool _isUpdatingGameList; // 添加：控制游戏列表更新的标志
 
     public MainPage()
     {
@@ -37,28 +31,28 @@ public partial class MainPage : UserControl
 
         #region 注册导航项
 
-        RegisterTopItem(new TopBarItemInfo()
+        RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = "主页",
             Tag = "Home",
             Page = typeof(MainHomePage)
         });
-        RegisterTopItem(new TopBarItemInfo()
+        RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = "实例",
             Tag = "Manager",
             Page = typeof(MainManager)
         });
-        RegisterTopItem(new TopBarItemInfo()
+        RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = "下载",
             Tag = "Download",
             Page = typeof(DownloadRoot)
         });
-        RegisterTopItem(new TopBarItemInfo()
+        RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = "任务",
@@ -66,7 +60,7 @@ public partial class MainPage : UserControl
             Page = typeof(MainTaskPage)
         });
 #if DEBUG
-        RegisterTopItem(new TopBarItemInfo()
+        RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = "工具",
@@ -84,7 +78,7 @@ public partial class MainPage : UserControl
                 Page = typeof(MainToolsBoxPage)
             });
 #endif
-        RegisterTopItem(new TopBarItemInfo()
+        RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = "设置",
@@ -104,7 +98,7 @@ public partial class MainPage : UserControl
 
         if (GlobalModel.Config.Data.IsAutoCheckUpdate) Update();
 
-        this.Loaded += (sender, args) =>
+        Loaded += (sender, args) =>
         {
             PluginLoader.LoadAll();
 
@@ -124,13 +118,17 @@ public partial class MainPage : UserControl
         UpdateUI();
     }
 
+    public bool IsEditMode { get; set; }
+
+    public Dictionary<string, TopBarItemInfo> TopBarItem { get; } = new();
+
     public static async Task Update(bool isShowNeo = false)
     {
         try
         {
             var result = await CheckUpdate.Update();
             if (result != null)
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
                     Content = $"我们有新的更新：\n\n{result.Body}",
                     Title = $"更新 {result.TagName}",
@@ -139,10 +137,10 @@ public partial class MainPage : UserControl
                     CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
                 });
             else if (isShowNeo)
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
-                    Content = $"当前已是最新版本",
-                    Title = $"检查更新",
+                    Content = "当前已是最新版本",
+                    Title = "检查更新",
                     CloseButtonText = "确定"
                 });
         }
@@ -152,15 +150,13 @@ public partial class MainPage : UserControl
         }
     }
 
-    public Dictionary<string, TopBarItemInfo> TopBarItem { get; private set; } = new();
-
     public void RegisterTopItem(TopBarItemInfo item)
     {
         IsEditMode = false;
 
         TopBarItem.Add(item.Tag, item);
 
-        SelTag.Items.Add(new SelectBarItem()
+        SelTag.Items.Add(new SelectBarItem
         {
             Tag = item.Tag,
             Glyph = item.ItemGlyph
@@ -172,7 +168,6 @@ public partial class MainPage : UserControl
     private void SelTag_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (IsEditMode)
-        {
             try
             {
                 // 修复：检查 SelectedItem 是否为 null
@@ -187,23 +182,16 @@ public partial class MainPage : UserControl
                 BedrockBootPage page = null;
 
                 if (TopBarItem[tag].Page is Type selPageType)
-                {
                     page = (BedrockBootPage)Activator.CreateInstance(selPageType);
-                }
                 else
-                {
-                    DialogHost.Show(new DialogInfo()
+                    DialogHost.Show(new DialogInfo
                     {
                         Title = "页面无效",
                         Content = $"页面 {tag} 无效",
                         CloseButtonText = "确定"
                     });
-                }
 
-                if (page.HeaderView != null)
-                {
-                    HeaderContent.NavigateTo(page.HeaderView);
-                }
+                if (page.HeaderView != null) HeaderContent.NavigateTo(page.HeaderView);
 
                 MainFrame.NavigateTo(page);
             }
@@ -211,7 +199,6 @@ public partial class MainPage : UserControl
             {
                 // 移除：不要在这里重置 IsEditMode，以免影响其他事件
             }
-        }
     }
 
     public void UpdateUI()
@@ -290,10 +277,7 @@ public partial class MainPage : UserControl
 
             // 修复：检查 GameSelIndex 是否有效，如果无效则设置为 0
             var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
-            if (gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count)
-            {
-                gameFolder.GameSelIndex = 0;
-            }
+            if (gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) gameFolder.GameSelIndex = 0;
 
             GameListChoose.SelectedIndex = gameFolder.GameSelIndex;
 
@@ -384,17 +368,12 @@ public partial class MainPage : UserControl
         if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
-        {
             return;
-        }
 
         var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
         var versions = GameInfoHelper.GetVersionConfigs(gameFolder.GameFolderPath);
 
-        if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count)
-        {
-            return;
-        }
+        if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) return;
 
         var version = versions[gameFolder.GameSelIndex];
 
@@ -408,17 +387,12 @@ public partial class MainPage : UserControl
         if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
-        {
             return;
-        }
 
         var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
         var versions = GameInfoHelper.GetVersionConfigs(gameFolder.GameFolderPath);
 
-        if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count)
-        {
-            return;
-        }
+        if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) return;
 
         var version = versions[gameFolder.GameSelIndex];
 

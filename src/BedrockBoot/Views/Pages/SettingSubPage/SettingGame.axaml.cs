@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
@@ -14,8 +12,8 @@ public partial class SettingGame : ISetting
 {
     public SettingGame()
     {
-        InitializeComponent();        
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
+        InitializeComponent();
+        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
         {
             new()
             {

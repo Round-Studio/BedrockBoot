@@ -1,12 +1,12 @@
 ﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
-                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
-                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainTaskPage">
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                       xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                       xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+                       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                       x:Class="BedrockBoot.Views.Pages.MainSubPage.MainTaskPage">
     <entry:BedrockBootPage.HeaderView>
         <onePointControls:LineTextBlock Grid.Row="0"
                                         Margin="0"
@@ -14,22 +14,20 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
-                                        Text="任务中心"></onePointControls:LineTextBlock>
+                                        Text="任务中心" />
     </entry:BedrockBootPage.HeaderView>
-    
+
     <Grid>
         <notice:InfoCard VerticalAlignment="Center"
                          HorizontalAlignment="Center"
                          BigTitle="太棒啦！"
                          Message="当前任务列表中没有任何一项任务"
-                         Name="NoneBox"> </notice:InfoCard>
-        
+                         Name="NoneBox" />
+
         <ScrollViewer Name="TaskViewer"
                       IsVisible="False">
             <StackPanel Margin="15,10,15,15"
-                        Name="TaskList">
-                
-            </StackPanel>
+                        Name="TaskList" />
         </ScrollViewer>
     </Grid>
 </entry:BedrockBootPage>

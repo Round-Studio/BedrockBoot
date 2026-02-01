@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
@@ -16,8 +14,8 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameResourcePackItem : UserControl
 {
-    public ResourcePackManifest ResourcePackManifest { get; set; }
     public Action RefreshCallBack;
+
     public GameResourcePackItem()
     {
         InitializeComponent();
@@ -31,6 +29,8 @@ public partial class GameResourcePackItem : UserControl
         ControlBox.IsVisible = !isImport;
     }
 
+    public ResourcePackManifest ResourcePackManifest { get; set; }
+
     public void Update()
     {
         if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon!))
@@ -41,7 +41,7 @@ public partial class GameResourcePackItem : UserControl
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "删除资源",
             Content = "您确定要删除吗，这将永远无法恢复。",
@@ -49,7 +49,7 @@ public partial class GameResourcePackItem : UserControl
             PrimaryButtonText = "取消",
             CloseAction = () =>
             {
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = "删除资源",
                     Content = "正在删除资源"
@@ -64,7 +64,7 @@ public partial class GameResourcePackItem : UserControl
                     {
                         Dispatcher.UIThread.Invoke(() =>
                         {
-                            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                             {
                                 Title = "错误",
                                 Message = "删除失败"

@@ -10,8 +10,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"
-                              MaxWidth="300"></ColumnDefinition>
-            <ColumnDefinition Width="7*"></ColumnDefinition>
+                              MaxWidth="300" />
+            <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <items:BorderCard Margin="20,10,5,20">
@@ -23,21 +23,25 @@
                                 Width="80"
                                 Height="80">
                             <Border.Background>
-                                <ImageBrush Source="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"></ImageBrush>
+                                <ImageBrush Source="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png" />
                             </Border.Background>
                         </Border>
-                            
+
                         <TextBlock HorizontalAlignment="Center"
                                    FontSize="20"
                                    Margin="0,20,0,2"
                                    Name="VersionName"
-                                   FontWeight="Bold">Version Name</TextBlock>
-                            
+                                   FontWeight="Bold">
+                            Version Name
+                        </TextBlock>
+
                         <TextBlock HorizontalAlignment="Center"
                                    FontSize="11"
                                    Foreground="Gray"
-                                   Name="VersionReady">Version Ready Version</TextBlock>
-                            
+                                   Name="VersionReady">
+                            Version Ready Version
+                        </TextBlock>
+
                         <Button Padding="16,8"
                                 HorizontalAlignment="Stretch"
                                 Margin="30,30,30,5"
@@ -50,13 +54,13 @@
                                 <onePointControls:FontIcon Glyph="&#xE768;"
                                                            VerticalAlignment="Center"
                                                            FontSize="14"
-                                                           Margin="0,0,20,0"></onePointControls:FontIcon>
+                                                           Margin="0,0,20,0" />
                                 <TextBlock Text="启动"
                                            FontSize="15"
-                                           VerticalAlignment="Center"/>
+                                           VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
-                        
+
                         <StackPanel Orientation="Horizontal"
                                     Spacing="5"
                                     HorizontalAlignment="Center"
@@ -65,14 +69,14 @@
                                     Name="OpenFolderBtn"
                                     Click="OpenFolderBtn_OnClick"
                                     Classes="NoBorder">
-                                <onePointControls:FontIcon Glyph="&#xE8B7;"/>
+                                <onePointControls:FontIcon Glyph="&#xE8B7;" />
                             </Button>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
             </items:BorderCard>
         </Grid>
-        
+
         <Grid Grid.Column="1"
               RowDefinitions="Auto,*">
             <TabControl Grid.Row="0"
@@ -80,7 +84,7 @@
                         SelectedIndex="0"
                         SelectionChanged="InstanceTabControl_OnSelectionChanged"
                         Margin="5,0,10,0">
-                <TabItem Header="实例详情" Tag="Info"></TabItem>
+                <TabItem Header="实例详情" Tag="Info" />
                 <TabItem Tag="Mods" Name="GameModes">
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal"
@@ -88,20 +92,20 @@
                             <TextBlock>模组管理</TextBlock>
                             <onePointControls:LabelBox Text="Beta"
                                                        VerticalAlignment="Center"
-                                                       FontWeight="Normal"></onePointControls:LabelBox>
+                                                       FontWeight="Normal" />
                         </StackPanel>
                     </TabItem.Header>
                 </TabItem>
-                <TabItem Header="资源包 / 行为包" Tag="Pack"></TabItem>
-                <TabItem Header="存档" Tag="Save"></TabItem>
-                <TabItem Header="截图" Tag="Screenshots"></TabItem>
-                <TabItem Header="服务器" Tag="Server"></TabItem>
-                <TabItem Header="操作" Tag="Controls" Name="GameControls"></TabItem>
+                <TabItem Header="资源包 / 行为包" Tag="Pack" />
+                <TabItem Header="存档" Tag="Save" />
+                <TabItem Header="截图" Tag="Screenshots" />
+                <TabItem Header="服务器" Tag="Server" />
+                <TabItem Header="操作" Tag="Controls" Name="GameControls" />
             </TabControl>
-        
+
             <navigation:NavigationFrame Grid.Row="1"
                                         Margin="5,5,10,0"
-                                        Name="InstanceFrame"/>
+                                        Name="InstanceFrame" />
         </Grid>
     </Grid>
 </UserControl>

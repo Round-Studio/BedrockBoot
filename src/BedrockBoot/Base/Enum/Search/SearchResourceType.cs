@@ -1,6 +1,4 @@
-﻿using BedrockLauncher.Core;
-
-namespace BedrockBoot.Base.Enum.Search;
+﻿namespace BedrockBoot.Base.Enum.Search;
 
 public enum SearchResourceType
 {

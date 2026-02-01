@@ -6,6 +6,5 @@ public class Load : IPluginBedrockBoot
 {
     public void Initialize()
     {
-        
     }
 }

@@ -1,5 +1,4 @@
-﻿using Avalonia;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,24 +8,22 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Platform;
+using Avalonia;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
 using BedrockBoot.Win32;
-using PeNet;
-using PeNet.FileParser;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
 using Round.SDK.Global;
 using Round.SDK.Logger;
+using Application = System.Windows.Forms.Application;
 
 namespace BedrockBoot;
 
-sealed class Program
+internal sealed class Program
 {
     [DllImport("kernel32.dll")]
-    static extern bool AllocConsole();
+    private static extern bool AllocConsole();
 
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
@@ -48,19 +45,17 @@ sealed class Program
         AppUpdater.ProcessStartupArgs(args);
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
-        
+
         // 然后处理原有的 -update 参数
         if (args.Length > 0)
         {
             if (!ArgsAnalytical(args.ToList()))
-            {
                 BuildAvaloniaApp()
                     .StartWithClassicDesktopLifetime(args);
-            }
         }
         else
         {
-            ConsoleRedirector consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
+            var consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
                 $"[BedrockBoot.Logger] {DateTime.Now.ToString("yyyy.MM.dd HHmmss.fff")}.log"));
 
             BuildAvaloniaApp()
@@ -71,7 +66,7 @@ sealed class Program
     private static bool ArgsAnalytical(List<string> args)
     {
         var result = false;
-        args.ForEach((arg) =>
+        args.ForEach(arg =>
         {
             switch (arg)
             {
@@ -83,7 +78,7 @@ sealed class Program
                     break;
                 case "-shell":
                     // 查找 -shell 参数的索引
-                    int shellIndex = args.FindIndex(x => x == "-shell");
+                    var shellIndex = args.FindIndex(x => x == "-shell");
 
                     // 检查是否提供了命令参数
                     if (shellIndex + 1 >= args.Count)
@@ -92,7 +87,7 @@ sealed class Program
                         break;
                     }
 
-                    string command = args[shellIndex + 1];
+                    var command = args[shellIndex + 1];
                     Console.WriteLine($@"触发 bb 协议：{command}");
 
                     try
@@ -123,8 +118,8 @@ sealed class Program
 
                     ApplicationConfiguration.Initialize();
                     var winJump = new LaunchWindow(args.ToList());
-                    System.Windows.Forms.Application.Run(winJump);
-                    
+                    Application.Run(winJump);
+
                     result = true;
                     break;
                 case "-open":
@@ -133,8 +128,8 @@ sealed class Program
 
                     ApplicationConfiguration.Initialize();
                     var winOpen = new ImportResourcePack(args.ToList());
-                    System.Windows.Forms.Application.Run(winOpen);
-                    
+                    Application.Run(winOpen);
+
                     result = true;
                     break;
             }
@@ -155,8 +150,8 @@ sealed class Program
         using var httpClient = new HttpClient(handler);
 
         // URL 编码命令参数
-        string encodedCommand = Uri.EscapeDataString(command);
-        string url = $"http://127.0.0.1:43956/shell?command={encodedCommand}";
+        var encodedCommand = Uri.EscapeDataString(command);
+        var url = $"http://127.0.0.1:43956/shell?command={encodedCommand}";
 
         // 异步发送请求
         var response = httpClient.GetAsync(url).Result;
@@ -164,7 +159,7 @@ sealed class Program
         // 如果需要，可以读取响应
         if (response.IsSuccessStatusCode)
         {
-            string responseContent = response.Content.ReadAsStringAsync().Result;
+            var responseContent = response.Content.ReadAsStringAsync().Result;
             Console.WriteLine($@"服务器响应：{responseContent}");
         }
         else
@@ -184,7 +179,7 @@ sealed class Program
             }
 
             // 获取当前程序路径
-            string currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
+            var currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
             if (string.IsNullOrEmpty(currentExePath) || !File.Exists(currentExePath))
             {
                 Console.WriteLine(@"无法获取当前程序路径");
@@ -201,11 +196,11 @@ sealed class Program
             Console.WriteLine($@"开始更新：从 {currentExePath} 到 {oldVersionPath}");
 
             // 1. 复制新版本到临时位置
-            string tempFile = oldVersionPath + ".new";
+            var tempFile = oldVersionPath + ".new";
             File.Copy(currentExePath, tempFile, true);
 
             // 2. 启动新版本（从临时文件）
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 FileName = tempFile,
                 Arguments = $"--updated \"{oldVersionPath}\"", // 传递原文件路径
@@ -225,8 +220,10 @@ sealed class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        return AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
+    }
 }

@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -15,7 +12,7 @@ public partial class SettingPersonalization : UserControl
     public SettingPersonalization()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
+        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
         {
             new()
             {

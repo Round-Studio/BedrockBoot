@@ -1,10 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
@@ -15,17 +13,19 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModItem : UserControl
 {
-    public CurseForgeResponse.ModData ModData { get; set; }
     public CurseForgeModItem()
     {
         InitializeComponent();
     }
-    public CurseForgeModItem(CurseForgeResponse.ModData modData):this()
+
+    public CurseForgeModItem(CurseForgeResponse.ModData modData) : this()
     {
         ModData = modData;
 
         Update();
     }
+
+    public CurseForgeResponse.ModData ModData { get; set; }
 
     public async Task Update()
     {
@@ -33,7 +33,7 @@ public partial class CurseForgeModItem : UserControl
         Card.Description = $"{string.Join(", ", ModData.Authors.Select(x => x.Name))}, 下载量：{ModData.DownloadCount}";
         ModData.Categories.ForEach(cat =>
         {
-            HeaderBox.Children.Add(new LabelBox()
+            HeaderBox.Children.Add(new LabelBox
             {
                 Text = cat.Name,
                 VerticalAlignment = VerticalAlignment.Center
@@ -53,6 +53,6 @@ public partial class CurseForgeModItem : UserControl
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(ModData),$"下载资源 {ModData.Name}");
+        GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(ModData), $"下载资源 {ModData.Name}");
     }
 }

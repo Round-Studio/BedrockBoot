@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Info;
@@ -21,7 +19,6 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawDownloadGameContent : UserControl
 {
-    public BuildInfo BuildInfo { get; set; }
     public List<GameDownloadUrlInfo>? Sources;
 
     public DrawDownloadGameContent()
@@ -35,6 +32,8 @@ public partial class DrawDownloadGameContent : UserControl
 
         UpdateUI();
     }
+
+    public BuildInfo BuildInfo { get; set; }
 
     public void UpdateUI()
     {
@@ -72,7 +71,7 @@ public partial class DrawDownloadGameContent : UserControl
                         };
                         itemList.Add(item);
 
-                        SourceSelBox.Items.Add(new ListBoxItem()
+                        SourceSelBox.Items.Add(new ListBoxItem
                         {
                             Content = item
                         });
@@ -90,7 +89,7 @@ public partial class DrawDownloadGameContent : UserControl
             }
             else
             {
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = "发生错误",
                     Content = "该版本无法获取到对应下载地址",
@@ -107,7 +106,7 @@ public partial class DrawDownloadGameContent : UserControl
         {
             var dialog = new DialogAddGameFolderContent();
 
-            DialogHost.Show(new DialogInfo()
+            DialogHost.Show(new DialogInfo
             {
                 Title = "添加游戏根目录",
                 Content = dialog,
@@ -122,7 +121,7 @@ public partial class DrawDownloadGameContent : UserControl
                             ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                             : dialog.FolderName;
 
-                        GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo()
+                        GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                         {
                             GameFolderPath = dialog.FolderPath,
                             GameFolderName = name

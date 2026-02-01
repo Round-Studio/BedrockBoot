@@ -6,6 +6,10 @@ namespace BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 
 public class CurseForgeResponse
 {
+    [JsonPropertyName("data")] public List<ModData> Data { get; set; }
+
+    [JsonPropertyName("pagination")] public PaginationEntry Pagination { get; set; }
+
     public class Links
     {
         [JsonPropertyName("websiteUrl")] public string WebsiteUrl { get; set; }
@@ -266,11 +270,12 @@ public class CurseForgeResponse
         [JsonPropertyName("gameVersionTypeId")]
         public int GameVersionTypeId { get; set; }
     }
+
     public class SingleFileResponse
     {
-        [JsonPropertyName("data")]
-        public ModFile Data { get; set; }
+        [JsonPropertyName("data")] public ModFile Data { get; set; }
     }
+
     public class FileDependency
     {
         [JsonPropertyName("modId")] public int ModId { get; set; }
@@ -303,7 +308,7 @@ public class CurseForgeResponse
 
         [JsonPropertyName("fileStatus")] public int FileStatus { get; set; }
 
-        [JsonPropertyName("hashes")] public List<FileHash> Hashes { get; set; } = new List<FileHash>();
+        [JsonPropertyName("hashes")] public List<FileHash> Hashes { get; set; } = new();
 
         [JsonPropertyName("fileDate")] public DateTime FileDate { get; set; }
 
@@ -313,13 +318,12 @@ public class CurseForgeResponse
 
         [JsonPropertyName("downloadUrl")] public string DownloadUrl { get; set; }
 
-        [JsonPropertyName("gameVersions")] public List<string> GameVersions { get; set; } = new List<string>();
+        [JsonPropertyName("gameVersions")] public List<string> GameVersions { get; set; } = new();
 
         [JsonPropertyName("sortableGameVersions")]
-        public List<SortableGameVersion> SortableGameVersions { get; set; } = new List<SortableGameVersion>();
+        public List<SortableGameVersion> SortableGameVersions { get; set; } = new();
 
-        [JsonPropertyName("dependencies")]
-        public List<FileDependency> Dependencies { get; set; } = new List<FileDependency>();
+        [JsonPropertyName("dependencies")] public List<FileDependency> Dependencies { get; set; } = new();
 
         [JsonPropertyName("alternateFileId")] public int AlternateFileId { get; set; }
 
@@ -327,18 +331,14 @@ public class CurseForgeResponse
 
         [JsonPropertyName("fileFingerprint")] public long FileFingerprint { get; set; }
 
-        [JsonPropertyName("modules")] public List<FileModule> Modules { get; set; } = new List<FileModule>();
+        [JsonPropertyName("modules")] public List<FileModule> Modules { get; set; } = new();
     }
 
     // 文件列表响应类
     public class ModFilesResponse
     {
-        [JsonPropertyName("data")] public List<ModFile> Data { get; set; } = new List<ModFile>();
+        [JsonPropertyName("data")] public List<ModFile> Data { get; set; } = new();
 
-        [JsonPropertyName("pagination")] public PaginationEntry Pagination { get; set; } = new PaginationEntry();
+        [JsonPropertyName("pagination")] public PaginationEntry Pagination { get; set; } = new();
     }
-
-    [JsonPropertyName("data")] public List<ModData> Data { get; set; }
-
-    [JsonPropertyName("pagination")] public PaginationEntry Pagination { get; set; }
 }

@@ -21,18 +21,15 @@ public class PackAnalysis
     {
         try
         {
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            using (BinaryReader reader = new BinaryReader(fs))
+            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (var reader = new BinaryReader(fs))
             {
                 // 读取指定数量的字节
-                byte[] headerBytes = reader.ReadBytes(bytesToRead);
+                var headerBytes = reader.ReadBytes(bytesToRead);
 
                 // 将字节转换为十六进制字符串
-                StringBuilder sb = new StringBuilder();
-                foreach (byte b in headerBytes)
-                {
-                    sb.AppendFormat("{0:X2} ", b); // X2表示两位大写十六进制
-                }
+                var sb = new StringBuilder();
+                foreach (var b in headerBytes) sb.AppendFormat("{0:X2} ", b); // X2表示两位大写十六进制
 
                 return sb.ToString().Trim(); // 移除末尾空格
             }

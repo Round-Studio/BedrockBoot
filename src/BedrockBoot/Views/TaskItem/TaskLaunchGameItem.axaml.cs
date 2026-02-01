@@ -1,37 +1,25 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Management.Deployment;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Pack.Game.Isolation;
-using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockBoot.Views.DialogContent;
-using BedrockLauncher.Core;
-using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
-using PeNet;
 
 namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskLaunchGameItem : UserControl
 {
-    public VersionConfig VersionInfo { get; set; }
-    public bool IsCancel = false;
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    public bool IsCancel;
     public Action LaunchCompleted;
     private Process MinecraftProcess;
-    private CancellationTokenSource _cancellationTokenSource;
 
     public TaskLaunchGameItem()
     {
@@ -43,6 +31,8 @@ public partial class TaskLaunchGameItem : UserControl
         VersionInfo = info;
         _cancellationTokenSource = new CancellationTokenSource();
     }
+
+    public VersionConfig VersionInfo { get; set; }
 
     public void Launch(Action launchCompleted)
     {
@@ -77,7 +67,7 @@ public partial class TaskLaunchGameItem : UserControl
 
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        DialogHost.Show(new DialogInfo()
+                        DialogHost.Show(new DialogInfo
                         {
                             Title = "迁移通知",
                             Content = "该版本需要迁移\n" +
@@ -86,7 +76,7 @@ public partial class TaskLaunchGameItem : UserControl
                             PrimaryButtonText = "不了",
                             CloseAction = () =>
                             {
-                                DialogHost.Show(new DialogInfo()
+                                DialogHost.Show(new DialogInfo
                                 {
                                     Title = "迁移版本",
                                     Content = new DialogMigrationGameRootConfigContent(VersionInfo)
@@ -107,13 +97,13 @@ public partial class TaskLaunchGameItem : UserControl
                 };
 
                 // 设置进度文本更新回调
-                lc.UpdateProgressText = (text) =>
+                lc.UpdateProgressText = text =>
                 {
                     Dispatcher.UIThread.Invoke(() => { LaunchProgressText.Text = text; });
                 };
 
                 // 设置进度条模式回调
-                lc.SetProgressIndeterminate = (isIndeterminate) =>
+                lc.SetProgressIndeterminate = isIndeterminate =>
                 {
                     Dispatcher.UIThread.Invoke(() => { LaunchProgressBar.IsIndeterminate = isIndeterminate; });
                 };
@@ -122,7 +112,7 @@ public partial class TaskLaunchGameItem : UserControl
                 lc.LaunchCompleted = () => { Dispatcher.UIThread.Invoke(() => { LaunchCompleted?.Invoke(); }); };
 
                 // 设置游戏启动回调
-                lc.Launched = (process) =>
+                lc.Launched = process =>
                 {
                     Console.WriteLine($@"游戏已启动，进程ID: {process.Id}");
                     // 可以在这里执行游戏启动后的其他操作
@@ -147,7 +137,7 @@ public partial class TaskLaunchGameItem : UserControl
 
     public static void Launch(VersionConfig gameInfo)
     {
-        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = "启动游戏",
             Message = $"游戏 {gameInfo.Info.VersionName} 已将其启动任务添加至任务列表。",
@@ -162,13 +152,12 @@ public partial class TaskLaunchGameItem : UserControl
 
     private void CancelBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        this.IsCancel = true;
+        IsCancel = true;
 
         // 取消相关操作
         _cancellationTokenSource?.Cancel();
 
         if (MinecraftProcess != null && !MinecraftProcess.HasExited)
-        {
             try
             {
                 MinecraftProcess.Kill(true);
@@ -178,7 +167,6 @@ public partial class TaskLaunchGameItem : UserControl
             {
                 Console.WriteLine($@"终止进程时出错: {ex.Message}");
             }
-        }
 
         // 清理资源
         MinecraftProcess?.Dispose();

@@ -11,17 +11,17 @@
                     VerticalAlignment="Center">
             <TextBlock Text="SourceHost"
                        Name="SourceHost"
-                       FontSize="15"></TextBlock>
+                       FontSize="15" />
             <TextBlock Text="SourceUrl"
                        Name="SourceUrl"
                        TextTrimming="CharacterEllipsis"
                        FontSize="11"
-                       Opacity="0.7"></TextBlock>
+                       Opacity="0.7" />
         </StackPanel>
-        
+
         <onePointControls:LabelBox Grid.Column="1"
                                    Name="PingBox"
                                    VerticalAlignment="Center"
-                                   Text="-1 ms"></onePointControls:LabelBox>
+                                   Text="-1 ms" />
     </Grid>
 </UserControl>

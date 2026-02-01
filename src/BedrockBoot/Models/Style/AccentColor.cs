@@ -4,7 +4,7 @@ namespace BedrockBoot.Models.Style;
 
 public class AccentColor
 {
-    public static List<string> Colors = new List<string>()
+    public static List<string> Colors = new()
     {
         "#FFB900", "#FF8C00", "#F7630C", "#CA5010",
         "#D83B01", "#EF6950", "#D13438", "#FF4343",

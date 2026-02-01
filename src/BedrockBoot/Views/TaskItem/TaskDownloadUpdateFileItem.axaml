@@ -8,23 +8,23 @@
              x:Class="BedrockBoot.Views.TaskItem.TaskDownloadUpdateFileItem">
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*">
-            <onePointControls:ProgressRing Grid.Column="0" 
+            <onePointControls:ProgressRing Grid.Column="0"
                                            Width="36"
                                            Height="36"
                                            VerticalAlignment="Top"
                                            Margin="4,4,0,0"
-                                           Background="Transparent"></onePointControls:ProgressRing>
-            
+                                           Background="Transparent" />
+
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
-                <TextBlock FontSize="16" 
-                           Name="CardTitle">下载更新文件</TextBlock>
-                
+                <TextBlock FontSize="16"
+                           Name="CardTitle">
+                    下载更新文件
+                </TextBlock>
+
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"
-                            Name="SourceListBox">
-                    
-                </StackPanel>
+                            Name="SourceListBox" />
             </StackPanel>
         </Grid>
     </items:BorderCard>

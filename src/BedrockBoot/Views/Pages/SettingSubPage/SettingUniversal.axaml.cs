@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -16,9 +13,9 @@ public partial class SettingUniversal : ISetting
     public SettingUniversal()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
+        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
         {
-            new ()
+            new()
             {
                 ItemName = "通用"
             }
@@ -49,7 +46,7 @@ public partial class SettingUniversal : ISetting
         {
             GlobalModel.Config.Data.IsTaskBarJumpItem = (bool)TaskBarJumpItem.IsChecked;
             GlobalModel.Config.Save();
-            
+
             JumpListManager.ConfigureJumpList();
         }
     }

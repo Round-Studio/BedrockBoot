@@ -1,25 +1,24 @@
 ﻿using System;
-using BedrockBoot.Models.Pack.Game.ResourcePack;
-using BedrockBoot.Win32.Controls;
 using System.Collections.Generic;
-using System.Runtime.Versioning;
-using System.Windows.Documents;
+using System.Drawing;
 using System.Windows.Forms;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockLauncher.Core.VersionJsons;
+using BedrockBoot.Models.Pack.Game.ResourcePack;
+using BedrockBoot.Win32.Controls;
 
 namespace BedrockBoot.Win32;
 
 public partial class ImportResourcePack : Form
 {
+    private readonly string _file;
+    public List<VersionConfig> Games;
+
     public ImportResourcePack()
     {
         InitializeComponent();
     }
-    public List<VersionConfig> Games;
-    private string _file;
 
     public ImportResourcePack(List<string> args) : this()
     {
@@ -31,7 +30,7 @@ public partial class ImportResourcePack : Form
             panel1.Controls.Add(new PackItem(conf)
             {
                 Height = 80,
-                Location = new System.Drawing.Point(0, y)
+                Location = new Point(0, y)
             });
             y += 80;
         });
@@ -53,10 +52,7 @@ public partial class ImportResourcePack : Form
             .GameFolderPath);
         comboBox1.Items.Clear();
         button1.Enabled = true;
-        Games.ForEach(g =>
-        {
-            comboBox1.Items.Add($"{g.Info.VersionName} - {g.Info.Version}");
-        });
+        Games.ForEach(g => { comboBox1.Items.Add($"{g.Info.VersionName} - {g.Info.Version}"); });
 
         if (Games.Count > 0)
             comboBox1.SelectedIndex = 0;
@@ -68,9 +64,9 @@ public partial class ImportResourcePack : Form
     {
         var man = new ResourcePackManager(GameInfoHelper.GetVersionConfig(Games[comboBox1.SelectedIndex].VersionPath));
         man.GetAllPack();
-        man.AddRangePacks(new() { _file });
-        
-        if(MessageBox.Show("导入包成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
+        man.AddRangePacks(new List<string> { _file });
+
+        if (MessageBox.Show("导入包成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
             Close();
     }
 }

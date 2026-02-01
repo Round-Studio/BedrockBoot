@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -14,17 +15,17 @@ namespace BedrockBoot.Models.Download;
 
 public class MultiThreadDownloader : IDisposable
 {
-    private readonly HttpClient _httpClient;
-    private readonly SocketsHttpHandler _handler;
-    private readonly int _maxConcurrency;
-    private readonly int _bufferSize;
-    private readonly TimeSpan _defaultTimeout;
-    private static readonly TimeSpan ProgressReportInterval = TimeSpan.FromMilliseconds(1000);
     private const long MinPartSize = 5 * 1024 * 1024; // 最小5MB的分段大小
     private const long MaxPartSize = 50 * 1024 * 1024; // 最大50MB的分段大小
+    private static readonly TimeSpan ProgressReportInterval = TimeSpan.FromMilliseconds(1000);
+    private readonly int _bufferSize;
+    private readonly TimeSpan _defaultTimeout;
+    private readonly SocketsHttpHandler _handler;
+    private readonly HttpClient _httpClient;
+    private readonly int _maxConcurrency;
 
     /// <summary>
-    /// 初始化
+    ///     初始化
     /// </summary>
     /// <param name="maxConcurrency">最大并发下载线程数</param>
     /// <param name="bufferSize">每次读写操作的缓冲区大小</param>
@@ -36,7 +37,7 @@ public class MultiThreadDownloader : IDisposable
             PooledConnectionLifetime = TimeSpan.FromMinutes(2),
             PooledConnectionIdleTimeout = TimeSpan.FromMinutes(1),
             MaxConnectionsPerServer = maxConcurrency * 2,
-            AutomaticDecompression = System.Net.DecompressionMethods.All,
+            AutomaticDecompression = DecompressionMethods.All,
             UseProxy = false,
             AllowAutoRedirect = true,
             MaxAutomaticRedirections = 5
@@ -46,20 +47,31 @@ public class MultiThreadDownloader : IDisposable
         _defaultTimeout = TimeSpan.FromSeconds(defaultTimeoutSeconds);
         _httpClient.Timeout = _defaultTimeout;
 
-        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; ImprovedMultiThreadDownloader/1.0)");
+        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
+            "Mozilla/5.0 (compatible; ImprovedMultiThreadDownloader/1.0)");
         _maxConcurrency = maxConcurrency;
         _bufferSize = bufferSize;
     }
-    private async System.Threading.Tasks.Task<(long fileSize, bool supportsRange)> GetFileInfoAsync(Uri uri, CancellationToken cancellationToken)
+
+    public void Dispose()
+    {
+        _httpClient?.Dispose();
+        _handler?.Dispose();
+    }
+
+    private async Task<(long fileSize, bool supportsRange)> GetFileInfoAsync(Uri uri,
+        CancellationToken cancellationToken)
     {
         try
         {
             using var headRequest = new HttpRequestMessage(HttpMethod.Head, uri);
-            using var headResponse = await _httpClient.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var headResponse = await _httpClient.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
             if (headResponse.IsSuccessStatusCode)
             {
                 var contentLength = headResponse.Content.Headers.ContentLength ?? -1;
-                var supportsRange = headResponse.Headers.AcceptRanges?.ToString().Equals("bytes", StringComparison.OrdinalIgnoreCase) == true;
+                var supportsRange = headResponse.Headers.AcceptRanges?.ToString()
+                    .Equals("bytes", StringComparison.OrdinalIgnoreCase) == true;
                 return (contentLength, supportsRange);
             }
         }
@@ -72,7 +84,8 @@ public class MultiThreadDownloader : IDisposable
         {
             using var getRequest = new HttpRequestMessage(HttpMethod.Get, uri);
             getRequest.Headers.Range = new RangeHeaderValue(0, 1);
-            using var getResponse = await _httpClient.SendAsync(getRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var getResponse = await _httpClient.SendAsync(getRequest, HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
             if (getResponse.IsSuccessStatusCode)
             {
                 var contentRange = getResponse.Content.Headers.ContentRange;
@@ -89,7 +102,8 @@ public class MultiThreadDownloader : IDisposable
         try
         {
             using var fullRequest = new HttpRequestMessage(HttpMethod.Get, uri);
-            using var fullResponse = await _httpClient.SendAsync(fullRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var fullResponse = await _httpClient.SendAsync(fullRequest, HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
             if (fullResponse.IsSuccessStatusCode)
             {
                 var contentLength = fullResponse.Content.Headers.ContentLength ?? -1;
@@ -105,7 +119,7 @@ public class MultiThreadDownloader : IDisposable
     }
 
     /// <summary>
-    /// 下载文件
+    ///     下载文件
     /// </summary>
     /// <param name="url">要下载的文件的 URL</param>
     /// <param name="filePath">保存文件的本地路径</param>
@@ -113,17 +127,12 @@ public class MultiThreadDownloader : IDisposable
     /// <param name="cancellationToken">用于取消操作的令牌</param>
     /// <returns>如果下载成功则返回 true，否则返回 false</returns>
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpClient))]
-    public async System.Threading.Tasks.Task<bool> DownloadAsync(string url, string filePath, IProgress<DownloadProgress>? progress = null, CancellationToken cancellationToken = default)
+    public async Task<bool> DownloadAsync(string url, string filePath, IProgress<DownloadProgress>? progress = null,
+        CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(url))
-        {
-            throw new Exception("错误: URL 不能为空或空白");
-        }
+        if (string.IsNullOrWhiteSpace(url)) throw new Exception("错误: URL 不能为空或空白");
 
-        if (string.IsNullOrWhiteSpace(filePath))
-        {
-            throw new Exception("错误: 文件路径不能为空或空白");
-        }
+        if (string.IsNullOrWhiteSpace(filePath)) throw new Exception("错误: 文件路径不能为空或空白");
 
         Uri uri;
         try
@@ -140,10 +149,7 @@ public class MultiThreadDownloader : IDisposable
             var (fileSize, supportsRange) = await GetFileInfoAsync(uri, cancellationToken);
 
             var directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
             if (fileSize > 0 && supportsRange)
             {
@@ -169,7 +175,8 @@ public class MultiThreadDownloader : IDisposable
             Console.WriteLine(@"下载已被取消");
             return false;
         }
-        catch (System.Threading.Tasks.TaskCanceledException ex) when (ex.InnerException is TimeoutException || (ex.InnerException == null && ex.CancellationToken == default))
+        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException ||
+                                               (ex.InnerException == null && ex.CancellationToken == default))
         {
             throw new Exception($"下载失败: 请求超时 (超过 {_defaultTimeout.TotalSeconds} 秒)");
         }
@@ -183,7 +190,8 @@ public class MultiThreadDownloader : IDisposable
         }
     }
 
-    private async System.Threading.Tasks.Task DownloadMultiPartAsync(Uri uri, string filePath, long fileSize, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
+    private async Task DownloadMultiPartAsync(Uri uri, string filePath, long fileSize,
+        IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
     {
         var actualParts = _maxConcurrency;
         Console.WriteLine($@"使用 {actualParts} 个分段进行下载 (文件大小: {fileSize} bytes)");
@@ -196,7 +204,7 @@ public class MultiThreadDownloader : IDisposable
         // 创建分段信息
         var parts = CalculateParts(fileSize, actualParts);
         var tempFiles = new string[parts.Count];
-        var tasks = new List<System.Threading.Tasks.Task>();
+        var tasks = new List<Task>();
         var downloadInfos = new PartDownloadInfo[parts.Count];
 
         // 使用线程安全的进度管理器
@@ -209,7 +217,7 @@ public class MultiThreadDownloader : IDisposable
         try
         {
             // 启动所有分段下载任务
-            for (int i = 0; i < parts.Count; i++)
+            for (var i = 0; i < parts.Count; i++)
             {
                 var part = parts[i];
                 var tempFilePath = $"{tempFilePrefix}{i}.tmp";
@@ -226,7 +234,7 @@ public class MultiThreadDownloader : IDisposable
                 downloadInfos[i] = downloadInfo;
 
                 // 创建分段下载任务
-                tasks.Add(System.Threading.Tasks.Task.Run(async () =>
+                tasks.Add(Task.Run(async () =>
                 {
                     await DownloadPartWithRetryAsync(
                         uri, part.Start, part.End, tempFilePath,
@@ -238,14 +246,21 @@ public class MultiThreadDownloader : IDisposable
             var progressTask = progressManager.StartReportingAsync(cancellationToken);
 
             // 等待所有下载任务完成
-            await System.Threading.Tasks.Task.WhenAll(tasks);
+            await Task.WhenAll(tasks);
 
             // 停止进度报告和监控
             progressManager.StopReporting();
             await progressTask;
 
             monitorCts.Cancel();
-            try { await monitorTask; } catch { /* 忽略取消异常 */ }
+            try
+            {
+                await monitorTask;
+            }
+            catch
+            {
+                /* 忽略取消异常 */
+            }
 
             // 合并临时文件
             Console.WriteLine(@"开始合并临时文件...");
@@ -270,13 +285,12 @@ public class MultiThreadDownloader : IDisposable
         }
     }
 
-    private async System.Threading.Tasks.Task DownloadPartWithRetryAsync(Uri uri, long start, long end,
-        string tempFilePath, int partIndex, PartDownloadInfo downloadInfo, 
+    private async Task DownloadPartWithRetryAsync(Uri uri, long start, long end,
+        string tempFilePath, int partIndex, PartDownloadInfo downloadInfo,
         ProgressManager progressManager, CancellationToken cancellationToken,
         int maxRetries = 3)
     {
-        for (int retry = 0; retry <= maxRetries; retry++)
-        {
+        for (var retry = 0; retry <= maxRetries; retry++)
             try
             {
                 await DownloadPartAsync(uri, start, end, tempFilePath, partIndex,
@@ -286,42 +300,47 @@ public class MultiThreadDownloader : IDisposable
             catch (Exception ex) when (retry < maxRetries)
             {
                 Console.WriteLine($@"分段 {partIndex} 下载失败，第 {retry + 1} 次重试: {ex.Message}");
-                
+
                 // 从进度管理中减去已下载的部分
                 progressManager.SubtractDownloaded(downloadInfo.Downloaded);
-                
+
                 // 重置下载信息
                 downloadInfo.Downloaded = 0;
                 downloadInfo.LastActivity = DateTime.UtcNow;
-                
+
                 // 等待一段时间后重试
-                await System.Threading.Tasks.Task.Delay(1000 * (int)Math.Pow(2, retry), cancellationToken);
-                
+                await Task.Delay(1000 * (int)Math.Pow(2, retry), cancellationToken);
+
                 // 删除可能损坏的临时文件
                 if (File.Exists(tempFilePath))
-                {
-                    try { File.Delete(tempFilePath); } catch { }
-                }
+                    try
+                    {
+                        File.Delete(tempFilePath);
+                    }
+                    catch
+                    {
+                    }
             }
-        }
 
         throw new Exception($"分段 {partIndex} 下载失败，已达到最大重试次数");
     }
 
-    private async System.Threading.Tasks.Task DownloadPartAsync(Uri uri, long start, long end,
-        string tempFilePath, int partIndex, PartDownloadInfo downloadInfo, 
+    private async Task DownloadPartAsync(Uri uri, long start, long end,
+        string tempFilePath, int partIndex, PartDownloadInfo downloadInfo,
         ProgressManager progressManager, CancellationToken cancellationToken)
     {
         using var partHttpClient = CreatePartHttpClient();
-        
+
         using var request = new HttpRequestMessage(HttpMethod.Get, uri);
         request.Headers.Range = new RangeHeaderValue(start, end);
-        
-        using var response = await partHttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+        using var response =
+            await partHttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        using var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, FileOptions.Asynchronous);
+        using var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None,
+            _bufferSize, FileOptions.Asynchronous);
 
         var buffer = new byte[_bufferSize];
         int bytesRead;
@@ -334,15 +353,15 @@ public class MultiThreadDownloader : IDisposable
         while ((bytesRead = await responseStream.ReadAsync(buffer, cancellationToken)) > 0)
         {
             await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
-            
+
             // 更新分段下载信息
             partDownloaded += bytesRead;
             downloadInfo.Downloaded = partDownloaded;
             downloadInfo.LastActivity = DateTime.UtcNow;
-            
+
             // 更新总进度
             progressManager.AddDownloaded(bytesRead);
-            
+
             // 检查下载速度
             var now = DateTime.UtcNow;
             if ((now - lastSpeedCheckTime).TotalSeconds >= 5)
@@ -350,39 +369,35 @@ public class MultiThreadDownloader : IDisposable
                 var speed = (partDownloaded - lastSpeedCheckBytes) / (now - lastSpeedCheckTime).TotalSeconds;
                 lastSpeedCheckBytes = partDownloaded;
                 lastSpeedCheckTime = now;
-                
+
                 if (speed < 1024 && partDownloaded < (end - start + 1) * 0.9)
-                {
                     Console.WriteLine($@"分段 {partIndex} 下载速度较慢: {speed:F2} B/s");
-                }
             }
         }
 
         Console.WriteLine($@"分段 {partIndex} 下载完成: {partDownloaded} bytes, 耗时: {stopwatch.Elapsed.TotalSeconds:F2}s");
     }
 
-    private async System.Threading.Tasks.Task MonitorDownloadProgress(PartDownloadInfo[] downloadInfos, CancellationToken cancellationToken)
+    private async Task MonitorDownloadProgress(PartDownloadInfo[] downloadInfos, CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
-        {
             try
             {
-                await System.Threading.Tasks.Task.Delay(10000, cancellationToken); // 每10秒检查一次
-                
+                await Task.Delay(10000, cancellationToken); // 每10秒检查一次
+
                 var now = DateTime.UtcNow;
                 var stalledParts = downloadInfos
                     .Where(info => info != null)
                     .Where(info => (now - info.LastActivity).TotalSeconds > 30)
-                    .Where(info => info.Downloaded < (info.End - info.Start + 1))
+                    .Where(info => info.Downloaded < info.End - info.Start + 1)
                     .ToList();
-                
+
                 if (stalledParts.Any())
                 {
                     Console.WriteLine($@"警告: 检测到 {stalledParts.Count} 个分段下载停滞:");
                     foreach (var info in stalledParts)
-                    {
-                        Console.WriteLine($@"  分段 {info.PartIndex}: 已下载 {info.Downloaded}/{info.End - info.Start + 1} bytes, 最后活动: {info.LastActivity:HH:mm:ss}");
-                    }
+                        Console.WriteLine(
+                            $@"  分段 {info.PartIndex}: 已下载 {info.Downloaded}/{info.End - info.Start + 1} bytes, 最后活动: {info.LastActivity:HH:mm:ss}");
                 }
             }
             catch (TaskCanceledException)
@@ -393,104 +408,6 @@ public class MultiThreadDownloader : IDisposable
             {
                 Console.WriteLine($@"监控任务出错: {ex.Message}");
             }
-        }
-    }
-
-    // 进度管理器类 - 新增
-    private class ProgressManager
-    {
-        private readonly long _totalBytes;
-        private readonly IProgress<DownloadProgress>? _progress;
-        private long _downloadedBytes;
-        private DateTimeOffset _lastReportTime;
-        private readonly object _lock = new object();
-        private volatile bool _isReporting = true;
-        private Timer? _reportTimer;
-
-        public ProgressManager(long totalBytes, IProgress<DownloadProgress>? progress)
-        {
-            _totalBytes = totalBytes;
-            _progress = progress;
-            _downloadedBytes = 0;
-            _lastReportTime = DateTimeOffset.UtcNow;
-        }
-
-        public void AddDownloaded(long bytes)
-        {
-            Interlocked.Add(ref _downloadedBytes, bytes);
-        }
-
-        public void SubtractDownloaded(long bytes)
-        {
-            Interlocked.Add(ref _downloadedBytes, -bytes);
-        }
-
-        public async System.Threading.Tasks.Task StartReportingAsync(CancellationToken cancellationToken)
-        {
-            if (_progress == null) return;
-
-            while (_isReporting && !cancellationToken.IsCancellationRequested)
-            {
-                try
-                {
-                    await System.Threading.Tasks.Task.Delay(ProgressReportInterval, cancellationToken);
-                    ReportProgress(false);
-                }
-                catch (TaskCanceledException)
-                {
-                    break;
-                }
-            }
-        }
-
-        public void StopReporting()
-        {
-            _isReporting = false;
-        }
-
-        public void ReportProgress(bool force = false)
-        {
-            if (_progress == null) return;
-
-            var now = DateTimeOffset.UtcNow;
-            var shouldReport = force || (now - _lastReportTime) >= ProgressReportInterval;
-
-            if (shouldReport)
-            {
-                lock (_lock)
-                {
-                    if (force || (now - _lastReportTime) >= ProgressReportInterval)
-                    {
-                        _lastReportTime = now;
-                        var downloaded = Interlocked.Read(ref _downloadedBytes);
-                        _progress.Report(new DownloadProgress
-                        {
-                            TotalBytes = _totalBytes,
-                            DownloadedBytes = downloaded
-                        });
-                        
-                        // 可选：输出调试信息
-                        if (_totalBytes > 0)
-                        {
-                            var percentage = (double)downloaded / _totalBytes * 100;
-                            Console.WriteLine($@"进度: {downloaded}/{_totalBytes} bytes ({percentage:F2}%)");
-                        }
-                    }
-                }
-            }
-        }
-
-        public void ReportFinalProgress()
-        {
-            if (_progress == null) return;
-            
-            var downloaded = Interlocked.Read(ref _downloadedBytes);
-            _progress.Report(new DownloadProgress
-            {
-                TotalBytes = _totalBytes,
-                DownloadedBytes = _totalBytes > 0 ? _totalBytes : downloaded
-            });
-        }
     }
 
     private int CalculateOptimalParts(long fileSize)
@@ -506,10 +423,7 @@ public class MultiThreadDownloader : IDisposable
 
         // 确保分段大小不超过最大值
         var partSize = fileSize / idealParts;
-        if (partSize > MaxPartSize)
-        {
-            idealParts = (int)Math.Ceiling((double)fileSize / MaxPartSize);
-        }
+        if (partSize > MaxPartSize) idealParts = (int)Math.Ceiling((double)fileSize / MaxPartSize);
 
         return Math.Max(1, idealParts);
     }
@@ -521,7 +435,7 @@ public class MultiThreadDownloader : IDisposable
         var remainder = fileSize % parts;
 
         long currentStart = 0;
-        for (int i = 0; i < parts; i++)
+        for (var i = 0; i < parts; i++)
         {
             var currentPartSize = partSize + (i < remainder ? 1 : 0);
             var currentEnd = currentStart + currentPartSize - 1;
@@ -538,7 +452,7 @@ public class MultiThreadDownloader : IDisposable
         }
 
         // 打印分段信息以便调试
-        for (int i = 0; i < result.Count; i++)
+        for (var i = 0; i < result.Count; i++)
         {
             var (start, end) = result[i];
             Console.WriteLine($@"分段 {i}: {start}-{end}, 大小: {end - start + 1} bytes");
@@ -547,12 +461,12 @@ public class MultiThreadDownloader : IDisposable
         return result;
     }
 
-    private async System.Threading.Tasks.Task DownloadPartWithRetryAsync(Uri uri, long start, long end,
-        string tempFilePath, int partIndex, PartDownloadInfo downloadInfo, long totalDownloadedBytes, Action<bool> reportProgress, CancellationToken cancellationToken,
+    private async Task DownloadPartWithRetryAsync(Uri uri, long start, long end,
+        string tempFilePath, int partIndex, PartDownloadInfo downloadInfo, long totalDownloadedBytes,
+        Action<bool> reportProgress, CancellationToken cancellationToken,
         int maxRetries = 3)
     {
-        for (int retry = 0; retry <= maxRetries; retry++)
-        {
+        for (var retry = 0; retry <= maxRetries; retry++)
             try
             {
                 await DownloadPartAsync(uri, start, end, tempFilePath, partIndex,
@@ -562,39 +476,45 @@ public class MultiThreadDownloader : IDisposable
             catch (Exception ex) when (retry < maxRetries)
             {
                 Console.WriteLine($@"分段 {partIndex} 下载失败，第 {retry + 1} 次重试: {ex.Message}");
-                
+
                 // 重置下载信息
                 downloadInfo.Downloaded = 0;
                 downloadInfo.LastActivity = DateTime.UtcNow;
-                
+
                 // 等待一段时间后重试（指数退避）
-                await System.Threading.Tasks.Task.Delay(1000 * (int)Math.Pow(2, retry), cancellationToken);
-                
+                await Task.Delay(1000 * (int)Math.Pow(2, retry), cancellationToken);
+
                 // 删除可能损坏的临时文件
                 if (File.Exists(tempFilePath))
-                {
-                    try { File.Delete(tempFilePath); } catch { }
-                }
+                    try
+                    {
+                        File.Delete(tempFilePath);
+                    }
+                    catch
+                    {
+                    }
             }
-        }
 
         throw new Exception($"分段 {partIndex} 下载失败，已达到最大重试次数");
     }
 
-    private async System.Threading.Tasks.Task DownloadPartAsync(Uri uri, long start, long end,
-        string tempFilePath, int partIndex, PartDownloadInfo downloadInfo, long totalDownloadedBytes, Action<bool> reportProgress, CancellationToken cancellationToken)
+    private async Task DownloadPartAsync(Uri uri, long start, long end,
+        string tempFilePath, int partIndex, PartDownloadInfo downloadInfo, long totalDownloadedBytes,
+        Action<bool> reportProgress, CancellationToken cancellationToken)
     {
         // 为每个分段创建独立的HttpClient，避免连接池竞争
         using var partHttpClient = CreatePartHttpClient();
-        
+
         using var request = new HttpRequestMessage(HttpMethod.Get, uri);
         request.Headers.Range = new RangeHeaderValue(start, end);
-        
-        using var response = await partHttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+        using var response =
+            await partHttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        using var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, FileOptions.Asynchronous);
+        using var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None,
+            _bufferSize, FileOptions.Asynchronous);
 
         var buffer = new byte[_bufferSize];
         int bytesRead;
@@ -607,14 +527,14 @@ public class MultiThreadDownloader : IDisposable
         while ((bytesRead = await responseStream.ReadAsync(buffer, cancellationToken)) > 0)
         {
             await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
-            
+
             // 更新统计信息
             partDownloaded += bytesRead;
             downloadInfo.Downloaded = partDownloaded;
             downloadInfo.LastActivity = DateTime.UtcNow;
-            
+
             var newTotal = Interlocked.Add(ref totalDownloadedBytes, bytesRead);
-            
+
             // 检查下载速度
             var now = DateTime.UtcNow;
             if ((now - lastSpeedCheckTime).TotalSeconds >= 5)
@@ -622,13 +542,11 @@ public class MultiThreadDownloader : IDisposable
                 var speed = (partDownloaded - lastSpeedCheckBytes) / (now - lastSpeedCheckTime).TotalSeconds;
                 lastSpeedCheckBytes = partDownloaded;
                 lastSpeedCheckTime = now;
-                
+
                 if (speed < 1024 && partDownloaded < (end - start + 1) * 0.9)
-                {
                     Console.WriteLine($@"分段 {partIndex} 下载速度较慢: {speed:F2} B/s");
-                }
             }
-            
+
             // 报告进度
             reportProgress(false);
         }
@@ -643,23 +561,26 @@ public class MultiThreadDownloader : IDisposable
             PooledConnectionLifetime = TimeSpan.FromSeconds(30), // 短连接生命周期
             PooledConnectionIdleTimeout = TimeSpan.FromSeconds(15),
             MaxConnectionsPerServer = 1, // 每个分段使用独立连接
-            AutomaticDecompression = System.Net.DecompressionMethods.All,
+            AutomaticDecompression = DecompressionMethods.All,
             UseProxy = false
         };
-        
+
         return new HttpClient(handler)
         {
             Timeout = TimeSpan.FromSeconds(60) // 分段单独的超时设置
         };
     }
 
-    private async System.Threading.Tasks.Task DownloadSinglePartAsync(Uri uri, string filePath, long fileSize, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
+    private async Task DownloadSinglePartAsync(Uri uri, string filePath, long fileSize,
+        IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
     {
-        using var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var response =
+            await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, useAsync: true);
+        using var fileStream =
+            new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, true);
 
         var buffer = new byte[_bufferSize];
         int bytesRead;
@@ -668,7 +589,7 @@ public class MultiThreadDownloader : IDisposable
 
         void ReportProgressIfNeeded()
         {
-            bool shouldReport = (DateTimeOffset.UtcNow - lastReportTime) >= ProgressReportInterval;
+            var shouldReport = DateTimeOffset.UtcNow - lastReportTime >= ProgressReportInterval;
             if (shouldReport)
             {
                 lastReportTime = DateTimeOffset.UtcNow;
@@ -694,13 +615,16 @@ public class MultiThreadDownloader : IDisposable
         });
     }
 
-    private async System.Threading.Tasks.Task DownloadAsStreamAsync(Uri uri, string filePath, IProgress<DownloadProgress>? progress, CancellationToken cancellationToken)
+    private async Task DownloadAsStreamAsync(Uri uri, string filePath, IProgress<DownloadProgress>? progress,
+        CancellationToken cancellationToken)
     {
-        using var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var response =
+            await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, useAsync: true);
+        using var fileStream =
+            new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, true);
 
         var buffer = new byte[_bufferSize];
         int bytesRead;
@@ -709,7 +633,7 @@ public class MultiThreadDownloader : IDisposable
 
         void ReportProgressIfNeeded()
         {
-            bool shouldReport = (DateTimeOffset.UtcNow - lastReportTime) >= ProgressReportInterval;
+            var shouldReport = DateTimeOffset.UtcNow - lastReportTime >= ProgressReportInterval;
             if (shouldReport)
             {
                 lastReportTime = DateTimeOffset.UtcNow;
@@ -735,7 +659,7 @@ public class MultiThreadDownloader : IDisposable
         });
     }
 
-    private async System.Threading.Tasks.Task MergeTempFilesAsync(string[] tempFiles, string outputPath, CancellationToken cancellationToken)
+    private async Task MergeTempFilesAsync(string[] tempFiles, string outputPath, CancellationToken cancellationToken)
     {
         Thread.Sleep(1000);
         // 增加缓冲区大小
@@ -755,34 +679,30 @@ public class MultiThreadDownloader : IDisposable
         foreach (var fileInfo in sortedFiles)
         {
             cancellationToken.ThrowIfCancellationRequested();
-        
+
             Console.WriteLine($@"正在合并文件: {fileInfo.FullName}, 大小: {fileInfo.Length} bytes");
-        
+
             using var inputStream = new BufferedStream(
                 new FileStream(fileInfo.FullName, FileMode.Open,
                     FileAccess.Read, FileShare.Read, largeBufferSize,
                     FileOptions.SequentialScan | FileOptions.Asynchronous),
                 largeBufferSize * 2);
-        
+
             var buffer = new byte[largeBufferSize];
             int bytesRead;
-        
+
             // 手动复制以支持进度报告
             while ((bytesRead = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
-            {
                 await outputStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
-            }
         }
-    
+
         await outputStream.FlushAsync(cancellationToken);
     }
 
     private void CleanupTempFiles(string[] tempFiles)
     {
         foreach (var tempFile in tempFiles)
-        {
             if (!string.IsNullOrEmpty(tempFile) && File.Exists(tempFile))
-            {
                 try
                 {
                     File.Delete(tempFile);
@@ -791,14 +711,99 @@ public class MultiThreadDownloader : IDisposable
                 {
                     Console.WriteLine($@"删除临时文件失败 {tempFile}: {ex.Message}");
                 }
-            }
-        }
     }
 
-    public void Dispose()
+    // 进度管理器类 - 新增
+    private class ProgressManager
     {
-        _httpClient?.Dispose();
-        _handler?.Dispose();
+        private readonly object _lock = new();
+        private readonly IProgress<DownloadProgress>? _progress;
+        private readonly long _totalBytes;
+        private long _downloadedBytes;
+        private volatile bool _isReporting = true;
+        private DateTimeOffset _lastReportTime;
+        private Timer? _reportTimer;
+
+        public ProgressManager(long totalBytes, IProgress<DownloadProgress>? progress)
+        {
+            _totalBytes = totalBytes;
+            _progress = progress;
+            _downloadedBytes = 0;
+            _lastReportTime = DateTimeOffset.UtcNow;
+        }
+
+        public void AddDownloaded(long bytes)
+        {
+            Interlocked.Add(ref _downloadedBytes, bytes);
+        }
+
+        public void SubtractDownloaded(long bytes)
+        {
+            Interlocked.Add(ref _downloadedBytes, -bytes);
+        }
+
+        public async Task StartReportingAsync(CancellationToken cancellationToken)
+        {
+            if (_progress == null) return;
+
+            while (_isReporting && !cancellationToken.IsCancellationRequested)
+                try
+                {
+                    await Task.Delay(ProgressReportInterval, cancellationToken);
+                    ReportProgress();
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
+        }
+
+        public void StopReporting()
+        {
+            _isReporting = false;
+        }
+
+        public void ReportProgress(bool force = false)
+        {
+            if (_progress == null) return;
+
+            var now = DateTimeOffset.UtcNow;
+            var shouldReport = force || now - _lastReportTime >= ProgressReportInterval;
+
+            if (shouldReport)
+                lock (_lock)
+                {
+                    if (force || now - _lastReportTime >= ProgressReportInterval)
+                    {
+                        _lastReportTime = now;
+                        var downloaded = Interlocked.Read(ref _downloadedBytes);
+                        _progress.Report(new DownloadProgress
+                        {
+                            TotalBytes = _totalBytes,
+                            DownloadedBytes = downloaded
+                        });
+
+                        // 可选：输出调试信息
+                        if (_totalBytes > 0)
+                        {
+                            var percentage = (double)downloaded / _totalBytes * 100;
+                            Console.WriteLine($@"进度: {downloaded}/{_totalBytes} bytes ({percentage:F2}%)");
+                        }
+                    }
+                }
+        }
+
+        public void ReportFinalProgress()
+        {
+            if (_progress == null) return;
+
+            var downloaded = Interlocked.Read(ref _downloadedBytes);
+            _progress.Report(new DownloadProgress
+            {
+                TotalBytes = _totalBytes,
+                DownloadedBytes = _totalBytes > 0 ? _totalBytes : downloaded
+            });
+        }
     }
 
 

@@ -6,6 +6,6 @@
              x:Class="BedrockBoot.Views.Pages.DownloadSubPage.DownloadAssetsResultPage">
     <ScrollViewer Name="ScrollViewer">
         <StackPanel Name="ItemsPanel"
-                    Margin="15,0,15,15"></StackPanel>
+                    Margin="15,0,15,15" />
     </ScrollViewer>
 </UserControl>

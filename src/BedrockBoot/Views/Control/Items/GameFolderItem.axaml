@@ -12,15 +12,19 @@
                        Margin="0,4,0,0"
                        FontSize="16"
                        TextTrimming="CharacterEllipsis"
-                       Name="FolderNameBox">Folder Name</TextBlock>
+                       Name="FolderNameBox">
+                Folder Name
+            </TextBlock>
             <TextBlock Grid.Row="1"
                        Margin="0,0,0,4"
                        FontSize="11"
                        Name="FolderPathBox"
                        TextTrimming="CharacterEllipsis"
-                       Foreground="Gray">Folder Path</TextBlock>
+                       Foreground="Gray">
+                Folder Path
+            </TextBlock>
         </Grid>
-        
+
         <StackPanel Grid.Column="1"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
@@ -29,7 +33,7 @@
                     Name="OpenFolderBtn"
                     Click="OpenFolderBtn_OnClick"
                     Classes="NoBorder">
-                <onePointControls:FontIcon Glyph="&#xE8B7;"/>
+                <onePointControls:FontIcon Glyph="&#xE8B7;" />
             </Button>
             <Button Width="24" Height="24"
                     Margin="0,0,5,0"
@@ -37,7 +41,7 @@
                     Click="DeleteFolderBtn_OnClick"
                     Classes="NoBorder">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
-                                           Foreground="DarkRed"/>
+                                           Foreground="DarkRed" />
             </Button>
         </StackPanel>
     </Grid>

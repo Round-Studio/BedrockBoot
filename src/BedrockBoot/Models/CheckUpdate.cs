@@ -21,14 +21,9 @@ public class CheckUpdate
         var latest = releases;
         Console.WriteLine($@"最新版本: {latest.TagName}");
 
-        if (!latest.TagName.EndsWith(Assembly.GetExecutingAssembly().GetName().Version.ToString()))
-        {
-            return latest;
-        }
-        else
-        {
-            Console.WriteLine($@"当前为最新版本 {latest.TagName}，无需启动更新。");
-        }
+        if (!latest.TagName.EndsWith(Assembly.GetExecutingAssembly().GetName().Version.ToString())) return latest;
+
+        Console.WriteLine($@"当前为最新版本 {latest.TagName}，无需启动更新。");
 
         return null;
     }

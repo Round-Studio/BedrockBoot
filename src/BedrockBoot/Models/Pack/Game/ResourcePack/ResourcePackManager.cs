@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Documents;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
-using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Pack.Game.ResourcePack;
 
 public class ResourcePackManager
 {
-    public VersionConfig VersionConfig { get; set; }
-    public List<ResourcePackManifest> Packs { get; private set; }
-
     public ResourcePackManager(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
     }
+
+    public VersionConfig VersionConfig { get; set; }
+    public List<ResourcePackManifest> Packs { get; private set; }
 
     private List<string> GetManifests(string dir)
     {
@@ -74,21 +71,19 @@ public class ResourcePackManager
         Directory.CreateDirectory(destinationDir);
 
         // 复制所有文件
-        foreach (FileInfo file in dir.GetFiles())
+        foreach (var file in dir.GetFiles())
         {
-            string targetFilePath = Path.Combine(destinationDir, file.Name);
+            var targetFilePath = Path.Combine(destinationDir, file.Name);
             file.CopyTo(targetFilePath, true);
         }
 
         // 如果需要递归复制子目录
         if (recursive)
-        {
-            foreach (DirectoryInfo subDir in dir.GetDirectories())
+            foreach (var subDir in dir.GetDirectories())
             {
-                string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
-                CopyDirectory(subDir.FullName, newDestinationDir, true);
+                var newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                CopyDirectory(subDir.FullName, newDestinationDir);
             }
-        }
     }
 
     public void AddRangePacks(List<string> files)
@@ -102,7 +97,6 @@ public class ResourcePackManager
                 if (!ids.Contains(pack.Header.Uuid))
                 {
                     if (pack.PackType == ResourcePackType.Resource)
-                    {
                         GetInstanceResourcePackPath().Values.ToList().ForEach(folder =>
                         {
                             if (folder.Contains("Shared") ||
@@ -110,10 +104,8 @@ public class ResourcePackManager
                                 CopyDirectory(pack.PackRootPath,
                                     Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
                         });
-                    }
 
                     if (pack.PackType == ResourcePackType.Behavior)
-                    {
                         GetInstanceBehaviorPackPath().Values.ToList().ForEach(folder =>
                         {
                             if (folder.Contains("Shared") ||
@@ -121,7 +113,6 @@ public class ResourcePackManager
                                 CopyDirectory(pack.PackRootPath,
                                     Path.Combine(folder, Path.GetFileName(pack.PackRootPath)));
                         });
-                    }
                 }
             });
         });
@@ -154,7 +145,9 @@ public class ResourcePackManager
                 {
                     var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
                     if (Path.Exists(path))
+                    {
                         result.Add(Path.GetFileName(user), path);
+                    }
                     else
                     {
                         Directory.CreateDirectory(path);
@@ -177,7 +170,9 @@ public class ResourcePackManager
                 {
                     var path = Path.Combine(user, "games", "com.mojang", "resource_packs");
                     if (Path.Exists(path))
+                    {
                         result.Add(Path.GetFileName(user), path);
+                    }
                     else
                     {
                         Directory.CreateDirectory(path);
@@ -215,7 +210,9 @@ public class ResourcePackManager
             {
                 var path = Path.Combine(user, "games", "com.mojang", "behavior_packs");
                 if (Path.Exists(path))
+                {
                     result.Add(Path.GetFileName(user), path);
+                }
                 else
                 {
                     Directory.CreateDirectory(path);

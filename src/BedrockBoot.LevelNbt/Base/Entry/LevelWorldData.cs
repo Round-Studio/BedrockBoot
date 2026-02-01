@@ -2,10 +2,8 @@
 
 namespace BedrockBoot.LevelNbt.Base.Entry;
 
-
-
 /// <summary>
-/// 存储提取的世界数据（增强版）
+///     存储提取的世界数据（增强版）
 /// </summary>
 public class LevelWorldData
 {
@@ -21,7 +19,7 @@ public class LevelWorldData
     public int SpawnZ { get; set; }
     public long Time { get; set; }
     public long LastPlayed { get; set; }
-        
+
     public override string ToString()
     {
         return $"存档名称: {LevelName}\n" +

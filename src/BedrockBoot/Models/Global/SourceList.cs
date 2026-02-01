@@ -8,8 +8,8 @@ public class SourceList
     public static int MinecraftIconID => 2;
     public static int PackIconID => 1;
     public static int BodyIconID => 0;
-    
-    public static Dictionary<string, string> UpdateDownloadSources { get; set; } = new Dictionary<string, string>()
+
+    public static Dictionary<string, string> UpdateDownloadSources { get; set; } = new()
     {
         { "Github", "{url}" },
         { "加速源 ①", "https://github1.roundstudio.top/{url}" },
@@ -18,7 +18,7 @@ public class SourceList
         { "gh-proxy.net", "https://gh-proxy.net/{url}" }
     };
 
-    public static Dictionary<string, string> VersionDataSources { get; set; } = new Dictionary<string, string>()
+    public static Dictionary<string, string> VersionDataSources { get; set; } = new()
     {
         { "McAppx 源", "https://data.mcappx.com/v2/bedrock.json" },
         { "BedrockBoot 源 ①", "https://mcappx.52caecb8.er.aliyun-esa.net" },
@@ -26,34 +26,34 @@ public class SourceList
         { "BMCBL 源 ②", "https://api.chlna6666.com/mcappx" }
     };
 
-    public static Dictionary<string, string> CurseForgeSource { get; set; } = new Dictionary<string, string>()
+    public static Dictionary<string, string> CurseForgeSource { get; set; } = new()
     {
-        { "CurseForge 官方源", "https://api.curseforge.com/" },
+        { "CurseForge 官方源", "https://api.curseforge.com/" }
         /*{ "加速源 ①", "https://blog.zink.dpdns.org/advanced-proxy?url=\"https://api.curseforge.com/{url}\"" },
         { "MCIM 源", "https://mod.mcimirror.top/curseforge/" }*/
     };
 
-    public static List<GameDownloadUrlInfo> GameFileDownloadSource { get; set; } = new List<GameDownloadUrlInfo>()
+    public static List<GameDownloadUrlInfo> GameFileDownloadSource { get; set; } = new()
     {
-        new()
+        new GameDownloadUrlInfo
         {
             Host = "assets1.xboxlive.cn",
-            Url = "http://assets1.xboxlive.cn{router}",
+            Url = "http://assets1.xboxlive.cn{router}"
         },
-        new()
+        new GameDownloadUrlInfo
         {
             Host = "assets2.xboxlive.cn",
-            Url = "http://assets2.xboxlive.cn{router}",
+            Url = "http://assets2.xboxlive.cn{router}"
         },
-        new()
+        new GameDownloadUrlInfo
         {
             Host = "assets1.xboxlive.com",
-            Url = "http://assets1.xboxlive.com{router}",
+            Url = "http://assets1.xboxlive.com{router}"
         },
-        new()
+        new GameDownloadUrlInfo
         {
             Host = "assets2.xboxlive.com",
-            Url = "http://assets2.xboxlive.com/{router}",
+            Url = "http://assets2.xboxlive.com/{router}"
         }
     };
 }

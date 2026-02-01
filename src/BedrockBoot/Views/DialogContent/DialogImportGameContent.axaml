@@ -2,44 +2,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="300"
              MinWidth="500"
              x:Class="BedrockBoot.Views.DialogContent.DialogImportGameContent">
     <ScrollViewer>
         <StackPanel Margin="0,0,0,0">
             <TextBlock Margin="0,5,0,5"
-                       HorizontalAlignment="Left">安装包路径：</TextBlock>
-            
+                       HorizontalAlignment="Left">
+                安装包路径：
+            </TextBlock>
+
             <DockPanel>
                 <Button DockPanel.Dock="Right"
                         Margin="5,5,0,5"
                         Padding="12,0"
                         Classes="NoBorder"
                         Name="OpenChooseFileBtn"
-                        Click="OpenChooseFileBtn_OnClick">浏览</Button>
-                
+                        Click="OpenChooseFileBtn_OnClick">
+                    浏览
+                </Button>
+
                 <TextBox Margin="0,5,5,5"
-                         Name="PathInputBox"></TextBox>
+                         Name="PathInputBox" />
             </DockPanel>
-            
-            
+
+
             <TextBlock Margin="0,5,0,5"
-                       HorizontalAlignment="Left">安装目录：</TextBlock>
+                       HorizontalAlignment="Left">
+                安装目录：
+            </TextBlock>
             <ComboBox Margin="0,5,0,5"
                       Name="GameInstallFoldersInputBox"
-                      HorizontalAlignment="Stretch">
-            </ComboBox>
-            
+                      HorizontalAlignment="Stretch" />
+
             <TextBlock Margin="0,5,0,5"
-                       HorizontalAlignment="Left">安装名称（自定义）：</TextBlock>
+                       HorizontalAlignment="Left">
+                安装名称（自定义）：
+            </TextBlock>
             <TextBox Margin="0,5,0,5"
-                     Name="NameInputBox"></TextBox>
-            
+                     Name="NameInputBox" />
+
             <StackPanel Name="GDKItem"
                         IsVisible="False">
                 <TextBlock Margin="0,5,0,5"
-                           HorizontalAlignment="Left">实际版本类型（GDK 必须选择此项，填错无法启动）：</TextBlock>
+                           HorizontalAlignment="Left">
+                    实际版本类型（GDK 必须选择此项，填错无法启动）：
+                </TextBlock>
                 <ComboBox Margin="0,5,0,5"
                           Name="RealGameBuildTypeInputBox"
                           SelectedIndex="0"
@@ -47,11 +55,11 @@
                     <ComboBoxItem>Preview</ComboBoxItem>
                     <ComboBoxItem>Release</ComboBoxItem>
                 </ComboBox>
-                
+
                 <CheckBox Content="我并不知道该版本类型，上面的选项是随便选的"
                           Margin="0,5,0,5"
                           IsChecked="True"
-                          Name="DontKnowGameTypeCheckBox"></CheckBox>
+                          Name="DontKnowGameTypeCheckBox" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

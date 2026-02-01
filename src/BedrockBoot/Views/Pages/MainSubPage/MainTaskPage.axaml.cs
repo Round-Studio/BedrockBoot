@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+﻿using Avalonia;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
@@ -16,7 +13,7 @@ public partial class MainTaskPage : BedrockBootPage
 
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateUI);
         UpdateUI();
-        this.Unloaded += (sender, args) => UnLoad();
+        Unloaded += (sender, args) => UnLoad();
     }
 
     public void UpdateUI()
@@ -24,7 +21,7 @@ public partial class MainTaskPage : BedrockBootPage
         TaskList.Children.Clear();
         TaskViewer.IsVisible = true;
         NoneBox.IsVisible = false;
-        
+
         if (GlobalModel.TaskManager.Tasks.Count <= 0)
         {
             TaskViewer.IsVisible = false;

@@ -1,30 +1,28 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Security.Principal;
-using Avalonia;
+using System.Text;
+using System.Threading;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
-using BedrockBoot.Views.TaskItem;
+using IWshRuntimeLibrary;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using File = System.IO.File;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceControls : ISetting
 {
-    public VersionConfig VersionInfo { get; set; }
-
     public InstanceControls()
     {
         IsEdit = false;
@@ -40,23 +38,25 @@ public partial class InstanceControls : ISetting
         VersionInfo = versionInfo;
     }
 
+    public VersionConfig VersionInfo { get; set; }
+
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "确认删除",
             Content = $"您确定要删除 {VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) 吗，\n" +
                       $"这将永远无法恢复.jpg",
             CloseButtonText = "确定",
             PrimaryButtonText = "取消",
-            CloseAction = (() =>
+            CloseAction = () =>
             {
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = $"删除 {VersionInfo.Info.VersionName}",
                     Content = new DialogDeleteGameContent(VersionInfo)
                 });
-            }),
+            },
             AccountButton = DialogButtons.PrimaryButton
         });
     }
@@ -81,58 +81,54 @@ public partial class InstanceControls : ISetting
         });
 
         if (file is not null)
-        {
             try
             {
-                string shortcutPath = file.TryGetLocalPath();
+                var shortcutPath = file.TryGetLocalPath();
 
                 // 确保路径是 .lnk 扩展名
                 if (!shortcutPath.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
-                {
                     shortcutPath = Path.ChangeExtension(shortcutPath, ".lnk");
-                }
 
-                var targetPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                var targetPath = Process.GetCurrentProcess().MainModule.FileName;
                 var arguments = $"-jump \"{VersionInfo.VersionPath}\"";
 
                 // 使用增强的创建方法，传入是否需要管理员权限
-                bool success = CreateShortcutWithComInitialization(shortcutPath, targetPath, arguments, requireAdmin);
+                var success = CreateShortcutWithComInitialization(shortcutPath, targetPath, arguments, requireAdmin);
 
                 if (success)
-                {
-                    DialogHost.Show(new DialogInfo()
+                    DialogHost.Show(new DialogInfo
                     {
                         Title = "生成成功",
                         Content = $"快捷方式已成功创建！\n\n" +
-                                 $"名称：{Path.GetFileName(shortcutPath)}\n" +
-                                 $"位置：{Path.GetDirectoryName(shortcutPath)}",
+                                  $"名称：{Path.GetFileName(shortcutPath)}\n" +
+                                  $"位置：{Path.GetDirectoryName(shortcutPath)}",
                         CloseButtonText = "确定",
                         PrimaryButtonText = "打开所在文件夹",
-                        PrimaryAction = (() =>
+                        PrimaryAction = () =>
                         {
                             // 打开快捷方式所在文件夹
                             try
                             {
-                                System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{shortcutPath}\"");
+                                Process.Start("explorer.exe", $"/select,\"{shortcutPath}\"");
                             }
-                            catch { }
-                        })
+                            catch
+                            {
+                            }
+                        }
                     });
-                }
             }
             catch (Exception ex)
             {
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = "创建失败",
                     Content = $"创建快捷方式失败：\n\n{ex.Message}",
                     CloseButtonText = "确定"
                 });
             }
-        }
     }
 
-    private bool CreateShortcutWithComInitialization(string shortcutPath, string targetPath, 
+    private bool CreateShortcutWithComInitialization(string shortcutPath, string targetPath,
         string arguments, bool requireAdmin = false)
     {
         try
@@ -162,18 +158,18 @@ public partial class InstanceControls : ISetting
         }
     }
 
-    private bool CreateShortcutInSTAThread(string shortcutPath, string targetPath, 
+    private bool CreateShortcutInSTAThread(string shortcutPath, string targetPath,
         string arguments, bool requireAdmin)
     {
-        bool success = false;
+        var success = false;
         Exception threadException = null;
 
-        var thread = new System.Threading.Thread(() =>
+        var thread = new Thread(() =>
         {
             try
             {
-                var shell = new IWshRuntimeLibrary.WshShell();
-                var shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutPath);
+                var shell = new WshShell();
+                var shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
 
                 shortcut.TargetPath = targetPath;
                 shortcut.Arguments = arguments;
@@ -182,12 +178,9 @@ public partial class InstanceControls : ISetting
                 shortcut.IconLocation = $"{targetPath},{SourceList.MinecraftIconID}";
 
                 shortcut.Save();
-                
+
                 // 如果需要管理员权限，修改快捷方式属性
-                if (requireAdmin)
-                {
-                    SetRunAsAdminFlag(shortcutPath);
-                }
+                if (requireAdmin) SetRunAsAdminFlag(shortcutPath);
 
                 success = true;
             }
@@ -198,7 +191,7 @@ public partial class InstanceControls : ISetting
         });
 
         // 设置为 STA 线程（COM 需要）
-        thread.SetApartmentState(System.Threading.ApartmentState.STA);
+        thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
         thread.Join();
 
@@ -208,42 +201,10 @@ public partial class InstanceControls : ISetting
         return success;
     }
 
-    // COM 接口定义
-    [ComImport]
-    [Guid("00021401-0000-0000-C000-000000000046")]
-    internal class ShellLink { }
-
-    [ComImport]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [Guid("000214F9-0000-0000-C000-000000000046")]
-    internal interface IShellLink
-    {
-        void GetPath([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile, int cchMaxPath, out IntPtr pfd,
-            int fFlags);
-        void GetIDList(out IntPtr ppidl);
-        void SetIDList(IntPtr pidl);
-        void GetDescription([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName, int cchMaxName);
-        void SetDescription([MarshalAs(UnmanagedType.LPWStr)] string pszName);
-        void GetWorkingDirectory([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir, int cchMaxPath);
-        void SetWorkingDirectory([MarshalAs(UnmanagedType.LPWStr)] string pszDir);
-        void GetArguments([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs, int cchMaxPath);
-        void SetArguments([MarshalAs(UnmanagedType.LPWStr)] string pszArgs);
-        void GetHotkey(out short pwHotkey);
-        void SetHotkey(short wHotkey);
-        void GetShowCmd(out int piShowCmd);
-        void SetShowCmd(int iShowCmd);
-        void GetIconLocation([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath, int cchIconPath,
-            out int piIcon);
-        void SetIconLocation([MarshalAs(UnmanagedType.LPWStr)] string pszIconPath, int iIcon);
-        void SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel, int dwReserved);
-        void Resolve(IntPtr hwnd, int fFlags);
-        void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
-    }
-
-    private bool CreateShortcutWithShellLink(string shortcutPath, string targetPath, 
+    private bool CreateShortcutWithShellLink(string shortcutPath, string targetPath,
         string arguments, bool requireAdmin)
     {
-        IShellLink link = (IShellLink)new ShellLink();
+        var link = (IShellLink)new ShellLink();
 
         // 设置快捷方式属性
         link.SetPath(targetPath);
@@ -257,22 +218,19 @@ public partial class InstanceControls : ISetting
         persistFile.Save(shortcutPath, false);
 
         // 如果需要管理员权限，修改快捷方式属性
-        if (requireAdmin)
-        {
-            SetRunAsAdminFlag(shortcutPath);
-        }
+        if (requireAdmin) SetRunAsAdminFlag(shortcutPath);
 
         return true;
     }
 
     // 方法3：使用 PowerShell 创建快捷方式（最可靠）
-    private bool CreateShortcutUsingPowerShell(string shortcutPath, string targetPath, 
+    private bool CreateShortcutUsingPowerShell(string shortcutPath, string targetPath,
         string arguments, bool requireAdmin)
     {
         try
         {
             // 构建 PowerShell 脚本
-            string psScript = @$"
+            var psScript = @$"
 $WshShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WshShell.CreateShortcut('{shortcutPath.Replace("'", "''")}')
 $Shortcut.TargetPath = '{targetPath.Replace("'", "''")}'
@@ -285,23 +243,21 @@ $Shortcut.Save()
 
             // 如果需要管理员权限，添加相应设置
             if (requireAdmin)
-            {
                 psScript += @$"
 # 设置以管理员身份运行
 $bytes = [System.IO.File]::ReadAllBytes('{shortcutPath.Replace("'", "''")}')
 $bytes[0x15] = $bytes[0x15] -bor 0x20  # 设置 flag 位
 [System.IO.File]::WriteAllBytes('{shortcutPath.Replace("'", "''")}', $bytes)
 ";
-            }
 
             // 创建临时 PowerShell 脚本文件
-            string tempScript = Path.GetTempFileName() + ".ps1";
+            var tempScript = Path.GetTempFileName() + ".ps1";
             File.WriteAllText(tempScript, psScript);
 
             // 执行 PowerShell
-            var process = new System.Diagnostics.Process
+            var process = new Process
             {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
+                StartInfo = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
                     Arguments = $"-ExecutionPolicy Bypass -File \"{tempScript}\"",
@@ -313,17 +269,14 @@ $bytes[0x15] = $bytes[0x15] -bor 0x20  # 设置 flag 位
             };
 
             process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            string error = process.StandardError.ReadToEnd();
+            var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
             process.WaitForExit();
 
             // 清理临时文件
             File.Delete(tempScript);
 
-            if (process.ExitCode != 0)
-            {
-                throw new Exception($"PowerShell 执行失败：{error}");
-            }
+            if (process.ExitCode != 0) throw new Exception($"PowerShell 执行失败：{error}");
 
             return true;
         }
@@ -359,8 +312,8 @@ $bytes[0x15] = $bytes[0x15] -bor 0x20  # 设置 flag 位
     private void SetRunAsAdminFlagBinary(string shortcutPath)
     {
         // 读取文件
-        byte[] fileBytes = File.ReadAllBytes(shortcutPath);
-        
+        var fileBytes = File.ReadAllBytes(shortcutPath);
+
         // LNK文件格式：偏移0x15处的字节控制运行级别
         // 第6位（0x20）表示"以管理员身份运行"
         if (fileBytes.Length > 0x15)
@@ -378,15 +331,15 @@ $bytes[0x15] = $bytes[0x15] -bor 0x20  # 设置 flag 位
     private void SetRunAsAdminFlagManifest(string shortcutPath)
     {
         // 获取目标EXE路径
-        string targetPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-        
+        var targetPath = Process.GetCurrentProcess().MainModule.FileName;
+
         // 创建清单文件路径
-        string manifestPath = targetPath + ".manifest";
-        
+        var manifestPath = targetPath + ".manifest";
+
         // 如果不存在清单文件，创建一个
         if (!File.Exists(manifestPath))
         {
-            string manifestContent = @"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>
+            var manifestContent = @"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>
 <assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">
   <trustInfo xmlns=""urn:schemas-microsoft-com:asm.v3"">
     <security>
@@ -396,14 +349,14 @@ $bytes[0x15] = $bytes[0x15] -bor 0x20  # 设置 flag 位
     </security>
   </trustInfo>
 </assembly>";
-            
+
             File.WriteAllText(manifestPath, manifestContent);
         }
-        
+
         // 创建应用程序清单的快捷方式实际上不起作用，
         // 所以这里我们创建一个批处理文件作为替代方案
-        string batPath = Path.ChangeExtension(shortcutPath, ".bat");
-        string batContent = $@"
+        var batPath = Path.ChangeExtension(shortcutPath, ".bat");
+        var batContent = $@"
 @echo off
 REM 检查是否以管理员身份运行
 NET SESSION >nul 2>&1
@@ -415,12 +368,12 @@ if %errorLevel% == 0 (
     powershell -Command ""Start-Process '{targetPath}' -ArgumentList '{Path.GetFileNameWithoutExtension(shortcutPath).Replace("快捷启动", "").Trim()}' -Verb RunAs""
     exit
 )";
-        
+
         File.WriteAllText(batPath, batContent, Encoding.Default);
-        
+
         // 修改原快捷方式指向批处理文件
-        var shell = new IWshRuntimeLibrary.WshShell();
-        var shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutPath);
+        var shell = new WshShell();
+        var shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
         shortcut.TargetPath = batPath;
         shortcut.Arguments = "";
         shortcut.Save();
@@ -429,19 +382,19 @@ if %errorLevel% == 0 (
     // 方法3：创建 VBScript 来请求管理员权限
     private void CreateAdminShortcutViaVBS(string shortcutPath)
     {
-        string vbsPath = Path.ChangeExtension(shortcutPath, ".vbs");
-        string targetPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-        
-        string vbsContent = $@"
+        var vbsPath = Path.ChangeExtension(shortcutPath, ".vbs");
+        var targetPath = Process.GetCurrentProcess().MainModule.FileName;
+
+        var vbsContent = $@"
 Set UAC = CreateObject(""Shell.Application"")
 UAC.ShellExecute ""{targetPath}"", ""-jump """"{VersionInfo.VersionPath}"""""", """", ""runas"", {SourceList.MinecraftIconID}
 ";
-        
+
         File.WriteAllText(vbsPath, vbsContent);
-        
+
         // 修改快捷方式指向 VBS 文件
-        var shell = new IWshRuntimeLibrary.WshShell();
-        var shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutPath);
+        var shell = new WshShell();
+        var shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
         shortcut.TargetPath = "wscript.exe";
         shortcut.Arguments = $"\"{vbsPath}\"";
         shortcut.Save();
@@ -455,5 +408,42 @@ UAC.ShellExecute ""{targetPath}"", ""-jump """"{VersionInfo.VersionPath}"""""", 
             var principal = new WindowsPrincipal(identity);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
+    }
+
+    // COM 接口定义
+    [ComImport]
+    [Guid("00021401-0000-0000-C000-000000000046")]
+    internal class ShellLink
+    {
+    }
+
+    [ComImport]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("000214F9-0000-0000-C000-000000000046")]
+    internal interface IShellLink
+    {
+        void GetPath([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile, int cchMaxPath, out IntPtr pfd,
+            int fFlags);
+
+        void GetIDList(out IntPtr ppidl);
+        void SetIDList(IntPtr pidl);
+        void GetDescription([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName, int cchMaxName);
+        void SetDescription([MarshalAs(UnmanagedType.LPWStr)] string pszName);
+        void GetWorkingDirectory([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir, int cchMaxPath);
+        void SetWorkingDirectory([MarshalAs(UnmanagedType.LPWStr)] string pszDir);
+        void GetArguments([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs, int cchMaxPath);
+        void SetArguments([MarshalAs(UnmanagedType.LPWStr)] string pszArgs);
+        void GetHotkey(out short pwHotkey);
+        void SetHotkey(short wHotkey);
+        void GetShowCmd(out int piShowCmd);
+        void SetShowCmd(int iShowCmd);
+
+        void GetIconLocation([Out] [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath, int cchIconPath,
+            out int piIcon);
+
+        void SetIconLocation([MarshalAs(UnmanagedType.LPWStr)] string pszIconPath, int iIcon);
+        void SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel, int dwReserved);
+        void Resolve(IntPtr hwnd, int fFlags);
+        void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
     }
 }

@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -16,12 +13,12 @@ public partial class UniversalSoftwareUpdate : ISetting
     {
         InitializeComponent();
         IsAutoCheckUpdate.IsChecked = GlobalModel.Config.Data.IsAutoCheckUpdate;
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>()
+        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "通用",
-                ItemClickAction = (info) =>
+                ItemClickAction = info =>
                     MainSettingPage.NavigationFrame.NavigateTo(new SettingUniversal())
             },
             new()

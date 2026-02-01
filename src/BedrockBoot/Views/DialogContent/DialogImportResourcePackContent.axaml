@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              MaxHeight="450"
              MinHeight="260"
-             
+
              MaxWidth="600"
              MinWidth="600"
              x:Class="BedrockBoot.Views.DialogContent.DialogImportResourcePackContent">
@@ -16,15 +16,17 @@
                                        VerticalAlignment="Center"
                                        Width="48"
                                        Height="48"
-                                       Name="LoadingRing"/>
-        
+                                       Name="LoadingRing" />
+
         <Grid RowDefinitions="Auto,*">
             <TextBlock Grid.Row="0"
-                       Margin="5">您将导入以下包：</TextBlock>
-        
+                       Margin="5">
+                您将导入以下包：
+            </TextBlock>
+
             <ScrollViewer Grid.Row="1">
                 <StackPanel Margin="0,8,0,5"
-                            Name="PacksList"></StackPanel>
+                            Name="PacksList" />
             </ScrollViewer>
         </Grid>
     </Grid>

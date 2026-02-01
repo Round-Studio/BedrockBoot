@@ -1,28 +1,20 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.Game.Archive;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceInfo : UserControl
 {
-    public bool IsEdit { get; set; } = false;
-    public VersionConfig VersionInfo { get; set; }
     public InstanceInfo()
     {
         IsEdit = false;
-        
+
         InitializeComponent();
 
 #if RELEASE
@@ -33,9 +25,12 @@ public partial class InstanceInfo : UserControl
     public InstanceInfo(VersionConfig versionInfo) : this()
     {
         VersionInfo = versionInfo;
-        
+
         UpdateUI();
     }
+
+    public bool IsEdit { get; set; }
+    public VersionConfig VersionInfo { get; set; }
 
     public void UpdateUI()
     {
@@ -48,7 +43,7 @@ public partial class InstanceInfo : UserControl
                 InstanceName.Text = VersionInfo.Info.VersionName;
 
                 if (VersionInfo.Config == null)
-                    VersionInfo.Config = new();
+                    VersionInfo.Config = new VersionConfig.VersionConfigEntry();
 
                 InstanceArgs.Text = VersionInfo.Config.OtherCommand;
                 InstanceConsole.IsChecked = VersionInfo.Config.IsConsole;
@@ -69,7 +64,7 @@ public partial class InstanceInfo : UserControl
             if (string.IsNullOrEmpty(InstanceName.Text))
                 VersionInfo.Info.VersionName = Path.GetFileName(VersionInfo.VersionPath);
             else VersionInfo.Info.VersionName = InstanceName.Text;
-            
+
             VersionInfo.Config.OtherCommand = InstanceArgs.Text;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }

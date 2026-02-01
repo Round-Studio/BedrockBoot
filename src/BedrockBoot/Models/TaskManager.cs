@@ -7,12 +7,12 @@ namespace BedrockBoot.Models;
 
 public class TaskManager
 {
-    public List<TaskEntry> Tasks { get; private set; } = new();
+    public List<TaskEntry> Tasks { get; } = new();
     public Action OnChanged { get; set; }
 
     public string AddTask(Control item)
     {
-        var entry = new TaskEntry()
+        var entry = new TaskEntry
         {
             Item = item
         };

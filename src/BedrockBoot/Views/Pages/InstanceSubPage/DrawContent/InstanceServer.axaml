@@ -18,31 +18,31 @@
                         <onePointControls:FontIcon Glyph="&#xEBDA;"
                                                    VerticalAlignment="Center"
                                                    FontSize="16"
-                                                   Margin="5,5,12,5"></onePointControls:FontIcon>
-                    
+                                                   Margin="5,5,12,5" />
+
                         <ComboBox HorizontalAlignment="Stretch"
                                   Name="UserChooseBox"
                                   SelectionChanged="UserChooseBox_OnSelectionChanged"
-                                  DockPanel.Dock="Right"></ComboBox>
+                                  DockPanel.Dock="Right" />
                     </DockPanel>
-                        
+
                     <Border Grid.Column="1"
                             Width="1"
                             VerticalAlignment="Stretch"
                             Background="{DynamicResource PrimaryDisabledForegroundBrush}"
-                            Margin="0,5,0,5"></Border>
-                        
+                            Margin="0,5,0,5" />
+
                     <DockPanel Grid.Column="2"
                                HorizontalAlignment="Stretch"
                                LastChildFill="True">
                         <onePointControls:FontIcon Glyph="&#xE71E;"
                                                    VerticalAlignment="Center"
                                                    FontSize="16"
-                                                   Margin="12,5,12,5"></onePointControls:FontIcon>
+                                                   Margin="12,5,12,5" />
                         <TextBox Name="SearchBox"
                                  TextChanged="SearchBox_OnTextChanged"
                                  HorizontalAlignment="Stretch"
-                                 DockPanel.Dock="Right"></TextBox>
+                                 DockPanel.Dock="Right" />
                     </DockPanel>
                 </Grid>
             </items:BorderCard>
@@ -58,7 +58,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <onePointControls:FontIcon Glyph="&#xE710;"
                                                            VerticalAlignment="Center"
-                                                           Margin="0,1,8,0"></onePointControls:FontIcon>
+                                                           Margin="0,1,8,0" />
                                 <TextBlock>添加服务器</TextBlock>
                             </StackPanel>
                         </Button>
@@ -66,20 +66,19 @@
                 </Grid>
             </items:BorderCard>
         </Grid>
-        
+
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="15,0,15,15"
                         HorizontalAlignment="Stretch"
-                        Name="ResultBox">
-            </StackPanel>
+                        Name="ResultBox" />
         </ScrollViewer>
-        
+
         <notice:InfoCard Grid.Row="1"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
                          BigTitle="没有任何一个第三方服务器 wa..."
-                         Message="输入的关键词无效 或 这个用户没有服务器"/>
+                         Message="输入的关键词无效 或 这个用户没有服务器" />
     </Grid>
 </UserControl>

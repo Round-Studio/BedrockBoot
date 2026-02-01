@@ -6,19 +6,25 @@
              x:Class="BedrockBoot.Views.DialogContent.DialogAddGameServerContent">
     <StackPanel>
         <TextBlock Margin="0,5,0,5"
-                   HorizontalAlignment="Left">服务器名称（自定义）：</TextBlock>
+                   HorizontalAlignment="Left">
+            服务器名称（自定义）：
+        </TextBlock>
         <TextBox Margin="0,5,0,5" Width="320"
                  Watermark="第三方服务器"
-                 Name="ServerNameInputBox"></TextBox>
+                 Name="ServerNameInputBox" />
         <TextBlock Margin="0,5,0,5"
-                   HorizontalAlignment="Left">服务器地址：</TextBlock>
+                   HorizontalAlignment="Left">
+            服务器地址：
+        </TextBlock>
         <TextBox Margin="0,5,0,5" Width="320"
                  Watermark="play.example.com"
-                 Name="ServerAddressInputBox"></TextBox>
+                 Name="ServerAddressInputBox" />
         <TextBlock Margin="0,5,0,5"
-                   HorizontalAlignment="Left">服务器端口：</TextBlock>
+                   HorizontalAlignment="Left">
+            服务器端口：
+        </TextBlock>
         <TextBox Margin="0,5,0,5" Width="320"
                  Watermark="19132"
-                 Name="ServerPortInputBox"></TextBox>
+                 Name="ServerPortInputBox" />
     </StackPanel>
 </UserControl>

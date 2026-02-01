@@ -1,69 +1,69 @@
 ﻿<windowFrame:OnePointWindow xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
-        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="BedrockBoot.Views.Windows.ExceptionWindow"
-        IsMaxBtn="False"
-        IsMinBtn="False"
-        WindowStartupLocation="CenterOwner"
-        Width="800" Height="500"
-        MinWidth="800" MinHeight="500"
-        Title="BedrockBoot">
-    
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
+                            xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                            mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                            x:Class="BedrockBoot.Views.Windows.ExceptionWindow"
+                            IsMaxBtn="False"
+                            IsMinBtn="False"
+                            WindowStartupLocation="CenterOwner"
+                            Width="800" Height="500"
+                            MinWidth="800" MinHeight="500"
+                            Title="BedrockBoot">
+
     <windowFrame:OnePointWindow.TitleBarContent>
         <onePointControls:LabelBox Text="异常处理"
                                    FontSize="14"
                                    Foreground="White"
                                    Background="DarkRed"
                                    Margin="0,0,5,0"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center" />
     </windowFrame:OnePointWindow.TitleBarContent>
-    
+
     <windowFrame:OnePointWindow.MainContent>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
+
             <!-- 错误图标和标题 -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="22,20,20,0">
-                <onePointControls:FontIcon Glyph="&#xE814;" 
-                                           FontSize="38" 
+                <onePointControls:FontIcon Glyph="&#xE814;"
+                                           FontSize="38"
                                            Foreground="Orange"
                                            Margin="0,4,0,0"
-                                           VerticalAlignment="Center"/>
+                                           VerticalAlignment="Center" />
                 <onePointControls:LineTextBlock FontSize="28"
                                                 FontWeight="Bold"
                                                 VerticalAlignment="Center"
-                                                Text="应用程序遇到了致命错误"/>
+                                                Text="应用程序遇到了致命错误" />
             </StackPanel>
-            
+
             <!-- 错误消息 -->
-            <TextBlock Grid.Row="1" 
+            <TextBlock Grid.Row="1"
                        Text="BedrockBoot 遇到了一个致命错误，需要进行反馈。"
                        Foreground="Gray"
-                       Margin="20,5,20,0"/>
-            
+                       Margin="20,5,20,0" />
+
             <!-- 错误详情区域 -->
-            <ScrollViewer Grid.Row="2" 
+            <ScrollViewer Grid.Row="2"
                           Margin="5,0,5,0">
                 <StackPanel Margin="15">
                     <TextBlock TextWrapping="WrapWithOverflow"
                                FontFamily="Consolas"
-                               Name="LogBox"></TextBlock>
+                               Name="LogBox" />
                 </StackPanel>
             </ScrollViewer>
-            
+
             <!-- 操作按钮 -->
-            <StackPanel Grid.Row="3" 
+            <StackPanel Grid.Row="3"
                         Margin="20"
-                        Orientation="Horizontal" 
+                        Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Spacing="10">
                 <Button Name="CloseButton"
@@ -73,12 +73,12 @@
                         Click="CloseButton_OnClick"
                         Classes="NoBorder"
                         Background="DarkRed"
-                        Foreground="White"/>
+                        Foreground="White" />
             </StackPanel>
-            
-            <StackPanel Grid.Row="3" 
+
+            <StackPanel Grid.Row="3"
                         Margin="20"
-                        Orientation="Horizontal" 
+                        Orientation="Horizontal"
                         HorizontalAlignment="Left"
                         Spacing="10">
                 <Button Name="CopyButton"
@@ -86,14 +86,14 @@
                         Padding="15,10"
                         MinWidth="120"
                         Click="CopyButton_OnClick"
-                        Classes="NoBorder"/>
+                        Classes="NoBorder" />
 
                 <Button Name="GithubBtn"
                         Content="Github Issues"
                         Padding="15,10"
                         MinWidth="120"
                         Click="GithubBtn_OnClick"
-                        Classes="NoBorder"/>
+                        Classes="NoBorder" />
             </StackPanel>
         </Grid>
     </windowFrame:OnePointWindow.MainContent>

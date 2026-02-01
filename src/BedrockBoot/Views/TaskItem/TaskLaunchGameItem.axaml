@@ -8,12 +8,12 @@
              x:Class="BedrockBoot.Views.TaskItem.TaskLaunchGameItem">
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*,Auto">
-            <onePointControls:ProgressRing Grid.Column="0" 
+            <onePointControls:ProgressRing Grid.Column="0"
                                            Width="36"
                                            Height="36"
                                            Margin="4,0,0,0"
-                                           Background="Transparent"></onePointControls:ProgressRing>
-            
+                                           Background="Transparent" />
+
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
                 <StackPanel Orientation="Horizontal">
@@ -24,25 +24,29 @@
                                                Name="EditModule"
                                                IsVisible="False"
                                                Margin="0,0,8,0"
-                                               VerticalAlignment="Center"/>
-                    
-                    <TextBlock FontSize="16" 
-                               Name="CardTitle">正在启动游戏...</TextBlock>
+                                               VerticalAlignment="Center" />
+
+                    <TextBlock FontSize="16"
+                               Name="CardTitle">
+                        正在启动游戏...
+                    </TextBlock>
                 </StackPanel>
-                
+
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">
                     <ProgressBar IsIndeterminate="True"
                                  HorizontalAlignment="Stretch"
-                                 Name="LaunchProgressBar"></ProgressBar>
-                    
+                                 Name="LaunchProgressBar" />
+
                     <TextBlock Foreground="Gray"
                                FontSize="9"
                                Margin="0,2,0,0"
-                               Name="LaunchProgressText">步骤：准备部署中...</TextBlock>
+                               Name="LaunchProgressText">
+                        步骤：准备部署中...
+                    </TextBlock>
                 </StackPanel>
             </StackPanel>
-            
+
             <Button Grid.Column="2"
                     Classes="NoBorder"
                     Width="32" Height="32"
@@ -51,7 +55,7 @@
                     Click="CancelBtn_OnClick">
                 <onePointControls:FontIcon Glyph="&#xE711;"
                                            Foreground="DarkRed"
-                                           FontSize="16"></onePointControls:FontIcon>
+                                           FontSize="16" />
             </Button>
         </Grid>
     </items:BorderCard>

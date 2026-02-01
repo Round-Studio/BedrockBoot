@@ -1,7 +1,6 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
@@ -14,7 +13,7 @@ public partial class DownloadSearch : UserControl
     public static NavigationFrame SearchFrame;
     public static SearchDetailed SearchDetailed;
     public static DownloadSearch DownloadSearchView;
-    public string SearchKey => KeyBox.Text;
+
     public DownloadSearch()
     {
         InitializeComponent();
@@ -22,24 +21,20 @@ public partial class DownloadSearch : UserControl
         DownloadSearchView = this;
         SearchFrame = NavigationFrame;
         NavigationFrame.NavigateTo(new SearchDefault());
-        
+
         KeyBox.KeyDown += (sender, e) =>
         {
-            if (e.Key == Avalonia.Input.Key.Enter)
-            {
-                SearchBtn_OnClick(null, null);
-            }
+            if (e.Key == Key.Enter) SearchBtn_OnClick(null, null);
         };
     }
 
+    public string SearchKey => KeyBox.Text;
+
     private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (SearchDetailed == null)
-        {
-            NavigationFrame.NavigateTo(new SearchDetailed());
-        }
+        if (SearchDetailed == null) NavigationFrame.NavigateTo(new SearchDetailed());
 
-        SearchDetailed.OnSearch(new SearchInfo()
+        SearchDetailed.OnSearch(new SearchInfo
         {
             Key = KeyBox.Text,
             Type = SearchResourceType.Unknow

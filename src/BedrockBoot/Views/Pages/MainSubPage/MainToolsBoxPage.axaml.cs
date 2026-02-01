@@ -1,8 +1,5 @@
 ﻿using System.Diagnostics;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
@@ -21,6 +18,5 @@ public partial class MainToolsBoxPage : BedrockBootPage
             FileName = "https://www.mcappx.com/download/mc-framework/",
             UseShellExecute = true
         });
-
     }
 }

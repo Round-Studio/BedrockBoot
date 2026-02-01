@@ -1,7 +1,5 @@
 ﻿using System;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
@@ -11,7 +9,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class ArchiveItem : UserControl
 {
-    public ArchiveInfo ArchiveInfo { get; set; }
     public ArchiveItem()
     {
         InitializeComponent();
@@ -24,6 +21,8 @@ public partial class ArchiveItem : UserControl
         UpdateUI();
     }
 
+    public ArchiveInfo ArchiveInfo { get; set; }
+
     public void UpdateUI()
     {
         if (ArchiveInfo == null) throw new NullReferenceException();
@@ -35,12 +34,10 @@ public partial class ArchiveItem : UserControl
             $"{UnixTimeConverter.UnixTimeStampToDateTime(ArchiveInfo.LevelWorldData.LastPlayed).ToShortTimeString()}";
         ProjectLabel.IsVisible = ArchiveInfo.IsProject;
         if (!string.IsNullOrEmpty(ArchiveInfo.IconPath))
-        {
-            ImageBox.Background = new ImageBrush()
+            ImageBox.Background = new ImageBrush
             {
                 Stretch = Stretch.UniformToFill,
                 Source = new Bitmap(ArchiveInfo.IconPath)
             };
-        }
     }
 }

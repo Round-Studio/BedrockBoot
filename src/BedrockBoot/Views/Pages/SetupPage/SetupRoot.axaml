@@ -9,26 +9,25 @@
              x:Class="BedrockBoot.Views.Pages.SetupPage.SetupRoot">
     <Grid RowDefinitions="Auto,*,Auto">
         <items:BorderCard Grid.Row="0"
-                Height="48"
-                Margin="10"
-                CornerRadius="8"
-                HorizontalAlignment="Center"
-                Padding="12,0">
+                          Height="48"
+                          Margin="10"
+                          CornerRadius="8"
+                          HorizontalAlignment="Center"
+                          Padding="12,0">
             <Grid>
                 <TabControl HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Name="TopProgressBar"
-                            Margin="0,2,0,0">
-                </TabControl>
-                
+                            Margin="0,2,0,0" />
+
                 <Border Background="#010000FE"
-                        Opacity="0.000001"></Border>
+                        Opacity="0.000001" />
             </Grid>
         </items:BorderCard>
-        
+
         <navigation:NavigationFrame Grid.Row="1"
-                                    Name="SetupFrame"/>
-        
+                                    Name="SetupFrame" />
+
         <Grid Row="2">
             <Grid HorizontalAlignment="Left"
                   VerticalAlignment="Stretch"
@@ -37,20 +36,20 @@
                     <Image Source="avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png"
                            Width="42"
                            Height="42"
-                           Margin="5"></Image>
-                    
+                           Margin="5" />
+
                     <StackPanel>
                         <TextBlock Margin="5"
                                    FontSize="14"
                                    FontWeight="Bold"
-                                   Text="BedrockBoot v2"></TextBlock>
+                                   Text="BedrockBoot v2" />
                         <TextBlock Margin="5,0,0,0"
                                    FontSize="11"
-                                   Text="新一代 Minecraft 基岩版启动器"></TextBlock>
+                                   Text="新一代 Minecraft 基岩版启动器" />
                     </StackPanel>
                 </StackPanel>
             </Grid>
-            
+
             <DockPanel Margin="15"
                        HorizontalAlignment="Right"
                        LastChildFill="False">
@@ -63,13 +62,13 @@
                     <StackPanel Orientation="Horizontal">
                         <onePointControls:FontIcon Glyph="&#xE72B;"
                                                    Margin="0,1,0,0"
-                                                   VerticalAlignment="Center"/>
+                                                   VerticalAlignment="Center" />
                         <TextBlock VerticalAlignment="Center"
                                    Margin="12,0,0,0"
-                                   Text="上一步"></TextBlock>
+                                   Text="上一步" />
                     </StackPanel>
                 </Button>
-                
+
                 <Button Padding="28,12"
                         IsEnabled="False"
                         Name="ButtonNext"
@@ -79,10 +78,10 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center"
                                    Margin="0,0,12,0"
-                                   Text="下一步"></TextBlock>
+                                   Text="下一步" />
                         <onePointControls:FontIcon Glyph="&#xE72A;"
                                                    Margin="0,1,0,0"
-                                                   VerticalAlignment="Center"/>
+                                                   VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
             </DockPanel>

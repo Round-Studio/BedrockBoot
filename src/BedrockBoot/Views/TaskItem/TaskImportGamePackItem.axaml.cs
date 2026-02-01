@@ -13,11 +13,6 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskImportGamePackItem : UserControl
 {
-    public string PackFile { get; set; }
-    public string InstallFolder { get; set; }
-    public string InstallName { get; set; }
-    public bool IsGDKUnknownBuildType { get; set; } = false;
-    public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
     public TaskImportGamePackItem()
     {
         InitializeComponent();
@@ -33,6 +28,12 @@ public partial class TaskImportGamePackItem : UserControl
         IsGDKUnknownBuildType = knowGameType;
     }
 
+    public string PackFile { get; set; }
+    public string InstallFolder { get; set; }
+    public string InstallName { get; set; }
+    public bool IsGDKUnknownBuildType { get; set; }
+    public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
+
     public async void Install(Action installed)
     {
         var body = new PackInstaller(PackFile)
@@ -41,11 +42,11 @@ public partial class TaskImportGamePackItem : UserControl
             IsGDKUnknownBuildType = IsGDKUnknownBuildType
         };
         double lastProgress = -1;
-        body.ImportProgress = new Progress<PackImportProgress>((s) =>
+        body.ImportProgress = new Progress<PackImportProgress>(s =>
         {
             // 精确到小数点后两位进行比较
-            double currentProgress = Math.Round(s.Progress, 2);
-    
+            var currentProgress = Math.Round(s.Progress, 2);
+
             // 只有当小数点后两位的值变化时才刷新UI
             if (Math.Abs(currentProgress - lastProgress) > 0.0001) // 浮点数比较容差
             {
@@ -57,7 +58,7 @@ public partial class TaskImportGamePackItem : UserControl
                     ProgressBar.Value = (int)s.Progress;
                     ProgressText.Text = s.StatusMessage;
 
-                    if (ProgressBar.IsIndeterminate) 
+                    if (ProgressBar.IsIndeterminate)
                         ProgressBar.IsIndeterminate = false;
                 });
             }
@@ -74,7 +75,7 @@ public partial class TaskImportGamePackItem : UserControl
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    DialogHost.Show(new DialogInfo()
+                    DialogHost.Show(new DialogInfo
                     {
                         Title = $"抱歉，无法安装 {InstallName}",
                         Content = "您的包可能存在问题，是不支持的格式",
@@ -85,9 +86,10 @@ public partial class TaskImportGamePackItem : UserControl
         });
     }
 
-    public static void Install(string packFile, string installFolder, string installName, MinecraftGameTypeVersion type,bool knowGameTypeCheckBox)
+    public static void Install(string packFile, string installFolder, string installName, MinecraftGameTypeVersion type,
+        bool knowGameTypeCheckBox)
     {
-        var body = new TaskImportGamePackItem(packFile, installFolder, installName, type,knowGameTypeCheckBox);
+        var body = new TaskImportGamePackItem(packFile, installFolder, installName, type, knowGameTypeCheckBox);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
         body.Install(() => { GlobalModel.TaskManager.RemoveTask(tuid); });

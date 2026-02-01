@@ -3,10 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Download;
@@ -19,8 +16,6 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadUpdateFileItem : UserControl
 {
-    public Release Release { get; set; }
-
     public TaskDownloadUpdateFileItem()
     {
         InitializeComponent();
@@ -31,25 +26,27 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         Release = release;
     }
 
+    public Release Release { get; set; }
+
     public void Update()
     {
         CardTitle.Text = $"下载更新文件：{Release.TagName}";
         var url = Release.Assets[0].BrowserDownloadUrl;
-        
+
         SourceList.UpdateDownloadSources.ToList().ForEach(src =>
         {
             var thisUrl = src.Value.Replace("{url}", url);
             var path = Path.Combine(PathsList.UpdatePath, $"{src.Key}_{Release.TagName}.exe");
-            var progress = new ProgressBar()
+            var progress = new ProgressBar
             {
-                IsIndeterminate = true,
+                IsIndeterminate = true
             };
-            var item = new DockPanel()
+            var item = new DockPanel
             {
                 LastChildFill = true,
                 Children =
                 {
-                    new TextBlock()
+                    new TextBlock
                     {
                         MinWidth = 120,
                         Text = src.Key
@@ -63,7 +60,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
             {
                 var download = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
 
-                await download.DownloadAsync(thisUrl, path, new Progress<DownloadProgress>((xprogress =>
+                await download.DownloadAsync(thisUrl, path, new Progress<DownloadProgress>(xprogress =>
                 {
                     Dispatcher.UIThread.Invoke(() =>
                     {
@@ -75,29 +72,29 @@ public partial class TaskDownloadUpdateFileItem : UserControl
 
                         progress.Value = xprogress.ProgressPercentage;
                     });
-                })));
-                
+                }));
+
                 Thread.Sleep(100);
-                            
+
                 Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
                 Thread.Sleep(100);
 
                 Environment.Exit(0);
             });
-            
-            this.SourceListBox.Children.Add(item);
+
+            SourceListBox.Children.Add(item);
         });
     }
 
     public static void Update(Release release)
     {
-        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = "下载更新",
-            Message = $"正在下载更新文件",
+            Message = "正在下载更新文件",
             NoticeType = NoticeType.Info
         });
-        
+
         var body = new TaskDownloadUpdateFileItem(release);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 

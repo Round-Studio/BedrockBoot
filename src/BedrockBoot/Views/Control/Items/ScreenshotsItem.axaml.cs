@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Imaging;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -11,7 +12,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class ScreenshotsItem : UserControl
 {
-    public ScreenshotsInfo ScreenshotsInfo { get; set; }
     public ScreenshotsItem()
     {
         InitializeComponent();
@@ -24,20 +24,21 @@ public partial class ScreenshotsItem : UserControl
         UpdateUI();
     }
 
+    public ScreenshotsInfo ScreenshotsInfo { get; set; }
+
     public void UpdateUI()
     {
         if (ScreenshotsInfo == null) throw new NullReferenceException();
         ShotYear.Text = DateTimeOffset.FromUnixTimeSeconds(ScreenshotsInfo.CaptureTime).ToLocalTime().ToString("yyyy");
-        ShotTime.Text = DateTimeOffset.FromUnixTimeSeconds(ScreenshotsInfo.CaptureTime).ToLocalTime().ToString("MM.dd hh:mm:ss");
-        
+        ShotTime.Text = DateTimeOffset.FromUnixTimeSeconds(ScreenshotsInfo.CaptureTime).ToLocalTime()
+            .ToString("MM.dd hh:mm:ss");
+
         if (!string.IsNullOrEmpty(ScreenshotsInfo.FilePath))
-        {
-            ImageBox.Background = new ImageBrush()
+            ImageBox.Background = new ImageBrush
             {
                 Stretch = Stretch.UniformToFill,
                 Source = Bitmap.DecodeToWidth(File.OpenRead(ScreenshotsInfo.FilePath), 265)
             };
-        }
     }
 
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -48,7 +49,8 @@ public partial class ScreenshotsItem : UserControl
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "保存图片",
-            SuggestedFileName = $"{DateTimeOffset.FromUnixTimeSeconds(ScreenshotsInfo.CaptureTime).ToLocalTime().ToString("yyyy.MM.dd hh.mm.ss")}.jpeg", 
+            SuggestedFileName =
+                $"{DateTimeOffset.FromUnixTimeSeconds(ScreenshotsInfo.CaptureTime).ToLocalTime().ToString("yyyy.MM.dd hh.mm.ss")}.jpeg",
             DefaultExtension = ".jpeg",
             ShowOverwritePrompt = true,
             FileTypeChoices = new[]
@@ -62,13 +64,13 @@ public partial class ScreenshotsItem : UserControl
         });
 
         if (file != null)
-        {
             try
             {
                 await using var stream = await file.OpenWriteAsync();
-                new System.Drawing.Bitmap(ScreenshotsInfo.FilePath).Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                new System.Drawing.Bitmap(ScreenshotsInfo.FilePath).Save(stream, ImageFormat.Jpeg);
             }
-            catch (Exception ex) { }
-        }
+            catch (Exception ex)
+            {
+            }
     }
 }

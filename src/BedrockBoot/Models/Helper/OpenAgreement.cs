@@ -8,15 +8,15 @@ public class OpenAgreement
 {
     public static void RegisterAssociation()
     {
-        string appPath = Process.GetCurrentProcess().MainModule.FileName;
-        string progId = "BedrockBoot.Win32";
+        var appPath = Process.GetCurrentProcess().MainModule.FileName;
+        var progId = "BedrockBoot.Win32";
 
-        using (var extKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\.mcpack"))
+        using (var extKey = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.mcpack"))
         {
             extKey.SetValue("", progId);
-        }        
-        
-        using (var extKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\.mcaddon"))
+        }
+
+        using (var extKey = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.mcaddon"))
         {
             extKey.SetValue("", progId);
         }
@@ -28,6 +28,7 @@ public class OpenAgreement
             {
                 iconKey.SetValue("", $"\"{appPath}\",{SourceList.PackIconID}");
             }
+
             using (var cmdKey = progIdKey.CreateSubKey(@"shell\open\command"))
             {
                 cmdKey.SetValue("", $"\"{appPath}\" -open \"%1\"");

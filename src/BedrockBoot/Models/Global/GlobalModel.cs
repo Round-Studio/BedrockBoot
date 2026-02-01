@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Windows.Forms.VisualStyles;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Models.Helper;
@@ -19,6 +18,6 @@ public class GlobalModel
     public static bool IsAbleToLaunchGame { get; set; } = false;
     public static FunctionOptionEntry FunctionOption { get; set; }
     public static string BodyVersion => Assembly.GetExecutingAssembly().GetName().Version!.ToString();
-    public static ProtocolService ProtocolService { get; set; } = new  ProtocolService();
+    public static ProtocolService ProtocolService { get; set; } = new();
     public static ImageLoader ImageLoader { get; set; } = new();
 }

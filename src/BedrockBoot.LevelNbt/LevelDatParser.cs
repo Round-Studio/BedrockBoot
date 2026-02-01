@@ -4,16 +4,12 @@ using BedrockBoot.LevelNbt.Base.Entry;
 namespace BedrockBoot.LevelNbt;
 
 /// <summary>
-/// 用于解析基岩版 Minecraft level.dat文件的类（修正数据结构版本）
+///     用于解析基岩版 Minecraft level.dat文件的类（修正数据结构版本）
 /// </summary>
 public class LevelDatParser : IDisposable
 {
-    private BinaryReader _reader;
+    private readonly BinaryReader _reader;
     private bool _disposed;
-
-    public int WorldVersion { get; private set; }
-    public int NBTDataSize { get; private set; }
-    public LevelWorldData WorldData { get; private set; }
 
     public LevelDatParser(Stream stream)
     {
@@ -36,6 +32,20 @@ public class LevelDatParser : IDisposable
         ParseNBTData();
     }
 
+    public int WorldVersion { get; private set; }
+    public int NBTDataSize { get; private set; }
+    public LevelWorldData WorldData { get; private set; }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _reader?.Close();
+            _reader?.Dispose();
+            _disposed = true;
+        }
+    }
+
     private void ParseFileHeader()
     {
         try
@@ -53,7 +63,7 @@ public class LevelDatParser : IDisposable
     }
 
     /// <summary>
-    /// 修正：正确解析NBT数据结构
+    ///     修正：正确解析NBT数据结构
     /// </summary>
     private void ParseNBTData()
     {
@@ -73,8 +83,8 @@ public class LevelDatParser : IDisposable
     }
 
     /// <summary>
-    /// 修正：从根标签中正确提取世界数据
-    /// 根据你的调试输出，LevelName等标签直接位于根标签中
+    ///     修正：从根标签中正确提取世界数据
+    ///     根据你的调试输出，LevelName等标签直接位于根标签中
     /// </summary>
     private LevelWorldData ExtractWorldDataFromRoot(Dictionary<string, object> rootTag)
     {
@@ -93,7 +103,6 @@ public class LevelDatParser : IDisposable
 
             // 查找可能的嵌套CompoundTag
             foreach (var kvp in rootTag)
-            {
                 if (kvp.Value is Dictionary<string, object> nestedDict)
                 {
                     Console.WriteLine($@"调试: 检查嵌套标签 '{kvp.Key}'");
@@ -103,28 +112,25 @@ public class LevelDatParser : IDisposable
                     if (!string.IsNullOrEmpty(worldData.LevelName))
                         break;
                 }
-            }
         }
 
         return worldData;
     }
 
     /// <summary>
-    /// 从字典中提取世界数据
+    ///     从字典中提取世界数据
     /// </summary>
     private void ExtractWorldDataFromDictionary(Dictionary<string, object> dict, LevelWorldData worldData)
     {
         // 根据文章提到的标签提取关键信息
-        if (dict.TryGetValue("LevelName", out object levelNameObj))
-        {
+        if (dict.TryGetValue("LevelName", out var levelNameObj))
             if (levelNameObj is string levelName)
             {
                 worldData.LevelName = levelName;
                 Console.WriteLine($@"调试: 找到 LevelName = {levelName}");
             }
-        }
 
-        if (dict.TryGetValue("RandomSeed", out object seedObj))
+        if (dict.TryGetValue("RandomSeed", out var seedObj))
         {
             if (seedObj is long seedLong)
             {
@@ -142,7 +148,7 @@ public class LevelDatParser : IDisposable
             }
         }
 
-        if (dict.TryGetValue("GameType", out object gameTypeObj))
+        if (dict.TryGetValue("GameType", out var gameTypeObj))
         {
             if (gameTypeObj is int gameTypeInt)
             {
@@ -155,25 +161,21 @@ public class LevelDatParser : IDisposable
             }
         }
 
-        if (dict.TryGetValue("cheatsEnabled", out object cheatsEnabledObj))
-        {
+        if (dict.TryGetValue("cheatsEnabled", out var cheatsEnabledObj))
             if (cheatsEnabledObj is byte cheatsByte)
             {
                 worldData.CheatsEnabled = cheatsByte != 0;
                 Console.WriteLine($@"调试: 找到 cheatsEnabled = {cheatsByte != 0}");
             }
-        }
 
-        if (dict.TryGetValue("commandsEnabled", out object commandsEnabledObj))
-        {
+        if (dict.TryGetValue("commandsEnabled", out var commandsEnabledObj))
             if (commandsEnabledObj is byte commandsByte)
             {
                 worldData.CommandsEnabled = commandsByte != 0;
                 Console.WriteLine($@"调试: 找到 commandsEnabled = {commandsByte != 0}");
             }
-        }
 
-        if (dict.TryGetValue("isHardcore", out object isHardcoreObj))
+        if (dict.TryGetValue("isHardcore", out var isHardcoreObj))
         {
             if (isHardcoreObj is byte hardcoreByte)
             {
@@ -182,7 +184,7 @@ public class LevelDatParser : IDisposable
             }
         }
         // 也尝试用驼峰命名的版本
-        else if (dict.TryGetValue("IsHardcore", out object IsHardcoreObj))
+        else if (dict.TryGetValue("IsHardcore", out var IsHardcoreObj))
         {
             if (IsHardcoreObj is byte hardcoreByte)
             {
@@ -192,7 +194,7 @@ public class LevelDatParser : IDisposable
         }
 
         // FlatWorldLayers (超平坦预设)
-        if (dict.TryGetValue("FlatWorldLayers", out object flatWorldLayersObj) &&
+        if (dict.TryGetValue("FlatWorldLayers", out var flatWorldLayersObj) &&
             flatWorldLayersObj is string flatWorldLayers)
         {
             worldData.FlatWorldLayers = flatWorldLayers;
@@ -200,54 +202,44 @@ public class LevelDatParser : IDisposable
         }
 
         // 提取更多有用的标签
-        if (dict.TryGetValue("SpawnX", out object spawnXObj))
-        {
+        if (dict.TryGetValue("SpawnX", out var spawnXObj))
             if (spawnXObj is int spawnX)
             {
                 worldData.SpawnX = spawnX;
                 Console.WriteLine($@"调试: 找到 SpawnX = {spawnX}");
             }
-        }
 
-        if (dict.TryGetValue("SpawnY", out object spawnYObj))
-        {
+        if (dict.TryGetValue("SpawnY", out var spawnYObj))
             if (spawnYObj is int spawnY)
             {
                 worldData.SpawnY = spawnY;
                 Console.WriteLine($@"调试: 找到 SpawnY = {spawnY}");
             }
-        }
 
-        if (dict.TryGetValue("SpawnZ", out object spawnZObj))
-        {
+        if (dict.TryGetValue("SpawnZ", out var spawnZObj))
             if (spawnZObj is int spawnZ)
             {
                 worldData.SpawnZ = spawnZ;
                 Console.WriteLine($@"调试: 找到 SpawnZ = {spawnZ}");
             }
-        }
 
-        if (dict.TryGetValue("Time", out object timeObj))
-        {
+        if (dict.TryGetValue("Time", out var timeObj))
             if (timeObj is long timeLong)
             {
                 worldData.Time = timeLong;
                 Console.WriteLine($@"调试: 找到 Time = {timeLong}");
             }
-        }
 
-        if (dict.TryGetValue("LastPlayed", out object lastPlayedObj))
-        {
+        if (dict.TryGetValue("LastPlayed", out var lastPlayedObj))
             if (lastPlayedObj is long lastPlayedLong)
             {
                 worldData.LastPlayed = lastPlayedLong;
                 Console.WriteLine($@"调试: 找到 LastPlayed = {lastPlayedLong}");
             }
-        }
     }
 
     /// <summary>
-    /// 读取CompoundTag类型 - 保持原有实现
+    ///     读取CompoundTag类型 - 保持原有实现
     /// </summary>
     private Dictionary<string, object> ReadCompoundTag()
     {
@@ -258,19 +250,19 @@ public class LevelDatParser : IDisposable
             if (_reader.BaseStream.Position >= _reader.BaseStream.Length)
                 break;
 
-            byte tagType = _reader.ReadByte();
+            var tagType = _reader.ReadByte();
 
             if (tagType == 0x00)
                 break;
 
-            ushort nameLength = ReadUInt16LittleEndian();
-            byte[] nameBytes = _reader.ReadBytes(nameLength);
+            var nameLength = ReadUInt16LittleEndian();
+            var nameBytes = _reader.ReadBytes(nameLength);
             if (nameBytes.Length < nameLength)
                 throw new EndOfStreamException("无法读取完整的标签名");
 
-            string tagName = Encoding.UTF8.GetString(nameBytes);
+            var tagName = Encoding.UTF8.GetString(nameBytes);
 
-            object tagValue = ReadTagValue(tagType, tagName);
+            var tagValue = ReadTagValue(tagType, tagName);
 
             compound[tagName] = tagValue;
         }
@@ -301,7 +293,7 @@ public class LevelDatParser : IDisposable
     // 以下是各种数据类型的读取方法（保持原有实现）
     private int ReadInt32LittleEndian()
     {
-        byte[] bytes = _reader.ReadBytes(4);
+        var bytes = _reader.ReadBytes(4);
         if (bytes.Length < 4)
             throw new EndOfStreamException("无法读取4字节整数");
         return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
@@ -309,7 +301,7 @@ public class LevelDatParser : IDisposable
 
     private short ReadInt16LittleEndian()
     {
-        byte[] bytes = _reader.ReadBytes(2);
+        var bytes = _reader.ReadBytes(2);
         if (bytes.Length < 2)
             throw new EndOfStreamException("无法读取2字节整数");
         return (short)(bytes[0] | (bytes[1] << 8));
@@ -317,7 +309,7 @@ public class LevelDatParser : IDisposable
 
     private ushort ReadUInt16LittleEndian()
     {
-        byte[] bytes = _reader.ReadBytes(2);
+        var bytes = _reader.ReadBytes(2);
         if (bytes.Length < 2)
             throw new EndOfStreamException("无法读取2字节无符号整数");
         return (ushort)(bytes[0] | (bytes[1] << 8));
@@ -325,18 +317,18 @@ public class LevelDatParser : IDisposable
 
     private long ReadInt64LittleEndian()
     {
-        byte[] bytes = _reader.ReadBytes(8);
+        var bytes = _reader.ReadBytes(8);
         if (bytes.Length < 8)
             throw new EndOfStreamException("无法读取8字节整数");
         long result = 0;
-        for (int i = 0; i < 8; i++)
-            result |= ((long)bytes[i] << (8 * i));
+        for (var i = 0; i < 8; i++)
+            result |= (long)bytes[i] << (8 * i);
         return result;
     }
 
     private float ReadSingleLittleEndian()
     {
-        byte[] bytes = _reader.ReadBytes(4);
+        var bytes = _reader.ReadBytes(4);
         if (bytes.Length < 4)
             throw new EndOfStreamException("无法读取4字节浮点数");
         if (BitConverter.IsLittleEndian)
@@ -346,7 +338,7 @@ public class LevelDatParser : IDisposable
 
     private double ReadDoubleLittleEndian()
     {
-        byte[] bytes = _reader.ReadBytes(8);
+        var bytes = _reader.ReadBytes(8);
         if (bytes.Length < 8)
             throw new EndOfStreamException("无法读取8字节双精度浮点数");
         if (BitConverter.IsLittleEndian)
@@ -356,10 +348,10 @@ public class LevelDatParser : IDisposable
 
     private string ReadStringTag()
     {
-        ushort length = ReadUInt16LittleEndian();
+        var length = ReadUInt16LittleEndian();
         if (length == 0)
             return string.Empty;
-        byte[] bytes = _reader.ReadBytes(length);
+        var bytes = _reader.ReadBytes(length);
         if (bytes.Length < length)
             throw new EndOfStreamException("无法读取完整的字符串");
         return Encoding.UTF8.GetString(bytes);
@@ -367,15 +359,15 @@ public class LevelDatParser : IDisposable
 
     private List<object> ReadListTag()
     {
-        byte listTagType = _reader.ReadByte();
-        int listLength = ReadInt32LittleEndian();
+        var listTagType = _reader.ReadByte();
+        var listLength = ReadInt32LittleEndian();
 
         var list = new List<object>(listLength);
 
         if (listLength == 0)
             return list;
 
-        for (int i = 0; i < listLength; i++)
+        for (var i = 0; i < listLength; i++)
             list.Add(ReadTagValue(listTagType, $"List[{i}]"));
 
         return list;
@@ -383,10 +375,10 @@ public class LevelDatParser : IDisposable
 
     private byte[] ReadByteArrayTag()
     {
-        int length = ReadInt32LittleEndian();
+        var length = ReadInt32LittleEndian();
         if (length == 0)
             return Array.Empty<byte>();
-        byte[] array = _reader.ReadBytes(length);
+        var array = _reader.ReadBytes(length);
         if (array.Length < length)
             throw new EndOfStreamException("无法读取完整的字节数组");
         return array;
@@ -394,33 +386,23 @@ public class LevelDatParser : IDisposable
 
     private int[] ReadIntArrayTag()
     {
-        int length = ReadInt32LittleEndian();
+        var length = ReadInt32LittleEndian();
         if (length == 0)
             return Array.Empty<int>();
-        int[] array = new int[length];
-        for (int i = 0; i < length; i++)
+        var array = new int[length];
+        for (var i = 0; i < length; i++)
             array[i] = ReadInt32LittleEndian();
         return array;
     }
 
     private long[] ReadLongArrayTag()
     {
-        int length = ReadInt32LittleEndian();
+        var length = ReadInt32LittleEndian();
         if (length == 0)
             return Array.Empty<long>();
-        long[] array = new long[length];
-        for (int i = 0; i < length; i++)
+        var array = new long[length];
+        for (var i = 0; i < length; i++)
             array[i] = ReadInt64LittleEndian();
         return array;
-    }
-
-    public void Dispose()
-    {
-        if (!_disposed)
-        {
-            _reader?.Close();
-            _reader?.Dispose();
-            _disposed = true;
-        }
     }
 }

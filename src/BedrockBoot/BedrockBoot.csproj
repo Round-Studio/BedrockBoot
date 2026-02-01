@@ -10,123 +10,123 @@
     </PropertyGroup>
 
     <PropertyGroup>
-      <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
-      <Win32Resource>Manifest.res</Win32Resource>
+        <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
+        <Win32Resource>Manifest.res</Win32Resource>
     </PropertyGroup>
 
     <ItemGroup>
-      <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
-        <_Parameter1>BuildTimestamp</_Parameter1>
-        <_Parameter2>$(BuildTimestamp)</_Parameter2>
-      </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+            <_Parameter1>BuildTimestamp</_Parameter1>
+            <_Parameter2>$(BuildTimestamp)</_Parameter2>
+        </AssemblyAttribute>
     </ItemGroup>
 
     <ItemGroup>
         <Content Include="Assets\Icon\BedrockBoot.Icon.512x.ico">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
-        <AvaloniaResource Remove="Assets\Inject.dll" />
-        <AvaloniaResource Remove="Assets\PreloadCpp.dll" />
-        <AvaloniaResource Include="Manifest\Function\FunctionOption.json" />
+        <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Remove="Assets\Inject.dll"/>
+        <AvaloniaResource Remove="Assets\PreloadCpp.dll"/>
+        <AvaloniaResource Include="Manifest\Function\FunctionOption.json"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Assets\Inject.dll" />
-      <EmbeddedResource Include="Assets\PreloadCpp.dll" />
+        <EmbeddedResource Include="Assets\Inject.dll"/>
+        <EmbeddedResource Include="Assets\PreloadCpp.dll"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.4.3" />
-        <PackageReference Include="Avalonia" Version="11.3.10" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
-        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.10" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
+        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.4.3"/>
+        <PackageReference Include="Avalonia" Version="11.3.10"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.10"/>
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.10"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.10">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="BedrockLauncher.Core" Version="2.0.2" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1" />
-        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
-        <PackageReference Include="Octokit" Version="14.0.0" />
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.2"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
+        <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1"/>
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5"/>
+        <PackageReference Include="Octokit" Version="14.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
-      <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
-      <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj" />
-      <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj" />
-      <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj" />
-      <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />
+        <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj"/>
+        <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj"/>
+        <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj"/>
+        <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj"/>
+        <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Win32\Windows\LaunchWindow.cs">
-        <SubType>Form</SubType>
-      </Compile>
-      <Compile Update="Win32\Windows\ImportResourcePack.cs">
-        <SubType>Form</SubType>
-      </Compile>
-      <Compile Update="Win32\Controls\PackItem.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\ArchiveItem.axaml.cs">
-        <DependentUpon>ArchiveItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\BackgroundChooseItem.axaml.cs">
-        <DependentUpon>BackgroundChooseItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\CurseForgeModBuildFileItem.axaml.cs">
-        <DependentUpon>CurseForgeModBuildFileItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\CurseForgeModItem.axaml.cs">
-        <DependentUpon>CurseForgeModItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\GameDownloadSourceItem.axaml.cs">
-        <DependentUpon>GameDownloadSourceItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\GameFolderItem.axaml.cs">
-        <DependentUpon>GameFolderItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\GameItem.axaml.cs">
-        <DependentUpon>GameItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\GameModItem.axaml.cs">
-        <DependentUpon>GameModItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\GameResourcePackItem.axaml.cs">
-        <DependentUpon>GameResourcePackItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\GameServerItem.axaml.cs">
-        <DependentUpon>GameServerItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Control\Items\ScreenshotsItem.axaml.cs">
-        <DependentUpon>ScreenshotsItem.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Pages\DownloadPage\DownloadSearch.axaml.cs">
-        <DependentUpon>DownloadSearch.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="Views\Pages\DownloadPage\SearchSubPage\SearchDefault.axaml.cs">
-        <DependentUpon>DownloadDefault.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
+        <Compile Update="Win32\Windows\LaunchWindow.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="Win32\Windows\ImportResourcePack.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="Win32\Controls\PackItem.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\ArchiveItem.axaml.cs">
+            <DependentUpon>ArchiveItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\BackgroundChooseItem.axaml.cs">
+            <DependentUpon>BackgroundChooseItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\CurseForgeModBuildFileItem.axaml.cs">
+            <DependentUpon>CurseForgeModBuildFileItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\CurseForgeModItem.axaml.cs">
+            <DependentUpon>CurseForgeModItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\GameDownloadSourceItem.axaml.cs">
+            <DependentUpon>GameDownloadSourceItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\GameFolderItem.axaml.cs">
+            <DependentUpon>GameFolderItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\GameItem.axaml.cs">
+            <DependentUpon>GameItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\GameModItem.axaml.cs">
+            <DependentUpon>GameModItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\GameResourcePackItem.axaml.cs">
+            <DependentUpon>GameResourcePackItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\GameServerItem.axaml.cs">
+            <DependentUpon>GameServerItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Control\Items\ScreenshotsItem.axaml.cs">
+            <DependentUpon>ScreenshotsItem.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Pages\DownloadPage\DownloadSearch.axaml.cs">
+            <DependentUpon>DownloadSearch.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\Pages\DownloadPage\SearchSubPage\SearchDefault.axaml.cs">
+            <DependentUpon>DownloadDefault.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

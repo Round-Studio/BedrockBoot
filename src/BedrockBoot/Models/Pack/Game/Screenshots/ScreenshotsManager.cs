@@ -11,12 +11,12 @@ namespace BedrockBoot.Models.Pack.Game.Screenshots;
 
 public class ScreenshotsManager
 {
-    public VersionConfig VersionConfig { get; set; }
-
     public ScreenshotsManager(VersionConfig versionInfo)
     {
         VersionConfig = versionInfo;
     }
+
+    public VersionConfig VersionConfig { get; set; }
 
     public Dictionary<string, List<ScreenshotsInfo>> GetScreenshots()
     {
@@ -26,20 +26,20 @@ public class ScreenshotsManager
         foreach (var user in users)
         {
             var files = Directory.GetFiles(user.Value, "*.jpeg", SearchOption.AllDirectories)
-                                            .ToList();
+                .ToList();
             var resultInfos = new List<ScreenshotsInfo>();
-            
+
             files.ForEach(file =>
             {
                 var confFile = file.Replace(".jpeg", ".json");
-                var conf = new ConfigEntity<ScreenshotsInfo>(confFile,false);
+                var conf = new ConfigEntity<ScreenshotsInfo>(confFile, false);
                 conf.Data.FilePath = file;
                 resultInfos.Add(conf.Data);
             });
-            
+
             result.Add(user.Key, resultInfos);
         }
-        
+
         return result;
     }
 
@@ -68,7 +68,9 @@ public class ScreenshotsManager
             {
                 var path = Path.Combine(user, "games", "com.mojang", "Screenshots");
                 if (Path.Exists(path))
+                {
                     result.Add(Path.GetFileName(user), path);
+                }
                 else
                 {
                     Directory.CreateDirectory(path);

@@ -1,9 +1,6 @@
 ﻿using System.IO;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using System;
-using System.Windows.Markup;
 
 namespace BedrockBoot.Models.Loader;
 

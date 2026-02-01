@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.SearchSubPage.SearchDefault">
     <Grid>
@@ -26,16 +25,16 @@
                                         Spacing="4">
                                 <onePointControls:FontIcon VerticalAlignment="Center"
                                                            Margin="0,0.5,0,0"
-                                                           Glyph="&#xE8FD;"></onePointControls:FontIcon>
+                                                           Glyph="&#xE8FD;" />
                                 <TextBlock>版本列表</TextBlock>
                             </StackPanel>
                         </Button>
-                        
+
                         <TextBlock DockPanel.Dock="Left"
                                    Text="最新版本"
-                                   VerticalAlignment="Center"></TextBlock>
+                                   VerticalAlignment="Center" />
                     </DockPanel>
-                    
+
                     <Grid Grid.Row="1"
                           ColumnDefinitions="*,*">
                         <Button Grid.Column="0"
@@ -49,22 +48,22 @@
                                 <Image Grid.Column="0"
                                        Width="26"
                                        Height="26"
-                                       Source="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"></Image>
-                                
+                                       Source="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png" />
+
                                 <StackPanel Grid.Column="1"
                                             Margin="5,-1,0,1"
                                             HorizontalAlignment="Stretch">
                                     <TextBlock Text="Version"
-                                               Name="ReleaseVersion"></TextBlock>
+                                               Name="ReleaseVersion" />
                                     <TextBlock Text="Date"
                                                Name="ReleaseDescription"
                                                FontSize="9"
-                                               Opacity="0.6"></TextBlock>
+                                               Opacity="0.6" />
                                 </StackPanel>
                             </Grid>
                         </Button>
-                        
-                        <Button Grid.Column="1" 
+
+                        <Button Grid.Column="1"
                                 Margin="4,0,0,0"
                                 HorizontalContentAlignment="Stretch"
                                 Name="PreviewBtn"
@@ -75,17 +74,17 @@
                                 <Image Grid.Column="0"
                                        Width="26"
                                        Height="26"
-                                       Source="avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png"></Image>
-                                
+                                       Source="avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png" />
+
                                 <StackPanel Grid.Column="1"
                                             Margin="5,-1,0,1"
                                             HorizontalAlignment="Stretch">
                                     <TextBlock Text="Version"
-                                               Name="PreviewVersion"></TextBlock>
+                                               Name="PreviewVersion" />
                                     <TextBlock Text="Date"
                                                Name="PreviewDescription"
                                                FontSize="9"
-                                               Opacity="0.6"></TextBlock>
+                                               Opacity="0.6" />
                                 </StackPanel>
                             </Grid>
                         </Button>
@@ -93,11 +92,11 @@
                 </Grid>
             </items:BorderCard>
         </StackPanel>
-        
-        <onePointControls:ProgressRing HorizontalAlignment="Center" 
+
+        <onePointControls:ProgressRing HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        Name="LoadRing"
                                        Width="48"
-                                       Height="48"/>
+                                       Height="48" />
     </Grid>
 </UserControl>

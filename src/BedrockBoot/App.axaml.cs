@@ -1,11 +1,10 @@
 using System;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -15,47 +14,45 @@ using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
 using BedrockBoot.ViewModels;
-using BedrockBoot.Views;
 using BedrockBoot.Views.Windows;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 
 namespace BedrockBoot;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {
-        if(GlobalModel.Config == null)
+        if (GlobalModel.Config == null)
         {
             GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
             GlobalModel.Config.Load();
         }
-        
+
         ServicePointManager.DefaultConnectionLimit = 1024;
-        
+
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
-        
+
         // 订阅所有全局异常处理器
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         Dispatcher.UIThread.UnhandledException += UIThread_UnhandledException;
-        
+
         Console.WriteLine(@"异常订阅已完毕");
         LoadColor();
     }
-    
+
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         var exception = e.ExceptionObject as Exception;
         LogException(exception, "AppDomain");
         ShowErrorDialog(exception);
-        
+
         // 非致命错误可以继续运行
         if (!e.IsTerminating)
         {
-            return;
         }
     }
 
@@ -71,10 +68,7 @@ public partial class App : Application
         try
         {
             var time = DateTime.Now;
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                new ExceptionWindow(ex.ToString()).Show();
-            });
+            Dispatcher.UIThread.Invoke(() => { new ExceptionWindow(ex.ToString()).Show(); });
         }
         catch (Exception dialogEx)
         {
@@ -104,7 +98,7 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = new MainWindowViewModel()
             };
         }
 
@@ -118,10 +112,7 @@ public partial class App : Application
             BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
 
         // remove each entry found
-        foreach (var plugin in dataValidationPluginsToRemove)
-        {
-            BindingPlugins.DataValidators.Remove(plugin);
-        }
+        foreach (var plugin in dataValidationPluginsToRemove) BindingPlugins.DataValidators.Remove(plugin);
     }
 
     public static void LoadColor()

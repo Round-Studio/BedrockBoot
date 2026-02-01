@@ -19,7 +19,7 @@
                     <ComboBoxItem>新闻主页</ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>
-            
+
             <StackPanel Name="HomeXmlBox">
                 <onePointControls:SettingExpander Header="自定义主页"
                                                   Description="使用 Xml 文本进行主页自定义"
@@ -33,16 +33,13 @@
                                                       Click="AddXmlFile_OnClick"
                                                       Glyph="&#xE8B0;"
                                                       Classes="Item"
-                                                      IsClickable="True">
-                        </onePointControls:SettingCard>
+                                                      IsClickable="True" />
                     </StackPanel>
                 </onePointControls:SettingExpander>
-                
+
                 <ListBox Name="XamlList"
                          SelectionChanged="XamlList_OnSelectionChanged"
-                         Margin="5">
-                    
-                </ListBox>
+                         Margin="5" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

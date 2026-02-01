@@ -9,6 +9,7 @@ using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Models.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
@@ -188,7 +189,7 @@ public class EasyDownload
 
     private void SaveVersionConfig(string installDir)
     {
-        GameInfoHelper.SaveVersionConfig(new VersionConfig
+        var conf = new VersionConfig
         {
             VersionPath = installDir,
             Info = new VersionConfig.VersionInfo
@@ -198,7 +199,11 @@ public class EasyDownload
                 VersionName = GameName,
                 VersionType = BuildInfo.Type
             }
-        });
+        };
+
+        var isolation = new IsolationCore(conf);
+        isolation.Init();
+        GameInfoHelper.SaveVersionConfig(conf);
     }
 
     public async Task<bool> CheckMD5(string file, bool showError = true)

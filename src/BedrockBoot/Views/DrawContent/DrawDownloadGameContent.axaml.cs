@@ -157,12 +157,21 @@ public partial class DrawDownloadGameContent : UserControl
 
     private void InstallFolder_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        var packagePath = Path.Combine(GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath,
-            "version_save", $"{BuildInfo.ID}.insPack");
+        try
+        {
+            var packagePath = Path.Combine(
+                GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath,
+                "version_save", $"{BuildInfo.ID}.insPack");
 
-        var enable = File.Exists(packagePath);
+            var enable = File.Exists(packagePath);
 
-        IsUsePackIns.IsChecked = enable;
-        IsUsePackIns.IsVisible = enable;
+            IsUsePackIns.IsChecked = enable;
+            IsUsePackIns.IsVisible = enable;
+
+            if (enable) InstallBtn.IsEnabled = true;
+        }
+        catch
+        {
+        }
     }
 }

@@ -1,13 +1,13 @@
 ﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                       xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                       xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
-                       xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
-                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
-                       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                       x:Class="BedrockBoot.Views.Pages.MainSubPage.MainManager">
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainManager">
     <entry:BedrockBootPage.HeaderView>
         <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Center">
@@ -16,18 +16,18 @@
                                             HorizontalAlignment="Left"
                                             FontSize="28"
                                             FontWeight="Bold"
-                                            Text="实例管理" />
-
+                                            Text="实例管理"></onePointControls:LineTextBlock>
+            
             <Button Padding="12,8"
                     Margin="0,0,8,0"
                     Name="ImportGameBtn"
                     Click="ImportGameBtn_OnClick">
                 <StackPanel Orientation="Horizontal">
                     <onePointControls:FontIcon Glyph="&#xE78B;"
-                                               VerticalAlignment="Center" />
+                                               VerticalAlignment="Center"/>
                     <TextBlock Margin="4,0,0,0">导入游戏</TextBlock>
                     <onePointControls:LabelBox Text="Beta"
-                                               Margin="8,0,0,0" />
+                                               Margin="8,0,0,0"></onePointControls:LabelBox>
                 </StackPanel>
             </Button>
         </StackPanel>
@@ -35,10 +35,10 @@
     <Grid Margin="15,10,15,15">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="7*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-
+            
             <items:BorderCard Grid.Column="0"
                               Margin="5">
                 <Grid>
@@ -46,8 +46,10 @@
                         <ListBox Grid.Row="0"
                                  Name="FolderList"
                                  Margin="5,0"
-                                 SelectionChanged="FolderList_OnSelectionChanged" />
-
+                                 SelectionChanged="FolderList_OnSelectionChanged">
+                    
+                        </ListBox>
+                    
                         <Button Grid.Row="1"
                                 Padding="12,10"
                                 Margin="5,5"
@@ -57,33 +59,33 @@
                             <onePointControls:FontIcon Glyph="&#xE710;"
                                                        FontSize="18"
                                                        VerticalAlignment="Center"
-                                                       HorizontalAlignment="Center" />
+                                                       HorizontalAlignment="Center"/>
                         </Button>
                     </Grid>
-
+                    
                     <notice:InfoCard HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
                                      IsVisible="False"
                                      Name="FolderNull"
                                      BigTitle="空"
-                                     Message="点击下方 添加目录&#x0A;以添加目录" />
+                                     Message="点击下方 添加目录&#x0A;以添加目录"/>
                 </Grid>
             </items:BorderCard>
-
+            
             <Grid Grid.Column="1"
                   RowDefinitions="Auto,*">
                 <items:BorderCard Grid.Row="0"
                                   Margin="5">
                     <Grid ColumnDefinitions="4*,Auto,6*">
-                        <DockPanel Grid.Column="0"
+                        <DockPanel Grid.Column="0" 
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Stretch"
                                    LastChildFill="True">
                             <onePointControls:FontIcon Glyph="&#xE71C;"
                                                        VerticalAlignment="Center"
                                                        FontSize="16"
-                                                       Margin="5,5,12,5" />
-
+                                                       Margin="5,5,12,5"></onePointControls:FontIcon>
+                            
                             <ComboBox DockPanel.Dock="Right"
                                       SelectedIndex="0"
                                       Name="GameTypeSel"
@@ -94,28 +96,28 @@
                                 <ComboBoxItem Tag="Preview">预览版 / Beta 版</ComboBoxItem>
                             </ComboBox>
                         </DockPanel>
-
+                        
                         <Border Grid.Column="1"
                                 Width="1"
                                 VerticalAlignment="Stretch"
                                 Background="{DynamicResource PrimaryDisabledForegroundBrush}"
-                                Margin="0,5,0,5" />
-
+                                Margin="0,5,0,5"></Border>
+                        
                         <DockPanel Grid.Column="2"
                                    HorizontalAlignment="Stretch"
                                    LastChildFill="True">
                             <onePointControls:FontIcon Glyph="&#xE71E;"
                                                        VerticalAlignment="Center"
                                                        FontSize="16"
-                                                       Margin="12,5,12,5" />
+                                                       Margin="12,5,12,5"></onePointControls:FontIcon>
                             <TextBox Name="SearchBox"
                                      HorizontalAlignment="Stretch"
                                      DockPanel.Dock="Right"
-                                     TextChanged="SearchBox_OnTextChanged" />
+                                     TextChanged="SearchBox_OnTextChanged"></TextBox>
                         </DockPanel>
                     </Grid>
                 </items:BorderCard>
-
+                
                 <items:BorderCard
                     Grid.Row="1"
                     Padding="0"
@@ -124,21 +126,22 @@
                         <ScrollViewer Name="GameScro"
                                       Margin="8,8,0,8">
                             <StackPanel Margin="5,5,13,5"
-                                        Name="GameList" />
+                                        Spacing="8"
+                                        Name="GameList"></StackPanel>
                         </ScrollViewer>
-
+                    
                         <notice:InfoCard HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          Name="GamesNull"
                                          BigTitle="没有实例"
-                                         Message="关键词无效 或 未下载实例" />
-
+                                         Message="关键词无效 或 未下载实例"/>
+                    
                         <notice:LoadCard HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          IsVisible="False"
                                          Name="GamesLoad"
                                          BigTitle="列队中"
-                                         Message="正在加载版本..." />
+                                         Message="正在加载版本..."></notice:LoadCard>
                     </Grid>
                 </items:BorderCard>
             </Grid>

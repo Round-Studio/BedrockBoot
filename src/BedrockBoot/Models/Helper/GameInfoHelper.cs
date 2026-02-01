@@ -36,22 +36,20 @@ public class GameInfoHelper
         }
     }
 
+    // 优化后的GetVersionConfigs方法 - 使用LINQ链式操作提高性能和可读性
     public static List<VersionConfig> GetVersionConfigs(string gameFolder)
     {
-        var result = new List<VersionConfig>();
-        if (!Directory.Exists(Path.Combine(gameFolder, "bedrock_versions")))
-            return result;
-        var versions = Directory.GetDirectories(Path.Combine(gameFolder, "bedrock_versions")).ToList();
+        var bedrockVersionsPath = Path.Combine(gameFolder, "bedrock_versions");
+        
+        if (!Directory.Exists(bedrockVersionsPath))
+            return new List<VersionConfig>();
 
-        versions.ForEach(x =>
-        {
-            var body = GetVersionConfig(x);
-            if (body != null &&
-                !string.IsNullOrEmpty(body.Info.VersionName) &&
-                !string.IsNullOrEmpty(body.Info.Version))
-                result.Add(body);
-        });
-        return result;
+        return Directory.GetDirectories(bedrockVersionsPath)
+            .Select(GetVersionConfig)  // 转换每个路径为VersionConfig
+            .Where(config => config != null && 
+                           !string.IsNullOrEmpty(config.Info.VersionName) && 
+                           !string.IsNullOrEmpty(config.Info.Version))  // 过滤有效配置
+            .ToList();  // 转换为列表返回
     }
 
     public static VersionConfig GetVersionConfig(string gamePath)
@@ -59,8 +57,8 @@ public class GameInfoHelper
         var bedrockBootJson = Path.Combine(gamePath, "config", "BedrockBoot2", "config.json");
         ConfigEntity<VersionConfig> bodyConfig = null;
 
-        if (!File.Exists(bedrockBootJson) &&
-            File.Exists(Path.Combine(gamePath, "appxmanifest.xml"))) // 没有 BedrockBoot 2 的配置文件时
+        if (!File.Exists(bedrockBootJson) && 
+             File.Exists(Path.Combine(gamePath, "appxmanifest.xml"))) // 没有 BedrockBoot 2 的配置文件时
         {
             Directory.CreateDirectory(Path.Combine(gamePath, "config", "BedrockBoot2"));
             bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);
@@ -69,7 +67,7 @@ public class GameInfoHelper
             var manifest =
                 PackageIdentity.ParseFromXml(File.ReadAllText(Path.Combine(gamePath, "appxmanifest.xml")));
 
-            bodyConfig.Data.Info = new VersionConfig.VersionInfo
+            bodyConfig.Data.Info = new VersionConfig.VersionInfo()
             {
                 Version = manifest.Version,
                 VersionName = Path.GetFileName(gamePath),
@@ -122,16 +120,16 @@ public class GameInfoHelper
         if (files.Count() > 1)
             throw new FileNotFoundException(
                 $"无法找到对应的 EXE 文件，原因是该目录中有 {files.Count()} 个 EXE，有很大概率是蠕虫病毒的感染，请尝试查杀病毒或删除对应文件以解决该问题。\nFiles:\n{string.Join('\n', files)}");
-
+        
         Console.WriteLine($@"目标实例本体文件：{files[0]}");
-
+        
         return Path.GetFileName(files[0]);
     }
 
     public static bool IsInvalidVersion(VersionConfig config)
     {
         var indexJson = Path.Combine(config.VersionPath, "config", "BedrockBoot2", "index.json");
-
+        
         if (!File.Exists(indexJson))
             return false;
         if (string.IsNullOrEmpty(File.ReadAllText(indexJson)))
@@ -142,7 +140,7 @@ public class GameInfoHelper
 
         if (body.Data.Count <= 0)
             return false;
-
+        
         return true;
     }
 

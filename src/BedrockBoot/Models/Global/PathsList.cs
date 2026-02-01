@@ -5,7 +5,6 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Config;
-using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
 
@@ -14,8 +13,7 @@ namespace BedrockBoot.Models.Global;
 public class PathsList
 {
     public static readonly string RootConfigPath =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RoundStudio",
-            "BedrockBoot2");
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RoundStudio", "BedrockBoot2");
 
     public static readonly string ConfigPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "Config.json");
     public static readonly string LogPath = Path.Combine(RootConfigPath, "BedrockBoot.Log");
@@ -26,7 +24,7 @@ public class PathsList
 
     public static List<OtherLauncherInfo> OtherLauncher = new()
     {
-        new OtherLauncherInfo() // LeviLauncher
+        new() // LeviLauncher
         {
             Name = "LeviLauncher",
             IconUrl = "avares://BedrockBoot/Assets/Icon/Other/LeviLauncher.png",
@@ -40,28 +38,21 @@ public class PathsList
                 var conf = new ConfigEntity<ConfigLeviLauncher>(s, false);
                 var realPath = Path.Combine(conf.Data.BaseRoot, "versions");
                 var inPath = Path.Combine(conf.Data.BaseRoot, "bedrock_versions");
-                if (!Directory.Exists(realPath) ||
-                    Directory.Exists(inPath))
+                if (!Directory.Exists(realPath))
                 {
-                    DialogHost.Show(new DialogInfo
-                    {
-                        Title = "提示",
-                        Content = "该启动器已导入",
-                        CloseButtonText = "确定"
-                    });
-                    return;
+                    Directory.CreateDirectory(realPath);
                 }
 
-                Directory.CreateSymbolicLink(inPath, realPath);
-                GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                if (!Directory.Exists(inPath)) Directory.CreateSymbolicLink(inPath, realPath);
+                GlobalModel.Config.Data.GameFolders.Add(new()
                 {
                     GameFolderName = "LeviLauncher",
-                    GameFolderPath = conf.Data.BaseRoot
+                    GameFolderPath = conf.Data.BaseRoot,
                 });
                 GlobalModel.Config.Save();
-
+                
                 GlobalModel.MainWindow.CloseDraw();
-                DialogHost.Show(new DialogInfo
+                DialogHost.Show(new()
                 {
                     Title = "导入成功",
                     Content = "导入 LeviLauncher 启动器的配置成功",
@@ -69,13 +60,14 @@ public class PathsList
                 });
             }
         },
-        new OtherLauncherInfo() // BMCBL
+        new() // BMCBL
         {
             Name = "BMCBL",
             IconUrl = "avares://BedrockBoot/Assets/Icon/Other/BMCBL.png",
+            IsExists = false,
             OnImport = async _ =>
             {
-                var storageProvider = TopLevel.GetTopLevel(GlobalModel.MainWindow);
+                var storageProvider = TopLevel.GetTopLevel(GlobalModel.MainWindow); 
                 var options = new FilePickerOpenOptions
                 {
                     Title = "选择 BMCBL 本体",
@@ -93,7 +85,7 @@ public class PathsList
                 if (files != null && files.Count > 0)
                 {
                     var selectedFile = files[0];
-
+        
                     var filePath = selectedFile.Path.LocalPath;
                     var folder = Path.Combine(Path.GetDirectoryName(filePath), "BMCBL");
                     var realPath = Path.Combine(folder, "versions");
@@ -103,7 +95,7 @@ public class PathsList
                         if (!Directory.Exists(realPath) ||
                             Directory.Exists(inPath))
                         {
-                            DialogHost.Show(new DialogInfo
+                            DialogHost.Show(new()
                             {
                                 Title = "提示",
                                 Content = "该启动器已导入",
@@ -113,15 +105,15 @@ public class PathsList
                         }
 
                         Directory.CreateSymbolicLink(inPath, realPath);
-                        GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                        GlobalModel.Config.Data.GameFolders.Add(new()
                         {
                             GameFolderName = "BMCBL",
-                            GameFolderPath = folder
+                            GameFolderPath = folder,
                         });
                         GlobalModel.Config.Save();
-
+                
                         GlobalModel.MainWindow.CloseDraw();
-                        DialogHost.Show(new DialogInfo
+                        DialogHost.Show(new()
                         {
                             Title = "导入成功",
                             Content = "导入 BMCBL 启动器的配置成功",

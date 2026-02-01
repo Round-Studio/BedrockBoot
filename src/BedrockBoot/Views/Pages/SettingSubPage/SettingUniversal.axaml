@@ -6,64 +6,63 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversal">
     <ScrollViewer>
-        <StackPanel Margin="15">
-            <TextBlock Margin="5,0,5,10"
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <TextBlock Margin="5, 0"
                        FontWeight="Bold"
-                       FontSize="14">
-                辅助功能
-            </TextBlock>
-
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                       FontSize="14">辅助功能</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="任务栏快捷菜单"
                                           Description="当程序固定在任务栏时，右键其固定项时显示最近启动"
                                           Glyph="&#xE8FC;">
                 <ToggleSwitch IsChecked="False"
                               Name="TaskBarJumpItem"
-                              IsCheckedChanged="TaskBarJumpItem_OnIsCheckedChanged" />
+                              IsCheckedChanged="TaskBarJumpItem_OnIsCheckedChanged"></ToggleSwitch>
             </onePointControls:SettingCard>
-
-            <TextBlock Margin="5,0,5,10"
+            
+            <TextBlock Margin="5, 0"
                        FontWeight="Bold"
-                       FontSize="14">
-                高级
-            </TextBlock>
-
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                       FontSize="14">高级</TextBlock>
+            
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="软件更新"
                                           Description="BedrockBoot 的更新设置"
                                           IsClickable="True"
                                           Name="SoftwareUpdate"
                                           Click="SoftwareUpdate_OnClick"
-                                          Glyph="&#xE895;" />
-
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Glyph="&#xE895;">
+            </onePointControls:SettingCard>
+            
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="调试模式"
                                           Description="BedrockBoot 本体调试模式"
                                           IsClickable="True"
                                           Name="DebugBtn"
                                           Click="DebugBtn_OnClick"
-                                          Glyph="&#xEBE8;" />
-
-            <StackPanel Name="PluginPanel">
-                <TextBlock Margin="5,0,5,10"
+                                          Glyph="&#xEBE8;">
+            </onePointControls:SettingCard>
+            
+            <StackPanel Name="PluginPanel"
+                        Spacing="8">
+                <TextBlock Margin="5, 0"
                            FontWeight="Bold"
-                           FontSize="14">
-                    插件
-                </TextBlock>
-
-                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                           FontSize="14">插件</TextBlock>
+            
+                <onePointControls:SettingCard Margin="5, 0"
                                               Header="启用插件"
                                               Description="是否启用第三方插件"
                                               Glyph="&#xE8EC;">
-                    <ToggleSwitch IsChecked="True" />
+                    <ToggleSwitch IsChecked="True"></ToggleSwitch>
                 </onePointControls:SettingCard>
-
-                <onePointControls:SettingCard Margin="5, 0, 5, 10"
+            
+                <onePointControls:SettingCard Margin="5, 0"
                                               Header="插件"
                                               Description="本体插件管理"
                                               IsClickable="True"
                                               Name="PluginBtn"
-                                              Glyph="&#xEA86;" />
+                                              Glyph="&#xEA86;">
+                </onePointControls:SettingCard>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

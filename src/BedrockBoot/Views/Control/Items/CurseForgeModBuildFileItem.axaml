@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.CurseForgeModBuildFileItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
-                                  Margin="5,0,5,10"
+                                  Margin="5,0"
                                   Glyph="&#xE734;"
                                   Description="信息"
                                   IsShowActionIcon="False"
@@ -22,8 +22,9 @@
                                            FontSize="14" />
             </Button>
             <Button Classes="NoBorder"
-                    Padding="12,8"
-                    IsEnabled="False"
+                    Padding="16,0"
+                    Name="DownloadBtn"
+                    Click="DownloadBtn_OnClick"
                     Background="{DynamicResource AccentBackgroundBrush}">
                 <StackPanel Orientation="Horizontal"
                             Spacing="8">

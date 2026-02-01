@@ -6,46 +6,47 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingNavigation">
     <ScrollViewer>
-        <StackPanel Margin="15">
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="个性化"
                                           Description="启动器的个性化设置"
                                           Name="SetPersonalization"
                                           Click="SetPersonalization_OnClick"
                                           IsClickable="True"
-                                          Glyph="&#xEE56;" />
-
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Glyph="&#xEE56;"/>
+                
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="下载"
                                           Description="BedrockBoot 的下载行为"
                                           Name="SetDownload"
                                           Click="SetDownload_OnClick"
                                           IsClickable="True"
-                                          Glyph="&#xE896;" />
-
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Glyph="&#xE896;"/>
+                
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="游戏"
                                           Description="操作游戏的基本设置"
                                           Name="SetGame"
                                           Click="SetGame_OnClick"
                                           IsClickable="True"
-                                          Glyph="&#xE7FC;" />
-
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Glyph="&#xE7FC;"/>
+                
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="通用"
                                           Description="启动器本体通用设置"
                                           Name="Universal"
                                           Click="Universal_OnClick"
                                           IsClickable="True"
-                                          Glyph="&#xE71D;" />
-
-            <onePointControls:SettingCard Margin="5, 0, 5, 10"
+                                          Glyph="&#xE71D;"/>
+                
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="关于"
                                           Description="关于 BedrockBoot"
                                           Name="AboutUs"
                                           Click="AboutUs_OnClick"
                                           IsClickable="True"
-                                          Glyph="&#xE946;" />
+                                          Glyph="&#xE946;"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

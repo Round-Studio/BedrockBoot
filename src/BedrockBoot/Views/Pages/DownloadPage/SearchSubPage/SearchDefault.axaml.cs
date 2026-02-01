@@ -21,20 +21,30 @@ public partial class SearchDefault : UserControl
 
         Task.Run(() =>
         {
-            var rele = VersionHelper.GetVersions().Find(x => x.Type == MinecraftGameTypeVersion.Release);
-            var prev = VersionHelper.GetVersions().Find(x => x.Type == MinecraftGameTypeVersion.Preview);
-
-            Dispatcher.UIThread.Invoke(() =>
+            try
             {
-                RecommendationPanel.IsVisible = true;
-                LoadRing.IsVisible = false;
+                var rele = VersionHelper.GetVersions().Find(x => x.Type == MinecraftGameTypeVersion.Release);
+                var prev = VersionHelper.GetVersions().Find(x => x.Type == MinecraftGameTypeVersion.Preview);
 
-                ReleaseVersion.Text = rele.ID;
-                PreviewVersion.Text = prev.ID;
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    RecommendationPanel.IsVisible = true;
+                    LoadRing.IsVisible = false;
 
-                ReleaseDescription.Text = $"{rele.Date}，{rele.BuildType}";
-                PreviewDescription.Text = $"{prev.Date}，{prev.BuildType}";
-            });
+                    ReleaseVersion.Text = rele.ID;
+                    PreviewVersion.Text = prev.ID;
+
+                    ReleaseDescription.Text = $"{rele.Date}，{rele.BuildType}";
+                    PreviewDescription.Text = $"{prev.Date}，{prev.BuildType}";
+                });
+            }
+            catch
+            {
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    RecommendationPanel.IsVisible = false;
+                });
+            }
         });
     }
 

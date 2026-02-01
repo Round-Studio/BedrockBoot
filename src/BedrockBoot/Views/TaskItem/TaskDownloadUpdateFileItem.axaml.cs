@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Models.Download;
 using BedrockBoot.Models.Global;
 using Octokit;
@@ -54,8 +55,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
                     progress
                 }
             };
-
-
+            
             Task.Run(async () =>
             {
                 var download = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);

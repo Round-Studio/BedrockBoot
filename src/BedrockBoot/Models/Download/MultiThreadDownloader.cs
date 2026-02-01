@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Progress;
 
 namespace BedrockBoot.Models.Download;
 
@@ -127,7 +128,7 @@ public class MultiThreadDownloader : IDisposable
     /// <param name="cancellationToken">用于取消操作的令牌</param>
     /// <returns>如果下载成功则返回 true，否则返回 false</returns>
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(HttpClient))]
-    public async Task<bool> DownloadAsync(string url, string filePath, IProgress<DownloadProgress>? progress = null,
+    public async Task<bool> DownloadAsync(string url, string filePath, IProgress<DownloadProgress> progress = null,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(url)) throw new Exception("错误: URL 不能为空或空白");

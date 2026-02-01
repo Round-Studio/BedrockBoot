@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BedrockBoot.Base.Entry;
+namespace BedrockBoot.Base.Entry.Progress;
 
 public class DownloadProgress
 {

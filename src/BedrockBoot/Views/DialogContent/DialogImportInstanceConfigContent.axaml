@@ -1,0 +1,35 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.DialogImportInstanceConfigContent">
+    <StackPanel Spacing="10"
+                Margin="5,0">
+        <TextBlock
+            HorizontalAlignment="Left">
+            选择需要导入的内容
+        </TextBlock>
+        
+        <CheckBox Content="资源包"
+                  Width="200"
+                  IsChecked="True"
+                  Name="IsEnableResourcePack"
+                  Margin="0"></CheckBox>
+        <CheckBox Content="资源包"
+                  Width="200"
+                  IsChecked="True"
+                  Name="IsEnableBehaviorPack"
+                  Margin="0"></CheckBox>
+        <CheckBox Content="存档"
+                  Width="200"
+                  IsChecked="True"
+                  Name="IsEnableArchivePack"
+                  Margin="0"></CheckBox>
+        <CheckBox Content="实例设置"
+                  Width="200"
+                  IsChecked="True"
+                  Name="IsEnableConfigPack"
+                  Margin="0"></CheckBox>
+    </StackPanel>
+</UserControl>

@@ -1,10 +1,32 @@
-﻿using BedrockLauncher.Core;
+﻿using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Entry.Game.Pack.Integration;
+using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Models.Pack.Game.Integration;
+using BedrockLauncher.Core;
 
 public class Program
 {
     private static async Task Main()
     {
-        var bedrockCore = new BedrockCore();
-        bedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release).Wait();
+        var packager = new IntegrationPackager(new VersionConfig()
+        {
+            VersionPath = @"",
+            Info = new VersionConfig.VersionInfo()
+            {
+                BuildType = MinecraftBuildTypeVersion.GDK
+            }
+        })
+        {
+            IntegrationProgress = new Progress<IntegrationProgress>((p =>
+            {
+                Console.WriteLine($@"{p.Message} - {p.Progress:F2} %");
+            }))
+        };
+        packager.BeginPack(new PackInfo()
+        {
+            PackSavePath = $@"E:/testPack.mcpint",
+        });
+
+        Console.ReadKey();
     }
 }

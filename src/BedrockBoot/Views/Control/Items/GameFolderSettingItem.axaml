@@ -1,0 +1,38 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Control.Items.GameFolderSettingItem">
+    <onePointControls:SettingCard Header="FolderName"
+                                  Description="FolderPath"
+                                  Name="Card"
+                                  IsFontIcon="True"
+                                  IsShowActionIcon="False"
+                                  IsClickable="True"
+                                  Glyph="&#xE8B7;">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="5">
+            <Button Width="24" Height="24"
+                    Name="OpenFolderBtn"
+                    Click="OpenFolderBtn_OnClick"
+                    Classes="NoBorder">
+                <onePointControls:FontIcon Glyph="&#xE8B7;" />
+            </Button>
+            <Button Width="24" Height="24"
+                    Name="SettingBtn"
+                    Click="SettingBtn_OnClick"
+                    Classes="NoBorder">
+                <onePointControls:FontIcon Glyph="&#xE713;" />
+            </Button>
+            <Button Width="24" Height="24"
+                    Name="DeleteFolderBtn"
+                    Click="DeleteFolderBtn_OnClick"
+                    Classes="NoBorder">
+                <onePointControls:FontIcon Glyph="&#xE74D;"
+                                           Foreground="DarkRed" />
+            </Button>
+        </StackPanel>
+    </onePointControls:SettingCard>
+</UserControl>

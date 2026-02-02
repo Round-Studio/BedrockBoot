@@ -15,27 +15,34 @@ public partial class DialogAddGameFolderContent : UserControl
         InitializeComponent();
     }
 
-    public string FolderPath => PathInputBox.Text;
-    public string FolderName => PathNameInputBox.Text;
+    public string FolderPath
+    {
+        get => PathInputBox.Text;
+        set => PathInputBox.Text = value;
+    }
+
+    public string FolderName
+    {
+        get => PathNameInputBox.Text;
+        set => PathNameInputBox.Text = value;
+    }
 
     private async void OpenChooseFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        // ① 拿到当前 TopLevel（Window 或 Desktop 层）
         var topLevel = TopLevel.GetTopLevel(this); // this 可以是 Window 或 UserControl
         if (topLevel == null) return;
 
-        // ② 打开文件夹选择框
         var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(
             new FolderPickerOpenOptions
             {
                 Title = "请选择文件夹",
-                AllowMultiple = false // true 可多选
+                AllowMultiple = false
             });
 
         if (folders.Count > 0)
             try
             {
-                var path = folders[0].Path.LocalPath; // 本地文件系统路径
+                var path = folders[0].Path.LocalPath;
                 Console.WriteLine($@"选择路径：{path}");
 
                 PathInputBox.Text = path;

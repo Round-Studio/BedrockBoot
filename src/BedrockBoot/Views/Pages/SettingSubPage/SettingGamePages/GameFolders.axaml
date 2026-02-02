@@ -1,0 +1,31 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages.GameFolders">
+    <ScrollViewer>
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="添加目录"
+                                          Description="添加新的游戏目录"
+                                          Glyph="&#xECC8;"
+                                          IsClickable="True"
+                                          Name="AddFolderBtn"
+                                          Click="AddFolderBtn_OnClick">
+            </onePointControls:SettingCard>
+
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14">
+                目录设置
+            </TextBlock>
+            
+            <StackPanel Spacing="8"
+                        Margin="5, 0"
+                        Name="ListBox"></StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

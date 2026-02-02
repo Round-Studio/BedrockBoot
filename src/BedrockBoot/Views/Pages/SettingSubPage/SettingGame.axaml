@@ -25,6 +25,14 @@
                     <ComboBoxItem Content="混合模式（Hook + Symbolic Link）" />
                 </ComboBox>
             </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="实例文件夹"
+                                          Description="游戏存放的根目录"
+                                          Name="GameFolderBtn"
+                                          Click="GameFolderBtn_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xE8B7;" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

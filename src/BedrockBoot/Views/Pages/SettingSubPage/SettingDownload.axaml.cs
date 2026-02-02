@@ -5,6 +5,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 using OnePointUI.Avalonia.Base.Entry;
 
@@ -25,7 +26,6 @@ public partial class SettingDownload : UserControl
             }
         });
 
-        IsAutoCacheGamePack.IsChecked = GlobalModel.Config.Data.IsAutoCacheGamePack;
         ChunkCountSlider.Value = GlobalModel.Config.Data.DownloadChunkCount;
         SourceList.VersionDataSources.ToList().ForEach(s => SourceBox.Items.Add(new ComboBoxItem
         {
@@ -40,13 +40,9 @@ public partial class SettingDownload : UserControl
         IsEdit = true;
     }
 
-    private void IsAutoCacheGamePack_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    private void GameFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (IsEdit)
-        {
-            GlobalModel.Config.Data.IsAutoCacheGamePack = (bool)IsAutoCacheGamePack.IsChecked;
-            GlobalModel.Config.Save();
-        }
+        MainSettingPage.NavigationFrame.NavigateTo(new GameFolders());
     }
 
     private void SoftwareUpdate_OnClick(object? sender, RoutedEventArgs e)

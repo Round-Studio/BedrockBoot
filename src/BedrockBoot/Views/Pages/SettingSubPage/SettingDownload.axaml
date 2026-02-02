@@ -34,7 +34,7 @@
             </TextBlock>
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="实例文件夹"
+                                          Header="实例目录"
                                           Description="游戏存放的根目录"
                                           Name="GameFolderBtn"
                                           Click="GameFolderBtn_OnClick"

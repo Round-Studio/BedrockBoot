@@ -38,8 +38,8 @@ public partial class GameFolderItem : UserControl
         {
             Title = "删除目录",
             Content = "请注意，本次删除仅删除启动器中保存的目录，并不会从文件系统上删除其及其子文件。\n您确定要删除吗？",
-            SecondaryButtonText = "蒜鸟蒜鸟",
-            CloseButtonText = "是是是是是是是",
+            SecondaryButtonText = "取消",
+            CloseButtonText = "确定删除",
             AccountButton = DialogButtons.SecondaryButton,
             CloseAction = () =>
             {

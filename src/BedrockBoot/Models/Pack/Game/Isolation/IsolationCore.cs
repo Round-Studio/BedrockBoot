@@ -172,7 +172,7 @@ public class IsolationCore
 
     public static List<string>? GetInstanceUsers(VersionConfig versionConfig)
     {
-        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP) return null;
+        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP) return new() { "Shared" };
 
         var userFolder = GetInstanceFolderPath(versionConfig, InstanceFolderType.UserFolder);
         if (Directory.Exists(userFolder))

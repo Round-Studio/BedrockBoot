@@ -121,6 +121,9 @@ public partial class DrawDownloadGameContent : UserControl
                             ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                             : dialog.FolderName;
 
+                        if (GlobalModel.Config.Data.GameFolders == null)
+                            GlobalModel.Config.Data.GameFolders = new();
+
                         GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                         {
                             GameFolderPath = dialog.FolderPath,

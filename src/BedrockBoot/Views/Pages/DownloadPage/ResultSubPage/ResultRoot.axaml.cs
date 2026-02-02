@@ -50,7 +50,7 @@ public partial class ResultRoot : UserControl
             PreviewCard.IsVisible = true;
             SearchResultItemInfo.Images.ForEach(image => PreviewList.Children.Add(new LocalImageRenderWidget(image)
             {
-                Width = 320
+                Width = 290
             }));
         }
 

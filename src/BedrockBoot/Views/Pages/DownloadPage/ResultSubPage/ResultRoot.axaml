@@ -139,7 +139,7 @@
 
                         <Grid Grid.Row="2"
                               Margin="0,8,0,0"
-                              Height="180">
+                              Height="160">
                             <ScrollViewer VerticalScrollBarVisibility="Disabled"
                                           HorizontalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Horizontal"

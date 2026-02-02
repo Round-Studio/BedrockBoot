@@ -70,15 +70,6 @@ public partial class ResultRoot : UserControl
         }
     }
 
-    private void OpenSourceWebsite_OnClick(object? sender, RoutedEventArgs e)
-    {
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = SearchResultItemInfo.SourceWebsite,
-            UseShellExecute = true
-        });
-    }
-
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         GlobalModel.MainWindow.OpenDraw(

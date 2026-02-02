@@ -162,6 +162,14 @@ public class IsolationCore
         };
     }
 
+    public static List<string> GetAllUserFolderPaths(VersionConfig versionConfig,
+        InstanceFolderType folderType = InstanceFolderType.RootFolder)
+    {
+        var users = GetInstanceUsers(versionConfig);
+        var result = users.Select(x => GetInstanceFolderPath(versionConfig, folderType, x)).ToList();
+        return result;
+    }
+
     public static List<string>? GetInstanceUsers(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP) return null;

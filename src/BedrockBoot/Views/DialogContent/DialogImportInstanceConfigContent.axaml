@@ -16,7 +16,7 @@
                   IsChecked="True"
                   Name="IsEnableResourcePack"
                   Margin="0"></CheckBox>
-        <CheckBox Content="资源包"
+        <CheckBox Content="行为包"
                   Width="200"
                   IsChecked="True"
                   Name="IsEnableBehaviorPack"

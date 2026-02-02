@@ -18,27 +18,33 @@ public class IsolationMigration
 
     public async Task MigrateFoldersAsync(MigrationConfig migrationConfig)
     {
-        var dirsEnable = new List<(bool isEnabled, string newPath, string oldPath)>
-        {
-            (migrationConfig.IsEnableArchive,
-                IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig, InstanceFolderType.ArchiveFolder),
-                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig,
-                    InstanceFolderType.ArchiveFolder)),
-            (migrationConfig.IsEnableConfig,
-                IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig, InstanceFolderType.OptionFolder),
-                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig, InstanceFolderType.OptionFolder)),
-            (migrationConfig.IsEnableResourcePack,
-                IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig,
-                    InstanceFolderType.ResourcePackFolder),
-                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig,
-                    InstanceFolderType.ResourcePackFolder)),
-            (migrationConfig.IsEnableBehaviorPack,
-                IsolationCore.GetInstanceFolderPath(migrationConfig.NewVersionConfig,
-                    InstanceFolderType.BehaviorPackFolder),
-                IsolationCore.GetInstanceFolderPath(migrationConfig.OldVersionConfig,
-                    InstanceFolderType.BehaviorPackFolder))
-        };
+        var dirsEnable = new List<(bool isEnabled, string newPath, string oldPath)>();
 
+        var enables = new List<(bool isEnabled, InstanceFolderType type)>()
+        {
+            (migrationConfig.IsEnableArchive, InstanceFolderType.ArchiveFolder),
+            (migrationConfig.IsEnableConfig, InstanceFolderType.OptionFolder),
+            (migrationConfig.IsEnableResourcePack, InstanceFolderType.ResourcePackFolder),
+            (migrationConfig.IsEnableBehaviorPack, InstanceFolderType.BehaviorPackFolder)
+        };
+        
+        enables.ForEach(enable =>
+        {
+            if (enable.isEnabled)
+            {
+                var newFolder = IsolationCore.GetAllUserFolderPaths(migrationConfig.NewVersionConfig, enable.type);
+                var oldFolder = IsolationCore.GetAllUserFolderPaths(migrationConfig.OldVersionConfig, enable.type);
+
+                newFolder.ForEach(newPath =>
+                {
+                    oldFolder.ForEach(oldPath =>
+                    {
+                        dirsEnable.Add(new ValueTuple<bool, string, string>(true, newPath, oldPath));
+                    });
+                });
+            }
+        });
+        
         var enabledItems = dirsEnable.Where(x => x.isEnabled).ToList(); // 获取上面这坨启用的项
         var filesCount = enabledItems
             .Sum(item => Directory.Exists(item.oldPath)
@@ -110,7 +116,7 @@ public class IsolationMigration
                             processedFiles++;
 
                             // 每批报告一次进度，减少UI更新
-                            if (processedFiles % 10 == 0 || processedFiles == filesCount)
+                            if (processedFiles % 25 == 0 || processedFiles == filesCount)
                                 MigrationProgress.Report(new MigrationProgress
                                 {
                                     FileCountTotal = filesCount,

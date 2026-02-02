@@ -28,7 +28,7 @@ public partial class DialogMigrationGameConfigContent : UserControl
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         if (MigrationProgressBar.IsIndeterminate) MigrationProgressBar.IsIndeterminate = false;
-                        MigrationProgressBar.Value = progress.Percentage;
+                        MigrationProgressBar.Value = (int)progress.Percentage;
                         MigrationProgressText.Text = $"迁移中... ({progress.Percentage:F2} %)";
                     });
                 })

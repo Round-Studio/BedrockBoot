@@ -14,7 +14,7 @@ public class PackInfo
     [JsonIgnore] public PackEnableConfig EnableConfig { get; set; } = new();
     [JsonIgnore] public string PackIconFile { get; set; } = string.Empty;
     [JsonIgnore] public string PackSavePath { get; set; } = string.Empty;
-    
+
     public class GameVersionInfo
     {
         [JsonPropertyName("buildType")] public string BuildType { get; set; } = string.Empty;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BedrockBoot.Base.Entry.Game.Pack.Isolation;
+﻿namespace BedrockBoot.Base.Entry.Game.Pack.Isolation;
 
 public class MigrationConfig
 {

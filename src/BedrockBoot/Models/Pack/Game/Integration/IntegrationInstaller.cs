@@ -209,11 +209,11 @@ public class IntegrationInstaller
                 {
                     IntegrationProgress?.Report(new InstallIntegrationProgress
                     {
-                        Progress = ((double)count / files.Count) * 100.00,
+                        Progress = (double)count / files.Count * 100.00,
                         Message = "解压整合包资源包文件",
                         Status = InstallIntegrationProgressType.Uninstalling
                     });
-                    packManager.AddRangePacks(new() { file });
+                    packManager.AddRangePacks(new List<string> { file });
                     count++;
                 });
             }
@@ -229,11 +229,11 @@ public class IntegrationInstaller
                 {
                     IntegrationProgress?.Report(new InstallIntegrationProgress
                     {
-                        Progress = ((double)count / files.Count) * 100.00,
+                        Progress = (double)count / files.Count * 100.00,
                         Message = "解压整合包行为包文件",
                         Status = InstallIntegrationProgressType.Uninstalling
                     });
-                    packManager.AddRangePacks(new() { file });
+                    packManager.AddRangePacks(new List<string> { file });
                     count++;
                 });
             }
@@ -248,7 +248,7 @@ public class IntegrationInstaller
                 {
                     IntegrationProgress?.Report(new InstallIntegrationProgress
                     {
-                        Progress = ((double)count / files.Count) * 100.00,
+                        Progress = (double)count / files.Count * 100.00,
                         Message = "解压整合包存档文件",
                         Status = InstallIntegrationProgressType.Uninstalling
                     });

@@ -1,0 +1,99 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.DialogMakeIntegrationPackConfigContent">
+    <ScrollViewer>
+        <StackPanel Margin="15,0,15,0"
+                    Spacing="8">
+            <notice:InfoBar State="Warning"
+                            Title="注意"
+                            Message="请注意，整合包中的资源包分发需要获得其开发者的允许，否则可能为非法分发"/>
+            
+            <TextBlock FontSize="17"
+                       FontWeight="Bold">
+                整合包信息
+            </TextBlock>
+            
+            <TextBlock Opacity="0.7">
+                整合包名：
+            </TextBlock>
+            <TextBox Watermark="My Pack"
+                     Name="PackName"></TextBox>
+            
+            <TextBlock Opacity="0.7">
+                整合包简介：
+            </TextBlock>
+            <TextBox Watermark="My Pack Description"
+                     Name="PackDescription"></TextBox>
+            
+            <TextBlock Opacity="0.7">
+                整合包版本：
+            </TextBlock>
+            <TextBox Watermark="0.0.0.1"
+                     Name="PackVersion"></TextBox>
+            
+            <TextBlock Opacity="0.7">
+                整合包图标（可为空）：
+            </TextBlock>
+            <DockPanel LastChildFill="True">
+                <Button Content="浏览"
+                        Padding="12,0"
+                        DockPanel.Dock="Right"
+                        Margin="8,0,0,0"></Button>
+                <TextBox DockPanel.Dock="Left"
+                         Name="PackIcon"></TextBox>
+            </DockPanel>
+            
+            <TextBlock FontSize="17"
+                       FontWeight="Bold">
+                整合包作者信息
+            </TextBlock>
+            
+            <TextBlock Opacity="0.7">
+                整合包作者名：
+            </TextBlock>
+            <TextBox Watermark="Creator"
+                     Name="PackAuthorName"></TextBox>
+            
+            <TextBlock Opacity="0.7">
+                整合包作者地址：
+            </TextBlock>
+            <TextBox Watermark="https://example.com"
+                     Name="PackAuthorLink"></TextBox>
+            
+            <TextBlock FontSize="17"
+                       FontWeight="Bold">
+                整合包包含内容
+            </TextBlock>
+            
+            <Grid ColumnDefinitions="*,*">
+                <StackPanel Grid.Column="0"
+                            Spacing="8">
+                    <CheckBox Content="存档"
+                              Margin="0"
+                              Name="EnableArchive"
+                              IsChecked="True"></CheckBox>
+                    <CheckBox Content="Mod 文件"
+                              Margin="0"
+                              Name="EnableDllMods"
+                              IsChecked="True"></CheckBox>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1"
+                            Spacing="8">
+                    <CheckBox Content="资源包"
+                              Margin="0"
+                              Name="EnableResourcePack"
+                              IsChecked="True"></CheckBox>
+                    <CheckBox Content="行为包"
+                              Margin="0"
+                              Name="EnableBehaviorPack"
+                              IsChecked="True"></CheckBox>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -199,4 +199,47 @@ public partial class InstanceControls : ISetting
             }
         });
     }
+
+    private void MakePack_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new DialogMakeIntegrationPackConfigContent();
+
+        DialogHost.Show(new DialogInfo()
+        {
+            Content = dialog,
+            Title = "整合包信息填写",
+            CloseButtonText = "确定",
+            SecondaryButtonText = "取消",
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = async () =>
+            {
+                var config = dialog.PackConfig;
+                var topLevel = TopLevel.GetTopLevel(this);
+                
+                var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                {
+                    Title = "导出 Minecraft 基岩版整合包",
+                    DefaultExtension = "mcpint",
+                    FileTypeChoices = new[]
+                    {
+                        new FilePickerFileType("基岩版整合包 (*.mcpint)")
+                        {
+                            Patterns = new[] { "*.mcpint" }
+                        }
+                    }
+                });
+
+                if (file != null)
+                {
+                    config.PackSavePath = file.TryGetLocalPath();
+                    config.VersionConfig = VersionInfo;
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Title = "打包整合包",
+                        Content = new DialogMakeIntegrationPackContent(config)
+                    });
+                }
+            }
+        });
+    }
 }

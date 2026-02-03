@@ -47,6 +47,13 @@
                                               Header="导入配置"
                                               Description="导入其他实例的配置" />
 
+                <onePointControls:SettingCard IsClickable="True"
+                                              Name="MakePack"
+                                              Click="MakePack_OnClick"
+                                              Glyph="&#xF012;"
+                                              Header="导出整合包" 
+                                              Description="导出成 Minecraft Bedrock 整合包" />
+
                 <TextBlock FontWeight="Bold"
                            FontSize="14">
                     高危操作

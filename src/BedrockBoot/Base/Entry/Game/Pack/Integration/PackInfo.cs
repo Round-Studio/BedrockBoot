@@ -12,6 +12,7 @@ public class PackInfo
     [JsonPropertyName("author")] public List<PackAuthor> Authors { get; set; }
     [JsonPropertyName("versionInfo")] public GameVersionInfo VersionInfo { get; set; }
     [JsonIgnore] public PackEnableConfig EnableConfig { get; set; } = new();
+    [JsonIgnore] public VersionConfig? VersionConfig { get; set; } = null;
     [JsonIgnore] public string PackIconFile { get; set; } = string.Empty;
     [JsonIgnore] public string PackSavePath { get; set; } = string.Empty;
 

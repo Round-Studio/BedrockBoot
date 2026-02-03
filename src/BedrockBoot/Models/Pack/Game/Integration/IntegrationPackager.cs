@@ -24,6 +24,7 @@ public class IntegrationPackager
 
     public VersionConfig VersionConfig { get; set; }
     public IProgress<IntegrationProgress>? IntegrationProgress { get; set; }
+    public Action? CompleteCallBack { get; set; }
 
     public void BeginPack(PackInfo config)
     {
@@ -206,5 +207,7 @@ public class IntegrationPackager
             Progress = 100,
             Message = "整合包打包完毕"
         });
+        
+        CompleteCallBack?.Invoke();
     }
 }

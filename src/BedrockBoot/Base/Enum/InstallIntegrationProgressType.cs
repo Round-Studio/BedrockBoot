@@ -10,5 +10,6 @@ public enum InstallIntegrationProgressType
     Uninstalling,
     Uninstalled,
     InstallPack,
-    Success
+    Success,
+    Failed
 }

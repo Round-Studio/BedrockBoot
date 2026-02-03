@@ -54,7 +54,7 @@
                     </DockPanel>
 
                     <DockPanel Name="InsInstallGamePanel">
-                        <TextBlock Width="100">部署游戏</TextBlock>
+                        <TextBlock Width="100">安装资源</TextBlock>
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsInstallGameBar" />
                     </DockPanel>

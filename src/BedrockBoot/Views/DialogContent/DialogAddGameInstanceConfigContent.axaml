@@ -4,5 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DialogContent.DialogAddGameInstanceConfigContent">
-    Welcome to Avalonia!
+    <StackPanel>
+        <TextBlock
+            HorizontalAlignment="Left">
+            游戏目录
+        </TextBlock>
+        <ComboBox Width="320"
+                  Name="GameFolder" />
+        
+        <TextBlock Margin="0,5,0,5"
+                   HorizontalAlignment="Left">
+            实例名（自定义）：
+        </TextBlock>
+        <TextBox Margin="0,5,0,5" MinWidth="320"
+                 HorizontalAlignment="Stretch"
+                 Name="GameName" />
+    </StackPanel>
 </UserControl>

@@ -27,12 +27,12 @@ public class Program
             PackSavePath = $@"E:/testPack.mcpint",
         });*/
 
-        var packInstall = new IntegrationInstaller($@"E:/testPack.mcpint");
+        var packInstall = new IntegrationInstaller($@"E:\测试整合包.mcpint");
         packInstall.IntegrationProgress = new Progress<InstallIntegrationProgress>((s) =>
         {
             Console.WriteLine($"{s.Message} - {s.Status} - {s.Progress:F2}");
         });
-        await packInstall.BeginInstaller($"D:\\BedrockBoot","测试整合包安装1");
+        await packInstall.BeginInstaller($"D:\\BedrockBoot","测试整合包安装12");
 
         Console.ReadKey();
     }

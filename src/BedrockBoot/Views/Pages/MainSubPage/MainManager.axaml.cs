@@ -413,7 +413,21 @@ public partial class MainManager : BedrockBootPage
 
             if (File.Exists(filePath))
             {
-                
+                var body = new DialogAddGameInstanceConfigContent(filePath);
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = "选择安装目录",
+                    Content = body,
+                    CloseButtonText = "安装",
+                    SecondaryButtonText = "取消",
+                    CloseAction = () =>
+                    {
+                        if(string.IsNullOrEmpty(body.GameInstallFolder) || string.IsNullOrEmpty(body.GameInstallName))
+                            return;
+
+                        TaskImportIntegrationPackItem.Install(filePath, body.GameInstallFolder, body.GameInstallName);
+                    }
+                });
             }
         }
     }

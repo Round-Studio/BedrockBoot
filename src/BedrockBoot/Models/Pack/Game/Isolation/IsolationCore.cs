@@ -54,7 +54,7 @@ public class IsolationCore
         if (DirectoryLinkChecker.CheckFolderType(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock")) ==
             DirectoryType.Folder)
         {
-            Directory.Delete(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock"));
+            Directory.Delete(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock"), true);
             Directory.CreateSymbolicLink(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock"), RealRootPath);
         }
 

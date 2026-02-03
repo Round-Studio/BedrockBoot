@@ -66,6 +66,12 @@
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Spacing="10">
+                <Button Name="CopyButton"
+                        Content="复制错误信息"
+                        Padding="15,10"
+                        MinWidth="120"
+                        Click="CopyButton_OnClick"
+                        Classes="NoBorder" />
                 <Button Name="CloseButton"
                         Content="返回本体"
                         Padding="15,10"
@@ -81,19 +87,10 @@
                         Orientation="Horizontal"
                         HorizontalAlignment="Left"
                         Spacing="10">
-                <Button Name="CopyButton"
-                        Content="复制错误信息"
-                        Padding="15,10"
-                        MinWidth="120"
-                        Click="CopyButton_OnClick"
-                        Classes="NoBorder" />
-
-                <Button Name="GithubBtn"
-                        Content="Github Issues"
-                        Padding="15,10"
-                        MinWidth="120"
-                        Click="GithubBtn_OnClick"
-                        Classes="NoBorder" />
+                <HyperlinkButton Content="BedrockBoot 常见问题"
+                                 NavigateUri="https://docs.roundstudio.top/docs/product/bb/commonQuestion" />
+                <HyperlinkButton Content="Github Issues"
+                                 NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues" />
             </StackPanel>
         </Grid>
     </windowFrame:OnePointWindow.MainContent>

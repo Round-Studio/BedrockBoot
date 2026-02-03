@@ -1,10 +1,9 @@
-﻿using System.Diagnostics;
-using Avalonia.Interactivity;
+﻿using Avalonia.Interactivity;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;
 
 namespace BedrockBoot.Views.Windows;
 
-public partial class ExceptionWindow : OnePointWindow
+public class ExceptionWindow : OnePointWindow
 {
     public ExceptionWindow()
     {
@@ -18,15 +17,6 @@ public partial class ExceptionWindow : OnePointWindow
     }
 
     public string Log { get; set; }
-
-    private void GithubBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = "https://github.com/Round-Studio/BedrockBoot/issues",
-            UseShellExecute = true
-        });
-    }
 
     private async void CopyButton_OnClick(object? sender, RoutedEventArgs e)
     {

@@ -10,7 +10,7 @@ public class Program
     {
         var packager = new IntegrationPackager(new VersionConfig()
         {
-            VersionPath = @"",
+            VersionPath = @"E:\Bedrock\bedrock_versions\1.21.13201",
             Info = new VersionConfig.VersionInfo()
             {
                 BuildType = MinecraftBuildTypeVersion.GDK

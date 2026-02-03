@@ -7,6 +7,7 @@ using BedrockBoot.Base.Entry.Game.Pack.Integration;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.Mods;
 using Round.SDK.Entity;
@@ -26,6 +27,24 @@ public class IntegrationPackager
 
     public void BeginPack(PackInfo config)
     {
+        IntegrationProgress?.Report(new IntegrationProgress
+        {
+            Progress = 10,
+            Message = "获取版本详细信息"
+        });
+
+        var gameVersions = VersionHelper.GetVersions()
+            .Find(x => x.ID.Replace(".", "") ==
+                       GameInfoHelper.GetVersionConfig(VersionConfig.VersionPath).Info.Version.Replace(".", ""));
+        
+        if(gameVersions==null) throw new Exception("无法获取版本详细信息");
+
+        config.VersionInfo = new PackInfo.GameVersionInfo()
+        {
+            Version = gameVersions.ID.Replace(".", ""),
+            BuildType = gameVersions.BuildType.ToString()
+        };
+        
         var path = Path.Combine(PathsList.TempPath, $"integration_{Guid.NewGuid().ToString().Replace("-", "")}");
         Directory.CreateDirectory(path);
 
@@ -50,7 +69,7 @@ public class IntegrationPackager
 
         IntegrationProgress?.Report(new IntegrationProgress
         {
-            Progress = 10,
+            Progress = 40,
             Message = "目录创建完毕"
         });
 

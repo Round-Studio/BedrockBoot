@@ -106,11 +106,14 @@ public partial class MainPage : UserControl
         };
 
         var sel = -1;
+        var count = -1;
         GlobalModel.Config.AfterSave += (sender, args) =>
         {
-            if (GlobalModel.Config.Data.GameFolderSelIndex != sel &&
+            if ((GlobalModel.Config.Data.GameFolderSelIndex != sel ||
+                 GlobalModel.Config.Data.GameFolders.Count != count) &&
                 IsEditMode)
             {
+                count = GlobalModel.Config.Data.GameFolders.Count;
                 sel = GlobalModel.Config.Data.GameFolderSelIndex;
                 UpdateUI();
             }

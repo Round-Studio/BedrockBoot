@@ -58,7 +58,7 @@
                             <onePointControls:FontIcon Glyph="&#xE710;"
                                                        VerticalAlignment="Center"
                                                        Margin="0,1,8,0" />
-                            <TextBlock>导入包</TextBlock>
+                            <TextBlock>导入存档</TextBlock>
                         </StackPanel>
                     </Button>
                 </StackPanel>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -68,21 +69,58 @@ public partial class InstanceSave : UserControl
 
     public void UpdateSearch()
     {
-        var lst = ArchiveManifest.Manifest.Values.ToList()[SelIndex];
-        var result = new List<ArchiveInfo>();
-        if (!string.IsNullOrEmpty(SearchKey))
+        try
         {
-            lst.ForEach(save =>
+            // 防御性编程：检查所有前提条件
+            if (ArchiveManifest == null || 
+                ArchiveManifest.Manifest == null || 
+                ArchiveManifest.Manifest.Count == 0)
             {
-                if (save.Name.Contains(SearchKey))
-                    result.Add(save);
-            });
+                UpdateSaves(new List<ArchiveInfo>());
+                return;
+            }
 
-            UpdateSaves(result);
+            // 检查索引是否有效
+            if (SelIndex < 0 || SelIndex >= ArchiveManifest.Manifest.Count)
+            {
+                // 如果索引无效，默认使用第一个用户
+                if (ArchiveManifest.Manifest.Count > 0)
+                {
+                    var firstUser = ArchiveManifest.Manifest.ToList()[0].Value;
+                    UpdateSaves(firstUser);
+                }
+                else
+                {
+                    UpdateSaves(new List<ArchiveInfo>());
+                }
+                return;
+            }
+
+            // 安全地获取列表
+            var manifestList = ArchiveManifest.Manifest.ToList();
+            var lst = manifestList[SelIndex].Value;
+        
+            var result = new List<ArchiveInfo>();
+            if (!string.IsNullOrEmpty(SearchKey))
+            {
+                lst.ForEach(save =>
+                {
+                    if (save.Name.Contains(SearchKey))
+                        result.Add(save);
+                });
+                UpdateSaves(result);
+            }
+            else
+            {
+                UpdateSaves(lst);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            UpdateSaves(lst);
+            // 记录异常以便调试
+            Console.WriteLine($"UpdateSearch error: {ex.Message}");
+            // 显示空列表而不是崩溃
+            UpdateSaves(new List<ArchiveInfo>());
         }
     }
 

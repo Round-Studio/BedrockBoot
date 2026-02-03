@@ -16,6 +16,9 @@ public class ArchiveCheck
     public ArchiveCheck(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
+
+        var iso = new IsolationCore(versionConfig);
+        iso.Init();
     }
 
     public VersionConfig VersionConfig { get; set; }

@@ -52,11 +52,11 @@ public partial class DialogDeleteGameContent : UserControl
                 }
 
                 jd++;
-                if (jd % 20 == 0)
+                if (jd % 200 == 0)
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         DeleteProgressText.Text = $"进度：{jd * 100.0 / files.Length:F2} %";
-                        DeleteProgressBar.Value = jd;
+                        DeleteProgressBar.Value = (int)jd;
                     });
             });
 

@@ -43,11 +43,13 @@ public partial class TaskDownloadGameItem : UserControl
     {
         _downloader = new EasyDownload(BuildInfo, IsUsePack, InstallFolder, GameName)
         {
-            DownloadProgress = (text, percentage) =>
-                Dispatcher.UIThread.Invoke(() => UpdateDownloadProgress(text, percentage)),
+            // 修改为使用整合的DownloadProgressInfo
+            DownloadProgress = (text, progressInfo) =>
+                Dispatcher.UIThread.Invoke(() => UpdateDownloadProgress(text, progressInfo)),
 
-            DownloadSpeed = speed =>
-                Dispatcher.UIThread.Invoke(() => MainSpeedText.Text = speed),
+            // 移除单独的DownloadSpeed回调
+            // DownloadSpeed = speed =>
+            //     Dispatcher.UIThread.Invoke(() => MainSpeedText.Text = speed),
 
             // 新增合并进度回调
             MergeProgress = (text, percentage) =>
@@ -66,7 +68,10 @@ public partial class TaskDownloadGameItem : UserControl
                 Dispatcher.UIThread.Invoke(() => HandleInstallState(states)),
 
             ErrorOccurred = (title, message, ex) =>
-                Dispatcher.UIThread.Invoke(() => ShowErrorDialog(title, message, ex))
+                Dispatcher.UIThread.Invoke(() => ShowErrorDialog(title, message, ex)),
+                
+            Completed = (c) =>
+                Dispatcher.UIThread.Invoke(() => MainSpeedText.Text = "下载完成")
         };
     }
 
@@ -92,7 +97,8 @@ public partial class TaskDownloadGameItem : UserControl
         });
     }
 
-    private void UpdateDownloadProgress(string text, double percentage)
+    // 修改：使用DownloadProgressInfo参数
+    private void UpdateDownloadProgress(string text, DownloadProgressInfo progressInfo)
     {
         if (InsGetUrlBar.IsIndeterminate)
         {
@@ -100,8 +106,26 @@ public partial class TaskDownloadGameItem : UserControl
             InsGetUrlBar.Value = 100;
         }
 
-        InsDownGameBar.Value = percentage;
+        // 更新进度条
+        InsDownGameBar.Value = progressInfo.Percentage;
+        
+        // 更新主文本
         MainText.Text = text;
+        
+        // 更新速度文本 - 从progressInfo中获取
+        if (!string.IsNullOrEmpty(progressInfo.Speed))
+        {
+            MainSpeedText.Text = $"{progressInfo.Speed}/s";
+        }
+        
+        // 可选：显示详细的下载信息
+        if (progressInfo.TotalBytes > 0)
+        {
+            // 显示已下载/总大小
+            var downloaded = FormatBytes(progressInfo.DownloadedBytes);
+            var total = FormatBytes(progressInfo.TotalBytes);
+            // 可以将这些信息显示在UI的其他位置，如果需要的话
+        }
     }
 
     private void UpdateExtractionProgress(string text, double percentage)
@@ -163,5 +187,19 @@ public partial class TaskDownloadGameItem : UserControl
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
         body.Install(() => { GlobalModel.TaskManager.RemoveTask(tuid); });
+    }
+    
+    // 辅助方法：格式化字节大小
+    private string FormatBytes(long bytes)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        double len = bytes;
+        int order = 0;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len = len / 1024;
+        }
+        return $"{len:0.##} {sizes[order]}";
     }
 }

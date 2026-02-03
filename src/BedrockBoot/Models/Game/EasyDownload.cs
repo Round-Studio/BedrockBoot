@@ -19,6 +19,23 @@ using DownloadProgress = BedrockBoot.Base.Entry.Progress.DownloadProgress;
 
 namespace BedrockBoot.Services;
 
+// 定义一个新的进度信息类，包含下载速度和进度
+public class DownloadProgressInfo
+{
+    public DownloadProgressInfo(double percentage, string speed, long downloadedBytes, long totalBytes)
+    {
+        Percentage = percentage;
+        Speed = speed;
+        DownloadedBytes = downloadedBytes;
+        TotalBytes = totalBytes;
+    }
+
+    public double Percentage { get; set; }
+    public string Speed { get; set; }
+    public long DownloadedBytes { get; set; }
+    public long TotalBytes { get; set; }
+}
+
 public class EasyDownload
 {
     public EasyDownload(BuildInfo info, bool isUsePack, string dir, string gameName)
@@ -35,15 +52,16 @@ public class EasyDownload
     public bool IsUsePack { get; set; }
 
     // 进度报告回调
-    public Action<string, double> DownloadProgress { get; set; }
-    public Action<string> DownloadSpeed { get; set; }
-    public Action<string, double> MergeProgress { get; set; } // 新增：合并进度回调
+    public Action<string, DownloadProgressInfo> DownloadProgress { get; set; } // 修改：整合下载进度和速度
+    public Action<string, double> MergeProgress { get; set; }
     public Action<string, double> ExtractionProgress { get; set; }
     public Action<string, DeploymentProgress> DeploymentProgress { get; set; }
     public Action<string> StatusText { get; set; }
     public Action<InstallStates> InstallStateChanged { get; set; }
     public Action<string, string, Exception> ErrorOccurred { get; set; }
-    public Action Completed { get; set; }
+    public Action<VersionConfig> Completed { get; set; }
+
+    public VersionConfig GameConfig { get; private set; }
 
     public async Task InstallAsync(string url)
     {
@@ -57,6 +75,7 @@ public class EasyDownload
             var packagePath = await DownloadPackageAsync(url);
 
             MergeProgress?.Invoke("验证包...", 80);
+
             // 3. 验证包完整性
             if (!await ValidatePackageAsync(packagePath)) return;
 
@@ -66,7 +85,7 @@ public class EasyDownload
             // 5. 安装包
             await InstallPackageAsync(packagePath);
 
-            Completed?.Invoke();
+            Completed?.Invoke(GameConfig);
         }
         catch (Exception ex)
         {
@@ -90,23 +109,36 @@ public class EasyDownload
             IsUsePack)
         {
             StatusText?.Invoke("使用缓存包");
-            DownloadProgress.Invoke("", 100);
+
+            // 使用缓存时，报告100%进度
+            var progressInfo = new DownloadProgressInfo(100, "使用缓存", 0, 0);
+            DownloadProgress?.Invoke("使用缓存包 (100%)", progressInfo);
+
             OnMergeComplete(); // 使用缓存时也触发合并完成
             return packagePath;
         }
 
         StatusText?.Invoke("正在下载游戏包...");
-        var downloader = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
+        var downloadCount = GlobalModel.Config == null ? 4 : GlobalModel.Config.Data.DownloadChunkCount;
+        var downloader = new MultiThreadDownloader(downloadCount, 1024);
         var speedCalculator = new DownloadSpeedCalculator();
 
         await downloader.DownloadAsync(url, packagePath, new Progress<DownloadProgress>(progress =>
         {
-            DownloadProgress?.Invoke($"下载游戏 ({progress.ProgressPercentage:F2}%)",
-                progress.ProgressPercentage);
+            // 计算下载速度
+            var speedBytes = speedCalculator.UpdateSpeed(progress.DownloadedBytes, progress.TotalBytes);
+            var speedFormatted = SizeHelper.FormatBytes(speedBytes);
 
-            var speed = SizeHelper.FormatBytes(
-                speedCalculator.UpdateSpeed(progress.DownloadedBytes, progress.TotalBytes));
-            DownloadSpeed?.Invoke($"{speed}/s");
+            // 创建整合的进度信息
+            var progressInfo = new DownloadProgressInfo(
+                progress.ProgressPercentage,
+                speedFormatted,
+                progress.DownloadedBytes,
+                progress.TotalBytes
+            );
+
+            // 更新整合的下载进度
+            DownloadProgress?.Invoke($"下载游戏 ({progress.ProgressPercentage:F2}%)", progressInfo);
         }));
 
         return packagePath;
@@ -169,7 +201,7 @@ public class EasyDownload
                 if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
                 {
                     SaveVersionConfig(installDir);
-                    Completed?.Invoke();
+                    Completed?.Invoke(GameConfig);
                 }
 
                 break;
@@ -177,12 +209,10 @@ public class EasyDownload
             case InstallStates.Registering:
                 // 对于非GDK版本，在注册时保存配置
                 if (BuildInfo.BuildType != MinecraftBuildTypeVersion.GDK) SaveVersionConfig(installDir);
-
                 break;
 
             case InstallStates.Registered:
-                if (BuildInfo.BuildType != MinecraftBuildTypeVersion.GDK) Completed?.Invoke();
-
+                if (BuildInfo.BuildType != MinecraftBuildTypeVersion.GDK) Completed?.Invoke(GameConfig);
                 break;
         }
     }
@@ -200,6 +230,7 @@ public class EasyDownload
                 VersionType = BuildInfo.Type
             }
         };
+        GameConfig = conf;
 
         var isolation = new IsolationCore(conf);
         isolation.Init();

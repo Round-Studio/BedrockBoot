@@ -8,7 +8,7 @@ public class Program
 {
     private static async Task Main()
     {
-        var packager = new IntegrationPackager(new VersionConfig()
+        /*var packager = new IntegrationPackager(new VersionConfig()
         {
             VersionPath = @"E:\Bedrock\bedrock_versions\1.21.13201",
             Info = new VersionConfig.VersionInfo()
@@ -25,7 +25,14 @@ public class Program
         packager.BeginPack(new PackInfo()
         {
             PackSavePath = $@"E:/testPack.mcpint",
+        });*/
+
+        var packInstall = new IntegrationInstaller($@"E:/testPack.mcpint");
+        packInstall.IntegrationProgress = new Progress<InstallIntegrationProgress>((s) =>
+        {
+            Console.WriteLine($"{s.Message} - {s.Status} - {s.Progress:F2}");
         });
+        await packInstall.BeginInstaller($"D:\\BedrockBoot","测试整合包安装");
 
         Console.ReadKey();
     }

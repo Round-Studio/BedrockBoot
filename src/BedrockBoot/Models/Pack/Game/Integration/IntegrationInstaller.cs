@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Integration;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
@@ -27,19 +25,19 @@ namespace BedrockBoot.Models.Pack.Game.Integration;
 
 public class IntegrationInstaller
 {
-    public string PackageFile { get; set; }
-    public IProgress<InstallIntegrationProgress>? IntegrationProgress { get; set; }
-    
     public IntegrationInstaller(string pack)
     {
         PackageFile = pack;
     }
 
+    public string PackageFile { get; set; }
+    public IProgress<InstallIntegrationProgress>? IntegrationProgress { get; set; }
+
     public PackInfo? GetPackInfo()
     {
         var packJson = ZipHelper.GetTextFileContent(PackageFile, "pack.json");
         if (string.IsNullOrEmpty(packJson)) throw new Exception("文件非可用的整合包文件");
-        
+
         return JsonSerializer.Deserialize<PackInfo>(packJson);
     }
 
@@ -49,85 +47,90 @@ public class IntegrationInstaller
         Directory.CreateDirectory(path);
 
         var info = GetPackInfo();
-        
+
         if (info == null) throw new Exception("无法解析整合包信息");
-        
+
         var gameVersions = VersionHelper.GetVersions()
             .Find(x => x.ID.Replace(".", "") ==
                        info.VersionInfo.Version.Replace(".", ""));
 
         if (gameVersions == null) throw new Exception("无法获取整合包目标游戏版本");
-        
+
+        var unZip = 0.00;
         var downloader = new EasyDownload(gameVersions, true, installFolder, installName)
         {
-            DownloadProgress = new Action<string, DownloadProgressInfo>((s, p) =>
+            DownloadProgress = (s, p) =>
             {
-                IntegrationProgress?.Report(new()
+                IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = p.Percentage,
-                    Message = $"{s} ({p.Speed}/s)",
+                    Message = $"{s} ({p.Speed} / s)",
                     Status = InstallIntegrationProgressType.DownloadingFile
                 });
-            }),
-            MergeProgress = new Action<string, double>((s, p) =>
+            },
+            MergeProgress = (s, p) =>
             {
-                IntegrationProgress?.Report(new()
+                IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = p,
                     Message = "合并文件",
                     Status = InstallIntegrationProgressType.DownloadedFile
                 });
-            }),
-            ExtractionProgress = new Action<string, double>((s, p) =>
+            },
+            ExtractionProgress = (s, p) =>
             {
-                IntegrationProgress?.Report(new()
+                if (Math.Abs(p - unZip) > 0.01)
                 {
-                    Progress = p,
-                    Message = "解压文件",
-                    Status = InstallIntegrationProgressType.Installing
-                });
-            }),
-            DeploymentProgress = new Action<string, DeploymentProgress>((s, p) =>
+                    unZip = p;
+                    IntegrationProgress?.Report(new InstallIntegrationProgress
+                    {
+                        Progress = p,
+                        Message = "解压文件",
+                        Status = InstallIntegrationProgressType.Installing
+                    });
+                }
+            },
+            DeploymentProgress = (s, p) =>
             {
-                IntegrationProgress?.Report(new()
+                IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = p.percentage,
                     Message = $"安装游戏 {p.state}",
                     Status = InstallIntegrationProgressType.Installing
                 });
-            }),
+            },
             StatusText = text =>
             {
-                IntegrationProgress?.Report(new()
+                IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
-                    Progress = -1, // 表示无进度，只有状态
+                    Progress = -1,
                     Message = text,
                     Status = InstallIntegrationProgressType.Installing
                 });
             },
             ErrorOccurred = (title, message, ex) =>
             {
-                IntegrationProgress?.Report(new()
+                IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = 0,
                     Message = $"{title}: {message} {ex}",
                     Status = InstallIntegrationProgressType.Success
                 });
             },
-            Completed = (gameConfig) =>
+            Completed = gameConfig =>
             {
-                IntegrationProgress?.Report(new()
+                IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = 100,
-                    Message = $"实例安装完成",
+                    Message = "实例安装完成",
                     Status = InstallIntegrationProgressType.Installed
                 });
 
-                InstallPack(path,gameConfig);
+                InstallPack(path, gameConfig);
             }
         };
-        
-        IntegrationProgress?.Report(new()
+
+        IntegrationProgress?.Report(new InstallIntegrationProgress
         {
             Progress = 0,
             Message = "获取 URL",
@@ -135,7 +138,6 @@ public class IntegrationInstaller
         });
 
         if (GlobalModel.BedrockCore == null)
-        {
             GlobalModel.BedrockCore = new BedrockCore
             {
                 Options = new CoreOptions
@@ -146,14 +148,13 @@ public class IntegrationInstaller
                     IsCheckMD5 = true
                 }
             };
-        }
 
         var url = await GlobalModel.BedrockCore.GetPackageUri(gameVersions, Architecture.X64);
-        
+
         // 添加错误处理
         if (string.IsNullOrEmpty(url))
         {
-            IntegrationProgress?.Report(new()
+            IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 0,
                 Message = "无法获取下载地址",
@@ -161,8 +162,8 @@ public class IntegrationInstaller
             });
             return;
         }
-        
-        IntegrationProgress?.Report(new()
+
+        IntegrationProgress?.Report(new InstallIntegrationProgress
         {
             Progress = 5,
             Message = "开始下载游戏",
@@ -175,19 +176,18 @@ public class IntegrationInstaller
         }
         catch (Exception ex)
         {
-            IntegrationProgress?.Report(new()
+            IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 0,
                 Message = $"下载失败: {ex.Message}",
                 Status = InstallIntegrationProgressType.Success
             });
-            return;
         }
     }
 
-    private void InstallPack(string path,VersionConfig gameConfig)
+    private void InstallPack(string path, VersionConfig gameConfig)
     {
-        IntegrationProgress?.Report(new()
+        IntegrationProgress?.Report(new InstallIntegrationProgress
         {
             Progress = 80,
             Message = "解压整合包文件",
@@ -197,39 +197,72 @@ public class IntegrationInstaller
         try
         {
             ZipHelper.ExtractZipFile(PackageFile, path);
-            
+
             // 安装资源包
             if (Directory.Exists(Path.Combine(path, "packs", "resource_packs")))
             {
                 var packManager = new ResourcePackManager(gameConfig);
                 packManager.GetAllPack();
                 var files = Directory.GetFiles(Path.Combine(path, "packs", "resource_packs")).ToList();
-                packManager.AddRangePacks(files);
+                var count = 0;
+                files.ForEach(file =>
+                {
+                    IntegrationProgress?.Report(new InstallIntegrationProgress
+                    {
+                        Progress = ((double)count / files.Count) * 100.00,
+                        Message = "解压整合包资源包文件",
+                        Status = InstallIntegrationProgressType.Uninstalling
+                    });
+                    packManager.AddRangePacks(new() { file });
+                    count++;
+                });
             }
-            
+
             // 安装行为包
             if (Directory.Exists(Path.Combine(path, "packs", "behavior_packs")))
             {
                 var packManager = new ResourcePackManager(gameConfig);
                 packManager.GetAllPack();
                 var files = Directory.GetFiles(Path.Combine(path, "packs", "behavior_packs")).ToList();
-                packManager.AddRangePacks(files);
+                var count = 0;
+                files.ForEach(file =>
+                {
+                    IntegrationProgress?.Report(new InstallIntegrationProgress
+                    {
+                        Progress = ((double)count / files.Count) * 100.00,
+                        Message = "解压整合包行为包文件",
+                        Status = InstallIntegrationProgressType.Uninstalling
+                    });
+                    packManager.AddRangePacks(new() { file });
+                    count++;
+                });
             }
-            
+
             // 导入世界
             if (Directory.Exists(Path.Combine(path, "worlds")))
             {
                 var packManager = new ArchiveCheck(gameConfig);
                 var files = Directory.GetFiles(Path.Combine(path, "worlds")).ToList();
+                var count = 0;
                 files.ForEach(file =>
-                    packManager.ImportWorldPack(file));
+                {
+                    IntegrationProgress?.Report(new InstallIntegrationProgress
+                    {
+                        Progress = ((double)count / files.Count) * 100.00,
+                        Message = "解压整合包存档文件",
+                        Status = InstallIntegrationProgressType.Uninstalling
+                    });
+                    packManager.ImportWorldPack(file);
+                    count++;
+                });
             }
-            
+
             // 安装Mods
             if (File.Exists(Path.Combine(path, "mods", "mods.json")))
             {
-                var modConf = new ConfigEntity<Dictionary<string, PackModInfo>>(Path.Combine(path, "mods", "mods.json"));
-                
+                var modConf =
+                    new ConfigEntity<Dictionary<string, PackModInfo>>(Path.Combine(path, "mods", "mods.json"));
+
                 var modManager = new ModsManager(gameConfig);
                 modConf.Data.ToList().ForEach(mod =>
                 {
@@ -238,12 +271,12 @@ public class IntegrationInstaller
                     {
                         var newFile = Path.Combine(gameConfig.VersionPath, "config", "BedrockBoot2", "mods",
                             Path.GetFileName(mod.Key));
-                        
+
                         // 确保目录存在
                         Directory.CreateDirectory(Path.GetDirectoryName(newFile));
                         File.Copy(modFilePath, newFile, true);
-                        
-                        modManager.AddMod(new ModInfo()
+
+                        modManager.AddMod(new ModInfo
                         {
                             File = newFile,
                             IsPreLoad = mod.Value.IsPreLoad,
@@ -256,7 +289,7 @@ public class IntegrationInstaller
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            IntegrationProgress?.Report(new()
+            IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 0,
                 Message = $"整合包安装失败: {ex}",
@@ -269,15 +302,15 @@ public class IntegrationInstaller
             // 清理临时文件
             try
             {
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path, true);
-                }
+                if (Directory.Exists(path)) Directory.Delete(path, true);
             }
-            catch { /* 忽略清理错误 */ }
+            catch
+            {
+                /* 忽略清理错误 */
+            }
         }
-        
-        IntegrationProgress?.Report(new()
+
+        IntegrationProgress?.Report(new InstallIntegrationProgress
         {
             Progress = 100,
             Message = "安装完成",

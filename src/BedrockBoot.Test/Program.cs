@@ -32,7 +32,7 @@ public class Program
         {
             Console.WriteLine($"{s.Message} - {s.Status} - {s.Progress:F2}");
         });
-        await packInstall.BeginInstaller($"D:\\BedrockBoot","测试整合包安装");
+        await packInstall.BeginInstaller($"D:\\BedrockBoot","测试整合包安装1");
 
         Console.ReadKey();
     }

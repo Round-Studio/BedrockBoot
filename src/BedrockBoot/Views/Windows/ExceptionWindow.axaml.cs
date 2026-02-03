@@ -3,7 +3,7 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;
 
 namespace BedrockBoot.Views.Windows;
 
-public class ExceptionWindow : OnePointWindow
+public partial class ExceptionWindow : OnePointWindow
 {
     public ExceptionWindow()
     {

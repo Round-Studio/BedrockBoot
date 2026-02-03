@@ -8,7 +8,7 @@ namespace BedrockBoot.Models.Helper;
 
 public class VersionHelper
 {
-    public static List<BuildInfo> Versions { get; private set; }
+    public static List<BuildInfo> Versions { get; private set; } = null;
 
     public static List<BuildInfo> GetVersions()
     {
@@ -16,9 +16,12 @@ public class VersionHelper
 
         try
         {
+            var url = GlobalModel.Config == null
+                ? SourceList.VersionDataSources.ToList()[0].Value
+                : SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value;
+            
             var lst = VersionsHelper
-                .GetBuildDatabaseAsync(
-                    SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value)
+                .GetBuildDatabaseAsync(url)
                 .Result!.Builds
                 .ToListAsync().Result;
 

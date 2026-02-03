@@ -9,6 +9,7 @@ using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Models.Download;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using OnePointUI.Avalonia.Base.Entry;
 
@@ -59,9 +60,17 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
         MainText.Text = "进度：正在导入文件... (0 %)";
         Task.Run(() =>
         {
-            var manager = new ResourcePackManager(version);
-            manager.GetAllPack();
-            manager.AddRangePacks(new List<string> { savePath });
+            if (savePath.EndsWith(".mcworld"))
+            {
+                var worldManager = new ArchiveCheck(version);
+                worldManager.ImportWorldPack(savePath,"Shared");
+            }
+            else
+            {
+                var manager = new ResourcePackManager(version);
+                manager.GetAllPack();
+                manager.AddRangePacks(new List<string> { savePath });
+            }
 
             if (CallBack != null) Dispatcher.UIThread.Invoke(CallBack);
         });

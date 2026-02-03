@@ -13,6 +13,7 @@ public class ResourcePackManager
     public ResourcePackManager(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
+        Packs = new List<ResourcePackManifest>();
     }
 
     public VersionConfig VersionConfig { get; set; }
@@ -20,6 +21,9 @@ public class ResourcePackManager
 
     private List<string> GetManifests(string dir)
     {
+        if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
+            return new List<string>();
+            
         return Directory.GetFiles(dir, "manifest.json", SearchOption.AllDirectories).ToList();
     }
 
@@ -28,38 +32,54 @@ public class ResourcePackManager
         var files = new List<string>();
         var result = new List<ResourcePackManifest>();
 
-        Directory.GetDirectories(IsolationCore.GetInstanceFolderPath(VersionConfig,
-                InstanceFolderType.ResourcePackFolder)).ToList()
-            .ForEach(dir => { files.AddRange(GetManifests(dir)); });
-        Directory.GetDirectories(IsolationCore.GetInstanceFolderPath(VersionConfig,
-                InstanceFolderType.BehaviorPackFolder)).ToList()
-            .ForEach(dir => { files.AddRange(GetManifests(dir)); });
+        // 获取资源包目录
+        var resourcePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ResourcePackFolder);
+        if (!string.IsNullOrEmpty(resourcePackDir) && Directory.Exists(resourcePackDir))
+        {
+            Directory.GetDirectories(resourcePackDir).ToList()
+                .ForEach(dir => { files.AddRange(GetManifests(dir)); });
+        }
+
+        // 获取行为包目录
+        var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.BehaviorPackFolder);
+        if (!string.IsNullOrEmpty(behaviorPackDir) && Directory.Exists(behaviorPackDir))
+        {
+            Directory.GetDirectories(behaviorPackDir).ToList()
+                .ForEach(dir => { files.AddRange(GetManifests(dir)); });
+        }
 
         files.ForEach(file =>
         {
-            var con = ResourcePackAnalysis.GetPackManifest(file);
-            if (con != null)
-                result.Add(ResourcePackAnalysis.GetPackManifest(file));
+            try
+            {
+                var manifest = ResourcePackAnalysis.GetPackManifest(file);
+                if (manifest != null)
+                {
+                    // 确保Header不为空
+                    if (manifest.Header != null && !string.IsNullOrEmpty(manifest.Header.Uuid))
+                    {
+                        result.Add(manifest);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                // 记录错误但继续处理其他文件
+                System.Console.WriteLine($"Error processing manifest {file}: {ex.Message}");
+            }
         });
 
         Packs = result;
-
         return result;
     }
 
     public static void CopyDirectory(string sourceDir, string destinationDir, bool recursive = true)
     {
-        // 获取源目录信息
         var dir = new DirectoryInfo(sourceDir);
-
-        // 检查源目录是否存在
         if (!dir.Exists)
             throw new DirectoryNotFoundException($"源目录不存在: {dir.FullName}");
 
-        // 确保目标目录存在
         Directory.CreateDirectory(destinationDir);
-
-        // 复制所有文件
         foreach (var file in dir.GetFiles())
         {
             var targetFilePath = Path.Combine(destinationDir, file.Name);
@@ -77,27 +97,67 @@ public class ResourcePackManager
 
     public void AddRangePacks(List<string> files)
     {
-        var ids = Packs.Select(p => p.Header.Uuid).ToList();
+        if (files == null || !files.Any())
+            return;
+
+        // 重新获取现有包列表以确保Packs不为空
+        if (Packs == null)
+            Packs = new List<ResourcePackManifest>();
+
+        var ids = new HashSet<string>(Packs.Where(p => p?.Header != null).Select(p => p.Header.Uuid).Where(id => !string.IsNullOrEmpty(id)));
+
         files.ForEach(file =>
         {
-            var confs = new ResourcePackAnalysis(file).GetPackManifests();
-            confs.ForEach(pack =>
+            try
             {
-                if (!ids.Contains(pack.Header.Uuid))
-                {
-                    if (pack.PackType == ResourcePackType.Resource)
-                        CopyDirectory(pack.PackRootPath,
-                            Path.Combine(
-                                IsolationCore.GetInstanceFolderPath(VersionConfig,
-                                    InstanceFolderType.ResourcePackFolder), Path.GetFileName(pack.PackRootPath)));
+                var analysis = new ResourcePackAnalysis(file);
+                var confs = analysis.GetPackManifests();
 
-                    if (pack.PackType == ResourcePackType.Behavior)
-                        CopyDirectory(pack.PackRootPath,
-                            Path.Combine(
-                                IsolationCore.GetInstanceFolderPath(VersionConfig,
-                                    InstanceFolderType.BehaviorPackFolder), Path.GetFileName(pack.PackRootPath)));
+                if (confs != null)
+                {
+                    confs.ForEach(pack =>
+                    {
+                        if (pack != null && pack.Header != null && !string.IsNullOrEmpty(pack.Header.Uuid))
+                        {
+                            if (!ids.Contains(pack.Header.Uuid))
+                            {
+                                // 确保PackRootPath有效
+                                if (!string.IsNullOrEmpty(pack.PackRootPath) && Directory.Exists(pack.PackRootPath))
+                                {
+                                    if (pack.PackType == ResourcePackType.Resource)
+                                    {
+                                        var resourcePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ResourcePackFolder);
+                                        if (!string.IsNullOrEmpty(resourcePackDir))
+                                        {
+                                            var destPath = Path.Combine(resourcePackDir, Path.GetFileName(pack.PackRootPath));
+                                            CopyDirectory(pack.PackRootPath, destPath);
+                                        }
+                                    }
+                                    else if (pack.PackType == ResourcePackType.Behavior)
+                                    {
+                                        var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.BehaviorPackFolder);
+                                        if (!string.IsNullOrEmpty(behaviorPackDir))
+                                        {
+                                            var destPath = Path.Combine(behaviorPackDir, Path.GetFileName(pack.PackRootPath));
+                                            CopyDirectory(pack.PackRootPath, destPath);
+                                        }
+                                    }
+                                    
+                                    // 添加到ID集合，避免重复
+                                    ids.Add(pack.Header.Uuid);
+                                }
+                            }
+                        }
+                    });
                 }
-            });
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine($"Error adding pack from {file}: {ex.Message}");
+            }
         });
+
+        // 重新获取所有包以更新Packs列表
+        GetAllPack();
     }
 }

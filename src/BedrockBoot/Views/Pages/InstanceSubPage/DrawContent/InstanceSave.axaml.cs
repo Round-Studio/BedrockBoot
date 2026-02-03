@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Models.Pack.Game.Archive;
@@ -36,6 +38,7 @@ public partial class InstanceSave : UserControl
         var body = new ArchiveCheck(VersionInfo);
         ArchiveManifest = body.Check();
 
+        UserChooseBox.Items.Clear();
         ArchiveManifest.Manifest.ToList().ForEach(user =>
         {
             UserChooseBox.Items.Add(new ComboBoxItem
@@ -91,5 +94,30 @@ public partial class InstanceSave : UserControl
     private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         UpdateSearch();
+    }
+
+    private async void ImportPackBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "导入 Minecraft Bedrock 包",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+                new FilePickerFileType("Minecraft 存档包")
+                {
+                    Patterns = new[] { "*.mcworld" }
+                }
+            }
+        });
+
+        if (files != null && files.Count >= 1)
+        {
+            var body = new ArchiveCheck(VersionInfo);
+            body.ImportWorldPack(files[0].TryGetLocalPath(), "Shared");
+            UpdateUI();
+        }
     }
 }

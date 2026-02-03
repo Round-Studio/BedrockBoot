@@ -7,16 +7,13 @@ using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
+using Round.SDK.Helper;
 
 namespace BedrockBoot.Models.Pack.Game.Archive;
 
 public class ArchiveCheck
 {
-    public ArchiveCheck()
-    {
-    }
-
-    public ArchiveCheck(VersionConfig versionConfig) : this()
+    public ArchiveCheck(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
     }
@@ -63,6 +60,23 @@ public class ArchiveCheck
         });
 
         return result;
+    }
+
+    public void ImportWorldPack(string pack, string user = "Shared")
+    {
+        if (!pack.EndsWith($".mcworld")) throw new FileNotFoundException(pack);
+
+        var paths = GetInstanceWorldPackPath().ToList();
+        paths.ForEach(path =>
+        {
+            if (path.Key != user && 
+                VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+                return;
+            
+            if (!Directory.Exists(path.Value)) Directory.CreateDirectory(path.Value);
+            var worldPath = Path.Combine(path.Value, $"{Guid.NewGuid().ToString().Replace("-", "")}");
+            ZipHelper.ExtractZipFile(pack, worldPath);
+        });
     }
 
     private Dictionary<string, string> GetInstanceWorldPackPath()

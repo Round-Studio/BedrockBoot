@@ -12,6 +12,13 @@
                             Title="注意"
                             Message="请注意，整合包中的资源包分发需要获得其开发者的允许，否则可能为非法分发"/>
             
+            <StackPanel Orientation="Horizontal"
+                        Opacity="0.5">
+                <TextBlock Text="如果你也想制作与我们启动器相兼容的整合包文件，请参阅："></TextBlock>
+                <HyperlinkButton Content="基岩版整合包规范"
+                                 NavigateUri="https://docs.roundstudio.top/docs/standard/bedrockPack/integrationPackage"></HyperlinkButton>
+            </StackPanel>
+            
             <TextBlock FontSize="17"
                        FontWeight="Bold">
                 整合包信息

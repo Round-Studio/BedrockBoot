@@ -28,9 +28,9 @@ public class SourceList
 
     public static Dictionary<string, string> CurseForgeSource { get; set; } = new()
     {
-        { "CurseForge 官方源", "https://api.curseforge.com/" }
-        /*{ "加速源 ①", "https://blog.zink.dpdns.org/advanced-proxy?url=\"https://api.curseforge.com/{url}\"" },
-        { "MCIM 源", "https://mod.mcimirror.top/curseforge/" }*/
+        { "CurseForge 官方源", "https://api.curseforge.com/" },
+        /*{ "加速源 ①", "https://blog.zink.dpdns.org/advanced-proxy?url=\"https://api.curseforge.com/{url}\"" },*/
+        { "MCIM 源", "https://mod.mcimirror.top/curseforge/" }
     };
 
     public static List<GameDownloadUrlInfo> GameFileDownloadSource { get; set; } = new()

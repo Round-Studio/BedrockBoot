@@ -1,7 +1,8 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.OtherPage;
+using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 

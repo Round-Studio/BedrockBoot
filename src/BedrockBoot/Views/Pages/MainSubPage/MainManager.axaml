@@ -10,16 +10,16 @@
                        x:Class="BedrockBoot.Views.Pages.MainSubPage.MainManager">
     <entry:BedrockBootPage.HeaderView>
         <StackPanel Orientation="Horizontal"
-                    VerticalAlignment="Center">
-            <onePointControls:LineTextBlock Margin="0,0,8,0"
-                                            VerticalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="8">
+            <onePointControls:LineTextBlock VerticalAlignment="Center"
                                             HorizontalAlignment="Left"
                                             FontSize="28"
                                             FontWeight="Bold"
                                             Text="实例管理" />
 
             <Button Padding="12,8"
-                    Margin="0,0,8,0"
+                    Height="32"
                     Name="ImportGameBtn"
                     Click="ImportGameBtn_OnClick">
                 <StackPanel Orientation="Horizontal">
@@ -28,6 +28,17 @@
                     <TextBlock Margin="4,0,0,0">导入游戏</TextBlock>
                     <onePointControls:LabelBox Text="Beta"
                                                Margin="8,0,0,0" />
+                </StackPanel>
+            </Button>
+
+            <Button Padding="12,8"
+                    Height="32"
+                    Name="ImportIntegrationPackBtn"
+                    Click="ImportIntegrationPackBtn_OnClick">
+                <StackPanel Orientation="Horizontal">
+                    <onePointControls:FontIcon Glyph="&#xE838;"
+                                               VerticalAlignment="Center" />
+                    <TextBlock Margin="4,0,0,0">导入整合包</TextBlock>
                 </StackPanel>
             </Button>
         </StackPanel>

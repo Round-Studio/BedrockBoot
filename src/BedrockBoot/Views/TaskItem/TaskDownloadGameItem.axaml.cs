@@ -181,12 +181,22 @@ public partial class TaskDownloadGameItem : UserControl
         });
     }
 
-    public static void Install(BuildInfo info, string url, bool? isUsePack, string dir, string gameName)
+    public static void Install(
+        BuildInfo info, 
+        string url,
+        bool? isUsePack, 
+        string dir,
+        string gameName,
+        Action? installedCallBack = null)
     {
         var body = new TaskDownloadGameItem(info, url, isUsePack, dir, gameName);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
-        body.Install(() => { GlobalModel.TaskManager.RemoveTask(tuid); });
+        body.Install(() =>
+        {
+            GlobalModel.TaskManager.RemoveTask(tuid);
+            installedCallBack?.Invoke();
+        });
     }
     
     // 辅助方法：格式化字节大小

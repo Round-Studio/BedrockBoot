@@ -4,11 +4,13 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Import;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
@@ -383,6 +385,35 @@ public partial class MainManager : BedrockBootPage
             catch (Exception ex)
             {
                 Console.WriteLine($@"刷新实例失败：{ex}");
+            }
+        }
+    }
+
+    private async void ImportIntegrationPackBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "请选择整合包文件",
+            AllowMultiple = false,
+            FileTypeFilter = new []
+            {
+                new FilePickerFileType("基岩版整合包 (*.mcpint)")
+                {
+                    Patterns = new[] { "*.mcpint" }
+                }
+            }
+        });
+
+        if (files != null && files.Count >= 1)
+        {
+            var selectedFile = files[0];
+            var filePath = selectedFile.Path.LocalPath;
+
+            if (File.Exists(filePath))
+            {
+                
             }
         }
     }

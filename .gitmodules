@@ -7,6 +7,3 @@
 [submodule "src/PeNet"]
 	path = src/PeNet
 	url = https://github.com/Round-Studio/PeNet.git
-[submodule "src/LiteSkinViewer"]
-	path = src/LiteSkinViewer
-	url = https://github.com/Round-Studio/LiteSkinViewer.git

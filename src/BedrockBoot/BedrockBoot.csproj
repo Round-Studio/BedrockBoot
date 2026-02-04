@@ -131,5 +131,8 @@
         <Compile Update="Views\DialogContent\DialogChooseGameContent.axaml.cs">
           <DependentUpon>DialogChooseGameContent.axaml</DependentUpon>
         </Compile>
+        <Compile Update="Views\Windows\SubWindows\RecoverFilesWindow.axaml.cs">
+          <DependentUpon>RecoverFilesWindow.axaml</DependentUpon>
+        </Compile>
     </ItemGroup>
 </Project>

@@ -16,7 +16,7 @@ public class ServerManager
         VersionConfig = versionInfo;
 
         var iso = new IsolationCore(versionInfo);
-        iso.Init();
+        iso.Init(true);
     }
 
     public VersionConfig VersionConfig { get; set; }

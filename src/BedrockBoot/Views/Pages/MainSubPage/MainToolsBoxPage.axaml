@@ -20,50 +20,28 @@
 
     <Grid>
         <ScrollViewer>
-            <StackPanel Margin="15">
-                <TextBlock Margin="5,0,5,0"
-                           FontWeight="Bold"
+            <StackPanel Margin="20"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
                            FontSize="14">
                     帮助
                 </TextBlock>
-
-                <WrapPanel Margin="5,10,5,5">
-                    <items:BorderCard Width="240"
-                                      Height="120">
-                        <Grid RowDefinitions="*,Auto">
-                            <Grid Grid.Row="0"
-                                  ColumnDefinitions="Auto,*">
-                                <onePointControls:FontIcon Grid.Column="0"
-                                                           Glyph="&#xECAA;"
-                                                           FontSize="42"
-                                                           Margin="5" />
-
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock Margin="2"
-                                               FontSize="18">
-                                        游戏框架
-                                    </TextBlock>
-
-                                    <TextBlock Margin="2"
-                                               FontSize="11">
-                                        前往 MCAPPX 网站下载游戏框架
-                                    </TextBlock>
-                                </StackPanel>
-                            </Grid>
-
-                            <StackPanel Grid.Row="1"
-                                        HorizontalAlignment="Right"
-                                        Orientation="Horizontal">
-                                <Button Padding="12,8"
-                                        Margin="5"
-                                        Name="OpenGameFrameBtn"
-                                        Click="OpenGameFrameBtn_OnClick">
-                                    转到链接
-                                </Button>
-                            </StackPanel>
-                        </Grid>
-                    </items:BorderCard>
-                </WrapPanel>
+                
+                <onePointControls:SettingCard Header="下载游戏框架"
+                                              Description="前往 MCAPPX 网站下载 Minecraft 游戏运行框架"
+                                              Glyph="&#xECAA;"
+                                              IsClickable="True"
+                                              IsShowActionIcon="False">
+                    <HyperlinkButton Content="打开网页"
+                                     NavigateUri="https://www.mcappx.com/download/mc-framework/"></HyperlinkButton>
+                </onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Header="找回文件"
+                                              Description="用于找回因版本隔离导致的 存档 / 资源包 等文件丢失"
+                                              Glyph="&#xE71E;"
+                                              IsClickable="True"
+                                              Name="FoundLoseFilesBtn"
+                                              Click="FoundLoseFilesBtn_OnClick"/>
             </StackPanel>
         </ScrollViewer>
 

@@ -7,7 +7,7 @@
   "isEnableSettingBackground": true,
   "isEnableSettingColor": true,
   "isEnablePlugin": false,
-  "isEnableToolsBox": false,
+  "isEnableToolsBox": true,
   "isEnableMouseLock": false,
   "isEnableMcPackOpenWithBody": true,
   "isEnableSettingPersonalizationHome": false

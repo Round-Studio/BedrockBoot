@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Models.Global;
+using BedrockBoot.Views.Windows.SubWindows;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
 
@@ -11,12 +13,9 @@ public partial class MainToolsBoxPage : BedrockBootPage
         InitializeComponent();
     }
 
-    private void OpenGameFrameBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void FoundLoseFilesBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = "https://www.mcappx.com/download/mc-framework/",
-            UseShellExecute = true
-        });
+        var rfw = new RecoverFilesWindow();
+        rfw.ShowDialog(GlobalModel.MainWindow);
     }
 }

@@ -1,0 +1,30 @@
+﻿<windowFrame:OnePointWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="BedrockBoot.Views.Windows.SubWindows.RecoverFilesWindow"
+        WindowStartupLocation="CenterOwner"
+        MinHeight="500" MinWidth="840"
+        Height="500" Width="840"
+        CanResize="False"
+        IsMinBtn="False"
+        IsMaxBtn="False"
+        Title="BedrockBoot 找回文件向导">
+    <windowFrame:OnePointWindow.TitleBarContent>
+        <StackPanel Orientation="Horizontal">
+            <onePointControls:LabelBox Text="Beta"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center" />
+        </StackPanel>
+    </windowFrame:OnePointWindow.TitleBarContent>
+    <windowFrame:OnePointWindow.MainContent>
+        <Grid>
+            
+        </Grid>
+    </windowFrame:OnePointWindow.MainContent>
+</windowFrame:OnePointWindow>

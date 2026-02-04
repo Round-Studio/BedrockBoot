@@ -24,10 +24,26 @@ public class IsolationCore
 
     public void Init(bool isForced = false)
     {
+        Clear();
+        
         var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
         if (folderType == DirectoryType.Folder &&
             !isForced)
             throw new Exception("该实例的目标隔离文件需要进行迁移");
+
+        if (Path.Exists(Path.Combine(RealRootPath, "LocalState")))
+        {
+            if (DirectoryLinkChecker.CheckFolderType(Path.Combine(RealRootPath, "LocalState")) ==
+                DirectoryType.SymbolicLink)
+            {
+                Directory.Delete(Path.Combine(RealRootPath, "LocalState"));
+                Directory.CreateDirectory(Path.Combine(RealRootPath, "LocalState"));
+            }
+        }
+        else if(VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+        {
+            Directory.CreateDirectory(Path.Combine(RealRootPath, "LocalState"));
+        }
 
         if (folderType == DirectoryType.SymbolicLink)
             Directory.Delete(RootPath);

@@ -63,7 +63,7 @@
         <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj"/>
         <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj"/>
         <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj"/>
-        <ProjectReference Include="..\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj"/>
+        <ProjectReference Include="..\Round.SDK\Round.SDK.Avalonia\Round.SDK.Avalonia.csproj" />
         <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj"/>
     </ItemGroup>
 

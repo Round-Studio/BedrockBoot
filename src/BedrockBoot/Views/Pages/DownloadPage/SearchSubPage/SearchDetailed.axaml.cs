@@ -157,8 +157,8 @@ public partial class SearchDetailed : ISetting
                             Name = i.ID,
                             Description = $"{i.BuildType}, {i.Date}",
                             IconUri = i.Type == MinecraftGameTypeVersion.Release
-                                ? "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png"
-                                : "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png",
+                                ? "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png"
+                                : "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png",
                             OnClick = s =>
                             {
                                 GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i), $"下载游戏 {i.ID}");

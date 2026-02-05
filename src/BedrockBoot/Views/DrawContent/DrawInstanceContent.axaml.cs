@@ -41,9 +41,9 @@ public partial class DrawInstanceContent : UserControl
     {
         IsEditMode = false;
 
-        var image = "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png";
+        var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
         if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
-            image = "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png";
+            image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
         IconBox.Background = new ImageBrush
         {

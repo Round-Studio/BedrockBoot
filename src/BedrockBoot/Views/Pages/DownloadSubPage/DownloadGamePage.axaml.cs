@@ -207,9 +207,9 @@ public partial class DownloadGamePage : UserControl, IDisposable
             // 在UI线程添加一批项目
             foreach (var x in batch)
             {
-                var image = "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png";
+                var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
                 if (x.Type != MinecraftGameTypeVersion.Release)
-                    image = "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png";
+                    image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
                 var item = new SettingCard
                 {

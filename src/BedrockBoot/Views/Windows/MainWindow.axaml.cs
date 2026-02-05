@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -28,6 +30,8 @@ using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;
 using Round.SDK.Helper;
+using TextBlock = Avalonia.Controls.TextBlock;
+using TextBox = Avalonia.Controls.TextBox;
 
 namespace BedrockBoot.Views.Windows;
 
@@ -325,22 +329,26 @@ public partial class MainWindow : OnePointWindow
     
     private void SetupDynamicHotkey()
     {
-        var ctrlVBinding = new KeyBinding
-        {
-            Gesture = new KeyGesture(Key.V, KeyModifiers.Control)
-        };
-        
-        ctrlVBinding.Command = new RelayCommand(async () =>
-        {
-            await HandlePasteAsync();
-        });
-        
-        this.KeyBindings.Add(ctrlVBinding);
+        this.AddHandler(KeyDownEvent, OnPreviewKeyDown, RoutingStrategies.Tunnel);
     }
 
     private async Task HandlePasteAsync()
     {
         Console.WriteLine("Ctrl+V 被按下");
         CopyService.HandleCopyAction();
+    }
+    
+    private async void OnPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.V && e.KeyModifiers == KeyModifiers.Control)
+        {
+            // 检查事件源是否是输入控件
+            var source = e.Source;
+            if (!(source is TextBox || source is TextBlock || source is RichTextBox))
+            {
+                await HandlePasteAsync();
+                e.Handled = true;
+            }
+        }
     }
 }

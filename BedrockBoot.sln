@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDK", "SDK", "{65075EB2-7D7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Round.SDK", "src\Round.SDK\Round.SDK\Round.SDK.csproj", "{8985A7FB-14ED-44A2-BBD2-AE68E1E2CC29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Round.Avalonia.Assets", "src\Round.SDK\Round.Avalonia.Assets\Round.Avalonia.Assets.csproj", "{424EB186-C257-409A-8AA3-5F8C1C0162B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Round.SDK.Avalonia", "src\Round.SDK\Round.SDK.Avalonia\Round.SDK.Avalonia.csproj", "{424EB186-C257-409A-8AA3-5F8C1C0162B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginTools", "src\Round.SDK\PluginTools\PluginTools.csproj", "{F282AFD6-D55B-4FDD-A9C6-B2FD8AFC9F5A}"
 EndProject

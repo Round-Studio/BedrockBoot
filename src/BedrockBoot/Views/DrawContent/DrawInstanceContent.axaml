@@ -23,7 +23,7 @@
                                 Width="80"
                                 Height="80">
                             <Border.Background>
-                                <ImageBrush Source="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png" />
+                                <ImageBrush Source="avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png" />
                             </Border.Background>
                         </Border>
 

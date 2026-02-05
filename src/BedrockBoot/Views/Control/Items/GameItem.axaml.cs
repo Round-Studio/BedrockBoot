@@ -35,9 +35,9 @@ public partial class GameItem : UserControl
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
 
-        var image = "avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png";
+        var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
         if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
-            image = "avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png";
+            image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
         Card.ImageIcon = GetImage(image);
     }

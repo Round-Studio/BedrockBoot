@@ -48,7 +48,7 @@
                                 <Image Grid.Column="0"
                                        Width="26"
                                        Height="26"
-                                       Source="avares://Round.Avalonia.Assets/Image/Icon/mc_grassblock_neo.png" />
+                                       Source="avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png" />
 
                                 <StackPanel Grid.Column="1"
                                             Margin="5,-1,0,1"
@@ -74,7 +74,7 @@
                                 <Image Grid.Column="0"
                                        Width="26"
                                        Height="26"
-                                       Source="avares://Round.Avalonia.Assets/Image/Icon/mc_soilblock_neo.png" />
+                                       Source="avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png" />
 
                                 <StackPanel Grid.Column="1"
                                             Margin="5,-1,0,1"

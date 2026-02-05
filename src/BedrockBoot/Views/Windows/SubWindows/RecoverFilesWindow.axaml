@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
         xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+        xmlns:recoverFilesPage="clr-namespace:BedrockBoot.Views.Pages.RecoverFilesPage"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BedrockBoot.Views.Windows.SubWindows.RecoverFilesWindow"
         WindowStartupLocation="CenterOwner"
@@ -24,7 +25,7 @@
     </windowFrame:OnePointWindow.TitleBarContent>
     <windowFrame:OnePointWindow.MainContent>
         <Grid>
-            
+            <recoverFilesPage:RecoverFilesRoot />
         </Grid>
     </windowFrame:OnePointWindow.MainContent>
 </windowFrame:OnePointWindow>

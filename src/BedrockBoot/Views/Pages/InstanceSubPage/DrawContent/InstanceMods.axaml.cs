@@ -60,9 +60,10 @@ public partial class InstanceMods : ISetting
         else
             resultMods.ForEach(info =>
             {
-                ResultBox.Children.Add(new GameModItem(info)
+                ResultBox.Children.Add(new GameModItem(info, VersionInfo)
                 {
-                    ModsManager = ModsManager
+                    ModsManager = ModsManager,
+                    UpdateCallBack = UpdateUI
                 });
             });
 

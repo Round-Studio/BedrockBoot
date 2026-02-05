@@ -34,7 +34,7 @@
             </Button>
             <Button Width="32" Height="32"
                     Classes="NoBorder"
-                    IsEnabled="False"
+                    Click="SettingBtn_OnClick"
                     Name="SettingBtn">
                 <onePointControls:FontIcon Glyph="&#xE713;"
                                            FontSize="16" />

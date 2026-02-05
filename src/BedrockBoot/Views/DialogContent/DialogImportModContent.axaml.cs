@@ -12,9 +12,23 @@ public partial class DialogImportModContent : UserControl
         InitializeComponent();
     }
 
-    public string ModFile => PathInputBox.Text;
-    public int ModDelay => (int)InjectionDelay.Value;
-    public bool IsPreLoad => (bool)EnablePreLoad.IsChecked;
+    public string ModFile
+    {
+        get => PathInputBox.Text;
+        set => PathInputBox.Text = value;
+    }
+
+    public int ModDelay
+    {
+        get => (int)InjectionDelay.Value;
+        set => InjectionDelay.Value = value;
+    }
+
+    public bool IsPreLoad
+    {
+        get => EnablePreLoad.IsChecked ?? false;
+        set => EnablePreLoad.IsChecked = value;
+    }
 
     private async void OpenChooseFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {

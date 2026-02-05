@@ -33,6 +33,9 @@ namespace BedrockBoot.Entity
         
         [JsonPropertyName("configInfo")]
         public object ConfigInfo { get; set; }
+        
+        [JsonIgnore]
+        public string FileName { get; set; }
 
         /// <summary>
         /// 创建错误报告
@@ -81,6 +84,7 @@ namespace BedrockBoot.Entity
         {
             var json = ToJson();
             System.IO.File.WriteAllText(filePath, json);
+            FileName = filePath;
         }
     }
 

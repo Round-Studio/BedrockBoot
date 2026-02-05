@@ -39,6 +39,7 @@
                 <onePointControls:SettingCard Header="找回文件"
                                               Description="用于找回因版本隔离导致的 存档 / 资源包 等文件丢失"
                                               Glyph="&#xE71E;"
+                                              IsVisible="False"
                                               IsClickable="True"
                                               Name="FoundLoseFilesBtn"
                                               Click="FoundLoseFilesBtn_OnClick1"/>

@@ -73,7 +73,7 @@ public class App : Application
             var errorReportJson = ErrorReport.Create(GlobalModel.Config.Data, $"错误报告", ex);
             errorReportJson.SaveToFile(Path.Combine(PathsList.ReportPath,
                 DateTime.Now.ToString("yyyyMMddHHmmss") + ".json"));
-            Dispatcher.UIThread.Invoke(() => { new ExceptionWindow(ex.ToString()).Show(); });
+            Dispatcher.UIThread.Invoke(() => { new ExceptionWindow(errorReportJson).Show(); });
         }
         catch (Exception dialogEx)
         {

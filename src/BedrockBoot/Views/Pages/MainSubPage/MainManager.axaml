@@ -15,6 +15,7 @@
             <onePointControls:LineTextBlock VerticalAlignment="Center"
                                             HorizontalAlignment="Left"
                                             FontSize="28"
+                                            Margin="0"
                                             FontWeight="Bold"
                                             Text="实例管理" />
 

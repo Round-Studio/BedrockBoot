@@ -12,6 +12,7 @@
         <navigation:NavigationFrame Grid.Row="0"
                                     Name="HeaderContent"
                                     Margin="20,20,0,0"
+                                    Height="48"
                                     NavigationFrameDirection="Right"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Stretch" />

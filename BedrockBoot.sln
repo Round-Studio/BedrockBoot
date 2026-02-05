@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Round.SDK", "src\Round.SDK\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Round.SDK.Avalonia", "src\Round.SDK\Round.SDK.Avalonia\Round.SDK.Avalonia.csproj", "{424EB186-C257-409A-8AA3-5F8C1C0162B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginTools", "src\Round.SDK\PluginTools\PluginTools.csproj", "{F282AFD6-D55B-4FDD-A9C6-B2FD8AFC9F5A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Round.SDK.PluginTools", "src\Round.SDK\Round.SDK.PluginTools\Round.SDK.PluginTools.csproj", "{F282AFD6-D55B-4FDD-A9C6-B2FD8AFC9F5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.Test", "src\BedrockBoot.Test\BedrockBoot.Test.csproj", "{B6CA8710-242D-4403-8771-74A153A567FA}"
 EndProject

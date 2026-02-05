@@ -23,6 +23,7 @@ public class PathsList
     public static readonly string TempPath = Path.Combine(RootConfigPath, "BedrockBoot.Temp");
     public static readonly string PluginPath = Path.Combine(RootConfigPath, "BedrockBoot.Plugin");
     public static readonly string GamePublicRootPath = Path.Combine(RootConfigPath, "BedrockBoot.GamePublic");
+    public static readonly string ReportPath = Path.Combine(RootConfigPath, "BedrockBoot.ErrorReport");
 
     public static List<OtherLauncherInfo> OtherLauncher = new()
     {

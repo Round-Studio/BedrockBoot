@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
 using BedrockBoot.ViewModels;
@@ -67,7 +69,10 @@ public class App : Application
     {
         try
         {
-            var time = DateTime.Now;
+            if(!Directory.Exists(PathsList.ReportPath)) Directory.CreateDirectory(PathsList.ReportPath);
+            var errorReportJson = ErrorReport.Create(GlobalModel.Config.Data, $"错误报告", ex);
+            errorReportJson.SaveToFile(Path.Combine(PathsList.ReportPath,
+                DateTime.Now.ToString("yyyyMMddHHmmss") + ".json"));
             Dispatcher.UIThread.Invoke(() => { new ExceptionWindow(ex.ToString()).Show(); });
         }
         catch (Exception dialogEx)

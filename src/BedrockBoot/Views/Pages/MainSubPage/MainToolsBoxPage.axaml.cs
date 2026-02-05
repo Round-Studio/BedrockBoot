@@ -18,4 +18,9 @@ public partial class MainToolsBoxPage : BedrockBootPage
         var rfw = new RecoverFilesWindow();
         rfw.ShowDialog(GlobalModel.MainWindow);
     }
+
+    private void FoundLoseFilesBtn_OnClick1(object? sender, RoutedEventArgs e)
+    {
+        throw new System.NotImplementedException();
+    }
 }

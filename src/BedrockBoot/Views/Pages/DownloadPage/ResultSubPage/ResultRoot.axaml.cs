@@ -10,6 +10,7 @@ using BedrockBoot.Base.Enum;
 using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Service;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
@@ -68,6 +69,9 @@ public partial class ResultRoot : UserControl
             IconBox.Source = icon;
             IconFont.IsVisible = false;
         }
+
+        var dInfo = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
+            .GetModDetailsAsync(SearchResultItemInfo.Id);
     }
 
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)

@@ -8,6 +8,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Octokit" Version="14.0.0" />
     </ItemGroup>
 
 </Project>

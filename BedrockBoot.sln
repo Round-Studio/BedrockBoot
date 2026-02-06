@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.LeviLamina", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.Base", "src\BedrockBoot.Base\BedrockBoot.Base.csproj", "{38D0574A-A6F5-412C-A4B6-1692CDC7FCF9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.Core", "src\BedrockBoot.Core\BedrockBoot.Core.csproj", "{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,14 @@ Global
 		{38D0574A-A6F5-412C-A4B6-1692CDC7FCF9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38D0574A-A6F5-412C-A4B6-1692CDC7FCF9}.Release|x86.ActiveCfg = Release|Any CPU
 		{38D0574A-A6F5-412C-A4B6-1692CDC7FCF9}.Release|x86.Build.0 = Release|Any CPU
+		{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}.Debug|x86.Build.0 = Debug|Any CPU
+		{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}.Release|x86.ActiveCfg = Release|Any CPU
+		{6E6BC221-63EE-4BDF-9475-9DE3EE84C0FE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

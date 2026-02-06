@@ -1,4 +1,4 @@
-﻿using BedrockBoot.Base.Models;
+﻿using BedrockBoot.Core.Models;
 using BedrockBoot.LeviLamina.Base.Entry.Manifest;
 using BedrockBoot.LeviLamina.Global;
 

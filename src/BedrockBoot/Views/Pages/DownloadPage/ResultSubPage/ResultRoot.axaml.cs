@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -70,8 +71,35 @@ public partial class ResultRoot : UserControl
             IconFont.IsVisible = false;
         }
 
-        var description = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
-            .GetModDescriptionAsync(SearchResultItemInfo.Id);
+        try
+        {
+            var description = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
+                .GetModDescriptionAsync(SearchResultItemInfo.Id);
+
+            if (!string.IsNullOrEmpty(description))
+            {
+                DescriptionCard.IsVisible = true;
+                DescriptionContent.Children.Clear();
+
+                var controls = HtmlToControlConverter.ConvertHtmlToControls(description);
+                foreach (var control in controls)
+                {
+                    DescriptionContent.Children.Add(control);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // 出错时显示错误信息
+            DescriptionCard.IsVisible = true;
+            DescriptionContent.Children.Clear();
+            DescriptionContent.Children.Add(new TextBlock
+            {
+                Text = $"加载描述时出错: {ex.Message}",
+                TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                Foreground = Avalonia.Media.Brushes.Red
+            });
+        }
     }
 
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)

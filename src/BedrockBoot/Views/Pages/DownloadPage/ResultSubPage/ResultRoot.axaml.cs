@@ -70,8 +70,8 @@ public partial class ResultRoot : UserControl
             IconFont.IsVisible = false;
         }
 
-        var dInfo = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
-            .GetModDetailsAsync(SearchResultItemInfo.Id);
+        var description = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
+            .GetModDescriptionAsync(SearchResultItemInfo.Id);
     }
 
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)

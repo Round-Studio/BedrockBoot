@@ -85,18 +85,8 @@
                         SelectionChanged="InstanceTabControl_OnSelectionChanged"
                         Margin="5,0,10,0">
                 <TabItem Header="实例详情" Tag="Info" />
-                <TabItem Tag="Mods" Name="GameModes">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="4">
-                            <TextBlock>模组管理</TextBlock>
-                            <onePointControls:LabelBox Text="Beta"
-                                                       VerticalAlignment="Center"
-                                                       FontWeight="Normal" />
-                        </StackPanel>
-                    </TabItem.Header>
-                </TabItem>
-                <TabItem Header="资源包 / 行为包" Tag="Pack" />
+                <TabItem Header="模组管理" Tag="Mods" />
+                <TabItem Header="资源 / 行为包" Tag="Pack" />
                 <TabItem Header="存档" Tag="Save" />
                 <TabItem Header="截图" Tag="Screenshots" />
                 <TabItem Header="服务器" Tag="Server" />

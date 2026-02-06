@@ -12,12 +12,12 @@ public class Program
     {
         var llInstaller = new LeviLaminaInstaller(new VersionConfig()
         {
-            VersionPath = @"D:\BedrockBoot\bedrock_versions\1.21.13201"
+            VersionPath = @"D:\BedrockBoot\bedrock_versions\1.21.13101"
         });
         llInstaller.Progress = new Progress<InstallerProgress>((p) =>
         {
             Console.WriteLine($"{p.Message} - {p.Status} - {p.Progress:F2} %");
         });
-        await llInstaller.InstallLeviLamina("1.9.3");
+        await llInstaller.InstallLeviLamina("1.9.4");
     }
 }

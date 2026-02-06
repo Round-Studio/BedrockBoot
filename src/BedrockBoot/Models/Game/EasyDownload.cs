@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Models.Download;
+using BedrockBoot.Base.Models.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;

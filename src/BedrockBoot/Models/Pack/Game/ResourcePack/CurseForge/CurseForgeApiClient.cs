@@ -504,4 +504,75 @@ public class CurseForgeApiClient
         // 如果重试后仍然失败，抛出异常
         throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
+
+    /// <summary>
+    ///     获取指定 modId 的 Markdown 格式描述
+    /// </summary>
+    /// <param name="modId">模组ID</param>
+    /// <returns>模组的 Markdown 描述内容</returns>
+    public async Task<string> GetModDescriptionAsync(int modId)
+    {
+        var retryCount = 0;
+        const int maxRetries = 3;
+
+        while (retryCount <= maxRetries)
+            try
+            {
+                var url = $"v1/mods/{modId}/description";
+
+                // 创建请求
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("x-api-key", _apiKey);
+
+                var response = await _sharedHttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    WriteIndented = false,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var descriptionResponse = JsonSerializer.Deserialize<CurseForgeResponse.ModDescriptionResponse>(json, options);
+                return descriptionResponse?.Data ?? string.Empty;
+            }
+            catch (HttpRequestException ex) when (retryCount < maxRetries &&
+                                                  (ex.Message.Contains("SSL connection could not be established") ||
+                                                   ex.Message.Contains("remote host closed") ||
+                                                   ex.Message.Contains("Connection was closed")))
+            {
+                retryCount++;
+                Console.WriteLine($@"获取模组描述错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+
+                // 如果是SSL连接问题，重新初始化HttpClient
+                if (ex.Message.Contains("SSL connection could not be established"))
+                    ReinitializeHttpClient();
+
+                // 等待一段时间后重试
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($@"获取模组描述错误: {ex.Message}");
+                if (ex.InnerException != null)
+                    Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($@"JSON解析错误: {ex.Message}");
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($@"请求超时: {ex.Message}");
+                throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
+            }
+
+        // 如果重试后仍然失败，抛出异常
+        throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
+    }
 }

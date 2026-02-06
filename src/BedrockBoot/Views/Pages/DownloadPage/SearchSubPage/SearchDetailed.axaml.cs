@@ -185,6 +185,7 @@ public partial class SearchDetailed : ISetting
                         var item = new SearchResultItemInfo
                         {
                             Name = i.Name,
+                            Id = i.Id,
                             Description = $"{i.Summary}",
                             DateUpdated = i.DateReleased,
                             DateCreated = i.DateCreated,

@@ -1,120 +1,124 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
-             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.ResultRoot">
+﻿<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.ResultRoot"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
         <ScrollViewer Margin="5,0">
-            <StackPanel Margin="15,15,15,0"
-                        Spacing="10">
+            <StackPanel Margin="15,15,15,0" Spacing="10">
                 <items:BorderCard Padding="12">
                     <Grid ColumnDefinitions="Auto,*,Auto">
-                        <items:BorderCard Grid.Column="0"
-                                          VerticalAlignment="Top"
-                                          Padding="0"
-                                          Width="90"
-                                          Height="90">
+                        <items:BorderCard
+                            Grid.Column="0"
+                            Height="90"
+                            Padding="0"
+                            VerticalAlignment="Top"
+                            Width="90">
                             <Grid>
-                                <onePointControls:FontIcon Glyph="&#xE91B;"
-                                                           Name="IconFont"
-                                                           FontSize="48"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center" />
+                                <onePointControls:FontIcon
+                                    FontSize="48"
+                                    Glyph="&#xE91B;"
+                                    HorizontalAlignment="Center"
+                                    Name="IconFont"
+                                    VerticalAlignment="Center" />
 
-                                <Image Name="IconBox"
-                                       Width="90"
-                                       Height="90" />
+                                <Image
+                                    Height="90"
+                                    Name="IconBox"
+                                    Width="90" />
                             </Grid>
                         </items:BorderCard>
 
-                        <StackPanel Grid.Column="1"
-                                    Margin="20,-2,20,0">
-                            <TextBlock FontSize="24"
-                                       FontWeight="Bold"
-                                       Name="ResourceName"
-                                       Text="Resource" />
+                        <StackPanel Grid.Column="1" Margin="20,-2,20,0">
+                            <TextBlock
+                                FontSize="24"
+                                FontWeight="Bold"
+                                Name="ResourceName"
+                                Text="Resource" />
 
-                            <HyperlinkButton Content="在 CurseForge 上查看此资源"
-                                             Name="HyperlinkButton"
-                                             FontSize="9"
-                                             Margin="0,4,0,0" />
+                            <HyperlinkButton
+                                Content="在 CurseForge 上查看此资源"
+                                FontSize="9"
+                                Margin="0,4,0,0"
+                                Name="HyperlinkButton" />
 
-                            <StackPanel Orientation="Horizontal"
-                                        VerticalAlignment="Center"
-                                        Margin="0,6,0,0"
-                                        Spacing="8">
+                            <StackPanel
+                                Margin="0,6,0,0"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                VerticalAlignment="Center">
                                 <StackPanel Spacing="2">
-                                    <onePointControls:FontIcon Glyph="&#xE896;"
-                                                               Opacity="0.5" />
-                                    <TextBlock Text="114514"
-                                               Name="DownloadCountText" />
+                                    <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" />
+                                    <TextBlock Name="DownloadCountText" Text="114514" />
                                 </StackPanel>
 
-                                <Border Height="24"
-                                        Width="1"
-                                        Background="Gray" />
+                                <Border
+                                    Background="Gray"
+                                    Height="24"
+                                    Width="1" />
 
                                 <StackPanel Spacing="2">
-                                    <onePointControls:FontIcon Glyph="&#xE823;"
-                                                               Opacity="0.5" />
-                                    <TextBlock Text="1 天前"
-                                               Name="UpdataDateText" />
+                                    <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" />
+                                    <TextBlock Name="UpdataDateText" Text="1 天前" />
                                 </StackPanel>
 
-                                <Border Height="24"
-                                        Width="1"
-                                        Background="Gray" />
+                                <Border
+                                    Background="Gray"
+                                    Height="24"
+                                    Width="1" />
 
                                 <StackPanel Spacing="2">
-                                    <onePointControls:FontIcon Glyph="&#xE716;"
-                                                               Opacity="0.5" />
-                                    <TextBlock Text="By xxx"
-                                               Name="AuthorText" />
+                                    <onePointControls:FontIcon Glyph="&#xE716;" Opacity="0.5" />
+                                    <TextBlock Name="AuthorText" Text="By xxx" />
                                 </StackPanel>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,6,0,0"
-                                        Name="LabelsBox"
-                                        Spacing="4">
+                            <StackPanel
+                                Margin="0,6,0,0"
+                                Name="LabelsBox"
+                                Orientation="Horizontal"
+                                Spacing="4">
                                 <onePointControls:LabelBox Text="Label" />
                             </StackPanel>
 
-                            <TextBlock Text="Description"
-                                       Name="DescriptionText"
-                                       TextWrapping="WrapWithOverflow"
-                                       Margin="0,4,0,0" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                Name="DescriptionText"
+                                Text="Description"
+                                TextWrapping="WrapWithOverflow" />
                         </StackPanel>
 
-                        <StackPanel Grid.Column="2"
-                                    Margin="0"
-                                    Spacing="8">
-                            <Button Width="130"
-                                    Height="32"
-                                    Name="GetResourceBtn"
-                                    Click="GetResourceBtn_OnClick"
-                                    Classes="NoBorder"
-                                    Background="{DynamicResource AccentBackgroundBrush}">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="8">
-                                    <onePointControls:FontIcon Glyph="&#xE896;"
-                                                               VerticalAlignment="Center" />
+                        <StackPanel
+                            Grid.Column="2"
+                            Margin="0"
+                            Spacing="8">
+                            <Button
+                                Background="{DynamicResource AccentBackgroundBrush}"
+                                Classes="NoBorder"
+                                Click="GetResourceBtn_OnClick"
+                                Height="32"
+                                Name="GetResourceBtn"
+                                Width="130">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xE896;" VerticalAlignment="Center" />
                                     <TextBlock Text="获取资源" />
                                 </StackPanel>
                             </Button>
 
-                            <Button Width="130"
-                                    Height="32"
-                                    Name="CopyName"
-                                    Click="CopyName_OnClick"
-                                    Classes="NoBorder">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="8">
-                                    <onePointControls:FontIcon Glyph="&#xE8C8;"
-                                                               VerticalAlignment="Center" />
+                            <Button
+                                Classes="NoBorder"
+                                Click="CopyName_OnClick"
+                                Height="32"
+                                Name="CopyName"
+                                Width="130">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xE8C8;" VerticalAlignment="Center" />
                                     <TextBlock Text="分享资源" />
                                 </StackPanel>
                             </Button>
@@ -122,29 +126,60 @@
                     </Grid>
                 </items:BorderCard>
 
-                <items:BorderCard Padding="12"
-                                  Name="PreviewCard"
-                                  IsVisible="False">
+                <items:BorderCard
+                    IsVisible="False"
+                    Name="DescriptionCard"
+                    Padding="12">
                     <Grid RowDefinitions="Auto,Auto,*">
-                        <TextBlock Grid.Row="0"
-                                   Text="预览"
-                                   FontSize="16"
-                                   Opacity="0.7" />
+                        <TextBlock
+                            FontSize="16"
+                            Grid.Row="0"
+                            Opacity="0.7"
+                            Text="详细介绍" />
 
-                        <Border Grid.Row="1"
-                                Margin="0,5,0,0"
-                                HorizontalAlignment="Stretch"
-                                Height="1"
-                                Background="Gray" />
+                        <Border
+                            Background="Gray"
+                            Grid.Row="1"
+                            Height="1"
+                            HorizontalAlignment="Stretch"
+                            Margin="0,5,0,0" />
 
-                        <Grid Grid.Row="2"
-                              Margin="0,8,0,0"
-                              Height="160">
-                            <ScrollViewer VerticalScrollBarVisibility="Disabled"
-                                          HorizontalScrollBarVisibility="Auto">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="8"
-                                            Name="PreviewList" />
+                        <ScrollViewer
+                            Grid.Row="2"
+                            Margin="0,8,0,0"
+                            MaxHeight="600">
+                            <StackPanel Name="DescriptionContent" Spacing="8" />
+                        </ScrollViewer>
+                    </Grid>
+                </items:BorderCard>
+
+                <items:BorderCard
+                    IsVisible="False"
+                    Name="PreviewCard"
+                    Padding="12">
+                    <Grid RowDefinitions="Auto,Auto,*">
+                        <TextBlock
+                            FontSize="16"
+                            Grid.Row="0"
+                            Opacity="0.7"
+                            Text="预览" />
+
+                        <Border
+                            Background="Gray"
+                            Grid.Row="1"
+                            Height="1"
+                            HorizontalAlignment="Stretch"
+                            Margin="0,5,0,0" />
+
+                        <Grid
+                            Grid.Row="2"
+                            Height="160"
+                            Margin="0,8,0,0">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                <StackPanel
+                                    Name="PreviewList"
+                                    Orientation="Horizontal"
+                                    Spacing="8" />
                             </ScrollViewer>
                         </Grid>
                     </Grid>

@@ -12,6 +12,7 @@ public class SearchResultItemInfo
     public DateTime DateUpdated { get; set; }
     public DateTime DateCreated { get; set; }
     public uint DownloadCount { get; set; } = 0;
+    public int Id { get; set; } 
     public List<string> Labels { get; set; } = new();
     public Type DataType { get; set; }
     public string JsonData { get; set; } = string.Empty;

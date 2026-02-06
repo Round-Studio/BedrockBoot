@@ -55,7 +55,7 @@ public class LeviLaminaInstaller
         if (!Path.Exists(PathList.LeviLaminaCacheFolder)) Directory.CreateDirectory(PathList.LeviLaminaCacheFolder);
 
         Console.WriteLine(sourceUrl);
-        var downloader = new SingleThreadDownloader();
+        var downloader = new GithubFilesDownload();
         await downloader.DownloadAsync(sourceUrl, path, new Progress<DownloadProgress>(p =>
         {
             Progress.Report(new()
@@ -99,7 +99,7 @@ public class LeviLaminaInstaller
                 try
                 {
                     // 下载文件
-                    await new MultiThreadDownloader().DownloadAsync(dep.Value, depPath,
+                    await new GithubFilesDownload().DownloadAsync(dep.Value, depPath,
                         new Progress<DownloadProgress>(p =>
                         {
                             Progress.Report(new()

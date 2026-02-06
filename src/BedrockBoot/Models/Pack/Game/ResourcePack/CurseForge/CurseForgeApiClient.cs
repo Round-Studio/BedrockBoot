@@ -518,13 +518,45 @@ public class CurseForgeApiClient
         while (retryCount <= maxRetries)
             try
             {
+                var handler = new SocketsHttpHandler
+                {
+                    // 配置SSL/TLS选项
+                    SslOptions = new SslClientAuthenticationOptions
+                    {
+                        // 启用所有TLS版本，让服务器选择
+                        EnabledSslProtocols = SslProtocols.Tls12 |
+                                              SslProtocols.Tls13 |
+                                              SslProtocols.Tls11 |
+                                              SslProtocols.Tls
+                    },
+                    ConnectTimeout = TimeSpan.FromSeconds(30),
+                    PooledConnectionLifetime = TimeSpan.FromMinutes(2), // 缩短连接生命周期
+                    MaxConnectionsPerServer = 5, // 限制每个服务器的连接数
+                    UseProxy = true,
+                    AllowAutoRedirect = true,
+                    MaxAutomaticRedirections = 3
+                };
+
+                var sharedHttpClient = new HttpClient(handler)
+                {
+                    Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
+                    BaseAddress =
+                        new Uri(SourceList.CurseForgeSource.Values.ToList()[0]),
+                    DefaultRequestVersion = HttpVersion.Version20
+                };
+
+                // 设置默认请求头
+                sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"BedrockBoot/{GlobalModel.BodyVersion}");
+                sharedHttpClient.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+                
                 var url = $"v1/mods/{modId}/description";
 
                 // 创建请求
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("x-api-key", _apiKey);
 
-                var response = await _sharedHttpClient.SendAsync(request);
+                var response = await sharedHttpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();

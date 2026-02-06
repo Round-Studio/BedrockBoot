@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -10,6 +11,7 @@ using BedrockBoot.Base.Enum;
 using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Service;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
@@ -67,6 +69,36 @@ public partial class ResultRoot : UserControl
         {
             IconBox.Source = icon;
             IconFont.IsVisible = false;
+        }
+
+        try
+        {
+            var description = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
+                .GetModDescriptionAsync(SearchResultItemInfo.Id);
+
+            if (!string.IsNullOrEmpty(description))
+            {
+                DescriptionCard.IsVisible = true;
+                DescriptionContent.Children.Clear();
+
+                var controls = HtmlToControlConverter.ConvertHtmlToControls(description);
+                foreach (var control in controls)
+                {
+                    DescriptionContent.Children.Add(control);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // 出错时显示错误信息
+            DescriptionCard.IsVisible = true;
+            DescriptionContent.Children.Clear();
+            DescriptionContent.Children.Add(new TextBlock
+            {
+                Text = $"加载描述时出错: {ex.Message}",
+                TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                Foreground = Avalonia.Media.Brushes.Red
+            });
         }
     }
 

@@ -346,4 +346,10 @@ public class CurseForgeResponse
     {
         [JsonPropertyName("data")] public ModData Data { get; set; }
     }
+
+    // 模组描述响应类
+    public class ModDescriptionResponse
+    {
+        [JsonPropertyName("data")] public string Data { get; set; }
+    }
 }

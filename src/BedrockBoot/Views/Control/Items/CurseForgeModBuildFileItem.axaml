@@ -8,7 +8,7 @@
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
                                   Margin="5,0"
-                                  Glyph="&#xE734;"
+                                  Glyph="&#xE7C3;"
                                   Description="信息"
                                   IsShowActionIcon="False"
                                   Header="Name">

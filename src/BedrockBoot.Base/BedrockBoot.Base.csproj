@@ -12,9 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
-      <ProjectReference Include="..\src\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
-      <ProjectReference Include="..\src\Round.SDK\Round.SDK\Round.SDK.csproj" />
+      <ProjectReference Include="../BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
+      <ProjectReference Include="../BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
+      <ProjectReference Include="../Round.SDK\Round.SDK\Round.SDK.csproj" />
     </ItemGroup>
 
 </Project>

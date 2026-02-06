@@ -8,4 +8,7 @@ public class PathList
     public readonly static string LeviLaminaTempFolder = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RoundStudio",
         "BedrockBoot2", "BedrockBoot.LeviLamina", "Temp");
+    public readonly static string LeviLaminaCacheFolder = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RoundStudio",
+        "BedrockBoot2", "BedrockBoot.LeviLamina", "Cache");
 }

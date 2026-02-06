@@ -2,6 +2,7 @@
 
 public enum DependenciesType
 {
+    LeviLamina,
     CrashLogger,
     PreLoader,
     BedrockRtd

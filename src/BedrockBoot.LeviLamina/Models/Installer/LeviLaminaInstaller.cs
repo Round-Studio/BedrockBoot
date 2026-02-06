@@ -1,4 +1,5 @@
 ﻿using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.LeviLamina.Base.Entry.Manifest;
@@ -51,9 +52,10 @@ public class LeviLaminaInstaller
         var path = Path.Combine(PathList.LeviLaminaSourceFolder, $"{lmaVersion}.zip");
 
         if (!Path.Exists(PathList.LeviLaminaSourceFolder)) Directory.CreateDirectory(PathList.LeviLaminaSourceFolder);
+        if (!Path.Exists(PathList.LeviLaminaCacheFolder)) Directory.CreateDirectory(PathList.LeviLaminaCacheFolder);
 
         Console.WriteLine(sourceUrl);
-        var downloader = new MultiThreadDownloader();
+        var downloader = new SingleThreadDownloader();
         await downloader.DownloadAsync(sourceUrl, path, new Progress<DownloadProgress>(p =>
         {
             Progress.Report(new()
@@ -84,6 +86,117 @@ public class LeviLaminaInstaller
         allUrls.ForEach(Console.WriteLine);
         var deps = await GetDependenceDownloadUrlsAsync(depInfo);
         deps.ToList().ForEach((d) => Console.WriteLine($"{d.Key} {d.Value}"));
+        allUrls.ForEach(x => deps.Add(DependenciesType.LeviLamina, x));
+
+        var tasks = new List<Task>();
+        deps.ToList().ForEach(dep =>
+        {
+            var depPath = Path.Combine(PathList.LeviLaminaCacheFolder, GetCleanFileNameFromUri(dep.Value));
+
+            // 创建包含后续操作的任务
+            var task = Task.Run(async () =>
+            {
+                try
+                {
+                    // 下载文件
+                    await new MultiThreadDownloader().DownloadAsync(dep.Value, depPath,
+                        new Progress<DownloadProgress>(p =>
+                        {
+                            Progress.Report(new()
+                            {
+                                Message = "下载组件",
+                                Status = dep.Key switch
+                                {
+                                    DependenciesType.LeviLamina => InstallerStatus.DownloadLeviLamina,
+                                    DependenciesType.CrashLogger => InstallerStatus.DownloadCrashLogger,
+                                    DependenciesType.BedrockRtd => InstallerStatus.DownloadBedrockRtd,
+                                    DependenciesType.PreLoader => InstallerStatus.DownloadPreLoader
+                                },
+                                Progress = p.ProgressPercentage
+                            });
+                        }));
+
+                    Console.WriteLine($"{dep.Key} 下载完成: {Path.GetFileName(depPath)}");
+
+                    if (!Directory.Exists(Path.Combine(VersionInfo.VersionPath, "mods", "LeviLamina")))
+                        Directory.CreateDirectory(Path.Combine(VersionInfo.VersionPath, "mods", "LeviLamina"));
+
+                    // 根据不同类型执行不同操作
+                    switch (dep.Key)
+                    {
+                        case DependenciesType.LeviLamina:
+                            ZipHelper.ExtractZipFile(depPath,
+                                Path.Combine(VersionInfo.VersionPath, "mods"),true);
+                            // LeviLamina 特定操作
+                            Console.WriteLine("LeviLamina 安装完成");
+                            break;
+
+                        case DependenciesType.CrashLogger:
+                            ZipHelper.ExtractZipFile(depPath,
+                                Path.Combine(VersionInfo.VersionPath, "mods", "LeviLamina"),true);
+                            // CrashLogger 特定操作
+                            Console.WriteLine("CrashLogger 安装完成");
+                            break;
+
+                        case DependenciesType.BedrockRtd:
+                            ZipHelper.ExtractZipFile(depPath, VersionInfo.VersionPath, true);
+                            // BedrockRTD 特定操作
+                            Console.WriteLine("BedrockRTD 安装完成");
+                            break;
+
+                        case DependenciesType.PreLoader:
+                            var file = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
+                                "PreLoader.dll");
+                            if(File.Exists(file)) File.Delete(file);
+                            var conf = new ConfigEntity<List<ModInfo>>(Path.Combine(VersionInfo.VersionPath, "config",
+                                "BedrockBoot2", "mods.json"));
+                            conf.Data.Add(new ModInfo()
+                            {
+                                File = file,
+                                IsPreLoad = true,
+                                InjectDelay = 0
+                            });
+                            conf.Save();
+
+                            var tmpPath = Path.Combine(PathList.LeviLaminaTempFolder,
+                                $"preload_{Guid.NewGuid().ToString().Replace("-", "")}");
+                            ZipHelper.ExtractZipFile(depPath, tmpPath);
+                            var bodyFile = Path.Combine(tmpPath, "bin", "PreLoader.dll");
+                            File.Move(bodyFile, file);
+                            
+                            // PreLoader 特定操作
+                            Console.WriteLine("PreLoader 安装完成");
+                            break;
+                    }
+
+                    // 更新进度
+                    Progress.Report(new()
+                    {
+                        Message = $"{dep.Key} 处理完成",
+                        Status = InstallerStatus.Processed,
+                        Progress = 100
+                    });
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{dep.Key} 处理失败: {ex.Message}");
+                    throw;
+                }
+            });
+
+            tasks.Add(task);
+        });
+
+        Task.WaitAll(tasks.ToArray());
+
+        Console.WriteLine("所有组件下载并处理完成");
+        Progress.Report(new()
+        {
+            Message = "准备下一步安装",
+            Status = InstallerStatus.Complete,
+            Progress = 100
+        });
     }
 
     private async Task<Dictionary<DependenciesType, string>> GetDependenceDownloadUrlsAsync(
@@ -177,5 +290,28 @@ public class LeviLaminaInstaller
         {
             Console.WriteLine($"处理依赖 {repName} 失败: {ex.Message}");
         }
+    }
+    private string GetCleanFileNameFromUri(string uriString)
+    {
+        Uri uri = new Uri(uriString);
+    
+        // 获取路径部分
+        string path = uri.AbsolutePath;
+    
+        // 获取文件名（包含扩展名）
+        string fileName = Path.GetFileName(path);
+    
+        // 如果没有文件名（例如以斜杠结尾）
+        if (string.IsNullOrEmpty(fileName))
+        {
+            // 尝试从最后一个非空段获取
+            var segments = uri.Segments.Where(s => !string.IsNullOrWhiteSpace(s));
+            if (segments.Any())
+            {
+                fileName = segments.Last().TrimEnd('/');
+            }
+        }
+    
+        return fileName;
     }
 }

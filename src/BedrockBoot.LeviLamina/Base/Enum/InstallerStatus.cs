@@ -3,4 +3,10 @@
 public enum InstallerStatus
 {
     DownloadSource,
+    DownloadLeviLamina,
+    DownloadCrashLogger,
+    DownloadPreLoader,
+    DownloadBedrockRtd,
+    Processed,
+    Complete
 }

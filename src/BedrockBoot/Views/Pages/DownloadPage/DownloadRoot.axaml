@@ -1,13 +1,13 @@
-﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+﻿<entry1:BedrockBootPage xmlns="https://github.com/avaloniaui"
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
                        xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
-                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                       xmlns:entry1="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
                        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                        x:Class="BedrockBoot.Views.Pages.DownloadPage.DownloadRoot">
-    <entry:BedrockBootPage.HeaderView>
+    <entry1:BedrockBootPage.HeaderView>
         <StackPanel Orientation="Horizontal"
                     Spacing="8">
             <onePointControls:LineTextBlock
@@ -34,9 +34,9 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-    </entry:BedrockBootPage.HeaderView>
+    </entry1:BedrockBootPage.HeaderView>
     <Grid>
         <navigation:NavigationFrame Name="MainFrame"
                                     HorizontalAlignment="Stretch" />
     </Grid>
-</entry:BedrockBootPage>
+</entry1:BedrockBootPage>

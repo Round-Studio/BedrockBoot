@@ -3,7 +3,7 @@
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:breadcrumb="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.Breadcrumb;assembly=OnePointUI.Avalonia"
-                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry"
+                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
                        xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
                        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                        x:Class="BedrockBoot.Views.Pages.MainSubPage.MainSettingPage">

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Avalonia" Version="11.3.11" />
+      <PackageReference Include="BedrockLauncher.Core" Version="2.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\src\BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
+      <ProjectReference Include="..\src\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
+      <ProjectReference Include="..\src\Round.SDK\Round.SDK\Round.SDK.csproj" />
+    </ItemGroup>
+
+</Project>

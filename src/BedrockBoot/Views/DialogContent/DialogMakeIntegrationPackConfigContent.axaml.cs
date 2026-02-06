@@ -26,8 +26,7 @@ public partial class DialogMakeIntegrationPackConfigContent : UserControl
             IsEnableBehaviorPack = (bool)EnableBehaviorPack.IsChecked!,
             IsEnableDllFile = (bool)EnableDllMods.IsChecked!,
             IsEnableResourcePack = (bool)EnableResourcePack.IsChecked!
-        },
-        PackIconFile = (string.IsNullOrEmpty(PackIcon.Text) ? string.Empty : PackName.Text)!
+        }
     };
     public DialogMakeIntegrationPackConfigContent()
     {

@@ -42,7 +42,7 @@
             <TextBox Watermark="0.0.0.1"
                      Name="PackVersion"></TextBox>
             
-            <TextBlock Opacity="0.7">
+            <!--<TextBlock Opacity="0.7">
                 整合包图标（可为空）：
             </TextBlock>
             <DockPanel LastChildFill="True">
@@ -52,7 +52,7 @@
                         Margin="8,0,0,0"></Button>
                 <TextBox DockPanel.Dock="Left"
                          Name="PackIcon"></TextBox>
-            </DockPanel>
+            </DockPanel>-->
             
             <TextBlock FontSize="17"
                        FontWeight="Bold">

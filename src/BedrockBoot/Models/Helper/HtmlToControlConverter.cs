@@ -12,7 +12,7 @@ namespace BedrockBoot.Models.Helper;
 
 public class HtmlToControlConverter
 {
-    private const int MaxImageWidth = 800;
+    private const int MaxImageWidth = 400;
 
     public static List<Avalonia.Controls.Control> ConvertHtmlToControls(string html)
     {

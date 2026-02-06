@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Progress;
 
-namespace BedrockBoot.Base.Models.Download;
+namespace BedrockBoot.Core.Models.Download;
 
 public class SingleThreadDownloader : IDisposable
 {

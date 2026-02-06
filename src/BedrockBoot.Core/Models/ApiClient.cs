@@ -9,7 +9,7 @@ using System.Net;
 using System.IO;
 using System.Linq;
 
-namespace BedrockBoot.Base.Models
+namespace BedrockBoot.Core.Models
 {
     /// <summary>
     /// API客户端配置

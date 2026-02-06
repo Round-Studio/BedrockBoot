@@ -10,8 +10,8 @@
     xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
-        <ScrollViewer Margin="5,0">
-            <StackPanel Margin="15,15,15,0" Spacing="10">
+        <ScrollViewer Margin="5,15">
+            <StackPanel Margin="15,0,15,0" Spacing="10">
                 <items:BorderCard Padding="12">
                     <Grid ColumnDefinitions="Auto,*,Auto">
                         <items:BorderCard
@@ -128,33 +128,6 @@
 
                 <items:BorderCard
                     IsVisible="False"
-                    Name="DescriptionCard"
-                    Padding="12">
-                    <Grid RowDefinitions="Auto,Auto,*">
-                        <TextBlock
-                            FontSize="16"
-                            Grid.Row="0"
-                            Opacity="0.7"
-                            Text="详细介绍" />
-
-                        <Border
-                            Background="Gray"
-                            Grid.Row="1"
-                            Height="1"
-                            HorizontalAlignment="Stretch"
-                            Margin="0,5,0,0" />
-
-                        <ScrollViewer
-                            Grid.Row="2"
-                            Margin="0,8,0,0"
-                            MaxHeight="600">
-                            <StackPanel Name="DescriptionContent" Spacing="8" />
-                        </ScrollViewer>
-                    </Grid>
-                </items:BorderCard>
-
-                <items:BorderCard
-                    IsVisible="False"
                     Name="PreviewCard"
                     Padding="12">
                     <Grid RowDefinitions="Auto,Auto,*">
@@ -182,6 +155,32 @@
                                     Spacing="8" />
                             </ScrollViewer>
                         </Grid>
+                    </Grid>
+                </items:BorderCard>
+
+                <items:BorderCard
+                    IsVisible="False"
+                    Name="DescriptionCard"
+                    Padding="12">
+                    <Grid RowDefinitions="Auto,Auto,*">
+                        <TextBlock
+                            FontSize="16"
+                            Grid.Row="0"
+                            Opacity="0.7"
+                            Text="详细介绍" />
+
+                        <Border
+                            Background="Gray"
+                            Grid.Row="1"
+                            Height="1"
+                            HorizontalAlignment="Stretch"
+                            Margin="0,5,0,0" />
+
+                        <ScrollViewer
+                            Grid.Row="2"
+                            Margin="0,8,0,0">
+                            <StackPanel Name="DescriptionContent" />
+                        </ScrollViewer>
                     </Grid>
                 </items:BorderCard>
             </StackPanel>

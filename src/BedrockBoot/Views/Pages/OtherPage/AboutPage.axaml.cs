@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -22,7 +23,7 @@ public partial class AboutPage : UserControl
                 ItemName = "关于我们"
             }
         });
-        VersionCard.Description = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        VersionCard.Description = GlobalModel.BodyVersion;
         PowerByTextBlock.Text = $"Power By: Avalonia {typeof(AppBuilder).Assembly.GetName().Version}";
     }
 

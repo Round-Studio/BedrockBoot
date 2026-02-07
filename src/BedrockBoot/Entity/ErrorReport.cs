@@ -53,7 +53,7 @@ namespace BedrockBoot.Entity
         {
             return new ErrorReport
             {
-                BBVersion = $"{GlobalModel.BodyVersion}-{CheckUpdate.GetBodyUpdateType()}",
+                BBVersion = $"{GlobalModel.BodyVersion}",
                 ErrorTitle = title,
                 ExceptionCanInfo = ExceptionCanInfo.Create(),
                 ExceptionInfo = ExceptionInfo.Create(exception.Message, exception),

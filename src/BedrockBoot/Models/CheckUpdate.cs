@@ -25,7 +25,7 @@ public class CheckUpdate
 
         Console.WriteLine($@"最新版本: {latest.TagName}");
 
-        if (!latest.TagName.EndsWith(Assembly.GetExecutingAssembly().GetName().Version.ToString())) return latest;
+        if (!latest.TagName.Replace("0","").EndsWith(Assembly.GetExecutingAssembly().GetName().Version!.ToString().Replace("0",""))) return latest;
 
         Console.WriteLine($@"当前为最新版本 {latest.TagName}，无需启动更新。");
 
@@ -34,7 +34,7 @@ public class CheckUpdate
 
     public static UpdateType GetBodyUpdateType()
     {
-        var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        var version = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
         if (IsStrictDateVersion(version))
             return UpdateType.Preview;
         else

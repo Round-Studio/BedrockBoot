@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BedrockBoot.Models;
 using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Entity
@@ -52,7 +53,7 @@ namespace BedrockBoot.Entity
         {
             return new ErrorReport
             {
-                BBVersion = GlobalModel.BodyVersion,
+                BBVersion = $"{GlobalModel.BodyVersion}-{CheckUpdate.GetBodyUpdateType()}",
                 ErrorTitle = title,
                 ExceptionCanInfo = ExceptionCanInfo.Create(),
                 ExceptionInfo = ExceptionInfo.Create(exception.Message, exception),

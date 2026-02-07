@@ -36,6 +36,7 @@ public class ConfigEntry
 
     [JsonPropertyName("isTaskBarJumpItem")]
     public bool IsTaskBarJumpItem { get; set; } = true;
+    [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
 
     [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.SymbolicLink;
 }

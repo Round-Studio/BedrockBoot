@@ -7,16 +7,29 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalSoftwareUpdate">
     <ScrollViewer>
-        <Grid Margin="15"
+        <Grid Margin="20,15,20,20"
               RowDefinitions="Auto,*">
-            <StackPanel Grid.Row="0">
+            <StackPanel Grid.Row="0"
+                        Spacing="8">
                 <onePointControls:SettingCard Header="自动更新"
                                               Description="在每次启动时都检测更新"
-                                              Margin="5"
                                               Glyph="&#xE965;">
                     <ToggleSwitch IsChecked="True"
                                   Name="IsAutoCheckUpdate"
                                   IsCheckedChanged="IsAutoCheckUpdate_OnIsCheckedChanged" />
+                </onePointControls:SettingCard>
+                
+                <onePointControls:SettingCard Header="更新通道"
+                                              Description="启动器更新通道"
+                                              Margin="5"
+                                              Glyph="&#xE965;">
+                    <ComboBox Width="280"
+                              SelectedIndex="0"
+                              Name="UpdateTypeBox"
+                              SelectionChanged="UpdateTypeBox_OnSelectionChanged">
+                        <ComboBoxItem Content="正式版 (稳定，更新速度慢)"></ComboBoxItem>
+                        <ComboBoxItem Content="预览版 (不稳定，更新速度快)"></ComboBoxItem>
+                    </ComboBox>
                 </onePointControls:SettingCard>
             </StackPanel>
 
@@ -25,13 +38,9 @@
                 <notice:InfoCard HorizontalAlignment="Center"
                                  VerticalAlignment="Center"
                                  Glyph="&#xEC61;"
+                                 IsVisible="False"
                                  BigTitle="当前已是最新版本"
                                  Message="尽情享用吧~" />
-
-                <notice:InfoBar Grid.Row="1" State="Error"
-                                Margin="5"
-                                Title="警告"
-                                Message="该功能在此 BedrockBoot 上暂不可用" />
             </Grid>
         </Grid>
     </ScrollViewer>

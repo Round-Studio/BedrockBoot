@@ -15,12 +15,45 @@
                            Height="64"
                            HorizontalAlignment="Left" />
 
-                    <onePointControls:LineTextBlock Text="BedrockBoot"
-                                                    Margin="12,8,0,8" />
+                    <StackPanel Spacing="4">
+                        <onePointControls:LineTextBlock Text="BedrockBoot"
+                                                        Margin="12,0,0,0" />
+                        
+                        <TextBlock Text="Power By"
+                                   Name="PowerByTextBlock"
+                                   Opacity="0.6"
+                                   Margin="12,0,0,0"></TextBlock>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
 
             <TextBlock Margin="5,0,0,8"
+                       FontSize="16"
+                       Text="开源地址" />
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="20,1">
+                <TextBlock Text="Github 仓库：" />
+                <HyperlinkButton Content="BedrockBoot 开源仓库"
+                                 NavigateUri="https://github.com/Round-Studio/BedrockBoot"></HyperlinkButton>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="20,1">
+                <TextBlock Text="Github 组织：" />
+                <HyperlinkButton Content="Round Studio"
+                                 NavigateUri="https://github.com/Round-Studio"></HyperlinkButton>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="20,1">
+                <TextBlock Text="Github 仓库：" />
+                <HyperlinkButton Content="BedrockBoot Issues"
+                                 NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues"></HyperlinkButton>
+            </StackPanel>
+            <TextBlock Margin="20,1" Text="欢迎给我们的项目提交 PR，让我们共同完善 BedrockBoot" />
+
+            <TextBlock Margin="5,20,0,8"
                        FontSize="16"
                        Text="开发者" />
 
@@ -28,7 +61,7 @@
             <TextBlock Margin="20,1" Text="BedrockBoot 启动核心：YoumiHa" />
             <TextBlock Margin="20,1" Text="BedrockBoot 用户交互体验：DrMing" />
 
-            <TextBlock Margin="5,20,0,08"
+            <TextBlock Margin="5,20,0,8"
                        FontSize="16"
                        Text="鸣谢" />
 

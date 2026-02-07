@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -22,6 +23,7 @@ public partial class AboutPage : UserControl
             }
         });
         VersionCard.Description = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        PowerByTextBlock.Text = $"Power By: Avalonia {typeof(AppBuilder).Assembly.GetName().Version}";
     }
 
     private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)

@@ -22,7 +22,7 @@ jobs:
         id: version
         run: |
           # 生成 yyyy.mm.dd.hhss 格式的版本号
-          VERSION=$(date +'%Y.%m.%d.%H%M%S')
+          VERSION=$(date +'%Y.%m.%d.%H%M')
           echo "value=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
       

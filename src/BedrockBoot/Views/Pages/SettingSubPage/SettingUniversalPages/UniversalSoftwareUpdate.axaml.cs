@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
@@ -16,6 +18,7 @@ public partial class UniversalSoftwareUpdate : ISetting
         InitializeComponent();
         IsAutoCheckUpdate.IsChecked = GlobalModel.Config.Data.IsAutoCheckUpdate;
         UpdateTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.UpdateType;
+        VersionCard.Description = GlobalModel.BodyVersion;
         MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
         {
             new()
@@ -49,5 +52,18 @@ public partial class UniversalSoftwareUpdate : ISetting
             GlobalModel.Config.Data.UpdateType = (UpdateType)UpdateTypeBox.SelectedIndex;
             GlobalModel.Config.Save();
         }
+    }
+    private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        CheckUpdateBtn.IsEnabled = false;
+        CheckUpdateBtn.Content = new ProgressRing
+        {
+            Width = 24,
+            Height = 24,
+            Background = Brushes.Transparent
+        };
+        await MainPage.Update(true);
+        CheckUpdateBtn.IsEnabled = true;
+        CheckUpdateBtn.Content = "检查更新";
     }
 }

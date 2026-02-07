@@ -21,8 +21,7 @@
                 
                 <onePointControls:SettingCard Header="更新通道"
                                               Description="启动器更新通道"
-                                              Margin="5"
-                                              Glyph="&#xE965;">
+                                              Glyph="&#xE728;">
                     <ComboBox Width="280"
                               SelectedIndex="0"
                               Name="UpdateTypeBox"
@@ -30,6 +29,18 @@
                         <ComboBoxItem Content="正式版 (稳定，更新速度慢)"></ComboBoxItem>
                         <ComboBoxItem Content="预览版 (不稳定，更新速度快)"></ComboBoxItem>
                     </ComboBox>
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard Glyph="&#xE7E3;"
+                                              Name="VersionCard"
+                                              Header="内部版本号"
+                                              Description="1.0.0.0">
+                    <Button Padding="8"
+                            Height="36" Width="100"
+                            Name="CheckUpdateBtn"
+                            Click="CheckUpdateBtn_OnClick">
+                        检查更新
+                    </Button>
                 </onePointControls:SettingCard>
             </StackPanel>
 

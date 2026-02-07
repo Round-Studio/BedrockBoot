@@ -8,6 +8,7 @@
         xmlns:dialog="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;assembly=OnePointUI.Avalonia"
         xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
         xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+        xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BedrockBoot.Views.Windows.BedrockBootWindow"
         ExtendClientAreaToDecorationsHint="True"
@@ -19,7 +20,17 @@
     <Grid>
         <Border>
             <Grid>
-                <Grid>
+                <Grid Name="BackgroundGroupBox">
+                    <Grid.Transitions>
+                        <Transitions>
+                            <EffectTransition Property="Effect"
+                                              Duration="0:0:0.58"
+                                              Easing="QuinticEaseOut"></EffectTransition>
+                            <ThicknessTransition Property="Margin"
+                                                 Easing="ExponentialEaseOut"
+                                                 Duration="0:0:0.58"></ThicknessTransition>
+                        </Transitions>
+                    </Grid.Transitions>
                     <view:AnimationBackground Name="AnimationBackground" />
 
                     <Grid Name="AccentBackgroundBox"
@@ -46,13 +57,11 @@
                       PointerPressed="InputElement_OnPointerPressed"
                       Opacity="0.0001" />
 
-                <ContentControl Content="Hello OnePointUI.Avalonia!"
-                                Margin="0,0,0,0"
-                                Name="PART_MainContent">
-                    <ContentControl.Effect>
+                <Grid Name="ContentView">
+                    <Grid.Effect>
                         <BlurEffect Radius="0" />
-                    </ContentControl.Effect>
-                    <ContentControl.Transitions>
+                    </Grid.Effect>
+                    <Grid.Transitions>
                         <Transitions>
                             <EffectTransition Property="Effect"
                                               Duration="0:0:0.58"
@@ -61,77 +70,98 @@
                                                  Easing="ExponentialEaseOut"
                                                  Duration="0:0:0.58"></ThicknessTransition>
                         </Transitions>
-                    </ContentControl.Transitions>
-                </ContentControl>
+                    </Grid.Transitions>
+                    <ContentControl Content="Hello OnePointUI.Avalonia!"
+                                Margin="0,0,0,0"
+                                Name="PART_MainContent">
+                    </ContentControl>
 
-                <Grid Name="BorderGrid"
-                      IsVisible="False">
-                    <Grid Background="{DynamicResource PrimaryForegroundBrush}"
-                          Opacity="0"
-                          Name="BorderBackground">
-                        <Grid.Transitions>
-                            <Transitions>
-                                <DoubleTransition Duration="0:0:0.38"
-                                                  Property="Opacity" />
-                            </Transitions>
-                        </Grid.Transitions>
-                    </Grid>
-
-                    <Border CornerRadius="16,16,0,0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            BorderThickness="1,1,1,0"
-                            BorderBrush="{DynamicResource PrimaryBorderBrush}"
-                            Margin="10,0,10,0"
-                            Name="BottomBorder"
-                            Background="{DynamicResource BackgroundBrush}">
-                        <Border.Transitions>
-                            <Transitions>
-                                <ThicknessTransition Duration="0:0:0.7"
-                                                     Easing="ExponentialEaseOut"
-                                                     Property="Margin" />
-                            </Transitions>
-                        </Border.Transitions>
-
-                        <Grid Grid.RowDefinitions="Auto,*">
-                            <Button CornerRadius="8"
-                                    Width="36"
-                                    Height="36"
-                                    HorizontalAlignment="Right" VerticalAlignment="Top"
-                                    Margin="12"
-                                    Name="CloseBorderBtn"
-                                    Click="CloseBorderBtn_OnClick"
-                                    Classes="NoBorder">
-                                <onePointControls:FontIcon Glyph="&#xE8BB;"
-                                                           FontSize="12" />
-                            </Button>
-
-                            <TextBlock Grid.Row="0"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Top"
-                                       Margin="18,18,12,12"
-                                       Foreground="{DynamicResource AccentBackgroundBrush}"
-                                       FontWeight="Bold"
-                                       FontSize="18"
-                                       Name="BorderTitle"
-                                       Text="Title" />
-
-                            <navigation:NavigationFrame Grid.Row="1"
-                                                        Name="Frame" />
+                    <Grid Name="BorderGrid"
+                          IsVisible="False">
+                        <Grid Background="{DynamicResource PrimaryForegroundBrush}"
+                              Opacity="0"
+                              Name="BorderBackground">
+                            <Grid.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Duration="0:0:0.38"
+                                                      Property="Opacity" />
+                                </Transitions>
+                            </Grid.Transitions>
                         </Grid>
-                    </Border>
+
+                        <Border CornerRadius="16,16,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                BorderThickness="1,1,1,0"
+                                BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                                Margin="10,0,10,0"
+                                Name="BottomBorder"
+                                Background="{DynamicResource BackgroundBrush}">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <ThicknessTransition Duration="0:0:0.7"
+                                                         Easing="ExponentialEaseOut"
+                                                         Property="Margin" />
+                                </Transitions>
+                            </Border.Transitions>
+
+                            <Grid Grid.RowDefinitions="Auto,*">
+                                <Button CornerRadius="8"
+                                        Width="36"
+                                        Height="36"
+                                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                                        Margin="12"
+                                        Name="CloseBorderBtn"
+                                        Click="CloseBorderBtn_OnClick"
+                                        Classes="NoBorder">
+                                    <onePointControls:FontIcon Glyph="&#xE8BB;"
+                                                               FontSize="12" />
+                                </Button>
+
+                                <TextBlock Grid.Row="0"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="18,18,12,12"
+                                           Foreground="{DynamicResource AccentBackgroundBrush}"
+                                           FontWeight="Bold"
+                                           FontSize="18"
+                                           Name="BorderTitle"
+                                           Text="Title" />
+
+                                <navigation:NavigationFrame Grid.Row="1"
+                                                            Name="Frame" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    
+                    <info:NoticePanel HorizontalAlignment="Right"
+                                      VerticalAlignment="Bottom"
+                                      Name="NoticePanel"
+                                      Margin="0,0,0,10" />
+
+                    <dialog:DialogHost Name="DialogHost" />
                 </Grid>
-
-                <info:NoticePanel HorizontalAlignment="Right"
-                                  VerticalAlignment="Bottom"
-                                  Name="NoticePanel"
-                                  Margin="0,0,0,10" />
-
-                <dialog:DialogHost Name="DialogHost" />
+                
+                <Grid HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Opacity="0.0001"
+                      IsVisible="False"
+                      Name="BlackView"
+                      PointerPressed="BlackView_OnPointerPressed"
+                      Background="#01000000">
+                    <Grid.Transitions>
+                        <Transitions>
+                            <ThicknessTransition Property="Margin"
+                                                 Easing="ExponentialEaseOut"
+                                                 Duration="0:0:0.58"></ThicknessTransition>
+                        </Transitions>
+                    </Grid.Transitions>
+                </Grid>
                 
                 <items:BorderCard Width="480"
                                   Margin="500,10,-500,10"
                                   Name="TaskCard"
+                                  Padding="0"
                                   VerticalAlignment="Stretch"
                                   HorizontalAlignment="Right">
                     <items:BorderCard.Transitions>
@@ -141,6 +171,30 @@
                                                  Duration="0:0:0.58"></ThicknessTransition>
                         </Transitions>
                     </items:BorderCard.Transitions>
+                    
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid Grid.Row="0"
+                              MinHeight="58">
+                            <TextBlock Text="任务中心"
+                                       VerticalAlignment="Center"
+                                       FontSize="22"
+                                       Margin="20,0,0,0"></TextBlock>
+                        </Grid>
+                        
+                        <notice:InfoCard Grid.Row="1" 
+                                         VerticalAlignment="Center"
+                                         HorizontalAlignment="Center"
+                                         BigTitle="太棒啦！"
+                                         Message="当前任务列表中没有任何一项任务"
+                                         Name="NoneBox" />
+
+                        <ScrollViewer Grid.Row="1" 
+                                      Name="TaskViewer"
+                                      IsVisible="False">
+                            <StackPanel Margin="15,0,15,5"
+                                        Name="TaskList" />
+                        </ScrollViewer>
+                    </Grid>
                 </items:BorderCard>
 
                 <Grid HorizontalAlignment="Right"

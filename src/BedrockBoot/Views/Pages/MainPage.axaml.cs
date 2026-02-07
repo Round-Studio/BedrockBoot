@@ -52,13 +52,13 @@ public partial class MainPage : UserControl
             Tag = "Download",
             Page = typeof(DownloadRoot)
         });
-        RegisterTopItem(new TopBarItemInfo
+        /*RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = "任务",
             Tag = "Task",
             Page = typeof(MainTaskPage)
-        });
+        });*/
 #if DEBUG
         RegisterTopItem(new TopBarItemInfo
         {

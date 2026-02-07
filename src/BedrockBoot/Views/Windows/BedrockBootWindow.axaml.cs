@@ -7,6 +7,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
+using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;
 
@@ -41,6 +42,7 @@ public partial class BedrockBootWindow : Window
         });
         _stateTimer.Change(TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
         BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
+        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
     }
 
     public bool IsMainWindow
@@ -189,19 +191,56 @@ public partial class BedrockBootWindow : Window
     public void OpenTaskCard()
     {
         TaskCard.Margin = new Thickness(10);
-        PART_MainContent.Effect = new BlurEffect()
+        ContentView.Effect = new BlurEffect()
         {
             Radius = 50
         };
+        BackgroundGroupBox.Effect = new BlurEffect()
+        {
+            Radius = 50
+        };
+        BackgroundGroupBox.Margin = new(-50);
         IsTaskCardOpen = true;
+        BlackView.IsVisible = true;
     }
+    
     public void CloseTaskCard()
     {
         TaskCard.Margin = new Thickness(500,10,-500,10);
-        PART_MainContent.Effect = new BlurEffect()
+        ContentView.Effect = new BlurEffect()
         {
             Radius = 0
         };
+        BackgroundGroupBox.Effect = new BlurEffect()
+        {
+            Radius = 0
+        };
+        BackgroundGroupBox.Margin = new(0);
         IsTaskCardOpen = false;
+        BlackView.IsVisible = false;
+    }
+
+    public void UpdateTaskUI()
+    {
+        TaskList.Children.Clear();
+        TaskViewer.IsVisible = true;
+        NoneBox.IsVisible = false;
+
+        if (GlobalModel.TaskManager.Tasks.Count <= 0)
+        {
+            TaskViewer.IsVisible = false;
+            NoneBox.IsVisible = true;
+        }
+
+        GlobalModel.TaskManager.Tasks.ForEach(task =>
+        {
+            task.Item.Margin = new Thickness(5);
+            TaskList.Children.Add(task.Item);
+        });
+    }
+
+    private void BlackView_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        CloseTaskCard();
     }
 }

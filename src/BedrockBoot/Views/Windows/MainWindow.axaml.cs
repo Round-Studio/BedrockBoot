@@ -351,4 +351,10 @@ public partial class MainWindow : BedrockBootWindow
             }
         }
     }
+
+    private void TaskBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (IsTaskCardOpen) CloseTaskCard();
+        else OpenTaskCard();
+    }
 }

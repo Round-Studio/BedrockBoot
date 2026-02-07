@@ -58,6 +58,7 @@
                     Spacing="8">
             <Button Classes="NoBorder"
                     Width="32" Height="32"
+                    Click="TaskBtn_OnClick"
                     Name="TaskBtn">
                 <onePointControls:FontIcon Glyph="&#xE7C4;"
                                            FontSize="12"
@@ -68,26 +69,6 @@
     </windows:BedrockBootWindow.TitleBarContentContent>
     <windows:BedrockBootWindow.MainContent>
         <Panel>
-            <Grid>
-                <view:AnimationBackground Name="AnimationBackground" />
-
-                <Grid Name="AccentBackgroundBox"
-                      Background="{DynamicResource AccentBackgroundBrush}"
-                      IsVisible="False" />
-
-                <Grid Name="BackgroundBox"
-                      Margin="0"
-                      IsVisible="False">
-                    <Grid.Effect>
-                        <BlurEffect Radius="0" />
-                    </Grid.Effect>
-                    <Grid Name="BackgroundImage" />
-                    <Grid Name="BackgroundImageOpacity"
-                          Opacity="0"
-                          Background="{DynamicResource BackgroundBrush}" />
-                </Grid>
-            </Grid>
-
             <navigation:NavigationFrame Name="MainFrame"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"

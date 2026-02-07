@@ -6,6 +6,8 @@
         xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
         xmlns:info="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;assembly=OnePointUI.Avalonia"
         xmlns:dialog="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;assembly=OnePointUI.Avalonia"
+        xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+        xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BedrockBoot.Views.Windows.BedrockBootWindow"
         ExtendClientAreaToDecorationsHint="True"
@@ -14,141 +16,191 @@
         WindowStartupLocation="CenterScreen"
         FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
         Title="BedrockBootWindow">
-    <Border>
-        <Grid>
-            <Grid HorizontalAlignment="Stretch"
-                  VerticalAlignment="Top"
-                  Height="76"
-                  Background="#01000000"
-                  PointerPressed="InputElement_OnPointerPressed"
-                  Opacity="0.0001"></Grid>
-            
-            <ContentControl Content="Hello OnePointUI.Avalonia!"
-                            Margin="0,0,0,0"
-                            Name="PART_MainContent" />
+    <Grid>
+        <Border>
+            <Grid>
+                <Grid>
+                    <view:AnimationBackground Name="AnimationBackground" />
 
-            <Grid Name="BorderGrid"
-                  IsVisible="False">
-                <Grid Background="{DynamicResource PrimaryForegroundBrush}"
-                      Opacity="0"
-                      Name="BorderBackground">
-                    <Grid.Transitions>
+                    <Grid Name="AccentBackgroundBox"
+                          Background="{DynamicResource AccentBackgroundBrush}"
+                          IsVisible="False" />
+
+                    <Grid Name="BackgroundBox"
+                          Margin="0"
+                          IsVisible="False">
+                        <Grid.Effect>
+                            <BlurEffect Radius="0" />
+                        </Grid.Effect>
+                        <Grid Name="BackgroundImage" />
+                        <Grid Name="BackgroundImageOpacity"
+                              Opacity="0"
+                              Background="{DynamicResource BackgroundBrush}" />
+                    </Grid>
+                </Grid>
+                
+                <Grid HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top"
+                      Height="76"
+                      Background="#01000000"
+                      PointerPressed="InputElement_OnPointerPressed"
+                      Opacity="0.0001" />
+
+                <ContentControl Content="Hello OnePointUI.Avalonia!"
+                                Margin="0,0,0,0"
+                                Name="PART_MainContent">
+                    <ContentControl.Effect>
+                        <BlurEffect Radius="0" />
+                    </ContentControl.Effect>
+                    <ContentControl.Transitions>
                         <Transitions>
-                            <DoubleTransition Duration="0:0:0.38"
-                                              Property="Opacity" />
+                            <EffectTransition Property="Effect"
+                                              Duration="0:0:0.58"
+                                              Easing="QuinticEaseOut"></EffectTransition>
+                            <ThicknessTransition Property="Margin"
+                                                 Easing="ExponentialEaseOut"
+                                                 Duration="0:0:0.58"></ThicknessTransition>
                         </Transitions>
-                    </Grid.Transitions>
+                    </ContentControl.Transitions>
+                </ContentControl>
+
+                <Grid Name="BorderGrid"
+                      IsVisible="False">
+                    <Grid Background="{DynamicResource PrimaryForegroundBrush}"
+                          Opacity="0"
+                          Name="BorderBackground">
+                        <Grid.Transitions>
+                            <Transitions>
+                                <DoubleTransition Duration="0:0:0.38"
+                                                  Property="Opacity" />
+                            </Transitions>
+                        </Grid.Transitions>
+                    </Grid>
+
+                    <Border CornerRadius="16,16,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            BorderThickness="1,1,1,0"
+                            BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                            Margin="10,0,10,0"
+                            Name="BottomBorder"
+                            Background="{DynamicResource BackgroundBrush}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <ThicknessTransition Duration="0:0:0.7"
+                                                     Easing="ExponentialEaseOut"
+                                                     Property="Margin" />
+                            </Transitions>
+                        </Border.Transitions>
+
+                        <Grid Grid.RowDefinitions="Auto,*">
+                            <Button CornerRadius="8"
+                                    Width="36"
+                                    Height="36"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                                    Margin="12"
+                                    Name="CloseBorderBtn"
+                                    Click="CloseBorderBtn_OnClick"
+                                    Classes="NoBorder">
+                                <onePointControls:FontIcon Glyph="&#xE8BB;"
+                                                           FontSize="12" />
+                            </Button>
+
+                            <TextBlock Grid.Row="0"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Margin="18,18,12,12"
+                                       Foreground="{DynamicResource AccentBackgroundBrush}"
+                                       FontWeight="Bold"
+                                       FontSize="18"
+                                       Name="BorderTitle"
+                                       Text="Title" />
+
+                            <navigation:NavigationFrame Grid.Row="1"
+                                                        Name="Frame" />
+                        </Grid>
+                    </Border>
                 </Grid>
 
-                <Border CornerRadius="16,16,0,0"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        BorderThickness="1,1,1,0"
-                        BorderBrush="{DynamicResource PrimaryBorderBrush}"
-                        Margin="10,0,10,0"
-                        Name="BottomBorder"
-                        Background="{DynamicResource BackgroundBrush}">
-                    <Border.Transitions>
+                <info:NoticePanel HorizontalAlignment="Right"
+                                  VerticalAlignment="Bottom"
+                                  Name="NoticePanel"
+                                  Margin="0,0,0,10" />
+
+                <dialog:DialogHost Name="DialogHost" />
+                
+                <items:BorderCard Width="480"
+                                  Margin="500,10,-500,10"
+                                  Name="TaskCard"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Right">
+                    <items:BorderCard.Transitions>
                         <Transitions>
-                            <ThicknessTransition Duration="0:0:0.7"
+                            <ThicknessTransition Property="Margin"
                                                  Easing="ExponentialEaseOut"
-                                                 Property="Margin" />
+                                                 Duration="0:0:0.58"></ThicknessTransition>
                         </Transitions>
-                    </Border.Transitions>
+                    </items:BorderCard.Transitions>
+                </items:BorderCard>
 
-                    <Grid Grid.RowDefinitions="Auto,*">
-                        <Button CornerRadius="8"
-                                Width="36"
-                                Height="36"
-                                HorizontalAlignment="Right" VerticalAlignment="Top"
-                                Margin="12"
-                                Name="CloseBorderBtn"
-                                Click="CloseBorderBtn_OnClick"
-                                Classes="NoBorder">
-                            <onePointControls:FontIcon Glyph="&#xE8BB;"
-                                                       FontSize="12" />
+                <Grid HorizontalAlignment="Right"
+                      VerticalAlignment="Top"
+                      Height="76">
+                    <Grid Background="{DynamicResource PrimaryBackgroundBrush}"
+                          IsVisible="False"
+                          Opacity="0.85" />
+
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                IsVisible="False"
+                                Margin="15,0,0,0">
+                        <TextBlock FontSize="16"
+                                   Name="TitleBlock">
+                            OnePointUI.Avalonia
+                        </TextBlock>
+
+                        <ContentControl Margin="8,0,0,0"
+                                        Name="TitleContent" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Margin="0,0,22,0"
+                                Spacing="8">
+                        <ContentControl Name="TitleBarContentBarContent" />
+                        <Button Classes="NoBorder"
+                                Width="32" Height="32"
+                                Name="MinBtn"
+                                Click="MinBtn_OnClick">
+                            <onePointControls:FontIcon Glyph="&#xE921;"
+                                                       FontSize="10"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
                         </Button>
-
-                        <TextBlock Grid.Row="0"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Top"
-                                   Margin="18,18,12,12"
-                                   Foreground="{DynamicResource AccentBackgroundBrush}"
-                                   FontWeight="Bold"
-                                   FontSize="18"
-                                   Name="BorderTitle"
-                                   Text="Title" />
-
-                        <navigation:NavigationFrame Grid.Row="1"
-                                                    Name="Frame" />
-                    </Grid>
-                </Border>
+                        <Button Classes="NoBorder"
+                                Width="32" Height="32"
+                                Name="MaxBtn"
+                                Click="MaxBtn_OnClick">
+                            <onePointControls:FontIcon Glyph="&#xE922;"
+                                                       FontSize="10"
+                                                       Name="MaxBtnIcon"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                        </Button>
+                        <Button Classes="NoBorder"
+                                Width="32" Height="32"
+                                Name="CloseBtn"
+                                Click="CloseBtn_OnClick">
+                            <onePointControls:FontIcon Glyph="&#xE8BB;"
+                                                       FontSize="10"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
             </Grid>
-
-            <info:NoticePanel HorizontalAlignment="Right"
-                              VerticalAlignment="Bottom"
-                              Name="NoticePanel"
-                              Margin="0,0,0,10" />
-
-            <dialog:DialogHost Name="DialogHost" />
-
-            <Grid HorizontalAlignment="Right"
-                  VerticalAlignment="Top"
-                  Height="76">
-                <Grid Background="{DynamicResource PrimaryBackgroundBrush}"
-                      IsVisible="False"
-                      Opacity="0.85" />
-
-                <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Left"
-                            IsVisible="False"
-                            Margin="15,0,0,0">
-                    <TextBlock FontSize="16"
-                               Name="TitleBlock">
-                        OnePointUI.Avalonia
-                    </TextBlock>
-
-                    <ContentControl Margin="8,0,0,0"
-                                    Name="TitleContent" />
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Right"
-                            Margin="0,0,22,0"
-                            Spacing="8">
-                    <ContentControl Name="TitleBarContentBarContent" />
-                    <Button Classes="NoBorder"
-                            Width="32" Height="32"
-                            Name="MinBtn"
-                            Click="MinBtn_OnClick">
-                        <onePointControls:FontIcon Glyph="&#xE921;"
-                                                   FontSize="10"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
-                    </Button>
-                    <Button Classes="NoBorder"
-                            Width="32" Height="32"
-                            Name="MaxBtn"
-                            Click="MaxBtn_OnClick">
-                        <onePointControls:FontIcon Glyph="&#xE922;"
-                                                   FontSize="10"
-                                                   Name="MaxBtnIcon"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
-                    </Button>
-                    <Button Classes="NoBorder"
-                            Width="32" Height="32"
-                            Name="CloseBtn"
-                            Click="CloseBtn_OnClick">
-                        <onePointControls:FontIcon Glyph="&#xE8BB;"
-                                                   FontSize="10"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </Grid>
-    </Border>
+        </Border>
+    </Grid>
 </Window>

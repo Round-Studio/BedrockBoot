@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Threading;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;
@@ -184,5 +183,25 @@ public partial class BedrockBootWindow : Window
     private void CloseBorderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         SetBorderState(false);
+    }
+
+    public bool IsTaskCardOpen { get; private set; } = false;
+    public void OpenTaskCard()
+    {
+        TaskCard.Margin = new Thickness(10);
+        PART_MainContent.Effect = new BlurEffect()
+        {
+            Radius = 50
+        };
+        IsTaskCardOpen = true;
+    }
+    public void CloseTaskCard()
+    {
+        TaskCard.Margin = new Thickness(500,10,-500,10);
+        PART_MainContent.Effect = new BlurEffect()
+        {
+            Radius = 0
+        };
+        IsTaskCardOpen = false;
     }
 }

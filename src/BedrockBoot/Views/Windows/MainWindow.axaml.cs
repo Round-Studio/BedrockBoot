@@ -35,7 +35,7 @@ using TextBox = Avalonia.Controls.TextBox;
 
 namespace BedrockBoot.Views.Windows;
 
-public partial class MainWindow : OnePointWindow
+public partial class MainWindow : BedrockBootWindow
 {
     public MainWindow()
     {

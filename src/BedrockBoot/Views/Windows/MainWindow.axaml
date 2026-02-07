@@ -1,23 +1,24 @@
-<windowFrame:OnePointWindow xmlns="https://github.com/avaloniaui"
-                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                            xmlns:vm="using:BedrockBoot.ViewModels"
-                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                            xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
-                            xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                            xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
-                            xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
-                            mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
-                            x:Class="BedrockBoot.Views.Windows.MainWindow"
-                            x:DataType="vm:MainWindowViewModel"
-                            Width="900" Height="520"
-                            MinWidth="900" MinHeight="520"
-                            IsMainWindow="True"
-                            Closing="Window_OnClosing"
-                            Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
-                            Background="Transparent"
-                            Title="BedrockBoot">
-    <windowFrame:OnePointWindow.TitleBarContent>
+<windows:BedrockBootWindow xmlns="https://github.com/avaloniaui"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                               xmlns:vm="using:BedrockBoot.ViewModels"
+                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                               xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
+                               xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                               xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                               xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+                               xmlns:windows="clr-namespace:BedrockBoot.Views.Windows"
+                               mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
+                               x:Class="BedrockBoot.Views.Windows.MainWindow"
+                               x:DataType="vm:MainWindowViewModel"
+                               Width="900" Height="520"
+                               MinWidth="900" MinHeight="520"
+                               IsMainWindow="True"
+                               Closing="Window_OnClosing"
+                               Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
+                               Background="Transparent"
+                               Title="BedrockBoot">
+    <windows:BedrockBootWindow.TitleBarContent>
         <StackPanel Orientation="Horizontal">
             <onePointControls:LabelBox Text="2"
                                        Name="VersionBox"
@@ -51,8 +52,21 @@
                                        Margin="0,0,5,0"
                                        VerticalAlignment="Center" />
         </StackPanel>
-    </windowFrame:OnePointWindow.TitleBarContent>
-    <windowFrame:OnePointWindow.MainContent>
+    </windows:BedrockBootWindow.TitleBarContent>
+    <windows:BedrockBootWindow.TitleBarContentContent>
+        <StackPanel Orientation="Horizontal"
+                    Spacing="8">
+            <Button Classes="NoBorder"
+                    Width="32" Height="32"
+                    Name="TaskBtn">
+                <onePointControls:FontIcon Glyph="&#xE7C4;"
+                                           FontSize="12"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+            </Button>
+        </StackPanel>
+    </windows:BedrockBootWindow.TitleBarContentContent>
+    <windows:BedrockBootWindow.MainContent>
         <Panel>
             <Grid>
                 <view:AnimationBackground Name="AnimationBackground" />
@@ -79,5 +93,5 @@
                                         VerticalAlignment="Stretch"
                                         Margin="0" />
         </Panel>
-    </windowFrame:OnePointWindow.MainContent>
-</windowFrame:OnePointWindow>
+    </windows:BedrockBootWindow.MainContent>
+</windows:BedrockBootWindow>

@@ -1,9 +1,9 @@
-name: 自动构建并推送 Release
+name: 构建并推送 Pre Release
 
 on:
   workflow_dispatch:
   push:
-    branches: ["2.0-main"]
+    branches: ["2.0-preview"]
 
 jobs:
   version:
@@ -58,13 +58,21 @@ jobs:
           cd ./src/BedrockBoot
           dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../Release-publish/" /p:Version=${{ needs.version.outputs.v }}
       
+      - name: Get commit messages
+        id: commits
+        run: |
+          # 获取最近一次提交的信息
+          echo "latest_commit=$(git log -1 --pretty=format:%s)" >> $GITHUB_OUTPUT
+          # 获取最近3次提交的信息作为变更日志
+          echo "changelog=$(git log -3 --pretty=format:"- %s (%h)" --reverse)" >> $GITHUB_OUTPUT
+      
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.version.outputs.tag }}
           release_name: "Release ${{ needs.version.outputs.tag }}"
           body: |
-            ## BedrockBoot ${{ needs.version.outputs.v }}
+            ## BedrockBoot ${{ needs.version.outputs.v }} 测试版推送
             
             **构建信息**
             - 版本: ${{ needs.version.outputs.v }}

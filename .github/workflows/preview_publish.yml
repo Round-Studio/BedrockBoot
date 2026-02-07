@@ -21,8 +21,10 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          echo "value=2.1.2.${{ github.run_number }}" >> $GITHUB_OUTPUT
-          echo "tag=v2.1.2.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          # 生成 yyyy.mm.dd.hhss 格式的版本号
+          VERSION=$(date +'%Y.%m.%d.%H%M%S')
+          echo "value=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
       
       - name: Get current time
         id: time

@@ -18,6 +18,9 @@
         FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
         Title="BedrockBootWindow">
     <Grid>
+        <Grid Background="{DynamicResource BackgroundBrush}"
+              Opacity="0.58"></Grid>
+        
         <Border>
             <Grid>
                 <Grid Name="BackgroundGroupBox">

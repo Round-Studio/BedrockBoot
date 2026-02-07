@@ -5,7 +5,7 @@
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="600"
              x:Class="BedrockBoot.Views.DrawContent.DrawInstanceContent">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -90,6 +90,7 @@
                 <TabItem Header="存档" Tag="Save" />
                 <TabItem Header="截图" Tag="Screenshots" />
                 <TabItem Header="服务器" Tag="Server" />
+                <TabItem Header="插件" Tag="Plugin" />
                 <TabItem Header="操作" Tag="Controls" Name="GameControls" />
             </TabControl>
 

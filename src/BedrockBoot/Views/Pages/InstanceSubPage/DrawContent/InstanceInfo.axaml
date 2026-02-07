@@ -26,6 +26,7 @@
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xEB9F;"
                                               IsEnabled="False"
+                                              IsVisible="False"
                                               Header="图标"
                                               Description="实例在启动器中显示的图标">
                     <ComboBox Width="200"

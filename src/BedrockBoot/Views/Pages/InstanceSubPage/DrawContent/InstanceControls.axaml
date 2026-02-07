@@ -59,17 +59,12 @@
                     高危操作
                 </TextBlock>
 
-                <onePointControls:SettingCard Glyph="&#xE74D;"
+                <onePointControls:SettingCard IsClickable="True"
+                                              Glyph="&#xE74D;"
+                                              Name="DeleteBtn"
+                                              Click="DeleteBtn_OnClick"
                                               Header="删除实例"
                                               Description="彻底删除该游戏版本">
-                    <Button Padding="8"
-                            Height="36" Width="100"
-                            Name="DeleteBtn"
-                            Classes="NoBorder"
-                            Background="DarkRed"
-                            Click="DeleteBtn_OnClick">
-                        立即删除
-                    </Button>
                 </onePointControls:SettingCard>
             </StackPanel>
         </ScrollViewer>

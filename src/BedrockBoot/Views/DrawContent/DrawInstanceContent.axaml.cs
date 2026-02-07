@@ -95,6 +95,9 @@ public partial class DrawInstanceContent : UserControl
                 case "Server":
                     InstanceFrame.NavigateTo(new InstanceServer(VersionInfo));
                     break;
+                case "Plugin":
+                    InstanceFrame.NavigateTo(new InstancePlugins(VersionInfo));
+                    break;
                 case "Controls":
                     InstanceFrame.NavigateTo(new InstanceControls(VersionInfo));
                     break;

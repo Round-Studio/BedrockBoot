@@ -29,7 +29,7 @@ public class LeviLaminaInstaller
         var result = new List<string>();
         lmaDb.Versions.Keys.ToList().ForEach(x =>
         {
-            if (VersionInfo.Info.Version.Replace(".", "").StartsWith(x))
+            if (VersionInfo.Info.Version.Replace(".", "").StartsWith(x.Replace(".", "")))
             {
                 result = lmaDb.Versions[x];
             }

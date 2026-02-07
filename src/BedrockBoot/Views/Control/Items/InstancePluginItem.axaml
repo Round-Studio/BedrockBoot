@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800"
+             x:Class="BedrockBoot.Views.Control.Items.InstancePluginItem">
+    <onePointControls:SettingCard Glyph="&#xEA86;"
+                                  IsClickable="True"
+                                  Click="Card_OnClick"
+                                  Name="Card">
+        <onePointControls:SettingCard.Header>
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <onePointControls:LabelBox Text="未安装"
+                                           Name="InstalledBox"
+                                           Foreground="White"
+                                           Background="DarkRed"
+                                           VerticalAlignment="Center"></onePointControls:LabelBox>
+                
+                <TextBlock Name="CardHeader"
+                           Text="PluginName"></TextBlock>
+            </StackPanel>
+        </onePointControls:SettingCard.Header>
+        <onePointControls:SettingCard.Description>
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock Name="CardDescription"
+                           Text="PluginDescription"></TextBlock>
+            </StackPanel>
+        </onePointControls:SettingCard.Description>
+    </onePointControls:SettingCard>
+</UserControl>

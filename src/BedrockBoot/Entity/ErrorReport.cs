@@ -49,7 +49,7 @@ namespace BedrockBoot.Entity
         public static ErrorReport Create(
             object configData, 
             string title, 
-            Exception exception = null)
+            Exception exception)
         {
             return new ErrorReport
             {
@@ -123,7 +123,7 @@ namespace BedrockBoot.Entity
         [JsonPropertyName("source")]
         public string Source { get; set; }
 
-        public static ExceptionInfo Create(string message = null, Exception exception = null)
+        public static ExceptionInfo Create(string message, Exception exception)
         {
             var info = new ExceptionInfo
             {
@@ -132,9 +132,9 @@ namespace BedrockBoot.Entity
 
             if (exception != null)
             {
-                info.InnerException = exception.InnerException?.ToString() ?? "-";
-                info.StackTrace = exception.StackTrace ?? "-";
-                info.Source = exception.Source ?? "-";
+                info.InnerException = exception.InnerException?.ToString();
+                info.StackTrace = exception.StackTrace;
+                info.Source = exception.Source;
                 
                 if (string.IsNullOrEmpty(message))
                 {

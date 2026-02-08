@@ -8,5 +8,6 @@ public enum InstallerStatus
     DownloadPreLoader,
     DownloadBedrockRtd,
     Processed,
-    Complete
+    Complete,
+    Error
 }

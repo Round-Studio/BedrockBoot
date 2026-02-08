@@ -48,12 +48,6 @@
                     </DockPanel>
 
                     <DockPanel>
-                        <TextBlock Width="120">下载加载器</TextBlock>
-                        <ProgressBar HorizontalAlignment="Stretch"
-                                     Name="InsPreLoaderBar" />
-                    </DockPanel>
-
-                    <DockPanel>
                         <TextBlock Width="120">下载运行时</TextBlock>
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsRuntimeBar" />

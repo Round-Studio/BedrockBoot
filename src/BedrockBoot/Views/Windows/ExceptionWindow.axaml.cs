@@ -17,7 +17,7 @@ public partial class ExceptionWindow : OnePointWindow
     public ExceptionWindow(ErrorReport logs) : this()
     {
         Log = logs;
-        LogBox.Text = logs.ExceptionInfo.StackTrace;
+        LogBox.Text = logs.ExceptionInfo.InnerException;
     }
 
     public ErrorReport Log { get; set; }

@@ -10,6 +10,7 @@ using BedrockBoot.LeviLamina.Base.Enum;
 using BedrockBoot.LeviLamina.Models.Installer;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.TaskItem.Plugin.LeviLamina;
 
@@ -23,6 +24,7 @@ public partial class TaskInstallLeviLaminaItem : UserControl
     public VersionConfig VersionConfig { get; set; }
     public string LeviLaminaVersion { get; set; }
     public Action? CompleteCallBack { get; set; }
+    public Action<string>? ErrorCallBack { get; set; }
 
     public TaskInstallLeviLaminaItem(string version, VersionConfig versionConfig) : this()
     {
@@ -54,11 +56,11 @@ public partial class TaskInstallLeviLaminaItem : UserControl
                         case InstallerStatus.DownloadBedrockRtd:
                             InsRuntimeBar.Value = (int)p.Progress;
                             break;
-                        case InstallerStatus.DownloadPreLoader:
-                            InsPreLoaderBar.Value = (int)p.Progress;
-                            break;
                         case InstallerStatus.Complete:
                             CompleteCallBack?.Invoke();
+                            break;
+                        case InstallerStatus.Error:
+                            ErrorCallBack?.Invoke(p.Message);
                             break;
                     }
                 });
@@ -79,7 +81,33 @@ public partial class TaskInstallLeviLaminaItem : UserControl
         var body = new TaskInstallLeviLaminaItem(version, versionConfig);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
-        body.CompleteCallBack = () => GlobalModel.TaskManager.RemoveTask(tuid);
+        body.CompleteCallBack = () =>
+        {
+            GlobalModel.TaskManager.RemoveTask(tuid);
+            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+            {
+                Title = "安装 LeviLamina",
+                Message = $"LeviLamina 安装完成",
+                NoticeType = NoticeType.Info
+            });
+        };
+        body.ErrorCallBack = (ex) =>
+        {
+            GlobalModel.TaskManager.RemoveTask(tuid);
+            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+            {
+                Title = "安装 LeviLamina",
+                Message = $"LeviLamina 安装失败",
+                NoticeType = NoticeType.Info
+            });
+            
+            DialogHost.Show(new DialogInfo()
+            {
+                Title = "LeviLamina 安装失败",
+                Content = ex,
+                CloseButtonText = "确定"
+            });
+        };
         body.Install();
     }
 }

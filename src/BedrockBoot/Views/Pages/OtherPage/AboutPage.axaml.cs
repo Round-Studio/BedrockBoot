@@ -45,4 +45,9 @@ public partial class AboutPage : UserControl
     {
         MainSettingPage.NavigationFrame.NavigateTo(new AboutOpenSource());
     }
+
+    private void ContributorsBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigationFrame.NavigateTo(new AboutContributor());
+    }
 }

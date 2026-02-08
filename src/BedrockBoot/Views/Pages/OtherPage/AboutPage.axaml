@@ -107,6 +107,14 @@
                                           IsClickable="True" />
 
             <onePointControls:SettingCard Margin="5"
+                                          Glyph="&#xE902;"
+                                          Header="贡献者"
+                                          Description="BedrockBoot 的所有贡献者"
+                                          Name="ContributorsBtn"
+                                          Click="ContributorsBtn_OnClick"
+                                          IsClickable="True" />
+
+            <onePointControls:SettingCard Margin="5"
                                           Glyph="&#xE7E3;"
                                           Name="VersionCard"
                                           Header="内部版本号"

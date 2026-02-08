@@ -1,0 +1,28 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.Control.Items.ContributorItem">
+    <items:BorderCard Width="120"
+                      Height="150">
+        <Grid RowDefinitions="*,Auto">
+            <widgets:LocalImageRenderWidget Grid.Row="0"
+                                            Name="IconBox"/>
+            
+            <StackPanel Grid.Row="1"
+                        Margin="0,3,0,0">
+                <TextBlock Text="Name"
+                           FontSize="13"
+                           HorizontalAlignment="Center"
+                           Name="NameText"></TextBlock>
+                <TextBlock Text="成功贡献过 ? 次"
+                           FontSize="11"
+                           HorizontalAlignment="Center"
+                           Name="ContributorText"></TextBlock>
+            </StackPanel>
+        </Grid>
+    </items:BorderCard>
+</UserControl>

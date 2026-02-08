@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.OtherPage.AboutContributor">
+    <Grid RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0" 
+                    Margin="15">
+            <TextBlock Margin="5,0,0,8"
+                       FontSize="16"
+                       Text="贡献者" />
+        
+            <TextBlock Margin="20,1" Text="这里展示的是对 BedrockBoot 有贡献的创作者！" />
+        </StackPanel>
+        
+        <onePointControls:ProgressRing Grid.Row="1"
+                                       Width="48"
+                                       Height="48"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Name="LoadingRing"/>
+        
+        <ScrollViewer Grid.Row="1"
+                      Margin="15,0">
+            <WrapPanel ItemSpacing="8"
+                       LineSpacing="8"
+                       Margin="5"
+                       Name="ContributorBox"></WrapPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

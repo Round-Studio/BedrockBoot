@@ -56,6 +56,9 @@ public partial class TaskInstallLeviLaminaItem : UserControl
                         case InstallerStatus.DownloadBedrockRtd:
                             InsRuntimeBar.Value = (int)p.Progress;
                             break;
+                        case InstallerStatus.DownloadPreLoader:
+                            InsPreLoaderBar.Value = (int)p.Progress;
+                            break;
                         case InstallerStatus.Complete:
                             CompleteCallBack?.Invoke();
                             break;

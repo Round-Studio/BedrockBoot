@@ -498,31 +498,6 @@ public class LeviLaminaInstaller
         {
             case DependenciesType.LeviLamina:
                 ZipHelper.ExtractZipFile(filePath, Path.Combine(VersionInfo.VersionPath, "mods"), true);
-                if (File.Exists(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
-                        "LeviLamina.dll")))
-                    File.Delete(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
-                        "LeviLamina.dll"));
-
-                File.Move(Path.Combine(VersionInfo.VersionPath, "mods", "LeviLamina", "LeviLamina.dll"),
-                    Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
-                        "LeviLamina.dll"));
-                
-                var modsConfigPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods.json");
-                if (File.Exists(modsConfigPath))
-                {
-                    var conf = new ConfigEntity<List<ModInfo>>(modsConfigPath);
-                    if (!conf.Data.Any(m => m.File.EndsWith("LeviLamina.dll")))
-                    {
-                        conf.Data.Add(new ModInfo()
-                        {
-                            File = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
-                                "LeviLamina.dll"),
-                            IsPreLoad = true,
-                            InjectDelay = 0
-                        });
-                        conf.Save();
-                    }
-                }
                 break;
 
             case DependenciesType.CrashLogger:
@@ -538,6 +513,66 @@ public class LeviLaminaInstaller
                     File.Delete(rtdFile);
                 ZipHelper.ExtractZipFile(filePath, VersionInfo.VersionPath, true);
                 break;
+
+            case DependenciesType.PreLoader:
+                await InstallPreLoader(filePath);
+                break;
+        }
+    }
+
+    private async Task InstallPreLoader(string preloaderPath)
+    {
+        try
+        {
+            var preloaderFile = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods", "PreLoader.dll");
+            var modsConfigPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods.json");
+            
+            // 确保目录存在
+            var modsDir = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods");
+            if (!Directory.Exists(modsDir))
+                Directory.CreateDirectory(modsDir);
+            
+            // 更新mods.json
+            if (File.Exists(modsConfigPath))
+            {
+                var conf = new ConfigEntity<List<ModInfo>>(modsConfigPath);
+                if (!conf.Data.Any(m => m.File.EndsWith("PreLoader.dll")))
+                {
+                    conf.Data.Add(new ModInfo()
+                    {
+                        File = preloaderFile,
+                        IsPreLoad = true,
+                        InjectDelay = 0
+                    });
+                    conf.Save();
+                }
+            }
+            
+            // 删除旧文件
+            if (File.Exists(preloaderFile))
+                File.Delete(preloaderFile);
+            
+            // 提取PreLoader
+            var tmpPath = Path.Combine(PathList.LeviLaminaTempFolder, $"preload_{Guid.NewGuid():N}");
+            ZipHelper.ExtractZipFile(preloaderPath, tmpPath);
+            var sourceFile = Path.Combine(tmpPath, "bin", "PreLoader.dll");
+            
+            if (File.Exists(sourceFile))
+            {
+                File.Move(sourceFile, preloaderFile, true);
+            }
+            else
+            {
+                throw new FileNotFoundException("在压缩包中找不到 PreLoader.dll", sourceFile);
+            }
+            
+            // 清理临时文件
+            try { Directory.Delete(tmpPath, true); } catch { }
+        }
+        catch (Exception ex)
+        {
+            ReportError($"安装PreLoader失败: {ex.Message}");
+            throw;
         }
     }
 
@@ -594,8 +629,7 @@ public class LeviLaminaInstaller
         var notNecessarilyDel = new List<string>()
         {
             "github.com/LiteLDev/levilamina-loc#client",
-            "github.com/LiteLDev/PeEditor",
-            "github.com/LiteLDev/PreLoader",
+            "github.com/LiteLDev/PeEditor"
         };
 
         var result = new Dictionary<DependenciesType, string>();
@@ -661,6 +695,7 @@ public class LeviLaminaInstaller
             {
                 "CrashLogger" => DependenciesType.CrashLogger,
                 "bedrock-runtime-data" => DependenciesType.BedrockRtd,
+                "PreLoader" => DependenciesType.PreLoader,
                 _ => (DependenciesType?)null
             };
 
@@ -686,6 +721,7 @@ public class LeviLaminaInstaller
             DependenciesType.LeviLamina => InstallerStatus.DownloadLeviLamina,
             DependenciesType.CrashLogger => InstallerStatus.DownloadCrashLogger,
             DependenciesType.BedrockRtd => InstallerStatus.DownloadBedrockRtd,
+            DependenciesType.PreLoader => InstallerStatus.DownloadPreLoader,
             _ => InstallerStatus.Error
         };
     }

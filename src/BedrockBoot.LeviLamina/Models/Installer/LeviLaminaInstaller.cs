@@ -139,6 +139,8 @@ public class LeviLaminaInstaller
                             break;
 
                         case DependenciesType.BedrockRtd:
+                            if (File.Exists(Path.Combine(VersionInfo.VersionPath, "bedrock_runtime_data")))
+                                File.Delete(Path.Combine(VersionInfo.VersionPath, "bedrock_runtime_data"));
                             ZipHelper.ExtractZipFile(depPath, VersionInfo.VersionPath, true);
                             // BedrockRTD 特定操作
                             Console.WriteLine("BedrockRTD 安装完成");
@@ -147,7 +149,7 @@ public class LeviLaminaInstaller
                         case DependenciesType.PreLoader:
                             var file = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
                                 "PreLoader.dll");
-                            if(File.Exists(file)) File.Delete(file);
+                            if (File.Exists(file)) File.Delete(file);
                             var conf = new ConfigEntity<List<ModInfo>>(Path.Combine(VersionInfo.VersionPath, "config",
                                 "BedrockBoot2", "mods.json"));
                             conf.Data.Add(new ModInfo()
@@ -157,6 +159,12 @@ public class LeviLaminaInstaller
                                 InjectDelay = 0
                             });
                             conf.Save();
+
+                            if (!Directory.Exists(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2",
+                                    "mods")))
+                                Directory.CreateDirectory(Path.Combine(VersionInfo.VersionPath, "config",
+                                    "BedrockBoot2",
+                                    "mods"));
 
                             var tmpPath = Path.Combine(PathList.LeviLaminaTempFolder,
                                 $"preload_{Guid.NewGuid().ToString().Replace("-", "")}");

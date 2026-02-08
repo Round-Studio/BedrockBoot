@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Interface;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
@@ -14,7 +15,7 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
-public partial class InstancePack : UserControl
+public partial class InstancePack : ISetting
 {
     private string _searchText = string.Empty;
 
@@ -23,6 +24,8 @@ public partial class InstancePack : UserControl
     public InstancePack()
     {
         InitializeComponent();
+
+        IsEdit = true;
     }
 
     public InstancePack(VersionConfig versionConfig) : this()
@@ -138,15 +141,16 @@ public partial class InstancePack : UserControl
 
     private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        try
-        {
-            _type = ((ListBoxItem)TypeSel.SelectedItem).Tag.ToString().ToLower();
-            UpdateUI();
-        }
-        catch
-        {
-            // 保持当前类型
-        }
+        if (IsEdit)
+            try
+            {
+                _type = ((ListBoxItem)TypeSel.SelectedItem).Tag.ToString().ToLower();
+                UpdateUI();
+            }
+            catch
+            {
+                // 保持当前类型
+            }
     }
 
     // 如果需要手动刷新数据（比如从其他页面返回时）

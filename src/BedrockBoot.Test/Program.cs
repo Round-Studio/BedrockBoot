@@ -18,6 +18,6 @@ public class Program
         {
             Console.WriteLine($"{p.Message} - {p.Status} - {p.Progress:F2} %");
         });
-        await llInstaller.InstallLeviLamina("1.9.4");
+        await llInstaller.InstallLeviLamina("1.9.5");
     }
 }

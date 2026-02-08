@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Core.Interface.Instance;
 using BedrockBoot.LeviLamina.Models.Installer;
+using BedrockBoot.Views.DialogContent.Plugin.LeviLamina;
+using BedrockBoot.Views.TaskItem.Plugin.LeviLamina;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -43,6 +45,21 @@ public class PluginLeviLamina : IInstancePlugin
         {
             var versions = await llmInstaller.GetVersions();
             await DialogHost.Close();
+
+            var chooseDialog = new DialogLeviLaminaChooseVersionContent(versions);
+            DialogHost.Show(new DialogInfo()
+            {
+                Content = chooseDialog,
+                Title = "选择 LeviLamina 版本",
+                CloseButtonText = "确定",
+                PrimaryButtonText = "取消",
+                CloseAction = () =>
+                {
+                    var version = chooseDialog.Version;
+                    
+                    TaskInstallLeviLaminaItem.Install(version, VersionConfig);
+                }
+            });
         }
         catch (NullReferenceException nullEx)
         {

@@ -232,9 +232,9 @@ public class EasyDownload
         };
         GameConfig = conf;
 
+        GameInfoHelper.SaveVersionConfig(conf);
         var isolation = new IsolationCore(conf);
         isolation.Init();
-        GameInfoHelper.SaveVersionConfig(conf);
     }
 
     public async Task<bool> CheckMD5(string file, bool showError = true)

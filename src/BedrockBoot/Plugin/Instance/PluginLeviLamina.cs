@@ -25,7 +25,7 @@ public class PluginLeviLamina : IInstancePlugin
 
     public bool IsInstalled()
     {
-        if (File.Exists(Path.Combine(VersionConfig.VersionPath, "mods", "LeviLamina", "LeviLamina.dll")))
+        if (File.Exists(Path.Combine(VersionConfig.VersionPath, "mods", "LeviLamina.dll")))
             return true;
 
         return false;

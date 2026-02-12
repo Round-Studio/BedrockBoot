@@ -51,7 +51,7 @@
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="BedrockLauncher.Core" Version="2.0.2"/>
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.3" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
         <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />

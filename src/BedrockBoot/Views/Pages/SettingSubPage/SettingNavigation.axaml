@@ -59,15 +59,15 @@
                     下载
                 </TextBlock>
                 
-                <TextBlock Opacity="0.4"
+                <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
                            Text="设置做符合您网络环境的下载配置，使启动器联网体验更加流畅。"></TextBlock>
                 
-                <TextBlock Opacity="0.4"
+                <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
                            Text="部分网络环境下，MCAPPX 源将无法使用，需要使用默认的 BMCBL ② 源。"></TextBlock>
                 
-                <TextBlock Opacity="0.4"
+                <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
                            Text="在下载线程中，我们推荐使用默认 4 线程下载，如果下载线程过多，下载速度可能会减慢。"></TextBlock>
                 
@@ -77,11 +77,11 @@
                     游戏
                 </TextBlock>
                 
-                <TextBlock Opacity="0.4"
+                <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
                            Text="请注意游戏目录中是否含有中文以及符号等字符，如果出现以上字符，游戏很有可能无法启动。"></TextBlock>
                 
-                <TextBlock Opacity="0.4"
+                <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
                            Text="在版本隔离中，我们推荐使用 混合模式 进行游戏，假如使用 单一模式，可能会导致其他第三方基岩版启动器无法正常安装和启动游戏。"></TextBlock>
                 

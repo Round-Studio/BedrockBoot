@@ -94,7 +94,7 @@ public partial class MainPage : UserControl
         SelTag.SelectedIndex = 0;
         SelTag_OnSelectionChanged(null, null);
 
-        RegisterService.API.RegisterTopBarItem = RegisterTopItem;
+        RegisterService.API.RegisterNavigationBarItem = RegisterTopItem;
 
         if (GlobalModel.Config.Data.IsAutoCheckUpdate) Update();
 

@@ -46,10 +46,11 @@ public class GameInfoHelper
 
         return Directory.GetDirectories(bedrockVersionsPath)
             .Select(GetVersionConfig) // 转换每个路径为VersionConfig
-            .Where(config => config != null &&
+            .Where(config => config != null)
+            .Where(config => config.Info != null &&
                              !string.IsNullOrEmpty(config.Info.VersionName) &&
-                             !string.IsNullOrEmpty(config.Info.Version)) // 过滤有效配置
-            .ToList(); // 转换为列表返回
+                             !string.IsNullOrEmpty(config.Info.Version))
+            .ToList();
     }
 
     public static VersionConfig GetVersionConfig(string gamePath)

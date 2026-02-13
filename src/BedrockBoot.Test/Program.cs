@@ -10,6 +10,9 @@ public class Program
 {
     private static async Task Main()
     {
+        var bedrockCore = new BedrockCore();
+        bedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release).Wait();
+        return;
         var llInstaller = new LeviLaminaInstaller(new VersionConfig()
         {
             VersionPath = @"D:\BedrockBoot\bedrock_versions\1.21.13101"

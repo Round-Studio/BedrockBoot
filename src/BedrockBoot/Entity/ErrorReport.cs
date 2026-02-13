@@ -17,6 +17,8 @@ namespace BedrockBoot.Entity
     /// </summary>
     public class ErrorReport
     {
+        [JsonIgnore]
+        public Exception Exception { get; set; }
         [JsonPropertyName("bbVersion")]
         public string BBVersion { get; set; }
         
@@ -58,7 +60,8 @@ namespace BedrockBoot.Entity
                 ExceptionCanInfo = ExceptionCanInfo.Create(),
                 ExceptionInfo = ExceptionInfo.Create(exception.Message, exception),
                 NetworkInfo = NetworkInfo.Create(),
-                ConfigInfo = configData
+                ConfigInfo = configData,
+                Exception = exception
             };
         }
 

@@ -17,12 +17,26 @@ public partial class ExceptionWindow : OnePointWindow
     public ExceptionWindow(ErrorReport logs) : this()
     {
         Log = logs;
-        LogBox.Text = logs.ExceptionInfo.InnerException;
+        LogBox.Text = logs.Exception.ToString();
     }
 
     public ErrorReport Log { get; set; }
 
     private async void CopyButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+        if (clipboard != null)
+        {
+            await clipboard.SetTextAsync(Log.Exception.ToString());
+        }
+    }
+
+    private void CloseButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private async void SaveBtnButton_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = GetTopLevel(this);
 
@@ -47,10 +61,5 @@ public partial class ExceptionWindow : OnePointWindow
             var filePath = file.Path.LocalPath;
             File.WriteAllText(filePath,Log.ToJson());
         }
-    }
-
-    private void CloseButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        Close();
     }
 }

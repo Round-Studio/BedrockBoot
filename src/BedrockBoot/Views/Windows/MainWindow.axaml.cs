@@ -41,6 +41,7 @@ public partial class MainWindow : BedrockBootWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
+        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
         SetupDynamicHotkey();
 
         UpdateBack();
@@ -327,5 +328,27 @@ public partial class MainWindow : BedrockBootWindow
     {
         if (IsTaskCardOpen) CloseTaskCard();
         else OpenTaskCard();
+    }
+
+    public void UpdateTaskUI()
+    {
+        TaskList.Children.Clear();
+        TaskViewer.IsVisible = true;
+        NoneBox.IsVisible = false;
+        TaskInfoText.IsVisible = true;
+        TaskInfoText.Text = $"当前有 {GlobalModel.TaskManager.Tasks.Count} 项任务";
+
+        if (GlobalModel.TaskManager.Tasks.Count <= 0)
+        {
+            TaskViewer.IsVisible = false;
+            NoneBox.IsVisible = true;
+            TaskInfoText.IsVisible = false;
+        }
+
+        GlobalModel.TaskManager.Tasks.ForEach(task =>
+        {
+            task.Item.Margin = new Thickness(5);
+            TaskList.Children.Add(task.Item);
+        });
     }
 }

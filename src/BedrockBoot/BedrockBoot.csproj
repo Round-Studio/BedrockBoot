@@ -29,46 +29,39 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
-        <AvaloniaResource Remove="Assets\Inject.dll"/>
-        <AvaloniaResource Remove="Assets\PreloadCpp.dll"/>
         <AvaloniaResource Include="Manifest\Function\FunctionOption.json"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Assets\Inject.dll"/>
-        <EmbeddedResource Include="Assets\PreloadCpp.dll"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.4.3"/>
-        <PackageReference Include="Avalonia" Version="11.3.11"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.11"/>
-        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.11"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11"/>
+        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.4.3" />
+        <PackageReference Include="Avalonia" Version="11.3.11" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.11" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.11">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="BedrockLauncher.Core" Version="2.0.3" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1"/>
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.1" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1" />
         <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
-        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5"/>
-        <PackageReference Include="Octokit" Version="14.0.0"/>
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
+        <PackageReference Include="Octokit" Version="14.0.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
         <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
-        <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj"/>
-        <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
+        <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
         <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj" />
-        <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj"/>
-        <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj"/>
+        <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj" />
+        <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj" />
         <ProjectReference Include="..\Round.SDK\Round.SDK.Avalonia\Round.SDK.Avalonia.csproj" />
-        <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj"/>
+        <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Enum;
@@ -111,38 +112,49 @@ public class ModsCore
 
         try
         {
-            // 先处理文件写入（无论是否存在都覆盖）
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "BedrockBoot.Assets.PreloadCpp.dll";
+            var assembly = Assembly.GetAssembly(typeof(WindowInfo));
 
-            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            var resourceName = "BedrockBoot.Base.Dependence.PreLoadCpp.dll";
+            var allResources = assembly.GetManifestResourceNames();
+            Console.WriteLine("可用资源:");
+            foreach (var name in allResources)
+                Console.WriteLine($"  {name}");
+    
+            var actualResourceName = allResources.FirstOrDefault(r => r.EndsWith("PreLoadCpp.dll"));
+            if (actualResourceName == null)
+                throw new InvalidOperationException("找不到嵌入的DLL资源");
+
+            using (var stream = assembly.GetManifestResourceStream(actualResourceName))
             {
-                if (stream != null)
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        stream.CopyTo(memoryStream);
-                        try
-                        {
-                            File.WriteAllBytes(fullPath, memoryStream.ToArray());
-                        }
-                        catch
-                        {
-                        }
-                    }
+                if (stream == null)
+                    throw new InvalidOperationException("无法打开资源流");
+            
+                using (var memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    File.WriteAllBytes(fullPath, memoryStream.ToArray());
+                }
             }
 
             // 然后修改 PE 文件
             if (!FileCheck.IsFileLocked(body))
-                using (var peFile = new PeFile(File.Open(body, FileMode.OpenOrCreate, FileAccess.ReadWrite)))
+            {
+                using (var fs = new FileStream(body, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+                using (var peFile = new PeFile(fs))
                 {
                     peFile.AddImport("PreloadCpp.dll", "Load");
                     peFile.Flush();
                 }
+            }
             else
+            {
                 throw new IOException($"文件 {body} 被锁定，无法修改");
+            }
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine($"错误: {ex.Message}");
+            Console.WriteLine($"堆栈: {ex.StackTrace}");
         }
     }
 

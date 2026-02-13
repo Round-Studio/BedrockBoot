@@ -66,8 +66,14 @@
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Spacing="10">
-                <Button Name="CopyButton"
+                <Button Name="SaveBtn"
                         Content="导出错误报告"
+                        Padding="15,10"
+                        MinWidth="130"
+                        Click="SaveBtnButton_OnClick"
+                        Classes="NoBorder" />
+                <Button Name="CopyButton"
+                        Content="复制错误信息"
                         Padding="15,10"
                         MinWidth="130"
                         Click="CopyButton_OnClick"

@@ -21,10 +21,6 @@ public partial class SettingUniversal : ISetting
             }
         });
 
-#if RELEASE
-        PluginPanel.IsVisible = GlobalModel.FunctionOption.IsEnablePlugin;
-#endif
-
         TaskBarJumpItem.IsChecked = GlobalModel.Config.Data.IsTaskBarJumpItem;
 
         IsEdit = true;

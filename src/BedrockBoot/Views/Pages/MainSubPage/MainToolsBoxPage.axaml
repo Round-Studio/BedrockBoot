@@ -43,6 +43,13 @@
                                               IsClickable="True"
                                               Name="FoundLoseFilesBtn"
                                               Click="FoundLoseFilesBtn_OnClick1"/>
+                
+                <onePointControls:SettingCard Header="卸载本机已安装的 Minecraft"
+                                              Description="用于卸载由本机已安装的 Minecraft 导致的错误"
+                                              Glyph="&#xE74D;"
+                                              IsClickable="True"
+                                              Name="DeleteMcBtn"
+                                              Click="DeleteMcBtn_OnClick"/>
             </StackPanel>
         </ScrollViewer>
 

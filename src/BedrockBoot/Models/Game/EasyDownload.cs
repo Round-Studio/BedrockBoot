@@ -234,7 +234,7 @@ public class EasyDownload
 
         GameInfoHelper.SaveVersionConfig(conf);
         var isolation = new IsolationCore(conf);
-        isolation.Init();
+        isolation.Init(true);
     }
 
     public async Task<bool> CheckMD5(string file, bool showError = true)

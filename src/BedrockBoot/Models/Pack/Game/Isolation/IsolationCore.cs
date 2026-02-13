@@ -194,7 +194,7 @@ public class IsolationCore
         if (Directory.Exists(userFolder))
             return Directory.GetDirectories(userFolder).Select(x => Path.GetFileName(x)).ToList();
 
-        return null;
+        return new() { "Shared" };
     }
 
     private static string GetInstanceFolderPath(VersionConfig VersionConfig, string folder, string user = "Shared")

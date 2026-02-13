@@ -42,7 +42,6 @@ public partial class BedrockBootWindow : Window
         });
         _stateTimer.Change(TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
         BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
-        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
     }
 
     public bool IsMainWindow
@@ -218,25 +217,6 @@ public partial class BedrockBootWindow : Window
         BackgroundGroupBox.Margin = new(0);
         IsTaskCardOpen = false;
         BlackView.IsVisible = false;
-    }
-
-    public void UpdateTaskUI()
-    {
-        TaskList.Children.Clear();
-        TaskViewer.IsVisible = true;
-        NoneBox.IsVisible = false;
-
-        if (GlobalModel.TaskManager.Tasks.Count <= 0)
-        {
-            TaskViewer.IsVisible = false;
-            NoneBox.IsVisible = true;
-        }
-
-        GlobalModel.TaskManager.Tasks.ForEach(task =>
-        {
-            task.Item.Margin = new Thickness(5);
-            TaskList.Children.Add(task.Item);
-        });
     }
 
     private void BlackView_OnPointerPressed(object? sender, PointerPressedEventArgs e)

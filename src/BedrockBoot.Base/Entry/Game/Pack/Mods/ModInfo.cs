@@ -32,46 +32,32 @@ public class ModInfo
             throw new Exception("This mod is PreLoad mod.");
 
         var assembly = Assembly.GetExecutingAssembly();
+    
+        var resources = assembly.GetManifestResourceNames();
+        Console.WriteLine("Available embedded resources:");
+        foreach (var res in resources)
+        {
+            Console.WriteLine($"  {res}");
+        }
 
-        var resourceName = "BedrockBoot.Assets.Inject.dll";
-
+        var resourceName = "BedrockBoot.Base.Dependence.Inject.dll";
+        Console.WriteLine($"Looking for: {resourceName}");
+    
         using (var stream = assembly.GetManifestResourceStream(resourceName))
         {
-            if (stream != null)
-                using (var memoryStream = new MemoryStream())
-                {
-                    stream.CopyTo(memoryStream);
-                    BedrockBoot.Inject.Native.Init(memoryStream.ToArray());
-                    BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0,
-                        InjectDelay);
-                }
-        }
-    }
-
-    private byte[] GetAssetBytes(string uri)
-    {
-        try
-        {
-            // 确保URI格式正确
-            if (!uri.StartsWith("avares://")) uri = $"avares://{uri.TrimStart('/')}";
-
-            // 使用AssetLoader的静态方法
-            var uriObj = new Uri(uri);
-
-            // 检查资源是否存在
-            if (!AssetLoader.Exists(uriObj)) throw new FileNotFoundException($"Asset not found: {uri}");
-
-            // 打开资源流
-            using (var stream = AssetLoader.Open(uriObj))
+            if (stream == null)
+            {
+                throw new InvalidOperationException(
+                    $"Resource '{resourceName}' not found. Available resources: {string.Join(", ", resources)}");
+            }
+        
             using (var memoryStream = new MemoryStream())
             {
                 stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
+                BedrockBoot.Inject.Native.Init(memoryStream.ToArray());
+                BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0,
+                    InjectDelay);
             }
-        }
-        catch (Exception ex)
-        {
-            throw new IOException($"Failed to load asset from URI: {uri}", ex);
         }
     }
 }

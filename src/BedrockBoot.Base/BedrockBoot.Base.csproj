@@ -17,4 +17,8 @@
       <ProjectReference Include="../Round.SDK\Round.SDK\Round.SDK.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="Dependence\Inject.dll" />
+    </ItemGroup>
+
 </Project>

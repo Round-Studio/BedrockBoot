@@ -33,10 +33,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Dependence\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.4.3" />
         <PackageReference Include="Avalonia" Version="11.3.11" />
         <PackageReference Include="Avalonia.Desktop" Version="11.3.11" />

@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Dependence\Inject.dll" />
+      <EmbeddedResource Include="Dependence\PreLoadCpp.dll" />
     </ItemGroup>
 
 </Project>

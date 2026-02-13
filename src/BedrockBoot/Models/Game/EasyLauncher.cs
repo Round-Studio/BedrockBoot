@@ -92,29 +92,22 @@ public class EasyLauncher
                 LaunchArgs = string.IsNullOrEmpty(args) ? null : args
             });
 
-            if (MinecraftProcess != null && !MinecraftProcess.HasExited)
+            if (MinecraftProcess != null)
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
-
-                // 触发游戏启动回调
                 Launched?.Invoke(MinecraftProcess);
-
-                // 更新进度文本
                 UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                 SetProgressIndeterminate?.Invoke(true);
 
                 if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
 
-                // 正确注册退出事件
                 MinecraftProcess.EnableRaisingEvents = true;
                 MinecraftProcess.Exited += OnProcessExited;
 
-                // 等待进程退出
                 await WaitForProcessExitAsync(MinecraftProcess);
             }
             else
             {
-                // 进程启动失败或立即退出
                 LaunchCompleted?.Invoke();
             }
         }

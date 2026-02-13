@@ -153,10 +153,8 @@ public class ModsCore
         }
         catch (Exception ex)
         {
-            // 🔴 2. 至少记录异常！
             Console.WriteLine($"错误: {ex.Message}");
             Console.WriteLine($"堆栈: {ex.StackTrace}");
-            throw; // 或者根据需要处理
         }
     }
 

@@ -8,8 +8,7 @@
     <ScrollViewer>
         <StackPanel Margin="20,15"
                     Spacing="8">
-            <TextBlock Margin="5,0"
-                       FontWeight="Bold"
+            <TextBlock FontWeight="Bold"
                        FontSize="14">
                 基础设置
             </TextBlock>
@@ -22,8 +21,7 @@
                               IsCheckedChanged="CheckBox_Change" />
             </onePointControls:SettingCard>
             
-            <TextBlock Margin="5,0"
-                       FontWeight="Bold"
+            <TextBlock FontWeight="Bold"
                        FontSize="14">
                 其他页面
             </TextBlock>
@@ -31,6 +29,8 @@
             <onePointControls:SettingCard Header="崩溃记录"
                                           Description="BedrockBoot 本体所记录的每一次崩溃"
                                           IsClickable="True"
+                                          Name="ExceptionBtn"
+                                          Click="ExceptionBtn_OnClick"
                                           Glyph="&#xEBE8;">
             </onePointControls:SettingCard>
         </StackPanel>

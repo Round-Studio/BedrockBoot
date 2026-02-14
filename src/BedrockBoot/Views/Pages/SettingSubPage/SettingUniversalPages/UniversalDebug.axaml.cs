@@ -39,4 +39,9 @@ public partial class UniversalDebug : ISettingPage
             GlobalModel.Config.Save();
         }
     }
+
+    private void ExceptionBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new UniversalException());
+    }
 }

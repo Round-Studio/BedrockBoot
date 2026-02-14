@@ -2,7 +2,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalException">
-    Welcome to Avalonia!
+    <Grid Margin="0,15">
+        <Grid ColumnDefinitions="3*,7*">
+            <StackPanel Grid.Column="0"
+                        Margin="20,0,0,0"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14">
+                    简述
+                </TextBlock>
+                
+                <TextBlock Text="该页面所记录的所有内容均来自使用中出现的崩溃"
+                           TextWrapping="Wrap"
+                           Opacity="0.6"></TextBlock>
+                
+                <TextBlock Text="遇到崩溃，需要反馈给开发者时，可以前往该页面寻找先前出现的异常崩溃，导出后提供给开发者进行修复"
+                           TextWrapping="Wrap"
+                           Opacity="0.6"></TextBlock>
+            </StackPanel>
+            
+            <ScrollViewer Grid.Column="1"
+                          Margin="10,0,15,0">
+                <StackPanel Margin="0,0,5,0"
+                            Spacing="8">
+                    <onePointControls:SettingCard/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </UserControl>

@@ -11,7 +11,7 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
-public partial class UniversalSoftwareUpdate : ISetting
+public partial class UniversalSoftwareUpdate : ISettingPage
 {
     public UniversalSoftwareUpdate()
     {
@@ -19,19 +19,19 @@ public partial class UniversalSoftwareUpdate : ISetting
         IsAutoCheckUpdate.IsChecked = GlobalModel.Config.Data.IsAutoCheckUpdate;
         UpdateTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.UpdateType;
         VersionCard.Description = GlobalModel.BodyVersion;
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "通用",
                 ItemClickAction = info =>
-                    MainSettingPage.NavigationFrame.NavigateTo(new SettingUniversal())
+                    MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
                 ItemName = "软件更新"
             }
-        });
+        };
 
         IsEdit = true;
     }

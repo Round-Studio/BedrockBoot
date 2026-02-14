@@ -14,7 +14,7 @@ public class ProtocolCommand
             Dispatcher.UIThread.Invoke(() =>
             {
                 MainPage.Instance.SelTag.SelectedIndex = 5;
-                MainSettingPage.NavigationFrame.NavigateTo(new AboutPage());
+                MainSettingPage.NavigateTo(new AboutPage());
             });
     }
 }

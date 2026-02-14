@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
@@ -11,18 +12,18 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.OtherPage;
 
-public partial class AboutPage : UserControl
+public partial class AboutPage : ISettingPage
 {
     public AboutPage()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "关于我们"
             }
-        });
+        };
         VersionCard.Description = GlobalModel.BodyVersion;
         PowerByTextBlock.Text = $"Power By: Avalonia {typeof(AppBuilder).Assembly.GetName().Version}";
     }
@@ -43,11 +44,11 @@ public partial class AboutPage : UserControl
 
     private void OpenSourceBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new AboutOpenSource());
+        MainSettingPage.NavigateTo(new AboutOpenSource());
     }
 
     private void ContributorsBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new AboutContributor());
+        MainSettingPage.NavigateTo(new AboutContributor());
     }
 }

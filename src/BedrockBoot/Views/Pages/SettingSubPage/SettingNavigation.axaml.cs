@@ -19,26 +19,26 @@ public partial class SettingNavigation : UserControl
 
     private void AboutUs_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new AboutPage());
+        MainSettingPage.NavigateTo(new AboutPage());
     }
 
     private void SetDownload_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new SettingDownload());
+        MainSettingPage.NavigateTo(new SettingDownload());
     }
 
     private void Universal_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new SettingUniversal());
+        MainSettingPage.NavigateTo(new SettingUniversal());
     }
 
     private void SetPersonalization_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new SettingPersonalization());
+        MainSettingPage.NavigateTo(new SettingPersonalization());
     }
 
     private void SetGame_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new SettingGame());
+        MainSettingPage.NavigateTo(new SettingGame());
     }
 }

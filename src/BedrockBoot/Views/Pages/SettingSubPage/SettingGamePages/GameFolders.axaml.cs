@@ -17,23 +17,23 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 
-public partial class GameFolders : ISetting
+public partial class GameFolders : ISettingPage
 {
     public GameFolders()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "游戏",
-                ItemClickAction = (s) => MainSettingPage.NavigationFrame.NavigateTo(new SettingGame())
+                ItemClickAction = (s) => MainSettingPage.NavigateTo(new SettingGame())
             },
             new()
             {
                 ItemName = "实例目录"
             }
-        });
+        };
         
         UpdateUI();
         IsEdit = true;

@@ -7,24 +7,24 @@ using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
-public partial class UniversalDebug : ISetting
+public partial class UniversalDebug : ISettingPage
 {
     public UniversalDebug()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "通用",
                 ItemClickAction = info =>
-                    MainSettingPage.NavigationFrame.NavigateTo(new SettingUniversal())
+                    MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
                 ItemName = "调试模式"
             }
-        });
+        };
 
         IsConsoleModel.IsChecked = GlobalModel.Config.Data.IsConsole;
         IsEdit = true;

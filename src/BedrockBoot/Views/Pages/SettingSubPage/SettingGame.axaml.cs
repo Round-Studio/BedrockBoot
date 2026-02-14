@@ -10,18 +10,18 @@ using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 
-public partial class SettingGame : ISetting
+public partial class SettingGame : ISettingPage
 {
     public SettingGame()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "游戏"
             }
-        });
+        };
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
 
         IsEdit = true;
@@ -38,6 +38,6 @@ public partial class SettingGame : ISetting
 
     private void GameFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new GameFolders());
+        MainSettingPage.NavigateTo(new GameFolders());
     }
 }

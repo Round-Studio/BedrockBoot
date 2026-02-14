@@ -13,7 +13,7 @@ using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
-public partial class PersonalizationBackground : ISetting
+public partial class PersonalizationBackground : ISettingPage
 {
     public PersonalizationBackground()
     {
@@ -43,19 +43,19 @@ public partial class PersonalizationBackground : ISetting
             }
         }
 
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "个性化",
                 ItemClickAction = info =>
-                    MainSettingPage.NavigationFrame.NavigateTo(new SettingPersonalization())
+                    MainSettingPage.NavigateTo(new SettingPersonalization())
             },
             new()
             {
                 ItemName = "背景"
             }
-        });
+        };
 
         IsEdit = true;
     }

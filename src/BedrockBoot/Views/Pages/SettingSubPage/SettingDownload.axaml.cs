@@ -3,6 +3,7 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
@@ -11,20 +12,20 @@ using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 
-public partial class SettingDownload : UserControl
+public partial class SettingDownload : ISettingPage
 {
     public bool IsEdit;
 
     public SettingDownload()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "下载"
             }
-        });
+        };
 
         ChunkCountSlider.Value = GlobalModel.Config.Data.DownloadChunkCount;
         SourceList.VersionDataSources.ToList().ForEach(s => SourceBox.Items.Add(new ComboBoxItem
@@ -42,12 +43,12 @@ public partial class SettingDownload : UserControl
 
     private void GameFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new GameFolders());
+        MainSettingPage.NavigateTo(new GameFolders());
     }
 
     private void SoftwareUpdate_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigationFrame.NavigateTo(new UniversalSoftwareUpdate());
+        MainSettingPage.NavigateTo(new UniversalSoftwareUpdate());
     }
 
     private void ChunkCountSlider_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)

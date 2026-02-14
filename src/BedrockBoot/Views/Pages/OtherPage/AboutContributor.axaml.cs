@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using BedrockBoot.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
 using Octokit;
@@ -12,23 +13,24 @@ using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.OtherPage;
 
-public partial class AboutContributor : UserControl
+public partial class AboutContributor : ISettingPage
 {
     public AboutContributor()
     {
         InitializeComponent();
-        MainSettingPage.SettingBreadcrumbBar.SetItems(new List<BreadcrumbItemInfo>
+
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
                 ItemName = "关于我们",
-                ItemClickAction = info => MainSettingPage.NavigationFrame.NavigateTo(new AboutPage())
+                ItemClickAction = info => MainSettingPage.NavigateTo(new AboutPage())
             },
             new()
             {
                 ItemName = "贡献者"
             }
-        });
+        };
 
         Task.Run(async () =>
         {

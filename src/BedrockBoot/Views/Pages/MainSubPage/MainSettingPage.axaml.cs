@@ -1,4 +1,5 @@
 ﻿using BedrockBoot.Base.Entry;
+using BedrockBoot.Interface;
 using BedrockBoot.Views.Pages.SettingSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.Breadcrumb;
@@ -7,8 +8,14 @@ namespace BedrockBoot.Views.Pages.MainSubPage;
 
 public partial class MainSettingPage : BedrockBootPage
 {
-    public static NavigationFrame NavigationFrame;
-    public static BreadcrumbBar SettingBreadcrumbBar;
+    private static NavigationFrame NavigationFrame;
+    private static BreadcrumbBar SettingBreadcrumbBar;
+
+    public static void NavigateTo(ISettingPage page)
+    {
+        NavigationFrame.NavigateTo(page);
+        SettingBreadcrumbBar.SetItems(page.BreadcrumbItem);
+    }
 
     public MainSettingPage()
     {

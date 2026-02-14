@@ -8,7 +8,7 @@ using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
-public partial class PersonalizationHome : ISetting
+public partial class PersonalizationHome : ISettingPage
 {
     public PersonalizationHome()
     {

@@ -36,6 +36,8 @@ namespace BedrockBoot.Entity
         
         [JsonPropertyName("configInfo")]
         public object ConfigInfo { get; set; }
+
+        [JsonIgnore] public string ErrorTime => ExceptionCanInfo.ErrorTime;
         
         [JsonIgnore]
         public string FileName { get; set; }
@@ -47,7 +49,6 @@ namespace BedrockBoot.Entity
         /// <param name="title">错误标题</param>
         /// <param name="message">异常消息</param>
         /// <param name="exception">异常对象</param>
-        /// <param name="customData">自定义数据（可选）</param>
         public static ErrorReport Create(
             object configData, 
             string title, 

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalException">
     <Grid Margin="0,15">
@@ -25,12 +26,20 @@
             </StackPanel>
             
             <ScrollViewer Grid.Column="1"
-                          Margin="10,0,15,0">
-                <StackPanel Margin="0,0,5,0"
-                            Spacing="8">
-                    <onePointControls:SettingCard/>
+                          Margin="10,0,5,0">
+                <StackPanel Margin="0,0,15,0"
+                            Spacing="8"
+                            Name="ReportsList">
+                    
                 </StackPanel>
             </ScrollViewer>
+            
+            <notice:InfoCard Grid.Column="1"
+                             Name="InfoCard"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             BigTitle="没有任何报告"
+                             Message="没有任何错误报告生成"/>
         </Grid>
     </Grid>
 </UserControl>

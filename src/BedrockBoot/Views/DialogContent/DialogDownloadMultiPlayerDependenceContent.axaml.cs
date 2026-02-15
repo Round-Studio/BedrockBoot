@@ -10,4 +10,9 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
     {
         InitializeComponent();
     }
+
+    public void Download()
+    {
+        
+    }
 }

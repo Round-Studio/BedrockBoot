@@ -24,6 +24,8 @@ public class PathsList
     public static readonly string PluginPath = Path.Combine(RootConfigPath, "BedrockBoot.Plugin");
     public static readonly string GamePublicRootPath = Path.Combine(RootConfigPath, "BedrockBoot.GamePublic");
     public static readonly string ReportPath = Path.Combine(RootConfigPath, "BedrockBoot.ErrorReport");
+    public static readonly string PaperConnectPath = Path.Combine(RootConfigPath, "BedrockBoot.PaperConnect");
+    public static readonly string EasyTierPath = Path.Combine(PaperConnectPath, "EasyTier");
 
     public static List<OtherLauncherInfo> OtherLauncher = new()
     {

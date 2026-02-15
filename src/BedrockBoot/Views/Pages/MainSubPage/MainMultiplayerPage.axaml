@@ -1,0 +1,63 @@
+﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
+                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainMultiplayerPage">
+    <entry:BedrockBootPage.HeaderView>
+        <onePointControls:LineTextBlock Grid.Row="0"
+                                        Margin="0"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        FontSize="28"
+                                        FontWeight="Bold"
+                                        Text="多人联机" />
+    </entry:BedrockBootPage.HeaderView>
+    <Grid>
+        <Grid ColumnDefinitions="3*,7*"
+              Margin="0,15,0,0">
+            <StackPanel Grid.Column="0"
+                        Margin="20,0,0,0"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14">
+                    简述
+                </TextBlock>
+                
+                <TextBlock Text="本联机基于协议 PaperConnect，转发基于 EasyTier"
+                           TextWrapping="Wrap"
+                           Opacity="0.6"></TextBlock>
+                
+                <TextBlock Text="使用 P2P 技术进行联机，连接成功后房间内用户将会互相连接，将不会使用第三方服务器转发流量。最终联机体验由网络环境决定"
+                           TextWrapping="Wrap"
+                           Opacity="0.6"></TextBlock>
+                
+                <TextBlock FontWeight="Bold"
+                           FontSize="14">
+                    相关文档
+                </TextBlock>
+                
+                <StackPanel>
+                    <HyperlinkButton Content="PaperConnect 联机协议"
+                                     NavigateUri="https://docs.roundstudio.top/docs/standard/paperconnect"></HyperlinkButton>
+                
+                    <HyperlinkButton Content="PaperConnect 开源仓库"
+                                     NavigateUri="https://github.com/Round-Studio/PaperConnect"></HyperlinkButton>
+                
+                    <HyperlinkButton Content="EasyTier 官方网站"
+                                     NavigateUri="https://easytier.cn"></HyperlinkButton>
+                </StackPanel>
+            </StackPanel>
+            
+            <ScrollViewer Grid.Column="1"
+                          Margin="10,0,5,0">
+                <navigation:NavigationFrame Margin="0,0,15,0"
+                                            Name="MainFrame"></navigation:NavigationFrame>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</entry:BedrockBootPage>

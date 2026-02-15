@@ -7,3 +7,6 @@
 [submodule "src/PeNet"]
 	path = src/PeNet
 	url = https://github.com/Round-Studio/PeNet.git
+[submodule "src/PaperConnect"]
+	path = src/PaperConnect
+	url = https://github.com/Round-Studio/PaperConnect.git

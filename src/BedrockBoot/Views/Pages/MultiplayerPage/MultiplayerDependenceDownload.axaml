@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.MultiplayerPage.MultiplayerDependenceDownload">
+    <StackPanel Spacing="8">
+        <TextBlock FontWeight="Bold"
+                   FontSize="14">
+            尚未安装 PaperConnect 需要的运行依赖，点击下方开始下载依赖
+        </TextBlock>
+        <onePointControls:SettingCard Header="开始下载"
+                                      Description="自动下载 PaperConnect 需要的依赖文件，包含 EasyTier"
+                                      Glyph="&#xE896;"
+                                      IsClickable="True"
+                                      Name="DownloadBtn"
+                                      Click="DownloadBtn_OnClick"/>
+    </StackPanel>
+</UserControl>

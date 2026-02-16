@@ -1,0 +1,51 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             mc:Ignorable="d" d:DesignWidth="300"
+             Height="180"
+             PointerEntered="InputElement_OnPointerEntered"
+             PointerExited="InputElement_OnPointerExited"
+             x:Class="BedrockBoot.Views.Control.Items.NewsItem">
+    <Grid>
+        <Border ClipToBounds="True"
+                CornerRadius="6">
+            <widgets:LocalImageRenderWidget Name="ImageRender">
+                <widgets:LocalImageRenderWidget.Transitions>
+                    <Transitions>
+                        <EffectTransition Property="Effect"
+                                          Duration="0:0:0.58"
+                                          Easing="QuinticEaseOut"></EffectTransition>
+                        <ThicknessTransition Property="Margin"
+                                             Easing="ExponentialEaseOut"
+                                             Duration="0:0:0.58"></ThicknessTransition>
+                    </Transitions>
+                </widgets:LocalImageRenderWidget.Transitions>
+            </widgets:LocalImageRenderWidget>
+        </Border>
+        
+        <Border CornerRadius="6">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="Transparent" Offset="0.0"/>
+                    <GradientStop Color="#000" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        
+        <StackPanel Margin="20"
+                    VerticalAlignment="Bottom">
+            <TextBlock Text="Title"
+                       Foreground="White"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Name="ItemTitle"></TextBlock>
+            <TextBlock Text="SubTitle"
+                       Foreground="White"
+                       FontSize="11"
+                       TextWrapping="Wrap"
+                       Name="ItemSubTitle"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

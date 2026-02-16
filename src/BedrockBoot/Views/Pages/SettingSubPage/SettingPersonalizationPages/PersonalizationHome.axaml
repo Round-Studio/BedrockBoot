@@ -15,32 +15,9 @@
                           Name="HomeTypeBox"
                           SelectionChanged="HomeTypeBox_OnSelectionChanged">
                     <ComboBoxItem>无</ComboBoxItem>
-                    <ComboBoxItem>自定义主页</ComboBoxItem>
                     <ComboBoxItem>新闻主页</ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>
-
-            <StackPanel Name="HomeXmlBox">
-                <onePointControls:SettingExpander Header="自定义主页"
-                                                  Description="使用 Xml 文本进行主页自定义"
-                                                  IsExpanded="True"
-                                                  Margin="5"
-                                                  Glyph="&#xE943;">
-                    <StackPanel>
-                        <onePointControls:SettingCard Header="选择文件"
-                                                      Description="选择你需要的 Xml 文件"
-                                                      Name="AddXmlFile"
-                                                      Click="AddXmlFile_OnClick"
-                                                      Glyph="&#xE8B0;"
-                                                      Classes="Item"
-                                                      IsClickable="True" />
-                    </StackPanel>
-                </onePointControls:SettingExpander>
-
-                <ListBox Name="XamlList"
-                         SelectionChanged="XamlList_OnSelectionChanged"
-                         Margin="5" />
-            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

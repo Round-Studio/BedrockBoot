@@ -8,6 +8,7 @@
                                xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
                                xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
                                xmlns:windows="clr-namespace:BedrockBoot.Views.Windows"
+                               xmlns:classes="clr-namespace:OnePointUI.Avalonia.Classes;assembly=OnePointUI.Avalonia"
                                mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
                                x:Class="BedrockBoot.Views.Windows.MainWindow"
                                x:DataType="vm:MainWindowViewModel"

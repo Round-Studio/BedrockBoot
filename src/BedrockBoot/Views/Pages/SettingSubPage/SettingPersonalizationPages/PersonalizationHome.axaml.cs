@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.Pages.MainSubPage;
+using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
@@ -13,6 +16,19 @@ public partial class PersonalizationHome : ISettingPage
     public PersonalizationHome()
     {
         InitializeComponent();
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
+        {
+            new()
+            {
+                ItemName = "个性化",
+                ItemClickAction = info =>
+                    MainSettingPage.NavigateTo(new SettingPersonalization())
+            },
+            new()
+            {
+                ItemName = "主页"
+            }
+        };
         Update();
 
         IsEdit = true;
@@ -23,19 +39,10 @@ public partial class PersonalizationHome : ISettingPage
         IsEdit = false;
 
         HomeTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.HomeConfig.HomeType;
-        XamlList.Items.Clear();
-        GlobalModel.Config.Data.HomeConfig.HomeXmlFiles.ForEach(f => { XamlList.Items.Add(f); });
-        if (GlobalModel.Config.Data.HomeConfig.HomeXmlSelIndex != -1)
-            XamlList.SelectedIndex = GlobalModel.Config.Data.HomeConfig.HomeXmlSelIndex;
-
-        HomeXmlBox.IsVisible = false;
 
         switch (GlobalModel.Config.Data.HomeConfig.HomeType)
         {
             case HomeType.None:
-                break;
-            case HomeType.Xml:
-                HomeXmlBox.IsVisible = true;
                 break;
             case HomeType.News:
                 break;
@@ -83,14 +90,5 @@ public partial class PersonalizationHome : ISettingPage
         else
             // 用户取消了选择
             Console.WriteLine(@"未选择文件。");
-    }
-
-    private void XamlList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (IsEdit)
-        {
-            GlobalModel.Config.Data.HomeConfig.HomeXmlSelIndex = XamlList.SelectedIndex;
-            GlobalModel.Config.Save();
-        }
     }
 }

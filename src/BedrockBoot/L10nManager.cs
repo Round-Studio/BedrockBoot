@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Styling;
+using BedrockBoot.Base.Enum.Language;
 
 public class L10nManager : INotifyPropertyChanged
 {
@@ -16,13 +18,11 @@ public class L10nManager : INotifyPropertyChanged
 
     private ResourceDictionary? _currentLanguageDict;
 
-    public void SystemLanguage(string cultureName)
+    public void SystemLanguage(LanguageEnum language)
     {
-        // 1. 加载指定的 AXAML 资源文件
-        var uri = new Uri($"avares://BedrockBoot/I18n/{cultureName}.axaml");
+        var uri = new Uri(LanguageEnumExtensions.GetUri(language));
         var dict = (ResourceDictionary)AvaloniaXamlLoader.Load(uri);
 
-        // 2. 替换 App 级别的资源
         var appResources = Application.Current!.Resources.MergedDictionaries;
         if (_currentLanguageDict != null) appResources.Remove(_currentLanguageDict);
         
@@ -43,4 +43,15 @@ public class L10nManager : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) 
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    
+    
+    public static class LanguageEnumExtensions
+    {
+        public static string GetUri(LanguageEnum language)
+        {
+            var field = language.GetType().GetField(language.ToString());
+            var attribute = field?.GetCustomAttribute<LanguageResourceAttribute>();
+            return attribute?.Uri ?? string.Empty;
+        }
+    }
 }

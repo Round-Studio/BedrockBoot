@@ -13,6 +13,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Language;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
@@ -40,7 +41,7 @@ public class App : Application
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
         
-        L10nManager.Instance.SystemLanguage("en_US");
+        L10nManager.Instance.SystemLanguage(LanguageEnum.Chinese);
 
         // 订阅所有全局异常处理器
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Language;
 
 namespace BedrockBoot.Base.Entry;
 
@@ -39,6 +40,7 @@ public class ConfigEntry
     [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
 
     [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.SymbolicLink;
+    [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
 }
 
 public class StyleConfig

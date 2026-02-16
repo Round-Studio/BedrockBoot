@@ -16,7 +16,7 @@
                 HorizontalAlignment="Left"
                 FontSize="28"
                 FontWeight="Bold"
-                Text="{DynamicResource Main.Download.Title}" />
+                Text="{DynamicResource Download.Title}" />
 
             <Button Classes="NoBorder"
                     Name="BackBtn"

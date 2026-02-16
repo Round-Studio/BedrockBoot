@@ -4,7 +4,6 @@
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
                        xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
-                       xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
                        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                        x:Class="BedrockBoot.Views.Pages.MainSubPage.MainHomePage">
     <entry:BedrockBootPage.HeaderView>

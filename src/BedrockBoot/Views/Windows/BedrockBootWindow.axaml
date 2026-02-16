@@ -180,7 +180,7 @@
                     <Grid RowDefinitions="Auto,*">
                         <Grid Grid.Row="0"
                               MinHeight="58">
-                            <TextBlock Text="任务中心"
+                            <TextBlock Text="{DynamicResource MainWindow.TaskView.Title}"
                                        VerticalAlignment="Center"
                                        FontSize="22"
                                        Margin="20,0,0,0"></TextBlock>

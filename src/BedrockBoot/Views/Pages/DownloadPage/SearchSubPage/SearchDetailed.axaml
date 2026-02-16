@@ -27,7 +27,7 @@
                       SelectionChanged="ResourceTypeBox_OnSelectionChanged"
                       Name="ResourceTypeBox">
                 <ComboBoxItem Content="Minecraft" />
-                <ComboBoxItem Content="{DynamicResource Main.Download.Tab.Assets}" />
+                <ComboBoxItem Content="{DynamicResource Download.Tab.Assets}" />
             </ComboBox>
 
             <StackPanel Orientation="Horizontal"
@@ -48,7 +48,7 @@
                           SelectionChanged="GameType_OnSelectionChanged"
                           Name="GameType">
                     <ComboBoxItem Content="{DynamicResource Download.Game.Type.Preview}" />
-                    <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Release}" />
+                    <ComboBoxItem Content="{DynamicResource Download.Game.Type.Release}" />
                     <ComboBoxItem Content="{DynamicResource Download.Game.Type.Beta}" />
                 </ComboBox>
             </StackPanel>

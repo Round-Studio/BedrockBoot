@@ -25,6 +25,23 @@
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"
+                       Text="{DynamicResource Settings.Universal.Language.Title}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="{DynamicResource Settings.Universal.Language.Title}"
+                                          Description="{DynamicResource Settings.Universal.Language.Desc}"
+                                          Glyph="&#xE909;">
+                <ComboBox Width="200"
+                          Name="LanguageChoose"
+                          SelectionChanged="LanguageChoose_OnSelectionChanged">
+                    <ComboBoxItem Content="Chinese"></ComboBoxItem>
+                    <ComboBoxItem Content="English"></ComboBoxItem>
+                </ComboBox>
+            </onePointControls:SettingCard>
+
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14"
                        Text="{DynamicResource Settings.Download.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"

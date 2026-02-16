@@ -126,6 +126,8 @@
     <x:String x:Key="Settings.Universal.JumpList.Desc">当程序固定在任务栏时，右键其固定项时显示最近启动</x:String>
     <x:String x:Key="Settings.Universal.Debug.Title">调试模式</x:String>
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本体调试模式</x:String>
+    <x:String x:Key="Settings.Universal.Language.Title">语言</x:String>
+    <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot 所显示的语言</x:String>
     
     <x:String x:Key="Tools.Title">工具箱</x:String>
     <x:String x:Key="Tools.Group.Help">帮助</x:String>
@@ -235,12 +237,15 @@
     <x:String x:Key="Instance.Plugins.Status.NotInstalled">未安装</x:String>
     <x:String x:Key="Instance.Plugins.Status.Installed">已安装</x:String>
     
+    <x:String x:Key="Download.Title">下载</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Title">收集电子中...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">全体电子，列队！</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Title">请...诶？</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Message">您所输入的关键词无效哦</x:String>
+    <x:String x:Key="Download.Game.Type.Release">正式版</x:String>
     <x:String x:Key="Download.Game.Type.Preview">预览版</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta 版</x:String>
+    <x:String x:Key="Download.Tab.Assets">资源包</x:String>
     <x:String x:Key="Download.Search.Watermark">键入关键词以搜索...</x:String>
     <x:String x:Key="Download.Search.Action.VersionList">版本列表</x:String>
     <x:String x:Key="Download.Search.Group.Latest">最新版本</x:String>

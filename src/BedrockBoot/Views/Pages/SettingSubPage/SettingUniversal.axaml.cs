@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BedrockBoot.Base.Enum.Language;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -22,6 +24,7 @@ public partial class SettingUniversal : ISettingPage
         };
 
         TaskBarJumpItem.IsChecked = GlobalModel.Config.Data.IsTaskBarJumpItem;
+        LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
 
         IsEdit = true;
     }
@@ -44,6 +47,17 @@ public partial class SettingUniversal : ISettingPage
             GlobalModel.Config.Save();
 
             JumpListManager.ConfigureJumpList();
+        }
+    }
+
+    private void LanguageChoose_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.Language = (LanguageEnum)LanguageChoose.SelectedIndex;
+            GlobalModel.Config.Save();
+
+            L10nManager.Instance.SystemLanguage(GlobalModel.Config.Data.Language);
         }
     }
 }

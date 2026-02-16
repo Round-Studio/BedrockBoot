@@ -126,6 +126,8 @@
     <x:String x:Key="Settings.Universal.JumpList.Desc">Show recent launches when right-clicking the pinned program on the taskbar</x:String>
     <x:String x:Key="Settings.Universal.Debug.Title">Debug Mode</x:String>
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot's own debug mode</x:String>
+    <x:String x:Key="Settings.Universal.Language.Title">Language</x:String>
+    <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot show language</x:String>
     
     <x:String x:Key="Tools.Title">Toolbox</x:String>
     <x:String x:Key="Tools.Group.Help">Help</x:String>
@@ -235,12 +237,15 @@
     <x:String x:Key="Instance.Plugins.Status.NotInstalled">Not Installed</x:String>
     <x:String x:Key="Instance.Plugins.Status.Installed">Installed</x:String>
     
+    <x:String x:Key="Download.Title">Download</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Title">Collecting Assets...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">All assets, fall in!</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Title">Huh...?</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Message">The keyword you entered is invalid</x:String>
+    <x:String x:Key="Download.Game.Type.Release">Release</x:String>
     <x:String x:Key="Download.Game.Type.Preview">Preview</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta</x:String>
+    <x:String x:Key="Download.Tab.Assets">Resource</x:String>
     <x:String x:Key="Download.Search.Watermark">Type keywords to search...</x:String>
     <x:String x:Key="Download.Search.Action.VersionList">Version List</x:String>
     <x:String x:Key="Download.Search.Group.Latest">Latest Versions</x:String>

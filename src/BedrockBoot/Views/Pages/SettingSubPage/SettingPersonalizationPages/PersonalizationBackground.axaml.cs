@@ -21,6 +21,7 @@ public partial class PersonalizationBackground : ISettingPage
         BackgroundTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.StyleType;
         OptBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity;
         BlurBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
+        Image3D.IsChecked = GlobalModel.Config.Data.StyleConfig.Background3D;
         UpdateUI();
 
         if (OperatingSystem.IsWindows())
@@ -155,6 +156,17 @@ public partial class PersonalizationBackground : ISettingPage
 
             GlobalModel.Config.Save();
             GlobalModel.MainWindow.SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
+        }
+    }
+
+    private void Image3D_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.StyleConfig.Background3D = (bool)Image3D.IsChecked;
+
+            GlobalModel.Config.Save();
+            GlobalModel.MainWindow.UpdateBack();
         }
     }
 }

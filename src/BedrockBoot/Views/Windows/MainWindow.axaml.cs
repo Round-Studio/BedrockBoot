@@ -250,15 +250,29 @@ public partial class MainWindow : BedrockBootWindow
                 if (GlobalModel.Config.Data.StyleConfig.BackgroundImages.Count >= 0)
                 {
                     BackgroundBox.IsVisible = true;
+                    BackgroundImage.IsVisible = false;
+                    BackgroundImage3D.IsVisible = false;
                     SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
 
-                    BackgroundImage.Background = new ImageBrush
+                    if (GlobalModel.Config.Data.StyleConfig.Background3D)
                     {
-                        Stretch = Stretch.UniformToFill,
-                        Source = new Bitmap(
+                        BackgroundImage3D.IsVisible = true;
+                        BackgroundImage3D.Source = new Bitmap(
                             GlobalModel.Config.Data.StyleConfig.BackgroundImages[
-                                GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex])
-                    };
+                                GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex]);
+                        BackgroundImage3D.Stretch = Stretch.UniformToFill;
+                    }
+                    else
+                    {
+                        BackgroundImage.IsVisible = true;
+                        BackgroundImage.Background = new ImageBrush
+                        {
+                            Stretch = Stretch.UniformToFill,
+                            Source = new Bitmap(
+                                GlobalModel.Config.Data.StyleConfig.BackgroundImages[
+                                    GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex])
+                        };
+                    }
                 }
         }
         else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.AccentColor)

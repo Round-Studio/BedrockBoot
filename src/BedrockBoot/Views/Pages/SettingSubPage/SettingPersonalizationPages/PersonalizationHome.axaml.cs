@@ -61,34 +61,4 @@ public partial class PersonalizationHome : ISettingPage
             Update();
         }
     }
-
-    private async void AddXmlFile_OnClick(object? sender, RoutedEventArgs e)
-    {
-        var topLevel = TopLevel.GetTopLevel(this);
-
-        var filePickerOptions = new FilePickerOpenOptions
-        {
-            Title = "Choose Xml File",
-            AllowMultiple = false,
-            FileTypeFilter = new[]
-            {
-                FilePickerFileTypes.Xml
-            }
-        };
-
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(filePickerOptions);
-
-        if (files != null && files.Count > 0)
-            foreach (var file in files)
-            {
-                var filePath = file.Path.LocalPath;
-
-                GlobalModel.Config.Data.HomeConfig.HomeXmlFiles.Add(filePath);
-                GlobalModel.Config.Save();
-                Update();
-            }
-        else
-            // 用户取消了选择
-            Console.WriteLine(@"未选择文件。");
-    }
 }

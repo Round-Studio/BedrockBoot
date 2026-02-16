@@ -57,6 +57,7 @@ public class StyleConfig
 
     [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Voronoi;
     [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
+    [JsonPropertyName("background3d")] public bool Background3D { get; set; } = false;
 }
 
 public class HomeConfig

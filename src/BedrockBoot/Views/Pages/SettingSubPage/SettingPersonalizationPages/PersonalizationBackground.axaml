@@ -37,6 +37,15 @@
                                                       IsClickable="True"
                                                       Click="ImportBackgroundBtn_OnClick" />
 
+                        <onePointControls:SettingCard Header="图片视差"
+                                                      Description="3D 图片视差效果"
+                                                      Glyph="&#xE81E;"
+                                                      Classes="Item"
+                                                      IsClickable="False">
+                            <ToggleSwitch Name="Image3D"
+                                          IsCheckedChanged="Image3D_OnIsCheckedChanged"></ToggleSwitch>
+                        </onePointControls:SettingCard>
+
                         <onePointControls:SettingCard Header="壁纸透明度"
                                                       Description="壁纸的透明度设置"
                                                       Glyph="&#xE81E;"

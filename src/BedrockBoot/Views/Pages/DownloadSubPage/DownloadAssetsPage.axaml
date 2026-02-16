@@ -29,7 +29,7 @@
                             <onePointControls:FontIcon Glyph="&#xE71E;"
                                                        FontSize="16"
                                                        VerticalAlignment="Center" />
-                            <TextBlock>搜索</TextBlock>
+                            <TextBlock Text="{DynamicResource Shared.Action.Search}" />
                         </StackPanel>
                     </Button>
 
@@ -44,15 +44,15 @@
 
         <notice:LoadCard Grid.Row="1" HorizontalAlignment="Center"
                          VerticalAlignment="Center"
-                         BigTitle="收集电子中..."
-                         Message="全体电子，列队！"
+                         BigTitle="{DynamicResource Download.Assets.Status.Loading.Title}"
+                         Message="{DynamicResource Download.Assets.Status.Loading.Message}"
                          Name="LoadingRing" />
 
         <notice:InfoCard Grid.Row="1" VerticalAlignment="Center"
                          HorizontalAlignment="Center"
                          Glyph="&#xE822;"
-                         BigTitle="请...诶？"
-                         Message="您所输入的关键词无效哦"
+                         BigTitle="{DynamicResource Download.Assets.Status.Empty.Title}"
+                         Message="{DynamicResource Download.Assets.Status.Empty.Message}"
                          Name="NoneBox" />
 
         <navigation:LotsPageFrame Grid.Row="1"

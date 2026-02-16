@@ -8,9 +8,8 @@
     <ScrollViewer>
         <StackPanel Margin="0,0,0,0">
             <TextBlock Margin="0,5,0,5"
-                       HorizontalAlignment="Left">
-                安装包路径：
-            </TextBlock>
+                       HorizontalAlignment="Left"
+                       Text="{DynamicResource Dialog.Import.Label.PackagePath}" />
 
             <DockPanel>
                 <Button DockPanel.Dock="Right"
@@ -18,45 +17,40 @@
                         Padding="12,0"
                         Classes="NoBorder"
                         Name="OpenChooseFileBtn"
-                        Click="OpenChooseFileBtn_OnClick">
-                    浏览
-                </Button>
+                        Click="OpenChooseFileBtn_OnClick"
+                        Content="{DynamicResource Shared.Action.Browse}" />
 
                 <TextBox Margin="0,5,5,5"
                          Name="PathInputBox" />
             </DockPanel>
 
-
             <TextBlock Margin="0,5,0,5"
-                       HorizontalAlignment="Left">
-                安装目录：
-            </TextBlock>
+                       HorizontalAlignment="Left"
+                       Text="{DynamicResource Dialog.Import.Label.InstallFolder}" />
             <ComboBox Margin="0,5,0,5"
                       Name="GameInstallFoldersInputBox"
                       HorizontalAlignment="Stretch" />
 
             <TextBlock Margin="0,5,0,5"
-                       HorizontalAlignment="Left">
-                安装名称（自定义）：
-            </TextBlock>
+                       HorizontalAlignment="Left"
+                       Text="{DynamicResource Dialog.Import.Label.InstallName}" />
             <TextBox Margin="0,5,0,5"
                      Name="NameInputBox" />
 
             <StackPanel Name="GDKItem"
                         IsVisible="False">
                 <TextBlock Margin="0,5,0,5"
-                           HorizontalAlignment="Left">
-                    实际版本类型（GDK 必须选择此项，填错无法启动）：
-                </TextBlock>
+                           HorizontalAlignment="Left"
+                           Text="{DynamicResource Dialog.Import.Label.GDKTypeTip}" />
                 <ComboBox Margin="0,5,0,5"
                           Name="RealGameBuildTypeInputBox"
                           SelectedIndex="0"
                           HorizontalAlignment="Stretch">
-                    <ComboBoxItem>Preview</ComboBoxItem>
-                    <ComboBoxItem>Release</ComboBoxItem>
+                    <ComboBoxItem Content="Preview" />
+                    <ComboBoxItem Content="Release" />
                 </ComboBox>
 
-                <CheckBox Content="我并不知道该版本类型，上面的选项是随便选的"
+                <CheckBox Content="{DynamicResource Dialog.Import.Action.DontKnowType}"
                           Margin="0,5,0,5"
                           IsChecked="True"
                           Name="DontKnowGameTypeCheckBox" />

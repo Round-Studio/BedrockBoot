@@ -8,18 +8,18 @@
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationColor">
     <ScrollViewer>
         <StackPanel Margin="15">
-            <onePointControls:SettingCard Header="主题模式"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Color.Theme.Title}"
                                           Margin="5"
-                                          Description="浅色 or 深色"
+                                          Description="{DynamicResource Settings.Color.Theme.Desc}"
                                           Glyph="&#xE793;">
                 <ListBox Name="ChooseTheme"
                          Classes="Segmented"
                          SelectedIndex="0"
                          SelectionChanged="ChooseTheme_OnSelectionChanged">
-                    <ListBoxItem Content="深色"
+                    <ListBoxItem Content="{DynamicResource Settings.Color.Theme.Dark}"
                                  Classes="Segmented" />
 
-                    <ListBoxItem Content="浅色"
+                    <ListBoxItem Content="{DynamicResource Settings.Color.Theme.Light}"
                                  Classes="Segmented" />
                 </ListBox>
             </onePointControls:SettingCard>

@@ -17,7 +17,7 @@
                                             FontSize="28"
                                             Margin="0"
                                             FontWeight="Bold"
-                                            Text="实例管理" />
+                                            Text="{DynamicResource Manager.Title}" />
 
             <Button Padding="12,8"
                     Height="32"
@@ -26,7 +26,8 @@
                 <StackPanel Orientation="Horizontal">
                     <onePointControls:FontIcon Glyph="&#xE78B;"
                                                VerticalAlignment="Center" />
-                    <TextBlock Margin="4,0,0,0">导入游戏</TextBlock>
+                    <TextBlock Margin="4,0,0,0"
+                               Text="{DynamicResource Manager.IncludeGame}"></TextBlock>
                     <onePointControls:LabelBox Text="Beta"
                                                Margin="8,0,0,0" />
                 </StackPanel>
@@ -39,7 +40,8 @@
                 <StackPanel Orientation="Horizontal">
                     <onePointControls:FontIcon Glyph="&#xE838;"
                                                VerticalAlignment="Center" />
-                    <TextBlock Margin="4,0,0,0">导入整合包</TextBlock>
+                    <TextBlock Margin="4,0,0,0"
+                               Text="{DynamicResource Manager.IncludePack}"></TextBlock>
                 </StackPanel>
             </Button>
         </StackPanel>
@@ -77,8 +79,8 @@
                                      VerticalAlignment="Center"
                                      IsVisible="False"
                                      Name="FolderNull"
-                                     BigTitle="空"
-                                     Message="点击下方 添加目录&#x0A;以添加目录" />
+                                     BigTitle="{DynamicResource Manager.Folder.Empty.Title}"
+                                     Message="{DynamicResource Manager.Folder.Empty.Message}" />
                 </Grid>
             </items:BorderCard>
 
@@ -101,9 +103,9 @@
                                       Name="GameTypeSel"
                                       SelectionChanged="GameTypeSel_OnSelectionChanged"
                                       HorizontalAlignment="Stretch">
-                                <ComboBoxItem Tag="">全部类型</ComboBoxItem>
-                                <ComboBoxItem Tag="Release">正式版</ComboBoxItem>
-                                <ComboBoxItem Tag="Preview">预览版 / Beta 版</ComboBoxItem>
+                                <ComboBoxItem Tag="" Content="{DynamicResource Manager.GameType.AllType}"></ComboBoxItem>
+                                <ComboBoxItem Tag="Release" Content="{DynamicResource Manager.GameType.Release}"></ComboBoxItem>
+                                <ComboBoxItem Tag="Preview" Content="{DynamicResource Manager.GameType.Preview}"></ComboBoxItem>
                             </ComboBox>
                         </DockPanel>
 
@@ -123,6 +125,7 @@
                             <TextBox Name="SearchBox"
                                      HorizontalAlignment="Stretch"
                                      DockPanel.Dock="Right"
+                                     Watermark="{DynamicResource Manager.Search.Placeholder}"
                                      TextChanged="SearchBox_OnTextChanged" />
                         </DockPanel>
                     </Grid>
@@ -143,15 +146,15 @@
                         <notice:InfoCard HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          Name="GamesNull"
-                                         BigTitle="没有实例"
-                                         Message="关键词无效 或 未下载实例" />
+                                         BigTitle="{DynamicResource Manager.Games.Empty.Title}"
+                                         Message="{DynamicResource Manager.Games.Empty.Message}" />
 
                         <notice:LoadCard HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          IsVisible="False"
                                          Name="GamesLoad"
-                                         BigTitle="列队中"
-                                         Message="正在加载版本..." />
+                                         BigTitle="{DynamicResource Manager.Games.Loading.Title}"
+                                         Message="{DynamicResource Manager.Games.Loading.Message}" />
                     </Grid>
                 </items:BorderCard>
             </Grid>

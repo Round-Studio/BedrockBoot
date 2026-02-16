@@ -16,7 +16,7 @@
                         Spacing="8">
                 <TextBlock Name="VersionName" />
 
-                <onePointControls:LabelBox Text="编辑模式"
+                <onePointControls:LabelBox Text="{DynamicResource Manager.GameItem.EditModel}"
                                            FontSize="14"
                                            Foreground="White"
                                            Background="Purple"
@@ -47,7 +47,7 @@
                                                FontSize="16"
                                                Margin="0,0,8,0" />
 
-                    <TextBlock Text="启动"
+                    <TextBlock Text="{DynamicResource Manager.GameItem.Launch}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>

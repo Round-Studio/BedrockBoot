@@ -11,8 +11,8 @@
                         Spacing="10"
                         Margin="20" />
         </ScrollViewer>
-        <notice:InfoCard BigTitle="没有可用配置"
-                         Message="当前系统中没有可用的第三方基岩版启动器配置文件"
+        <notice:InfoCard BigTitle="{DynamicResource Draw.ImportLauncher.Status.None.Title}"
+                         Message="{DynamicResource Draw.ImportLauncher.Status.None.Message}"
                          Name="NoneBox"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center" />

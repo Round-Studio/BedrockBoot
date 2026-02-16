@@ -10,14 +10,13 @@
             <StackPanel Margin="15,0,15,15">
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">
-                    基础设置
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Settings.Game.Group.Base}" />
 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE8AC;"
-                                              Header="实例名称"
-                                              Description="实例在启动器内显示的名称">
+                                              Header="{DynamicResource Instance.Info.Name.Title}"
+                                              Description="{DynamicResource Instance.Info.Name.Desc}">
                     <TextBox Width="200"
                              Name="InstanceName"
                              TextChanged="TextTypeConfig_OnChanged" />
@@ -27,31 +26,30 @@
                                               Glyph="&#xEB9F;"
                                               IsEnabled="False"
                                               IsVisible="False"
-                                              Header="图标"
-                                              Description="实例在启动器中显示的图标">
+                                              Header="{DynamicResource Instance.Info.Icon.Title}"
+                                              Description="{DynamicResource Instance.Info.Icon.Desc}">
                     <ComboBox Width="200"
                               SelectedIndex="0">
-                        <ComboBoxItem>草方块</ComboBoxItem>
-                        <ComboBoxItem>土径</ComboBoxItem>
-                        <ComboBoxItem>末地石</ComboBoxItem>
-                        <ComboBoxItem>工作台</ComboBoxItem>
+                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Grass}" />
+                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Path}" />
+                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.EndStone}" />
+                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Crafting}" />
                     </ComboBox>
                 </onePointControls:SettingCard>
 
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">
-                    启动设置
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Instance.Info.Group.Launch}" />
 
-                <onePointControls:SettingExpander Header="启动设置"
-                                                  Description="实例的启动相关设置"
+                <onePointControls:SettingExpander Header="{DynamicResource Instance.Info.Launch.Title}"
+                                                  Description="{DynamicResource Instance.Info.Launch.Desc}"
                                                   Margin="5"
                                                   Glyph="&#xECAD;">
                     <StackPanel>
                         <onePointControls:SettingCard Glyph="&#xEC06;"
-                                                      Header="参数"
-                                                      Description="启动游戏时的额外命令行参数"
+                                                      Header="{DynamicResource Instance.Info.Launch.Args.Title}"
+                                                      Description="{DynamicResource Instance.Info.Launch.Args.Desc}"
                                                       Classes="Item">
                             <TextBox Width="200"
                                      Name="InstanceArgs"
@@ -59,24 +57,24 @@
                         </onePointControls:SettingCard>
 
                         <onePointControls:SettingCard Glyph="&#xE70F;"
-                                                      Header="编辑模式"
-                                                      Description="启动基岩版的创作者编辑模式"
+                                                      Header="{DynamicResource Instance.Info.Launch.EditMode.Title}"
+                                                      Description="{DynamicResource Instance.Info.Launch.EditMode.Desc}"
                                                       Classes="Item">
                             <ToggleSwitch Name="InstanceEdit"
                                           IsCheckedChanged="BoolTypeConfig_OnChanged" />
                         </onePointControls:SettingCard>
 
                         <onePointControls:SettingCard Glyph="&#xE822;"
-                                                      Header="启用 Mods"
-                                                      Description="是否启用在出现游戏进程后自动注入 Mods"
+                                                      Header="{DynamicResource Instance.Info.Launch.Mods.Title}"
+                                                      Description="{DynamicResource Instance.Info.Launch.Mods.Desc}"
                                                       Classes="Item">
                             <ToggleSwitch Name="InstanceMod"
                                           IsCheckedChanged="BoolTypeConfig_OnChanged" />
                         </onePointControls:SettingCard>
 
                         <onePointControls:SettingCard Glyph="&#xE756;"
-                                                      Header="控制台"
-                                                      Description="启动时拉起游戏控制台"
+                                                      Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
+                                                      Description="{DynamicResource Instance.Info.Launch.Console.Desc}"
                                                       Classes="Item">
                             <ToggleSwitch Name="InstanceConsole"
                                           IsCheckedChanged="BoolTypeConfig_OnChanged" />
@@ -86,14 +84,13 @@
 
                 <TextBlock Margin="5"
                            FontWeight="Bold"
-                           FontSize="14">
-                    高级设置
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Settings.Download.Group.Advanced}" />
 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE7B8;"
-                                              Header="版本隔离"
-                                              Description="启用版本隔离（仅隔离存档，资源包等。模组文件无需隔离）">
+                                              Header="{DynamicResource Settings.Game.Isolation.Title}"
+                                              Description="{DynamicResource Instance.Info.Isolation.Desc}">
                     <ToggleSwitch IsChecked="True"
                                   Name="InstanceIsolated"
                                   IsCheckedChanged="BoolTypeConfig_OnChanged" />

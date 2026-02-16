@@ -6,27 +6,24 @@
              x:Class="BedrockBoot.Views.DialogContent.DialogImportModContent">
     <StackPanel>
         <TextBlock Margin="0,5,0,5"
-                   HorizontalAlignment="Left">
-            文件路径：
-        </TextBlock>
+                   HorizontalAlignment="Left"
+                   Text="{DynamicResource Dialog.ImportMod.Label.FilePath}" />
         <DockPanel MinWidth="320">
             <Button DockPanel.Dock="Right"
                     Margin="5,5,0,5"
                     Padding="12,0"
                     Classes="NoBorder"
                     Name="OpenChooseFolderBtn"
-                    Click="OpenChooseFolderBtn_OnClick">
-                浏览
-            </Button>
+                    Click="OpenChooseFolderBtn_OnClick"
+                    Content="{DynamicResource Shared.Action.Browse}" />
 
             <TextBox Margin="0,5,5,5"
                      Name="PathInputBox" />
         </DockPanel>
 
         <TextBlock Margin="0,5,0,5"
-                   HorizontalAlignment="Left">
-            Mod 延迟（ms）：
-        </TextBlock>
+                   HorizontalAlignment="Left"
+                   Text="{DynamicResource Dialog.ImportMod.Label.InjectionDelay}" />
         <Slider Margin="0,5,0,5"
                 HorizontalAlignment="Stretch"
                 Maximum="5000"
@@ -35,12 +32,11 @@
                 Name="InjectionDelay" />
 
         <CheckBox Margin="0,5,0,5"
-                  Name="EnablePreLoad">
-            启用预加载 *
-        </CheckBox>
+                  Name="EnablePreLoad"
+                  Content="{DynamicResource Dialog.ImportMod.Option.Preload}" />
+        
         <TextBlock FontSize="9"
-                   Foreground="Gray">
-            * 如果您不知道什么是预加载，请不要勾选
-        </TextBlock>
+                   Foreground="Gray"
+                   Text="{DynamicResource Dialog.ImportMod.Tip.Preload}" />
     </StackPanel>
 </UserControl>

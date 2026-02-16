@@ -10,13 +10,12 @@
                     Spacing="8">
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
-                       FontSize="14">
-                辅助功能
-            </TextBlock>
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Universal.Group.Accessibility}" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="任务栏快捷菜单"
-                                          Description="当程序固定在任务栏时，右键其固定项时显示最近启动"
+                                          Header="{DynamicResource Settings.Universal.JumpList.Title}"
+                                          Description="{DynamicResource Settings.Universal.JumpList.Desc}"
                                           Glyph="&#xE8FC;">
                 <ToggleSwitch IsChecked="False"
                               Name="TaskBarJumpItem"
@@ -25,21 +24,20 @@
 
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
-                       FontSize="14">
-                高级
-            </TextBlock>
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Download.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="软件更新"
-                                          Description="BedrockBoot 的更新设置"
+                                          Header="{DynamicResource Settings.Download.SoftwareUpdate.Title}"
+                                          Description="{DynamicResource Settings.Download.SoftwareUpdate.Desc}"
                                           IsClickable="True"
                                           Name="SoftwareUpdate"
                                           Click="SoftwareUpdate_OnClick"
                                           Glyph="&#xE895;" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="调试模式"
-                                          Description="BedrockBoot 本体调试模式"
+                                          Header="{DynamicResource Settings.Universal.Debug.Title}"
+                                          Description="{DynamicResource Settings.Universal.Debug.Desc}"
                                           IsClickable="True"
                                           Name="DebugBtn"
                                           Click="DebugBtn_OnClick"

@@ -6,7 +6,6 @@
              mc:Ignorable="d"
              MaxHeight="450"
              MinHeight="260"
-
              MaxWidth="600"
              MinWidth="600"
              x:Class="BedrockBoot.Views.DialogContent.DialogImportResourcePackContent">
@@ -20,9 +19,8 @@
 
         <Grid RowDefinitions="Auto,*">
             <TextBlock Grid.Row="0"
-                       Margin="5">
-                您将导入以下包：
-            </TextBlock>
+                       Margin="5"
+                       Text="{DynamicResource Dialog.ImportPack.Label.ConfirmList}" />
 
             <ScrollViewer Grid.Row="1">
                 <StackPanel Margin="0,8,0,5"

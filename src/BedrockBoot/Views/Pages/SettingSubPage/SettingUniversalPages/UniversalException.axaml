@@ -12,15 +12,14 @@
                         Margin="20,0,0,0"
                         Spacing="8">
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    简述
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Settings.Universal.Exception.Summary.Title}" />
                 
-                <TextBlock Text="该页面所记录的所有内容均来自使用中出现的崩溃"
+                <TextBlock Text="{DynamicResource Settings.Universal.Exception.Summary.Intro}"
                            TextWrapping="Wrap"
                            Opacity="0.6"></TextBlock>
                 
-                <TextBlock Text="遇到崩溃，需要反馈给开发者时，可以前往该页面寻找先前出现的异常崩溃，导出后提供给开发者进行修复"
+                <TextBlock Text="{DynamicResource Settings.Universal.Exception.Summary.Guide}"
                            TextWrapping="Wrap"
                            Opacity="0.6"></TextBlock>
             </StackPanel>
@@ -38,8 +37,8 @@
                              Name="InfoCard"
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center"
-                             BigTitle="没有任何报告"
-                             Message="没有任何错误报告生成"/>
+                             BigTitle="{DynamicResource Settings.Universal.Exception.Empty.Title}"
+                             Message="{DynamicResource Settings.Universal.Exception.Empty.Message}"/>
         </Grid>
     </Grid>
 </UserControl>

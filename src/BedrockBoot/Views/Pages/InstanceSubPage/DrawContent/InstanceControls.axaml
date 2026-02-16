@@ -10,13 +10,12 @@
             <StackPanel Margin="20,0,20,15"
                         Spacing="8">
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    辅助功能
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Instance.Controls.Group.Accessibility}" />
 
                 <onePointControls:SettingExpander Name="MouseLock"
-                                                  Header="鼠标锁"
-                                                  Description="针对 UWP 版本的 Bedrock 进行的鼠标优化"
+                                                  Header="{DynamicResource Instance.Controls.MouseLock.Title}"
+                                                  Description="{DynamicResource Instance.Controls.MouseLock.Desc}"
                                                   Glyph="&#xE72E;">
                     <onePointControls:SettingExpander.ItemContent>
                         <ToggleSwitch />
@@ -24,8 +23,8 @@
                     <StackPanel>
                         <onePointControls:SettingCard Classes="Item"
                                                       Glyph="&#xF577;"
-                                                      Header="剪切范围"
-                                                      Description="鼠标锁对游戏的限制范围">
+                                                      Header="{DynamicResource Instance.Controls.MouseLock.Range.Title}"
+                                                      Description="{DynamicResource Instance.Controls.MouseLock.Range.Desc}">
                             <Slider Width="200"
                                     Classes="Number"
                                     Maximum="50" />
@@ -37,34 +36,33 @@
                                               Name="JumpItemBtn"
                                               Click="JumpItemBtn_OnClick"
                                               Glyph="&#xE8A7;"
-                                              Header="快捷方式"
-                                              Description="保存一个用于快速启动该实例的快捷方式" />
+                                              Header="{DynamicResource Instance.Controls.Shortcut.Title}"
+                                              Description="{DynamicResource Instance.Controls.Shortcut.Desc}" />
 
                 <onePointControls:SettingCard IsClickable="True"
                                               Name="ImportConfig"
                                               Click="ImportConfig_OnClick"
                                               Glyph="&#xE8AB;"
-                                              Header="导入配置"
-                                              Description="导入其他实例的配置" />
+                                              Header="{DynamicResource Instance.Controls.ImportConfig.Title}"
+                                              Description="{DynamicResource Instance.Controls.ImportConfig.Desc}" />
 
                 <onePointControls:SettingCard IsClickable="True"
                                               Name="MakePack"
                                               Click="MakePack_OnClick"
                                               Glyph="&#xF012;"
-                                              Header="导出整合包" 
-                                              Description="导出成 Minecraft Bedrock 整合包" />
+                                              Header="{DynamicResource Instance.Controls.ExportPack.Title}" 
+                                              Description="{DynamicResource Instance.Controls.ExportPack.Desc}" />
 
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    高危操作
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Instance.Controls.Group.DangerZone}" />
 
                 <onePointControls:SettingCard IsClickable="True"
                                               Glyph="&#xE74D;"
                                               Name="DeleteBtn"
                                               Click="DeleteBtn_OnClick"
-                                              Header="删除实例"
-                                              Description="彻底删除该游戏版本">
+                                              Header="{DynamicResource Instance.Controls.Delete.Title}"
+                                              Description="{DynamicResource Instance.Controls.Delete.Desc}">
                 </onePointControls:SettingCard>
             </StackPanel>
         </ScrollViewer>

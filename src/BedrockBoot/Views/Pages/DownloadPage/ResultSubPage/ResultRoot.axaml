@@ -43,7 +43,7 @@
                                 Text="Resource" />
 
                             <HyperlinkButton
-                                Content="在 CurseForge 上查看此资源"
+                                Content="{DynamicResource Download.Result.Action.ViewOnCurseForge}"
                                 FontSize="9"
                                 Margin="0,4,0,0"
                                 Name="HyperlinkButton" />
@@ -107,7 +107,7 @@
                                 Width="130">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <onePointControls:FontIcon Glyph="&#xE896;" VerticalAlignment="Center" />
-                                    <TextBlock Text="获取资源" />
+                                    <TextBlock Text="{DynamicResource Download.Result.Action.Get}" />
                                 </StackPanel>
                             </Button>
 
@@ -119,7 +119,7 @@
                                 Width="130">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <onePointControls:FontIcon Glyph="&#xE8C8;" VerticalAlignment="Center" />
-                                    <TextBlock Text="分享资源" />
+                                    <TextBlock Text="{DynamicResource Download.Result.Action.Share}" />
                                 </StackPanel>
                             </Button>
                         </StackPanel>
@@ -135,7 +135,7 @@
                             FontSize="16"
                             Grid.Row="0"
                             Opacity="0.7"
-                            Text="预览" />
+                            Text="{DynamicResource Download.Result.Group.Preview}" />
 
                         <Border
                             Background="Gray"
@@ -167,7 +167,7 @@
                             FontSize="16"
                             Grid.Row="0"
                             Opacity="0.7"
-                            Text="详细介绍" />
+                            Text="{DynamicResource Download.Result.Group.Details}" />
 
                         <Border
                             Background="Gray"

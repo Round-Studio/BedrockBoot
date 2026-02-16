@@ -13,7 +13,7 @@
             <TextBox Grid.Column="0"
                      Margin="5"
                      Name="KeyBox"
-                     Watermark="键入关键词以搜索..." />
+                     Watermark="{DynamicResource Download.Search.Watermark}" />
 
             <Button Grid.Column="1"
                     Width="120"
@@ -28,7 +28,7 @@
                                                VerticalAlignment="Center"
                                                FontSize="15" />
 
-                    <TextBlock Text="搜索" />
+                    <TextBlock Text="{DynamicResource Shared.Action.Search}" />
                 </StackPanel>
             </Button>
         </Grid>

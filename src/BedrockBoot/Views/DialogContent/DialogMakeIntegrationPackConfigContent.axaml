@@ -9,96 +9,76 @@
         <StackPanel Margin="15,0,15,0"
                     Spacing="8">
             <notice:InfoBar State="Warning"
-                            Title="注意"
-                            Message="请注意，整合包中的资源包分发需要获得其开发者的允许，否则可能为非法分发"/>
+                            Title="{DynamicResource Shared.Label.Notice}"
+                            Message="{DynamicResource Dialog.MakePack.Notice.Legal}"/>
             
             <StackPanel Orientation="Horizontal"
                         Opacity="0.5">
-                <TextBlock Text="如果你也想制作与我们启动器相兼容的整合包文件，请参阅："></TextBlock>
-                <HyperlinkButton Content="基岩版整合包规范"
-                                 NavigateUri="https://docs.roundstudio.top/docs/standard/bedrockPack/integrationPackage"></HyperlinkButton>
+                <TextBlock Text="{DynamicResource Dialog.MakePack.Label.GuidePrefix}" />
+                <HyperlinkButton Content="{DynamicResource Dialog.MakePack.Action.ViewGuide}"
+                                 NavigateUri="https://docs.roundstudio.top/docs/standard/bedrockPack/integrationPackage" />
             </StackPanel>
             
             <TextBlock FontSize="17"
-                       FontWeight="Bold">
-                整合包信息
-            </TextBlock>
+                       FontWeight="Bold"
+                       Text="{DynamicResource Dialog.MakePack.Group.PackInfo}" />
             
-            <TextBlock Opacity="0.7">
-                整合包名：
-            </TextBlock>
+            <TextBlock Opacity="0.7"
+                       Text="{DynamicResource Dialog.MakePack.Label.PackName}" />
             <TextBox Watermark="My Pack"
-                     Name="PackName"></TextBox>
+                     Name="PackName" />
             
-            <TextBlock Opacity="0.7">
-                整合包简介：
-            </TextBlock>
+            <TextBlock Opacity="0.7"
+                       Text="{DynamicResource Dialog.MakePack.Label.PackDescription}" />
             <TextBox Watermark="My Pack Description"
-                     Name="PackDescription"></TextBox>
+                     Name="PackDescription" />
             
-            <TextBlock Opacity="0.7">
-                整合包版本：
-            </TextBlock>
+            <TextBlock Opacity="0.7"
+                       Text="{DynamicResource Dialog.MakePack.Label.PackVersion}" />
             <TextBox Watermark="0.0.0.1"
-                     Name="PackVersion"></TextBox>
-            
-            <!--<TextBlock Opacity="0.7">
-                整合包图标（可为空）：
-            </TextBlock>
-            <DockPanel LastChildFill="True">
-                <Button Content="浏览"
-                        Padding="12,0"
-                        DockPanel.Dock="Right"
-                        Margin="8,0,0,0"></Button>
-                <TextBox DockPanel.Dock="Left"
-                         Name="PackIcon"></TextBox>
-            </DockPanel>-->
+                     Name="PackVersion" />
             
             <TextBlock FontSize="17"
-                       FontWeight="Bold">
-                整合包作者信息
-            </TextBlock>
+                       FontWeight="Bold"
+                       Text="{DynamicResource Dialog.MakePack.Group.AuthorInfo}" />
             
-            <TextBlock Opacity="0.7">
-                整合包作者名：
-            </TextBlock>
+            <TextBlock Opacity="0.7"
+                       Text="{DynamicResource Dialog.MakePack.Label.AuthorName}" />
             <TextBox Watermark="Creator"
-                     Name="PackAuthorName"></TextBox>
+                     Name="PackAuthorName" />
             
-            <TextBlock Opacity="0.7">
-                整合包作者地址：
-            </TextBlock>
+            <TextBlock Opacity="0.7"
+                       Text="{DynamicResource Dialog.MakePack.Label.AuthorLink}" />
             <TextBox Watermark="https://example.com"
-                     Name="PackAuthorLink"></TextBox>
+                     Name="PackAuthorLink" />
             
             <TextBlock FontSize="17"
-                       FontWeight="Bold">
-                整合包包含内容
-            </TextBlock>
+                       FontWeight="Bold"
+                       Text="{DynamicResource Dialog.MakePack.Group.Contents}" />
             
             <Grid ColumnDefinitions="*,*">
                 <StackPanel Grid.Column="0"
                             Spacing="8">
-                    <CheckBox Content="存档"
+                    <CheckBox Content="{DynamicResource Main.Home.Title.Archive}"
                               Margin="0"
                               Name="EnableArchive"
-                              IsChecked="True"></CheckBox>
-                    <CheckBox Content="Mod 文件"
+                              IsChecked="True" />
+                    <CheckBox Content="{DynamicResource Dialog.MakePack.Option.DllMods}"
                               Margin="0"
                               Name="EnableDllMods"
-                              IsChecked="True"></CheckBox>
+                              IsChecked="True" />
                 </StackPanel>
                 
                 <StackPanel Grid.Column="1"
                             Spacing="8">
-                    <CheckBox Content="资源包"
+                    <CheckBox Content="{DynamicResource Download.Search.Category.Texture}"
                               Margin="0"
                               Name="EnableResourcePack"
-                              IsChecked="True"></CheckBox>
-                    <CheckBox Content="行为包"
+                              IsChecked="True" />
+                    <CheckBox Content="{DynamicResource Download.Search.Category.Behavior}"
                               Margin="0"
                               Name="EnableBehaviorPack"
-                              IsChecked="True"></CheckBox>
+                              IsChecked="True" />
                 </StackPanel>
             </Grid>
         </StackPanel>

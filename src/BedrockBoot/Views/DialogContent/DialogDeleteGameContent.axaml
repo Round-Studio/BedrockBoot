@@ -11,10 +11,14 @@
 
         <StackPanel Margin="12,0,0,0"
                     VerticalAlignment="Center">
-            <TextBlock FontSize="16"
-                       Name="DeleteProgressText">
-                进度：0 %
-            </TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="16"
+                           Text="{DynamicResource Shared.Status.Progress.Title}" />
+                <TextBlock FontSize="16"
+                           Name="DeleteProgressText"
+                           Text="0 %" />
+            </StackPanel>
+            
             <ProgressBar IsIndeterminate="True"
                          Name="DeleteProgressBar"
                          Margin="0,8,0,0"

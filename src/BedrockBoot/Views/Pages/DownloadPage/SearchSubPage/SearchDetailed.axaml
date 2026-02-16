@@ -18,7 +18,7 @@
                                            VerticalAlignment="Center"
                                            FontSize="15" />
 
-                <TextBlock VerticalAlignment="Center">资源类型</TextBlock>
+                <TextBlock VerticalAlignment="Center" Text="{DynamicResource Download.Search.Label.ResourceType}" />
             </StackPanel>
 
             <ComboBox Width="120"
@@ -26,8 +26,8 @@
                       SelectedIndex="0"
                       SelectionChanged="ResourceTypeBox_OnSelectionChanged"
                       Name="ResourceTypeBox">
-                <ComboBoxItem>Minecraft</ComboBoxItem>
-                <ComboBoxItem>资源包</ComboBoxItem>
+                <ComboBoxItem Content="Minecraft" />
+                <ComboBoxItem Content="{DynamicResource Main.Download.Tab.Assets}" />
             </ComboBox>
 
             <StackPanel Orientation="Horizontal"
@@ -39,7 +39,7 @@
                                                VerticalAlignment="Center"
                                                FontSize="15" />
 
-                    <TextBlock VerticalAlignment="Center">发布类型</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource Download.Search.Label.PublishType}" />
                 </StackPanel>
 
                 <ComboBox Width="120"
@@ -47,9 +47,9 @@
                           SelectedIndex="1"
                           SelectionChanged="GameType_OnSelectionChanged"
                           Name="GameType">
-                    <ComboBoxItem Content="预览版" />
-                    <ComboBoxItem Content="正式版" />
-                    <ComboBoxItem Content="Beta 版" />
+                    <ComboBoxItem Content="{DynamicResource Download.Game.Type.Preview}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Release}" />
+                    <ComboBoxItem Content="{DynamicResource Download.Game.Type.Beta}" />
                 </ComboBox>
             </StackPanel>
 
@@ -65,39 +65,36 @@
                                                VerticalAlignment="Center"
                                                FontSize="15" />
 
-                    <TextBlock VerticalAlignment="Center">资源分类</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource Download.Search.Label.Category}" />
                 </StackPanel>
 
                 <ComboBox Width="120"
                           SelectedIndex="0"
                           HorizontalAlignment="Stretch">
-                    <ComboBoxItem>综合资源</ComboBoxItem>
-                    <ComboBoxItem>材质包</ComboBoxItem>
-                    <ComboBoxItem>行为包</ComboBoxItem>
-                    <ComboBoxItem>地图包</ComboBoxItem>
+                    <ComboBoxItem Content="{DynamicResource Download.Search.Category.All}" />
+                    <ComboBoxItem Content="{DynamicResource Download.Search.Category.Texture}" />
+                    <ComboBoxItem Content="{DynamicResource Download.Search.Category.Behavior}" />
+                    <ComboBoxItem Content="{DynamicResource Download.Search.Category.Map}" />
                 </ComboBox>
             </StackPanel>
         </StackPanel>
 
-        <!-- 分页控件 -->
         <navigation:LotsPageFrame Grid.Row="1"
                                   Name="ResultPage" />
 
-        <!-- 加载动画 -->
         <notice:LoadCard Grid.Row="1"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="LoadingRing"
-                         BigTitle="搜索中..."
-                         Message="请稍候..." />
+                         BigTitle="{DynamicResource Shared.Status.Searching}"
+                         Message="{DynamicResource Shared.Status.Wait}" />
 
-        <!-- 无结果提示 -->
         <notice:InfoCard Grid.Row="1"
                          VerticalAlignment="Center"
                          HorizontalAlignment="Center"
                          Glyph="&#xE822;"
-                         BigTitle="未找到结果"
-                         Message="请尝试其他关键词"
+                         BigTitle="{DynamicResource Download.Search.Status.NoResult.Title}"
+                         Message="{DynamicResource Download.Search.Status.NoResult.Message}"
                          Name="NoneBox" />
     </Grid>
 </UserControl>

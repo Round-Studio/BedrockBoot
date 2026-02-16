@@ -44,7 +44,7 @@
                                                        Foreground="White"
                                                        Glyph="&#xE709;" />
 
-                            <TextBlock Text="启动"
+                            <TextBlock Text="{DynamicResource Main.Action.Launch}"
                                        Foreground="White"
                                        FontSize="15" />
                         </StackPanel>
@@ -86,7 +86,7 @@
                           Margin="6"
                           SelectionChanged="GameListChoose_OnSelectionChanged"
                           Name="GameListChoose">
-                    <ComboBoxItem>无实例</ComboBoxItem>
+                    <ComboBoxItem Content="{DynamicResource Main.GameList.Empty}" />
                 </ComboBox>
             </Grid>
         </items:BorderCard>

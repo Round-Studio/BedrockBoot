@@ -33,6 +33,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <AvaloniaXaml Include="I18n\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.4.3" />
         <PackageReference Include="Avalonia" Version="11.3.12" />
         <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />

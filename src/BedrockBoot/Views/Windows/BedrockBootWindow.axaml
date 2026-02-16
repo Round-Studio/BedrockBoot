@@ -189,8 +189,8 @@
                         <notice:InfoCard Grid.Row="1" 
                                          VerticalAlignment="Center"
                                          HorizontalAlignment="Center"
-                                         BigTitle="太棒啦！"
-                                         Message="当前任务列表中没有任何一项任务"
+                                         BigTitle="{DynamicResource MainWindow.TaskView.NoneTitle}"
+                                         Message="{DynamicResource MainWindow.TaskView.NoneMessage}"
                                          Name="NoneBox" />
 
                         <ScrollViewer Grid.Row="1" 

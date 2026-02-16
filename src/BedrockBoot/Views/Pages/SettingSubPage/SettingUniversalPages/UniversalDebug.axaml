@@ -9,12 +9,11 @@
         <StackPanel Margin="20,15"
                     Spacing="8">
             <TextBlock FontWeight="Bold"
-                       FontSize="14">
-                基础设置
-            </TextBlock>
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Universal.Debug.Group.Base}" />
             
-            <onePointControls:SettingCard Header="控制台"
-                                          Description="BedrockBoot 本体的控制台（需要重启）"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
+                                          Description="{DynamicResource Settings.Universal.Debug.Console.Desc}"
                                           Glyph="&#xE756;">
                 <ToggleSwitch IsChecked="False"
                               Name="IsConsoleModel"
@@ -22,12 +21,11 @@
             </onePointControls:SettingCard>
             
             <TextBlock FontWeight="Bold"
-                       FontSize="14">
-                其他页面
-            </TextBlock>
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Universal.Debug.Group.Other}" />
             
-            <onePointControls:SettingCard Header="崩溃记录"
-                                          Description="BedrockBoot 本体所记录的每一次崩溃"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Debug.Exception.Title}"
+                                          Description="{DynamicResource Settings.Universal.Debug.Exception.Desc}"
                                           IsClickable="True"
                                           Name="ExceptionBtn"
                                           Click="ExceptionBtn_OnClick"

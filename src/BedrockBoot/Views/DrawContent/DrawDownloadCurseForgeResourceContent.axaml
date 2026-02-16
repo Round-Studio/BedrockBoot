@@ -44,7 +44,8 @@
                               HorizontalAlignment="Center">
                             <StackPanel Grid.Column="0">
                                 <TextBlock Name="RankingBox">0</TextBlock>
-                                <TextBlock Foreground="Gray">排行</TextBlock>
+                                <TextBlock Foreground="Gray" 
+                                           Text="{DynamicResource Shared.Label.Ranking}" />
                             </StackPanel>
 
                             <Border Grid.Column="1"
@@ -55,7 +56,8 @@
 
                             <StackPanel Grid.Column="2">
                                 <TextBlock Name="DownCountBox">0</TextBlock>
-                                <TextBlock Foreground="Gray">下载</TextBlock>
+                                <TextBlock Foreground="Gray" 
+                                           Text="{DynamicResource Shared.Action.Download}" />
                             </StackPanel>
                         </Grid>
 
@@ -84,7 +86,7 @@
                         Name="InstanceTabControl"
                         SelectedIndex="0"
                         Margin="5,0,10,0">
-                <TabItem Header="构建文件" Tag="Download" />
+                <TabItem Header="{DynamicResource Download.CurseForge.Tab.BuildFiles}" Tag="Download" />
             </TabControl>
 
             <navigation:NavigationFrame Grid.Row="1"

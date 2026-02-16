@@ -18,10 +18,16 @@
                            FontSize="13"
                            HorizontalAlignment="Center"
                            Name="NameText"></TextBlock>
-                <TextBlock Text="成功贡献过 ? 次"
-                           FontSize="11"
-                           HorizontalAlignment="Center"
-                           Name="ContributorText"></TextBlock>
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Center">
+                    <TextBlock Text="{DynamicResource About.Contributor.Count.Prefix}"
+                               FontSize="11" />
+                    <TextBlock Text="?" 
+                               FontSize="11"
+                               Name="ContributorText" />
+                    <TextBlock Text="{DynamicResource About.Contributor.Count.Suffix}"
+                               FontSize="11" />
+                </StackPanel>
             </StackPanel>
         </Grid>
     </items:BorderCard>

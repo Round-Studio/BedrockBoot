@@ -14,7 +14,7 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
-                                        Text="你好，欢迎回来" />
+                                        Text="{DynamicResource Home.Title}" />
     </entry:BedrockBootPage.HeaderView>
-    <Grid Name="MainGrid" ></Grid>
+    <Grid Name="MainGrid"></Grid>
 </entry:BedrockBootPage>

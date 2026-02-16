@@ -7,38 +7,38 @@
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationBackground">
     <ScrollViewer>
         <StackPanel Margin="15">
-            <onePointControls:SettingCard Header="背景模式"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Mode.Title}"
                                           Margin="5"
-                                          Description="窗体的背景模式"
+                                          Description="{DynamicResource Settings.Background.Mode.Desc}"
                                           Glyph="&#xEC26;">
                 <ComboBox Width="200"
                           Name="BackgroundTypeBox"
                           SelectionChanged="BackgroundTypeBox_OnSelectionChanged">
                     <ComboBoxItem Name="MicaModel">Mica (Win11+)</ComboBoxItem>
                     <ComboBoxItem Name="BlurModel">Blur (Win10+)</ComboBoxItem>
-                    <ComboBoxItem>Image</ComboBoxItem>
-                    <ComboBoxItem>Accent Color</ComboBoxItem>
-                    <ComboBoxItem>Voronoi</ComboBoxItem>
-                    <ComboBoxItem>Bubble</ComboBoxItem>
+                    <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Image}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Accent}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Voronoi}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Bubble}" />
                 </ComboBox>
             </onePointControls:SettingCard>
 
             <StackPanel Name="BackgroundImageBox">
-                <onePointControls:SettingExpander Header="图片背景"
-                                                  Description="启动器图片背景相关设置"
+                <onePointControls:SettingExpander Header="{DynamicResource Settings.Background.Image.Group.Title}"
+                                                  Description="{DynamicResource Settings.Background.Image.Group.Desc}"
                                                   IsExpanded="True"
                                                   Margin="5"
                                                   Glyph="&#xE91B;">
                     <StackPanel>
-                        <onePointControls:SettingCard Header="选择壁纸"
-                                                      Description="选择你需要的壁纸"
+                        <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Image.Select.Title}"
+                                                      Description="{DynamicResource Settings.Background.Image.Select.Desc}"
                                                       Glyph="&#xE8B0;"
                                                       Classes="Item"
                                                       IsClickable="True"
                                                       Click="ImportBackgroundBtn_OnClick" />
 
-                        <onePointControls:SettingCard Header="图片视差"
-                                                      Description="3D 图片视差效果"
+                        <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Image.Parallax.Title}"
+                                                      Description="{DynamicResource Settings.Background.Image.Parallax.Desc}"
                                                       Glyph="&#xE81E;"
                                                       Classes="Item"
                                                       IsClickable="False">
@@ -46,8 +46,8 @@
                                           IsCheckedChanged="Image3D_OnIsCheckedChanged"></ToggleSwitch>
                         </onePointControls:SettingCard>
 
-                        <onePointControls:SettingCard Header="壁纸透明度"
-                                                      Description="壁纸的透明度设置"
+                        <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Image.Opacity.Title}"
+                                                      Description="{DynamicResource Settings.Background.Image.Opacity.Desc}"
                                                       Glyph="&#xE81E;"
                                                       Classes="Item"
                                                       IsClickable="False">
@@ -59,8 +59,8 @@
                                     ValueChanged="OptBar_OnValueChanged" />
                         </onePointControls:SettingCard>
 
-                        <onePointControls:SettingCard Header="壁纸模糊"
-                                                      Description="壁纸的模糊效果"
+                        <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Image.Blur.Title}"
+                                                      Description="{DynamicResource Settings.Background.Image.Blur.Desc}"
                                                       Glyph="&#xF5EF;"
                                                       Classes="Item"
                                                       IsClickable="False">

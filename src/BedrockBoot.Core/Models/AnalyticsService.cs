@@ -5,50 +5,308 @@ using System.Management;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net;
+using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace BedrockBoot.Core.Models
 {
-    public class AnalyticsService
+    public class AnalyticsService : IDisposable
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
+        private static HttpClient _httpClient;
         private const string BaseUrl = "https://count-bb.roundstudio.top/push";
+        private const string Domain = "count-bb.roundstudio.top";
+        
+        private static OptimizedIpResolver _ipResolver;
+        private static IPEndPoint _optimizedEndpoint;
+        private static readonly SemaphoreSlim _initLock = new SemaphoreSlim(1, 1);
+        private bool _disposed;
 
+        static AnalyticsService()
+        {
+            InitializeResolver();
+        }
+
+        private static void InitializeResolver()
+        {
+            var config = new OptimizedIpResolver.OptimizedIpConfig
+            {
+                Domain = Domain,
+                Port = 443,
+                TimeoutSeconds = 3,
+                CacheTtlSeconds = 300, // 5分钟缓存
+                MinResults = 2,
+                MaxConcurrentTests = 10,
+                PreferIPv4 = true,
+                TestPath = "/" // 测试根路径
+            };
+
+            _ipResolver = new OptimizedIpResolver(config);
+        }
+
+        /// <summary>
+        /// 确保HttpClient已初始化（使用优选IP）
+        /// </summary>
+        private static async Task EnsureHttpClientAsync()
+        {
+            if (_httpClient != null) 
+                return;
+
+            await _initLock.WaitAsync();
+            try
+            {
+                if (_httpClient == null)
+                {
+                    // 获取优选IP
+                    _optimizedEndpoint = await _ipResolver.GetOptimizedIpAsync(useCache: true);
+                    
+                    if (_optimizedEndpoint != null)
+                    {
+                        Console.WriteLine($"[Analytics] 使用优选IP: {_optimizedEndpoint}");
+                        _httpClient = CreateOptimizedHttpClient(_optimizedEndpoint);
+                    }
+                    else
+                    {
+                        // 如果优选失败，使用普通HTTP客户端
+                        Console.WriteLine("[Analytics] 优选IP获取失败，使用普通连接");
+                        _httpClient = CreateDefaultHttpClient();
+                    }
+                }
+            }
+            finally
+            {
+                _initLock.Release();
+            }
+        }
+
+        /// <summary>
+        /// 创建使用优选IP的HttpClient
+        /// </summary>
+        private static HttpClient CreateOptimizedHttpClient(IPEndPoint endpoint)
+        {
+            var socketsHandler = new SocketsHttpHandler
+            {
+                ConnectCallback = async (context, cancellationToken) =>
+                {
+                    var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                    
+                    try
+                    {
+                        // 设置KeepAlive
+                        socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                        
+                        // 连接到优选IP
+                        await socket.ConnectAsync(endpoint.Address, endpoint.Port, cancellationToken)
+                            .ConfigureAwait(false);
+                        
+                        Console.WriteLine($"[Analytics] 已连接到优选IP: {endpoint.Address}:{endpoint.Port}");
+                        
+                        return new NetworkStream(socket, ownsSocket: true);
+                    }
+                    catch
+                    {
+                        socket.Dispose();
+                        throw;
+                    }
+                },
+                
+                // 连接池优化
+                MaxConnectionsPerServer = 10,
+                PooledConnectionLifetime = TimeSpan.FromMinutes(5),
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+                
+                // 超时设置
+                ConnectTimeout = TimeSpan.FromSeconds(5),
+                Expect100ContinueTimeout = TimeSpan.FromSeconds(2)
+            };
+
+            var client = new HttpClient(socketsHandler)
+            {
+                Timeout = TimeSpan.FromSeconds(10)
+            };
+
+            // 设置默认请求头
+            client.DefaultRequestHeaders.Host = Domain;
+            client.DefaultRequestHeaders.Add("User-Agent", "BedrockBoot-Analytics/1.0");
+            client.DefaultRequestHeaders.Add("Accept", "*/*");
+            client.DefaultRequestHeaders.Add("Connection", "keep-alive");
+            
+            // 添加缓存控制
+            client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
+
+            return client;
+        }
+
+        /// <summary>
+        /// 创建默认HttpClient（备选方案）
+        /// </summary>
+        private static HttpClient CreateDefaultHttpClient()
+        {
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+
+            var client = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromSeconds(10)
+            };
+
+            client.DefaultRequestHeaders.Add("User-Agent", "BedrockBoot-Analytics/1.0");
+            client.DefaultRequestHeaders.Add("Accept", "*/*");
+
+            return client;
+        }
+
+        /// <summary>
+        /// 刷新优选IP（可定期调用）
+        /// </summary>
+        public static async Task<bool> RefreshOptimizedIpAsync()
+        {
+            try
+            {
+                Console.WriteLine("[Analytics] 开始刷新优选IP...");
+                
+                var newEndpoint = await _ipResolver.GetOptimizedIpAsync(useCache: false);
+                
+                if (newEndpoint != null)
+                {
+                    await _initLock.WaitAsync();
+                    try
+                    {
+                        _optimizedEndpoint = newEndpoint;
+                        
+                        // 重新创建HttpClient
+                        var oldClient = _httpClient;
+                        _httpClient = CreateOptimizedHttpClient(newEndpoint);
+                        
+                        // 释放旧客户端
+                        oldClient?.Dispose();
+                        
+                        Console.WriteLine($"[Analytics] 优选IP刷新成功: {newEndpoint}");
+                        return true;
+                    }
+                    finally
+                    {
+                        _initLock.Release();
+                    }
+                }
+                
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Analytics] 刷新优选IP失败: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 推送设备日志（使用优选IP）
+        /// </summary>
         public static async Task<bool> PushDeviceLog(string version)
         {
             try
             {
-                // 获取设备名称
-                string deviceName = Environment.MachineName;
-                
-                // 获取机器码
-                string machineCode = GetMachineCode();
-                
-                // 组合为 "设备名称_机器码"
-                string user = $"{deviceName}_{machineCode}";
+                // 确保HttpClient已初始化
+                await EnsureHttpClientAsync();
 
+                // 获取设备信息
+                string deviceName = Environment.MachineName;
+                string machineCode = GetMachineCode();
+                string user = $"{deviceName}_{machineCode}";
                 string system = GetOperatingSystemInfo();
                 string type = "BedrockBoot";
 
+                // 构建URL
                 var builder = new UriBuilder(BaseUrl);
                 var query = HttpUtility.ParseQueryString(string.Empty);
                 query["user"] = user;
                 query["system"] = system;
                 query["version"] = version;
                 query["type"] = type;
+                query["t"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(); // 添加时间戳避免缓存
                 builder.Query = query.ToString();
 
-                var response = await _httpClient.GetAsync(builder.ToString());
-                return response.IsSuccessStatusCode;
+                var url = builder.ToString();
+                
+                // 记录使用的IP信息
+                if (_optimizedEndpoint != null)
+                {
+                    Console.WriteLine($"[Analytics] 使用优选IP {_optimizedEndpoint.Address} 发送请求");
+                }
+
+                // 发送请求
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("X-Forwarded-For", GetLocalIpAddress());
+                
+                var response = await _httpClient.SendAsync(request);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"[Analytics] 日志推送成功: {user}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine($"[Analytics] 日志推送失败: {response.StatusCode}");
+                    
+                    // 如果失败且可能是网络问题，尝试刷新优选IP
+                    if (response.StatusCode == HttpStatusCode.RequestTimeout || 
+                        response.StatusCode == HttpStatusCode.GatewayTimeout ||
+                        (int)response.StatusCode >= 500)
+                    {
+                        _ = Task.Run(async () => await RefreshOptimizedIpAsync());
+                    }
+                    
+                    return false;
+                }
             }
-            catch
+            catch (HttpRequestException ex)
             {
+                Console.WriteLine($"[Analytics] 网络请求异常: {ex.Message}");
+                
+                // 网络异常时尝试刷新优选IP
+                _ = Task.Run(async () => await RefreshOptimizedIpAsync());
+                
+                return false;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"[Analytics] 请求超时: {ex.Message}");
+                
+                // 超时时尝试刷新优选IP
+                _ = Task.Run(async () => await RefreshOptimizedIpAsync());
+                
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Analytics] 推送异常: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// 获取机器码（综合硬件信息生成）
+        /// 获取本地IP地址（用于X-Forwarded-For）
         /// </summary>
+        private static string GetLocalIpAddress()
+        {
+            try
+            {
+                using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+                socket.Connect("8.8.8.8", 65530);
+                var endPoint = socket.LocalEndPoint as IPEndPoint;
+                return endPoint?.Address.ToString() ?? "127.0.0.1";
+            }
+            catch
+            {
+                return "127.0.0.1";
+            }
+        }
+
+        // 原有的机器码获取方法保持不变
         private static string GetMachineCode()
         {
             try
@@ -57,16 +315,13 @@ namespace BedrockBoot.Core.Models
                 string diskId = GetDiskId();
                 string macAddress = GetMacAddress();
                 
-                // 组合硬件信息
                 string combined = $"{cpuId}{diskId}{macAddress}";
                 
                 if (string.IsNullOrWhiteSpace(combined))
                 {
-                    // 如果硬件信息获取失败，使用备用方案
                     combined = Environment.MachineName + Environment.ProcessorCount + Environment.OSVersion.VersionString;
                 }
                 
-                // 计算MD5作为机器码
                 using (MD5 md5 = MD5.Create())
                 {
                     byte[] hashBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(combined));
@@ -75,52 +330,38 @@ namespace BedrockBoot.Core.Models
             }
             catch
             {
-                // 异常时返回基于机器名的简单机器码
                 return GenerateFallbackMachineCode();
             }
         }
 
-        /// <summary>
-        /// 获取CPU序列号
-        /// </summary>
         private static string GetCpuId()
         {
             try
             {
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT ProcessorId FROM Win32_Processor"))
+                using var searcher = new ManagementObjectSearcher("SELECT ProcessorId FROM Win32_Processor");
+                foreach (ManagementObject obj in searcher.Get())
                 {
-                    foreach (ManagementObject obj in searcher.Get())
-                    {
-                        return obj["ProcessorId"]?.ToString() ?? "";
-                    }
+                    return obj["ProcessorId"]?.ToString() ?? "";
                 }
             }
             catch { }
             return "";
         }
 
-        /// <summary>
-        /// 获取硬盘序列号
-        /// </summary>
         private static string GetDiskId()
         {
             try
             {
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT SerialNumber FROM Win32_DiskDrive WHERE Index=0"))
+                using var searcher = new ManagementObjectSearcher("SELECT SerialNumber FROM Win32_DiskDrive WHERE Index=0");
+                foreach (ManagementObject obj in searcher.Get())
                 {
-                    foreach (ManagementObject obj in searcher.Get())
-                    {
-                        return obj["SerialNumber"]?.ToString().Trim() ?? "";
-                    }
+                    return obj["SerialNumber"]?.ToString().Trim() ?? "";
                 }
             }
             catch { }
             return "";
         }
 
-        /// <summary>
-        /// 获取MAC地址
-        /// </summary>
         private static string GetMacAddress()
         {
             try
@@ -140,9 +381,6 @@ namespace BedrockBoot.Core.Models
             return "";
         }
 
-        /// <summary>
-        /// 生成备用机器码（当WMI获取失败时）
-        /// </summary>
         private static string GenerateFallbackMachineCode()
         {
             try
@@ -160,7 +398,6 @@ namespace BedrockBoot.Core.Models
             }
             catch
             {
-                // 最后的备用方案
                 return Guid.NewGuid().ToString("N").Substring(0, 16);
             }
         }
@@ -195,6 +432,17 @@ namespace BedrockBoot.Core.Models
             catch
             {
                 return "Unknown";
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                _httpClient?.Dispose();
+                _ipResolver?.Dispose();
+                _initLock?.Dispose();
+                _disposed = true;
             }
         }
     }

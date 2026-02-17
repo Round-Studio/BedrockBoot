@@ -37,8 +37,6 @@ public partial class PersonalizationHome : ISettingPage
         IsEdit = true;
     }
 
-    public List<BreadcrumbItemInfo> BreadcrumbItem { get; set; }
-
     public void Update()
     {
         IsEdit = false;

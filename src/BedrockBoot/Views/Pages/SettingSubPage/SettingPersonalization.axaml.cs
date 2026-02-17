@@ -11,18 +11,23 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 
 public partial class SettingPersonalization : ISettingPage
 {
+    
+
     public SettingPersonalization()
     {
         InitializeComponent();
+        
+        // 面包屑导航国际化
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
-                ItemName = "个性化"
+                ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"]
             }
         };
 
 #if RELEASE
+        // 根据功能开关控制启用状态
         SetBackground.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingBackground;
         SetColor.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingColor;
         HomePanel.IsVisible = GlobalModel.FunctionOption.IsEnableSettingPersonalizationHome;

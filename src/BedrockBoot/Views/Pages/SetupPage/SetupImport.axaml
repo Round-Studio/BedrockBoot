@@ -15,9 +15,9 @@
                                        Foreground="{DynamicResource PrimaryForegroundBrush}" />
             <TextBlock FontSize="22"
                        Margin="5,10,0,0"
-                       Text="导入" />
+                       Text="{DynamicResource Setup.Import.Title}" />
             <TextBlock Margin="5"
-                       Text="在初次使用 BedrockBoot 时，需要您进行一些操作。" />
+                       Text="{DynamicResource Setup.Import.Description}" />
         </StackPanel>
 
         <Grid Margin="0,10,0,0">
@@ -25,15 +25,15 @@
                         HorizontalAlignment="Left"
                         Width="460"
                         Spacing="10">
-                <onePointControls:SettingCard Header="导入实例目录"
-                                              Description="导入一个新的实例目录"
+                <onePointControls:SettingCard Header="{DynamicResource Setup.Import.Folder.Header}"
+                                              Description="{DynamicResource Setup.Import.Folder.Description}"
                                               Glyph="&#xECC8;"
                                               Name="ImportFolderBtn"
                                               Click="ImportFolderBtn_OnClick"
                                               IsClickable="True" />
 
-                <onePointControls:SettingCard Header="导入其他启动器配置"
-                                              Description="导入其他第三方启动器的配置文件，例如 LeviLauncher"
+                <onePointControls:SettingCard Header="{DynamicResource Setup.Import.Other.Header}"
+                                              Description="{DynamicResource Setup.Import.Other.Description}"
                                               Glyph="&#xE835;"
                                               Name="ImportOtherLauncherBtn"
                                               Click="ImportOtherLauncherBtn_OnClick"

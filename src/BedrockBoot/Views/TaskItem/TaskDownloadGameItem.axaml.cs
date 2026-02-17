@@ -15,6 +15,7 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadGameItem : UserControl
 {
+    
     private EasyDownload _downloader;
 
     public TaskDownloadGameItem()
@@ -43,15 +44,9 @@ public partial class TaskDownloadGameItem : UserControl
     {
         _downloader = new EasyDownload(BuildInfo, IsUsePack, InstallFolder, GameName)
         {
-            // 修改为使用整合的DownloadProgressInfo
             DownloadProgress = (text, progressInfo) =>
                 Dispatcher.UIThread.Invoke(() => UpdateDownloadProgress(text, progressInfo)),
 
-            // 移除单独的DownloadSpeed回调
-            // DownloadSpeed = speed =>
-            //     Dispatcher.UIThread.Invoke(() => MainSpeedText.Text = speed),
-
-            // 新增合并进度回调
             MergeProgress = (text, percentage) =>
                 Dispatcher.UIThread.Invoke(() => UpdateMergeProgress(text, percentage)),
 
@@ -71,7 +66,7 @@ public partial class TaskDownloadGameItem : UserControl
                 Dispatcher.UIThread.Invoke(() => ShowErrorDialog(title, message, ex)),
                 
             Completed = (c) =>
-                Dispatcher.UIThread.Invoke(() => MainSpeedText.Text = "下载完成")
+                Dispatcher.UIThread.Invoke(() => MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.Completed"])
         };
     }
 
@@ -84,7 +79,8 @@ public partial class TaskDownloadGameItem : UserControl
 
     public void Install(Action installed)
     {
-        CardTitle.Text = $"下载游戏 {GameName} [{BuildInfo.ID}]";
+        // 标题国际化
+        CardTitle.Text = string.Format(I18nManager.Instance["Task.Game.Title.Format"], GameName, BuildInfo.ID);
 
         InsGetUrlBar.IsIndeterminate = true;
         if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
@@ -97,7 +93,6 @@ public partial class TaskDownloadGameItem : UserControl
         });
     }
 
-    // 修改：使用DownloadProgressInfo参数
     private void UpdateDownloadProgress(string text, DownloadProgressInfo progressInfo)
     {
         if (InsGetUrlBar.IsIndeterminate)
@@ -106,25 +101,13 @@ public partial class TaskDownloadGameItem : UserControl
             InsGetUrlBar.Value = 100;
         }
 
-        // 更新进度条
         InsDownGameBar.Value = progressInfo.Percentage;
-        
-        // 更新主文本
         MainText.Text = text;
         
-        // 更新速度文本 - 从progressInfo中获取
         if (!string.IsNullOrEmpty(progressInfo.Speed))
         {
-            MainSpeedText.Text = $"{progressInfo.Speed}/s";
-        }
-        
-        // 可选：显示详细的下载信息
-        if (progressInfo.TotalBytes > 0)
-        {
-            // 显示已下载/总大小
-            var downloaded = FormatBytes(progressInfo.DownloadedBytes);
-            var total = FormatBytes(progressInfo.TotalBytes);
-            // 可以将这些信息显示在UI的其他位置，如果需要的话
+            // 速度单位国际化
+            MainSpeedText.Text = string.Format(I18nManager.Instance["Common.Unit.Speed"], progressInfo.Speed);
         }
     }
 
@@ -151,7 +134,7 @@ public partial class TaskDownloadGameItem : UserControl
 
             case InstallStates.Extracted:
                 InsUnZipBar.Value = 100;
-                MainSpeedText.Text = "本地安装中...";
+                MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.LocalInstalling"];
                 break;
 
             case InstallStates.Cleared:
@@ -170,13 +153,14 @@ public partial class TaskDownloadGameItem : UserControl
 
     private void ShowErrorDialog(string title, string message, Exception ex)
     {
-        if (ex != null) message += $"\n\n错误详情：{ex.Message}";
+        if (ex != null) 
+            message += $"\n\n{string.Format(I18nManager.Instance["Task.Game.Error.Detail"], ex.Message)}";
 
         DialogHost.Show(new DialogInfo
         {
             Title = title,
             Content = message,
-            CloseButtonText = "确定",
+            CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"],
             AccountButton = DialogButtons.CloseButton
         });
     }
@@ -197,19 +181,5 @@ public partial class TaskDownloadGameItem : UserControl
             GlobalModel.TaskManager.RemoveTask(tuid);
             installedCallBack?.Invoke();
         });
-    }
-    
-    // 辅助方法：格式化字节大小
-    private string FormatBytes(long bytes)
-    {
-        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
-        double len = bytes;
-        int order = 0;
-        while (len >= 1024 && order < sizes.Length - 1)
-        {
-            order++;
-            len = len / 1024;
-        }
-        return $"{len:0.##} {sizes[order]}";
     }
 }

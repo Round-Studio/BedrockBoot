@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d"
+             mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.TaskItem.TaskLaunchGameItem">
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*,Auto">
@@ -17,7 +17,7 @@
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
                 <StackPanel Orientation="Horizontal">
-                    <onePointControls:LabelBox Text="编辑"
+                    <onePointControls:LabelBox Text="{DynamicResource Task.Launch.Tag.Edit}"
                                                FontSize="14"
                                                Foreground="White"
                                                Background="Purple"
@@ -27,9 +27,8 @@
                                                VerticalAlignment="Center" />
 
                     <TextBlock FontSize="16"
-                               Name="CardTitle">
-                        正在启动游戏...
-                    </TextBlock>
+                               Name="CardTitle"
+                               Text="{DynamicResource Task.Launch.Title}" />
                 </StackPanel>
 
                 <StackPanel Margin="0,8,0,0"
@@ -41,9 +40,8 @@
                     <TextBlock Foreground="Gray"
                                FontSize="9"
                                Margin="0,2,0,0"
-                               Name="LaunchProgressText">
-                        步骤：准备部署中...
-                    </TextBlock>
+                               Name="LaunchProgressText"
+                               Text="{DynamicResource Task.Launch.Status.Preparing}" />
                 </StackPanel>
             </StackPanel>
 

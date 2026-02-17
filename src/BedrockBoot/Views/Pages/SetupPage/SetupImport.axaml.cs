@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
@@ -13,6 +14,8 @@ namespace BedrockBoot.Views.Pages.SetupPage;
 
 public partial class SetupImport : UserControl
 {
+    
+
     public SetupImport()
     {
         InitializeComponent();
@@ -24,15 +27,17 @@ public partial class SetupImport : UserControl
 
         DialogHost.Show(new DialogInfo
         {
-            Title = "添加游戏根目录",
+            // 标题和按钮文本国际化
+            Title = I18nManager.Instance["Setup.Import.Dialog.AddFolder.Title"],
             Content = dialog,
-            CloseButtonText = "添加",
-            SecondaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Setup.Import.Dialog.AddFolder.Action"],
+            SecondaryButtonText = I18nManager.Instance["MainWindow.Common.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
                 if (Directory.Exists(dialog.FolderPath))
                 {
+                    // 逻辑保持不变：如果文件夹名为空，则取路径名
                     var name = string.IsNullOrEmpty(dialog.FolderName)
                         ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                         : dialog.FolderName;
@@ -50,6 +55,10 @@ public partial class SetupImport : UserControl
 
     private void ImportOtherLauncherBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.MainWindow.OpenDraw(new DrawImportOtherLauncherContent(), "导入第三方启动器配置");
+        // 侧边抽屉标题国际化
+        GlobalModel.MainWindow.OpenDraw(
+            new DrawImportOtherLauncherContent(), 
+            I18nManager.Instance["Setup.Import.Draw.ImportOther.Title"]
+        );
     }
 }

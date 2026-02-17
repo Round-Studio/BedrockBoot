@@ -15,6 +15,9 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
 public partial class PersonalizationBackground : ISettingPage
 {
+    
+    public bool IsEdit;
+
     public PersonalizationBackground()
     {
         InitializeComponent();
@@ -48,13 +51,13 @@ public partial class PersonalizationBackground : ISettingPage
         {
             new()
             {
-                ItemName = "个性化",
+                ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"],
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingPersonalization())
             },
             new()
             {
-                ItemName = "背景"
+                ItemName = I18nManager.Instance["Setting.Personalization.Background.Title"]
             }
         };
 
@@ -117,11 +120,12 @@ public partial class PersonalizationBackground : ISettingPage
     private async void ImportBackgroundBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
 
-        // 2. 配置文件选择器选项
+        // 配置文件选择器选项
         var filePickerOptions = new FilePickerOpenOptions
         {
-            Title = "Choose Image File",
+            Title = I18nManager.Instance["Setting.Personalization.Background.Dialog.Import.Title"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
@@ -129,22 +133,19 @@ public partial class PersonalizationBackground : ISettingPage
             }
         };
 
-        // 3. 打开对话框并获取文件
+        // 打开对话框并获取文件
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(filePickerOptions);
 
-        // 4. 处理选中的文件
+        // 处理选中的文件
         if (files != null && files.Count > 0)
+        {
             foreach (var file in files)
             {
-                // 获取文件路径
                 var filePath = file.Path.LocalPath;
-
                 GlobalModel.Config.Data.StyleConfig.BackgroundImages.Add(filePath);
                 UpdateUI();
             }
-        else
-            // 用户取消了选择
-            Console.WriteLine(@"未选择文件。");
+        }
     }
 
     private void OptBar_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
@@ -163,7 +164,7 @@ public partial class PersonalizationBackground : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.StyleConfig.Background3D = (bool)Image3D.IsChecked;
+            GlobalModel.Config.Data.StyleConfig.Background3D = Image3D.IsChecked ?? false;
 
             GlobalModel.Config.Save();
             GlobalModel.MainWindow.UpdateBack();

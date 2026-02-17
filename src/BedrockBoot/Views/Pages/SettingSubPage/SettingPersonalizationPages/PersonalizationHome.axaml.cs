@@ -13,6 +13,9 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
 public partial class PersonalizationHome : ISettingPage
 {
+    
+    public bool IsEdit;
+
     public PersonalizationHome()
     {
         InitializeComponent();
@@ -20,19 +23,21 @@ public partial class PersonalizationHome : ISettingPage
         {
             new()
             {
-                ItemName = "个性化",
+                ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"],
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingPersonalization())
             },
             new()
             {
-                ItemName = "主页"
+                ItemName = I18nManager.Instance["Setting.Personalization.Home.Title"]
             }
         };
         Update();
 
         IsEdit = true;
     }
+
+    public List<BreadcrumbItemInfo> BreadcrumbItem { get; set; }
 
     public void Update()
     {
@@ -43,6 +48,7 @@ public partial class PersonalizationHome : ISettingPage
         switch (GlobalModel.Config.Data.HomeConfig.HomeType)
         {
             case HomeType.None:
+                // 这里可以根据类型切换一些描述文本或控件显示
                 break;
             case HomeType.News:
                 break;

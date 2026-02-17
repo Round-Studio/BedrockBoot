@@ -41,7 +41,7 @@ public class App : Application
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
         
-        L10nManager.Instance.SystemLanguage(GlobalModel.Config.Data.Language);
+        I18nManager.Instance.SystemLanguage(GlobalModel.Config.Data.Language);
 
         // 订阅所有全局异常处理器
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

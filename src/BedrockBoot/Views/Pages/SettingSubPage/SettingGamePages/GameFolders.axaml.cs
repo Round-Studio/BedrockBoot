@@ -19,6 +19,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 
 public partial class GameFolders : ISettingPage
 {
+    public bool IsEdit;
+
     public GameFolders()
     {
         InitializeComponent();
@@ -26,12 +28,12 @@ public partial class GameFolders : ISettingPage
         {
             new()
             {
-                ItemName = "游戏",
+                ItemName = I18nManager.Instance["Setting.Game.Breadcrumb.Root"],
                 ItemClickAction = (s) => MainSettingPage.NavigateTo(new SettingGame())
             },
             new()
             {
-                ItemName = "实例目录"
+                ItemName = I18nManager.Instance["Setting.Game.Folders.Title"]
             }
         };
         
@@ -41,16 +43,15 @@ public partial class GameFolders : ISettingPage
 
     private void AddFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        
         var dialog = new DialogAddGameFolderContent();
 
         DialogHost.Show(new DialogInfo
         {
-            Title = "添加游戏根目录",
+            Title = I18nManager.Instance["Setting.Game.Folders.Dialog.Add.Title"],
             Content = dialog,
-            CloseButtonText = "添加",
-            SecondaryButtonText = "取消",
-            PrimaryButtonText = "导入其他启动器配置",
+            CloseButtonText = I18nManager.Instance["Setting.Game.Folders.Dialog.Add.Action"],
+            SecondaryButtonText = I18nManager.Instance["MainWindow.Common.Cancel"],
+            PrimaryButtonText = I18nManager.Instance["Setting.Game.Folders.Dialog.Add.ImportOther"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
@@ -72,7 +73,7 @@ public partial class GameFolders : ISettingPage
             },
             PrimaryAction = () =>
             {
-                GlobalModel.MainWindow.OpenDraw(new DrawImportOtherLauncherContent(), "导入其他启动器目录");
+                GlobalModel.MainWindow.OpenDraw(new DrawImportOtherLauncherContent(), I18nManager.Instance["Setting.Game.Folders.Draw.Import.Title"]);
             }
         });
     }

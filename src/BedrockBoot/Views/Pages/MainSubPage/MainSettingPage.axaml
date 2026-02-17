@@ -10,7 +10,6 @@
     <entry:BedrockBootPage.HeaderView>
         <breadcrumb:BreadcrumbBar HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
-                                  RootItem="设置"
                                   Name="BreadcrumbBar" />
     </entry:BedrockBootPage.HeaderView>
     <Grid>

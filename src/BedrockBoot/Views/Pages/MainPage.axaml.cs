@@ -22,48 +22,43 @@ namespace BedrockBoot.Views.Pages;
 
 public partial class MainPage : UserControl
 {
+    
     public static MainPage Instance;
-    private bool _isUpdatingGameList; // 添加：控制游戏列表更新的标志
+    private bool _isUpdatingGameList; 
 
     public MainPage()
     {
         InitializeComponent();
 
-        #region 注册导航项
+        #region 注册导航项 (使用国际化 Key)
 
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "主页",
+            ItemText = I18nManager.Instance["MainPage.Nav.Home"],
             Tag = "Home",
             Page = typeof(MainHomePage)
         });
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "实例",
+            ItemText = I18nManager.Instance["MainPage.Nav.Manager"],
             Tag = "Manager",
             Page = typeof(MainManager)
         });
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "下载",
+            ItemText = I18nManager.Instance["MainPage.Nav.Download"],
             Tag = "Download",
             Page = typeof(DownloadRoot)
         });
-        /*RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "",
-            ItemText = "任务",
-            Tag = "Task",
-            Page = typeof(MainTaskPage)
-        });*/
+
 #if DEBUG
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "工具",
+            ItemText = I18nManager.Instance["MainPage.Nav.Tools"],
             Tag = "ToolsBox",
             Page = typeof(MainToolsBoxPage)
         });
@@ -73,7 +68,7 @@ public partial class MainPage : UserControl
             RegisterTopItem(new TopBarItemInfo()
             {
                 ItemGlyph = "",
-                ItemText = "工具",
+                ItemText = I18nManager.Instance["MainPage.Nav.Tools"],
                 Tag = "ToolsBox",
                 Page = typeof(MainToolsBoxPage)
             });
@@ -81,7 +76,7 @@ public partial class MainPage : UserControl
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "设置",
+            ItemText = I18nManager.Instance["MainPage.Nav.Setting"],
             Tag = "Setting",
             Page = typeof(MainSettingPage)
         });
@@ -89,7 +84,6 @@ public partial class MainPage : UserControl
         #endregion
 
         Instance = this;
-
         IsEditMode = true;
         SelTag.SelectedIndex = 0;
         SelTag_OnSelectionChanged(null, null);
@@ -101,7 +95,6 @@ public partial class MainPage : UserControl
         Loaded += (sender, args) =>
         {
             PluginLoader.LoadAll();
-
             JumpListManager.ConfigureJumpList();
         };
 
@@ -122,7 +115,6 @@ public partial class MainPage : UserControl
     }
 
     public bool IsEditMode { get; set; }
-
     public Dictionary<string, TopBarItemInfo> TopBarItem { get; } = new();
 
     public static async Task Update(bool isShowNeo = false)
@@ -133,18 +125,18 @@ public partial class MainPage : UserControl
             if (result != null)
                 DialogHost.Show(new DialogInfo
                 {
-                    Content = $"我们有新的更新：\n\n{result.Body}",
-                    Title = $"更新 {result.TagName}",
-                    CloseButtonText = "现在更新",
-                    PrimaryButtonText = "取消",
+                    Title = string.Format(I18nManager.Instance["MainPage.Update.NewVersion"], result.TagName),
+                    Content = string.Format(I18nManager.Instance["MainPage.Update.Content"], result.Body),
+                    CloseButtonText = I18nManager.Instance["MainPage.Update.Action.Now"],
+                    PrimaryButtonText = I18nManager.Instance["MainWindow.Common.Cancel"],
                     CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
                 });
             else if (isShowNeo)
                 DialogHost.Show(new DialogInfo
                 {
-                    Content = "当前已是最新版本",
-                    Title = "检查更新",
-                    CloseButtonText = "确定"
+                    Title = I18nManager.Instance["MainPage.Update.Title"],
+                    Content = I18nManager.Instance["MainPage.Update.Action.Latest"],
+                    CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
                 });
         }
         catch (Exception ex)
@@ -156,15 +148,12 @@ public partial class MainPage : UserControl
     public void RegisterTopItem(TopBarItemInfo item)
     {
         IsEditMode = false;
-
         TopBarItem.Add(item.Tag, item);
-
         SelTag.Items.Add(new SelectBarItem
         {
             Tag = item.Tag,
             Glyph = item.ItemGlyph
         });
-
         IsEditMode = true;
     }
 
@@ -173,13 +162,11 @@ public partial class MainPage : UserControl
         if (IsEditMode)
             try
             {
-                // 修复：检查 SelectedItem 是否为 null
                 if (SelTag.SelectedItem == null) return;
 
                 var item = (SelectBarItem)SelTag.SelectedItem;
                 var tag = item.Tag as string;
 
-                // 修复：检查 tag 是否存在于字典中
                 if (string.IsNullOrEmpty(tag) || !TopBarItem.ContainsKey(tag)) return;
 
                 BedrockBootPage page = null;
@@ -189,19 +176,15 @@ public partial class MainPage : UserControl
                 else
                     DialogHost.Show(new DialogInfo
                     {
-                        Title = "页面无效",
-                        Content = $"页面 {tag} 无效",
-                        CloseButtonText = "确定"
+                        Title = I18nManager.Instance["MainPage.Error.InvalidPage.Title"],
+                        Content = string.Format(I18nManager.Instance["MainPage.Error.InvalidPage.Content"], tag),
+                        CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
                     });
 
                 if (page.HeaderView != null) HeaderContent.NavigateTo(page.HeaderView);
-
                 MainFrame.NavigateTo(page);
             }
-            catch
-            {
-                // 移除：不要在这里重置 IsEditMode，以免影响其他事件
-            }
+            catch { }
     }
 
     public void UpdateUI()
@@ -210,15 +193,15 @@ public partial class MainPage : UserControl
         {
             try
             {
-                _isUpdatingGameList = true; // 添加：设置更新标志
+                _isUpdatingGameList = true; 
                 GameListChoose.Items.Clear();
-                GameListChoose.Items.Add("无可用实例");
+                GameListChoose.Items.Add(I18nManager.Instance["MainPage.Status.NoInstance"]); // 国际化显示
                 GameListChoose.SelectedIndex = 0;
                 GameControls.IsEnabled = false;
                 GameInfo.Text = "";
                 GameName.Text = "";
                 GameSettingBtn.IsVisible = false;
-                _isUpdatingGameList = false; // 添加：清除更新标志
+                _isUpdatingGameList = false; 
             }
             catch (Exception ex)
             {
@@ -229,25 +212,12 @@ public partial class MainPage : UserControl
 
         try
         {
-            // 在开始更新前先设置标志
             IsEditMode = false;
             _isUpdatingGameList = true;
 
-            // 确保控件已初始化
-            if (GameListChoose == null)
-            {
-                Console.WriteLine(@"GameListChoose 控件未初始化");
-                return;
-            }
+            if (GameListChoose == null) return;
 
-            // 清空现有项目
-            try
-            {
-                GameListChoose.Items.Clear();
-            }
-            catch
-            {
-            }
+            try { GameListChoose.Items.Clear(); } catch { }
 
             GameControls.IsEnabled = true;
             GameSettingBtn.IsVisible = true;
@@ -258,7 +228,6 @@ public partial class MainPage : UserControl
                 return;
             }
 
-            // 修复：检查 GameFolderSelIndex 是否有效
             if (GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
                 GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
             {
@@ -275,27 +244,21 @@ public partial class MainPage : UserControl
                 return;
             }
 
-            // 添加版本到选择框
             versions.ForEach(v => { GameListChoose.Items.Add($"{v.Info.VersionName}"); });
 
-            // 修复：检查 GameSelIndex 是否有效，如果无效则设置为 0
             var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
             if (gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) gameFolder.GameSelIndex = 0;
 
             GameListChoose.SelectedIndex = gameFolder.GameSelIndex;
-
             UpdateGameInfo();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"UpdateUI执行出错: {ex}");
-            // 发生异常时也要确保标志位被重置
             _isUpdatingGameList = false;
             IsEditMode = true;
         }
         finally
         {
-            // 确保在finally块中重置标志，即使发生异常也能恢复
             _isUpdatingGameList = false;
             IsEditMode = true;
         }
@@ -305,12 +268,11 @@ public partial class MainPage : UserControl
     {
         try
         {
-            // 修复：添加边界检查防止数组越界
             if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
                 GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
                 GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
             {
-                GameInfo.Text = "无可用实例";
+                GameInfo.Text = I18nManager.Instance["MainPage.Status.NoInstance"];
                 GameName.Text = "";
                 GameBuildType.Text = "";
                 return;
@@ -323,23 +285,20 @@ public partial class MainPage : UserControl
                 gameFolder.GameSelIndex < 0 ||
                 gameFolder.GameSelIndex >= versions.Count)
             {
-                GameInfo.Text = "无可用实例";
+                GameInfo.Text = I18nManager.Instance["MainPage.Status.NoInstance"];
                 GameName.Text = "";
                 GameBuildType.Text = "";
                 return;
             }
 
             var version = versions[gameFolder.GameSelIndex];
-
             GameInfo.Text = $"{version.Info.VersionType} {version.Info.Version}";
             GameName.Text = version.Info.VersionName;
             GameBuildType.Text = version.Info.BuildType.ToString();
         }
         catch (Exception ex)
         {
-            // 修复：添加异常处理
-            Console.WriteLine($@"更新游戏信息失败：{ex.Message}");
-            GameInfo.Text = "加载失败";
+            GameInfo.Text = I18nManager.Instance["MainPage.Status.LoadFailed"];
             GameName.Text = "";
             GameBuildType.Text = "";
         }
@@ -347,19 +306,16 @@ public partial class MainPage : UserControl
 
     private void GameListChoose_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        // 修改：添加 _isUpdatingGameList 检查，防止在更新列表时触发
         if (IsEditMode && !_isUpdatingGameList)
         {
             var selIndex = GameListChoose.SelectedIndex;
 
-            // 修复：检查索引是否有效
             if (selIndex >= 0 && GlobalModel.Config.Data.GameFolderSelIndex >= 0 &&
                 GlobalModel.Config.Data.GameFolderSelIndex < GlobalModel.Config.Data.GameFolders.Count)
             {
                 GlobalModel.Config.Data
                     .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex = selIndex;
                 GlobalModel.Config.Save();
-
                 UpdateGameInfo();
             }
         }
@@ -367,7 +323,6 @@ public partial class MainPage : UserControl
 
     private void GameSettingBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        // 修复：添加边界检查
         if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
@@ -379,14 +334,12 @@ public partial class MainPage : UserControl
         if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) return;
 
         var version = versions[gameFolder.GameSelIndex];
-
         GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(version),
             $"{version.Info.VersionName} - {version.Info.Version}");
     }
 
     private void GameLaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        // 修复：添加边界检查
         if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
@@ -398,7 +351,6 @@ public partial class MainPage : UserControl
         if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) return;
 
         var version = versions[gameFolder.GameSelIndex];
-
         TaskLaunchGameItem.Launch(version);
     }
 }

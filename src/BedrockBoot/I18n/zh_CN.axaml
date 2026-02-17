@@ -335,4 +335,229 @@
     <x:String x:Key="Draw.Instance.Tab.Servers">服务器</x:String>
     <x:String x:Key="Draw.Instance.Tab.Plugins">插件</x:String>
     <x:String x:Key="Draw.Instance.Tab.Controls">操作</x:String>
+    
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Title">当前系统不支持</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Content">根据我们的最低支持标准，系统版本号需要大于等于 19041&#x0a;请尝试升级系统后再次尝试</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Close">退出</x:String>
+    
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Title">Emm...</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Content">偶，您好像没有连接网络.jpg&#x0a;请尝试重新连接网络或切换网络环境后重试。</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Close">确定</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.DevMode.Title">开发者模式</x:String>
+    <x:String x:Key="MainWindow.Dialog.DevMode.Content">我们貌似无法帮您打开开发者模式，请您手动前往设置中打开。</x:String>
+    
+    <x:String x:Key="MainWindow.Dialog.Agreement.Title">BedrockBoot 用户使用协议</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Content">欢迎使用 BedrockBoot，&#x0a;开始使用即代表您同意此条款：&#x0a;&#x0a;1. 此为非官方 Minecraft 启动器&#x0a;2. 您需拥有合法授权的 Minecraft 副本，否则自动进入试玩版&#x0a;3. 我们不会 辅助 / 协助 任何破解正版 Minecraft 的行为&#x0a;4. 禁止任何形式的盗版或作弊行为&#x0a;5. 模组 / 资源包 使用风险自负&#x0a;6. 与 Mojang / Microsoft 无关联&#x0a;7. 本软件会修改注册表相关配置&#x0a;8. 本软件为开源软件，使用和分发其副本源码请遵循开源协议 (GPL-v3)&#x0a;&#x0a;继续使用即为接受条款</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Agree">我同意</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Decline">我不同意，退出</x:String>
+
+    <x:String x:Key="MainWindow.Task.CountInfo">当前有 {0} 项任务</x:String>
+    <x:String x:Key="MainWindow.Protocol.Description">BedrockBoot 协议</x:String>
+    <x:String x:Key="MainWindow.Common.Confirm">确定</x:String>
+    
+    <x:String x:Key="ExceptionWindow.SaveDialog.Title">保存错误报告</x:String>
+    <x:String x:Key="ExceptionWindow.SaveDialog.FileType">BedrockBoot 崩溃报告</x:String>
+    <x:String x:Key="ExceptionWindow.TitleBar">异常处理</x:String>
+    <x:String x:Key="ExceptionWindow.FatalError.Header">应用程序遇到了致命错误</x:String>
+    <x:String x:Key="ExceptionWindow.FatalError.Message">BedrockBoot 遇到了一个致命错误，需要进行反馈。</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Export">导出错误报告</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Copy">复制错误信息</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Return">返回本体</x:String>
+    <x:String x:Key="ExceptionWindow.Link.FAQ">BedrockBoot 常见问题</x:String>
+    <x:String x:Key="ExceptionWindow.Link.Issues">Github Issues</x:String>
+    <x:String x:Key="Task.LeviLamina.Title">正在安装 LeviLamina...</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Manifest">下载清单</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Core">下载本体</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Logger">下载日志记录器</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Loader">下载加载器</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Runtime">下载运行时</x:String>
+    
+    <x:String x:Key="Task.LeviLamina.Status.Preparing">步骤：下载准备中... ({0}%)</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Downloading">正在下载 {0}... ({1}%)</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Installing">正在安装 {0}...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Completed">安装已完成！</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Title">安装 LeviLamina</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Added">已将其安装任务添加至任务列表。</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Success">LeviLamina 安装完成</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Failed">LeviLamina 安装失败</x:String>
+    
+    <x:String x:Key="Task.LeviLamina.Status.DownloadSource">正在下载资源清单...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadLLM">正在下载 LeviLamina 本体...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadLogger">正在下载错误日志器...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadRuntime">正在下载运行时...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadLoader">正在下载预加载器...</x:String>
+    <x:String x:Key="Task.CurseForge.Title">下载资源</x:String>
+    <x:String x:Key="Task.CurseForge.Step.File">下载文件</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Preparing">步骤：下载准备中... ({0}%)</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Downloading">正在下载 {0}... ({1}%)</x:String>
+    <x:String x:Key="Task.CurseForge.Notice.Title">下载资源</x:String>
+    <x:String x:Key="Task.CurseForge.Notice.Added">资源 {0} 已将其下载任务添加至任务列表。</x:String>
+    <x:String x:Key="Task.CurseForge.Title.Format">下载资源：{0}</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Progress">进度：{0:F2} %</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Importing">进度：正在导入文件... (0 %)</x:String>
+    <x:String x:Key="Task.Game.Title">正在安装游戏...</x:String>
+    <x:String x:Key="Task.Game.Step.GetUrl">获取地址</x:String>
+    <x:String x:Key="Task.Game.Step.Download">下载游戏</x:String>
+    <x:String x:Key="Task.Game.Step.Merge">合并文件</x:String>
+    <x:String x:Key="Task.Game.Step.Unzip">解压文件</x:String>
+    <x:String x:Key="Task.Game.Step.Deploy">部署游戏</x:String>
+    <x:String x:Key="Task.Game.Status.Preparing">步骤：下载准备中... ({0}%)</x:String>
+    <x:String x:Key="Task.Game.Notice.Title">安装游戏</x:String>
+    <x:String x:Key="Task.Game.Notice.Added">游戏版本 {0} 已添加至下载队列。</x:String>
+    <x:String x:Key="Task.Game.Notice.Success">游戏 {0} 安装成功！</x:String>
+    <x:String x:Key="Task.Game.Notice.Failed">游戏 {0} 安装失败</x:String>
+    <x:String x:Key="Task.Game.Title.Format">下载游戏 {0} [{1}]</x:String>
+    <x:String x:Key="Task.Game.Status.Completed">下载完成</x:String>
+    <x:String x:Key="Task.Game.Status.LocalInstalling">本地安装中...</x:String>
+    <x:String x:Key="Task.Game.Error.Detail">错误详情：{0}</x:String>
+    <x:String x:Key="Common.Unit.Speed">{0}/s</x:String>
+    <x:String x:Key="Task.Update.Title">下载更新文件</x:String>
+    <x:String x:Key="Task.Update.Notice.Title">下载更新</x:String>
+    <x:String x:Key="Task.Update.Notice.Added">更新文件已添加至下载队列。</x:String>
+    <x:String x:Key="Task.Update.Title.Format">下载更新文件：{0}</x:String>
+    <x:String x:Key="Task.Update.Notice.Message">正在下载更新文件...</x:String>
+    <x:String x:Key="Task.Update.Source.Prefix">下载源：{0}</x:String>
+    <x:String x:Key="Task.ImportPack.Title">导入游戏包...</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Preparing">步骤：准备导入中...</x:String>
+    <x:String x:Key="Task.ImportPack.Notice.Title">导入资源</x:String>
+    <x:String x:Key="Task.ImportPack.Notice.Added">已将资源导入任务添加至任务列表。</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Importing">正在导入：{0}</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Completed">导入完成</x:String>
+    <x:String x:Key="Task.ImportPack.Error.Title">抱歉，无法安装 {0}</x:String>
+    <x:String x:Key="Task.ImportPack.Error.Content">您的包可能存在问题，是不支持的格式。</x:String>
+    <x:String x:Key="Task.IntegrationPack.Title">正在安装整合包...</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.GetUrl">获取地址</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Download">下载游戏</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Merge">合并文件</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Unzip">解压文件</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.InstallResource">安装资源</x:String>
+    <x:String x:Key="Task.IntegrationPack.Status.Preparing">步骤：下载准备中... ({0}%)</x:String>
+    <x:String x:Key="Task.IntegrationPack.Notice.Title">导入整合包</x:String>
+    <x:String x:Key="Task.IntegrationPack.Notice.Added">整合包安装已开启后台进程</x:String>
+    <x:String x:Key="Task.IntegrationPack.Status.Format">({0:F2} %) {1}</x:String>
+    <x:String x:Key="Task.Launch.Title">正在启动游戏...</x:String>
+    <x:String x:Key="Task.Launch.Tag.Edit">编辑</x:String>
+    <x:String x:Key="Task.Launch.Status.Preparing">步骤：准备部署中...</x:String>
+    <x:String x:Key="Task.Launch.Notice.Title">启动游戏</x:String>
+    <x:String x:Key="Task.Launch.Notice.Started">游戏 {0} 启动程序已运行。</x:String>
+    <x:String x:Key="Task.Launch.Notice.InTask">正在处理启动任务...</x:String>
+    <x:String x:Key="Task.Launch.Title.Format">启动游戏 {0}</x:String>
+    <x:String x:Key="Task.Launch.Notice.Added">游戏 {0} 已将其启动任务添加至任务列表。</x:String>
+    <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
+    <x:String x:Key="Task.Launch.Migration.Title">迁移通知</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">该版本需要迁移\n请问是否立即启动迁移？</x:String>
+    <x:String x:Key="Task.Launch.Migration.Action.Start">启动迁移</x:String>
+    <x:String x:Key="Task.Launch.Migration.Action.Later">不了</x:String>
+    <x:String x:Key="Task.Launch.Migration.View.Title">迁移版本</x:String>
+    <x:String x:Key="MainPage.Nav.Home">主页</x:String>
+    <x:String x:Key="MainPage.Nav.Manager">实例</x:String>
+    <x:String x:Key="MainPage.Nav.Download">下载</x:String>
+    <x:String x:Key="MainPage.Nav.Tools">工具</x:String>
+    <x:String x:Key="MainPage.Nav.Setting">设置</x:String>
+    <x:String x:Key="MainPage.Status.NoInstance">无可用实例</x:String>
+    <x:String x:Key="MainPage.Status.LoadFailed">加载失败</x:String>
+    <x:String x:Key="MainPage.Update.Title">检查更新</x:String>
+    <x:String x:Key="MainPage.Update.NewVersion">更新 {0}</x:String>
+    <x:String x:Key="MainPage.Update.Content">我们有新的更新：\n\n{0}</x:String>
+    <x:String x:Key="MainPage.Update.Action.Now">现在更新</x:String>
+    <x:String x:Key="MainPage.Update.Action.Latest">当前已是最新版本</x:String>
+    <x:String x:Key="MainPage.Error.InvalidPage.Title">页面无效</x:String>
+    <x:String x:Key="MainPage.Error.InvalidPage.Content">页面 {0} 无效</x:String>
+    
+    <x:String x:Key="Setup.Completed.Title">完成</x:String>
+    <x:String x:Key="Setup.Completed.Description">基础设置已完成！现在可以尽情享用啦~</x:String>
+    <x:String x:Key="Setup.Completed.Action.Start">开始使用</x:String>
+    <x:String x:Key="Setup.Import.Title">导入</x:String>
+    <x:String x:Key="Setup.Import.Description">在初次使用 BedrockBoot 时，需要您进行一些操作。</x:String>
+    
+    <x:String x:Key="Setup.Import.Folder.Header">导入实例目录</x:String>
+    <x:String x:Key="Setup.Import.Folder.Description">导入一个新的实例目录</x:String>
+    
+    <x:String x:Key="Setup.Import.Other.Header">导入其他启动器配置</x:String>
+    <x:String x:Key="Setup.Import.Other.Description">导入其他第三方启动器的配置文件，例如 LeviLauncher</x:String>
+    <x:String x:Key="Setup.Import.Dialog.AddFolder.Title">添加游戏根目录</x:String>
+    <x:String x:Key="Setup.Import.Dialog.AddFolder.Action">添加</x:String>
+    <x:String x:Key="Setup.Import.Draw.ImportOther.Title">导入第三方启动器配置</x:String>
+    <x:String x:Key="Setup.Root.Slogan">新一代 Minecraft 基岩版启动器</x:String>
+    <x:String x:Key="Setup.Root.Action.Previous">上一步</x:String>
+    <x:String x:Key="Setup.Root.Action.Next">下一步</x:String>
+    
+    <x:String x:Key="Setup.Step.Welcome">欢迎</x:String>
+    <x:String x:Key="Setup.Step.Import">导入</x:String>
+    <x:String x:Key="Setup.Step.Completed">完成</x:String>
+    <x:String x:Key="Setup.Step.Style">个性化</x:String>
+    <x:String x:Key="Setup.Style.Title">个性化</x:String>
+    <x:String x:Key="Setup.Style.Description">启动器的个性化设置</x:String>
+    
+    <x:String x:Key="Setup.Style.Theme.Dark">深色 (Dark)</x:String>
+    <x:String x:Key="Setup.Style.Theme.Light">浅色 (Light)</x:String>
+    <x:String x:Key="Setup.Welcome.Title">欢迎</x:String>
+    <x:String x:Key="Setup.Welcome.Description">欢迎使用 BedrockBoot v2，这是初次使用向导</x:String>
+    
+    <x:String x:Key="Setting.Universal.Title">通用</x:String>
+    <x:String x:Key="Setting.Universal.Breadcrumb.Root">通用</x:String>
+    
+    <x:String x:Key="Setting.Universal.Language.Auto">跟随系统 (Auto)</x:String>
+    <x:String x:Key="Setting.Personalization.Title">个性化</x:String>
+    <x:String x:Key="Setting.Personalization.Breadcrumb.Root">个性化</x:String>
+    <x:String x:Key="Setting.Game.Title">游戏</x:String>
+    <x:String x:Key="Setting.Game.Breadcrumb.Root">游戏</x:String>
+    
+    <x:String x:Key="Setting.Game.Isolation.None">不隔离 (None)</x:String>
+    <x:String x:Key="Setting.Game.Isolation.Version">按版本隔离 (Version)</x:String>
+    <x:String x:Key="Setting.Download.Title">下载设置</x:String>
+    <x:String x:Key="Setting.Download.Breadcrumb.Root">下载</x:String>
+    
+    <x:String x:Key="Setting.Download.ChunkCount">下载并发分片数</x:String>
+    <x:String x:Key="Setting.Download.Source.Version">版本元数据源</x:String>
+    <x:String x:Key="Setting.Download.Source.CurseForge">CurseForge API 代理源</x:String>
+    <x:String x:Key="Setting.Download.Navigation.Folders">管理游戏目录</x:String>
+    <x:String x:Key="Setting.Download.Navigation.Update">检查软件更新</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Title">调试模式</x:String>
+
+    <x:String x:Key="Setting.Universal.Debug.Console.Header">控制台模式</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Console.Desc">开启后将随游戏启动显示控制台窗口</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Exception.Header">异常查看</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Exception.Desc">查看捕获到的程序异常日志</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Title">崩溃记录</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Item.Desc">{0} 发生的崩溃</x:String>
+    
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Title">保存错误报告</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Prefix">错误报告</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.FileType">BedrockBoot 崩溃报告</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Title">软件更新</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.CheckUpdateAction">检查更新</x:String>
+
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Stable">稳定版 (Stable)</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Beta">测试版 (Beta)</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Dev">开发版 (Dev)</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Title">背景</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Dialog.Import.Title">选择图片文件</x:String>
+
+    <x:String x:Key="Setting.Personalization.Background.Type.None">无</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Color">纯色</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Image">图片</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Mica">云母 (Mica)</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Acrylic">亚克力 (Acrylic)</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Title">颜色</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Header">应用模式</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Accent.Header">强调色</x:String>
+
+    <x:String x:Key="Setting.Personalization.Color.Theme.Light">浅色 (Light)</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Dark">深色 (Dark)</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Auto">跟随系统 (Auto)</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Title">主页</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.Header">主页内容类型</x:String>
+    
+    <x:String x:Key="Setting.Personalization.Home.Type.None">空白 (None)</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.News">新闻 (News)</x:String>
+    <x:String x:Key="Setting.Game.Folders.Title">实例目录</x:String>
+    
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.Title">添加游戏根目录</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.Action">添加</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.ImportOther">导入其他启动器配置</x:String>
+    
+    <x:String x:Key="Setting.Game.Folders.Draw.Import.Title">导入其他启动器目录</x:String>
+    <x:String x:Key="MainWindow.Common.Cancel">取消</x:String>
 </ResourceDictionary>

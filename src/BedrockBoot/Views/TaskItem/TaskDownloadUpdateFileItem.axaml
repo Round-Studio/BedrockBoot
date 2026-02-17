@@ -18,9 +18,8 @@
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
                 <TextBlock FontSize="16"
-                           Name="CardTitle">
-                    下载更新文件
-                </TextBlock>
+                           Name="CardTitle"
+                           Text="{DynamicResource Task.Update.Title}" />
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"

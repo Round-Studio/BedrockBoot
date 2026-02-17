@@ -13,6 +13,8 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskImportGamePackItem : UserControl
 {
+    
+
     public TaskImportGamePackItem()
     {
         InitializeComponent();
@@ -34,7 +36,7 @@ public partial class TaskImportGamePackItem : UserControl
     public bool IsGDKUnknownBuildType { get; set; }
     public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
 
-    public async void Install(Action installed)
+    public void Install(Action installed)
     {
         var body = new PackInstaller(PackFile)
         {
@@ -42,20 +44,19 @@ public partial class TaskImportGamePackItem : UserControl
             IsGDKUnknownBuildType = IsGDKUnknownBuildType
         };
         double lastProgress = -1;
+        
         body.ImportProgress = new Progress<PackImportProgress>(s =>
         {
-            // 精确到小数点后两位进行比较
             var currentProgress = Math.Round(s.Progress, 2);
 
-            // 只有当小数点后两位的值变化时才刷新UI
-            if (Math.Abs(currentProgress - lastProgress) > 0.0001) // 浮点数比较容差
+            if (Math.Abs(currentProgress - lastProgress) > 0.0001)
             {
                 lastProgress = currentProgress;
-                Console.WriteLine($@"{s.StatusMessage} - {currentProgress:F2} %");
 
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     ProgressBar.Value = (int)s.Progress;
+                    // 注意：s.StatusMessage 如果来自核心库硬编码，建议后续在核心库也进行 I18n 处理
                     ProgressText.Text = s.StatusMessage;
 
                     if (ProgressBar.IsIndeterminate)
@@ -77,9 +78,10 @@ public partial class TaskImportGamePackItem : UserControl
                 {
                     DialogHost.Show(new DialogInfo
                     {
-                        Title = $"抱歉，无法安装 {InstallName}",
-                        Content = "您的包可能存在问题，是不支持的格式",
-                        CloseButtonText = "确定"
+                        // 错误信息国际化
+                        Title = string.Format(I18nManager.Instance["Task.ImportPack.Error.Title"], InstallName),
+                        Content = I18nManager.Instance["Task.ImportPack.Error.Content"],
+                        CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
                     });
                 });
             }

@@ -14,7 +14,7 @@
                             Title="BedrockBoot">
 
     <windowFrame:OnePointWindow.TitleBarContent>
-        <onePointControls:LabelBox Text="异常处理"
+        <onePointControls:LabelBox Text="{DynamicResource ExceptionWindow.TitleBar}"
                                    FontSize="14"
                                    Foreground="White"
                                    Background="DarkRed"
@@ -31,7 +31,6 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- 错误图标和标题 -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="22,20,20,0">
                 <onePointControls:FontIcon Glyph="&#xE814;"
                                            FontSize="38"
@@ -41,16 +40,14 @@
                 <onePointControls:LineTextBlock FontSize="28"
                                                 FontWeight="Bold"
                                                 VerticalAlignment="Center"
-                                                Text="应用程序遇到了致命错误" />
+                                                Text="{DynamicResource ExceptionWindow.FatalError.Header}" />
             </StackPanel>
 
-            <!-- 错误消息 -->
             <TextBlock Grid.Row="1"
-                       Text="BedrockBoot 遇到了一个致命错误，需要进行反馈。"
+                       Text="{DynamicResource ExceptionWindow.FatalError.Message}"
                        Foreground="Gray"
                        Margin="20,5,20,0" />
 
-            <!-- 错误详情区域 -->
             <ScrollViewer Grid.Row="2"
                           Margin="5,0,5,0">
                 <StackPanel Margin="15">
@@ -60,26 +57,25 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- 操作按钮 -->
             <StackPanel Grid.Row="3"
                         Margin="20"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Spacing="10">
                 <Button Name="SaveBtn"
-                        Content="导出错误报告"
+                        Content="{DynamicResource ExceptionWindow.Button.Export}"
                         Padding="15,10"
                         MinWidth="130"
                         Click="SaveBtnButton_OnClick"
                         Classes="NoBorder" />
                 <Button Name="CopyButton"
-                        Content="复制错误信息"
+                        Content="{DynamicResource ExceptionWindow.Button.Copy}"
                         Padding="15,10"
                         MinWidth="130"
                         Click="CopyButton_OnClick"
                         Classes="NoBorder" />
                 <Button Name="CloseButton"
-                        Content="返回本体"
+                        Content="{DynamicResource ExceptionWindow.Button.Return}"
                         Padding="15,10"
                         MinWidth="120"
                         Click="CloseButton_OnClick"
@@ -93,9 +89,9 @@
                         Orientation="Horizontal"
                         HorizontalAlignment="Left"
                         Spacing="10">
-                <HyperlinkButton Content="BedrockBoot 常见问题"
+                <HyperlinkButton Content="{DynamicResource ExceptionWindow.Link.FAQ}"
                                  NavigateUri="https://docs.roundstudio.top/docs/product/bb/commonQuestion" />
-                <HyperlinkButton Content="Github Issues"
+                <HyperlinkButton Content="{DynamicResource ExceptionWindow.Link.Issues}"
                                  NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues" />
             </StackPanel>
         </Grid>

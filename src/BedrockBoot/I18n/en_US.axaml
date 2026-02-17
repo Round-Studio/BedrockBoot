@@ -1,18 +1,18 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <x:String x:Key="LanguageName">English - BedrockBoot Official</x:String>
-    
+
     <x:String x:Key="MainWindow.TaskView.Title">Task Center</x:String>
     <x:String x:Key="MainWindow.TaskView.NoneTitle">Awesome!</x:String>
     <x:String x:Key="MainWindow.TaskView.NoneMessage">There are no tasks in the task list</x:String>
-    
+
     <x:String x:Key="Main.Action.Launch">Launch</x:String>
     <x:String x:Key="Main.GameList.Empty">No Instances</x:String>
-    
+
     <x:String x:Key="Home.Title">Hello, Welcome Back</x:String>
-    
+
     <x:String x:Key="Shared.Action.Search">Search</x:String>
-    
+
     <x:String x:Key="Manager.Title">Instance Manager</x:String>
     <x:String x:Key="Manager.IncludeGame">Import Game</x:String>
     <x:String x:Key="Manager.IncludePack">Import Modpack</x:String>
@@ -28,7 +28,7 @@
     <x:String x:Key="Manager.Games.Loading.Title">In Queue</x:String>
     <x:String x:Key="Manager.Games.Loading.Message">Loading versions...</x:String>
     <x:String x:Key="Manager.Search.Placeholder">Search instances...</x:String>
-    
+
     <x:String x:Key="Settings.Title">Settings</x:String>
     <x:String x:Key="Settings.Folders.Action.Add">Add Directory</x:String>
     <x:String x:Key="Settings.Folders.Action.Add.Desc">Add a new game directory</x:String>
@@ -128,7 +128,7 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot's own debug mode</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">Language</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot show language</x:String>
-    
+
     <x:String x:Key="Tools.Title">Toolbox</x:String>
     <x:String x:Key="Tools.Group.Help">Help</x:String>
     <x:String x:Key="Tools.McFramework.Title">Download Game Framework</x:String>
@@ -140,7 +140,7 @@
     <x:String x:Key="Tools.UninstallMc.Description">Used to uninstall errors caused by a locally installed Minecraft version</x:String>
     <x:String x:Key="Tools.Empty.Title">Well...</x:String>
     <x:String x:Key="Tools.Empty.Message">No tools in the toolbox awa&#x0A;You can urge the developer to add them ASAP.jpg</x:String>
-    
+
     <x:String x:Key="About.Contributor.Title">Contributors</x:String>
     <x:String x:Key="About.Contributor.Description">Here are the creators who have contributed to BedrockBoot!</x:String>
     <x:String x:Key="About.OpenSource.License.Mit">MIT License</x:String>
@@ -179,7 +179,7 @@
     <x:String x:Key="About.Action.CheckUpdate">Check for Updates</x:String>
     <x:String x:Key="About.Contributor.Count.Prefix">Successfully contributed </x:String>
     <x:String x:Key="About.Contributor.Count.Suffix"> times</x:String>
-    
+
     <x:String x:Key="Instance.Controls.Group.Accessibility">Accessibility</x:String>
     <x:String x:Key="Instance.Controls.MouseLock.Title">Mouse Lock</x:String>
     <x:String x:Key="Instance.Controls.MouseLock.Desc">Mouse optimization for the UWP version of Bedrock</x:String>
@@ -236,7 +236,7 @@
     <x:String x:Key="Instance.Mods.Label.Preload">Preload</x:String>
     <x:String x:Key="Instance.Plugins.Status.NotInstalled">Not Installed</x:String>
     <x:String x:Key="Instance.Plugins.Status.Installed">Installed</x:String>
-    
+
     <x:String x:Key="Download.Title">Download</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Title">Collecting Assets...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">All assets, fall in!</x:String>
@@ -266,7 +266,7 @@
     <x:String x:Key="Download.Result.Group.Details">Details</x:String>
     <x:String x:Key="Download.CurseForge.Label.PackInfo">Pack Information</x:String>
     <x:String x:Key="Download.CurseForge.Tab.BuildFiles">Build Files</x:String>
-    
+
     <x:String x:Key="Shared.Action.Settings">Settings</x:String>
     <x:String x:Key="Shared.Label.Project">Project</x:String>
     <x:String x:Key="Shared.Action.OpenFolder">Open Folder</x:String>
@@ -280,7 +280,7 @@
     <x:String x:Key="Shared.Status.Progress.Title">Progress:</x:String>
     <x:String x:Key="Shared.Label.Notice">Notice</x:String>
     <x:String x:Key="Shared.Label.Ranking">Ranking</x:String>
-    
+
     <x:String x:Key="Dialog.AddGameFolder.Label.Name">Directory Name (Custom):</x:String>
     <x:String x:Key="Dialog.AddGameFolder.Label.Path">Directory Path:</x:String>
     <x:String x:Key="Shared.Action.Browse">Browse</x:String>
@@ -316,7 +316,7 @@
     <x:String x:Key="Dialog.MakePack.Label.AuthorLink">Author Link:</x:String>
     <x:String x:Key="Dialog.MakePack.Option.DllMods">Mod Files (.dll)</x:String>
     <x:String x:Key="Shared.Group.BasicSettings">Basic Settings</x:String>
-    
+
     <x:String x:Key="Draw.DownloadGame.Label.InstanceName">Instance Name</x:String>
     <x:String x:Key="Draw.DownloadGame.Description.InstanceName">The name displayed for the instance in the launcher</x:String>
     <x:String x:Key="Draw.DownloadGame.Description.InstallPath">The installation location for the instance</x:String>
@@ -335,4 +335,214 @@
     <x:String x:Key="Draw.Instance.Tab.Servers">Servers</x:String>
     <x:String x:Key="Draw.Instance.Tab.Plugins">Plugins</x:String>
     <x:String x:Key="Draw.Instance.Tab.Controls">Actions</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Title">System Not Supported</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Content">Based on our minimum support standards, your system version must be 19041 or higher.&#x0a;Please try again after upgrading your system.</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Close">Exit</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Title">Emm...</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Content">Oops, it seems you are not connected to the internet.&#x0a;Please try reconnecting or switching your network environment and try again.</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Close">OK</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.DevMode.Title">Developer Mode</x:String>
+    <x:String x:Key="MainWindow.Dialog.DevMode.Content">We are unable to enable Developer Mode for you. Please enable it manually in your system settings.</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.Agreement.Title">BedrockBoot User Agreement</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Content">Welcome to BedrockBoot.&#x0a;By using this software, you agree to the following terms:&#x0a;&#x0a;1. This is an unofficial Minecraft launcher.&#x0a;2. You must own a legally licensed copy of Minecraft; otherwise, it will default to Trial Mode.&#x0a;3. We do not support or assist in any bypass of Minecraft's official licensing.&#x0a;4. Any form of piracy or cheating is strictly prohibited.&#x0a;5. Use Mods/Resource Packs at your own risk.&#x0a;6. Not affiliated with Mojang / Microsoft.&#x0a;7. This software will modify registry-related configurations.&#x0a;8. This is open-source software; use and distribution must follow the GPL-v3 license.&#x0a;&#x0a;Continuing to use the software constitutes acceptance of these terms.</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Agree">I Agree</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Decline">I Decline, Exit</x:String>
+
+    <x:String x:Key="MainWindow.Task.CountInfo">Currently {0} tasks in progress</x:String>
+    <x:String x:Key="MainWindow.Protocol.Description">BedrockBoot Protocol</x:String>
+    <x:String x:Key="MainWindow.Common.Confirm">Confirm</x:String>
+    <x:String x:Key="MainWindow.Common.Cancel">Cancel</x:String>
+
+    <x:String x:Key="ExceptionWindow.SaveDialog.Title">Save Error Report</x:String>
+    <x:String x:Key="ExceptionWindow.SaveDialog.FileType">BedrockBoot Crash Report</x:String>
+    <x:String x:Key="ExceptionWindow.TitleBar">Exception Handling</x:String>
+    <x:String x:Key="ExceptionWindow.FatalError.Header">Application Encountered a Fatal Error</x:String>
+    <x:String x:Key="ExceptionWindow.FatalError.Message">BedrockBoot has encountered a fatal error and needs your feedback.</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Export">Export Error Report</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Copy">Copy Error Info</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Return">Return to Launcher</x:String>
+    <x:String x:Key="ExceptionWindow.Link.FAQ">BedrockBoot FAQ</x:String>
+    <x:String x:Key="ExceptionWindow.Link.Issues">GitHub Issues</x:String>
+
+    <x:String x:Key="Task.LeviLamina.Title">Installing LeviLamina...</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Manifest">Downloading Manifest</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Core">Downloading Core</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Logger">Downloading Logger</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Loader">Downloading Loader</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Runtime">Downloading Runtime</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Preparing">Step: Preparing download... ({0}%)</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Downloading">Downloading {0}... ({1}%)</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Installing">Installing {0}...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Completed">Installation Complete!</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Title">LeviLamina Installation</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Added">Installation task added to the list.</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Success">LeviLamina installed successfully</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Failed">LeviLamina installation failed</x:String>
+
+    <x:String x:Key="Task.CurseForge.Title">Download Resources</x:String>
+    <x:String x:Key="Task.CurseForge.Step.File">Downloading File</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Preparing">Step: Preparing download... ({0}%)</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Downloading">Downloading {0}... ({1}%)</x:String>
+    <x:String x:Key="Task.CurseForge.Notice.Title">Download Resources</x:String>
+    <x:String x:Key="Task.CurseForge.Notice.Added">Resource {0} download task added to the list.</x:String>
+    <x:String x:Key="Task.CurseForge.Title.Format">Downloading Resource: {0}</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Progress">Progress: {0:F2} %</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Importing">Progress: Importing files... (0 %)</x:String>
+    <x:String x:Key="Task.Game.Title">Installing Game...</x:String>
+    <x:String x:Key="Task.Game.Step.GetUrl">Getting URL</x:String>
+    <x:String x:Key="Task.Game.Step.Download">Downloading Game</x:String>
+    <x:String x:Key="Task.Game.Step.Merge">Merging Files</x:String>
+    <x:String x:Key="Task.Game.Step.Unzip">Extracting Files</x:String>
+    <x:String x:Key="Task.Game.Step.Deploy">Deploying Game</x:String>
+    <x:String x:Key="Task.Game.Status.Preparing">Step: Preparing download... ({0}%)</x:String>
+    <x:String x:Key="Task.Game.Notice.Title">Install Game</x:String>
+    <x:String x:Key="Task.Game.Notice.Added">Game version {0} added to download queue.</x:String>
+    <x:String x:Key="Task.Game.Notice.Success">Game {0} installed successfully!</x:String>
+    <x:String x:Key="Task.Game.Notice.Failed">Game {0} installation failed</x:String>
+    <x:String x:Key="Task.Game.Title.Format">Downloading Game {0} [{1}]</x:String>
+    <x:String x:Key="Task.Game.Status.Completed">Download Complete</x:String>
+    <x:String x:Key="Task.Game.Status.LocalInstalling">Local installation in progress...</x:String>
+    <x:String x:Key="Task.Game.Error.Detail">Error Details: {0}</x:String>
+    <x:String x:Key="Common.Unit.Speed">{0}/s</x:String>
+
+    <x:String x:Key="Task.Update.Title">Download Update File</x:String>
+    <x:String x:Key="Task.Update.Notice.Title">Software Update</x:String>
+    <x:String x:Key="Task.Update.Notice.Added">Update file added to download queue.</x:String>
+    <x:String x:Key="Task.Update.Title.Format">Downloading Update: {0}</x:String>
+    <x:String x:Key="Task.Update.Notice.Message">Downloading update file...</x:String>
+    <x:String x:Key="Task.Update.Source.Prefix">Source: {0}</x:String>
+    <x:String x:Key="Task.ImportPack.Title">Importing Pack...</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Preparing">Step: Preparing import...</x:String>
+    <x:String x:Key="Task.ImportPack.Notice.Title">Import Resources</x:String>
+    <x:String x:Key="Task.ImportPack.Notice.Added">Resource import task added to the list.</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Importing">Importing: {0}</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Completed">Import Complete</x:String>
+    <x:String x:Key="Task.ImportPack.Error.Title">Sorry, unable to install {0}</x:String>
+    <x:String x:Key="Task.ImportPack.Error.Content">There may be an issue with your pack; the format is not supported.</x:String>
+
+    <x:String x:Key="Task.IntegrationPack.Title">Installing Integration Pack...</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.GetUrl">Getting URL</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Download">Downloading Game</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Merge">Merging Files</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Unzip">Extracting Files</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.InstallResource">Installing Resources</x:String>
+    <x:String x:Key="Task.IntegrationPack.Status.Preparing">Step: Preparing download... ({0}%)</x:String>
+    <x:String x:Key="Task.IntegrationPack.Notice.Title">Import Integration Pack</x:String>
+    <x:String x:Key="Task.IntegrationPack.Notice.Added">Integration pack installation started in background.</x:String>
+    <x:String x:Key="Task.IntegrationPack.Status.Format">({0:F2} %) {1}</x:String>
+    <x:String x:Key="Task.Launch.Title">Launching Game...</x:String>
+    <x:String x:Key="Task.Launch.Tag.Edit">Edit</x:String>
+    <x:String x:Key="Task.Launch.Status.Preparing">Step: Preparing deployment...</x:String>
+    <x:String x:Key="Task.Launch.Notice.Title">Launch Game</x:String>
+    <x:String x:Key="Task.Launch.Notice.Started">Game {0} launcher is running.</x:String>
+    <x:String x:Key="Task.Launch.Notice.InTask">Processing launch task...</x:String>
+    <x:String x:Key="Task.Launch.Title.Format">Launching Game {0}</x:String>
+    <x:String x:Key="Task.Launch.Notice.Added">Game {0} launch task added to the list.</x:String>
+    <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
+
+    <x:String x:Key="Task.Launch.Migration.Title">Migration Notice</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">This version requires migration.&#x0a;Would you like to start the migration now?</x:String>
+    <x:String x:Key="Task.Launch.Migration.Action.Start">Start Migration</x:String>
+    <x:String x:Key="Task.Launch.Migration.Action.Later">Not Now</x:String>
+    <x:String x:Key="Task.Launch.Migration.View.Title">Migrate Version</x:String>
+    <x:String x:Key="MainPage.Nav.Home">Home</x:String>
+    <x:String x:Key="MainPage.Nav.Manager">Instances</x:String>
+    <x:String x:Key="MainPage.Nav.Download">Download</x:String>
+    <x:String x:Key="MainPage.Nav.Tools">Tools</x:String>
+    <x:String x:Key="MainPage.Nav.Setting">Settings</x:String>
+    <x:String x:Key="MainPage.Status.NoInstance">No instances available</x:String>
+    <x:String x:Key="MainPage.Status.LoadFailed">Load Failed</x:String>
+    <x:String x:Key="MainPage.Update.Title">Check for Updates</x:String>
+    <x:String x:Key="MainPage.Update.NewVersion">Update {0}</x:String>
+    <x:String x:Key="MainPage.Update.Content">A new update is available:&#x0a;&#x0a;{0}</x:String>
+    <x:String x:Key="MainPage.Update.Action.Now">Update Now</x:String>
+    <x:String x:Key="MainPage.Update.Action.Latest">Already on the latest version</x:String>
+    <x:String x:Key="MainPage.Error.InvalidPage.Title">Invalid Page</x:String>
+    <x:String x:Key="MainPage.Error.InvalidPage.Content">Page {0} is invalid</x:String>
+
+    <x:String x:Key="Setup.Completed.Title">Finished</x:String>
+    <x:String x:Key="Setup.Completed.Description">Basic setup is complete! You are ready to go.</x:String>
+    <x:String x:Key="Setup.Completed.Action.Start">Get Started</x:String>
+    <x:String x:Key="Setup.Import.Title">Import</x:String>
+    <x:String x:Key="Setup.Import.Description">Since this is your first time using BedrockBoot, we need to perform some setup.</x:String>
+    <x:String x:Key="Setup.Import.Folder.Header">Import Instance Directory</x:String>
+    <x:String x:Key="Setup.Import.Folder.Description">Import a new instance directory</x:String>
+    <x:String x:Key="Setup.Import.Other.Header">Import Other Launcher Configs</x:String>
+    <x:String x:Key="Setup.Import.Other.Description">Import configurations from other 3rd-party launchers, such as LeviLauncher</x:String>
+    <x:String x:Key="Setup.Import.Dialog.AddFolder.Title">Add Game Root Directory</x:String>
+    <x:String x:Key="Setup.Import.Dialog.AddFolder.Action">Add</x:String>
+    <x:String x:Key="Setup.Import.Draw.ImportOther.Title">Import 3rd-Party Configs</x:String>
+    <x:String x:Key="Setup.Root.Slogan">The next generation Minecraft Bedrock Edition launcher</x:String>
+    <x:String x:Key="Setup.Root.Action.Previous">Previous</x:String>
+    <x:String x:Key="Setup.Root.Action.Next">Next</x:String>
+    <x:String x:Key="Setup.Step.Welcome">Welcome</x:String>
+    <x:String x:Key="Setup.Step.Import">Import</x:String>
+    <x:String x:Key="Setup.Step.Completed">Finished</x:String>
+    <x:String x:Key="Setup.Step.Style">Personalization</x:String>
+    <x:String x:Key="Setup.Style.Title">Personalization</x:String>
+    <x:String x:Key="Setup.Style.Description">Launcher personalization settings</x:String>
+    <x:String x:Key="Setup.Style.Theme.Dark">Dark Theme</x:String>
+    <x:String x:Key="Setup.Style.Theme.Light">Light Theme</x:String>
+    <x:String x:Key="Setup.Welcome.Title">Welcome</x:String>
+    <x:String x:Key="Setup.Welcome.Description">Welcome to BedrockBoot v2; this is the first-time setup guide.</x:String>
+
+    <x:String x:Key="Setting.Universal.Title">Universal</x:String>
+    <x:String x:Key="Setting.Universal.Breadcrumb.Root">Universal</x:String>
+    <x:String x:Key="Setting.Universal.Language.Auto">System Language (Auto)</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Title">Debug Mode</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Console.Header">Console Mode</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Console.Desc">Show a console window when the game starts</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Exception.Header">View Exceptions</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Exception.Desc">View captured program exception logs</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Title">Crash Records</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Item.Desc">Crash occurred at {0}</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Title">Save Error Report</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Prefix">Error_Report</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.FileType">BedrockBoot Crash Report</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Title">Software Update</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.CheckUpdateAction">Check for Updates</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Stable">Stable</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Beta">Beta</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Dev">Dev</x:String>
+
+    <x:String x:Key="Setting.Personalization.Title">Personalization</x:String>
+    <x:String x:Key="Setting.Personalization.Breadcrumb.Root">Personalization</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Title">Background</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Dialog.Import.Title">Select Image File</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.None">None</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Color">Solid Color</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Image">Image</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Mica">Mica</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Acrylic">Acrylic</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Title">Color</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Header">App Mode</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Accent.Header">Accent Color</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Light">Light</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Dark">Dark</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Auto">System Sync (Auto)</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Title">Home</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.Header">Home Content Type</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.None">Empty (None)</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.News">News</x:String>
+
+    <x:String x:Key="Setting.Game.Title">Game</x:String>
+    <x:String x:Key="Setting.Game.Breadcrumb.Root">Game</x:String>
+    <x:String x:Key="Setting.Game.Isolation.None">No Isolation (None)</x:String>
+    <x:String x:Key="Setting.Game.Isolation.Version">By Version (Version)</x:String>
+    <x:String x:Key="Setting.Game.Folders.Title">Instance Directories</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.Title">Add Game Root Directory</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.Action">Add</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.ImportOther">Import Other Launcher Config</x:String>
+    <x:String x:Key="Setting.Game.Folders.Draw.Import.Title">Import External Instance Directories</x:String>
+    <x:String x:Key="Setting.Download.Title">Download Settings</x:String>
+    <x:String x:Key="Setting.Download.Breadcrumb.Root">Download</x:String>
+    <x:String x:Key="Setting.Download.ChunkCount">Concurrent Download Chunks</x:String>
+    <x:String x:Key="Setting.Download.Source.Version">Version Metadata Source</x:String>
+    <x:String x:Key="Setting.Download.Source.CurseForge">CurseForge API Proxy</x:String>
+    <x:String x:Key="Setting.Download.Navigation.Folders">Manage Game Directories</x:String>
+    <x:String x:Key="Setting.Download.Navigation.Update">Check for Software Updates</x:String>
 </ResourceDictionary>

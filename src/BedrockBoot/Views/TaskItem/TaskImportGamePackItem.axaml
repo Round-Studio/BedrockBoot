@@ -17,9 +17,8 @@
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
                 <TextBlock FontSize="16"
-                           Name="CardTitle">
-                    导入游戏包...
-                </TextBlock>
+                           Name="CardTitle"
+                           Text="{DynamicResource Task.ImportPack.Title}" />
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">
@@ -30,9 +29,8 @@
                     <TextBlock Foreground="Gray"
                                FontSize="9"
                                Margin="0,2,0,0"
-                               Name="ProgressText">
-                        步骤：准备导入中...
-                    </TextBlock>
+                               Name="ProgressText"
+                               Text="{DynamicResource Task.ImportPack.Status.Preparing}" />
                 </StackPanel>
             </StackPanel>
         </Grid>

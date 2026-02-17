@@ -9,11 +9,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Styling;
 using BedrockBoot.Base.Enum.Language;
 
-public class L10nManager : INotifyPropertyChanged
+public class I18nManager : INotifyPropertyChanged
 {
-    public static L10nManager Instance { get; } = new();
+    public static I18nManager Instance { get; } = new();
 
-    // 索引器：让 XAML 可以通过 {Binding [Key]} 访问
     public string this[string key] => GetString(key);
 
     private ResourceDictionary? _currentLanguageDict;
@@ -29,15 +28,15 @@ public class L10nManager : INotifyPropertyChanged
         appResources.Add(dict);
         _currentLanguageDict = dict;
 
-        // 3. 通知所有绑定了索引器的 UI 更新
-        OnPropertyChanged("Item[]"); 
+        OnPropertyChanged($"Item[]"); 
+        Console.WriteLine($@"SystemLanguage: {Instance["LanguageName"]}");
     }
 
     private string GetString(string key)
     {
         if (Application.Current!.Resources.TryGetResource(key, null, out var value) && value is string s)
             return s;
-        return $"#{key}#"; // 找不到键时返回占位符
+        return $"#{key}#";
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

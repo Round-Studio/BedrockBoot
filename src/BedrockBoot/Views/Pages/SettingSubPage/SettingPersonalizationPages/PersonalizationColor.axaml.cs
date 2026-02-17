@@ -14,24 +14,32 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
 public partial class PersonalizationColor : ISettingPage
 {
+    
+    public bool IsEdit;
+
     public PersonalizationColor()
     {
         InitializeComponent();
+        
+        // 面包屑导航国际化
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
-                ItemName = "个性化",
+                ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"],
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingPersonalization())
             },
             new()
             {
-                ItemName = "颜色"
+                ItemName = I18nManager.Instance["Setting.Personalization.Color.Title"]
             }
         };
+
+        // 还原主题选择索引
         ChooseTheme.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.LightThemeType;
 
+        // 渲染强调色色块列表
         AccentColor.Colors.ForEach(c => ColorsView.Items.Add(new ItemViewItem
         {
             Content = new Border

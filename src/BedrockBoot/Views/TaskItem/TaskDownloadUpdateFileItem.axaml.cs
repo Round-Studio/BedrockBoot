@@ -17,6 +17,8 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadUpdateFileItem : UserControl
 {
+    
+
     public TaskDownloadUpdateFileItem()
     {
         InitializeComponent();
@@ -31,17 +33,22 @@ public partial class TaskDownloadUpdateFileItem : UserControl
 
     public void Update()
     {
-        CardTitle.Text = $"下载更新文件：{Release.TagName}";
+        // 标题国际化
+        CardTitle.Text = string.Format(I18nManager.Instance["Task.Update.Title.Format"], Release.TagName);
+        
         var url = Release.Assets[0].BrowserDownloadUrl;
 
         SourceList.UpdateDownloadSources.ToList().ForEach(src =>
         {
             var thisUrl = src.Value.Replace("{url}", url);
             var path = Path.Combine(PathsList.UpdatePath, $"{src.Key}_{Release.TagName}.exe");
+            
             var progress = new ProgressBar
             {
                 IsIndeterminate = true
             };
+
+            // 动态创建的项也需要处理文本
             var item = new DockPanel
             {
                 LastChildFill = true,
@@ -50,7 +57,8 @@ public partial class TaskDownloadUpdateFileItem : UserControl
                     new TextBlock
                     {
                         MinWidth = 120,
-                        Text = src.Key
+                        // 如果需要对下载源名称进行修饰，可以使用 Format
+                        Text = string.Format(I18nManager.Instance["Task.Update.Source.Prefix"], src.Key)
                     },
                     progress
                 }
@@ -74,11 +82,13 @@ public partial class TaskDownloadUpdateFileItem : UserControl
                     });
                 }));
 
-                Thread.Sleep(100);
+                // 给予 UI 刷新的缓冲时间
+                await Task.Delay(100);
 
+                // 启动更新程序
                 Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
-                Thread.Sleep(100);
-
+                
+                await Task.Delay(100);
                 Environment.Exit(0);
             });
 
@@ -90,8 +100,8 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "下载更新",
-            Message = "正在下载更新文件",
+            Title = I18nManager.Instance["Task.Update.Notice.Title"],
+            Message = I18nManager.Instance["Task.Update.Notice.Message"],
             NoticeType = NoticeType.Info
         });
 

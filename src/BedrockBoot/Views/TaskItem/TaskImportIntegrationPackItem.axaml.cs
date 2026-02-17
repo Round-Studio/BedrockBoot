@@ -14,6 +14,8 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskImportIntegrationPackItem : UserControl
 {
+    
+
     public TaskImportIntegrationPackItem()
     {
         InitializeComponent();
@@ -34,7 +36,8 @@ public partial class TaskImportIntegrationPackItem : UserControl
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    MainText.Text = $"({progress.Progress:F2} %) {progress.Message}";
+                    // 进度文字格式化国际化
+                    MainText.Text = string.Format(I18nManager.Instance["Task.IntegrationPack.Status.Format"], progress.Progress, progress.Message);
                 });
                 
                 if (progress.Status == InstallIntegrationProgressType.GetUrl)
@@ -60,14 +63,6 @@ public partial class TaskImportIntegrationPackItem : UserControl
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         InsMergeBar.Value = (int)progress.Progress;
-                    });
-                }
-
-                if (progress.Status == InstallIntegrationProgressType.Installing)
-                {
-                    Dispatcher.UIThread.Invoke(() =>
-                    {
-                        InsUnZipBar.Value = (int)progress.Progress;
                     });
                 }
 
@@ -109,8 +104,8 @@ public partial class TaskImportIntegrationPackItem : UserControl
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "导入整合包",
-            Message = $"整合包安装已开启后台进程",
+            Title = I18nManager.Instance["Task.IntegrationPack.Notice.Title"],
+            Message = I18nManager.Instance["Task.IntegrationPack.Notice.Added"],
             NoticeType = NoticeType.Info
         });
 

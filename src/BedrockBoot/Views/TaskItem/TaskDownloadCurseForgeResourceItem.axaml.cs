@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Progress;
@@ -17,6 +16,8 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadCurseForgeResourceItem : UserControl
 {
+    
+
     public TaskDownloadCurseForgeResourceItem()
     {
         InitializeComponent();
@@ -33,7 +34,8 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
     public void Update()
     {
-        CardTitle.Text = $"下载资源：{ModFile.DisplayName}";
+        // 使用动态格式化字符串
+        CardTitle.Text = string.Format(I18nManager.Instance["Task.CurseForge.Title.Format"], ModFile.DisplayName);
     }
 
     public async Task Download(string savePath, VersionConfig version = null)
@@ -42,6 +44,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
         var url = new Uri(ModFile.DownloadUrl).AbsoluteUri.Replace("edge.forgecdn.net", "mediafilez.forgecdn.net");
         Console.WriteLine($@"下载文件：{url}");
+        
         await download.DownloadAsync(url, savePath, new Progress<DownloadProgress>(xprogress =>
         {
             Dispatcher.UIThread.Invoke(() =>
@@ -49,7 +52,8 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
                 if (DownloadProgressBar.IsIndeterminate) DownloadProgressBar.IsIndeterminate = false;
 
                 DownloadProgressBar.Value = xprogress.ProgressPercentage;
-                MainText.Text = $"进度：{xprogress.ProgressPercentage:F2} %";
+                // 进度文字国际化
+                MainText.Text = string.Format(I18nManager.Instance["Task.CurseForge.Status.Progress"], xprogress.ProgressPercentage);
                 MainSpeedText.Text = "??? / s";
             });
         }));
@@ -57,13 +61,15 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
         if (version == null) CallBack?.Invoke();
 
         DownloadProgressBar.IsIndeterminate = true;
-        MainText.Text = "进度：正在导入文件... (0 %)";
+        // 导入状态国际化
+        MainText.Text = I18nManager.Instance["Task.CurseForge.Status.Importing"];
+        
         Task.Run(() =>
         {
             if (savePath.EndsWith(".mcworld"))
             {
                 var worldManager = new ArchiveCheck(version);
-                worldManager.ImportWorldPack(savePath,"Shared");
+                worldManager.ImportWorldPack(savePath, "Shared");
             }
             else
             {
@@ -80,8 +86,8 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "下载资源",
-            Message = $"资源 {modFile.DisplayName} 已将其下载任务添加至任务列表。",
+            Title = I18nManager.Instance["Task.CurseForge.Notice.Title"],
+            Message = string.Format(I18nManager.Instance["Task.CurseForge.Notice.Added"], modFile.DisplayName),
             NoticeType = NoticeType.Info
         });
 
@@ -89,6 +95,6 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
         body.CallBack = () => GlobalModel.TaskManager.RemoveTask(tuid);
-        body.Download(savePath, version);
+        _ = body.Download(savePath, version); // 使用丢弃符号明确表示异步调用
     }
 }

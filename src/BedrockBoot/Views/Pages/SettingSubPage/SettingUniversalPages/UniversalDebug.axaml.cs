@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
@@ -9,6 +10,9 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
 public partial class UniversalDebug : ISettingPage
 {
+    
+    public bool IsEdit;
+
     public UniversalDebug()
     {
         InitializeComponent();
@@ -16,13 +20,13 @@ public partial class UniversalDebug : ISettingPage
         {
             new()
             {
-                ItemName = "通用",
+                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = "调试模式"
+                ItemName = I18nManager.Instance["Setting.Universal.Debug.Title"]
             }
         };
 
@@ -34,7 +38,7 @@ public partial class UniversalDebug : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.IsConsole = (bool)IsConsoleModel.IsChecked;
+            GlobalModel.Config.Data.IsConsole = IsConsoleModel.IsChecked ?? false;
 
             GlobalModel.Config.Save();
         }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.LeviLamina.Base.Entry.Porgress;
@@ -16,6 +15,8 @@ namespace BedrockBoot.Views.TaskItem.Plugin.LeviLamina;
 
 public partial class TaskInstallLeviLaminaItem : UserControl
 {
+    
+
     public TaskInstallLeviLaminaItem()
     {
         InitializeComponent();
@@ -41,7 +42,9 @@ public partial class TaskInstallLeviLaminaItem : UserControl
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    MainText.Text = p.Message;
+                    // 如果 Installer 内部消息已经是中文或你希望覆盖它：
+                    MainText.Text = GetStatusMessage(p.Status, p.Message);
+                    
                     switch (p.Status)
                     {
                         case InstallerStatus.DownloadSource:
@@ -72,12 +75,25 @@ public partial class TaskInstallLeviLaminaItem : UserControl
         });
     }
 
+    private string GetStatusMessage(InstallerStatus status, string defaultMsg)
+    {
+        return status switch
+        {
+            InstallerStatus.DownloadSource => I18nManager.Instance["Task.LeviLamina.Status.DownloadSource"],
+            InstallerStatus.DownloadLeviLamina => I18nManager.Instance["Task.LeviLamina.Status.DownloadLLM"],
+            InstallerStatus.DownloadCrashLogger => I18nManager.Instance["Task.LeviLamina.Status.DownloadLogger"],
+            InstallerStatus.DownloadBedrockRtd => I18nManager.Instance["Task.LeviLamina.Status.DownloadRuntime"],
+            InstallerStatus.DownloadPreLoader => I18nManager.Instance["Task.LeviLamina.Status.DownloadLoader"],
+            _ => defaultMsg
+        };
+    }
+
     public static void Install(string version, VersionConfig versionConfig)
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "安装 LeviLamina",
-            Message = $"已将其安装任务添加至任务列表。",
+            Title = I18nManager.Instance["Task.LeviLamina.Notice.Title"],
+            Message = I18nManager.Instance["Task.LeviLamina.Notice.Added"],
             NoticeType = NoticeType.Info
         });
 
@@ -89,8 +105,8 @@ public partial class TaskInstallLeviLaminaItem : UserControl
             GlobalModel.TaskManager.RemoveTask(tuid);
             GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
             {
-                Title = "安装 LeviLamina",
-                Message = $"LeviLamina 安装完成",
+                Title = I18nManager.Instance["Task.LeviLamina.Notice.Title"],
+                Message = I18nManager.Instance["Task.LeviLamina.Notice.Success"],
                 NoticeType = NoticeType.Info
             });
         };
@@ -99,16 +115,16 @@ public partial class TaskInstallLeviLaminaItem : UserControl
             GlobalModel.TaskManager.RemoveTask(tuid);
             GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
             {
-                Title = "安装 LeviLamina",
-                Message = $"LeviLamina 安装失败",
+                Title = I18nManager.Instance["Task.LeviLamina.Notice.Title"],
+                Message = I18nManager.Instance["Task.LeviLamina.Notice.Failed"],
                 NoticeType = NoticeType.Info
             });
             
             DialogHost.Show(new DialogInfo()
             {
-                Title = "LeviLamina 安装失败",
+                Title = I18nManager.Instance["Task.LeviLamina.Notice.Failed"],
                 Content = ex,
-                CloseButtonText = "确定"
+                CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
             });
         };
         body.Install();

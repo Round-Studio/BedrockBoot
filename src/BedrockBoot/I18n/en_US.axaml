@@ -15,7 +15,7 @@
 
     <x:String x:Key="Manager.Title">Instance Manager</x:String>
     <x:String x:Key="Manager.IncludeGame">Import Game</x:String>
-    <x:String x:Key="Manager.IncludePack">Import Modpack</x:String>
+    <x:String x:Key="Manager.IncludePack">Import IntegrationPackage</x:String>
     <x:String x:Key="Manager.GameType.AllType">All Types</x:String>
     <x:String x:Key="Manager.GameType.Release">Release</x:String>
     <x:String x:Key="Manager.GameType.Preview">Preview</x:String>
@@ -216,8 +216,8 @@
     <x:String x:Key="Instance.Mods.Action.Import">Import Mod</x:String>
     <x:String x:Key="Instance.Mods.Empty.Title">Empty</x:String>
     <x:String x:Key="Instance.Mods.Empty.Message">Invalid keyword or this instance has no mods</x:String>
-    <x:String x:Key="Instance.Packs.Tab.Resource">Resource Packs</x:String>
-    <x:String x:Key="Instance.Packs.Tab.Behavior">Behavior Packs</x:String>
+    <x:String x:Key="Instance.Packs.Tab.Resource">Resource</x:String>
+    <x:String x:Key="Instance.Packs.Tab.Behavior">Behavior</x:String>
     <x:String x:Key="Instance.Packs.Action.Import">Import Pack</x:String>
     <x:String x:Key="Instance.Packs.Empty.Title">Empty</x:String>
     <x:String x:Key="Instance.Packs.Empty.Message">Invalid keyword or this instance has no packs</x:String>
@@ -352,7 +352,7 @@
     <x:String x:Key="MainWindow.Dialog.Agreement.Agree">I Agree</x:String>
     <x:String x:Key="MainWindow.Dialog.Agreement.Decline">I Decline, Exit</x:String>
 
-    <x:String x:Key="MainWindow.Task.CountInfo">Currently {0} tasks in progress</x:String>
+    <x:String x:Key="MainWindow.Task.CountInfo">{0} Tasks</x:String>
     <x:String x:Key="MainWindow.Protocol.Description">BedrockBoot Protocol</x:String>
     <x:String x:Key="MainWindow.Common.Confirm">Confirm</x:String>
     <x:String x:Key="MainWindow.Common.Cancel">Cancel</x:String>

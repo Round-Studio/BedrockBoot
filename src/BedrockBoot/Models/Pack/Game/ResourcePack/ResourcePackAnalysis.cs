@@ -25,6 +25,7 @@ public class ResourcePackAnalysis
 
     public static ResourcePackType GetPackType(ResourcePackManifest conf)
     {
+        if (conf?.Modules == null) return ResourcePackType.Unknown;
         var modules = conf.Modules.Select(x => x.Type).ToList();
         if (modules.Contains("resources"))
             return ResourcePackType.Resource;
@@ -36,133 +37,162 @@ public class ResourcePackAnalysis
 
     public ResourcePackType GetPackType()
     {
-        var tempPath = _tempPath;
-        ZipHelper.ExtractZipFile(FilePath, tempPath);
-        var num = Directory.GetDirectories(tempPath).Length;
+        var manifests = GetPackManifests();
+        if (manifests.Count == 0) return ResourcePackType.Unknown;
+        if (manifests.Count > 1) return ResourcePackType.Addon;
 
-        if (num == 1 &&
-            !File.Exists(Path.Combine(tempPath, "manifest.json")))
-            tempPath = Directory.GetDirectories(tempPath)[0];
+        var types = manifests.Select(m => m.PackType).Distinct().ToList();
+        if (types.Count > 1) return ResourcePackType.Addon;
 
-        if (num == 2 &&
-            !File.Exists(Path.Combine(tempPath, "manifest.json")))
-            return ResourcePackType.Addon; // 直接返回 Addon
-
-        if (num > 2 &&
-            !File.Exists(Path.Combine(tempPath, "manifest.json")))
-            return ResourcePackType.Unknown;
-
-        var manifestFile = Path.Combine(tempPath, "manifest.json");
-        var conf = new ConfigEntity<ResourcePackManifest>(manifestFile, false).Data;
-
-        return GetPackType(conf);
+        return types.FirstOrDefault();
     }
 
     public List<ResourcePackManifest> GetPackManifests()
     {
-        var result = new List<ResourcePackManifest>();
-        var type = GetPackType();
+        if (!Directory.Exists(_tempPath))
+        {
+            ZipHelper.ExtractZipFile(FilePath, _tempPath);
+            ExtractSubPacks(_tempPath);
+        }
 
-        var files = Directory.GetFiles(_tempPath, "manifest.json", SearchOption.AllDirectories);
-        files.ToList().ForEach(f => result.Add(GetPackManifest(f)));
+        var result = new List<ResourcePackManifest>();
+        var manifestFiles = Directory.GetFiles(_tempPath, "manifest.json", SearchOption.AllDirectories);
+
+        foreach (var file in manifestFiles)
+        {
+            var manifest = GetPackManifest(file);
+            if (manifest != null)
+            {
+                result.Add(manifest);
+            }
+        }
 
         return result;
     }
 
+    private void ExtractSubPacks(string targetPath)
+    {
+        var subPacks = Directory.GetFiles(targetPath, "*.mcpack", SearchOption.AllDirectories);
+        foreach (var subPack in subPacks)
+        {
+            var subExtractPath = Path.Combine(Path.GetDirectoryName(subPack), Path.GetFileNameWithoutExtension(subPack));
+            if (!Directory.Exists(subExtractPath))
+            {
+                ZipHelper.ExtractZipFile(subPack, subExtractPath);
+                // 递归处理嵌套的子包（例如 mcaddon 嵌套了文件夹，文件夹里又有 mcpack）
+                ExtractSubPacks(subExtractPath);
+            }
+        }
+    }
+
     public static ResourcePackManifest GetPackManifest(string file)
     {
-        var conf = new ConfigEntity<ResourcePackManifest>(file, false).Data;
-        if (conf.Header == null ||
-            conf == null)
+        try
+        {
+            var conf = new ConfigEntity<ResourcePackManifest>(file, false).Data;
+            if (conf?.Header == null) return null;
+
+            conf.PackRootPath = Path.GetDirectoryName(file);
+            conf.PackType = GetPackType(conf);
+
+            if (conf.Header.Name == "pack.name")
+                conf.Header.Name = GetLangText(conf.PackRootPath, "pack.name");
+
+            if (conf.Header.Description == "pack.description")
+                conf.Header.Description = GetLangText(conf.PackRootPath, "pack.description");
+
+            return conf;
+        }
+        catch
+        {
             return null;
-        conf.PackRootPath = Path.GetDirectoryName(file);
-        conf.PackType = GetPackType(conf);
-
-        if (conf.Header.Name == "pack.name") conf.Header.Name = GetLangText(conf.PackRootPath, "pack.name");
-
-        if (conf.Header.Description == "pack.description")
-            conf.Header.Description = GetLangText(conf.PackRootPath, "pack.description");
-
-        return conf;
+        }
     }
 
     private static string GetLangText(string folder, string langKey)
     {
         var textFolder = Path.Combine(folder, "texts");
+        if (!Directory.Exists(textFolder)) return langKey;
+
         var textManifest = Path.Combine(textFolder, "languages.json");
-
-        if (!Directory.Exists(textFolder))
-            return langKey;
-
-        var langFiles = new List<string>();
+        List<string> langFiles;
 
         if (!File.Exists(textManifest))
         {
-            var files = Directory.GetFiles(textFolder)
-                .Select(f => Path.GetFileName(f).Split('.')[0])
+            langFiles = Directory.GetFiles(textFolder, "*.lang")
+                .Select(f => Path.GetFileNameWithoutExtension(f))
                 .ToList();
-            langFiles = files;
         }
         else
         {
-            var langConf = new ConfigEntity<List<string>>(textManifest, false);
-            langFiles = langConf.Data;
+            langFiles = new ConfigEntity<List<string>>(textManifest, false).Data;
         }
+
+        if (langFiles == null || langFiles.Count == 0) return langKey;
 
         var lang = FindBestMatchLanguage(langFiles);
         var langFile = Path.Combine(textFolder, $"{lang}.lang");
 
-        var langs = File.ReadAllLines(langFile);
+        if (!File.Exists(langFile)) return langKey;
 
         try
         {
-            return langs.First(t => t.Contains(langKey))
-                .Replace("#", "")
-                .Split('=')[1]
-                .Replace("\\n", "\n");
+            var lines = File.ReadAllLines(langFile);
+            foreach (var line in lines)
+            {
+                var trimmed = line.Trim();
+                if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith("##")) continue;
+
+                var splitIndex = trimmed.IndexOf('=');
+                if (splitIndex > 0)
+                {
+                    var key = trimmed.Substring(0, splitIndex).Trim();
+                    if (key == langKey)
+                    {
+                        return trimmed.Substring(splitIndex + 1)
+                            .Split('\t')[0]
+                            .Split('#')[0]
+                            .Trim()
+                            .Replace("\\n", "\n");
+                    }
+                }
+            }
         }
         catch
         {
-            return langKey;
+            // Ignore
         }
+
+        return langKey;
     }
 
     private static string FindBestMatchLanguage(List<string> supportedLanguages)
     {
-        // 1. 获取当前系统的语言和区域信息
-        var currentCulture = CultureInfo.CurrentUICulture; // 或者 CultureInfo.CurrentCulture
-
-        // 2. 获取语言代码（不带区域）
+        var currentCulture = CultureInfo.CurrentUICulture;
         var currentLanguage = currentCulture.TwoLetterISOLanguageName.ToLower();
-        var currentFullLocale = currentCulture.Name; // 例如 "zh-CN"
+        var currentFullLocale = currentCulture.Name.Replace("-", "_");
 
-        Console.WriteLine($@"当前系统语言: {currentCulture.DisplayName}");
-        Console.WriteLine($@"语言代码: {currentLanguage}, 完整区域: {currentFullLocale}");
-
-        // 3. 优先尝试完全匹配（包括区域）
-        var normalizedLocale = currentFullLocale.Replace("-", "_");
         foreach (var lang in supportedLanguages)
-            if (string.Equals(lang, normalizedLocale, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(lang, currentFullLocale, StringComparison.OrdinalIgnoreCase))
                 return lang;
 
-        // 4. 尝试仅匹配语言代码（不带区域）
         foreach (var lang in supportedLanguages)
             if (lang.StartsWith(currentLanguage + "_", StringComparison.OrdinalIgnoreCase))
                 return lang;
 
-        // 5. 对于中文的特殊处理（因为中文有多个变体）
         if (currentLanguage == "zh")
         {
-            // 根据系统区域决定使用哪种中文变体
             var region = currentFullLocale.Contains("CN") ? "zh_CN" :
-                currentFullLocale.Contains("TW") ? "zh_TW" :
-                currentFullLocale.Contains("HK") ? "zh_HK" : "zh_CN";
+                         currentFullLocale.Contains("TW") ? "zh_TW" :
+                         currentFullLocale.Contains("HK") ? "zh_HK" : "zh_CN";
 
-            if (supportedLanguages.Contains(region))
-                return region;
+            if (supportedLanguages.Any(l => string.Equals(l, region, StringComparison.OrdinalIgnoreCase)))
+                return supportedLanguages.First(l => string.Equals(l, region, StringComparison.OrdinalIgnoreCase));
         }
 
-        // 6. 如果没有匹配的，返回默认语言（通常是英文）
-        return supportedLanguages.Contains("en_US") ? "en_US" : supportedLanguages[0];
+        if (supportedLanguages.Contains("en_US")) return "en_US";
+        if (supportedLanguages.Contains("en_GB")) return "en_GB";
+
+        return supportedLanguages[0];
     }
 }

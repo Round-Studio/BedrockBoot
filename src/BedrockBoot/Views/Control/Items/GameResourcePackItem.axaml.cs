@@ -26,7 +26,6 @@ public partial class GameResourcePackItem : UserControl
     public GameResourcePackItem(ResourcePackManifest maf, bool isImport = false) : this()
     {
         ResourcePackManifest = maf;
-
         UpdateUI();
         ControlBox.IsVisible = !isImport;
     }
@@ -39,6 +38,12 @@ public partial class GameResourcePackItem : UserControl
         {
             if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon) && File.Exists(ResourcePackManifest.PackIcon))
             {
+                // 释放旧的 Bitmap 资源，避免内存泄漏
+                if (Card.ImageIcon is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+
                 using var stream = File.OpenRead(ResourcePackManifest.PackIcon);
                 Card.ImageIcon = new Bitmap(stream);
             }
@@ -68,7 +73,7 @@ public partial class GameResourcePackItem : UserControl
                     Content = i18n["Instance.Resource.Delete.Processing"]
                 });
 
-                Task.Run(() =>
+                Task.Run(async () =>
                 {
                     bool success = false;
                     try
@@ -81,7 +86,7 @@ public partial class GameResourcePackItem : UserControl
                     }
                     catch (Exception ex)
                     {
-                        Dispatcher.UIThread.Invoke(() =>
+                        await Dispatcher.UIThread.InvokeAsync(() =>
                         {
                             GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                             {
@@ -92,7 +97,7 @@ public partial class GameResourcePackItem : UserControl
                         });
                     }
 
-                    Dispatcher.UIThread.Invoke(() =>
+                    await Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         DialogHost.Close();
                         if (success) RefreshCallBack?.Invoke();

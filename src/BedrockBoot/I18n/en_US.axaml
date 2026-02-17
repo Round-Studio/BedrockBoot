@@ -128,6 +128,8 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot's own debug mode</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">Language</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot show language</x:String>
+    <x:String x:Key="Setting.Universal.GatherInfo.Title">Collect User Information</x:String>
+    <x:String x:Key="Setting.Universal.GatherInfo.Desc">Used to collect user information for analysis purposes only. We will never sell your data to third parties.</x:String>
 
     <x:String x:Key="Tools.Title">Toolbox</x:String>
     <x:String x:Key="Tools.Group.Help">Help</x:String>

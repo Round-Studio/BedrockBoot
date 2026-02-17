@@ -31,7 +31,8 @@ public partial class SettingUniversal : ISettingPage
         // 初始化 UI 状态
         TaskBarJumpItem.IsChecked = GlobalModel.Config.Data.IsTaskBarJumpItem;
         LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
-
+        GatInfo.IsChecked = GlobalModel.Config.Data.GatherInfo;
+        
         IsEdit = true;
     }
 
@@ -71,6 +72,15 @@ public partial class SettingUniversal : ISettingPage
             // 提示：由于 BreadcrumbItem 是在构造函数赋值的，
             // 如果需要立即更新面包屑文字，可以在此处重新赋值：
             BreadcrumbItem[0].ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"];
+        }
+    }
+
+    private void GatInfo_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.GatherInfo = (bool)GatInfo.IsChecked!;
+            GlobalModel.Config.Save();
         }
     }
 }

@@ -45,6 +45,16 @@
                        Text="{DynamicResource Settings.Download.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"
+                                          Header="{DynamicResource Setting.Universal.GatherInfo.Title}"
+                                          Description="{DynamicResource Setting.Universal.GatherInfo.Desc}"
+                                          IsClickable="True"
+                                          IsShowActionIcon="False"
+                                          Glyph="&#xE946;">
+                <ToggleSwitch Name="GatInfo"
+                              IsCheckedChanged="GatInfo_OnIsCheckedChanged"></ToggleSwitch>
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="{DynamicResource Settings.Download.SoftwareUpdate.Title}"
                                           Description="{DynamicResource Settings.Download.SoftwareUpdate.Desc}"
                                           IsClickable="True"

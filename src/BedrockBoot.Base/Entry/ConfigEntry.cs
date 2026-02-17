@@ -41,6 +41,7 @@ public class ConfigEntry
 
     [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.SymbolicLink;
     [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
+    [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
 }
 
 public class StyleConfig

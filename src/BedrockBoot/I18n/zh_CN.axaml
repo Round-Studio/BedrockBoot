@@ -532,6 +532,10 @@
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Stable">稳定版 (Stable)</x:String>
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Beta">测试版 (Beta)</x:String>
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Dev">开发版 (Dev)</x:String>
+    <x:String x:Key="Setting.Universal.GatherInfo.Title">收集用户信息</x:String>
+    <x:String x:Key="Setting.Universal.GatherInfo.Desc">用于收集用户使用的信息，仅用于分析用户群体，绝不向第三方出售数据</x:String>
+    
+    
     <x:String x:Key="Setting.Personalization.Background.Title">背景</x:String>
     <x:String x:Key="Setting.Personalization.Background.Dialog.Import.Title">选择图片文件</x:String>
 

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 
@@ -9,26 +11,46 @@ namespace BedrockBoot.Views.Pages.OtherPage;
 
 public partial class AboutOpenSource : ISettingPage
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     public AboutOpenSource()
     {
         InitializeComponent();
+
+        // 面包屑导航国际化
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
-                ItemName = "关于我们",
-                ItemClickAction = info => MainSettingPage.NavigateTo(new AboutPage())
+                ItemName = i18n["AboutPage.Title"], // "关于我们"
+                ItemClickAction = _ => MainSettingPage.NavigateTo(new AboutPage())
             },
             new()
             {
-                ItemName = "第三方组件库"
+                ItemName = i18n["AboutPage.OpenSource.Title"] // "第三方组件库"
             }
         };
 
-        var type = typeof(AppBuilder);
-        var assembly = type.Assembly;
-        var version = assembly.GetName().Version;
+        InitializeFrameworkVersion();
+    }
 
-        AvaloniaVersion.Text = $"Version {version}";
+    /// <summary>
+    /// 获取并显示核心框架版本
+    /// </summary>
+    private void InitializeFrameworkVersion()
+    {
+        try
+        {
+            var type = typeof(AppBuilder);
+            var assembly = type.Assembly;
+            var version = assembly.GetName().Version;
+
+            // 使用国际化前缀，例如 "版本 11.0.0" 或 "Version 11.0.0"
+            AvaloniaVersion.Text = $"{i18n["AboutPage.OpenSource.VersionPrefix"]} {version}";
+        }
+        catch (Exception)
+        {
+            AvaloniaVersion.Text = "Unknown";
+        }
     }
 }

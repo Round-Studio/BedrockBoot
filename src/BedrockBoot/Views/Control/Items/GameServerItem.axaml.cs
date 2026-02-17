@@ -14,6 +14,7 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameServerItem : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
     private readonly ServerItemInfo ServerItemInfo;
 
     public GameServerItem()
@@ -26,42 +27,50 @@ public partial class GameServerItem : UserControl
         ServerItemInfo = info;
         ServerName.Text = info.ServerName;
         ServerDescription.Text = $"{info.ServerAddress}:{info.ServerPort}";
+        
+        _ = UpdateServerStatusAsync();
+    }
+
+    private async Task UpdateServerStatusAsync()
+    {
         var checker = new ServerChecker();
-        Task.Run(() =>
+        try
         {
-            try
+            // 使用 await 替代 .Result 避免阻塞
+            var sta = await checker.GetServerStatusAsync(ServerItemInfo);
+            
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var sta = checker.GetServerStatusAsync(info).Result;
-                Dispatcher.UIThread.Invoke(() =>
+                if (sta.Players != null)
                 {
                     ServerMotd.IsVisible = true;
                     PlayerBox.IsVisible = true;
                     ServerMotd.MinecraftText = string.IsNullOrEmpty(sta.MOTD) ? "" : sta.MOTD;
                     DelayBox.Text = $"{sta.Delay} ms";
-                    if (sta.Players != null)
-                    {
-                        PlayerBox.Text = $"{sta.Players.Online} / {sta.Players.Max}";
-                    }
-                    else
-                    {
-                        ServerMotd.IsVisible = false;
-                        PlayerBox.IsVisible = false;
-                        DelayBox.Text = "-1 ms";
-                        DelayBox.Text = "无法连接至服务器";
-                        DelayBox.Background = Brushes.DarkRed;
-                    }
-                });
-            }
-            catch
-            {
-                Dispatcher.UIThread.Invoke(() =>
+                    PlayerBox.Text = $"{sta.Players.Online} / {sta.Players.Max}";
+                    
+                    // 根据延迟设置颜色
+                    DelayBox.Background = sta.Delay < 100 ? Brushes.Green : 
+                                         sta.Delay < 250 ? Brushes.Orange : Brushes.Red;
+                }
+                else
                 {
-                    DelayBox.Text = "无法连接至服务器";
-                    DelayBox.Background = Brushes.DarkRed;
-                    ServerMotd.IsVisible = false;
-                });
-            }
-        });
+                    SetOfflineStatus();
+                }
+            });
+        }
+        catch
+        {
+            await Dispatcher.UIThread.InvokeAsync(SetOfflineStatus);
+        }
+    }
+
+    private void SetOfflineStatus()
+    {
+        ServerMotd.IsVisible = false;
+        PlayerBox.IsVisible = false;
+        DelayBox.Text = i18n["Instance.Server.Status.Offline"];
+        DelayBox.Background = Brushes.DarkRed;
     }
 
     public Action<ServerItemInfo>? DeleteServer { get; set; }
@@ -70,10 +79,10 @@ public partial class GameServerItem : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除服务器",
-            Content = "您确定要删除吗，这将永远无法恢复。",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Title = i18n["Instance.Server.Delete.Title"],
+            Content = $"{i18n["Instance.Server.Delete.Content"]}\n{i18n["Common.Action.Irreversible"]}",
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () => { DeleteServer?.Invoke(ServerItemInfo); }
         });
     }
@@ -81,9 +90,13 @@ public partial class GameServerItem : UserControl
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var versionConf = ServerItemInfo.VersionConfig;
+        if (versionConf == null) return;
+
         versionConf.Config.IsEditModel = false;
+        // 构造快速加入指令
         versionConf.Config.OtherCommand =
             $"minecraft://connect/?serverUrl={ServerItemInfo.ServerAddress}&serverPort={ServerItemInfo.ServerPort} {versionConf.Config.OtherCommand}";
+        
         TaskLaunchGameItem.Launch(versionConf);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
@@ -18,10 +19,11 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceMods : ISetting
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     public InstanceMods()
     {
         IsEdit = false;
-
         InitializeComponent();
     }
 
@@ -38,34 +40,45 @@ public partial class InstanceMods : ISetting
 
     public VersionConfig VersionInfo { get; set; }
     public ModsManager ModsManager { get; set; }
-    private string _searchKey => SearchBox.Text;
+    private string SearchKey => SearchBox.Text ?? string.Empty;
 
+    /// <summary>
+    /// 更新模组列表 UI
+    /// </summary>
     private void UpdateUI()
     {
         IsEdit = false;
         NullBox.IsVisible = false;
         ResultBox.Children.Clear();
+
         var mods = ModsManager.RefreshMods();
         var resultMods = new List<ModInfo>();
 
-        mods.ForEach(info =>
+        foreach (var info in mods)
         {
-            if (string.IsNullOrEmpty(_searchKey) ||
-                info.File.Contains(_searchKey))
+            // 使用不区分大小写的包含匹配
+            if (string.IsNullOrEmpty(SearchKey) ||
+                info.File.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
+            {
                 resultMods.Add(info);
-        });
+            }
+        }
 
         if (resultMods.Count <= 0)
+        {
             NullBox.IsVisible = true;
+        }
         else
-            resultMods.ForEach(info =>
+        {
+            foreach (var info in resultMods)
             {
                 ResultBox.Children.Add(new GameModItem(info, VersionInfo)
                 {
                     ModsManager = ModsManager,
                     UpdateCallBack = UpdateUI
                 });
-            });
+            }
+        }
 
         IsEdit = true;
     }
@@ -76,44 +89,70 @@ public partial class InstanceMods : ISetting
             UpdateUI();
     }
 
+    /// <summary>
+    /// 打开模组所在的物理文件夹
+    /// </summary>
     private void FolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        Process.Start("explorer", new[] { Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods") });
+        var modPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods");
+        if (!Directory.Exists(modPath))
+        {
+            Directory.CreateDirectory(modPath);
+        }
+        Process.Start("explorer", new[] { modPath });
     }
 
+    /// <summary>
+    /// 导入模组文件
+    /// </summary>
     private void ImportModBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogImportModContent();
         DialogHost.Show(new DialogInfo
         {
-            Title = "添加 Mod 文件",
+            Title = i18n["Instance.Mods.Import.Title"],
             Content = dialog,
-            CloseButtonText = "添加",
-            PrimaryButtonText = "取消",
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
-                if (string.IsNullOrEmpty(dialog.ModFile) ||
-                    !File.Exists(dialog.ModFile))
+                if (string.IsNullOrEmpty(dialog.ModFile) || !File.Exists(dialog.ModFile))
                 {
                     GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                     {
-                        Message = "无效路径，无法添加模组",
-                        Title = "无效路径"
+                        Title = i18n["MainWindow.Dialog.Error.Title"],
+                        Message = i18n["Instance.Mods.Import.Error.InvalidPath"]
                     });
                     return;
                 }
 
-                var path = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
-                    Path.GetFileName(dialog.ModFile));
-                File.Copy(dialog.ModFile, path);
-
-                ModsManager.AddMod(new ModInfo
+                try 
                 {
-                    File = path,
-                    InjectDelay = dialog.ModDelay,
-                    IsPreLoad = dialog.IsPreLoad
-                });
-                UpdateUI();
+                    var modFileName = Path.GetFileName(dialog.ModFile);
+                    var targetPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods", modFileName);
+
+                    // 确保目标目录存在
+                    var targetDir = Path.GetDirectoryName(targetPath);
+                    if (targetDir != null && !Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
+
+                    File.Copy(dialog.ModFile, targetPath, true);
+
+                    ModsManager.AddMod(new ModInfo
+                    {
+                        File = targetPath,
+                        InjectDelay = dialog.ModDelay,
+                        IsPreLoad = dialog.IsPreLoad
+                    });
+                    UpdateUI();
+                }
+                catch (Exception ex)
+                {
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+                    {
+                        Title = i18n["MainWindow.Dialog.Error.Title"],
+                        Message = $"{i18n["Instance.Mods.Import.Error.CopyFailed"]}\n{ex.Message}"
+                    });
+                }
             }
         });
     }

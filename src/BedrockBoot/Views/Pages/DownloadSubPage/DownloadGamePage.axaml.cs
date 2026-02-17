@@ -13,257 +13,187 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
+using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.DownloadSubPage;
 
 public partial class DownloadGamePage : UserControl, IDisposable
 {
-    private CancellationTokenSource _currentLoadingCancellation = new();
-    private string _key = "";
-    private MinecraftGameTypeVersion _type = MinecraftGameTypeVersion.Release;
+    private static I18nManager i18n => I18nManager.Instance;
+    private CancellationTokenSource? _currentLoadingCancellation;
+    private string _searchKey = string.Empty;
+    private MinecraftGameTypeVersion _currentType = MinecraftGameTypeVersion.Release;
 
     public DownloadGamePage()
     {
         InitializeComponent();
-        UpdateUI(MinecraftGameTypeVersion.Release);
         IsEdit = true;
+        
+        // 初始加载
+        UpdateUI(MinecraftGameTypeVersion.Release);
 
         Unloaded += (sender, args) => Dispose();
     }
 
     public bool IsEdit { get; set; }
 
-    // 清理资源
     public void Dispose()
     {
         _currentLoadingCancellation?.Cancel();
         _currentLoadingCancellation?.Dispose();
+        _currentLoadingCancellation = null;
         ItemsPanel.Children.Clear();
     }
 
+    /// <summary>
+    /// 更新版本列表 UI
+    /// </summary>
     public async void UpdateUI(MinecraftGameTypeVersion type, string key = "")
     {
-        // 取消之前的加载任务
-        _currentLoadingCancellation.Cancel();
-        _currentLoadingCancellation = new CancellationTokenSource();
-        var cancellationToken = _currentLoadingCancellation.Token;
+        _currentType = type;
+        _searchKey = key;
 
-        // 更新UI状态
-        await SetLoadingState(true, false, false);
+        // 取消并清理之前的任务
+        _currentLoadingCancellation?.Cancel();
+        _currentLoadingCancellation?.Dispose();
+        _currentLoadingCancellation = new CancellationTokenSource();
+        var token = _currentLoadingCancellation.Token;
 
         try
         {
-            await LoadVersionsAsync(type, key, cancellationToken);
+            // 进入加载状态
+            await SetLoadingState(true, false, false);
+            ItemsPanel.Children.Clear();
+
+            await LoadVersionsAsync(type, key, token);
         }
-        catch (OperationCanceledException)
-        {
-            // 任务被取消是正常情况，忽略
-        }
+        catch (OperationCanceledException) { /* 忽略取消异常 */ }
         catch (Exception ex)
         {
-            // 处理其他异常
-            Console.WriteLine($@"加载版本列表时出错: {ex.Message}");
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                LoadingRing.IsVisible = false;
-                ScrollViewer.IsVisible = false;
-                NoneBox.IsVisible = true;
-            });
+            System.Diagnostics.Debug.WriteLine($"Error loading versions: {ex.Message}");
+            await SetLoadingState(false, false, true);
         }
     }
 
-    private async Task LoadVersionsAsync(MinecraftGameTypeVersion type, string key, CancellationToken cancellationToken)
+    private async Task LoadVersionsAsync(MinecraftGameTypeVersion type, string key, CancellationToken token)
     {
-        Console.WriteLine($@"Version Type: {type} | Key Word: {key}");
-
-        // 在后台线程执行耗时操作
-        var (versions, hasItems) = await Task.Run(async () =>
+        // 1. 在后台线程获取并处理数据
+        var processedList = await Task.Run(async () =>
         {
             try
             {
-                Console.WriteLine(@"正在加载基岩版版本列表...");
-                var lst = VersionsHelper
-                    .GetBuildDatabaseAsync(
-                        SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value)
-                    .Result!.Builds
-                    .ToListAsync().Result;
-                Console.WriteLine(@"基岩版版本列表加载完成");
+                var sourceIndex = GlobalModel.Config.Data.VersionSourceIndex;
+                var source = SourceList.VersionDataSources.ElementAtOrDefault(sourceIndex).Value;
+                
+                var buildDatabase = await VersionsHelper.GetBuildDatabaseAsync(source);
+                var rawList = await buildDatabase!.Builds.ToListAsync();
 
-                Console.WriteLine(@"开始序列化");
+                var filtered = new List<(BuildInfo Item, Version? Ver)>();
 
-                // 预处理：为每个项预先计算 Version 对象
-                var versionCache = new List<(BuildInfo item, Version? version)>();
-
-                foreach (var item in lst)
+                foreach (var build in rawList)
                 {
-                    // 检查取消请求
-                    cancellationToken.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
 
-                    if (string.IsNullOrEmpty(item.Value.ID)) continue;
-                    if (item.Value.Variations.Count <= 0) continue;
+                    var info = build.Value;
+                    if (string.IsNullOrEmpty(info.ID) || info.Variations.Count <= 0) continue;
 
-                    var isCon = false;
+                    // 校验 Metadata 是否存在
+                    if (info.Variations.Any(v => v.MetaData.Count <= 0)) continue;
 
-                    foreach (var v in item.Value.Variations)
-                        if (v.MetaData.Count <= 0)
-                            isCon = true;
+                    // 类型过滤
+                    if (info.Type != type) continue;
 
-                    if (isCon) continue;
+                    // 关键词过滤
+                    if (!string.IsNullOrEmpty(key) && !info.ID.Contains(key, StringComparison.OrdinalIgnoreCase)) continue;
 
-                    Version? version = null;
-                    try
-                    {
-                        version = new Version(item.Value.ID);
-                    }
-                    catch
-                    {
-                    }
-
-                    if (item.Value.Type == type || type == null)
-                    {
-                        if (key != null)
-                        {
-                            if (item.Value.ID.Contains(key))
-                                versionCache.Add((item.Value, version));
-                        }
-                        else
-                        {
-                            versionCache.Add((item.Value, version));
-                        }
-                    }
+                    Version? vObj = null;
+                    Version.TryParse(info.ID, out vObj);
+                    filtered.Add((info, vObj));
                 }
 
-                // 使用缓存的 Version 对象进行排序
-                versionCache.Sort((x, y) =>
-                {
-                    // 两个都有有效版本号
-                    if (x.version != null && y.version != null) return y.version.CompareTo(x.version); // 降序
-
-                    // 只有一个有有效版本号，有效版本号排在前面
-                    if (x.version != null) return -1;
-                    if (y.version != null) return 1;
-
-                    // 两个都没有有效版本号，按原始字符串排序
-                    return string.Compare(y.item.ID, x.item.ID, StringComparison.Ordinal);
-                });
-
-                // 提取排序后的结果
-                var sortedList = versionCache.Select(x => x.item).ToList();
-                Console.WriteLine(@"序列化完成");
-
-                return (sortedList, sortedList.Count > 0);
+                // 2. 排序：版本号降序
+                return filtered.OrderByDescending(x => x.Ver).ThenByDescending(x => x.Item.ID).Select(x => x.Item).ToList();
             }
-            catch (WebException ex)
-            {
-                Console.WriteLine($@"网络错误: {ex.Message}");
-                return (new List<BuildInfo>(), false);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"处理版本数据时出错: {ex.Message}");
-                return (new List<BuildInfo>(), false);
-            }
-        });
+            catch { return new List<BuildInfo>(); }
+        }, token);
 
-        // 检查是否被取消
-        cancellationToken.ThrowIfCancellationRequested();
+        token.ThrowIfCancellationRequested();
 
-        // 在UI线程更新界面
-        await UpdateUIAsync(versions, hasItems);
-    }
-
-    private async Task UpdateUIAsync(List<BuildInfo> versions, bool hasItems)
-    {
-        Console.WriteLine(@"开始动态修改 UI");
-
-        // 清空现有项
-        ItemsPanel.Children.Clear();
-
-        if (hasItems)
+        // 3. UI 渲染：分批添加防止卡顿
+        if (processedList.Count > 0)
         {
-            // 分批加载项，避免一次性添加太多导致UI卡顿
-            await AddItemsBatchAsync(versions);
-
             await SetLoadingState(false, true, false);
+            await AddItemsBatchAsync(processedList, token);
         }
         else
         {
             await SetLoadingState(false, false, true);
         }
-
-        Console.WriteLine(@"UI 修改完毕");
     }
 
-    private async Task AddItemsBatchAsync(List<BuildInfo> versions)
+    private async Task AddItemsBatchAsync(List<BuildInfo> versions, CancellationToken token)
     {
-        const int batchSize = 10; // 每批添加的项目数量
-        var totalCount = versions.Count;
+        const int batchSize = 12;
+        var releaseIcon = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
+        var previewIcon = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
-        for (var i = 0; i < totalCount; i += batchSize)
+        for (int i = 0; i < versions.Count; i += batchSize)
         {
+            token.ThrowIfCancellationRequested();
             var batch = versions.Skip(i).Take(batchSize).ToList();
 
-            // 在UI线程添加一批项目
-            foreach (var x in batch)
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
-                if (x.Type != MinecraftGameTypeVersion.Release)
-                    image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
-
-                var item = new SettingCard
+                foreach (var x in batch)
                 {
-                    Header = x.ID,
-                    Description = string.Join(", ", new[]
+                    var iconPath = x.Type == MinecraftGameTypeVersion.Release ? releaseIcon : previewIcon;
+                    
+                    var card = new SettingCard
                     {
-                        x.Type.ToString(),
-                        x.BuildType.ToString(),
-                        x.Date
-                    }),
-                    IsClickable = true,
-                    Margin = new Thickness(5, 0, 5, 10),
-                    IsFontIcon = false,
-                    ImageIcon = GetImage(image)
-                };
+                        Header = x.ID,
+                        Description = $"{x.Type} | {x.BuildType} | {x.Date}",
+                        IsClickable = true,
+                        Margin = new Thickness(5, 0, 5, 10),
+                        ImageIcon = GetImage(iconPath)
+                    };
 
-                item.Click += (sender, args) =>
-                {
-                    GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(x), $"下载游戏：{x.ID}");
-                };
+                    card.Click += (s, e) =>
+                    {
+                        var title = $"{i18n["Download.Dialog.TitlePrefix"]}: {x.ID}";
+                        GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(x), title);
+                    };
 
-                ItemsPanel.Children.Add(item);
-            }
+                    ItemsPanel.Children.Add(card);
+                }
+            }, DispatcherPriority.Background);
 
-            // 短暂延迟，让UI有机会更新
-            await Task.Delay(10);
+            // 给 UI 线程喘息时间
+            await Task.Delay(5, token);
         }
     }
 
-    private async Task SetLoadingState(bool loading, bool showScrollViewer, bool showNoneBox)
+    private async Task SetLoadingState(bool loading, bool scroll, bool none)
     {
-        LoadingRing.IsVisible = loading;
-        ScrollViewer.IsVisible = showScrollViewer;
-        NoneBox.IsVisible = showNoneBox;
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            LoadingRing.IsVisible = loading;
+            ScrollViewer.IsVisible = scroll;
+            NoneBox.IsVisible = none;
+        });
     }
 
     public Bitmap GetImage(string url)
     {
-        var uri = new Uri(url);
-
-        // 2. 使用 AssetLoader.Open 获取流
-        using (var stream = AssetLoader.Open(uri))
-        {
-            // 3. 将流解码为 Bitmap
-            return new Bitmap(stream);
-        }
+        using var stream = AssetLoader.Open(new Uri(url));
+        return new Bitmap(stream);
     }
 
     private void ComboBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (IsEdit && ComboBox.SelectedIndex >= 0)
         {
-            _type = (MinecraftGameTypeVersion)ComboBox.SelectedIndex;
-            UpdateUI(_type, _key);
+            UpdateUI((MinecraftGameTypeVersion)ComboBox.SelectedIndex, _searchKey);
         }
     }
 
@@ -271,8 +201,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
     {
         if (IsEdit)
         {
-            _key = TextBox.Text;
-            UpdateUI(_type, _key);
+            UpdateUI(_currentType, TextBox.Text ?? string.Empty);
         }
     }
 }

@@ -1,40 +1,66 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.Isolation;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
+using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.DialogContent;
 
 public partial class DialogMigrationGameConfigContent : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     public DialogMigrationGameConfigContent()
     {
         InitializeComponent();
     }
+
+    /// <summary>
+    /// 初始化并自动开始迁移任务
+    /// </summary>
+    /// <param name="conf">迁移配置信息</param>
     public DialogMigrationGameConfigContent(MigrationConfig conf) : this()
+    {
+        StartMigration(conf);
+    }
+
+    private void StartMigration(MigrationConfig conf)
     {
         Task.Run(async () =>
         {
-            var core = new IsolationMigration()
+            try
             {
-                MigrationProgress = new Progress<MigrationProgress>(progress =>
+                var core = new IsolationMigration
                 {
-                    Dispatcher.UIThread.Invoke(() =>
+                    MigrationProgress = new Progress<MigrationProgress>(progress =>
                     {
-                        if (MigrationProgressBar.IsIndeterminate) MigrationProgressBar.IsIndeterminate = false;
-                        MigrationProgressBar.Value = (int)progress.Percentage;
-                        MigrationProgressText.Text = $"迁移中... ({progress.Percentage:F2} %)";
-                    });
-                })
-            };
-            await core.MigrateFoldersAsync(conf);
-            Dispatcher.UIThread.Invoke(DialogHost.Close);
+                        Dispatcher.UIThread.Invoke(() =>
+                        {
+                            if (MigrationProgressBar.IsIndeterminate) 
+                                MigrationProgressBar.IsIndeterminate = false;
+
+                            MigrationProgressBar.Value = progress.Percentage;
+                            
+                            MigrationProgressText.Text = $"{i18n["Instance.Isolation.Migrating"]} ({progress.Percentage:F2} %)";
+                        });
+                    })
+                };
+
+                await core.MigrateFoldersAsync(conf);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Migration failed: {ex.Message}");
+            }
+            finally
+            {
+                Dispatcher.UIThread.Invoke(DialogHost.Close);
+            }
         });
     }
 }

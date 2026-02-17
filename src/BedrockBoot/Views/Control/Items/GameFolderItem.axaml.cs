@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
@@ -12,6 +13,9 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameFolderItem : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+    public GameFolderInfo GameFolderInfo { get; set; } = null!;
+
     public GameFolderItem()
     {
         InitializeComponent();
@@ -20,37 +24,70 @@ public partial class GameFolderItem : UserControl
     public GameFolderItem(GameFolderInfo info) : this()
     {
         GameFolderInfo = info;
-
-        FolderPathBox.Text = info.GameFolderPath;
-        FolderNameBox.Text = info.GameFolderName;
+        UpdateUI();
     }
 
-    public GameFolderInfo GameFolderInfo { get; set; }
+    private void UpdateUI()
+    {
+        FolderPathBox.Text = GameFolderInfo.GameFolderPath;
+        FolderNameBox.Text = GameFolderInfo.GameFolderName;
+    }
 
+    /// <summary>
+    /// 在资源管理器中打开该目录
+    /// </summary>
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        Process.Start("explorer", new[] { GameFolderInfo.GameFolderPath });
+        if (string.IsNullOrEmpty(GameFolderInfo.GameFolderPath)) return;
+        
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = GameFolderInfo.GameFolderPath,
+                UseShellExecute = true // 使用外壳程序打开文件夹
+            });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to open folder: {ex.Message}");
+        }
     }
 
+    /// <summary>
+    /// 从配置中移除该目录（不删除物理文件）
+    /// </summary>
     private void DeleteFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除目录",
-            Content = "请注意，本次删除仅删除启动器中保存的目录，并不会从文件系统上删除其及其子文件。\n您确定要删除吗？",
-            SecondaryButtonText = "取消",
-            CloseButtonText = "确定删除",
+            Title = i18n["Setting.Folder.Delete.Title"],
+            Content = i18n["Setting.Folder.Delete.Content"],
+            SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
+            CloseButtonText = i18n["MainWindow.Common.Delete"],
             AccountButton = DialogButtons.SecondaryButton,
             CloseAction = () =>
             {
-                var index = GlobalModel.Config.Data.GameFolders.FindIndex(x =>
+                var folders = GlobalModel.Config.Data.GameFolders;
+                var itemToRemove = folders.Find(x =>
                     x.GameFolderPath == GameFolderInfo.GameFolderPath &&
                     x.GameFolderName == GameFolderInfo.GameFolderName);
 
-                GlobalModel.Config.Data.GameFolders.RemoveAt(index);
-                GlobalModel.Config.Save();
+                if (itemToRemove != null)
+                {
+                    folders.Remove(itemToRemove);
+                    
+                    // 如果删除的是当前选中的目录，重置索引
+                    if (GlobalModel.Config.Data.GameFolderSelIndex >= folders.Count)
+                    {
+                        GlobalModel.Config.Data.GameFolderSelIndex = Math.Max(0, folders.Count - 1);
+                    }
 
-                MainManager.Instance.UpdateUI();
+                    GlobalModel.Config.Save();
+
+                    // 通知主界面或管理页更新 UI
+                    MainManager.Instance.UpdateUI();
+                }
             }
         });
     }

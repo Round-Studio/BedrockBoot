@@ -19,6 +19,8 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceControls : ISetting
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     public InstanceControls()
     {
         IsEdit = false;
@@ -36,20 +38,23 @@ public partial class InstanceControls : ISetting
 
     public VersionConfig VersionInfo { get; set; }
 
+    /// <summary>
+    /// 删除实例逻辑
+    /// </summary>
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "确认删除",
-            Content = $"您确定要删除 {VersionInfo.Info.VersionName} ({VersionInfo.Info.Version}) 吗，\n" +
-                      $"这将永远无法恢复.jpg",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Title = i18n["Instance.Control.Delete.Confirm.Title"],
+            Content = string.Format(i18n["Instance.Control.Delete.Confirm.Content"], 
+                VersionInfo.Info.VersionName, VersionInfo.Info.Version),
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = $"删除 {VersionInfo.Info.VersionName}",
+                    Title = string.Format(i18n["Instance.Control.Delete.Process.Title"], VersionInfo.Info.VersionName),
                     Content = new DialogDeleteGameContent(VersionInfo)
                 });
             },
@@ -57,17 +62,21 @@ public partial class InstanceControls : ISetting
         });
     }
 
+    /// <summary>
+    /// 创建桌面快捷方式
+    /// </summary>
     private async void JumpItemBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "保存快捷启动",
-            SuggestedFileName = $"快捷启动 {VersionInfo.Info.VersionName}",
+            Title = i18n["Instance.Control.Shortcut.Save.Title"],
+            SuggestedFileName = $"{i18n["Instance.Control.Shortcut.Prefix"]} {VersionInfo.Info.VersionName}",
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("Windows 快捷方式 (.lnk)")
+                new FilePickerFileType(i18n["Instance.Control.Shortcut.FileType"])
                 {
                     Patterns = new[] { "*.lnk" }
                 }
@@ -79,38 +88,32 @@ public partial class InstanceControls : ISetting
             try
             {
                 var shortcutPath = file.TryGetLocalPath();
+                if (string.IsNullOrEmpty(shortcutPath)) return;
 
-                // 确保路径是 .lnk 扩展名
                 if (!shortcutPath.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
                     shortcutPath = Path.ChangeExtension(shortcutPath, ".lnk");
 
-                var targetPath = Process.GetCurrentProcess().MainModule.FileName;
+                var targetPath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
                 var arguments = $"-jump \"{VersionInfo.VersionPath}\"";
 
-                // 创建快捷方式
                 var success = CreateShortcutInSTAThread(shortcutPath, targetPath, arguments);
 
                 if (success)
                 {
                     DialogHost.Show(new DialogInfo
                     {
-                        Title = "生成成功",
-                        Content = $"快捷方式已成功创建！\n\n" +
-                                  $"名称：{Path.GetFileName(shortcutPath)}\n" +
-                                  $"位置：{Path.GetDirectoryName(shortcutPath)}",
-                        CloseButtonText = "确定",
-                        PrimaryButtonText = "打开所在文件夹",
+                        Title = i18n["Instance.Control.Shortcut.Success.Title"],
+                        Content = string.Format(i18n["Instance.Control.Shortcut.Success.Content"], 
+                            Path.GetFileName(shortcutPath), Path.GetDirectoryName(shortcutPath)),
+                        CloseButtonText = i18n["MainWindow.Common.Confirm"],
+                        PrimaryButtonText = i18n["Instance.Control.Shortcut.Action.OpenFolder"],
                         PrimaryAction = () =>
                         {
-                            // 打开快捷方式所在文件夹
                             try
                             {
                                 Process.Start("explorer.exe", $"/select,\"{shortcutPath}\"");
                             }
-                            catch
-                            {
-                                // 忽略错误
-                            }
+                            catch { /* Ignore */ }
                         }
                     });
                 }
@@ -119,9 +122,9 @@ public partial class InstanceControls : ISetting
             {
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "创建失败",
-                    Content = $"创建快捷方式失败：\n\n{ex.Message}",
-                    CloseButtonText = "确定"
+                    Title = i18n["Instance.Control.Shortcut.Failed.Title"],
+                    Content = $"{i18n["Instance.Control.Shortcut.Failed.Content"]}\n\n{ex.Message}",
+                    CloseButtonText = i18n["MainWindow.Common.Confirm"]
                 });
             }
         }
@@ -130,7 +133,7 @@ public partial class InstanceControls : ISetting
     private bool CreateShortcutInSTAThread(string shortcutPath, string targetPath, string arguments)
     {
         var success = false;
-        Exception threadException = null;
+        Exception? threadException = null;
 
         var thread = new Thread(() =>
         {
@@ -142,7 +145,7 @@ public partial class InstanceControls : ISetting
                 shortcut.TargetPath = targetPath;
                 shortcut.Arguments = arguments;
                 shortcut.WorkingDirectory = Path.GetDirectoryName(targetPath) ?? string.Empty;
-                shortcut.Description = $"BedrockBoot 快捷启动 - {VersionInfo.Info.VersionName}";
+                shortcut.Description = $"BedrockBoot Quick Launch - {VersionInfo.Info.VersionName}";
                 shortcut.IconLocation = $"{targetPath},{SourceList.MinecraftIconID}";
 
                 shortcut.Save();
@@ -154,35 +157,35 @@ public partial class InstanceControls : ISetting
             }
         });
 
-        // 设置为 STA 线程（COM 需要）
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
         thread.Join();
 
-        if (threadException != null)
-            throw threadException;
-
+        if (threadException != null) throw threadException;
         return success;
     }
 
+    /// <summary>
+    /// 导入/迁移配置
+    /// </summary>
     private void ImportConfig_OnClick(object? sender, RoutedEventArgs e)
     {
         var body = new DialogChooseGameContent();
         DialogHost.Show(new DialogInfo()
         {
-            Title = "选择需要导入的实例",
+            Title = i18n["Instance.Control.Import.Choose.Title"],
             Content = body,
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
                 var confBody = new DialogImportInstanceConfigContent();
                 DialogHost.Show(new DialogInfo()
                 {
-                    Title = "选择导入内容",
+                    Title = i18n["Instance.Control.Import.Content.Title"],
                     Content = confBody,
-                    CloseButtonText = "开始导入",
-                    PrimaryButtonText = "取消",
+                    CloseButtonText = i18n["Instance.Control.Import.Action.Start"],
+                    PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
                     CloseAction = () =>
                     {
                         var conf = confBody.MigrationConfig;
@@ -191,7 +194,7 @@ public partial class InstanceControls : ISetting
                         
                         DialogHost.Show(new DialogInfo()
                         {
-                            Title = "迁移资源...",
+                            Title = i18n["Instance.Control.Import.Progress.Title"],
                             Content = new DialogMigrationGameConfigContent(conf)
                         });
                     }
@@ -200,6 +203,9 @@ public partial class InstanceControls : ISetting
         });
     }
 
+    /// <summary>
+    /// 导出整合包
+    /// </summary>
     private void MakePack_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogMakeIntegrationPackConfigContent();
@@ -207,22 +213,23 @@ public partial class InstanceControls : ISetting
         DialogHost.Show(new DialogInfo()
         {
             Content = dialog,
-            Title = "整合包信息填写",
-            CloseButtonText = "确定",
-            SecondaryButtonText = "取消",
+            Title = i18n["Instance.Control.Pack.Dialog.Title"],
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = async () =>
             {
                 var config = dialog.PackConfig;
                 var topLevel = TopLevel.GetTopLevel(this);
+                if (topLevel == null) return;
                 
                 var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
-                    Title = "导出 Minecraft 基岩版整合包",
+                    Title = i18n["Instance.Control.Pack.Save.Title"],
                     DefaultExtension = "mcpint",
                     FileTypeChoices = new[]
                     {
-                        new FilePickerFileType("基岩版整合包 (*.mcpint)")
+                        new FilePickerFileType(i18n["Instance.Control.Pack.FileType"])
                         {
                             Patterns = new[] { "*.mcpint" }
                         }
@@ -235,7 +242,7 @@ public partial class InstanceControls : ISetting
                     config.VersionConfig = VersionInfo;
                     DialogHost.Show(new DialogInfo()
                     {
-                        Title = "打包整合包",
+                        Title = i18n["Instance.Control.Pack.Progress.Title"],
                         Content = new DialogMakeIntegrationPackContent(config)
                     });
                 }

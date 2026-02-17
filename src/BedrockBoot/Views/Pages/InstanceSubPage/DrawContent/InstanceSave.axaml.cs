@@ -6,155 +6,169 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Views.Control.Items;
+using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceSave : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+    public VersionConfig VersionInfo { get; set; }
+    public ArchiveManifest? ArchiveManifest { get; private set; }
+    public bool IsEdit { get; set; }
+
+    private string SearchKey => SearchBox.Text ?? string.Empty;
+    private int SelIndex => UserChooseBox.SelectedIndex;
+
     public InstanceSave()
     {
         IsEdit = false;
-
         InitializeComponent();
     }
 
     public InstanceSave(VersionConfig versionInfo) : this()
     {
         VersionInfo = versionInfo;
-
         UpdateUI();
     }
 
-    public bool IsEdit { get; set; }
-    public VersionConfig VersionInfo { get; set; }
-    public ArchiveManifest ArchiveManifest { get; private set; }
-    private string SearchKey => SearchBox.Text;
-    private int SelIndex => UserChooseBox.SelectedIndex;
-
+    /// <summary>
+    /// 初始化并刷新存档元数据
+    /// </summary>
     private void UpdateUI()
     {
         IsEdit = false;
-        var body = new ArchiveCheck(VersionInfo);
-        ArchiveManifest = body.Check();
+        
+        // 执行存档目录扫描
+        var checker = new ArchiveCheck(VersionInfo);
+        ArchiveManifest = checker.Check();
 
         UserChooseBox.Items.Clear();
-        ArchiveManifest.Manifest.ToList().ForEach(user =>
+
+        if (ArchiveManifest?.Manifest != null)
         {
-            UserChooseBox.Items.Add(new ComboBoxItem
+            foreach (var user in ArchiveManifest.Manifest)
             {
-                Content = user.Key,
-                Tag = user.Value
-            });
-        });
+                UserChooseBox.Items.Add(new ComboBoxItem
+                {
+                    Content = user.Key,
+                    Tag = user.Value
+                });
+            }
 
-        if (ArchiveManifest.Manifest.Count > 0)
-        {
-            UserChooseBox.SelectedIndex = 0;
-
-            UpdateSaves(ArchiveManifest.Manifest.Values.ToList()[0]);
+            if (ArchiveManifest.Manifest.Count > 0)
+            {
+                UserChooseBox.SelectedIndex = 0;
+                // 默认显示第一个用户的存档
+                UpdateSaves(ArchiveManifest.Manifest.Values.FirstOrDefault() ?? new List<ArchiveInfo>());
+            }
         }
 
         IsEdit = true;
     }
 
+    /// <summary>
+    /// 将存档对象渲染到 UI 列表
+    /// </summary>
     public void UpdateSaves(List<ArchiveInfo> saves)
     {
+        SavesBox.Children.Clear();
         NullBox.IsVisible = saves.Count <= 0;
 
-        SavesBox.Children.Clear();
-        saves.ForEach(save => { SavesBox.Children.Add(new ArchiveItem(save)); });
+        foreach (var save in saves)
+        {
+            SavesBox.Children.Add(new ArchiveItem(save));
+        }
     }
 
+    /// <summary>
+    /// 处理搜索和用户切换逻辑
+    /// </summary>
     public void UpdateSearch()
     {
         try
         {
-            // 防御性编程：检查所有前提条件
-            if (ArchiveManifest == null || 
-                ArchiveManifest.Manifest == null || 
-                ArchiveManifest.Manifest.Count == 0)
+            if (ArchiveManifest?.Manifest == null || ArchiveManifest.Manifest.Count == 0)
             {
                 UpdateSaves(new List<ArchiveInfo>());
                 return;
             }
 
-            // 检查索引是否有效
-            if (SelIndex < 0 || SelIndex >= ArchiveManifest.Manifest.Count)
+            // 获取当前选中的用户存档列表
+            List<ArchiveInfo> currentSaves;
+            if (SelIndex >= 0 && SelIndex < UserChooseBox.Items.Count)
             {
-                // 如果索引无效，默认使用第一个用户
-                if (ArchiveManifest.Manifest.Count > 0)
-                {
-                    var firstUser = ArchiveManifest.Manifest.ToList()[0].Value;
-                    UpdateSaves(firstUser);
-                }
-                else
-                {
-                    UpdateSaves(new List<ArchiveInfo>());
-                }
-                return;
-            }
-
-            // 安全地获取列表
-            var manifestList = ArchiveManifest.Manifest.ToList();
-            var lst = manifestList[SelIndex].Value;
-        
-            var result = new List<ArchiveInfo>();
-            if (!string.IsNullOrEmpty(SearchKey))
-            {
-                lst.ForEach(save =>
-                {
-                    if (save.Name.Contains(SearchKey))
-                        result.Add(save);
-                });
-                UpdateSaves(result);
+                var selectedItem = UserChooseBox.Items[SelIndex] as ComboBoxItem;
+                currentSaves = selectedItem?.Tag as List<ArchiveInfo> ?? new List<ArchiveInfo>();
             }
             else
             {
-                UpdateSaves(lst);
+                currentSaves = ArchiveManifest.Manifest.Values.FirstOrDefault() ?? new List<ArchiveInfo>();
+            }
+
+            // 执行搜索过滤
+            if (!string.IsNullOrEmpty(SearchKey))
+            {
+                var filtered = currentSaves
+                    .Where(s => s.Name.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                UpdateSaves(filtered);
+            }
+            else
+            {
+                UpdateSaves(currentSaves);
             }
         }
         catch (Exception ex)
         {
-            // 记录异常以便调试
-            Console.WriteLine($"UpdateSearch error: {ex.Message}");
-            // 显示空列表而不是崩溃
+            Console.WriteLine($@"UpdateSearch error: {ex.Message}");
             UpdateSaves(new List<ArchiveInfo>());
         }
     }
 
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        UpdateSearch();
+        if (IsEdit) UpdateSearch();
     }
 
     private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        UpdateSearch();
+        if (IsEdit) UpdateSearch();
     }
 
+    /// <summary>
+    /// 导入 .mcworld 存档包
+    /// </summary>
     private async void ImportPackBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "导入 Minecraft Bedrock 包",
+            Title = i18n["Instance.Save.Import.Picker.Title"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("Minecraft 存档包")
+                new FilePickerFileType(i18n["Instance.Save.Import.Picker.Type"])
                 {
                     Patterns = new[] { "*.mcworld" }
                 }
             }
         });
 
-        if (files != null && files.Count >= 1)
+        if (files is { Count: >= 1 })
         {
-            var body = new ArchiveCheck(VersionInfo);
-            body.ImportWorldPack(files[0].TryGetLocalPath(), "Shared");
+            var path = files[0].Path.LocalPath;
+            if (string.IsNullOrEmpty(path)) return;
+
+            var checker = new ArchiveCheck(VersionInfo);
+            // 默认导入到 Shared 目录（公共目录）
+            checker.ImportWorldPack(path, "Shared");
+            
             UpdateUI();
         }
     }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
@@ -22,6 +23,8 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 public partial class ResultRoot : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     public ResultRoot()
     {
         InitializeComponent();
@@ -30,40 +33,55 @@ public partial class ResultRoot : UserControl
     public ResultRoot(SearchResultItemInfo info) : this()
     {
         SearchResultItemInfo = info;
-        Update();
+        // 触发异步更新，不阻塞 UI 线程
+        _ = UpdateAsync();
     }
 
-    public SearchResultItemInfo SearchResultItemInfo { get; set; }
+    public SearchResultItemInfo SearchResultItemInfo { get; set; } = null!;
 
-    public async Task Update()
+    /// <summary>
+    /// 异步加载资源详情
+    /// </summary>
+    public async Task UpdateAsync()
     {
+        // 1. 基础文字信息
         ResourceName.Text = SearchResultItemInfo.Name;
-        AuthorText.Text = $"By {string.Join(", ", SearchResultItemInfo.Authors)}";
+        AuthorText.Text = $"{i18n["Download.Result.Author.Prefix"]} {string.Join(", ", SearchResultItemInfo.Authors)}";
         DescriptionText.Text = SearchResultItemInfo.Description;
-        DownloadCountText.Text = SearchResultItemInfo.DownloadCount.ToString();
+        DownloadCountText.Text = SearchResultItemInfo.DownloadCount.ToString("N0"); // 格式化数字
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
-        HyperlinkButton.IsVisible = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
-        HyperlinkButton.NavigateUri = string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite)
-            ? new Uri("")
-            : new Uri(SearchResultItemInfo.SourceWebsite);
-        if (SearchResultItemInfo.Images != null &&
-            SearchResultItemInfo.Images.Count > 0)
+
+        // 2. 外部链接
+        var hasWebsite = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
+        HyperlinkButton.IsVisible = hasWebsite;
+        if (hasWebsite && Uri.TryCreate(SearchResultItemInfo.SourceWebsite, UriKind.Absolute, out var uri))
+        {
+            HyperlinkButton.NavigateUri = uri;
+        }
+
+        // 3. 预览图列表渲染
+        PreviewList.Children.Clear();
+        if (SearchResultItemInfo.Images is { Count: > 0 })
         {
             PreviewCard.IsVisible = true;
-            SearchResultItemInfo.Images.ForEach(image => PreviewList.Children.Add(new LocalImageRenderWidget(image)
+            foreach (var image in SearchResultItemInfo.Images)
             {
-                Width = 290
-            }));
+                PreviewList.Children.Add(new LocalImageRenderWidget(image) { Width = 290 });
+            }
         }
 
+        // 4. 标签渲染
         LabelsBox.Children.Clear();
-
-        if (SearchResultItemInfo.Labels.Count > 0)
+        if (SearchResultItemInfo.Labels is { Count: > 0 })
         {
             LabelsBox.IsVisible = true;
-            SearchResultItemInfo.Labels.ForEach(s => LabelsBox.Children.Add(new LabelBox { Text = s }));
+            foreach (var s in SearchResultItemInfo.Labels)
+            {
+                LabelsBox.Children.Add(new LabelBox { Text = s });
+            }
         }
 
+        // 5. 异步图标加载
         var icon = await ImageLoader.LoadIconAsync(SearchResultItemInfo.IconUri);
         if (icon != null)
         {
@@ -71,17 +89,24 @@ public partial class ResultRoot : UserControl
             IconFont.IsVisible = false;
         }
 
+        // 6. 获取 CurseForge 详细 HTML 描述
+        await LoadDetailedDescription();
+    }
+
+    private async Task LoadDetailedDescription()
+    {
         try
         {
-            var description = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
-                .GetModDescriptionAsync(SearchResultItemInfo.Id);
+            var apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
+            var descriptionHtml = await apiClient.GetModDescriptionAsync(SearchResultItemInfo.Id);
 
-            if (!string.IsNullOrEmpty(description))
+            if (!string.IsNullOrEmpty(descriptionHtml))
             {
                 DescriptionCard.IsVisible = true;
                 DescriptionContent.Children.Clear();
 
-                var controls = HtmlToControlConverter.ConvertHtmlToControls(description);
+                // 转换 HTML 到 Avalonia 控件
+                var controls = HtmlToControlConverter.ConvertHtmlToControls(descriptionHtml);
                 foreach (var control in controls)
                 {
                     DescriptionContent.Children.Add(control);
@@ -90,37 +115,48 @@ public partial class ResultRoot : UserControl
         }
         catch (Exception ex)
         {
-            // 出错时显示错误信息
             DescriptionCard.IsVisible = true;
             DescriptionContent.Children.Clear();
             DescriptionContent.Children.Add(new TextBlock
             {
-                Text = $"加载描述时出错: {ex.Message}",
+                Text = $"{i18n["Download.Result.Error.LoadDescription"]}: {ex.Message}",
                 TextWrapping = Avalonia.Media.TextWrapping.Wrap,
-                Foreground = Avalonia.Media.Brushes.Red
+                Foreground = Avalonia.Media.Brushes.Red,
+                Margin = new Thickness(0, 10)
             });
         }
     }
 
+    /// <summary>
+    /// 打开下载抽屉
+    /// </summary>
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        var modData = JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData);
+        if (modData == null) return;
+
         GlobalModel.MainWindow.OpenDraw(
-            new DrawDownloadCurseForgeResourceContent(
-                JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData)),
-            $"下载资源 {SearchResultItemInfo.Name}");
+            new DrawDownloadCurseForgeResourceContent(modData),
+            $"{i18n["Download.Action.GetResource"]}: {SearchResultItemInfo.Name}");
     }
 
+    /// <summary>
+    /// 复制分享链接
+    /// </summary>
     private void CopyName_OnClick(object? sender, RoutedEventArgs e)
     {
-        CopyService.SetClipboard($"你的好友向你推荐了一个资源【{SearchResultItemInfo.Name}】\n" +
-                                 $"地址：{SearchResultItemInfo.SourceWebsite}\n" +
-                                 $"前往 [BedrockBoot]，Ctrl+V 即可获取该资源", CopyType.Resource,
-            JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData).Id);
+        var modData = JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData);
+        if (modData == null) return;
+
+        var shareContent = string.Format(i18n["Download.Result.Share.Format"], 
+            SearchResultItemInfo.Name, SearchResultItemInfo.SourceWebsite);
+
+        CopyService.SetClipboard(shareContent, CopyType.Resource, modData.Id);
 
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "剪切板",
-            Message = "分享内容已复制，在 BedrockBoot 内按下 Ctrl+V 即可查看该资源"
+            Title = i18n["Common.Clipboard.Title"],
+            Message = i18n["Download.Result.Share.Success"]
         });
     }
 }

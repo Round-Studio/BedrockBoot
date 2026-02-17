@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -13,6 +15,9 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModBuildFileItem : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+    public CurseForgeResponse.ModFile ModFile { get; set; } = null!;
+
     public CurseForgeModBuildFileItem()
     {
         InitializeComponent();
@@ -21,57 +26,72 @@ public partial class CurseForgeModBuildFileItem : UserControl
     public CurseForgeModBuildFileItem(CurseForgeResponse.ModFile modFile) : this()
     {
         ModFile = modFile;
-
-        Update();
+        UpdateUI();
     }
 
-    public CurseForgeResponse.ModFile ModFile { get; set; }
-
-    private void Update()
+    private void UpdateUI()
     {
         Card.Header = ModFile.DisplayName;
-        Card.Description = $"{ModFile.FileDate.ToShortDateString()} {ModFile.FileDate.ToShortTimeString()}";
+        // 使用本地化时间格式
+        Card.Description = ModFile.FileDate.ToString("yyyy/MM/dd HH:mm");
     }
 
+    /// <summary>
+    /// 另存为：手动选择下载位置
+    /// </summary>
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
+
+        // 获取文件后缀，如果没有则默认为 .mcpack
+        string extension = Path.GetExtension(ModFile.FileName);
+        if (string.IsNullOrEmpty(extension)) extension = ".mcpack";
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "下载资源包",
+            Title = i18n["Download.CurseForge.SaveAs.Title"],
             SuggestedFileName = ModFile.FileName,
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("Minecraft Bedrock 资源文件")
+                new FilePickerFileType(i18n["Download.CurseForge.FileType.Bedrock"])
                 {
-                    Patterns = new[] { Path.GetExtension(ModFile.FileName) }
+                    Patterns = new[] { $"*{extension}" }
                 }
             }
         });
 
-        if (file is not null)
+        var localPath = file?.TryGetLocalPath();
+        if (!string.IsNullOrEmpty(localPath))
         {
             GlobalModel.MainWindow.CloseDraw();
-            TaskDownloadCurseForgeResourceItem.Download(ModFile, file.TryGetLocalPath());
+            TaskDownloadCurseForgeResourceItem.Download(ModFile, localPath);
         }
     }
 
+    /// <summary>
+    /// 下载到实例：弹出对话框选择目标游戏实例
+    /// </summary>
     private void DownloadBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogChooseGameContent();
+        
         DialogHost.Show(new DialogInfo
         {
             Content = dialog,
-            Title = "下载资源到...",
-            CloseButtonText = "下载",
-            SecondaryButtonText = "取消",
+            Title = i18n["Download.CurseForge.InstallTo.Title"],
+            CloseButtonText = i18n["MainWindow.Common.Download"],
+            SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
                 var conf = dialog.VersionConfig;
+                if (conf == null) return;
+
                 GlobalModel.MainWindow.CloseDraw();
-                TaskDownloadCurseForgeResourceItem.Download(ModFile,
-                    Path.Combine(PathsList.TempPath, ModFile.FileName), conf);
+                
+                // 下载到临时目录并触发自动导入逻辑
+                string tempFilePath = Path.Combine(PathsList.TempPath, ModFile.FileName);
+                TaskDownloadCurseForgeResourceItem.Download(ModFile, tempFilePath, conf);
             }
         });
     }

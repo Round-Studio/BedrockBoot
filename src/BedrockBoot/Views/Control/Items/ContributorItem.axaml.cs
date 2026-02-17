@@ -12,7 +12,7 @@ public partial class ContributorItem : UserControl
         InitializeComponent();
 
         NameText.Text = con.Login;
-        ContributorText.Text = $"成功贡献了 {con.Contributions} 次";
+        ContributorText.Text = $"{con.Contributions}";
         IconBox.Update(con.AvatarUrl);
     }
 }

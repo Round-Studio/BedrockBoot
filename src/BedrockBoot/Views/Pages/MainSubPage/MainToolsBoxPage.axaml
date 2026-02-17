@@ -41,7 +41,7 @@
                                               IsVisible="False"
                                               IsClickable="True"
                                               Name="FoundLoseFilesBtn"
-                                              Click="FoundLoseFilesBtn_OnClick1"/>
+                                              Click="FoundLoseFilesBtn_OnClick"/>
                 
                 <onePointControls:SettingCard Header="{DynamicResource Tools.UninstallMc.Title}"
                                               Description="{DynamicResource Tools.UninstallMc.Description}"

@@ -15,12 +15,14 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameModItem : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     public GameModItem()
     {
         InitializeComponent();
     }
 
-    public GameModItem(ModInfo info,VersionConfig versionConfig) : this()
+    public GameModItem(ModInfo info, VersionConfig versionConfig) : this()
     {
         ModInfo = info;
         VersionConfig = versionConfig;
@@ -29,46 +31,55 @@ public partial class GameModItem : UserControl
     }
 
     public ModInfo ModInfo { get; set; }
-    public ModsManager ModsManager { get; set; }
-    public VersionConfig VersionConfig { get; set; }
+    public ModsManager ModsManager { get; set; } = null!;
+    public VersionConfig VersionConfig { get; set; } = null!;
     public Action? UpdateCallBack { get; set; }
 
     public void UpdateUI()
     {
-        FileName.Text = Path.GetFileName(ModInfo.File);
+        if (ModInfo == null) return;
+
+        string fileName = Path.GetFileName(ModInfo.File);
+        FileName.Text = fileName;
+
+        long fileSize = File.Exists(ModInfo.File) ? new FileInfo(ModInfo.File).Length : 0;
+        string formattedSize = SizeHelper.FormatBytes(fileSize);
 
         if (!ModInfo.IsPreLoad)
-            Card.Description = $"{SizeHelper.FormatBytes(new FileInfo(ModInfo.File).Length)}，{ModInfo.InjectDelay} ms";
+            Card.Description = $"{formattedSize}, {ModInfo.InjectDelay} ms";
         else
-            Card.Description = $"{SizeHelper.FormatBytes(new FileInfo(ModInfo.File).Length)}";
+            Card.Description = formattedSize;
 
         PreLoadBox.IsVisible = ModInfo.IsPreLoad;
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        string fileName = Path.GetFileName(ModInfo.File);
+        
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除模组",
-            Content = $"您确定要删除模组 {Path.GetFileName(ModInfo.File)} 吗\n" +
-                      $"这将永远无法恢复。",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Title = i18n["Instance.Mod.Delete.Title"],
+            Content = $"{i18n["Instance.Mod.Delete.Content"]} {fileName}?\n{i18n["Common.Action.Irreversible"]}",
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
                 try
                 {
-                    File.Delete(ModInfo.File);
+                    if (File.Exists(ModInfo.File))
+                        File.Delete(ModInfo.File);
+                    
                     ModsManager.RefreshMods(true);
+                    UpdateCallBack?.Invoke();
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     DialogHost.Show(new DialogInfo
                     {
-                        Title = "出现错误",
-                        Content = $"删除模组 {Path.GetFileName(ModInfo.File)} 时\n" +
-                                  $"出现错误：{e.Message}",
-                        CloseButtonText = "确定"
+                        Title = i18n["MainWindow.Dialog.Error.Title"],
+                        Content = $"{i18n["Instance.Mod.Delete.Error"]} {fileName}:\n{ex.Message}",
+                        CloseButtonText = i18n["MainWindow.Common.Confirm"]
                     });
                 }
             }
@@ -77,50 +88,71 @@ public partial class GameModItem : UserControl
 
     private void SettingBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var dialog = new DialogImportModContent();
-        dialog.IsPreLoad = ModInfo.IsPreLoad;
-        dialog.ModDelay = ModInfo.InjectDelay;
-        dialog.ModFile = ModInfo.File;
-        
+        var dialog = new DialogImportModContent
+        {
+            IsPreLoad = ModInfo.IsPreLoad,
+            ModDelay = ModInfo.InjectDelay,
+            ModFile = ModInfo.File
+        };
+
         DialogHost.Show(new DialogInfo
         {
-            Title = "设置 Mod 文件",
+            Title = i18n["Instance.Mod.Setting.Title"],
             Content = dialog,
-            CloseButtonText = "保存",
-            PrimaryButtonText = "取消",
+            CloseButtonText = i18n["MainWindow.Common.Save"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
-                if (string.IsNullOrEmpty(dialog.ModFile) ||
-                    !File.Exists(dialog.ModFile))
+                if (string.IsNullOrEmpty(dialog.ModFile) || !File.Exists(dialog.ModFile))
                 {
                     GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                     {
-                        Message = "无效路径，无法添加模组",
-                        Title = "无效路径"
+                        Message = i18n["Instance.Mod.Import.InvalidPath"],
+                        Title = i18n["MainWindow.Dialog.Error.Title"],
+                        NoticeType = NoticeType.Error
                     });
                     return;
                 }
 
-                var path = Path.Combine(VersionConfig.VersionPath, "config", "BedrockBoot2", "mods",
-                    Path.GetFileName(dialog.ModFile));
-                if (dialog.ModFile != path)
+                string modsDir = Path.Combine(VersionConfig.VersionPath, "config", "BedrockBoot2", "mods");
+                if (!Directory.Exists(modsDir)) Directory.CreateDirectory(modsDir);
+
+                string targetPath = Path.Combine(modsDir, Path.GetFileName(dialog.ModFile));
+
+                try
                 {
-                    File.Delete(ModInfo.File);
-                    File.Copy(dialog.ModFile, path);
+                    if (ModInfo.File != targetPath)
+                    {
+                        if (File.Exists(ModInfo.File)) File.Delete(ModInfo.File);
+                        File.Copy(dialog.ModFile, targetPath, true);
+                    }
+
+                    var index = ModsManager.ModsConfig.Data.FindIndex(x => x.File == ModInfo.File);
+
+                    if (index != -1)
+                    {
+                        ModsManager.ModsConfig.Data[index] = new ModInfo
+                        {
+                            File = targetPath,
+                            InjectDelay = dialog.ModDelay,
+                            IsPreLoad = dialog.IsPreLoad
+                        };
+                        ModsManager.ModsConfig.Save();
+                        
+                        ModInfo = ModsManager.ModsConfig.Data[index];
+                        UpdateUI();
+                        UpdateCallBack?.Invoke();
+                    }
                 }
-
-                var index = ModsManager.ModsConfig.Data.FindIndex(x => x.File == ModInfo.File &&
-                                                                       x.InjectDelay == ModInfo.InjectDelay &&
-                                                                       x.IsPreLoad == ModInfo.IsPreLoad);
-
-                ModsManager.ModsConfig.Data[index] = new ModInfo
+                catch (Exception ex)
                 {
-                    File = path,
-                    InjectDelay = dialog.ModDelay,
-                    IsPreLoad = dialog.IsPreLoad
-                };
-                ModsManager.ModsConfig.Save();
-                UpdateCallBack?.Invoke();
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+                    {
+                        Message = ex.Message,
+                        Title = i18n["MainWindow.Dialog.Error.Title"],
+                        NoticeType = NoticeType.Error
+                    });
+                }
             }
         });
     }

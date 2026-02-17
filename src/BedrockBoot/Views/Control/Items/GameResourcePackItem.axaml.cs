@@ -14,7 +14,9 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameResourcePackItem : UserControl
 {
-    public Action RefreshCallBack;
+    private static I18nManager i18n => I18nManager.Instance;
+    public Action? RefreshCallBack { get; set; }
+    public ResourcePackManifest ResourcePackManifest { get; set; } = null!;
 
     public GameResourcePackItem()
     {
@@ -25,16 +27,27 @@ public partial class GameResourcePackItem : UserControl
     {
         ResourcePackManifest = maf;
 
-        Update();
+        UpdateUI();
         ControlBox.IsVisible = !isImport;
     }
 
-    public ResourcePackManifest ResourcePackManifest { get; set; }
-
-    public void Update()
+    public void UpdateUI()
     {
-        if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon!))
-            Card.ImageIcon = new Bitmap(ResourcePackManifest.PackIcon!);
+        if (ResourcePackManifest == null) return;
+
+        try
+        {
+            if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon) && File.Exists(ResourcePackManifest.PackIcon))
+            {
+                using var stream = File.OpenRead(ResourcePackManifest.PackIcon);
+                Card.ImageIcon = new Bitmap(stream);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to load pack icon: {ex.Message}");
+        }
+
         PackName.MinecraftText = ResourcePackManifest.Header.Name;
         PackDescription.MinecraftText = ResourcePackManifest.Header.Description;
     }
@@ -43,31 +56,38 @@ public partial class GameResourcePackItem : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除资源",
-            Content = "您确定要删除吗，这将永远无法恢复。",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Title = i18n["Instance.Resource.Delete.Title"],
+            Content = $"{i18n["Instance.Resource.Delete.Content"]}\n{i18n["Common.Action.Irreversible"]}",
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "删除资源",
-                    Content = "正在删除资源"
+                    Title = i18n["Instance.Resource.Delete.Title"],
+                    Content = i18n["Instance.Resource.Delete.Processing"]
                 });
+
                 Task.Run(() =>
                 {
+                    bool success = false;
                     try
                     {
-                        Directory.Delete(ResourcePackManifest.PackRootPath, true);
+                        if (Directory.Exists(ResourcePackManifest.PackRootPath))
+                        {
+                            Directory.Delete(ResourcePackManifest.PackRootPath, true);
+                            success = true;
+                        }
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         Dispatcher.UIThread.Invoke(() =>
                         {
                             GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                             {
-                                Title = "错误",
-                                Message = "删除失败"
+                                Title = i18n["MainWindow.Dialog.Error.Title"],
+                                Message = $"{i18n["Instance.Resource.Delete.Error"]}: {ex.Message}",
+                                NoticeType = NoticeType.Error
                             });
                         });
                     }
@@ -75,7 +95,7 @@ public partial class GameResourcePackItem : UserControl
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         DialogHost.Close();
-                        RefreshCallBack?.Invoke();
+                        if (success) RefreshCallBack?.Invoke();
                     });
                 });
             }

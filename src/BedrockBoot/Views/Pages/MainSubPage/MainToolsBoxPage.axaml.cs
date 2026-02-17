@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
@@ -11,34 +12,50 @@ namespace BedrockBoot.Views.Pages.MainSubPage;
 
 public partial class MainToolsBoxPage : BedrockBootPage
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     public MainToolsBoxPage()
     {
         InitializeComponent();
     }
 
+    /// <summary>
+    /// 修复丢失的游戏文件
+    /// </summary>
     private void FoundLoseFilesBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var rfw = new RecoverFilesWindow();
         rfw.ShowDialog(GlobalModel.MainWindow);
     }
 
-    private void FoundLoseFilesBtn_OnClick1(object? sender, RoutedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
-
+    /// <summary>
+    /// 卸载所有已安装的 UWP 游戏组件
+    /// </summary>
     private async void DeleteMcBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogHost.Show(new ()
+        // 显示正在卸载的进度提示
+        DialogHost.Show(new DialogInfo
         {
-            Title = "卸载游戏中...",
-            Content = "卸载完毕将会自动关闭此对话框"
+            Title = i18n["MainPage.Tools.Uninstall.Dialog.Title"],
+            Content = i18n["MainPage.Tools.Uninstall.Dialog.Content"]
         });
 
-        await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release);
-        await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Preview);
-        await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Beta);
-
-        DialogHost.Close();
+        try
+        {
+            // 依次移除不同版本的 UWP 实例
+            await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release);
+            await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Preview);
+            await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Beta);
+        }
+        catch (Exception ex)
+        {
+            // 如果卸载过程中出现异常，可以在此处捕获并记录
+            Console.WriteLine($@"Uninstall failed: {ex.Message}");
+        }
+        finally
+        {
+            // 无论成功与否，任务结束后关闭对话框
+            DialogHost.Close();
+        }
     }
 }

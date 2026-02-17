@@ -24,7 +24,8 @@ namespace BedrockBoot.Views.Pages.MainSubPage;
 
 public partial class MainManager : BedrockBootPage
 {
-    private FileSystemWatcher _configWatcher;
+    private static I18nManager i18n => I18nManager.Instance;
+    private FileSystemWatcher? _configWatcher;
     private string GameType = "";
     private string SearchKey = "";
 
@@ -45,7 +46,6 @@ public partial class MainManager : BedrockBootPage
 
     private void InitializeConfigWatcher()
     {
-        // 先清理现有的监听器
         CleanupConfigWatcher();
 
         try
@@ -53,32 +53,27 @@ public partial class MainManager : BedrockBootPage
             if (GlobalModel.Config.Data.GameFolders.Count == 0)
                 return;
 
-            // 获取当前选中的游戏文件夹路径
             var currentFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
             var gameFolderPath = currentFolder.GameFolderPath;
 
             if (!Directory.Exists(gameFolderPath))
                 return;
 
-            // 创建 FileSystemWatcher
             _configWatcher = new FileSystemWatcher
             {
                 Path = gameFolderPath,
                 Filter = "config.json",
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                IncludeSubdirectories = true // 监听子目录
+                IncludeSubdirectories = true 
             };
 
-            // 注册事件处理
             _configWatcher.Changed += OnConfigFileChanged;
             _configWatcher.Deleted += OnConfigFileChanged;
-
-            // 开始监听
             _configWatcher.EnableRaisingEvents = true;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"初始化配置文件监听失败: {ex.Message}");
+            Console.WriteLine($@"Config Watcher Init Failed: {ex.Message}");
         }
     }
 
@@ -97,19 +92,13 @@ public partial class MainManager : BedrockBootPage
     {
         try
         {
-            // 只在文件在 bedrock_versions 目录或其子目录中时刷新
             if (e.FullPath.Contains("bedrock_versions", StringComparison.OrdinalIgnoreCase))
-                // 在主线程中更新UI
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    Console.WriteLine($@"检测到文件变化: {e.ChangeType} - {e.FullPath}");
                     UpdateGameList();
                 });
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"配置文件变化处理失败: {ex.Message}");
-        }
+        catch (Exception) { /* Ignored */ }
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
@@ -122,16 +111,9 @@ public partial class MainManager : BedrockBootPage
     {
         IsEditMode = false;
 
-        if (GlobalModel.Config.Data.GameFolders.Count <= 0)
-        {
-            FolderList.IsVisible = false;
-            FolderNull.IsVisible = true;
-        }
-        else
-        {
-            FolderList.IsVisible = true;
-            FolderNull.IsVisible = false;
-        }
+        bool hasFolders = GlobalModel.Config.Data.GameFolders.Count > 0;
+        FolderList.IsVisible = hasFolders;
+        FolderNull.IsVisible = !hasFolders;
 
         FolderList.SelectedIndex = -1;
         FolderList.Items.Clear();
@@ -150,9 +132,7 @@ public partial class MainManager : BedrockBootPage
         else
             FolderList.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
 
-        // 初始化或重新初始化文件监听
         InitializeConfigWatcher();
-
         UpdateGameList();
 
         IsEditMode = true;
@@ -162,7 +142,6 @@ public partial class MainManager : BedrockBootPage
     {
         IsEditMode = false;
 
-        // 安全校验索引
         if (GlobalModel.Config.Data.GameFolders.Count == 0)
         {
             ShowNoGamesUI(true);
@@ -180,16 +159,13 @@ public partial class MainManager : BedrockBootPage
         var currentFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
         var versionsPath = Path.Combine(currentFolder.GameFolderPath, "bedrock_versions");
 
-        // 判断 bedrock_versions 目录是否存在
         if (!Directory.Exists(versionsPath))
         {
-            // 目录不存在 → 显示“无实例”，但可提示用户
             ShowNoGamesUI(false);
             IsEditMode = true;
             return;
         }
 
-        // 开始加载
         GamesLoad.IsVisible = true;
         GamesNull.IsVisible = false;
         GameScro.IsVisible = false;
@@ -198,17 +174,14 @@ public partial class MainManager : BedrockBootPage
 
         foreach (var info in GameInfoHelper.GetVersionConfigs(currentFolder.GameFolderPath))
         {
-            if (string.IsNullOrEmpty(info?.Info?.VersionName) ||
-                string.IsNullOrEmpty(info?.Info?.Version))
+            if (string.IsNullOrEmpty(info?.Info?.VersionName) || string.IsNullOrEmpty(info?.Info?.Version))
                 continue;
 
-            // 搜索过滤
             if (!string.IsNullOrEmpty(SearchKey) &&
                 !info.Info.VersionName.Contains(SearchKey, StringComparison.OrdinalIgnoreCase) &&
                 !info.Info.Version.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            // 类型过滤
             var type = info.Info.VersionType == MinecraftGameTypeVersion.Release ? "Release" : "Preview";
             if (!string.IsNullOrEmpty(GameType) && GameType != type)
                 continue;
@@ -216,13 +189,11 @@ public partial class MainManager : BedrockBootPage
             lst.Add(info);
         }
 
-        // 更新 UI
         GameList.Children.Clear();
 
         if (lst.Count > 0)
         {
             foreach (var item in lst) GameList.Children.Add(new GameItem(item));
-
             GamesLoad.IsVisible = false;
             GameScro.IsVisible = true;
             GamesNull.IsVisible = false;
@@ -231,21 +202,20 @@ public partial class MainManager : BedrockBootPage
         {
             GamesLoad.IsVisible = false;
             GameScro.IsVisible = false;
-            GamesNull.IsVisible = true; // 确实没有有效实例
+            GamesNull.IsVisible = true;
         }
 
         IsEditMode = true;
     }
 
-// 提取 UI 显示逻辑，便于维护
     private void ShowNoGamesUI(bool isNullBecauseNoFolder)
     {
         GamesLoad.IsVisible = false;
         GameScro.IsVisible = false;
         GamesNull.IsVisible = true;
-
-        // 可选：根据 isNullBecauseNoFolder 改变提示文本
-        // 例如：GamesNullText.Text = isNullBecauseNoFolder ? "请先添加游戏文件夹" : "该文件夹下没有 Bedrock 实例";
+        
+        // 此处可通过绑定或 FindControl 获取 TextBlock 并设置多语言
+        // GamesNullText.Text = isNullBecauseNoFolder ? i18n["MainPage.Status.NoFolder"] : i18n["MainPage.Status.NoInstance"];
     }
 
     private void AddFolderBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -254,11 +224,11 @@ public partial class MainManager : BedrockBootPage
 
         DialogHost.Show(new DialogInfo
         {
-            Title = "添加游戏根目录",
+            Title = i18n["Setting.Game.Folders.Dialog.Add.Title"],
             Content = dialog,
-            CloseButtonText = "添加",
-            SecondaryButtonText = "取消",
-            PrimaryButtonText = "导入其他启动器配置",
+            CloseButtonText = i18n["Setting.Game.Folders.Dialog.Add.Action"],
+            SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
+            PrimaryButtonText = i18n["Setting.Game.Folders.Dialog.Add.ImportOther"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
@@ -274,13 +244,12 @@ public partial class MainManager : BedrockBootPage
                         GameFolderName = name
                     });
                     GlobalModel.Config.Save();
-
                     UpdateUI();
                 }
             },
             PrimaryAction = () =>
             {
-                GlobalModel.MainWindow.OpenDraw(new DrawImportOtherLauncherContent(), "导入其他启动器目录");
+                GlobalModel.MainWindow.OpenDraw(new DrawImportOtherLauncherContent(), i18n["Setting.Game.Folders.Draw.Import.Title"]);
             }
         });
     }
@@ -291,10 +260,7 @@ public partial class MainManager : BedrockBootPage
         {
             GlobalModel.Config.Data.GameFolderSelIndex = FolderList.SelectedIndex;
             GlobalModel.Config.Save();
-
-            // 当切换文件夹时重新初始化监听器
             InitializeConfigWatcher();
-
             UpdateGameList();
             JumpListManager.ConfigureJumpList();
         }
@@ -306,25 +272,22 @@ public partial class MainManager : BedrockBootPage
 
         DialogHost.Show(new DialogInfo
         {
-            Title = "导入游戏安装包",
+            Title = i18n["MainPage.Manager.Import.Title"],
             Content = dialog,
-            CloseButtonText = "开始导入",
-            SecondaryButtonText = "取消",
+            CloseButtonText = i18n["MainPage.Manager.Import.Action"],
+            SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
                 var packPath = dialog.PackFile;
-                var isGDK = dialog.IsGDK;
-                var knowGameTypeCheckBox = dialog.DontKnowGameType;
                 var installFolder = dialog.PackInstallFolder;
                 var installName = dialog.PackInstallName;
 
                 if (string.IsNullOrEmpty(packPath) || !File.Exists(packPath))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
-                    {
-                        Title = "错误",
-                        Message = $"游戏包 {packPath} 无效",
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo {
+                        Title = i18n["MainWindow.Dialog.Error.Title"],
+                        Message = string.Format(i18n["MainPage.Manager.Import.Error.Pack"], packPath),
                         NoticeType = NoticeType.Info
                     });
                     return;
@@ -332,10 +295,9 @@ public partial class MainManager : BedrockBootPage
 
                 if (string.IsNullOrEmpty(installFolder) || !Directory.Exists(installFolder))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
-                    {
-                        Title = "错误",
-                        Message = $"文件夹 {installFolder} 无效",
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo {
+                        Title = i18n["MainWindow.Dialog.Error.Title"],
+                        Message = string.Format(i18n["MainPage.Manager.Import.Error.Folder"], installFolder),
                         NoticeType = NoticeType.Info
                     });
                     return;
@@ -343,25 +305,22 @@ public partial class MainManager : BedrockBootPage
 
                 if (string.IsNullOrEmpty(installName))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
-                    {
-                        Title = "错误",
-                        Message = "请输入有效的实例名称",
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo {
+                        Title = i18n["MainWindow.Dialog.Error.Title"],
+                        Message = i18n["MainPage.Manager.Import.Error.Name"],
                         NoticeType = NoticeType.Info
                     });
                     return;
                 }
 
-                TaskImportGamePackItem.Install(packPath, installFolder, installName, dialog.GameType,
-                    knowGameTypeCheckBox);
+                TaskImportGamePackItem.Install(packPath, installFolder, installName, dialog.GameType, dialog.DontKnowGameType);
             }
         });
     }
 
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        SearchKey = SearchBox.Text;
-
+        SearchKey = SearchBox.Text ?? "";
         UpdateGameList();
     }
 
@@ -370,56 +329,46 @@ public partial class MainManager : BedrockBootPage
         if (IsEditMode)
         {
             var tag = "";
-            if (GameTypeSel != null)
-                if (GameTypeSel.SelectedItem != null)
-                {
-                    var item = (ComboBoxItem)GameTypeSel.SelectedItem;
-                    tag = item.Tag.ToString();
-                }
+            if (GameTypeSel?.SelectedItem is ComboBoxItem item)
+            {
+                tag = item.Tag?.ToString() ?? "";
+            }
 
             GameType = tag;
-            try
-            {
-                UpdateGameList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"刷新实例失败：{ex}");
-            }
+            UpdateGameList();
         }
     }
 
     private async void ImportIntegrationPackBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "请选择整合包文件",
+            Title = i18n["MainPage.Manager.Integration.Picker.Title"],
             AllowMultiple = false,
             FileTypeFilter = new []
             {
-                new FilePickerFileType("基岩版整合包 (*.mcpint)")
+                new FilePickerFileType(i18n["MainPage.Manager.Integration.Picker.Type"])
                 {
                     Patterns = new[] { "*.mcpint" }
                 }
             }
         });
 
-        if (files != null && files.Count >= 1)
+        if (files is { Count: >= 1 })
         {
-            var selectedFile = files[0];
-            var filePath = selectedFile.Path.LocalPath;
-
+            var filePath = files[0].Path.LocalPath;
             if (File.Exists(filePath))
             {
                 var body = new DialogAddGameInstanceConfigContent(filePath);
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
-                    Title = "选择安装目录",
+                    Title = i18n["MainPage.Manager.Integration.Dialog.Title"],
                     Content = body,
-                    CloseButtonText = "安装",
-                    SecondaryButtonText = "取消",
+                    CloseButtonText = i18n["MainPage.Manager.Integration.Dialog.Action"],
+                    SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
                     CloseAction = () =>
                     {
                         if(string.IsNullOrEmpty(body.GameInstallFolder) || string.IsNullOrEmpty(body.GameInstallName))

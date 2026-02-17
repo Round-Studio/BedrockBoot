@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -7,12 +8,16 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
+using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModItem : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+    public CurseForgeResponse.ModData ModData { get; set; } = null!;
+
     public CurseForgeModItem()
     {
         InitializeComponent();
@@ -21,38 +26,71 @@ public partial class CurseForgeModItem : UserControl
     public CurseForgeModItem(CurseForgeResponse.ModData modData) : this()
     {
         ModData = modData;
-
-        Update();
+        // 触发异步更新
+        _ = UpdateAsync();
     }
 
-    public CurseForgeResponse.ModData ModData { get; set; }
-
-    public async Task Update()
+    /// <summary>
+    /// 异步更新 UI 元素
+    /// </summary>
+    public async Task UpdateAsync()
     {
+        // 1. 设置文本信息
         PackName.Text = ModData.Name;
-        Card.Description = $"{string.Join(", ", ModData.Authors.Select(x => x.Name))}, 下载量：{ModData.DownloadCount}";
-        ModData.Categories.ForEach(cat =>
+        
+        var authors = string.Join(", ", ModData.Authors.Select(x => x.Name));
+        // 格式化描述：作者, 下载量：1,234,567
+        Card.Description = $"{authors} | {i18n["Download.CurseForge.Downloads"]}: {ModData.DownloadCount:N0}";
+
+        // 2. 渲染分类标签
+        HeaderBox.Children.Clear();
+        if (ModData.Categories != null)
         {
-            HeaderBox.Children.Add(new LabelBox
+            foreach (var cat in ModData.Categories)
             {
-                Text = cat.Name,
-                VerticalAlignment = VerticalAlignment.Center
-            });
-        });
-        Task.Run(() =>
+                HeaderBox.Children.Add(new LabelBox
+                {
+                    Text = cat.Name,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Avalonia.Thickness(4, 0)
+                });
+            }
+        }
+
+        // 3. 异步加载图标（非阻塞）
+        await LoadThumbnailAsync();
+    }
+
+    private async Task LoadThumbnailAsync()
+    {
+        if (ModData.Logo?.ThumbnailUrl == null) return;
+
+        try
         {
-            var image = GlobalModel.ImageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl).Result;
+            // 修正：使用 await 替代 .Result，防止阻塞 UI 线程或造成死锁
+            var image = await GlobalModel.ImageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl);
+            
             if (image != null)
-                Dispatcher.UIThread.Invoke(() =>
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     Card.IsFontIcon = false;
                     Card.ImageIcon = image;
                 });
-        });
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to load CurseForge thumbnail: {ex.Message}");
+        }
     }
 
+    /// <summary>
+    /// 点击卡片进入资源下载详情页
+    /// </summary>
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(ModData), $"下载资源 {ModData.Name}");
+        var title = $"{i18n["Download.Action.GetResource"]}: {ModData.Name}";
+        GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(ModData), title);
     }
 }

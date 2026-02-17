@@ -47,10 +47,13 @@ internal sealed class Program
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
 
-        Task.Run(async () =>
+        if (GlobalModel.Config.Data.GatherInfo)
         {
-            await AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion);
-        });
+            Task.Run(async () =>
+            {
+                await AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion);
+            });
+        }
 
         // 然后处理原有的 -update 参数
         if (args.Length > 0)

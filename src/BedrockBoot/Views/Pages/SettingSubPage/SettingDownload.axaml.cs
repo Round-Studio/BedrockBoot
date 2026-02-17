@@ -14,8 +14,6 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 
 public partial class SettingDownload : ISettingPage
 {
-    
-    public bool IsEdit;
 
     public SettingDownload()
     {
@@ -51,8 +49,6 @@ public partial class SettingDownload : ISettingPage
 
         IsEdit = true;
     }
-
-    public List<BreadcrumbItemInfo> BreadcrumbItem { get; set; }
 
     private void GameFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {

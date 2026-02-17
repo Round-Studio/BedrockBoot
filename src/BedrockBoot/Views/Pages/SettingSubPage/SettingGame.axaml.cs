@@ -12,8 +12,6 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 
 public partial class SettingGame : ISettingPage
 {
-    
-
     public SettingGame()
     {
         InitializeComponent();

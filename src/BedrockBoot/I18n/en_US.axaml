@@ -176,7 +176,7 @@
     <x:String x:Key="About.Action.Contributors.Title">Contributors</x:String>
     <x:String x:Key="About.Action.Contributors.Desc">All contributors to BedrockBoot</x:String>
     <x:String x:Key="About.Action.Version.Title">Internal Version</x:String>
-    <x:String x:Key="About.Action.CheckUpdate">Check for Updates</x:String>
+    <x:String x:Key="About.Action.CheckUpdate">Check Updates</x:String>
     <x:String x:Key="About.Contributor.Count.Prefix">Successfully contributed </x:String>
     <x:String x:Key="About.Contributor.Count.Suffix"> times</x:String>
 
@@ -456,7 +456,7 @@
     <x:String x:Key="MainPage.Nav.Setting">Settings</x:String>
     <x:String x:Key="MainPage.Status.NoInstance">No instances available</x:String>
     <x:String x:Key="MainPage.Status.LoadFailed">Load Failed</x:String>
-    <x:String x:Key="MainPage.Update.Title">Check for Updates</x:String>
+    <x:String x:Key="MainPage.Update.Title">Check Updates</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">Update {0}</x:String>
     <x:String x:Key="MainPage.Update.Content">A new update is available:&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">Update Now</x:String>
@@ -504,7 +504,7 @@
     <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Prefix">Error_Report</x:String>
     <x:String x:Key="Setting.Universal.Exception.Dialog.Save.FileType">BedrockBoot Crash Report</x:String>
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Title">Software Update</x:String>
-    <x:String x:Key="Setting.Universal.SoftwareUpdate.CheckUpdateAction">Check for Updates</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.CheckUpdateAction">Check Updates</x:String>
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Stable">Stable</x:String>
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Beta">Beta</x:String>
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Dev">Dev</x:String>
@@ -601,7 +601,7 @@
     <x:String x:Key="AboutPage.Contributor.LoadFailed">Failed to load contributor list, please check your connection.</x:String>
     <x:String x:Key="AboutPage.OpenSource.Title">Third-party Libraries</x:String>
     <x:String x:Key="AboutPage.OpenSource.VersionPrefix">Version</x:String>
-    <x:String x:Key="AboutPage.Update.Action">Check for Updates</x:String>
+    <x:String x:Key="AboutPage.Update.Action">Check Updates</x:String>
     <x:String x:Key="AboutPage.Update.Checking">Checking...</x:String>
     <x:String x:Key="Download.Dialog.TitlePrefix">Download Game</x:String>
     <x:String x:Key="Download.List.Empty">No versions found matching the criteria</x:String>

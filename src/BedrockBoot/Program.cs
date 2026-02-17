@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Win32;
 using Round.SDK.Entity;
@@ -45,6 +46,11 @@ internal sealed class Program
         AppUpdater.ProcessStartupArgs(args);
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
+
+        Task.Run(async () =>
+        {
+            await AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion);
+        });
 
         // 然后处理原有的 -update 参数
         if (args.Length > 0)

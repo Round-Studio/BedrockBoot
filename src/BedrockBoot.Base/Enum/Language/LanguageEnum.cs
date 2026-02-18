@@ -18,4 +18,7 @@ public enum LanguageEnum
     
     [LanguageResource("avares://BedrockBoot/I18n/en_US.axaml")]
     English,
+    
+    [LanguageResource("avares://BedrockBoot/I18n/ja_JP.axaml")]
+    Japanese,
 }

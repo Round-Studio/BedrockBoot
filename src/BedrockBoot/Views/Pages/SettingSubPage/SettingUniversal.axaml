@@ -34,8 +34,9 @@
                 <ComboBox Width="200"
                           Name="LanguageChoose"
                           SelectionChanged="LanguageChoose_OnSelectionChanged">
-                    <ComboBoxItem Content="Chinese"></ComboBoxItem>
-                    <ComboBoxItem Content="English"></ComboBoxItem>
+                    <ComboBoxItem Content="中文 (简体中文)"></ComboBoxItem>
+                    <ComboBoxItem Content="English (US)"></ComboBoxItem>
+                    <ComboBoxItem Content="Japanese"></ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>
 

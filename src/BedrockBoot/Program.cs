@@ -51,7 +51,13 @@ internal sealed class Program
         {
             Task.Run(async () =>
             {
-                await AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion);
+                try
+                {
+                    await AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion);
+                }
+                catch
+                {
+                }
             });
         }
 

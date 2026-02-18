@@ -32,30 +32,37 @@ namespace BedrockBoot.Views.Windows;
 
 public partial class MainWindow : BedrockBootWindow
 {
-    private I18nManager i18n => I18nManager.Instance;
+    private I18nManager I18n => I18nManager.Instance;
 
     public MainWindow()
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
-        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
+        
+        // 1. 初始化窗口几何信息
+        InitializeWindowBounds();
+        
+        // 2. 绑定任务列表更新回调 (使用 Post 确保线程安全)
+        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Post(UpdateTaskUI);
+        
+        // 3. 注册全局快捷键
         SetupDynamicHotkey();
+        
+        // 4. 执行异步初始化流程
+        _ = InitializeAsync();
+    }
 
-        UpdateBack();
+    #region 初始化流程
 
-        if (!Directory.Exists(PathsList.TempPath)) Directory.CreateDirectory(PathsList.TempPath);
-
-        if (GlobalModel.Config.Data.WindowInfo.X != -1 && GlobalModel.Config.Data.WindowInfo.Y != -1)
+    private void InitializeWindowBounds()
+    {
+        var winInfo = GlobalModel.Config.Data.WindowInfo;
+        if (winInfo.X != -1 && winInfo.Y != -1)
         {
             WindowStartupLocation = WindowStartupLocation.Manual;
-            Position = new PixelPoint(GlobalModel.Config.Data.WindowInfo.X,
-                GlobalModel.Config.Data.WindowInfo.Y);
-
-            Width = GlobalModel.Config.Data.WindowInfo.Width;
-            Height = GlobalModel.Config.Data.WindowInfo.Height;
-
-            Console.WriteLine(
-                $@"Main Window: Width {GlobalModel.Config.Data.WindowInfo.Width}, Height {GlobalModel.Config.Data.WindowInfo.Height}");
+            Position = new PixelPoint(winInfo.X, winInfo.Y);
+            Width = winInfo.Width;
+            Height = winInfo.Height;
         }
 
 #if DEBUG
@@ -65,229 +72,248 @@ public partial class MainWindow : BedrockBootWindow
 
         MainFrame.NavigateTo(new LoadingPage());
         VersionBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        BuildTime.Text =
-            $"Build.2.{((DateTime)CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly())).ToString("yy.MMdd.HHmmss")}";
+        var buildTimestamp = (DateTime)CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly());
+        BuildTime.Text = $"Build.2.{buildTimestamp:yy.MMdd.HHmmss}";
         
-        Task.Run(async () =>
+        if (!Directory.Exists(PathsList.TempPath)) 
+            Directory.CreateDirectory(PathsList.TempPath);
+    }
+
+    private async Task InitializeAsync()
+    {
+        // 加载功能配置文件
+        try
         {
             GlobalModel.FunctionOption = await new JsonResourceEntity()
-                .LoadJsonResourceAsync<FunctionOptionEntry>(
-                    "avares://BedrockBoot/Manifest/Function/FunctionOption.json");
+                .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to load FunctionOption: {ex.Message}");
+        }
 
+        // 注册文件关联
+        HandleFileAssociations();
+
+        // 核心引擎异步初始化
+        await InitBedrockCoreAsync();
+
+        // 完成初始化后回到 UI 线程进行页面跳转
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            UpdateBack(); // 应用背景设置
+            
+            if (GlobalModel.Config.Data.IsFirstRun)
+                MainFrame.NavigateTo(new SetupRoot());
+            else
+                MainFrame.NavigateTo(new MainPage());
+
+            CheckUserAgreement();
+        });
+    }
+
+    private void HandleFileAssociations()
+    {
 #if RELEASE
-            if (GlobalModel.FunctionOption.IsEnableMcPackOpenWithBody)
-                OpenAgreement.RegisterAssociation();
-#else
+        if (GlobalModel.FunctionOption?.IsEnableMcPackOpenWithBody == true)
             OpenAgreement.RegisterAssociation();
+#else
+        OpenAgreement.RegisterAssociation();
 #endif
+    }
 
-            try
+    private async Task InitBedrockCoreAsync()
+    {
+        try
+        {
+            GlobalModel.BedrockCore = new BedrockCore
             {
-                GlobalModel.BedrockCore = new BedrockCore
+                Options = new CoreOptions
                 {
-                    Options = new CoreOptions
-                    {
-                        IsAutoCompleteVC = true,
-                        IsAutoOpenDevelopment = true,
-                        IsAutoCompleteGameInput = true,
-                        IsCheckMD5 = true
-                    }
-                };
-                await GlobalModel.BedrockCore.InitAsync();
-            }
-            catch (Exception ex)
+                    IsAutoCompleteVC = true,
+                    IsAutoOpenDevelopment = true,
+                    IsAutoCompleteGameInput = true,
+                    IsCheckMD5 = true
+                }
+            };
+            await GlobalModel.BedrockCore.InitAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"BedrockCore Init Error: {ex}");
+            
+            if (ex.Message.Contains("Not Support Windows Version"))
             {
-                Console.WriteLine(ex);
-                if (ex.Message.Contains("Not Support Windows Version"))
-                    DialogHost.Show(new DialogInfo
-                    {
-                        Title = I18nManager.Instance["MainWindow.Dialog.UnsupportedSys.Title"],
-                        Content = I18nManager.Instance["MainWindow.Dialog.UnsupportedSys.Content"],
-                        CloseButtonText = I18nManager.Instance["MainWindow.Dialog.UnsupportedSys.Close"],
-                        CloseAction = () => Environment.Exit(1)
-                    });
+                await Dispatcher.UIThread.InvokeAsync(() => DialogHost.Show(new DialogInfo
+                {
+                    Title = I18n["MainWindow.Dialog.UnsupportedSys.Title"],
+                    Content = I18n["MainWindow.Dialog.UnsupportedSys.Content"],
+                    CloseButtonText = I18n["MainWindow.Dialog.UnsupportedSys.Close"],
+                    CloseAction = () => Environment.Exit(1)
+                }));
             }
+        }
+    }
 
-            try
-            {
-                // OpenProtocol();
-            }
-            catch (InvalidOperationException)
-            {
-                DialogHost.Show(new DialogInfo
-                {
-                    Title = I18nManager.Instance["MainWindow.Dialog.NoNetwork.Title"],
-                    Content = I18nManager.Instance["MainWindow.Dialog.NoNetwork.Content"],
-                    CloseButtonText = I18nManager.Instance["MainWindow.Dialog.NoNetwork.Close"]
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"Error: {ex}");
+    private void CheckUserAgreement()
+    {
+        if (GlobalModel.Config.Data.IsAgreeTerms) return;
 
-                if (!GlobalModel.BedrockCore.GetWindowsDevelopmentState())
-                {
-                    DialogHost.Show(new DialogInfo
-                    {
-                        Title = I18nManager.Instance["MainWindow.Dialog.DevMode.Title"],
-                        Content = I18nManager.Instance["MainWindow.Dialog.DevMode.Content"],
-                        CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
-                    });
-                }
-            }
-            finally
+        DialogHost.Show(new DialogInfo
+        {
+            Content = I18n["MainWindow.Dialog.Agreement.Content"],
+            Title = I18n["MainWindow.Dialog.Agreement.Title"],
+            CloseButtonText = I18n["MainWindow.Dialog.Agreement.Agree"],
+            CloseAction = () =>
             {
-                if (GlobalModel.Config.Data.IsFirstRun)
-                {
-                    Dispatcher.UIThread.Invoke(() => MainFrame.NavigateTo(new SetupRoot()));
-                }
-                else
-                {
-                    Dispatcher.UIThread.Invoke(() => MainFrame.NavigateTo(new MainPage()));
-                }
-                
-                if (!GlobalModel.Config.Data.IsAgreeTerms)
-                    DialogHost.Show(new DialogInfo
-                    {
-                        Content = I18nManager.Instance["MainWindow.Dialog.Agreement.Content"],
-                        Title = I18nManager.Instance["MainWindow.Dialog.Agreement.Title"],
-                        CloseButtonText = I18nManager.Instance["MainWindow.Dialog.Agreement.Agree"],
-                        CloseAction = () =>
-                        {
-                            GlobalModel.Config.Data.IsAgreeTerms = true;
-                            GlobalModel.Config.Save();
-                        },
-                        PrimaryButtonText = I18nManager.Instance["MainWindow.Dialog.Agreement.Decline"],
-                        PrimaryAction = () => { Environment.Exit(0); },
-                        AccountButton = DialogButtons.CloseButton
-                    });
-            }
+                GlobalModel.Config.Data.IsAgreeTerms = true;
+                GlobalModel.Config.Save();
+            },
+            PrimaryButtonText = I18n["MainWindow.Dialog.Agreement.Decline"],
+            PrimaryAction = () => Environment.Exit(0),
+            AccountButton = DialogButtons.CloseButton
         });
     }
 
-    public void OpenProtocol()
-    {
-        var pro = new ProtocolRegister();
-        pro.ProtocolName = "BedrockBoot";
-        pro.ProtocolDescription = I18nManager.Instance["MainWindow.Protocol.Description"];
-        pro.RegisterProtocol(Process.GetCurrentProcess().MainModule.FileName);
+    #endregion
 
-        GlobalModel.ProtocolService.StartAsync();
-        GlobalModel.ProtocolService.Get("/shell", async (context, parameters) =>
-        {
-            parameters.TryGetQuery("command", out var command);
-            var comm = command.Replace("bedrockboot://", "").Split('/');
-            ProtocolCommand.OnCommand(comm);
-            await ProtocolService.WriteResponseAsync(context, 200, "ok");
-        });
-    }
+    #region 视觉渲染 (背景处理)
 
-    private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
+    public void UpdateBack()
     {
-        GlobalModel.Config.Data.WindowInfo = new WindowInfo
-        {
-            Width = Bounds.Width,
-            Height = Bounds.Height,
-            X = Position.X,
-            Y = Position.Y
-        };
-        GlobalModel.Config.Save();
-    }
-
-    public async Task UpdateBack()
-    {
-        TransparencyLevelHint = new List<WindowTransparencyLevel> { WindowTransparencyLevel.Transparent };
+        // 状态重置
+        TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
         BackgroundBox.IsVisible = false;
         AccentBackgroundBox.IsVisible = false;
         AnimationBackground.IsVisible = false;
-        
-        if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Mica)
-        {
-            TransparencyLevelHint = new List<WindowTransparencyLevel> { WindowTransparencyLevel.Mica };
-        }
-        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Blur)
-        {
-            TransparencyLevelHint = new List<WindowTransparencyLevel> { WindowTransparencyLevel.AcrylicBlur };
-        }
-        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image)
-        {
-            BackgroundImageOpacity.Opacity = (100 - GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
-            var index = GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex;
-            if (index != -1 && GlobalModel.Config.Data.StyleConfig.BackgroundImages.Count > 0)
-            {
-                BackgroundBox.IsVisible = true;
-                BackgroundImage.IsVisible = false;
-                BackgroundImage3D.IsVisible = false;
-                SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
 
-                var imgPath = GlobalModel.Config.Data.StyleConfig.BackgroundImages[index];
-                if (GlobalModel.Config.Data.StyleConfig.Background3D)
-                {
-                    BackgroundImage3D.IsVisible = true;
-                    BackgroundImage3D.Source = new Bitmap(imgPath);
-                    BackgroundImage3D.Stretch = Stretch.UniformToFill;
-                }
-                else
-                {
-                    BackgroundImage.IsVisible = true;
-                    BackgroundImage.Background = new ImageBrush
-                    {
-                        Stretch = Stretch.UniformToFill,
-                        Source = new Bitmap(imgPath)
-                    };
-                }
-            }
-        }
-        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.AccentColor)
+        var style = GlobalModel.Config.Data.StyleConfig;
+
+        switch (style.StyleType)
         {
-            AccentBackgroundBox.IsVisible = true;
-            AccentBackgroundBox.Opacity = 0.7;
-        }
-        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Voronoi)
-        {
-            AnimationBackground.IsVisible = true;
-            AnimationBackground.BackgroundType = BackgroundType.Voronoi;
-        }
-        else if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Bubble)
-        {
-            AnimationBackground.IsVisible = true;
-            AnimationBackground.BackgroundType = BackgroundType.Bubble;
+            case StyleType.Mica:
+                TransparencyLevelHint = new[] { WindowTransparencyLevel.Mica };
+                break;
+            case StyleType.Blur:
+                TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
+                break;
+            case StyleType.Image:
+                ApplyImageBackground(style);
+                break;
+            case StyleType.AccentColor:
+                AccentBackgroundBox.IsVisible = true;
+                AccentBackgroundBox.Opacity = 0.7;
+                break;
+            case StyleType.Voronoi:
+                AnimationBackground.IsVisible = true;
+                AnimationBackground.BackgroundType = BackgroundType.Voronoi;
+                break;
+            case StyleType.Bubble:
+                AnimationBackground.IsVisible = true;
+                AnimationBackground.BackgroundType = BackgroundType.Bubble;
+                break;
         }
     }
 
-    public void SetBackgroundBlur(int num)
+    private void ApplyImageBackground(StyleConfig style)
     {
-        if (num != 0)
+        if (style.BackgroundImageSelectedIndex == -1 || style.BackgroundImages.Count == 0) return;
+
+        var imgPath = style.BackgroundImages[style.BackgroundImageSelectedIndex];
+        if (!File.Exists(imgPath)) return;
+
+        try
         {
-            BackgroundBox.Effect = new BlurEffect { Radius = num };
-            BackgroundBox.Margin = new Thickness(-num);
+            BackgroundBox.IsVisible = true;
+            BackgroundImage.IsVisible = false;
+            BackgroundImage3D.IsVisible = false;
+            
+            SetBackgroundBlur(style.BackgroundImageBlur);
+            
+            var bitmap = new Bitmap(imgPath);
+            if (style.Background3D)
+            {
+                BackgroundImage3D.IsVisible = true;
+                BackgroundImage3D.Source = bitmap;
+                BackgroundImage3D.Stretch = Stretch.UniformToFill;
+            }
+            else
+            {
+                BackgroundImage.IsVisible = true;
+                BackgroundImage.Background = new ImageBrush
+                {
+                    Stretch = Stretch.UniformToFill,
+                    Source = bitmap
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Background image render error: {ex.Message}");
+        }
+    }
+
+    public void SetBackgroundBlur(int radius)
+    {
+        if (radius > 0)
+        {
+            BackgroundBox.Effect = new BlurEffect { Radius = radius };
+            BackgroundBox.Margin = new Thickness(-radius);
         }
         else
         {
             BackgroundBox.Effect = null;
             BackgroundBox.Margin = new Thickness(0);
         }
+        
+        // 透明度应用
         BackgroundImageOpacity.Opacity = (100 - GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
     }
-    
+
+    #endregion
+
+    #region 任务与交互
+
+    public void UpdateTaskUI()
+    {
+        TaskList.Children.Clear();
+        var tasks = GlobalModel.TaskManager.Tasks;
+
+        if (tasks.Count == 0)
+        {
+            TaskViewer.IsVisible = false;
+            NoneBox.IsVisible = true;
+            TaskInfoText.IsVisible = false;
+        }
+        else
+        {
+            TaskViewer.IsVisible = true;
+            NoneBox.IsVisible = false;
+            TaskInfoText.IsVisible = true;
+            TaskInfoText.Text = string.Format(I18n["MainWindow.Task.CountInfo"], tasks.Count);
+
+            foreach (var task in tasks)
+            {
+                if (task.Item == null) continue;
+                task.Item.Margin = new Thickness(5);
+                TaskList.Children.Add(task.Item);
+            }
+        }
+    }
+
     private void SetupDynamicHotkey()
     {
         this.AddHandler(KeyDownEvent, OnPreviewKeyDown, RoutingStrategies.Tunnel);
     }
 
-    private async Task HandlePasteAsync()
+    private async void OnPreviewKeyDown(object? sender, KeyEventArgs e)
     {
-        CopyService.HandleCopyAction();
-    }
-    
-    private async void OnPreviewKeyDown(object sender, KeyEventArgs e)
-    {
+        // Ctrl + V 全局粘贴逻辑
         if (e.Key == Key.V && e.KeyModifiers == KeyModifiers.Control)
         {
-            var source = e.Source;
-            if (source is not (TextBox or TextBlock))
+            if (e.Source is not (TextBox or TextBlock))
             {
-                await HandlePasteAsync();
+                CopyService.HandleCopyAction();
                 e.Handled = true;
             }
         }
@@ -299,29 +325,18 @@ public partial class MainWindow : BedrockBootWindow
         else OpenTaskCard();
     }
 
-    public void UpdateTaskUI()
+    private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {
-        TaskList.Children.Clear();
-        var taskCount = GlobalModel.TaskManager.Tasks.Count;
-
-        if (taskCount <= 0)
+        // 保存窗口状态
+        GlobalModel.Config.Data.WindowInfo = new WindowInfo
         {
-            TaskViewer.IsVisible = false;
-            NoneBox.IsVisible = true;
-            TaskInfoText.IsVisible = false;
-        }
-        else
-        {
-            TaskViewer.IsVisible = true;
-            NoneBox.IsVisible = false;
-            TaskInfoText.IsVisible = true;
-            TaskInfoText.Text = string.Format(I18nManager.Instance["MainWindow.Task.CountInfo"], taskCount);
-
-            GlobalModel.TaskManager.Tasks.ForEach(task =>
-            {
-                task.Item.Margin = new Thickness(5);
-                TaskList.Children.Add(task.Item);
-            });
-        }
+            Width = Bounds.Width,
+            Height = Bounds.Height,
+            X = Position.X,
+            Y = Position.Y
+        };
+        GlobalModel.Config.Save();
     }
+
+    #endregion
 }

@@ -1,13 +1,20 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BedrockBoot.Core.Models;
 
-public class OptimizedIpResolver
+public class OptimizedIpResolver : IDisposable
 {
-    private readonly HttpClient _httpClient;
     private readonly OptimizedIpConfig _config;
+    // 使用单例 Handler 避免 Socket 泄露
+    private readonly SocketsHttpHandler _sharedHandler;
 
     public class OptimizedIpConfig
     {
@@ -17,7 +24,7 @@ public class OptimizedIpResolver
         public int TimeoutSeconds { get; set; } = 3;
         public int CacheTtlSeconds { get; set; } = 300;
         public bool PreferIPv4 { get; set; } = true;
-        public int MinResults { get; set; } = 3;
+        public int MinResults { get; set; } = 2; // 找到2个足够快的就停，提高效率
         public int MaxConcurrentTests { get; set; } = 10;
     }
 
@@ -32,58 +39,35 @@ public class OptimizedIpResolver
     public OptimizedIpResolver(OptimizedIpConfig config = null)
     {
         _config = config ?? new OptimizedIpConfig();
-
-        var handler = new HttpClientHandler
+        
+        _sharedHandler = new SocketsHttpHandler
         {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
-            AllowAutoRedirect = false
+            SslOptions = { RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true },
+            AllowAutoRedirect = false,
+            ConnectTimeout = TimeSpan.FromSeconds(_config.TimeoutSeconds)
         };
-
-        _httpClient = new HttpClient(handler)
-        {
-            Timeout = TimeSpan.FromSeconds(_config.TimeoutSeconds)
-        };
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", "BMCBL-Updater");
     }
 
-    /// <summary>
-    /// 获取最优 IP 地址
-    /// </summary>
     public async Task<IPEndPoint> GetOptimizedIpAsync(bool useCache = true)
     {
         if (useCache)
         {
             var cached = await GetCachedOptimizedIp();
-            if (cached != null)
-                return cached;
+            if (cached != null) return cached;
         }
 
         var stopwatch = Stopwatch.StartNew();
-
         try
         {
-            // 1. 解析域名获取所有 IP
             var ipAddresses = await ResolveDomainAsync(_config.Domain);
-            if (!ipAddresses.Any())
-            {
-                Console.WriteLine($"未解析到 {_config.Domain} 的 IP 地址");
-                return null;
-            }
+            if (!ipAddresses.Any()) return null;
 
-            Console.WriteLine($"解析到 {ipAddresses.Count} 个候选 IP");
-
-            // 2. 根据优先级过滤
             var candidates = FilterByPreference(ipAddresses);
-
-            // 3. 并发测试 IP 延迟
             var results = await TestIpLatencyAsync(candidates);
-
-            // 4. 选择最优 IP
             var bestIp = SelectBestIp(results);
 
             if (bestIp != null)
             {
-                Console.WriteLine($"✅ 优选IP竞速完成: {bestIp} (耗时: {stopwatch.ElapsedMilliseconds}ms)");
                 await CacheOptimizedIp(bestIp);
             }
 
@@ -91,172 +75,124 @@ public class OptimizedIpResolver
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取优选IP失败: {ex.Message}");
+            Console.WriteLine($"获取优选IP流程异常: {ex.Message}");
             return null;
         }
     }
 
-    /// <summary>
-    /// 解析域名获取所有 IP 地址
-    /// </summary>
     private async Task<List<IPAddress>> ResolveDomainAsync(string domain)
     {
         try
         {
-            var entries = await Dns.GetHostEntryAsync(domain);
-            return entries.AddressList.ToList();
+            return (await Dns.GetHostAddressesAsync(domain)).ToList();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"DNS解析失败: {ex.Message}");
-
-            // 备用解析方法
-            try
-            {
-                using var client = new TcpClient();
-                await client.ConnectAsync(domain, _config.Port);
-                var ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address;
-                return new List<IPAddress> { ip };
-            }
-            catch
-            {
-                return new List<IPAddress>();
-            }
+            return new List<IPAddress>();
         }
     }
 
-    /// <summary>
-    /// 根据配置过滤 IP
-    /// </summary>
     private List<IPAddress> FilterByPreference(List<IPAddress> addresses)
     {
-        if (_config.PreferIPv4)
-        {
-            return addresses
-                .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork)
-                .Concat(addresses.Where(ip => ip.AddressFamily == AddressFamily.InterNetworkV6))
-                .ToList();
-        }
+        var ipv4 = addresses.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+        var ipv6 = addresses.Where(ip => ip.AddressFamily == AddressFamily.InterNetworkV6);
 
-        return addresses
-            .Where(ip => ip.AddressFamily == AddressFamily.InterNetworkV6)
-            .Concat(addresses.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork))
-            .ToList();
+        return _config.PreferIPv4 
+            ? ipv4.Concat(ipv6).ToList() 
+            : ipv6.Concat(ipv4).ToList();
     }
 
-    /// <summary>
-    /// 并发测试 IP 延迟
-    /// </summary>
     private async Task<List<IpTestResult>> TestIpLatencyAsync(List<IPAddress> ipAddresses)
     {
         var results = new List<IpTestResult>();
-        var semaphore = new SemaphoreSlim(_config.MaxConcurrentTests);
+        using var semaphore = new SemaphoreSlim(_config.MaxConcurrentTests);
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_config.TimeoutSeconds + 2));
         var tasks = new List<Task>();
-        var cts = new CancellationTokenSource();
 
-        foreach (var ip in ipAddresses.Take(_config.MaxConcurrentTests * 2))
+        foreach (var ip in ipAddresses.Take(20))
         {
-            await semaphore.WaitAsync();
-
+            await semaphore.WaitAsync(cts.Token);
             tasks.Add(Task.Run(async () =>
             {
                 try
                 {
+                    if (cts.IsCancellationRequested) return;
+
                     var result = await TestSingleIpAsync(ip, cts.Token);
+                    
                     lock (results)
                     {
                         results.Add(result);
-
-                        // 如果已经找到足够多的结果，可以取消其他测试
-                        if (results.Count(r => r.IsSuccessful) >= _config.MinResults)
+                        if (result.IsSuccessful && results.Count(r => r.IsSuccessful) >= _config.MinResults)
                         {
-                            cts.Cancel();
+                            cts.Cancel(); // 达到目标，触发其他任务中止
                         }
                     }
                 }
+                catch (OperationCanceledException) { /* 忽略信号触发的取消 */ }
                 finally
                 {
                     semaphore.Release();
                 }
-            }));
+            }, cts.Token));
         }
 
-        await Task.WhenAll(tasks);
-
+        try { await Task.WhenAll(tasks); } catch { /* 忽略WhenAll中的取消异常 */ }
         return results;
     }
 
-    /// <summary>
-    /// 测试单个 IP 的延迟
-    /// </summary>
-    private async Task<IpTestResult> TestSingleIpAsync(IPAddress ip, CancellationToken cancellationToken)
+    private async Task<IpTestResult> TestSingleIpAsync(IPAddress ip, CancellationToken ct)
     {
         var result = new IpTestResult { IpAddress = ip };
-        var stopwatch = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
 
         try
         {
-            // 方法1: TCP 连接测试
-            using var tcpClient = new TcpClient();
-            var connectTask = tcpClient.ConnectAsync(ip, _config.Port);
+            // 使用 Socket 替代 TcpClient，以获得更好的 CancellationToken 支持
+            using var socket = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            
+            // 步骤 1: TCP 连接竞速
+            await socket.ConnectAsync(new IPEndPoint(ip, _config.Port), ct);
 
-            if (await Task.WhenAny(connectTask, Task.Delay(TimeSpan.FromSeconds(2), cancellationToken)) == connectTask)
+            // 步骤 2: HTTPS 应用层测试 (复用 Handler)
+            using var client = new HttpClient(new SocketsHttpHandler
             {
-                await connectTask;
-
-                // 方法2: HTTPS 请求测试
-                var endpoint = new IPEndPoint(ip, _config.Port);
-                var url = $"https://{_config.Domain}{_config.TestPath}";
-
-                // 使用自定义 DNS 解析
-                var handler = new HttpClientHandler
+                ConnectCallback = async (context, token) =>
                 {
-                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-                };
+                    // 此处不再重连，但由于 HttpClient 设计，我们需要提供流
+                    // 为简单起见，这里直接利用之前的连接或让 HttpClient 重新在特定 IP 上握手
+                    var s = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    await s.ConnectAsync(new IPEndPoint(ip, _config.Port), token);
+                    return new NetworkStream(s, ownsSocket: true);
+                },
+                SslOptions = { RemoteCertificateValidationCallback = delegate { return true; } }
+            }) 
+            { 
+                Timeout = TimeSpan.FromSeconds(_config.TimeoutSeconds) 
+            };
 
-                // 通过 Host 头指定域名
-                using var client = new HttpClient(handler);
-                client.DefaultRequestHeaders.Host = _config.Domain;
-                client.Timeout = TimeSpan.FromSeconds(_config.TimeoutSeconds);
-
-                // 直接连接到指定 IP
-                using var socketsHandler = new SocketsHttpHandler
-                {
-                    ConnectCallback = async (context, cancellationToken) =>
-                    {
-                        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-                        await socket.ConnectAsync(ip, _config.Port, cancellationToken);
-                        return new NetworkStream(socket, ownsSocket: true);
-                    }
-                };
-
-                using var httpClient = new HttpClient(socketsHandler);
-                httpClient.DefaultRequestHeaders.Host = _config.Domain;
-                httpClient.Timeout = TimeSpan.FromSeconds(_config.TimeoutSeconds);
-
-                var response = await httpClient.GetAsync(url, cancellationToken);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    stopwatch.Stop();
-                    result.IsSuccessful = true;
-                    result.Latency = stopwatch.Elapsed;
-
-                    Console.WriteLine($"  ✓ {ip}: {stopwatch.ElapsedMilliseconds}ms");
-                }
-                else
-                {
-                    throw new Exception($"HTTP状态码: {response.StatusCode}");
-                }
-            }
-            else
+            client.DefaultRequestHeaders.Host = _config.Domain;
+            var url = $"https://{_config.Domain}{_config.TestPath}";
+            
+            var response = await client.GetAsync(url, ct);
+            if (response.IsSuccessStatusCode)
             {
-                throw new TimeoutException("TCP连接超时");
+                sw.Stop();
+                result.IsSuccessful = true;
+                result.Latency = sw.Elapsed;
+                Console.WriteLine($"  ✓ {ip}: {sw.ElapsedMilliseconds}ms");
             }
+        }
+        catch (OperationCanceledException)
+        {
+            result.IsSuccessful = false;
+            result.Error = "Task Cancelled";
+            // 不在控制台打印取消的错误，减少噪音
         }
         catch (Exception ex)
         {
-            stopwatch.Stop();
+            sw.Stop();
             result.IsSuccessful = false;
             result.Error = ex.Message;
             Console.WriteLine($"  ✗ {ip}: {ex.Message}");
@@ -265,34 +201,22 @@ public class OptimizedIpResolver
         return result;
     }
 
-    /// <summary>
-    /// 选择最优 IP
-    /// </summary>
     private IPEndPoint SelectBestIp(List<IpTestResult> results)
     {
-        var successful = results
+        var best = results
             .Where(r => r.IsSuccessful)
             .OrderBy(r => r.Latency)
-            .ToList();
+            .FirstOrDefault();
 
-        if (!successful.Any())
-            return null;
-
-        var best = successful.First();
-        return new IPEndPoint(best.IpAddress, _config.Port);
+        return best != null ? new IPEndPoint(best.IpAddress, _config.Port) : null;
     }
 
-    // 简单的内存缓存
     private static (IPEndPoint Endpoint, DateTime Expiry) _cache;
 
     private async Task<IPEndPoint> GetCachedOptimizedIp()
     {
         if (_cache.Endpoint != null && DateTime.Now < _cache.Expiry)
-        {
-            Console.WriteLine($"使用缓存的优选IP: {_cache.Endpoint}");
             return _cache.Endpoint;
-        }
-
         return null;
     }
 
@@ -303,6 +227,6 @@ public class OptimizedIpResolver
 
     public void Dispose()
     {
-        _httpClient?.Dispose();
+        _sharedHandler?.Dispose();
     }
 }

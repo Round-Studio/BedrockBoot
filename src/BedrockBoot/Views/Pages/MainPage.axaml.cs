@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -22,240 +25,158 @@ namespace BedrockBoot.Views.Pages;
 
 public partial class MainPage : UserControl
 {
-    
     public static MainPage Instance;
-    private bool _isUpdatingGameList; 
+    private bool _isUpdatingGameList;
+    private List<VersionConfig> _cachedVersions = new(); // 缓存当前文件夹下的版本列表
+    private FileSystemWatcher _folderWatcher; // 监听磁盘变动
 
     public MainPage()
     {
         InitializeComponent();
-
-        #region 注册导航项 (使用国际化 Key)
-
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "",
-            ItemText = I18nManager.Instance["MainPage.Nav.Home"],
-            Tag = "Home",
-            Page = typeof(MainHomePage)
-        });
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "",
-            ItemText = I18nManager.Instance["MainPage.Nav.Manager"],
-            Tag = "Manager",
-            Page = typeof(MainManager)
-        });
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "",
-            ItemText = I18nManager.Instance["MainPage.Nav.Download"],
-            Tag = "Download",
-            Page = typeof(DownloadRoot)
-        });
-
-#if DEBUG
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "",
-            ItemText = I18nManager.Instance["MainPage.Nav.Tools"],
-            Tag = "ToolsBox",
-            Page = typeof(MainToolsBoxPage)
-        });
-#endif
-#if RELEASE
-        if (GlobalModel.FunctionOption.IsEnableToolsBox)
-            RegisterTopItem(new TopBarItemInfo()
-            {
-                ItemGlyph = "",
-                ItemText = I18nManager.Instance["MainPage.Nav.Tools"],
-                Tag = "ToolsBox",
-                Page = typeof(MainToolsBoxPage)
-            });
-#endif
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "",
-            ItemText = I18nManager.Instance["MainPage.Nav.Setting"],
-            Tag = "Setting",
-            Page = typeof(MainSettingPage)
-        });
-
-        #endregion
-
         Instance = this;
+
+        InitNavigation();
+
         IsEditMode = true;
         SelTag.SelectedIndex = 0;
         SelTag_OnSelectionChanged(null, null);
 
         RegisterService.API.RegisterNavigationBarItem = RegisterTopItem;
 
-        if (GlobalModel.Config.Data.IsAutoCheckUpdate) Update();
+        if (GlobalModel.Config.Data.IsAutoCheckUpdate) _ = Update();
 
         Loaded += (sender, args) =>
         {
             PluginLoader.LoadAll();
             JumpListManager.ConfigureJumpList();
+            _ = UpdateUIAsync(); // 初始加载
         };
 
-        var sel = -1;
-        var count = -1;
-        GlobalModel.Config.AfterSave += (sender, args) =>
+        // 监听配置更改（如切换游戏目录）
+        var lastFolderIndex = -1;
+        var lastFolderCount = -1;
+        GlobalModel.Config.AfterSave += async (sender, args) =>
         {
-            if ((GlobalModel.Config.Data.GameFolderSelIndex != sel ||
-                 GlobalModel.Config.Data.GameFolders.Count != count) &&
-                IsEditMode)
+            if (IsEditMode && (GlobalModel.Config.Data.GameFolderSelIndex != lastFolderIndex ||
+                               GlobalModel.Config.Data.GameFolders.Count != lastFolderCount))
             {
-                count = GlobalModel.Config.Data.GameFolders.Count;
-                sel = GlobalModel.Config.Data.GameFolderSelIndex;
-                UpdateUI();
+                lastFolderCount = GlobalModel.Config.Data.GameFolders.Count;
+                lastFolderIndex = GlobalModel.Config.Data.GameFolderSelIndex;
+                await UpdateUIAsync();
             }
         };
-        UpdateUI();
     }
 
     public bool IsEditMode { get; set; }
     public Dictionary<string, TopBarItemInfo> TopBarItem { get; } = new();
 
-    public static async Task Update(bool isShowNeo = false)
+    #region 初始化与导航
+
+    private void InitNavigation()
     {
-        try
+        var navItems = new List<TopBarItemInfo>
         {
-            var result = await CheckUpdate.Update();
-            if (result != null)
-                DialogHost.Show(new DialogInfo
-                {
-                    Title = string.Format(I18nManager.Instance["MainPage.Update.NewVersion"], result.TagName),
-                    Content = string.Format(I18nManager.Instance["MainPage.Update.Content"], result.Body),
-                    CloseButtonText = I18nManager.Instance["MainPage.Update.Action.Now"],
-                    PrimaryButtonText = I18nManager.Instance["MainWindow.Common.Cancel"],
-                    CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
-                });
-            else if (isShowNeo)
-                DialogHost.Show(new DialogInfo
-                {
-                    Title = I18nManager.Instance["MainPage.Update.Title"],
-                    Content = I18nManager.Instance["MainPage.Update.Action.Latest"],
-                    CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
-                });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"更新失败：{ex.Message}");
-        }
+            new() { ItemGlyph = "", ItemText = I18nManager.Instance["MainPage.Nav.Home"], Tag = "Home", Page = typeof(MainHomePage) },
+            new() { ItemGlyph = "", ItemText = I18nManager.Instance["MainPage.Nav.Manager"], Tag = "Manager", Page = typeof(MainManager) },
+            new() { ItemGlyph = "", ItemText = I18nManager.Instance["MainPage.Nav.Download"], Tag = "Download", Page = typeof(DownloadRoot) }
+        };
+
+        // 工具箱逻辑
+        bool showTools = false;
+#if DEBUG
+        showTools = true;
+#else
+        showTools = GlobalModel.FunctionOption.IsEnableToolsBox;
+#endif
+        if (showTools)
+            navItems.Add(new() { ItemGlyph = "", ItemText = I18nManager.Instance["MainPage.Nav.Tools"], Tag = "ToolsBox", Page = typeof(MainToolsBoxPage) });
+
+        navItems.Add(new() { ItemGlyph = "", ItemText = I18nManager.Instance["MainPage.Nav.Setting"], Tag = "Setting", Page = typeof(MainSettingPage) });
+
+        foreach (var item in navItems) RegisterTopItem(item);
     }
 
     public void RegisterTopItem(TopBarItemInfo item)
     {
         IsEditMode = false;
-        TopBarItem.Add(item.Tag, item);
-        SelTag.Items.Add(new SelectBarItem
-        {
-            Tag = item.Tag,
-            Glyph = item.ItemGlyph
-        });
+        TopBarItem[item.Tag] = item;
+        SelTag.Items.Add(new SelectBarItem { Tag = item.Tag, Glyph = item.ItemGlyph });
         IsEditMode = true;
     }
 
     private void SelTag_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (IsEditMode)
-            try
+        if (!IsEditMode || SelTag.SelectedItem is not SelectBarItem item) return;
+
+        var tag = item.Tag as string;
+        if (string.IsNullOrEmpty(tag) || !TopBarItem.TryGetValue(tag, out var info)) return;
+
+        try
+        {
+            if (Activator.CreateInstance(info.Page) is BedrockBootPage page)
             {
-                if (SelTag.SelectedItem == null) return;
-
-                var item = (SelectBarItem)SelTag.SelectedItem;
-                var tag = item.Tag as string;
-
-                if (string.IsNullOrEmpty(tag) || !TopBarItem.ContainsKey(tag)) return;
-
-                BedrockBootPage page = null;
-
-                if (TopBarItem[tag].Page is Type selPageType)
-                    page = (BedrockBootPage)Activator.CreateInstance(selPageType);
-                else
-                    DialogHost.Show(new DialogInfo
-                    {
-                        Title = I18nManager.Instance["MainPage.Error.InvalidPage.Title"],
-                        Content = string.Format(I18nManager.Instance["MainPage.Error.InvalidPage.Content"], tag),
-                        CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
-                    });
-
                 if (page.HeaderView != null) HeaderContent.NavigateTo(page.HeaderView);
                 MainFrame.NavigateTo(page);
             }
-            catch { }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"页面导航失败: {ex.Message}");
+        }
     }
 
-    public void UpdateUI()
+    #endregion
+
+    #region 核心业务逻辑：实时版本加载
+
+    /// <summary>
+    /// 异步更新 UI 列表，防止磁盘扫描卡顿
+    /// </summary>
+    public async Task UpdateUIAsync()
     {
-        void NullFunc()
-        {
-            try
-            {
-                _isUpdatingGameList = true; 
-                GameListChoose.Items.Clear();
-                GameListChoose.Items.Add(I18nManager.Instance["MainPage.Status.NoInstance"]); // 国际化显示
-                GameListChoose.SelectedIndex = 0;
-                GameControls.IsEnabled = false;
-                GameInfo.Text = "";
-                GameName.Text = "";
-                GameSettingBtn.IsVisible = false;
-                _isUpdatingGameList = false; 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"NullFunc执行出错: {ex.Message}");
-                _isUpdatingGameList = false;
-            }
-        }
+        if (_isUpdatingGameList) return;
 
         try
         {
             IsEditMode = false;
             _isUpdatingGameList = true;
 
-            if (GameListChoose == null) return;
+            if (GlobalModel.Config.Data.GameFolders.Count == 0 || GlobalModel.Config.Data.GameFolderSelIndex < 0)
+            {
+                SetNullStatus();
+                return;
+            }
 
-            try { GameListChoose.Items.Clear(); } catch { }
+            var folderConfig = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
+            string path = folderConfig.GameFolderPath;
 
+            // 设置文件夹监听器，实现实时感应磁盘变化
+            SetupWatcher(path);
+
+            // 异步扫描磁盘
+            _cachedVersions = await Task.Run(() => GameInfoHelper.GetVersionConfigs(path));
+
+            GameListChoose.Items.Clear();
+
+            if (_cachedVersions.Count == 0)
+            {
+                SetNullStatus();
+                return;
+            }
+
+            // 填充下拉框
+            foreach (var v in _cachedVersions)
+                GameListChoose.Items.Add(v.Info.VersionName);
+
+            // 状态恢复
             GameControls.IsEnabled = true;
             GameSettingBtn.IsVisible = true;
 
-            if (GlobalModel.Config.Data.GameFolders.Count <= 0)
-            {
-                NullFunc();
-                return;
-            }
+            if (folderConfig.GameSelIndex < 0 || folderConfig.GameSelIndex >= _cachedVersions.Count)
+                folderConfig.GameSelIndex = 0;
 
-            if (GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-                GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
-            {
-                NullFunc();
-                return;
-            }
-
-            var versions = GameInfoHelper.GetVersionConfigs(GlobalModel.Config.Data
-                .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath);
-
-            if (versions.Count <= 0)
-            {
-                NullFunc();
-                return;
-            }
-
-            versions.ForEach(v => { GameListChoose.Items.Add($"{v.Info.VersionName}"); });
-
-            var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
-            if (gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) gameFolder.GameSelIndex = 0;
-
-            GameListChoose.SelectedIndex = gameFolder.GameSelIndex;
-            UpdateGameInfo();
-        }
-        catch (Exception ex)
-        {
-            _isUpdatingGameList = false;
-            IsEditMode = true;
+            GameListChoose.SelectedIndex = folderConfig.GameSelIndex;
+            UpdateGameDisplay();
         }
         finally
         {
@@ -264,93 +185,101 @@ public partial class MainPage : UserControl
         }
     }
 
-    public void UpdateGameInfo()
+    private void SetupWatcher(string path)
+    {
+        _folderWatcher?.Dispose();
+        if (!Directory.Exists(path)) return;
+
+        _folderWatcher = new FileSystemWatcher(path)
+        {
+            IncludeSubdirectories = true,
+            EnableRaisingEvents = true,
+            NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName
+        };
+
+        // 磁盘发生变化时（增删文件夹），回到 UI 线程刷新
+        Action refresh = () => Dispatcher.UIThread.InvokeAsync(() => UpdateUIAsync());
+        _folderWatcher.Created += (s, e) => refresh();
+        _folderWatcher.Deleted += (s, e) => refresh();
+        _folderWatcher.Renamed += (s, e) => refresh();
+    }
+
+    private void SetNullStatus()
+    {
+        GameListChoose.Items.Clear();
+        GameListChoose.Items.Add(I18nManager.Instance["MainPage.Status.NoInstance"]);
+        GameListChoose.SelectedIndex = 0;
+        GameControls.IsEnabled = false;
+        GameSettingBtn.IsVisible = false;
+        GameInfo.Text = "";
+        GameName.Text = "";
+        GameBuildType.Text = "";
+        _cachedVersions.Clear();
+    }
+
+    private void UpdateGameDisplay()
+    {
+        if (_cachedVersions.Count == 0 || GameListChoose.SelectedIndex < 0) return;
+
+        var version = _cachedVersions[GameListChoose.SelectedIndex];
+        GameInfo.Text = $"{version.Info.VersionType} {version.Info.Version}";
+        GameName.Text = version.Info.VersionName;
+        GameBuildType.Text = version.Info.BuildType.ToString();
+    }
+
+    #endregion
+
+    #region 事件交互
+
+    public static async Task Update(bool isShowNeo = false)
     {
         try
         {
-            if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
-                GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-                GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
+            var result = await CheckUpdate.Update();
+            if (result != null)
             {
-                GameInfo.Text = I18nManager.Instance["MainPage.Status.NoInstance"];
-                GameName.Text = "";
-                GameBuildType.Text = "";
-                return;
+                DialogHost.Show(new DialogInfo
+                {
+                    Title = string.Format(I18nManager.Instance["MainPage.Update.NewVersion"], result.TagName),
+                    Content = string.Format(I18nManager.Instance["MainPage.Update.Content"], result.Body),
+                    CloseButtonText = I18nManager.Instance["MainPage.Update.Action.Now"],
+                    PrimaryButtonText = I18nManager.Instance["MainWindow.Common.Cancel"],
+                    CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
+                });
             }
-
-            var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
-            var versions = GameInfoHelper.GetVersionConfigs(gameFolder.GameFolderPath);
-
-            if (versions.Count == 0 ||
-                gameFolder.GameSelIndex < 0 ||
-                gameFolder.GameSelIndex >= versions.Count)
+            else if (isShowNeo)
             {
-                GameInfo.Text = I18nManager.Instance["MainPage.Status.NoInstance"];
-                GameName.Text = "";
-                GameBuildType.Text = "";
-                return;
+                DialogHost.Show(new DialogInfo { Title = I18nManager.Instance["MainPage.Update.Title"], Content = I18nManager.Instance["MainPage.Update.Action.Latest"], CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"] });
             }
-
-            var version = versions[gameFolder.GameSelIndex];
-            GameInfo.Text = $"{version.Info.VersionType} {version.Info.Version}";
-            GameName.Text = version.Info.VersionName;
-            GameBuildType.Text = version.Info.BuildType.ToString();
         }
-        catch (Exception ex)
-        {
-            GameInfo.Text = I18nManager.Instance["MainPage.Status.LoadFailed"];
-            GameName.Text = "";
-            GameBuildType.Text = "";
-        }
+        catch (Exception ex) { Console.WriteLine($"更新检查失败: {ex.Message}"); }
     }
 
     private void GameListChoose_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (IsEditMode && !_isUpdatingGameList)
-        {
-            var selIndex = GameListChoose.SelectedIndex;
+        if (!IsEditMode || _isUpdatingGameList) return;
 
-            if (selIndex >= 0 && GlobalModel.Config.Data.GameFolderSelIndex >= 0 &&
-                GlobalModel.Config.Data.GameFolderSelIndex < GlobalModel.Config.Data.GameFolders.Count)
-            {
-                GlobalModel.Config.Data
-                    .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex = selIndex;
-                GlobalModel.Config.Save();
-                UpdateGameInfo();
-            }
+        int selIndex = GameListChoose.SelectedIndex;
+        if (selIndex >= 0 && GlobalModel.Config.Data.GameFolderSelIndex < GlobalModel.Config.Data.GameFolders.Count)
+        {
+            GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex = selIndex;
+            GlobalModel.Config.Save();
+            UpdateGameDisplay();
         }
     }
 
     private void GameSettingBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
-            return;
-
-        var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
-        var versions = GameInfoHelper.GetVersionConfigs(gameFolder.GameFolderPath);
-
-        if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) return;
-
-        var version = versions[gameFolder.GameSelIndex];
-        GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(version),
-            $"{version.Info.VersionName} - {version.Info.Version}");
+        if (_cachedVersions.Count == 0 || GameListChoose.SelectedIndex < 0) return;
+        var version = _cachedVersions[GameListChoose.SelectedIndex];
+        GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(version), $"{version.Info.VersionName} - {version.Info.Version}");
     }
 
     private void GameLaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
-            return;
-
-        var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
-        var versions = GameInfoHelper.GetVersionConfigs(gameFolder.GameFolderPath);
-
-        if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) return;
-
-        var version = versions[gameFolder.GameSelIndex];
-        TaskLaunchGameItem.Launch(version);
+        if (_cachedVersions.Count == 0 || GameListChoose.SelectedIndex < 0) return;
+        TaskLaunchGameItem.Launch(_cachedVersions[GameListChoose.SelectedIndex]);
     }
+
+    #endregion
 }

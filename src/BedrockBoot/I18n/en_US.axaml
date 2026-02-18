@@ -12,6 +12,7 @@
     <x:String x:Key="Home.Title">Hello, Welcome Back</x:String>
 
     <x:String x:Key="Shared.Action.Search">Search</x:String>
+    <x:String x:Key="MainWindow.Common.Delete">Delete</x:String>
 
     <x:String x:Key="Manager.Title">Instance Manager</x:String>
     <x:String x:Key="Manager.IncludeGame">Import Game</x:String>

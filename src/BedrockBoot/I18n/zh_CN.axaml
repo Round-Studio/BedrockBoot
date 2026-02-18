@@ -13,6 +13,8 @@
     
     <x:String x:Key="Shared.Action.Search">搜索</x:String>
     
+    <x:String x:Key="MainWindow.Common.Delete">删除</x:String>
+    
     <x:String x:Key="Manager.Title">实例管理</x:String>
     <x:String x:Key="Manager.IncludeGame">导入游戏</x:String>
     <x:String x:Key="Manager.IncludePack">导入整合包</x:String>

@@ -19,8 +19,7 @@
                         <onePointControls:LineTextBlock Text="BedrockBoot"
                                                         Margin="12,0,0,0" />
                         
-                        <TextBlock Text="{DynamicResource About.Header.PowerBy}"
-                                   Name="PowerByTextBlock"
+                        <TextBlock Name="PowerByTextBlock"
                                    Opacity="0.6"
                                    Margin="12,0,0,0"></TextBlock>
                     </StackPanel>

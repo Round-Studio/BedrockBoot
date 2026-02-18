@@ -38,6 +38,7 @@ public partial class MainWindow : BedrockBootWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
+        UpdateBack();
         
         // 1. 初始化窗口几何信息
         InitializeWindowBounds();
@@ -101,8 +102,6 @@ public partial class MainWindow : BedrockBootWindow
         // 完成初始化后回到 UI 线程进行页面跳转
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            UpdateBack(); // 应用背景设置
-            
             if (GlobalModel.Config.Data.IsFirstRun)
                 MainFrame.NavigateTo(new SetupRoot());
             else

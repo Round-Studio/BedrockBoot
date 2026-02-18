@@ -177,7 +177,7 @@ public partial class DrawDownloadGameContent : UserControl
 
     private void ExecuteInstallTask()
     {
-        if (Sources == null || SourceSelBox.SelectedIndex < 0 || !CheckPack()) return;
+        if ((Sources == null || SourceSelBox.SelectedIndex < 0) && !CheckPack()) return;
 
         var selectedUrl = Sources[SourceSelBox.SelectedIndex].Url;
         var targetPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;

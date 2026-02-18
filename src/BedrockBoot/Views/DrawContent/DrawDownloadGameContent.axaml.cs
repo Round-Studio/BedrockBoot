@@ -58,6 +58,8 @@ public partial class DrawDownloadGameContent : UserControl
         LoadRing.IsVisible = true;
         InstallBtn.IsEnabled = false;
 
+        CheckPack();
+
         // 2. 异步获取下载地址
         Task.Run(async () =>
         {
@@ -175,7 +177,7 @@ public partial class DrawDownloadGameContent : UserControl
 
     private void ExecuteInstallTask()
     {
-        if (Sources == null || SourceSelBox.SelectedIndex < 0) return;
+        if (Sources == null || SourceSelBox.SelectedIndex < 0 || !CheckPack()) return;
 
         var selectedUrl = Sources[SourceSelBox.SelectedIndex].Url;
         var targetPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
@@ -202,15 +204,21 @@ public partial class DrawDownloadGameContent : UserControl
 
         try
         {
-            var folderPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
-            var packagePath = Path.Combine(folderPath, "version_save", $"{BuildInfo.ID}.insPack");
-
-            var hasPack = File.Exists(packagePath);
-            IsUsePackIns.IsChecked = hasPack;
-            IsUsePackIns.IsVisible = hasPack;
-
-            if (hasPack) InstallBtn.IsEnabled = true;
+            CheckPack();
         }
         catch { /* 路径无效忽略 */ }
+    }
+
+    private bool CheckPack()
+    {
+        var folderPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
+        var packagePath = Path.Combine(folderPath, "version_save", $"{BuildInfo.ID}.insPack");
+
+        var hasPack = File.Exists(packagePath);
+        IsUsePackIns.IsChecked = hasPack;
+        IsUsePackIns.IsVisible = hasPack;
+        InstallBtn.IsEnabled = hasPack;
+
+        return hasPack;
     }
 }

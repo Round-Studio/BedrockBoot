@@ -33,7 +33,7 @@ public partial class MultiplayerRoomGuest : UserControl
 
     private void CloseBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.PaperConnectCore.Stop();
+        GlobalModel.PaperConnectCore.Stop(true);
         GlobalModel.PaperConnectCore = null;
         
         Dispatcher.UIThread.Invoke(() =>

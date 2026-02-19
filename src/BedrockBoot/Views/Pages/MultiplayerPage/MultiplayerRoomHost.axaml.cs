@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.Control.Items.Multiplayer;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -25,12 +26,8 @@ public partial class MultiplayerRoomHost : UserControl
                 PlayerList.Children.Clear();
                 list.ForEach(p =>
                 {
-                    Console.WriteLine($"接收到万家心跳：{p.PlayerName}");
-                    PlayerList.Children.Add(new SettingCard()
-                    {
-                        Header = p.PlayerName,
-                        Description = p.ClientId
-                    });
+                    Console.WriteLine($"接收到心跳：{p.PlayerName}");
+                    PlayerList.Children.Add(new PlayerItem(p));
                 });
             });
         });

@@ -13,6 +13,7 @@ using BedrockBoot.Base.Entry;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Win32;
+using PaperConnect.Core.Module.Global;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
 using Round.SDK.Global;
@@ -46,6 +47,7 @@ internal sealed class Program
         AppUpdater.ProcessStartupArgs(args);
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
+        EnvironmentLabel.ClientId = $"BedrockBoot {GlobalModel.BodyVersion}";
 
         if (GlobalModel.Config.Data.GatherInfo)
         {

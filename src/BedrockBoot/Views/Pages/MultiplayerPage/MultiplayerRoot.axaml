@@ -24,6 +24,8 @@
         <onePointControls:SettingCard Header="加入房间"
                                       Description="加入你好友的房间，加入游戏"
                                       IsClickable="True"
+                                      Name="LinkRoom"
+                                      Click="LinkRoom_OnClick"
                                       Glyph="&#xECC8;"/>
     </StackPanel>
 </UserControl>

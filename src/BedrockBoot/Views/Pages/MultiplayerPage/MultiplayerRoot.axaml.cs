@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DialogContent.Multiplayer;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -34,5 +35,42 @@ public partial class MultiplayerRoot : UserControl
         };
         Task.Run(() => GlobalModel.PaperConnectCore.Initialize(CoreType.Server, GlobalModel.ETPublicServer));
         Dispatcher.UIThread.Invoke(() => MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomHost()));
+    }
+
+    private void LinkRoom_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new DialogMultiplayerLinkRoomContent();
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "连接房间",
+            Content = dialog,
+            CloseButtonText = "加入",
+            PrimaryButtonText = "取消",
+            CloseAction = () =>
+            {
+                var playerName = dialog.PlayerName;
+                var roomCode = dialog.RoomCode;
+                
+                GlobalModel.PaperConnectCore = new PaperConnectCore()
+                {
+                    EasyTierCliPath = PathsList.EasyTierCliPath,
+                    EasyTierPath = PathsList.EasyTierCorePath,
+                    ClientPlayer = playerName,
+                    RoomCode = roomCode
+                };
+                GlobalModel.PaperConnectCore.LinkSuccess = () =>
+                {
+                    DialogHost.Close();
+                    Dispatcher.UIThread.Invoke(() =>
+                        MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomHost()));
+                };
+                Task.Run(() => GlobalModel.PaperConnectCore.Initialize(CoreType.Client, GlobalModel.ETPublicServer));
+                DialogHost.Show(new()
+                {
+                    Title = "连接房间中...",
+                    Content = "正在连接房间..."
+                });
+            }
+        });
     }
 }

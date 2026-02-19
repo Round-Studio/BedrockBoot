@@ -41,7 +41,7 @@
                          Name="NullBox"
                          IsVisible="False"
                          Glyph="&#xE91B;"
-                         BigTitle="空空如也"
-                         Message="还没有任何一张截图.jpg" />
+                         BigTitle="{DynamicResource Instance.Screenshots.Empty.Title}"
+                         Message="{DynamicResource Instance.Screenshots.Empty.Message}" />
     </Grid>
 </UserControl>

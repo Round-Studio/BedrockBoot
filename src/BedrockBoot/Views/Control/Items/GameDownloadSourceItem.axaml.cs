@@ -6,13 +6,16 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Info;
+using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameDownloadSourceItem : UserControl
 {
-    public GameDownloadUrlInfo GameDownloadUrlInfo;
-    public Action<int>? Pinged;
+    private static I18nManager i18n => I18nManager.Instance;
+    
+    public GameDownloadUrlInfo GameDownloadUrlInfo { get; set; } = null!;
+    public Action<int>? Pinged { get; set; }
 
     public GameDownloadSourceItem()
     {
@@ -26,98 +29,94 @@ public partial class GameDownloadSourceItem : UserControl
         SourceUrl.Text = info.Url;
     }
 
+    /// <summary>
+    /// 执行下载速度测试
+    /// </summary>
+    /// <param name="index">当前源在列表中的索引</param>
     public async Task OnPing(int index)
     {
-        Dispatcher.UIThread.Invoke(() =>
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            PingBox.Text = "测试中...";
+            PingBox.Text = i18n["Download.Source.Testing"]; // "测试中..."
             PingBox.Background = Brushes.Orange;
         });
 
         try
         {
-            // 使用独立的HttpClient避免复用问题
-            using (var client = new HttpClient())
+            // 对于测速任务，使用短生命周期的 HttpClient 是合理的，但需注意 DNS 缓存
+            using var client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(15);
+
+            var stopwatch = Stopwatch.StartNew();
+            const int testSize = 1024 * 1024; // 测试读取 1MB 数据
+            var buffer = new byte[8192];
+
+            using var response = await client.GetAsync(
+                       GameDownloadUrlInfo.Url,
+                       HttpCompletionOption.ResponseHeadersRead);
+            
+            response.EnsureSuccessStatusCode();
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            int totalRead = 0;
+            int read;
+
+            // 循环读取直到达到测试大小或流结束
+            while (totalRead < testSize && (read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
             {
-                client.Timeout = TimeSpan.FromSeconds(15);
-
-                // 使用Stopwatch计时
-                var stopwatch = Stopwatch.StartNew();
-
-                // 下载一个固定大小的数据块
-                const int bufferSize = 2 * 1024 * 1024;
-                var buffer = new byte[8192]; // 8KB chunks
-
-                using (var response = await client.GetAsync(
-                           GameDownloadUrlInfo.Url,
-                           HttpCompletionOption.ResponseHeadersRead))
-                {
-                    response.EnsureSuccessStatusCode();
-
-                    using (var stream = await response.Content.ReadAsStreamAsync())
-                    {
-                        var totalRead = 0;
-                        int read;
-
-                        // 读取1MB数据来测试速度
-                        while (totalRead < bufferSize &&
-                               (read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                            totalRead += read;
-
-                        stopwatch.Stop();
-
-                        // 计算速度（Bytes/ms -> 转换为合适的单位）
-                        var speedInBytesPerSecond = totalRead * 1000.0 / stopwatch.ElapsedMilliseconds;
-
-                        // 格式化为合适的单位
-                        string formattedSpeed;
-                        IBrush backgroundColor;
-
-                        if (speedInBytesPerSecond >= 1024 * 1024) // 大于等于1MB/s
-                        {
-                            var speedMBps = speedInBytesPerSecond / (1024 * 1024);
-                            formattedSpeed = $"{speedMBps:F2} MB/s";
-
-                            // 根据速度设置背景色
-                            if (speedMBps > 5)
-                                backgroundColor = Brushes.Green;
-                            else if (speedMBps > 1)
-                                backgroundColor = Brushes.Olive;
-                            else
-                                backgroundColor = Brushes.Orange;
-                        }
-                        else if (speedInBytesPerSecond >= 1024) // 大于等于1KB/s
-                        {
-                            var speedKBps = speedInBytesPerSecond / 1024;
-                            formattedSpeed = $"{speedKBps:F2} KB/s";
-                            backgroundColor = speedKBps > 500 ? Brushes.Olive : Brushes.Orange;
-                        }
-                        else // 小于1KB/s
-                        {
-                            formattedSpeed = $"{speedInBytesPerSecond:F0} B/s";
-                            backgroundColor = Brushes.OrangeRed;
-                        }
-
-                        Dispatcher.UIThread.Invoke(() =>
-                        {
-                            PingBox.Text = formattedSpeed;
-                            PingBox.Background = backgroundColor;
-                        });
-
-                        Console.WriteLine($@"速度测试完成: {formattedSpeed}, 耗时: {stopwatch.ElapsedMilliseconds}ms");
-                        Pinged?.Invoke(index);
-                    }
-                }
+                totalRead += read;
             }
+
+            stopwatch.Stop();
+
+            // 计算速度并格式化
+            UpdateSpeedUI(totalRead, stopwatch.ElapsedMilliseconds, index);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"速度测试错误: {ex.Message}");
-            Dispatcher.UIThread.Invoke(() =>
+            Debug.WriteLine($"Speed test error for {GameDownloadUrlInfo.Host}: {ex.Message}");
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 PingBox.Background = Brushes.DarkRed;
-                PingBox.Text = "连接失败";
+                PingBox.Text = i18n["Download.Source.Failed"]; // "连接失败"
             });
         }
+    }
+
+    private void UpdateSpeedUI(long bytesReceived, long elapsedMs, int index)
+    {
+        // 计算 Bytes/s (避免除以 0)
+        double speedBps = bytesReceived * 1000.0 / Math.Max(elapsedMs, 1);
+        
+        string formattedSpeed;
+        IBrush color;
+
+        // 速度阶梯判断
+        if (speedBps >= 1024 * 1024) // >= 1MB/s
+        {
+            double mbps = speedBps / (1024 * 1024);
+            formattedSpeed = $"{mbps:F2} MB/s";
+            color = mbps > 5 ? Brushes.Green : (mbps > 1 ? Brushes.Olive : Brushes.Orange);
+        }
+        else if (speedBps >= 1024) // >= 1KB/s
+        {
+            double kbps = speedBps / 1024;
+            formattedSpeed = $"{kbps:F2} KB/s";
+            color = kbps > 500 ? Brushes.Olive : Brushes.Orange;
+        }
+        else // < 1KB/s
+        {
+            formattedSpeed = $"{speedBps:F0} B/s";
+            color = Brushes.OrangeRed;
+        }
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            PingBox.Text = formattedSpeed;
+            PingBox.Background = color;
+            
+            // 测速完成回调，父组件可据此选择最优源
+            Pinged?.Invoke(index);
+        });
     }
 }

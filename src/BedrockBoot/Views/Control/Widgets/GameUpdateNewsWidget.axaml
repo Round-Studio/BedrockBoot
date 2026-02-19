@@ -2,11 +2,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Control.Widgets.GameUpdateNewsWidget">
-    <ScrollViewer Margin="5">
-        <WrapPanel Margin="15"
-                   ItemSpacing="8"
-                   LineSpacing="8" />
-    </ScrollViewer>
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Margin="15"
+                        Spacing="8"
+                        Name="NewsList">
+            
+            </StackPanel>
+        </ScrollViewer>
+        
+        <onePointControls:ProgressRing HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Name="LoadRing"
+                                       Width="48"
+                                       Height="48"></onePointControls:ProgressRing>
+    </Grid>
 </UserControl>

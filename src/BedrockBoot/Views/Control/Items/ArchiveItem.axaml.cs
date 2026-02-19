@@ -15,6 +15,9 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class ArchiveItem : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+    public ArchiveInfo? ArchiveInfo { get; set; }
+
     public ArchiveItem()
     {
         InitializeComponent();
@@ -23,33 +26,56 @@ public partial class ArchiveItem : UserControl
     public ArchiveItem(ArchiveInfo info) : this()
     {
         ArchiveInfo = info;
-
         UpdateUI();
     }
 
-    public ArchiveInfo ArchiveInfo { get; set; }
-
+    /// <summary>
+    /// 更新存档卡片 UI
+    /// </summary>
     public void UpdateUI()
     {
-        if (ArchiveInfo == null) throw new NullReferenceException();
+        if (ArchiveInfo == null) return;
 
-        Console.WriteLine($@"存档：{ArchiveInfo.Name} 路径：{ArchiveInfo.Path}");
         WorldName.Text = ArchiveInfo.Name;
-        WorldLastPlayed.Text =
-            $"{UnixTimeConverter.UnixTimeStampToDateTime(ArchiveInfo.LevelWorldData.LastPlayed).ToShortDateString()} " +
-            $"{UnixTimeConverter.UnixTimeStampToDateTime(ArchiveInfo.LevelWorldData.LastPlayed).ToShortTimeString()}";
+
+        // 时间转换与格式化
+        var lastPlayedTime = UnixTimeConverter.UnixTimeStampToDateTime(ArchiveInfo.LevelWorldData.LastPlayed);
+        WorldLastPlayed.Text = lastPlayedTime.ToString("yyyy/MM/dd HH:mm");
+
+        // 标记是否为项目实例
         ProjectLabel.IsVisible = ArchiveInfo.IsProject;
-        if (!string.IsNullOrEmpty(ArchiveInfo.IconPath))
+
+        // 异步或流式加载图标，防止文件占用
+        LoadWorldIcon(ArchiveInfo.IconPath);
+    }
+
+    private void LoadWorldIcon(string? path)
+    {
+        if (string.IsNullOrEmpty(path) || !File.Exists(path)) return;
+
+        try
+        {
+            using var stream = File.OpenRead(path);
+            var bitmap = new Bitmap(stream);
             ImageBox.Background = new ImageBrush
             {
                 Stretch = Stretch.UniformToFill,
-                Source = new Bitmap(ArchiveInfo.IconPath)
+                Source = bitmap
             };
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to load world icon: {ex.Message}");
+        }
     }
 
+    /// <summary>
+    /// 在资源管理器中打开存档目录
+    /// </summary>
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        Console.WriteLine($@"{Directory.Exists(ArchiveInfo.Path)}");
+        if (ArchiveInfo == null || !Directory.Exists(ArchiveInfo.Path)) return;
+
         Process.Start(new ProcessStartInfo
         {
             FileName = ArchiveInfo.Path,
@@ -57,32 +83,50 @@ public partial class ArchiveItem : UserControl
         });
     }
 
+    /// <summary>
+    /// 导出存档为 .mcworld 包
+    /// </summary>
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        if (ArchiveInfo == null) return;
+
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel == null) return;
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "导出 Minecraft World Pack",
+            Title = i18n["Archive.Export.Title"],
             DefaultExtension = "mcworld",
+            SuggestedFileName = $"{ArchiveInfo.Name}.mcworld",
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("MCWORLD (*.mcworld)")
+                new FilePickerFileType(i18n["Archive.Export.FileType"])
                 {
                     Patterns = new[] { "*.mcworld" }
                 }
             }
         });
 
-        if (file != null)
+        var localPath = file?.TryGetLocalPath();
+        if (string.IsNullOrEmpty(localPath)) return;
+
+        try
         {
-            ArchiveInfo.Save(file.TryGetLocalPath());
+            ArchiveInfo.Save(localPath);
             GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
             {
-                Title = "成功",
-                Message = "存档已导出！",
+                Title = i18n["Common.Success"],
+                Message = i18n["Archive.Export.Success"],
                 NoticeType = NoticeType.Info
+            });
+        }
+        catch (Exception ex)
+        {
+            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+            {
+                Title = i18n["MainWindow.Dialog.Error.Title"],
+                Message = ex.Message,
+                NoticeType = NoticeType.Error
             });
         }
     }

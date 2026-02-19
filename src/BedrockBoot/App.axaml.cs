@@ -3,15 +3,17 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Avalonia;
+using System.Windows;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Language;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
@@ -19,6 +21,8 @@ using BedrockBoot.ViewModels;
 using BedrockBoot.Views.Windows;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
+using Application = Avalonia.Application;
+using ResourceDictionary = Avalonia.Controls.ResourceDictionary;
 
 namespace BedrockBoot;
 
@@ -36,6 +40,8 @@ public class App : Application
 
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
+        
+        I18nManager.Instance.SystemLanguage(GlobalModel.Config.Data.Language);
 
         // 订阅所有全局异常处理器
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

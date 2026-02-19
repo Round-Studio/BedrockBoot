@@ -17,14 +17,13 @@
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
                 <TextBlock FontSize="16"
-                           Name="CardTitle">
-                    下载资源
-                </TextBlock>
+                           Name="CardTitle"
+                           Text="{DynamicResource Task.CurseForge.Title}" />
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">
                     <DockPanel>
-                        <TextBlock Width="100">下载文件</TextBlock>
+                        <TextBlock Width="100" Text="{DynamicResource Task.CurseForge.Step.File}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      IsIndeterminate="True"
                                      Name="DownloadProgressBar" />
@@ -35,9 +34,7 @@
                                    Foreground="Gray"
                                    FontSize="9"
                                    Margin="0,2,0,0"
-                                   Name="MainText">
-                            步骤：下载准备中... (0%)
-                        </TextBlock>
+                                   Name="MainText" />
 
                         <TextBlock Grid.Column="1"
                                    Foreground="Gray"

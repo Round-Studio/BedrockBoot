@@ -58,7 +58,7 @@
                             <onePointControls:FontIcon Glyph="&#xE710;"
                                                        VerticalAlignment="Center"
                                                        Margin="0,1,8,0" />
-                            <TextBlock>导入存档</TextBlock>
+                            <TextBlock Text="{DynamicResource Instance.Saves.Action.Import}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -76,7 +76,7 @@
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
-                         BigTitle="空空如也"
-                         Message="输入的关键词无效 或 这个用户没有存档" />
+                         BigTitle="{DynamicResource Instance.Saves.Empty.Title}"
+                         Message="{DynamicResource Instance.Saves.Empty.Message}" />
     </Grid>
 </UserControl>

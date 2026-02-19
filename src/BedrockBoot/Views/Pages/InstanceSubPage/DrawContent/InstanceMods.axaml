@@ -48,7 +48,7 @@
                                 <onePointControls:FontIcon Glyph="&#xE710;"
                                                            VerticalAlignment="Center"
                                                            Margin="0,1,8,0" />
-                                <TextBlock>导入模组</TextBlock>
+                                <TextBlock Text="{DynamicResource Instance.Mods.Action.Import}" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -67,7 +67,7 @@
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
-                         BigTitle="空空如也"
-                         Message="输入的关键词无效 或 这个实例没有模组" />
+                         BigTitle="{DynamicResource Instance.Mods.Empty.Title}"
+                         Message="{DynamicResource Instance.Mods.Empty.Message}" />
     </Grid>
 </UserControl>

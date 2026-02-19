@@ -19,8 +19,7 @@
                         <onePointControls:LineTextBlock Text="BedrockBoot"
                                                         Margin="12,0,0,0" />
                         
-                        <TextBlock Text="Power By"
-                                   Name="PowerByTextBlock"
+                        <TextBlock Name="PowerByTextBlock"
                                    Opacity="0.6"
                                    Margin="12,0,0,0"></TextBlock>
                     </StackPanel>
@@ -29,87 +28,87 @@
 
             <TextBlock Margin="5,0,0,8"
                        FontSize="16"
-                       Text="开源地址" />
+                       Text="{DynamicResource About.Section.OpenSource}" />
 
             <StackPanel Orientation="Horizontal"
                         Margin="20,1">
-                <TextBlock Text="Github 仓库：" />
-                <HyperlinkButton Content="BedrockBoot 开源仓库"
+                <TextBlock Text="{DynamicResource About.OpenSource.Repo}" />
+                <HyperlinkButton Content="{DynamicResource About.OpenSource.RepoName}"
                                  NavigateUri="https://github.com/Round-Studio/BedrockBoot"></HyperlinkButton>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
                         Margin="20,1">
-                <TextBlock Text="Github 组织：" />
-                <HyperlinkButton Content="Round Studio"
+                <TextBlock Text="{DynamicResource About.OpenSource.Org}" />
+                <HyperlinkButton Content="{DynamicResource About.OpenSource.OrgName}"
                                  NavigateUri="https://github.com/Round-Studio"></HyperlinkButton>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
                         Margin="20,1">
-                <TextBlock Text="Github 仓库：" />
-                <HyperlinkButton Content="BedrockBoot Issues"
+                <TextBlock Text="{DynamicResource About.OpenSource.Repo}" />
+                <HyperlinkButton Content="{DynamicResource About.OpenSource.Issues}"
                                  NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues"></HyperlinkButton>
             </StackPanel>
-            <TextBlock Margin="20,1" Text="欢迎给我们的项目提交 PR，让我们共同完善 BedrockBoot" />
+            <TextBlock Margin="20,1" Text="{DynamicResource About.OpenSource.Invitation}" />
 
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
-                       Text="开发者" />
+                       Text="{DynamicResource About.Section.Developers}" />
 
-            <TextBlock Margin="20,1" Text="BedrockBoot 本体：Dime，YoumiHa" />
-            <TextBlock Margin="20,1" Text="BedrockBoot 启动核心：YoumiHa" />
-            <TextBlock Margin="20,1" Text="BedrockBoot 用户交互体验：DrMing" />
-
-            <TextBlock Margin="5,20,0,8"
-                       FontSize="16"
-                       Text="鸣谢" />
-
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用的版本列表源来自 MCAPPX 网站" />
-            <TextBlock Margin="20,1">(https://www.mcappx.com/)</TextBlock>
-
-            <TextBlock Margin="20,1" Text="BedrockBoot 下载更新的部分公益源来自 github.akams.cn" />
-            <TextBlock Margin="20,1">(https://github.akams.cn/)</TextBlock>
-
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用的游戏资源下载来自 CurseForge" />
-            <TextBlock Margin="20,1">(https://curseforge.com/)</TextBlock>
-
-            <TextBlock Margin="20,1" Text="感谢来自 BMCBL 提供的 MCAPPX 列表源加速站点" />
-            <TextBlock Margin="20,1">(https://www.bmcbl.com/)</TextBlock>
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Developers.Core}" />
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Developers.Kernel}" />
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Developers.UI}" />
 
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
-                       Text="灵感来源" />
+                       Text="{DynamicResource About.Section.Credits}" />
 
-            <TextBlock Margin="20,1" Text="BedrockBoot 内部分动画参考自 LauncherX" />
-            <TextBlock Margin="20,1">(https://corona.studio/lx)</TextBlock>
-            <TextBlock Margin="20,1" Text="BedrockBoot 内部分设计参考自 Polymerium" />
-            <TextBlock Margin="20,1">(https://github.com/d3ara1n/Polymerium)</TextBlock>
-            <TextBlock Margin="20,1" Text="BedrockBoot 内部分设计参考自 WonderLab" />
-            <TextBlock Margin="20,1">(https://github.com/Lunova-Studio/WonderLab.Override)</TextBlock>
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Credits.MCAPPX}" />
+            <TextBlock Margin="20,1" Text="(https://www.mcappx.com/)" />
+
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Credits.Akams}" />
+            <TextBlock Margin="20,1" Text="(https://github.akams.cn/)" />
+
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Credits.CurseForge}" />
+            <TextBlock Margin="20,1" Text="(https://curseforge.com/)" />
+
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Credits.BMCBL}" />
+            <TextBlock Margin="20,1" Text="(https://www.bmcbl.com/)" />
 
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
-                       Text="组件库" />
+                       Text="{DynamicResource About.Section.Inspiration}" />
 
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用了 OnePointUI 作为用户交互风格" />
-            <TextBlock Margin="20,1">(https://github.com/Round-Studio/OnePointUI.Avalonia/)</TextBlock>
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Inspiration.LauncherX}" />
+            <TextBlock Margin="20,1" Text="(https://corona.studio/lx)" />
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Inspiration.Polymerium}" />
+            <TextBlock Margin="20,1" Text="(https://github.com/d3ara1n/Polymerium)" />
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Inspiration.WonderLab}" />
+            <TextBlock Margin="20,1" Text="(https://github.com/Lunova-Studio/WonderLab.Override)" />
 
-            <TextBlock Margin="20,1" Text="BedrockBoot 使用了 BedrockLauncher.Core 游戏启动核心" />
-            <TextBlock Margin="20,1">(https://github.com/Round-Studio/BedrockLauncher.Core/)</TextBlock>
+            <TextBlock Margin="5,20,0,8"
+                       FontSize="16"
+                       Text="{DynamicResource About.Section.Components}" />
+
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Components.OnePointUI}" />
+            <TextBlock Margin="20,1" Text="(https://github.com/Round-Studio/OnePointUI.Avalonia/)" />
+
+            <TextBlock Margin="20,1" Text="{DynamicResource About.Components.Core}" />
+            <TextBlock Margin="20,1" Text="(https://github.com/Round-Studio/BedrockLauncher.Core/)" />
 
             <onePointControls:SettingCard Margin="5,20,5,5"
                                           Glyph="&#xE909;"
-                                          Header="第三方组件库"
-                                          Description="BedrockBoot 使用的第三方开源库"
+                                          Header="{DynamicResource About.Action.OpenSourceLib.Title}"
+                                          Description="{DynamicResource About.Action.OpenSourceLib.Desc}"
                                           Name="OpenSourceBtn"
                                           Click="OpenSourceBtn_OnClick"
                                           IsClickable="True" />
 
             <onePointControls:SettingCard Margin="5"
                                           Glyph="&#xE902;"
-                                          Header="贡献者"
-                                          Description="BedrockBoot 的所有贡献者"
+                                          Header="{DynamicResource About.Action.Contributors.Title}"
+                                          Description="{DynamicResource About.Action.Contributors.Desc}"
                                           Name="ContributorsBtn"
                                           Click="ContributorsBtn_OnClick"
                                           IsClickable="True" />
@@ -117,14 +116,13 @@
             <onePointControls:SettingCard Margin="5"
                                           Glyph="&#xE7E3;"
                                           Name="VersionCard"
-                                          Header="内部版本号"
+                                          Header="{DynamicResource About.Action.Version.Title}"
                                           Description="1.0.0.0">
                 <Button Padding="8"
                         Height="36" Width="100"
                         Name="CheckUpdateBtn"
-                        Click="CheckUpdateBtn_OnClick">
-                    检查更新
-                </Button>
+                        Click="CheckUpdateBtn_OnClick"
+                        Content="{DynamicResource About.Action.CheckUpdate}" />
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

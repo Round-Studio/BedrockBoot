@@ -15,11 +15,13 @@ public partial class MainSettingPage : BedrockBootPage
     {
         NavigationFrame.NavigateTo(page);
         SettingBreadcrumbBar.SetItems(page.BreadcrumbItem);
+        SettingBreadcrumbBar.RootItem = I18nManager.Instance["MainPage.Nav.Setting"];
     }
 
     public MainSettingPage()
     {
         InitializeComponent();
+        BreadcrumbBar.RootItem = I18nManager.Instance["MainPage.Nav.Setting"];
         SettingBreadcrumbBar = BreadcrumbBar;
         BreadcrumbBar.RootItemClick = () =>
             SettingFrame.NavigateTo(new SettingNavigation());

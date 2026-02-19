@@ -14,15 +14,15 @@
 
         <notice:LoadCard HorizontalAlignment="Center"
                          VerticalAlignment="Center"
-                         BigTitle="收集电子中..."
-                         Message="全体电子，列队！"
+                         BigTitle="{DynamicResource Download.Assets.Status.Loading.Title}"
+                         Message="{DynamicResource Download.Assets.Status.Loading.Message}"
                          Name="LoadingRing" />
 
         <notice:InfoCard VerticalAlignment="Center"
                          HorizontalAlignment="Center"
                          Glyph="&#xE822;"
-                         BigTitle="出现了错误"
-                         Message="这有可能是您的网络波动导致的请求错误"
+                         BigTitle="{DynamicResource Shared.Status.Error.Title}"
+                         Message="{DynamicResource Shared.Status.Error.Network.Desc}"
                          Name="NoneBox" />
     </Grid>
 </UserControl>

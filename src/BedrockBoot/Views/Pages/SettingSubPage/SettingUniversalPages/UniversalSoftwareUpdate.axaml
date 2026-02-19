@@ -11,35 +11,35 @@
               RowDefinitions="Auto,*">
             <StackPanel Grid.Row="0"
                         Spacing="8">
-                <onePointControls:SettingCard Header="自动更新"
-                                              Description="在每次启动时都检测更新"
+                <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Update.Auto.Title}"
+                                              Description="{DynamicResource Settings.Universal.Update.Auto.Desc}"
                                               Glyph="&#xE965;">
                     <ToggleSwitch IsChecked="True"
                                   Name="IsAutoCheckUpdate"
                                   IsCheckedChanged="IsAutoCheckUpdate_OnIsCheckedChanged" />
                 </onePointControls:SettingCard>
                 
-                <onePointControls:SettingCard Header="更新通道"
-                                              Description="启动器更新通道"
+                <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Update.Channel.Title}"
+                                              Description="{DynamicResource Settings.Universal.Update.Channel.Desc}"
                                               Glyph="&#xE728;">
                     <ComboBox Width="280"
                               SelectedIndex="0"
                               Name="UpdateTypeBox"
                               SelectionChanged="UpdateTypeBox_OnSelectionChanged">
-                        <ComboBoxItem Content="正式版 (稳定，更新速度慢)"></ComboBoxItem>
-                        <ComboBoxItem Content="预览版 (不稳定，更新速度快)"></ComboBoxItem>
+                        <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Release}"></ComboBoxItem>
+                        <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Preview}"></ComboBoxItem>
                     </ComboBox>
                 </onePointControls:SettingCard>
 
                 <onePointControls:SettingCard Glyph="&#xE7E3;"
                                               Name="VersionCard"
-                                              Header="内部版本号"
+                                              Header="{DynamicResource About.Action.Version.Title}"
                                               Description="1.0.0.0">
                     <Button Padding="8"
                             Height="36" Width="100"
                             Name="CheckUpdateBtn"
+                            Content="{DynamicResource About.Action.CheckUpdate}"
                             Click="CheckUpdateBtn_OnClick">
-                        检查更新
                     </Button>
                 </onePointControls:SettingCard>
             </StackPanel>
@@ -50,8 +50,8 @@
                                  VerticalAlignment="Center"
                                  Glyph="&#xEC61;"
                                  IsVisible="False"
-                                 BigTitle="当前已是最新版本"
-                                 Message="尽情享用吧~" />
+                                 BigTitle="{DynamicResource Settings.Universal.Update.Status.Latest.Title}"
+                                 Message="{DynamicResource Settings.Universal.Update.Status.Latest.Message}" />
             </Grid>
         </Grid>
     </ScrollViewer>

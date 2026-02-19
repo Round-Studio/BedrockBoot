@@ -16,7 +16,7 @@
                 HorizontalAlignment="Left"
                 FontSize="28"
                 FontWeight="Bold"
-                Text="下载" />
+                Text="{DynamicResource Download.Title}" />
 
             <Button Classes="NoBorder"
                     Name="BackBtn"
@@ -30,7 +30,7 @@
                                                VerticalAlignment="Center"
                                                FontSize="14" />
 
-                    <TextBlock Text="返回" />
+                    <TextBlock Text="{DynamicResource Shared.Action.Back}" />
                 </StackPanel>
             </Button>
         </StackPanel>

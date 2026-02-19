@@ -12,21 +12,21 @@
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
-                <onePointControls:LabelBox Text="未安装"
+                <onePointControls:LabelBox Text="{DynamicResource Instance.Plugins.Status.NotInstalled}"
                                            Name="InstalledBox"
                                            Foreground="White"
                                            Background="DarkRed"
-                                           VerticalAlignment="Center"></onePointControls:LabelBox>
+                                           VerticalAlignment="Center" />
                 
                 <TextBlock Name="CardHeader"
-                           Text="PluginName"></TextBlock>
+                           Text="PluginName" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
         <onePointControls:SettingCard.Description>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <TextBlock Name="CardDescription"
-                           Text="PluginDescription"></TextBlock>
+                           Text="PluginDescription" />
             </StackPanel>
         </onePointControls:SettingCard.Description>
     </onePointControls:SettingCard>

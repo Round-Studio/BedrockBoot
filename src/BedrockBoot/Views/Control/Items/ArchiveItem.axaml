@@ -22,7 +22,7 @@
                                                VerticalAlignment="Bottom"
                                                Name="ProjectLabel"
                                                Margin="8"
-                                               Text="项目"
+                                               Text="{DynamicResource Shared.Label.Project}"
                                                FontSize="12"
                                                Background="Purple" />
                 </Grid>
@@ -47,6 +47,7 @@
                     <Button Width="24" Height="24"
                             Name="OpenFolderBtn"
                             Click="OpenFolderBtn_OnClick"
+                            ToolTip.Tip="{DynamicResource Shared.Action.OpenFolder}"
                             Classes="NoBorder">
                         <onePointControls:FontIcon Glyph="&#xE8B7;" />
                     </Button>
@@ -54,6 +55,7 @@
                     <Button Width="24" Height="24"
                             Name="SaveBtn"
                             Click="SaveBtn_OnClick"
+                            ToolTip.Tip="{DynamicResource Shared.Action.Save}"
                             Classes="NoBorder">
                         <onePointControls:FontIcon Glyph="&#xE74E;" />
                     </Button>

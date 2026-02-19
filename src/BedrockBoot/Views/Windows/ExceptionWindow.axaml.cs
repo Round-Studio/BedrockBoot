@@ -9,6 +9,8 @@ namespace BedrockBoot.Views.Windows;
 
 public partial class ExceptionWindow : OnePointWindow
 {
+    private I18nManager i18n => I18nManager.Instance;
+
     public ExceptionWindow()
     {
         InitializeComponent();
@@ -39,16 +41,16 @@ public partial class ExceptionWindow : OnePointWindow
     private async void SaveBtnButton_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = GetTopLevel(this);
+        if (topLevel == null) return;
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "保存错误报告",
+            Title = I18nManager.Instance["ExceptionWindow.SaveDialog.Title"],
             SuggestedFileName = Path.GetFileName(Log.FileName),
             DefaultExtension = "json",
             FileTypeChoices = new[]
             {
-                // 定义可选择的文件类型过滤器
-                new FilePickerFileType("BedrockBoot 崩溃报告")
+                new FilePickerFileType(I18nManager.Instance["ExceptionWindow.SaveDialog.FileType"])
                 {
                     Patterns = new[] { "*.json" }
                 }
@@ -59,7 +61,7 @@ public partial class ExceptionWindow : OnePointWindow
         if (file != null)
         {
             var filePath = file.Path.LocalPath;
-            File.WriteAllText(filePath,Log.ToJson());
+            File.WriteAllText(filePath, Log.ToJson());
         }
     }
 }

@@ -13,6 +13,5 @@ public enum StyleType
 public enum HomeType
 {
     None,
-    Xml,
     News
 }

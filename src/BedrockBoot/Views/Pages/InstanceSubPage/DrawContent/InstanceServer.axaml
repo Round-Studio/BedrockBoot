@@ -59,7 +59,7 @@
                                 <onePointControls:FontIcon Glyph="&#xE710;"
                                                            VerticalAlignment="Center"
                                                            Margin="0,1,8,0" />
-                                <TextBlock>添加服务器</TextBlock>
+                                <TextBlock Text="{DynamicResource Instance.Server.Action.Add}" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -78,7 +78,7 @@
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
-                         BigTitle="没有任何一个第三方服务器 wa..."
-                         Message="输入的关键词无效 或 这个用户没有服务器" />
+                         BigTitle="{DynamicResource Instance.Server.Empty.Title}"
+                         Message="{DynamicResource Instance.Server.Empty.Message}" />
     </Grid>
 </UserControl>

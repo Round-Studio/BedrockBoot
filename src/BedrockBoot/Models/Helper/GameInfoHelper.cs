@@ -9,34 +9,15 @@ using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Helper;
 
-public class GameInfoHelper
+public static class GameInfoHelper
 {
-    public static VersionInfo GetVersionInfo(string gamePath)
-    {
-        var jsonFile = Path.Combine(gamePath, "version.json");
-        if (!File.Exists(jsonFile))
-            return null;
+    private const string ConfigSubPath = "config/BedrockBoot2";
+    private const string ConfigFileName = "config.json";
+    private const string IndexFileName = "index.json";
 
-        var json = File.ReadAllText(jsonFile);
-        return JsonSerializer.Deserialize<VersionInfo>(json);
-    }
-
-    public static MinecraftGameTypeVersion GetGameVersionType(string typeStr)
-    {
-        switch (typeStr)
-        {
-            case "Release":
-                return MinecraftGameTypeVersion.Release;
-            case "Preview":
-                return MinecraftGameTypeVersion.Preview;
-            case "Beta":
-                return MinecraftGameTypeVersion.Beta;
-            default:
-                return MinecraftGameTypeVersion.Release;
-        }
-    }
-
-    // 优化后的GetVersionConfigs方法 - 使用LINQ链式操作提高性能和可读性
+    /// <summary>
+    /// 获取版本配置列表
+    /// </summary>
     public static List<VersionConfig> GetVersionConfigs(string gameFolder)
     {
         var bedrockVersionsPath = Path.Combine(gameFolder, "bedrock_versions");
@@ -44,31 +25,39 @@ public class GameInfoHelper
         if (!Directory.Exists(bedrockVersionsPath))
             return new List<VersionConfig>();
 
-        return Directory.GetDirectories(bedrockVersionsPath)
-            .Select(GetVersionConfig) // 转换每个路径为VersionConfig
-            .Where(config => config != null)
-            .Where(config => config.Info != null &&
-                             !string.IsNullOrEmpty(config.Info.VersionName) &&
+        // 使用 EnumerateDirectories 提高大目录下的性能
+        return Directory.EnumerateDirectories(bedrockVersionsPath)
+            .Select(GetVersionConfig)
+            .Where(config => config?.Info != null && 
+                             !string.IsNullOrEmpty(config.Info.VersionName) && 
                              !string.IsNullOrEmpty(config.Info.Version))
             .ToList();
     }
 
+    /// <summary>
+    /// 获取单个版本的详细配置
+    /// </summary>
     public static VersionConfig GetVersionConfig(string gamePath)
     {
-        var bedrockBootJson = Path.Combine(gamePath, "config", "BedrockBoot2", "config.json");
-        ConfigEntity<VersionConfig> bodyConfig = null;
+        var configDir = Path.Combine(gamePath, ConfigSubPath);
+        var configJsonPath = Path.Combine(configDir, ConfigFileName);
+        
+        ConfigEntity<VersionConfig> configEntity;
 
-        if (!File.Exists(bedrockBootJson) &&
-            File.Exists(Path.Combine(gamePath, "appxmanifest.xml"))) // 没有 BedrockBoot 2 的配置文件时
+        // 检查配置文件是否存在
+        if (!File.Exists(configJsonPath))
         {
-            Directory.CreateDirectory(Path.Combine(gamePath, "config", "BedrockBoot2"));
-            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson);
-            bodyConfig.Load();
+            var manifestPath = Path.Combine(gamePath, "appxmanifest.xml");
+            if (!File.Exists(manifestPath)) return null;
 
-            var manifest =
-                PackageIdentity.ParseFromXml(File.ReadAllText(Path.Combine(gamePath, "appxmanifest.xml")));
+            // 初始化新配置
+            Directory.CreateDirectory(configDir);
+            configEntity = new ConfigEntity<VersionConfig>(configJsonPath);
+            configEntity.Load();
 
-            bodyConfig.Data.Info = new VersionConfig.VersionInfo
+            var manifest = PackageIdentity.ParseFromXml(File.ReadAllText(manifestPath));
+            
+            configEntity.Data.Info = new VersionConfig.VersionInfo
             {
                 Version = manifest.Version,
                 VersionName = Path.GetFileName(gamePath),
@@ -77,83 +66,99 @@ public class GameInfoHelper
                     : MinecraftBuildTypeVersion.UWP,
                 VersionType = GetVersionTypeWithPackName(manifest.Name)
             };
-
-            bodyConfig.Save();
+            configEntity.Save();
         }
         else
         {
-            bodyConfig = new ConfigEntity<VersionConfig>(bedrockBootJson, false);
-            bodyConfig.Load();
+            configEntity = new ConfigEntity<VersionConfig>(configJsonPath, false);
+            configEntity.Load();
         }
 
+        // 绑定运行时路径
         var bodyFile = GetBodyFile(gamePath);
+        if (string.IsNullOrEmpty(bodyFile)) return null;
 
-        if (string.IsNullOrEmpty(bodyFile))
-            return null;
+        var data = configEntity.Data;
+        data.VersionPath = gamePath;
+        data.BodyFile = bodyFile;
 
-        bodyConfig.Data.VersionPath = gamePath;
-        bodyConfig.Data.BodyFile = bodyFile;
+        return data;
+    }
 
-        return bodyConfig.Data;
+    /// <summary>
+    /// 寻找 Minecraft 执行文件
+    /// </summary>
+    public static string GetBodyFile(string gamePath)
+    {
+        // 仅搜索顶级目录，避免递归产生的性能消耗
+        var exeFiles = Directory.EnumerateFiles(gamePath, "Minecraft*.exe")
+                                .ToList();
+
+        if (exeFiles.Count == 0) return string.Empty;
+
+        // 这里的逻辑保持严谨：多个 EXE 可能意味着环境异常
+        if (exeFiles.Count > 1)
+        {
+            throw new InvalidOperationException(
+                $"检测到异常：目录中存在多个 Minecraft EXE 文件 ({exeFiles.Count}个)。\n" +
+                $"请清理目录以防潜在风险。\n路径：{gamePath}");
+        }
+
+        return Path.GetFileName(exeFiles[0]);
+    }
+
+    /// <summary>
+    /// 验证版本有效性
+    /// </summary>
+    public static bool IsInvalidVersion(VersionConfig config)
+    {
+        if (config == null || string.IsNullOrEmpty(config.VersionPath)) return false;
+
+        var indexJson = Path.Combine(config.VersionPath, ConfigSubPath, IndexFileName);
+
+        if (!File.Exists(indexJson)) return false;
+
+        try 
+        {
+            // 简单的内容检查，避免加载大文件
+            var content = File.ReadAllText(indexJson);
+            if (string.IsNullOrWhiteSpace(content) || content == "[]") return false;
+
+            var body = new ConfigEntity<List<GameFileInfo>>(indexJson);
+            body.Load();
+            return body.Data != null && body.Data.Count > 0;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public static MinecraftGameTypeVersion GetVersionTypeWithPackName(string packName)
     {
-        if (string.IsNullOrEmpty(packName))
-            return MinecraftGameTypeVersion.Release;
+        if (string.IsNullOrEmpty(packName)) return MinecraftGameTypeVersion.Release;
 
-        packName = packName.ToLowerInvariant();
-
-        if (packName.Contains("preview") || packName.Contains("beta"))
+        // 使用 Contains 的 StringComparison 忽略大小写，效率更高
+        if (packName.Contains("preview", StringComparison.OrdinalIgnoreCase) || 
+            packName.Contains("beta", StringComparison.OrdinalIgnoreCase))
+        {
             return MinecraftGameTypeVersion.Preview;
+        }
 
         return MinecraftGameTypeVersion.Release;
     }
 
-    public static string GetBodyFile(string gamePath)
-    {
-        var files = Directory.GetFiles(gamePath, "*.exe")
-            .Where(x => Path.GetFileName(x).StartsWith("Minecraft"))
-            .ToList();
-
-        if (files.Count() <= 0)
-            return string.Empty;
-        if (files.Count() > 1)
-            throw new FileNotFoundException(
-                $"无法找到对应的 EXE 文件，原因是该目录中有 {files.Count()} 个 EXE，有很大概率是蠕虫病毒的感染，请尝试查杀病毒或删除对应文件以解决该问题。\nFiles:\n{string.Join('\n', files)}");
-
-        Console.WriteLine($@"目标实例本体文件：{files[0]}");
-
-        return Path.GetFileName(files[0]);
-    }
-
-    public static bool IsInvalidVersion(VersionConfig config)
-    {
-        var indexJson = Path.Combine(config.VersionPath, "config", "BedrockBoot2", "index.json");
-
-        if (!File.Exists(indexJson))
-            return false;
-        if (string.IsNullOrEmpty(File.ReadAllText(indexJson)))
-            return false;
-
-        var body = new ConfigEntity<List<GameFileInfo>>(indexJson);
-        body.Load();
-
-        if (body.Data.Count <= 0)
-            return false;
-
-        return true;
-    }
-
     public static void SaveVersionConfig(VersionConfig config)
     {
-        var bedrockBootJson = Path.Combine(config.VersionPath, "config", "BedrockBoot2", "config.json");
+        if (config == null) return;
 
-        if (!Directory.Exists(Path.Combine(config.VersionPath, "config", "BedrockBoot2")))
-            Directory.CreateDirectory(Path.Combine(config.VersionPath, "config", "BedrockBoot2"));
+        var configDir = Path.Combine(config.VersionPath, ConfigSubPath);
+        var configJsonPath = Path.Combine(configDir, ConfigFileName);
 
-        var cfg = new ConfigEntity<VersionConfig>(bedrockBootJson);
-        cfg.Data = config;
+        if (!Directory.Exists(configDir))
+            Directory.CreateDirectory(configDir);
+
+        var cfg = new ConfigEntity<VersionConfig>(configJsonPath) { Data = config };
         cfg.Save();
     }
 }

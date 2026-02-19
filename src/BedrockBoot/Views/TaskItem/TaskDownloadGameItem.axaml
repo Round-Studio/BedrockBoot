@@ -18,9 +18,8 @@
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
                 <TextBlock FontSize="16"
-                           Name="CardTitle">
-                    正在安装游戏...
-                </TextBlock>
+                           Name="CardTitle"
+                           Text="{DynamicResource Task.Game.Title}" />
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">
@@ -30,31 +29,31 @@
                                  Name="MainProgressBar" />
 
                     <DockPanel>
-                        <TextBlock Width="100">获取地址</TextBlock>
+                        <TextBlock Width="100" Text="{DynamicResource Task.Game.Step.GetUrl}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsGetUrlBar" />
                     </DockPanel>
 
                     <DockPanel>
-                        <TextBlock Width="100">下载游戏</TextBlock>
+                        <TextBlock Width="100" Text="{DynamicResource Task.Game.Step.Download}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsDownGameBar" />
                     </DockPanel>
 
                     <DockPanel>
-                        <TextBlock Width="100">合并文件</TextBlock>
+                        <TextBlock Width="100" Text="{DynamicResource Task.Game.Step.Merge}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsMergeBar" />
                     </DockPanel>
 
                     <DockPanel>
-                        <TextBlock Width="100">解压文件</TextBlock>
+                        <TextBlock Width="100" Text="{DynamicResource Task.Game.Step.Unzip}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsUnZipBar" />
                     </DockPanel>
 
                     <DockPanel Name="InsInstallGamePanel">
-                        <TextBlock Width="100">部署游戏</TextBlock>
+                        <TextBlock Width="100" Text="{DynamicResource Task.Game.Step.Deploy}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsInstallGameBar" />
                     </DockPanel>
@@ -64,9 +63,7 @@
                                    Foreground="Gray"
                                    FontSize="9"
                                    Margin="0,2,0,0"
-                                   Name="MainText">
-                            步骤：下载准备中... (0%)
-                        </TextBlock>
+                                   Name="MainText" />
 
                         <TextBlock Grid.Column="1"
                                    Foreground="Gray"

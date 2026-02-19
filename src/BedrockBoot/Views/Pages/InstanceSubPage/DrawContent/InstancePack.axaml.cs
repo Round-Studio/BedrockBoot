@@ -7,6 +7,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
@@ -17,14 +18,13 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstancePack : ISetting
 {
+    private static I18nManager i18n => I18nManager.Instance;
     private string _searchText = string.Empty;
-
     private string _type = "resource";
 
     public InstancePack()
     {
         InitializeComponent();
-
         IsEdit = true;
     }
 
@@ -35,11 +35,11 @@ public partial class InstancePack : ISetting
     }
 
     public VersionConfig VersionInfo { get; set; }
-    public ResourcePackManager ResourcePackManager { get; set; }
+    public ResourcePackManager? ResourcePackManager { get; set; }
 
     private void UpdateUI()
     {
-        // 清空当前显示
+        // UI 状态重置
         ResultBox.Children.Clear();
         ScBox.IsVisible = false;
         LoadBox.IsVisible = true;
@@ -49,35 +49,32 @@ public partial class InstancePack : ISetting
             if (ResourcePackManager == null)
             {
                 ResourcePackManager = new ResourcePackManager(VersionInfo);
-                ResourcePackManager.GetAllPack();
             }
 
+            // 1. 在后台线程处理数据解析（IO 密集型）
             ResourcePackManager.GetAllPack();
 
             var filteredPacks = ResourcePackManager.Packs
-                .Where(x => x != null && x.Header != null)
-                .Where(x => x.PackType.ToString().ToLower() == _type)
+                .Where(x => x?.Header != null)
+                .Where(x => x.PackType.ToString().Equals(_type, StringComparison.OrdinalIgnoreCase))
                 .Where(x => string.IsNullOrWhiteSpace(_searchText) ||
                             x.Header.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
+            // 2. 切回 UI 线程进行控件实例化和渲染
             Dispatcher.UIThread.Invoke(() =>
             {
                 NullBox.IsVisible = filteredPacks.Count == 0;
-                ScBox.IsVisible = false;
-                NumberBox.Text = $"共 {filteredPacks.Count} 项";
-            });
+                NumberBox.Text = string.Format(i18n["Instance.Pack.Count.Format"], filteredPacks.Count);
+                
+                // 必须在 UI 线程内 new 控件
+                var packItems = filteredPacks.Select(pack => new GameResourcePackItem(pack)
+                {
+                    RefreshCallBack = UpdateUI
+                }).ToList();
 
-            // 如果有包，添加它们
-            if (filteredPacks.Count > 0)
-                foreach (var pack in filteredPacks)
-                    Dispatcher.UIThread.Invoke(() => ResultBox.Children.Add(new GameResourcePackItem(pack)
-                    {
-                        RefreshCallBack = UpdateUI
-                    }));
+                ResultBox.Children.AddRange(packItems);
 
-            Dispatcher.UIThread.Invoke(() =>
-            {
                 ScBox.IsVisible = true;
                 LoadBox.IsVisible = false;
             });
@@ -87,40 +84,42 @@ public partial class InstancePack : ISetting
     private async void ImportPackBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "导入 Minecraft Bedrock 包",
+            Title = i18n["Instance.Pack.Import.Picker.Title"],
             AllowMultiple = true,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("Minecraft 支持包")
+                new FilePickerFileType(i18n["Instance.Pack.Import.Picker.Type"])
                 {
                     Patterns = new[] { "*.mcpack", "*.mcaddon" }
                 }
             }
         });
 
-        if (files != null && files.Count >= 1)
+        if (files is { Count: >= 1 })
         {
             var selectedFiles = files.Select(f => f.Path.LocalPath).ToList();
-
             var body = new DialogImportResourcePackContent();
+
             DialogHost.Show(new DialogInfo
             {
-                Title = "导入包",
+                Title = i18n["Instance.Pack.Import.Dialog.Title"],
                 Content = body,
-                CloseButtonText = "导入",
-                PrimaryButtonText = "取消",
+                CloseButtonText = i18n["Instance.Pack.Import.Dialog.Action"],
+                PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
                 CloseAction = async () =>
                 {
                     DialogHost.Show(new DialogInfo
                     {
-                        Title = "导入包...",
-                        Content = "正在导入包..."
+                        Title = i18n["Instance.Pack.Import.Progress.Title"],
+                        Content = i18n["Instance.Pack.Import.Progress.Content"]
                     });
 
-                    await Task.Run(() => { ResourcePackManager.AddRangePacks(selectedFiles); });
+                    // 导入操作在后台执行
+                    await Task.Run(() => { ResourcePackManager?.AddRangePacks(selectedFiles); });
 
                     Dispatcher.UIThread.Invoke(() =>
                     {
@@ -141,22 +140,20 @@ public partial class InstancePack : ISetting
 
     private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (IsEdit)
-            try
+        // 增加 IsEdit 判断防止初始化时的意外触发
+        if (IsEdit && TypeSel?.SelectedItem is ListBoxItem item)
+        {
+            var newType = item.Tag?.ToString()?.ToLower() ?? "resource";
+            if (_type != newType)
             {
-                _type = ((ListBoxItem)TypeSel.SelectedItem).Tag.ToString().ToLower();
+                _type = newType;
                 UpdateUI();
             }
-            catch
-            {
-                // 保持当前类型
-            }
+        }
     }
 
-    // 如果需要手动刷新数据（比如从其他页面返回时）
     public void RefreshData()
     {
-        if (ResourcePackManager != null) ResourcePackManager.GetAllPack();
         UpdateUI();
     }
 }

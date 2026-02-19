@@ -44,9 +44,8 @@
             <Button Padding="24,0"
                     Margin="0,0,8,0"
                     Height="32"
-                    IsEnabled="False">
-                删除
-            </Button>
+                    IsEnabled="False"
+                    Content="{DynamicResource Shared.Action.Delete}" />
         </StackPanel>
     </Grid>
 </UserControl>

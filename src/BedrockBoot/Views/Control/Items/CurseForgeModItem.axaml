@@ -10,7 +10,7 @@
                                   Click="Card_OnClick"
                                   Margin="5,0,5,10"
                                   Glyph="&#xE91B;"
-                                  Description="相关包信息">
+                                  Description="{DynamicResource Download.CurseForge.Label.PackInfo}">
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"
                         Name="HeaderBox"

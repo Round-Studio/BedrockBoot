@@ -15,7 +15,7 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
-                                        Text="工具箱" />
+                                        Text="{DynamicResource Tools.Title}" />
     </entry:BedrockBootPage.HeaderView>
 
     <Grid>
@@ -23,29 +23,28 @@
             <StackPanel Margin="20"
                         Spacing="8">
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    帮助
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Tools.Group.Help}" />
                 
-                <onePointControls:SettingCard Header="下载游戏框架"
-                                              Description="前往 MCAPPX 网站下载 Minecraft 游戏运行框架"
+                <onePointControls:SettingCard Header="{DynamicResource Tools.McFramework.Title}"
+                                              Description="{DynamicResource Tools.McFramework.Description}"
                                               Glyph="&#xECAA;"
                                               IsClickable="True"
                                               IsShowActionIcon="False">
-                    <HyperlinkButton Content="打开网页"
+                    <HyperlinkButton Content="{DynamicResource Tools.McFramework.Action}"
                                      NavigateUri="https://www.mcappx.com/download/mc-framework/"></HyperlinkButton>
                 </onePointControls:SettingCard>
                 
-                <onePointControls:SettingCard Header="找回文件"
-                                              Description="用于找回因版本隔离导致的 存档 / 资源包 等文件丢失"
+                <onePointControls:SettingCard Header="{DynamicResource Tools.RecoverFiles.Title}"
+                                              Description="{DynamicResource Tools.RecoverFiles.Description}"
                                               Glyph="&#xE71E;"
                                               IsVisible="False"
                                               IsClickable="True"
                                               Name="FoundLoseFilesBtn"
-                                              Click="FoundLoseFilesBtn_OnClick1"/>
+                                              Click="FoundLoseFilesBtn_OnClick"/>
                 
-                <onePointControls:SettingCard Header="卸载本机已安装的 Minecraft"
-                                              Description="用于卸载由本机已安装的 Minecraft 导致的错误"
+                <onePointControls:SettingCard Header="{DynamicResource Tools.UninstallMc.Title}"
+                                              Description="{DynamicResource Tools.UninstallMc.Description}"
                                               Glyph="&#xE74D;"
                                               IsClickable="True"
                                               Name="DeleteMcBtn"
@@ -56,7 +55,7 @@
         <notice:InfoCard HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          IsVisible="False"
-                         BigTitle="某野喔"
-                         Message="工具箱内没有工具 awa&#x0A;可以催促开发者火速添加.jpg" />
+                         BigTitle="{DynamicResource Tools.Empty.Title}"
+                         Message="{DynamicResource Tools.Empty.Message}" />
     </Grid>
 </entry:BedrockBootPage>

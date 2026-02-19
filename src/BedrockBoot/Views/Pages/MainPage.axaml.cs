@@ -52,13 +52,14 @@ public partial class MainPage : UserControl
             Tag = "Download",
             Page = typeof(DownloadRoot)
         });
-        RegisterTopItem(new TopBarItemInfo
+        /*RegisterTopItem(new TopBarItemInfo
         {
-            ItemGlyph = "\uF0B9",
-            ItemText = "多人联机",
-            Tag = "Multiplayer",
-            Page = typeof(MainMultiplayerPage)
-        });
+            ItemGlyph = "",
+            ItemText = "任务",
+            Tag = "Task",
+            Page = typeof(MainTaskPage)
+        });*/
+#if DEBUG
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
@@ -66,6 +67,17 @@ public partial class MainPage : UserControl
             Tag = "ToolsBox",
             Page = typeof(MainToolsBoxPage)
         });
+#endif
+#if RELEASE
+        if (GlobalModel.FunctionOption.IsEnableToolsBox)
+            RegisterTopItem(new TopBarItemInfo()
+            {
+                ItemGlyph = "",
+                ItemText = "工具",
+                Tag = "ToolsBox",
+                Page = typeof(MainToolsBoxPage)
+            });
+#endif
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",

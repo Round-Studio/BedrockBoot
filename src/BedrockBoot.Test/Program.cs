@@ -1,8 +1,10 @@
 ﻿using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Integration;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Core.Models.News;
 using BedrockBoot.LeviLamina.Base.Entry.Porgress;
 using BedrockBoot.LeviLamina.Models.Installer;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Integration;
 using BedrockLauncher.Core;
 
@@ -10,17 +12,12 @@ public class Program
 {
     private static async Task Main()
     {
-        var bedrockCore = new BedrockCore();
-        bedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release).Wait();
-        return;
-        var llInstaller = new LeviLaminaInstaller(new VersionConfig()
+        /*for (int i = 0; i < 100; i++)
         {
-            VersionPath = @"D:\BedrockBoot\bedrock_versions\1.21.13101"
-        });
-        llInstaller.Progress = new Progress<InstallerProgress>((p) =>
-        {
-            Console.WriteLine($"{p.Message} - {p.Status} - {p.Progress:F2} %");
-        });
-        await llInstaller.InstallLeviLamina("1.9.5");
+            NewsGenerate.GetRandomLine().ForEach(x=>Console.Write($"{x} "));
+            Console.WriteLine();
+        }*/
+
+        NewsGenerate.GetPatchNotesAsync(SourceList.NewsUrl).Result.ForEach(x=>Console.WriteLine(x.Title));
     }
 }

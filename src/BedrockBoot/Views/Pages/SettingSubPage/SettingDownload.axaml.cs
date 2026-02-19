@@ -14,30 +14,39 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 
 public partial class SettingDownload : ISettingPage
 {
-    public bool IsEdit;
 
     public SettingDownload()
     {
         InitializeComponent();
+        
+        // 面包屑导航国际化
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
-                ItemName = "下载"
+                ItemName = I18nManager.Instance["Setting.Download.Breadcrumb.Root"]
             }
         };
 
+        // 加载下载分片数配置
         ChunkCountSlider.Value = GlobalModel.Config.Data.DownloadChunkCount;
-        SourceList.VersionDataSources.ToList().ForEach(s => SourceBox.Items.Add(new ComboBoxItem
+
+        // 动态加载版本下载源 (保持数据源原名)
+        SourceBox.Items.Clear();
+        foreach (var s in SourceList.VersionDataSources)
         {
-            Content = s.Key
-        }));
+            SourceBox.Items.Add(new ComboBoxItem { Content = s.Key });
+        }
         SourceBox.SelectedIndex = GlobalModel.Config.Data.VersionSourceIndex;
-        SourceList.CurseForgeSource.ToList().ForEach(s => CurseForgeSourceBox.Items.Add(new ComboBoxItem
+
+        // 动态加载 CurseForge 下载源
+        CurseForgeSourceBox.Items.Clear();
+        foreach (var s in SourceList.CurseForgeSource)
         {
-            Content = s.Key
-        }));
+            CurseForgeSourceBox.Items.Add(new ComboBoxItem { Content = s.Key });
+        }
         CurseForgeSourceBox.SelectedIndex = GlobalModel.Config.Data.CurseForgeSourceIndex;
+
         IsEdit = true;
     }
 
@@ -54,11 +63,14 @@ public partial class SettingDownload : ISettingPage
     private void ChunkCountSlider_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
         if (IsEdit)
-            if ((int)ChunkCountSlider.Value != GlobalModel.Config.Data.DownloadChunkCount)
+        {
+            int newValue = (int)ChunkCountSlider.Value;
+            if (newValue != GlobalModel.Config.Data.DownloadChunkCount)
             {
-                GlobalModel.Config.Data.DownloadChunkCount = (int)ChunkCountSlider.Value;
+                GlobalModel.Config.Data.DownloadChunkCount = newValue;
                 GlobalModel.Config.Save();
             }
+        }
     }
 
     private void SourceBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

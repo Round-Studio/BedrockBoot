@@ -13,23 +13,29 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
 public partial class UniversalSoftwareUpdate : ISettingPage
 {
+    
+    public bool IsEdit;
+
     public UniversalSoftwareUpdate()
     {
         InitializeComponent();
         IsAutoCheckUpdate.IsChecked = GlobalModel.Config.Data.IsAutoCheckUpdate;
         UpdateTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.UpdateType;
+        
+        // 版本描述：直接显示版本号，或拼接“当前版本：”
         VersionCard.Description = GlobalModel.BodyVersion;
+
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
-                ItemName = "通用",
+                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = "软件更新"
+                ItemName = I18nManager.Instance["Setting.Universal.SoftwareUpdate.Title"]
             }
         };
 
@@ -40,7 +46,7 @@ public partial class UniversalSoftwareUpdate : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.IsAutoCheckUpdate = (bool)IsAutoCheckUpdate.IsChecked;
+            GlobalModel.Config.Data.IsAutoCheckUpdate = IsAutoCheckUpdate.IsChecked ?? false;
             GlobalModel.Config.Save();
         }
     }
@@ -53,17 +59,23 @@ public partial class UniversalSoftwareUpdate : ISettingPage
             GlobalModel.Config.Save();
         }
     }
+
     private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         CheckUpdateBtn.IsEnabled = false;
+        
+        // 替换为等待状态
         CheckUpdateBtn.Content = new ProgressRing
         {
             Width = 24,
             Height = 24,
             Background = Brushes.Transparent
         };
+
         await MainPage.Update(true);
+
         CheckUpdateBtn.IsEnabled = true;
-        CheckUpdateBtn.Content = "检查更新";
+        // 恢复按钮文本
+        CheckUpdateBtn.Content = I18nManager.Instance["Setting.Universal.SoftwareUpdate.CheckUpdateAction"];
     }
 }

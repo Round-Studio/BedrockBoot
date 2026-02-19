@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -6,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
 using Octokit;
@@ -15,39 +17,68 @@ namespace BedrockBoot.Views.Pages.OtherPage;
 
 public partial class AboutContributor : ISettingPage
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     public AboutContributor()
     {
         InitializeComponent();
 
+        // 面包屑导航国际化
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
-                ItemName = "关于我们",
-                ItemClickAction = info => MainSettingPage.NavigateTo(new AboutPage())
+                ItemName = i18n["AboutPage.Title"], // "关于我们"
+                ItemClickAction = _ => MainSettingPage.NavigateTo(new AboutPage())
             },
             new()
             {
-                ItemName = "贡献者"
+                ItemName = i18n["AboutPage.Contributor.Title"] // "贡献者"
             }
         };
 
+        // 异步获取 GitHub 贡献者
+        FetchContributors();
+    }
+
+    private void FetchContributors()
+    {
         Task.Run(async () =>
         {
             try
             {
+                // 初始化 GitHub 客户端
                 var githubClient = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
-                var cons = await githubClient.Repository.GetAllContributors("Round-Studio", "BedrockBoot");
+                
+                // 获取 Round-Studio/BedrockBoot 仓库的贡献者
+                var contributors = await githubClient.Repository.GetAllContributors("Round-Studio", "BedrockBoot");
 
-                Dispatcher.UIThread.Invoke(() =>
+                // 预先准备好 UI 控件列表，减少跨线程调用开销
+                var items = contributors.Select(con => new ContributorItem(con)).ToList();
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    cons.ToList().ForEach(con =>
+                    ContributorBox.Children.Clear();
+                    foreach (var item in items)
                     {
-                        ContributorBox.Children.Add(new ContributorItem(con));
-                    });
+                        ContributorBox.Children.Add(item);
+                    }
                     LoadingRing.IsVisible = false;
                 });
-            }catch{}
+            }
+            catch (Exception ex)
+            {
+                // 记录错误并在 UI 上反馈（可选）
+                System.Diagnostics.Debug.WriteLine($"Failed to fetch contributors: {ex.Message}");
+                
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    LoadingRing.IsVisible = false;
+                    // 如果加载失败，可以显示一个提示文本
+                    // ErrorTextBlock.IsVisible = true;
+                    // ErrorTextBlock.Text = i18n["AboutPage.Contributor.LoadFailed"];
+                });
+            }
         });
     }
 }

@@ -7,17 +7,15 @@
     <StackPanel Spacing="10"
                 Margin="5,0">
         <TextBlock
-            HorizontalAlignment="Left">
-            游戏目录
-        </TextBlock>
+            HorizontalAlignment="Left"
+            Text="{DynamicResource Dialog.AddInstance.Label.GameFolder}" />
         <ComboBox Width="320"
                   Name="GameFolder"
                   SelectionChanged="GameFolder_OnSelectionChanged" />
 
         <TextBlock
-            HorizontalAlignment="Left">
-            实例：
-        </TextBlock>
+            HorizontalAlignment="Left"
+            Text="{DynamicResource Dialog.ChooseGame.Label.Instance}" />
         <ComboBox Width="320"
                   Name="GameInstance" />
     </StackPanel>

@@ -10,9 +10,10 @@
                     Margin="15">
             <TextBlock Margin="5,0,0,8"
                        FontSize="16"
-                       Text="贡献者" />
+                       Text="{DynamicResource About.Contributor.Title}" />
         
-            <TextBlock Margin="20,1" Text="这里展示的是对 BedrockBoot 有贡献的创作者！" />
+            <TextBlock Margin="20,1" 
+                       Text="{DynamicResource About.Contributor.Description}" />
         </StackPanel>
         
         <onePointControls:ProgressRing Grid.Row="1"

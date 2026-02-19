@@ -18,6 +18,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
 public partial class UniversalException : ISettingPage
 {
+    
+
     public UniversalException()
     {
         InitializeComponent();
@@ -26,19 +28,19 @@ public partial class UniversalException : ISettingPage
         {
             new()
             {
-                ItemName = "通用",
+                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = "调试模式",
+                ItemName = I18nManager.Instance["Setting.Universal.Debug.Title"],
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new UniversalDebug())
             },
             new()
             {
-                ItemName = "崩溃记录"
+                ItemName = I18nManager.Instance["Setting.Universal.Exception.Title"]
             }
         };
         
@@ -57,12 +59,16 @@ public partial class UniversalException : ISettingPage
             
             lst.ForEach(re =>
             {
-                Dispatcher.UIThread.Invoke(() =>
+                Dispatcher.UIThread.Invoke(async () =>
                 {
+                    // 格式化崩溃描述：[时间] 发生的崩溃
+                    string formattedTime = DateTime.Parse(re.ErrorTime).ToString("yyyy-MM-dd HH:mm:ss");
+                    string description = string.Format(I18nManager.Instance["Setting.Universal.Exception.Item.Desc"], formattedTime);
+
                     var item = new SettingCard()
                     {
                         Header = re.ErrorTitle,
-                        Description = $"{DateTime.Parse(re.ErrorTime).ToString("yyyy-MM-dd HH:mm:ss")} 发生的崩溃",
+                        Description = description,
                         Glyph = "\uE730",
                         IsClickable = true
                     };
@@ -70,16 +76,16 @@ public partial class UniversalException : ISettingPage
                     item.Click += async (s, e) =>
                     {
                         var topLevel = TopLevel.GetTopLevel(this);
+                        if (topLevel == null) return;
 
                         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                         {
-                            Title = "保存错误报告",
-                            SuggestedFileName = $"错误报告 {Path.GetFileName(re.FileName)}",
+                            Title = I18nManager.Instance["Setting.Universal.Exception.Dialog.Save.Title"],
+                            SuggestedFileName = $"{I18nManager.Instance["Setting.Universal.Exception.Dialog.Save.Prefix"]} {Path.GetFileName(re.FileName)}",
                             DefaultExtension = "json",
                             FileTypeChoices = new[]
                             {
-                                // 定义可选择的文件类型过滤器
-                                new FilePickerFileType("BedrockBoot 崩溃报告")
+                                new FilePickerFileType(I18nManager.Instance["Setting.Universal.Exception.Dialog.Save.FileType"])
                                 {
                                     Patterns = new[] { "*.json" }
                                 }
@@ -90,7 +96,7 @@ public partial class UniversalException : ISettingPage
                         if (file != null)
                         {
                             var filePath = file.Path.LocalPath;
-                            File.WriteAllText(filePath, re.ToJson());
+                            await File.WriteAllTextAsync(filePath, re.ToJson());
                         }
                     };
 

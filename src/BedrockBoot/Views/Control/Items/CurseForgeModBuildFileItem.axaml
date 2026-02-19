@@ -9,7 +9,7 @@
                                   Name="Card"
                                   Margin="5,0"
                                   Glyph="&#xE7C3;"
-                                  Description="信息"
+                                  Description="{DynamicResource Shared.Label.Information}"
                                   IsShowActionIcon="False"
                                   Header="Name">
         <StackPanel Orientation="Horizontal"
@@ -17,6 +17,7 @@
             <Button Classes="NoBorder"
                     Name="SaveBtn"
                     Click="SaveBtn_OnClick"
+                    ToolTip.Tip="{DynamicResource Shared.Action.Save}"
                     Padding="10">
                 <onePointControls:FontIcon Glyph="&#xE74E;"
                                            FontSize="14" />
@@ -30,7 +31,7 @@
                             Spacing="8">
                     <onePointControls:FontIcon Glyph="&#xE896;"
                                                VerticalAlignment="Center" />
-                    <TextBlock>下载</TextBlock>
+                    <TextBlock Text="{DynamicResource Shared.Action.Download}" />
                 </StackPanel>
             </Button>
         </StackPanel>

@@ -7,29 +7,28 @@
     <StackPanel Spacing="10"
                 Margin="5,0">
         <TextBlock
-            HorizontalAlignment="Left">
-            选择需要导入的内容
-        </TextBlock>
+            HorizontalAlignment="Left"
+            Text="{DynamicResource Dialog.ImportConfig.Label.Title}" />
         
-        <CheckBox Content="资源包"
+        <CheckBox Content="{DynamicResource Download.Search.Category.Texture}"
                   Width="200"
                   IsChecked="True"
                   Name="IsEnableResourcePack"
-                  Margin="0"></CheckBox>
-        <CheckBox Content="行为包"
+                  Margin="0" />
+        <CheckBox Content="{DynamicResource Download.Search.Category.Behavior}"
                   Width="200"
                   IsChecked="True"
                   Name="IsEnableBehaviorPack"
-                  Margin="0"></CheckBox>
-        <CheckBox Content="存档"
+                  Margin="0" />
+        <CheckBox Content="{DynamicResource Main.Home.Title.Archive}"
                   Width="200"
                   IsChecked="True"
                   Name="IsEnableArchivePack"
-                  Margin="0"></CheckBox>
-        <CheckBox Content="实例设置"
+                  Margin="0" />
+        <CheckBox Content="{DynamicResource Dialog.ImportConfig.Option.Settings}"
                   Width="200"
                   IsChecked="True"
                   Name="IsEnableConfigPack"
-                  Margin="0"></CheckBox>
+                  Margin="0" />
     </StackPanel>
 </UserControl>

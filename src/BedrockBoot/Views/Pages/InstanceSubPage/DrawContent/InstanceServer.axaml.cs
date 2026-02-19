@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Server;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
@@ -13,8 +16,9 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceServer : ISetting
 {
-    private readonly ServerManager _serverManager;
-    private string _key = "";
+    private static I18nManager i18n => I18nManager.Instance;
+    private readonly ServerManager? _serverManager;
+    private string _searchKey = string.Empty;
 
     public InstanceServer()
     {
@@ -31,84 +35,127 @@ public partial class InstanceServer : ISetting
     private int SelIndex => UserChooseBox.SelectedIndex;
     public VersionConfig VersionConfig { get; set; }
 
+    /// <summary>
+    /// 初始化 UI 并扫描所有用户的服务器配置文件
+    /// </summary>
     public void UpdateUI()
     {
+        if (_serverManager == null) return;
+        
         IsEdit = false;
         UserChooseBox.Items.Clear();
-        _serverManager.GetServers().ToList().ForEach(user =>
-            {
-                UserChooseBox.Items.Add(new ComboBoxItem
-                {
-                    Content = user.Key,
-                    Tag = user.Value
-                });
-            }
-        );
 
-        if (_serverManager.GetServers().Count >= 1)
+        var servers = _serverManager.GetServers();
+        foreach (var user in servers)
+        {
+            UserChooseBox.Items.Add(new ComboBoxItem
+            {
+                Content = user.Key,
+                Tag = user.Value
+            });
+        }
+
+        if (servers.Count >= 1)
         {
             UserChooseBox.SelectedIndex = 0;
-            UpdateServer(_serverManager.GetServers().Keys.First());
+            UpdateServer(servers.Keys.First());
         }
 
         IsEdit = true;
     }
 
-    public void UpdateServer(string user)
+    /// <summary>
+    /// 根据当前选中的用户和搜索关键词更新服务器列表
+    /// </summary>
+    public void UpdateServer(string userKey)
     {
+        if (_serverManager == null) return;
+
         NullBox.IsVisible = false;
         ResultBox.Children.Clear();
 
-        var servers = _serverManager.GetServers()[user];
-        var res = servers
-            .Where(x => x.ServerName.Contains(_key) ||
-                        x.ServerAddress.Contains(_key) ||
-                        x.ServerPort.ToString().Contains(_key))
+        var serverDict = _serverManager.GetServers();
+        if (!serverDict.TryGetValue(userKey, out var servers))
+        {
+            NullBox.IsVisible = true;
+            return;
+        }
+
+        // 过滤逻辑
+        var filteredList = servers
+            .Where(x => string.IsNullOrEmpty(_searchKey) ||
+                        x.ServerName.Contains(_searchKey, StringComparison.OrdinalIgnoreCase) ||
+                        x.ServerAddress.Contains(_searchKey, StringComparison.OrdinalIgnoreCase) ||
+                        x.ServerPort.ToString().Contains(_searchKey))
             .ToList();
 
-        res.ForEach(s => ResultBox.Children.Add(new GameServerItem(s)
+        foreach (var s in filteredList)
         {
-            DeleteServer = info =>
+            ResultBox.Children.Add(new GameServerItem(s)
             {
-                _serverManager.DeleteServer(user, info);
-                UpdateServer(user);
-            }
-        }));
+                DeleteServer = info =>
+                {
+                    _serverManager.DeleteServer(userKey, info);
+                    UpdateServer(userKey);
+                }
+            });
+        }
 
-        if (res.Count <= 0)
+        if (filteredList.Count <= 0)
             NullBox.IsVisible = true;
     }
 
+    /// <summary>
+    /// 弹出对话框添加第三方服务器
+    /// </summary>
     private void AddServerBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        if (_serverManager == null || SelIndex < 0) return;
+
         var body = new DialogAddGameServerContent();
         DialogHost.Show(new DialogInfo
         {
-            Title = "添加第三方服务器",
+            Title = i18n["Instance.Server.Add.Title"],
             Content = body,
-            CloseButtonText = "添加此",
-            PrimaryButtonText = "取消",
+            CloseButtonText = i18n["Instance.Server.Add.Action"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
-                _serverManager.AddServer(_serverManager.GetServers().Keys.ToList()[UserChooseBox.SelectedIndex],
-                    body.ServerItemInfo);
-
-                UpdateServer(_serverManager.GetServers().Keys.ToList()[UserChooseBox.SelectedIndex]);
+                // 安全获取当前选中的用户 Key
+                var userKeys = _serverManager.GetServers().Keys.ToList();
+                if (SelIndex < userKeys.Count)
+                {
+                    var currentUser = userKeys[SelIndex];
+                    _serverManager.AddServer(currentUser, body.ServerItemInfo);
+                    UpdateServer(currentUser);
+                }
             }
         });
     }
 
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (IsEdit)
+        if (IsEdit && _serverManager != null)
         {
-            _key = string.IsNullOrEmpty(SearchBox.Text) ? "" : SearchBox.Text;
-            UpdateServer(_serverManager.GetServers().ToList()[SelIndex].Key);
+            _searchKey = SearchBox.Text ?? string.Empty;
+            
+            var userKeys = _serverManager.GetServers().Keys.ToList();
+            if (SelIndex >= 0 && SelIndex < userKeys.Count)
+            {
+                UpdateServer(userKeys[SelIndex]);
+            }
         }
     }
 
     private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (IsEdit) UpdateServer(_serverManager.GetServers().ToList()[SelIndex].Key);
+        if (IsEdit && _serverManager != null)
+        {
+            var userKeys = _serverManager.GetServers().Keys.ToList();
+            if (SelIndex >= 0 && SelIndex < userKeys.Count)
+            {
+                UpdateServer(userKeys[SelIndex]);
+            }
+        }
     }
 }

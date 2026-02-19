@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800"
+             mc:Ignorable="d" d:DesignWidth="400"
              x:Class="BedrockBoot.Views.TaskItem.Plugin.LeviLamina.TaskInstallLeviLaminaItem">
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*">
@@ -18,9 +18,8 @@
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">
                 <TextBlock FontSize="16"
-                           Name="CardTitle">
-                    正在安装 LeviLamina...
-                </TextBlock>
+                           Name="CardTitle"
+                           Text="{DynamicResource Task.LeviLamina.Title}" />
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">
@@ -30,31 +29,31 @@
                                  Name="MainProgressBar" />
 
                     <DockPanel>
-                        <TextBlock Width="120">下载清单</TextBlock>
+                        <TextBlock Width="120" Text="{DynamicResource Task.LeviLamina.Step.Manifest}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsDownSourceBar" />
                     </DockPanel>
 
                     <DockPanel>
-                        <TextBlock Width="120">下载本体</TextBlock>
+                        <TextBlock Width="120" Text="{DynamicResource Task.LeviLamina.Step.Core}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsLLMBar" />
                     </DockPanel>
 
                     <DockPanel>
-                        <TextBlock Width="120">下载日志记录器</TextBlock>
+                        <TextBlock Width="120" Text="{DynamicResource Task.LeviLamina.Step.Logger}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsLogBar" />
                     </DockPanel>
 
                     <DockPanel>
-                        <TextBlock Width="120">下载加载器</TextBlock>
+                        <TextBlock Width="120" Text="{DynamicResource Task.LeviLamina.Step.Loader}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsPreLoaderBar" />
                     </DockPanel>
 
                     <DockPanel>
-                        <TextBlock Width="120">下载运行时</TextBlock>
+                        <TextBlock Width="120" Text="{DynamicResource Task.LeviLamina.Step.Runtime}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsRuntimeBar" />
                     </DockPanel>
@@ -64,9 +63,7 @@
                                    Foreground="Gray"
                                    FontSize="9"
                                    Margin="0,2,0,0"
-                                   Name="MainText">
-                            步骤：下载准备中... (0%)
-                        </TextBlock>
+                                   Name="MainText" />
 
                         <TextBlock Grid.Column="1"
                                    Foreground="Gray"

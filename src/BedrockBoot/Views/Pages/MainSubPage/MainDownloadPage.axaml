@@ -10,11 +10,6 @@
     <entry1:BedrockBootPage.HeaderView>
         <Grid Width="400"
               HorizontalAlignment="Left">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
             <onePointControls:LineTextBlock Grid.Column="0"
                                             Margin="0"
                                             VerticalAlignment="Center"
@@ -22,33 +17,6 @@
                                             FontSize="28"
                                             FontWeight="Bold"
                                             Text="下载" />
-
-            <ListBox Grid.Column="1"
-                     Classes="Segmented"
-                     Margin="12,0,0,0"
-                     Name="PageSel"
-                     SelectedIndex="0"
-                     SelectionChanged="SelectingItemsControl_OnSelectionChanged">
-                <ListBoxItem Classes="Segmented"
-                             Tag="Game">
-                    <StackPanel Orientation="Horizontal">
-                        <onePointControls:FontIcon Glyph="&#xE7FC;"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="16" />
-                        <TextBlock Margin="8,4,0,4">实例</TextBlock>
-                    </StackPanel>
-                </ListBoxItem>
-
-                <ListBoxItem Classes="Segmented"
-                             Tag="Assets">
-                    <StackPanel Orientation="Horizontal">
-                        <onePointControls:FontIcon Glyph="&#xE728;"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="16" />
-                        <TextBlock Margin="8,4,0,4">资源</TextBlock>
-                    </StackPanel>
-                </ListBoxItem>
-            </ListBox>
         </Grid>
     </entry1:BedrockBootPage.HeaderView>
     <Grid>

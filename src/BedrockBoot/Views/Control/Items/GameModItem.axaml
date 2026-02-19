@@ -15,7 +15,7 @@
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <TextBlock Name="FileName" />
-                <onePointControls:LabelBox Text="预加载"
+                <onePointControls:LabelBox Text="{DynamicResource Instance.Mods.Label.Preload}"
                                            Background="Orange"
                                            Foreground="White"
                                            Name="PreLoadBox"
@@ -27,6 +27,7 @@
             <Button Width="32" Height="32"
                     Classes="NoBorder"
                     Click="DeleteBtn_OnClick"
+                    ToolTip.Tip="{DynamicResource Shared.Action.Delete}"
                     Name="DeleteBtn">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
                                            FontSize="16"
@@ -35,6 +36,7 @@
             <Button Width="32" Height="32"
                     Classes="NoBorder"
                     Click="SettingBtn_OnClick"
+                    ToolTip.Tip="{DynamicResource Shared.Action.Settings}"
                     Name="SettingBtn">
                 <onePointControls:FontIcon Glyph="&#xE713;"
                                            FontSize="16" />

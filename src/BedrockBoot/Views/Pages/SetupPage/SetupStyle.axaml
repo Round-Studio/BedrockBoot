@@ -15,9 +15,9 @@
                                        Foreground="{DynamicResource PrimaryForegroundBrush}" />
             <TextBlock FontSize="22"
                        Margin="5,10,0,0"
-                       Text="个性化" />
+                       Text="{DynamicResource Setup.Style.Title}" />
             <TextBlock Margin="5"
-                       Text="启动器的个性化设置" />
+                       Text="{DynamicResource Setup.Style.Description}" />
         </StackPanel>
 
         <Grid Margin="0,10,0,0">
@@ -28,8 +28,8 @@
                           Name="ChooseThemeBox"
                           SelectionChanged="ChooseThemeBox_OnSelectionChanged"
                           SelectedIndex="0">
-                    <ComboBoxItem Content="Dark" />
-                    <ComboBoxItem Content="Light" />
+                    <ComboBoxItem Content="{DynamicResource Setup.Style.Theme.Dark}" />
+                    <ComboBoxItem Content="{DynamicResource Setup.Style.Theme.Light}" />
                 </ComboBox>
             </StackPanel>
         </Grid>

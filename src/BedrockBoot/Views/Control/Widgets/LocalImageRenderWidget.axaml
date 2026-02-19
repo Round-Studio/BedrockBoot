@@ -13,9 +13,9 @@
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
 
-            <Image HorizontalAlignment="Stretch"
+            <Border HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
-                   Stretch="UniformToFill"
+                   CornerRadius="6"
                    Name="ImageBox" />
         </Grid>
     </items:BorderCard>

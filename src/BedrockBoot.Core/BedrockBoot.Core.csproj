@@ -10,4 +10,8 @@
       <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="System.Management" Version="11.0.0-preview.1.26104.118" />
+    </ItemGroup>
+
 </Project>

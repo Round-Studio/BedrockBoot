@@ -7,40 +7,17 @@
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationHome">
     <ScrollViewer>
         <StackPanel Margin="15">
-            <onePointControls:SettingCard Header="主页类型"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Home.Type.Title}"
                                           Margin="5"
-                                          Description="启动器主页显示的类型"
+                                          Description="{DynamicResource Settings.Personalization.Home.Type.Desc}"
                                           Glyph="&#xEC26;">
                 <ComboBox Width="200"
                           Name="HomeTypeBox"
                           SelectionChanged="HomeTypeBox_OnSelectionChanged">
-                    <ComboBoxItem>无</ComboBoxItem>
-                    <ComboBoxItem>自定义主页</ComboBoxItem>
-                    <ComboBoxItem>新闻主页</ComboBoxItem>
+                    <ComboBoxItem Content="{DynamicResource Settings.Personalization.Home.Type.None}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Personalization.Home.Type.News}" />
                 </ComboBox>
             </onePointControls:SettingCard>
-
-            <StackPanel Name="HomeXmlBox">
-                <onePointControls:SettingExpander Header="自定义主页"
-                                                  Description="使用 Xml 文本进行主页自定义"
-                                                  IsExpanded="True"
-                                                  Margin="5"
-                                                  Glyph="&#xE943;">
-                    <StackPanel>
-                        <onePointControls:SettingCard Header="选择文件"
-                                                      Description="选择你需要的 Xml 文件"
-                                                      Name="AddXmlFile"
-                                                      Click="AddXmlFile_OnClick"
-                                                      Glyph="&#xE8B0;"
-                                                      Classes="Item"
-                                                      IsClickable="True" />
-                    </StackPanel>
-                </onePointControls:SettingExpander>
-
-                <ListBox Name="XamlList"
-                         SelectionChanged="XamlList_OnSelectionChanged"
-                         Margin="5" />
-            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

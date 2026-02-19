@@ -10,25 +10,24 @@
                     Spacing="8">
             <TextBlock Margin="5,0"
                        FontWeight="Bold"
-                       FontSize="14">
-                基础设置
-            </TextBlock>
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Game.Group.Base}" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="版本隔离"
-                                          Description="版本隔离使用的技术类型"
+                                          Header="{DynamicResource Settings.Game.Isolation.Title}"
+                                          Description="{DynamicResource Settings.Game.Isolation.Desc}"
                                           Glyph="&#xE7B8;">
                 <ComboBox Width="300"
                           Name="IsolationTypeBox"
                           SelectionChanged="IsolationTypeBox_OnSelectionChanged">
-                    <ComboBoxItem Content="单一模式（Symbolic Link）" />
-                    <ComboBoxItem Content="混合模式（Hook + Symbolic Link）" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Game.Isolation.SymbolicLink}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Game.Isolation.HookSymbolicLink}" />
                 </ComboBox>
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="实例目录"
-                                          Description="游戏存放的根目录"
+                                          Header="{DynamicResource Settings.Download.InstancePath.Title}"
+                                          Description="{DynamicResource Settings.Download.InstancePath.Desc}"
                                           Name="GameFolderBtn"
                                           Click="GameFolderBtn_OnClick"
                                           IsClickable="True"

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using BedrockBoot.Base.Entry.Info;
 
 namespace BedrockBoot.Models.Global;
@@ -29,7 +30,6 @@ public class SourceList
     public static Dictionary<string, string> CurseForgeSource { get; set; } = new()
     {
         { "CurseForge 官方源", "https://api.curseforge.com/" },
-        /*{ "加速源 ①", "https://blog.zink.dpdns.org/advanced-proxy?url=\"https://api.curseforge.com/{url}\"" },*/
         { "MCIM 源", "https://mod.mcimirror.top/curseforge/" }
     };
 
@@ -56,4 +56,7 @@ public class SourceList
             Url = "http://assets2.xboxlive.com/{router}"
         }
     };
+
+    public static string MojangHost { get; set; } = "https://launchercontent.mojang.com/v2";
+    public static string NewsUrl { get; set; } = MojangHost + "/bedrockPatchNotes.json";
 }

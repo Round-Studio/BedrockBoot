@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Language;
 
 namespace BedrockBoot.Base.Entry;
 
@@ -39,6 +40,8 @@ public class ConfigEntry
     [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
 
     [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.SymbolicLink;
+    [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
+    [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
 }
 
 public class StyleConfig
@@ -57,6 +60,7 @@ public class StyleConfig
 
     [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Voronoi;
     [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
+    [JsonPropertyName("background3d")] public bool Background3D { get; set; } = false;
 }
 
 public class HomeConfig

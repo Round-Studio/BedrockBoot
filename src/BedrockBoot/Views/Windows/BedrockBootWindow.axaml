@@ -9,6 +9,7 @@
         xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
         xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
         xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+        xmlns:classes="clr-namespace:OnePointUI.Avalonia.Classes;assembly=OnePointUI.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BedrockBoot.Views.Windows.BedrockBootWindow"
         ExtendClientAreaToDecorationsHint="True"
@@ -47,6 +48,7 @@
                             <BlurEffect Radius="0" />
                         </Grid.Effect>
                         <Grid Name="BackgroundImage" />
+                        <classes:ParallaxImage3D Name="BackgroundImage3D"/>
                         <Grid Name="BackgroundImageOpacity"
                               Opacity="0"
                               Background="{DynamicResource BackgroundBrush}" />
@@ -178,7 +180,7 @@
                     <Grid RowDefinitions="Auto,*">
                         <Grid Grid.Row="0"
                               MinHeight="58">
-                            <TextBlock Text="任务中心"
+                            <TextBlock Text="{DynamicResource MainWindow.TaskView.Title}"
                                        VerticalAlignment="Center"
                                        FontSize="22"
                                        Margin="20,0,0,0"></TextBlock>
@@ -187,8 +189,8 @@
                         <notice:InfoCard Grid.Row="1" 
                                          VerticalAlignment="Center"
                                          HorizontalAlignment="Center"
-                                         BigTitle="太棒啦！"
-                                         Message="当前任务列表中没有任何一项任务"
+                                         BigTitle="{DynamicResource MainWindow.TaskView.NoneTitle}"
+                                         Message="{DynamicResource MainWindow.TaskView.NoneMessage}"
                                          Name="NoneBox" />
 
                         <ScrollViewer Grid.Row="1" 

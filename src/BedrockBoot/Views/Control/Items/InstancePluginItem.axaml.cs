@@ -1,49 +1,69 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using BedrockBoot.Core.Interface.Instance;
 using BedrockBoot.Models.Helper;
+using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class InstancePluginItem : UserControl
 {
+    private static I18nManager i18n => I18nManager.Instance;
+    public IInstancePlugin? InstancePlugin { get; set; }
+
     public InstancePluginItem()
     {
         InitializeComponent();
     }
-    
-    public IInstancePlugin InstancePlugin { get; set; }
 
     public InstancePluginItem(IInstancePlugin plugin) : this()
     {
         InstancePlugin = plugin;
-        UpdateUI();
+        _ = UpdateUIAsync();
     }
 
-    public async Task UpdateUI()
+    public async Task UpdateUIAsync()
     {
+        if (InstancePlugin == null) return;
+
+        // 状态显示
         if (InstancePlugin.IsInstalled())
         {
             InstalledBox.Background = Brushes.Orange;
-            InstalledBox.Text = "已安装";
-        };
-        CardDescription.Text = InstancePlugin.Description;
-        CardHeader.Text = InstancePlugin.Name;
+            InstalledBox.Text = i18n["Instance.Plugin.Status.Installed"];
+        }
+        else
+        {
+            InstalledBox.IsVisible = false;
+        }
 
+        CardHeader.Text = InstancePlugin.Name;
+        CardDescription.Text = InstancePlugin.Description;
+
+        // 图标异步加载
         if (!string.IsNullOrEmpty(InstancePlugin.Icon))
         {
-            Card.ImageIcon = await ImageLoader.LoadIconAsync(InstancePlugin.Icon);
-            Card.IsFontIcon = false;
+            try
+            {
+                var icon = await ImageLoader.LoadIconAsync(InstancePlugin.Icon);
+                if (icon != null)
+                {
+                    Card.IsFontIcon = false;
+                    Card.ImageIcon = icon;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load plugin icon: {ex.Message}");
+            }
         }
     }
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {
-        InstancePlugin.Install();
+        InstancePlugin?.Install();
     }
 }

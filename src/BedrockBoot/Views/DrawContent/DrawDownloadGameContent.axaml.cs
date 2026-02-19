@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -19,7 +21,9 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawDownloadGameContent : UserControl
 {
-    public List<GameDownloadUrlInfo>? Sources;
+    private static I18nManager i18n => I18nManager.Instance;
+    public List<GameDownloadUrlInfo>? Sources { get; set; }
+    public BuildInfo BuildInfo { get; set; } = null!;
 
     public DrawDownloadGameContent()
     {
@@ -29,89 +33,119 @@ public partial class DrawDownloadGameContent : UserControl
     public DrawDownloadGameContent(BuildInfo info) : this()
     {
         BuildInfo = info;
-
         UpdateUI();
     }
 
-    public BuildInfo BuildInfo { get; set; }
-
+    /// <summary>
+    /// 初始化 UI 与下载源列表
+    /// </summary>
     public void UpdateUI()
     {
-        GlobalModel.Config.Data.GameFolders.ForEach(folder =>
-            InstallFolder.Items.Add($"[{folder.GameFolderName}] {folder.GameFolderPath}"));
-
-        InstallFolder.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
-        InstallName.Text = BuildInfo.ID;
-
-        var itemList = new List<GameDownloadSourceItem>();
-        var geted = false;
-        Task.Run(() =>
+        // 1. 初始化安装目录下拉框
+        InstallFolder.Items.Clear();
+        var folders = GlobalModel.Config.Data.GameFolders;
+        if (folders is { Count: > 0 })
         {
-            Sources = EasyDownload.GetPackageUrls(BuildInfo).Result;
-            if (Sources != null)
+            foreach (var folder in folders)
             {
-                Sources.ForEach(urlInfo =>
+                InstallFolder.Items.Add($"[{folder.GameFolderName}] {folder.GameFolderPath}");
+            }
+            InstallFolder.SelectedIndex = Math.Clamp(GlobalModel.Config.Data.GameFolderSelIndex, 0, folders.Count - 1);
+        }
+
+        InstallName.Text = BuildInfo.ID;
+        SourceSelBox.Items.Clear();
+        LoadRing.IsVisible = true;
+        InstallBtn.IsEnabled = false;
+
+        CheckPack();
+
+        // 2. 异步获取下载地址
+        Task.Run(async () =>
+        {
+            try
+            {
+                Sources = await EasyDownload.GetPackageUrls(BuildInfo);
+
+                if (Sources == null || Sources.Count == 0)
                 {
-                    Dispatcher.UIThread.Invoke(() =>
+                    await ShowErrorDialog(i18n["Download.Draw.Error.NoUrl"]);
+                    return;
+                }
+
+                bool hasBestSourceSet = false;
+                var itemList = new List<GameDownloadSourceItem>();
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    for (int i = 0; i < Sources.Count; i++)
                     {
+                        var urlInfo = Sources[i];
                         var item = new GameDownloadSourceItem(urlInfo);
+                        int currentIndex = i;
+
+                        // 当某个源 Ping 通后的回调
                         item.Pinged = index =>
                         {
-                            if (!geted)
+                            if (!hasBestSourceSet)
                             {
-                                geted = true;
+                                hasBestSourceSet = true;
                                 Dispatcher.UIThread.Invoke(() =>
                                 {
                                     LoadRing.IsVisible = false;
                                     InstallBtn.IsEnabled = true;
-
                                     SourceSelBox.SelectedIndex = index;
                                 });
                             }
                         };
-                        itemList.Add(item);
 
-                        SourceSelBox.Items.Add(new ListBoxItem
-                        {
-                            Content = item
-                        });
-                    });
+                        itemList.Add(item);
+                        SourceSelBox.Items.Add(new ListBoxItem { Content = item });
+                    }
                 });
-                Dispatcher.UIThread.Invoke(() =>
+
+                // 启动所有源的 Ping 测试
+                for (int i = 0; i < itemList.Count; i++)
                 {
-                    var iindex = 0;
-                    itemList.ForEach(item =>
-                    {
-                        item.OnPing(iindex);
-                        iindex++;
-                    });
-                });
+                    itemList[i].OnPing(i);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                DialogHost.Show(new DialogInfo
-                {
-                    Title = "发生错误",
-                    Content = "该版本无法获取到对应下载地址",
-                    CloseButtonText = "确定",
-                    CloseAction = () => { GlobalModel.MainWindow.CloseDraw(); }
-                });
+                await ShowErrorDialog($"{i18n["MainWindow.Dialog.Error.Title"]}: {ex.Message}");
             }
         });
     }
 
+    private async Task ShowErrorDialog(string message)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            DialogHost.Show(new DialogInfo
+            {
+                Title = i18n["MainWindow.Dialog.Error.Title"],
+                Content = message,
+                CloseButtonText = i18n["MainWindow.Common.Confirm"],
+                CloseAction = () => GlobalModel.MainWindow.CloseDraw()
+            });
+        });
+    }
+
+    /// <summary>
+    /// 安装按钮逻辑
+    /// </summary>
     private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        // 如果没有配置游戏目录，弹出添加对话框
         if (InstallFolder.Items.Count <= 0)
         {
             var dialog = new DialogAddGameFolderContent();
-
             DialogHost.Show(new DialogInfo
             {
-                Title = "添加游戏根目录",
+                Title = i18n["Download.Draw.AddFolder.Title"],
                 Content = dialog,
-                CloseButtonText = "添加",
-                SecondaryButtonText = "取消",
+                CloseButtonText = i18n["MainWindow.Common.Add"],
+                SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
                 AccountButton = DialogButtons.CloseButton,
                 CloseAction = () =>
                 {
@@ -121,60 +155,70 @@ public partial class DrawDownloadGameContent : UserControl
                             ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                             : dialog.FolderName;
 
-                        if (GlobalModel.Config.Data.GameFolders == null)
-                            GlobalModel.Config.Data.GameFolders = new();
-
+                        GlobalModel.Config.Data.GameFolders ??= new List<GameFolderInfo>();
                         GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                         {
                             GameFolderPath = dialog.FolderPath,
-                            GameFolderName = name
+                            GameFolderName = name ?? "Minecraft"
                         });
-                        GlobalModel.Config.Data.GameFolderSelIndex = 0;
                         GlobalModel.Config.Save();
 
                         UpdateUI();
-
-                        TaskDownloadGameItem.Install(BuildInfo, Sources[SourceSelBox.SelectedIndex].Url,
-                            IsUsePackIns.IsChecked!,
-                            GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath,
-                            InstallName.Text);
-
-                        GlobalModel.MainWindow.CloseDraw();
+                        ExecuteInstallTask();
                     }
                 }
             });
         }
         else
         {
-            TaskDownloadGameItem.Install(BuildInfo, Sources[SourceSelBox.SelectedIndex].Url, IsUsePackIns.IsChecked!,
-                GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath, InstallName.Text);
-
-            GlobalModel.MainWindow.CloseDraw();
+            ExecuteInstallTask();
         }
+    }
+
+    private void ExecuteInstallTask()
+    {
+        if ((Sources == null || SourceSelBox.SelectedIndex < 0) && !CheckPack()) return;
+
+        var selectedUrl = Sources[SourceSelBox.SelectedIndex].Url;
+        var targetPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
+
+        TaskDownloadGameItem.Install(
+            BuildInfo, 
+            selectedUrl, 
+            IsUsePackIns.IsChecked ?? false,
+            targetPath, 
+            InstallName.Text
+        );
+
+        GlobalModel.MainWindow.CloseDraw();
     }
 
     private void IsUsePackIns_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
-        SourceGrid.IsVisible = !(bool)IsUsePackIns.IsChecked!;
+        SourceGrid.IsVisible = IsUsePackIns.IsChecked != true;
     }
 
     private void InstallFolder_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
+        if (InstallFolder.SelectedIndex < 0) return;
+
         try
         {
-            var packagePath = Path.Combine(
-                GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath,
-                "version_save", $"{BuildInfo.ID}.insPack");
-
-            var enable = File.Exists(packagePath);
-
-            IsUsePackIns.IsChecked = enable;
-            IsUsePackIns.IsVisible = enable;
-
-            if (enable) InstallBtn.IsEnabled = true;
+            CheckPack();
         }
-        catch
-        {
-        }
+        catch { /* 路径无效忽略 */ }
+    }
+
+    private bool CheckPack()
+    {
+        var folderPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
+        var packagePath = Path.Combine(folderPath, "version_save", $"{BuildInfo.ID}.insPack");
+
+        var hasPack = File.Exists(packagePath);
+        IsUsePackIns.IsChecked = hasPack;
+        IsUsePackIns.IsVisible = hasPack;
+        InstallBtn.IsEnabled = hasPack;
+
+        return hasPack;
     }
 }

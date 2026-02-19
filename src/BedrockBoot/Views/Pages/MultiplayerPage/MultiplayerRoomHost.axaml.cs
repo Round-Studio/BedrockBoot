@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -21,11 +22,16 @@ public partial class MultiplayerRoomHost : UserControl
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                list.ForEach(p => PlayerList.Children.Add(new SettingCard()
+                PlayerList.Children.Clear();
+                list.ForEach(p =>
                 {
-                    Header = p.PlayerName,
-                    Description = p.ClientId
-                }));
+                    Console.WriteLine($"接收到万家心跳：{p.PlayerName}");
+                    PlayerList.Children.Add(new SettingCard()
+                    {
+                        Header = p.PlayerName,
+                        Description = p.ClientId
+                    });
+                });
             });
         });
     }

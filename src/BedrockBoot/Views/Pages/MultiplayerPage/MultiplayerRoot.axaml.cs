@@ -60,11 +60,11 @@ public partial class MultiplayerRoot : UserControl
                 };
                 GlobalModel.PaperConnectCore.LinkSuccess = () =>
                 {
-                    DialogHost.Close();
-                    Dispatcher.UIThread.Invoke(() =>
-                        MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomHost()));
+                    Dispatcher.UIThread.Invoke(() => DialogHost.Close());
                 };
                 Task.Run(() => GlobalModel.PaperConnectCore.Initialize(CoreType.Client, GlobalModel.ETPublicServer));
+                Dispatcher.UIThread.Invoke(() =>
+                    MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomGuest()));
                 DialogHost.Show(new()
                 {
                     Title = "连接房间中...",

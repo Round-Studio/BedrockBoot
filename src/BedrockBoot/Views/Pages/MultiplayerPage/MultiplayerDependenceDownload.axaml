@@ -5,7 +5,8 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MultiplayerPage.MultiplayerDependenceDownload">
-    <StackPanel Spacing="8">
+    <StackPanel Spacing="8"
+                Margin="0,0,20,0">
         <TextBlock FontWeight="Bold"
                    FontSize="14">
             尚未安装 PaperConnect 需要的运行依赖，点击下方开始下载依赖

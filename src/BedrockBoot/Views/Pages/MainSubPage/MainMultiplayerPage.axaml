@@ -53,11 +53,9 @@
                 </StackPanel>
             </StackPanel>
             
-            <ScrollViewer Grid.Column="1"
-                          Margin="10,0,5,0">
-                <navigation:NavigationFrame Margin="0,0,15,0"
-                                            Name="MainFrame"></navigation:NavigationFrame>
-            </ScrollViewer>
+            <navigation:NavigationFrame Margin="10,0,0,0"
+                                        Grid.Column="1"
+                                        Name="MainFrame"></navigation:NavigationFrame>
         </Grid>
     </Grid>
 </entry:BedrockBootPage>

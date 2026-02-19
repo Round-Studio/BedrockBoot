@@ -35,7 +35,9 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
             // 获取指定仓库的所有发布
             var owner = "EasyTier";
             var repo = "EasyTier";
-            var releases = (await github.Repository.Release.GetLatest(owner, repo)).Assets.First(x => x.Name.Contains("easytier-windows-x86_64"));
+            var releases =
+                (await github.Repository.Release.GetLatest(owner, repo)).Assets.First(x =>
+                    x.Name.Contains("easytier-windows-x86_64"));
 
             var url = releases.BrowserDownloadUrl;
             var downloader = new GithubFilesDownload();
@@ -53,9 +55,9 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 }));
 
             ZipHelper.ExtractZipFile(Path.Combine(PathsList.TempPath, releases.Name), PathsList.EasyTierPath, true);
-            
+
             Dispatcher.UIThread.Invoke(DialogHost.Close);
-            Dispatcher.UIThread.Invoke(()=>MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoot()));
+            Dispatcher.UIThread.Invoke(() => MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoot()));
         });
     }
 }

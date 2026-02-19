@@ -7,7 +7,8 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.MultiplayerPage.MultiplayerRoot">
-    <StackPanel Spacing="8">
+    <StackPanel Spacing="8"
+                Margin="0,0,20,0">
         <TextBlock FontWeight="Bold"
                    FontSize="14">
             联机大厅
@@ -16,6 +17,8 @@
         <onePointControls:SettingCard Header="创建房间"
                                       Description="创建一个你自己的房间，并邀请你的好友加入"
                                       IsClickable="True"
+                                      Name="CreateRoom"
+                                      Click="CreateRoom_OnClick"
                                       Glyph="&#xE8CE;"/>
         
         <onePointControls:SettingCard Header="加入房间"

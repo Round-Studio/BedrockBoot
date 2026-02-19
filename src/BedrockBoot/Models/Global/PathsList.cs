@@ -25,7 +25,14 @@ public class PathsList
     public static readonly string GamePublicRootPath = Path.Combine(RootConfigPath, "BedrockBoot.GamePublic");
     public static readonly string ReportPath = Path.Combine(RootConfigPath, "BedrockBoot.ErrorReport");
     public static readonly string PaperConnectPath = Path.Combine(RootConfigPath, "BedrockBoot.PaperConnect");
+    
     public static readonly string EasyTierPath = Path.Combine(PaperConnectPath, "EasyTier");
+
+    public static readonly string EasyTierCorePath =
+        Path.Combine(PaperConnectPath, "EasyTier", "easytier-windows-x86_64", "easytier-core.exe");
+
+    public static readonly string EasyTierCliPath =
+        Path.Combine(PaperConnectPath, "EasyTier", "easytier-windows-x86_64", "easytier-cli.exe");
 
     public static List<OtherLauncherInfo> OtherLauncher = new()
     {

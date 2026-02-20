@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -28,6 +30,9 @@ public partial class MainManager : BedrockBootPage
     private FileSystemWatcher? _configWatcher;
     private string GameType = "";
     private string SearchKey = "";
+    
+    // 用于 FileSystemWatcher 的防抖
+    private CancellationTokenSource? _watcherDebounceCts;
 
     public MainManager()
     {
@@ -50,14 +55,13 @@ public partial class MainManager : BedrockBootPage
 
         try
         {
-            if (GlobalModel.Config.Data.GameFolders.Count == 0)
-                return;
+            var folders = GlobalModel.Config.Data.GameFolders;
+            if (folders.Count == 0) return;
 
-            var currentFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
+            var currentFolder = folders[GlobalModel.Config.Data.GameFolderSelIndex];
             var gameFolderPath = currentFolder.GameFolderPath;
 
-            if (!Directory.Exists(gameFolderPath))
-                return;
+            if (!Directory.Exists(gameFolderPath)) return;
 
             _configWatcher = new FileSystemWatcher
             {
@@ -83,22 +87,35 @@ public partial class MainManager : BedrockBootPage
         {
             _configWatcher.EnableRaisingEvents = false;
             _configWatcher.Changed -= OnConfigFileChanged;
+            _configWatcher.Deleted -= OnConfigFileChanged;
             _configWatcher.Dispose();
             _configWatcher = null;
         }
+        
+        _watcherDebounceCts?.Cancel();
+        _watcherDebounceCts?.Dispose();
+        _watcherDebounceCts = null;
     }
 
     private async void OnConfigFileChanged(object sender, FileSystemEventArgs e)
     {
+        if (!e.FullPath.Contains("bedrock_versions", StringComparison.OrdinalIgnoreCase)) 
+            return;
+
+        // 防抖逻辑：避免单次保存触发多次事件导致重复刷新
+        _watcherDebounceCts?.Cancel();
+        _watcherDebounceCts = new CancellationTokenSource();
+        var token = _watcherDebounceCts.Token;
+
         try
         {
-            if (e.FullPath.Contains("bedrock_versions", StringComparison.OrdinalIgnoreCase))
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    UpdateGameList();
-                });
+            await Task.Delay(300, token); // 等待 300ms
+            if (!token.IsCancellationRequested)
+            {
+                await Dispatcher.UIThread.InvokeAsync(UpdateGameList);
+            }
         }
-        catch (Exception) { /* Ignored */ }
+        catch (TaskCanceledException) { /* 任务被取消，正常忽略 */ }
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
@@ -110,102 +127,123 @@ public partial class MainManager : BedrockBootPage
     public void UpdateUI()
     {
         IsEditMode = false;
-
-        bool hasFolders = GlobalModel.Config.Data.GameFolders.Count > 0;
-        FolderList.IsVisible = hasFolders;
-        FolderNull.IsVisible = !hasFolders;
-
-        FolderList.SelectedIndex = -1;
-        FolderList.Items.Clear();
-
-        GlobalModel.Config.Data.GameFolders.ForEach(folder =>
+        try
         {
-            FolderList.Items.Add(new ListBoxItem
+            var folders = GlobalModel.Config.Data.GameFolders;
+            bool hasFolders = folders.Count > 0;
+            
+            FolderList.IsVisible = hasFolders;
+            FolderNull.IsVisible = !hasFolders;
+
+            FolderList.SelectedIndex = -1;
+            FolderList.Items.Clear();
+
+            // 批量生成 Folder 项
+            var folderItems = new List<ListBoxItem>(folders.Count);
+            foreach (var folder in folders)
             {
-                Content = new GameFolderItem(folder),
-                VerticalAlignment = VerticalAlignment.Center
-            });
-        });
+                folderItems.Add(new ListBoxItem
+                {
+                    Content = new GameFolderItem(folder),
+                    VerticalAlignment = VerticalAlignment.Center
+                });
+            }
 
-        if (GlobalModel.Config.Data.GameFolders.Count == 1)
-            FolderList.SelectedIndex = 0;
-        else
-            FolderList.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
+            // 一次性分配数据，减少 UI 重绘
+            if (folderItems.Count > 0)
+            {
+                // 如果是 Avalonia 11，推荐使用 ItemsSource = folderItems，若兼容旧版可用 Items.AddRange(folderItems) 或循环 Add
+                foreach (var item in folderItems) FolderList.Items.Add(item);
+                
+                FolderList.SelectedIndex = folders.Count == 1 ? 0 : GlobalModel.Config.Data.GameFolderSelIndex;
+            }
 
-        InitializeConfigWatcher();
-        UpdateGameList();
-
-        IsEditMode = true;
+            InitializeConfigWatcher();
+            UpdateGameList();
+        }
+        finally
+        {
+            IsEditMode = true;
+        }
     }
 
     public void UpdateGameList()
     {
         IsEditMode = false;
-
-        if (GlobalModel.Config.Data.GameFolders.Count == 0)
+        try
         {
-            ShowNoGamesUI(true);
-            IsEditMode = true;
-            return;
-        }
+            var configData = GlobalModel.Config.Data;
+            
+            if (configData.GameFolders.Count == 0)
+            {
+                ShowNoGamesUI(true);
+                return;
+            }
 
-        if (GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
-        {
-            GlobalModel.Config.Data.GameFolderSelIndex = 0;
-            GlobalModel.Config.Save();
-        }
+            if (configData.GameFolderSelIndex < 0 || configData.GameFolderSelIndex >= configData.GameFolders.Count)
+            {
+                configData.GameFolderSelIndex = 0;
+                GlobalModel.Config.Save();
+            }
 
-        var currentFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
-        var versionsPath = Path.Combine(currentFolder.GameFolderPath, "bedrock_versions");
+            var currentFolder = configData.GameFolders[configData.GameFolderSelIndex];
+            var versionsPath = Path.Combine(currentFolder.GameFolderPath, "bedrock_versions");
 
-        if (!Directory.Exists(versionsPath))
-        {
-            ShowNoGamesUI(false);
-            IsEditMode = true;
-            return;
-        }
+            if (!Directory.Exists(versionsPath))
+            {
+                ShowNoGamesUI(false);
+                return;
+            }
 
-        GamesLoad.IsVisible = true;
-        GamesNull.IsVisible = false;
-        GameScro.IsVisible = false;
-
-        var lst = new List<VersionConfig>();
-
-        foreach (var info in GameInfoHelper.GetVersionConfigs(currentFolder.GameFolderPath))
-        {
-            if (string.IsNullOrEmpty(info?.Info?.VersionName) || string.IsNullOrEmpty(info?.Info?.Version))
-                continue;
-
-            if (!string.IsNullOrEmpty(SearchKey) &&
-                !info.Info.VersionName.Contains(SearchKey, StringComparison.OrdinalIgnoreCase) &&
-                !info.Info.Version.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            var type = info.Info.VersionType == MinecraftGameTypeVersion.Release ? "Release" : "Preview";
-            if (!string.IsNullOrEmpty(GameType) && GameType != type)
-                continue;
-
-            lst.Add(info);
-        }
-
-        GameList.Children.Clear();
-
-        if (lst.Count > 0)
-        {
-            foreach (var item in lst) GameList.Children.Add(new GameItem(item));
-            GamesLoad.IsVisible = false;
-            GameScro.IsVisible = true;
+            GamesLoad.IsVisible = true;
             GamesNull.IsVisible = false;
-        }
-        else
-        {
-            GamesLoad.IsVisible = false;
             GameScro.IsVisible = false;
-            GamesNull.IsVisible = true;
-        }
 
-        IsEditMode = true;
+            var gameItems = new List<Avalonia.Controls.Control>();
+            bool hasSearchKey = !string.IsNullOrEmpty(SearchKey);
+            bool hasGameType = !string.IsNullOrEmpty(GameType);
+
+            foreach (var info in GameInfoHelper.GetVersionConfigs(currentFolder.GameFolderPath))
+            {
+                var vInfo = info?.Info;
+                if (string.IsNullOrEmpty(vInfo?.VersionName) || string.IsNullOrEmpty(vInfo?.Version))
+                    continue;
+
+                if (hasSearchKey &&
+                    !vInfo.VersionName.Contains(SearchKey, StringComparison.OrdinalIgnoreCase) &&
+                    !vInfo.Version.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (hasGameType)
+                {
+                    var type = vInfo.VersionType == MinecraftGameTypeVersion.Release ? "Release" : "Preview";
+                    if (GameType != type) continue;
+                }
+
+                gameItems.Add(new GameItem(info!));
+            }
+
+            GameList.Children.Clear();
+
+            if (gameItems.Count > 0)
+            {
+                // 使用 AddRange 批量添加 UI 元素以优化渲染性能
+                GameList.Children.AddRange(gameItems);
+                GamesLoad.IsVisible = false;
+                GameScro.IsVisible = true;
+                GamesNull.IsVisible = false;
+            }
+            else
+            {
+                GamesLoad.IsVisible = false;
+                GameScro.IsVisible = false;
+                GamesNull.IsVisible = true;
+            }
+        }
+        finally
+        {
+            IsEditMode = true;
+        }
     }
 
     private void ShowNoGamesUI(bool isNullBecauseNoFolder)
@@ -232,20 +270,19 @@ public partial class MainManager : BedrockBootPage
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
-                if (Directory.Exists(dialog.FolderPath))
-                {
-                    var name = string.IsNullOrEmpty(dialog.FolderName)
-                        ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
-                        : dialog.FolderName;
+                if (!Directory.Exists(dialog.FolderPath)) return;
 
-                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
-                    {
-                        GameFolderPath = dialog.FolderPath,
-                        GameFolderName = name
-                    });
-                    GlobalModel.Config.Save();
-                    UpdateUI();
-                }
+                var name = string.IsNullOrEmpty(dialog.FolderName)
+                    ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
+                    : dialog.FolderName;
+
+                GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                {
+                    GameFolderPath = dialog.FolderPath,
+                    GameFolderName = name ?? "Unknown Folder"
+                });
+                GlobalModel.Config.Save();
+                UpdateUI();
             },
             PrimaryAction = () =>
             {
@@ -285,31 +322,19 @@ public partial class MainManager : BedrockBootPage
 
                 if (string.IsNullOrEmpty(packPath) || !File.Exists(packPath))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo {
-                        Title = i18n["MainWindow.Dialog.Error.Title"],
-                        Message = string.Format(i18n["MainPage.Manager.Import.Error.Pack"], packPath),
-                        NoticeType = NoticeType.Info
-                    });
+                    ShowErrorNotice(string.Format(i18n["MainPage.Manager.Import.Error.Pack"], packPath));
                     return;
                 }
 
                 if (string.IsNullOrEmpty(installFolder) || !Directory.Exists(installFolder))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo {
-                        Title = i18n["MainWindow.Dialog.Error.Title"],
-                        Message = string.Format(i18n["MainPage.Manager.Import.Error.Folder"], installFolder),
-                        NoticeType = NoticeType.Info
-                    });
+                    ShowErrorNotice(string.Format(i18n["MainPage.Manager.Import.Error.Folder"], installFolder));
                     return;
                 }
 
                 if (string.IsNullOrEmpty(installName))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo {
-                        Title = i18n["MainWindow.Dialog.Error.Title"],
-                        Message = i18n["MainPage.Manager.Import.Error.Name"],
-                        NoticeType = NoticeType.Info
-                    });
+                    ShowErrorNotice(i18n["MainPage.Manager.Import.Error.Name"]);
                     return;
                 }
 
@@ -320,7 +345,7 @@ public partial class MainManager : BedrockBootPage
 
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        SearchKey = SearchBox.Text ?? "";
+        SearchKey = SearchBox.Text?.Trim() ?? "";
         UpdateGameList();
     }
 
@@ -328,13 +353,9 @@ public partial class MainManager : BedrockBootPage
     {
         if (IsEditMode)
         {
-            var tag = "";
-            if (GameTypeSel?.SelectedItem is ComboBoxItem item)
-            {
-                tag = item.Tag?.ToString() ?? "";
-            }
-
-            GameType = tag;
+            GameType = GameTypeSel?.SelectedItem is ComboBoxItem { Tag: { } tag } 
+                       ? tag.ToString() ?? "" 
+                       : "";
             UpdateGameList();
         }
     }
@@ -379,5 +400,16 @@ public partial class MainManager : BedrockBootPage
                 });
             }
         }
+    }
+
+    // 提取公共弹窗逻辑减少代码冗余
+    private void ShowErrorNotice(string message)
+    {
+        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo 
+        {
+            Title = i18n["MainWindow.Dialog.Error.Title"],
+            Message = message,
+            NoticeType = NoticeType.Info
+        });
     }
 }

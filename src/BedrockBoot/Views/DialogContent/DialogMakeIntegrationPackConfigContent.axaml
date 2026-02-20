@@ -59,7 +59,7 @@
             <Grid ColumnDefinitions="*,*">
                 <StackPanel Grid.Column="0"
                             Spacing="8">
-                    <CheckBox Content="{DynamicResource Main.Home.Title.Archive}"
+                    <CheckBox Content="{DynamicResource Dialog.ImportConfig.Option.Archive}"
                               Margin="0"
                               Name="EnableArchive"
                               IsChecked="True" />

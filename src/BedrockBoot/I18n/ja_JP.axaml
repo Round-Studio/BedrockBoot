@@ -157,6 +157,7 @@
     <x:String x:Key="Instance.Control.Import.Content.Title">インポート内容を選択</x:String>
     <x:String x:Key="Instance.Control.Import.Action.Start">インポート開始</x:String>
     <x:String x:Key="Instance.Control.Import.Progress.Title">リソースを移行中...</x:String>
+    <x:String x:Key="Instance.Isolation.Migration">导入资源</x:String>
 
     <x:String x:Key="Instance.Control.Pack.Dialog.Title">整合パック情報の入力</x:String>
     <x:String x:Key="Instance.Control.Pack.Save.Title">Minecraft Bedrock整合パックをエクスポート</x:String>
@@ -697,6 +698,7 @@
     
     <x:String x:Key="Dialog.ImportConfig.Label.Title">インポートする内容を選択</x:String>
     <x:String x:Key="Dialog.ImportConfig.Option.Settings">インスタンス設定</x:String>
+    <x:String x:Key="Dialog.ImportConfig.Option.Archive">存档</x:String>
     
     <x:String x:Key="Dialog.ImportMod.Label.FilePath">ファイルパス：</x:String>
     <x:String x:Key="Dialog.ImportMod.Label.InjectionDelay">Mod 遅延（ms）：</x:String>

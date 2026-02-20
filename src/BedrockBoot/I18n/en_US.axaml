@@ -153,6 +153,7 @@
     <x:String x:Key="Instance.Control.Import.Content.Title">Select Content to Import</x:String>
     <x:String x:Key="Instance.Control.Import.Action.Start">Start Import</x:String>
     <x:String x:Key="Instance.Control.Import.Progress.Title">Migrating Resources...</x:String>
+    <x:String x:Key="Instance.Isolation.Migration">Migration</x:String>
 
     <x:String x:Key="Instance.Control.Pack.Dialog.Title">Integration Pack Information</x:String>
     <x:String x:Key="Instance.Control.Pack.Save.Title">Export Bedrock Integration Pack</x:String>
@@ -689,6 +690,7 @@
     
     <x:String x:Key="Dialog.ImportConfig.Label.Title">Select content to import</x:String>
     <x:String x:Key="Dialog.ImportConfig.Option.Settings">Instance Settings</x:String>
+    <x:String x:Key="Dialog.ImportConfig.Option.Archive">Instance Archive</x:String>
     
     <x:String x:Key="Dialog.ImportMod.Label.FilePath">File Path:</x:String>
     <x:String x:Key="Dialog.ImportMod.Label.InjectionDelay">Mod Delay (ms):</x:String>

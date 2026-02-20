@@ -20,7 +20,7 @@
                   IsChecked="True"
                   Name="IsEnableBehaviorPack"
                   Margin="0" />
-        <CheckBox Content="{DynamicResource Main.Home.Title.Archive}"
+        <CheckBox Content="{DynamicResource Dialog.ImportConfig.Option.Archive}"
                   Width="200"
                   IsChecked="True"
                   Name="IsEnableArchivePack"

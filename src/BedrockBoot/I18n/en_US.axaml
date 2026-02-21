@@ -97,6 +97,7 @@
     <x:String x:Key="Draw.Instance.Tab.Servers">Servers</x:String>
     <x:String x:Key="Draw.Instance.Tab.Plugins">Plugins</x:String>
     <x:String x:Key="Draw.Instance.Tab.Controls">Actions</x:String>
+    <x:String x:Key="Draw.Instance.TotalTime">{0} Hours</x:String>
 
     <x:String x:Key="Instance.Info.Name.Title">Instance Name</x:String>
     <x:String x:Key="Instance.Info.Name.Desc">The name displayed for the instance in the launcher</x:String>

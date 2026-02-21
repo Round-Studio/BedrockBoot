@@ -101,6 +101,7 @@
     <x:String x:Key="Draw.Instance.Tab.Servers">サーバー</x:String>
     <x:String x:Key="Draw.Instance.Tab.Plugins">プラグイン</x:String>
     <x:String x:Key="Draw.Instance.Tab.Controls">操作</x:String>
+    <x:String x:Key="Draw.Instance.TotalTime">{0} Hours</x:String>
 
     <x:String x:Key="Instance.Info.Name.Title">インスタンス名</x:String>
     <x:String x:Key="Instance.Info.Name.Desc">ランチャーに表示されるインスタンスの名前</x:String>

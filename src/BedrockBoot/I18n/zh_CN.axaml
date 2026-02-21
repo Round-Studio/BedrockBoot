@@ -101,6 +101,7 @@
     <x:String x:Key="Draw.Instance.Tab.Servers">服务器</x:String>
     <x:String x:Key="Draw.Instance.Tab.Plugins">插件</x:String>
     <x:String x:Key="Draw.Instance.Tab.Controls">操作</x:String>
+    <x:String x:Key="Draw.Instance.TotalTime">{0} 小时</x:String>
 
     <x:String x:Key="Instance.Info.Name.Title">实例名称</x:String>
     <x:String x:Key="Instance.Info.Name.Desc">实例在启动器内显示的名称</x:String>

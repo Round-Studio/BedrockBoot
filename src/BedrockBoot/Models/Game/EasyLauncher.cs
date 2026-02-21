@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.IO;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockLauncher.Core;
@@ -15,20 +18,44 @@ public class EasyLauncher
 {
     private ModsCore _core;
     private IsolationCore IsolationCore;
+    private Stopwatch _gameplayStopwatch; // 计时器
+    private DateTime _gameStartTime; // 游戏开始时间
+    private string _playerDataFilePath; // 玩家数据文件路径
 
     public EasyLauncher(VersionConfig versionConfig)
     {
         VersionInfo = versionConfig;
+        _gameplayStopwatch = new Stopwatch(); // 初始化计时器
+        _playerDataFilePath = Path.Combine(versionConfig.VersionPath, "playerdata.json"); // 玩家数据文件路径
     }
 
     public VersionConfig VersionInfo { get; }
     public Action? OnMigration { get; set; }
     public Action<Process>? Launched { get; set; }
     public Action? LaunchCompleted { get; set; }
-    public Action<string, double>? UpdateProgress { get; set; } // 新增：更新进度回调
-    public Action<string>? UpdateProgressText { get; set; } // 新增：更新进度文本回调
-    public Action<bool>? SetProgressIndeterminate { get; set; } // 新增：设置进度条是否为不确定模式
+    public Action<string, double>? UpdateProgress { get; set; }
+    public Action<string>? UpdateProgressText { get; set; }
+    public Action<bool>? SetProgressIndeterminate { get; set; }
     public Process MinecraftProcess { get; private set; }
+    private void UpdatePlayerPlayTime(TimeSpan playTime)
+    {
+        var playerData = VersionInfo.PlayerData;
+        
+        playerData.TotalPlayTime += (long)playTime.TotalSeconds;
+        
+        playerData.LastPlayTime = DateTime.Now;
+        
+        if (playerData.FirstPlayTime == null)
+        {
+            playerData.FirstPlayTime = _gameStartTime;
+        }
+        
+        playerData.TotalSessions++;
+
+        VersionInfo.PlayerData = playerData;
+        
+        GameInfoHelper.SaveVersionConfig(VersionInfo);
+    }
 
     public async Task Launch()
     {
@@ -70,6 +97,10 @@ public class EasyLauncher
 
         try
         {
+            // 重置计时器
+            _gameplayStopwatch.Reset();
+            _gameStartTime = DateTime.Now;
+            
             MinecraftProcess = await GlobalModel.BedrockCore.LaunchGameAsync(new LaunchOptions
             {
                 GameFolder = VersionInfo.VersionPath,
@@ -88,6 +119,12 @@ public class EasyLauncher
                     IsolationCore.Init(true);
                     Console.WriteLine(state);
                     UpdateProgressText?.Invoke($"状态：{state}");
+                    
+                    // 当游戏启动状态变化时，更新进度文本
+                    if (state == LaunchState.Launched)
+                    {
+                        UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
+                    }
                 }),
                 LaunchArgs = string.IsNullOrEmpty(args) ? null : args
             });
@@ -95,6 +132,11 @@ public class EasyLauncher
             if (MinecraftProcess != null)
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
+                
+                // 开始计时
+                _gameplayStopwatch.Start();
+                Console.WriteLine($@"游戏计时开始：{_gameStartTime:yyyy-MM-dd HH:mm:ss}");
+                
                 Launched?.Invoke(MinecraftProcess);
                 UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                 SetProgressIndeterminate?.Invoke(true);
@@ -114,12 +156,27 @@ public class EasyLauncher
         catch (Exception ex)
         {
             Console.WriteLine($@"启动游戏时发生错误: {ex}");
+            
+            // 确保计时器停止
+            if (_gameplayStopwatch.IsRunning)
+                _gameplayStopwatch.Stop();
+                
             LaunchCompleted?.Invoke();
         }
     }
 
     private void OnProcessExited(object sender, EventArgs e)
     {
+        // 停止计时并记录数据
+        if (_gameplayStopwatch.IsRunning)
+        {
+            _gameplayStopwatch.Stop();
+            TimeSpan playTime = _gameplayStopwatch.Elapsed;
+            
+            // 更新玩家数据
+            UpdatePlayerPlayTime(playTime);
+        }
+        
         Console.WriteLine(@"游戏进程已退出");
         LaunchCompleted?.Invoke();
     }
@@ -129,12 +186,28 @@ public class EasyLauncher
         try
         {
             await Task.Run(() => process.WaitForExit());
+            
+            // 停止计时并记录数据
+            if (_gameplayStopwatch.IsRunning)
+            {
+                _gameplayStopwatch.Stop();
+                TimeSpan playTime = _gameplayStopwatch.Elapsed;
+                
+                // 更新玩家数据
+                UpdatePlayerPlayTime(playTime);
+            }
+            
             Console.WriteLine(@"游戏进程已退出（异步等待）");
             LaunchCompleted?.Invoke();
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"等待进程退出时发生错误: {ex.Message}");
+            
+            // 确保计时器停止
+            if (_gameplayStopwatch.IsRunning)
+                _gameplayStopwatch.Stop();
+                
             LaunchCompleted?.Invoke();
         }
     }

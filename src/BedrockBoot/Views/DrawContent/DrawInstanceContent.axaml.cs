@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
@@ -15,6 +19,9 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawInstanceContent : UserControl
 {
+    private CancellationTokenSource _refreshCancellationTokenSource;
+    private DispatcherTimer _refreshTimer;
+
     public DrawInstanceContent()
     {
         InitializeComponent();
@@ -54,6 +61,8 @@ public partial class DrawInstanceContent : UserControl
         VersionReady.Text =
             $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
 
+        StartPlayTimeRefresh();
+
         IsEditMode = true;
     }
 
@@ -61,12 +70,96 @@ public partial class DrawInstanceContent : UserControl
     {
         var uri = new Uri(url);
 
-        // 2. 使用 AssetLoader.Open 获取流
         using (var stream = AssetLoader.Open(uri))
         {
-            // 3. 将流解码为 Bitmap
             return new Bitmap(stream);
         }
+    }
+
+    private void StartPlayTimeRefresh()
+    {
+        StopPlayTimeRefresh();
+
+        _refreshCancellationTokenSource = new CancellationTokenSource();
+
+        _refreshTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1) 
+        };
+        
+        _refreshTimer.Tick += async (sender, e) => await RefreshPlayTimeAsync();
+        _refreshTimer.Start();
+
+        Dispatcher.UIThread.Post(async () => await RefreshPlayTimeAsync());
+    }
+
+    private void StopPlayTimeRefresh()
+    {
+        if (_refreshTimer != null)
+        {
+            _refreshTimer.Stop();
+            _refreshTimer.Tick -= async (sender, e) => await RefreshPlayTimeAsync();
+            _refreshTimer = null;
+        }
+
+        if (_refreshCancellationTokenSource != null)
+        {
+            _refreshCancellationTokenSource.Cancel();
+            _refreshCancellationTokenSource.Dispose();
+            _refreshCancellationTokenSource = null;
+        }
+    }
+
+    private async Task RefreshPlayTimeAsync()
+    {
+        VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
+        try
+        {
+            if (VersionInfo?.PlayerData == null)
+                return;
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (TotalDuration != null)
+                {
+                    var playerData = VersionInfo.PlayerData;
+                    
+                    // 获取总游玩时间（秒）并转换为 TimeSpan
+                    TimeSpan totalTime = TimeSpan.FromSeconds(playerData.TotalPlayTime);
+
+                    TotalDuration.Text =
+                        string.Format(I18nManager.Instance["Draw.Instance.TotalTime"],
+                            totalTime.TotalHours.ToString("F2"));
+                }
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            // 取消操作时忽略
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"刷新游玩时间失败: {ex.Message}");
+        }
+    }
+
+    // 当控件加载完成时
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        // 确保定时器在控件加载时启动
+        if (VersionInfo != null)
+        {
+            StartPlayTimeRefresh();
+        }
+    }
+
+    // 当控件卸载时（视图消失）- 修正为正确的签名
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        // 停止定时刷新
+        StopPlayTimeRefresh();
+        base.OnUnloaded(e);
     }
 
     private void InstanceTabControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

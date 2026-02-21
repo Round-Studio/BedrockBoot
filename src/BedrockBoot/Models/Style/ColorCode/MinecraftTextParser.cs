@@ -24,9 +24,9 @@ public class MinecraftTextParser
         var isObfuscated = false;
 
         for (var i = 0; i < input.Length; i++)
+        {
             if (input[i] == '§' && i + 1 < input.Length)
             {
-                // 保存当前段落的文本
                 if (!string.IsNullOrEmpty(currentSegment.Text))
                 {
                     currentSegment.OriginalText = currentSegment.Text;
@@ -35,11 +35,14 @@ public class MinecraftTextParser
                 }
 
                 var code = $"§{input[i + 1]}";
-                i++; // 跳过颜色代码字符
+                i++;
 
                 if (MinecraftColorCode.ColorCodes.TryGetValue(code, out var colorCode))
+                {
                     currentColor = colorCode.Color;
+                }
                 else
+                {
                     switch (code)
                     {
                         case "§l": isBold = true; break;
@@ -48,11 +51,11 @@ public class MinecraftTextParser
                         case "§m": isStrikethrough = true; break;
                         case "§k": isObfuscated = true; break;
                         case "§r":
-                            // 重置所有格式
                             currentColor = null;
                             isBold = isItalic = isUnderline = isStrikethrough = isObfuscated = false;
                             break;
                     }
+                }
 
                 currentSegment.Color = currentColor;
                 currentSegment.IsBold = isBold;
@@ -65,8 +68,8 @@ public class MinecraftTextParser
             {
                 currentSegment.Text += input[i];
             }
+        }
 
-        // 添加最后一个段落
         if (!string.IsNullOrEmpty(currentSegment.Text))
         {
             currentSegment.OriginalText = currentSegment.Text;
@@ -83,24 +86,24 @@ public class MinecraftTextParser
 
         foreach (var segment in segments)
         {
-            var run = new Run(segment.IsObfuscated
-                ? GenerateObfuscatedText(segment.OriginalText)
-                : segment.OriginalText);
+            var displayText = segment.IsObfuscated ? GenerateObfuscatedText(segment.OriginalText) : segment.OriginalText;
+            var run = new Run(displayText);
 
-            // 设置颜色
-            if (segment.Color.HasValue) run.Foreground = new SolidColorBrush(segment.Color.Value);
+            if (segment.Color.HasValue)
+            {
+                run.Foreground = new SolidColorBrush(segment.Color.Value);
+            }
 
-            // 设置字体样式
             run.FontWeight = segment.IsBold ? FontWeight.Bold : FontWeight.Normal;
             run.FontStyle = segment.IsItalic ? FontStyle.Italic : FontStyle.Normal;
 
-            // 设置文本装饰
             var decorations = new TextDecorationCollection();
-
             run.TextDecorations = decorations;
 
-            // 保存Run引用用于混淆文本更新
-            if (segment.IsObfuscated) segment.ObfuscatedRun = run;
+            if (segment.IsObfuscated)
+            {
+                segment.ObfuscatedRun = run;
+            }
 
             inlines.Add(run);
         }
@@ -110,24 +113,26 @@ public class MinecraftTextParser
 
     private static string GenerateObfuscatedText(string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+
         const string chars = "!@#$%^&*()_+-=[]{}|;':\",./<>?";
         var random = new Random(Guid.NewGuid().GetHashCode());
         var result = new char[input.Length];
 
         for (var i = 0; i < input.Length; i++)
-            result[i] = char.IsWhiteSpace(input[i])
-                ? input[i]
-                : chars[random.Next(chars.Length)];
+        {
+            result[i] = char.IsWhiteSpace(input[i]) ? input[i] : chars[random.Next(chars.Length)];
+        }
 
         return new string(result);
     }
 
     public class TextSegment : IDisposable
     {
-        // 定时器用于更新混淆文本
-        private Timer? _obfuscationTimer;
-
-        // 临时文本，用于构建过程中的存储
+        private Timer _obfuscationTimer;
         private string _text = string.Empty;
 
         public string Text
@@ -143,9 +148,7 @@ public class MinecraftTextParser
         public bool IsUnderline { get; set; }
         public bool IsStrikethrough { get; set; }
         public bool IsObfuscated { get; set; }
-
-        // 混淆文本的Run引用，用于更新
-        public Run? ObfuscatedRun { get; set; }
+        public Run ObfuscatedRun { get; set; }
 
         public void Dispose()
         {
@@ -161,14 +164,27 @@ public class MinecraftTextParser
             _obfuscationTimer = new Timer(_ =>
             {
                 if (ObfuscatedRun != null)
-                    Dispatcher.UIThread.Post(() => { ObfuscatedRun.Text = GenerateObfuscatedText(OriginalText); });
-            }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(20)); // 每100ms更新一次
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        ObfuscatedRun.Text = GenerateObfuscatedText(OriginalText);
+                    });
+                }
+            }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(50));
         }
 
         public void StopObfuscation()
         {
             _obfuscationTimer?.Dispose();
             _obfuscationTimer = null;
+            
+            if (ObfuscatedRun != null && !string.IsNullOrEmpty(OriginalText))
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    ObfuscatedRun.Text = OriginalText;
+                });
+            }
         }
     }
 }

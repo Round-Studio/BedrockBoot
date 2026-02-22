@@ -10,6 +10,8 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
+using PeNet.Header.Net.MetaDataTables;
+using File = System.IO.File;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
@@ -75,12 +77,23 @@ public partial class PersonalizationBackground : ISettingPage
             BackgroundsList.SelectedIndex = -1;
             BackgroundsList.Items.Clear();
 
+            var notFoundImages = new List<string>();
+
             GlobalModel.Config.Data.StyleConfig.BackgroundImages.ForEach(image =>
             {
-                var item = new BackgroundChooseItem { ImagePath = image };
-                item.UpdateUI();
-                BackgroundsList.Items.Add(item);
+                if (File.Exists(image))
+                {
+                    var item = new BackgroundChooseItem { ImagePath = image };
+                    item.UpdateUI();
+                    BackgroundsList.Items.Add(item);
+                }
+                else
+                {
+                    notFoundImages.Add(image);
+                }
             });
+
+            GlobalModel.Config.Data.StyleConfig.BackgroundImages.RemoveAll(f => notFoundImages.Contains(f));
 
             var index = GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex;
             if (index != -1)

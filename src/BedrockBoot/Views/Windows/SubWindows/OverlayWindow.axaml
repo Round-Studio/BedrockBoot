@@ -1,0 +1,56 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+        xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+        x:Class="BedrockBoot.Views.Windows.SubWindows.OverlayWindow"
+        d:DesignWidth="800" d:DesignHeight="450"
+        Title="Overlay"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        SystemDecorations="None"
+        ShowInTaskbar="False"
+        CanResize="False">
+    <Grid Name="OverlayRoot" Background="#C8000000" Opacity="0">
+        <Grid.Transitions>
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut" />
+            </Transitions>
+        </Grid.Transitions>
+            
+        <Grid RowDefinitions="Auto,*"
+              Name="MainContent"
+              Margin="20">
+            <Button Grid.Row="0" 
+                    Classes="NoBorder"
+                    HorizontalAlignment="Right"
+                    Name="CloseBtn"
+                    Click="CloseBtn_OnClick"
+                    Height="48" Width="48">
+                <onePointControls:FontIcon Glyph="&#xE8BB;"
+                                           FontSize="22"/>
+            </Button>
+            
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        Spacing="8">
+                <StackPanel>
+                    <TextBlock Text="BedrockBoot"
+                               Opacity="0.6"></TextBlock>
+                    <TextBlock Text="游戏叠层"
+                               FontSize="18"></TextBlock>
+                </StackPanel>
+                
+                <widgets:XboxUserInfoWidget />
+            </StackPanel>
+        </Grid>
+        
+        <TextBlock HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Margin="8"
+                   Opacity="0.6"
+                   Name="VersionBox"
+                   Text="Game Overlay (Ver.???)"></TextBlock>
+    </Grid>
+</Window>

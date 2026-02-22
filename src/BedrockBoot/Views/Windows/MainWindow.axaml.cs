@@ -21,6 +21,7 @@ using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
+using BedrockBoot.Views.Windows.SubWindows;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
@@ -38,6 +39,9 @@ public partial class MainWindow : BedrockBootWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
+        
+        new OverlayWindow().Show();
+        
         UpdateBack();
         
         // 1. 初始化窗口几何信息

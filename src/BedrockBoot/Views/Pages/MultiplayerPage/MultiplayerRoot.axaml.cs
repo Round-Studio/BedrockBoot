@@ -30,7 +30,7 @@ public partial class MultiplayerRoot : UserControl
         {
             EasyTierCliPath = PathsList.EasyTierCliPath,
             EasyTierPath = PathsList.EasyTierCorePath,
-            ClientPlayer = "Host",
+            ClientPlayer = GlobalModel.XboxUserInfo.Gamertag,
             GamePort = 7551
         };
         Task.Run(() => GlobalModel.PaperConnectCore.Initialize(CoreType.Server, GlobalModel.ETPublicServer));
@@ -48,14 +48,13 @@ public partial class MultiplayerRoot : UserControl
             PrimaryButtonText = "取消",
             CloseAction = () =>
             {
-                var playerName = dialog.PlayerName;
                 var roomCode = dialog.RoomCode;
                 
                 GlobalModel.PaperConnectCore = new PaperConnectCore()
                 {
                     EasyTierCliPath = PathsList.EasyTierCliPath,
                     EasyTierPath = PathsList.EasyTierCorePath,
-                    ClientPlayer = playerName,
+                    ClientPlayer = GlobalModel.XboxUserInfo.Gamertag,
                     RoomCode = roomCode
                 };
                 GlobalModel.PaperConnectCore.LinkSuccess = () =>

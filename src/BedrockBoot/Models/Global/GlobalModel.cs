@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Info.Xbox;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Service.Protocol;
@@ -23,4 +24,5 @@ public class GlobalModel
     public static ImageLoader ImageLoader { get; set; } = new();
     public static PaperConnectCore PaperConnectCore { get; set; }
     public static List<string> ETPublicServer { get; set; }
+    public static XboxUserInfo XboxUserInfo { get; set; }
 }

@@ -52,15 +52,12 @@ public partial class OverlayWindow : Window
     [DllImport("user32.dll")]
     private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
 
-    [DllImport("dwmapi.dll")]
-    private static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
-
     // 枚举窗口相关API
     [DllImport("user32.dll")]
     private static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
 
     [DllImport("user32.dll")]
-    private static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder strText, int maxCount);
+    private static extern int GetWindowText(IntPtr hWnd, StringBuilder strText, int maxCount);
 
     [DllImport("user32.dll")]
     private static extern int GetWindowTextLength(IntPtr hWnd);
@@ -73,30 +70,13 @@ public partial class OverlayWindow : Window
 
     [DllImport("user32.dll")]
     private static extern bool GetWindowRect(IntPtr hWnd, ref RECT rect);
-    
+
     [DllImport("user32.dll", SetLastError = true)]
     private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
     [DllImport("user32.dll")]
-    private static extern bool IsIconic(IntPtr hWnd);
-
-    [DllImport("user32.dll")]
-    private static extern bool IsZoomed(IntPtr hWnd);
-
-    [DllImport("user32.dll")]
-    private static extern bool ClientToScreen(IntPtr hWnd, ref POINT point);
-
-    [DllImport("user32.dll")]
-    private static extern bool ScreenToClient(IntPtr hWnd, ref POINT point);
-
-    [DllImport("user32.dll")]
-    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-
-    [DllImport("user32.dll")]
-    private static extern bool BringWindowToTop(IntPtr hWnd);
-
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetAncestor(IntPtr hWnd, uint gaFlags);
+    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy,
+        uint uFlags);
 
     // 键盘钩子相关
     [DllImport("user32.dll", SetLastError = true)]
@@ -122,16 +102,13 @@ public partial class OverlayWindow : Window
     private const int WS_EX_LAYERED = 0x00080000;
     private const int WS_EX_NOACTIVATE = 0x08000000;
     private const int WS_EX_TOOLWINDOW = 0x00000080;
-    private const int WS_EX_TOPMOST = 0x00000008;
     private const int SW_HIDE = 0;
     private const int SW_SHOW = 5;
     private const int SWP_NOMOVE = 0x0002;
     private const int SWP_NOSIZE = 0x0001;
     private const int SWP_NOZORDER = 0x0004;
     private const int SWP_NOACTIVATE = 0x0010;
-    private const int HWND_BOTTOM = 1;
     private const int HWND_TOP = 0;
-    private const int HWND_TOPMOST = -1;
 
     private const int WH_KEYBOARD_LL = 13;
     private const int WM_KEYDOWN = 0x0100;
@@ -139,10 +116,6 @@ public partial class OverlayWindow : Window
     private const int VK_SHIFT = 0x10;
     private const int VK_TAB = 0x09;
     private const int VK_ESCAPE = 0x1B;
-
-    // UWP相关常量
-    private const uint GA_ROOT = 2;
-    private const uint GA_PARENT = 1;
 
     [StructLayout(LayoutKind.Sequential)]
     public struct RECT
@@ -155,14 +128,8 @@ public partial class OverlayWindow : Window
     {
         public int X, Y;
     }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct MARGINS
-    {
-        public int cxLeftWidth, cxRightWidth, cyTopHeight, cyBottomHeight;
-    }
-
     private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
     private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
     // --- 成员变量 ---
@@ -177,19 +144,18 @@ public partial class OverlayWindow : Window
     private int _originalHeight = 0;
     private int _originalX = 0;
     private int _originalY = 0;
-    
+
     // 动画控制
     private volatile bool _isAnimating = false;
     private volatile bool _pendingAction = false; // 存储待执行的操作
     private bool _nextAction = false; // 下一步要执行的动作(true=显示, false=false)
-    
+
     // 目标进程信息
     private Process? _targetProcess = null;
     private string _targetProcessName = string.Empty;
     private string _expectedVersion = string.Empty; // 期望的版本号
 
     // UWP特定变量
-    private IntPtr _uwpHostHwnd = IntPtr.Zero; // UWP宿主窗口句柄
     private bool _isUWPApp = false; // 是否是UWP应用
 
     public OverlayWindow(Process targetProcess, string expectedVersion)
@@ -202,7 +168,7 @@ public partial class OverlayWindow : Window
         _expectedVersion = expectedVersion;
 
         VersionBox.Text = $"Game Overlay (Ver.{GlobalModel.BodyVersion})";
-        
+
         _proc = HookCallback;
 
         // 确保窗口在最上层
@@ -225,37 +191,35 @@ public partial class OverlayWindow : Window
         Task.Run(async () =>
         {
             // 最多重试20次，每次间隔500毫秒
-            for (int i = 0; i < 20; i++)
+            for (var i = 0; i < 20; i++)
             {
                 var foundHwnd = FindWindowByProcessAndVersion(_targetProcess, _expectedVersion);
-                
+
                 if (foundHwnd != IntPtr.Zero)
                 {
                     // 在UI线程中更新目标窗口句柄
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         _targetHwnd = foundHwnd;
-                        
+
                         // 检查是否是UWP应用
                         _isUWPApp = IsUWPWindow(foundHwnd);
-                        
+
                         // 现在找到了目标窗口，可以继续初始化
                         InitializeOverlay();
                     });
                     break;
                 }
-                
+
                 await Task.Delay(500); // 等待500毫秒后重试
             }
-            
+
             // 如果最终还是找不到窗口，则显示错误提示或禁用功能
             if (_targetHwnd == IntPtr.Zero)
-            {
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     Console.WriteLine($"无法找到进程 {_targetProcess?.ProcessName} 版本为 {_expectedVersion} 的窗口");
                 });
-            }
         });
     }
 
@@ -264,7 +228,7 @@ public partial class OverlayWindow : Window
         // 确保窗口初始状态是隐藏的且没有嵌入关系
         _isOverlayVisible = false;
         _isEmbedded = false;
-        
+
         // 设置窗口样式 - 透明且不可激活，不影响底层窗口
         var exStyle = GetWindowLong(_myHandle, GWL_EXSTYLE);
         exStyle |= WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE;
@@ -282,39 +246,30 @@ public partial class OverlayWindow : Window
 
     private IntPtr FindWindowByProcessAndVersion(Process? process, string expectedVersion)
     {
-        if (process == null || process.HasExited)
-        {
-            return IntPtr.Zero;
-        }
+        if (process == null || process.HasExited) return IntPtr.Zero;
 
         // 首先尝试通过版本号查找窗口
-        IntPtr foundHwnd = FindWindowByVersion(process, expectedVersion);
-        
+        var foundHwnd = FindWindowByVersion(process, expectedVersion);
+
         // 如果通过版本号没找到，尝试通过进程查找
-        if (foundHwnd == IntPtr.Zero)
-        {
-            foundHwnd = FindWindowByProcessOnly(process);
-        }
-        
+        if (foundHwnd == IntPtr.Zero) foundHwnd = FindWindowByProcessOnly(process);
+
         return foundHwnd;
     }
 
     private IntPtr FindWindowByVersion(Process process, string expectedVersion)
     {
-        IntPtr foundHwnd = IntPtr.Zero;
+        var foundHwnd = IntPtr.Zero;
         var candidates = new List<WindowInfo>();
 
         bool EnumWindowCallback(IntPtr hWnd, IntPtr lParam)
         {
             // 检查窗口是否可见
-            if (!IsWindowVisible(hWnd))
-            {
-                return true; // 继续枚举
-            }
+            if (!IsWindowVisible(hWnd)) return true; // 继续枚举
 
             // 获取窗口所属进程ID
-            GetWindowThreadProcessId(hWnd, out uint windowPid);
-            int pid = (int)windowPid;
+            GetWindowThreadProcessId(hWnd, out var windowPid);
+            var pid = (int)windowPid;
 
             // 检查是否是目标进程的窗口
             if (pid == process.Id)
@@ -329,29 +284,27 @@ public partial class OverlayWindow : Window
                     var className = GetClassName(hWnd);
 
                     // 跳过控制台窗口（ConsoleWindowClass）和一些系统窗口
-                    if (className.Contains("Console") || 
-                        className.Contains("MSCTFIME UI") || 
+                    if (className.Contains("Console") ||
+                        className.Contains("MSCTFIME UI") ||
                         className.Contains("Shell_TrayWnd"))
-                    {
                         return true; // 继续枚举
-                    }
 
                     // 检查窗口矩形是否有效
-                    RECT rect = new RECT();
+                    var rect = new RECT();
                     if (GetWindowRect(hWnd, ref rect))
                     {
-                        int width = rect.Right - rect.Left;
-                        int height = rect.Bottom - rect.Top;
+                        var width = rect.Right - rect.Left;
+                        var height = rect.Bottom - rect.Top;
 
                         // 确保窗口有一定大小（不是极小的系统窗口）
                         if (width > 50 && height > 50)
                         {
                             // 获取窗口创建时间（近似方法）
-                            long creationTime = GetWindowCreationTime(hWnd);
-                            
-                            candidates.Add(new WindowInfo 
-                            { 
-                                Handle = hWnd, 
+                            var creationTime = GetWindowCreationTime(hWnd);
+
+                            candidates.Add(new WindowInfo
+                            {
+                                Handle = hWnd,
                                 CreationTime = creationTime,
                                 Title = windowText
                             });
@@ -364,7 +317,7 @@ public partial class OverlayWindow : Window
         }
 
         EnumWindows(EnumWindowCallback, IntPtr.Zero);
-        
+
         // 按创建时间排序，返回最新的窗口
         if (candidates.Any())
         {
@@ -377,20 +330,17 @@ public partial class OverlayWindow : Window
 
     private IntPtr FindWindowByProcessOnly(Process process)
     {
-        IntPtr foundHwnd = IntPtr.Zero;
+        var foundHwnd = IntPtr.Zero;
         var candidates = new List<WindowInfo>();
 
         bool EnumWindowCallback(IntPtr hWnd, IntPtr lParam)
         {
             // 检查窗口是否可见
-            if (!IsWindowVisible(hWnd))
-            {
-                return true; // 继续枚举
-            }
+            if (!IsWindowVisible(hWnd)) return true; // 继续枚举
 
             // 获取窗口所属进程ID
-            GetWindowThreadProcessId(hWnd, out uint windowPid);
-            int pid = (int)windowPid;
+            GetWindowThreadProcessId(hWnd, out var windowPid);
+            var pid = (int)windowPid;
 
             // 检查是否是目标进程的窗口
             if (pid == process.Id)
@@ -400,29 +350,27 @@ public partial class OverlayWindow : Window
                 var className = GetClassName(hWnd);
 
                 // 跳过控制台窗口（ConsoleWindowClass）和一些系统窗口
-                if (className.Contains("Console") || 
-                    className.Contains("MSCTFIME UI") || 
+                if (className.Contains("Console") ||
+                    className.Contains("MSCTFIME UI") ||
                     className.Contains("Shell_TrayWnd"))
-                {
                     return true; // 继续枚举
-                }
 
                 // 检查窗口矩形是否有效
-                RECT rect = new RECT();
+                var rect = new RECT();
                 if (GetWindowRect(hWnd, ref rect))
                 {
-                    int width = rect.Right - rect.Left;
-                    int height = rect.Bottom - rect.Top;
+                    var width = rect.Right - rect.Left;
+                    var height = rect.Bottom - rect.Top;
 
                     // 确保窗口有一定大小（不是极小的系统窗口）
                     if (width > 50 && height > 50)
                     {
                         // 获取窗口创建时间（近似方法）
-                        long creationTime = GetWindowCreationTime(hWnd);
-                        
-                        candidates.Add(new WindowInfo 
-                        { 
-                            Handle = hWnd, 
+                        var creationTime = GetWindowCreationTime(hWnd);
+
+                        candidates.Add(new WindowInfo
+                        {
+                            Handle = hWnd,
                             CreationTime = creationTime,
                             Title = windowText
                         });
@@ -434,7 +382,7 @@ public partial class OverlayWindow : Window
         }
 
         EnumWindows(EnumWindowCallback, IntPtr.Zero);
-        
+
         // 按创建时间排序，返回最新的窗口
         if (candidates.Any())
         {
@@ -448,7 +396,7 @@ public partial class OverlayWindow : Window
     private long GetWindowCreationTime(IntPtr hWnd)
     {
         // 尝试通过进程ID获取创建时间，作为近似值
-        GetWindowThreadProcessId(hWnd, out uint processId);
+        GetWindowThreadProcessId(hWnd, out var processId);
         try
         {
             var proc = Process.GetProcessById((int)processId);
@@ -474,14 +422,10 @@ public partial class OverlayWindow : Window
 
         // 尝试从窗口标题中提取版本号
         var extractedVersions = ExtractVersionNumbers(windowTitle);
-        
+
         foreach (var version in extractedVersions)
-        {
             if (AreVersionsEquivalent(version, expectedVersion))
-            {
                 return true;
-            }
-        }
 
         return false;
     }
@@ -494,7 +438,7 @@ public partial class OverlayWindow : Window
     private List<string> ExtractVersionNumbers(string input)
     {
         var versions = new List<string>();
-        
+
         // 匹配版本号的正则表达式模式
         // 支持 x.y.z, x.y, x.y.z.w 等格式
         var regex = new Regex(@"\b(\d+\.?\d*\.?\d*\.?\d*)\b", RegexOptions.IgnoreCase);
@@ -503,10 +447,7 @@ public partial class OverlayWindow : Window
         foreach (Match match in matches)
         {
             var version = match.Value.Trim();
-            if (!string.IsNullOrEmpty(version) && !versions.Contains(version))
-            {
-                versions.Add(version);
-            }
+            if (!string.IsNullOrEmpty(version) && !versions.Contains(version)) versions.Add(version);
         }
 
         return versions;
@@ -535,11 +476,9 @@ public partial class OverlayWindow : Window
             var parts2 = ParseVersionParts(cleanVersion2);
 
             // 比较主要版本部分
-            for (int i = 0; i < Math.Min(parts1.Count, parts2.Count); i++)
-            {
+            for (var i = 0; i < Math.Min(parts1.Count, parts2.Count); i++)
                 if (parts1[i] != parts2[i])
                     return false;
-            }
 
             // 如果前面的数字都相同，则认为匹配
             return true;
@@ -562,16 +501,16 @@ public partial class OverlayWindow : Window
 
         // 移除前缀如 "v", "ver", "version"
         var cleaned = version.Replace("v", "", StringComparison.OrdinalIgnoreCase)
-                           .Replace("ver", "", StringComparison.OrdinalIgnoreCase)
-                           .Replace("version", "", StringComparison.OrdinalIgnoreCase)
-                           .Trim();
+            .Replace("ver", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("version", "", StringComparison.OrdinalIgnoreCase)
+            .Trim();
 
         // 移除其他非版本号字符，只保留数字和点
         var result = "";
-        bool lastWasDot = false;
-        for (int i = 0; i < cleaned.Length; i++)
+        var lastWasDot = false;
+        for (var i = 0; i < cleaned.Length; i++)
         {
-            char c = cleaned[i];
+            var c = cleaned[i];
             if (char.IsDigit(c))
             {
                 result += c;
@@ -585,7 +524,7 @@ public partial class OverlayWindow : Window
             else if (c == ' ')
             {
                 // 空格替换为点，以便处理像 "1 20 0" 这样的情况
-                if (!lastWasDot && i > 0 && char.IsDigit(cleaned[i - 1]) && 
+                if (!lastWasDot && i > 0 && char.IsDigit(cleaned[i - 1]) &&
                     i < cleaned.Length - 1 && char.IsDigit(cleaned[i + 1]))
                 {
                     result += '.';
@@ -606,14 +545,10 @@ public partial class OverlayWindow : Window
     {
         var parts = new List<int>();
         var numberStrings = version.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-        
+
         foreach (var part in numberStrings)
-        {
-            if (int.TryParse(part, out int num))
-            {
+            if (int.TryParse(part, out var num))
                 parts.Add(num);
-            }
-        }
 
         return parts;
     }
@@ -622,43 +557,38 @@ public partial class OverlayWindow : Window
     {
         var className = GetClassName(hwnd);
         var windowText = GetWindowText(hwnd);
-        
+
         // 检查窗口类名是否是UWP相关
-        if (className.Contains("ApplicationFrame") || 
+        if (className.Contains("ApplicationFrame") ||
             className.Contains("Windows.UI.Core") ||
             className.Contains("Windows.UI.Xaml"))
-        {
             return true;
-        }
-        
+
         // 检查是否是通过ApplicationFrameHost承载的UWP应用
-        GetWindowThreadProcessId(hwnd, out uint pid);
+        GetWindowThreadProcessId(hwnd, out var pid);
         var process = Process.GetProcessById((int)pid);
-        if (process.ProcessName.Equals("ApplicationFrameHost", StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-        
+        if (process.ProcessName.Equals("ApplicationFrameHost", StringComparison.OrdinalIgnoreCase)) return true;
+
         return false;
     }
 
     private string GetClassName(IntPtr hWnd)
     {
-        var sb = new System.Text.StringBuilder(256);
-        int length = GetClassName(hWnd, sb, sb.Capacity);
-        
+        var sb = new StringBuilder(256);
+        var length = GetClassName(hWnd, sb, sb.Capacity);
+
         // 检查API调用是否成功
         if (length == 0)
         {
             // 获取最后的错误代码
-            int errorCode = Marshal.GetLastWin32Error();
+            var errorCode = Marshal.GetLastWin32Error();
             if (errorCode != 0)
             {
                 Console.WriteLine($"GetClassName failed with error code: {errorCode}");
                 return string.Empty;
             }
         }
-        
+
         return sb.ToString(0, Math.Min(length, 255));
     }
 
@@ -667,7 +597,7 @@ public partial class OverlayWindow : Window
         var length = GetWindowTextLength(hWnd);
         if (length == 0) return "";
 
-        var sb = new System.Text.StringBuilder(length + 1);
+        var sb = new StringBuilder(length + 1);
         GetWindowText(hWnd, sb, sb.Capacity);
         return sb.ToString();
     }
@@ -701,10 +631,7 @@ public partial class OverlayWindow : Window
         }
 
         // 如果状态相同，无需操作
-        if (_isOverlayVisible == visible)
-        {
-            return;
-        }
+        if (_isOverlayVisible == visible) return;
 
         // 开始动画
         StartAnimation(visible);
@@ -742,20 +669,17 @@ public partial class OverlayWindow : Window
     private async Task AnimateOpacity(double startOpacity, double endOpacity, int durationMs)
     {
         const int steps = 10;
-        int stepDuration = durationMs / steps;
-        double stepValue = (endOpacity - startOpacity) / steps;
+        var stepDuration = durationMs / steps;
+        var stepValue = (endOpacity - startOpacity) / steps;
 
         OverlayRoot.Opacity = startOpacity;
 
-        for (int i = 1; i <= steps; i++)
+        for (var i = 1; i <= steps; i++)
         {
             // 检查是否在动画过程中被中断
-            if (!_isAnimating)
-            {
-                break;
-            }
+            if (!_isAnimating) break;
 
-            double newOpacity = startOpacity + (stepValue * i);
+            var newOpacity = startOpacity + stepValue * i;
             if (newOpacity < 0) newOpacity = 0;
             if (newOpacity > 1) newOpacity = 1;
 
@@ -828,7 +752,7 @@ public partial class OverlayWindow : Window
         // UWP应用的特殊处理逻辑
         // 由于UWP使用DirectComposition等现代渲染技术，我们不能直接SetParent
         // 而是需要跟随UWP窗口的位置和大小
-        
+
         _isEmbedded = true;
 
         // 设置窗口样式（移除穿透，添加分层）
@@ -839,7 +763,7 @@ public partial class OverlayWindow : Window
         SetWindowLong(_myHandle, GWL_EXSTYLE, exStyle);
 
         // 获取UWP窗口位置和大小
-        RECT windowRect = new RECT();
+        var windowRect = new RECT();
         if (GetWindowRect(_targetHwnd, ref windowRect))
         {
             _originalWidth = windowRect.Right - windowRect.Left;
@@ -850,15 +774,15 @@ public partial class OverlayWindow : Window
             // 调整窗口大小
             Width = _originalWidth;
             Height = _originalHeight;
-            
+
             // 将叠层窗口放置在UWP窗口之上，但不激活它
-            SetWindowPos(_myHandle, _targetHwnd, 
-                _originalX, _originalY, 
+            SetWindowPos(_myHandle, _targetHwnd,
+                _originalX, _originalY,
                 _originalWidth, _originalHeight,
                 SWP_NOZORDER | SWP_NOACTIVATE);
-            
+
             // 确保叠层窗口在UWP窗口之上
-            SetWindowPos(_myHandle, HWND_TOP, 0, 0, 0, 0, 
+            SetWindowPos(_myHandle, HWND_TOP, 0, 0, 0, 0,
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
         }
 
@@ -949,7 +873,7 @@ public partial class OverlayWindow : Window
     private void SyncUWPSizes()
     {
         // UWP应用的同步逻辑
-        RECT windowRect = new RECT();
+        var windowRect = new RECT();
         if (GetWindowRect(_targetHwnd, ref windowRect))
         {
             var w = windowRect.Right - windowRect.Left;
@@ -960,10 +884,10 @@ public partial class OverlayWindow : Window
             {
                 Width = w;
                 Height = h;
-                
+
                 // 更新叠层窗口位置，不改变Z顺序和激活状态
-                SetWindowPos(_myHandle, _targetHwnd, 
-                    windowRect.Left, windowRect.Top, 
+                SetWindowPos(_myHandle, _targetHwnd,
+                    windowRect.Left, windowRect.Top,
                     w, h,
                     SWP_NOZORDER | SWP_NOACTIVATE);
             }
@@ -980,18 +904,18 @@ public partial class OverlayWindow : Window
             var isShiftDown = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
 
             if (vkCode == VK_TAB && isShiftDown)
+            {
+                var foreground = GetForegroundWindow();
+                // 仅当游戏窗口或叠层窗口在前端时响应
+                if (foreground == _targetHwnd || foreground == _myHandle)
                 {
-                    var foreground = GetForegroundWindow();
-                    // 仅当游戏窗口或叠层窗口在前端时响应
-                    if (foreground == _targetHwnd || foreground == _myHandle)
-                    {
-                        // 异步切换 UI 状态，避免阻塞钩子链
-                        Dispatcher.UIThread.Post(() => SetOverlayState(!_isOverlayVisible));
+                    // 异步切换 UI 状态，避免阻塞钩子链
+                    Dispatcher.UIThread.Post(() => SetOverlayState(!_isOverlayVisible));
 
-                        // 返回 1 吞掉按键，防止游戏内弹出多余菜单
-                        return (IntPtr)1;
-                    }
+                    // 返回 1 吞掉按键，防止游戏内弹出多余菜单
+                    return (IntPtr)1;
                 }
+            }
 
             // 检测 ESC (仅用于退出显示状态，不触发显示)
             if (vkCode == VK_ESCAPE)

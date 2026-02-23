@@ -3,18 +3,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
         xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+        xmlns:overlayPage="clr-namespace:BedrockBoot.Views.Pages.OverlayPage"
         x:Class="BedrockBoot.Views.Windows.SubWindows.OverlayWindow"
         d:DesignWidth="800" d:DesignHeight="450"
         Title="Overlay"
+        FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
         Background="Transparent"
         TransparencyLevelHint="Transparent"
         SystemDecorations="None"
         ShowInTaskbar="False"
         CanResize="False">
-    <Grid Name="OverlayRoot" Background="#C8000000" Opacity="0">
+    <Grid Name="OverlayRoot" 
+          Opacity="0">
+        <Grid Background="{DynamicResource BackgroundBrush}"
+              Opacity="0.8"></Grid>
+        
         <Grid RowDefinitions="Auto,*"
               Name="MainContent"
-              Margin="20">
+              Margin="30">
             <Button Grid.Row="0" 
                     Classes="NoBorder"
                     HorizontalAlignment="Right"
@@ -45,6 +51,8 @@
                 
                 <widgets:XboxUserInfoWidget VerticalAlignment="Center"/>
             </StackPanel>
+            
+            <overlayPage:OverlayMain Grid.Row="1"/>
         </Grid>
         
         <TextBlock HorizontalAlignment="Left"

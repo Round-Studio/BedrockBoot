@@ -20,7 +20,7 @@
 
     <Grid>
         <ScrollViewer>
-            <StackPanel Margin="20"
+            <StackPanel Margin="20,15,20,20"
                         Spacing="8">
                 <TextBlock FontWeight="Bold"
                            FontSize="14"

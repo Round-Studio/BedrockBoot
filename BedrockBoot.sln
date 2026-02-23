@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperConnect.Core", "src\Pa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperTest", "src\PaperTest\PaperTest.csproj", "{8AD437FD-BF2A-41C7-B09C-348E4B2E1E7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BedrockBoot.Chunker", "src\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj", "{18EC4472-12B4-4B35-BA07-CF98B05A9466}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -183,6 +185,14 @@ Global
 		{8AD437FD-BF2A-41C7-B09C-348E4B2E1E7B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8AD437FD-BF2A-41C7-B09C-348E4B2E1E7B}.Release|x86.ActiveCfg = Release|Any CPU
 		{8AD437FD-BF2A-41C7-B09C-348E4B2E1E7B}.Release|x86.Build.0 = Release|Any CPU
+		{18EC4472-12B4-4B35-BA07-CF98B05A9466}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18EC4472-12B4-4B35-BA07-CF98B05A9466}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18EC4472-12B4-4B35-BA07-CF98B05A9466}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{18EC4472-12B4-4B35-BA07-CF98B05A9466}.Debug|x86.Build.0 = Debug|Any CPU
+		{18EC4472-12B4-4B35-BA07-CF98B05A9466}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18EC4472-12B4-4B35-BA07-CF98B05A9466}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18EC4472-12B4-4B35-BA07-CF98B05A9466}.Release|x86.ActiveCfg = Release|Any CPU
+		{18EC4472-12B4-4B35-BA07-CF98B05A9466}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

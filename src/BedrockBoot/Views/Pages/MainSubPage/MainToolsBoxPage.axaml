@@ -49,6 +49,14 @@
                                               IsClickable="True"
                                               Name="DeleteMcBtn"
                                               Click="DeleteMcBtn_OnClick"/>
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
+                           Text="{DynamicResource Tools.Group.Help}" />
+                
+                <onePointControls:SettingCard Header="存档转换"
+                                              Description="Java 存档与 Bedrock 存档互相转换"
+                                              Glyph="&#xEBD2;"
+                                              IsClickable="True"/>
             </StackPanel>
         </ScrollViewer>
 

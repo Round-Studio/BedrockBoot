@@ -9,6 +9,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.Windows.SubWindows;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -109,6 +110,7 @@ public partial class TaskLaunchGameItem : UserControl
                 lc.Launched = process =>
                 {
                     MinecraftProcess = process;
+                    Dispatcher.UIThread.Invoke(() => new OverlayWindow(process,VersionInfo.Info.Version).Show());
                 };
 
                 await lc.Launch();

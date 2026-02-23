@@ -40,8 +40,6 @@ public partial class MainWindow : BedrockBootWindow
         GlobalModel.MainWindow = this;
         InitializeComponent();
         
-        new OverlayWindow().Show();
-        
         UpdateBack();
         
         // 1. 初始化窗口几何信息

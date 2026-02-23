@@ -3,21 +3,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" MinWidth="160" Height="48"
+             mc:Ignorable="d" MinWidth="160"
              x:Class="BedrockBoot.Views.Control.Widgets.XboxUserInfoWidget">
     <Grid>
         <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
                     Name="BoxContent"
                     IsVisible="False"
                     Spacing="8">
             <onePointControls:FontIcon Glyph="&#xE77B;"
+                                       VerticalAlignment="Center"
                                        FontSize="22"></onePointControls:FontIcon>
             
-            <TextBlock Text="PlayerName"
-                       Name="PlayerName"
-                       FontSize="16"></TextBlock>
+            <StackPanel>
+                <TextBlock Opacity="0.6"
+                           Text="Xbox Live"></TextBlock>
+                
+                <TextBlock Text="PlayerName"
+                           Name="PlayerName"
+                           FontSize="18"></TextBlock>
+            </StackPanel>
         </StackPanel>
         
         <onePointControls:ProgressRing HorizontalAlignment="Center"

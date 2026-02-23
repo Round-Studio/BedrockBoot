@@ -12,12 +12,6 @@
         ShowInTaskbar="False"
         CanResize="False">
     <Grid Name="OverlayRoot" Background="#C8000000" Opacity="0">
-        <Grid.Transitions>
-            <Transitions>
-                <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut" />
-            </Transitions>
-        </Grid.Transitions>
-            
         <Grid RowDefinitions="Auto,*"
               Name="MainContent"
               Margin="20">
@@ -34,15 +28,22 @@
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Left"
-                        Spacing="8">
-                <StackPanel>
-                    <TextBlock Text="BedrockBoot"
-                               Opacity="0.6"></TextBlock>
-                    <TextBlock Text="游戏叠层"
-                               FontSize="18"></TextBlock>
+                        Spacing="22">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <onePointControls:FontIcon Glyph="&#xF156;"
+                                               VerticalAlignment="Center"
+                                               FontSize="22"></onePointControls:FontIcon>
+                
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="BedrockBoot"
+                                   Opacity="0.6"></TextBlock>
+                        <TextBlock Text="游戏叠层"
+                                   FontSize="18"></TextBlock>
+                    </StackPanel>
                 </StackPanel>
                 
-                <widgets:XboxUserInfoWidget />
+                <widgets:XboxUserInfoWidget VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
         

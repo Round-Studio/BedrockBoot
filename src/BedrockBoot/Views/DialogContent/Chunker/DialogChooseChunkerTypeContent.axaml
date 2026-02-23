@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.Chunker.DialogChooseChunkerTypeContent">
+    <StackPanel Width="360"
+                Spacing="8">
+        <onePointControls:SettingCard Header="Java 转 Bedrock"
+                                      Description="将 Java Edition 存档转换为 Bedrock Edition 存档"
+                                      IsClickable="True"
+                                      Glyph="&#xE945;"/>
+        
+        <onePointControls:SettingCard Header="Bedrock 转 Java"
+                                      Description="将 Bedrock Edition 存档转换为 Java Edition 存档"
+                                      IsClickable="True"
+                                      Glyph="&#xE945;"/>
+    </StackPanel>
+</UserControl>

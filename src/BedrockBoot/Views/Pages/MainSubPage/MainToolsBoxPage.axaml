@@ -56,6 +56,8 @@
                 <onePointControls:SettingCard Header="存档转换"
                                               Description="Java 存档与 Bedrock 存档互相转换"
                                               Glyph="&#xEBD2;"
+                                              Name="WorldShift"
+                                              Click="WorldShift_OnClick"
                                               IsClickable="True"/>
             </StackPanel>
         </ScrollViewer>

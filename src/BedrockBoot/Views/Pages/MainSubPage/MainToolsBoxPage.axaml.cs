@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DialogContent.Chunker;
 using BedrockBoot.Views.Windows.SubWindows;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
@@ -57,5 +58,15 @@ public partial class MainToolsBoxPage : BedrockBootPage
             // 无论成功与否，任务结束后关闭对话框
             DialogHost.Close();
         }
+    }
+
+    private void WorldShift_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new ()
+        {
+            Title = "存档转换",
+            Content = new DialogChooseChunkerTypeContent(),
+            CloseButtonText = "取消"
+        });
     }
 }

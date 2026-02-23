@@ -211,7 +211,18 @@ public partial class DrawDownloadGameContent : UserControl
 
     private bool CheckPack()
     {
-        var folderPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
+        var selectedFolder = GlobalModel.Config.Data.GameFolders
+            .ElementAtOrDefault(InstallFolder.SelectedIndex);
+    
+        if (selectedFolder == null)
+        {
+            IsUsePackIns.IsChecked = false;
+            IsUsePackIns.IsVisible = false;
+            InstallBtn.IsEnabled = false;
+            return false;
+        }
+
+        var folderPath = selectedFolder.GameFolderPath;
         var packagePath = Path.Combine(folderPath, "version_save", $"{BuildInfo.ID}.insPack");
 
         var hasPack = File.Exists(packagePath);

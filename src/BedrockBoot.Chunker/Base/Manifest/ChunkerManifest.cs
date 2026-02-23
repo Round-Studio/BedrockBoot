@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BedrockBoot.Chunker.Base;
+namespace BedrockBoot.Chunker.Base.Manifest;
 
 public class ChunkerManifest
 {

@@ -1,5 +1,7 @@
-﻿using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Chunker.Base;
+﻿using System.Diagnostics;
+using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Chunker.Base.Entry.Info;
+using BedrockBoot.Chunker.Base.Manifest;
 using BedrockBoot.Chunker.Base.Enum;
 using BedrockBoot.Chunker.Event;
 using BedrockBoot.Core.Models.Download;
@@ -10,7 +12,11 @@ namespace BedrockBoot.Chunker;
 
 public class Chunker
 {
-    public static string ChunkerDownloadManifest { get; } = "https://download.roundstudio.top/files/chunker-cli/manifest.json";
+    #region 静态方法
+
+    public static string ChunkerDownloadManifest { get; } =
+        "https://download.roundstudio.top/files/chunker-cli/manifest.json";
+
     public static string ChunkerDownloadRoot { get; } = "https://download.roundstudio.top";
 
     public static readonly string ChunkerFolderPath =
@@ -19,7 +25,7 @@ public class Chunker
 
     public static readonly string ChunkerDownloadFolderPath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RoundStudio",
-            "BedrockBoot2", "BedrockBoot.Chunker","Download");
+            "BedrockBoot2", "BedrockBoot.Chunker", "Download");
 
     public static readonly string ChunkerPath =
         Path.Combine(ChunkerFolderPath, "chunker-cli.jar");
@@ -27,19 +33,20 @@ public class Chunker
     public static List<string> SupportJava { get; } = new()
     {
         "1.8.8",
-        "1.9.0",
-        "1.10.0",
-        "1.11.0",
-        "1.12.0",
-        "1.13.0",
-        "1.14.0",
-        "1.15.0",
-        "1.16.0",
-        "1.17.0",
-        "1.18.0",
-        "1.19.0",
-        "1.20.0",
-        "1.21.0"
+        "1.9.0", "1.9.1", "1.9.2", "1.9.3",
+        "1.10.0", "1.10.1", "1.10.2",
+        "1.11.0", "1.11.1", "1.11.2",
+        "1.12.0", "1.12.1", "1.12.2",
+        "1.13.0", "1.13.1", "1.13.2",
+        "1.14.0", "1.14.1", "1.14.2", "1.14.3", "1.14.4",
+        "1.15.0", "1.15.1", "1.15.2",
+        "1.16.0", "1.16.1", "1.16.2", "1.16.3", "1.16.4", "1.16.5",
+        "1.17.0", "1.17.1",
+        "1.18.0", "1.18.1", "1.18.2",
+        "1.19.0", "1.19.1", "1.19.2", "1.19.3", "1.19.4",
+        "1.20.0", "1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.20.5", "1.20.6",
+        "1.21.0", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10",
+        "1.21.11"
     };
 
     public static List<string> SupportBedrock { get; } = new()
@@ -57,8 +64,16 @@ public class Chunker
     };
 
     public static bool CheckChunker() => File.Exists(ChunkerPath);
-    
-    public static async Task DownloadChunker(DownloadType dowType,IProgress<DownloadProgressEventArgs> progress)
+
+    public static bool CheckJvm(JavaInfo jvmInfo)
+    {
+        if (jvmInfo.MajorVersion >= 17)
+            return true;
+
+        return false;
+    }
+
+    public static async Task DownloadChunker(DownloadType dowType, IProgress<DownloadProgressEventArgs> progress)
     {
         if (dowType == DownloadType.DownloadSource)
         {
@@ -69,7 +84,8 @@ public class Chunker
 
             var downManifest = ConfigEntity<ChunkerManifest>.JsonDeserialize(jsonString);
             var parts = downManifest.Parts.Select(uri => ($"{ChunkerDownloadRoot}{uri}",
-                Path.Combine(ChunkerDownloadFolderPath, new Uri($"{ChunkerDownloadRoot}{uri}").Segments.Last()))).ToList();
+                    Path.Combine(ChunkerDownloadFolderPath, new Uri($"{ChunkerDownloadRoot}{uri}").Segments.Last())))
+                .ToList();
 
             var tasks = parts.Select(p => new SingleThreadDownloader().DownloadAsync(p.Item1, p.Item2,
                 new Progress<DownloadProgress>(pro =>
@@ -96,6 +112,7 @@ public class Chunker
                 throw new Exception($"合并文件失败: {ex.Message}", ex);
             }
         }
+
         if (dowType == DownloadType.Github)
         {
             progress.Report(new DownloadProgressEventArgs("获取更新...", 10));
@@ -108,10 +125,119 @@ public class Chunker
             var url = releases.Assets.ToList().Find(x => x.Name.Contains(".jar")).BrowserDownloadUrl;
 
             var down = new GithubFilesDownload();
-            await down.DownloadAsync(url, ChunkerPath, new Progress<DownloadProgress>(p =>
+            await down.DownloadAsync(url, ChunkerPath,
+                new Progress<DownloadProgress>(p =>
+                {
+                    progress.Report(new DownloadProgressEventArgs("下载 Chunker", (int)p.ProgressPercentage));
+                }));
+        }
+    }
+
+    #endregion
+
+    public required JavaInfo JvmInfo { get; set; }
+    public string JavaEditionVersion { get; set; }
+    public string BedrockEditionVersion { get; set; }
+
+    public void BeginChunker(ChunkerType chunkerType, string javaWorldFolder, string bedrockWorldFolder,IProgress<double> progress)
+    {
+        if (!CheckChunker()) throw new Exception("未安装 Chunker");
+        if (!CheckJvm(JvmInfo)) throw new Exception("Jvm 版本不符合最低版本要求 (JVM>=17)");
+
+        Console.WriteLine($"将使用 {JvmInfo.JavaPath}");
+
+        ProcessStartInfo startInfo = new ProcessStartInfo(JvmInfo.JavaPath)
+        {
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true,
+            StandardOutputEncoding = System.Text.Encoding.UTF8, // 设置 UTF-8 编码以正确显示中文
+            StandardErrorEncoding = System.Text.Encoding.UTF8
+        };
+
+        if (chunkerType == ChunkerType.BedrockToJava)
+        {
+            if (!SupportJava.Contains(JavaEditionVersion))
+                throw new Exception($"不支持的游戏版本 {JavaEditionVersion}");
+
+            startInfo.ArgumentList.Add("-jar");
+            startInfo.ArgumentList.Add(ChunkerPath);
+            startInfo.ArgumentList.Add("-i");
+            startInfo.ArgumentList.Add(bedrockWorldFolder);
+            startInfo.ArgumentList.Add("-f");
+            startInfo.ArgumentList.Add($"JAVA_{JavaEditionVersion.Replace(".", "_")}");
+            startInfo.ArgumentList.Add("-o");
+            startInfo.ArgumentList.Add(javaWorldFolder);
+
+            Console.WriteLine($"转换参数: 从 Bedrock {BedrockEditionVersion} 到 Java {JavaEditionVersion}");
+        }
+        else
+        {
+            if (!SupportBedrock.Contains(BedrockEditionVersion))
+                throw new Exception($"不支持的游戏版本 {BedrockEditionVersion}");
+
+            startInfo.ArgumentList.Add("-jar");
+            startInfo.ArgumentList.Add(ChunkerPath);
+            startInfo.ArgumentList.Add("-i");
+            startInfo.ArgumentList.Add(javaWorldFolder);
+            startInfo.ArgumentList.Add("-f");
+            startInfo.ArgumentList.Add($"BEDROCK_{BedrockEditionVersion.Replace(".", "_")}");
+            startInfo.ArgumentList.Add("-o");
+            startInfo.ArgumentList.Add(bedrockWorldFolder);
+
+            Console.WriteLine($"转换参数: 从 Java {JavaEditionVersion} 到 Bedrock {BedrockEditionVersion}");
+        }
+
+        using (var process = new Process())
+        {
+            process.StartInfo = startInfo;
+
+            // 设置实时输出处理
+            process.OutputDataReceived += (sender, e) =>
             {
-                progress.Report(new DownloadProgressEventArgs("下载 Chunker", (int)p.ProgressPercentage));
-            }));
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    Console.WriteLine($"[Chunker] {e.Data}");
+
+                    var log = e.Data.Replace("%", "");
+                    if (double.TryParse(log, out double result))
+                    {
+                        progress.Report(result);
+                    }
+                }
+            };
+
+            process.ErrorDataReceived += (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    Console.WriteLine($"[Chunker 错误] {e.Data}");
+                }
+            };
+
+            try
+            {
+                Console.WriteLine("开始转换，请等待...");
+                process.Start();
+
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                process.WaitForExit();
+
+                Console.WriteLine($"转换完成，退出代码: {process.ExitCode}");
+
+                if (process.ExitCode != 0)
+                {
+                    throw new Exception($"Chunker 转换失败，退出代码: {process.ExitCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"执行过程中发生错误: {ex.Message}");
+                throw;
+            }
         }
     }
 }

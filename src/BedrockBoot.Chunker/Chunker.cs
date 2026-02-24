@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Chunker.Base.Entry;
 using BedrockBoot.Chunker.Base.Entry.Info;
 using BedrockBoot.Chunker.Base.Manifest;
 using BedrockBoot.Chunker.Base.Enum;
@@ -186,7 +187,7 @@ public class Chunker
     public string JavaEditionVersion { get; set; }
     public string BedrockEditionVersion { get; set; }
 
-    public void BeginChunker(ChunkerType chunkerType, string javaWorldFolder, string bedrockWorldFolder,IProgress<double> progress)
+    public void BeginChunker(ChunkerInfo info)
     {
         if (!CheckChunker()) throw new Exception("未安装 Chunker");
         if (!CheckJvm(JvmInfo)) throw new Exception("Jvm 版本不符合最低版本要求 (JVM>=17)");
@@ -203,7 +204,7 @@ public class Chunker
             StandardErrorEncoding = System.Text.Encoding.UTF8
         };
 
-        if (chunkerType == ChunkerType.BedrockToJava)
+        if (info.ChunkerType == ChunkerType.BedrockToJava)
         {
             if (!SupportJava.Contains(JavaEditionVersion))
                 throw new Exception($"不支持的游戏版本 {JavaEditionVersion}");
@@ -211,11 +212,11 @@ public class Chunker
             startInfo.ArgumentList.Add("-jar");
             startInfo.ArgumentList.Add(ChunkerPath);
             startInfo.ArgumentList.Add("-i");
-            startInfo.ArgumentList.Add(bedrockWorldFolder);
+            startInfo.ArgumentList.Add(info.BedrockWorldFolder);
             startInfo.ArgumentList.Add("-f");
             startInfo.ArgumentList.Add($"JAVA_{JavaEditionVersion.Replace(".", "_")}");
             startInfo.ArgumentList.Add("-o");
-            startInfo.ArgumentList.Add(javaWorldFolder);
+            startInfo.ArgumentList.Add(info.JavaWorldFolder);
 
             Console.WriteLine($"转换参数: 从 Bedrock {BedrockEditionVersion} 到 Java {JavaEditionVersion}");
         }
@@ -227,11 +228,11 @@ public class Chunker
             startInfo.ArgumentList.Add("-jar");
             startInfo.ArgumentList.Add(ChunkerPath);
             startInfo.ArgumentList.Add("-i");
-            startInfo.ArgumentList.Add(javaWorldFolder);
+            startInfo.ArgumentList.Add(info.JavaWorldFolder);
             startInfo.ArgumentList.Add("-f");
             startInfo.ArgumentList.Add($"BEDROCK_{BedrockEditionVersion.Replace(".", "_")}");
             startInfo.ArgumentList.Add("-o");
-            startInfo.ArgumentList.Add(bedrockWorldFolder);
+            startInfo.ArgumentList.Add(info.BedrockWorldFolder);
 
             Console.WriteLine($"转换参数: 从 Java {JavaEditionVersion} 到 Bedrock {BedrockEditionVersion}");
         }
@@ -250,7 +251,7 @@ public class Chunker
                     var log = e.Data.Replace("%", "");
                     if (double.TryParse(log, out double result))
                     {
-                        progress.Report(result);
+                        info.Progress?.Report(result);
                     }
                 }
             };

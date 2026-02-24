@@ -72,12 +72,13 @@ public class ArchiveCheck
         var paths = GetInstanceWorldPackPath().ToList();
         paths.ForEach(path =>
         {
-            if (path.Key != user && 
-                VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+            // GDK版本：跳过所有Shared用户的导入
+            if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK && 
+                path.Key == "Shared")
                 return;
-            
+        
             if (!Directory.Exists(path.Value)) Directory.CreateDirectory(path.Value);
-            var worldPath = Path.Combine(path.Value, $"{Guid.NewGuid().ToString().Replace("-", "")}");
+            var worldPath = Path.Combine(path.Value, $"{Guid.NewGuid().ToString().Replace("-", "").Substring(0,12)}");
             ZipHelper.ExtractZipFile(pack, worldPath);
         });
     }

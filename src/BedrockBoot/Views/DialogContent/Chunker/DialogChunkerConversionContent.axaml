@@ -1,0 +1,25 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.Chunker.DialogChunkerConversionContent">
+    <StackPanel Orientation="Horizontal">
+        <onePointControls:ProgressRing Height="36" Width="36"
+                                       Background="Transparent" />
+
+        <StackPanel Margin="12,0,0,0"
+                    MaxWidth="200"
+                    VerticalAlignment="Center">
+            <TextBlock FontSize="16"
+                       Name="ProgressText"
+                       TextTrimming="CharacterEllipsis">
+                转换存档中...
+            </TextBlock>
+            <ProgressBar Name="ProgressBar"
+                         Margin="0,8,0,0"
+                         MinWidth="200" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

@@ -13,7 +13,8 @@
         
             <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Static chunker:Chunker.SupportJava}"
-                      SelectedIndex="0"></ComboBox>
+                      SelectedIndex="0"
+                      Name="GameVersionChoose"></ComboBox>
         
             <TextBlock Text="Bedrock 存档"></TextBlock>
         
@@ -53,6 +54,7 @@
                     Spacing="8">
             <Button Padding="8,0"
                     Name="SaveFolder"
+                    Click="SaveFolder_OnClick"
                     Height="32">
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">
@@ -65,6 +67,7 @@
             <Button Classes="Accent"
                     Padding="8,0"
                     Name="SaveZipFile"
+                    Click="SaveZipFile_OnClick"
                     Height="32">
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">

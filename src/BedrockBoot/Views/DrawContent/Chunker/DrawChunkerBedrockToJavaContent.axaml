@@ -52,6 +52,7 @@
                     Orientation="Horizontal"
                     Spacing="8">
             <Button Padding="8,0"
+                    Name="SaveFolder"
                     Height="32">
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">
@@ -63,6 +64,7 @@
             
             <Button Classes="Accent"
                     Padding="8,0"
+                    Name="SaveZipFile"
                     Height="32">
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">

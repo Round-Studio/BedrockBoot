@@ -183,18 +183,14 @@ public class Chunker
 
     #endregion
 
-    public required JavaInfo JvmInfo { get; set; }
-    public string JavaEditionVersion { get; set; }
-    public string BedrockEditionVersion { get; set; }
-
     public void BeginChunker(ChunkerInfo info)
     {
         if (!CheckChunker()) throw new Exception("未安装 Chunker");
-        if (!CheckJvm(JvmInfo)) throw new Exception("Jvm 版本不符合最低版本要求 (JVM>=17)");
+        if (!CheckJvm(info.JvmInfo)) throw new Exception("Jvm 版本不符合最低版本要求 (JVM>=17)");
 
-        Console.WriteLine($"将使用 {JvmInfo.JavaPath}");
+        Console.WriteLine($"将使用 {info.JvmInfo.JavaPath}");
 
-        ProcessStartInfo startInfo = new ProcessStartInfo(JvmInfo.JavaPath)
+        ProcessStartInfo startInfo = new ProcessStartInfo(info.JvmInfo.JavaPath)
         {
             UseShellExecute = false,
             RedirectStandardOutput = true,
@@ -206,35 +202,35 @@ public class Chunker
 
         if (info.ChunkerType == ChunkerType.BedrockToJava)
         {
-            if (!SupportJava.Contains(JavaEditionVersion))
-                throw new Exception($"不支持的游戏版本 {JavaEditionVersion}");
+            if (!SupportJava.Contains(info.JavaEditionVersion!))
+                throw new Exception($"不支持的游戏版本 {info.JavaEditionVersion}");
 
             startInfo.ArgumentList.Add("-jar");
             startInfo.ArgumentList.Add(ChunkerPath);
             startInfo.ArgumentList.Add("-i");
             startInfo.ArgumentList.Add(info.BedrockWorldFolder);
             startInfo.ArgumentList.Add("-f");
-            startInfo.ArgumentList.Add($"JAVA_{JavaEditionVersion.Replace(".", "_")}");
+            startInfo.ArgumentList.Add($"JAVA_{info.JavaEditionVersion.Replace(".", "_")}");
             startInfo.ArgumentList.Add("-o");
             startInfo.ArgumentList.Add(info.JavaWorldFolder);
 
-            Console.WriteLine($"转换参数: 从 Bedrock {BedrockEditionVersion} 到 Java {JavaEditionVersion}");
+            Console.WriteLine($"转换参数: 从 Bedrock 到 Java {info.JavaEditionVersion}");
         }
         else
         {
-            if (!SupportBedrock.Contains(BedrockEditionVersion))
-                throw new Exception($"不支持的游戏版本 {BedrockEditionVersion}");
+            if (!SupportBedrock.Contains(info.BedrockEditionVersion!))
+                throw new Exception($"不支持的游戏版本 {info.BedrockEditionVersion}");
 
             startInfo.ArgumentList.Add("-jar");
             startInfo.ArgumentList.Add(ChunkerPath);
             startInfo.ArgumentList.Add("-i");
             startInfo.ArgumentList.Add(info.JavaWorldFolder);
             startInfo.ArgumentList.Add("-f");
-            startInfo.ArgumentList.Add($"BEDROCK_{BedrockEditionVersion.Replace(".", "_")}");
+            startInfo.ArgumentList.Add($"BEDROCK_{info.BedrockEditionVersion!.Replace(".", "_")}");
             startInfo.ArgumentList.Add("-o");
             startInfo.ArgumentList.Add(info.BedrockWorldFolder);
 
-            Console.WriteLine($"转换参数: 从 Java {JavaEditionVersion} 到 Bedrock {BedrockEditionVersion}");
+            Console.WriteLine($"转换参数: 从 Java 到 Bedrock {info.BedrockEditionVersion}");
         }
 
         using (var process = new Process())

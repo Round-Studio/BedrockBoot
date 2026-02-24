@@ -68,7 +68,8 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
                     AccountButton = DialogButtons.CloseButton,
                     CloseAction = () =>
                     {
-                        
+                        var arch = worldsChoose.SelectedArchiveInfo;
+                        WorldPath.Text = arch!.Path;
                     }
                 });
             }

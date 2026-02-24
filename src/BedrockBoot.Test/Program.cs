@@ -1,23 +1,29 @@
 ﻿using BedrockBoot.Chunker;
+using BedrockBoot.Chunker.Base.Entry;
 using BedrockBoot.Chunker.Base.Enum;
 using BedrockBoot.Chunker.Event;
 using BedrockBoot.Chunker.Jvm;
+using BedrockBoot.Models.Pack.Chunker;
 
 public class Program
 {
     private static async Task Main()
     {
-        var chunker = new Chunker()
-        {
-            JvmInfo = JavaUtil.GetJavaListAsync().Result.First(),
-            JavaEditionVersion = "1.21.11"
-        };
-
-        chunker.BeginChunker(ChunkerType.BedrockToJava, "E:\\testWorld",
-            "D:\\BedrockBoot\\bedrock_versions\\1.26.2\\config\\BedrockBoot2\\isolation\\Users\\2818413420751248947\\games\\com.mojang\\minecraftWorlds\\BobjNnseFv0=",
+        if (!Chunker.CheckChunker())
+            await Chunker.DownloadChunker(DownloadType.Github, new Progress<DownloadProgressEventArgs>(pro =>
+            {
+                Console.WriteLine(pro.Percentage);
+            }));
+        
+        new ChunkerHelper(
+            ChunkerType.BedrockToJava,
+            "1.21.0", 
+            "J://test.mcworld", 
+            JavaUtil.GetJavaListAsync().Result.First(),
             new Progress<double>(p =>
             {
                 Console.WriteLine($"进度：{p:F2} %");
-            }));
+            }))
+            .ConversionToFolder("G:\\Minecraft\\.minecraft\\versions\\1.21.11-Fabric_0.18.4\\saves\\新的世界1");
     }
 }

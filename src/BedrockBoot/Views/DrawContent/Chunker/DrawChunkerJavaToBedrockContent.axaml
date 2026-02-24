@@ -15,20 +15,11 @@
                       ItemsSource="{x:Static chunker:Chunker.SupportBedrock}"
                       SelectedIndex="0"></ComboBox>
         
-            <TextBlock Text="Bedrock 存档"></TextBlock>
+            <TextBlock Text="Java 存档"></TextBlock>
         
-            <DockPanel HorizontalSpacing="8">
+            <DockPanel HorizontalSpacing="8">   
                 <Button DockPanel.Dock="Right"
-                        Padding="8,0">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="4">
-                        <onePointControls:FontIcon VerticalAlignment="Center"
-                                                   Glyph="&#xE8B7;"/>
-                        <TextBlock Text="导入文件夹"></TextBlock>
-                    </StackPanel>
-                </Button>
-            
-                <Button DockPanel.Dock="Right"
+                        Click="ImportArchive_OnClick"
                         Padding="8,0">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="4">
@@ -38,7 +29,8 @@
                     </StackPanel>
                 </Button>
             
-                <TextBox Watermark="存档路径（zip or folder）"></TextBox>
+                <TextBox Watermark="存档路径（zip）"
+                         Name="WorldPath"></TextBox>
             </DockPanel>
         </StackPanel>
         

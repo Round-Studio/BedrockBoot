@@ -15,10 +15,12 @@
                       ItemsSource="{x:Static chunker:Chunker.SupportJava}"
                       SelectedIndex="0"></ComboBox>
         
-            <TextBlock Text="Java 存档"></TextBlock>
+            <TextBlock Text="Bedrock 存档"></TextBlock>
         
             <DockPanel HorizontalSpacing="8">
                 <Button DockPanel.Dock="Right"
+                        Name="ImportMcWorld"
+                        Click="ImportMcWorld_OnClick"
                         Padding="8,0">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="4">
@@ -29,6 +31,8 @@
                 </Button>
             
                 <Button DockPanel.Dock="Right"
+                        Name="ChooseWorld"
+                        Click="ChooseWorld_OnClick"
                         Padding="8,0">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="4">
@@ -38,7 +42,8 @@
                     </StackPanel>
                 </Button>
             
-                <TextBox Watermark="存档路径（mcworld）"></TextBox>
+                <TextBox Watermark="存档路径（mcworld）"
+                         Name="WorldPath"></TextBox>
             </DockPanel>
         </StackPanel>
         

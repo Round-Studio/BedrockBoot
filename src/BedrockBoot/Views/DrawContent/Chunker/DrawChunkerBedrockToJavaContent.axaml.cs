@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -46,7 +47,21 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
         if (result != null && result.Any())
         {
             string selectedFile = result.First();
-            WorldPath.Text = selectedFile;
+            
+            string extension = Path.GetExtension(selectedFile).ToLower();
+            if (extension.Contains("zip"))
+            {
+                WorldPath.Text = selectedFile;
+            }
+            else
+            {
+                DialogHost.Show(new()
+                {
+                    Title = "错误的文件",
+                    Content = "您选择的文件非 zip 文件",
+                    CloseButtonText = "确定"
+                });
+            }
         }
     }
 

@@ -24,7 +24,8 @@ public partial class DialogChunkerConversionContent : UserControl
         SaveType saveType,
         string gameVersion,
         string archivePath,
-        string savePath) : this()
+        string savePath,
+        Action<string>? complete = null) : this()
     {
         GlobalModel.MainWindow.CloseDraw();
         
@@ -47,6 +48,7 @@ public partial class DialogChunkerConversionContent : UserControl
                 chunkerHelper.ConversionToFolder(savePath);
 
             Dispatcher.UIThread.Invoke(DialogHost.Close);
+            complete?.Invoke(savePath);
         });
     }
 }

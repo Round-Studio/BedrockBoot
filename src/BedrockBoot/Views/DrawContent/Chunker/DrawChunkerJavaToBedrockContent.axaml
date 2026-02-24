@@ -13,6 +13,7 @@
         
             <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Static chunker:Chunker.SupportBedrock}"
+                      Name="GameVersionChoose"
                       SelectedIndex="0"></ComboBox>
         
             <TextBlock Text="Java 存档"></TextBlock>
@@ -39,6 +40,8 @@
                     Orientation="Horizontal"
                     Spacing="8">
             <Button Padding="8,0"
+                    Name="SaveMcWorld"
+                    Click="SaveMcWorld_OnClick"
                     Height="32">
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">
@@ -50,6 +53,8 @@
             
             <Button Classes="Accent"
                     Padding="8,0"
+                    Name="SaveIns"
+                    Click="SaveIns_OnClick"
                     Height="32">
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">

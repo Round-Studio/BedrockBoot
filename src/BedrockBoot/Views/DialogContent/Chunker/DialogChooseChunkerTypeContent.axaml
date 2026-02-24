@@ -9,11 +9,15 @@
                 Spacing="8">
         <onePointControls:SettingCard Header="Java 转 Bedrock"
                                       Description="将 Java Edition 存档转换为 Bedrock Edition 存档"
+                                      Name="JavaToBedrock"
+                                      Click="JavaToBedrock_OnClick"
                                       IsClickable="True"
                                       Glyph="&#xE945;"/>
         
         <onePointControls:SettingCard Header="Bedrock 转 Java"
                                       Description="将 Bedrock Edition 存档转换为 Java Edition 存档"
+                                      Name="BedrockToJava"
+                                      Click="BedrockToJava_OnClick"
                                       IsClickable="True"
                                       Glyph="&#xE945;"/>
     </StackPanel>

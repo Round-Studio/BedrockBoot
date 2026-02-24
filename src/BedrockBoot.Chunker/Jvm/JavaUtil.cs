@@ -10,13 +10,17 @@ using BedrockBoot.Chunker.Base.Entry.Info;
 
 namespace BedrockBoot.Chunker.Jvm;
 
-public static partial class JavaUtil {
-    public static async Task<JavaInfo> GetJavaInfoAsync(string javaPath, CancellationToken cancellationToken = default) {
-        if (string.IsNullOrEmpty(javaPath) || !File.Exists(javaPath)) {
+public static partial class JavaUtil
+{
+    public static async Task<JavaInfo> GetJavaInfoAsync(string javaPath, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(javaPath) || !File.Exists(javaPath))
+        {
             return null;
         }
 
-        using var process = Process.Start(new ProcessStartInfo(javaPath) {
+        using var process = Process.Start(new ProcessStartInfo(javaPath)
+        {
             Arguments = "-version",
             CreateNoWindow = true,
             UseShellExecute = false,
@@ -40,7 +44,8 @@ public static partial class JavaUtil {
         await process.WaitForExitAsync(cancellationToken);
 
         var versionParts = javaVersion.Split(".");
-        return new JavaInfo {
+        return new JavaInfo
+        {
             Is64bit = is64bit,
             JavaPath = javaPath,
             JavaType = javaType,
@@ -49,27 +54,35 @@ public static partial class JavaUtil {
         };
     }
 
-    public static async Task<List<JavaInfo>> GetJavaListAsync(CancellationToken cancellationToken = default) {
+    public static async Task<List<JavaInfo>> GetJavaListAsync(CancellationToken cancellationToken = default)
+    {
         var javaList = new List<JavaInfo>();
-        
-        if (OperatingSystem.IsWindows()) {
-            foreach (var java in GetJavasForWindows()) {
-                if (File.Exists(java)) {
+
+        if (OperatingSystem.IsWindows())
+        {
+            foreach (var java in GetJavasForWindows())
+            {
+                if (File.Exists(java))
+                {
                     var javaInfo = await GetJavaInfoAsync(java, cancellationToken);
-                    if (javaInfo != null) {
+                    if (javaInfo != null)
+                    {
                         javaList.Add(javaInfo);
                     }
                 }
             }
+
             return javaList;
         }
 
-        using var process = Process.Start(new ProcessStartInfo("whereis") {
+        using var process = Process.Start(new ProcessStartInfo("whereis")
+        {
             CreateNoWindow = true,
             UseShellExecute = false,
             RedirectStandardError = true,
             RedirectStandardOutput = true,
-            ArgumentList = {
+            ArgumentList =
+            {
                 "/b",
                 "java"
             },
@@ -78,7 +91,8 @@ public static partial class JavaUtil {
         if (process == null)
             return javaList;
 
-        do {
+        do
+        {
             cancellationToken.ThrowIfCancellationRequested();
 
             var line = process.StandardOutput.ReadLine();
@@ -86,7 +100,8 @@ public static partial class JavaUtil {
                 continue;
 
             var javaInfo = await GetJavaInfoAsync(line, cancellationToken);
-            if (javaInfo != null) {
+            if (javaInfo != null)
+            {
                 javaList.Add(javaInfo);
             }
         } while (!process.HasExited);
@@ -94,9 +109,11 @@ public static partial class JavaUtil {
         await process.WaitForExitAsync(cancellationToken);
         var lastLine = await process.StandardOutput.ReadLineAsync(cancellationToken);
 
-        if (!string.IsNullOrEmpty(lastLine) && File.Exists(lastLine)) {
+        if (!string.IsNullOrEmpty(lastLine) && File.Exists(lastLine))
+        {
             var javaInfo = await GetJavaInfoAsync(lastLine, cancellationToken);
-            if (javaInfo != null) {
+            if (javaInfo != null)
+            {
                 javaList.Add(javaInfo);
             }
         }
@@ -105,17 +122,21 @@ public static partial class JavaUtil {
     }
 
     #region Privates
+
     private static Regex JavaVersionRegex() => new Regex("(java|openjdk) version \"\\s*(?<version>\\S+)\\s*\"");
 
     [SupportedOSPlatform("Windows")]
-    private static IEnumerable<string> GetJavasForWindows() {
+    private static IEnumerable<string> GetJavasForWindows()
+    {
         //Use by:https://github.com/Xcube-Studio/Natsurainko.FluentCore/blob/main/Natsurainko.FluentCore/Environment/JavaUtils.cs 
         List<string> result = [];
 
         #region Cmd: Find Java by running "where java" command in cmd.exe
 
-        using var process = new Process() {
-            StartInfo = new ProcessStartInfo() {
+        using var process = new Process()
+        {
+            StartInfo = new ProcessStartInfo()
+            {
                 FileName = "cmd",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
@@ -132,11 +153,13 @@ public static partial class JavaUtil {
 
         var output = new List<string>();
 
-        process.OutputDataReceived += (sender, e) => {
+        process.OutputDataReceived += (sender, e) =>
+        {
             if (!string.IsNullOrEmpty(e.Data))
                 output.Add(e.Data);
         };
-        process.ErrorDataReceived += (sender, e) => {
+        process.ErrorDataReceived += (sender, e) =>
+        {
             if (!string.IsNullOrEmpty(e.Data))
                 output.Add(e.Data);
         };
@@ -145,9 +168,9 @@ public static partial class JavaUtil {
         process.StandardInput.WriteLine("exit");
         process.WaitForExit();
 
-        IEnumerable<string> javaPaths = output.Where(
-            x => !string.IsNullOrEmpty(x) && x.EndsWith("java.exe") && File.Exists(x)
-        )!; // null checked in the where clause
+        IEnumerable<string> javaPaths =
+            output.Where(x => !string.IsNullOrEmpty(x) && x.EndsWith("java.exe") && File.Exists(x)
+            )!; // null checked in the where clause
         result.AddRange(javaPaths);
 
         #endregion
@@ -157,15 +180,18 @@ public static partial class JavaUtil {
         var javaHomePaths = new List<string>();
 
         // Local function: recursively search for the keyName in the registry
-        static List<string> ForRegistryKey(RegistryKey registryKey, string keyName) {
+        static List<string> ForRegistryKey(RegistryKey registryKey, string keyName)
+        {
             var result = new List<string>();
 
-            foreach (string valueName in registryKey.GetValueNames()) {
+            foreach (string valueName in registryKey.GetValueNames())
+            {
                 if (valueName == keyName) // Check that the valueName exists
                     result.Add((string)registryKey.GetValue(valueName)!);
             }
 
-            foreach (string registrySubKey in registryKey.GetSubKeyNames()) {
+            foreach (string registrySubKey in registryKey.GetSubKeyNames())
+            {
                 using var subKey = registryKey.OpenSubKey(registrySubKey);
                 if (subKey is not null) // Check that the registrySubKey exists
                     result.AddRange(ForRegistryKey(subKey, keyName));
@@ -173,19 +199,23 @@ public static partial class JavaUtil {
 
             return result;
         }
+
         ;
 
         using var reg = Registry.LocalMachine.OpenSubKey("SOFTWARE");
 
-        if (reg is not null && reg.GetSubKeyNames().Contains("JavaSoft")) {
+        if (reg is not null && reg.GetSubKeyNames().Contains("JavaSoft"))
+        {
             using var registryKey = reg.OpenSubKey("JavaSoft");
             if (registryKey is not null)
                 javaHomePaths.AddRange(ForRegistryKey(registryKey, "JavaHome"));
         }
 
-        if (reg is not null && reg.GetSubKeyNames().Contains("WOW6432Node")) {
+        if (reg is not null && reg.GetSubKeyNames().Contains("WOW6432Node"))
+        {
             using var registryKey = reg.OpenSubKey("WOW6432Node");
-            if (registryKey is not null && registryKey.GetSubKeyNames().Contains("JavaSoft")) {
+            if (registryKey is not null && registryKey.GetSubKeyNames().Contains("JavaSoft"))
+            {
                 using var registrySubKey = reg.OpenSubKey("JavaSoft");
                 if (registrySubKey is not null)
                     ForRegistryKey(registrySubKey, "JavaHome").ForEach(x => javaHomePaths.Add(x));
@@ -235,20 +265,24 @@ public static partial class JavaUtil {
         return result.Distinct();
     }
 
-    private static IEnumerable<string> GetFilesInDirectory(string directoryPath, string searchPattern) {
+    private static IEnumerable<string> GetFilesInDirectory(string directoryPath, string searchPattern)
+    {
         var files = new List<string>();
-        
-        try {
+
+        try
+        {
             // 使用 Directory.GetFiles 递归搜索文件
             files.AddRange(Directory.GetFiles(directoryPath, searchPattern, SearchOption.AllDirectories));
         }
-        catch (UnauthorizedAccessException) {
+        catch (UnauthorizedAccessException)
+        {
             // 忽略无权限访问的目录
         }
-        catch (Exception) {
+        catch (Exception)
+        {
             // 忽略其他异常（如路径过长等）
         }
-        
+
         return files;
     }
 

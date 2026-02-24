@@ -1,0 +1,71 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:chunker="clr-namespace:BedrockBoot.Chunker;assembly=BedrockBoot.Chunker"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DrawContent.Chunker.DrawChunkerBedrockToJavaContent">
+    <Grid RowDefinitions="*,Auto"
+          Margin="20,0,20,20">
+        <StackPanel Spacing="8">
+            <TextBlock Text="需要转换到的版本 （Java Version.）："></TextBlock>
+        
+            <ComboBox HorizontalAlignment="Stretch"
+                      ItemsSource="{x:Static chunker:Chunker.SupportJava}"
+                      SelectedIndex="0"></ComboBox>
+        
+            <TextBlock Text="Java 存档"></TextBlock>
+        
+            <DockPanel HorizontalSpacing="8">
+                <Button DockPanel.Dock="Right"
+                        Padding="8,0">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="4">
+                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                   Glyph="&#xE7C3;"/>
+                        <TextBlock Text="导入 .mcworld"></TextBlock>
+                    </StackPanel>
+                </Button>
+            
+                <Button DockPanel.Dock="Right"
+                        Padding="8,0">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="4">
+                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                   Glyph="&#xE8B7;"/>
+                        <TextBlock Text="从实例中选择"></TextBlock>
+                    </StackPanel>
+                </Button>
+            
+                <TextBox Watermark="存档路径（mcworld）"></TextBox>
+            </DockPanel>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="8">
+            <Button Padding="8,0"
+                    Height="32">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="4">
+                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                               Glyph="&#xE8B7;"/>
+                    <TextBlock Text="导出为文件夹"></TextBlock>
+                </StackPanel>
+            </Button>
+            
+            <Button Classes="Accent"
+                    Padding="8,0"
+                    Height="32">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="4">
+                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                               Glyph="&#xF012;"/>
+                    <TextBlock Text="导出为 .zip"></TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

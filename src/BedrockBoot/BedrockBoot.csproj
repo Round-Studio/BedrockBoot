@@ -58,6 +58,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
+        <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj" />
         <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
         <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
         <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />

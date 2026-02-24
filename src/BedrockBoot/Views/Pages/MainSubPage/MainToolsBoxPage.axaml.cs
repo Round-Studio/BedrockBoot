@@ -65,50 +65,69 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
     private void WorldShift_OnClick(object? sender, RoutedEventArgs e)
     {
-        Task.Run(async () =>
+        void OpenDialog()
         {
-            if (Chunker.Chunker.DefaultJvmInfo == null)
+            Task.Run(async () =>
             {
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    DialogHost.Show(new()
-                    {
-                        Title = "存档转换",
-                        Content = "正在获取适合的 Jvm 运行器..."
-                    });
-                });
-
-                var jvms = await JavaUtil.GetJavaListAsync();
-                jvms.ForEach(j => Console.WriteLine($"Find Jvm: {j.JavaPath}"));
-                var jvm = jvms.Find(j => j.MajorVersion >= 17);
-                
-                Dispatcher.UIThread.Invoke(DialogHost.Close);
-
-                if (jvm == null)
+                if (Chunker.Chunker.DefaultJvmInfo == null)
                 {
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         DialogHost.Show(new()
                         {
-                            Title = "Jvm 错误",
-                            Content = "未找到合适的 Jvm 运行器"
+                            Title = "存档转换",
+                            Content = "正在获取适合的 Jvm 运行器..."
                         });
                     });
-                    return;
-                }
+
+                    var jvms = await JavaUtil.GetJavaListAsync();
+                    jvms.ForEach(j => Console.WriteLine($"Find Jvm: {j.JavaPath}"));
+                    var jvm = jvms.Find(j => j.MajorVersion >= 17);
                 
-                Chunker.Chunker.DefaultJvmInfo = jvm;
-            }
+                    Dispatcher.UIThread.Invoke(DialogHost.Close);
+
+                    if (jvm == null)
+                    {
+                        Dispatcher.UIThread.Invoke(() =>
+                        {
+                            DialogHost.Show(new()
+                            {
+                                Title = "Jvm 错误",
+                                Content = "未找到合适的 Jvm 运行器"
+                            });
+                        });
+                        return;
+                    }
+                
+                    Chunker.Chunker.DefaultJvmInfo = jvm;
+                }
             
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                DialogHost.Show(new()
+                Dispatcher.UIThread.Invoke(() =>
                 {
-                    Title = "存档转换",
-                    Content = new DialogChooseChunkerTypeContent(),
-                    CloseButtonText = "取消"
+                    DialogHost.Show(new()
+                    {
+                        Title = "存档转换",
+                        Content = new DialogChooseChunkerTypeContent(),
+                        CloseButtonText = "取消"
+                    });
                 });
             });
-        });
+        }
+
+        if (!Chunker.Chunker.CheckChunker())
+        {
+            var dialog = new DialogDownloadChunkerContent();
+            DialogHost.Show(new ()
+            {
+                Title = "下载依赖",
+                Content = dialog
+            });
+            
+            dialog.Download(OpenDialog);
+        }
+        else
+        {
+            OpenDialog();
+        }
     }
 }

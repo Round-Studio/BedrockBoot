@@ -48,6 +48,14 @@
             </DockPanel>
         </StackPanel>
         
+        <TextBlock Grid.Row="1"
+                   Opacity="0.6"
+                   Text="使用 Chunker 开源项目，转换存档有风险（Java to Bedrock 可能会有问题）"></TextBlock>
+        
+        <TextBlock Grid.Row="1"
+                   Opacity="0.6"
+                   Text="使用 Chunker 开源项目，转换存档有风险（目前 Java to Bedrock 有问题）"></TextBlock>
+        
         <StackPanel Grid.Row="1"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"

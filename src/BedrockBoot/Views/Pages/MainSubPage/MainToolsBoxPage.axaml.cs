@@ -21,6 +21,10 @@ public partial class MainToolsBoxPage : BedrockBootPage
     public MainToolsBoxPage()
     {
         InitializeComponent();
+        
+#if RELEASE
+        TranslateResourcePack.IsVisible = GlobalModel.FunctionOption.IsEnableToolsBoxUsingPackTranslate;
+#endif
     }
 
     /// <summary>

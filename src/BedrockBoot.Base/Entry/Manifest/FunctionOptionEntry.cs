@@ -36,4 +36,7 @@ public class FunctionOptionEntry
 
     [JsonPropertyName("isEnableSettingPersonalizationHome")]
     public bool IsEnableSettingPersonalizationHome { get; set; }
+    
+    [JsonPropertyName("isEnableToolsBoxUsingPackTranslate")]
+    public bool IsEnableToolsBoxUsingPackTranslate { get; set; }
 }

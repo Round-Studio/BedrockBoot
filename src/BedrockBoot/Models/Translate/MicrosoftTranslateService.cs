@@ -51,11 +51,11 @@ public class MicrosoftTranslateService : ITranslationService
         try
         {
             // 可以在这里添加一些初始化代码
-            Console.WriteLine("MicrosoftTranslateService 静态初始化成功");
+            Console.WriteLine(@"MicrosoftTranslateService 静态初始化成功");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"MicrosoftTranslateService 静态初始化失败: {ex.Message}");
+            Console.WriteLine($@"MicrosoftTranslateService 静态初始化失败: {ex.Message}");
             throw; // 重新抛出，但我们可以记录日志
         }
     }
@@ -79,14 +79,14 @@ public class MicrosoftTranslateService : ITranslationService
         }
         catch (HttpRequestException httpEx)
         {
-            Console.WriteLine($"HTTP错误 (状态码: {httpEx.StatusCode}): {httpEx.Message}");
-            Console.WriteLine($"请求的文本: {text}");
+            Console.WriteLine($@"HTTP错误 (状态码: {httpEx.StatusCode}): {httpEx.Message}");
+            Console.WriteLine($@"请求的文本: {text}");
             return text; // HTTP错误时返回原文
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"翻译失败: {ex.Message}");
-            Console.WriteLine($"请求的文本: {text}");
+            Console.WriteLine($@"翻译失败: {ex.Message}");
+            Console.WriteLine($@"请求的文本: {text}");
             return text; // 发生异常时返回原文
         }
     }
@@ -101,11 +101,11 @@ public class MicrosoftTranslateService : ITranslationService
             {
                 // 假设令牌有效期为10分钟，设置为9分钟，留出1分钟缓冲
                 _tokenExpiryTime = DateTime.UtcNow.AddMinutes(9);
-                Console.WriteLine("Token刷新成功");
+                Console.WriteLine(@"Token刷新成功");
             }
             else
             {
-                Console.WriteLine("警告: 获取Token失败");
+                Console.WriteLine(@"警告: 获取Token失败");
             }
         }
     }
@@ -132,7 +132,7 @@ public class MicrosoftTranslateService : ITranslationService
         // 查找映射
         if (_languageCodeMap.TryGetValue(lowerCode, out string mappedCode))
         {
-            Console.WriteLine($"语言代码映射: {languageCode} -> {mappedCode}");
+            Console.WriteLine($@"语言代码映射: {languageCode} -> {mappedCode}");
             return mappedCode;
         }
         
@@ -143,7 +143,7 @@ public class MicrosoftTranslateService : ITranslationService
         }
         
         // 如果没有映射，返回原代码（但记录警告）
-        Console.WriteLine($"警告: 未找到语言代码映射: {languageCode}，使用原代码");
+        Console.WriteLine($@"警告: 未找到语言代码映射: {languageCode}，使用原代码");
         return languageCode;
     }
 
@@ -192,10 +192,10 @@ public class MicrosoftTranslateService : ITranslationService
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"翻译API错误 - 状态码: {response.StatusCode}");
-                Console.WriteLine($"请求URL: {url}");
-                Console.WriteLine($"请求体: {requestBody}");
-                Console.WriteLine($"错误响应: {errorContent}");
+                Console.WriteLine($@"翻译API错误 - 状态码: {response.StatusCode}");
+                Console.WriteLine($@"请求URL: {url}");
+                Console.WriteLine($@"请求体: {requestBody}");
+                Console.WriteLine($@"错误响应: {errorContent}");
                 
                 // 尝试提取更详细的错误信息
                 try
@@ -205,11 +205,11 @@ public class MicrosoftTranslateService : ITranslationService
                     {
                         if (error.TryGetProperty("message", out var message))
                         {
-                            Console.WriteLine($"错误消息: {message.GetString()}");
+                            Console.WriteLine($@"错误消息: {message.GetString()}");
                         }
                         if (error.TryGetProperty("code", out var code))
                         {
-                            Console.WriteLine($"错误代码: {code.GetString()}");
+                            Console.WriteLine($@"错误代码: {code.GetString()}");
                         }
                     }
                 }
@@ -225,7 +225,7 @@ public class MicrosoftTranslateService : ITranslationService
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"HTTP请求异常: {ex.Message}");
+            Console.WriteLine($@"HTTP请求异常: {ex.Message}");
             throw;
         }
     }
@@ -260,7 +260,7 @@ public class MicrosoftTranslateService : ITranslationService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取API令牌失败: {ex.Message}");
+            Console.WriteLine($@"获取API令牌失败: {ex.Message}");
             return null;
         }
     }
@@ -285,7 +285,7 @@ public class MicrosoftTranslateService : ITranslationService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"解析翻译响应失败: {ex.Message}, 响应: {json}");
+            Console.WriteLine($@"解析翻译响应失败: {ex.Message}, 响应: {json}");
         }
         return null;
     }
@@ -319,7 +319,7 @@ public class MicrosoftTranslateService : ITranslationService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"解析批量翻译响应失败: {ex.Message}, 响应: {json}");
+            Console.WriteLine($@"解析批量翻译响应失败: {ex.Message}, 响应: {json}");
         }
         return results;
     }

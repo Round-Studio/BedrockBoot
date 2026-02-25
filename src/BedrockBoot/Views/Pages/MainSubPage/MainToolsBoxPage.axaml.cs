@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Chunker.Jvm;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Chunker;
 using BedrockBoot.Views.Windows.SubWindows;
 using BedrockLauncher.Core;
@@ -85,7 +89,7 @@ public partial class MainToolsBoxPage : BedrockBootPage
                     });
 
                     var jvms = await JavaUtil.GetJavaListAsync();
-                    jvms.ForEach(j => Console.WriteLine($"Find Jvm: {j.JavaPath}"));
+                    jvms.ForEach(j => Console.WriteLine($@"Find Jvm: {j.JavaPath}"));
                     var jvm = jvms.Find(j => j.MajorVersion >= 17);
                 
                     Dispatcher.UIThread.Invoke(DialogHost.Close);
@@ -135,8 +139,59 @@ public partial class MainToolsBoxPage : BedrockBootPage
         }
     }
 
-    private void TranslateResourcePack_OnClick(object? sender, RoutedEventArgs e)
+    private async void TranslateResourcePack_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        var window = this.VisualRoot as Window;
+        var dialog = new OpenFileDialog
+        {
+            Title = "导入需要翻译的基岩版资源包",
+            AllowMultiple = false,
+            Filters = new List<FileDialogFilter>
+            {
+                new FileDialogFilter
+                {
+                    Name = "基岩版资源包/行为包",
+                    Extensions = new List<string> { "mcpack", "mcaddon" }
+                }
+            }
+        };
+
+        if (window == null) return;
+
+        var result = await dialog.ShowAsync(window);
+
+        if (result != null && result.Any())
+        {
+            var selectedFile = result.First();
+
+            var saveFileDialog = new SaveFileDialog
+            {
+                Title = "保存为 McPack 文件",
+                Filters = new List<FileDialogFilter>
+                {
+                    new FileDialogFilter
+                    {
+                        Name = "Minecraft 基岩版支持文件",
+                        Extensions = new List<string> { "mcworld","mcaddon" }
+                    }
+                }
+            };
+
+            if (window == null) return;
+
+            var showAsync = await saveFileDialog.ShowAsync(window);
+        
+            if (!string.IsNullOrWhiteSpace(showAsync))
+            {
+                var saveFile = showAsync;
+                var inputFile = selectedFile;
+                
+                DialogHost.Show(new()
+                {
+                    Title = "翻译包",
+                    Content = new DialogTranslateResourcePackContent(inputFile, saveFile)
+                });
+            }
+        }
     }
 }

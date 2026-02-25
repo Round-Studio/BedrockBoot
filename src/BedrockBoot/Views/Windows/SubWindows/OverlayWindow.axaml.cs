@@ -218,7 +218,7 @@ public partial class OverlayWindow : Window
             if (_targetHwnd == IntPtr.Zero)
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    Console.WriteLine($"无法找到进程 {_targetProcess?.ProcessName} 版本为 {_expectedVersion} 的窗口");
+                    Console.WriteLine($@"无法找到进程 {_targetProcess?.ProcessName} 版本为 {_expectedVersion} 的窗口");
                 });
         });
     }
@@ -584,7 +584,7 @@ public partial class OverlayWindow : Window
             var errorCode = Marshal.GetLastWin32Error();
             if (errorCode != 0)
             {
-                Console.WriteLine($"GetClassName failed with error code: {errorCode}");
+                Console.WriteLine($@"GetClassName failed with error code: {errorCode}");
                 return string.Empty;
             }
         }

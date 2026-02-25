@@ -9,6 +9,7 @@ using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
+using Round.SDK.Global;
 using Round.SDK.Helper;
 
 namespace BedrockBoot.Models.Pack.Game.ResourcePack;
@@ -348,12 +349,7 @@ public class ResourcePackTranslate
         if (File.Exists(languagesJsonPath))
         {
             var content = File.ReadAllText(languagesJsonPath);
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            existingLanguages = JsonSerializer.Deserialize<List<string>>(content, options) ?? new List<string>();
+            existingLanguages = JsonSerializer.Deserialize<List<string>>(content, JsonSerializerOption.Options) ?? new List<string>();
         }
 
         // 添加新语言（如果不存在）
@@ -361,13 +357,8 @@ public class ResourcePackTranslate
         {
             existingLanguages.Add(newLanguage);
             existingLanguages.Sort(); // 排序以保持一致性
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            var updatedContent = JsonSerializer.Serialize(existingLanguages, options);
+            
+            var updatedContent = JsonSerializer.Serialize(existingLanguages, JsonSerializerOption.Options);
             File.WriteAllText(languagesJsonPath, updatedContent);
         }
     }

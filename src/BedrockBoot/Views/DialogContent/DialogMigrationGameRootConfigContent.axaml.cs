@@ -63,7 +63,7 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
 
                 if (string.IsNullOrEmpty(mojangSourcePath) || !Directory.Exists(mojangSourcePath))
                 {
-                    Console.WriteLine("未找到 com.mojang 数据目录，跳过迁移。");
+                    Console.WriteLine(@"未找到 com.mojang 数据目录，跳过迁移。");
                     goto SKIP_MIGRATION;
                 }
 

@@ -116,9 +116,9 @@ public class ModsCore
 
             var resourceName = "BedrockBoot.Base.Dependence.PreLoadCpp.dll";
             var allResources = assembly.GetManifestResourceNames();
-            Console.WriteLine("可用资源:");
+            Console.WriteLine(@"可用资源:");
             foreach (var name in allResources)
-                Console.WriteLine($"  {name}");
+                Console.WriteLine($@"  {name}");
     
             var actualResourceName = allResources.FirstOrDefault(r => r.EndsWith("PreLoadCpp.dll"));
             if (actualResourceName == null)
@@ -153,8 +153,8 @@ public class ModsCore
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"错误: {ex.Message}");
-            Console.WriteLine($"堆栈: {ex.StackTrace}");
+            Console.WriteLine($@"错误: {ex.Message}");
+            Console.WriteLine($@"堆栈: {ex.StackTrace}");
         }
     }
 

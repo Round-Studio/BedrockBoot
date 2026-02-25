@@ -11,5 +11,5 @@
   "isEnableMouseLock": false,
   "isEnableMcPackOpenWithBody": true,
   "isEnableSettingPersonalizationHome": true,
-  "isEnableToolsBoxUsingPackTranslate": false
+  "isEnableToolsBoxUsingPackTranslate": true
 }

@@ -77,13 +77,13 @@ public partial class MainMultiplayerPage : BedrockBootPage
 
                 if (nodeList != null)
                 {
-                    Console.WriteLine($"成功获取到 {nodeList.Count} 个节点：");
+                    Console.WriteLine($@"成功获取到 {nodeList.Count} 个节点：");
                     GlobalModel.ETPublicServer = nodeList;
                     Dispatcher.UIThread.Invoke(GetXboxUser);
                 }
                 else
                 {
-                    Console.WriteLine("反序列化结果为空。");
+                    Console.WriteLine(@"反序列化结果为空。");
                     Dispatcher.UIThread.Invoke(() => MainPage.Instance.SelTag.SelectedIndex = 0);
                 }
 

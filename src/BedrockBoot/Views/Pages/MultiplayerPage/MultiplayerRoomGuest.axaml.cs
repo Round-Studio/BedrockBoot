@@ -24,7 +24,7 @@ public partial class MultiplayerRoomGuest : UserControl
                 PlayerList.Children.Clear();
                 list.ForEach(p =>
                 {
-                    Console.WriteLine($"接收到心跳：{p.PlayerName}");
+                    Console.WriteLine($@"接收到心跳：{p.PlayerName}");
                     PlayerList.Children.Add(new PlayerItem(p));
                 });
             });

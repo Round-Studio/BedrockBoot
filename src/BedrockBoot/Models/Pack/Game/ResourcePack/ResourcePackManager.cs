@@ -68,7 +68,7 @@ public class ResourcePackManager
             catch (System.Exception ex)
             {
                 // 记录错误但继续处理其他文件
-                System.Console.WriteLine($"Error processing manifest {file}: {ex.Message}");
+                System.Console.WriteLine($@"Error processing manifest {file}: {ex.Message}");
             }
         });
 
@@ -156,7 +156,7 @@ public class ResourcePackManager
             }
             catch (System.Exception ex)
             {
-                System.Console.WriteLine($"Error adding pack from {file}: {ex.Message}");
+                System.Console.WriteLine($@"Error adding pack from {file}: {ex.Message}");
             }
         });
 

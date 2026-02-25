@@ -22,59 +22,90 @@ public class IsolationCore
     public string RealRootPath => GetRealPath(VersionConfig);
     public string RootPath => GetInstanceConfigRootPath(VersionConfig);
 
+    private void SafeDeleteIfSymbolicLink(string path)
+    {
+        if (!Directory.Exists(path)) return;
+
+        var type = DirectoryLinkChecker.CheckFolderType(path);
+        if (type == DirectoryType.SymbolicLink)
+        {
+            Directory.Delete(path);
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                $"目标路径 '{path}' 是真实目录，无法安全隔离。请启用强制模式或手动清理。");
+        }
+    }
+
+    private void CreateSymbolicLinkSafe(string linkPath, string targetPath)
+    {
+        if (Directory.Exists(linkPath))
+            SafeDeleteIfSymbolicLink(linkPath);
+
+        try
+        {
+            Directory.CreateSymbolicLink(linkPath, targetPath);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            throw new InvalidOperationException(
+                "无法创建符号链接：请以管理员身份运行程序，或在 Windows 设置中启用「开发者模式」。", ex);
+        }
+        catch (IOException ex) when (ex.Message.Contains("privilege") || ex.HResult == -2147024891)
+        {
+            throw new InvalidOperationException(
+                "创建符号链接需要提升权限或启用开发者模式。", ex);
+        }
+    }
+
     public void Init(bool isForced = false)
     {
         Clear();
-        
+
         var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
-        if (folderType == DirectoryType.Folder &&
-            !isForced)
+        if (folderType == DirectoryType.Folder && !isForced)
             throw new Exception("该实例的目标隔离文件需要进行迁移");
 
-        if (Path.Exists(Path.Combine(RealRootPath, "LocalState")))
+        // 处理 LocalState
+        var localStatePath = Path.Combine(RealRootPath, "LocalState");
+        if (Path.Exists(localStatePath))
         {
-            if (DirectoryLinkChecker.CheckFolderType(Path.Combine(RealRootPath, "LocalState")) ==
-                DirectoryType.SymbolicLink)
+            if (DirectoryLinkChecker.CheckFolderType(localStatePath) == DirectoryType.SymbolicLink)
             {
-                Directory.Delete(Path.Combine(RealRootPath, "LocalState"));
-                Directory.CreateDirectory(Path.Combine(RealRootPath, "LocalState"));
+                Directory.Delete(localStatePath);
+                Directory.CreateDirectory(localStatePath);
             }
         }
-        else if(VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
-            Directory.CreateDirectory(Path.Combine(RealRootPath, "LocalState"));
+            Directory.CreateDirectory(localStatePath);
         }
 
+        // 清理 RootPath（仅符号链接）
         if (folderType == DirectoryType.SymbolicLink)
-            Directory.Delete(RootPath);
+            SafeDeleteIfSymbolicLink(RootPath);
 
-        if (!isForced && Directory.Exists(RootPath))
-            Directory.Delete(RootPath);
-
+        // 创建 RealRootPath
         if (!Directory.Exists(RealRootPath))
             Directory.CreateDirectory(RealRootPath);
 
-        if (folderType == DirectoryType.SymbolicLink)
-            try
-            {
-                Directory.Delete(RootPath);
-                Directory.CreateSymbolicLink(RootPath, RealRootPath);
-            }
-            catch
-            {
-            }
+        // 创建符号链接
+        CreateSymbolicLinkSafe(RootPath, RealRootPath);
 
-        if (!Directory.Exists(RootPath))
-            Directory.CreateSymbolicLink(RootPath, RealRootPath);
-
-        if (DirectoryLinkChecker.CheckFolderType(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock")) ==
-            DirectoryType.Folder)
+        // 链接 "Minecraft Bedrock"
+        var bedrockLinkPath = Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock");
+        if (DirectoryLinkChecker.CheckFolderType(bedrockLinkPath) == DirectoryType.Folder)
         {
-            Directory.Delete(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock"), true);
-            Directory.CreateSymbolicLink(Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock"), RealRootPath);
+            Directory.Delete(bedrockLinkPath, true);
+        }
+        if (!Directory.Exists(bedrockLinkPath))
+        {
+            CreateSymbolicLinkSafe(bedrockLinkPath, RealRootPath);
         }
 
-        new[]
+        // 链接子目录
+        var packFolders = new[]
         {
             "resource_packs",
             "behavior_packs",
@@ -82,26 +113,28 @@ public class IsolationCore
             "minecraftpe",
             "custom_skins",
             "skin_packs"
-        }.ToList().ForEach(f =>
+        };
+
+        foreach (var f in packFolders)
         {
-            if (Directory.Exists(Path.Combine(VersionConfig.VersionPath, f)) &&
-                Directory.Exists(GetInstancePackPath(VersionConfig, f)))
+            var versionPackPath = Path.Combine(VersionConfig.VersionPath, f);
+            var instancePackPath = GetInstancePackPath(VersionConfig, f);
+
+            if (Directory.Exists(versionPackPath))
+                Directory.Delete(versionPackPath, true);
+
+            if (Directory.Exists(instancePackPath))
             {
-                Directory.Delete(Path.Combine(VersionConfig.VersionPath, f), true);
-                Directory.CreateSymbolicLink(Path.Combine(VersionConfig.VersionPath, f),
-                    GetInstancePackPath(VersionConfig, f));
+                CreateSymbolicLinkSafe(versionPackPath, instancePackPath);
             }
-        });
+        }
     }
 
     public void Clear()
     {
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
-            var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
-
-            if (folderType == DirectoryType.SymbolicLink)
-                Directory.Delete(RootPath);
+            SafeDeleteIfSymbolicLink(RootPath);
         }
     }
 
@@ -132,27 +165,17 @@ public class IsolationCore
 
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            if (versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release)
-            {
-                var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Minecraft Bedrock"
-                );
+            string dirName = versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release
+                ? "Minecraft Bedrock"
+                : "Minecraft Bedrock Preview";
 
-                return dir;
-            }
-            else
-            {
-                var dir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Minecraft Bedrock Preview"
-                );
-
-                return dir;
-            }
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                dirName
+            );
         }
 
-        return string.Empty;
+        throw new NotSupportedException($"不支持的 Minecraft 构建类型: {versionConfig.Info.BuildType}");
     }
 
     public static string GetInstanceFolderPath(VersionConfig versionConfig,
@@ -167,12 +190,9 @@ public class IsolationCore
             InstanceFolderType.ArchiveFolder => GetInstanceFolderPath(versionConfig, "minecraftWorlds", user),
             InstanceFolderType.OptionFolder => GetInstanceFolderPath(versionConfig, "minecraftpe", user),
             InstanceFolderType.SkinPackFolder => GetInstanceFolderPath(versionConfig, "skin_packs", user),
-            InstanceFolderType.UserFolder => new Func<string>(() =>
-            {
-                if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP) return string.Empty;
-
-                return Path.Combine(GetRealPath(versionConfig), "Users");
-            }).Invoke(),
+            InstanceFolderType.UserFolder => versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP
+                ? string.Empty
+                : Path.Combine(GetRealPath(versionConfig), "Users"),
             InstanceFolderType.ScreenshotFolder => GetInstanceFolderPath(versionConfig, "Screenshots", user),
             _ => string.Empty
         };
@@ -182,43 +202,34 @@ public class IsolationCore
         InstanceFolderType folderType = InstanceFolderType.RootFolder)
     {
         var users = GetInstanceUsers(versionConfig);
-        var result = users.Select(x => GetInstanceFolderPath(versionConfig, folderType, x)).ToList();
-        return result;
+        return users.Select(x => GetInstanceFolderPath(versionConfig, folderType, x)).ToList();
     }
 
-    public static List<string>? GetInstanceUsers(VersionConfig versionConfig)
+    public static List<string> GetInstanceUsers(VersionConfig versionConfig)
     {
-        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP) return new() { "Shared" };
+        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+            return new() { "Shared" };
 
         var userFolder = GetInstanceFolderPath(versionConfig, InstanceFolderType.UserFolder);
         if (Directory.Exists(userFolder))
-            return Directory.GetDirectories(userFolder).Select(x => Path.GetFileName(x)).ToList();
+            return Directory.GetDirectories(userFolder).Select(Path.GetFileName).ToList();
 
         return new() { "Shared" };
     }
 
-    private static string GetInstanceFolderPath(VersionConfig VersionConfig, string folder, string user = "Shared")
+    private static string GetInstanceFolderPath(VersionConfig versionConfig, string folder, string user = "Shared")
     {
-        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-            return Path.Combine(
-                GetRealPath(VersionConfig),
-                @"LocalState", "games", "com.mojang",
-                folder
-            );
+        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+            return Path.Combine(GetRealPath(versionConfig), @"LocalState", "games", "com.mojang", folder);
 
-        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            var dir = Path.Combine(
-                GetRealPath(VersionConfig),
-                "Users", user, "games", "com.mojang", folder
-            );
-
+            var dir = Path.Combine(GetRealPath(versionConfig), "Users", user, "games", "com.mojang", folder);
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-
             return dir;
         }
 
-        return string.Empty;
+        throw new NotSupportedException($"不支持的 Minecraft 构建类型: {versionConfig.Info.BuildType}");
     }
 }

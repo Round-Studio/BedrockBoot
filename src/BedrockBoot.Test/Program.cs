@@ -1,10 +1,8 @@
 ﻿using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Models.Translate;
 
-var translationService = new MicrosoftTranslateService();
-
 // 2. 创建翻译器实例
-var translator = new ResourcePackTranslate(translationService);
+var translator = new ResourcePackTranslate(new MicrosoftTranslateService());
 
 // 3. 翻译资源包 - 从默认英文(en_US)翻译为目标语言
 await translator.TranslatePackageAsync(

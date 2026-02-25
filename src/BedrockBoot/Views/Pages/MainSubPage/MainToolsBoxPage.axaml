@@ -50,11 +50,22 @@
                                               Name="DeleteMcBtn"
                                               Click="DeleteMcBtn_OnClick"/>
                 
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
+                           Text="工具" />
+                
                 <onePointControls:SettingCard Header="存档转换"
                                               Description="Java 存档与 Bedrock 存档互相转换"
                                               Glyph="&#xEBD2;"
                                               Name="WorldShift"
                                               Click="WorldShift_OnClick"
+                                              IsClickable="True"/>
+                
+                <onePointControls:SettingCard Header="翻译资源包"
+                                              Description="导入一个资源包，并翻译成中文"
+                                              Glyph="&#xF2B7;"
+                                              Name="TranslateResourcePack"
+                                              Click="TranslateResourcePack_OnClick"
                                               IsClickable="True"/>
             </StackPanel>
         </ScrollViewer>

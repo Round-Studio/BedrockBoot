@@ -130,4 +130,9 @@ public partial class MainToolsBoxPage : BedrockBootPage
             OpenDialog();
         }
     }
+
+    private void TranslateResourcePack_OnClick(object? sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,29 +1,18 @@
-﻿using BedrockBoot.Chunker;
-using BedrockBoot.Chunker.Base.Entry;
-using BedrockBoot.Chunker.Base.Enum;
-using BedrockBoot.Chunker.Event;
-using BedrockBoot.Chunker.Jvm;
-using BedrockBoot.Models.Pack.Chunker;
+﻿using BedrockBoot.Models.Pack.Game.ResourcePack;
+using BedrockBoot.Models.Translate;
 
-public class Program
-{
-    private static async Task Main()
+var translationService = new MicrosoftTranslateService();
+
+// 2. 创建翻译器实例
+var translator = new ResourcePackTranslate(translationService);
+
+// 3. 翻译资源包 - 从默认英文(en_US)翻译为目标语言
+await translator.TranslatePackageAsync(
+    packagePath: @"J:\enPack.mcpack",  // 输入包路径
+    targetLanguage: "zh_CN",                            // 目标语言
+    outputPath: @"J:\zhCNPack.mcpack", // 输出包路径（可选，默认覆盖原包）
+    progressCallback: (progress, status) =>
     {
-        if (!Chunker.CheckChunker())
-            await Chunker.DownloadChunker(DownloadType.Github, new Progress<DownloadProgressEventArgs>(pro =>
-            {
-                Console.WriteLine(pro.Percentage);
-            }));
-        
-        new ChunkerHelper(
-            ChunkerType.BedrockToJava,
-            "1.21.0", 
-            "J://test.mcworld", 
-            JavaUtil.GetJavaListAsync().Result.First(),
-            new Progress<double>(p =>
-            {
-                Console.WriteLine($"进度：{p:F2} %");
-            }))
-            .ConversionToFolder("G:\\Minecraft\\.minecraft\\versions\\1.21.11-Fabric_0.18.4\\saves\\新的世界1");
+        Console.WriteLine($"进度: {progress:F2}% - {status}");
     }
-}
+);

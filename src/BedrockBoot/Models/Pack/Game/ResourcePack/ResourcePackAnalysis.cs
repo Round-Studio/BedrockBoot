@@ -23,6 +23,24 @@ public class ResourcePackAnalysis
 
     public string FilePath { get; }
 
+    // 新增：子包节点类
+    public class SubPackNode
+    {
+        public string Name { get; set; }
+        public string Path { get; set; }
+        public ResourcePackManifest Manifest { get; set; }
+        public List<SubPackNode> Children { get; set; } = new List<SubPackNode>();
+        public bool IsEnabled { get; set; } = true; // 是否启用此子包
+    }
+
+    // 新增：主包信息类
+    public class PackInfo
+    {
+        public ResourcePackManifest MainManifest { get; set; }
+        public List<SubPackNode> SubPacks { get; set; } = new List<SubPackNode>();
+        public string RootPath { get; set; }
+    }
+
     public static ResourcePackType GetPackType(ResourcePackManifest conf)
     {
         if (conf?.Modules == null) return ResourcePackType.Unknown;
@@ -45,6 +63,77 @@ public class ResourcePackAnalysis
         if (types.Count > 1) return ResourcePackType.Addon;
 
         return types.FirstOrDefault();
+    }
+
+    public PackInfo GetPackInfo()
+    {
+        if (!Directory.Exists(_tempPath))
+        {
+            ZipHelper.ExtractZipFile(FilePath, _tempPath);
+            ExtractSubPacks(_tempPath);
+        }
+
+        var packInfo = new PackInfo { RootPath = _tempPath };
+        
+        // 获取所有manifest文件
+        var manifestFiles = Directory.GetFiles(_tempPath, "manifest.json", SearchOption.AllDirectories);
+        
+        // 构建子包树形结构
+        foreach (var file in manifestFiles)
+        {
+            var manifest = GetPackManifest(file);
+            if (manifest != null)
+            {
+                var directory = Path.GetDirectoryName(file);
+                
+                // 判断是否为主包manifest（根目录下的manifest）
+                if (directory == _tempPath)
+                {
+                    packInfo.MainManifest = manifest;
+                }
+                else
+                {
+                    // 将非根目录的manifest视为子包
+                    var subPackNode = CreateSubPackNode(directory, manifest);
+                    packInfo.SubPacks.Add(subPackNode);
+                }
+            }
+        }
+
+        // 构建父子关系
+        BuildSubPackHierarchy(packInfo.SubPacks);
+
+        return packInfo;
+    }
+
+    private SubPackNode CreateSubPackNode(string directory, ResourcePackManifest manifest)
+    {
+        var relativePath = Path.GetRelativePath(_tempPath, directory);
+        var name = Path.GetFileName(directory);
+        
+        return new SubPackNode
+        {
+            Name = name,
+            Path = directory,
+            Manifest = manifest,
+            Children = new List<SubPackNode>()
+        };
+    }
+
+    private void BuildSubPackHierarchy(List<SubPackNode> allNodes)
+    {
+        var nodeMap = allNodes.ToDictionary(n => n.Path, n => n);
+        
+        foreach (var node in allNodes.ToList())
+        {
+            var parentPath = Path.GetDirectoryName(node.Path);
+            
+            if (nodeMap.ContainsKey(parentPath))
+            {
+                nodeMap[parentPath].Children.Add(node);
+                allNodes.Remove(node); // 从顶层移除，因为它属于另一个节点的子节点
+            }
+        }
     }
 
     public List<ResourcePackManifest> GetPackManifests()
@@ -194,5 +283,118 @@ public class ResourcePackAnalysis
         if (supportedLanguages.Contains("en_GB")) return "en_GB";
 
         return supportedLanguages[0];
+    }
+
+    // 新增：重新打包方法
+    public void Repack(string outputPath, PackInfo packInfo, bool includeDisabledSubPacks = false)
+    {
+        if (string.IsNullOrEmpty(outputPath))
+            throw new ArgumentException("Output path cannot be null or empty", nameof(outputPath));
+
+        // 确保输出目录存在
+        var outputDir = Path.GetDirectoryName(outputPath);
+        if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+        {
+            Directory.CreateDirectory(outputDir);
+        }
+
+        // 创建临时工作目录
+        var workPath = Path.Combine(PathsList.TempPath, $"repack_{Guid.NewGuid().ToString().Replace("-", "")}");
+        try
+        {
+            // 复制主包内容
+            CopyDirectory(packInfo.RootPath, workPath);
+
+            // 删除所有原始子包文件（.mcpack）
+            var originalSubPacks = Directory.GetFiles(workPath, "*.mcpack", SearchOption.AllDirectories);
+            foreach (var subPack in originalSubPacks)
+            {
+                File.Delete(subPack);
+            }
+
+            // 根据子包节点信息重新组织结构
+            ProcessSubPacks(workPath, packInfo.SubPacks, includeDisabledSubPacks);
+
+            // 打包成新的zip文件
+            ZipHelper.CreateZipFile(workPath, outputPath);
+        }
+        finally
+        {
+            // 清理临时工作目录
+            if (Directory.Exists(workPath))
+            {
+                Directory.Delete(workPath, true);
+            }
+        }
+    }
+
+    private void ProcessSubPacks(string rootPath, List<SubPackNode> subPacks, bool includeDisabledSubPacks)
+    {
+        foreach (var subPack in subPacks)
+        {
+            if (!includeDisabledSubPacks && !subPack.IsEnabled)
+                continue;
+
+            // 如果子包有子节点，递归处理
+            if (subPack.Children.Any())
+            {
+                ProcessSubPacks(rootPath, subPack.Children, includeDisabledSubPacks);
+            }
+
+            // 将子包移动到正确的相对位置
+            MoveSubPackToCorrectLocation(rootPath, subPack);
+        }
+    }
+
+    private void MoveSubPackToCorrectLocation(string rootPath, SubPackNode subPack)
+    {
+        var sourcePath = subPack.Path;
+        var relativePath = Path.GetRelativePath(rootPath, sourcePath);
+        var targetPath = Path.Combine(rootPath, relativePath);
+
+        // 如果源路径和目标路径不同，则移动内容
+        if (sourcePath != targetPath)
+        {
+            // 创建目标目录
+            Directory.CreateDirectory(targetPath);
+
+            // 移动所有内容
+            foreach (var file in Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories))
+            {
+                var relativeFile = Path.GetRelativePath(sourcePath, file);
+                var targetFile = Path.Combine(targetPath, relativeFile);
+                
+                var targetDir = Path.GetDirectoryName(targetFile);
+                if (!Directory.Exists(targetDir))
+                {
+                    Directory.CreateDirectory(targetDir);
+                }
+                
+                File.Copy(file, targetFile, true);
+            }
+        }
+    }
+
+    private void CopyDirectory(string sourceDir, string destinationDir)
+    {
+        var dir = new DirectoryInfo(sourceDir);
+        if (!dir.Exists) throw new DirectoryNotFoundException($"Source directory does not exist: {sourceDir}");
+
+        if (!Directory.Exists(destinationDir))
+        {
+            Directory.CreateDirectory(destinationDir);
+        }
+
+        foreach (var file in dir.GetFiles())
+        {
+            var targetFilePath = Path.Combine(destinationDir, file.Name);
+            file.CopyTo(targetFilePath, true);
+        }
+
+        foreach (var subDir in dir.GetDirectories())
+        {
+            var targetSubDir = Path.Combine(destinationDir, subDir.Name);
+            CopyDirectory(subDir.FullName, targetSubDir);
+        }
     }
 }

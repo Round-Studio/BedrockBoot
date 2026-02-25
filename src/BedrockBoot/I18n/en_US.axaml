@@ -32,6 +32,7 @@
     <x:String x:Key="MainWindow.Common.Cancel">Cancel</x:String>
     <x:String x:Key="MainWindow.Common.Delete">Delete</x:String>
     <x:String x:Key="MainWindow.Common.Save">Save Settings</x:String>
+    <x:String x:Key="MainWindow.Common.Add">Add</x:String>
 
     <x:String x:Key="Home.Title">Hello, Welcome Back</x:String>
     
@@ -155,6 +156,7 @@
     <x:String x:Key="Instance.Control.Import.Action.Start">Start Import</x:String>
     <x:String x:Key="Instance.Control.Import.Progress.Title">Migrating Resources...</x:String>
     <x:String x:Key="Instance.Isolation.Migration">Migration</x:String>
+    <x:String x:Key="Instance.Isolation.Migrating">Migration</x:String>
 
     <x:String x:Key="Instance.Control.Pack.Dialog.Title">Integration Pack Information</x:String>
     <x:String x:Key="Instance.Control.Pack.Save.Title">Export Bedrock Integration Pack</x:String>

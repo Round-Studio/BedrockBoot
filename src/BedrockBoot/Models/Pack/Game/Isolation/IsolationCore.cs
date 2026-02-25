@@ -33,8 +33,7 @@ public class IsolationCore
         }
         else
         {
-            throw new InvalidOperationException(
-                $"目标路径 '{path}' 是真实目录，无法安全隔离。请启用强制模式或手动清理。");
+            throw new Exception("该实例的目标隔离文件需要进行迁移");
         }
     }
 
@@ -61,71 +60,82 @@ public class IsolationCore
 
     public void Init(bool isForced = false)
     {
-        Clear();
-
-        var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
-        if (folderType == DirectoryType.Folder && !isForced)
-            throw new Exception("该实例的目标隔离文件需要进行迁移");
-
-        // 处理 LocalState
-        var localStatePath = Path.Combine(RealRootPath, "LocalState");
-        if (Path.Exists(localStatePath))
+        try
         {
-            if (DirectoryLinkChecker.CheckFolderType(localStatePath) == DirectoryType.SymbolicLink)
+            Clear();
+
+            var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
+            if (folderType == DirectoryType.Folder)
+                throw new Exception("wdf");
+
+            // 处理 LocalState
+            var localStatePath = Path.Combine(RealRootPath, "LocalState");
+            if (Path.Exists(localStatePath))
             {
-                Directory.Delete(localStatePath);
+                if (DirectoryLinkChecker.CheckFolderType(localStatePath) == DirectoryType.SymbolicLink)
+                {
+                    Directory.Delete(localStatePath);
+                    Directory.CreateDirectory(localStatePath);
+                }
+            }
+            else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+            {
                 Directory.CreateDirectory(localStatePath);
             }
-        }
-        else if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
-            Directory.CreateDirectory(localStatePath);
-        }
 
-        // 清理 RootPath（仅符号链接）
-        if (folderType == DirectoryType.SymbolicLink)
-            SafeDeleteIfSymbolicLink(RootPath);
+            // 清理 RootPath（仅符号链接）
+            if (folderType == DirectoryType.SymbolicLink)
+                SafeDeleteIfSymbolicLink(RootPath);
 
-        // 创建 RealRootPath
-        if (!Directory.Exists(RealRootPath))
-            Directory.CreateDirectory(RealRootPath);
+            // 创建 RealRootPath
+            if (!Directory.Exists(RealRootPath))
+                Directory.CreateDirectory(RealRootPath);
 
-        // 创建符号链接
-        CreateSymbolicLinkSafe(RootPath, RealRootPath);
+            // 创建符号链接
+            CreateSymbolicLinkSafe(RootPath, RealRootPath);
 
-        // 链接 "Minecraft Bedrock"
-        var bedrockLinkPath = Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock");
-        if (DirectoryLinkChecker.CheckFolderType(bedrockLinkPath) == DirectoryType.Folder)
-        {
-            Directory.Delete(bedrockLinkPath, true);
-        }
-        if (!Directory.Exists(bedrockLinkPath))
-        {
-            CreateSymbolicLinkSafe(bedrockLinkPath, RealRootPath);
-        }
-
-        // 链接子目录
-        var packFolders = new[]
-        {
-            "resource_packs",
-            "behavior_packs",
-            "minecraftWorlds",
-            "minecraftpe",
-            "custom_skins",
-            "skin_packs"
-        };
-
-        foreach (var f in packFolders)
-        {
-            var versionPackPath = Path.Combine(VersionConfig.VersionPath, f);
-            var instancePackPath = GetInstancePackPath(VersionConfig, f);
-
-            if (Directory.Exists(versionPackPath))
-                Directory.Delete(versionPackPath, true);
-
-            if (Directory.Exists(instancePackPath))
+            // 链接 "Minecraft Bedrock"
+            var bedrockLinkPath = Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock");
+            if (DirectoryLinkChecker.CheckFolderType(bedrockLinkPath) == DirectoryType.Folder)
             {
-                CreateSymbolicLinkSafe(versionPackPath, instancePackPath);
+                Directory.Delete(bedrockLinkPath, true);
+            }
+
+            if (!Directory.Exists(bedrockLinkPath))
+            {
+                CreateSymbolicLinkSafe(bedrockLinkPath, RealRootPath);
+            }
+
+            // 链接子目录
+            var packFolders = new[]
+            {
+                "resource_packs",
+                "behavior_packs",
+                "minecraftWorlds",
+                "minecraftpe",
+                "custom_skins",
+                "skin_packs"
+            };
+
+            foreach (var f in packFolders)
+            {
+                var versionPackPath = Path.Combine(VersionConfig.VersionPath, f);
+                var instancePackPath = GetInstancePackPath(VersionConfig, f);
+
+                if (Directory.Exists(versionPackPath))
+                    Directory.Delete(versionPackPath, true);
+
+                if (Directory.Exists(instancePackPath))
+                {
+                    CreateSymbolicLinkSafe(versionPackPath, instancePackPath);
+                }
+            }
+        }
+        catch
+        {
+            if (!isForced)
+            {
+                throw new Exception("该实例的目标隔离文件需要进行迁移");
             }
         }
     }

@@ -112,10 +112,11 @@ public partial class DrawInstanceContent : UserControl
 
     private async Task RefreshPlayTimeAsync()
     {
-        VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
         try
         {
-            if (VersionInfo?.PlayerData == null)
+            VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
+            if (VersionInfo == null || 
+                VersionInfo?.PlayerData == null)
                 return;
 
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -123,7 +124,7 @@ public partial class DrawInstanceContent : UserControl
                 if (TotalDuration != null)
                 {
                     var playerData = VersionInfo.PlayerData;
-                    
+
                     // 获取总游玩时间（秒）并转换为 TimeSpan
                     TimeSpan totalTime = TimeSpan.FromSeconds(playerData.TotalPlayTime);
 
@@ -140,6 +141,7 @@ public partial class DrawInstanceContent : UserControl
         catch (Exception ex)
         {
             Console.WriteLine($@"刷新游玩时间失败: {ex.Message}");
+            StopPlayTimeRefresh();
         }
     }
 

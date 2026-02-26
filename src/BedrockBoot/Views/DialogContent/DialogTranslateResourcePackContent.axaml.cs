@@ -16,7 +16,8 @@ public partial class DialogTranslateResourcePackContent : UserControl
     {
         InitializeComponent();
     }
-    public DialogTranslateResourcePackContent(string input,string save):this()
+
+    public DialogTranslateResourcePackContent(string input, string save) : this()
     {
         Task.Run(() =>
         {
@@ -29,7 +30,7 @@ public partial class DialogTranslateResourcePackContent : UserControl
                 progressCallback: (progress, status) =>
                 {
                     Console.WriteLine($@"进度: {progress:F2}% - {status}");
-                    Dispatcher.UIThread.Invoke(() =>
+                    Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         ProgressBar.Value = progress;
                         ProgressText.Text = $"{status} ({progress:F2} %)";
@@ -37,7 +38,7 @@ public partial class DialogTranslateResourcePackContent : UserControl
 
                     if (progress == 100)
                     {
-                        Dispatcher.UIThread.Invoke(DialogHost.Close);
+                        Dispatcher.UIThread.InvokeAsync(DialogHost.Close);
                     }
                 }
             );

@@ -132,7 +132,6 @@ public class MicrosoftTranslateService : ITranslationService
         // 查找映射
         if (_languageCodeMap.TryGetValue(lowerCode, out string mappedCode))
         {
-            Console.WriteLine($@"语言代码映射: {languageCode} -> {mappedCode}");
             return mappedCode;
         }
         

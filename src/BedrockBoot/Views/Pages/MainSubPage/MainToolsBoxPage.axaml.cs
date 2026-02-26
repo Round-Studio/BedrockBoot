@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -166,13 +167,14 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
             var saveFileDialog = new SaveFileDialog
             {
-                Title = "保存为 McPack 文件",
+                Title = "保存为基岩版支持包文件",
+                DefaultExtension = Path.GetExtension(selectedFile),
                 Filters = new List<FileDialogFilter>
                 {
                     new FileDialogFilter
                     {
                         Name = "Minecraft 基岩版支持文件",
-                        Extensions = new List<string> { "mcworld","mcaddon" }
+                        Extensions = new List<string> { Path.GetExtension(selectedFile) }
                     }
                 }
             };

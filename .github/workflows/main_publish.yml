@@ -55,7 +55,7 @@ jobs:
       
       - name: Build
         run: |
-          cd ./src/BedrockBoot
+          cd ./src/BedrockBoot.Desktop
           dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../Release-publish/" /p:Version=${{ needs.version.outputs.v }}
       
       - name: Create Release

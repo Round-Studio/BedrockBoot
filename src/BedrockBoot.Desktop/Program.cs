@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Avalonia;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Core.Models;
@@ -51,36 +50,11 @@ internal sealed class Program
             Task.Run(() => AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion).ContinueWith(_ => { }));
         }
 
-        ApplicationConfiguration.Initialize();
         if (args.Length > 0 && ArgsAnalytical(args.ToList()))
             return;
 
         var consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
             $"[BedrockBoot.Logger] {DateTime.Now:yyyy.MM.dd HHmmss.fff}.log"));
-
-        if (!VCRedistDetector.CheckInInstalledList().IsInstalled)
-        {
-            var dialog = MessageBox.Show(
-                new StringBuilder()
-                    .AppendLine("当前用户尚未安装 Microsoft Visual C++ 2015-2022 Redistributable 运行库，可能会导致启动器或游戏无法正常运行。")
-                    .AppendLine("")
-                    .AppendLine("[OK] 退出当前程序并手动安装 VC 2015-2022")
-                    .AppendLine("[Cancel] 继续运行启动器（忽略运行库问题）")
-                    .AppendLine("")
-                    .AppendLine("详细信息参见 https://docs.roundstudio.top/docs/product/bb/commonQuestion")
-                    .AppendLine("VC 2015-2022 运行库快速下载地址 https://aka.ms/vc14/vc_redist.x64.exe")
-                    .ToString(), @"BedrockBoot 警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-            
-            if (dialog == DialogResult.OK)
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "https://aka.ms/vc14/vc_redist.x64.exe",
-                    UseShellExecute = true
-                });
-                Environment.Exit(0);
-            }
-        }
 
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
@@ -133,6 +107,7 @@ internal sealed class Program
                     Console.WriteLine(@"快捷启动");
                     args.ForEach(Console.WriteLine);
 
+                    ApplicationConfiguration.Initialize();
                     Application.Run(new LaunchWindow(args.ToList()));
                     return true;
 
@@ -140,6 +115,7 @@ internal sealed class Program
                     Console.WriteLine(@"导入资源");
                     args.ForEach(Console.WriteLine);
 
+                    ApplicationConfiguration.Initialize();
                     Application.Run(new ImportResourcePack(args.ToList()));
                     return true;
             }

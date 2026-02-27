@@ -37,7 +37,7 @@ public partial class LaunchWindow : Form
         }
         catch
         {
-            MessageBox.Show("无效版本", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("无效版本", @"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Environment.Exit(1);
         }
     }
@@ -64,14 +64,14 @@ public partial class LaunchWindow : Form
                     Invoke(() =>
                     {
                         MessageBox.Show("该版本不支持快捷启动，请进入启动器 UI 进行迁移",
-                            "需要迁移", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            @"需要迁移", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Close();
                     });
                 }
                 else
                 {
                     MessageBox.Show("该版本不支持快捷启动，请进入启动器 UI 进行迁移",
-                        "需要迁移", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        @"需要迁移", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Close();
                 }
             };
@@ -119,7 +119,7 @@ public partial class LaunchWindow : Form
             // 异常处理
             BeginInvoke(() =>
             {
-                MessageBox.Show($"启动失败: {ex.Message}", "错误",
+                MessageBox.Show($"启动失败: {ex.Message}", @"错误",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             });

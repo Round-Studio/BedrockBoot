@@ -38,7 +38,7 @@ public partial class ImportResourcePack : Form
         if (GlobalModel.Config.Data.GameFolders.Count <= 0)
         {
             Close();
-            MessageBox.Show("当前配置环境中无可用游戏目录，\n请前往 本体>实例管理 中添加游戏目录", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("当前配置环境中无可用游戏目录，\n请前往 本体>实例管理 中添加游戏目录", @"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         GlobalModel.Config.Data.GameFolders.ForEach(f =>
@@ -66,7 +66,7 @@ public partial class ImportResourcePack : Form
         man.GetAllPack();
         man.AddRangePacks(new List<string> { _file });
 
-        if (MessageBox.Show("导入包成功", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
+        if (MessageBox.Show("导入包成功", @"提示", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
             Close();
     }
 }

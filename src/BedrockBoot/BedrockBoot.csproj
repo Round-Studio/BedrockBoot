@@ -137,5 +137,8 @@
         <Compile Update="Views\Windows\SubWindows\RecoverFilesWindow.axaml.cs">
           <DependentUpon>RecoverFilesWindow.axaml</DependentUpon>
         </Compile>
+        <Compile Update="Win32\Windows\DownloadVCWindow.cs">
+          <SubType>Form</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

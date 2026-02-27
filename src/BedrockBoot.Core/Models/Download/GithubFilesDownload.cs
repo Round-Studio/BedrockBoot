@@ -65,13 +65,13 @@ public class GithubFilesDownload
                     {
                         // 成功完成测试，设置结果并取消其他测试
                         var selectedUrl = UpdateDownloadSources[sourceKey].Replace("{url}", fileUrl);
-                        Console.WriteLine($"源 {sourceKey} 测试成功，速度: {result.Speed:F2} B/s，开始下载");
+                        Console.WriteLine($@"源 {sourceKey} 测试成功，速度: {result.Speed:F2} B/s，开始下载");
                         
                         // 尝试设置结果，如果成功则取消其他测试
                         if (completionSource.TrySetResult((sourceKey, selectedUrl)))
                         {
                             cts.Cancel();
-                            Console.WriteLine($"使用第一个成功源: {sourceKey}");
+                            Console.WriteLine($@"使用第一个成功源: {sourceKey}");
                         }
                     }
                 }
@@ -84,7 +84,7 @@ public class GithubFilesDownload
                     // 如果还没有成功结果，记录错误但不取消整体测试
                     if (!completionSource.Task.IsCompleted)
                     {
-                        Console.WriteLine($"源 {sourceKey} 测试失败: {ex.Message}");
+                        Console.WriteLine($@"源 {sourceKey} 测试失败: {ex.Message}");
                     }
                 }
                 finally
@@ -173,7 +173,7 @@ public class GithubFilesDownload
             
             if (!headResponse.IsSuccessStatusCode)
             {
-                Console.WriteLine($"源 {sourceName} HEAD请求失败: {headResponse.StatusCode}");
+                Console.WriteLine($@"源 {sourceName} HEAD请求失败: {headResponse.StatusCode}");
                 return (sourceName, 0, sourceUrl);
             }
             
@@ -194,7 +194,7 @@ public class GithubFilesDownload
                 
                 if (!testResponse.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"源 {sourceName} Range请求失败: {testResponse.StatusCode}");
+                    Console.WriteLine($@"源 {sourceName} Range请求失败: {testResponse.StatusCode}");
                     return (sourceName, 0, sourceUrl);
                 }
                 
@@ -207,7 +207,7 @@ public class GithubFilesDownload
                 
                 if (bytesRead == 0)
                 {
-                    Console.WriteLine($"源 {sourceName} 未读取到数据");
+                    Console.WriteLine($@"源 {sourceName} 未读取到数据");
                     return (sourceName, 0, sourceUrl);
                 }
                 
@@ -228,7 +228,7 @@ public class GithubFilesDownload
                 
                 if (!testResponse.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"源 {sourceName} GET请求失败: {testResponse.StatusCode}");
+                    Console.WriteLine($@"源 {sourceName} GET请求失败: {testResponse.StatusCode}");
                     return (sourceName, 0, sourceUrl);
                 }
                 
@@ -241,7 +241,7 @@ public class GithubFilesDownload
                 
                 if (bytesRead == 0)
                 {
-                    Console.WriteLine($"源 {sourceName} 未读取到数据");
+                    Console.WriteLine($@"源 {sourceName} 未读取到数据");
                     return (sourceName, 0, sourceUrl);
                 }
                 
@@ -290,11 +290,11 @@ public class GithubFilesDownload
         try
         {
             // 1. 并行测试所有下载源，使用第一个成功的源
-            Console.WriteLine("开始并行测试下载源...");
+            Console.WriteLine(@"开始并行测试下载源...");
             var (selectedSourceName, selectedUrl) = await TestDownloadSourcesAsync(fileUrl);
             
-            Console.WriteLine($"使用下载源: {selectedSourceName}");
-            Console.WriteLine($"下载URL: {selectedUrl}");
+            Console.WriteLine($@"使用下载源: {selectedSourceName}");
+            Console.WriteLine($@"下载URL: {selectedUrl}");
             
             // 2. 使用多线程下载器下载文件
             var result = await _downloader.DownloadAsync(
@@ -305,14 +305,14 @@ public class GithubFilesDownload
             
             if (result)
             {
-                Console.WriteLine($"文件下载完成: {savePath}");
+                Console.WriteLine($@"文件下载完成: {savePath}");
             }
             
             return result;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"下载失败: {ex.Message}");
+            Console.WriteLine($@"下载失败: {ex.Message}");
             throw new Exception($"Github文件下载失败: {ex.Message}", ex);
         }
     }

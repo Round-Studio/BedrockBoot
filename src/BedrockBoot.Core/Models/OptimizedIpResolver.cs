@@ -75,7 +75,7 @@ public class OptimizedIpResolver : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取优选IP流程异常: {ex.Message}");
+            Console.WriteLine($@"获取优选IP流程异常: {ex.Message}");
             return null;
         }
     }
@@ -88,7 +88,7 @@ public class OptimizedIpResolver : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"DNS解析失败: {ex.Message}");
+            Console.WriteLine($@"DNS解析失败: {ex.Message}");
             return new List<IPAddress>();
         }
     }
@@ -181,7 +181,7 @@ public class OptimizedIpResolver : IDisposable
                 sw.Stop();
                 result.IsSuccessful = true;
                 result.Latency = sw.Elapsed;
-                Console.WriteLine($"  ✓ {ip}: {sw.ElapsedMilliseconds}ms");
+                Console.WriteLine($@"  ✓ {ip}: {sw.ElapsedMilliseconds}ms");
             }
         }
         catch (OperationCanceledException)
@@ -195,7 +195,7 @@ public class OptimizedIpResolver : IDisposable
             sw.Stop();
             result.IsSuccessful = false;
             result.Error = ex.Message;
-            Console.WriteLine($"  ✗ {ip}: {ex.Message}");
+            Console.WriteLine($@"  ✗ {ip}: {ex.Message}");
         }
 
         return result;

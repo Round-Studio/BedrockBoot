@@ -21,7 +21,7 @@ public class XboxLoginStatusChecker
     {
         var status = new XboxStatus();
         
-        Console.WriteLine("正在检测 Xbox 登录状态...");
+        Console.WriteLine(@"正在检测 Xbox 登录状态...");
         
         // 方法1：检查服务
         status.XblAuthServiceRunning = IsServiceRunning("XblAuthManager");
@@ -103,7 +103,7 @@ public class XboxLoginStatusChecker
                         // 打印找到的信息（调试用）
                         if (!string.IsNullOrEmpty(gamertag))
                         {
-                            Console.WriteLine($"找到 Gamertag: {gamertag}");
+                            Console.WriteLine($@"找到 Gamertag: {gamertag}");
                         }
                         
                         if (!string.IsNullOrEmpty(xuid) && xuid != "0" ||
@@ -136,7 +136,7 @@ public class XboxLoginStatusChecker
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"注册表检查出错: {ex.Message}");
+            Console.WriteLine($@"注册表检查出错: {ex.Message}");
         }
         return false;
     }
@@ -175,7 +175,7 @@ public class XboxLoginStatusChecker
         
         if (runningProcesses.Any())
         {
-            Console.WriteLine($"运行的 Xbox 进程: {string.Join(", ", runningProcesses)}");
+            Console.WriteLine($@"运行的 Xbox 进程: {string.Join(", ", runningProcesses)}");
             return true;
         }
         
@@ -198,7 +198,7 @@ public class XboxLoginStatusChecker
                 if (xuidPtr != IntPtr.Zero)
                 {
                     string xuid = Marshal.PtrToStringUni(xuidPtr);
-                    Console.WriteLine($"Xbox API - Gamertag: {gamertag}, XUID: {xuid}");
+                    Console.WriteLine($@"Xbox API - Gamertag: {gamertag}, XUID: {xuid}");
                 }
                 
                 // 释放内存
@@ -218,7 +218,7 @@ public class XboxLoginStatusChecker
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Xbox API 检查出错: {ex.Message}");
+            Console.WriteLine($@"Xbox API 检查出错: {ex.Message}");
         }
         
         return false;
@@ -258,7 +258,7 @@ public class XboxLoginStatusChecker
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Xbox 应用包检查出错: {ex.Message}");
+            Console.WriteLine($@"Xbox 应用包检查出错: {ex.Message}");
         }
         
         return false;
@@ -284,7 +284,7 @@ public class XboxLoginStatusChecker
                     
                     if (xboxTokens.Any())
                     {
-                        Console.WriteLine($"找到 Xbox 令牌: {string.Join(", ", xboxTokens)}");
+                        Console.WriteLine($@"找到 Xbox 令牌: {string.Join(", ", xboxTokens)}");
                         return true;
                     }
                 }
@@ -306,7 +306,7 @@ public class XboxLoginStatusChecker
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"令牌缓存检查出错: {ex.Message}");
+            Console.WriteLine($@"令牌缓存检查出错: {ex.Message}");
         }
         
         return false;
@@ -377,7 +377,7 @@ public class XboxLoginStatusChecker
         if (status.XboxGipSvcRunning) score += 5;
         
         // 打印得分
-        Console.WriteLine($"登录状态得分: {score}/100");
+        Console.WriteLine($@"登录状态得分: {score}/100");
         
         // 得分阈值判断
         return score >= 30; // 30分以上视为已登录

@@ -34,14 +34,14 @@ public class ModInfo
         var assembly = Assembly.GetExecutingAssembly();
     
         var resources = assembly.GetManifestResourceNames();
-        Console.WriteLine("Available embedded resources:");
+        Console.WriteLine(@"Available embedded resources:");
         foreach (var res in resources)
         {
-            Console.WriteLine($"  {res}");
+            Console.WriteLine($@"  {res}");
         }
 
         var resourceName = "BedrockBoot.Base.Dependence.Inject.dll";
-        Console.WriteLine($"Looking for: {resourceName}");
+        Console.WriteLine($@"Looking for: {resourceName}");
     
         using (var stream = assembly.GetManifestResourceStream(resourceName))
         {

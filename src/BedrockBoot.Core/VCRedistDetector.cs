@@ -15,11 +15,8 @@ public class VCRedistDetector
         string[] searchPatterns = new[]
         {
             "Microsoft Visual C++ 2015-2022 Redistributable (x64)",
-            "Microsoft Visual C++ 2015-2022 Redistributable",
-            "Microsoft Visual C++ 2015-2022",
             "Microsoft Visual C++ 2015-2022 (x64)",
-            "Microsoft Visual C++ 2015-2022 Redistributable - 14",
-            "Microsoft Visual C++ 2015-2022 Redistributable (x64) - 14"
+            "Microsoft Visual C++ v14 Redistributable (x64)",
         };
 
         // 检查两个注册表位置
@@ -71,7 +68,7 @@ public class VCRedistDetector
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"访问注册表路径 {basePath} 时出错: {ex.Message}");
+                Console.WriteLine($@"访问注册表路径 {basePath} 时出错: {ex.Message}");
             }
         }
 

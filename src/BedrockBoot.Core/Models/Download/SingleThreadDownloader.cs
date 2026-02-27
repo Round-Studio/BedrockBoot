@@ -76,17 +76,17 @@ public class SingleThreadDownloader : IDisposable
             // Download in chunks
             await DownloadInChunksAsync(url, filePath, fileInfo, progress, cancellationToken);
 
-            Console.WriteLine($"Download completed: {filePath}");
+            Console.WriteLine($@"Download completed: {filePath}");
             return true;
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Download was cancelled");
+            Console.WriteLine(@"Download was cancelled");
             return false;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Download failed: {ex.Message}");
+            Console.WriteLine($@"Download failed: {ex.Message}");
             throw;
         }
     }

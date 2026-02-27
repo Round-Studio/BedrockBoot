@@ -41,7 +41,7 @@ public class LeviLaminaInstaller
         if (!Directory.Exists(targetModsPath))
         {
             Directory.CreateDirectory(targetModsPath);
-            Console.WriteLine($"创建目标mods目录: {targetModsPath}");
+            Console.WriteLine($@"创建目标mods目录: {targetModsPath}");
         }
         
         // 检查当前mods目录的状态
@@ -55,19 +55,19 @@ public class LeviLaminaInstaller
                 if (linkInfo == DirectoryType.Folder)
                 {
                     // 如果是普通文件夹，删除它
-                    Console.WriteLine($"删除普通mods文件夹: {modsPath}");
+                    Console.WriteLine($@"删除普通mods文件夹: {modsPath}");
                     Directory.Delete(modsPath, true);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"检查mods目录失败，尝试删除: {ex.Message}");
+                Console.WriteLine($@"检查mods目录失败，尝试删除: {ex.Message}");
                 try { Directory.Delete(modsPath, true); } catch { }
             }
         }
         
         // 创建符号链接
-        Console.WriteLine($"创建符号链接: {modsPath} -> {targetModsPath}");
+        Console.WriteLine($@"创建符号链接: {modsPath} -> {targetModsPath}");
         try
         {
             Directory.CreateSymbolicLink(modsPath, targetModsPath);
@@ -124,7 +124,7 @@ public class LeviLaminaInstaller
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"保存缓存索引失败: {ex.Message}");
+            Console.WriteLine($@"保存缓存索引失败: {ex.Message}");
         }
     }
 
@@ -289,7 +289,7 @@ public class LeviLaminaInstaller
             
                 if (!File.Exists(cachePath))
                 {
-                    Console.WriteLine($"缓存文件缺失: {fileName} - {dep.Key}");
+                    Console.WriteLine($@"缓存文件缺失: {fileName} - {dep.Key}");
                     return false;
                 }
             }
@@ -300,7 +300,7 @@ public class LeviLaminaInstaller
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"缓存安装失败: {ex.Message}");
+            Console.WriteLine($@"缓存安装失败: {ex.Message}");
             return false;
         }
     }
@@ -319,11 +319,11 @@ public class LeviLaminaInstaller
                 try
                 {
                     ProcessDependencyFile(dep.Key, cachePath);
-                    Console.WriteLine($"{dep.Key} 从缓存安装完成");
+                    Console.WriteLine($@"{dep.Key} 从缓存安装完成");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"{dep.Key} 缓存处理失败: {ex.Message}");
+                    Console.WriteLine($@"{dep.Key} 缓存处理失败: {ex.Message}");
                     throw;
                 }
             });
@@ -346,7 +346,7 @@ public class LeviLaminaInstaller
         var sourceUrl = SourceList.LeviLaminaSource.Replace("{version}", lmaVersion);
         var sourcePath = Path.Combine(PathList.LeviLaminaSourceFolder, $"{lmaVersion}.zip");
 
-        Console.WriteLine($"下载源: {sourceUrl}");    
+        Console.WriteLine($@"下载源: {sourceUrl}");    
         
         // 下载源码
         await DownloadWithRetry(sourceUrl, sourcePath, InstallerStatus.DownloadSource, "LeviLamina 清单", 3);    
@@ -431,7 +431,7 @@ public class LeviLaminaInstaller
                     // 检查缓存
                     if (_useCache && File.Exists(cachePath))
                     {
-                        Console.WriteLine($"{dep.Key} 使用缓存文件: {fileName}");
+                        Console.WriteLine($@"{dep.Key} 使用缓存文件: {fileName}");
                         Progress?.Report(new()
                         {
                             Message = $"{dep.Key} 使用缓存",
@@ -466,7 +466,7 @@ public class LeviLaminaInstaller
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"{dep.Key} 处理失败: {ex.Message}");
+                    Console.WriteLine($@"{dep.Key} 处理失败: {ex.Message}");
                     errors.Add(ex);
                     
                     // 删除可能损坏的缓存文件
@@ -607,7 +607,7 @@ public class LeviLaminaInstaller
             catch (Exception ex) when (retryCount < maxRetries)
             {
                 retryCount++;
-                Console.WriteLine($"{description} 下载失败，正在重试 ({retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"{description} 下载失败，正在重试 ({retryCount}/{maxRetries}): {ex.Message}");
                 
                 // 等待一段时间后重试
                 await Task.Delay(1000 * retryCount);
@@ -705,7 +705,7 @@ public class LeviLaminaInstaller
                 {
                     result[depType.Value] = matchingRelease.Assets[0].BrowserDownloadUrl;
                 }
-                Console.WriteLine($"已解析 {repName}: {matchingRelease.TagName}");
+                Console.WriteLine($@"已解析 {repName}: {matchingRelease.TagName}");
             }
         }
         catch (Exception ex)
@@ -753,7 +753,7 @@ public class LeviLaminaInstaller
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"解析文件名失败: {ex.Message}");
+            Console.WriteLine($@"解析文件名失败: {ex.Message}");
             return $"file_{Guid.NewGuid():N}";
         }
     }
@@ -767,6 +767,6 @@ public class LeviLaminaInstaller
             Status = InstallerStatus.Error
         });
         
-        Console.WriteLine($"错误: {message}");
+        Console.WriteLine($@"错误: {message}");
     }
 }

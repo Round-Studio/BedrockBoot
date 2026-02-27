@@ -188,7 +188,7 @@ public class Chunker
         if (!CheckChunker()) throw new Exception("未安装 Chunker");
         if (!CheckJvm(info.JvmInfo)) throw new Exception("Jvm 版本不符合最低版本要求 (JVM>=17)");
 
-        Console.WriteLine($"将使用 {info.JvmInfo.JavaPath}");
+        Console.WriteLine($@"将使用 {info.JvmInfo.JavaPath}");
 
         ProcessStartInfo startInfo = new ProcessStartInfo(info.JvmInfo.JavaPath)
         {
@@ -214,7 +214,7 @@ public class Chunker
             startInfo.ArgumentList.Add("-o");
             startInfo.ArgumentList.Add(info.JavaWorldFolder);
 
-            Console.WriteLine($"转换参数: 从 Bedrock 到 Java {info.JavaEditionVersion}");
+            Console.WriteLine($@"转换参数: 从 Bedrock 到 Java {info.JavaEditionVersion}");
         }
         else
         {
@@ -230,7 +230,7 @@ public class Chunker
             startInfo.ArgumentList.Add("-o");
             startInfo.ArgumentList.Add(info.BedrockWorldFolder);
 
-            Console.WriteLine($"转换参数: 从 Java 到 Bedrock {info.BedrockEditionVersion}");
+            Console.WriteLine($@"转换参数: 从 Java 到 Bedrock {info.BedrockEditionVersion}");
         }
 
         using (var process = new Process())
@@ -242,7 +242,7 @@ public class Chunker
             {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
-                    Console.WriteLine($"[Chunker] {e.Data}");
+                    Console.WriteLine($@"[Chunker] {e.Data}");
 
                     var log = e.Data.Replace("%", "");
                     if (double.TryParse(log, out double result))
@@ -256,13 +256,13 @@ public class Chunker
             {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
-                    Console.WriteLine($"[Chunker 错误] {e.Data}");
+                    Console.WriteLine($@"[Chunker 错误] {e.Data}");
                 }
             };
 
             try
             {
-                Console.WriteLine("开始转换，请等待...");
+                Console.WriteLine(@"开始转换，请等待...");
                 process.Start();
 
                 process.BeginOutputReadLine();
@@ -270,7 +270,7 @@ public class Chunker
 
                 process.WaitForExit();
 
-                Console.WriteLine($"转换完成，退出代码: {process.ExitCode}");
+                Console.WriteLine($@"转换完成，退出代码: {process.ExitCode}");
 
                 if (process.ExitCode != 0)
                 {
@@ -279,7 +279,7 @@ public class Chunker
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"执行过程中发生错误: {ex.Message}");
+                Console.WriteLine($@"执行过程中发生错误: {ex.Message}");
                 throw;
             }
         }

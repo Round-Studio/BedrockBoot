@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace BedrockBoot;
+namespace BedrockBoot.Desktop;
 
 /// <summary>
 ///     应用程序更新器

@@ -19,8 +19,8 @@ public class IsolationCore
     }
 
     public VersionConfig VersionConfig { get; set; }
-    public string RealRootPath => GetRealPath(VersionConfig);
-    public string RootPath => GetInstanceConfigRootPath(VersionConfig);
+    public string RealRootPath => GetRealPath(VersionConfig); // config 中的文件夹
+    public string RootPath => GetInstanceConfigRootPath(VersionConfig); // AppData 中的文件夹
 
     private void SafeDeleteIfSymbolicLink(string path)
     {
@@ -62,13 +62,6 @@ public class IsolationCore
     {
         try
         {
-            Clear();
-
-            var folderType = DirectoryLinkChecker.CheckFolderType(RootPath);
-            if (folderType == DirectoryType.Folder)
-                throw new Exception("wdf");
-
-            // 处理 LocalState
             var localStatePath = Path.Combine(RealRootPath, "LocalState");
             if (Path.Exists(localStatePath))
             {
@@ -83,16 +76,9 @@ public class IsolationCore
                 Directory.CreateDirectory(localStatePath);
             }
 
-            // 清理 RootPath（仅符号链接）
-            if (folderType == DirectoryType.SymbolicLink)
-                SafeDeleteIfSymbolicLink(RootPath);
-
             // 创建 RealRootPath
             if (!Directory.Exists(RealRootPath))
                 Directory.CreateDirectory(RealRootPath);
-
-            // 创建符号链接
-            CreateSymbolicLinkSafe(RootPath, RealRootPath);
 
             // 链接 "Minecraft Bedrock"
             var bedrockLinkPath = Path.Combine(VersionConfig.VersionPath, "Minecraft Bedrock");
@@ -137,14 +123,6 @@ public class IsolationCore
             {
                 throw new Exception("该实例的目标隔离文件需要进行迁移");
             }
-        }
-    }
-
-    public void Clear()
-    {
-        if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
-            SafeDeleteIfSymbolicLink(RootPath);
         }
     }
 

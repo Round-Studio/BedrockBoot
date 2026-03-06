@@ -115,7 +115,6 @@ public class EasyLauncher
                 }),
                 Progress = new Progress<LaunchState>(state =>
                 {
-                    IsolationCore.Clear();
                     IsolationCore.Init(true);
                     Console.WriteLine(state);
                     UpdateProgressText?.Invoke($"状态：{state}");

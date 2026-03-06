@@ -2,6 +2,5 @@
 
 public enum IsolationType
 {
-    SymbolicLink,
     Hook
 }

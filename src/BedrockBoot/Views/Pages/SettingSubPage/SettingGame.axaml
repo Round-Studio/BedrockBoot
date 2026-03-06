@@ -20,7 +20,7 @@
                 <ComboBox Width="300"
                           Name="IsolationTypeBox"
                           SelectionChanged="IsolationTypeBox_OnSelectionChanged">
-                    <ComboBoxItem Content="{DynamicResource Settings.Game.Isolation.SymbolicLink}" />
+                    <!--<ComboBoxItem Content="{DynamicResource Settings.Game.Isolation.SymbolicLink}" />-->
                     <ComboBoxItem Content="{DynamicResource Settings.Game.Isolation.HookSymbolicLink}" />
                 </ComboBox>
             </onePointControls:SettingCard>

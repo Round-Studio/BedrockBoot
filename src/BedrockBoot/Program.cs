@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Avalonia;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Win32;
@@ -56,6 +57,10 @@ internal sealed class Program
 
         var consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
             $"[BedrockBoot.Logger] {DateTime.Now:yyyy.MM.dd HHmmss.fff}.log"));
+
+        if ((int)GlobalModel.Config.Data.IsolationModel != 0)
+            GlobalModel.Config.Data.IsolationModel = IsolationType.Hook;
+        GlobalModel.Config.Save();
 
         if (!VCRedistDetector.CheckInInstalledList().IsInstalled)
         {

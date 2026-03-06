@@ -39,7 +39,7 @@ public class ConfigEntry
     public bool IsTaskBarJumpItem { get; set; } = true;
     [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
 
-    [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.SymbolicLink;
+    [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.Hook;
     [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
     [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
 }

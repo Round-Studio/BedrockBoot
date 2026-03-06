@@ -103,7 +103,8 @@ public partial class MainPage : UserControl
             {
                 count = GlobalModel.Config.Data.GameFolders.Count;
                 sel = GlobalModel.Config.Data.GameFolderSelIndex;
-                UpdateUI();
+                
+                Avalonia.Threading.Dispatcher.UIThread.Post(UpdateUI);
             }
         };
         UpdateUI();

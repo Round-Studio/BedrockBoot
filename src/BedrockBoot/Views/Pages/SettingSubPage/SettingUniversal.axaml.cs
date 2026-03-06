@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Language;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
@@ -30,8 +31,9 @@ public partial class SettingUniversal : ISettingPage
 
         // 初始化 UI 状态
         TaskBarJumpItem.IsChecked = GlobalModel.Config.Data.IsTaskBarJumpItem;
-        LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
         GatInfo.IsChecked = GlobalModel.Config.Data.GatherInfo;
+        LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
+        LaunchBehaviorChoose.SelectedIndex = (int)GlobalModel.Config.Data.LaunchBehavior;
         
         IsEdit = true;
     }
@@ -80,6 +82,15 @@ public partial class SettingUniversal : ISettingPage
         if (IsEdit)
         {
             GlobalModel.Config.Data.GatherInfo = (bool)GatInfo.IsChecked!;
+            GlobalModel.Config.Save();
+        }
+    }
+
+    private void LaunchBehaviorChoose_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.LaunchBehavior = (LaunchBehaviorEnum)LaunchBehaviorChoose.SelectedIndex;
             GlobalModel.Config.Save();
         }
     }

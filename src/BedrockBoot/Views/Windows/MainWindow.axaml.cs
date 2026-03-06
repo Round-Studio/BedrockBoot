@@ -15,6 +15,7 @@ using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Entity;
+using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Service;
@@ -39,19 +40,14 @@ public partial class MainWindow : BedrockBootWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
-        
         UpdateBack();
-        
-        // 1. 初始化窗口几何信息
         InitializeWindowBounds();
         
-        // 2. 绑定任务列表更新回调 (使用 Post 确保线程安全)
+        // 绑定回调
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Post(UpdateTaskUI);
+        EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Post(RunBehavior);
         
-        // 3. 注册全局快捷键
         SetupDynamicHotkey();
-        
-        // 4. 执行异步初始化流程
         _ = InitializeAsync();
     }
 
@@ -299,6 +295,19 @@ public partial class MainWindow : BedrockBootWindow
                 task.Item.Margin = new Thickness(5);
                 TaskList.Children.Add(task.Item);
             }
+        }
+    }
+
+    private void RunBehavior()
+    {
+        switch (GlobalModel.Config.Data.LaunchBehavior)
+        {
+            case LaunchBehaviorEnum.Minimize:
+                WindowState = WindowState.Minimized;
+                break;
+            case LaunchBehaviorEnum.Exit:
+                Environment.Exit(0);
+                break;
         }
     }
 

@@ -21,6 +21,8 @@ public class EasyLauncher
     private Stopwatch _gameplayStopwatch; // 计时器
     private DateTime _gameStartTime; // 游戏开始时间
     private string _playerDataFilePath; // 玩家数据文件路径
+    
+    private static int LaunchingCount { get; set; } = 0;
 
     public EasyLauncher(VersionConfig versionConfig)
     {
@@ -37,6 +39,7 @@ public class EasyLauncher
     public Action<string>? UpdateProgressText { get; set; }
     public Action<bool>? SetProgressIndeterminate { get; set; }
     public Process MinecraftProcess { get; private set; }
+    public static Action? LaunchedBehavior { get; set; }
     private void UpdatePlayerPlayTime(TimeSpan playTime)
     {
         var playerData = VersionInfo.PlayerData;
@@ -59,6 +62,7 @@ public class EasyLauncher
 
     public async Task Launch()
     {
+        LaunchingCount++;
         if (GlobalModel.BedrockCore == null)
         {
             GlobalModel.BedrockCore = new BedrockCore
@@ -131,6 +135,9 @@ public class EasyLauncher
             if (MinecraftProcess != null)
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
+                
+                LaunchingCount--;
+                if (LaunchingCount == 0) LaunchedBehavior?.Invoke();
                 
                 // 开始计时
                 _gameplayStopwatch.Start();

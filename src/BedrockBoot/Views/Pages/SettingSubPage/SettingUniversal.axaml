@@ -43,6 +43,25 @@
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"
+                       Text="行为" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="启动器行为"
+                                          Description="启动器在游戏启动后的行为"
+                                          Glyph="&#xEBD2;">
+                <ComboBox Width="200"
+                          Name="LaunchBehaviorChoose"
+                          SelectionChanged="LaunchBehaviorChoose_OnSelectionChanged"
+                          SelectedIndex="0">
+                    <ComboBoxItem Content="无"></ComboBoxItem>
+                    <ComboBoxItem Content="启动后最小化启动器"></ComboBoxItem>
+                    <ComboBoxItem Content="启动后退出启动器"></ComboBoxItem>
+                </ComboBox>
+            </onePointControls:SettingCard>
+
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14"
                        Text="{DynamicResource Settings.Download.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"

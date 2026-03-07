@@ -40,6 +40,7 @@ public partial class MainWindow : BedrockBootWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
+        MainFrame.NavigateTo(new MainPage());
         UpdateBack();
         InitializeWindowBounds();
         
@@ -69,7 +70,6 @@ public partial class MainWindow : BedrockBootWindow
         VersionBox.IsVisible = false;
 #endif
 
-        MainFrame.NavigateTo(new LoadingPage());
         VersionBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         var buildTimestamp = (DateTime)CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly());
         BuildTime.Text = $"Build.2.{buildTimestamp:yy.MMdd.HHmmss}";
@@ -100,10 +100,7 @@ public partial class MainWindow : BedrockBootWindow
         // 完成初始化后回到 UI 线程进行页面跳转
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (GlobalModel.Config.Data.IsFirstRun)
-                MainFrame.NavigateTo(new SetupRoot());
-            else
-                MainFrame.NavigateTo(new MainPage());
+            LoadBox.IsVisible = false;
 
             CheckUserAgreement();
         });

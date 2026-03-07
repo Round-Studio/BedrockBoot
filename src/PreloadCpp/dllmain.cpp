@@ -1,5 +1,4 @@
-﻿
-#include "pch.h"
+﻿#include "pch.h"
 #include <shellapi.h>
 #include <algorithm>
 #include <iostream>
@@ -24,6 +23,26 @@ NtQueryFullAttributesFile_t OriginalNtQueryFullAttributesFile = nullptr;
 NtSetInformationFile_t OriginalNtSetInformationFile = nullptr;
 NtDeleteFile_t OriginalNtDeleteFile = nullptr;
 
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define CYAN    "\033[36m"
+#define BOLD    "\033[1m"
+
+const char* BEDROCK_BOOT_LOGO =
+R"(
+  ____           _                 _      ____              _   
+ | __ )  ___  __| |_ __ ___   ____| | __ | __ )  ___   ___ | |_ 
+ |  _ \ / _ \/ _` | '__/ _ \ / __ | |/ / |  _ \ / _ \ / _ \| __|
+ | |_) |  __/ (_| | | | (_) | (__ |   <  | |_) | (_) | (_) | |_ 
+ |____/ \___|\__,_|_|  \___/ \____|_|\_\ |____/ \___/ \___/ \__|
+                                                                
+ >> File Redirector & Plugin Loader for Minecraft Bedrock
+----------------------------------------------------------------
+)";
+
 std::wstring GetRedirectedRelativePath(const std::wstring& originalPath)
 {
 	const std::vector<std::wstring> keywords = {
@@ -44,7 +63,7 @@ std::wstring GetRedirectedRelativePath(const std::wstring& originalPath)
 		{
 			pos = foundPos;
 			matchedKeyword = keyword;
-			break; 
+			break;
 		}
 	}
 
@@ -169,7 +188,7 @@ bool ApplyRedirection(POBJECT_ATTRIBUTES objectAttributes, RedirectContext& cont
 			context.unicodeString.Buffer = context.wideBuffer.data();
 
 			context.objectAttributes = *objectAttributes;
-			context.objectAttributes.Attributes = 0x00000040; 
+			context.objectAttributes.Attributes = 0x00000040;
 			context.objectAttributes.ObjectName = &context.unicodeString;
 			context.objectAttributes.RootDirectory = rootHandle;
 			context.objectAttributes.SecurityDescriptor = nullptr;
@@ -220,7 +239,7 @@ NTSTATUS NTAPI HookedNtCreateFile(
 			bool isDir = IsDirectory(context.wideBuffer.data());
 			if (isDir)
 			{
-				CreateOptions &= ~0x00000040; 
+				CreateOptions &= ~0x00000040;
 				CreateOptions |= 0x00000001;
 			}
 		}
@@ -379,79 +398,61 @@ NTSTATUS NTAPI HookedNtDeleteFile(
 }
 
 namespace fs = std::filesystem;
-typedef BOOL (WINAPI*DLL_MAIN_PROC)(
+typedef BOOL(WINAPI* DLL_MAIN_PROC)(
 	HINSTANCE hinstDLL,
 	DWORD fdwReason,
 	LPVOID lpvReserved
-);
+	);
 
 extern "C" __declspec(dllexport) void Load()
 {
-	std::cout << "BedrockBoot Injecting!" << std::endl;
+	std::cout << CYAN << BOLD << BEDROCK_BOOT_LOGO << RESET << std::endl;
+	std::cout << YELLOW << "[*] Initializing BedrockBoot Core..." << RESET << std::endl;
 }
 
-int LoadPreloadDlls(HINSTANCE hinstDLL,
-                    DWORD fdwReason,
-                    LPVOID lpvReserved)
+int LoadPreloadDlls(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 	std::string preloadDir;
 	char currentDir[MAX_PATH];
 	GetCurrentDirectoryA(MAX_PATH, currentDir);
 	preloadDir = std::string(currentDir) + "\\preload";
 
-
-	if (!fs::exists(preloadDir) || !fs::is_directory(preloadDir))
-	{
-		fs::create_directory("preload");
+	if (!fs::exists(preloadDir)) {
+		fs::create_directory(preloadDir);
 	}
 
-	std::vector<HMODULE> loadedModules;
 	int count = 0;
+	std::cout << BLUE << "\n[+] Scanning Plugin Directory: " << RESET << preloadDir << std::endl;
+	std::cout << "------------------------------------------------" << std::endl;
 
-	std::cout << "Loading DLLs from: " << preloadDir << std::endl;
+	try {
+		for (const auto& entry : fs::directory_iterator(preloadDir)) {
+			if (entry.is_regular_file() && entry.path().extension() == ".dll") {
+				std::string filename = entry.path().filename().string();
 
-	try
-	{
-		for (const auto& entry : fs::directory_iterator(preloadDir))
-		{
-			if (entry.is_regular_file())
-			{
-				std::string path = entry.path().string();
-				std::string ext = entry.path().extension().string();
+				// 使用 printf 格式化对齐
+				printf("  %-30s ", filename.c_str());
 
-				std::string lowerExt = ext;
-				std::transform(lowerExt.begin(), lowerExt.end(), lowerExt.begin(), ::tolower);
-
-				if (lowerExt == ".dll")
-				{
-					std::string filename = entry.path().filename().string();
-					std::cout << "  -> " << filename << "... ";
-
-					HMODULE hModule = LoadLibraryA(path.c_str());
-					if (hModule)
-					{
-						FARPROC dllMain = GetProcAddress(hModule, "DllMain");
-
-						loadedModules.push_back(hModule);
-						count++;
-						std::cout << "OK" << std::endl;
-					}
-					else
-					{
-						std::cout << "FAILED (Error: " << GetLastError() << ")" << std::endl;
-					}
+				HMODULE hModule = LoadLibraryA(entry.path().string().c_str());
+				if (hModule) {
+					std::cout << "[" << GREEN << " SUCCESS " << RESET << "]" << std::endl;
+					count++;
+				}
+				else {
+					std::cout << "[" << RED << " FAILED  " << RESET << "] Error: " << GetLastError() << std::endl;
 				}
 			}
 		}
 	}
-	catch (const std::exception& e)
-	{
-		std::cerr << "Error: " << e.what() << std::endl;
+	catch (const std::exception& e) {
+		std::cerr << RED << "[!] Error during scan: " << e.what() << RESET << std::endl;
 	}
 
-	std::cout << "\nSuccessfully loaded " << count << " DLL(s)" << std::endl;
+	std::cout << "------------------------------------------------" << std::endl;
+	std::cout << GREEN << "[*] Total Plugins Loaded: " << count << RESET << "\n" << std::endl;
 	return count;
 }
+
 void createDefaultConfig(const std::string& filename)
 {
 	std::ofstream config(filename);
@@ -492,11 +493,11 @@ bool getConfigValue(const std::string& filename, const std::string& key, bool de
 
 		std::string lowerLine = line;
 		std::transform(lowerLine.begin(), lowerLine.end(), lowerLine.begin(),
-		               [](unsigned char c) { return std::tolower(c); });
+			[](unsigned char c) { return std::tolower(c); });
 
 		std::string lowerKey = key;
 		std::transform(lowerKey.begin(), lowerKey.end(), lowerKey.begin(),
-		               [](unsigned char c) { return std::tolower(c); });
+			[](unsigned char c) { return std::tolower(c); });
 
 		if (lowerLine.find(lowerKey) != std::string::npos)
 		{
@@ -548,11 +549,11 @@ void setConfigValue(const std::string& filename, const std::string& key, bool va
 	{
 		std::string lowerLine = line;
 		std::transform(lowerLine.begin(), lowerLine.end(), lowerLine.begin(),
-		               [](unsigned char c) { return std::tolower(c); });
+			[](unsigned char c) { return std::tolower(c); });
 
 		std::string lowerKey = key;
 		std::transform(lowerKey.begin(), lowerKey.end(), lowerKey.begin(),
-		               [](unsigned char c) { return std::tolower(c); });
+			[](unsigned char c) { return std::tolower(c); });
 		if (lowerLine.find(lowerKey) != std::string::npos &&
 			lowerLine.find("=") != std::string::npos &&
 			lowerLine[0] != '#')
@@ -583,7 +584,7 @@ void setConfigValue(const std::string& filename, const std::string& key, bool va
 
 bool SetExeDirectoryAsWorkingDir()
 {
-	char exePath[MAX_PATH] = {0};
+	char exePath[MAX_PATH] = { 0 };
 	DWORD pathLength = GetModuleFileNameA(NULL, exePath, MAX_PATH);
 
 	if (pathLength == 0 || pathLength == MAX_PATH)
@@ -608,7 +609,7 @@ bool SetExeDirectoryAsWorkingDir()
 		return false;
 	}
 
-	char currentDir[MAX_PATH] = {0};
+	char currentDir[MAX_PATH] = { 0 };
 	DWORD dirLength = GetCurrentDirectoryA(MAX_PATH, currentDir);
 
 	if (dirLength > 0)
@@ -620,8 +621,8 @@ bool SetExeDirectoryAsWorkingDir()
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,
-                      DWORD ul_reason_for_call,
-                      LPVOID lpReserved
+	DWORD ul_reason_for_call,
+	LPVOID lpReserved
 )
 {
 	switch (ul_reason_for_call)
@@ -671,10 +672,16 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 			if (error == NO_ERROR)
 			{
 				g_hooksInstalled = true;
+				std::cout << GREEN << "[OK] File Redirector Hooked Successfully." << RESET << std::endl;
 			}
 			else
 			{
+				std::cout << RED << "[ERR] Failed to Hook Redirector: " << error << RESET << std::endl;
 			}
+		}
+		else
+		{
+			std::cout << YELLOW << "[!] Redirector is disabled in game.conf" << RESET << std::endl;
 		}
 		Load();
 		LoadPreloadDlls(hModule, ul_reason_for_call, lpReserved);

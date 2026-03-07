@@ -181,7 +181,7 @@ public class OptimizedIpResolver : IDisposable
                 sw.Stop();
                 result.IsSuccessful = true;
                 result.Latency = sw.Elapsed;
-                Console.WriteLine($@"  ✓ {ip}: {sw.ElapsedMilliseconds}ms");
+                Console.WriteLine($@"{ip}: {sw.ElapsedMilliseconds} ms");
             }
         }
         catch (OperationCanceledException)
@@ -195,7 +195,7 @@ public class OptimizedIpResolver : IDisposable
             sw.Stop();
             result.IsSuccessful = false;
             result.Error = ex.Message;
-            Console.WriteLine($@"  ✗ {ip}: {ex.Message}");
+            Console.WriteLine($@"{ip}: {ex.Message}");
         }
 
         return result;

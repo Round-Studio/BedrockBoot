@@ -62,13 +62,13 @@ namespace BedrockBoot.Core.Models
                     
                     if (_optimizedEndpoint != null)
                     {
-                        Console.WriteLine($@"[Analytics] 使用优选IP: {_optimizedEndpoint}");
+                        Console.WriteLine($@"使用优选IP: {_optimizedEndpoint}");
                         _httpClient = CreateOptimizedHttpClient(_optimizedEndpoint);
                     }
                     else
                     {
                         // 如果优选失败，使用普通HTTP客户端
-                        Console.WriteLine(@"[Analytics] 优选IP获取失败，使用普通连接");
+                        Console.WriteLine(@"优选IP获取失败，使用普通连接");
                         _httpClient = CreateDefaultHttpClient();
                     }
                 }
@@ -99,7 +99,7 @@ namespace BedrockBoot.Core.Models
                         await socket.ConnectAsync(endpoint.Address, endpoint.Port, cancellationToken)
                             .ConfigureAwait(false);
                         
-                        Console.WriteLine($@"[Analytics] 已连接到优选IP: {endpoint.Address}:{endpoint.Port}");
+                        Console.WriteLine($@"已连接到优选IP: {endpoint.Address}:{endpoint.Port}");
                         
                         return new NetworkStream(socket, ownsSocket: true);
                     }
@@ -166,7 +166,7 @@ namespace BedrockBoot.Core.Models
         {
             try
             {
-                Console.WriteLine(@"[Analytics] 开始刷新优选IP...");
+                Console.WriteLine(@"开始刷新优选IP...");
                 
                 var newEndpoint = await _ipResolver.GetOptimizedIpAsync(useCache: false);
                 
@@ -184,7 +184,7 @@ namespace BedrockBoot.Core.Models
                         // 释放旧客户端
                         oldClient?.Dispose();
                         
-                        Console.WriteLine($@"[Analytics] 优选IP刷新成功: {newEndpoint}");
+                        Console.WriteLine($@"优选IP刷新成功: {newEndpoint}");
                         return true;
                     }
                     finally
@@ -197,7 +197,7 @@ namespace BedrockBoot.Core.Models
             }
             catch (Exception ex)
             {
-                Console.WriteLine($@"[Analytics] 刷新优选IP失败: {ex.Message}");
+                Console.WriteLine($@"刷新优选IP失败: {ex.Message}");
                 return false;
             }
         }
@@ -234,7 +234,7 @@ namespace BedrockBoot.Core.Models
                 // 记录使用的IP信息
                 if (_optimizedEndpoint != null)
                 {
-                    Console.WriteLine($@"[Analytics] 使用优选IP {_optimizedEndpoint.Address} 发送请求");
+                    Console.WriteLine($@"使用优选IP {_optimizedEndpoint.Address} 发送请求");
                 }
 
                 // 发送请求
@@ -245,12 +245,12 @@ namespace BedrockBoot.Core.Models
                 
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($@"[Analytics] 日志推送成功: {user}");
+                    Console.WriteLine($@"日志推送成功: {user}");
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine($@"[Analytics] 日志推送失败: {response.StatusCode}");
+                    Console.WriteLine($@"日志推送失败: {response.StatusCode}");
                     
                     // 如果失败且可能是网络问题，尝试刷新优选IP
                     if (response.StatusCode == HttpStatusCode.RequestTimeout || 
@@ -265,7 +265,7 @@ namespace BedrockBoot.Core.Models
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($@"[Analytics] 网络请求异常: {ex.Message}");
+                Console.WriteLine($@"网络请求异常: {ex.Message}");
                 
                 // 网络异常时尝试刷新优选IP
                 _ = Task.Run(async () => await RefreshOptimizedIpAsync());
@@ -274,7 +274,7 @@ namespace BedrockBoot.Core.Models
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($@"[Analytics] 请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex.Message}");
                 
                 // 超时时尝试刷新优选IP
                 _ = Task.Run(async () => await RefreshOptimizedIpAsync());
@@ -283,7 +283,7 @@ namespace BedrockBoot.Core.Models
             }
             catch (Exception ex)
             {
-                Console.WriteLine($@"[Analytics] 推送异常: {ex.Message}");
+                Console.WriteLine($@"推送异常: {ex.Message}");
                 return false;
             }
         }

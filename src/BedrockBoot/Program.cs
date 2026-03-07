@@ -34,13 +34,6 @@ internal sealed class Program
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
 
-        if (GlobalModel.Config.Data.IsConsole)
-        {
-            AllocConsole();
-            Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
-        }
-
         AppUpdater.ProcessStartupArgs(args);
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
@@ -55,8 +48,27 @@ internal sealed class Program
         if (args.Length > 0 && ArgsAnalytical(args.ToList()))
             return;
 
+        if (GlobalModel.Config.Data.IsConsole)
+        {
+            AllocConsole();
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
+        }
+
         var consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
             $"[BedrockBoot.Logger] {DateTime.Now:yyyy.MM.dd HHmmss.fff}.log"));
+        
+        string bedrockBootLogo = $@"
+  ____           _                 _      ____              _   
+ | __ )  ___  __| |_ __ ___   ____| | __ | __ )  ___   ___ | |_ 
+ |  _ \ / _ \/ _` | '__/ _ \ / __ | |/ / |  _ \ / _ \ / _ \| __|
+ | |_) |  __/ (_| | | | (_) | (__ |   <  | |_) | (_) | (_) | |_ 
+ |____/ \___|\__,_|_|  \___/ \____|_|\_\ |____/ \___/ \___/ \__|
+ BedrockBoot Ver.{GlobalModel.BodyVersion}
+                                                                
+";
+
+        Console.WriteLine(bedrockBootLogo);
 
         if ((int)GlobalModel.Config.Data.IsolationModel != 0)
             GlobalModel.Config.Data.IsolationModel = IsolationType.Hook;

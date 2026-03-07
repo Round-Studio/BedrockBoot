@@ -104,7 +104,7 @@ public partial class MainPage : UserControl
                 count = GlobalModel.Config.Data.GameFolders.Count;
                 sel = GlobalModel.Config.Data.GameFolderSelIndex;
                 
-                Avalonia.Threading.Dispatcher.UIThread.Post(UpdateUI);
+                Avalonia.Threading.Dispatcher.UIThread.Invoke(UpdateUI);
             }
         };
         UpdateUI();
@@ -222,6 +222,9 @@ public partial class MainPage : UserControl
             IsEditMode = false;
             _isUpdatingGameList = true;
 
+            GameControls.IsEnabled = true;
+            GameSettingBtn.IsVisible = true;
+
             // 确保控件已初始化
             if (GameListChoose == null)
             {
@@ -237,9 +240,6 @@ public partial class MainPage : UserControl
             catch
             {
             }
-
-            GameControls.IsEnabled = true;
-            GameSettingBtn.IsVisible = true;
 
             if (GlobalModel.Config.Data.GameFolders.Count <= 0)
             {

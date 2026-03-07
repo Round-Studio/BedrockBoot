@@ -76,6 +76,16 @@
             <TextBlock Margin="5" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1)" />
             <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Custom}" />
             <TextBlock Margin="5" FontSize="9" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1/blob/main/LICENSE)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                WindowsCommunityToolkit (Microsoft.Toolkit.Uwp.Notifications)
+            </TextBlock>
+            <TextBlock Margin="5" Text="(https://github.com/CommunityToolkit/WindowsCommunityToolkit)" />
+            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/CommunityToolkit/WindowsCommunityToolkit/blob/main/License.md)" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -150,7 +150,6 @@ public class EasyLauncher
                 if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
 
                 MinecraftProcess.EnableRaisingEvents = true;
-                MinecraftProcess.Exited += OnProcessExited;
 
                 await WaitForProcessExitAsync(MinecraftProcess);
             }
@@ -169,22 +168,6 @@ public class EasyLauncher
                 
             LaunchCompleted?.Invoke();
         }
-    }
-
-    private void OnProcessExited(object sender, EventArgs e)
-    {
-        // 停止计时并记录数据
-        if (_gameplayStopwatch.IsRunning)
-        {
-            _gameplayStopwatch.Stop();
-            TimeSpan playTime = _gameplayStopwatch.Elapsed;
-            
-            // 更新玩家数据
-            UpdatePlayerPlayTime(playTime);
-        }
-        
-        Console.WriteLine(@"游戏进程已退出");
-        LaunchCompleted?.Invoke();
     }
 
     private async Task WaitForProcessExitAsync(Process process)

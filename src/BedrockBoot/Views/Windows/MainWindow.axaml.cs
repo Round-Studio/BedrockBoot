@@ -18,6 +18,7 @@ using BedrockBoot.Entity;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Helper.Notice;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Pages;
@@ -25,6 +26,7 @@ using BedrockBoot.Views.Pages.SetupPage;
 using BedrockBoot.Views.Windows.SubWindows;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
+using Microsoft.Toolkit.Uwp.Notifications;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -35,6 +37,7 @@ namespace BedrockBoot.Views.Windows;
 public partial class MainWindow : BedrockBootWindow
 {
     private I18nManager I18n => I18nManager.Instance;
+    public bool IsWindowActive => IsActive;
 
     public MainWindow()
     {

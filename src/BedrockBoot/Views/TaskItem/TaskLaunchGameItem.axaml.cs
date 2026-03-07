@@ -8,6 +8,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper.Notice;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Windows.SubWindows;
 using OnePointUI.Avalonia.Base.Entry;
@@ -105,7 +106,12 @@ public partial class TaskLaunchGameItem : UserControl
                     Dispatcher.UIThread.Invoke(() => { LaunchProgressBar.IsIndeterminate = isIndeterminate; });
                 };
 
-                lc.LaunchCompleted = () => { Dispatcher.UIThread.Invoke(() => { LaunchCompleted?.Invoke(); }); };
+                lc.LaunchCompleted = () => { Dispatcher.UIThread.Invoke(() =>
+                {
+                    LaunchCompleted?.Invoke();
+                    if (!GlobalModel.MainWindow.IsWindowActive)
+                        NoticeHelper.SentNotice("游戏退出", $"游戏 {VersionInfo.Info.VersionName} 已退出。");
+                }); };
 
                 lc.Launched = process =>
                 {

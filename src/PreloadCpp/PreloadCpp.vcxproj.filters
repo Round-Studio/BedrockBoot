@@ -38,11 +38,5 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="detours_stub.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="logger.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

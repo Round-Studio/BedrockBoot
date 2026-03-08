@@ -51,6 +51,7 @@ public partial class InstanceInfo : UserControl
                 InstanceEdit.IsChecked = VersionInfo.Config.IsEditModel;
                 InstanceMod.IsChecked = VersionInfo.Config.IsModes;
                 InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
+                InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
             });
 
             Thread.Sleep(500);
@@ -79,6 +80,7 @@ public partial class InstanceInfo : UserControl
             VersionInfo.Config.IsEditModel = (bool)InstanceEdit.IsChecked!;
             VersionInfo.Config.IsVersionIsolated = (bool)InstanceIsolated.IsChecked!;
             VersionInfo.Config.IsModes = (bool)InstanceMod.IsChecked!;
+            VersionInfo.Config.IsDetailedLog = (bool)InstanceDetailedLogs.IsChecked!;
 
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }

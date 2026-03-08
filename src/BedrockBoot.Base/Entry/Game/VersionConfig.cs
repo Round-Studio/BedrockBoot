@@ -29,9 +29,8 @@ public class VersionConfig
         [JsonPropertyName("isEditModel")] public bool IsEditModel { get; set; } = false;
         [JsonPropertyName("isModes")] public bool IsModes { get; set; } = true;
         [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
-
-        [JsonPropertyName("isVersionIsolated")]
-        public bool IsVersionIsolated { get; set; } = true;
+        [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
+        [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
 
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
     }

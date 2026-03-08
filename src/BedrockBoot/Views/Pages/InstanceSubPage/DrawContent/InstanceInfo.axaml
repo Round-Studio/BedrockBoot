@@ -79,6 +79,14 @@
                             <ToggleSwitch Name="InstanceConsole"
                                           IsCheckedChanged="BoolTypeConfig_OnChanged" />
                         </onePointControls:SettingCard>
+
+                        <onePointControls:SettingCard Glyph="&#xE8A1;"
+                                                      Header="详细日志"
+                                                      Description="输出详细的日志，包括游戏底层的文件操作（开启后会有卡顿）"
+                                                      Classes="Item">
+                            <ToggleSwitch Name="InstanceDetailedLogs"
+                                          IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                        </onePointControls:SettingCard>
                     </StackPanel>
                 </onePointControls:SettingExpander>
 

@@ -125,6 +125,8 @@ public:
 
         shouldStop = false;
         workerThread = std::thread(ProcessLogs);
+
+        Logger::Log(LogLevel::INFO, "Logger Initialize.", "Logger");
     }
 
     static void Shutdown() {

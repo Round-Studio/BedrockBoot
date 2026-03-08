@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="detours.h" />
     <ClInclude Include="detver.h" />
     <ClInclude Include="framework.h" />

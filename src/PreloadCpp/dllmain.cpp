@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include <shellapi.h>
 #include <algorithm>
 #include <iostream>
@@ -11,11 +11,14 @@
 #include "detours.h"
 #include "redirctor.h"
 #include "logger.h"
+#include "ConfigManager.h"
 #pragma comment(lib, "detours.lib")
 fs::path g_logicalBaseDir;
 HANDLE g_localDataHandle = INVALID_HANDLE_VALUE;
 std::mutex g_handleMutex;
 bool g_hooksInstalled = false;
+ConfigManager g_configManager;
+bool isOutFileHook = g_configManager.GetBoolConfig("isDetailedLog");
 
 NtCreateFile_t OriginalNtCreateFile = nullptr;
 NtOpenFile_t OriginalNtOpenFile = nullptr;
@@ -155,7 +158,7 @@ bool ApplyRedirection(POBJECT_ATTRIBUTES objectAttributes, RedirectContext& cont
 {
 	isRedirected = false; 
 	
-	if (objectAttributes && objectAttributes->ObjectName) {
+	if (objectAttributes && objectAttributes->ObjectName && isOutFileHook) {
 		std::wstring path(objectAttributes->ObjectName->Buffer, objectAttributes->ObjectName->Length / sizeof(wchar_t));
 		Logger::Info(opType + ": " + WStringToString(path));
 	}
@@ -468,134 +471,6 @@ int LoadPreloadDlls(HINSTANCE hinstDLL,
 	Logger::Success("Successfully loaded " + std::to_string(count) + " DLL(s)");
 	return count;
 }
-void createDefaultConfig(const std::string& filename)
-{
-	std::ofstream config(filename);
-	config << "# 游戏配置文件\n";
-	config << "# 重定向功能 (0=禁用, 1=启用)\n";
-	config << "redirctor = 0\n\n";
-	config << "# 控制台输出 (0=禁用, 1=启用)\n";
-	config << "console_open = 0\n";
-	config.close();
-	Logger::Info("配置文件 " + filename + " 不存在，已创建默认配置");
-}
-
-bool getConfigValue(const std::string& filename, const std::string& key, bool defaultValue = false)
-{
-	if (!fs::exists(filename))
-	{
-		createDefaultConfig(filename);
-		return defaultValue;
-	}
-
-	std::ifstream file(filename);
-	if (!file.is_open())
-	{
-		Logger::Error("无法打开配置文件: " + filename);
-		return defaultValue;
-	}
-
-	std::string line;
-	while (std::getline(file, line))
-	{
-		line.erase(0, line.find_first_not_of(" \t"));
-		line.erase(line.find_last_not_of(" \t") + 1);
-
-		if (line.empty() || line[0] == '#')
-		{
-			continue;
-		}
-
-		std::string lowerLine = line;
-		std::transform(lowerLine.begin(), lowerLine.end(), lowerLine.begin(),
-			[](unsigned char c) { return std::tolower(c); });
-
-		std::string lowerKey = key;
-		std::transform(lowerKey.begin(), lowerKey.end(), lowerKey.begin(),
-			[](unsigned char c) { return std::tolower(c); });
-
-		if (lowerLine.find(lowerKey) != std::string::npos)
-		{
-			lowerLine.erase(std::remove(lowerLine.begin(), lowerLine.end(), ' '), lowerLine.end());
-			lowerLine.erase(std::remove(lowerLine.begin(), lowerLine.end(), '\t'), lowerLine.end());
-
-			size_t pos = lowerLine.find(lowerKey + "=");
-			if (pos != std::string::npos)
-			{
-				std::string value = lowerLine.substr(pos + lowerKey.length() + 1);
-				file.close();
-
-				if (value == "1")
-				{
-					return true;
-				}
-				else if (value == "0")
-				{
-					return false;
-				}
-			}
-		}
-	}
-
-	file.close();
-	return defaultValue;
-}
-bool isRedirectorEnabled()
-{
-	return getConfigValue("game.conf", "redirctor", false);
-}
-bool isConsoleOpenEnabled()
-{
-	return getConfigValue("game.conf", "console_open", false);
-}
-
-void setConfigValue(const std::string& filename, const std::string& key, bool value)
-{
-	if (!fs::exists(filename))
-	{
-		createDefaultConfig(filename);
-	}
-
-	std::vector<std::string> lines;
-	bool keyFound = false;
-	std::ifstream inFile(filename);
-	std::string line;
-	while (std::getline(inFile, line))
-	{
-		std::string lowerLine = line;
-		std::transform(lowerLine.begin(), lowerLine.end(), lowerLine.begin(),
-			[](unsigned char c) { return std::tolower(c); });
-
-		std::string lowerKey = key;
-		std::transform(lowerKey.begin(), lowerKey.end(), lowerKey.begin(),
-			[](unsigned char c) { return std::tolower(c); });
-		if (lowerLine.find(lowerKey) != std::string::npos &&
-			lowerLine.find("=") != std::string::npos &&
-			lowerLine[0] != '#')
-		{
-			std::string newLine = key + " = " + (value ? "1" : "0");
-			lines.push_back(newLine);
-			keyFound = true;
-		}
-		else
-		{
-			lines.push_back(line);
-		}
-	}
-	inFile.close();
-
-	if (!keyFound)
-	{
-		lines.push_back(key + " = " + (value ? "1" : "0"));
-	}
-
-	std::ofstream outFile(filename);
-	for (const auto& l : lines)
-	{
-		outFile << l << "\n";
-	}
-	outFile.close();
-}
 
 bool SetExeDirectoryAsWorkingDir()
 {
@@ -646,7 +521,13 @@ inline void PrintBanner()
 
 )";
 
-	Logger::Info(banner);
+	std::stringstream ss(banner);
+	std::string line;
+
+	while (std::getline(ss, line))
+	{
+		Logger::Info(line);
+	}
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -658,7 +539,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 		SetExeDirectoryAsWorkingDir();
-		if (isConsoleOpenEnabled())
+		if (g_configManager.GetBoolConfig("isConsole"))
 		{
 			AllocConsole();
 			FILE* fDummy;
@@ -667,9 +548,13 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 			freopen_s(&fDummy, "CONIN$", "r", stdin);
 			Logger::Initialize();
 			PrintBanner();
+
+			Logger::Warning("BedrockBoot is free software licensed under GPLv3");
+			Logger::Warning("Submit issues and submit PR: https://github.com/Round-Studio/BedrockBoot");
 		}
-		if (isRedirectorEnabled())
+		if (g_configManager.GetBoolConfig("isVersionIsolated"))
 		{
+			Logger::Info("Initializing File Hook.");
 			HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
 			if (!ntdll)
 			{

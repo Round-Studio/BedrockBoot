@@ -88,19 +88,6 @@ public class EasyLauncher
 
         try
         {
-            IsolationCore = new IsolationCore(VersionInfo);
-            IsolationCore.Init();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            // 迁移失败，触发迁移回调
-            OnMigration?.Invoke();
-            return;
-        }
-
-        try
-        {
             // 重置计时器
             _gameplayStopwatch.Reset();
             _gameStartTime = DateTime.Now;
@@ -119,7 +106,6 @@ public class EasyLauncher
                 }),
                 Progress = new Progress<LaunchState>(state =>
                 {
-                    IsolationCore.Init(true);
                     Console.WriteLine(state);
                     UpdateProgressText?.Invoke($"状态：{state}");
                     

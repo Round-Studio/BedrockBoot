@@ -14,9 +14,6 @@ public class ResourcePackManager
     {
         VersionConfig = versionConfig;
         Packs = new List<ResourcePackManifest>();
-
-        var iso = new IsolationCore(versionConfig);
-        iso.Init(true);
     }
 
     public VersionConfig VersionConfig { get; set; }

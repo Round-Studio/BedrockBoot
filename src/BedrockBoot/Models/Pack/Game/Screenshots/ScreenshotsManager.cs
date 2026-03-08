@@ -15,9 +15,6 @@ public class ScreenshotsManager
     public ScreenshotsManager(VersionConfig versionInfo)
     {
         VersionConfig = versionInfo;
-
-        var iso = new IsolationCore(versionInfo);
-        iso.Init(true);
     }
 
     public VersionConfig VersionConfig { get; set; }

@@ -5,3 +5,6 @@ riderModule.iml
 /_ReSharper.Caches/
 .vs/
 .idea/
+/x64/Release
+/Debug
+/src/PreloadCpp/x64/Release

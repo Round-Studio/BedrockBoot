@@ -21,13 +21,13 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="redirctor.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="detours.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="detver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -36,6 +36,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="detours_stub.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="logger.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

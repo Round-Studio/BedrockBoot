@@ -7,10 +7,12 @@
 #include <fstream>
 #include <vector>
 #include <filesystem>
+#include <sstream>
+#include <string>
 
 #include "detours.h"
 #include "redirctor.h"
-#pragma comment(lib, "detours.lib")
+#include "logger.h"
 fs::path g_logicalBaseDir;
 HANDLE g_localDataHandle = INVALID_HANDLE_VALUE;
 std::mutex g_handleMutex;
@@ -23,13 +25,7 @@ NtQueryFullAttributesFile_t OriginalNtQueryFullAttributesFile = nullptr;
 NtSetInformationFile_t OriginalNtSetInformationFile = nullptr;
 NtDeleteFile_t OriginalNtDeleteFile = nullptr;
 
-#define RESET   "\033[0m"
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
-#define CYAN    "\033[36m"
-#define BOLD    "\033[1m"
+
 
 const char* BEDROCK_BOOT_LOGO =
 R"(
@@ -406,8 +402,10 @@ typedef BOOL(WINAPI* DLL_MAIN_PROC)(
 
 extern "C" __declspec(dllexport) void Load()
 {
-	std::cout << CYAN << BOLD << BEDROCK_BOOT_LOGO << RESET << std::endl;
-	std::cout << YELLOW << "[*] Initializing BedrockBoot Core..." << RESET << std::endl;
+    Log(LogLevel::Info, "BedrockBoot", std::string(BEDROCK_BOOT_LOGO));
+    Log(LogLevel::Info, "BedrockBoot", "BedrockBoot is a free software licensed under GPLv3");
+    Log(LogLevel::Info, "BedrockBoot", "Submit issues and submit PR: https://github.com/Round-Studio/BedrockBoot");
+    Log(LogLevel::Info, "BedrockBoot", "Initializing BedrockBoot Core...");
 }
 
 int LoadPreloadDlls(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
@@ -421,35 +419,33 @@ int LoadPreloadDlls(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		fs::create_directory(preloadDir);
 	}
 
-	int count = 0;
-	std::cout << BLUE << "\n[+] Scanning Plugin Directory: " << RESET << preloadDir << std::endl;
-	std::cout << "------------------------------------------------" << std::endl;
+    int count = 0;
+    Log(LogLevel::Info, "BedrockBoot", std::string("Scanning Plugin Directory: ") + preloadDir);
 
-	try {
-		for (const auto& entry : fs::directory_iterator(preloadDir)) {
-			if (entry.is_regular_file() && entry.path().extension() == ".dll") {
-				std::string filename = entry.path().filename().string();
+    try {
+        for (const auto& entry : fs::directory_iterator(preloadDir)) {
+            if (entry.is_regular_file() && entry.path().extension() == ".dll") {
+                std::string filename = entry.path().filename().string();
+                std::string pluginName = entry.path().stem().string();
 
-				// 使用 printf 格式化对齐
-				printf("  %-30s ", filename.c_str());
+                Log(LogLevel::Info, "BedrockBoot", std::string("Loading Dll: ") + filename);
 
-				HMODULE hModule = LoadLibraryA(entry.path().string().c_str());
-				if (hModule) {
-					std::cout << "[" << GREEN << " SUCCESS " << RESET << "]" << std::endl;
-					count++;
-				}
-				else {
-					std::cout << "[" << RED << " FAILED  " << RESET << "] Error: " << GetLastError() << std::endl;
-				}
-			}
-		}
-	}
-	catch (const std::exception& e) {
-		std::cerr << RED << "[!] Error during scan: " << e.what() << RESET << std::endl;
-	}
+                HMODULE hModule = LoadLibraryA(entry.path().string().c_str());
+                if (hModule) {
+                    Log(LogLevel::Info, pluginName, std::string("Success for loading dll: ") + filename);
+                    count++;
+                }
+                else {
+                    Log(LogLevel::Err, pluginName, std::string("Error: ") + std::to_string(GetLastError()));
+                }
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        Log(LogLevel::Err, "BedrockBoot", std::string("Error during scan: ") + e.what());
+    }
 
-	std::cout << "------------------------------------------------" << std::endl;
-	std::cout << GREEN << "[*] Total Plugins Loaded: " << count << RESET << "\n" << std::endl;
+    Log(LogLevel::Info, "BedrockBoot", std::string("Total Plugins Loaded: ") + std::to_string(count));
 	return count;
 }
 
@@ -462,7 +458,7 @@ void createDefaultConfig(const std::string& filename)
 	config << "# 控制台输出 (0=禁用, 1=启用)\n";
 	config << "console_open = 0\n";
 	config.close();
-	std::cout << "配置文件 " << filename << " 不存在，已创建默认配置" << std::endl;
+    Log(LogLevel::Info, "BedrockBoot", std::string("配置文件 ") + filename + " 不存在，已创建默认配置");
 }
 
 bool getConfigValue(const std::string& filename, const std::string& key, bool defaultValue = false)
@@ -474,11 +470,11 @@ bool getConfigValue(const std::string& filename, const std::string& key, bool de
 	}
 
 	std::ifstream file(filename);
-	if (!file.is_open())
-	{
-		std::cerr << "无法打开配置文件: " << filename << std::endl;
-		return defaultValue;
-	}
+    if (!file.is_open())
+    {
+        Log(LogLevel::Err, "BedrockBoot", std::string("无法打开配置文件: ") + filename);
+        return defaultValue;
+    }
 
 	std::string line;
 	while (std::getline(file, line))
@@ -629,22 +625,18 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 		SetExeDirectoryAsWorkingDir();
-		if (isConsoleOpenEnabled())
-		{
-			AllocConsole();
-			FILE* fDummy;
-			freopen_s(&fDummy, "CONOUT$", "w", stdout);
-			freopen_s(&fDummy, "CONOUT$", "w", stderr);
-			freopen_s(&fDummy, "CONIN$", "r", stdin);
-		}
+        if (isConsoleOpenEnabled())
+        {
+            EnableConsoleWithVT();
+        }
 		if (isRedirectorEnabled())
 		{
 			HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
-			if (!ntdll)
-			{
-				std::cout << "Get ntll pt error" << std::endl;
-				return FALSE;
-			}
+            if (!ntdll)
+            {
+                Log(LogLevel::Err, "BedrockBoot", "Get ntdll handle error");
+                return FALSE;
+            }
 
 			OriginalNtCreateFile = reinterpret_cast<NtCreateFile_t>(
 				GetProcAddress(ntdll, "NtCreateFile"));
@@ -669,20 +661,20 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 			DetourAttach(&(PVOID&)OriginalNtDeleteFile, HookedNtDeleteFile);
 
 			LONG error = DetourTransactionCommit();
-			if (error == NO_ERROR)
-			{
-				g_hooksInstalled = true;
-				std::cout << GREEN << "[OK] File Redirector Hooked Successfully." << RESET << std::endl;
-			}
-			else
-			{
-				std::cout << RED << "[ERR] Failed to Hook Redirector: " << error << RESET << std::endl;
-			}
+            if (error == NO_ERROR)
+            {
+                g_hooksInstalled = true;
+                Log(LogLevel::Info, "BedrockBoot", "File Redirector Hooked Successfully.");
+            }
+            else
+            {
+                Log(LogLevel::Err, "BedrockBoot", std::string("Failed to Hook Redirector: ") + std::to_string(error));
+            }
 		}
-		else
-		{
-			std::cout << YELLOW << "[!] Redirector is disabled in game.conf" << RESET << std::endl;
-		}
+        else
+        {
+            Log(LogLevel::Info, "BedrockBoot", "Redirector is disabled in game.conf");
+        }
 		Load();
 		LoadPreloadDlls(hModule, ul_reason_for_call, lpReserved);
 	case DLL_THREAD_ATTACH:

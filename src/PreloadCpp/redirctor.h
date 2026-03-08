@@ -1,10 +1,9 @@
 // MinecraftRedirector.h
 #pragma once
 #define WIN32_LEAN_AND_MEAN
-#define _CRT_SECURE_NO_WARNINGS  // 禁用安全警告
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <windows.h>
-//#include "include/detours.h"
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -13,7 +12,7 @@
 
 namespace fs = std::filesystem;
 
-// Windows NT内核结构体
+// Minimal NT structures used by the redirector
 typedef struct _UNICODE_STRING {
     USHORT Length;
     USHORT MaximumLength;
@@ -47,11 +46,9 @@ typedef struct _FILE_RENAME_INFORMATION {
     WCHAR FileName[1];
 } FILE_RENAME_INFORMATION, * PFILE_RENAME_INFORMATION;
 
-// NTSTATUS定义
 typedef LONG NTSTATUS;
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 
-// FILE_INFORMATION_CLASS枚举
 typedef enum _FILE_INFORMATION_CLASS {
     FileDirectoryInformation = 1,
     FileFullDirectoryInformation,
@@ -62,7 +59,7 @@ typedef enum _FILE_INFORMATION_CLASS {
     FileEaInformation,
     FileAccessInformation,
     FileNameInformation,
-    FileRenameInformation,           // 10
+    FileRenameInformation,
     FileLinkInformation,
     FileNamesInformation,
     FileDispositionInformation,
@@ -108,7 +105,7 @@ typedef enum _FILE_INFORMATION_CLASS {
     FileNumaNodeInformation,
     FileStandardLinkInformation,
     FileRemoteProtocolInformation,
-    FileRenameInformationBypassAccessCheck, // 用于Win10
+    FileRenameInformationBypassAccessCheck,
     FileLinkInformationBypassAccessCheck,
     FileVolumeNameInformation,
     FileIdInformation,
@@ -117,7 +114,7 @@ typedef enum _FILE_INFORMATION_CLASS {
     FileHardLinkFullIdInformation,
     FileIdExtdBothDirectoryInformation,
     FileDispositionInformationEx,
-    FileRenameInformationEx,                // 64
+    FileRenameInformationEx,
     FileRenameInformationExBypassAccessCheck,
     FileDesiredStorageClassInformation,
     FileStatInformation,
@@ -131,7 +128,6 @@ typedef enum _FILE_INFORMATION_CLASS {
     FileMaximumInformation
 } FILE_INFORMATION_CLASS;
 
-// 原始函数指针类型
 typedef NTSTATUS(NTAPI* NtCreateFile_t)(
     PHANDLE FileHandle,
     ACCESS_MASK DesiredAccess,
@@ -177,14 +173,12 @@ typedef NTSTATUS(NTAPI* NtDeleteFile_t)(
     POBJECT_ATTRIBUTES ObjectAttributes
     );
 
-// 配置结构
 struct Config {
     bool enable_debug_console = false;
     bool enable_redirection = false;
     std::wstring base_directory = L"Minecraft Bedrock";
 };
 
-// 重定向上下文
 struct RedirectContext {
     std::vector<wchar_t> wideBuffer;
     UNICODE_STRING unicodeString;
@@ -201,7 +195,6 @@ extern HANDLE g_localDataHandle;
 extern std::mutex g_handleMutex;
 extern bool g_hooksInstalled;
 
-// 原始函数指针
 extern NtCreateFile_t OriginalNtCreateFile;
 extern NtOpenFile_t OriginalNtOpenFile;
 extern NtQueryAttributesFile_t OriginalNtQueryAttributesFile;
@@ -209,9 +202,6 @@ extern NtQueryFullAttributesFile_t OriginalNtQueryFullAttributesFile;
 extern NtSetInformationFile_t OriginalNtSetInformationFile;
 extern NtDeleteFile_t OriginalNtDeleteFile;
 
-
-
-// Hook函数声明
 NTSTATUS NTAPI HookedNtCreateFile(
     PHANDLE FileHandle,
     ACCESS_MASK DesiredAccess,

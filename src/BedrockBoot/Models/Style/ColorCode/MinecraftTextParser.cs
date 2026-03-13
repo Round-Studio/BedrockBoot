@@ -1,6 +1,4 @@
-﻿// MinecraftTextParser.cs
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using Avalonia.Controls.Documents;
@@ -22,6 +20,9 @@ public class MinecraftTextParser
         var isUnderline = false;
         var isStrikethrough = false;
         var isObfuscated = false;
+
+        if (string.IsNullOrEmpty(input))
+            input = "§7该包没有介绍...";
 
         for (var i = 0; i < input.Length; i++)
         {

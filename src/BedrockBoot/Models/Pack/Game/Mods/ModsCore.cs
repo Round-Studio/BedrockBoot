@@ -32,13 +32,6 @@ public class ModsCore
     {
         _manager.RefreshMods();
 
-        var gameConf = Path.Combine(VersionInfo.VersionPath, "game.conf");
-        var open = VersionInfo.Config.IsConsole ? "1" : "0";
-        var redirctor = GlobalModel.Config.Data.IsolationModel == IsolationType.Hook ? "1" : "0";
-        File.WriteAllText(gameConf,
-            $"console_open = {open}\n" +
-            $"redirctor = {redirctor}");
-
         var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", VersionInfo.BodyFile);
         var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");

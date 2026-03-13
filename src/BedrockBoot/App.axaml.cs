@@ -14,15 +14,18 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Language;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
 using BedrockBoot.ViewModels;
 using BedrockBoot.Views.Windows;
+using BedrockBoot.Views.Windows.SystemMethod;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 using Application = Avalonia.Application;
 using ResourceDictionary = Avalonia.Controls.ResourceDictionary;
+using Window = Avalonia.Controls.Window;
 
 namespace BedrockBoot;
 
@@ -107,10 +110,22 @@ public class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new MainWindow
+
+            Window window = null;
+
+            switch (GlobalModel.AppRunType)
             {
-                DataContext = new MainWindowViewModel()
-            };
+                case AppRunType.Default:
+                    window = new MainWindow();
+                    break;
+                case AppRunType.OpenResourcePack:
+                    window = new ImportResourcePack();
+                    break;
+            }
+
+            if (window == null) throw new NullReferenceException();
+            
+            desktop.MainWindow = window;
         }
 
         base.OnFrameworkInitializationCompleted();

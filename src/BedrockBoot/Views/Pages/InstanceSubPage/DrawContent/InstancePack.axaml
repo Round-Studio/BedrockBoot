@@ -75,7 +75,8 @@
         </Grid>
 
         <ScrollViewer Grid.Row="1" Name="ScBox">
-            <StackPanel Margin="15,0,15,15"
+            <StackPanel Margin="20,0,20,15"
+                        Spacing="8"
                         HorizontalAlignment="Stretch"
                         Name="ResultBox" />
         </ScrollViewer>

@@ -8,7 +8,6 @@
              x:Class="BedrockBoot.Views.Control.Items.GameResourcePackItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
-                                  Margin="5,0,5,10"
                                   IsShowActionIcon="False"
                                   IsFontIcon="False">
         <onePointControls:SettingCard.Header>

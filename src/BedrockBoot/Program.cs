@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Avalonia;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Win32;
@@ -27,10 +28,13 @@ internal sealed class Program
 {
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
+    
+    public static List<string> Args { get; private set; }
 
     [STAThread]
     public static void Main(string[] args)
     {
+        Args = args.ToList();
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
 
@@ -154,8 +158,9 @@ internal sealed class Program
                     Console.WriteLine(@"导入资源");
                     args.ForEach(Console.WriteLine);
 
-                    Application.Run(new ImportResourcePack(args.ToList()));
-                    return true;
+                    // Application.Run(new ImportResourcePack(args.ToList()));
+                    GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+                    return false;
             }
         }
 

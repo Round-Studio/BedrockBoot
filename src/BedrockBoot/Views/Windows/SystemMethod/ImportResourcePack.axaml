@@ -1,0 +1,73 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+        xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+        x:Class="BedrockBoot.Views.Windows.SystemMethod.ImportResourcePack"
+        WindowStartupLocation="CenterScreen"
+        Width="600" Height="450"
+        MinWidth="600" MinHeight="450"
+        Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
+        Padding="12"
+        Title="导入资源">
+    <Grid RowDefinitions="Auto,*,Auto,Auto"
+          RowSpacing="8">
+        <TextBlock Grid.Row="0"
+                   Text="资源预览"
+                   FontSize="16"
+                   FontWeight="Bold"></TextBlock>
+        
+        <Grid Grid.Row="1">
+            <ScrollViewer x:Name="PacksScrollViewer" IsVisible="False">
+                <StackPanel x:Name="PacksList" Spacing="8"/>
+            </ScrollViewer>
+    
+            <notice:LoadCard x:Name="LoadingCard"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             BigTitle="加载中"
+                             Message="正在加载包信息..."/>
+        </Grid>
+        
+        <StackPanel Grid.Row="2"
+                    Spacing="8"
+                    Margin="0,0,0,0"
+                    Name="ConfigPanel">
+            <DockPanel>
+                <TextBlock Text="目标目录"
+                           Width="60"
+                           VerticalAlignment="Center"></TextBlock>
+                <ComboBox x:Name="FolderComboBox" 
+                          HorizontalAlignment="Stretch" 
+                          SelectionChanged="FolderComboBox_SelectionChanged"></ComboBox>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="目标实例"
+                           Width="60"
+                           VerticalAlignment="Center"></TextBlock>
+                <ComboBox x:Name="InstanceComboBox" 
+                          HorizontalAlignment="Stretch"></ComboBox>
+            </DockPanel>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="3"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="8">
+            <Button Classes="Accent"
+                    Padding="8"
+                    Name="ImportButton"
+                    Click="ImportButton_Click">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="6">
+                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                               FontSize="15"
+                                               Glyph="&#xE74E;"/>
+                    <TextBlock Text="开始导入"></TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

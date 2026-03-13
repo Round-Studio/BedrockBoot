@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using BedrockBoot.Models.Global;
 using Microsoft.Win32;
 
@@ -8,7 +9,7 @@ public class OpenAgreement
 {
     public static void RegisterAssociation()
     {
-        var appPath = Process.GetCurrentProcess().MainModule.FileName;
+        string? exePath = Environment.ProcessPath;
         var progId = "BedrockBoot.Win32";
 
         using (var extKey = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.mcpack"))
@@ -26,12 +27,12 @@ public class OpenAgreement
             progIdKey.SetValue("", "Minecraft Bedrock 支持文件");
             using (var iconKey = progIdKey.CreateSubKey("DefaultIcon"))
             {
-                iconKey.SetValue("", $"\"{appPath}\",{SourceList.PackIconID}");
+                iconKey.SetValue("", $"\"{exePath}\",{SourceList.PackIconID}");
             }
 
             using (var cmdKey = progIdKey.CreateSubKey(@"shell\open\command"))
             {
-                cmdKey.SetValue("", $"\"{appPath}\" -open \"%1\"");
+                cmdKey.SetValue("", $"\"{exePath}\" -open \"%1\"");
             }
         }
     }

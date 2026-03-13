@@ -3,6 +3,7 @@ using System.Reflection;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Info.Xbox;
 using BedrockBoot.Base.Entry.Manifest;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
@@ -25,4 +26,5 @@ public class GlobalModel
     public static PaperConnectCore PaperConnectCore { get; set; }
     public static List<string> ETPublicServer { get; set; }
     public static XboxUserInfo XboxUserInfo { get; set; }
+    public static AppRunType AppRunType { get; set; } = AppRunType.Default;
 }

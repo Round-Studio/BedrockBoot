@@ -3,5 +3,6 @@
 public enum AppRunType
 {
     Default,
-    OpenResourcePack
+    OpenResourcePack,
+    OpenWorldPack
 }

@@ -121,6 +121,9 @@ public class App : Application
                 case AppRunType.OpenResourcePack:
                     window = new ImportResourcePack();
                     break;
+                case AppRunType.OpenWorldPack:
+                    window = new ImportResourcePack();
+                    break;
             }
 
             if (window == null) throw new NullReferenceException();

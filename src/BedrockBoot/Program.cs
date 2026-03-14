@@ -160,6 +160,10 @@ internal sealed class Program
 
                     // Application.Run(new ImportResourcePack(args.ToList()));
                     GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+
+                    if (Args.Contains("--resource")) GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+                    if (Args.Contains("--world")) GlobalModel.AppRunType = AppRunType.OpenWorldPack;
+                    
                     return false;
             }
         }

@@ -10,6 +10,7 @@ using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using PeNet;
+using PeNet.Header.Pe;
 using Round.SDK.Helper.IO;
 
 namespace BedrockBoot.Models.Pack.Game.Mods;
@@ -136,6 +137,11 @@ public class ModsCore
                 using (var peFile = new PeFile(fs))
                 {
                     peFile.AddImport("PreloadCpp.dll", "Load");
+                    /*if (peFile.ImageNtHeaders != null)
+                    {
+                        peFile.ImageNtHeaders.OptionalHeader.Subsystem = SubsystemType.WindowsCui;
+                        System.Console.WriteLine("转换完成！Subsystem 已修改为 WindowsCui (3)");
+                    }*/
                     peFile.Flush();
                 }
             }
@@ -146,8 +152,7 @@ public class ModsCore
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"错误: {ex.Message}");
-            Console.WriteLine($@"堆栈: {ex.StackTrace}");
+            Console.WriteLine($@"修改 PE 文件失败: {ex}");
         }
     }
 

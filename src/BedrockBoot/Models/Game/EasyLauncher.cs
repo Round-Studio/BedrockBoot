@@ -43,20 +43,13 @@ public class EasyLauncher
     private void UpdatePlayerPlayTime(TimeSpan playTime)
     {
         var playerData = VersionInfo.PlayerData;
-        
         playerData.TotalPlayTime += (long)playTime.TotalSeconds;
-        
         playerData.LastPlayTime = DateTime.Now;
-        
         if (playerData.FirstPlayTime == null)
-        {
             playerData.FirstPlayTime = _gameStartTime;
-        }
         
         playerData.TotalSessions++;
-
         VersionInfo.PlayerData = playerData;
-        
         GameInfoHelper.SaveVersionConfig(VersionInfo);
     }
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./../assets/BedrockBoot.Icon.256x.png" alt="BedrockBoot Logo" width="80"/>
+  <img src="assets/BedrockBoot.Icon.256x.png" alt="BedrockBoot Logo" width="80"/>
 </p>
 
 <h1 align="center">BedrockBoot v2</h1>

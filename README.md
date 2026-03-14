@@ -67,7 +67,7 @@ BedrockBoot 是一个开源且社区驱动的项目，欢迎任何形式的贡�
 
 * **反馈**：通过 [GitHub Issues](https://github.com/Round-Studio/BedrockBoot/issues) 提交缺陷报告或功能建议。
 * **贡献**：Fork 本仓库并提交 Pull Request。请在提交前确保代码通过基础单元测试。
-* **技术栈**：C# / .NET / [Avalonia](https://github.com/avaloniaui/avalonia)。
+* **技术栈**：C# / C++ / .NET / [Avalonia](https://github.com/avaloniaui/avalonia)。
 
 ---
 

@@ -23,10 +23,12 @@ public partial class ArchiveItem : UserControl
         InitializeComponent();
     }
 
-    public ArchiveItem(ArchiveInfo info) : this()
+    public ArchiveItem(ArchiveInfo info, bool isView = false) : this()
     {
         ArchiveInfo = info;
         UpdateUI();
+        
+        ControlPanel.IsVisible = !isView;
     }
 
     /// <summary>

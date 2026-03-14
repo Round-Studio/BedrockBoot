@@ -43,6 +43,7 @@
                 </TextBlock>
 
                 <StackPanel Orientation="Horizontal"
+                            Name="ControlPanel"
                             Spacing="6">
                     <Button Width="24" Height="24"
                             Name="OpenFolderBtn"

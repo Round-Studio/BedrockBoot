@@ -122,7 +122,7 @@ public class App : Application
                     window = new ImportResourcePack();
                     break;
                 case AppRunType.OpenWorldPack:
-                    window = new ImportResourcePack();
+                    window = new ImportWorldPack();
                     break;
             }
 

@@ -9,6 +9,8 @@
     <ItemGroup>
       <EmbeddedResource Include="Dependence\Inject.dll" />
       <EmbeddedResource Include="Dependence\PreLoadCpp.dll" />
+      <None Remove="Dependence\XOREncryptDLL.dll" />
+      <EmbeddedResource Include="Dependence\XOREncryptDLL.dll" />
     </ItemGroup>
 
 </Project>

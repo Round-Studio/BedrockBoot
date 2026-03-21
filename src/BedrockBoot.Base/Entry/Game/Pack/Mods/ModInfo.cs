@@ -30,34 +30,9 @@ public class ModInfo
     {
         if (IsPreLoad)
             throw new Exception("This mod is PreLoad mod.");
-
-        var assembly = Assembly.GetExecutingAssembly();
-    
-        var resources = assembly.GetManifestResourceNames();
-        Console.WriteLine(@"Available embedded resources:");
-        foreach (var res in resources)
-        {
-            Console.WriteLine($@"  {res}");
-        }
-
-        var resourceName = "BedrockBoot.Base.Dependence.Inject.dll";
-        Console.WriteLine($@"Looking for: {resourceName}");
-    
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-            {
-                throw new InvalidOperationException(
-                    $"Resource '{resourceName}' not found. Available resources: {string.Join(", ", resources)}");
-            }
         
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                BedrockBoot.Inject.Native.Init(memoryStream.ToArray());
-                BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0,
-                    InjectDelay);
-            }
-        }
+        BedrockBoot.Inject.Native.Init(Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.Inject.dll"));
+        BedrockBoot.Inject.Native.LoadPlugins(processId, Path.GetFullPath(File), InjectDelay != 0,
+            InjectDelay);
     }
 }

@@ -106,29 +106,7 @@ public class ModsCore
 
         try
         {
-            var assembly = Assembly.GetAssembly(typeof(WindowInfo));
-
-            var resourceName = "BedrockBoot.Base.Dependence.PreLoadCpp.dll";
-            var allResources = assembly.GetManifestResourceNames();
-            Console.WriteLine(@"可用资源:");
-            foreach (var name in allResources)
-                Console.WriteLine($@"  {name}");
-    
-            var actualResourceName = allResources.FirstOrDefault(r => r.EndsWith("PreLoadCpp.dll"));
-            if (actualResourceName == null)
-                throw new InvalidOperationException("找不到嵌入的DLL资源");
-
-            using (var stream = assembly.GetManifestResourceStream(actualResourceName))
-            {
-                if (stream == null)
-                    throw new InvalidOperationException("无法打开资源流");
-            
-                using (var memoryStream = new MemoryStream())
-                {
-                    stream.CopyTo(memoryStream);
-                    File.WriteAllBytes(fullPath, memoryStream.ToArray());
-                }
-            }
+            File.WriteAllBytes(fullPath, Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreLoadCpp.dll"));
 
             // 然后修改 PE 文件
             if (!FileCheck.IsFileLocked(body))

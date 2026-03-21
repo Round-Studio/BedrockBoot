@@ -15,11 +15,7 @@
       <ProjectReference Include="../BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
       <ProjectReference Include="../BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
       <ProjectReference Include="../Round.SDK\Round.SDK\Round.SDK.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="Dependence\Inject.dll" />
-      <EmbeddedResource Include="Dependence\PreLoadCpp.dll" />
+      <ProjectReference Include="..\BedrockBoot.Dependence\BedrockBoot.Dependence.csproj" />
     </ItemGroup>
 
 </Project>

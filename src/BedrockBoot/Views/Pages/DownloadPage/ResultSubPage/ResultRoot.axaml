@@ -28,10 +28,13 @@
                                     Name="IconFont"
                                     VerticalAlignment="Center" />
 
-                                <Image
-                                    Height="90"
-                                    Name="IconBox"
-                                    Width="90" />
+                                <Border ClipToBounds="True"
+                                        CornerRadius="6">
+                                    <Image
+                                        Height="90"
+                                        Name="IconBox"
+                                        Width="90" />
+                                </Border>
                             </Grid>
                         </items:BorderCard>
 

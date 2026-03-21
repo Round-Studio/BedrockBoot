@@ -45,7 +45,8 @@ public partial class MainWindow : BedrockBootWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
-        MainFrame.NavigateTo(new MainPage());
+        if (!GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
+        else MainFrame.NavigateTo(new SetupRoot());
         UpdateBack();
         InitializeWindowBounds();
         

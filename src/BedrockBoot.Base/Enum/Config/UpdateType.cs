@@ -2,6 +2,7 @@
 
 public enum UpdateType
 {
+    Debug,
     Release,
     Preview
 }

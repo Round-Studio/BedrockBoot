@@ -37,8 +37,12 @@ public class CheckUpdate
         var version = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
         if (IsStrictDateVersion(version))
             return UpdateType.Preview;
-        else
-            return UpdateType.Release;
+
+#if DEBUG
+        return UpdateType.Debug;
+#else
+        return UpdateType.Release;
+#endif
     }
     
     private static bool IsStrictDateVersion(string version)

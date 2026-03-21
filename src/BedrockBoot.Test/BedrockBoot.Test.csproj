@@ -14,6 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj" />
       <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Netease\BedrockBoot.Netease.csproj" />
       <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
     </ItemGroup>
 

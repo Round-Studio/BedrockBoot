@@ -1,16 +1,7 @@
-﻿using BedrockBoot.Models.Pack.Game.ResourcePack;
-using BedrockBoot.Models.Translate;
+﻿using BedrockBoot.Dependence;
+using BedrockBoot.Netease.Utils;
 
-// 2. 创建翻译器实例
-var translator = new ResourcePackTranslate(new MicrosoftTranslateService());
+File.WriteAllBytes("XOREncryptDLL.dll", Dependence.GetResource("BedrockBoot.Dependence.Dependence.XOREncryptDLL.dll"));
+var savePath = "E:\\Netease_Bedrock\\TestWorld";
 
-// 3. 翻译资源包 - 从默认英文(en_US)翻译为目标语言
-await translator.TranslatePackageAsync(
-    packagePath: @"E:\enPack.mcpack",  // 输入包路径
-    targetLanguage: "zh_CN",                            // 目标语言
-    outputPath: @"E:\zhCNPack.mcpack", // 输出包路径（可选，默认覆盖原包）
-    progressCallback: (progress, status) =>
-    {
-        Console.WriteLine($@"进度: {progress:F2}% - {status}");
-    }
-);
+Console.WriteLine(LevelDbEncryptHelper.DecryptRecord(savePath));

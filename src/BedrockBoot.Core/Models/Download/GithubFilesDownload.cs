@@ -261,7 +261,7 @@ public class GithubFilesDownload
             {
                 // 只在调试时记录详细错误
                 #if DEBUG
-                Console.WriteLine($"源 {sourceName} 测试失败: {ex.Message}");
+                Console.WriteLine($@"源 {sourceName} 测试失败: {ex.Message}");
                 #endif
             }
             return (sourceName, 0, sourcePattern.Replace("{url}", fileUrl));

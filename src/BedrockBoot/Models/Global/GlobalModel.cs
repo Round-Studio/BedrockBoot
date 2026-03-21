@@ -27,4 +27,5 @@ public class GlobalModel
     public static List<string> ETPublicServer { get; set; }
     public static XboxUserInfo XboxUserInfo { get; set; }
     public static AppRunType AppRunType { get; set; } = AppRunType.Default;
+    public static bool IsNetworkAvailable { get; set; }
 }

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -52,6 +54,7 @@ public partial class MainWindow : BedrockBootWindow
         EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Post(RunBehavior);
         
         SetupDynamicHotkey();
+        StartNetworkMonitoring();
         _ = InitializeAsync();
     }
 
@@ -333,6 +336,60 @@ public partial class MainWindow : BedrockBootWindow
     {
         if (IsTaskCardOpen) CloseTaskCard();
         else OpenTaskCard();
+    }
+    
+    private CancellationTokenSource? _netMonitorCts;
+
+    private void StartNetworkMonitoring()
+    {
+        _netMonitorCts = new CancellationTokenSource();
+        var token = _netMonitorCts.Token;
+
+        NetworkChange.NetworkAvailabilityChanged += (s, e) => 
+        {
+            UpdateNetworkStatus(e.IsAvailable);
+        };
+
+        Task.Run(async () =>
+        {
+            while (!token.IsCancellationRequested)
+            {
+                bool isAlive = await CheckInternetConnectivityAsync();
+                UpdateNetworkStatus(isAlive);
+                await Task.Delay(TimeSpan.FromSeconds(5), token);
+            }
+        }, token);
+    }
+
+    private async Task<bool> CheckInternetConnectivityAsync()
+    {
+        try
+        {
+            using var ping = new Ping();
+            var reply = await ping.SendPingAsync("223.5.5.5", 2000);
+            return reply.Status == IPStatus.Success;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private void UpdateNetworkStatus(bool isAvailable)
+    {
+        if (GlobalModel.IsNetworkAvailable == isAvailable) return;
+
+        GlobalModel.IsNetworkAvailable = isAvailable;
+        Dispatcher.UIThread.Invoke(() => 
+        {
+            UpdateNetworkMonitoring();
+            Console.WriteLine($@"Network Status changed to: {isAvailable}");
+        });
+    }
+
+    private void UpdateNetworkMonitoring()
+    {
+        OfflineBtn.IsVisible = !GlobalModel.IsNetworkAvailable;
     }
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)

@@ -1,0 +1,16 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.DialogAgreementContent">
+    <StackPanel Spacing="4">
+        <TextBlock Text="{DynamicResource MainWindow.Dialog.Agreement.Content}"></TextBlock>
+        <StackPanel Orientation="Horizontal"
+                    Spacing="4">
+            <TextBlock Text="其他："></TextBlock>
+            <HyperlinkButton Content="隐私策略"
+                             NavigateUri="https://docs.roundstudio.top/docs/product/bb/privacyPolicy"></HyperlinkButton>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

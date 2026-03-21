@@ -673,7 +673,7 @@
     <x:String x:Key="MainWindow.Protocol.Description">BedrockBoot 协议</x:String>
 
     <x:String x:Key="MainWindow.Dialog.Agreement.Title">BedrockBoot 用户使用协议</x:String>
-    <x:String x:Key="MainWindow.Dialog.Agreement.Content">欢迎使用 BedrockBoot，&#x0a;开始使用即代表您同意此条款：&#x0a;&#x0a;1.此为非官方 Minecraft 启动器&#x0a;2. 您需拥有合法授权的 Minecraft 副本，否则自动进入试玩版&#x0a;3. 我们不会 辅助 / 协助 任何破解正版 Minecraft 的行为&#x0a;4. 禁止任何形式的盗版或作弊行为&#x0a;5. 模组 / 资源包 使用风险自负&#x0a;6. 与 Mojang / Microsoft 无关联&#x0a;7. 本软件会修改注册表相关配置&#x0a;8. 本软件为开源软件，使用和分发其副本源码请遵循开源协议 (GPL-v3)&#x0a;&#x0a;继续使用即为接受条款</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Content">欢迎使用 BedrockBoot，&#x0a;开始使用即代表您同意此条款：&#x0a;&#x0a;1. 此为非官方 Minecraft 启动器&#x0a;2. 您需拥有合法授权的 Minecraft 副本，否则自动进入试玩版&#x0a;3. 我们不会 辅助 / 协助 任何破解正版 Minecraft 的行为&#x0a;4. 禁止任何形式的盗版或作弊行为&#x0a;5. 模组 / 资源包 使用风险自负&#x0a;6. 与 Mojang / Microsoft 无关联&#x0a;7. 本软件会修改注册表相关配置&#x0a;8. 本软件为开源软件，使用和分发其副本源码请遵循开源协议 (GPL-v3)&#x0a;&#x0a;继续使用即为接受条款</x:String>
     <x:String x:Key="MainWindow.Dialog.Agreement.Agree">我同意</x:String>
     <x:String x:Key="MainWindow.Dialog.Agreement.Decline">我不同意，退出</x:String>
 

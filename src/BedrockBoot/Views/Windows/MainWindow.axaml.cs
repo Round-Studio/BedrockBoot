@@ -23,6 +23,7 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Helper.Notice;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using BedrockBoot.Views.Windows.SubWindows;
@@ -98,6 +99,8 @@ public partial class MainWindow : BedrockBootWindow
             Debug.WriteLine($"Failed to load FunctionOption: {ex.Message}");
         }
 
+        CheckUserAgreement();
+
         // 注册文件关联
         HandleFileAssociations();
 
@@ -108,8 +111,6 @@ public partial class MainWindow : BedrockBootWindow
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             LoadBox.IsVisible = false;
-
-            CheckUserAgreement();
         });
     }
 
@@ -162,7 +163,7 @@ public partial class MainWindow : BedrockBootWindow
 
         DialogHost.Show(new DialogInfo
         {
-            Content = I18n["MainWindow.Dialog.Agreement.Content"],
+            Content = new DialogAgreementContent(),
             Title = I18n["MainWindow.Dialog.Agreement.Title"],
             CloseButtonText = I18n["MainWindow.Dialog.Agreement.Agree"],
             CloseAction = () =>

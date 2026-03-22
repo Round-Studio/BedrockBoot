@@ -1,119 +1,64 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.SearchSubPage.SearchDefault">
     <Grid>
-        <StackPanel Spacing="10"
-                    Margin="20,5,20,20">
-            <items:BorderCard>
+        <StackPanel Spacing="10" Margin="20,5,20,20">
+            <items:BorderCard Name="VersionCard">
                 <Grid RowDefinitions="Auto,*">
-                    <DockPanel Grid.Row="0"
-                               Margin="0,0,0,8"
-                               LastChildFill="True">
-                        <Button DockPanel.Dock="Right"
-                                Classes="NoBorder"
-                                Name="GameListBtn"
-                                Click="GameListBtn_OnClick"
-                                Padding="6,4">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="4">
-                                <onePointControls:FontIcon VerticalAlignment="Center"
-                                                           Margin="0,0.5,0,0"
-                                                           Glyph="&#xE8FD;" />
+                    <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                        <Button DockPanel.Dock="Right" Classes="NoBorder" Click="GameListBtn_OnClick" Padding="6,4">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE8FD;" />
                                 <TextBlock Text="{DynamicResource Download.Search.Action.VersionList}" />
                             </StackPanel>
                         </Button>
-
-                        <TextBlock DockPanel.Dock="Left"
-                                   Text="{DynamicResource Download.Search.Group.Latest}"
-                                   VerticalAlignment="Center" />
+                        <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.Group.Latest}" VerticalAlignment="Center" />
                     </DockPanel>
 
-                    <Grid Grid.Row="1"
-                          IsVisible="False"
-                          Name="RecommendationPanel"
-                          ColumnDefinitions="*,*"
-                          ColumnSpacing="6">
-                        <widgets:SmallGameView Grid.Column="0"
-                                               Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png"
-                                               Name="ReleaseBtn"
-                                               Click="ReleaseBtn_OnClick"/>
-                        
-                        <widgets:SmallGameView Grid.Column="1"
-                                               Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png" 
-                                               Name="PreviewBtn"
-                                               Click="PreviewBtn_OnClick"/>
+                    <Grid Grid.Row="1" IsVisible="False" Name="RecommendationPanel" ColumnDefinitions="*,*" ColumnSpacing="6">
+                        <widgets:SmallGameView Grid.Column="0" Name="ReleaseBtn" Click="ReleaseBtn_OnClick" Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png" />
+                        <widgets:SmallGameView Grid.Column="1" Name="PreviewBtn" Click="PreviewBtn_OnClick" Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png" />
                     </Grid>
 
-                    <Border Grid.Row="1"
-                            Height="44">
-                        <onePointControls:ProgressRing HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       Name="LoadRing"
-                                                       Height="36"
-                                                       Width="36"/>
+                    <Border Grid.Row="1" Height="44">
+                        <onePointControls:ProgressRing Name="LoadRing" HorizontalAlignment="Center" Height="36" Width="36"/>
                     </Border>
                 </Grid>
             </items:BorderCard>
             
-            <items:BorderCard>
+            <items:BorderCard Name="ResourceCard">
                 <Grid RowDefinitions="Auto,*">
-                    <DockPanel Grid.Row="0"
-                               Margin="0,0,0,8"
-                               LastChildFill="True">
-                        <Button DockPanel.Dock="Right"
-                                Classes="NoBorder"
-                                Name="SearchRes"
-                                Click="SearchRes_OnClick"
-                                Padding="6,4">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="4">
-                                <onePointControls:FontIcon VerticalAlignment="Center"
-                                                           Margin="0,0.5,0,0"
-                                                           Glyph="&#xE721;" />
+                    <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                        <Button DockPanel.Dock="Right" Classes="NoBorder" Click="SearchRes_OnClick" Padding="6,4">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
                                 <TextBlock Text="搜索资源" />
                             </StackPanel>
                         </Button>
-
-                        <TextBlock DockPanel.Dock="Left"
-                                   Text="热门资源"
-                                   VerticalAlignment="Center" />
+                        <TextBlock DockPanel.Dock="Left" Text="热门资源" VerticalAlignment="Center" />
                     </DockPanel>
 
-                    <Grid Grid.Row="1"
-                          Name="RecommendationGrid"
-                          IsVisible="True"
-                          ColumnDefinitions="*,*"
-                          ColumnSpacing="6">
-                        <widgets:BigResourceButton Grid.Column="0"
-                                                   Name="BigResourceButton"/>
-                        
-                        <Grid Grid.Column="1"
-                              RowDefinitions="*,*"
-                              RowSpacing="6">
-                            <widgets:SmallResourceButton Grid.Row="0" 
-                                                         Name="SmallResourceButton1"/>
-                            <widgets:SmallResourceButton Grid.Row="1" 
-                                                         Name="SmallResourceButton2"/>
+                    <Grid Grid.Row="1" Name="RecommendationGrid" IsVisible="False" ColumnDefinitions="*,*" ColumnSpacing="6">
+                        <widgets:BigResourceButton Grid.Column="0" Name="BigResourceBtn"/>
+                        <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="6">
+                            <widgets:SmallResourceButton Grid.Row="0" Name="SmallResourceBtn1"/>
+                            <widgets:SmallResourceButton Grid.Row="1" Name="SmallResourceBtn2"/>
                         </Grid>
                     </Grid>
                     
-                    <Border Grid.Row="1"
-                            Height="122">
-                        <onePointControls:ProgressRing HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       Name="ResourceLoadRing"
-                                                       IsVisible="False"
-                                                       Height="36"
-                                                       Width="36"/>
+                    <Border Grid.Row="1" Height="122">
+                        <onePointControls:ProgressRing Name="ResourceLoadRing" HorizontalAlignment="Center" Height="36" Width="36"/>
                     </Border>
                 </Grid>    
             </items:BorderCard>
         </StackPanel>
+        
+        <notice:InfoCard Name="NetworkErrorNotice" IsVisible="False" BigTitle="无效的网络连接" Message="无法连接至目标服务器"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

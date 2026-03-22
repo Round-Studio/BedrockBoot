@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
+using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using BedrockLauncher.Core;
@@ -23,235 +25,154 @@ public partial class SearchDefault : UserControl
 {
     private static I18nManager i18n => I18nManager.Instance;
 
+    private bool _versionLoadSuccess = false;
+    private bool _resourceLoadSuccess = false;
+    private int _completedTasks = 0;
+
     public SearchDefault()
     {
         InitializeComponent();
-
-        // 重置详细搜索状态
         DownloadSearch.SearchDetailed = null;
         
-        FetchLatestVersions();
-        LoadFeaturedResourcesAsync();
+        _ = FetchLatestVersions();
+        _ = LoadFeaturedResourcesAsync();
     }
 
+    private void CheckNetworkStatus()
+    {
+        _completedTasks++;
+        if (_completedTasks >= 2)
+        {
+            Dispatcher.UIThread.Invoke(() => {
+                // 如果全部失败，显示底部的网络错误通知卡片
+                NetworkErrorNotice.IsVisible = !_versionLoadSuccess && !_resourceLoadSuccess;
+            });
+        }
+    }
+
+    // --- 热门资源加载 ---
     private async Task LoadFeaturedResourcesAsync()
     {
-        // 1. 开始加载，显示 Ring，隐藏旧内容
-        ResourceLoadRing.IsVisible = true;
-        RecommendationGrid.IsVisible = false; // 假设你的容器叫这个名字
-
         try
         {
-            // 2. 在后台线程执行网络请求
             var client = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
-        
-            // 使用 Task.Run 确保 API 初始化的耗时操作不在 UI 线程
-            var featuredData = await Task.Run(async () => 
+            var featuredData = await Task.Run(async () => await client.GetFeaturedModsAsync());
+
+            if (featuredData?.Data?.Popular != null && featuredData.Data.Popular.Count > 0)
             {
-                return await client.GetFeaturedModsAsync();
-            });
+                _resourceLoadSuccess = true;
+                var popularList = featuredData.Data.Popular;
 
-            // 3. 回到 UI 线程更新控件
-            // 注意：await 之后会自动回到 UI 上下文，但为了保险或复杂逻辑可以用 Post
-            Dispatcher.UIThread.Post(() =>
-            {
-                if (featuredData?.Data.Popular != null && featuredData.Data.Popular.Count > 0)
-                {
-                    var popularList = featuredData.Data.Popular;
+                Dispatcher.UIThread.Post(() => {
+                    UpdateBigButton(popularList[0]);
+                    if (popularList.Count > 1) UpdateSmallButton(SmallResourceBtn1, popularList[1]);
+                    if (popularList.Count > 2) UpdateSmallButton(SmallResourceBtn2, popularList[2]);
 
-                    // --- 1. 大按钮 (Index 0) ---
-                    var mod0 = popularList[0];
-                    BigResourceButton.ResourceName = mod0.Name;
-                    BigResourceButton.Description = mod0.Summary;
-                    BigResourceButton.Author = $"By {mod0.Authors.FirstOrDefault()?.Name}";
-                    BigResourceButton.DownloadCount = mod0.DownloadCount.ToString();
-                    BigResourceButton.IconUrl = mod0.Logo?.ThumbnailUrl;
-                    BigResourceButton.Labels = mod0.Categories.Select(x => x.Name).ToList();
-                    BigResourceButton.UpdateDate = DateHelper.GetRelativeTime(mod0.DateReleased);
-
-                    {
-                        var authorNames = mod0.Authors.Select(a => a.Name).ToList();
-
-                        var categories = mod0.Categories.Select(a => a.Name).ToList();
-
-                        var item = new SearchResultItemInfo
-                        {
-                            Name = mod0.Name,
-                            Id = mod0.Id,
-                            Description = $"{mod0.Summary}",
-                            DateUpdated = mod0.DateReleased,
-                            DateCreated = mod0.DateCreated,
-                            Authors = authorNames,
-                            DownloadCount = (uint)mod0.DownloadCount,
-                            IconUri = mod0.Logo.Url,
-                            Labels = categories,
-                            Images = mod0.Screenshots.Select(a => a.Url).ToList(),
-                            SourceWebsite = mod0.Links.WebsiteUrl,
-                            JsonData = JsonSerializer.Serialize(mod0)
-                        };
-                        
-                        BigResourceButton.Click +=
-                            (s, e) => DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
-                    }
-
-                    // --- 2. 小按钮 1 (Index 1) ---
-                    if (popularList.Count > 1)
-                    {
-                        var mod1 = popularList[1];
-                        SmallResourceButton1.ResourceName = mod1.Name;
-                        SmallResourceButton1.Author = $"By {mod1.Authors.FirstOrDefault()?.Name}";
-                        SmallResourceButton1.IconUrl = mod1.Logo?.ThumbnailUrl;
-                        // 如果小按钮不需要展示这么多信息，可以省略部分赋值
-                        {
-                            var authorNames = mod1.Authors.Select(a => a.Name).ToList();
-
-                            var categories = mod1.Categories.Select(a => a.Name).ToList();
-
-                            var item = new SearchResultItemInfo
-                            {
-                                Name = mod1.Name,
-                                Id = mod1.Id,
-                                Description = $"{mod1.Summary}",
-                                DateUpdated = mod1.DateReleased,
-                                DateCreated = mod1.DateCreated,
-                                Authors = authorNames,
-                                DownloadCount = (uint)mod1.DownloadCount,
-                                IconUri = mod1.Logo.Url,
-                                Labels = categories,
-                                Images = mod1.Screenshots.Select(a => a.Url).ToList(),
-                                SourceWebsite = mod1.Links.WebsiteUrl,
-                                JsonData = JsonSerializer.Serialize(mod1)
-                            };
-
-                            SmallResourceButton1.Click +=
-                                (s, e) => DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
-                        }
-                    }
-
-                    // --- 3. 小按钮 2 (Index 2) ---
-                    if (popularList.Count > 2)
-                    {
-                        var mod2 = popularList[2];
-                        SmallResourceButton2.ResourceName = mod2.Name;
-                        SmallResourceButton2.Author = $"By {mod2.Authors.FirstOrDefault()?.Name}";
-                        SmallResourceButton2.IconUrl = mod2.Logo?.ThumbnailUrl;
-                        
-                        {
-                            var authorNames = mod2.Authors.Select(a => a.Name).ToList();
-
-                            var categories = mod2.Categories.Select(a => a.Name).ToList();
-
-                            var item = new SearchResultItemInfo
-                            {
-                                Name = mod2.Name,
-                                Id = mod2.Id,
-                                Description = $"{mod2.Summary}",
-                                DateUpdated = mod2.DateReleased,
-                                DateCreated = mod2.DateCreated,
-                                Authors = authorNames,
-                                DownloadCount = (uint)mod2.DownloadCount,
-                                IconUri = mod2.Logo.Url,
-                                Labels = categories,
-                                Images = mod2.Screenshots.Select(a => a.Url).ToList(),
-                                SourceWebsite = mod2.Links.WebsiteUrl,
-                                JsonData = JsonSerializer.Serialize(mod2)
-                            };
-                        
-                            SmallResourceButton2.Click +=
-                                (s, e) => DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
-                        }
-                    }
-                
                     RecommendationGrid.IsVisible = true;
+                    ResourceLoadRing.IsVisible = false;
+                });
+                return;
+            }
+            throw new Exception("Data empty");
+        }
+        catch (Exception ex)
+        {
+            _resourceLoadSuccess = false;
+            Dispatcher.UIThread.Post(() => {
+                // 加载失败，直接隐藏整个资源板块的 BorderCard
+                ResourceCard.IsVisible = false; 
+            });
+        }
+        finally
+        {
+            CheckNetworkStatus();
+        }
+    }
+
+    // --- 游戏版本加载 ---
+    private async Task FetchLatestVersions()
+    {
+        try
+        {
+            var versions = await Task.Run(() => VersionHelper.GetVersions());
+            var release = versions.Find(x => x.Type == MinecraftGameTypeVersion.Release);
+            var preview = versions.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
+
+            if (release == null && preview == null) throw new Exception("No versions found");
+
+            Dispatcher.UIThread.Invoke(() => {
+                _versionLoadSuccess = true;
+                if (release != null)
+                {
+                    ReleaseBtn.Version = release.ID;
+                    ReleaseBtn.Description = $"{release.Date}, {release.BuildType}";
                 }
-                ResourceLoadRing.IsVisible = false;
+                if (preview != null)
+                {
+                    PreviewBtn.Version = preview.ID;
+                    PreviewBtn.Description = $"{preview.Date}, {preview.BuildType}";
+                }
+                RecommendationPanel.IsVisible = true;
+                LoadRing.IsVisible = false;
             });
         }
         catch (Exception ex)
         {
-            // 4. 错误处理
-            System.Diagnostics.Debug.WriteLine($"API 请求失败: {ex.Message}");
-            Dispatcher.UIThread.Post(() => ResourceLoadRing.IsVisible = false);
+            _versionLoadSuccess = false;
+            Dispatcher.UIThread.Invoke(() => {
+                // 加载失败，直接隐藏整个版本板块的 BorderCard
+                VersionCard.IsVisible = false;
+            });
+        }
+        finally
+        {
+            CheckNetworkStatus();
         }
     }
-    private void FetchLatestVersions()
+
+    // --- 数据填充辅助方法 ---
+    private void UpdateBigButton(CurseForgeResponse.ModData mod)
     {
-        Task.Run(() =>
-        {
-            try
-            {
-                var versions = VersionHelper.GetVersions();
-                var release = versions.Find(x => x.Type == MinecraftGameTypeVersion.Release);
-                var preview = versions.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
-
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    if (release != null)
-                    {
-                        ReleaseBtn.Version = release.ID;
-                        ReleaseBtn.Description = $"{release.Date}, {release.BuildType}";
-                    }
-
-                    if (preview != null)
-                    {
-                        PreviewBtn.Version = preview.ID;
-                        PreviewBtn.Description = $"{preview.Date}, {preview.BuildType}";
-                    }
-
-                    RecommendationPanel.IsVisible = true;
-                    LoadRing.IsVisible = false;
-                });
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Failed to fetch default versions: {ex.Message}");
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    RecommendationPanel.IsVisible = false;
-                    LoadRing.IsVisible = false;
-                });
-            }
-        });
+        BigResourceBtn.ResourceName = mod.Name;
+        BigResourceBtn.Description = mod.Summary;
+        BigResourceBtn.Author = $"By {mod.Authors.FirstOrDefault()?.Name}";
+        BigResourceBtn.DownloadCount = mod.DownloadCount.ToString();
+        BigResourceBtn.IconUrl = mod.Logo?.ThumbnailUrl;
+        BigResourceBtn.UpdateDate = DateHelper.GetRelativeTime(mod.DateReleased);
+        BigResourceBtn.Labels = mod.Categories.Select(x => x.Name).ToList();
+        BigResourceBtn.Click += (s, e) => NavigateToResult(mod);
     }
 
-    /// <summary>
-    /// 跳转到游戏详细列表
-    /// </summary>
-    private void GameListBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void UpdateSmallButton(SmallResourceButton srb, CurseForgeResponse.ModData mod)
     {
-        DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(new SearchInfo
-        {
-            Type = SearchResourceType.Minecraft
-        }));
+        srb.ResourceName = mod.Name;
+        srb.Author = $"By {mod.Authors.FirstOrDefault()?.Name}";
+        srb.IconUrl = mod.Logo?.ThumbnailUrl;
+        srb.Click += (s, e) => NavigateToResult(mod);
     }
 
-    private void ReleaseBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void NavigateToResult(CurseForgeResponse.ModData mod)
     {
-        OpenDownloadDraw(MinecraftGameTypeVersion.Release);
+        var item = new SearchResultItemInfo {
+            Name = mod.Name, Id = mod.Id, Description = mod.Summary,
+            DateUpdated = mod.DateReleased, Authors = mod.Authors.Select(a => a.Name).ToList(),
+            DownloadCount = (uint)mod.DownloadCount, IconUri = mod.Logo?.Url,
+            Labels = mod.Categories.Select(c => c.Name).ToList(),
+            SourceWebsite = mod.Links?.WebsiteUrl, JsonData = JsonSerializer.Serialize(mod)
+        };
+        DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
     }
 
-    private void PreviewBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        OpenDownloadDraw(MinecraftGameTypeVersion.Preview);
-    }
+    // --- 基础导航事件 ---
+    private void GameListBtn_OnClick(object? sender, RoutedEventArgs e) => NavigateSearch(SearchResourceType.Minecraft);
+    private void SearchRes_OnClick(object? sender, RoutedEventArgs e) => NavigateSearch(SearchResourceType.ResourcePack);
+    private void NavigateSearch(SearchResourceType type) => DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(new SearchInfo { Type = type }));
+    private void ReleaseBtn_OnClick(object? sender, RoutedEventArgs e) => OpenDownloadDraw(MinecraftGameTypeVersion.Release);
+    private void PreviewBtn_OnClick(object? sender, RoutedEventArgs e) => OpenDownloadDraw(MinecraftGameTypeVersion.Preview);
 
-    /// <summary>
-    /// 统一打开下载侧边栏
-    /// </summary>
     private void OpenDownloadDraw(MinecraftGameTypeVersion type)
     {
         var version = VersionHelper.GetVersions().Find(x => x.Type == type);
-        if (version == null) return;
-
-        var title = $"{i18n["Download.Action.DownloadGame"]} {version.ID}";
-        GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version), title);
-    }
-
-    private void SearchRes_OnClick(object? sender, RoutedEventArgs e)
-    {
-        DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(new SearchInfo
-        {
-            Type = SearchResourceType.ResourcePack
-        }));
+        if (version != null) GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version), $"{i18n["Download.Action.DownloadGame"]} {version.ID}");
     }
 }

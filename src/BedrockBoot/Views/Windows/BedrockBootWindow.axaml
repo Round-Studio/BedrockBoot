@@ -261,16 +261,5 @@
                 </Grid>
             </Grid>
         </Border>
-        
-        <items:BorderCard Width="72" Height="72"
-                          HorizontalAlignment="Right"
-                          VerticalAlignment="Top"
-                          Padding="18"
-                          Name="LoadBox"
-                          Margin="0,78,22,0">
-            <Grid>
-                <onePointControls:ProgressRing></onePointControls:ProgressRing>
-            </Grid>
-        </items:BorderCard>
     </Grid>
 </Window>

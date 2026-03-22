@@ -58,6 +58,8 @@
     <windows:BedrockBootWindow.TitleBarContentContent>
         <StackPanel Orientation="Horizontal"
                     Spacing="8">
+            <onePointControls:ProgressRing Name="LoadBox"
+                                           Width="24" Height="24"></onePointControls:ProgressRing>
             <Button Classes="NoBorder"
                     Height="32"
                     IsVisible="False"

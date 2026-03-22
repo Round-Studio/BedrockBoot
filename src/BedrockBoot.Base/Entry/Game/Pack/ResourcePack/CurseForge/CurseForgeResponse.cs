@@ -7,7 +7,6 @@ namespace BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 public class CurseForgeResponse
 {
     [JsonPropertyName("data")] public List<ModData> Data { get; set; }
-
     [JsonPropertyName("pagination")] public PaginationEntry Pagination { get; set; }
 
     public class Links

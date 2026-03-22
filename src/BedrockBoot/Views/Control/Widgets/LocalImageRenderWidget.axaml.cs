@@ -1,12 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Threading;
 using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.Control.Widgets;
 
 public partial class LocalImageRenderWidget : UserControl
 {
+    // 定义 AvaloniaProperty，以便支持 XAML 绑定和更改通知
+    public static readonly StyledProperty<string?> ImageUrlProperty =
+        AvaloniaProperty.Register<LocalImageRenderWidget, string?>(nameof(ImageUrl));
+
+    public string? ImageUrl
+    {
+        get => GetValue(ImageUrlProperty);
+        set => SetValue(ImageUrlProperty, value);
+    }
+
     public LocalImageRenderWidget()
     {
         InitializeComponent();
@@ -14,15 +27,51 @@ public partial class LocalImageRenderWidget : UserControl
 
     public LocalImageRenderWidget(string uri) : this()
     {
-        Update(uri);
+        ImageUrl = uri;
+    }
+
+    // 在属性发生变化时触发
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == ImageUrlProperty)
+        {
+            var newUrl = change.GetNewValue<string?>();
+            if (!string.IsNullOrEmpty(newUrl))
+            {
+                // 触发异步更新，不阻塞 UI 线程
+                _ = Update(newUrl);
+            }
+        }
     }
 
     public async Task Update(string uri)
     {
-        var iamge = await ImageLoader.LoadIconAsync(uri);
-        if (iamge != null) ImageBox.Background = new ImageBrush(iamge)
+        try
         {
-            Stretch = Stretch.UniformToFill
-        };
+            var image = await ImageLoader.LoadIconAsync(uri);
+            
+            // 确保在 UI 线程更新界面
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (image != null)
+                {
+                    ImageBox.Background = new ImageBrush(image)
+                    {
+                        Stretch = Stretch.UniformToFill
+                    };
+                }
+                else
+                {
+                    // 如果图片加载失败，可以清空背景或设置占位图
+                    ImageBox.Background = null;
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to load image: {ex.Message}");
+        }
     }
 }

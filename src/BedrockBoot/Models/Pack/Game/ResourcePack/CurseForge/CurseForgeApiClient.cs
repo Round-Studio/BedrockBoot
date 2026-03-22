@@ -234,7 +234,7 @@ public class CurseForgeApiClient
         throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 
-    public async Task<CurseForgeResponse> GetFeaturedModsAsync(int gameId = 78022)
+    public async Task<CurseForgeFeaturedResponse> GetFeaturedModsAsync(int gameId = 78022)
     {
         try
         {
@@ -265,7 +265,7 @@ public class CurseForgeApiClient
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            var featuredResponse = JsonSerializer.Deserialize<CurseForgeResponse>(json, options);
+            var featuredResponse = JsonSerializer.Deserialize<CurseForgeFeaturedResponse>(json, options);
             return featuredResponse;
         }
         catch (HttpRequestException ex)

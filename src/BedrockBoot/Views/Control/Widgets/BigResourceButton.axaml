@@ -1,0 +1,66 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Control.Widgets.BigResourceButton">
+    <Button HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            Name="MainButton"
+            Padding="8"
+            MaxHeight="122">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="Auto,*"
+                  ColumnSpacing="6">
+                <widgets:LocalImageRenderWidget Grid.Column="0"
+                                                Name="CoverImage"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Top"
+                                                Width="72"
+                                                Height="72" />
+                
+                <StackPanel Grid.Column="1" Spacing="6">
+                    <TextBlock Name="ResourceNameText"
+                               FontSize="20"
+                               Text="ResourceName" />
+                    
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <StackPanel Spacing="4" Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" VerticalAlignment="Center"/>
+                            <TextBlock Name="DownloadCountText" Text="0"/>
+                        </StackPanel>
+
+                        <Border Background="Gray" Height="12" Width="1" />
+
+                        <StackPanel Spacing="4" Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" VerticalAlignment="Center"/>
+                            <TextBlock Name="UpdateDateText" Text="未知" />
+                        </StackPanel>
+
+                        <Border Background="Gray" Height="12" Width="1" />
+
+                        <StackPanel Spacing="4" Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xE716;" Opacity="0.5" VerticalAlignment="Center"/>
+                            <TextBlock Name="AuthorText" Text="By Unknown" />
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6"
+                                Name="LabelsControl"></StackPanel>
+                </StackPanel>
+            </Grid>
+            
+            <TextBlock Grid.Row="1"
+                       Opacity="0.5"
+                       Name="DescriptionText"
+                       TextWrapping="WrapWithOverflow"
+                       TextTrimming="CharacterEllipsis"
+                       MaxHeight="40"
+                       Text="暂无简介111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" />
+        </Grid>
+    </Button>
+</UserControl>

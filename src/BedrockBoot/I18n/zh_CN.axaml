@@ -395,7 +395,7 @@
 
     <x:String x:Key="Settings.Nav.Group.Download">下载</x:String>
     <x:String x:Key="Settings.Nav.Tips.Download.Env">设置做符合您网络环境的下载配置，使启动器联网体验更加流畅。</x:String>
-    <x:String x:Key="Settings.Nav.Tips.Download.Source">部分网络环境下，MCAPPX 源将无法使用，需要使用默认的 BMCBL ② 源。</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Source">部分网络环境下，MCAPPX 源将无法使用，需要使用其他的列表源。</x:String>
     <x:String x:Key="Settings.Nav.Tips.Download.Thread">在下载线程中，我们推荐使用默认 4 线程下载，如果下载线程过多，下载速度可能会减慢。</x:String>
     <x:String x:Key="Settings.Nav.Group.Game">游戏</x:String>
     <x:String x:Key="Settings.Nav.Tips.Game.Path">请注意游戏目录中是否含有中文以及符号等字符，如果出现以上字符，游戏很有可能无法启动。</x:String>

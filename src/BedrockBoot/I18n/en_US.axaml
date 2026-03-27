@@ -386,7 +386,7 @@
 
     <x:String x:Key="Settings.Nav.Group.Download">Download</x:String>
     <x:String x:Key="Settings.Nav.Tips.Download.Env">Configure the download settings according to your network environment to make the launcher's online experience smoother.</x:String>
-    <x:String x:Key="Settings.Nav.Tips.Download.Source">In some network environments, the MCAPPX source may not be available, requiring the use of the default BMCBL ② source.</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Source">In some network environments, the MCAPPX source may not be available.</x:String>
     <x:String x:Key="Settings.Nav.Tips.Download.Thread">For download threads, we recommend using the default 4 threads. If too many threads are used, download speed may decrease.</x:String>
     <x:String x:Key="Settings.Nav.Group.Game">Game</x:String>
     <x:String x:Key="Settings.Nav.Tips.Game.Path">Please ensure the game directory path does not contain Chinese characters or symbols. If such characters appear, the game may not launch.</x:String>

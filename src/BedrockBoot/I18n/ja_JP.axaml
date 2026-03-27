@@ -395,7 +395,7 @@
 
     <x:String x:Key="Settings.Nav.Group.Download">ダウンロード</x:String>
     <x:String x:Key="Settings.Nav.Tips.Download.Env">お使いのネットワーク環境に合わせたダウンロード設定を行い、ランチャーのオンライン体験をよりスムーズにします。</x:String>
-    <x:String x:Key="Settings.Nav.Tips.Download.Source">一部のネットワーク環境では、MCAPPX ソースが使用できず、デフォルトの BMCBL ② ソースを使用する必要があります。</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Source">一部のネットワーク環境では、MCAPPX ソースが使用できず。</x:String>
     <x:String x:Key="Settings.Nav.Tips.Download.Thread">ダウンロードスレッドは、デフォルトの4スレッドをお勧めします。スレッドが多すぎると、ダウンロード速度が低下する可能性があります。</x:String>
     <x:String x:Key="Settings.Nav.Group.Game">ゲーム</x:String>
     <x:String x:Key="Settings.Nav.Tips.Game.Path">ゲームディレクトリに日本語や記号などが含まれていないか注意してください。これらの文字が含まれていると、ゲームが起動できない可能性があります。</x:String>

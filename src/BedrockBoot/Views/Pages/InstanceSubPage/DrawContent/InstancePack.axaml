@@ -100,11 +100,7 @@
               ColumnDefinitions="*"
               Margin="20,4,20,20">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{DynamicResource Instance.Packs.Status.Total}" Foreground="Gray" />
-                <TextBlock Text=" " />
                 <TextBlock Text="???" Name="NumberBox" Foreground="Gray" />
-                <TextBlock Text=" " />
-                <TextBlock Text="{DynamicResource Instance.Packs.Status.Items}" Foreground="Gray" />
             </StackPanel>
         </Grid>
     </Grid>

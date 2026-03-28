@@ -17,6 +17,7 @@ public partial class ArchiveItem : UserControl
 {
     private static I18nManager i18n => I18nManager.Instance;
     public ArchiveInfo? ArchiveInfo { get; set; }
+    public Action? EditAction { get; set; }
 
     public ArchiveItem()
     {
@@ -131,5 +132,10 @@ public partial class ArchiveItem : UserControl
                 NoticeType = NoticeType.Error
             });
         }
+    }
+
+    private void EditBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        EditAction?.Invoke();
     }
 }

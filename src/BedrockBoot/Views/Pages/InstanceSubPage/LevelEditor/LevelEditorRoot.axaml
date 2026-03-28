@@ -1,0 +1,29 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelEditor.LevelEditorRoot">
+    <Grid Margin="10,8,10,10"
+          RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0"
+                    Spacing="8"
+                    Orientation="Horizontal">
+            <Button Classes="NoBorder"
+                    Name="BackBtn"
+                    Click="BackBtn_OnClick"
+                    Padding="8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                               Glyph="&#xE76B;"/>
+                    <TextBlock Text="返回存档管理"></TextBlock>
+                </StackPanel>
+            </Button>
+            
+            <TextBlock Text="存档编辑器"
+                       VerticalAlignment="Center"
+                       FontSize="16"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

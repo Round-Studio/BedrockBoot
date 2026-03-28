@@ -5,78 +5,10 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceSave">
-    <Grid RowDefinitions="Auto,*">
-        <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto">
-            <items:BorderCard Grid.Column="0"
-                              Margin="20,8,12,10">
-                <Grid ColumnDefinitions="4*,Auto,6*">
-                    <DockPanel Grid.Column="0"
-                               Margin="0,0,12,0">
-                        <onePointControls:FontIcon Glyph="&#xEBDA;"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="16"
-                                                   Margin="5,5,12,5" />
-
-                        <ComboBox HorizontalAlignment="Stretch"
-                                  Name="UserChooseBox"
-                                  SelectionChanged="UserChooseBox_OnSelectionChanged"
-                                  DockPanel.Dock="Right" />
-                    </DockPanel>
-
-                    <Border Grid.Column="1"
-                            Width="1"
-                            VerticalAlignment="Stretch"
-                            Background="{DynamicResource PrimaryDisabledForegroundBrush}"
-                            Margin="0,5,0,5" />
-
-                    <DockPanel Grid.Column="2"
-                               HorizontalAlignment="Stretch"
-                               LastChildFill="True">
-                        <onePointControls:FontIcon Glyph="&#xE71E;"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="16"
-                                                   Margin="12,5,12,5" />
-                        <TextBox Name="SearchBox"
-                                 TextChanged="SearchBox_OnTextChanged"
-                                 HorizontalAlignment="Stretch"
-                                 DockPanel.Dock="Right" />
-                    </DockPanel>
-                </Grid>
-            </items:BorderCard>
-            
-            <items:BorderCard Grid.Column="1"
-                              Margin="0,8,20,10">
-                <StackPanel Orientation="Horizontal">
-                    <Button Classes="NoBorder"
-                            Name="ImportPackBtn"
-                            Click="ImportPackBtn_OnClick"
-                            Padding="12,8">
-                        <StackPanel Orientation="Horizontal">
-                            <onePointControls:FontIcon Glyph="&#xE710;"
-                                                       VerticalAlignment="Center"
-                                                       Margin="0,1,8,0" />
-                            <TextBlock Text="{DynamicResource Instance.Saves.Action.Import}" />
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-            </items:BorderCard>
-        </Grid>
-
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Margin="20,0,20,15"
-                        Spacing="8"
-                        Name="SavesBox" />
-        </ScrollViewer>
-
-        <notice:InfoCard Grid.Row="1"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center"
-                         Name="NullBox"
-                         IsVisible="False"
-                         BigTitle="{DynamicResource Instance.Saves.Empty.Title}"
-                         Message="{DynamicResource Instance.Saves.Empty.Message}" />
+    <Grid>
+        <navigation:NavigationFrame Name="NavigationFrame"/>
     </Grid>
 </UserControl>

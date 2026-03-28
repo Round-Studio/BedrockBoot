@@ -382,14 +382,8 @@ public partial class MainWindow : BedrockBootWindow
         GlobalModel.IsNetworkAvailable = isAvailable;
         Dispatcher.UIThread.Invoke(() => 
         {
-            UpdateNetworkMonitoring();
-            Console.WriteLine($@"Network Status changed to: {isAvailable}");
+            OfflineBtn.IsVisible = !GlobalModel.IsNetworkAvailable;
         });
-    }
-
-    private void UpdateNetworkMonitoring()
-    {
-        OfflineBtn.IsVisible = !GlobalModel.IsNetworkAvailable;
     }
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)

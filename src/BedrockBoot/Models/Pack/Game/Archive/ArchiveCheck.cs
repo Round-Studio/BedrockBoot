@@ -16,8 +16,6 @@ public class ArchiveCheck
     public ArchiveCheck(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
-
-        
     }
 
     public VersionConfig VersionConfig { get; set; }

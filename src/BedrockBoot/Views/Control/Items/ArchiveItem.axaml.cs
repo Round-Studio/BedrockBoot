@@ -39,7 +39,7 @@ public partial class ArchiveItem : UserControl
     {
         if (ArchiveInfo == null) return;
 
-        WorldName.Text = ArchiveInfo.Name;
+        WorldName.Text = ArchiveInfo.LevelWorldData.LevelName;
 
         // 时间转换与格式化
         var lastPlayedTime = UnixTimeConverter.UnixTimeStampToDateTime(ArchiveInfo.LevelWorldData.LastPlayed);

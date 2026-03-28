@@ -3,39 +3,171 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="1200"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelEditor.LevelEditorRoot">
-    <Grid Margin="10,8,10,10"
-          RowDefinitions="Auto,*">
-        <StackPanel Grid.Row="0"
-                    Margin="10,0"
-                    Spacing="8"
-                    Orientation="Horizontal">
-            <Button Classes="NoBorder"
-                    Name="BackBtn"
-                    Click="BackBtn_OnClick"
-                    Padding="8"
-                    Height="32">
+    <UserControl.Styles>
+        <Style Selector="CheckBox">
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="MinWidth" Value="140"/>
+        </Style>
+        <Style Selector="TextBlock.Header">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Margin="10,8,10,10" RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0" Margin="10,0" Spacing="8" Orientation="Horizontal">
+            <Button Classes="NoBorder" Name="BackBtn" Click="BackBtn_OnClick" Padding="8" Height="32">
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <onePointControls:FontIcon VerticalAlignment="Center"
-                                               Glyph="&#xE76B;"/>
-                    <TextBlock Text="返回存档管理"></TextBlock>
+                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE76B;"/>
+                    <TextBlock Text="返回存档管理"/>
                 </StackPanel>
             </Button>
-            
-            <TextBlock Text="存档编辑器"
-                       VerticalAlignment="Center"
-                       FontSize="16"></TextBlock>
-            
-            <TextBlock Text="LevelName"
-                       Name="LevelName"
-                       Opacity="0.5"
-                       VerticalAlignment="Center"></TextBlock>
+            <TextBlock Text="存档编辑器" VerticalAlignment="Center" FontSize="16"/>
+            <TextBlock Name="LevelNameLabel" Opacity="0.5" VerticalAlignment="Center" Margin="10,0,0,0"/>
         </StackPanel>
-        
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Margin="10,0">
+
+        <Button Grid.Row="0" Classes="Accent" Name="SaveBtn" Click="SaveBtn_OnClick" 
+                HorizontalAlignment="Right" Padding="12,0" Height="32">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE74E;"/>
+                <TextBlock Text="保存更改" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
+
+        <ScrollViewer Grid.Row="1" Margin="0,10,0,0">
+            <StackPanel Margin="15,0,25,20" Spacing="8">
+                <TextBlock Text="存档信息" Classes="Header"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15" RowDefinitions="Auto,Auto">
+                    <StackPanel Grid.Row="0" Grid.Column="0" Spacing="5">
+                        <TextBlock Text="世界名称" FontSize="12" Opacity="0.6"/>
+                        <TextBox Name="LevelNameText" TextChanged="OnLevelNameChanged"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="5">
+                        <TextBlock Text="种子" FontSize="12" Opacity="0.6"/>
+                        <widgets:CopyTextBox Name="SeedBox" IsReadOnly="True"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Spacing="5" Margin="0,10,0,0">
+                        <TextBlock Text="游戏模式" FontSize="12" Opacity="0.6"/>
+                        <ComboBox Name="GameTypeCombo" HorizontalAlignment="Stretch" SelectionChanged="OnSelectionChanged">
+                            <ComboBoxItem Content="生存"/>
+                            <ComboBoxItem Content="创造"/>
+                            <ComboBoxItem Content="冒险"/>
+                            <ComboBoxItem Content="旁观"/>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="5" Margin="0,10,0,0">
+                        <TextBlock Text="游戏难度" FontSize="12" Opacity="0.6"/>
+                        <ComboBox Name="DifficultyCombo" HorizontalAlignment="Stretch" SelectionChanged="OnSelectionChanged">
+                            <ComboBoxItem Content="和平"/>
+                            <ComboBoxItem Content="简单"/>
+                            <ComboBoxItem Content="普通"/>
+                            <ComboBoxItem Content="困难"/>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="核心" Classes="Header"/>
                 
+                <UniformGrid Columns="4">
+                    <CheckBox Name="CheatsSwitch" Content="作弊" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="HardcoreSwitch" Content="极限模式" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="CmdBlockSwitch" Content="命令方块" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="CmdOutputSwitch" Content="命令方块输出" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="AdminCmdSwitch" Content="管理员命令" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="CmdFeedbackSwitch" Content="命令反馈" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="BonusChestSwitch" Content="奖励箱" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="StartMapSwitch" Content="初始地图" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="ImmediateRespawnSwitch" Content="立即重生" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="RecipeUnlockSwitch" Content="配方解锁" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="LimitedCraftSwitch" Content="限制合成" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="TextureRequiredSwitch" Content="要求材质包" IsCheckedChanged="OnCheckChanged"/>
+                </UniformGrid>
+
+                <TextBlock Text="界面" Classes="Header"/>
+                <UniformGrid Columns="4">
+                    <CheckBox Name="ShowCoordSwitch" Content="显示坐标" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="ShowDaysSwitch" Content="显示游戏天数" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="ShowDeathMsgSwitch" Content="显示死亡信息" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="ShowRecipeSwitch" Content="显示配方提示" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="ShowTagsSwitch" Content="显示标签" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="ShowBorderSwitch" Content="显示边界效果" IsCheckedChanged="OnCheckChanged"/>
+                </UniformGrid>
+
+                <TextBlock Text="生物与环境" Classes="Header"/>
+                <UniformGrid Columns="4">
+                    <CheckBox Name="DaylightCycleSwitch" Content="昼夜循环" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="WeatherCycleSwitch" Content="天气循环" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="MobSpawnSwitch" Content="生物生成" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="InsomniaSwitch" Content="幻翼生成" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="MobGriefSwitch" Content="生物破坏" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="MobLootSwitch" Content="生物掉落" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="EntityDropSwitch" Content="实体掉落" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="TileDropSwitch" Content="方块掉落" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="FireTickSwitch" Content="火焰蔓延" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="TntExplodeSwitch" Content="TNT 爆炸" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="RespawnExplodeSwitch" Content="重生方块爆炸" IsCheckedChanged="OnCheckChanged"/>
+                </UniformGrid>
+
+                <TextBlock Text="玩家" Classes="Header"/>
+                <UniformGrid Columns="4">
+                    <CheckBox Name="KeepInvSwitch" Content="保留物品栏" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="NaturalRegenSwitch" Content="自然回复" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="PvpSwitch" Content="PVP" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="FallDamageSwitch" Content="掉落伤害" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="FireDamageSwitch" Content="火焰伤害" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="DrownDamageSwitch" Content="溺水伤害" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="FreezeDamageSwitch" Content="冻伤伤害" IsCheckedChanged="OnCheckChanged"/>
+                </UniformGrid>
+
+                <TextBlock Text="出生点" Classes="Header"/>
+                <Grid ColumnDefinitions="*,*,*">
+                    <TextBox Name="SpawnXText" Grid.Column="0" Watermark="x" UseFloatingWatermark="True" Margin="0,0,5,0"/>
+                    <TextBox Name="SpawnYText" Grid.Column="1" Watermark="y" UseFloatingWatermark="True" Margin="5,0,5,0"/>
+                    <TextBox Name="SpawnZText" Grid.Column="2" Watermark="z" UseFloatingWatermark="True" Margin="5,0,0,0"/>
+                </Grid>
+
+                <TextBlock Text="权限" Classes="Header"/>
+                <UniformGrid Columns="4">
+                    <CheckBox Name="MineSwitch" Content="挖掘" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="BuildSwitch" Content="建造" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="AtkMobSwitch" Content="攻击生物" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="AtkPlayerSwitch" Content="攻击玩家" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="DoorSwitch" Content="门与开关" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="ContainerSwitch" Content="打开容器" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="OpSwitch" Content="管理员" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="TpSwitch" Content="传送" IsCheckedChanged="OnCheckChanged"/>
+                </UniformGrid>
+
+                <TextBlock Text="移动" Classes="Header"/>
+                <UniformGrid Columns="4">
+                    <CheckBox Name="FlyingSwitch" Content="飞行" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="MayflySwitch" Content="允许飞行" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="InstabuildSwitch" Content="即时建造" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="InvulnerableSwitch" Content="无敌" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="NoClipSwitch" Content="穿墙" IsCheckedChanged="OnCheckChanged"/>
+                    <CheckBox Name="WorldBuilderSwitch" Content="雷击" IsCheckedChanged="OnCheckChanged"/>
+                </UniformGrid>
+
+                <Grid ColumnDefinitions="*,*,*" Margin="0,10,0,0">
+                    <StackPanel Grid.Column="0" Margin="0,0,5,0"
+                                Spacing="8">
+                        <TextBlock Text="行走速度 (walkSpeed)" Opacity="0.5"/>
+                        <TextBox Name="WalkSpeedText"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="5,0,5,0"
+                                Spacing="8">
+                        <TextBlock Text="飞行速度 (flySpeed)" Opacity="0.5"/>
+                        <TextBox Name="FlySpeedText"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Margin="5,0,0,0"
+                                Spacing="8">
+                        <TextBlock Text="垂直飞行速度 (verticalFlySpeed)" Opacity="0.5"/>
+                        <TextBox Name="VFlySpeedText"/>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
     </Grid>

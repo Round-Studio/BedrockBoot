@@ -1,0 +1,43 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Dependence/">
+    <Project Path="src/BedrockBoot.Chunker/BedrockBoot.Chunker.csproj" />
+    <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />
+    <Project Path="src/BedrockBoot.Inject/BedrockBoot.Inject.csproj" />
+    <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
+    <Project Path="src/BedrockBoot.LeviLamina/BedrockBoot.LeviLamina.csproj" />
+    <Project Path="src/BedrockBoot.Netease/BedrockBoot.Netease.csproj" />
+    <Project Path="src/PreloadCpp/PreloadCpp.vcxproj">
+      <Platform Solution="Debug|Any CPU" Project="Win32" />
+      <Platform Solution="Release|x86" Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/Dependence/OnePointUI.Avalonia/">
+    <Project Path="src/OnePointUI.Avalonia/src/OnePointUI.Avalonia.Test/OnePointUI.Avalonia.Test.csproj" />
+    <Project Path="src/OnePointUI.Avalonia/src/OnePointUI.Avalonia/OnePointUI.Avalonia.csproj" />
+  </Folder>
+  <Folder Name="/Dependence/OtherUtils/">
+    <Project Path="src/PeNet/src/PeNet/PeNet.csproj" />
+  </Folder>
+  <Folder Name="/Dependence/PaperConnect/">
+    <Project Path="src/PaperConnect/src/PaperConnect.Core/PaperConnect.Core.csproj" />
+  </Folder>
+  <Folder Name="/Dependence/SDK/">
+    <Project Path="src/Round.SDK/Round.SDK.Avalonia/Round.SDK.Avalonia.csproj" />
+    <Project Path="src/Round.SDK/Round.SDK.PluginTools/Round.SDK.PluginTools.csproj" />
+    <Project Path="src/Round.SDK/Round.SDK/Round.SDK.csproj" />
+  </Folder>
+  <Folder Name="/Plugin/">
+    <Project Path="src/Plugin/Plugin.ToolsBox/Plugin.ToolsBox.csproj" />
+  </Folder>
+  <Folder Name="/Test/">
+    <Project Path="src/BedrockBoot.Test/BedrockBoot.Test.csproj" />
+    <Project Path="src/PaperTest/PaperTest.csproj" />
+  </Folder>
+  <Project Path="src/BedrockBoot.Base/BedrockBoot.Base.csproj" />
+  <Project Path="src/BedrockBoot.Core/BedrockBoot.Core.csproj" />
+  <Project Path="src/BedrockBoot/BedrockBoot.csproj" />
+</Solution>

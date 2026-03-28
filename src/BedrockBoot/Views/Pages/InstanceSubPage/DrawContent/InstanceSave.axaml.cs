@@ -11,7 +11,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ContentView;
-using BedrockBoot.Views.Pages.InstanceSubPage.LevelEditor;
+using BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
@@ -44,7 +44,7 @@ public partial class InstanceSave : UserControl
         {
             NavigationFrame.NavigateTo(new SavesView(VersionInfo)
             {
-                EditAction = (info => OnNavigatedTo(false, new LevelEditorRoot(info)
+                EditAction = (info => OnNavigatedTo(false, new LevelSettingsRoot(info)
                 {
                     BackAction = () =>
                         OnNavigatedTo(true)

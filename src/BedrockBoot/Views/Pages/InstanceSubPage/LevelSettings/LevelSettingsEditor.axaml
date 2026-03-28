@@ -2,40 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="1200"
-             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelEditor.LevelEditorRoot">
-    <UserControl.Styles>
-        <Style Selector="CheckBox">
-            <Setter Property="Margin" Value="0,4"/>
-            <Setter Property="MinWidth" Value="140"/>
-        </Style>
-        <Style Selector="TextBlock.Header">
-            <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
-    </UserControl.Styles>
-
-    <Grid Margin="10,8,10,10" RowDefinitions="Auto,*">
-        <StackPanel Grid.Row="0" Margin="10,0" Spacing="8" Orientation="Horizontal">
-            <Button Classes="NoBorder" Name="BackBtn" Click="BackBtn_OnClick" Padding="8" Height="32">
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings.LevelSettingsEditor">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0"
+              Margin="10,0">
+            <TextBlock Text="存档编辑器" VerticalAlignment="Center" FontSize="16"/>
+            <Button Classes="Accent" Name="SaveBtn" Click="SaveBtn_OnClick" 
+                    HorizontalAlignment="Right" Padding="12,0" Height="32">
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE76B;"/>
-                    <TextBlock Text="返回存档管理"/>
+                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE74E;"/>
+                    <TextBlock Text="保存更改" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <TextBlock Text="存档编辑器" VerticalAlignment="Center" FontSize="16"/>
-            <TextBlock Name="LevelNameLabel" Opacity="0.5" VerticalAlignment="Center"/>
-        </StackPanel>
-
-        <Button Grid.Row="0" Classes="Accent" Name="SaveBtn" Click="SaveBtn_OnClick" 
-                HorizontalAlignment="Right" Padding="12,0" Height="32">
-            <StackPanel Orientation="Horizontal" Spacing="6">
-                <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE74E;"/>
-                <TextBlock Text="保存更改" VerticalAlignment="Center"/>
-            </StackPanel>
-        </Button>
-
+        </Grid>
+        
         <ScrollViewer Grid.Row="1" Margin="0,10,0,0">
             <StackPanel Margin="15,0,25,20" Spacing="8">
                 <TextBlock Text="存档信息" Classes="Header"/>

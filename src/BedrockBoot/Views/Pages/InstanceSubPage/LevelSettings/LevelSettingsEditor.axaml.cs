@@ -1,22 +1,23 @@
 ﻿using System;
 using System.IO;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Interface;
 using BedrockBoot.LevelNbt;
 
-namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelEditor;
+namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 
-public partial class LevelEditorRoot : ISetting
+public partial class LevelSettingsEditor : UserControl
 {
     private ArchiveInfo _info;
     private bool _isInternalUpdating = false;
     public Action? BackAction { get; set; }
 
-    public LevelEditorRoot() => InitializeComponent();
+    public LevelSettingsEditor() => InitializeComponent();
 
-    public LevelEditorRoot(ArchiveInfo info) : this()
+    public LevelSettingsEditor(ArchiveInfo info) : this()
     {
         _info = info;
         UpdaterUI();
@@ -33,7 +34,6 @@ public partial class LevelEditorRoot : ISetting
         var d = _info.LevelWorldData;
 
         // --- 基础信息 ---
-        LevelNameLabel.Text = d.LevelName;
         LevelNameText.Text = d.LevelName;
         SeedBox.Text = d.RandomSeed.ToString();
         // 游戏模式映射 (NBT: 0=生存, 1=创造, 2=冒险, 3=旁观)
@@ -129,7 +129,6 @@ public partial class LevelEditorRoot : ISetting
     {
         if (_isInternalUpdating) return;
         _info.LevelWorldData.LevelName = string.IsNullOrWhiteSpace(LevelNameText.Text) ? "我的世界" : LevelNameText.Text;
-        LevelNameLabel.Text = _info.LevelWorldData.LevelName;
     }
 
     /// <summary>
@@ -210,7 +209,6 @@ public partial class LevelEditorRoot : ISetting
         if (_isInternalUpdating) return;
         SyncUiToData();
     }
-
     private void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var d = _info.LevelWorldData;
@@ -230,9 +228,5 @@ public partial class LevelEditorRoot : ISetting
         // 3. 执行保存
         string path = Path.Combine(_info.Path, "level.dat");
         LevelDatSaver.Save(path, d, d.HeaderVersion);
-        
-        // 提示用户或刷新 UI 状态
     }
-
-    private void BackBtn_OnClick(object? sender, RoutedEventArgs e) => BackAction?.Invoke();
 }

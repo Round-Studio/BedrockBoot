@@ -379,8 +379,6 @@ public partial class MainWindow : BedrockBootWindow
 
     private void UpdateNetworkStatus(bool isAvailable)
     {
-        if (GlobalModel.IsNetworkAvailable == isAvailable) return;
-
         GlobalModel.IsNetworkAvailable = isAvailable;
         Dispatcher.UIThread.Invoke(() => 
         {

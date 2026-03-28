@@ -7,7 +7,6 @@
 #include <fstream>
 #include <vector>
 #include <filesystem>
-
 #include "detours.h"
 #include "redirctor.h"
 #include "logger.h"

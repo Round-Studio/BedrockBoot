@@ -8,12 +8,14 @@
     <Grid Margin="10,8,10,10"
           RowDefinitions="Auto,*">
         <StackPanel Grid.Row="0"
+                    Margin="10,0"
                     Spacing="8"
                     Orientation="Horizontal">
             <Button Classes="NoBorder"
                     Name="BackBtn"
                     Click="BackBtn_OnClick"
-                    Padding="8">
+                    Padding="8"
+                    Height="32">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                Glyph="&#xE76B;"/>
@@ -24,6 +26,17 @@
             <TextBlock Text="存档编辑器"
                        VerticalAlignment="Center"
                        FontSize="16"></TextBlock>
+            
+            <TextBlock Text="LevelName"
+                       Name="LevelName"
+                       Opacity="0.5"
+                       VerticalAlignment="Center"></TextBlock>
         </StackPanel>
+        
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="10,0">
+                
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

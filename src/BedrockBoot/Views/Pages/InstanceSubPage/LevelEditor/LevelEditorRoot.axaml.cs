@@ -16,6 +16,12 @@ public partial class LevelEditorRoot : UserControl
     public LevelEditorRoot(ArchiveInfo info):this()
     {
         _info = info;
+        UpdaterUI();
+    }
+
+    private void UpdaterUI()
+    {
+        LevelName.Text = _info.Name;
     }
 
     private ArchiveInfo _info;

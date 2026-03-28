@@ -93,6 +93,13 @@
                                 </Transitions>
                             </Grid.Transitions>
                         </Grid>
+                
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Top"
+                              Height="76"
+                              Background="#01000000"
+                              PointerPressed="InputElement_OnPointerPressed"
+                              Opacity="0.0001" />
 
                         <Border CornerRadius="16,16,0,0"
                                 HorizontalAlignment="Stretch"

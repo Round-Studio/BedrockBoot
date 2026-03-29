@@ -13,25 +13,6 @@
                            FontSize="14"
                            Text="{DynamicResource Instance.Controls.Group.Accessibility}" />
 
-                <onePointControls:SettingExpander Name="MouseLock"
-                                                  Header="{DynamicResource Instance.Controls.MouseLock.Title}"
-                                                  Description="{DynamicResource Instance.Controls.MouseLock.Desc}"
-                                                  Glyph="&#xE72E;">
-                    <onePointControls:SettingExpander.ItemContent>
-                        <ToggleSwitch />
-                    </onePointControls:SettingExpander.ItemContent>
-                    <StackPanel>
-                        <onePointControls:SettingCard Classes="Item"
-                                                      Glyph="&#xF577;"
-                                                      Header="{DynamicResource Instance.Controls.MouseLock.Range.Title}"
-                                                      Description="{DynamicResource Instance.Controls.MouseLock.Range.Desc}">
-                            <Slider Width="200"
-                                    Classes="Number"
-                                    Maximum="50" />
-                        </onePointControls:SettingCard>
-                    </StackPanel>
-                </onePointControls:SettingExpander>
-
                 <onePointControls:SettingCard IsClickable="True"
                                               Name="JumpItemBtn"
                                               Click="JumpItemBtn_OnClick"

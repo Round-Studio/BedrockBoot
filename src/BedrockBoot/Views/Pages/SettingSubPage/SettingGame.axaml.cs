@@ -27,6 +27,7 @@ public partial class SettingGame : ISettingPage
 
         // 从配置中还原隔离模式索引
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
+        MouseLockSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
 
         IsEdit = true;
     }
@@ -45,5 +46,14 @@ public partial class SettingGame : ISettingPage
     {
         // 导航至游戏目录管理子页面
         MainSettingPage.NavigateTo(new GameFolders());
+    }
+
+    private void MouseLockSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsMouseLock = (bool)MouseLockSwitch.IsChecked!;
+            GlobalModel.Config.Save();
+        }
     }
 }

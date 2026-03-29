@@ -125,6 +125,12 @@ public class EasyLauncher
                 Launched?.Invoke(MinecraftProcess);
                 UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                 SetProgressIndeterminate?.Invoke(true);
+                
+                if (GlobalModel.Config.Data.IsMouseLock)
+                {
+                    var mouse = new ProcessMouseLocker(MinecraftProcess.Id);
+                    mouse.Start();
+                }
 
                 if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
 

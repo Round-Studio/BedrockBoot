@@ -25,6 +25,7 @@ public class ConfigEntry
     [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.Hook;
     [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
     [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
+    [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;
     [JsonPropertyName("launchBehavior")] public LaunchBehaviorEnum LaunchBehavior { get; set; } = LaunchBehaviorEnum.Normal;
 }
 

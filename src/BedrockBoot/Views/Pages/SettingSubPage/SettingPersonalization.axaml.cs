@@ -11,8 +11,6 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 
 public partial class SettingPersonalization : ISettingPage
 {
-    
-
     public SettingPersonalization()
     {
         InitializeComponent();

@@ -1,0 +1,66 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPluginPages.PluginManager">
+    <Grid Margin="0,15">
+        <Grid ColumnDefinitions="3*,7*">
+            <StackPanel Grid.Column="0"
+                        Margin="20,0,0,0"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
+                           Text="{DynamicResource Settings.Universal.Exception.Summary.Title}" />
+                
+                <TextBlock Text="通过导入第三方插件，BedrockBoot 以运行第三方拓展内容。"
+                           TextWrapping="Wrap"
+                           Opacity="0.6"></TextBlock>
+                
+                <TextBlock Text="点击 导入 按钮，开始导入插件包。"
+                           TextWrapping="Wrap"
+                           Opacity="0.6"></TextBlock>
+                
+                <Button Padding="8"
+                        Click="ImportButton_OnClick">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12">
+                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                   Glyph="&#xE710;"></onePointControls:FontIcon>
+                        <TextBlock Text="导入插件"></TextBlock>
+                    </StackPanel>
+                </Button>
+                
+                <TextBlock Text="请导入您信任的插件包。注意：加载来源不明的插件可能存在安全风险。"
+                           TextWrapping="Wrap"
+                           Opacity="0.6"></TextBlock>
+            </StackPanel>
+            
+            <ScrollViewer Grid.Column="1"
+                          Margin="10,0,5,0"
+                          Name="ScrollViewer">
+                <StackPanel Margin="0,0,15,0"
+                            Spacing="8"
+                            Name="PluginList">
+                    
+                </StackPanel>
+            </ScrollViewer>
+            
+            <notice:InfoCard Grid.Column="1"
+                             Name="InfoCard"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             BigTitle="未安装插件"
+                             Message="还没有安装任何第三方插件"/>
+            
+            <notice:LoadCard Grid.Column="1"
+                             Name="LoadingCard"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             BigTitle="请稍后"
+                             Message="加载插件中"/>
+        </Grid>
+    </Grid>
+</UserControl>

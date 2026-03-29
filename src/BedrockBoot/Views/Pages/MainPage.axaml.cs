@@ -146,11 +146,13 @@ public partial class MainPage : UserControl
     {
         IsEditMode = false;
 
-        TopBarItem.Add(item.Tag, item);
+        var tag = $"{item.Tag}{Guid.NewGuid().ToString("N")}";
+
+        TopBarItem.Add(tag, item);
 
         SelTag.Items.Add(new SelectBarItem
         {
-            Tag = item.Tag,
+            Tag = tag,
             Glyph = item.ItemGlyph
         });
 

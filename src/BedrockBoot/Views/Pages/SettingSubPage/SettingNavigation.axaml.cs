@@ -41,4 +41,9 @@ public partial class SettingNavigation : UserControl
     {
         MainSettingPage.NavigateTo(new SettingGame());
     }
+
+    private void Plugin_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new SettingPlugin());
+    }
 }

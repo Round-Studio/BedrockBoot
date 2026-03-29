@@ -1,6 +1,6 @@
 {
   "packName": "ToolsBox",
-  "packIconPath": "",
+  "packIconPath": "./pluginBuildConfig/icons/BedrockBoot.Icon.png",
   "packVersion": "1.0.0",
   "packAuthor": "Dime",
   "packDescription": "BedrockBoot 工具箱",

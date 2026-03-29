@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Base.Entry.Game.Pack.Archive.Backup;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper.IO;
 using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Pack.Game.Archive;
@@ -17,7 +18,7 @@ public class ArchiveBackup
         IndexConfig = new ConfigEntity<BackupIndex>(Path.Combine(PathsList.ArchiveBackup, "index.json"));
     }
 
-    public void Backup(ArchiveInfo info, Action backupComplete, IProgress<string> progress)
+    public async Task BackupAsync(ArchiveInfo info, IProgress<string> progress, CancellationToken cancellationToken = default)
     {
         if (!IndexConfig.Data.Index.Contains(info.Uuid))
         {
@@ -30,14 +31,14 @@ public class ArchiveBackup
         var indexFolder = Path.Combine(PathsList.ArchiveBackup, "backups", info.Uuid);
         Directory.CreateDirectory(indexFolder);
 
-        if (File.Exists(Path.Combine(info.IconPath)))
+        if (File.Exists(info.IconPath))
         {
             File.Copy(info.IconPath, Path.Combine(indexFolder, "icon.jpeg"), true);
         }
 
         var newBackupUuid = Guid.NewGuid().ToString("N");
-
-        Directory.CreateDirectory(Path.Combine(indexFolder, newBackupUuid));
+        var backupFolder = Path.Combine(indexFolder, newBackupUuid);
+        Directory.CreateDirectory(backupFolder);
 
         var conf = new ConfigEntity<BackupManifest>(Path.Combine(indexFolder, "manifest.json"));
         conf.Data.Uuid = info.Uuid;
@@ -52,10 +53,22 @@ public class ArchiveBackup
         });
         conf.Save();
 
-        new Thread(() =>
-        {
+        // 使用异步复制方法
+        await FolderCopier.CopyAsync(
+            sourceFolder: info.Path,
+            destinationFolder: backupFolder,
+            progressCallback: new Progress<(int current, int total, string file, long copied, long totalBytes)>(p =>
+            {
+                double percentage = p.totalBytes > 0 
+                    ? (double)p.copied / p.totalBytes * 100 
+                    : 0;
             
-        }).Start();
+                progress.Report($"{percentage:F2}%");
+            }),
+            overwrite: true,
+            copySubDirectories: true,
+            cancellationToken: cancellationToken
+        );
     }
 
     public BackupManifest? GetArchiveBackupsWhitUuid(string archiveUuid)

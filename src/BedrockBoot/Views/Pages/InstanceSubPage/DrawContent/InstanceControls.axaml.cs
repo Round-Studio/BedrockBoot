@@ -25,10 +25,6 @@ public partial class InstanceControls : ISetting
     {
         IsEdit = false;
         InitializeComponent();
-
-#if RELEASE
-        MouseLock.IsVisible = GlobalModel.FunctionOption.IsEnableMouseLock;
-#endif
     }
 
     public InstanceControls(VersionConfig versionInfo) : this()

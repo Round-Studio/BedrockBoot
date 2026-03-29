@@ -84,7 +84,8 @@ public partial class SavesView : UserControl
             SavesBox.Children.Add(new ArchiveItem(save)
             {
                 EditAction = () =>
-                    EditAction?.Invoke(save)
+                    EditAction?.Invoke(save),
+                RefreshCallBack = UpdateUI
             });
         }
     }

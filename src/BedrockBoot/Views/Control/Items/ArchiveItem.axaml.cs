@@ -7,8 +7,10 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Base.Entry.Game.Pack.Archive.Backup;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
 
 namespace BedrockBoot.Views.Control.Items;
@@ -18,6 +20,7 @@ public partial class ArchiveItem : UserControl
     private static I18nManager i18n => I18nManager.Instance;
     public ArchiveInfo? ArchiveInfo { get; set; }
     public Action? EditAction { get; set; }
+    public Action? RefreshCallBack { get; set; }
 
     public ArchiveItem()
     {
@@ -137,5 +140,22 @@ public partial class ArchiveItem : UserControl
     private void EditBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         EditAction?.Invoke();
+    }
+
+    private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "删除警告",
+            Content = "你确定要删除此存档吗，这将会失去很久...",
+            CloseButtonText = "确定删除",
+            PrimaryButtonText = "取消",
+            CloseAction = () =>
+            {
+                ArchiveInfo.Delete();
+                
+                RefreshCallBack?.Invoke();
+            }
+        });
     }
 }

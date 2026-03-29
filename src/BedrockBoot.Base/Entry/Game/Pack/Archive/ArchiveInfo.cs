@@ -93,6 +93,21 @@ public class ArchiveInfo
             
         ZipHelper.CreateZipFile(Path, saveFile);
     }
+
+    /// <summary>
+    /// 删除存档
+    /// </summary>
+    public void Delete()
+    {
+        try
+        {
+            Directory.Delete(Path, true);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+        }
+    }
     
     /// <summary>
     /// 反序列化后调用，确保 UUID 状态正确

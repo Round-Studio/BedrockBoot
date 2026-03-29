@@ -67,6 +67,14 @@
                             Classes="NoBorder">
                         <onePointControls:FontIcon Glyph="&#xE74E;" />
                     </Button>
+
+                    <Button Width="24" Height="24"
+                            Name="DeleteBtn"
+                            Click="DeleteBtn_OnClick"
+                            Classes="NoBorder">
+                        <onePointControls:FontIcon Glyph="&#xE74D;" 
+                                                   Foreground="Red"/>
+                    </Button>
                 </StackPanel>
             </StackPanel>
         </Grid>

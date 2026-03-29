@@ -74,6 +74,7 @@ public class ArchiveBackup
 
     public BackupManifest? GetArchiveBackupsWhitUuid(string archiveUuid)
     {
+        IndexConfig.Load();
         if (!IndexConfig.Data.Index.Contains(archiveUuid))
             return null;
 

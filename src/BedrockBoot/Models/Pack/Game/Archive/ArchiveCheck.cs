@@ -5,6 +5,7 @@ using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 using Round.SDK.Helper;
@@ -19,6 +20,30 @@ public class ArchiveCheck
     }
 
     public VersionConfig VersionConfig { get; set; }
+
+    public static ArchiveInfo? GetInfo(string save,string gameFolder)
+    {
+        if (!File.Exists(Path.Combine(save, "levelname.txt")))
+            return null;
+        
+        var name = File.ReadAllText(Path.Combine(save, "levelname.txt"));
+
+        var icon = Path.Combine(save, "world_icon.jpeg");
+        var isProject = false;
+
+        if (Directory.Exists(Path.Combine(save, "editor")))
+            isProject = true;
+
+        return new ArchiveInfo
+        {
+            Name = name,
+            Path = Path.Combine(save),
+            IconPath = File.Exists(icon) ? icon : "",
+            IsProject = isProject,
+            LevelWorldData = new ArchiveSerializer(save).Parser(),
+            VersionInfo = GameInfoHelper.GetVersionConfig(gameFolder)
+        };
+    }
 
     public ArchiveManifest Check()
     {
@@ -36,23 +61,12 @@ public class ArchiveCheck
                 var saves = Directory.GetDirectories(us.Value).ToList();
                 saves.ForEach(save =>
                 {
-                    if (!File.Exists(Path.Combine(save, "levelname.txt"))) return;
-                    var name = File.ReadAllText(Path.Combine(save, "levelname.txt"));
-
-                    var icon = Path.Combine(save, "world_icon.jpeg");
-                    var isProject = false;
-
-                    if (Directory.Exists(Path.Combine(save, "editor")))
-                        isProject = true;
-
-                    acts.Add(new ArchiveInfo
+                    var info = GetInfo(save, VersionConfig.VersionPath);
+                    if (info != null)
                     {
-                        Name = name,
-                        Path = Path.Combine(save),
-                        IconPath = File.Exists(icon) ? icon : "",
-                        IsProject = isProject,
-                        LevelWorldData = new ArchiveSerializer(save).Parser()
-                    });
+                        acts.Add(info);
+                        var uuidUpdate = info.Uuid;
+                    }
                 });
             }
 

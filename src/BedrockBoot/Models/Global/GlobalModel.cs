@@ -5,6 +5,7 @@ using BedrockBoot.Base.Entry.Info.Xbox;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using BedrockLauncher.Core;
@@ -28,4 +29,5 @@ public class GlobalModel
     public static XboxUserInfo XboxUserInfo { get; set; }
     public static AppRunType AppRunType { get; set; } = AppRunType.Default;
     public static bool IsNetworkAvailable { get; set; }
+    public static ArchiveBackup ArchiveBackup { get; } = new();
 }

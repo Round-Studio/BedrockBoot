@@ -1,0 +1,86 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800"
+             x:Class="BedrockBoot.Views.Control.Items.ArchiveBackupItem">
+    <items:BorderCard>
+        <Grid ColumnDefinitions="Auto,*,Auto">
+            <Border Grid.Column="0"
+                    Name="ImageBox"
+                    MinHeight="64"
+                    MinWidth="120"
+                    CornerRadius="6">
+                <Border.Background>
+                    <ImageBrush Stretch="UniformToFill"
+                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png" />
+                </Border.Background>
+                <Grid>
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Column="1"
+                        Margin="12,0"
+                        VerticalAlignment="Center"
+                        Spacing="4">
+                <TextBlock FontSize="15"
+                           Name="BackupName">
+                    My Backup
+                </TextBlock>
+                <TextBlock FontSize="11"
+                           Opacity="0.6"
+                           Name="BackupLastPlayed">
+                    LastPlayed Time
+                </TextBlock>
+
+                <StackPanel Orientation="Horizontal"
+                            Name="ControlPanel"
+                            Spacing="6">
+                    
+                    <Button Width="24" Height="24"
+                            Name="OpenFolderBtn"
+                            Click="OpenFolderBtn_OnClick"
+                            ToolTip.Tip="{DynamicResource Shared.Action.OpenFolder}"
+                            Classes="NoBorder">
+                        <onePointControls:FontIcon Glyph="&#xE8B7;" />
+                    </Button>
+
+                    <Button Width="24" Height="24"
+                            Name="SaveBtn"
+                            Click="SaveBtn_OnClick"
+                            ToolTip.Tip="{DynamicResource Shared.Action.Save}"
+                            Classes="NoBorder">
+                        <onePointControls:FontIcon Glyph="&#xE74E;" />
+                    </Button>
+
+                    <Button Width="24" Height="24"
+                            Name="DeleteBtn"
+                            Click="DeleteBtn_OnClick"
+                            Classes="NoBorder">
+                        <onePointControls:FontIcon Glyph="&#xE74D;" 
+                                                   Foreground="Red"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="2"
+                        VerticalAlignment="Center"
+                        Margin="12">
+                <Button Classes="NoBorder"
+                        Name="BackupBtn"
+                        Click="BackupBtn_OnClick"
+                        Background="{DynamicResource AccentBackgroundBrush}"
+                        Padding="8">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                   Glyph="&#xE8A7;"></onePointControls:FontIcon>
+                        <TextBlock Text="回档至此备份"></TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </items:BorderCard>
+</UserControl>

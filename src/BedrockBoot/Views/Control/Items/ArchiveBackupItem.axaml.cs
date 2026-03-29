@@ -1,0 +1,172 @@
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
+using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Base.Entry.Game.Pack.Archive.Backup;
+using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.Archive;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Helper;
+
+namespace BedrockBoot.Views.Control.Items;
+
+public partial class ArchiveBackupItem : UserControl
+{
+    private readonly ArchiveInfo _archiveInfo;
+    private readonly BackupManifest _manifest;
+    private static I18nManager i18n => I18nManager.Instance;
+    public BackupManifest.BackupInfo? BackupInfo { get; set; }
+    public Action? RefreshCallBack { get; set; }
+
+    public ArchiveBackupItem()
+    {
+        InitializeComponent();
+    }
+
+    public ArchiveBackupItem(ArchiveInfo archiveInfo,BackupManifest.BackupInfo info, BackupManifest manifest) : this()
+    {
+        _archiveInfo = archiveInfo;
+        _manifest = manifest;
+        BackupInfo = info;
+        UpdateUI();
+    }
+
+    /// <summary>
+    /// 更新存档卡片 UI
+    /// </summary>
+    public void UpdateUI()
+    {
+        if (BackupInfo == null) return;
+
+        BackupName.Text = BackupInfo.BackupName;
+
+        // 时间转换与格式化
+        var lastPlayedTime = UnixTimeConverter.UnixTimeStampToDateTime(BackupInfo.BackupTime);
+        BackupLastPlayed.Text = $"备份时间: {lastPlayedTime.ToString("yyyy/MM/dd HH:mm")}";
+
+        // 异步或流式加载图标，防止文件占用
+        LoadBackupIcon(ArchiveCheck.GetInfo(Path.Combine(_manifest.BackupFolder, BackupInfo.FolderID),
+            _manifest.GameFolder)!.IconPath);
+    }
+
+    private void LoadBackupIcon(string? path)
+    {
+        if (string.IsNullOrEmpty(path) || !File.Exists(path)) return;
+
+        try
+        {
+            using var stream = File.OpenRead(path);
+            var bitmap = new Bitmap(stream);
+            ImageBox.Background = new ImageBrush
+            {
+                Stretch = Stretch.UniformToFill,
+                Source = bitmap
+            };
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to load Backup icon: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// 在资源管理器中打开存档目录
+    /// </summary>
+    private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = Path.Combine(_manifest.BackupFolder, BackupInfo.FolderID),
+            UseShellExecute = true
+        });
+    }
+
+    /// <summary>
+    /// 导出存档为 .mcworld 包
+    /// </summary>
+    private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
+
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = i18n["Archive.Export.Title"],
+            DefaultExtension = "mcworld",
+            SuggestedFileName = $"{BackupInfo.BackupName}.mcworld",
+            FileTypeChoices = new[]
+            {
+                new FilePickerFileType(i18n["Archive.Export.FileType"])
+                {
+                    Patterns = new[] { "*.mcworld" }
+                }
+            }
+        });
+
+        var localPath = file?.TryGetLocalPath();
+        if (string.IsNullOrEmpty(localPath)) return;
+
+        try
+        {
+            ArchiveCheck.GetInfo(Path.Combine(_manifest.BackupFolder, BackupInfo.FolderID),
+                _manifest.GameFolder)!.Save(localPath);
+            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+            {
+                Title = i18n["Common.Success"],
+                Message = i18n["Archive.Export.Success"],
+                NoticeType = NoticeType.Info
+            });
+        }
+        catch (Exception ex)
+        {
+            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+            {
+                Title = i18n["MainWindow.Dialog.Error.Title"],
+                Message = ex.Message,
+                NoticeType = NoticeType.Error
+            });
+        }
+    }
+
+    private void BackupBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "回档警告",
+            Content = "切换到此备份将会删除现有的所有内容！\n" +
+                      "回档前请先备份。",
+            CloseButtonText = "确定回档",
+            PrimaryButtonText = "取消",
+            CloseAction = () =>
+            {
+                GlobalModel.ArchiveBackup.RollbackArchiveBackup(_archiveInfo, BackupInfo.FolderID);
+            }
+        });
+    }
+
+    private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "删除警告",
+            Content = "你确定要删除此备份吗，这将会失去很久...",
+            CloseButtonText = "确定删除",
+            PrimaryButtonText = "取消",
+            CloseAction = () =>
+            {
+                if (BackupInfo != null)
+                    GlobalModel.ArchiveBackup.DeleteArchiveBackup(_manifest.Uuid, BackupInfo.FolderID);
+                
+                RefreshCallBack?.Invoke();
+            }
+        });
+    }
+}

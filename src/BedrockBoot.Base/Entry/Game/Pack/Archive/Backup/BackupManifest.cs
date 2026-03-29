@@ -15,18 +15,16 @@ public class BackupManifest
     
     [JsonPropertyName("archiveName")]
     public string ArchiveName { get; set; }
-    
-    [JsonPropertyName("gameFolder")]
-    public string GameFolder { get; set; }
+
+    [JsonPropertyName("gameFolder")] public string GameFolder { get; set; }
 
     [JsonPropertyName("backups")] public List<BackupInfo> Backups { get; set; } = new();
+    [JsonIgnore] public string BackupFolder { get; set; }
     
     public class BackupInfo
     {
-        [JsonPropertyName("folder")]
-        public string FolderID { get; set; }
-    
-        [JsonPropertyName("backupTime")]
-        public long BackupTime { get; set; }
+        [JsonPropertyName("folder")] public string FolderID { get; set; }
+        [JsonPropertyName("backupName")] public string BackupName { get; set; } = "新建备份";
+        [JsonPropertyName("backupTime")] public long BackupTime { get; set; }
     }
 }

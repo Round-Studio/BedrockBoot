@@ -37,6 +37,16 @@ public class IsolationCore
         }
     }
 
+    public static string GetRealPath(VersionConfig versionConfig)
+    {
+        if (versionConfig.Config.IsVersionIsolated)
+            return Path.Combine(versionConfig.VersionPath, "config", "BedrockBoot2", "isolation");
+
+        return PathsList.GamePublicRootPath;
+    }
+
+    #region 废弃的方法
+    
     private void CreateSymbolicLinkSafe(string linkPath, string targetPath)
     {
         if (Directory.Exists(linkPath))
@@ -58,14 +68,6 @@ public class IsolationCore
         }
     }
 
-    public static string GetRealPath(VersionConfig versionConfig)
-    {
-        if (versionConfig.Config.IsVersionIsolated)
-            return Path.Combine(versionConfig.VersionPath, "config", "BedrockBoot2", "isolation");
-
-        return PathsList.GamePublicRootPath;
-    }
-
     public static string GetInstancePackPath(VersionConfig versionConfig, string folder)
     {
         var root = GetRealPath(versionConfig);
@@ -74,6 +76,8 @@ public class IsolationCore
 
         return Path.Combine(root, "LocalState", "games", "com.mojang", folder);
     }
+
+    #endregion
 
     public static string GetInstanceConfigRootPath(VersionConfig versionConfig)
     {
@@ -112,7 +116,9 @@ public class IsolationCore
             InstanceFolderType.SkinPackFolder => GetInstanceFolderPath(versionConfig, "skin_packs", user),
             InstanceFolderType.UserFolder => versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP
                 ? string.Empty
-                : Path.Combine(GetRealPath(versionConfig), "Users"),
+                : (versionConfig.Info.VersionType == MinecraftGameTypeVersion.Preview
+                    ? Path.Combine(GetRealPath(versionConfig), " Preview", "Users")
+                    : Path.Combine(GetRealPath(versionConfig), "Users")),
             InstanceFolderType.ScreenshotFolder => GetInstanceFolderPath(versionConfig, "Screenshots", user),
             _ => string.Empty
         };
@@ -144,10 +150,22 @@ public class IsolationCore
 
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            var dir = Path.Combine(GetRealPath(versionConfig), "Users", user, "games", "com.mojang", folder);
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-            return dir;
+            if (versionConfig.Info.VersionType == MinecraftGameTypeVersion.Preview ||
+                versionConfig.Info.VersionType == MinecraftGameTypeVersion.Beta)
+            {
+                var dir = Path.Combine(GetRealPath(versionConfig), " Preview", "Users", user, "games", "com.mojang",
+                    folder);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                return dir;
+            }
+            else
+            {
+                var dir = Path.Combine(GetRealPath(versionConfig), "Users", user, "games", "com.mojang", folder);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                return dir;
+            }
         }
 
         throw new NotSupportedException($"不支持的 Minecraft 构建类型: {versionConfig.Info.BuildType}");

@@ -12,7 +12,9 @@ using BedrockBoot.Views.DialogContent;
 using IWshRuntimeLibrary;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Plugin.BedrockBoot.Register;
 using File = System.IO.File;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
@@ -25,6 +27,20 @@ public partial class InstanceControls : ISetting
     {
         IsEdit = false;
         InitializeComponent();
+
+        Expansion.IsVisible = RegisterService.API.InstanceControlItems.Count > 0;
+        RegisterService.API.InstanceControlItems.ForEach(it =>
+        {
+            var item = new SettingCard()
+            {
+                Header = it.Header,
+                Description = it.Description,
+                Glyph = it.ItemGlyph,
+                IsClickable = true
+            };
+            item.Click += (sender, args) => it.Callback?.Invoke(VersionInfo?.VersionPath!);
+            ExpansionPanel.Children.Add(item);
+        });
     }
 
     public InstanceControls(VersionConfig versionInfo) : this()

@@ -45,6 +45,15 @@
                                               Header="{DynamicResource Instance.Controls.Delete.Title}"
                                               Description="{DynamicResource Instance.Controls.Delete.Desc}">
                 </onePointControls:SettingCard>
+
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
+                           IsVisible="False"
+                           Name="Expansion"
+                           Text="拓展" />
+                
+                <StackPanel Spacing="8"
+                            Name="ExpansionPanel"></StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

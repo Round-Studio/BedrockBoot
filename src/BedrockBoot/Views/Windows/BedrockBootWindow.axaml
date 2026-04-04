@@ -20,6 +20,7 @@
         Title="BedrockBootWindow">
     <Grid>
         <Grid Background="{DynamicResource BackgroundBrush}"
+              Name="BackgroundCover"
               Opacity="0.58"></Grid>
         
         <Border>

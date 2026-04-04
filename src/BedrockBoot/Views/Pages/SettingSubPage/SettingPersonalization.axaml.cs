@@ -24,6 +24,10 @@ public partial class SettingPersonalization : ISettingPage
             }
         };
 
+        IsUseSystemWindow.IsChecked = GlobalModel.Config.Data.IsUseSystemWindow;
+
+        IsEdit = true;
+
 #if RELEASE
         // 根据功能开关控制启用状态
         SetBackground.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingBackground;
@@ -45,5 +49,17 @@ public partial class SettingPersonalization : ISettingPage
     private void SetHome_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new PersonalizationHome());
+    }
+
+    private void IsUseSystemWindow_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsUseSystemWindow =
+                (bool)IsUseSystemWindow.IsChecked!;
+            GlobalModel.Config.Save();
+            
+            GlobalModel.MainWindow.UpdateWindowBorder();
+        }
     }
 }

@@ -260,7 +260,9 @@ public partial class SearchDetailed : ISetting
             Spacing = 8
         };
 
-        foreach (var item in items) stackPanel.Children.Add(new SearchItem(item));
+        var resItems = items.Select(x => new SearchItem(x));
+
+        stackPanel.Children.AddRange(resItems);
 
         var scrollViewer = new ScrollViewer
         {

@@ -20,6 +20,14 @@
                                            Click="PluginManager_OnClick"
                                            IsClickable="True"
                                            Glyph="&#xECAA;" />
-            </StackPanel>
+             
+             <StackPanel Name="PluginSetting"
+                         Margin="5, 0"
+                         Spacing="8">
+                 <TextBlock FontWeight="Bold"
+                            FontSize="14"
+                            Text="插件设置" />
+             </StackPanel>
+         </StackPanel>
     </ScrollViewer>
 </UserControl>

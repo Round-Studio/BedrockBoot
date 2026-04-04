@@ -152,7 +152,7 @@ public partial class MainManager : BedrockBootPage
             // 一次性分配数据，减少 UI 重绘
             if (folderItems.Count > 0)
             {
-                // 如果是 Avalonia 11，推荐使用 ItemsSource = folderItems，若兼容旧版可用 Items.AddRange(folderItems) 或循环 Add
+                // 如果是 Avalonia 11，推荐使用 ItemsSource = folderItems，若兼容旧版可用  或循环 Add
                 foreach (var item in folderItems) FolderList.Items.Add(item);
                 
                 FolderList.SelectedIndex = folders.Count == 1 ? 0 : GlobalModel.Config.Data.GameFolderSelIndex;

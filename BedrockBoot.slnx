@@ -35,7 +35,6 @@
   </Folder>
   <Folder Name="/Test/">
     <Project Path="src/BedrockBoot.Test/BedrockBoot.Test.csproj" />
-    <Project Path="src/PaperTest/PaperTest.csproj" />
   </Folder>
   <Project Path="src/BedrockBoot.Base/BedrockBoot.Base.csproj" />
   <Project Path="src/BedrockBoot.Core/BedrockBoot.Core.csproj" />

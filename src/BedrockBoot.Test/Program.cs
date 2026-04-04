@@ -7,7 +7,7 @@ var info = ArchiveCheck.GetInfo(
 var archiveMani = new ArchiveBackup();
 await archiveMani.BackupAsync(info, new Progress<string>((s) =>
 {
-    Console.WriteLine($"备份进度：{s}");
+    Console.WriteLine($@"备份进度：{s}");
 }));
 
 Console.WriteLine(archiveMani.GetArchiveBackupsWhitUuid("c85dc64f-7939-4e39-9447-19e698b54c9d")?.Backups.Count);

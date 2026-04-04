@@ -56,7 +56,7 @@ public class ArchiveInfo
                     }
                     catch (Exception ex) 
                     { 
-                        Console.WriteLine($"自动保存新UUID失败: {ex.Message}"); 
+                        Console.WriteLine($@"自动保存新UUID失败: {ex.Message}"); 
                     }
                 }
             }

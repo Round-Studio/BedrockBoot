@@ -60,7 +60,7 @@ public class LevelDatParser : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"解析出错: {ex.Message}");
+            Console.WriteLine($@"解析出错: {ex.Message}");
             throw;
         }
     }

@@ -33,7 +33,7 @@ public partial class DialogBackupProgressContent : UserControl
     {
         await GlobalModel.ArchiveBackup.BackupAsync(_info, _backupName, new Progress<string>((s) =>
         {
-            Console.WriteLine($"备份进度：{s}");
+            Console.WriteLine($@"备份进度：{s}");
             Dispatcher.UIThread.Invoke(() => { ProgressText.Text = $"备份进度：{s} %"; });
         }));
 

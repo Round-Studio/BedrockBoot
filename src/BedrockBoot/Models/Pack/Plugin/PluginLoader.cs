@@ -39,7 +39,7 @@ public class PluginLoader
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"加载插件失败: {file}, 错误: {ex.Message}");
+                    Console.WriteLine($@"加载插件失败: {file}, 错误: {ex.Message}");
                     conf.IsEnable = false;
                 }
             }
@@ -80,7 +80,7 @@ public class PluginLoader
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"导入插件失败: {ex.Message}");
+            Console.WriteLine($@"导入插件失败: {ex.Message}");
             return false;
         }
     }
@@ -119,7 +119,7 @@ public class PluginLoader
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Error] 切换插件状态失败: {ex.Message}");
+                Console.WriteLine($@"[Error] 切换插件状态失败: {ex.Message}");
             }
         }
     }
@@ -127,68 +127,86 @@ public class PluginLoader
     public static List<PackConfig> Plugins { get; set; } = new();
     public static Type PluginType { get; } = typeof(IPluginBedrockBoot);
     public static readonly List<Assembly> _loadedAssemblies = new();
+
     public static void LoadDependencies(string extractDir, string bodyFile)
     {
         var filesDir = Path.Combine(extractDir, "files");
+        if (!Directory.Exists(filesDir)) return;
 
-        if (!Directory.Exists(filesDir)) throw new DirectoryNotFoundException($"插件文件目录不存在: {filesDir}");
-
-        // 获取所有DLL文件（排除主体文件）
         var dllFiles = Directory.GetFiles(filesDir, "*.dll")
             .Where(file => !Path.GetFileName(file).Equals(bodyFile, StringComparison.OrdinalIgnoreCase))
             .ToList();
 
+        var loadedNames = AppDomain.CurrentDomain.GetAssemblies()
+            .Select(a => a.GetName().Name)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
         foreach (var dllPath in dllFiles)
+        {
             try
             {
-                // 加载程序集到当前应用程序域
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(dllPath);
+
+                if (loadedNames.Contains(fileNameWithoutExt))
+                {
+                    continue;
+                }
+
                 var assembly = Assembly.LoadFrom(dllPath);
                 _loadedAssemblies.Add(assembly);
+            
+                loadedNames.Add(fileNameWithoutExt);
+
                 Console.WriteLine($@"已加载依赖: {Path.GetFileName(dllPath)}");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($@"加载依赖失败 {dllPath}: {ex.Message}");
             }
+        }
     }
-    public static object LoadPluginBody(string extractDir, string bodyFile)
+
+    public static void LoadPluginBody(string extractDir, string bodyFile)
     {
-        var bodyFilePath = Path.Combine(extractDir, "files", bodyFile);
-        if (!File.Exists(bodyFilePath)) throw new FileNotFoundException($"插件主体文件不存在: {bodyFilePath}");
-
-        try
+        Task.Run(() =>
         {
-            var bodyAssembly = Assembly.LoadFrom(bodyFilePath);
-            _loadedAssemblies.Add(bodyAssembly);
+            var bodyFilePath = Path.Combine(extractDir, "files", bodyFile);
+            if (!File.Exists(bodyFilePath)) throw new FileNotFoundException($"插件主体文件不存在: {bodyFilePath}");
 
-            // 查找实现了 IPluginBedrockBoot 的非抽象类
-            var pluginType = bodyAssembly.GetTypes()
-                .FirstOrDefault(t => typeof(IPluginBedrockBoot).IsAssignableFrom(t) &&
-                                     !t.IsInterface &&
-                                     !t.IsAbstract);
-
-            if (pluginType != null)
+            try
             {
-                // 1. 创建实例
-                var pluginInstance = Activator.CreateInstance(pluginType);
-            
-                // 2. 强转并执行 Initialize
-                if (pluginInstance is IPluginBedrockBoot bootPlugin)
-                {
-                    bootPlugin.Initialize();
-                    Console.WriteLine($@"插件已初始化: {pluginType.FullName}");
-                }
-            
-                return pluginInstance;
-            }
+                var bodyAssembly = Assembly.LoadFrom(bodyFilePath);
+                _loadedAssemblies.Add(bodyAssembly);
 
-            throw new InvalidOperationException($"在主体文件中未找到实现 IPluginBedrockBoot 的类: {bodyFile}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"加载并初始化插件主体失败 {bodyFilePath}: {ex.Message}");
-            throw;
-        }
+                // 查找实现了 IPluginBedrockBoot 的非抽象类
+                var pluginType = bodyAssembly.GetTypes()
+                    .FirstOrDefault(t => typeof(IPluginBedrockBoot).IsAssignableFrom(t) &&
+                                         !t.IsInterface &&
+                                         !t.IsAbstract);
+
+                if (pluginType != null)
+                {
+                    // 1. 创建实例
+                    var pluginInstance = Activator.CreateInstance(pluginType);
+
+                    // 2. 强转并执行 Initialize
+                    if (pluginInstance is IPluginBedrockBoot bootPlugin)
+                    {
+                        bootPlugin.Initialize();
+                        Console.WriteLine($@"插件已初始化: {pluginType.FullName}");
+                    }
+
+                    return pluginInstance;
+                }
+
+                throw new InvalidOperationException($"在主体文件中未找到实现 IPluginBedrockBoot 的类: {bodyFile}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"加载并初始化插件主体失败 {bodyFilePath}: {ex.Message}");
+                throw;
+            }
+        });
     }
     public static bool Delete(PackConfig config)
     {
@@ -207,7 +225,7 @@ public class PluginLoader
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"删除插件文件失败: {ex.Message}");
+            Console.WriteLine($@"删除插件文件失败: {ex.Message}");
             return false;
         }
     }

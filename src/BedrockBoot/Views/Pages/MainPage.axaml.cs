@@ -86,9 +86,15 @@ public partial class MainPage : UserControl
 
         if (GlobalModel.Config.Data.IsAutoCheckUpdate) Update();
 
-        Loaded += (sender, args) =>
+        Loaded += async (sender, args) =>
         {
-            PluginLoader.LoadAll();
+            try
+            {
+                await PluginLoader.LoadAll();
+            }
+            catch
+            {
+            }
 
             JumpListManager.ConfigureJumpList();
         };

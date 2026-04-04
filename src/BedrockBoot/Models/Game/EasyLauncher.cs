@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
+using System.Threading;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
@@ -11,6 +12,7 @@ using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
+using Round.SDK.Plugin.BedrockBoot.Register;
 
 namespace BedrockBoot.Models.Game;
 
@@ -78,6 +80,9 @@ public class EasyLauncher
         args += VersionInfo.Config.OtherCommand;
 
         _core.PreLoad(); // 启动 PreLoad
+
+        RegisterService.API.LaunchingEvent.ForEach(action =>
+            new Thread(() => action.Invoke(VersionInfo.VersionPath)).Start());
 
         try
         {

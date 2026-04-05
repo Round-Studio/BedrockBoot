@@ -102,7 +102,8 @@ public partial class MainToolsBoxPage : BedrockBootPage
                             DialogHost.Show(new()
                             {
                                 Title = "Jvm 错误",
-                                Content = "未找到合适的 Jvm 运行器"
+                                Content = "未找到合适的 Jvm 运行器",
+                                CloseButtonText = "确定"
                             });
                         });
                         return;

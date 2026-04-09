@@ -42,12 +42,12 @@ public partial class SetupImport : UserControl
                         ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                         : dialog.FolderName;
 
-                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                    BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                     {
                         GameFolderPath = dialog.FolderPath,
                         GameFolderName = name
                     });
-                    GlobalModel.Config.Save();
+                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
                 }
             }
         });

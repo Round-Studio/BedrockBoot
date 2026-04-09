@@ -33,7 +33,7 @@ public partial class BedrockBootWindow : Window
                 UpdateWindowBorder();
                 if (OperatingSystem.IsWindows())
                 {
-                    if (WindowState == WindowState.Maximized && !GlobalModel.Config.Data.IsUseSystemWindow)
+                    if (WindowState == WindowState.Maximized && !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow)
                         Padding = new Thickness(8);
                     else Padding = new Thickness(0);
                 }
@@ -41,7 +41,7 @@ public partial class BedrockBootWindow : Window
                 if (WindowState == WindowState.Maximized) MaxBtnIcon.Glyph = "\uE923";
                 else MaxBtnIcon.Glyph = "\uE922";
 
-                BackgroundCover.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Blur;
+                BackgroundCover.IsVisible = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Blur;
 
                 TitleBlock.Text = Title;
             });
@@ -52,12 +52,12 @@ public partial class BedrockBootWindow : Window
 
     public void UpdateWindowBorder()
     {
-        MaxBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
-        MinBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
-        CloseBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
-        ExtendClientAreaToDecorationsHint = !GlobalModel.Config.Data.IsUseSystemWindow;
+        MaxBtn.IsVisible = !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        MinBtn.IsVisible = !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        CloseBtn.IsVisible = !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        ExtendClientAreaToDecorationsHint = !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
         ExtendClientAreaTitleBarHeightHint = -1;
-        ExtendClientAreaChromeHints = GlobalModel.Config.Data.IsUseSystemWindow
+        ExtendClientAreaChromeHints = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow
             ? ExtendClientAreaChromeHints.Default
             : ExtendClientAreaChromeHints.NoChrome;
     }

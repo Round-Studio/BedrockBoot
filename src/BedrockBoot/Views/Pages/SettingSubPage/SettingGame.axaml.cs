@@ -26,8 +26,8 @@ public partial class SettingGame : ISettingPage
         };
 
         // 从配置中还原隔离模式索引
-        IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
-        MouseLockSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
+        IsolationTypeBox.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.IsolationModel;
+        MouseLockSwitch.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock;
 
         IsEdit = true;
     }
@@ -37,8 +37,8 @@ public partial class SettingGame : ISettingPage
         if (IsEdit)
         {
             // 更新配置中的隔离模式
-            GlobalModel.Config.Data.IsolationModel = (IsolationType)IsolationTypeBox.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsolationModel = (IsolationType)IsolationTypeBox.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
         }
     }
 
@@ -52,8 +52,8 @@ public partial class SettingGame : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.IsMouseLock = (bool)MouseLockSwitch.IsChecked!;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock = (bool)MouseLockSwitch.IsChecked!;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
         }
     }
 }

@@ -29,7 +29,7 @@ public partial class SettingDownload : ISettingPage
         };
 
         // 加载下载分片数配置
-        ChunkCountSlider.Value = GlobalModel.Config.Data.DownloadChunkCount;
+        ChunkCountSlider.Value = BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount;
 
         // 动态加载版本下载源 (保持数据源原名)
         SourceBox.Items.Clear();
@@ -37,7 +37,7 @@ public partial class SettingDownload : ISettingPage
         {
             SourceBox.Items.Add(new ComboBoxItem { Content = s.Key });
         }
-        SourceBox.SelectedIndex = GlobalModel.Config.Data.VersionSourceIndex;
+        SourceBox.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.VersionSourceIndex;
 
         // 动态加载 CurseForge 下载源
         CurseForgeSourceBox.Items.Clear();
@@ -45,7 +45,7 @@ public partial class SettingDownload : ISettingPage
         {
             CurseForgeSourceBox.Items.Add(new ComboBoxItem { Content = s.Key });
         }
-        CurseForgeSourceBox.SelectedIndex = GlobalModel.Config.Data.CurseForgeSourceIndex;
+        CurseForgeSourceBox.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.CurseForgeSourceIndex;
 
         IsEdit = true;
     }
@@ -65,10 +65,10 @@ public partial class SettingDownload : ISettingPage
         if (IsEdit)
         {
             int newValue = (int)ChunkCountSlider.Value;
-            if (newValue != GlobalModel.Config.Data.DownloadChunkCount)
+            if (newValue != BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount)
             {
-                GlobalModel.Config.Data.DownloadChunkCount = newValue;
-                GlobalModel.Config.Save();
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount = newValue;
+                BedrockBoot.Core.Global.GlobalModel.Config.Save();
             }
         }
     }
@@ -77,8 +77,8 @@ public partial class SettingDownload : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.VersionSourceIndex = SourceBox.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.VersionSourceIndex = SourceBox.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
         }
     }
 
@@ -86,8 +86,8 @@ public partial class SettingDownload : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.CurseForgeSourceIndex = CurseForgeSourceBox.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.CurseForgeSourceIndex = CurseForgeSourceBox.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
         }
     }
 }

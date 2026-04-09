@@ -141,8 +141,8 @@ public class IntegrationInstaller
             Status = InstallIntegrationProgressType.GetUrl
         });
 
-        if (GlobalModel.BedrockCore == null)
-            GlobalModel.BedrockCore = new BedrockCore
+        if (CoreGlobal.BedrockCore == null)
+            CoreGlobal.BedrockCore = new BedrockCore
             {
                 Options = new CoreOptions
                 {
@@ -153,7 +153,7 @@ public class IntegrationInstaller
                 }
             };
 
-        var url = await GlobalModel.BedrockCore.GetPackageUri(gameVersions, Architecture.X64);
+        var url = await CoreGlobal.BedrockCore.GetPackageUri(gameVersions, Architecture.X64);
 
         // 添加错误处理
         if (string.IsNullOrEmpty(url))

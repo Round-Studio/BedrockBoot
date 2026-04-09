@@ -25,14 +25,14 @@ public partial class DialogChooseGameContent : ISetting
         IsEnabled = false;
 
         GameFolder.Items.Clear();
-        GlobalModel.Config.Data.GameFolders.ForEach(f =>
+        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.ForEach(f =>
         {
             GameFolder.Items.Add(new ComboBoxItem
             {
                 Content = $"{f.GameFolderName} - {f.GameFolderPath}"
             });
         });
-        GameFolder.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
+        GameFolder.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
         UpdateList();
 
         IsEnabled = true;
@@ -42,7 +42,7 @@ public partial class DialogChooseGameContent : ISetting
     {
         GameInstance.Items.Clear();
         var index = GameFolder.SelectedIndex;
-        var path = GlobalModel.Config.Data.GameFolders[index].GameFolderPath;
+        var path = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[index].GameFolderPath;
         Versions = GameInfoHelper.GetVersionConfigs(path);
         Versions.ForEach(v =>
         {
@@ -52,7 +52,7 @@ public partial class DialogChooseGameContent : ISetting
                 Tag = v
             });
         });
-        GameInstance.SelectedIndex = GlobalModel.Config.Data.GameFolders[index].GameSelIndex;
+        GameInstance.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[index].GameSelIndex;
     }
 
     private void GameFolder_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

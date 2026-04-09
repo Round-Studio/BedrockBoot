@@ -55,10 +55,10 @@ public partial class MainManager : BedrockBootPage
 
         try
         {
-            var folders = GlobalModel.Config.Data.GameFolders;
+            var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
             if (folders.Count == 0) return;
 
-            var currentFolder = folders[GlobalModel.Config.Data.GameFolderSelIndex];
+            var currentFolder = folders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex];
             var gameFolderPath = currentFolder.GameFolderPath;
 
             if (!Directory.Exists(gameFolderPath)) return;
@@ -129,7 +129,7 @@ public partial class MainManager : BedrockBootPage
         IsEditMode = false;
         try
         {
-            var folders = GlobalModel.Config.Data.GameFolders;
+            var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
             bool hasFolders = folders.Count > 0;
             
             FolderList.IsVisible = hasFolders;
@@ -155,7 +155,7 @@ public partial class MainManager : BedrockBootPage
                 // 如果是 Avalonia 11，推荐使用 ItemsSource = folderItems，若兼容旧版可用  或循环 Add
                 foreach (var item in folderItems) FolderList.Items.Add(item);
                 
-                FolderList.SelectedIndex = folders.Count == 1 ? 0 : GlobalModel.Config.Data.GameFolderSelIndex;
+                FolderList.SelectedIndex = folders.Count == 1 ? 0 : BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
             }
 
             InitializeConfigWatcher();
@@ -172,7 +172,7 @@ public partial class MainManager : BedrockBootPage
         IsEditMode = false;
         try
         {
-            var configData = GlobalModel.Config.Data;
+            var configData = BedrockBoot.Core.Global.GlobalModel.Config.Data;
             
             if (configData.GameFolders.Count == 0)
             {
@@ -183,7 +183,7 @@ public partial class MainManager : BedrockBootPage
             if (configData.GameFolderSelIndex < 0 || configData.GameFolderSelIndex >= configData.GameFolders.Count)
             {
                 configData.GameFolderSelIndex = 0;
-                GlobalModel.Config.Save();
+                BedrockBoot.Core.Global.GlobalModel.Config.Save();
             }
 
             var currentFolder = configData.GameFolders[configData.GameFolderSelIndex];
@@ -276,12 +276,12 @@ public partial class MainManager : BedrockBootPage
                     ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                     : dialog.FolderName;
 
-                GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                 {
                     GameFolderPath = dialog.FolderPath,
                     GameFolderName = name ?? "Unknown Folder"
                 });
-                GlobalModel.Config.Save();
+                BedrockBoot.Core.Global.GlobalModel.Config.Save();
                 UpdateUI();
             },
             PrimaryAction = () =>
@@ -295,8 +295,8 @@ public partial class MainManager : BedrockBootPage
     {
         if (IsEditMode)
         {
-            GlobalModel.Config.Data.GameFolderSelIndex = FolderList.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex = FolderList.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
             InitializeConfigWatcher();
             UpdateGameList();
             JumpListManager.ConfigureJumpList();

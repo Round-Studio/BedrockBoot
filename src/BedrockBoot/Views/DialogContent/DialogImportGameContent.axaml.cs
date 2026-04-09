@@ -16,11 +16,11 @@ public partial class DialogImportGameContent : UserControl
     {
         InitializeComponent();
 
-        GlobalModel.Config.Data.GameFolders.ForEach(f =>
+        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.ForEach(f =>
             GameInstallFoldersInputBox.Items.Add($"[{f.GameFolderName}] {f.GameFolderPath}"));
 
-        if (GlobalModel.Config.Data.GameFolders.Count > 0)
-            GameInstallFoldersInputBox.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count > 0)
+            GameInstallFoldersInputBox.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
     }
 
     public string PackFile => PathInputBox.Text;
@@ -28,8 +28,8 @@ public partial class DialogImportGameContent : UserControl
     public bool DontKnowGameType => (bool)DontKnowGameTypeCheckBox.IsChecked;
     public MinecraftGameTypeVersion GameType => (MinecraftGameTypeVersion)RealGameBuildTypeInputBox.SelectedIndex;
 
-    public string PackInstallFolder => GlobalModel.Config.Data.GameFolders.Count != 0
-        ? GlobalModel.Config.Data.GameFolders[GameInstallFoldersInputBox.SelectedIndex].GameFolderPath
+    public string PackInstallFolder => BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count != 0
+        ? BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[GameInstallFoldersInputBox.SelectedIndex].GameFolderPath
         : string.Empty;
 
     private async void OpenChooseFileBtn_OnClick(object? sender, RoutedEventArgs e)

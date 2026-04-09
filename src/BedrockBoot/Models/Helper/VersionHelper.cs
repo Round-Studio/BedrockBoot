@@ -102,9 +102,9 @@ public class VersionHelper
 
         try
         {
-            var url = GlobalModel.Config == null
+            var url = BedrockBoot.Core.Global.GlobalModel.Config == null
                 ? SourceList.VersionDataSources.ToList()[0].Value
-                : SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value;
+                : SourceList.VersionDataSources.ToList()[BedrockBoot.Core.Global.GlobalModel.Config.Data.VersionSourceIndex].Value;
 
             var db = await VersionsHelper.GetBuildDatabaseAsync(url).ConfigureAwait(false);
             var lst = await db!.Builds.ToListAsync().ConfigureAwait(false);

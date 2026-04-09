@@ -12,7 +12,7 @@ public partial class SetupStyle : ISetting
     public SetupStyle()
     {
         InitializeComponent();
-        ChooseThemeBox.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.LightThemeType;
+        ChooseThemeBox.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType;
 
         IsEdit = true;
     }
@@ -21,11 +21,11 @@ public partial class SetupStyle : ISetting
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseThemeBox.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseThemeBox.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
             ThemeManager.Instance.SetThemeModel(
-                GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
                     ? ThemeVariant.Light
                     : ThemeVariant.Dark);
         }

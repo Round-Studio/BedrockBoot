@@ -56,7 +56,7 @@ public class PackInstaller
         var parentDir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(parentDir) && !Directory.Exists(parentDir)) Directory.CreateDirectory(parentDir);
 
-        await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
+        await CoreGlobal.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
         {
             GameName = gameName,
             Type = MinecraftBuildTypeVersion.UWP,
@@ -185,7 +185,7 @@ public class PackInstaller
                         }
                     });
 
-                    var installTask = GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
+                    var installTask = CoreGlobal.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
                     {
                         GameName = tempGameName,
                         Type = MinecraftBuildTypeVersion.GDK,
@@ -364,7 +364,7 @@ public class PackInstaller
 
             var jd = 0.00;
             // 使用临时文件进行安装
-            await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
+            await CoreGlobal.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
             {
                 GameName = gameName,
                 Type = MinecraftBuildTypeVersion.GDK,

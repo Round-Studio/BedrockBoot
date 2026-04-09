@@ -15,9 +15,7 @@ namespace BedrockBoot.Models.Global;
 
 public class GlobalModel
 {
-    public static ConfigEntity<ConfigEntry> Config;
     public static MainWindow MainWindow;
-    public static BedrockCore BedrockCore { get; set; }
     public static TaskManager TaskManager { get; set; } = new();
     public static bool IsAbleToLaunchGame { get; set; } = false;
     public static FunctionOptionEntry FunctionOption { get; set; }

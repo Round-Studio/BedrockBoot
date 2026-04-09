@@ -83,7 +83,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
         {
             try
             {
-                var sourceIndex = GlobalModel.Config.Data.VersionSourceIndex;
+                var sourceIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.VersionSourceIndex;
                 var source = SourceList.VersionDataSources.ElementAtOrDefault(sourceIndex).Value;
                 
                 var buildDatabase = await VersionsHelper.GetBuildDatabaseAsync(source);

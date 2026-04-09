@@ -61,12 +61,12 @@ public partial class GameFolders : ISettingPage
                         ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                         : dialog.FolderName;
 
-                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                    BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                     {
                         GameFolderPath = dialog.FolderPath,
                         GameFolderName = name
                     });
-                    GlobalModel.Config.Save();
+                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
                     UpdateUI();
                 }
@@ -82,7 +82,7 @@ public partial class GameFolders : ISettingPage
     {
         ListBox.Children.Clear();
         
-        GlobalModel.Config.Data.GameFolders.ForEach(folder =>
+        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.ForEach(folder =>
         {
             ListBox.Children.Add(new GameFolderSettingItem(folder, UpdateUI));
         });

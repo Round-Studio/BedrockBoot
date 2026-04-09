@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
+      <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -17,6 +17,7 @@ using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Entity;
+using BedrockBoot.Models;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -46,7 +47,7 @@ public partial class MainWindow : BedrockBootWindow
     {
         GlobalModel.MainWindow = this;
         InitializeComponent();
-        if (!GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
+        if (!BedrockBoot.Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         UpdateBack();
         InitializeWindowBounds();
@@ -64,7 +65,7 @@ public partial class MainWindow : BedrockBootWindow
 
     private void InitializeWindowBounds()
     {
-        var winInfo = GlobalModel.Config.Data.WindowInfo;
+        var winInfo = BedrockBoot.Core.Global.GlobalModel.Config.Data.WindowInfo;
         if (winInfo.X != -1 && winInfo.Y != -1)
         {
             WindowStartupLocation = WindowStartupLocation.Manual;
@@ -128,17 +129,7 @@ public partial class MainWindow : BedrockBootWindow
     {
         try
         {
-            GlobalModel.BedrockCore = new BedrockCore
-            {
-                Options = new CoreOptions
-                {
-                    IsAutoCompleteVC = true,
-                    IsAutoOpenDevelopment = true,
-                    IsAutoCompleteGameInput = true,
-                    IsCheckMD5 = true
-                }
-            };
-            await GlobalModel.BedrockCore.InitAsync();
+            await CoreInit.Init();
         }
         catch (Exception ex)
         {
@@ -159,7 +150,7 @@ public partial class MainWindow : BedrockBootWindow
 
     private void CheckUserAgreement()
     {
-        if (GlobalModel.Config.Data.IsAgreeTerms) return;
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;
 
         DialogHost.Show(new DialogInfo
         {
@@ -168,8 +159,8 @@ public partial class MainWindow : BedrockBootWindow
             CloseButtonText = I18n["MainWindow.Dialog.Agreement.Agree"],
             CloseAction = () =>
             {
-                GlobalModel.Config.Data.IsAgreeTerms = true;
-                GlobalModel.Config.Save();
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.IsAgreeTerms = true;
+                BedrockBoot.Core.Global.GlobalModel.Config.Save();
             },
             PrimaryButtonText = I18n["MainWindow.Dialog.Agreement.Decline"],
             PrimaryAction = () => Environment.Exit(0),
@@ -189,7 +180,7 @@ public partial class MainWindow : BedrockBootWindow
         AccentBackgroundBox.IsVisible = false;
         AnimationBackground.IsVisible = false;
 
-        var style = GlobalModel.Config.Data.StyleConfig;
+        var style = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig;
 
         switch (style.StyleType)
         {
@@ -269,7 +260,7 @@ public partial class MainWindow : BedrockBootWindow
         }
         
         // 透明度应用
-        BackgroundImageOpacity.Opacity = (100 - GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
+        BackgroundImageOpacity.Opacity = (100 - BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
     }
 
     #endregion
@@ -305,7 +296,7 @@ public partial class MainWindow : BedrockBootWindow
 
     private void RunBehavior()
     {
-        switch (GlobalModel.Config.Data.LaunchBehavior)
+        switch (BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchBehavior)
         {
             case LaunchBehaviorEnum.Minimize:
                 WindowState = WindowState.Minimized;
@@ -389,14 +380,14 @@ public partial class MainWindow : BedrockBootWindow
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {
         // 保存窗口状态
-        GlobalModel.Config.Data.WindowInfo = new WindowInfo
+        BedrockBoot.Core.Global.GlobalModel.Config.Data.WindowInfo = new WindowInfo
         {
             Width = Bounds.Width,
             Height = Bounds.Height,
             X = Position.X,
             Y = Position.Y
         };
-        GlobalModel.Config.Save();
+        BedrockBoot.Core.Global.GlobalModel.Config.Save();
     }
 
     #endregion

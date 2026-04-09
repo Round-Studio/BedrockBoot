@@ -23,10 +23,10 @@ public partial class PersonalizationBackground : ISettingPage
     public PersonalizationBackground()
     {
         InitializeComponent();
-        BackgroundTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.StyleType;
-        OptBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity;
-        BlurBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
-        Image3D.IsChecked = GlobalModel.Config.Data.StyleConfig.Background3D;
+        BackgroundTypeBox.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.StyleType;
+        OptBar.Value = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity;
+        BlurBar.Value = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
+        Image3D.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.Background3D;
         UpdateUI();
 
         if (OperatingSystem.IsWindows())
@@ -71,7 +71,7 @@ public partial class PersonalizationBackground : ISettingPage
         IsEdit = false;
         BackgroundImageBox.IsVisible = false;
 
-        if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image)
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image)
         {
             BackgroundImageBox.IsVisible = true;
             BackgroundsList.SelectedIndex = -1;
@@ -79,7 +79,7 @@ public partial class PersonalizationBackground : ISettingPage
 
             var notFoundImages = new List<string>();
 
-            GlobalModel.Config.Data.StyleConfig.BackgroundImages.ForEach(image =>
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImages.ForEach(image =>
             {
                 if (File.Exists(image))
                 {
@@ -93,11 +93,11 @@ public partial class PersonalizationBackground : ISettingPage
                 }
             });
 
-            GlobalModel.Config.Data.StyleConfig.BackgroundImages.RemoveAll(f => notFoundImages.Contains(f));
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImages.RemoveAll(f => notFoundImages.Contains(f));
 
-            var index = GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex;
+            var index = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex;
             if (index != -1)
-                if (GlobalModel.Config.Data.StyleConfig.BackgroundImages.Count >= 0)
+                if (BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImages.Count >= 0)
                     BackgroundsList.SelectedIndex = index;
         }
 
@@ -108,8 +108,8 @@ public partial class PersonalizationBackground : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.StyleConfig.StyleType = (StyleType)BackgroundTypeBox.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.StyleType = (StyleType)BackgroundTypeBox.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
             GlobalModel.MainWindow.UpdateBack();
 
@@ -121,8 +121,8 @@ public partial class PersonalizationBackground : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex = BackgroundsList.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex = BackgroundsList.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
             GlobalModel.MainWindow.UpdateBack();
             App.LoadColor();
@@ -155,7 +155,7 @@ public partial class PersonalizationBackground : ISettingPage
             foreach (var file in files)
             {
                 var filePath = file.Path.LocalPath;
-                GlobalModel.Config.Data.StyleConfig.BackgroundImages.Add(filePath);
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImages.Add(filePath);
                 UpdateUI();
             }
         }
@@ -165,11 +165,11 @@ public partial class PersonalizationBackground : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity = (int)OptBar.Value;
-            GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity = (int)OptBar.Value;
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
 
-            GlobalModel.Config.Save();
-            GlobalModel.MainWindow.SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+            GlobalModel.MainWindow.SetBackgroundBlur(BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
         }
     }
 
@@ -177,9 +177,9 @@ public partial class PersonalizationBackground : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.StyleConfig.Background3D = Image3D.IsChecked ?? false;
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.Background3D = Image3D.IsChecked ?? false;
 
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
             GlobalModel.MainWindow.UpdateBack();
         }
     }

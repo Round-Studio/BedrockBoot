@@ -66,7 +66,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
             
             Task.Run(async () =>
             {
-                var download = new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                var download = new MultiThreadDownloader(BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
 
                 await download.DownloadAsync(thisUrl, path, new Progress<DownloadProgress>(xprogress =>
                 {

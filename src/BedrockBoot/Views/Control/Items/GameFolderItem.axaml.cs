@@ -68,7 +68,7 @@ public partial class GameFolderItem : UserControl
             AccountButton = DialogButtons.SecondaryButton,
             CloseAction = () =>
             {
-                var folders = GlobalModel.Config.Data.GameFolders;
+                var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
                 var itemToRemove = folders.Find(x =>
                     x.GameFolderPath == GameFolderInfo.GameFolderPath &&
                     x.GameFolderName == GameFolderInfo.GameFolderName);
@@ -78,12 +78,12 @@ public partial class GameFolderItem : UserControl
                     folders.Remove(itemToRemove);
                     
                     // 如果删除的是当前选中的目录，重置索引
-                    if (GlobalModel.Config.Data.GameFolderSelIndex >= folders.Count)
+                    if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex >= folders.Count)
                     {
-                        GlobalModel.Config.Data.GameFolderSelIndex = Math.Max(0, folders.Count - 1);
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex = Math.Max(0, folders.Count - 1);
                     }
 
-                    GlobalModel.Config.Save();
+                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
                     // 通知主界面或管理页更新 UI
                     MainManager.Instance.UpdateUI();

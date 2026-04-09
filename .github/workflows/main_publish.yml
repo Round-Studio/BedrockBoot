@@ -62,7 +62,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.version.outputs.tag }}
-          release_name: "Release ${{ needs.version.outputs.tag }}"
+          name: "Release ${{ needs.version.outputs.tag }}"
           body: |
             ## BedrockBoot ${{ needs.version.outputs.v }}
             

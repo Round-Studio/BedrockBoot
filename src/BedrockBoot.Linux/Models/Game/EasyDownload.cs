@@ -243,41 +243,27 @@ public class EasyDownload
 
     public static async Task<List<GameDownloadUrlInfo>> GetPackageUrls(BuildInfo buildInfo)
     {
-        try
+        if (buildInfo == null)
+            throw new ArgumentNullException(nameof(buildInfo));
+        
+        if (buildInfo.BuildType != MinecraftBuildTypeVersion.GDK)
+            throw new Exception("该游戏在此设备上不支持");
+        
+        var url = buildInfo.Variations.Find((variation => variation.Arch == Architecture.X64))!.MetaData[0];
+
+        var res = new List<GameDownloadUrlInfo>();
+        var uri = new Uri(url);
+        var router = uri.AbsolutePath;
+        
+        SourceList.GameFileDownloadSource.ForEach(s =>
         {
-            var url = await CoreGlobal.BedrockCore.GetPackageUri(buildInfo, Architecture.X64);
-            Console.WriteLine($@"原始地址：{url}");
-
-            var res = new List<GameDownloadUrlInfo>();
-            var uri = new Uri(url);
-
-            if (buildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
+            res.Add(new GameDownloadUrlInfo
             {
-                var router = uri.AbsolutePath;
+                Host = s.Host,
+                Url = s.Url.Replace("{router}", router)
+            });
+        });
 
-                SourceList.GameFileDownloadSource.ForEach(s =>
-                {
-                    res.Add(new GameDownloadUrlInfo
-                    {
-                        Host = s.Host,
-                        Url = s.Url.Replace("{router}", router)
-                    });
-                });
-            }
-            else
-            {
-                res.Add(new GameDownloadUrlInfo
-                {
-                    Host = uri.Host,
-                    Url = url
-                });
-            }
-
-            return res;
-        }
-        catch
-        {
-            return null;
-        }
+        return res;
     }
 }

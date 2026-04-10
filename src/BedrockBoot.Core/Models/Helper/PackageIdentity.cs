@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Core.Models.Helper;
 
 public class PackageIdentity
 {

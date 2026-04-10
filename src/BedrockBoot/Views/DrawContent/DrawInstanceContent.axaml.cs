@@ -13,7 +13,6 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
-using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.DrawContent;
 

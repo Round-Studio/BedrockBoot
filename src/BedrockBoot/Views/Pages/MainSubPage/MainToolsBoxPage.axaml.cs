@@ -13,7 +13,6 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Chunker;
 using BedrockBoot.Views.Windows.SubWindows;
-using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 

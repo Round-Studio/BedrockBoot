@@ -13,7 +13,7 @@ using PeNet;
 using PeNet.Header.Pe;
 using Round.SDK.Helper.IO;
 
-namespace BedrockBoot.Models.Pack.Game.Mods;
+namespace BedrockBoot.Core.Models.Pack.Game.Mods;
 
 public class ModsCore
 {

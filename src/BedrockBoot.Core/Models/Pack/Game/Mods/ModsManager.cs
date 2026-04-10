@@ -7,7 +7,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using Round.SDK.Entity;
 
-namespace BedrockBoot.Models.Pack.Game.Mods;
+namespace BedrockBoot.Core.Models.Pack.Game.Mods;
 
 public class ModsManager
 {

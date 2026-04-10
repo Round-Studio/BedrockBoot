@@ -7,7 +7,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Core.Models.Helper;
 
 public static class GameInfoHelper
 {

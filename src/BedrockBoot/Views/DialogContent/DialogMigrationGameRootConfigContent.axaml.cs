@@ -8,7 +8,6 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Views.TaskItem;
-using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using SearchOption = System.IO.SearchOption;
 

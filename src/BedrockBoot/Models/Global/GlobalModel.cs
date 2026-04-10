@@ -8,7 +8,6 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
-using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Global;

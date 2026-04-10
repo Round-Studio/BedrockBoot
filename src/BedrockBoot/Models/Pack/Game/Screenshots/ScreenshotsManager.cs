@@ -5,7 +5,6 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Screenshots;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
-using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Pack.Game.Screenshots;

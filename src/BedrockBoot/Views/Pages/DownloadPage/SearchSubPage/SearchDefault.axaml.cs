@@ -16,7 +16,6 @@ using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
-using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;

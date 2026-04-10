@@ -7,7 +7,6 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
-using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.Control.Items;
 

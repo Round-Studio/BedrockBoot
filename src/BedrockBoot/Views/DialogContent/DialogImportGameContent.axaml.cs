@@ -4,7 +4,6 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Import;
-using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.DialogContent;
 

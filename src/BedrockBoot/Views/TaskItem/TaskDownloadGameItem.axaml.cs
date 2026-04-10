@@ -5,7 +5,6 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Services;
-using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;

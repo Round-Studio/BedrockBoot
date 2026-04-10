@@ -8,14 +8,17 @@
 
     <ItemGroup>
       <PackageReference Include="Avalonia" Version="11.3.12" />
-      <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.1" />
+    </ItemGroup>
+    
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="../BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
       <ProjectReference Include="../BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
       <ProjectReference Include="../Round.SDK\Round.SDK\Round.SDK.csproj" />
-      <ProjectReference Include="..\BedrockBoot.Dependence\BedrockBoot.Dependence.csproj" />
+      <ProjectReference Include="../BedrockBoot.Dependence\BedrockBoot.Dependence.csproj" />
     </ItemGroup>
 
 </Project>

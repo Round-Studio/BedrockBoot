@@ -16,7 +16,6 @@ using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Services;
-using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using Round.SDK.Entity;
 using Round.SDK.Helper;

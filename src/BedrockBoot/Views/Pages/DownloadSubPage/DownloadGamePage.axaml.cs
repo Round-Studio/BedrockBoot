@@ -11,7 +11,6 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
-using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;

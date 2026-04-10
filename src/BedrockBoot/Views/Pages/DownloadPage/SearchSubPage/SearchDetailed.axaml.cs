@@ -15,7 +15,6 @@ using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
-using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 

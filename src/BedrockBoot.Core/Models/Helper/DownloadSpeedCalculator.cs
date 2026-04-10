@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Core.Models.Helper;
 
 public class DownloadSpeedCalculator
 {

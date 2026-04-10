@@ -7,7 +7,6 @@ using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
-using BedrockLauncher.Core;
 using Round.SDK.Helper;
 
 namespace BedrockBoot.Models.Pack.Game.Archive;

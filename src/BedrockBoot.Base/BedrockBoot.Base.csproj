@@ -13,6 +13,10 @@
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.1" />
     </ItemGroup>
+    
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <PackageReference Include="BedrockLauncher.Core.Linux" Version="1.0.0.2" />
+    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="../BedrockBoot.Inject\BedrockBoot.Inject.csproj" />

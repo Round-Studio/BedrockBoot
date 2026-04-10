@@ -9,10 +9,12 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
+using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.DrawContent;
 
@@ -47,7 +49,7 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = false;
 
         var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
-        if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
+        if (VersionInfo.Info.VersionType != BedrockLauncher.Core.MinecraftGameTypeVersion.Release)
             image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
         IconBox.Background = new ImageBrush

@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Services;
+using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -136,6 +137,7 @@ public partial class TaskDownloadGameItem : UserControl
                 MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.LocalInstalling"];
                 break;
 
+#if WINDOWS
             case InstallStates.Cleared:
                 InsInstallGameBar.IsIndeterminate = true;
                 break;
@@ -147,6 +149,7 @@ public partial class TaskDownloadGameItem : UserControl
             case InstallStates.Registered:
                 InsInstallGameBar.Value = 100;
                 break;
+#endif
         }
     }
 

@@ -10,6 +10,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Import;
@@ -215,7 +216,7 @@ public partial class MainManager : BedrockBootPage
 
                 if (hasGameType)
                 {
-                    var type = vInfo.VersionType == MinecraftGameTypeVersion.Release ? "Release" : "Preview";
+                    var type = vInfo.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Release ? "Release" : "Preview";
                     if (GameType != type) continue;
                 }
 

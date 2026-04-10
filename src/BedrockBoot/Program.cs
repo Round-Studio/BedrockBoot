@@ -7,20 +7,23 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Avalonia;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Win32;
 using PaperConnect.Core.Module.Global;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
 using Round.SDK.Global;
 using Round.SDK.Logger;
+
+#if WINDOWS
+using System.Windows.Forms;
+using BedrockBoot.Win32;
 using Application = System.Windows.Forms.Application;
+#endif
 
 namespace BedrockBoot.Desktop;
 
@@ -48,7 +51,9 @@ internal sealed class Program
             Task.Run(() => AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion).ContinueWith(_ => { }));
         }
 
+#if WINDOWS
         ApplicationConfiguration.Initialize();
+#endif
         if (args.Length > 0 && ArgsAnalytical(args.ToList()))
             return;
 
@@ -79,6 +84,7 @@ internal sealed class Program
             BedrockBoot.Core.Global.GlobalModel.Config.Data.IsolationModel = IsolationType.Hook;
         BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
+#if WINDOWS
         if (!VCRedistDetector.CheckInInstalledList().IsInstalled)
         {
             var dialog = MessageBox.Show(
@@ -99,6 +105,7 @@ internal sealed class Program
                 return;
             }
         }
+#endif
 
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
@@ -151,7 +158,9 @@ internal sealed class Program
                     Console.WriteLine(@"快捷启动");
                     args.ForEach(Console.WriteLine);
 
-                    Application.Run(new LaunchWindow(args.ToList()));
+#if WINDOWS
+                    Application.Run(new LaunchWindow(args.ToList()));         
+#endif
                     return true;
 
                 case "-open":

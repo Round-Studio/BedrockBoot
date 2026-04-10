@@ -13,6 +13,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Chunker;
 using BedrockBoot.Views.Windows.SubWindows;
+using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -55,9 +56,11 @@ public partial class MainToolsBoxPage : BedrockBootPage
         try
         {
             // 依次移除不同版本的 UWP 实例
+#if WINDOWS
             await CoreGlobal.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release);
             await CoreGlobal.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Preview);
             await CoreGlobal.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Beta);
+#endif
         }
         catch (Exception ex)
         {

@@ -16,6 +16,7 @@ using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
+using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
@@ -94,8 +95,8 @@ public partial class SearchDefault : UserControl
         try
         {
             var versions = await Task.Run(() => VersionHelper.GetVersions());
-            var release = versions.Find(x => x.Type == MinecraftGameTypeVersion.Release);
-            var preview = versions.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
+            var release = versions.Find(x => x.Type == BedrockLauncher.Core.MinecraftGameTypeVersion.Release);
+            var preview = versions.Find(x => x.Type == BedrockLauncher.Core.MinecraftGameTypeVersion.Preview);
 
             if (release == null && preview == null) throw new Exception("No versions found");
 

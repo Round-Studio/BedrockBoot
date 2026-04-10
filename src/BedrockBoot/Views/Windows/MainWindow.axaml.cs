@@ -29,7 +29,6 @@ using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using BedrockBoot.Views.Windows.SubWindows;
 using BedrockLauncher.Core.CoreOption;
-using Microsoft.Toolkit.Uwp.Notifications;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;

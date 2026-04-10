@@ -5,6 +5,7 @@ using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
+using BedrockLauncher.Core;
 using Round.SDK.Enum;
 using Round.SDK.Helper.IO;
 
@@ -44,40 +45,6 @@ public class IsolationCore
         return PathsList.GamePublicRootPath;
     }
 
-    #region 废弃的方法
-    
-    private void CreateSymbolicLinkSafe(string linkPath, string targetPath)
-    {
-        if (Directory.Exists(linkPath))
-            SafeDeleteIfSymbolicLink(linkPath);
-
-        try
-        {
-            Directory.CreateSymbolicLink(linkPath, targetPath);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            throw new InvalidOperationException(
-                "无法创建符号链接：请以管理员身份运行程序，或在 Windows 设置中启用「开发者模式」。", ex);
-        }
-        catch (IOException ex) when (ex.Message.Contains("privilege") || ex.HResult == -2147024891)
-        {
-            throw new InvalidOperationException(
-                "创建符号链接需要提升权限或启用开发者模式。", ex);
-        }
-    }
-
-    public static string GetInstancePackPath(VersionConfig versionConfig, string folder)
-    {
-        var root = GetRealPath(versionConfig);
-        if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
-            return Path.Combine(root, "Users", "Shared", "games", "com.mojang", folder);
-
-        return Path.Combine(root, "LocalState", "games", "com.mojang", folder);
-    }
-
-    #endregion
-
     public static string GetInstanceConfigRootPath(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
@@ -88,7 +55,7 @@ public class IsolationCore
 
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            string dirName = versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release
+            string dirName = versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Release
                 ? "Minecraft Bedrock"
                 : "Minecraft Bedrock Preview";
 
@@ -115,7 +82,7 @@ public class IsolationCore
             InstanceFolderType.SkinPackFolder => GetInstanceFolderPath(versionConfig, "skin_packs", user),
             InstanceFolderType.UserFolder => versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP
                 ? string.Empty
-                : (versionConfig.Info.VersionType == MinecraftGameTypeVersion.Preview
+                : (versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Preview
                     ? Path.Combine(GetRealPath(versionConfig), " Preview", "Users")
                     : Path.Combine(GetRealPath(versionConfig), "Users")),
             InstanceFolderType.ScreenshotFolder => GetInstanceFolderPath(versionConfig, "Screenshots", user),
@@ -149,8 +116,8 @@ public class IsolationCore
 
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            if (versionConfig.Info.VersionType == MinecraftGameTypeVersion.Preview ||
-                versionConfig.Info.VersionType == MinecraftGameTypeVersion.Beta)
+            if (versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Preview ||
+                versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Beta)
             {
                 var dir = Path.Combine(GetRealPath(versionConfig), " Preview", "Users", user, "games", "com.mojang",
                     folder);

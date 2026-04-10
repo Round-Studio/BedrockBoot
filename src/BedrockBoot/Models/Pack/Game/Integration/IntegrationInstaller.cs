@@ -10,12 +10,13 @@ using BedrockBoot.Base.Entry.Game.Pack.Integration;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
-using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Services;
+using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using Round.SDK.Entity;
 using Round.SDK.Helper;
@@ -89,6 +90,7 @@ public class IntegrationInstaller
                     });
                 }
             },
+            #if WINDOWS
             DeploymentProgress = (s, p) =>
             {
                 IntegrationProgress?.Report(new InstallIntegrationProgress
@@ -98,6 +100,7 @@ public class IntegrationInstaller
                     Status = InstallIntegrationProgressType.Installing
                 });
             },
+            #endif
             StatusText = text =>
             {
                 IntegrationProgress?.Report(new InstallIntegrationProgress
@@ -143,6 +146,7 @@ public class IntegrationInstaller
         if (CoreGlobal.BedrockCore == null)
             CoreGlobal.BedrockCore = new BedrockCore
             {
+#if WINDOWS
                 Options = new CoreOptions
                 {
                     IsAutoCompleteVC = true,
@@ -150,6 +154,7 @@ public class IntegrationInstaller
                     IsAutoCompleteGameInput = true,
                     IsCheckMD5 = true
                 }
+#endif
             };
 
         var url = await CoreGlobal.BedrockCore.GetPackageUri(gameVersions, Architecture.X64);

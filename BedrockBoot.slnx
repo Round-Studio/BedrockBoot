@@ -4,6 +4,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Core/">
+    <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
     <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />
   </Folder>
   <Folder Name="/Dependence/">

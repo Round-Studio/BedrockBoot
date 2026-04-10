@@ -69,7 +69,7 @@ jobs:
           echo "changelog=$(git log -3 --pretty=format:"- %s (%h)" --reverse)" >> $GITHUB_OUTPUT
       
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
           name: "Release ${{ needs.version.outputs.tag }}"

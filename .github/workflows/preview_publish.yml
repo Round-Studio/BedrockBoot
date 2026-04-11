@@ -21,7 +21,6 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          # 生成 yyyy.mm.dd.hhss 格式的版本号
           VERSION=$(date +'%Y.%m.%d.%H%M')
           echo "value=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
@@ -40,9 +39,13 @@ jobs:
   win:
     runs-on: windows-latest
     needs: version
+    outputs:
+      exe_path: ${{ steps.set-outputs.outputs.exe_path }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -60,19 +63,147 @@ jobs:
           cd ./src/BedrockBoot
           dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../Release-publish/" /p:Version=${{ needs.version.outputs.v }}
       
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: ./Release-publish/*.exe
+          retention-days: 1
+
+  linux-appimage:
+    runs-on: ubuntu-latest
+    needs: version
+    outputs:
+      appimage_path: ${{ steps.set-outputs.outputs.appimage_path }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            10.0.x
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfuse2 wget
+      
+      - name: Sub-Module
+        run: |
+          git pull
+          git submodule update --init --recursive --remote
+      
+      - name: Build Linux executable
+        run: |
+          cd ./src/BedrockBoot
+          dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../linux-publish/" /p:Version=${{ needs.version.outputs.v }}
+          chmod +x ./../../linux-publish/BedrockBoot
+      
+      - name: Download AppImageTool
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+      
+      - name: Create AppDir structure
+        run: |
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+          
+          cp ./linux-publish/BedrockBoot AppDir/usr/bin/
+          
+          cat > AppDir/usr/share/applications/bedrockboot.desktop << EOF
+          [Desktop Entry]
+          Name=BedrockBoot
+          Comment=BedrockBoot Application
+          Exec=BedrockBoot
+          Icon=bedrockboot
+          Terminal=false
+          Type=Application
+          Categories=Utility;
+          EOF
+          
+          mkdir -p AppDir/usr/share/metainfo
+          cat > AppDir/usr/share/metainfo/bedrockboot.appdata.xml << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <component type="desktop-application">
+            <id>bedrockboot</id>
+            <metadata_license>MIT</metadata_license>
+            <project_license>MIT</project_license>
+            <name>BedrockBoot</name>
+            <summary>BedrockBoot Application</summary>
+            <description>
+              <p>BedrockBoot is a powerful bootstrapping application.</p>
+            </description>
+            <url type="homepage">https://github.com/${{ github.repository }}</url>
+            <releases>
+              <release version="${{ needs.version.outputs.v }}" date="$(date +'%Y-%m-%d')"/>
+            </releases>
+          </component>
+          EOF
+          
+          cat > AppDir/usr/share/icons/hicolor/256x256/apps/bedrockboot.svg << EOF
+          <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+            <rect width="256" height="256" fill="#4A90E2" rx="50"/>
+            <text x="128" y="156" font-size="120" text-anchor="middle" fill="white" font-weight="bold">B</text>
+          </svg>
+          EOF
+          
+          cat > AppDir/AppRun << EOF
+          #!/bin/bash
+          SELF=\$(readlink -f "\$0")
+          HERE=\${SELF%/*}
+          export PATH="\${HERE}/usr/bin/:\${PATH}"
+          export LD_LIBRARY_PATH="\${HERE}/usr/lib/:\${LD_LIBRARY_PATH}"
+          exec "\${HERE}/usr/bin/BedrockBoot" "\$@"
+          EOF
+          chmod +x AppDir/AppRun
+          
+          ln -s usr/share/applications/bedrockboot.desktop AppDir/bedrockboot.desktop
+          ln -s usr/share/icons/hicolor/256x256/apps/bedrockboot.svg AppDir/bedrockboot.svg
+      
+      - name: Build AppImage
+        run: |
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage AppDir "BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage"
+      
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: ./BedrockBoot-*.AppImage
+          retention-days: 1
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [version, win, linux-appimage]
+    steps:
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+          path: ./windows-artifacts
+      
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-build
+          path: ./linux-artifacts
+      
       - name: Get commit messages
         id: commits
         run: |
-          # 获取最近一次提交的信息
           echo "latest_commit=$(git log -1 --pretty=format:%s)" >> $GITHUB_OUTPUT
-          # 获取最近3次提交的信息作为变更日志
           echo "changelog=$(git log -3 --pretty=format:"- %s (%h)" --reverse)" >> $GITHUB_OUTPUT
       
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.version.outputs.tag }}
-          release_name: "Release ${{ needs.version.outputs.tag }}"
+          name: "Release ${{ needs.version.outputs.tag }}"
           body: |
             ## BedrockBoot ${{ needs.version.outputs.v }} 测试版推送
             
@@ -81,11 +212,15 @@ jobs:
             - 构建时间: ${{ needs.version.outputs.time }}
             - 提交: ${{ github.sha }}
             
+            **变更日志**
+            ${{ steps.commits.outputs.changelog }}
+            
             ---
-            *自动化构建发布*  
+            *自动化构建发布*
           draft: false
           prerelease: true
           files: |
-            ./Release-Publish/*.exe
+            ./windows-artifacts/*.exe
+            ./linux-artifacts/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

@@ -34,7 +34,7 @@ jobs:
           echo "Build version: ${{ steps.version.outputs.value }}"
           echo "Tag: ${{ steps.version.outputs.tag }}"
           echo "Build time: ${{ steps.time.outputs.value }}"
-          
+
   # 2. Windows 构建任务
   win-build:
     runs-on: windows-latest
@@ -59,7 +59,7 @@ jobs:
       - name: Rename Windows Output
         shell: pwsh
         run: |
-          Get-ChildItem "./win-publish/*.exe" | Rename-Item -NewName "BedrockBoot.exe"
+          Get-ChildItem "./win-publish/*.exe" | Rename-Item -NewName "BedrockBoot-x86_64-win.exe"
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4

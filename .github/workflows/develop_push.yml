@@ -95,16 +95,20 @@ jobs:
             -p:Version=${{ needs.version.outputs.v }} \
             -o ./AppDir/usr/bin
       
-      - name: Create AppDir Metadata
+      - name: Create AppDir Metadata (REBUILT)
         run: |
-          # 1. 强制规范 ID
-          APP_ID="io.github.round_studio.bedrockboot"
+          # 1. 彻底清空旧的元数据路径，防止旧文件干扰
+          rm -rf ./AppDir/usr/share/metainfo
+          rm -rf ./AppDir/usr/share/applications
+          
+          # 2. 定义符合规范的 APP_ID
+          APP_ID="top.roundstudio.bedrockboot"
           
           mkdir -p ./AppDir/usr/share/applications
           mkdir -p ./AppDir/usr/share/icons/hicolor/512x512/apps
           mkdir -p ./AppDir/usr/share/metainfo
 
-          # 2. 创建桌面文件 (文件名必须匹配 ID)
+          # 3. 强制创建符合 ID 命名的桌面文件
           cat > "./AppDir/usr/share/applications/${APP_ID}.desktop" << EOF
           [Desktop Entry]
           Type=Application
@@ -116,7 +120,8 @@ jobs:
           Categories=Game;Utility;
           EOF
 
-          # 3. 创建 AppStream 元数据 (文件名必须匹配 ID)
+          # 4. 强制创建符合 ID 命名的 AppData 文件
+          # 描述信息加长以通过 "too-short" 检查
           cat > "./AppDir/usr/share/metainfo/${APP_ID}.appdata.xml" << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <component type="desktop-application">
@@ -126,13 +131,14 @@ jobs:
             <name>BedrockBoot</name>
             <summary>A Minecraft Bedrock Launcher</summary>
             <description>
-              <p>BedrockBoot is a powerful bootstrapping application for Minecraft Bedrock Edition. It provides a reliable launcher experience.</p>
+              <p>BedrockBoot is a powerful bootstrapping application for Minecraft Bedrock Edition. It provides an efficient way to launch and manage your game instances on Linux systems.</p>
             </description>
             <launchable type="desktop-id">${APP_ID}.desktop</launchable>
+            <content_rating type="oars-1.1" />
           </component>
           EOF
 
-          # 4. 图标与 AppRun
+          # 5. 图标处理
           if [ -f "./assets/BedrockBoot.Icon.512x.png" ]; then
             cp ./assets/BedrockBoot.Icon.512x.png ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png
           else
@@ -141,6 +147,7 @@ jobs:
           fi
           cp ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png ./AppDir/bedrockboot.png
 
+          # 6. 编写 AppRun
           cat > ./AppDir/AppRun << 'EOF'
           #!/bin/bash
           HERE=$(dirname "$(readlink -f "${0}")")
@@ -155,7 +162,8 @@ jobs:
           wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
           
-          # 强制禁用验证退出逻辑
+          # 设置环境变量 NO_APPSTREAM=1 并跳过验证
+          # 这是强制 appimagetool 忽略错误代码退出的双重保险
           export NO_APPSTREAM=1
           
           ARCH=x86_64 ./appimagetool-x86_64.AppImage \
@@ -191,13 +199,13 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.version.outputs.tag }}
           release_name: "BedrockBoot ${{ needs.version.outputs.v }} - Pre-release"
           prerelease: true
           body: |
-            ## 🚀 BedrockBoot 推送成功
+            ## 🚀 BedrockBoot 新版本发布
             
             - **版本**: `${{ needs.version.outputs.v }}`
             - **构建时间**: `${{ needs.version.outputs.time }}`

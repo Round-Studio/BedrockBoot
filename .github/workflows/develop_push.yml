@@ -101,6 +101,91 @@ jobs:
         run: |
           dotnet tool install -g KuiperZone.PupNet
       
+      - name: Create PupNet configuration with proper AppStream
+        run: |
+          cat > ./.pupnet.conf << EOF
+          AppName = BedrockBoot
+          AppVersion = ${{ needs.version.outputs.v }}
+          AppPublisher = Round-Studio
+          AppIdentifier = top.roundstudio.bedrockboot
+          
+          AppIcon = ./assets/BedrockBoot.Icon.512x.png
+          
+          DotnetProject = ./src/BedrockBoot/BedrockBoot.csproj
+          DotnetRuntime = linux-x64
+          DotnetConfiguration = Release
+          
+          IsConsoleApp = false
+          
+          AppImageKind = appimage
+          
+          AppDescription = BedrockBoot is a powerful bootstrapping application designed to simplify and streamline the boot process.
+          AppCategories = Utility;Development;
+          
+          AppDeveloperName = Round Studio
+          AppDeveloperId = roundstudio.top
+          
+          AppHomepage = https://github.com/Round-Studio/BedrockBoot
+          AppBugTracker = https://github.com/Round-Studio/BedrockBoot/issues
+          EOF
+          
+          echo "✅ Created .pupnet.conf"
+          cat ./.pupnet.conf
+    
+      - name: Build and package AppImage with PupNet
+        run: |
+          # 使用 PupNet 自动处理所有打包步骤
+          pupnet --runtime linux-x64 --kind appimage --verbose
+          
+          # 查找生成的 AppImage
+          if ls *.AppImage 1> /dev/null 2>&1; then
+            for file in *.AppImage; do
+              # 重命名为统一格式
+              newname="BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage"
+              mv "$file" "$newname"
+              echo "✅ Renamed to $newname"
+            done
+          else
+            echo "⚠️ No AppImage found, checking PupNet output..."
+            find . -name "*.AppImage" -type f
+            ls -la
+          fi
+      
+      - name: List generated files
+        run: |
+          echo "📦 Generated AppImage:"
+          ls -lh *.AppImage || echo "No AppImage found"
+      
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-appimage
+          path: ./BedrockBoot-*.AppImage
+          retention-days: 7
+
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            10.0.x
+      
+      - name: Sub-Module
+        run: |
+          git pull
+          git submodule update --init --recursive --remote
+      
+      - name: Install PupNet
+        run: |
+          dotnet tool install -g KuiperZone.PupNet
+      
       - name: Create PupNet configuration
         run: |
           cat > ./.pupnet.conf << EOF

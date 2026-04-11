@@ -56,6 +56,7 @@ public partial class MainPage : UserControl
             Tag = "Download",
             Page = typeof(DownloadRoot)
         });
+#if WINDOWS
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
@@ -70,6 +71,7 @@ public partial class MainPage : UserControl
             Tag = "Multiplayer",
             Page = typeof(MainMultiplayerPage)
         });
+#endif
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",

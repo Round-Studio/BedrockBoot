@@ -28,6 +28,10 @@ public partial class InstanceControls : ISetting
         IsEdit = false;
         InitializeComponent();
 
+#if LINUX
+        JumpItemBtn.IsVisible = false;
+#endif
+
         Expansion.IsVisible = RegisterService.API.InstanceControlItems.Count > 0;
         RegisterService.API.InstanceControlItems.ForEach(it =>
         {

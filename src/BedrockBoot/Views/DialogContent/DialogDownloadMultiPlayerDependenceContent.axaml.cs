@@ -40,7 +40,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                     x.Name.Contains("easytier-windows-x86_64"));
 
             var url = releases.BrowserDownloadUrl;
-            var downloader = new GithubFilesDownload();
+            var downloader = new GithubFilesDownloader();
             await downloader.DownloadAsync(url, Path.Combine(PathsList.TempPath, releases.Name),
                 new Progress<DownloadProgress>(p =>
                 {

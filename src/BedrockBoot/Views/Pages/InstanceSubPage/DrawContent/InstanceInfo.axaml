@@ -92,11 +92,13 @@
 
                 <TextBlock Margin="5"
                            FontWeight="Bold"
+                           Name="HighLevel"
                            FontSize="14"
                            Text="{DynamicResource Settings.Download.Group.Advanced}" />
 
                 <onePointControls:SettingCard Margin="5"
                                               Glyph="&#xE7B8;"
+                                              Name="IsolationCard"
                                               Header="{DynamicResource Settings.Game.Isolation.Title}"
                                               Description="{DynamicResource Instance.Info.Isolation.Desc}">
                     <ToggleSwitch IsChecked="True"

@@ -97,13 +97,13 @@
                         SelectedIndex="0"
                         SelectionChanged="InstanceTabControl_OnSelectionChanged"
                         Margin="5,0,10,0">
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Detail}" Tag="Info" />
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Mods}" Tag="Mods" />
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Packs}" Tag="Pack" />
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Archive}" Tag="Save" />
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Screenshots}" Tag="Screenshots" />
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Servers}" Tag="Server" />
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Plugins}" Tag="Plugin" />
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Detail}" Tag="Info" Name="Info"/>
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Mods}" Tag="Mods" Name="Mods"/>
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Packs}" Tag="Pack" Name="Pack"/>
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Archive}" Tag="Save" Name="Save"/>
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Screenshots}" Tag="Screenshots" Name="Screenshots"/>
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Servers}" Tag="Server" Name="Server"/>
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Plugins}" Tag="Plugin" Name="Plugin"/>
                 <TabItem Header="{DynamicResource Draw.Instance.Tab.Controls}" Tag="Controls" Name="GameControls" />
             </TabControl>
 

@@ -1,8 +1,5 @@
-﻿using System;
-using BedrockBoot.Base.Entry;
+﻿using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Loader;
 using BedrockBoot.Views.Control.Widgets;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;

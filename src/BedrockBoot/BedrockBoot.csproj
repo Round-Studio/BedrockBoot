@@ -14,6 +14,12 @@
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <DefineConstants>WINDOWS</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <TargetFramework>net10.0</TargetFramework>
+        <DefineConstants>LINUX</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup>

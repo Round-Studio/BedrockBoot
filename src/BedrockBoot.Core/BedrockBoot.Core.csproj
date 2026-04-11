@@ -23,4 +23,10 @@
       <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Octokit">
+        <HintPath>..\..\..\.nuget\packages\octokit\14.0.0\lib\netstandard2.0\Octokit.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

@@ -42,6 +42,12 @@ public class IsolationCore
         if (versionConfig.Config.IsVersionIsolated)
             return Path.Combine(versionConfig.VersionPath, "config", "BedrockBoot2", "isolation");
 
+#if LINUX
+        return Path.Combine(PathsList.ProtonPath, "game_prefix", "pfx", "drive_c", "users", "steamuser", "AppData",
+            "Roaming", versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Release
+                ? "Minecraft Bedrock"
+                : "Minecraft Bedrock Preview");
+#endif
         return PathsList.GamePublicRootPath;
     }
 
@@ -58,6 +64,11 @@ public class IsolationCore
             string dirName = versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Release
                 ? "Minecraft Bedrock"
                 : "Minecraft Bedrock Preview";
+            
+#if LINUX
+            return Path.Combine(PathsList.ProtonPath, "game_prefix", "pfx", "drive_c", "users", "steamuser", "AppData",
+                "Roaming", dirName);
+#endif
 
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

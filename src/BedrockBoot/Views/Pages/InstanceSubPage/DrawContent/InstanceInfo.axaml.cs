@@ -19,6 +19,11 @@ public partial class InstanceInfo : UserControl
 
         InitializeComponent();
 
+#if LINUX
+        IsolationCard.IsVisible = false;
+        HighLevel.IsVisible = false;
+#endif
+
 #if RELEASE
         InstanceMod.IsVisible = GlobalModel.FunctionOption.IsEnableGameInstanceMods;
 #endif

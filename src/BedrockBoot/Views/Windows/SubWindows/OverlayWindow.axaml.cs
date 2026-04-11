@@ -160,6 +160,10 @@ public partial class OverlayWindow : Window
 
     public OverlayWindow(Process targetProcess, string expectedVersion)
     {
+#if LINUX
+        Console.WriteLine("Linux 无法开启窗口覆盖");
+        return;
+#endif
         InitializeComponent();
 
         // 保存目标进程和期望版本
@@ -180,6 +184,10 @@ public partial class OverlayWindow : Window
 
     private void OnWindowOpened(object? sender, EventArgs e)
     {
+#if LINUX
+        Console.WriteLine("Linux 无法开启窗口覆盖");
+        return;
+#endif
         var platformHandle = TryGetPlatformHandle();
         if (platformHandle == null) return;
         _myHandle = platformHandle.Handle;

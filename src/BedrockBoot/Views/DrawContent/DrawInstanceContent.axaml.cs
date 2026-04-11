@@ -32,6 +32,11 @@ public partial class DrawInstanceContent : UserControl
 #if RELEASE
         GameControls.IsEnabled = GlobalModel.FunctionOption.IsEnableGameInstanceControl;
 #endif
+
+#if LINUX
+        Mods.IsVisible = false;
+        Plugin.IsVisible = false;
+#endif
     }
 
     public DrawInstanceContent(VersionConfig info) : this()

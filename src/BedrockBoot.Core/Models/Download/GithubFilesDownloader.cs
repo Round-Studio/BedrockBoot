@@ -3,7 +3,7 @@ using BedrockBoot.Base.Entry.Progress;
 
 namespace BedrockBoot.Core.Models.Download;
 
-public class GithubFilesDownload
+public class GithubFilesDownloader
 {
     private readonly MultiThreadDownloader _downloader;
     
@@ -17,7 +17,7 @@ public class GithubFilesDownload
         { "gh-proxy.net", "https://gh-proxy.net/{url}" }
     };
 
-    public GithubFilesDownload(int maxConcurrency = 4, int bufferSize = 81920, int defaultTimeoutSeconds = 20)
+    public GithubFilesDownloader(int maxConcurrency = 4, int bufferSize = 81920, int defaultTimeoutSeconds = 20)
     {
         _downloader = new MultiThreadDownloader(maxConcurrency, bufferSize, defaultTimeoutSeconds);
     }

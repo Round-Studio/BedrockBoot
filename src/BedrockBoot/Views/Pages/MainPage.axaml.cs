@@ -4,16 +4,19 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
+using BedrockBoot.Views.DialogContent.Linux;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;
 using Round.SDK.Entry.BedrockBoot;
@@ -115,6 +118,38 @@ public partial class MainPage : UserControl
             }
         };
         UpdateUI();
+        
+#if LINUX
+        if (!ProtonDownloader.IsInstalledProtonVersion())
+        {
+            DialogHost.Show(new DialogInfo()
+            {
+                Content = "当前您正在 Linux 环境下运行本启动器\n" +
+                          "我们需要 ProtonGDK 组件才能正常启动 Minecraft for Windows (GDK)\n" +
+                          "\n" +
+                          "现在我们需要您同意 ProtonGDK 组件的下载",
+                Title = "必要运行时下载",
+                CloseButtonText = "立即下载",
+                PrimaryButtonText = "退出启动器",
+                AccountButton = DialogButtons.CloseButton,
+                PrimaryAction = () =>
+                {
+                    Console.WriteLine("用户不同意下载 ProtonGDK，正在退出启动器...");
+                    Environment.Exit(0);
+                },
+                CloseAction = () =>
+                {
+                    var dialog = new DialogDownloadProtonGDKContent();
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Content = dialog,
+                        Title = "下载游戏运行组件"
+                    });
+                    dialog.Download();
+                }
+            });
+        }
+#endif
     }
 
     public bool IsEditMode { get; set; }

@@ -116,7 +116,9 @@ public partial class TaskLaunchGameItem : UserControl
                 lc.Launched = process =>
                 {
                     MinecraftProcess = process;
+#if WINDOWS
                     Dispatcher.UIThread.Invoke(() => new OverlayWindow(process,VersionInfo.Info.Version).Show());
+#endif
                 };
 
                 await lc.Launch();

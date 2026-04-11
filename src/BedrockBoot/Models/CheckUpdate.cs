@@ -21,7 +21,8 @@ public class CheckUpdate
         var repo = "BedrockBoot";
         var releases = await github.Repository.Release.GetAll(owner, repo);
         
-        var latest = releases.First(x => x.Prerelease == (BedrockBoot.Core.Global.GlobalModel.Config.Data.UpdateType == UpdateType.Preview));
+        var latest = releases.FirstOrDefault(x => x.Prerelease == (BedrockBoot.Core.Global.GlobalModel.Config.Data.UpdateType == UpdateType.Preview));
+        Console.WriteLine($"预览版：{(BedrockBoot.Core.Global.GlobalModel.Config.Data.UpdateType == UpdateType.Preview)}");
 
         Console.WriteLine($@"最新版本: {latest.TagName}");
 

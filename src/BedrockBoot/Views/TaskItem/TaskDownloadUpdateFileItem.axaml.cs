@@ -37,62 +37,36 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         CardTitle.Text = string.Format(I18nManager.Instance["Task.Update.Title.Format"], Release.TagName);
         
         var url = Release.Assets[0].BrowserDownloadUrl;
+        var path = Path.Combine(PathsList.UpdatePath, $"{Release.TagName}.exe");
 
-        SourceList.UpdateDownloadSources.ToList().ForEach(src =>
+        Task.Run(async () =>
         {
-            var thisUrl = src.Value.Replace("{url}", url);
-            var path = Path.Combine(PathsList.UpdatePath, $"{src.Key}_{Release.TagName}.exe");
-            
-            var progress = new ProgressBar
-            {
-                IsIndeterminate = true
-            };
+            var download = new GithubFilesDownloader(BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount,
+                1024);
 
-            // 动态创建的项也需要处理文本
-            var item = new DockPanel
+            await download.DownloadAsync(url, path, new Progress<DownloadProgress>(xprogress =>
             {
-                LastChildFill = true,
-                Children =
+                Dispatcher.UIThread.Invoke(() =>
                 {
-                    new TextBlock
+                    if (ProgressBar.IsIndeterminate)
                     {
-                        MinWidth = 120,
-                        // 如果需要对下载源名称进行修饰，可以使用 Format
-                        Text = string.Format(I18nManager.Instance["Task.Update.Source.Prefix"], src.Key)
-                    },
-                    progress
-                }
-            };
-            
-            Task.Run(async () =>
-            {
-                var download = new MultiThreadDownloader(BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                        ProgressBar.IsIndeterminate = false;
+                        ProgressBar.Value = 100;
+                    }
 
-                await download.DownloadAsync(thisUrl, path, new Progress<DownloadProgress>(xprogress =>
-                {
-                    Dispatcher.UIThread.Invoke(() =>
-                    {
-                        if (progress.IsIndeterminate)
-                        {
-                            progress.IsIndeterminate = false;
-                            progress.Value = 100;
-                        }
+                    ProgressBar.Value = (int)xprogress.ProgressPercentage;
+                    ProgressText.Text = $"{xprogress.ProgressPercentage:F2} %";
+                });
+            }));
 
-                        progress.Value = xprogress.ProgressPercentage;
-                    });
-                }));
+            // 给予 UI 刷新的缓冲时间
+            await Task.Delay(100);
 
-                // 给予 UI 刷新的缓冲时间
-                await Task.Delay(100);
+            // 启动更新程序
+            Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
 
-                // 启动更新程序
-                Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
-                
-                await Task.Delay(100);
-                Environment.Exit(0);
-            });
-
-            SourceListBox.Children.Add(item);
+            await Task.Delay(100);
+            Environment.Exit(0);
         });
     }
 

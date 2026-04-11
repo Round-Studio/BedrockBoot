@@ -23,7 +23,16 @@
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"
-                            Name="SourceListBox" />
+                            Name="SourceListBox" >
+                    <DockPanel>
+                        <TextBlock Text="0%"
+                                   MinWidth="80"
+                                   Name="ProgressText"></TextBlock>
+                        
+                        <ProgressBar Name="ProgressBar"
+                                     IsIndeterminate="True"></ProgressBar>
+                    </DockPanel>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </items:BorderCard>

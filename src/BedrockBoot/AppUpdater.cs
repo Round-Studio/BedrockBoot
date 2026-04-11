@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace BedrockBoot;
@@ -10,6 +11,9 @@ namespace BedrockBoot;
 /// </summary>
 public static class AppUpdater
 {
+    private static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+    private static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+    
     /// <summary>
     ///     主入口：根据参数解析决定是执行更新流程还是正常启动
     /// </summary>
@@ -22,25 +26,21 @@ public static class AppUpdater
                     // 模式1：作为更新引导程序启动
                     if (i + 1 < args.Length)
                     {
-                        var targetExePath = args[i + 1];
-                        LaunchUpdateReplacement(targetExePath);
-                        Environment.Exit(0); // 引导程序使命完成，退出
+                        var targetPath = args[i + 1];
+                        LaunchUpdateReplacement(targetPath);
+                        Environment.Exit(0);
                     }
-
                     break;
                 case "--update-replace":
                     // 模式2：作为替换程序启动
                     if (i + 1 < args.Length)
                     {
-                        var oldExePath = args[i + 1];
-                        PerformFileReplacement(oldExePath);
-                        // 替换完成后，此进程会自动退出
+                        var oldPath = args[i + 1];
+                        PerformFileReplacement(oldPath);
                         Environment.Exit(0);
                     }
-
                     break;
             }
-        // 没有更新参数，正常继续启动Avalonia应用
     }
 
     /// <summary>
@@ -74,19 +74,24 @@ public static class AppUpdater
             }
 
             // 关键步骤1：启动更新引导程序（当前程序的新实例）
-            // 使用 --update-launcher 参数，并传递最终需要被替换的目标文件路径
             var launcherInfo = new ProcessStartInfo
             {
                 FileName = currentExePath,
                 Arguments = $"--update-launcher \"{oldVersionFullPath}\"",
-                UseShellExecute = true, // 启动新窗口
+                UseShellExecute = !IsLinux, // Linux 上设置为 false
                 WindowStyle = ProcessWindowStyle.Normal
             };
+            
+            // Linux 特殊处理
+            if (IsLinux)
+            {
+                launcherInfo.UseShellExecute = false;
+                launcherInfo.CreateNoWindow = true;
+            }
 
             Console.WriteLine($@"启动更新引导程序: {currentExePath}");
             Process.Start(launcherInfo);
 
-            // 当前旧版本程序可以在这里退出，让新引导程序接管
             Console.WriteLine(@"更新引导程序已启动，当前进程即将退出");
             Environment.Exit(0);
         }
@@ -99,34 +104,41 @@ public static class AppUpdater
     /// <summary>
     ///     作为更新引导程序启动：复制自身并启动替换程序
     /// </summary>
-    private static void LaunchUpdateReplacement(string targetExePath)
+    private static void LaunchUpdateReplacement(string targetPath)
     {
         try
         {
-            var currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
+            var currentPath = Process.GetCurrentProcess().MainModule?.FileName;
             var tempDir = Path.GetTempPath();
-            var tempExeName = $"BedrockBoot_Update_{Guid.NewGuid():N}.exe";
-            var tempExePath = Path.Combine(tempDir, tempExeName);
+            var tempFileName = IsLinux 
+                ? $"BedrockBoot_Update_{Guid.NewGuid():N}"
+                : $"BedrockBoot_Update_{Guid.NewGuid():N}.exe";
+            var tempPath = Path.Combine(tempDir, tempFileName);
 
-            Console.WriteLine($@"引导程序：复制到临时位置 {tempExePath}");
+            Console.WriteLine($@"引导程序：复制到临时位置 {tempPath}");
 
             // 复制当前程序到临时位置
-            File.Copy(currentExePath, tempExePath, true);
+            File.Copy(currentPath, tempPath, true);
+            
+            // Linux: 设置可执行权限
+            if (IsLinux)
+            {
+                var chmodProcess = Process.Start("chmod", $"+x \"{tempPath}\"");
+                chmodProcess?.WaitForExit();
+            }
 
             // 关键步骤2：启动临时副本作为替换程序
-            // 使用 --update-replace 参数，并传递需要被替换的原始文件路径
             var replaceInfo = new ProcessStartInfo
             {
-                FileName = tempExePath,
-                Arguments = $"--update-replace \"{targetExePath}\"",
-                UseShellExecute = false, // 不依赖Shell，更可靠
-                CreateNoWindow = true // 静默执行替换
+                FileName = tempPath,
+                Arguments = $"--update-replace \"{targetPath}\"",
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
 
-            Console.WriteLine($@"启动替换程序来更新 {targetExePath}");
+            Console.WriteLine($@"启动替换程序来更新 {targetPath}");
             Process.Start(replaceInfo);
 
-            // 引导程序完成任务，退出
             Console.WriteLine(@"更新引导程序退出");
         }
         catch (Exception ex)
@@ -138,43 +150,57 @@ public static class AppUpdater
     /// <summary>
     ///     作为替换程序执行文件替换操作
     /// </summary>
-    private static void PerformFileReplacement(string oldExePath)
+    private static void PerformFileReplacement(string oldPath)
     {
         try
         {
-            var currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
+            var currentPath = Process.GetCurrentProcess().MainModule?.FileName;
 
-            Console.WriteLine($@"替换程序：准备替换 {oldExePath}");
+            Console.WriteLine($@"替换程序：准备替换 {oldPath}");
 
             // 确保原进程已退出，重试多次
             var replaced = false;
-            for (var i = 0; i < 5; i++) // 最多重试5次
+            for (var i = 0; i < 5; i++)
                 try
                 {
                     // 关键步骤3：执行文件替换
-                    File.Delete(oldExePath); // 删除旧文件
-                    File.Move(currentExePath, oldExePath); // 移动新文件到目标位置
+                    File.Delete(oldPath);
+                    File.Move(currentPath, oldPath);
                     replaced = true;
                     Console.WriteLine($@"文件替换成功 (第{i + 1}次尝试)");
                     break;
                 }
-                catch (IOException ioEx) when (i < 4) // 前4次失败重试
+                catch (IOException ioEx) when (i < 4)
                 {
                     Console.WriteLine($@"文件被占用，等待后重试... (错误: {ioEx.Message})");
-                    Thread.Sleep(500 * (i + 1)); // 递增等待
+                    Thread.Sleep(500 * (i + 1));
                 }
 
             if (replaced)
             {
+                // Linux: 确保新文件有执行权限
+                if (IsLinux)
+                {
+                    var chmodProcess = Process.Start("chmod", $"+x \"{oldPath}\"");
+                    chmodProcess?.WaitForExit();
+                }
+                
                 // 关键步骤4：启动更新后的程序
                 var finalStartInfo = new ProcessStartInfo
                 {
-                    FileName = oldExePath,
-                    UseShellExecute = true,
+                    FileName = oldPath,
+                    UseShellExecute = !IsLinux,
                     WindowStyle = ProcessWindowStyle.Normal
                 };
+                
+                // Linux 特殊处理
+                if (IsLinux)
+                {
+                    finalStartInfo.UseShellExecute = false;
+                    finalStartInfo.CreateNoWindow = true;
+                }
 
-                Console.WriteLine($@"启动更新后的程序: {oldExePath}");
+                Console.WriteLine($@"启动更新后的程序: {oldPath}");
                 Process.Start(finalStartInfo);
                 Console.WriteLine(@"更新流程完成");
             }
@@ -189,7 +215,6 @@ public static class AppUpdater
         }
         finally
         {
-            // 替换程序使命完成，无论成功失败都退出
             Environment.Exit(0);
         }
     }

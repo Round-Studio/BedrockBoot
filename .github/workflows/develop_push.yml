@@ -69,6 +69,14 @@ jobs:
             /p:Version=${{ needs.version.outputs.v }} `
             -o "./../../Release-publish/"
       
+      - name: Rename Windows executable
+        run: |
+          cd ./Release-publish
+          if (Test-Path "BedrockBoot.exe") {
+            Rename-Item "BedrockBoot.exe" "BedrockBoot-${{ needs.version.outputs.v }}.exe"
+            Write-Host "✅ Renamed to BedrockBoot-${{ needs.version.outputs.v }}.exe"
+          }
+      
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
@@ -101,94 +109,9 @@ jobs:
         run: |
           dotnet tool install -g KuiperZone.PupNet
       
-      - name: Create PupNet configuration with proper AppStream
-        run: |
-          cat > ./.pupnet.conf << EOF
-          AppName = BedrockBoot
-          AppVersion = ${{ needs.version.outputs.v }}
-          AppPublisher = Round-Studio
-          AppIdentifier = top.roundstudio.bedrockboot
-          
-          AppIcon = ./assets/BedrockBoot.Icon.512x.png
-          
-          DotnetProject = ./src/BedrockBoot/BedrockBoot.csproj
-          DotnetRuntime = linux-x64
-          DotnetConfiguration = Release
-          
-          IsConsoleApp = false
-          
-          AppImageKind = appimage
-          
-          AppDescription = BedrockBoot is a powerful bootstrapping application designed to simplify and streamline the boot process.
-          AppCategories = Utility;Development;
-          
-          AppDeveloperName = Round Studio
-          AppDeveloperId = roundstudio.top
-          
-          AppHomepage = https://github.com/Round-Studio/BedrockBoot
-          AppBugTracker = https://github.com/Round-Studio/BedrockBoot/issues
-          EOF
-          
-          echo "✅ Created .pupnet.conf"
-          cat ./.pupnet.conf
-    
-      - name: Build and package AppImage with PupNet
-        run: |
-          # 使用 PupNet 自动处理所有打包步骤
-          pupnet --runtime linux-x64 --kind appimage --verbose
-          
-          # 查找生成的 AppImage
-          if ls *.AppImage 1> /dev/null 2>&1; then
-            for file in *.AppImage; do
-              # 重命名为统一格式
-              newname="BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage"
-              mv "$file" "$newname"
-              echo "✅ Renamed to $newname"
-            done
-          else
-            echo "⚠️ No AppImage found, checking PupNet output..."
-            find . -name "*.AppImage" -type f
-            ls -la
-          fi
-      
-      - name: List generated files
-        run: |
-          echo "📦 Generated AppImage:"
-          ls -lh *.AppImage || echo "No AppImage found"
-      
-      - name: Upload AppImage artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-appimage
-          path: ./BedrockBoot-*.AppImage
-          retention-days: 7
-
-    runs-on: ubuntu-latest
-    needs: version
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: |
-            10.0.x
-      
-      - name: Sub-Module
-        run: |
-          git pull
-          git submodule update --init --recursive --remote
-      
-      - name: Install PupNet
-        run: |
-          dotnet tool install -g KuiperZone.PupNet
-      
       - name: Create PupNet configuration
         run: |
-          cat > ./.pupnet.conf << EOF
+          cat > ./.pupnet.conf << 'EOF'
           AppName = BedrockBoot
           AppVersion = ${{ needs.version.outputs.v }}
           AppPublisher = Round-Studio
@@ -208,6 +131,9 @@ jobs:
           AppCategories = Utility;Development;
           EOF
           
+          # 替换版本号（因为上面用了 literal EOF，变量不会展开）
+          sed -i "s/\\${{ needs.version.outputs.v }}/${{ needs.version.outputs.v }}/" ./.pupnet.conf
+          
           echo "✅ PupNet configuration created:"
           cat ./.pupnet.conf
       
@@ -216,10 +142,25 @@ jobs:
           # 使用 PupNet 打包
           pupnet --runtime linux-x64 --kind appimage
       
+      - name: Rename AppImage
+        run: |
+          # 查找并重命名生成的 AppImage
+          if ls *.AppImage 1> /dev/null 2>&1; then
+            for file in *.AppImage; do
+              newname="BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage"
+              mv "$file" "$newname"
+              echo "✅ Renamed to $newname"
+            done
+          else
+            echo "⚠️ No AppImage file generated"
+            echo "Current directory contents:"
+            ls -la
+          fi
+      
       - name: List generated files
         run: |
           echo "📦 Generated AppImage files:"
-          ls -lh *.AppImage
+          ls -lh *.AppImage 2>/dev/null || echo "No AppImage found"
       
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v4
@@ -300,9 +241,9 @@ jobs:
             - 直接运行即可（无需安装 .NET 运行时）
             
             #### Linux 用户
-            - 下载 `BedrockBoot-${{ needs.version.outputs.v }}.AppImage`
-            - 添加执行权限：`chmod +x BedrockBoot-${{ needs.version.outputs.v }}.AppImage`
-            - 运行：`./BedrockBoot-${{ needs.version.outputs.v }}.AppImage`
+            - 下载 `BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage`
+            - 添加执行权限：`chmod +x BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage`
+            - 运行：`./BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage`
             
             ### ⚠️ 注意事项
             - 预发布版本，可能会有未发现的 Bugs

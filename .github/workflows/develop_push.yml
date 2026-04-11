@@ -47,14 +47,16 @@ jobs:
       - name: Rename
         run: |
           cd ./Release-publish
-          Rename-Item "BedrockBoot.exe" "BedrockBoot-${{ needs.version.outputs.v }}-win-x64.exe"
+          if (Test-Path "BedrockBoot.exe") {
+            Rename-Item "BedrockBoot.exe" "BedrockBoot-win-x64.exe"
+          }
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: ./Release-publish/BedrockBoot-*-win-x64.exe
+          path: ./Release-publish/BedrockBoot-win-x64.exe
 
-  # ==================== Linux 构建 (PupNet 原生配置模式) ====================
+  # ==================== Linux 构建 (PupNet) ====================
   linux-build:
     runs-on: ubuntu-latest
     needs: version
@@ -72,18 +74,17 @@ jobs:
       - name: Install PupNet
         run: dotnet tool install --global KuiperZone.PupNet
 
-      - name: Prepare PupNet Config (YAML)
+      - name: Prepare PupNet Config
         run: |
-          # 动态生成 pupnet.conf (这是 PupNet 的原生 YAML 格式)
-          # 注意：PupNet 的 YAML 键名通常是大写的，且结构如下
           cat > pupnet.conf << EOF
           AppId: top.roundstudio.bedrockboot
           AppName: BedrockBoot
           Company: RoundStudio
           Description: >-
-            BedrockBoot is a powerful and efficient bootstrapping application 
-            for Minecraft Bedrock Edition. Built with .NET for high performance 
-            on Linux systems.
+            BedrockBoot is a powerful, open-source bootstrapping application 
+            specifically designed for Minecraft Bedrock Edition. It provides 
+            a seamless way to manage and launch game instances on Linux systems 
+            using the latest .NET technologies.
           IconPath: assets/BedrockBoot.Icon.512x.png
           ProjectPath: src/BedrockBoot/BedrockBoot.csproj
           License: GPL-3.0-only
@@ -99,26 +100,26 @@ jobs:
 
       - name: Build AppImage
         run: |
-          # 解决 Ubuntu 22.04+ 的 FUSE 兼容问题
           sudo apt-get update && sudo apt-get install -y libfuse2
           
-          # 强制设置 NO_APPSTREAM 环境变量
+          rm -rf AppDir
+          rm -rf publish
+          
           export NO_APPSTREAM=1
           
-          # 执行打包。--v 参数会覆盖配置文件中的版本
           pupnet --build -r linux-x64 -k AppImage --v "${{ needs.version.outputs.v }}"
 
-      - name: Move and Rename
+      - name: Move and Rename Artifact
         run: |
           mkdir -p ./deploy
-          # PupNet 默认输出路径为 publish/linux-x64/AppImage/
-          find ./publish -name "*.AppImage" -exec mv {} ./deploy/BedrockBoot-${{ needs.version.outputs.v }}-linux-x86_64.AppImage \;
+          # 从 PupNet 默认输出路径提取文件
+          find ./publish -name "*.AppImage" -exec mv {} ./deploy/BedrockBoot-linux-x86_64.AppImage \;
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-appimage
-          path: ./deploy/*.AppImage
+          path: ./deploy/BedrockBoot-linux-x86_64.AppImage
 
   # ==================== 发布 Release ====================
   create-release:
@@ -149,15 +150,16 @@ jobs:
           prerelease: true
           body: |
             ## 🚀 BedrockBoot 构建成功
+            
             - **版本**: `${{ needs.version.outputs.v }}`
-            - **打包引擎**: `PupNet (YAML Config)`
+            - **时间**: `${{ needs.version.outputs.time }}`
             
             ### 🔐 SHA256 校验和
             ```text
             ${{ steps.checksums.outputs.CONTENT }}
             ```
           files: |
-            ./release-files/BedrockBoot-*-win-x64.exe
-            ./release-files/BedrockBoot-*-linux-x86_64.AppImage
+            ./release-files/*.exe
+            ./release-files/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

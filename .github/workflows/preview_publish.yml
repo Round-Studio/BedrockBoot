@@ -5,7 +5,11 @@ on:
   push:
     branches: ["2.0-preview"]
 
+permissions:
+  contents: write
+
 jobs:
+  # 1. 生成版本号
   version:
     runs-on: ubuntu-latest
     outputs:
@@ -13,11 +17,6 @@ jobs:
       tag: ${{ steps.version.outputs.tag }}
       time: ${{ steps.time.outputs.value }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      
       - name: Generate version
         id: version
         run: |
@@ -29,198 +28,130 @@ jobs:
         id: time
         run: |
           echo "value=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
-      
-      - name: Show version info
-        run: |
-          echo "Build version: ${{ steps.version.outputs.value }}"
-          echo "Tag: ${{ steps.version.outputs.tag }}"
-          echo "Build time: ${{ steps.time.outputs.value }}"
 
-  win:
+  # 2. Windows 构建任务
+  win-build:
     runs-on: windows-latest
     needs: version
-    outputs:
-      exe_path: ${{ steps.set-outputs.outputs.exe_path }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
+          submodules: recursive
           fetch-depth: 0
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            10.0.x
+          dotnet-version: 10.0.x
       
-      - name: Sub-Module
-        run: |
-          git pull
-          git submodule update --init --recursive --remote
-      
-      - name: Build
+      - name: Build Windows
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../Release-publish/" /p:Version=${{ needs.version.outputs.v }}
+          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../win-publish/" /p:Version=${{ needs.version.outputs.v }}
       
-      - name: Upload Windows artifact
+      - name: Rename Windows Output
+        shell: pwsh
+        run: |
+          Get-ChildItem "./win-publish/*.exe" | Rename-Item -NewName "BedrockBoot.exe"
+
+      - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-build
-          path: ./Release-publish/*.exe
+          name: windows-artifact
+          path: ./win-publish/BedrockBoot.exe
           retention-days: 1
 
-  linux-appimage:
+  # 3. Linux 构建任务
+  linux-build:
     runs-on: ubuntu-latest
     needs: version
-    outputs:
-      appimage_path: ${{ steps.set-outputs.outputs.appimage_path }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
+          submodules: recursive
           fetch-depth: 0
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            10.0.x
+          dotnet-version: 10.0.x
       
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libfuse2 wget
-      
-      - name: Sub-Module
-        run: |
-          git pull
-          git submodule update --init --recursive --remote
-      
-      - name: Build Linux executable
+      - name: Build Linux
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r linux-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../linux-publish/" /p:Version=${{ needs.version.outputs.v }}
+          dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o "./../../linux-publish/" /p:Version=${{ needs.version.outputs.v }}
           chmod +x ./../../linux-publish/BedrockBoot
       
-      - name: Download AppImageTool
-        run: |
-          wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-          chmod +x appimagetool-x86_64.AppImage
-      
-      - name: Create AppDir structure
-        run: |
-          mkdir -p AppDir/usr/bin
-          mkdir -p AppDir/usr/share/applications
-          mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
-          
-          cp ./linux-publish/BedrockBoot AppDir/usr/bin/
-          
-          cat > AppDir/usr/share/applications/bedrockboot.desktop << EOF
-          [Desktop Entry]
-          Name=BedrockBoot
-          Comment=BedrockBoot Application
-          Exec=BedrockBoot
-          Icon=bedrockboot
-          Terminal=false
-          Type=Application
-          Categories=Utility;
-          EOF
-          
-          mkdir -p AppDir/usr/share/metainfo
-          cat > AppDir/usr/share/metainfo/bedrockboot.appdata.xml << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <component type="desktop-application">
-            <id>bedrockboot</id>
-            <metadata_license>MIT</metadata_license>
-            <project_license>MIT</project_license>
-            <name>BedrockBoot</name>
-            <summary>BedrockBoot Application</summary>
-            <description>
-              <p>BedrockBoot is a powerful bootstrapping application.</p>
-            </description>
-            <url type="homepage">https://github.com/${{ github.repository }}</url>
-            <releases>
-              <release version="${{ needs.version.outputs.v }}" date="$(date +'%Y-%m-%d')"/>
-            </releases>
-          </component>
-          EOF
-          
-          cat > AppDir/usr/share/icons/hicolor/256x256/apps/bedrockboot.svg << EOF
-          <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
-            <rect width="256" height="256" fill="#4A90E2" rx="50"/>
-            <text x="128" y="156" font-size="120" text-anchor="middle" fill="white" font-weight="bold">B</text>
-          </svg>
-          EOF
-          
-          cat > AppDir/AppRun << EOF
-          #!/bin/bash
-          SELF=\$(readlink -f "\$0")
-          HERE=\${SELF%/*}
-          export PATH="\${HERE}/usr/bin/:\${PATH}"
-          export LD_LIBRARY_PATH="\${HERE}/usr/lib/:\${LD_LIBRARY_PATH}"
-          exec "\${HERE}/usr/bin/BedrockBoot" "\$@"
-          EOF
-          chmod +x AppDir/AppRun
-          
-          ln -s usr/share/applications/bedrockboot.desktop AppDir/bedrockboot.desktop
-          ln -s usr/share/icons/hicolor/256x256/apps/bedrockboot.svg AppDir/bedrockboot.svg
-      
-      - name: Build AppImage
-        run: |
-          ARCH=x86_64 ./appimagetool-x86_64.AppImage AppDir "BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage"
-      
-      - name: Upload Linux artifact
+      - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: linux-build
-          path: ./BedrockBoot-*.AppImage
+          name: linux-artifact
+          path: ./linux-publish/BedrockBoot
           retention-days: 1
 
+  # 4. 发布 Release
   release:
     runs-on: ubuntu-latest
-    needs: [version, win, linux-appimage]
+    needs: [version, win-build, linux-build]
     steps:
-      - name: Download Windows artifact
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 必须拉取全部历史以对比标签
+
+      - name: Download All Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: windows-build
-          path: ./windows-artifacts
-      
-      - name: Download Linux artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: linux-build
-          path: ./linux-artifacts
-      
-      - name: Get commit messages
+          path: ./dist
+          merge-multiple: true
+
+      - name: Generate Smart Changelog
         id: commits
         run: |
-          echo "latest_commit=$(git log -1 --pretty=format:%s)" >> $GITHUB_OUTPUT
-          echo "changelog=$(git log -3 --pretty=format:"- %s (%h)" --reverse)" >> $GITHUB_OUTPUT
+          # 获取上一个 Release 的标签 (排除当前的 tag)
+          # 如果没有上一个标签，则获取所有 commit
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "首次构建，显示最近 5 条变更：" >> $GITHUB_OUTPUT
+            git log -5 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+          else
+            echo "自 $PREVIOUS_TAG 以来的变更：" >> $GITHUB_OUTPUT
+            # 获取从上一个标签到当前 HEAD 的所有提交记录
+            CHANGES=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)")
+            if [ -z "$CHANGES" ]; then
+              echo "- 内部优化与小改动" >> $GITHUB_OUTPUT
+            else
+              echo "$CHANGES" >> $GITHUB_OUTPUT
+            fi
+          fi
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
       
-      - name: Create Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
-          name: "Release ${{ needs.version.outputs.tag }}"
+          name: "BedrockBoot Build ${{ needs.version.outputs.tag }}"
           body: |
             ## BedrockBoot ${{ needs.version.outputs.v }} 测试版推送
             
-            **构建信息**
-            - 版本: ${{ needs.version.outputs.v }}
+            **构建详情**
             - 构建时间: ${{ needs.version.outputs.time }}
-            - 提交: ${{ github.sha }}
+            - 提交 Hash: ${{ github.sha }}
             
-            **变更日志**
+            **本次更新内容**
             ${{ steps.commits.outputs.changelog }}
             
             ---
-            *自动化构建发布*
+            *提示：Linux 用户下载后请执行 `chmod +x BedrockBoot` 赋予运行权限。*
           draft: false
           prerelease: true
           files: |
-            ./windows-artifacts/*.exe
-            ./linux-artifacts/*.AppImage
+            ./dist/BedrockBoot.exe
+            ./dist/BedrockBoot
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

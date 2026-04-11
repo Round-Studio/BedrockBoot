@@ -1,9 +1,9 @@
-name: 构建并推送 Pre Release
+name: 验证代码
 
 on:
   workflow_dispatch:
   push:
-    branches: ["2.0-preview"]
+    branches: ["2.0-develop"]
 
 jobs:
   version:
@@ -15,158 +15,52 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
       - name: Generate version
         id: version
         run: |
-          VERSION=$(date +'%Y.%m.%d.%H%M')
-          echo "value=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+          echo "value=2.1.6.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "tag=v2.1.6.${{ github.run_number }}" >> $GITHUB_OUTPUT
+      
+      - name: Get current time
+        id: time
+        run: |
+          echo "value=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+      
+      - name: Show version info
+        run: |
+          echo "Build version: ${{ steps.version.outputs.value }}"
+          echo "Tag: ${{ steps.version.outputs.tag }}"
+          echo "Build time: ${{ steps.time.outputs.value }}"
 
-  windows-build:
+  win:
     runs-on: windows-latest
     needs: version
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: |
+            10.0.x
+      
+      - name: Sub-Module
+        run: |
+          git pull
+          git submodule update --init --recursive --remote
+      
       - name: Build
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:SelfContained=false /p:Version=${{ needs.version.outputs.v }} -o "./../../Release-publish/"
-      - name: Rename
-        run: |
-          if (Test-Path "./Release-publish/BedrockBoot.exe") {
-            Rename-Item "./Release-publish/BedrockBoot.exe" "BedrockBoot-win-x64.exe"
-          }
-      - name: Upload
+          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../Release-publish/" /p:Version=${{ needs.version.outputs.v }}
+      
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: windows-build
-          path: ./Release-publish/BedrockBoot-win-x64.exe
-
-  linux-build:
-    runs-on: ubuntu-latest
-    needs: version
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 10.0.x
-
-      - name: Install PupNet
-        run: dotnet tool install --global KuiperZone.PupNet
-
-      - name: 强制写死元数据并打包
-        run: |
-          # 1. 环境准备
-          sudo apt-get update && sudo apt-get install -y libfuse2
-          APP_ID="top.roundstudio.bedrockboot"
-          
-          # 2. 彻底粉碎旧目录，手动建立新的干净目录结构
-          rm -rf MyCleanAppDir publish
-          mkdir -p MyCleanAppDir/usr/share/metainfo
-          mkdir -p MyCleanAppDir/usr/share/applications
-          mkdir -p MyCleanAppDir/usr/share/icons/hicolor/512x512/apps
-
-          # 3. 写死 AppStream 文件 (这次文件名完全正确)
-          cat > "MyCleanAppDir/usr/share/metainfo/${APP_ID}.appdata.xml" << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <component type="desktop-application">
-            <id>${APP_ID}</id>
-            <metadata_license>CC0-1.0</metadata_license>
-            <project_license>GPL-3.0-only</project_license>
-            <name>BedrockBoot</name>
-            <summary>A powerful Minecraft Bedrock Launcher</summary>
-            <description>
-              <p>BedrockBoot is a high-performance, open-source bootstrapping utility for Minecraft Bedrock Edition, built with .NET for Linux systems. It offers a smooth experience for managing game instances.</p>
-            </description>
-            <launchable type="desktop-id">${APP_ID}.desktop</launchable>
-            <content_rating type="oars-1.1" />
-          </component>
-          EOF
-
-          # 4. 写死 Desktop 文件
-          cat > "MyCleanAppDir/usr/share/applications/${APP_ID}.desktop" << EOF
-          [Desktop Entry]
-          Type=Application
-          Name=BedrockBoot
-          Exec=BedrockBoot
-          Icon=bedrockboot
-          Categories=Game;Utility;
-          EOF
-
-          # 5. 复制图标
-          if [ -f "assets/BedrockBoot.Icon.512x.png" ]; then
-            cp assets/BedrockBoot.Icon.512x.png MyCleanAppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png
-          fi
-
-          # 6. 动态生成 pupnet.conf，使用 --appdir 锁定我们刚刚创建的目录
-          cat > pupnet.conf << EOF
-          AppId: ${APP_ID}
-          AppName: BedrockBoot
-          ProjectPath: src/BedrockBoot/BedrockBoot.csproj
-          # 关键：告诉 PupNet 使用我们手动准备的目录，不要自己乱搞
-          AppDir: MyCleanAppDir
-          DotnetPublish:
-            SelfContained: true
-          EOF
-
-          # 7. 执行构建
-          export NO_APPSTREAM=1
-          pupnet --build -r linux-x64 -k AppImage --v "${{ needs.version.outputs.v }}"
-
-      - name: Move and Rename
-        run: |
-          mkdir -p ./deploy
-          find ./publish -name "*.AppImage" -exec mv {} ./deploy/BedrockBoot-linux-x86_64.AppImage \;
-
-      - name: Upload Linux artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-appimage
-          path: ./deploy/BedrockBoot-linux-x86_64.AppImage
-
-  create-release:
-    runs-on: ubuntu-latest
-    needs: [version, windows-build, linux-build]
-    if: always() && needs.version.result == 'success'
-    steps:
-      - name: Download all
-        uses: actions/download-artifact@v4
-        with:
-          path: ./release-files
-          merge-multiple: true
-      - name: Generate Checksums
-        id: checksums
-        run: |
-          cd ./release-files
-          sha256sum BedrockBoot-* > checksums.txt
-          echo "CONTENT<<EOF" >> $GITHUB_OUTPUT
-          cat checksums.txt >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ needs.version.outputs.tag }}
-          release_name: "BedrockBoot ${{ needs.version.outputs.v }} - Pre-release"
-          prerelease: true
-          body: |
-            ## 🚀 BedrockBoot 构建成功
-            - **版本**: `${{ needs.version.outputs.v }}`
-            - **打包模式**: Manual AppDir + PupNet
-            
-            ### 🔐 SHA256 校验和
-            ```text
-            ${{ steps.checksums.outputs.CONTENT }}
-            ```
-          files: |
-            ./release-files/BedrockBoot-win-x64.exe
-            ./release-files/BedrockBoot-linux-x86_64.AppImage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: BedrockBoot.Publish
+          path: |
+            ./debug-publish/*

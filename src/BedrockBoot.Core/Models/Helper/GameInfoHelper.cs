@@ -4,11 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Views.Pages;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Core.Models.Helper;
 
 public static class GameInfoHelper
 {
@@ -161,6 +160,5 @@ public static class GameInfoHelper
 
         var cfg = new ConfigEntity<VersionConfig>(configJsonPath) { Data = config };
         cfg.Save();
-        if (MainPage.Instance != null) MainPage.Instance.UpdateUI();
     }
 }

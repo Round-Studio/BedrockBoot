@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Helper.PEFile;
@@ -26,7 +27,7 @@ public class PackInstaller
 
     public string PackFile { get; set; }
     public MinecraftBuildTypeVersion GameBuildType { get; private set; }
-    public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
+    public BedrockLauncher.Core.MinecraftGameTypeVersion GDKGameType { get; set; } = BedrockLauncher.Core.MinecraftGameTypeVersion.Release;
     public Action? ImportedAction { get; set; } = null;
     public IProgress<PackImportProgress> ImportProgress { get; set; } = new Progress<PackImportProgress>();
     public bool IsGDKUnknownBuildType { get; set; } = false;
@@ -56,7 +57,7 @@ public class PackInstaller
         var parentDir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(parentDir) && !Directory.Exists(parentDir)) Directory.CreateDirectory(parentDir);
 
-        await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
+        await CoreGlobal.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
         {
             GameName = gameName,
             Type = MinecraftBuildTypeVersion.UWP,
@@ -69,14 +70,6 @@ public class PackInstaller
                 {
                     Progress = s.Percentage,
                     StatusMessage = $"解压文件中... ({s.Percentage:F2} %)"
-                });
-            }),
-            DeployProgress = new Progress<DeploymentProgress>(s =>
-            {
-                ImportProgress.Report(new PackImportProgress
-                {
-                    Progress = s.percentage,
-                    StatusMessage = $"部署游戏中 ({s.state.ToString()}) ({s.percentage:F2} %)"
                 });
             })
         });
@@ -99,12 +92,12 @@ public class PackInstaller
             ImportedAction.Invoke();
     }
 
-    private MinecraftGameTypeVersion GetVersionTypeWithUWP(string packName)
+    private BedrockLauncher.Core.MinecraftGameTypeVersion GetVersionTypeWithUWP(string packName)
     {
         packName = packName.ToLower();
         if (packName.Contains("beta"))
-            return MinecraftGameTypeVersion.Preview;
-        return MinecraftGameTypeVersion.Release;
+            return BedrockLauncher.Core.MinecraftGameTypeVersion.Preview;
+        return BedrockLauncher.Core.MinecraftGameTypeVersion.Release;
     }
 
     private string ExtractAppxManifestFromAppx(string zipPath)
@@ -132,10 +125,10 @@ public class PackInstaller
     private readonly HashSet<string> _processedFiles = new();
 
     private async Task<MinecraftGameTypeVersion> TryParseGDKGameType(
-        MinecraftGameTypeVersion gameType = MinecraftGameTypeVersion.Beta)
+        BedrockLauncher.Core.MinecraftGameTypeVersion gameType = BedrockLauncher.Core.MinecraftGameTypeVersion.Beta)
     {
         // 从 Release 开始尝试
-        var allTypes = new[] { MinecraftGameTypeVersion.Release, MinecraftGameTypeVersion.Preview };
+        var allTypes = new[] { BedrockLauncher.Core.MinecraftGameTypeVersion.Release, BedrockLauncher.Core.MinecraftGameTypeVersion.Preview };
 
         foreach (var typeToTry in allTypes)
         {
@@ -185,7 +178,7 @@ public class PackInstaller
                         }
                     });
 
-                    var installTask = GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
+                    var installTask = CoreGlobal.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
                     {
                         GameName = tempGameName,
                         Type = MinecraftBuildTypeVersion.GDK,
@@ -280,7 +273,7 @@ public class PackInstaller
 
         // 如果所有类型都无效，返回Beta表示包无效
         Console.WriteLine(@"所有版本类型检测都失败，包无效");
-        return MinecraftGameTypeVersion.Beta;
+        return BedrockLauncher.Core.MinecraftGameTypeVersion.Beta;
     }
 
     private async Task<string> CreateTempFileCopy(string originalFilePath)
@@ -355,7 +348,7 @@ public class PackInstaller
                 gameTypeVersion = await TryParseGDKGameType();
 
                 // 如果还是未知，尝试检测
-                if (gameTypeVersion == MinecraftGameTypeVersion.Beta) throw new Exception("该包无效");
+                if (gameTypeVersion == BedrockLauncher.Core.MinecraftGameTypeVersion.Beta) throw new Exception("该包无效");
             }
 
             Console.WriteLine($@"最终确定的版本类型: {gameTypeVersion}");
@@ -364,7 +357,7 @@ public class PackInstaller
 
             var jd = 0.00;
             // 使用临时文件进行安装
-            await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
+            await CoreGlobal.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
             {
                 GameName = gameName,
                 Type = MinecraftBuildTypeVersion.GDK,
@@ -410,7 +403,7 @@ public class PackInstaller
     }
 
     private async Task VerifyInstallation(string installPath, string gameName,
-        MinecraftGameTypeVersion gameType)
+        BedrockLauncher.Core.MinecraftGameTypeVersion gameType)
     {
         var manifestPath = Path.Combine(installPath, "appxmanifest.xml");
 
@@ -439,17 +432,17 @@ public class PackInstaller
         Console.WriteLine($@"安装验证完成: {gameName} (版本: {manifest.Version}, 类型: {gameType})");
     }
 
-    private MinecraftGameTypeVersion GetVersionTypeWithGDK(string packName)
+    private BedrockLauncher.Core.MinecraftGameTypeVersion GetVersionTypeWithGDK(string packName)
     {
         if (string.IsNullOrEmpty(packName))
-            return MinecraftGameTypeVersion.Release;
+            return BedrockLauncher.Core.MinecraftGameTypeVersion.Release;
 
         packName = packName.ToLowerInvariant();
 
         if (packName.Contains("preview") || packName.Contains("beta"))
-            return MinecraftGameTypeVersion.Preview;
+            return BedrockLauncher.Core.MinecraftGameTypeVersion.Preview;
 
-        return MinecraftGameTypeVersion.Release;
+        return BedrockLauncher.Core.MinecraftGameTypeVersion.Release;
     }
 
     #endregion

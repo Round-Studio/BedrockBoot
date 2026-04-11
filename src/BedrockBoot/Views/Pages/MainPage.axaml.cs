@@ -4,15 +4,19 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
+using BedrockBoot.Views.DialogContent.Linux;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;
 using Round.SDK.Entry.BedrockBoot;
@@ -52,6 +56,7 @@ public partial class MainPage : UserControl
             Tag = "Download",
             Page = typeof(DownloadRoot)
         });
+#if WINDOWS
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
@@ -66,6 +71,7 @@ public partial class MainPage : UserControl
             Tag = "Multiplayer",
             Page = typeof(MainMultiplayerPage)
         });
+#endif
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
@@ -84,7 +90,7 @@ public partial class MainPage : UserControl
 
         RegisterService.API.RegisterNavigationBarItem = RegisterTopItem;
 
-        if (GlobalModel.Config.Data.IsAutoCheckUpdate) Update();
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsAutoCheckUpdate) Update();
 
         Loaded += async (sender, args) =>
         {
@@ -101,19 +107,51 @@ public partial class MainPage : UserControl
 
         var sel = -1;
         var count = -1;
-        GlobalModel.Config.AfterSave += (sender, args) =>
+        BedrockBoot.Core.Global.GlobalModel.Config.AfterSave += (sender, args) =>
         {
-            if ((GlobalModel.Config.Data.GameFolderSelIndex != sel ||
-                 GlobalModel.Config.Data.GameFolders.Count != count) &&
+            if ((BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex != sel ||
+                 BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count != count) &&
                 IsEditMode)
             {
-                count = GlobalModel.Config.Data.GameFolders.Count;
-                sel = GlobalModel.Config.Data.GameFolderSelIndex;
+                count = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count;
+                sel = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
                 
                 Avalonia.Threading.Dispatcher.UIThread.Invoke(UpdateUI);
             }
         };
         UpdateUI();
+        
+#if LINUX
+        if (!ProtonDownloader.IsInstalledProtonVersion())
+        {
+            DialogHost.Show(new DialogInfo()
+            {
+                Content = "当前您正在 Linux 环境下运行本启动器\n" +
+                          "我们需要 ProtonGDK 组件才能正常启动 Minecraft for Windows (GDK)\n" +
+                          "\n" +
+                          "现在我们需要您同意 ProtonGDK 组件的下载",
+                Title = "必要运行时下载",
+                CloseButtonText = "立即下载",
+                PrimaryButtonText = "退出启动器",
+                AccountButton = DialogButtons.CloseButton,
+                PrimaryAction = () =>
+                {
+                    Console.WriteLine("用户不同意下载 ProtonGDK，正在退出启动器...");
+                    Environment.Exit(0);
+                },
+                CloseAction = () =>
+                {
+                    var dialog = new DialogDownloadProtonGDKContent();
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Content = dialog,
+                        Title = "下载游戏运行组件"
+                    });
+                    dialog.Download();
+                }
+            });
+        }
+#endif
     }
 
     public bool IsEditMode { get; set; }
@@ -249,22 +287,22 @@ public partial class MainPage : UserControl
             {
             }
 
-            if (GlobalModel.Config.Data.GameFolders.Count <= 0)
+            if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count <= 0)
             {
                 NullFunc();
                 return;
             }
 
             // 修复：检查 GameFolderSelIndex 是否有效
-            if (GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-                GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
+            if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex >= BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count)
             {
                 NullFunc();
                 return;
             }
 
-            var versions = GameInfoHelper.GetVersionConfigs(GlobalModel.Config.Data
-                .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath);
+            var versions = GameInfoHelper.GetVersionConfigs(BedrockBoot.Core.Global.GlobalModel.Config.Data
+                .GameFolders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath);
 
             if (versions.Count <= 0)
             {
@@ -276,7 +314,7 @@ public partial class MainPage : UserControl
             versions.ForEach(v => { GameListChoose.Items.Add($"{v.Info.VersionName}"); });
 
             // 修复：检查 GameSelIndex 是否有效，如果无效则设置为 0
-            var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
+            var gameFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex];
             if (gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) gameFolder.GameSelIndex = 0;
 
             GameListChoose.SelectedIndex = gameFolder.GameSelIndex;
@@ -303,9 +341,9 @@ public partial class MainPage : UserControl
         try
         {
             // 修复：添加边界检查防止数组越界
-            if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
-                GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-                GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
+            if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count == 0 ||
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex >= BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count)
             {
                 GameInfo.Text = "无可用实例";
                 GameName.Text = "";
@@ -313,7 +351,7 @@ public partial class MainPage : UserControl
                 return;
             }
 
-            var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
+            var gameFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex];
             var versions = GameInfoHelper.GetVersionConfigs(gameFolder.GameFolderPath);
 
             if (versions.Count == 0 ||
@@ -350,12 +388,12 @@ public partial class MainPage : UserControl
             var selIndex = GameListChoose.SelectedIndex;
 
             // 修复：检查索引是否有效
-            if (selIndex >= 0 && GlobalModel.Config.Data.GameFolderSelIndex >= 0 &&
-                GlobalModel.Config.Data.GameFolderSelIndex < GlobalModel.Config.Data.GameFolders.Count)
+            if (selIndex >= 0 && BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex >= 0 &&
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count)
             {
-                GlobalModel.Config.Data
-                    .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex = selIndex;
-                GlobalModel.Config.Save();
+                BedrockBoot.Core.Global.GlobalModel.Config.Data
+                    .GameFolders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex].GameSelIndex = selIndex;
+                BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
                 UpdateGameInfo();
             }
@@ -365,12 +403,12 @@ public partial class MainPage : UserControl
     private void GameSettingBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         // 修复：添加边界检查
-        if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count == 0 ||
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex >= BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count)
             return;
 
-        var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
+        var gameFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex];
         var versions = GameInfoHelper.GetVersionConfigs(gameFolder.GameFolderPath);
 
         if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) return;
@@ -384,12 +422,12 @@ public partial class MainPage : UserControl
     private void GameLaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         // 修复：添加边界检查
-        if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
-            GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count == 0 ||
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex >= BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count)
             return;
 
-        var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
+        var gameFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex];
         var versions = GameInfoHelper.GetVersionConfigs(gameFolder.GameFolderPath);
 
         if (versions.Count == 0 || gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) return;

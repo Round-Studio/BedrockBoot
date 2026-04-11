@@ -94,8 +94,8 @@ public partial class ScreenshotsItem : UserControl
                 }
                 else
                 {
-                    using var bitmap = new System.Drawing.Bitmap(ScreenshotsInfo.FilePath);
-                    bitmap.Save(stream, ImageFormat.Jpeg);
+                    using var bitmap = new Bitmap(ScreenshotsInfo.FilePath);
+                    bitmap.Save(stream);
                 }
             }
             catch (Exception ex)

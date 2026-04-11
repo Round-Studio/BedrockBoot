@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>BedrockBoot</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.1" />
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
+        <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using Microsoft.WindowsAPICodePack.Shell;
@@ -10,7 +11,7 @@ public class JumpListManager
     public static void ConfigureJumpList()
     {
         var jumpList = JumpList.CreateJumpList();
-        if (!GlobalModel.Config.Data.IsTaskBarJumpItem)
+        if (!BedrockBoot.Core.Global.GlobalModel.Config.Data.IsTaskBarJumpItem)
         {
             jumpList.ClearAllUserTasks();
             jumpList.Refresh();
@@ -21,8 +22,8 @@ public class JumpListManager
 
         try
         {
-            var versions = GameInfoHelper.GetVersionConfigs(GlobalModel.Config.Data
-                .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath);
+            var versions = GameInfoHelper.GetVersionConfigs(BedrockBoot.Core.Global.GlobalModel.Config.Data
+                .GameFolders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath);
 
             versions.ForEach(v =>
             {

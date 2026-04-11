@@ -33,10 +33,10 @@ public class App : Application
 {
     public override void Initialize()
     {
-        if (GlobalModel.Config == null)
+        if (BedrockBoot.Core.Global.GlobalModel.Config == null)
         {
-            GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-            GlobalModel.Config.Load();
+            BedrockBoot.Core.Global.GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+            BedrockBoot.Core.Global.GlobalModel.Config.Load();
         }
 
         ServicePointManager.DefaultConnectionLimit = 1024;
@@ -44,7 +44,7 @@ public class App : Application
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
         
-        I18nManager.Instance.SystemLanguage(GlobalModel.Config.Data.Language);
+        I18nManager.Instance.SystemLanguage(BedrockBoot.Core.Global.GlobalModel.Config.Data.Language);
 
         // 订阅所有全局异常处理器
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -79,7 +79,7 @@ public class App : Application
         try
         {
             if(!Directory.Exists(PathsList.ReportPath)) Directory.CreateDirectory(PathsList.ReportPath);
-            var errorReportJson = ErrorReport.Create(GlobalModel.Config.Data, $"错误报告", ex);
+            var errorReportJson = ErrorReport.Create(BedrockBoot.Core.Global.GlobalModel.Config.Data, $"错误报告", ex);
             errorReportJson.SaveToFile(Path.Combine(PathsList.ReportPath,
                 DateTime.Now.ToString("yyyyMMddHHmmss") + ".json"));
             Dispatcher.UIThread.Invoke(() => { new ExceptionWindow(errorReportJson).Show(); });
@@ -149,9 +149,9 @@ public class App : Application
         try
         {
             ThemeManager.Instance.SetAccentColor(
-                Color.Parse(AccentColor.Colors[GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
+                Color.Parse(AccentColor.Colors[BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
             ThemeManager.Instance.SetThemeModel(
-                GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
                     ? ThemeVariant.Light
                     : ThemeVariant.Dark);
         }

@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Desktop;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -38,7 +39,7 @@ public partial class ImportResourcePack : Window
 
     private void InitGameFolders()
     {
-        var folders = GlobalModel.Config.Data.GameFolders;
+        var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
 
         if (folders == null || folders.Count <= 0)
         {
@@ -48,9 +49,9 @@ public partial class ImportResourcePack : Window
         FolderComboBox.ItemsSource = folders.Select(f => $"{f.GameFolderName} - {f.GameFolderPath}").ToList();
         
         // 恢复上次选择的索引
-        if (GlobalModel.Config.Data.GameFolderSelIndex < folders.Count)
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < folders.Count)
         {
-            FolderComboBox.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
+            FolderComboBox.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
         }
     }
 
@@ -58,7 +59,7 @@ public partial class ImportResourcePack : Window
     {
         if (FolderComboBox.SelectedIndex < 0) return;
 
-        var selectedFolder = GlobalModel.Config.Data.GameFolders[FolderComboBox.SelectedIndex];
+        var selectedFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[FolderComboBox.SelectedIndex];
         
         _currentGames = GameInfoHelper.GetVersionConfigs(selectedFolder.GameFolderPath);
         

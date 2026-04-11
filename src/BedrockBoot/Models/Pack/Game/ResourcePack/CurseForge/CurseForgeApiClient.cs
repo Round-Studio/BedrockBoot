@@ -51,7 +51,7 @@ public class CurseForgeApiClient
         {
             Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
             BaseAddress =
-                new Uri(SourceList.CurseForgeSource.Values.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex]),
+                new Uri(SourceList.CurseForgeSource.Values.ToList()[BedrockBoot.Core.Global.GlobalModel.Config.Data.CurseForgeSourceIndex]),
             DefaultRequestVersion = HttpVersion.Version20
         };
 

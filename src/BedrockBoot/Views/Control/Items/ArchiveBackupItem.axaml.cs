@@ -11,6 +11,7 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Base.Entry.Game.Pack.Archive.Backup;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -82,11 +83,7 @@ public partial class ArchiveBackupItem : UserControl
     /// </summary>
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = Path.Combine(_manifest.BackupFolder, BackupInfo.FolderID),
-            UseShellExecute = true
-        });
+        OpenFolderHelper.Open(Path.Combine(_manifest.BackupFolder, BackupInfo.FolderID));
     }
 
     /// <summary>

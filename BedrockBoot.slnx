@@ -3,6 +3,10 @@
     <Platform Name="Any CPU" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Core/">
+    <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
+    <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />
+  </Folder>
   <Folder Name="/Dependence/">
     <Project Path="src/BedrockBoot.Chunker/BedrockBoot.Chunker.csproj" />
     <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />

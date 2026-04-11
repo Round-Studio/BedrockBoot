@@ -192,8 +192,16 @@ public class PluginLoader
                     // 2. 强转并执行 Initialize
                     if (pluginInstance is IPluginBedrockBoot bootPlugin)
                     {
-                        bootPlugin.Initialize();
-                        Console.WriteLine($@"插件已初始化: {pluginType.FullName}");
+                        try
+                        {
+                            bootPlugin.Initialize();
+
+                            Console.WriteLine($@"插件已初始化: {pluginType.FullName}");
+                        }
+                        catch(Exception loadEx)
+                        {
+                            Console.WriteLine($"插件加载错误: {loadEx}");
+                        }
                     }
 
                     return pluginInstance;

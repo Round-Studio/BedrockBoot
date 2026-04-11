@@ -24,7 +24,7 @@ public partial class SettingPersonalization : ISettingPage
             }
         };
 
-        IsUseSystemWindow.IsChecked = GlobalModel.Config.Data.IsUseSystemWindow;
+        IsUseSystemWindow.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
 
         IsEdit = true;
 
@@ -55,9 +55,9 @@ public partial class SettingPersonalization : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.IsUseSystemWindow =
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow =
                 (bool)IsUseSystemWindow.IsChecked!;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
             
             GlobalModel.MainWindow.UpdateWindowBorder();
         }

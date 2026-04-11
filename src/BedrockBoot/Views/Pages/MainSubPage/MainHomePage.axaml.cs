@@ -1,8 +1,5 @@
-﻿using System;
-using BedrockBoot.Base.Entry;
+﻿using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Loader;
 using BedrockBoot.Views.Control.Widgets;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
@@ -18,7 +15,7 @@ public partial class MainHomePage : BedrockBootPage
     public void UpdateHome()
     {
         MainGrid.Children.Clear();
-        switch (GlobalModel.Config.Data.HomeConfig.HomeType)
+        switch (BedrockBoot.Core.Global.GlobalModel.Config.Data.HomeConfig.HomeType)
         {
             case HomeType.None:
                 break;

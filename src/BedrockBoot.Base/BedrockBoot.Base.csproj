@@ -1,21 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <DefineConstants>WINDOWS</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <TargetFramework>net10.0</TargetFramework>
+        <DefineConstants>LINUX</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
       <PackageReference Include="Avalonia" Version="11.3.12" />
-      <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.1" />
+    </ItemGroup>
+    
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.1" />
+    </ItemGroup>
+    
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <PackageReference Include="BedrockLauncher.Core.Linux" Version="1.0.0.2" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="../BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
       <ProjectReference Include="../BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
       <ProjectReference Include="../Round.SDK\Round.SDK\Round.SDK.csproj" />
-      <ProjectReference Include="..\BedrockBoot.Dependence\BedrockBoot.Dependence.csproj" />
+      <ProjectReference Include="../BedrockBoot.Dependence\BedrockBoot.Dependence.csproj" />
     </ItemGroup>
 
 </Project>

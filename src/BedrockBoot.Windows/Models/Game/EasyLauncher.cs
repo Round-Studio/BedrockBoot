@@ -6,10 +6,10 @@ using System.IO;
 using System.Threading;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.Game.Isolation;
-using BedrockBoot.Models.Pack.Game.Mods;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using Round.SDK.Plugin.BedrockBoot.Register;
@@ -19,7 +19,6 @@ namespace BedrockBoot.Models.Game;
 public class EasyLauncher
 {
     private ModsCore _core;
-    private IsolationCore IsolationCore;
     private Stopwatch _gameplayStopwatch; // 计时器
     private DateTime _gameStartTime; // 游戏开始时间
     private string _playerDataFilePath; // 玩家数据文件路径
@@ -58,9 +57,9 @@ public class EasyLauncher
     public async Task Launch()
     {
         LaunchingCount++;
-        if (GlobalModel.BedrockCore == null)
+        if (CoreGlobal.BedrockCore == null)
         {
-            GlobalModel.BedrockCore = new BedrockCore
+            CoreGlobal.BedrockCore = new BedrockCore
             {
                 Options = new CoreOptions
                 {
@@ -69,7 +68,7 @@ public class EasyLauncher
                     IsCheckMD5 = true
                 }
             };
-            await GlobalModel.BedrockCore.InitAsync();
+            await CoreGlobal.BedrockCore.InitAsync();
         }
 
         _core = new ModsCore(VersionInfo);
@@ -90,7 +89,7 @@ public class EasyLauncher
             _gameplayStopwatch.Reset();
             _gameStartTime = DateTime.Now;
             
-            MinecraftProcess = await GlobalModel.BedrockCore.LaunchGameAsync(new LaunchOptions
+            MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
             {
                 GameFolder = VersionInfo.VersionPath,
                 GameType = VersionInfo.Info.VersionType,
@@ -131,7 +130,7 @@ public class EasyLauncher
                 UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                 SetProgressIndeterminate?.Invoke(true);
                 
-                if (GlobalModel.Config.Data.IsMouseLock)
+                if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
                 {
                     var mouse = new ProcessMouseLocker(MinecraftProcess.Id);
                     mouse.Start();

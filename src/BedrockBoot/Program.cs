@@ -7,20 +7,24 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Avalonia;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Core;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Win32;
 using PaperConnect.Core.Module.Global;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
 using Round.SDK.Global;
 using Round.SDK.Logger;
+
+#if WINDOWS
+using System.Windows.Forms;
+using BedrockBoot.Win32;
 using Application = System.Windows.Forms.Application;
+#endif
 
 namespace BedrockBoot.Desktop;
 
@@ -35,24 +39,26 @@ internal sealed class Program
     public static void Main(string[] args)
     {
         Args = args.ToList();
-        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-        GlobalModel.Config.Load();
+        BedrockBoot.Core.Global.GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+        BedrockBoot.Core.Global.GlobalModel.Config.Load();
 
         AppUpdater.ProcessStartupArgs(args);
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
         EnvironmentLabel.ClientId = $"BedrockBoot {GlobalModel.BodyVersion}";
 
-        if (GlobalModel.Config.Data.GatherInfo)
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GatherInfo)
         {
             Task.Run(() => AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion).ContinueWith(_ => { }));
         }
 
+#if WINDOWS
         ApplicationConfiguration.Initialize();
+#endif
         if (args.Length > 0 && ArgsAnalytical(args.ToList()))
             return;
 
-        if (GlobalModel.Config.Data.IsConsole)
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsConsole)
         {
             AllocConsole();
             Console.OutputEncoding = Encoding.UTF8;
@@ -75,10 +81,11 @@ internal sealed class Program
 
         Console.WriteLine(bedrockBootLogo);
 
-        if ((int)GlobalModel.Config.Data.IsolationModel != 0)
-            GlobalModel.Config.Data.IsolationModel = IsolationType.Hook;
-        GlobalModel.Config.Save();
+        if ((int)BedrockBoot.Core.Global.GlobalModel.Config.Data.IsolationModel != 0)
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsolationModel = IsolationType.Hook;
+        BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
+#if WINDOWS
         if (!VCRedistDetector.CheckInInstalledList().IsInstalled)
         {
             var dialog = MessageBox.Show(
@@ -99,6 +106,7 @@ internal sealed class Program
                 return;
             }
         }
+#endif
 
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
@@ -151,7 +159,9 @@ internal sealed class Program
                     Console.WriteLine(@"快捷启动");
                     args.ForEach(Console.WriteLine);
 
-                    Application.Run(new LaunchWindow(args.ToList()));
+#if WINDOWS
+                    Application.Run(new LaunchWindow(args.ToList()));         
+#endif
                     return true;
 
                 case "-open":

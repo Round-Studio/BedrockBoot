@@ -9,6 +9,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
@@ -31,6 +32,11 @@ public partial class DrawInstanceContent : UserControl
 #if RELEASE
         GameControls.IsEnabled = GlobalModel.FunctionOption.IsEnableGameInstanceControl;
 #endif
+
+#if LINUX
+        Mods.IsVisible = false;
+        Plugin.IsVisible = false;
+#endif
     }
 
     public DrawInstanceContent(VersionConfig info) : this()
@@ -48,7 +54,7 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = false;
 
         var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
-        if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
+        if (VersionInfo.Info.VersionType != BedrockLauncher.Core.MinecraftGameTypeVersion.Release)
             image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
         IconBox.Background = new ImageBrush
@@ -207,6 +213,6 @@ public partial class DrawInstanceContent : UserControl
 
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        Process.Start("explorer", new[] { VersionInfo.VersionPath });
+        OpenFolderHelper.Open(VersionInfo.VersionPath);
     }
 }

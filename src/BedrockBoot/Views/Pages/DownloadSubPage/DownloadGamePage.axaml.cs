@@ -23,7 +23,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
     private static I18nManager i18n => I18nManager.Instance;
     private CancellationTokenSource? _currentLoadingCancellation;
     private string _searchKey = string.Empty;
-    private MinecraftGameTypeVersion _currentType = MinecraftGameTypeVersion.Release;
+    private BedrockLauncher.Core.MinecraftGameTypeVersion _currentType = BedrockLauncher.Core.MinecraftGameTypeVersion.Release;
 
     public DownloadGamePage()
     {
@@ -83,7 +83,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
         {
             try
             {
-                var sourceIndex = GlobalModel.Config.Data.VersionSourceIndex;
+                var sourceIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.VersionSourceIndex;
                 var source = SourceList.VersionDataSources.ElementAtOrDefault(sourceIndex).Value;
                 
                 var buildDatabase = await VersionsHelper.GetBuildDatabaseAsync(source);
@@ -147,7 +147,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
             {
                 foreach (var x in batch)
                 {
-                    var iconPath = x.Type == MinecraftGameTypeVersion.Release ? releaseIcon : previewIcon;
+                    var iconPath = x.Type == BedrockLauncher.Core.MinecraftGameTypeVersion.Release ? releaseIcon : previewIcon;
                     
                     var card = new SettingCard
                     {

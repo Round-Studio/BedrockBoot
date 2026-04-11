@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -46,11 +47,7 @@ public partial class GameFolderSettingItem : UserControl
         
         try
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = GameFolderInfo.GameFolderPath,
-                UseShellExecute = true
-            });
+            OpenFolderHelper.Open(GameFolderInfo.GameFolderPath);
         }
         catch (Exception ex)
         {
@@ -72,7 +69,7 @@ public partial class GameFolderSettingItem : UserControl
             AccountButton = DialogButtons.SecondaryButton,
             CloseAction = () =>
             {
-                var folders = GlobalModel.Config.Data.GameFolders;
+                var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
                 var target = folders.Find(x => 
                     x.GameFolderPath == GameFolderInfo.GameFolderPath && 
                     x.GameFolderName == GameFolderInfo.GameFolderName);
@@ -80,7 +77,7 @@ public partial class GameFolderSettingItem : UserControl
                 if (target != null)
                 {
                     folders.Remove(target);
-                    GlobalModel.Config.Save();
+                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
                     CallBack?.Invoke();
                 }
             }
@@ -107,7 +104,7 @@ public partial class GameFolderSettingItem : UserControl
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
-                var folders = GlobalModel.Config.Data.GameFolders;
+                var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
                 // 查找原始对象进行修改
                 var target = folders.Find(x => 
                     x.GameFolderPath == GameFolderInfo.GameFolderPath && 
@@ -118,7 +115,7 @@ public partial class GameFolderSettingItem : UserControl
                     target.GameFolderName = body.FolderName;
                     target.GameFolderPath = body.FolderPath;
                     
-                    GlobalModel.Config.Save();
+                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
                     
                     // 同步更新当前组件 UI
                     GameFolderInfo = target;

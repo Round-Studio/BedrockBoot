@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Avalonia.Controls;
-using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Entry.Config;
-using OnePointUI.Avalonia.Base.Entry;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
-using Round.SDK.Entity;
+﻿using BedrockBoot.Base.Entry;
 
 namespace BedrockBoot.Models.Global;
 
@@ -19,6 +10,7 @@ public class PathsList
 
     public static readonly string ConfigPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "Config.json");
     public static readonly string LogPath = Path.Combine(RootConfigPath, "BedrockBoot.Log");
+    public static readonly string ProtonPath = Path.Combine(RootConfigPath, "BedrockBoot.Linux", "ProtonGDK");
     public static readonly string UpdatePath = Path.Combine(RootConfigPath, "BedrockBoot.Update");
     public static readonly string TempPath = Path.Combine(RootConfigPath, "BedrockBoot.Temp");
     public static readonly string PluginPath = Path.Combine(RootConfigPath, "BedrockBoot.Plugin");
@@ -38,7 +30,7 @@ public class PathsList
 
     public static List<OtherLauncherInfo> OtherLauncher = new()
     {
-        new OtherLauncherInfo() // LeviLauncher
+        /*new OtherLauncherInfo() // LeviLauncher
         {
             Name = "LeviLauncher",
             IconUrl = "avares://BedrockBoot/Assets/Icon/Other/LeviLauncher.png",
@@ -55,12 +47,12 @@ public class PathsList
                 if (!Directory.Exists(realPath)) Directory.CreateDirectory(realPath);
 
                 if (!Directory.Exists(inPath)) Directory.CreateSymbolicLink(inPath, realPath);
-                GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                 {
                     GameFolderName = "LeviLauncher",
                     GameFolderPath = conf.Data.BaseRoot
                 });
-                GlobalModel.Config.Save();
+                BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
                 GlobalModel.MainWindow.CloseDraw();
                 DialogHost.Show(new DialogInfo
@@ -116,12 +108,12 @@ public class PathsList
                         }
 
                         Directory.CreateSymbolicLink(inPath, realPath);
-                        GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                         {
                             GameFolderName = "BMCBL",
                             GameFolderPath = folder
                         });
-                        GlobalModel.Config.Save();
+                        BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
                         GlobalModel.MainWindow.CloseDraw();
                         DialogHost.Show(new DialogInfo
@@ -133,6 +125,6 @@ public class PathsList
                     }
                 }
             }
-        }
+        }*/
     };
 }

@@ -7,14 +7,13 @@ using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
 using Round.SDK.Helper;
-using ComputeFileMD5 = BedrockBoot.Models.Helper.ComputeFileMD5;
 using DownloadProgress = BedrockBoot.Base.Entry.Progress.DownloadProgress;
 
 namespace BedrockBoot.Services;
@@ -119,7 +118,7 @@ public class EasyDownload
         }
 
         StatusText?.Invoke("正在下载游戏包...");
-        var downloadCount = GlobalModel.Config == null ? 4 : GlobalModel.Config.Data.DownloadChunkCount;
+        var downloadCount = BedrockBoot.Core.Global.GlobalModel.Config == null ? 4 : BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount;
         var downloader = new MultiThreadDownloader(downloadCount, 1024);
         var speedCalculator = new DownloadSpeedCalculator();
 
@@ -168,7 +167,7 @@ public class EasyDownload
     {
         var installDir = Path.Combine(InstallFolder, "bedrock_versions", GameName);
 
-        await GlobalModel.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
+        await CoreGlobal.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
         {
             FileFullPath = packagePath,
             GameName = GameName,
@@ -260,7 +259,7 @@ public class EasyDownload
     {
         try
         {
-            var url = await GlobalModel.BedrockCore.GetPackageUri(buildInfo, Architecture.X64);
+            var url = await CoreGlobal.BedrockCore.GetPackageUri(buildInfo, Architecture.X64);
             Console.WriteLine($@"原始地址：{url}");
 
             var res = new List<GameDownloadUrlInfo>();

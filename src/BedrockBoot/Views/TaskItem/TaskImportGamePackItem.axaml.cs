@@ -5,7 +5,6 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Import;
-using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -21,7 +20,7 @@ public partial class TaskImportGamePackItem : UserControl
     }
 
     public TaskImportGamePackItem(string packFile, string installFolder, string installName,
-        MinecraftGameTypeVersion type, bool knowGameType) : this()
+        BedrockLauncher.Core.MinecraftGameTypeVersion type, bool knowGameType) : this()
     {
         PackFile = packFile;
         InstallName = installName;
@@ -34,7 +33,7 @@ public partial class TaskImportGamePackItem : UserControl
     public string InstallFolder { get; set; }
     public string InstallName { get; set; }
     public bool IsGDKUnknownBuildType { get; set; }
-    public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
+    public BedrockLauncher.Core.MinecraftGameTypeVersion GDKGameType { get; set; } = BedrockLauncher.Core.MinecraftGameTypeVersion.Release;
 
     public void Install(Action installed)
     {
@@ -88,7 +87,7 @@ public partial class TaskImportGamePackItem : UserControl
         });
     }
 
-    public static void Install(string packFile, string installFolder, string installName, MinecraftGameTypeVersion type,
+    public static void Install(string packFile, string installFolder, string installName, BedrockLauncher.Core.MinecraftGameTypeVersion type,
         bool knowGameTypeCheckBox)
     {
         var body = new TaskImportGamePackItem(packFile, installFolder, installName, type, knowGameTypeCheckBox);

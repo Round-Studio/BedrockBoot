@@ -591,7 +591,7 @@ public class LeviLaminaInstaller
                     Progress = 0
                 });
                 
-                await new GithubFilesDownload().DownloadAsync(url, path, 
+                await new GithubFilesDownloader().DownloadAsync(url, path, 
                     new Progress<DownloadProgress>(p =>
                     {
                         Progress?.Report(new()

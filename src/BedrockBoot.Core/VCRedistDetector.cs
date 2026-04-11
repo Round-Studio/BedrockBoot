@@ -2,7 +2,7 @@
 using Microsoft.Win32;
 using System.Collections.Generic;
 
-namespace BedrockBoot.Core.Models;
+namespace BedrockBoot.Core;
 
 public class VCRedistDetector
 {

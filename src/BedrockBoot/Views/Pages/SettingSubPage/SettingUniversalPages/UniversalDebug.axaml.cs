@@ -30,7 +30,7 @@ public partial class UniversalDebug : ISettingPage
             }
         };
 
-        IsConsoleModel.IsChecked = GlobalModel.Config.Data.IsConsole;
+        IsConsoleModel.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsConsole;
         IsEdit = true;
     }
 
@@ -38,9 +38,9 @@ public partial class UniversalDebug : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.IsConsole = IsConsoleModel.IsChecked ?? false;
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsConsole = IsConsoleModel.IsChecked ?? false;
 
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
         }
     }
 

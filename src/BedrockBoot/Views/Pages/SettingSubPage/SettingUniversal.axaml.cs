@@ -30,10 +30,10 @@ public partial class SettingUniversal : ISettingPage
         };
 
         // 初始化 UI 状态
-        TaskBarJumpItem.IsChecked = GlobalModel.Config.Data.IsTaskBarJumpItem;
-        GatInfo.IsChecked = GlobalModel.Config.Data.GatherInfo;
-        LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
-        LaunchBehaviorChoose.SelectedIndex = (int)GlobalModel.Config.Data.LaunchBehavior;
+        TaskBarJumpItem.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsTaskBarJumpItem;
+        GatInfo.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.GatherInfo;
+        LanguageChoose.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.Language;
+        LaunchBehaviorChoose.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchBehavior;
         
         IsEdit = true;
     }
@@ -52,8 +52,8 @@ public partial class SettingUniversal : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.IsTaskBarJumpItem = TaskBarJumpItem.IsChecked ?? false;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsTaskBarJumpItem = TaskBarJumpItem.IsChecked ?? false;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
             JumpListManager.ConfigureJumpList();
         }
@@ -65,8 +65,8 @@ public partial class SettingUniversal : ISettingPage
         {
             // 更新配置中的语言枚举
             var selectedLanguage = (LanguageEnum)LanguageChoose.SelectedIndex;
-            GlobalModel.Config.Data.Language = selectedLanguage;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.Language = selectedLanguage;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
             // 执行语言切换核心逻辑
             I18nManager.Instance.SystemLanguage(selectedLanguage);
@@ -81,8 +81,8 @@ public partial class SettingUniversal : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.GatherInfo = (bool)GatInfo.IsChecked!;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.GatherInfo = (bool)GatInfo.IsChecked!;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
         }
     }
 
@@ -90,8 +90,8 @@ public partial class SettingUniversal : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.LaunchBehavior = (LaunchBehaviorEnum)LaunchBehaviorChoose.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchBehavior = (LaunchBehaviorEnum)LaunchBehaviorChoose.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
         }
     }
 }

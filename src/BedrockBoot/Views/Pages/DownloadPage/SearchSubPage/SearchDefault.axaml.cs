@@ -95,8 +95,8 @@ public partial class SearchDefault : UserControl
         try
         {
             var versions = await Task.Run(() => VersionHelper.GetVersions());
-            var release = versions.Find(x => x.Type == MinecraftGameTypeVersion.Release);
-            var preview = versions.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
+            var release = versions.Find(x => x.Type == BedrockLauncher.Core.MinecraftGameTypeVersion.Release);
+            var preview = versions.Find(x => x.Type == BedrockLauncher.Core.MinecraftGameTypeVersion.Preview);
 
             if (release == null && preview == null) throw new Exception("No versions found");
 

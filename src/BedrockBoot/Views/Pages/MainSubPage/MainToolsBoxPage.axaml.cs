@@ -56,9 +56,11 @@ public partial class MainToolsBoxPage : BedrockBootPage
         try
         {
             // 依次移除不同版本的 UWP 实例
-            await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release);
-            await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Preview);
-            await GlobalModel.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Beta);
+#if WINDOWS
+            await CoreGlobal.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Release);
+            await CoreGlobal.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Preview);
+            await CoreGlobal.BedrockCore.RemoveUWPGameAsync(MinecraftGameTypeVersion.Beta);
+#endif
         }
         catch (Exception ex)
         {

@@ -43,14 +43,14 @@ public partial class DrawDownloadGameContent : UserControl
     {
         // 1. 初始化安装目录下拉框
         InstallFolder.Items.Clear();
-        var folders = GlobalModel.Config.Data.GameFolders;
+        var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
         if (folders is { Count: > 0 })
         {
             foreach (var folder in folders)
             {
                 InstallFolder.Items.Add($"[{folder.GameFolderName}] {folder.GameFolderPath}");
             }
-            InstallFolder.SelectedIndex = Math.Clamp(GlobalModel.Config.Data.GameFolderSelIndex, 0, folders.Count - 1);
+            InstallFolder.SelectedIndex = Math.Clamp(BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex, 0, folders.Count - 1);
         }
 
         InstallName.Text = BuildInfo.ID;
@@ -155,13 +155,13 @@ public partial class DrawDownloadGameContent : UserControl
                             ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                             : dialog.FolderName;
 
-                        GlobalModel.Config.Data.GameFolders ??= new List<GameFolderInfo>();
-                        GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders ??= new List<GameFolderInfo>();
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                         {
                             GameFolderPath = dialog.FolderPath,
                             GameFolderName = name ?? "Minecraft"
                         });
-                        GlobalModel.Config.Save();
+                        BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
                         UpdateUI();
                         ExecuteInstallTask();
@@ -180,7 +180,7 @@ public partial class DrawDownloadGameContent : UserControl
         if ((Sources == null || SourceSelBox.SelectedIndex < 0) && !CheckPack()) return;
 
         var selectedUrl = Sources[SourceSelBox.SelectedIndex].Url;
-        var targetPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
+        var targetPath = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
 
         TaskDownloadGameItem.Install(
             BuildInfo, 
@@ -211,7 +211,7 @@ public partial class DrawDownloadGameContent : UserControl
 
     private bool CheckPack()
     {
-        var selectedFolder = GlobalModel.Config.Data.GameFolders
+        var selectedFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders
             .ElementAtOrDefault(InstallFolder.SelectedIndex);
     
         if (selectedFolder == null)

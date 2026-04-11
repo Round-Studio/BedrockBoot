@@ -13,7 +13,7 @@ using PeNet;
 using PeNet.Header.Pe;
 using Round.SDK.Helper.IO;
 
-namespace BedrockBoot.Models.Pack.Game.Mods;
+namespace BedrockBoot.Core.Models.Pack.Game.Mods;
 
 public class ModsCore
 {
@@ -36,7 +36,7 @@ public class ModsCore
         var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", VersionInfo.BodyFile);
         var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");
-        var fullPath = Path.Combine(VersionInfo.VersionPath, "PreloadCpp.dll");
+        var fullPath = Path.Combine(VersionInfo.VersionPath, "PreLoadCpp.dll");
 
         if (!Directory.Exists(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row")))
             Directory.CreateDirectory(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row"));
@@ -114,7 +114,7 @@ public class ModsCore
                 using (var fs = new FileStream(body, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
                 using (var peFile = new PeFile(fs))
                 {
-                    peFile.AddImport("PreloadCpp.dll", "Load");
+                    peFile.AddImport("PreLoadCpp.dll", "Load");
                     /*if (peFile.ImageNtHeaders != null)
                     {
                         peFile.ImageNtHeaders.OptionalHeader.Subsystem = SubsystemType.WindowsCui;

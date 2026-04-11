@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -42,11 +43,7 @@ public partial class GameFolderItem : UserControl
         
         try
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = GameFolderInfo.GameFolderPath,
-                UseShellExecute = true // 使用外壳程序打开文件夹
-            });
+            OpenFolderHelper.Open(GameFolderInfo.GameFolderPath);
         }
         catch (Exception ex)
         {
@@ -68,7 +65,7 @@ public partial class GameFolderItem : UserControl
             AccountButton = DialogButtons.SecondaryButton,
             CloseAction = () =>
             {
-                var folders = GlobalModel.Config.Data.GameFolders;
+                var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
                 var itemToRemove = folders.Find(x =>
                     x.GameFolderPath == GameFolderInfo.GameFolderPath &&
                     x.GameFolderName == GameFolderInfo.GameFolderName);
@@ -78,12 +75,12 @@ public partial class GameFolderItem : UserControl
                     folders.Remove(itemToRemove);
                     
                     // 如果删除的是当前选中的目录，重置索引
-                    if (GlobalModel.Config.Data.GameFolderSelIndex >= folders.Count)
+                    if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex >= folders.Count)
                     {
-                        GlobalModel.Config.Data.GameFolderSelIndex = Math.Max(0, folders.Count - 1);
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex = Math.Max(0, folders.Count - 1);
                     }
 
-                    GlobalModel.Config.Save();
+                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
                     // 通知主界面或管理页更新 UI
                     MainManager.Instance.UpdateUI();

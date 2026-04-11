@@ -172,7 +172,7 @@ public class Chunker
             var releases = await github.Repository.Release.GetLatest(owner, repo);
             var url = releases.Assets.ToList().Find(x => x.Name.Contains(".jar")).BrowserDownloadUrl;
 
-            var down = new GithubFilesDownload();
+            var down = new GithubFilesDownloader();
             await down.DownloadAsync(url, ChunkerPath,
                 new Progress<DownloadProgress>(p =>
                 {

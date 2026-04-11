@@ -37,7 +37,7 @@ public partial class PersonalizationColor : ISettingPage
         };
 
         // 还原主题选择索引
-        ChooseTheme.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.LightThemeType;
+        ChooseTheme.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType;
 
         // 渲染强调色色块列表
         AccentColor.Colors.ForEach(c => ColorsView.Items.Add(new ItemViewItem
@@ -52,7 +52,7 @@ public partial class PersonalizationColor : ISettingPage
             ClipToBounds = true
         }));
 
-        ColorsView.SelectedIndex = GlobalModel.Config.Data.StyleConfig.AccentColorIndex;
+        ColorsView.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex;
         IsEdit = true;
     }
 
@@ -60,8 +60,8 @@ public partial class PersonalizationColor : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseTheme.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseTheme.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
             App.LoadColor();
         }
@@ -71,8 +71,8 @@ public partial class PersonalizationColor : ISettingPage
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.StyleConfig.AccentColorIndex = ColorsView.SelectedIndex;
-            GlobalModel.Config.Save();
+            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex = ColorsView.SelectedIndex;
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
 
             App.LoadColor();
         }

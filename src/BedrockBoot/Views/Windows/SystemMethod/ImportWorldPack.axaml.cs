@@ -10,6 +10,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Desktop;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -42,20 +43,20 @@ public partial class ImportWorldPack : Window
 
     private void InitGameFolders()
     {
-        var folders = GlobalModel.Config.Data.GameFolders;
+        var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
         if (folders == null || folders.Count <= 0) return;
 
         FolderComboBox.ItemsSource = folders.Select(f => $"{f.GameFolderName} - {f.GameFolderPath}").ToList();
         
-        if (GlobalModel.Config.Data.GameFolderSelIndex < folders.Count)
-            FolderComboBox.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
+        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < folders.Count)
+            FolderComboBox.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
     }
 
     private void FolderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (FolderComboBox.SelectedIndex < 0) return;
 
-        var selectedFolder = GlobalModel.Config.Data.GameFolders[FolderComboBox.SelectedIndex];
+        var selectedFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[FolderComboBox.SelectedIndex];
         _currentGames = GameInfoHelper.GetVersionConfigs(selectedFolder.GameFolderPath);
         
         InstanceComboBox.ItemsSource = _currentGames.Select(g => $"{g.Info.VersionName} - {g.Info.Version}").ToList();

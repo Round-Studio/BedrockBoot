@@ -36,7 +36,7 @@ public partial class GameItem : UserControl
             EditModule.IsVisible = true;
 
         var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
-        if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
+        if (VersionInfo.Info.VersionType != BedrockLauncher.Core.MinecraftGameTypeVersion.Release)
             image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
         Card.ImageIcon = GetImage(image);

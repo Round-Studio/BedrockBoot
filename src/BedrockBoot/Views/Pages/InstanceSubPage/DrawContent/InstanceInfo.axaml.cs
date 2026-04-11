@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 
@@ -17,6 +18,11 @@ public partial class InstanceInfo : UserControl
         IsEdit = false;
 
         InitializeComponent();
+
+#if LINUX
+        IsolationCard.IsVisible = false;
+        HighLevel.IsVisible = false;
+#endif
 
 #if RELEASE
         InstanceMod.IsVisible = GlobalModel.FunctionOption.IsEnableGameInstanceMods;

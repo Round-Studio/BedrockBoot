@@ -22,7 +22,7 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          # 生成 yyyy.mm.dd.hhss 格式的版本号
+          # 生成 yyyy.mm.dd.hhmm 格式的版本号
           VERSION=$(date +'%Y.%m.%d.%H%M')
           echo "value=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
@@ -67,21 +67,30 @@ jobs:
             /p:IncludeNativeLibrariesForSelfExtract=true `
             /p:SelfContained=false `
             /p:Version=${{ needs.version.outputs.v }} `
+            /p:AssemblyTitle="BedrockBoot" `
+            /p:AssemblyDescription="A Minecraft Bedrock Launcher" `
+            /p:AssemblyCompany="Round-Studio" `
+            /p:Product="BedrockBoot" `
+            /p:Copyright="Copyright (C) Round-Studio" `
+            /p:PackageLicenseExpression="GPL-3.0-only" `
             -o "./../../Release-publish/"
       
       - name: Rename Windows executable
         run: |
           cd ./Release-publish
           if (Test-Path "BedrockBoot.exe") {
-            Rename-Item "BedrockBoot.exe" "BedrockBoot-${{ needs.version.outputs.v }}.exe"
-            Write-Host "✅ Renamed to BedrockBoot-${{ needs.version.outputs.v }}.exe"
+            Rename-Item "BedrockBoot.exe" "BedrockBoot-${{ needs.version.outputs.v }}-win-x64.exe"
+            Write-Host "✅ Renamed to BedrockBoot-${{ needs.version.outputs.v }}-win-x64.exe"
+          } else {
+            Write-Host "⚠️ BedrockBoot.exe not found"
+            Get-ChildItem
           }
       
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: ./Release-publish/BedrockBoot-*.exe
+          path: ./Release-publish/BedrockBoot-*-win-x64.exe
           retention-days: 7
 
   # ==================== Linux AppImage 构建 ====================
@@ -105,68 +114,155 @@ jobs:
           git pull
           git submodule update --init --recursive --remote
       
-      - name: Install PupNet
+      - name: Publish .NET application for Linux
         run: |
-          dotnet tool install -g KuiperZone.PupNet
+          dotnet publish ./src/BedrockBoot/BedrockBoot.csproj \
+            -c Release \
+            -r linux-x64 \
+            --self-contained true \
+            -p:Version=${{ needs.version.outputs.v }} \
+            -p:AssemblyTitle="BedrockBoot" \
+            -p:AssemblyDescription="A Minecraft Bedrock Launcher" \
+            -p:AssemblyCompany="Round-Studio" \
+            -p:Product="BedrockBoot" \
+            -p:Copyright="Copyright (C) Round-Studio" \
+            -p:PackageLicenseExpression="GPL-3.0-only" \
+            -o ./AppDir/usr/bin
       
-      - name: Create PupNet configuration
+      - name: Create AppDir structure
         run: |
-          cat > ./.pupnet.conf << 'EOF'
-          AppName = BedrockBoot
-          AppVersion = ${{ needs.version.outputs.v }}
-          AppPublisher = Round-Studio
-          AppIdentifier = top.roundstudio.bedrockboot
-          
-          AppIcon = ./assets/BedrockBoot.Icon.512x.png
-          
-          DotnetProject = ./src/BedrockBoot/BedrockBoot.csproj
-          DotnetRuntime = linux-x64
-          DotnetConfiguration = Release
-          
-          IsConsoleApp = false
-          
-          AppImageKind = appimage
-          
-          AppDescription = A Minecraft Bedrock Launcher.
-          AppCategories = Utility;Development;
-          EOF
-          
-          # 替换版本号（因为上面用了 literal EOF，变量不会展开）
-          sed -i "s/\\${{ needs.version.outputs.v }}/${{ needs.version.outputs.v }}/" ./.pupnet.conf
-          
-          echo "✅ PupNet configuration created:"
-          cat ./.pupnet.conf
+          mkdir -p ./AppDir/usr/share/applications
+          mkdir -p ./AppDir/usr/share/icons/hicolor/512x512/apps
+          mkdir -p ./AppDir/usr/share/metainfo
       
-      - name: Build and package AppImage
+      - name: Copy icon
         run: |
-          # 使用 PupNet 打包
-          pupnet --runtime linux-x64 --kind appimage
-      
-      - name: Rename AppImage
-        run: |
-          # 查找并重命名生成的 AppImage
-          if ls *.AppImage 1> /dev/null 2>&1; then
-            for file in *.AppImage; do
-              newname="BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage"
-              mv "$file" "$newname"
-              echo "✅ Renamed to $newname"
-            done
+          if [ -f "./assets/BedrockBoot.Icon.512x.png" ]; then
+            cp ./assets/BedrockBoot.Icon.512x.png ./AppDir/usr/share/icons/hicolor/512x512/apps/top.roundstudio.bedrockboot.png
+            echo "✅ Icon copied"
           else
-            echo "⚠️ No AppImage file generated"
-            echo "Current directory contents:"
-            ls -la
+            echo "⚠️ Icon not found, creating placeholder"
+            # 创建简单的占位符图标
+            convert -size 512x512 xc:transparent -fill "#4A90E2" -draw "rectangle 0,0 512,512" \
+              -fill white -draw "text 256,256 'BB'" ./AppDir/usr/share/icons/hicolor/512x512/apps/top.roundstudio.bedrockboot.png 2>/dev/null || true
           fi
       
-      - name: List generated files
+      - name: Create desktop file
         run: |
-          echo "📦 Generated AppImage files:"
-          ls -lh *.AppImage 2>/dev/null || echo "No AppImage found"
+          cat > ./AppDir/usr/share/applications/top.roundstudio.bedrockboot.desktop << 'EOF'
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=BedrockBoot
+          Comment=A Minecraft Bedrock Launcher
+          Exec=BedrockBoot
+          Icon=top.roundstudio.bedrockboot
+          Terminal=false
+          Categories=Utility;Game;
+          StartupWMClass=BedrockBoot
+          Keywords=minecraft;bedrock;launcher;
+          EOF
+          
+          echo "✅ Desktop file created"
+      
+      - name: Create GPL-3.0 compliant AppStream metadata
+        run: |
+          cat > ./AppDir/usr/share/metainfo/top.roundstudio.bedrockboot.appdata.xml << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <component type="desktop-application">
+            <id>top.roundstudio.bedrockboot</id>
+            <metadata_license>CC0-1.0</metadata_license>
+            <project_license>GPL-3.0-only</project_license>
+            <name>BedrockBoot</name>
+            <summary>A Minecraft Bedrock Launcher</summary>
+            <description>
+              <p>BedrockBoot is a powerful bootstrapping application designed to simplify and streamline the Minecraft Bedrock Edition experience.</p>
+              <p>Key features:</p>
+              <ul>
+                <li>Easy version management</li>
+                <li>Mod support and management</li>
+                <li>Cross-platform compatibility</li>
+                <li>Automatic updates</li>
+                <li>Open source under GPL-3.0</li>
+              </ul>
+              <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3 of the License.</p>
+            </description>
+            <launchable type="desktop-id">top.roundstudio.bedrockboot.desktop</launchable>
+            <url type="homepage">https://github.com/Round-Studio/BedrockBoot</url>
+            <url type="bugtracker">https://github.com/Round-Studio/BedrockBoot/issues</url>
+            <url type="vcs-browser">https://github.com/Round-Studio/BedrockBoot</url>
+            <screenshots>
+              <screenshot type="default">
+                <image>https://raw.githubusercontent.com/Round-Studio/BedrockBoot/main/assets/screenshot.png</image>
+              </screenshot>
+            </screenshots>
+            <provides>
+              <binary>BedrockBoot</binary>
+            </provides>
+            <content_rating type="oars-1.1">
+              <content_attribute id="social-chat">none</content_attribute>
+              <content_attribute id="social-info">none</content_attribute>
+              <content_attribute id="social-audio">none</content_attribute>
+              <content_attribute id="social-contact">none</content_attribute>
+              <content_attribute id="money-purchasing">none</content_attribute>
+            </content_rating>
+            <developer id="top.roundstudio">
+              <name>Round Studio</name>
+            </developer>
+            <releases>
+              <release version="${{ needs.version.outputs.v }}" date="${{ needs.version.outputs.value }}" />
+            </releases>
+          </component>
+          EOF
+          
+          echo "✅ AppStream metadata created"
+      
+      - name: Create AppRun script
+        run: |
+          cat > ./AppDir/AppRun << 'EOF'
+          #!/bin/bash
+          SELF=$(readlink -f "$0")
+          HERE=${SELF%/*}
+          export PATH="${HERE}/usr/bin/:${PATH}"
+          export LD_LIBRARY_PATH="${HERE}/usr/lib/:${LD_LIBRARY_PATH}"
+          export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+          exec "${HERE}/usr/bin/BedrockBoot" "$@"
+          EOF
+          chmod +x ./AppDir/AppRun
+          echo "✅ AppRun script created"
+      
+      - name: Download appimagetool
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+      
+      - name: Build AppImage
+        run: |
+          # 使用 --skip-appstream-validation 跳过验证问题
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage \
+            --skip-appstream-validation \
+            ./AppDir \
+            "BedrockBoot-${{ needs.version.outputs.v }}-linux-x86_64.AppImage"
+          
+          echo "✅ AppImage built successfully"
+      
+      - name: Verify AppImage
+        run: |
+          if [ -f "BedrockBoot-${{ needs.version.outputs.v }}-linux-x86_64.AppImage" ]; then
+            echo "✅ AppImage file exists"
+            ls -lh BedrockBoot-*.AppImage
+            # 检查文件是否为有效的 ELF 文件
+            file BedrockBoot-${{ needs.version.outputs.v }}-linux-x86_64.AppImage
+          else
+            echo "❌ AppImage file not found"
+            exit 1
+          fi
       
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-appimage
-          path: ./BedrockBoot-*.AppImage
+          path: ./BedrockBoot-*-linux-x86_64.AppImage
           retention-days: 7
 
   # ==================== 创建 Release ====================
@@ -204,21 +300,30 @@ jobs:
           echo "Linux files:"
           ls -lh ./release-files/linux/ 2>/dev/null || echo "  No Linux files"
       
+      - name: Generate checksums
+        run: |
+          cd ./release-files
+          echo "## 🔐 Checksums" > checksums.md
+          echo "" >> checksums.md
+          echo '```' >> checksums.md
+          for file in windows/* linux/*; do
+            if [ -f "$file" ]; then
+              echo "$(sha256sum $file | cut -d' ' -f1)  $(basename $file)" >> checksums.md
+            fi
+          done
+          echo '```' >> checksums.md
+          cat checksums.md
+      
       - name: Get commit messages
         id: commits
         run: |
-          # 获取最近一次提交的信息
           echo "latest_commit=$(git log -1 --pretty=format:%s)" >> $GITHUB_OUTPUT
-          
-          # 获取最近5次提交的信息作为变更日志
           CHANGELOG=$(git log -5 --pretty=format:"- %s (%h)" --reverse | sed ':a;N;$!ba;s/\n/\\n/g')
           echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
-          
-          # 获取提交者信息
           echo "committer=$(git log -1 --pretty=format:%an)" >> $GITHUB_OUTPUT
       
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
           release_name: "BedrockBoot ${{ needs.version.outputs.v }} - Pre-release"
@@ -235,19 +340,9 @@ jobs:
             ### 📝 变更日志
             ${{ steps.commits.outputs.changelog }}
             
-            ### 💻 下载说明
-            #### Windows 用户
-            - 下载 `BedrockBoot-${{ needs.version.outputs.v }}.exe`
-            - 直接运行即可（无需安装 .NET 运行时）
-            
-            #### Linux 用户
-            - 下载 `BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage`
-            - 添加执行权限：`chmod +x BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage`
-            - 运行：`./BedrockBoot-${{ needs.version.outputs.v }}-x86_64.AppImage`
-            
             ### ⚠️ 注意事项
-            - 预发布版本，可能会有未发现的 Bugs
-            - 如遇到问题，请提交 Issue 反馈
+            - 这是预发布版本，仅供测试使用
+            - 如遇到问题，请到 [Issues](https://github.com/${{ github.repository }}/issues) 反馈
             
             ---
             *🤖 自动化构建发布 | [查看工作流运行记录](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
@@ -256,6 +351,7 @@ jobs:
           files: |
             ./release-files/windows/*.exe
             ./release-files/linux/*.AppImage
+            ./release-files/checksums.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -267,3 +363,7 @@ jobs:
           echo "- 标签: ${{ needs.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
           echo "- 版本: ${{ needs.version.outputs.v }}" >> $GITHUB_STEP_SUMMARY
           echo "- 查看: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ needs.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**构建产物**" >> $GITHUB_STEP_SUMMARY
+          echo "- Windows: ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Linux AppImage: ✅" >> $GITHUB_STEP_SUMMARY

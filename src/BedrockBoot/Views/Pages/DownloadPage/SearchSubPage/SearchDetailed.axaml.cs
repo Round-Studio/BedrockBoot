@@ -15,6 +15,7 @@ using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
+using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
@@ -138,6 +139,9 @@ public partial class SearchDetailed : ISetting
                         .Where(x => (x.ID.ToLower().Contains(info.Key) ||
                                      x.BuildType.ToString().ToLower().Contains(info.Key)) &&
                                     x.Type == (BedrockLauncher.Core.MinecraftGameTypeVersion)GameType.SelectedIndex)
+#if LINUX
+                        .Where(x=>x.BuildType == MinecraftBuildTypeVersion.GDK)           
+#endif
                         .ToList();
 
                     // 计算总页数

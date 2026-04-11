@@ -6,7 +6,7 @@ on:
     branches: ["2.0-preview"]
 
 jobs:
-  # ==================== 版本生成 Job ====================
+  # ==================== 版本生成 ====================
   version:
     runs-on: ubuntu-latest
     outputs:
@@ -16,13 +16,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       
       - name: Generate version
         id: version
         run: |
-          # 生成 yyyy.mm.dd.hhmm 格式
           VERSION=$(date +'%Y.%m.%d.%H%M')
           echo "value=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
@@ -64,16 +61,13 @@ jobs:
       - name: Rename Windows executable
         run: |
           cd ./Release-publish
-          if (Test-Path "BedrockBoot.exe") {
-            Rename-Item "BedrockBoot.exe" "BedrockBoot-${{ needs.version.outputs.v }}-win-x64.exe"
-          }
+          Rename-Item "BedrockBoot.exe" "BedrockBoot-${{ needs.version.outputs.v }}-win-x64.exe"
       
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: ./Release-publish/BedrockBoot-*-win-x64.exe
-          retention-days: 7
 
   # ==================== Linux AppImage 构建 ====================
   linux-appimage-build:
@@ -103,24 +97,14 @@ jobs:
       
       - name: Create AppDir Metadata
         run: |
-          # 定义统一 ID
-          APP_ID="com.round_studio.bedrockboot"
+          # 1. 强制规范 ID
+          APP_ID="io.github.round_studio.bedrockboot"
           
           mkdir -p ./AppDir/usr/share/applications
           mkdir -p ./AppDir/usr/share/icons/hicolor/512x512/apps
           mkdir -p ./AppDir/usr/share/metainfo
 
-          # 1. 图标处理
-          if [ -f "./assets/BedrockBoot.Icon.512x.png" ]; then
-            cp ./assets/BedrockBoot.Icon.512x.png ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png
-          else
-            sudo apt-get update && sudo apt-get install -y imagemagick
-            convert -size 512x512 xc:#4A90E2 -gravity center -pointsize 120 -fill white -annotate 0 "BB" ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png
-          fi
-          # AppImage 规范：根目录需要一个图标
-          cp ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png ./AppDir/bedrockboot.png
-
-          # 2. 桌面文件 (文件名需与 APP_ID 一致)
+          # 2. 创建桌面文件 (文件名必须匹配 ID)
           cat > "./AppDir/usr/share/applications/${APP_ID}.desktop" << EOF
           [Desktop Entry]
           Type=Application
@@ -129,10 +113,10 @@ jobs:
           Exec=BedrockBoot
           Icon=bedrockboot
           Terminal=false
-          Categories=Utility;Game;
+          Categories=Game;Utility;
           EOF
 
-          # 3. AppStream 修复 (关键：launchable 需匹配 desktop 文件名)
+          # 3. 创建 AppStream 元数据 (文件名必须匹配 ID)
           cat > "./AppDir/usr/share/metainfo/${APP_ID}.appdata.xml" << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <component type="desktop-application">
@@ -142,13 +126,21 @@ jobs:
             <name>BedrockBoot</name>
             <summary>A Minecraft Bedrock Launcher</summary>
             <description>
-              <p>BedrockBoot is a powerful bootstrapping application for Minecraft Bedrock Edition.</p>
+              <p>BedrockBoot is a powerful bootstrapping application for Minecraft Bedrock Edition. It provides a reliable launcher experience.</p>
             </description>
             <launchable type="desktop-id">${APP_ID}.desktop</launchable>
           </component>
           EOF
 
-          # 4. 启动脚本
+          # 4. 图标与 AppRun
+          if [ -f "./assets/BedrockBoot.Icon.512x.png" ]; then
+            cp ./assets/BedrockBoot.Icon.512x.png ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png
+          else
+            sudo apt-get update && sudo apt-get install -y imagemagick
+            convert -size 512x512 xc:#4A90E2 -gravity center -pointsize 120 -fill white -annotate 0 "BB" ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png
+          fi
+          cp ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png ./AppDir/bedrockboot.png
+
           cat > ./AppDir/AppRun << 'EOF'
           #!/bin/bash
           HERE=$(dirname "$(readlink -f "${0}")")
@@ -163,7 +155,7 @@ jobs:
           wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
           
-          # 【修复核心】设置环境变量强制跳过所有 AppStream 检查
+          # 强制禁用验证退出逻辑
           export NO_APPSTREAM=1
           
           ARCH=x86_64 ./appimagetool-x86_64.AppImage \
@@ -176,57 +168,44 @@ jobs:
         with:
           name: linux-appimage
           path: ./BedrockBoot-*-linux-x86_64.AppImage
-          retention-days: 7
 
-  # ==================== 创建 Release ====================
+  # ==================== 创建 GitHub Release ====================
   create-release:
     runs-on: ubuntu-latest
     needs: [version, windows-build, linux-appimage-build]
-    # 只要版本号生成成功且至少有一个平台构建成功就继续
-    if: always() && needs.version.result == 'success' && (needs.windows-build.result == 'success' || needs.linux-appimage-build.result == 'success')
+    if: always() && needs.version.result == 'success'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: ./release-files
           merge-multiple: true
 
-      - name: Generate checksums
+      - name: Generate Checksums
         id: checksums
         run: |
           cd ./release-files
-          echo "SHA256 Checksums:" > checksums.txt
-          sha256sum BedrockBoot-* >> checksums.txt
-          
-          # 将内容转为多行输出变量供 Body 使用
-          echo 'CONTENT<<EOF' >> $GITHUB_OUTPUT
+          sha256sum BedrockBoot-* > checksums.txt
+          echo "CONTENT<<EOF" >> $GITHUB_OUTPUT
           cat checksums.txt >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
           release_name: "BedrockBoot ${{ needs.version.outputs.v }} - Pre-release"
           prerelease: true
           body: |
-            ## 🚀 BedrockBoot ${{ needs.version.outputs.v }} 预发布版
+            ## 🚀 BedrockBoot 推送成功
             
-            ### 📦 构建信息
-            - **版本号**: `${{ needs.version.outputs.v }}`
-            - **构建时间**: ${{ needs.version.outputs.time }}
-            - **提交哈希**: `${{ github.sha }}`
+            - **版本**: `${{ needs.version.outputs.v }}`
+            - **构建时间**: `${{ needs.version.outputs.time }}`
             
-            ### 🔐 文件校验 (SHA256)
+            ### 🔐 SHA256 校验和
             ```text
             ${{ steps.checksums.outputs.CONTENT }}
             ```
-            
-            ---
-            *🤖 自动构建自 GitHub Actions*
           files: |
             ./release-files/BedrockBoot-*-win-x64.exe
             ./release-files/BedrockBoot-*-linux-x86_64.AppImage

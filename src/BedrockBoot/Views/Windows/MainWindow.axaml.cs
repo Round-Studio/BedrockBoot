@@ -103,8 +103,10 @@ public partial class MainWindow : BedrockBootWindow
 
         CheckUserAgreement();
 
+#if WINDOWS 
         // 注册文件关联
         HandleFileAssociations();
+#endif
 
         // 完成初始化后回到 UI 线程进行页面跳转
         await Dispatcher.UIThread.InvokeAsync(() =>

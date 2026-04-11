@@ -64,8 +64,8 @@ jobs:
           name: windows-build
           path: ./Release-publish/BedrockBoot-*-win-x64.exe
 
-  # ==================== Linux AppImage 构建 ====================
-  linux-appimage-build:
+  # ==================== Linux 构建 (PupNet 驱动) ====================
+  linux-build:
     runs-on: ubuntu-latest
     needs: version
     steps:
@@ -73,100 +73,57 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      
+
       - name: Sub-Module
         run: |
           git submodule update --init --recursive --remote
-      
-      - name: Publish .NET application
+
+      - name: Install PupNet
+        run: dotnet tool install --global KuiperZone.PupNet
+
+      - name: Build AppImage with PupNet
         run: |
-          dotnet publish ./src/BedrockBoot/BedrockBoot.csproj \
-            -c Release -r linux-x64 --self-contained true \
-            -p:Version=${{ needs.version.outputs.v }} \
-            -o ./AppDir/usr/bin
-      
-      - name: Create AppDir Metadata
-        run: |
-          APP_ID="top.roundstudio.bedrockboot"
-          rm -rf ./AppDir/usr/share/metainfo
-          rm -rf ./AppDir/usr/share/applications
-          mkdir -p ./AppDir/usr/share/applications
-          mkdir -p ./AppDir/usr/share/icons/hicolor/512x512/apps
-          mkdir -p ./AppDir/usr/share/metainfo
-
-          cat > "./AppDir/usr/share/applications/${APP_ID}.desktop" << EOF
-          [Desktop Entry]
-          Type=Application
-          Name=BedrockBoot
-          Comment=A Minecraft Bedrock Launcher
-          Exec=BedrockBoot
-          Icon=bedrockboot
-          Terminal=false
-          Categories=Game;Utility;
-          EOF
-
-          cat > "./AppDir/usr/share/metainfo/${APP_ID}.appdata.xml" << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <component type="desktop-application">
-            <id>${APP_ID}</id>
-            <metadata_license>CC0-1.0</metadata_license>
-            <project_license>GPL-3.0-only</project_license>
-            <name>BedrockBoot</name>
-            <summary>A Minecraft Bedrock Launcher</summary>
-            <description>
-              <p>BedrockBoot is a powerful bootstrapping application for Minecraft Bedrock Edition. It offers a smooth and efficient way to manage your Bedrock instances on Linux.</p>
-            </description>
-            <launchable type="desktop-id">${APP_ID}.desktop</launchable>
-            <content_rating type="oars-1.1" />
-          </component>
-          EOF
-
-          if [ -f "./assets/BedrockBoot.Icon.512x.png" ]; then
-            cp ./assets/BedrockBoot.Icon.512x.png ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png
-          else
-            sudo apt-get update && sudo apt-get install -y imagemagick
-            convert -size 512x512 xc:#4A90E2 -gravity center -pointsize 120 -fill white -annotate 0 "BB" ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png
-          fi
-          cp ./AppDir/usr/share/icons/hicolor/512x512/apps/bedrockboot.png ./AppDir/bedrockboot.png
-
-          cat > ./AppDir/AppRun << 'EOF'
-          #!/bin/bash
-          HERE=$(dirname "$(readlink -f "${0}")")
-          export PATH="${HERE}/usr/bin/:${PATH}"
-          export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
-          exec "${HERE}/usr/bin/BedrockBoot" "$@"
-          EOF
-          chmod +x ./AppDir/AppRun
-
-      - name: Build AppImage
-        run: |
-          sudo apt-get update && sudo apt-get install -y libfuse2
-          wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-          chmod +x appimagetool-x86_64.AppImage
+          # 1. 环境准备
+          sudo apt-get update && sudo apt-get install -y libfuse2 imagemagick
           
-          # 核心修复：移除不支持的 --skip-appstream-validation 
-          # 使用 NO_APPSTREAM=1 环境变量来处理验证问题
+          # 2. 使用 PupNet 的指令化快速打包 (参数化模式)
+          # 注意：PupNet 的参数和 punet 略有不同
+          # 我们直接利用 PupNet 的简洁模式快速生成
+          pupnet --init \
+            -v "${{ needs.version.outputs.v }}" \
+            -app "BedrockBoot" \
+            -id "top.roundstudio.bedrockboot" \
+            -src "./src/BedrockBoot/BedrockBoot.csproj" \
+            -i "./assets/BedrockBoot.Icon.512x.png" \
+            -k "Game;Utility;" \
+            -d "A powerful bootstrapping application for Minecraft Bedrock Edition."
+
+          # 3. 运行打包
+          # NO_APPSTREAM 依然作为底层保险
           export NO_APPSTREAM=1
-          
-          ./appimagetool-x86_64.AppImage --appimage-extract-and-run \
-            ./AppDir \
-            "BedrockBoot-${{ needs.version.outputs.v }}-linux-x86_64.AppImage"
+          pupnet --build -r linux-x64 -k AppImage
+
+      - name: Rename and Move Artifact
+        run: |
+          mkdir -p ./deploy
+          # PupNet 默认输出在输出目录的子文件夹里，我们把它找出来
+          find ./publish -name "*.AppImage" -exec mv {} ./deploy/BedrockBoot-${{ needs.version.outputs.v }}-linux-x86_64.AppImage \;
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-appimage
-          path: ./BedrockBoot-*-linux-x86_64.AppImage
+          path: ./deploy/*.AppImage
 
   # ==================== 发布 Release ====================
   create-release:
     runs-on: ubuntu-latest
-    needs: [version, windows-build, linux-appimage-build]
+    needs: [version, windows-build, linux-build]
     if: always() && needs.version.result == 'success'
     steps:
       - name: Download all artifacts
@@ -194,7 +151,7 @@ jobs:
             ## 🚀 BedrockBoot 构建成功
             
             - **版本**: `${{ needs.version.outputs.v }}`
-            - **时间**: `${{ needs.version.outputs.time }}`
+            - **引擎**: `KuiperZone.PupNet`
             
             ### 🔐 SHA256 校验和
             ```text

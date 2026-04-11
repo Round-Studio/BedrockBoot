@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -12,13 +11,14 @@ using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Path = System.IO.Path;
 
 namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadUpdateFileItem : UserControl
 {
-
+    
 
     public TaskDownloadUpdateFileItem()
     {
@@ -36,31 +36,9 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     {
         // 标题国际化
         CardTitle.Text = string.Format(I18nManager.Instance["Task.Update.Title.Format"], Release.TagName);
-
-        // 根据操作系统选择正确的资产
-        var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
-        // 选择匹配的资产
-        var asset = isLinux
-            ? Release.Assets.FirstOrDefault(a => a.Name.Contains("linux", StringComparison.OrdinalIgnoreCase))
-            : Release.Assets.FirstOrDefault(a => a.Name.Contains("win", StringComparison.OrdinalIgnoreCase)
-                                                 || a.Name.Contains("windows", StringComparison.OrdinalIgnoreCase));
-
-        if (asset == null)
-        {
-            var osName = isLinux ? "Linux" : "Windows";
-            var errorMsg = $"未找到适用于 {osName} 的更新文件";
-            Dispatcher.UIThread.Invoke(() => { ProgressText.Text = errorMsg; });
-            Console.WriteLine(errorMsg);
-            return;
-        }
-
-        var url = asset.BrowserDownloadUrl;
-        // Linux 和 Windows 使用不同的扩展名
-        var extension = isLinux ? "" : ".exe"; // Linux 文件通常没有扩展名或者是 .AppImage
-        var fileName = isLinux ? Release.TagName : $"{Release.TagName}.exe";
-        var path = Path.Combine(PathsList.UpdatePath, fileName);
+        
+        var url = Release.Assets[0].BrowserDownloadUrl;
+        var path = Path.Combine(PathsList.UpdatePath, $"{Release.TagName}.exe");
 
         Task.Run(async () =>
         {
@@ -85,27 +63,8 @@ public partial class TaskDownloadUpdateFileItem : UserControl
             // 给予 UI 刷新的缓冲时间
             await Task.Delay(100);
 
-            // 根据平台启动更新程序
-            if (isLinux)
-            {
-                // Linux: 设置可执行权限并启动
-                var chmodProcess = Process.Start("chmod", $"+x \"{path}\"");
-                chmodProcess?.WaitForExit();
-
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = path,
-                    Arguments = $"-update {Process.GetCurrentProcess().MainModule?.FileName}",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                Process.Start(startInfo);
-            }
-            else
-            {
-                // Windows: 直接启动
-                Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
-            }
+            // 启动更新程序
+            Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
 
             await Task.Delay(100);
             Environment.Exit(0);
@@ -114,6 +73,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
 
     public static void Update(Release release)
     {
+#if WINDOWS
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = I18nManager.Instance["Task.Update.Notice.Title"],
@@ -125,5 +85,31 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
         body.Update();
+#endif
+
+#if LINUX
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "您的系统尚不支持自动更新",
+            Content = new StackPanel()
+            {
+                Spacing = 4,
+                Children =
+                {
+                    new TextBlock()
+                    {
+                        Text = "您的系统为 Linux 发行版，尚不支持使用内置更新工具进行自动更新。\n" +
+                               "请前往 Github Release 或 官网 下载新的程序包替换以完成更新"
+                    },
+                    new HyperlinkButton()
+                    {
+                        Content = $"Github Release {release.Name}",
+                        NavigateUri = new Uri(release.HtmlUrl)
+                    }
+                }
+            },
+            CloseButtonText = "确定"
+        });
+#endif
     }
 }

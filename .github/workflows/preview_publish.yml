@@ -80,15 +80,13 @@ jobs:
       
       - name: Build Linux
         run: |
-          cd ./src/BedrockBoot
-          dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o "./../../linux-publish/" /p:Version=${{ needs.version.outputs.v }}
-          chmod +x ./../../linux-publish/BedrockBoot
+          ./build-appimage.sh ./src/BedrockBoot/BedrockBoot.csproj "BedrockBoot" -version ${{ needs.version.outputs.v }}
       
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
         with:
           name: linux-artifact
-          path: ./linux-publish/BedrockBoot
+          path: ./artifacts
           retention-days: 1
 
   # 4. 发布 Release
@@ -145,13 +143,10 @@ jobs:
             
             **本次更新内容**
             ${{ steps.commits.outputs.changelog }}
-            
-            ---
-            *提示：Linux 用户下载后请执行 `chmod +x BedrockBoot` 赋予运行权限。*
           draft: false
           prerelease: true
           files: |
-            ./dist/BedrockBoot.exe
-            ./dist/BedrockBoot
+            ./dist/*.exe
+            ./dist/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

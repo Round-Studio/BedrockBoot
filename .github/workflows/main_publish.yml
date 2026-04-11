@@ -34,48 +34,125 @@ jobs:
           echo "Build version: ${{ steps.version.outputs.value }}"
           echo "Tag: ${{ steps.version.outputs.tag }}"
           echo "Build time: ${{ steps.time.outputs.value }}"
-
-  win:
+          
+  # 2. Windows 构建任务
+  win-build:
     runs-on: windows-latest
     needs: version
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            10.0.x
+          dotnet-version: 10.0.x
       
-      - name: Sub-Module
-        run: |
-          git pull
-          git submodule update --init --recursive --remote
-      
-      - name: Build
+      - name: Build Windows
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../Release-publish/" /p:Version=${{ needs.version.outputs.v }}
+          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../win-publish/" /p:Version=${{ needs.version.outputs.v }}
       
-      - name: Create Release
+      - name: Rename Windows Output
+        shell: pwsh
+        run: |
+          Get-ChildItem "./win-publish/*.exe" | Rename-Item -NewName "BedrockBoot.exe"
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifact
+          path: ./win-publish/BedrockBoot.exe
+          retention-days: 1
+
+  # 3. Linux 构建任务
+  linux-build:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      
+      - name: Build Linux
+        run: |
+          ./build-appimage.sh ./src/BedrockBoot/BedrockBoot.csproj "BedrockBoot" -version ${{ needs.version.outputs.v }}
+      
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-artifact
+          path: ./artifacts
+          retention-days: 1
+
+  # 4. 发布 Release
+  release:
+    runs-on: ubuntu-latest
+    needs: [version, win-build, linux-build]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 必须拉取全部历史以对比标签
+
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+          merge-multiple: true
+
+      - name: Generate Smart Changelog
+        id: commits
+        run: |
+          # 获取上一个 Release 的标签 (排除当前的 tag)
+          # 如果没有上一个标签，则获取所有 commit
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "首次构建，显示最近 5 条变更：" >> $GITHUB_OUTPUT
+            git log -5 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+          else
+            echo "自 $PREVIOUS_TAG 以来的变更：" >> $GITHUB_OUTPUT
+            # 获取从上一个标签到当前 HEAD 的所有提交记录
+            CHANGES=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)")
+            if [ -z "$CHANGES" ]; then
+              echo "- 内部优化与小改动" >> $GITHUB_OUTPUT
+            else
+              echo "$CHANGES" >> $GITHUB_OUTPUT
+            fi
+          fi
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
-          name: "Release ${{ needs.version.outputs.tag }}"
+          name: "BedrockBoot Build ${{ needs.version.outputs.tag }}"
           body: |
-            ## BedrockBoot ${{ needs.version.outputs.v }}
+            ## BedrockBoot ${{ needs.version.outputs.v }} 正式版推送
             
-            **构建信息**
-            - 版本: ${{ needs.version.outputs.v }}
+            **构建详情**
             - 构建时间: ${{ needs.version.outputs.time }}
-            - 提交: ${{ github.sha }}
+            - 提交 Hash: ${{ github.sha }}
             
-            ---
-            *自动化构建发布*  
+            **本次更新内容**
+            ${{ steps.commits.outputs.changelog }}
           draft: false
           prerelease: false
           files: |
-            ./Release-Publish/*.exe
+            ./dist/*.exe
+            ./dist/*.AppImage
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

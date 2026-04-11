@@ -16,14 +16,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
       - name: Generate version
         id: version
         run: |
           VERSION=$(date +'%Y.%m.%d.%H%M')
           echo "value=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
-      
       - name: Get current time
         id: time
         run: |
@@ -42,29 +40,21 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - name: Sub-Module
-        run: |
-          git submodule update --init --recursive --remote
-      - name: Build Windows executable
+      - name: Build
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r win-x64 `
-            /p:PublishSingleFile=true `
-            /p:IncludeNativeLibrariesForSelfExtract=true `
-            /p:SelfContained=false `
-            /p:Version=${{ needs.version.outputs.v }} `
-            -o "./../../Release-publish/"
-      - name: Rename Windows executable
+          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:SelfContained=false /p:Version=${{ needs.version.outputs.v }} -o "./../../Release-publish/"
+      - name: Rename
         run: |
           cd ./Release-publish
           Rename-Item "BedrockBoot.exe" "BedrockBoot-${{ needs.version.outputs.v }}-win-x64.exe"
-      - name: Upload Windows artifact
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: ./Release-publish/BedrockBoot-*-win-x64.exe
 
-  # ==================== Linux 构建 (PupNet 驱动) ====================
+  # ==================== Linux 构建 (PupNet 原生配置模式) ====================
   linux-build:
     runs-on: ubuntu-latest
     needs: version
@@ -79,39 +69,49 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Sub-Module
-        run: |
-          git submodule update --init --recursive --remote
-
       - name: Install PupNet
         run: dotnet tool install --global KuiperZone.PupNet
 
-      - name: Build AppImage with PupNet
+      - name: Prepare PupNet Config (YAML)
         run: |
-          # 1. 环境准备
-          sudo apt-get update && sudo apt-get install -y libfuse2 imagemagick
+          # 动态生成 pupnet.conf (这是 PupNet 的原生 YAML 格式)
+          # 注意：PupNet 的 YAML 键名通常是大写的，且结构如下
+          cat > pupnet.conf << EOF
+          AppId: top.roundstudio.bedrockboot
+          AppName: BedrockBoot
+          Company: RoundStudio
+          Description: >-
+            BedrockBoot is a powerful and efficient bootstrapping application 
+            for Minecraft Bedrock Edition. Built with .NET for high performance 
+            on Linux systems.
+          IconPath: assets/BedrockBoot.Icon.512x.png
+          ProjectPath: src/BedrockBoot/BedrockBoot.csproj
+          License: GPL-3.0-only
+          Categories: Game;Utility;
+          DotnetPublish:
+            SelfContained: true
+            ReadyToRun: true
+          AppStream:
+            Enabled: true
+            DeveloperName: RoundStudio
+            UrlHome: https://github.com/RoundStudio/BedrockBoot
+          EOF
+
+      - name: Build AppImage
+        run: |
+          # 解决 Ubuntu 22.04+ 的 FUSE 兼容问题
+          sudo apt-get update && sudo apt-get install -y libfuse2
           
-          # 2. 使用 PupNet 的指令化快速打包 (参数化模式)
-          # 注意：PupNet 的参数和 punet 略有不同
-          # 我们直接利用 PupNet 的简洁模式快速生成
-          pupnet --init \
-            -v "${{ needs.version.outputs.v }}" \
-            -app "BedrockBoot" \
-            -id "top.roundstudio.bedrockboot" \
-            -src "./src/BedrockBoot/BedrockBoot.csproj" \
-            -i "./assets/BedrockBoot.Icon.512x.png" \
-            -k "Game;Utility;" \
-            -d "A powerful bootstrapping application for Minecraft Bedrock Edition."
-
-          # 3. 运行打包
-          # NO_APPSTREAM 依然作为底层保险
+          # 强制设置 NO_APPSTREAM 环境变量
           export NO_APPSTREAM=1
-          pupnet --build -r linux-x64 -k AppImage
+          
+          # 执行打包。--v 参数会覆盖配置文件中的版本
+          pupnet --build -r linux-x64 -k AppImage --v "${{ needs.version.outputs.v }}"
 
-      - name: Rename and Move Artifact
+      - name: Move and Rename
         run: |
           mkdir -p ./deploy
-          # PupNet 默认输出在输出目录的子文件夹里，我们把它找出来
+          # PupNet 默认输出路径为 publish/linux-x64/AppImage/
           find ./publish -name "*.AppImage" -exec mv {} ./deploy/BedrockBoot-${{ needs.version.outputs.v }}-linux-x86_64.AppImage \;
 
       - name: Upload Linux artifact
@@ -126,7 +126,7 @@ jobs:
     needs: [version, windows-build, linux-build]
     if: always() && needs.version.result == 'success'
     steps:
-      - name: Download all artifacts
+      - name: Download all
         uses: actions/download-artifact@v4
         with:
           path: ./release-files
@@ -149,9 +149,8 @@ jobs:
           prerelease: true
           body: |
             ## 🚀 BedrockBoot 构建成功
-            
             - **版本**: `${{ needs.version.outputs.v }}`
-            - **引擎**: `KuiperZone.PupNet`
+            - **打包引擎**: `PupNet (YAML Config)`
             
             ### 🔐 SHA256 校验和
             ```text

@@ -103,7 +103,7 @@ jobs:
       
       - name: Create PupNet configuration
         run: |
-          cat > ./pupnet.conf << EOF
+          cat > ./.pupnet.conf << EOF
           AppName = BedrockBoot
           AppVersion = ${{ needs.version.outputs.v }}
           AppPublisher = Round-Studio

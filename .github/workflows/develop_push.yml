@@ -124,7 +124,7 @@ jobs:
           EOF
           
           echo "✅ PupNet configuration created:"
-          cat ./pupnet.conf
+          cat ./.pupnet.conf
       
       - name: Build and package AppImage
         run: |

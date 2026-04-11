@@ -208,6 +208,6 @@ public partial class DrawInstanceContent : UserControl
 
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        Process.Start("explorer", new[] { VersionInfo.VersionPath });
+        OpenFolderHelper.Open(VersionInfo.VersionPath);
     }
 }

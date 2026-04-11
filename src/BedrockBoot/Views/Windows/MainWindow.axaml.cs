@@ -43,6 +43,9 @@ public partial class MainWindow : BedrockBootWindow
 
     public MainWindow()
     {
+        // 核心引擎异步初始化
+        InitBedrockCoreAsync();
+
         GlobalModel.MainWindow = this;
         InitializeComponent();
         if (!BedrockBoot.Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
@@ -102,9 +105,6 @@ public partial class MainWindow : BedrockBootWindow
 
         // 注册文件关联
         HandleFileAssociations();
-
-        // 核心引擎异步初始化
-        await InitBedrockCoreAsync();
 
         // 完成初始化后回到 UI 线程进行页面跳转
         await Dispatcher.UIThread.InvokeAsync(() =>

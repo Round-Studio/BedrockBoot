@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -42,11 +43,7 @@ public partial class GameFolderItem : UserControl
         
         try
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = GameFolderInfo.GameFolderPath,
-                UseShellExecute = true // 使用外壳程序打开文件夹
-            });
+            OpenFolderHelper.Open(GameFolderInfo.GameFolderPath);
         }
         catch (Exception ex)
         {

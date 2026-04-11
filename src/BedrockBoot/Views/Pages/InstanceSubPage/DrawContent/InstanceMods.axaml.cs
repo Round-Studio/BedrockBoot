@@ -9,6 +9,7 @@ using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
@@ -99,7 +100,7 @@ public partial class InstanceMods : ISetting
         {
             Directory.CreateDirectory(modPath);
         }
-        Process.Start("explorer", new[] { modPath });
+        OpenFolderHelper.Open(modPath);
     }
 
     /// <summary>

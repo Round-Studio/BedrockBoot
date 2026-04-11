@@ -1,11 +1,12 @@
-name: 验证代码
+name: 构建并推送 Pre Release
 
 on:
   workflow_dispatch:
   push:
-    branches: ["2.0-develop"]
+    branches: ["2.0-preview"]
 
 jobs:
+  # 版本生成 Job
   version:
     runs-on: ubuntu-latest
     outputs:
@@ -21,8 +22,10 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          echo "value=2.1.6.${{ github.run_number }}" >> $GITHUB_OUTPUT
-          echo "tag=v2.1.6.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          # 生成 yyyy.mm.dd.hhss 格式的版本号
+          VERSION=$(date +'%Y.%m.%d.%H%M')
+          echo "value=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
       
       - name: Get current time
         id: time
@@ -35,12 +38,15 @@ jobs:
           echo "Tag: ${{ steps.version.outputs.tag }}"
           echo "Build time: ${{ steps.time.outputs.value }}"
 
-  win:
+  # ==================== Windows 构建 ====================
+  windows-build:
     runs-on: windows-latest
     needs: version
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -53,14 +59,185 @@ jobs:
           git pull
           git submodule update --init --recursive --remote
       
-      - name: Build
+      - name: Build Windows executable
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../Release-publish/" /p:Version=${{ needs.version.outputs.v }}
+          dotnet publish -c Release -r win-x64 `
+            /p:PublishSingleFile=true `
+            /p:IncludeNativeLibrariesForSelfExtract=true `
+            /p:SelfContained=false `
+            /p:Version=${{ needs.version.outputs.v }} `
+            -o "./../../Release-publish/"
       
-      - name: Upload Artifacts
+      - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BedrockBoot.Publish
-          path: |
-            ./debug-publish/*
+          name: windows-build
+          path: ./Release-publish/BedrockBoot-*.exe
+          retention-days: 7
+
+  # ==================== Linux AppImage 构建 ====================
+  linux-appimage-build:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            10.0.x
+      
+      - name: Sub-Module
+        run: |
+          git pull
+          git submodule update --init --recursive --remote
+      
+      - name: Install PupNet
+        run: |
+          dotnet tool install -g KuiperZone.PupNet
+      
+      - name: Create PupNet configuration
+        run: |
+          cat > ./pupnet.conf << EOF
+          AppName = BedrockBoot
+          AppVersion = ${{ needs.version.outputs.v }}
+          AppPublisher = Round-Studio
+          AppIdentifier = top.roundstudio.bedrockboot
+          
+          AppIcon = ./assets/BedrockBoot.Icon.512x.png
+          
+          DotnetProject = ./src/BedrockBoot/BedrockBoot.csproj
+          DotnetRuntime = linux-x64
+          DotnetConfiguration = Release
+          
+          IsConsoleApp = false
+          
+          AppImageKind = appimage
+          
+          AppDescription = A Minecraft Bedrock Launcher.
+          AppCategories = Utility;Development;
+          EOF
+          
+          echo "✅ PupNet configuration created:"
+          cat ./pupnet.conf
+      
+      - name: Build and package AppImage
+        run: |
+          # 使用 PupNet 打包
+          pupnet --runtime linux-x64 --kind appimage
+      
+      - name: List generated files
+        run: |
+          echo "📦 Generated AppImage files:"
+          ls -lh *.AppImage
+      
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-appimage
+          path: ./BedrockBoot-*.AppImage
+          retention-days: 7
+
+  # ==================== 创建 Release ====================
+  create-release:
+    runs-on: ubuntu-latest
+    needs: [version, windows-build, linux-appimage-build]
+    if: always() && needs.version.result == 'success' && (needs.windows-build.result == 'success' || needs.linux-appimage-build.result == 'success')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 3
+      
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+          path: ./release-files/windows
+        continue-on-error: true
+      
+      - name: Download Linux AppImage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-appimage
+          path: ./release-files/linux
+        continue-on-error: true
+      
+      - name: List downloaded files
+        run: |
+          echo "📁 Release files structure:"
+          echo ""
+          echo "Windows files:"
+          ls -lh ./release-files/windows/ 2>/dev/null || echo "  No Windows files"
+          echo ""
+          echo "Linux files:"
+          ls -lh ./release-files/linux/ 2>/dev/null || echo "  No Linux files"
+      
+      - name: Get commit messages
+        id: commits
+        run: |
+          # 获取最近一次提交的信息
+          echo "latest_commit=$(git log -1 --pretty=format:%s)" >> $GITHUB_OUTPUT
+          
+          # 获取最近5次提交的信息作为变更日志
+          CHANGELOG=$(git log -5 --pretty=format:"- %s (%h)" --reverse | sed ':a;N;$!ba;s/\n/\\n/g')
+          echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
+          
+          # 获取提交者信息
+          echo "committer=$(git log -1 --pretty=format:%an)" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.version.outputs.tag }}
+          release_name: "BedrockBoot ${{ needs.version.outputs.v }} - Pre-release"
+          body: |
+            ## 🚀 BedrockBoot ${{ needs.version.outputs.v }} 测试版推送
+            
+            ### 📦 构建信息
+            - **版本号**: `${{ needs.version.outputs.v }}`
+            - **构建时间**: ${{ needs.version.outputs.time }}
+            - **提交哈希**: `${{ github.sha }}`
+            - **提交者**: ${{ steps.commits.outputs.committer }}
+            - **提交信息**: ${{ steps.commits.outputs.latest_commit }}
+            
+            ### 📝 变更日志
+            ${{ steps.commits.outputs.changelog }}
+            
+            ### 💻 下载说明
+            #### Windows 用户
+            - 下载 `BedrockBoot-${{ needs.version.outputs.v }}.exe`
+            - 直接运行即可（无需安装 .NET 运行时）
+            
+            #### Linux 用户
+            - 下载 `BedrockBoot-${{ needs.version.outputs.v }}.AppImage`
+            - 添加执行权限：`chmod +x BedrockBoot-${{ needs.version.outputs.v }}.AppImage`
+            - 运行：`./BedrockBoot-${{ needs.version.outputs.v }}.AppImage`
+            
+            ### ⚠️ 注意事项
+            - 预发布版本，可能会有未发现的 Bugs
+            - 如遇到问题，请提交 Issue 反馈
+            
+            ---
+            *🤖 自动化构建发布 | [查看工作流运行记录](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
+          draft: false
+          prerelease: true
+          files: |
+            ./release-files/windows/*.exe
+            ./release-files/linux/*.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Release summary
+        run: |
+          echo "## ✅ Release 创建成功" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Release 信息**" >> $GITHUB_STEP_SUMMARY
+          echo "- 标签: ${{ needs.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 版本: ${{ needs.version.outputs.v }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 查看: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ needs.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY

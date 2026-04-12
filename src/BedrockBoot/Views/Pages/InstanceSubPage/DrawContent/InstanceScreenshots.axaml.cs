@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Screenshots;
 using BedrockBoot.Views.Control.Items;
 
@@ -51,5 +53,13 @@ public partial class InstanceScreenshots : ISetting
     {
         if (IsEdit)
             UpdateScreenshots();
+    }
+
+    private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var paths = new ScreenshotsManager(VersionInfo).GetInstanceScreenshotsPath();
+        var path = paths.Values.ToList()[UserChooseBox.SelectedIndex];
+        
+        OpenFolderHelper.Open(path);
     }
 }

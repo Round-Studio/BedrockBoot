@@ -46,7 +46,7 @@ public class ScreenshotsManager
         return result;
     }
 
-    private Dictionary<string, string> GetInstanceScreenshotsPath()
+    public Dictionary<string, string> GetInstanceScreenshotsPath()
     {
         var result = new Dictionary<string, string>();
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)

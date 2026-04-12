@@ -8,26 +8,41 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceScreenshots">
     <Grid RowDefinitions="Auto,*">
-        <items:BorderCard Grid.Row="0"
-                          Width="400"
-                          HorizontalAlignment="Left"
-                          Margin="20,8,20,10">
-            <Grid ColumnDefinitions="4*">
-                <DockPanel Grid.Column="0"
-                           Margin="0,0,0,0">
-                    <onePointControls:FontIcon Glyph="&#xEBDA;"
-                                               VerticalAlignment="Center"
-                                               FontSize="16"
-                                               Margin="5,5,12,5" />
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto">
+            <items:BorderCard Grid.Column="0"
+                              Margin="20,8,0,10">
+                <Grid ColumnDefinitions="4*">
+                    <DockPanel Grid.Column="0"
+                               Margin="0,0,0,0">
+                        <onePointControls:FontIcon Glyph="&#xEBDA;"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="16"
+                                                   Margin="5,5,12,5" />
 
-                    <ComboBox HorizontalAlignment="Stretch"
-                              Name="UserChooseBox"
-                              SelectionChanged="UserChooseBox_OnSelectionChanged"
-                              SelectedIndex="0"
-                              DockPanel.Dock="Right" />
-                </DockPanel>
-            </Grid>
-        </items:BorderCard>
+                        <ComboBox HorizontalAlignment="Stretch"
+                                  Name="UserChooseBox"
+                                  SelectionChanged="UserChooseBox_OnSelectionChanged"
+                                  SelectedIndex="0"
+                                  DockPanel.Dock="Right" />
+                    </DockPanel>
+                </Grid>
+            </items:BorderCard>
+            
+            <items:BorderCard Grid.Column="1"
+                              Margin="12,8,20,10">
+                <StackPanel Orientation="Horizontal">
+                    <Button Classes="NoBorder"
+                            Padding="8"
+                            Width="32"
+                            Height="32"
+                            Name="OpenFolderBtn"
+                            Click="OpenFolderBtn_OnClick">
+                        <onePointControls:FontIcon Glyph="&#xE8B7;"></onePointControls:FontIcon>
+                    </Button>
+                </StackPanel>
+            </items:BorderCard>
+        </Grid>
 
         <ScrollViewer Grid.Row="1">
             <WrapPanel Margin="15,0,15,15"

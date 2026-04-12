@@ -147,7 +147,9 @@ public class GithubFilesDownloader
     {
         try
         {
-            var sourceUrl = sourcePattern.Replace("{url}", fileUrl);
+            var sourceUrl = sourcePattern.Replace("{url}", fileUrl)
+                .Replace("{route}", fileUrl.Replace("https://github.com/", "").Replace("http://github.com/", ""));
+            
             var uri = new Uri(sourceUrl);
             
             using var testClient = new HttpClient();

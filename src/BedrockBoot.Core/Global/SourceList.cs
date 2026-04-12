@@ -24,7 +24,7 @@ public class SourceList
         { "McAppx 源", "https://data.mcappx.com/v2/bedrock.json" },
         { "BedrockBoot 源 ①", "https://mcappx.52caecb8.er.aliyun-esa.net" },
         { "BMCBL 源 ①", "https://mcappx.chlna6666.com" },
-        { "BMCBL 源 ②", "https://api.chlna6666.com/mcappx" }
+        { "BMCBL 源 ②", "https://api.chlna6666.com/api/v1/bedrock/mcappx" }
     };
 
     public static Dictionary<string, string> CurseForgeSource { get; set; } = new()

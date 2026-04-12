@@ -1,21 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Core.Models.Download;
 
 public class GithubFilesDownloader
 {
     private readonly MultiThreadDownloader _downloader;
-    
-    // 下载源定义
-    public static Dictionary<string, string> UpdateDownloadSources { get; set; } = new()
-    {
-        { "Github", "{url}" },
-        { "加速源 ①", "https://github1.roundstudio.top/{url}" },
-        { "llkk.cc", "https://gh.llkk.cc/{url}" },
-        { "gh-proxy.top", "https://gh-proxy.top/{url}" },
-        { "gh-proxy.net", "https://gh-proxy.net/{url}" }
-    };
 
     public GithubFilesDownloader(int maxConcurrency = 4, int bufferSize = 81920, int defaultTimeoutSeconds = 20)
     {
@@ -41,7 +32,7 @@ public class GithubFilesDownloader
         // 记录已经开始测试但未完成的源，用于后续取消
         var activeSources = new ConcurrentDictionary<string, CancellationTokenSource>();
 
-        foreach (var source in UpdateDownloadSources)
+        foreach (var source in SourceList.UpdateDownloadSources)
         {
             var sourceKey = source.Key;
             var sourcePattern = source.Value;
@@ -64,7 +55,7 @@ public class GithubFilesDownloader
                     if (result.Speed > 0 && !completionSource.Task.IsCompleted)
                     {
                         // 成功完成测试，设置结果并取消其他测试
-                        var selectedUrl = UpdateDownloadSources[sourceKey].Replace("{url}", fileUrl);
+                        var selectedUrl = SourceList.UpdateDownloadSources[sourceKey].Replace("{url}", fileUrl);
                         Console.WriteLine($@"源 {sourceKey} 测试成功，速度: {result.Speed:F2} B/s，开始下载");
                         
                         // 尝试设置结果，如果成功则取消其他测试

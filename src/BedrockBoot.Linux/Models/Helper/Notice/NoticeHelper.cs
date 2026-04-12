@@ -1,5 +1,4 @@
-﻿
-namespace BedrockBoot.Models.Helper.Notice;
+﻿namespace BedrockBoot.Models.Helper.Notice;
 
 public class NoticeHelper
 {

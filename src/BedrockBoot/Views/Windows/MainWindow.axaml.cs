@@ -60,7 +60,55 @@ public partial class MainWindow : BedrockBootWindow
         SetupDynamicHotkey();
         StartNetworkMonitoring();
         _ = InitializeAsync();
+        
+        DragDrop.SetAllowDrop(this, true);
+    
+        this.AddHandler(DragDrop.DragOverEvent, OnDragOver, RoutingStrategies.Tunnel);
+        this.AddHandler(DragDrop.DropEvent, OnDrop, RoutingStrategies.Tunnel);
     }
+
+    #region 窗口拖拽事件
+
+    /// <summary>
+    /// 当文件拖拽到窗口上方时触发，决定是否显示“拷贝”图标
+    /// </summary>
+    private void OnDragOver(object? sender, DragEventArgs e)
+    {
+        // 只有当拖拽内容包含文件时才允许放置
+        if (e.Data.Contains(DataFormats.Files))
+        {
+            e.DragEffects = DragDropEffects.Copy;
+        }
+        else
+        {
+            e.DragEffects = DragDropEffects.None;
+        }
+    }
+
+    /// <summary>
+    /// 当用户松开鼠标完成放置时触发
+    /// </summary>
+    private void OnDrop(object? sender, DragEventArgs e)
+    {
+        // 获取文件路径列表
+        var files = e.Data.GetFiles();
+
+        if (files != null)
+        {
+            foreach (var file in files)
+            {
+                // 获取文件的绝对路径
+                string? filePath = file.Path.LocalPath;
+            
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    Console.WriteLine($"检测到拖入文件: {filePath}");
+                }
+            }
+        }
+    }
+
+    #endregion
 
     #region 初始化流程
 

@@ -36,8 +36,19 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     {
         // 标题国际化
         CardTitle.Text = string.Format(I18nManager.Instance["Task.Update.Title.Format"], Release.TagName);
-        
-        var url = Release.Assets[0].BrowserDownloadUrl;
+    
+        // 查找名称包含 "win" 的 asset
+        var winAsset = Release.Assets.FirstOrDefault(asset => 
+            asset.Name.Contains("win", StringComparison.OrdinalIgnoreCase));
+    
+        if (winAsset == null)
+        {
+            // 如果没有找到包含 "win" 的 asset，可以记录错误或回退到第一个 asset
+            Console.WriteLine("未找到包含 'win' 标志的 asset");
+            return;
+        }
+    
+        var url = winAsset.BrowserDownloadUrl;
         var path = Path.Combine(PathsList.UpdatePath, $"{Release.TagName}.exe");
 
         Task.Run(async () =>

@@ -83,7 +83,7 @@ public class EasyLauncher
             UseShellExecute = false,
             CreateNoWindow = true,
             RedirectStandardOutput = true,
-            RedirectStandardError = true,
+            RedirectStandardError = true
         };
 
         // 注入 Proton 所需的环境变量

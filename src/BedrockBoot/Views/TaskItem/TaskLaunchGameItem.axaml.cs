@@ -60,6 +60,7 @@ public partial class TaskLaunchGameItem : UserControl
 
                 var lc = new EasyLauncher(VersionInfo);
 
+#if WINDOWS
                 // 设置迁移回调 - 这里的对话框内容已全部国际化
                 lc.OnMigration = () =>
                 {
@@ -95,6 +96,7 @@ public partial class TaskLaunchGameItem : UserControl
                         LaunchProgressBar.Value = percentage;
                     });
                 };
+#endif
 
                 lc.UpdateProgressText = text =>
                 {

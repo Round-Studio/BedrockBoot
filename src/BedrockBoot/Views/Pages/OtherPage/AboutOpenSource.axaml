@@ -5,16 +5,17 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.OtherPage.AboutOpenSource">
     <ScrollViewer>
-        <StackPanel Margin="15">
+        <StackPanel Margin="20"
+                    Spacing="4">
             <TextBlock FontSize="22"
                        FontWeight="Bold"
                        Margin="5,20,5,8">
                 Avalonia
             </TextBlock>
             <TextBlock Margin="5,5,0,0" Name="AvaloniaVersion" />
-            <TextBlock Margin="5" Text="(https://github.com/AvaloniaUI/Avalonia)" />
-            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
-            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/AvaloniaUI/Avalonia/blob/master/licence.md)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/AvaloniaUI/Avalonia)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/AvaloniaUI/Avalonia/blob/master/licence.md)" />
 
 
             <TextBlock FontSize="22"
@@ -22,9 +23,9 @@
                        Margin="5,20,5,8">
                 OnePointUI.Avalonia
             </TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/OnePointUI.Avalonia)" />
-            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
-            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/Round-Studio/OnePointUI.Avalonia/blob/master/LICENSE)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/OnePointUI.Avalonia)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/Round-Studio/OnePointUI.Avalonia/blob/master/LICENSE)" />
 
 
             <TextBlock FontSize="22"
@@ -32,9 +33,9 @@
                        Margin="5,20,5,8">
                 Round.SDK
             </TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/Round.SDK)" />
-            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Gpl}" />
-            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/Round-Studio/Round.SDK/blob/master/LICENSE)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/Round.SDK)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Gpl}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/Round-Studio/Round.SDK/blob/master/LICENSE)" />
 
 
             <TextBlock FontSize="22"
@@ -42,9 +43,27 @@
                        Margin="5,20,5,8">
                 BedrockLauncher.Core
             </TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/BedrockLauncher.Core)" />
-            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
-            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/Round-Studio/BedrockLauncher.Core/blob/2.0-main/LICENSE)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/BedrockLauncher.Core)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/Round-Studio/BedrockLauncher.Core/blob/2.0-main/LICENSE)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                BedrockLauncher.Core.Linux
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/BedrockLauncher.Core.Linux)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/Round-Studio/BedrockLauncher.Core.Linux/blob/master/LICENSE)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                PaperConnect.Core
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/PaperConnect)" />
 
 
             <TextBlock FontSize="22"
@@ -52,10 +71,20 @@
                        Margin="5,20,5,8">
                 PeNet
             </TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/secana/PeNet)" />
-            <TextBlock Margin="5" Text="(https://github.com/Round-Studio/PeNet)" />
-            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Apache}" />
-            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/secana/PeNet/blob/master/LICENSE)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/secana/PeNet)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/PeNet)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Apache}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/secana/PeNet/blob/master/LICENSE)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                SkiaSharp
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/mono/SkiaSharp)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Apache}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/mono/SkiaSharp/blob/main/LICENSE.md)" />
 
 
             <TextBlock FontSize="22"
@@ -63,9 +92,9 @@
                        Margin="5,20,5,8">
                 Octokit
             </TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/octokit/octokit.net)" />
-            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
-            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/octokit/octokit.net/blob/main/LICENSE.txt)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/octokit/octokit.net)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/octokit/octokit.net/blob/main/LICENSE.txt)" />
 
 
             <TextBlock FontSize="22"
@@ -73,9 +102,9 @@
                        Margin="5,20,5,8">
                 Windows.APICodePack
             </TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1)" />
-            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Custom}" />
-            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1/blob/main/LICENSE)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Custom}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1/blob/main/LICENSE)" />
 
 
             <TextBlock FontSize="22"
@@ -83,9 +112,27 @@
                        Margin="5,20,5,8">
                 WindowsCommunityToolkit (Microsoft.Toolkit.Uwp.Notifications)
             </TextBlock>
-            <TextBlock Margin="5" Text="(https://github.com/CommunityToolkit/WindowsCommunityToolkit)" />
-            <TextBlock Margin="5" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
-            <TextBlock Margin="5" FontSize="9" Text="(https://github.com/CommunityToolkit/WindowsCommunityToolkit/blob/main/License.md)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/CommunityToolkit/WindowsCommunityToolkit)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/CommunityToolkit/WindowsCommunityToolkit/blob/main/License.md)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                HtmlAgilityPack
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/zzzprojects/html-agility-pack)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/zzzprojects/html-agility-pack/blob/master/LICENSE)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                Interop.IWshRuntimeLibrary
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://www.nuget.org/packages/Interop.IWshRuntimeLibrary)" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

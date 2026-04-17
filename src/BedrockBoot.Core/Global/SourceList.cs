@@ -16,7 +16,7 @@ public class SourceList
         { "加速源 ①", "https://github1.roundstudio.top/{url}" },
         { "llkk.cc", "https://gh.llkk.cc/{url}" },
         { "gh-proxy.net", "https://gh-proxy.net/{url}" },
-        /*{ "zheo.top", "https://github.zheo.top/{route}" }*/
+        /*{ "", "{route}" }*/
     };
 
     public static Dictionary<string, string> VersionDataSources { get; set; } = new()

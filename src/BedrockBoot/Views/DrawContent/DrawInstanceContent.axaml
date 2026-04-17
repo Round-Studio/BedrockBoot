@@ -103,7 +103,7 @@
                 <TabItem Header="{DynamicResource Draw.Instance.Tab.Archive}" Tag="Save" Name="Save"/>
                 <TabItem Header="{DynamicResource Draw.Instance.Tab.Screenshots}" Tag="Screenshots" Name="Screenshots"/>
                 <TabItem Header="{DynamicResource Draw.Instance.Tab.Servers}" Tag="Server" Name="Server"/>
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Plugins}" Tag="Plugin" Name="Plugin"/>
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Plugins}" Tag="Plugin" Name="Plugin" IsVisible="False"/>
                 <TabItem Header="{DynamicResource Draw.Instance.Tab.Controls}" Tag="Controls" Name="GameControls" />
             </TabControl>
 

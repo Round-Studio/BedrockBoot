@@ -34,9 +34,7 @@
     <Project Path="src/Round.SDK/Round.SDK.PluginTools/Round.SDK.PluginTools.csproj" />
     <Project Path="src/Round.SDK/Round.SDK/Round.SDK.csproj" />
   </Folder>
-  <Folder Name="/Plugin/">
-    <Project Path="src/Plugin/Plugin.Pro/Plugin.Pro.csproj" />
-  </Folder>
+  <Folder Name="/Plugin/" />
   <Folder Name="/Test/">
     <Project Path="src/BedrockBoot.Test/BedrockBoot.Test.csproj" />
   </Folder>

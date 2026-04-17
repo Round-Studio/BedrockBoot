@@ -42,7 +42,7 @@
                             <onePointControls:FontIcon VerticalAlignment="Center"
                                                        FontSize="17"
                                                        Foreground="White"
-                                                       Glyph="&#xE709;" />
+                                                       Glyph="&#xE768;" />
 
                             <TextBlock Text="{DynamicResource Main.Action.Launch}"
                                        Foreground="White"

@@ -16,6 +16,7 @@ using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using BedrockLauncher.Core;
+using Round.SDK.Entity;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
@@ -76,6 +77,14 @@ public partial class SearchDetailed : ISetting
                 ResourceTypeBox.SelectedIndex = (int)info.Type;
         }
 
+        if (!string.IsNullOrEmpty(info.Key))
+        {
+            var searchHis = new ConfigEntity<List<SearchInfo>>(PathsList.HistoryPath);
+            searchHis.Data.RemoveAll(x => x.Key == info.Key);
+            searchHis.Data.Add(info);
+            searchHis.Save();
+        }
+        
         // 重置分页状态
         _currentPage = 1;
         _currentIndex = 0;

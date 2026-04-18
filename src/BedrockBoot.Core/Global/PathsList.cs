@@ -9,6 +9,7 @@ public class PathsList
             "BedrockBoot2");
 
     public static readonly string ConfigPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "Config.json");
+    public static readonly string HistoryPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "SearchHistory.json");
     public static readonly string LogPath = Path.Combine(RootConfigPath, "BedrockBoot.Log");
     public static readonly string ProtonPath = Path.Combine(RootConfigPath, "BedrockBoot.Linux", "ProtonGDK");
     public static readonly string UpdatePath = Path.Combine(RootConfigPath, "BedrockBoot.Update");

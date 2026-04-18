@@ -4,14 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Control.Widgets.BigResourceButton">
     <Button HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
             Name="MainButton"
-            Padding="8"
+            Padding="8,8,8,4"
             MaxHeight="122">
-        <Grid RowDefinitions="Auto,*">
+        <Grid RowDefinitions="Auto,*"
+              RowSpacing="4">
             <Grid Grid.Row="0"
                   ColumnDefinitions="Auto,*"
                   ColumnSpacing="6">
@@ -25,7 +26,8 @@
                 <StackPanel Grid.Column="1" Spacing="6">
                     <TextBlock Name="ResourceNameText"
                                FontSize="20"
-                               Text="ResourceName" />
+                               Text="ResourceName" 
+                               TextTrimming="CharacterEllipsis"/>
                     
                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                         <StackPanel Spacing="4" Orientation="Horizontal">

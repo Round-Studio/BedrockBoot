@@ -1,9 +1,11 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
              xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.SearchSubPage.SearchDefault">
     <Grid>
         <StackPanel Spacing="10" Margin="20,5,20,20">
@@ -55,6 +57,16 @@
                     </Border>
                 </Grid>    
             </items:BorderCard>
+            
+           <StackPanel HorizontalAlignment="Center"
+                       Opacity="0.6">
+               <TextBlock Text="如某一项资源无法加载，可通过手动输入关键词进行搜索"
+                          HorizontalAlignment="Center"
+                          FontSize="9"></TextBlock>
+               <TextBlock Text="如还是无法进行搜素，请前往 设置>下载 中切换列表源"
+                          HorizontalAlignment="Center"
+                          FontSize="9"></TextBlock>
+           </StackPanel>
         </StackPanel>
         
         <notice:InfoCard Name="NetworkErrorNotice" IsVisible="False" BigTitle="无效的网络连接" Message="无法连接至目标服务器"

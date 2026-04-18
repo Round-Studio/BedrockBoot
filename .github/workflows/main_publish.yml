@@ -114,8 +114,7 @@ jobs:
       - name: Generate Smart Changelog (only from releases)
         id: commits
         run: |
-          # 获取上一个 Pre-Release 的标签 (排除当前 tag)
-          # 只匹配以 v 开头，且不是正式版的标签（prerelease 特征：日期格式）
+          # 获取上一个 Release 的标签 (排除当前 tag)
           PREVIOUS_TAG=$(git tag -l "v2.*.*.*" | grep -v "${{ needs.version.outputs.tag }}" | sort -V | tail -n 1 || echo "")
           
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
@@ -123,8 +122,8 @@ jobs:
             echo "首次 Pre-Release 构建，显示最近 10 条变更：" >> $GITHUB_OUTPUT
             git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            echo "自 Pre-Release [$PREVIOUS_TAG] 以来的变更：" >> $GITHUB_OUTPUT
-            # 只获取两个 pre-release 标签之间的提交
+            echo "自 Release [$PREVIOUS_TAG] 以来的变更：" >> $GITHUB_OUTPUT
+            # 只获取两个 release 标签之间的提交
             CHANGES=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)")
             if [ -z "$CHANGES" ]; then
               echo "- 无功能变更，可能为依赖更新或配置调整" >> $GITHUB_OUTPUT

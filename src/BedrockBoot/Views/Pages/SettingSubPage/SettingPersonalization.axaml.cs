@@ -29,9 +29,9 @@ public partial class SettingPersonalization : ISettingPage
 
 #if RELEASE
         // 根据功能开关控制启用状态
-        SetBackground.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingBackground;
-        SetColor.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingColor;
-        HomePanel.IsVisible = GlobalModel.FunctionOption.IsEnableSettingPersonalizationHome;
+        SetBackground.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingBackground;
+        SetColor.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingColor;
+        HomePanel.IsVisible = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingPersonalizationHome;
 #endif
     }
 

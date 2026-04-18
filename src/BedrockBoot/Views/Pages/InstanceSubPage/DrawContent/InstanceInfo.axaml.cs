@@ -22,8 +22,8 @@ public partial class InstanceInfo : UserControl
         HighLevel.IsVisible = false;
 #endif
 
-#if RELEASE
-        InstanceMod.IsVisible = GlobalModel.FunctionOption.IsEnableGameInstanceMods;
+#if !RELEASE
+        InstanceMod.IsVisible = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableGameInstanceMods;
 #endif
     }
 

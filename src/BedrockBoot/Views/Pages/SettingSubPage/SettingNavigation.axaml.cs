@@ -12,7 +12,7 @@ public partial class SettingNavigation : UserControl
         InitializeComponent();
 
 #if RELEASE
-        SetPersonalization.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingPersonalization;
+        SetPersonalization.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingPersonalization;
 #endif
     }
 

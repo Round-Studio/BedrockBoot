@@ -28,7 +28,7 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = true;
 
 #if RELEASE
-        GameControls.IsEnabled = GlobalModel.FunctionOption.IsEnableGameInstanceControl;
+        GameControls.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableGameInstanceControl;
 #endif
 
 #if LINUX

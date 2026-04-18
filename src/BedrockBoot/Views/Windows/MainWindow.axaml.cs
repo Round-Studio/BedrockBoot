@@ -127,7 +127,7 @@ public partial class MainWindow : BedrockBootWindow
         // 加载功能配置文件
         try
         {
-            GlobalModel.FunctionOption = await new JsonResourceEntity()
+            BedrockBoot.Models.Global.GlobalModel.FunctionOption = await new JsonResourceEntity()
                 .LoadJsonResourceAsync<FunctionOptionEntry>(
                     "avares://BedrockBoot/Manifest/Function/FunctionOption.json");
         }

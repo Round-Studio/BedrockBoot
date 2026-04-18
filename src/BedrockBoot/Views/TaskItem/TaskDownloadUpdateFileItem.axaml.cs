@@ -9,6 +9,7 @@ using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 using Path = System.IO.Path;
 
@@ -95,7 +96,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
 #endif
 
 #if LINUX
-        DialogHost.Show(new DialogInfo()
+        OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog.DialogHost.Show(new DialogInfo()
         {
             Title = "您的系统尚不支持自动更新",
             Content = new StackPanel()

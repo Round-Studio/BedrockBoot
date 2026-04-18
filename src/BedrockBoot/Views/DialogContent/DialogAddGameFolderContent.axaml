@@ -8,15 +8,15 @@
         <TextBlock Margin="0,5,0,5"
                    HorizontalAlignment="Left"
                    Text="{DynamicResource Dialog.AddGameFolder.Label.Name}" />
-        
+
         <TextBox Margin="0,5,0,5" MinWidth="320"
                  HorizontalAlignment="Stretch"
                  Name="PathNameInputBox" />
-        
+
         <TextBlock Margin="0,5,0,5"
                    HorizontalAlignment="Left"
                    Text="{DynamicResource Dialog.AddGameFolder.Label.Path}" />
-        
+
         <DockPanel>
             <Button DockPanel.Dock="Right"
                     Margin="5,5,0,5"

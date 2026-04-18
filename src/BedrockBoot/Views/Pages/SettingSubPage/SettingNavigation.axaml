@@ -7,7 +7,7 @@
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingNavigation">
     <ScrollViewer>
         <Grid ColumnDefinitions="7*,3*">
-            <StackPanel Grid.Column="0" 
+            <StackPanel Grid.Column="0"
                         Margin="15,15,8,15"
                         Spacing="8">
                 <onePointControls:SettingCard Margin="5, 0"
@@ -58,42 +58,42 @@
                                               IsClickable="True"
                                               Glyph="&#xE946;" />
             </StackPanel>
-            
+
             <StackPanel Grid.Column="1"
                         Spacing="4"
                         Margin="0,15,15,15">
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
                            Text="{DynamicResource Settings.Nav.Group.Download}" />
-                
+
                 <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
-                           Text="{DynamicResource Settings.Nav.Tips.Download.Env}"></TextBlock>
-                
+                           Text="{DynamicResource Settings.Nav.Tips.Download.Env}" />
+
                 <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
-                           Text="{DynamicResource Settings.Nav.Tips.Download.Source}"></TextBlock>
-                
+                           Text="{DynamicResource Settings.Nav.Tips.Download.Source}" />
+
                 <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
-                           Text="{DynamicResource Settings.Nav.Tips.Download.Thread}"></TextBlock>
-                
-                
+                           Text="{DynamicResource Settings.Nav.Tips.Download.Thread}" />
+
+
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
                            Margin="0,8,0,0"
                            Text="{DynamicResource Settings.Nav.Group.Game}" />
-                
+
                 <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
-                           Text="{DynamicResource Settings.Nav.Tips.Game.Path}"></TextBlock>
-                
+                           Text="{DynamicResource Settings.Nav.Tips.Game.Path}" />
+
                 <TextBlock Opacity="0.6"
                            TextWrapping="WrapWithOverflow"
-                           Text="{DynamicResource Settings.Nav.Tips.Game.Isolation}"></TextBlock>
-                
+                           Text="{DynamicResource Settings.Nav.Tips.Game.Isolation}" />
+
                 <HyperlinkButton Content="{DynamicResource Settings.Nav.Action.FAQ}"
-                                 NavigateUri="https://docs.roundstudio.top/docs/product/bb/commonQuestion"></HyperlinkButton>
+                                 NavigateUri="https://docs.roundstudio.top/docs/product/bb/commonQuestion" />
             </StackPanel>
         </Grid>
     </ScrollViewer>

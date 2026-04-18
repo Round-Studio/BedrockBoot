@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.LevelNbt;
 
@@ -11,11 +9,13 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 
 public partial class LevelSettingsEditor : UserControl
 {
-    private ArchiveInfo _info;
-    private bool _isInternalUpdating = false;
-    public Action? BackAction { get; set; }
+    private readonly ArchiveInfo _info;
+    private bool _isInternalUpdating;
 
-    public LevelSettingsEditor() => InitializeComponent();
+    public LevelSettingsEditor()
+    {
+        InitializeComponent();
+    }
 
     public LevelSettingsEditor(ArchiveInfo info) : this()
     {
@@ -23,14 +23,16 @@ public partial class LevelSettingsEditor : UserControl
         UpdaterUI();
     }
 
+    public Action? BackAction { get; set; }
+
     /// <summary>
-    /// 将 LevelWorldData 实体类的数据同步到 UI 控件 (Data -> UI)
+    ///     将 LevelWorldData 实体类的数据同步到 UI 控件 (Data -> UI)
     /// </summary>
     private void UpdaterUI()
     {
         if (_info?.LevelWorldData == null) return;
         _isInternalUpdating = true;
-        
+
         var d = _info.LevelWorldData;
 
         // --- 基础信息 ---
@@ -117,7 +119,7 @@ public partial class LevelSettingsEditor : UserControl
     }
 
     /// <summary>
-    /// 当任何 CheckBox 改变时同步到数据类 (UI -> Data)
+    ///     当任何 CheckBox 改变时同步到数据类 (UI -> Data)
     /// </summary>
     private void OnCheckChanged(object? sender, RoutedEventArgs e)
     {
@@ -132,12 +134,12 @@ public partial class LevelSettingsEditor : UserControl
     }
 
     /// <summary>
-    /// 全量同步 UI 状态到实体类，确保与 JSON 结构对应的属性一致
+    ///     全量同步 UI 状态到实体类，确保与 JSON 结构对应的属性一致
     /// </summary>
     private void SyncUiToData()
     {
         var d = _info.LevelWorldData;
-        
+
         // 核心 & 规则
         d.CheatsEnabled = CheatsSwitch.IsChecked ?? false;
         d.IsHardCore = HardcoreSwitch.IsChecked ?? false;
@@ -151,7 +153,7 @@ public partial class LevelSettingsEditor : UserControl
         d.RecipeUnlock = RecipeUnlockSwitch.IsChecked ?? true;
         d.LimitedCrafting = LimitedCraftSwitch.IsChecked ?? false;
         d.TexturepacksRequired = TextureRequiredSwitch.IsChecked ?? false;
-        
+
         // 同步下拉框数据到实体类
         d.GameType = GameTypeCombo.SelectedIndex;
         d.Difficulty = DifficultyCombo.SelectedIndex;
@@ -203,30 +205,31 @@ public partial class LevelSettingsEditor : UserControl
         d.NoClip = NoClipSwitch.IsChecked ?? false;
         d.WorldBuilder = WorldBuilderSwitch.IsChecked ?? false;
     }
-    
+
     private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (_isInternalUpdating) return;
         SyncUiToData();
     }
+
     private void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var d = _info.LevelWorldData;
-        
-        // 1. 同步数值输入框
-        if (int.TryParse(SpawnXText.Text, out int x)) d.SpawnX = x;
-        if (int.TryParse(SpawnYText.Text, out int y)) d.SpawnY = y;
-        if (int.TryParse(SpawnZText.Text, out int z)) d.SpawnZ = z;
 
-        if (float.TryParse(WalkSpeedText.Text, out float ws)) d.WalkSpeed = ws;
-        if (float.TryParse(FlySpeedText.Text, out float fs)) d.FlySpeed = fs;
-        if (float.TryParse(VFlySpeedText.Text, out float vfs)) d.VerticalFlySpeed = vfs;
+        // 1. 同步数值输入框
+        if (int.TryParse(SpawnXText.Text, out var x)) d.SpawnX = x;
+        if (int.TryParse(SpawnYText.Text, out var y)) d.SpawnY = y;
+        if (int.TryParse(SpawnZText.Text, out var z)) d.SpawnZ = z;
+
+        if (float.TryParse(WalkSpeedText.Text, out var ws)) d.WalkSpeed = ws;
+        if (float.TryParse(FlySpeedText.Text, out var fs)) d.FlySpeed = fs;
+        if (float.TryParse(VFlySpeedText.Text, out var vfs)) d.VerticalFlySpeed = vfs;
 
         // 2. 更新最后游玩时间 (Unix 时间戳)
         d.LastPlayed = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         // 3. 执行保存
-        string path = Path.Combine(_info.Path, "level.dat");
+        var path = Path.Combine(_info.Path, "level.dat");
         LevelDatSaver.Save(path, d, d.HeaderVersion);
     }
 }

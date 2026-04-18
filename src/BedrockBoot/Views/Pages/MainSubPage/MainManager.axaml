@@ -27,7 +27,7 @@
                     <onePointControls:FontIcon Glyph="&#xE78B;"
                                                VerticalAlignment="Center" />
                     <TextBlock Margin="4,0,0,0"
-                               Text="{DynamicResource Manager.IncludeGame}"></TextBlock>
+                               Text="{DynamicResource Manager.IncludeGame}" />
                     <onePointControls:LabelBox Text="Beta"
                                                Margin="8,0,0,0" />
                 </StackPanel>
@@ -41,7 +41,7 @@
                     <onePointControls:FontIcon Glyph="&#xE838;"
                                                VerticalAlignment="Center" />
                     <TextBlock Margin="4,0,0,0"
-                               Text="{DynamicResource Manager.IncludePack}"></TextBlock>
+                               Text="{DynamicResource Manager.IncludePack}" />
                 </StackPanel>
             </Button>
         </StackPanel>
@@ -103,9 +103,9 @@
                                       Name="GameTypeSel"
                                       SelectionChanged="GameTypeSel_OnSelectionChanged"
                                       HorizontalAlignment="Stretch">
-                                <ComboBoxItem Tag="" Content="{DynamicResource Manager.GameType.AllType}"></ComboBoxItem>
-                                <ComboBoxItem Tag="Release" Content="{DynamicResource Manager.GameType.Release}"></ComboBoxItem>
-                                <ComboBoxItem Tag="Preview" Content="{DynamicResource Manager.GameType.Preview}"></ComboBoxItem>
+                                <ComboBoxItem Tag="" Content="{DynamicResource Manager.GameType.AllType}" />
+                                <ComboBoxItem Tag="Release" Content="{DynamicResource Manager.GameType.Release}" />
+                                <ComboBoxItem Tag="Preview" Content="{DynamicResource Manager.GameType.Preview}" />
                             </ComboBox>
                         </DockPanel>
 

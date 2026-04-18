@@ -23,14 +23,14 @@
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"
-                            Name="SourceListBox" >
+                            Name="SourceListBox">
                     <DockPanel>
                         <TextBlock Text="0%"
                                    MinWidth="80"
-                                   Name="ProgressText"></TextBlock>
-                        
+                                   Name="ProgressText" />
+
                         <ProgressBar Name="ProgressBar"
-                                     IsIndeterminate="True"></ProgressBar>
+                                     IsIndeterminate="True" />
                     </DockPanel>
                 </StackPanel>
             </StackPanel>

@@ -3,28 +3,24 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Windows;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
-using BedrockBoot.Base.Enum.Language;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
-using BedrockBoot.ViewModels;
 using BedrockBoot.Views.Windows;
 using BedrockBoot.Views.Windows.SystemMethod;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 using Application = Avalonia.Application;
-using ResourceDictionary = Avalonia.Controls.ResourceDictionary;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 using Window = Avalonia.Controls.Window;
 
 namespace BedrockBoot;
@@ -33,18 +29,18 @@ public class App : Application
 {
     public override void Initialize()
     {
-        if (BedrockBoot.Core.Global.GlobalModel.Config == null)
+        if (GlobalModel.Config == null)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-            BedrockBoot.Core.Global.GlobalModel.Config.Load();
+            GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+            GlobalModel.Config.Load();
         }
 
         ServicePointManager.DefaultConnectionLimit = 1024;
 
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
-        
-        I18nManager.Instance.SystemLanguage(BedrockBoot.Core.Global.GlobalModel.Config.Data.Language);
+
+        I18nManager.Instance.SystemLanguage(GlobalModel.Config.Data.Language);
 
         // 订阅所有全局异常处理器
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -78,8 +74,8 @@ public class App : Application
     {
         try
         {
-            if(!Directory.Exists(PathsList.ReportPath)) Directory.CreateDirectory(PathsList.ReportPath);
-            var errorReportJson = ErrorReport.Create(BedrockBoot.Core.Global.GlobalModel.Config.Data, $"错误报告", ex);
+            if (!Directory.Exists(PathsList.ReportPath)) Directory.CreateDirectory(PathsList.ReportPath);
+            var errorReportJson = ErrorReport.Create(GlobalModel.Config.Data, "错误报告", ex);
             errorReportJson.SaveToFile(Path.Combine(PathsList.ReportPath,
                 DateTime.Now.ToString("yyyyMMddHHmmss") + ".json"));
             Dispatcher.UIThread.Invoke(() => { new ExceptionWindow(errorReportJson).Show(); });
@@ -113,7 +109,7 @@ public class App : Application
 
             Window window = null;
 
-            switch (GlobalModel.AppRunType)
+            switch (Models.Global.GlobalModel.AppRunType)
             {
                 case AppRunType.Default:
                     window = new MainWindow();
@@ -127,7 +123,7 @@ public class App : Application
             }
 
             if (window == null) throw new NullReferenceException();
-            
+
             desktop.MainWindow = window;
         }
 
@@ -149,9 +145,9 @@ public class App : Application
         try
         {
             ThemeManager.Instance.SetAccentColor(
-                Color.Parse(AccentColor.Colors[BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
+                Color.Parse(AccentColor.Colors[GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
             ThemeManager.Instance.SetThemeModel(
-                BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
+                GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
                     ? ThemeVariant.Light
                     : ThemeVariant.Dark);
         }

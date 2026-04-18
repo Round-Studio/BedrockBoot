@@ -9,37 +9,37 @@
     <Grid RowDefinitions="*,Auto"
           Margin="20,0,20,20">
         <StackPanel Spacing="8">
-            <TextBlock Text="需要转换到的版本 （Bedrock Version.）："></TextBlock>
-        
+            <TextBlock Text="需要转换到的版本 （Bedrock Version.）：" />
+
             <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Static chunker:Chunker.SupportBedrock}"
                       Name="GameVersionChoose"
-                      SelectedIndex="0"></ComboBox>
-        
-            <TextBlock Text="Java 存档"></TextBlock>
-        
-            <DockPanel HorizontalSpacing="8">   
+                      SelectedIndex="0" />
+
+            <TextBlock Text="Java 存档" />
+
+            <DockPanel HorizontalSpacing="8">
                 <Button DockPanel.Dock="Right"
                         Click="ImportArchive_OnClick"
                         Padding="8,0">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="4">
                         <onePointControls:FontIcon VerticalAlignment="Center"
-                                                   Glyph="&#xF012;"/>
-                        <TextBlock Text="导入压缩包"></TextBlock>
+                                                   Glyph="&#xF012;" />
+                        <TextBlock Text="导入压缩包" />
                     </StackPanel>
                 </Button>
-            
+
                 <TextBox Watermark="存档路径（zip）"
-                         Name="WorldPath"></TextBox>
+                         Name="WorldPath" />
             </DockPanel>
         </StackPanel>
-        
+
         <TextBlock Grid.Row="1"
                    Opacity="0.6"
                    VerticalAlignment="Center"
-                   Text="使用 Chunker 开源项目，转换存档有风险"></TextBlock>
-        
+                   Text="使用 Chunker 开源项目，转换存档有风险" />
+
         <StackPanel Grid.Row="1"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
@@ -51,11 +51,11 @@
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">
                     <onePointControls:FontIcon VerticalAlignment="Center"
-                                               Glyph="&#xE74E;"/>
-                    <TextBlock Text="导出为 .mcworld"></TextBlock>
+                                               Glyph="&#xE74E;" />
+                    <TextBlock Text="导出为 .mcworld" />
                 </StackPanel>
             </Button>
-            
+
             <Button Classes="Accent"
                     Padding="8,0"
                     Name="SaveIns"
@@ -64,8 +64,8 @@
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">
                     <onePointControls:FontIcon VerticalAlignment="Center"
-                                               Glyph="&#xE74E;"/>
-                    <TextBlock Text="导出到实例"></TextBlock>
+                                               Glyph="&#xE74E;" />
+                    <TextBlock Text="导出到实例" />
                 </StackPanel>
             </Button>
         </StackPanel>

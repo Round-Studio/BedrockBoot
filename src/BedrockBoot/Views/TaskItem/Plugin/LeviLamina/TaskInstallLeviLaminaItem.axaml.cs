@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
@@ -15,23 +14,21 @@ namespace BedrockBoot.Views.TaskItem.Plugin.LeviLamina;
 
 public partial class TaskInstallLeviLaminaItem : UserControl
 {
-    
-
     public TaskInstallLeviLaminaItem()
     {
         InitializeComponent();
     }
-    
-    public VersionConfig VersionConfig { get; set; }
-    public string LeviLaminaVersion { get; set; }
-    public Action? CompleteCallBack { get; set; }
-    public Action<string>? ErrorCallBack { get; set; }
 
     public TaskInstallLeviLaminaItem(string version, VersionConfig versionConfig) : this()
     {
         VersionConfig = versionConfig;
         LeviLaminaVersion = version;
     }
+
+    public VersionConfig VersionConfig { get; set; }
+    public string LeviLaminaVersion { get; set; }
+    public Action? CompleteCallBack { get; set; }
+    public Action<string>? ErrorCallBack { get; set; }
 
     public void Install()
     {
@@ -44,7 +41,7 @@ public partial class TaskInstallLeviLaminaItem : UserControl
                 {
                     // 如果 Installer 内部消息已经是中文或你希望覆盖它：
                     MainText.Text = GetStatusMessage(p.Status, p.Message);
-                    
+
                     switch (p.Status)
                     {
                         case InstallerStatus.DownloadSource:
@@ -110,7 +107,7 @@ public partial class TaskInstallLeviLaminaItem : UserControl
                 NoticeType = NoticeType.Info
             });
         };
-        body.ErrorCallBack = (ex) =>
+        body.ErrorCallBack = ex =>
         {
             GlobalModel.TaskManager.RemoveTask(tuid);
             GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
@@ -119,8 +116,8 @@ public partial class TaskInstallLeviLaminaItem : UserControl
                 Message = I18nManager.Instance["Task.LeviLamina.Notice.Failed"],
                 NoticeType = NoticeType.Info
             });
-            
-            DialogHost.Show(new DialogInfo()
+
+            DialogHost.Show(new DialogInfo
             {
                 Title = I18nManager.Instance["Task.LeviLamina.Notice.Failed"],
                 Content = ex,

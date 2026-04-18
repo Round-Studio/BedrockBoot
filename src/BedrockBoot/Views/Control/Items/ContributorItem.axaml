@@ -10,19 +10,19 @@
                       Height="150">
         <Grid RowDefinitions="*,Auto">
             <widgets:LocalImageRenderWidget Grid.Row="0"
-                                            Name="IconBox"/>
-            
+                                            Name="IconBox" />
+
             <StackPanel Grid.Row="1"
                         Margin="0,3,0,0">
                 <TextBlock Text="Name"
                            FontSize="13"
                            HorizontalAlignment="Center"
-                           Name="NameText"></TextBlock>
-                <StackPanel Orientation="Horizontal" 
+                           Name="NameText" />
+                <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center">
                     <TextBlock Text="{DynamicResource About.Contributor.Count.Prefix}"
                                FontSize="11" />
-                    <TextBlock Text="?" 
+                    <TextBlock Text="?"
                                FontSize="11"
                                Name="ContributorText" />
                     <TextBlock Text="{DynamicResource About.Contributor.Count.Suffix}"

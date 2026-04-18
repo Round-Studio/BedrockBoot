@@ -38,9 +38,9 @@
                                           Description="使用系统自带的标题栏，并隐藏控制按钮"
                                           IsClickable="True"
                                           IsShowActionIcon="False"
-                                          Glyph="&#xE737;" >
+                                          Glyph="&#xE737;">
                 <ToggleSwitch Name="IsUseSystemWindow"
-                              IsCheckedChanged="IsUseSystemWindow_OnIsCheckedChanged"></ToggleSwitch>
+                              IsCheckedChanged="IsUseSystemWindow_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
 
             <StackPanel Name="HomePanel"

@@ -17,7 +17,7 @@
                                            Foreground="White"
                                            Background="DarkRed"
                                            VerticalAlignment="Center" />
-                
+
                 <TextBlock Name="CardHeader"
                            Text="PluginName" />
             </StackPanel>

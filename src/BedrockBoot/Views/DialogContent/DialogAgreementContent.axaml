@@ -5,12 +5,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DialogContent.DialogAgreementContent">
     <StackPanel Spacing="4">
-        <TextBlock Text="{DynamicResource MainWindow.Dialog.Agreement.Content}"></TextBlock>
+        <TextBlock Text="{DynamicResource MainWindow.Dialog.Agreement.Content}" />
         <StackPanel Orientation="Horizontal"
                     Spacing="4">
-            <TextBlock Text="其他："></TextBlock>
+            <TextBlock Text="其他：" />
             <HyperlinkButton Content="隐私策略"
-                             NavigateUri="https://docs.roundstudio.top/docs/product/bb/privacyPolicy"></HyperlinkButton>
+                             NavigateUri="https://docs.roundstudio.top/docs/product/bb/privacyPolicy" />
         </StackPanel>
     </StackPanel>
 </UserControl>

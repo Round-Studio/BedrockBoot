@@ -15,7 +15,6 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadGameItem : UserControl
 {
-    
     private EasyDownload _downloader;
 
     public TaskDownloadGameItem()
@@ -64,9 +63,10 @@ public partial class TaskDownloadGameItem : UserControl
 
             ErrorOccurred = (title, message, ex) =>
                 Dispatcher.UIThread.Invoke(() => ShowErrorDialog(title, message, ex)),
-                
-            Completed = (c) =>
-                Dispatcher.UIThread.Invoke(() => MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.Completed"])
+
+            Completed = c =>
+                Dispatcher.UIThread.Invoke(() =>
+                    MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.Completed"])
         };
     }
 
@@ -103,12 +103,10 @@ public partial class TaskDownloadGameItem : UserControl
 
         InsDownGameBar.Value = progressInfo.Percentage;
         MainText.Text = text;
-        
+
         if (!string.IsNullOrEmpty(progressInfo.Speed))
-        {
             // 速度单位国际化
             MainSpeedText.Text = string.Format(I18nManager.Instance["Common.Unit.Speed"], progressInfo.Speed);
-        }
     }
 
     private void UpdateExtractionProgress(string text, double percentage)
@@ -155,7 +153,7 @@ public partial class TaskDownloadGameItem : UserControl
 
     private void ShowErrorDialog(string title, string message, Exception ex)
     {
-        if (ex != null) 
+        if (ex != null)
             message += $"\n\n{string.Format(I18nManager.Instance["Task.Game.Error.Detail"], ex.Message)}";
 
         DialogHost.Show(new DialogInfo
@@ -168,9 +166,9 @@ public partial class TaskDownloadGameItem : UserControl
     }
 
     public static void Install(
-        BuildInfo info, 
+        BuildInfo info,
         string url,
-        bool? isUsePack, 
+        bool? isUsePack,
         string dir,
         string gameName,
         Action? installedCallBack = null)

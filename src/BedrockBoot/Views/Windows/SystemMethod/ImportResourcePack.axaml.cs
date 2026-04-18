@@ -6,10 +6,9 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Desktop;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
 
@@ -17,8 +16,8 @@ namespace BedrockBoot.Views.Windows.SystemMethod;
 
 public partial class ImportResourcePack : Window
 {
-    private string _filePath;
     private List<VersionConfig> _currentGames;
+    private string _filePath;
 
     public ImportResourcePack()
     {
@@ -28,7 +27,7 @@ public partial class ImportResourcePack : Window
 
         if (Program.Args != null && Program.Args.Contains("-open"))
         {
-            int index = Program.Args.FindIndex(a => a == "-open");
+            var index = Program.Args.FindIndex(a => a == "-open");
             if (index + 1 < Program.Args.Count)
             {
                 _filePath = Program.Args[index + 2];
@@ -39,30 +38,25 @@ public partial class ImportResourcePack : Window
 
     private void InitGameFolders()
     {
-        var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
+        var folders = GlobalModel.Config.Data.GameFolders;
 
-        if (folders == null || folders.Count <= 0)
-        {
-            return;
-        }
+        if (folders == null || folders.Count <= 0) return;
 
         FolderComboBox.ItemsSource = folders.Select(f => $"{f.GameFolderName} - {f.GameFolderPath}").ToList();
-        
+
         // 恢复上次选择的索引
-        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < folders.Count)
-        {
-            FolderComboBox.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
-        }
+        if (GlobalModel.Config.Data.GameFolderSelIndex < folders.Count)
+            FolderComboBox.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
     }
 
     private void FolderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (FolderComboBox.SelectedIndex < 0) return;
 
-        var selectedFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[FolderComboBox.SelectedIndex];
-        
+        var selectedFolder = GlobalModel.Config.Data.GameFolders[FolderComboBox.SelectedIndex];
+
         _currentGames = GameInfoHelper.GetVersionConfigs(selectedFolder.GameFolderPath);
-        
+
         InstanceComboBox.ItemsSource = _currentGames.Select(g => $"{g.Info.VersionName} - {g.Info.Version}").ToList();
 
         if (_currentGames.Count > 0)
@@ -76,7 +70,7 @@ public partial class ImportResourcePack : Window
             ImportButton.IsEnabled = false;
         }
     }
-    
+
     public void LoadPack(string file)
     {
         _filePath = file;
@@ -89,7 +83,7 @@ public partial class ImportResourcePack : Window
             try
             {
                 var manifests = new ResourcePackAnalysis(file).GetPackManifests();
-                
+
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     if (manifests == null || manifests.Count == 0)
@@ -104,7 +98,7 @@ public partial class ImportResourcePack : Window
                         var item = new GameResourcePackItem(conf, true);
                         PacksList.Children.Add(item);
                     }
-                    
+
                     LoadingCard.IsVisible = false;
                     PacksScrollViewer.IsVisible = true;
                 });
@@ -142,7 +136,7 @@ public partial class ImportResourcePack : Window
                 man.AddRangePacks(new List<string> { _filePath });
             });
 
-            this.Close();
+            Close();
         }
         catch (Exception ex)
         {

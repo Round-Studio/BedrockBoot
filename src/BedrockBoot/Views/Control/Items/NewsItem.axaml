@@ -16,36 +16,36 @@
                     <Transitions>
                         <EffectTransition Property="Effect"
                                           Duration="0:0:0.58"
-                                          Easing="QuinticEaseOut"></EffectTransition>
+                                          Easing="QuinticEaseOut" />
                         <ThicknessTransition Property="Margin"
                                              Easing="ExponentialEaseOut"
-                                             Duration="0:0:0.58"></ThicknessTransition>
+                                             Duration="0:0:0.58" />
                     </Transitions>
                 </widgets:LocalImageRenderWidget.Transitions>
             </widgets:LocalImageRenderWidget>
         </Border>
-        
+
         <Border CornerRadius="6">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="Transparent" Offset="0.0"/>
-                    <GradientStop Color="#000" Offset="1.0"/>
+                    <GradientStop Color="Transparent" Offset="0.0" />
+                    <GradientStop Color="#000" Offset="1.0" />
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
-        
+
         <StackPanel Margin="20"
                     VerticalAlignment="Bottom">
             <TextBlock Text="Title"
                        Foreground="White"
                        FontSize="24"
                        FontWeight="Bold"
-                       Name="ItemTitle"></TextBlock>
+                       Name="ItemTitle" />
             <TextBlock Text="SubTitle"
                        Foreground="White"
                        FontSize="11"
                        TextWrapping="Wrap"
-                       Name="ItemSubTitle"></TextBlock>
+                       Name="ItemSubTitle" />
         </StackPanel>
     </Grid>
 </UserControl>

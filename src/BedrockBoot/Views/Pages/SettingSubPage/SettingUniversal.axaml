@@ -34,9 +34,9 @@
                 <ComboBox Width="200"
                           Name="LanguageChoose"
                           SelectionChanged="LanguageChoose_OnSelectionChanged">
-                    <ComboBoxItem Content="中文 (简体中文)"></ComboBoxItem>
-                    <ComboBoxItem Content="English (US)"></ComboBoxItem>
-                    <ComboBoxItem Content="Japanese"></ComboBoxItem>
+                    <ComboBoxItem Content="中文 (简体中文)" />
+                    <ComboBoxItem Content="English (US)" />
+                    <ComboBoxItem Content="Japanese" />
                 </ComboBox>
             </onePointControls:SettingCard>
 
@@ -53,9 +53,9 @@
                           Name="LaunchBehaviorChoose"
                           SelectionChanged="LaunchBehaviorChoose_OnSelectionChanged"
                           SelectedIndex="0">
-                    <ComboBoxItem Content="无"></ComboBoxItem>
-                    <ComboBoxItem Content="启动后最小化启动器"></ComboBoxItem>
-                    <ComboBoxItem Content="启动后退出启动器"></ComboBoxItem>
+                    <ComboBoxItem Content="无" />
+                    <ComboBoxItem Content="启动后最小化启动器" />
+                    <ComboBoxItem Content="启动后退出启动器" />
                 </ComboBox>
             </onePointControls:SettingCard>
 
@@ -71,7 +71,7 @@
                                           IsShowActionIcon="False"
                                           Glyph="&#xE946;">
                 <ToggleSwitch Name="GatInfo"
-                              IsCheckedChanged="GatInfo_OnIsCheckedChanged"></ToggleSwitch>
+                              IsCheckedChanged="GatInfo_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"

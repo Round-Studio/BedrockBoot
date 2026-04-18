@@ -3,17 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="1200"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings.LevelSettingsRoot">
     <UserControl.Styles>
         <Style Selector="CheckBox">
-            <Setter Property="Margin" Value="0,4"/>
-            <Setter Property="MinWidth" Value="140"/>
+            <Setter Property="Margin" Value="0,4" />
+            <Setter Property="MinWidth" Value="140" />
         </Style>
         <Style Selector="TextBlock.Header">
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
     </UserControl.Styles>
 
@@ -21,12 +20,12 @@
         <StackPanel Grid.Row="0" Margin="20,0" Spacing="8" Orientation="Horizontal">
             <Button Classes="NoBorder" Name="BackBtn" Click="BackBtn_OnClick" Padding="8" Height="32">
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE76B;"/>
-                    <TextBlock Text="返回存档管理"/>
+                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE76B;" />
+                    <TextBlock Text="返回存档管理" />
                 </StackPanel>
             </Button>
-            <TextBlock Text="存档设置" VerticalAlignment="Center" FontSize="16"/>
-            <TextBlock Name="LevelNameLabel" Opacity="0.5" VerticalAlignment="Center"/>
+            <TextBlock Text="存档设置" VerticalAlignment="Center" FontSize="16" />
+            <TextBlock Name="LevelNameLabel" Opacity="0.5" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Grid.Row="0" Margin="20,0" Spacing="8" Orientation="Horizontal"
                     HorizontalAlignment="Right">
@@ -38,9 +37,9 @@
                     <StackPanel Orientation="Horizontal"
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xF28B;"
-                                                   VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                   VerticalAlignment="Center" />
                         <TextBlock Text="备份"
-                                   VerticalAlignment="Center"></TextBlock>
+                                   VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>
                 <ListBoxItem Classes="Segmented"
@@ -49,15 +48,15 @@
                     <StackPanel Orientation="Horizontal"
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xE713;"
-                                                   VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                   VerticalAlignment="Center" />
                         <TextBlock Text="常规设置"
-                                   VerticalAlignment="Center"></TextBlock>
+                                   VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>
             </ListBox>
         </StackPanel>
-        
+
         <navigation:NavigationFrame Grid.Row="1"
-                                    Name="NavigationFrame"/>
+                                    Name="NavigationFrame" />
     </Grid>
 </UserControl>

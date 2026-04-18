@@ -1,12 +1,15 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Controls;
 using BedrockBoot.Base.Entry.Game.Pack.Isolation;
 
 namespace BedrockBoot.Views.DialogContent;
 
 public partial class DialogImportInstanceConfigContent : UserControl
 {
+    public DialogImportInstanceConfigContent()
+    {
+        InitializeComponent();
+    }
+
     public MigrationConfig MigrationConfig => new()
     {
         IsEnableResourcePack = (bool)IsEnableResourcePack.IsChecked,
@@ -14,8 +17,4 @@ public partial class DialogImportInstanceConfigContent : UserControl
         IsEnableArchive = (bool)IsEnableArchivePack.IsChecked,
         IsEnableConfig = (bool)IsEnableConfigPack.IsChecked
     };
-    public DialogImportInstanceConfigContent()
-    {
-        InitializeComponent();
-    }
 }

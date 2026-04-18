@@ -1,33 +1,32 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.Isolation;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
-using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.DialogContent;
 
 public partial class DialogMigrationGameConfigContent : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public DialogMigrationGameConfigContent()
     {
         InitializeComponent();
     }
 
     /// <summary>
-    /// 初始化并自动开始迁移任务
+    ///     初始化并自动开始迁移任务
     /// </summary>
     /// <param name="conf">迁移配置信息</param>
     public DialogMigrationGameConfigContent(MigrationConfig conf) : this()
     {
         StartMigration(conf);
     }
+
+    private static I18nManager i18n => I18nManager.Instance;
 
     private void StartMigration(MigrationConfig conf)
     {
@@ -41,12 +40,13 @@ public partial class DialogMigrationGameConfigContent : UserControl
                     {
                         Dispatcher.UIThread.Invoke(() =>
                         {
-                            if (MigrationProgressBar.IsIndeterminate) 
+                            if (MigrationProgressBar.IsIndeterminate)
                                 MigrationProgressBar.IsIndeterminate = false;
 
                             MigrationProgressBar.Value = progress.Percentage;
-                            
-                            MigrationProgressText.Text = $"{i18n["Instance.Isolation.Migrating"]} ({progress.Percentage:F2} %)";
+
+                            MigrationProgressText.Text =
+                                $"{i18n["Instance.Isolation.Migrating"]} ({progress.Percentage:F2} %)";
                         });
                     })
                 };
@@ -55,7 +55,7 @@ public partial class DialogMigrationGameConfigContent : UserControl
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Migration failed: {ex.Message}");
+                Debug.WriteLine($"Migration failed: {ex.Message}");
             }
             finally
             {

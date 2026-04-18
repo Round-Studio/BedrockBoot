@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -14,7 +13,7 @@ public partial class SettingPersonalization : ISettingPage
     public SettingPersonalization()
     {
         InitializeComponent();
-        
+
         // 面包屑导航国际化
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
@@ -24,7 +23,7 @@ public partial class SettingPersonalization : ISettingPage
             }
         };
 
-        IsUseSystemWindow.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        IsUseSystemWindow.IsChecked = GlobalModel.Config.Data.IsUseSystemWindow;
 
         IsEdit = true;
 
@@ -55,11 +54,11 @@ public partial class SettingPersonalization : ISettingPage
     {
         if (IsEdit)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow =
+            GlobalModel.Config.Data.IsUseSystemWindow =
                 (bool)IsUseSystemWindow.IsChecked!;
-            BedrockBoot.Core.Global.GlobalModel.Config.Save();
-            
-            GlobalModel.MainWindow.UpdateWindowBorder();
+            GlobalModel.Config.Save();
+
+            Models.Global.GlobalModel.MainWindow.UpdateWindowBorder();
         }
     }
 }

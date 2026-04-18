@@ -19,8 +19,8 @@
                                                 Text="历史记录"
                                                 FontSize="16"
                                                 HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"></onePointControls:LineTextBlock>
-            
+                                                VerticalAlignment="Center" />
+
                 <Button Classes="NoBorder"
                         HorizontalAlignment="Right"
                         HorizontalContentAlignment="Center"
@@ -29,22 +29,22 @@
                         Width="24" Height="24"
                         Name="CleanBtn"
                         Click="CleanBtn_OnClick">
-                    <onePointControls:FontIcon Glyph="&#xE74D;"></onePointControls:FontIcon>
+                    <onePointControls:FontIcon Glyph="&#xE74D;" />
                 </Button>
             </Grid>
-            
+
             <StackPanel Grid.Row="1"
                         Spacing="8"
-                        Name="HistoryList"></StackPanel>
-            
+                        Name="HistoryList" />
+
             <notice:InfoCard Grid.Row="1"
                              VerticalAlignment="Center"
                              HorizontalAlignment="Center"
                              Name="NoneBox"
                              BigTitle="空"
-                             Message="没有历史搜索记录"></notice:InfoCard>
+                             Message="没有历史搜索记录" />
         </Grid>
-        
+
         <StackPanel Grid.Column="1" Spacing="10">
             <items:BorderCard Name="VersionCard">
                 <Grid RowDefinitions="Auto,*">
@@ -55,20 +55,25 @@
                                 <TextBlock Text="{DynamicResource Download.Search.Action.VersionList}" />
                             </StackPanel>
                         </Button>
-                        <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.Group.Latest}" VerticalAlignment="Center" />
+                        <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.Group.Latest}"
+                                   VerticalAlignment="Center" />
                     </DockPanel>
 
-                    <Grid Grid.Row="1" IsVisible="False" Name="RecommendationPanel" ColumnDefinitions="*,*" ColumnSpacing="6">
-                        <widgets:SmallGameView Grid.Column="0" Name="ReleaseBtn" Click="ReleaseBtn_OnClick" Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png" />
-                        <widgets:SmallGameView Grid.Column="1" Name="PreviewBtn" Click="PreviewBtn_OnClick" Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png" />
+                    <Grid Grid.Row="1" IsVisible="False" Name="RecommendationPanel" ColumnDefinitions="*,*"
+                          ColumnSpacing="6">
+                        <widgets:SmallGameView Grid.Column="0" Name="ReleaseBtn" Click="ReleaseBtn_OnClick"
+                                               Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png" />
+                        <widgets:SmallGameView Grid.Column="1" Name="PreviewBtn" Click="PreviewBtn_OnClick"
+                                               Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png" />
                     </Grid>
 
                     <Border Grid.Row="1" Height="44">
-                        <onePointControls:ProgressRing Name="LoadRing" HorizontalAlignment="Center" Height="36" Width="36"/>
+                        <onePointControls:ProgressRing Name="LoadRing" HorizontalAlignment="Center" Height="36"
+                                                       Width="36" />
                     </Border>
                 </Grid>
             </items:BorderCard>
-            
+
             <items:BorderCard Name="ResourceCard">
                 <Grid RowDefinitions="Auto,*">
                     <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
@@ -81,33 +86,35 @@
                         <TextBlock DockPanel.Dock="Left" Text="热门资源" VerticalAlignment="Center" />
                     </DockPanel>
 
-                    <Grid Grid.Row="1" Name="RecommendationGrid" IsVisible="False" ColumnDefinitions="*,*" ColumnSpacing="6">
-                        <widgets:BigResourceButton Grid.Column="0" Name="BigResourceBtn"/>
+                    <Grid Grid.Row="1" Name="RecommendationGrid" IsVisible="False" ColumnDefinitions="*,*"
+                          ColumnSpacing="6">
+                        <widgets:BigResourceButton Grid.Column="0" Name="BigResourceBtn" />
                         <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="6">
-                            <widgets:SmallResourceButton Grid.Row="0" Name="SmallResourceBtn1"/>
-                            <widgets:SmallResourceButton Grid.Row="1" Name="SmallResourceBtn2"/>
+                            <widgets:SmallResourceButton Grid.Row="0" Name="SmallResourceBtn1" />
+                            <widgets:SmallResourceButton Grid.Row="1" Name="SmallResourceBtn2" />
                         </Grid>
                     </Grid>
-                    
+
                     <Border Grid.Row="1" Height="122">
-                        <onePointControls:ProgressRing Name="ResourceLoadRing" HorizontalAlignment="Center" Height="36" Width="36"/>
+                        <onePointControls:ProgressRing Name="ResourceLoadRing" HorizontalAlignment="Center" Height="36"
+                                                       Width="36" />
                     </Border>
-                </Grid>    
+                </Grid>
             </items:BorderCard>
-            
-           <StackPanel HorizontalAlignment="Center"
-                       Opacity="0.6">
-               <TextBlock Text="如某一项资源无法加载，可通过手动输入关键词进行搜索"
-                          HorizontalAlignment="Center"
-                          FontSize="9"></TextBlock>
-               <TextBlock Text="如还是无法进行搜素，请前往 设置>下载 中切换列表源"
-                          HorizontalAlignment="Center"
-                          FontSize="9"></TextBlock>
-           </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center"
+                        Opacity="0.6">
+                <TextBlock Text="如某一项资源无法加载，可通过手动输入关键词进行搜索"
+                           HorizontalAlignment="Center"
+                           FontSize="9" />
+                <TextBlock Text="如还是无法进行搜素，请前往 设置>下载 中切换列表源"
+                           HorizontalAlignment="Center"
+                           FontSize="9" />
+            </StackPanel>
         </StackPanel>
-        
+
         <notice:InfoCard Name="NetworkErrorNotice" IsVisible="False" BigTitle="无效的网络连接" Message="无法连接至目标服务器"
                          HorizontalAlignment="Center"
-                         VerticalAlignment="Center"/>
+                         VerticalAlignment="Center" />
     </Grid>
 </UserControl>

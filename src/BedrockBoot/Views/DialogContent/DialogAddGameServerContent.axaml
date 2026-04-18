@@ -11,14 +11,14 @@
         <TextBox Margin="0,5,0,5" Width="320"
                  Watermark="{DynamicResource Dialog.AddServer.Watermark.Name}"
                  Name="ServerNameInputBox" />
-        
+
         <TextBlock Margin="0,5,0,5"
                    HorizontalAlignment="Left"
                    Text="{DynamicResource Dialog.AddServer.Label.Address}" />
         <TextBox Margin="0,5,0,5" Width="320"
                  Watermark="play.example.com"
                  Name="ServerAddressInputBox" />
-        
+
         <TextBlock Margin="0,5,0,5"
                    HorizontalAlignment="Left"
                    Text="{DynamicResource Dialog.AddServer.Label.Port}" />

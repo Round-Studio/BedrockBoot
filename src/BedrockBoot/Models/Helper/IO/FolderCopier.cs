@@ -9,7 +9,7 @@ namespace BedrockBoot.Models.Helper.IO;
 public class FolderCopier
 {
     /// <summary>
-    /// 异步复制文件夹
+    ///     异步复制文件夹
     /// </summary>
     /// <param name="sourceFolder">源文件夹路径</param>
     /// <param name="destinationFolder">目标文件夹路径</param>
@@ -20,7 +20,8 @@ public class FolderCopier
     public static async Task CopyAsync(
         string sourceFolder,
         string destinationFolder,
-        IProgress<(int currentFile, int totalFiles, string fileName, long copiedBytes, long totalBytes)> progressCallback = null,
+        IProgress<(int currentFile, int totalFiles, string fileName, long copiedBytes, long totalBytes)>
+            progressCallback = null,
         bool overwrite = false,
         bool copySubDirectories = true,
         CancellationToken cancellationToken = default)
@@ -31,50 +32,51 @@ public class FolderCopier
             throw new ArgumentException("目标文件夹路径不能为空", nameof(destinationFolder));
         if (!Directory.Exists(sourceFolder))
             throw new DirectoryNotFoundException($"源文件夹不存在: {sourceFolder}");
-        
+
         // 获取所有需要复制的文件
-        var files = Directory.GetFiles(sourceFolder, "*", copySubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-        int totalFiles = files.Length;
-        long totalBytes = files.Sum(f => new FileInfo(f).Length);
+        var files = Directory.GetFiles(sourceFolder, "*",
+            copySubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+        var totalFiles = files.Length;
+        var totalBytes = files.Sum(f => new FileInfo(f).Length);
         long copiedBytes = 0;
-        
-        int currentFileIndex = 0;
-        
+
+        var currentFileIndex = 0;
+
         foreach (var sourceFile in files)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            
+
             // 计算相对路径
             var relativePath = GetRelativePath(sourceFolder, sourceFile);
             var destFile = Path.Combine(destinationFolder, relativePath);
-            
+
             // 确保目标目录存在
             var destDir = Path.GetDirectoryName(destFile);
             if (!string.IsNullOrEmpty(destDir) && !Directory.Exists(destDir))
                 Directory.CreateDirectory(destDir);
-            
+
             // 复制文件
             var fileInfo = new FileInfo(sourceFile);
             var fileSize = fileInfo.Length;
-            
+
             await CopyFileAsync(sourceFile, destFile, overwrite, cancellationToken);
-            
+
             copiedBytes += fileSize;
             currentFileIndex++;
-            
+
             // 报告进度
             progressCallback?.Report((
-                currentFileIndex, 
-                totalFiles, 
-                relativePath, 
-                copiedBytes, 
+                currentFileIndex,
+                totalFiles,
+                relativePath,
+                copiedBytes,
                 totalBytes
             ));
         }
     }
-    
+
     /// <summary>
-    /// 同步复制文件夹
+    ///     同步复制文件夹
     /// </summary>
     /// <param name="sourceFolder">源文件夹路径</param>
     /// <param name="destinationFolder">目标文件夹路径</param>
@@ -94,52 +96,56 @@ public class FolderCopier
             throw new ArgumentException("目标文件夹路径不能为空", nameof(destinationFolder));
         if (!Directory.Exists(sourceFolder))
             throw new DirectoryNotFoundException($"源文件夹不存在: {sourceFolder}");
-        
-        var files = Directory.GetFiles(sourceFolder, "*", copySubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-        int totalFiles = files.Length;
-        long totalBytes = files.Sum(f => new FileInfo(f).Length);
+
+        var files = Directory.GetFiles(sourceFolder, "*",
+            copySubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+        var totalFiles = files.Length;
+        var totalBytes = files.Sum(f => new FileInfo(f).Length);
         long copiedBytes = 0;
-        
-        int currentFileIndex = 0;
-        
+
+        var currentFileIndex = 0;
+
         foreach (var sourceFile in files)
         {
             var relativePath = GetRelativePath(sourceFolder, sourceFile);
             var destFile = Path.Combine(destinationFolder, relativePath);
-            
+
             var destDir = Path.GetDirectoryName(destFile);
             if (!string.IsNullOrEmpty(destDir) && !Directory.Exists(destDir))
                 Directory.CreateDirectory(destDir);
-            
+
             var fileInfo = new FileInfo(sourceFile);
             var fileSize = fileInfo.Length;
-            
+
             File.Copy(sourceFile, destFile, overwrite);
-            
+
             copiedBytes += fileSize;
             currentFileIndex++;
-            
+
             progressCallback?.Invoke(currentFileIndex, totalFiles, relativePath, copiedBytes, totalBytes);
         }
     }
-    
-    private static async Task CopyFileAsync(string sourcePath, string destPath, bool overwrite, CancellationToken cancellationToken)
+
+    private static async Task CopyFileAsync(string sourcePath, string destPath, bool overwrite,
+        CancellationToken cancellationToken)
     {
         const int bufferSize = 81920;
-        
-        using (var sourceStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true))
-        using (var destStream = new FileStream(destPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, true))
+
+        using (var sourceStream =
+               new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true))
+        using (var destStream =
+               new FileStream(destPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, true))
         {
             await sourceStream.CopyToAsync(destStream, bufferSize, cancellationToken);
             await destStream.FlushAsync(cancellationToken);
         }
     }
-    
+
     private static string GetRelativePath(string basePath, string fullPath)
     {
         if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
             basePath += Path.DirectorySeparatorChar;
-        
+
         var relativePath = fullPath.Substring(basePath.Length);
         return relativePath;
     }

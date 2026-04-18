@@ -6,7 +6,6 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 using Round.SDK.Helper;
@@ -22,11 +21,11 @@ public class ArchiveCheck
 
     public VersionConfig VersionConfig { get; set; }
 
-    public static ArchiveInfo? GetInfo(string save,string gameFolder)
+    public static ArchiveInfo? GetInfo(string save, string gameFolder)
     {
         if (!File.Exists(Path.Combine(save, "levelname.txt")))
             return null;
-        
+
         var name = File.ReadAllText(Path.Combine(save, "levelname.txt"));
 
         var icon = Path.Combine(save, "world_icon.jpeg");
@@ -79,18 +78,18 @@ public class ArchiveCheck
 
     public void ImportWorldPack(string pack, string user = "Shared")
     {
-        if (!pack.EndsWith($".mcworld")) throw new FileNotFoundException(pack);
+        if (!pack.EndsWith(".mcworld")) throw new FileNotFoundException(pack);
 
         var paths = GetInstanceWorldPackPath().ToList();
         paths.ForEach(path =>
         {
             // GDK版本：跳过所有Shared用户的导入
-            if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK && 
+            if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK &&
                 path.Key == "Shared")
                 return;
-        
+
             if (!Directory.Exists(path.Value)) Directory.CreateDirectory(path.Value);
-            var worldPath = Path.Combine(path.Value, $"{Guid.NewGuid().ToString().Replace("-", "").Substring(0,12)}");
+            var worldPath = Path.Combine(path.Value, $"{Guid.NewGuid().ToString().Replace("-", "").Substring(0, 12)}");
             ZipHelper.ExtractZipFile(pack, worldPath);
         });
     }

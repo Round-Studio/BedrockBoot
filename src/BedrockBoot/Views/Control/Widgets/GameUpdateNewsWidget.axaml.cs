@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Base.Enum.News;
 using BedrockBoot.Core.Models.News;
@@ -17,7 +14,7 @@ public partial class GameUpdateNewsWidget : UserControl
     public GameUpdateNewsWidget()
     {
         InitializeComponent();
-        this.Loaded += (sender, args) => Update();
+        Loaded += (sender, args) => Update();
     }
 
     public void Update()
@@ -28,8 +25,8 @@ public partial class GameUpdateNewsWidget : UserControl
 
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                int itemIndex = 0; // 专门用于访问 lst 的索引
-                for (int rowIndex = 0; rowIndex < lst.Count; rowIndex++)
+                var itemIndex = 0; // 专门用于访问 lst 的索引
+                for (var rowIndex = 0; rowIndex < lst.Count; rowIndex++)
                 {
                     var line = NewsGenerate.GetRandomLine();
 
@@ -38,7 +35,6 @@ public partial class GameUpdateNewsWidget : UserControl
 
                     var columnDefs = new ColumnDefinitions();
                     foreach (var item in line)
-                    {
                         switch (item)
                         {
                             case NewsItemType.Big:
@@ -54,15 +50,14 @@ public partial class GameUpdateNewsWidget : UserControl
                                 columnDefs.Add(new ColumnDefinition(GridLength.Star));
                                 break;
                         }
-                    }
 
-                    var grid = new Grid()
+                    var grid = new Grid
                     {
                         ColumnDefinitions = columnDefs,
                         ColumnSpacing = 8
                     };
 
-                    int colIndex = 0;
+                    var colIndex = 0;
                     foreach (var itemType in line)
                     {
                         if (itemIndex >= lst.Count) break;
@@ -101,9 +96,8 @@ public partial class GameUpdateNewsWidget : UserControl
 
             int GetLineItemCount(List<NewsItemType> line)
             {
-                int count = 0;
+                var count = 0;
                 foreach (var item in line)
-                {
                     switch (item)
                     {
                         case NewsItemType.Big:
@@ -112,7 +106,6 @@ public partial class GameUpdateNewsWidget : UserControl
                             count++;
                             break;
                     }
-                }
 
                 return count;
             }

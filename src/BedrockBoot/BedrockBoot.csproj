@@ -46,45 +46,45 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaXaml Include="I18n\**" />
+        <AvaloniaXaml Include="I18n\**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.12" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
-        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.12" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.12" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.12" />
+        <PackageReference Include="Avalonia" Version="11.3.12"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.12"/>
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.12"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.12"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.12"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.12">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.4.3" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1" />
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
-        <PackageReference Include="Octokit" Version="14.0.0" />
+        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.4.3"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
+        <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1"/>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.71"/>
+        <PackageReference Include="Octokit" Version="14.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
-        <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj" />
-        <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
-        <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
-        <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
-        <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj" />
-        <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj" />
-        <ProjectReference Include="..\PaperConnect\src\PaperConnect.Core\PaperConnect.Core.csproj" />
-        <ProjectReference Include="..\Round.SDK\Round.SDK.Avalonia\Round.SDK.Avalonia.csproj" />
-        <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />
+        <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj"/>
+        <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj"/>
+        <ProjectReference Include="..\PaperConnect\src\PaperConnect.Core\PaperConnect.Core.csproj"/>
+        <ProjectReference Include="..\Round.SDK\Round.SDK.Avalonia\Round.SDK.Avalonia.csproj"/>
+        <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj" 
-                        Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+        <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj"
+                          Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
 
-        <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj" 
-                        Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+        <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
+                          Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
 </Project>

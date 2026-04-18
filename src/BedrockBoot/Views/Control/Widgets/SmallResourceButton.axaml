@@ -1,31 +1,30 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
-             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              x:Class="BedrockBoot.Views.Control.Widgets.SmallResourceButton"
              Name="Root">
-    <Button Padding="8" 
-            HorizontalAlignment="Stretch" 
+    <Button Padding="8"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
             Click="OnInternalButtonClick">
         <Grid ColumnDefinitions="Auto,*">
-            <widgets:LocalImageRenderWidget Grid.Column="0" 
-                                            CornerRadius="4" 
-                                            ClipToBounds="True" 
+            <widgets:LocalImageRenderWidget Grid.Column="0"
+                                            CornerRadius="4"
+                                            ClipToBounds="True"
                                             Width="42" Height="42"
-                                            ImageUrl="{Binding #Root.IconUrl}"/>
-                
+                                            ImageUrl="{Binding #Root.IconUrl}" />
+
             <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                <TextBlock Text="{Binding #Root.ResourceName}" 
-                           FontWeight="SemiBold" 
+                <TextBlock Text="{Binding #Root.ResourceName}"
+                           FontWeight="SemiBold"
                            FontSize="13"
-                           TextTrimming="CharacterEllipsis"/>
-                <TextBlock Text="{Binding #Root.Author}" 
-                           FontSize="11" 
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding #Root.Author}"
+                           FontSize="11"
                            Opacity="0.6"
-                           TextTrimming="CharacterEllipsis"/>
+                           TextTrimming="CharacterEllipsis" />
             </StackPanel>
         </Grid>
     </Button>

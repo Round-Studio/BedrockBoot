@@ -51,7 +51,7 @@
                             Classes="NoBorder">
                         <onePointControls:FontIcon Glyph="&#xE713;" />
                     </Button>
-                    
+
                     <Button Width="24" Height="24"
                             Name="OpenFolderBtn"
                             Click="OpenFolderBtn_OnClick"
@@ -72,8 +72,8 @@
                             Name="DeleteBtn"
                             Click="DeleteBtn_OnClick"
                             Classes="NoBorder">
-                        <onePointControls:FontIcon Glyph="&#xE74D;" 
-                                                   Foreground="Red"/>
+                        <onePointControls:FontIcon Glyph="&#xE74D;"
+                                                   Foreground="Red" />
                     </Button>
                 </StackPanel>
             </StackPanel>

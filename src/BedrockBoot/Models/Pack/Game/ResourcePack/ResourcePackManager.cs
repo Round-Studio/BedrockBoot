@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
@@ -23,7 +24,7 @@ public class ResourcePackManager
     {
         if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
             return new List<string>();
-            
+
         return Directory.GetFiles(dir, "manifest.json", SearchOption.AllDirectories).ToList();
     }
 
@@ -35,18 +36,14 @@ public class ResourcePackManager
         // 获取资源包目录
         var resourcePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ResourcePackFolder);
         if (!string.IsNullOrEmpty(resourcePackDir) && Directory.Exists(resourcePackDir))
-        {
             Directory.GetDirectories(resourcePackDir).ToList()
                 .ForEach(dir => { files.AddRange(GetManifests(dir)); });
-        }
 
         // 获取行为包目录
         var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.BehaviorPackFolder);
         if (!string.IsNullOrEmpty(behaviorPackDir) && Directory.Exists(behaviorPackDir))
-        {
             Directory.GetDirectories(behaviorPackDir).ToList()
                 .ForEach(dir => { files.AddRange(GetManifests(dir)); });
-        }
 
         files.ForEach(file =>
         {
@@ -54,18 +51,14 @@ public class ResourcePackManager
             {
                 var manifest = ResourcePackAnalysis.GetPackManifest(file);
                 if (manifest != null)
-                {
                     // 确保Header不为空
                     if (manifest.Header != null && !string.IsNullOrEmpty(manifest.Header.Uuid))
-                    {
                         result.Add(manifest);
-                    }
-                }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 // 记录错误但继续处理其他文件
-                System.Console.WriteLine($@"Error processing manifest {file}: {ex.Message}");
+                Console.WriteLine($@"Error processing manifest {file}: {ex.Message}");
             }
         });
 
@@ -104,7 +97,8 @@ public class ResourcePackManager
         if (Packs == null)
             Packs = new List<ResourcePackManifest>();
 
-        var ids = new HashSet<string>(Packs.Where(p => p?.Header != null).Select(p => p.Header.Uuid).Where(id => !string.IsNullOrEmpty(id)));
+        var ids = new HashSet<string>(Packs.Where(p => p?.Header != null).Select(p => p.Header.Uuid)
+            .Where(id => !string.IsNullOrEmpty(id)));
 
         files.ForEach(file =>
         {
@@ -114,46 +108,44 @@ public class ResourcePackManager
                 var confs = analysis.GetPackManifests();
 
                 if (confs != null)
-                {
                     confs.ForEach(pack =>
                     {
                         if (pack != null && pack.Header != null && !string.IsNullOrEmpty(pack.Header.Uuid))
-                        {
                             if (!ids.Contains(pack.Header.Uuid))
-                            {
                                 // 确保PackRootPath有效
                                 if (!string.IsNullOrEmpty(pack.PackRootPath) && Directory.Exists(pack.PackRootPath))
                                 {
                                     if (pack.PackType == ResourcePackType.Resource)
                                     {
-                                        var resourcePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ResourcePackFolder);
+                                        var resourcePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                            InstanceFolderType.ResourcePackFolder);
                                         if (!string.IsNullOrEmpty(resourcePackDir))
                                         {
-                                            var destPath = Path.Combine(resourcePackDir, Path.GetFileName(pack.PackRootPath));
+                                            var destPath = Path.Combine(resourcePackDir,
+                                                Path.GetFileName(pack.PackRootPath));
                                             CopyDirectory(pack.PackRootPath, destPath);
                                         }
                                     }
                                     else if (pack.PackType == ResourcePackType.Behavior)
                                     {
-                                        var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.BehaviorPackFolder);
+                                        var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                            InstanceFolderType.BehaviorPackFolder);
                                         if (!string.IsNullOrEmpty(behaviorPackDir))
                                         {
-                                            var destPath = Path.Combine(behaviorPackDir, Path.GetFileName(pack.PackRootPath));
+                                            var destPath = Path.Combine(behaviorPackDir,
+                                                Path.GetFileName(pack.PackRootPath));
                                             CopyDirectory(pack.PackRootPath, destPath);
                                         }
                                     }
-                                    
+
                                     // 添加到ID集合，避免重复
                                     ids.Add(pack.Header.Uuid);
                                 }
-                            }
-                        }
                     });
-                }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                System.Console.WriteLine($@"Error adding pack from {file}: {ex.Message}");
+                Console.WriteLine($@"Error adding pack from {file}: {ex.Message}");
             }
         });
 

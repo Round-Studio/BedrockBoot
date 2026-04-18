@@ -4,7 +4,6 @@
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
                        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                       xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
                        xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
                        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                        x:Class="BedrockBoot.Views.Pages.MainSubPage.MainToolsBoxPage">
@@ -25,48 +24,48 @@
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
                            Text="{DynamicResource Tools.Group.Help}" />
-                
+
                 <onePointControls:SettingCard Header="{DynamicResource Tools.McFramework.Title}"
                                               Description="{DynamicResource Tools.McFramework.Description}"
                                               Glyph="&#xECAA;"
                                               IsClickable="True"
                                               IsShowActionIcon="False">
                     <HyperlinkButton Content="{DynamicResource Tools.McFramework.Action}"
-                                     NavigateUri="https://www.mcappx.com/download/mc-framework/"></HyperlinkButton>
+                                     NavigateUri="https://www.mcappx.com/download/mc-framework/" />
                 </onePointControls:SettingCard>
-                
+
                 <onePointControls:SettingCard Header="{DynamicResource Tools.RecoverFiles.Title}"
                                               Description="{DynamicResource Tools.RecoverFiles.Description}"
                                               Glyph="&#xE71E;"
                                               IsVisible="False"
                                               IsClickable="True"
                                               Name="FoundLoseFilesBtn"
-                                              Click="FoundLoseFilesBtn_OnClick"/>
-                
+                                              Click="FoundLoseFilesBtn_OnClick" />
+
                 <onePointControls:SettingCard Header="{DynamicResource Tools.UninstallMc.Title}"
                                               Description="{DynamicResource Tools.UninstallMc.Description}"
                                               Glyph="&#xE74D;"
                                               IsClickable="True"
                                               Name="DeleteMcBtn"
-                                              Click="DeleteMcBtn_OnClick"/>
-                
+                                              Click="DeleteMcBtn_OnClick" />
+
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
                            Text="工具" />
-                
+
                 <onePointControls:SettingCard Header="存档转换"
                                               Description="Java 存档与 Bedrock 存档互相转换"
                                               Glyph="&#xEBD2;"
                                               Name="WorldShift"
                                               Click="WorldShift_OnClick"
-                                              IsClickable="True"/>
-                
+                                              IsClickable="True" />
+
                 <onePointControls:SettingCard Header="翻译资源包"
                                               Description="导入一个资源包，并翻译成中文"
                                               Glyph="&#xF2B7;"
                                               Name="TranslateResourcePack"
                                               Click="TranslateResourcePack_OnClick"
-                                              IsClickable="True"/>
+                                              IsClickable="True" />
             </StackPanel>
         </ScrollViewer>
 

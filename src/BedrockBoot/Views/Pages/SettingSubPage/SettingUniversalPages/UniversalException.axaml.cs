@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper.ExceptionHelper;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
@@ -18,8 +15,6 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
 public partial class UniversalException : ISettingPage
 {
-    
-
     public UniversalException()
     {
         InitializeComponent();
@@ -43,7 +38,7 @@ public partial class UniversalException : ISettingPage
                 ItemName = I18nManager.Instance["Setting.Universal.Exception.Title"]
             }
         };
-        
+
         UpdateUI();
     }
 
@@ -56,16 +51,17 @@ public partial class UniversalException : ISettingPage
                 Dispatcher.UIThread.Invoke(() => InfoCard.IsVisible = false);
 
             lst.Reverse();
-            
+
             lst.ForEach(re =>
             {
                 Dispatcher.UIThread.Invoke(async () =>
                 {
                     // 格式化崩溃描述：[时间] 发生的崩溃
-                    string formattedTime = DateTime.Parse(re.ErrorTime).ToString("yyyy-MM-dd HH:mm:ss");
-                    string description = string.Format(I18nManager.Instance["Setting.Universal.Exception.Item.Desc"], formattedTime);
+                    var formattedTime = DateTime.Parse(re.ErrorTime).ToString("yyyy-MM-dd HH:mm:ss");
+                    var description = string.Format(I18nManager.Instance["Setting.Universal.Exception.Item.Desc"],
+                        formattedTime);
 
-                    var item = new SettingCard()
+                    var item = new SettingCard
                     {
                         Header = re.ErrorTitle,
                         Description = description,
@@ -81,11 +77,13 @@ public partial class UniversalException : ISettingPage
                         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                         {
                             Title = I18nManager.Instance["Setting.Universal.Exception.Dialog.Save.Title"],
-                            SuggestedFileName = $"{I18nManager.Instance["Setting.Universal.Exception.Dialog.Save.Prefix"]} {Path.GetFileName(re.FileName)}",
+                            SuggestedFileName =
+                                $"{I18nManager.Instance["Setting.Universal.Exception.Dialog.Save.Prefix"]} {Path.GetFileName(re.FileName)}",
                             DefaultExtension = "json",
                             FileTypeChoices = new[]
                             {
-                                new FilePickerFileType(I18nManager.Instance["Setting.Universal.Exception.Dialog.Save.FileType"])
+                                new FilePickerFileType(
+                                    I18nManager.Instance["Setting.Universal.Exception.Dialog.Save.FileType"])
                                 {
                                     Patterns = new[] { "*.json" }
                                 }

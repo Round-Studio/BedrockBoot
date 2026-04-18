@@ -18,7 +18,7 @@
                            Name="ProgressText"
                            Text="0 %" />
             </StackPanel>
-            
+
             <ProgressBar IsIndeterminate="True"
                          Name="ProgressBar"
                          Margin="0,8,0,0"

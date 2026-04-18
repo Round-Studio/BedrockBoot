@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Media;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Control.Widgets;
@@ -15,12 +12,6 @@ public partial class BigResourceButton : UserControl
     // 定义点击事件路由
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
         RoutedEvent.Register<BigResourceButton, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
-
-    public event EventHandler<RoutedEventArgs>? Click
-    {
-        add => AddHandler(ClickEvent, value);
-        remove => RemoveHandler(ClickEvent, value);
-    }
 
     public BigResourceButton()
     {
@@ -63,14 +54,20 @@ public partial class BigResourceButton : UserControl
         set => UpdateLabels(value.ToList());
     }
 
-    private void UpdateLabels(List<string> labels)
-    {
-        labels.ForEach(x => LabelsControl.Children.Add(new LabelBox() { Text = x }));
-    }
-    
     public string? IconUrl
     {
         get => CoverImage.ImageUrl;
         set => CoverImage.ImageUrl = value;
+    }
+
+    public event EventHandler<RoutedEventArgs>? Click
+    {
+        add => AddHandler(ClickEvent, value);
+        remove => RemoveHandler(ClickEvent, value);
+    }
+
+    private void UpdateLabels(List<string> labels)
+    {
+        labels.ForEach(x => LabelsControl.Children.Add(new LabelBox { Text = x }));
     }
 }

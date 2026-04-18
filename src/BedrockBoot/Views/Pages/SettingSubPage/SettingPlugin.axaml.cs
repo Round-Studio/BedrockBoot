@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
+﻿using System.Collections.Generic;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingPluginPages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -21,7 +15,7 @@ public partial class SettingPlugin : ISettingPage
     public SettingPlugin()
     {
         InitializeComponent();
-        
+
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
@@ -33,7 +27,7 @@ public partial class SettingPlugin : ISettingPage
         PluginSetting.IsVisible = RegisterService.API.SettingItems.Count > 0;
         RegisterService.API.SettingItems.ForEach(it =>
         {
-            var item = new SettingCard()
+            var item = new SettingCard
             {
                 Header = it.Header,
                 Description = it.Description,

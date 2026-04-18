@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <x:String x:Key="LanguageName">简体中文 - BedrockBoot 官方</x:String>
-    
+
     <x:String x:Key="Shared.Action.Apply">应用</x:String>
     <x:String x:Key="Shared.Action.Back">返回</x:String>
     <x:String x:Key="Shared.Action.Browse">浏览</x:String>
@@ -15,20 +15,20 @@
     <x:String x:Key="Shared.Action.Save">保存</x:String>
     <x:String x:Key="Shared.Action.Search">搜索</x:String>
     <x:String x:Key="Shared.Action.Settings">设置</x:String>
-    
+
     <x:String x:Key="Shared.Label.Information">信息</x:String>
     <x:String x:Key="Shared.Label.Notice">注意</x:String>
     <x:String x:Key="Shared.Label.Project">项目</x:String>
     <x:String x:Key="Shared.Label.Ranking">排行</x:String>
-    
+
     <x:String x:Key="Shared.Group.BasicSettings">基础设置</x:String>
-    
+
     <x:String x:Key="Shared.Status.Wait">请稍后</x:String>
     <x:String x:Key="Shared.Status.Searching">搜索中...</x:String>
     <x:String x:Key="Shared.Status.Progress.Title">进度：</x:String>
     <x:String x:Key="Shared.Status.Error.Title">出现了错误</x:String>
     <x:String x:Key="Shared.Status.Error.Network.Desc">这有可能是您的网络波动导致的请求错误</x:String>
-    
+
     <x:String x:Key="Common.Action.Irreversible">此操作将永远无法恢复。</x:String>
     <x:String x:Key="Common.Unit.Speed">{0}/s</x:String>
 
@@ -39,17 +39,17 @@
     <x:String x:Key="MainWindow.Common.Add">新增</x:String>
 
     <x:String x:Key="Home.Title">你好，欢迎回来</x:String>
-    
+
     <x:String x:Key="MainPage.Nav.Home">主页</x:String>
     <x:String x:Key="MainPage.Nav.Manager">实例</x:String>
     <x:String x:Key="MainPage.Nav.Download">下载</x:String>
     <x:String x:Key="MainPage.Nav.Tools">工具</x:String>
     <x:String x:Key="MainPage.Nav.Setting">设置</x:String>
-    
+
     <x:String x:Key="MainPage.Status.NoInstance">无可用实例</x:String>
     <x:String x:Key="MainPage.Status.NoFolder">请先添加游戏文件夹</x:String>
     <x:String x:Key="MainPage.Status.LoadFailed">加载失败</x:String>
-    
+
     <x:String x:Key="MainPage.Error.InvalidPage.Title">页面无效</x:String>
     <x:String x:Key="MainPage.Error.InvalidPage.Content">页面 {0} 无效</x:String>
 
@@ -61,26 +61,26 @@
     <x:String x:Key="Manager.Title">实例管理</x:String>
     <x:String x:Key="Manager.IncludeGame">导入游戏</x:String>
     <x:String x:Key="Manager.IncludePack">导入整合包</x:String>
-    
+
     <x:String x:Key="Manager.GameType.AllType">所有类型</x:String>
     <x:String x:Key="Manager.GameType.Release">正式版</x:String>
     <x:String x:Key="Manager.GameType.Preview">测试版</x:String>
-    
+
     <x:String x:Key="Manager.GameItem.Launch">启动</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">编辑模式</x:String>
-    
+
     <x:String x:Key="Manager.Folder.Empty.Title">空</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">点击下方 添加目录&#x0A;以添加目录</x:String>
-    
+
     <x:String x:Key="Manager.Games.Empty.Title">没有实例</x:String>
     <x:String x:Key="Manager.Games.Empty.Message">关键词无效 或 未下载实例</x:String>
     <x:String x:Key="Manager.Games.Loading.Title">列队中</x:String>
     <x:String x:Key="Manager.Games.Loading.Message">正在加载版本...</x:String>
     <x:String x:Key="Manager.Search.Placeholder">搜索实例...</x:String>
-    
+
     <x:String x:Key="Main.Action.Launch">启动</x:String>
     <x:String x:Key="Main.GameList.Empty">无实例</x:String>
-    
+
     <x:String x:Key="MainPage.Manager.Import.Title">导入游戏安装包</x:String>
     <x:String x:Key="MainPage.Manager.Import.Action">开始导入</x:String>
     <x:String x:Key="MainPage.Manager.Import.Error.Pack">游戏包 {0} 无效</x:String>
@@ -93,7 +93,7 @@
     <x:String x:Key="MainPage.Manager.Integration.Dialog.Action">安装</x:String>
 
     <x:String x:Key="Instance.Title">实例</x:String>
-    
+
     <x:String x:Key="Draw.Instance.Tab.Detail">实例详情</x:String>
     <x:String x:Key="Draw.Instance.Tab.Mods">模组管理</x:String>
     <x:String x:Key="Draw.Instance.Tab.Packs">资源 / 行为包</x:String>
@@ -112,7 +112,7 @@
     <x:String x:Key="Instance.Info.Icon.Path">土径</x:String>
     <x:String x:Key="Instance.Info.Icon.EndStone">末地石</x:String>
     <x:String x:Key="Instance.Info.Icon.Crafting">工作台</x:String>
-    
+
     <x:String x:Key="Instance.Info.Group.Launch">启动设置</x:String>
     <x:String x:Key="Instance.Info.Launch.Title">启动设置</x:String>
     <x:String x:Key="Instance.Info.Launch.Desc">实例的启动相关设置</x:String>
@@ -130,14 +130,14 @@
     <x:String x:Key="Instance.Controls.MouseLock.Desc">针对 UWP 版本的 Bedrock 进行的鼠标优化</x:String>
     <x:String x:Key="Instance.Controls.MouseLock.Range.Title">剪切范围</x:String>
     <x:String x:Key="Instance.Controls.MouseLock.Range.Desc">鼠标锁对游戏的限制范围</x:String>
-    
+
     <x:String x:Key="Instance.Controls.Shortcut.Title">快捷方式</x:String>
     <x:String x:Key="Instance.Controls.Shortcut.Desc">保存一个用于快速启动该实例的快捷方式</x:String>
     <x:String x:Key="Instance.Controls.ImportConfig.Title">导入配置</x:String>
     <x:String x:Key="Instance.Controls.ImportConfig.Desc">导入其他实例的配置</x:String>
     <x:String x:Key="Instance.Controls.ExportPack.Title">导出整合包</x:String>
     <x:String x:Key="Instance.Controls.ExportPack.Desc">导出成 Minecraft Bedrock 整合包</x:String>
-    
+
     <x:String x:Key="Instance.Controls.Group.DangerZone">高危操作</x:String>
     <x:String x:Key="Instance.Controls.Delete.Title">删除实例</x:String>
     <x:String x:Key="Instance.Controls.Delete.Desc">彻底删除该游戏版本</x:String>
@@ -234,10 +234,10 @@
     <x:String x:Key="Download.Title">下载</x:String>
     <x:String x:Key="Download.Tab.Assets">资源包</x:String>
     <x:String x:Key="Download.List.Empty">未找到符合条件的版本</x:String>
-    
+
     <x:String x:Key="Download.Action.GetResource">下载资源</x:String>
     <x:String x:Key="Download.Action.DownloadGame">下载游戏</x:String>
-    
+
     <x:String x:Key="Download.Game.Type.Release">正式版</x:String>
     <x:String x:Key="Download.Game.Type.Preview">预览版</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta 版</x:String>
@@ -246,7 +246,7 @@
     <x:String x:Key="Download.Assets.Status.Loading.Message">全体电子，列队！</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Title">请...诶？</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Message">您所输入的关键词无效哦</x:String>
-    
+
     <x:String x:Key="Download.Search.Watermark">键入关键词以搜索...</x:String>
     <x:String x:Key="Download.Search.Action.VersionList">版本列表</x:String>
     <x:String x:Key="Download.Search.Group.Latest">最新版本</x:String>
@@ -257,10 +257,10 @@
     <x:String x:Key="Download.Search.Category.Texture">材质包</x:String>
     <x:String x:Key="Download.Search.Category.Behavior">行为包</x:String>
     <x:String x:Key="Download.Search.Category.Map">地图包</x:String>
-    
+
     <x:String x:Key="Download.Search.Status.NoResult.Title">未找到结果</x:String>
     <x:String x:Key="Download.Search.Status.NoResult.Message">请尝试其他关键词</x:String>
-    
+
     <x:String x:Key="Download.Result.Author.Prefix">作者</x:String>
     <x:String x:Key="Download.Result.Action.ViewOnCurseForge">在 CurseForge 上查看此资源</x:String>
     <x:String x:Key="Download.Result.Action.Get">获取资源</x:String>
@@ -280,7 +280,7 @@
 
     <x:String x:Key="Download.Source.Testing">测试中...</x:String>
     <x:String x:Key="Download.Source.Failed">连接失败</x:String>
-    
+
     <x:String x:Key="Download.Dialog.TitlePrefix">下载游戏</x:String>
     <x:String x:Key="Download.Draw.Error.NoUrl">该版本无法获取到对应下载地址，请尝试更换下载源。</x:String>
     <x:String x:Key="Download.Draw.AddFolder.Title">添加游戏安装根目录</x:String>
@@ -381,7 +381,7 @@
     <x:String x:Key="Task.Launch.Migration.View.Title">迁移版本</x:String>
 
     <x:String x:Key="Settings.Title">设置</x:String>
-    
+
     <x:String x:Key="Settings.Nav.Personalization.Title">个性化</x:String>
     <x:String x:Key="Settings.Nav.Personalization.Desc">启动器的个性化设置</x:String>
     <x:String x:Key="Settings.Nav.Download.Title">下载</x:String>
@@ -430,7 +430,7 @@
     <x:String x:Key="Settings.Background.Image.Opacity.Desc">壁纸的透明度设置</x:String>
     <x:String x:Key="Settings.Background.Image.Blur.Title">壁纸模糊</x:String>
     <x:String x:Key="Settings.Background.Image.Blur.Desc">壁纸的模糊效果</x:String>
-    
+
     <x:String x:Key="Setting.Personalization.Background.Title">背景</x:String>
     <x:String x:Key="Setting.Personalization.Background.Dialog.Import.Title">选择图片文件</x:String>
     <x:String x:Key="Setting.Personalization.Background.Type.None">无</x:String>
@@ -443,7 +443,7 @@
     <x:String x:Key="Settings.Color.Theme.Desc">浅色 or 深色</x:String>
     <x:String x:Key="Settings.Color.Theme.Dark">深色</x:String>
     <x:String x:Key="Settings.Color.Theme.Light">浅色</x:String>
-    
+
     <x:String x:Key="Setting.Personalization.Title">个性化</x:String>
     <x:String x:Key="Setting.Personalization.Breadcrumb.Root">个性化</x:String>
     <x:String x:Key="Setting.Personalization.Color.Title">颜色</x:String>
@@ -465,7 +465,7 @@
     <x:String x:Key="Settings.Personalization.Home.Type.Desc">启动器主页显示的类型</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.None">无</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.News">新闻主页</x:String>
-    
+
     <x:String x:Key="Setting.Personalization.Home.Title">主页</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.Header">主页内容类型</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.None">空白 (None)</x:String>
@@ -552,7 +552,7 @@
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Dev">开发版 (Dev)</x:String>
     <x:String x:Key="Setting.Universal.GatherInfo.Title">收集用户信息</x:String>
     <x:String x:Key="Setting.Universal.GatherInfo.Desc">用于收集用户使用的信息，仅用于分析用户群体，绝不向第三方出售数据</x:String>
-    
+
     <x:String x:Key="MainPage.Update.Title">检查更新</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">更新 {0}</x:String>
     <x:String x:Key="MainPage.Update.Content">我们有新的更新：\n\n{0}</x:String>
@@ -570,7 +570,7 @@
     <x:String x:Key="Tools.UninstallMc.Description">用于卸载由本机已安装的 Minecraft 导致的错误</x:String>
     <x:String x:Key="Tools.Empty.Title">某野喔</x:String>
     <x:String x:Key="Tools.Empty.Message">工具箱内没有工具 awa&#x0A;可以催促开发者火速添加.jpg</x:String>
-    
+
     <x:String x:Key="MainPage.Tools.Uninstall.Dialog.Title">正在卸载游戏中...</x:String>
     <x:String x:Key="MainPage.Tools.Uninstall.Dialog.Content">卸载完毕后，此对话框将自动关闭。</x:String>
 
@@ -590,18 +590,18 @@
     <x:String x:Key="About.Developers.Core">BedrockBoot 本体：Dime，YoumiHa</x:String>
     <x:String x:Key="About.Developers.Kernel">BedrockBoot 启动核心：YoumiHa</x:String>
     <x:String x:Key="About.Developers.UI">BedrockBoot 用户交互体验：DrMing</x:String>
-    
+
     <x:String x:Key="About.Section.Credits">鸣谢</x:String>
     <x:String x:Key="About.Credits.MCAPPX">BedrockBoot 使用的版本列表源来自 MCAPPX 网站</x:String>
     <x:String x:Key="About.Credits.Akams">BedrockBoot 下载更新的部分公益源来自 github.akams.cn</x:String>
     <x:String x:Key="About.Credits.CurseForge">BedrockBoot 使用的游戏资源下载来自 CurseForge</x:String>
     <x:String x:Key="About.Credits.BMCBL">感谢来自 BMCBL 提供的 MCAPPX 列表源加速站点</x:String>
-    
+
     <x:String x:Key="About.Section.Inspiration">灵感来源</x:String>
     <x:String x:Key="About.Inspiration.LauncherX">BedrockBoot 内部分动画参考自 LauncherX</x:String>
     <x:String x:Key="About.Inspiration.Polymerium">BedrockBoot 内部分设计参考自 Polymerium</x:String>
     <x:String x:Key="About.Inspiration.WonderLab">BedrockBoot 内部分设计参考自 WonderLab</x:String>
-    
+
     <x:String x:Key="About.Section.Components">组件库</x:String>
     <x:String x:Key="About.Components.OnePointUI">BedrockBoot 使用了 OnePointUI 作为用户交互风格</x:String>
     <x:String x:Key="About.Components.Core">BedrockBoot 使用了 BedrockLauncher.Core 游戏启动核心</x:String>
@@ -612,7 +612,7 @@
     <x:String x:Key="About.Action.Contributors.Desc">BedrockBoot 的所有贡献者</x:String>
     <x:String x:Key="About.Action.Version.Title">内部版本号</x:String>
     <x:String x:Key="About.Action.CheckUpdate">检查更新</x:String>
-    
+
     <x:String x:Key="About.Contributor.Title">贡献者</x:String>
     <x:String x:Key="About.Contributor.Description">这里展示的是对 BedrockBoot 有贡献的创作者！</x:String>
     <x:String x:Key="About.Contributor.Count.Prefix">成功贡献过 </x:String>
@@ -629,12 +629,12 @@
     <x:String x:Key="Setup.Root.Slogan">新一代 Minecraft 基岩版启动器</x:String>
     <x:String x:Key="Setup.Root.Action.Previous">上一步</x:String>
     <x:String x:Key="Setup.Root.Action.Next">下一步</x:String>
-    
+
     <x:String x:Key="Setup.Step.Welcome">欢迎</x:String>
     <x:String x:Key="Setup.Step.Import">导入</x:String>
     <x:String x:Key="Setup.Step.Completed">完成</x:String>
     <x:String x:Key="Setup.Step.Style">个性化</x:String>
-    
+
     <x:String x:Key="Setup.Welcome.Title">欢迎</x:String>
     <x:String x:Key="Setup.Welcome.Description">欢迎使用 BedrockBoot v2，这是初次使用向导</x:String>
 
@@ -647,16 +647,16 @@
     <x:String x:Key="Setup.Import.Dialog.AddFolder.Title">添加游戏根目录</x:String>
     <x:String x:Key="Setup.Import.Dialog.AddFolder.Action">添加</x:String>
     <x:String x:Key="Setup.Import.Draw.ImportOther.Title">导入第三方启动器配置</x:String>
-    
+
     <x:String x:Key="Setup.Style.Title">个性化</x:String>
     <x:String x:Key="Setup.Style.Description">启动器的个性化设置</x:String>
     <x:String x:Key="Setup.Style.Theme.Dark">深色 (Dark)</x:String>
     <x:String x:Key="Setup.Style.Theme.Light">浅色 (Light)</x:String>
-    
+
     <x:String x:Key="Setup.Completed.Title">完成</x:String>
     <x:String x:Key="Setup.Completed.Description">基础设置已完成！现在可以尽情享用啦~</x:String>
     <x:String x:Key="Setup.Completed.Action.Start">开始使用</x:String>
-    
+
     <x:String x:Key="Import.Launcher.Description.Format">从 {0} 启动器中导入数据...</x:String>
     <x:String x:Key="Draw.ImportLauncher.Status.None.Title">没有可用配置</x:String>
     <x:String x:Key="Draw.ImportLauncher.Status.None.Message">当前系统中没有可用的第三方基岩版启动器配置文件</x:String>
@@ -681,33 +681,33 @@
     <x:String x:Key="Dialog.AddGameFolder.Label.Path">目录路径：</x:String>
     <x:String x:Key="Dialog.AddFolder.Picker.Title">请选择游戏实例存放文件夹</x:String>
     <x:String x:Key="Dialog.AddFolder.Error.InvalidPath">您选择的路径无效或无法访问。&#x0a;请确保该路径不是受系统保护的根目录。</x:String>
-    
+
     <x:String x:Key="Dialog.AddInstance.Label.GameFolder">游戏目录</x:String>
     <x:String x:Key="Dialog.AddInstance.Label.InstanceName">实例名（自定义）：</x:String>
-    
+
     <x:String x:Key="Dialog.AddServer.Label.Name">服务器名称（自定义）：</x:String>
     <x:String x:Key="Dialog.AddServer.Watermark.Name">第三方服务器</x:String>
     <x:String x:Key="Dialog.AddServer.Label.Address">服务器地址：</x:String>
     <x:String x:Key="Dialog.AddServer.Label.Port">服务器端口：</x:String>
     <x:String x:Key="Dialog.AddServer.DefaultName">第三方服务器</x:String>
-    
+
     <x:String x:Key="Dialog.ChooseGame.Label.Instance">实例：</x:String>
-    
+
     <x:String x:Key="Dialog.Import.Label.PackagePath">安装包路径：</x:String>
     <x:String x:Key="Dialog.Import.Label.InstallFolder">安装目录：</x:String>
     <x:String x:Key="Dialog.Import.Label.InstallName">安装名称（自定义）：</x:String>
     <x:String x:Key="Dialog.Import.Label.GDKTypeTip">实际版本类型（GDK 必须选择此项，填错无法启动）：</x:String>
     <x:String x:Key="Dialog.Import.Action.DontKnowType">我并不知道该版本类型，上面的选项是随便选的</x:String>
-    
+
     <x:String x:Key="Dialog.ImportConfig.Label.Title">选择需要导入的内容</x:String>
     <x:String x:Key="Dialog.ImportConfig.Option.Settings">实例设置</x:String>
     <x:String x:Key="Dialog.ImportConfig.Option.Archive">存档</x:String>
-    
+
     <x:String x:Key="Dialog.ImportMod.Label.FilePath">文件路径：</x:String>
     <x:String x:Key="Dialog.ImportMod.Label.InjectionDelay">Mod 延迟（ms）：</x:String>
     <x:String x:Key="Dialog.ImportMod.Option.Preload">启用预加载 *</x:String>
     <x:String x:Key="Dialog.ImportMod.Tip.Preload">* 如果您不知道什么是预加载，请不要勾选</x:String>
-    
+
     <x:String x:Key="Dialog.ImportPack.Label.ConfirmList">您将导入以下包：</x:String>
 
     <x:String x:Key="Dialog.MakePack.Notice.Legal">请注意，整合包中的资源包分发需要获得其开发者的允许，否则可能为非法分发</x:String>
@@ -733,5 +733,5 @@
     <x:String x:Key="ExceptionWindow.Link.Issues">Github Issues</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.Title">保存错误报告</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.FileType">BedrockBoot 崩溃报告</x:String>
-    
+
 </ResourceDictionary>

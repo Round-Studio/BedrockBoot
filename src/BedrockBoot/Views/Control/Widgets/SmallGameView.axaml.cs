@@ -10,12 +10,6 @@ public partial class SmallGameView : UserControl
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
         RoutedEvent.Register<SmallGameView, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
 
-    public event EventHandler<RoutedEventArgs>? Click
-    {
-        add => AddHandler(ClickEvent, value);
-        remove => RemoveHandler(ClickEvent, value);
-    }
-
     public SmallGameView()
     {
         InitializeComponent();
@@ -38,5 +32,11 @@ public partial class SmallGameView : UserControl
     {
         get => IconImage.Source;
         set => IconImage.Source = value;
+    }
+
+    public event EventHandler<RoutedEventArgs>? Click
+    {
+        add => AddHandler(ClickEvent, value);
+        remove => RemoveHandler(ClickEvent, value);
     }
 }

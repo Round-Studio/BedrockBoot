@@ -6,6 +6,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.RecoverFilesPage.RecoverFilesRoot">
     <Grid>
-        <navigation:NavigationFrame Name="NavigationFrame"/>
+        <navigation:NavigationFrame Name="NavigationFrame" />
     </Grid>
 </UserControl>

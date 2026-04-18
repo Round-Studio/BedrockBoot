@@ -16,6 +16,6 @@
                                       Glyph="&#xE896;"
                                       IsClickable="True"
                                       Name="DownloadBtn"
-                                      Click="DownloadBtn_OnClick"/>
+                                      Click="DownloadBtn_OnClick" />
     </StackPanel>
 </UserControl>

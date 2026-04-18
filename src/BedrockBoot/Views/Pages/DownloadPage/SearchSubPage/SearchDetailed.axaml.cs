@@ -84,7 +84,7 @@ public partial class SearchDetailed : ISetting
             searchHis.Data.Add(info);
             searchHis.Save();
         }
-        
+
         // 重置分页状态
         _currentPage = 1;
         _currentIndex = 0;
@@ -147,9 +147,9 @@ public partial class SearchDetailed : ISetting
                     var allVersions = VersionHelper.GetVersions()
                         .Where(x => (x.ID.ToLower().Contains(info.Key) ||
                                      x.BuildType.ToString().ToLower().Contains(info.Key)) &&
-                                    x.Type == (BedrockLauncher.Core.MinecraftGameTypeVersion)GameType.SelectedIndex)
+                                    x.Type == (MinecraftGameTypeVersion)GameType.SelectedIndex)
 #if LINUX
-                        .Where(x=>x.BuildType == MinecraftBuildTypeVersion.GDK)           
+                        .Where(x=>x.BuildType == MinecraftBuildTypeVersion.GDK)
 #endif
                         .ToList();
 
@@ -168,7 +168,7 @@ public partial class SearchDetailed : ISetting
                         {
                             Name = i.ID,
                             Description = $"{i.BuildType}, {i.Date}",
-                            IconUri = i.Type == BedrockLauncher.Core.MinecraftGameTypeVersion.Release
+                            IconUri = i.Type == MinecraftGameTypeVersion.Release
                                 ? "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png"
                                 : "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png",
                             OnClick = s =>

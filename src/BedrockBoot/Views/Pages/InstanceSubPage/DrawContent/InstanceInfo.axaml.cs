@@ -6,8 +6,6 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 

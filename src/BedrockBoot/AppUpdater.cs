@@ -13,7 +13,7 @@ public static class AppUpdater
 {
     private static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
     private static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-    
+
     /// <summary>
     ///     主入口：根据参数解析决定是执行更新流程还是正常启动
     /// </summary>
@@ -30,6 +30,7 @@ public static class AppUpdater
                         LaunchUpdateReplacement(targetPath);
                         Environment.Exit(0);
                     }
+
                     break;
                 case "--update-replace":
                     // 模式2：作为替换程序启动
@@ -39,6 +40,7 @@ public static class AppUpdater
                         PerformFileReplacement(oldPath);
                         Environment.Exit(0);
                     }
+
                     break;
             }
     }
@@ -81,7 +83,7 @@ public static class AppUpdater
                 UseShellExecute = !IsLinux, // Linux 上设置为 false
                 WindowStyle = ProcessWindowStyle.Normal
             };
-            
+
             // Linux 特殊处理
             if (IsLinux)
             {
@@ -110,7 +112,7 @@ public static class AppUpdater
         {
             var currentPath = Process.GetCurrentProcess().MainModule?.FileName;
             var tempDir = Path.GetTempPath();
-            var tempFileName = IsLinux 
+            var tempFileName = IsLinux
                 ? $"BedrockBoot_Update_{Guid.NewGuid():N}"
                 : $"BedrockBoot_Update_{Guid.NewGuid():N}.exe";
             var tempPath = Path.Combine(tempDir, tempFileName);
@@ -119,7 +121,7 @@ public static class AppUpdater
 
             // 复制当前程序到临时位置
             File.Copy(currentPath, tempPath, true);
-            
+
             // Linux: 设置可执行权限
             if (IsLinux)
             {
@@ -184,7 +186,7 @@ public static class AppUpdater
                     var chmodProcess = Process.Start("chmod", $"+x \"{oldPath}\"");
                     chmodProcess?.WaitForExit();
                 }
-                
+
                 // 关键步骤4：启动更新后的程序
                 var finalStartInfo = new ProcessStartInfo
                 {
@@ -192,7 +194,7 @@ public static class AppUpdater
                     UseShellExecute = !IsLinux,
                     WindowStyle = ProcessWindowStyle.Normal
                 };
-                
+
                 // Linux 特殊处理
                 if (IsLinux)
                 {

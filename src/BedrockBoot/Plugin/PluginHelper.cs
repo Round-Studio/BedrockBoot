@@ -23,9 +23,7 @@ public class PluginHelper
 
         if (string.IsNullOrEmpty(config.BodyFile)) throw new InvalidOperationException("插件包配置中未指定主体文件");
         if (!string.IsNullOrEmpty(config.PackIconPath))
-        {
             config.PackIconPath = Path.Combine(extractDir, "assets", "icon", config.PackIconPath);
-        }
 
         config.PackFolder = extractDir;
         config.PackFile = packFile;

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent.Multiplayer;
@@ -26,7 +20,7 @@ public partial class MultiplayerRoot : UserControl
 
     private void CreateRoom_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.PaperConnectCore = new PaperConnectCore()
+        GlobalModel.PaperConnectCore = new PaperConnectCore
         {
             EasyTierCliPath = PathsList.EasyTierCliPath,
             EasyTierPath = PathsList.EasyTierCorePath,
@@ -40,7 +34,7 @@ public partial class MultiplayerRoot : UserControl
     private void LinkRoom_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogMultiplayerLinkRoomContent();
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "连接房间",
             Content = dialog,
@@ -49,8 +43,8 @@ public partial class MultiplayerRoot : UserControl
             CloseAction = () =>
             {
                 var roomCode = dialog.RoomCode;
-                
-                GlobalModel.PaperConnectCore = new PaperConnectCore()
+
+                GlobalModel.PaperConnectCore = new PaperConnectCore
                 {
                     EasyTierCliPath = PathsList.EasyTierCliPath,
                     EasyTierPath = PathsList.EasyTierCorePath,
@@ -64,7 +58,7 @@ public partial class MultiplayerRoot : UserControl
                 Task.Run(() => GlobalModel.PaperConnectCore.Initialize(CoreType.Client, GlobalModel.ETPublicServer));
                 Dispatcher.UIThread.Invoke(() =>
                     MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomGuest()));
-                DialogHost.Show(new()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = "连接房间中...",
                     Content = "正在连接房间..."

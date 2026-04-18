@@ -16,20 +16,20 @@
                 <onePointControls:FontIcon Grid.Column="0"
                                            VerticalAlignment="Center"
                                            FontSize="14"
-                                           Glyph="&#xE81C;"/>
-                
+                                           Glyph="&#xE81C;" />
+
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
                             Spacing="4"
                             VerticalAlignment="Center">
                     <TextBlock Text="Search Key"
                                Name="SearchKey"
-                               VerticalAlignment="Center"></TextBlock>
+                               VerticalAlignment="Center" />
                 </StackPanel>
-                    
-                <onePointControls:LabelBox Grid.Column="2" 
+
+                <onePointControls:LabelBox Grid.Column="2"
                                            Name="SearchType"
-                                           Text="Search Type"></onePointControls:LabelBox>
+                                           Text="Search Type" />
             </Grid>
         </Button>
     </items:BorderCard>

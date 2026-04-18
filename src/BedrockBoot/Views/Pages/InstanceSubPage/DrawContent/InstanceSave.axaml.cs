@@ -1,25 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
+﻿using Avalonia.Controls;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Pack.Game.Archive;
-using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ContentView;
 using BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
-using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceSave : UserControl
 {
-    public VersionConfig VersionInfo { get; set; }
-    public bool IsEdit { get; set; }
-
     public InstanceSave()
     {
         IsEdit = false;
@@ -32,6 +19,9 @@ public partial class InstanceSave : UserControl
         UpdateUI();
     }
 
+    public VersionConfig VersionInfo { get; set; }
+    public bool IsEdit { get; set; }
+
     private void UpdateUI()
     {
         OnNavigatedTo(true);
@@ -40,19 +30,15 @@ public partial class InstanceSave : UserControl
     public void OnNavigatedTo(bool isSavesView, object page = null)
     {
         if (isSavesView)
-        {
             NavigationFrame.NavigateTo(new SavesView(VersionInfo)
             {
-                EditAction = (info => OnNavigatedTo(false, new LevelSettingsRoot(info)
+                EditAction = info => OnNavigatedTo(false, new LevelSettingsRoot(info)
                 {
                     BackAction = () =>
                         OnNavigatedTo(true)
-                }))
+                })
             });
-        }
         else
-        {
             NavigationFrame.NavigateTo((UserControl)page);
-        }
     }
 }

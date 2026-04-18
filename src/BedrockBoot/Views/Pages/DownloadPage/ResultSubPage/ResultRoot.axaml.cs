@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum;
@@ -23,8 +22,6 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 public partial class ResultRoot : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public ResultRoot()
     {
         InitializeComponent();
@@ -37,10 +34,12 @@ public partial class ResultRoot : UserControl
         _ = UpdateAsync();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     public SearchResultItemInfo SearchResultItemInfo { get; set; } = null!;
 
     /// <summary>
-    /// 异步加载资源详情
+    ///     异步加载资源详情
     /// </summary>
     public async Task UpdateAsync()
     {
@@ -55,9 +54,7 @@ public partial class ResultRoot : UserControl
         var hasWebsite = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
         HyperlinkButton.IsVisible = hasWebsite;
         if (hasWebsite && Uri.TryCreate(SearchResultItemInfo.SourceWebsite, UriKind.Absolute, out var uri))
-        {
             HyperlinkButton.NavigateUri = uri;
-        }
 
         // 3. 预览图列表渲染
         PreviewList.Children.Clear();
@@ -65,9 +62,7 @@ public partial class ResultRoot : UserControl
         {
             PreviewCard.IsVisible = true;
             foreach (var image in SearchResultItemInfo.Images)
-            {
                 PreviewList.Children.Add(new LocalImageRenderWidget(image) { Width = 290 });
-            }
         }
 
         // 4. 标签渲染
@@ -75,10 +70,7 @@ public partial class ResultRoot : UserControl
         if (SearchResultItemInfo.Labels is { Count: > 0 })
         {
             LabelsBox.IsVisible = true;
-            foreach (var s in SearchResultItemInfo.Labels)
-            {
-                LabelsBox.Children.Add(new LabelBox { Text = s });
-            }
+            foreach (var s in SearchResultItemInfo.Labels) LabelsBox.Children.Add(new LabelBox { Text = s });
         }
 
         // 5. 异步图标加载
@@ -107,10 +99,7 @@ public partial class ResultRoot : UserControl
 
                 // 转换 HTML 到 Avalonia 控件
                 var controls = HtmlToControlConverter.ConvertHtmlToControls(descriptionHtml);
-                foreach (var control in controls)
-                {
-                    DescriptionContent.Children.Add(control);
-                }
+                foreach (var control in controls) DescriptionContent.Children.Add(control);
             }
         }
         catch (Exception ex)
@@ -120,15 +109,15 @@ public partial class ResultRoot : UserControl
             DescriptionContent.Children.Add(new TextBlock
             {
                 Text = $"{i18n["Download.Result.Error.LoadDescription"]}: {ex.Message}",
-                TextWrapping = Avalonia.Media.TextWrapping.Wrap,
-                Foreground = Avalonia.Media.Brushes.Red,
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = Brushes.Red,
                 Margin = new Thickness(0, 10)
             });
         }
     }
 
     /// <summary>
-    /// 打开下载抽屉
+    ///     打开下载抽屉
     /// </summary>
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -141,14 +130,14 @@ public partial class ResultRoot : UserControl
     }
 
     /// <summary>
-    /// 复制分享链接
+    ///     复制分享链接
     /// </summary>
     private void CopyName_OnClick(object? sender, RoutedEventArgs e)
     {
         var modData = JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData);
         if (modData == null) return;
 
-        var shareContent = string.Format(i18n["Download.Result.Share.Format"], 
+        var shareContent = string.Format(i18n["Download.Result.Share.Format"],
             SearchResultItemInfo.Name, SearchResultItemInfo.SourceWebsite);
 
         CopyService.SetClipboard(shareContent, CopyType.Resource, modData.Id);

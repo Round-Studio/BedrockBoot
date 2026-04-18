@@ -15,8 +15,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameModItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public GameModItem()
     {
         InitializeComponent();
@@ -30,6 +28,8 @@ public partial class GameModItem : UserControl
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     public ModInfo ModInfo { get; set; }
     public ModsManager ModsManager { get; set; } = null!;
     public VersionConfig VersionConfig { get; set; } = null!;
@@ -39,11 +39,11 @@ public partial class GameModItem : UserControl
     {
         if (ModInfo == null) return;
 
-        string fileName = Path.GetFileName(ModInfo.File);
+        var fileName = Path.GetFileName(ModInfo.File);
         FileName.Text = fileName;
 
-        long fileSize = File.Exists(ModInfo.File) ? new FileInfo(ModInfo.File).Length : 0;
-        string formattedSize = SizeHelper.FormatBytes(fileSize);
+        var fileSize = File.Exists(ModInfo.File) ? new FileInfo(ModInfo.File).Length : 0;
+        var formattedSize = SizeHelper.FormatBytes(fileSize);
 
         if (!ModInfo.IsPreLoad)
             Card.Description = $"{formattedSize}, {ModInfo.InjectDelay} ms";
@@ -55,8 +55,8 @@ public partial class GameModItem : UserControl
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        string fileName = Path.GetFileName(ModInfo.File);
-        
+        var fileName = Path.GetFileName(ModInfo.File);
+
         DialogHost.Show(new DialogInfo
         {
             Title = i18n["Instance.Mod.Delete.Title"],
@@ -69,7 +69,7 @@ public partial class GameModItem : UserControl
                 {
                     if (File.Exists(ModInfo.File))
                         File.Delete(ModInfo.File);
-                    
+
                     ModsManager.RefreshMods(true);
                     UpdateCallBack?.Invoke();
                 }
@@ -114,10 +114,10 @@ public partial class GameModItem : UserControl
                     return;
                 }
 
-                string modsDir = Path.Combine(VersionConfig.VersionPath, "config", "BedrockBoot2", "mods");
+                var modsDir = Path.Combine(VersionConfig.VersionPath, "config", "BedrockBoot2", "mods");
                 if (!Directory.Exists(modsDir)) Directory.CreateDirectory(modsDir);
 
-                string targetPath = Path.Combine(modsDir, Path.GetFileName(dialog.ModFile));
+                var targetPath = Path.Combine(modsDir, Path.GetFileName(dialog.ModFile));
 
                 try
                 {
@@ -138,7 +138,7 @@ public partial class GameModItem : UserControl
                             IsPreLoad = dialog.IsPreLoad
                         };
                         ModsManager.ModsConfig.Save();
-                        
+
                         ModInfo = ModsManager.ModsConfig.Data[index];
                         UpdateUI();
                         UpdateCallBack?.Invoke();

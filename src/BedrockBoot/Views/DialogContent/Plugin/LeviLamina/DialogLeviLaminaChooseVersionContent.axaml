@@ -5,6 +5,5 @@
              mc:Ignorable="d" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DialogContent.Plugin.LeviLamina.DialogLeviLaminaChooseVersionContent">
     <ListBox Name="VersionList"
-             Width="320">
-    </ListBox>
+             Width="320" />
 </UserControl>

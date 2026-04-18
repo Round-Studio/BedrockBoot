@@ -15,14 +15,11 @@ using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Plugin.BedrockBoot.Register;
-using File = System.IO.File;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceControls : ISetting
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public InstanceControls()
     {
         IsEdit = false;
@@ -35,7 +32,7 @@ public partial class InstanceControls : ISetting
         Expansion.IsVisible = RegisterService.API.InstanceControlItems.Count > 0;
         RegisterService.API.InstanceControlItems.ForEach(it =>
         {
-            var item = new SettingCard()
+            var item = new SettingCard
             {
                 Header = it.Header,
                 Description = it.Description,
@@ -52,17 +49,19 @@ public partial class InstanceControls : ISetting
         VersionInfo = versionInfo;
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     public VersionConfig VersionInfo { get; set; }
 
     /// <summary>
-    /// 删除实例逻辑
+    ///     删除实例逻辑
     /// </summary>
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         DialogHost.Show(new DialogInfo
         {
             Title = i18n["Instance.Control.Delete.Confirm.Title"],
-            Content = string.Format(i18n["Instance.Control.Delete.Confirm.Content"], 
+            Content = string.Format(i18n["Instance.Control.Delete.Confirm.Content"],
                 VersionInfo.Info.VersionName, VersionInfo.Info.Version),
             CloseButtonText = i18n["MainWindow.Common.Confirm"],
             PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
@@ -79,7 +78,7 @@ public partial class InstanceControls : ISetting
     }
 
     /// <summary>
-    /// 创建桌面快捷方式
+    ///     创建桌面快捷方式
     /// </summary>
     private async void JumpItemBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -100,7 +99,6 @@ public partial class InstanceControls : ISetting
         });
 
         if (file is not null)
-        {
             try
             {
                 var shortcutPath = file.TryGetLocalPath();
@@ -115,11 +113,10 @@ public partial class InstanceControls : ISetting
                 var success = CreateShortcutInSTAThread(shortcutPath, targetPath, arguments);
 
                 if (success)
-                {
                     DialogHost.Show(new DialogInfo
                     {
                         Title = i18n["Instance.Control.Shortcut.Success.Title"],
-                        Content = string.Format(i18n["Instance.Control.Shortcut.Success.Content"], 
+                        Content = string.Format(i18n["Instance.Control.Shortcut.Success.Content"],
                             Path.GetFileName(shortcutPath), Path.GetDirectoryName(shortcutPath)),
                         CloseButtonText = i18n["MainWindow.Common.Confirm"],
                         PrimaryButtonText = i18n["Instance.Control.Shortcut.Action.OpenFolder"],
@@ -129,10 +126,12 @@ public partial class InstanceControls : ISetting
                             {
                                 Process.Start("explorer.exe", $"/select,\"{shortcutPath}\"");
                             }
-                            catch { /* Ignore */ }
+                            catch
+                            {
+                                /* Ignore */
+                            }
                         }
                     });
-                }
             }
             catch (Exception ex)
             {
@@ -143,7 +142,6 @@ public partial class InstanceControls : ISetting
                     CloseButtonText = i18n["MainWindow.Common.Confirm"]
                 });
             }
-        }
     }
 
     private bool CreateShortcutInSTAThread(string shortcutPath, string targetPath, string arguments)
@@ -182,12 +180,12 @@ public partial class InstanceControls : ISetting
     }
 
     /// <summary>
-    /// 导入/迁移配置
+    ///     导入/迁移配置
     /// </summary>
     private void ImportConfig_OnClick(object? sender, RoutedEventArgs e)
     {
         var body = new DialogChooseGameContent();
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = i18n["Instance.Control.Import.Choose.Title"],
             Content = body,
@@ -196,7 +194,7 @@ public partial class InstanceControls : ISetting
             CloseAction = () =>
             {
                 var confBody = new DialogImportInstanceConfigContent();
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = i18n["Instance.Control.Import.Content.Title"],
                     Content = confBody,
@@ -207,8 +205,8 @@ public partial class InstanceControls : ISetting
                         var conf = confBody.MigrationConfig;
                         conf.NewVersionConfig = VersionInfo;
                         conf.OldVersionConfig = body.VersionConfig;
-                        
-                        DialogHost.Show(new DialogInfo()
+
+                        DialogHost.Show(new DialogInfo
                         {
                             Title = i18n["Instance.Control.Import.Progress.Title"],
                             Content = new DialogMigrationGameConfigContent(conf)
@@ -220,13 +218,13 @@ public partial class InstanceControls : ISetting
     }
 
     /// <summary>
-    /// 导出整合包
+    ///     导出整合包
     /// </summary>
     private void MakePack_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogMakeIntegrationPackConfigContent();
 
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Content = dialog,
             Title = i18n["Instance.Control.Pack.Dialog.Title"],
@@ -238,7 +236,7 @@ public partial class InstanceControls : ISetting
                 var config = dialog.PackConfig;
                 var topLevel = TopLevel.GetTopLevel(this);
                 if (topLevel == null) return;
-                
+
                 var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
                     Title = i18n["Instance.Control.Pack.Save.Title"],
@@ -256,7 +254,7 @@ public partial class InstanceControls : ISetting
                 {
                     config.PackSavePath = file.TryGetLocalPath();
                     config.VersionConfig = VersionInfo;
-                    DialogHost.Show(new DialogInfo()
+                    DialogHost.Show(new DialogInfo
                     {
                         Title = i18n["Instance.Control.Pack.Progress.Title"],
                         Content = new DialogMakeIntegrationPackContent(config)

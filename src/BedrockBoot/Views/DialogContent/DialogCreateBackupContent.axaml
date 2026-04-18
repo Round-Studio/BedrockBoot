@@ -11,6 +11,6 @@
             Text="备份名称" />
         <TextBox Width="320"
                  Watermark="新建备份"
-                 Name="BackupName"/>
+                 Name="BackupName" />
     </StackPanel>
 </UserControl>

@@ -1,8 +1,6 @@
 ﻿using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Search;
 
@@ -16,10 +14,8 @@ public partial class SearchHistoryItem : UserControl
     {
         InitializeComponent();
     }
-    
-    public Action<SearchInfo>? SearchAction { get; set; }
-    
-    public SearchHistoryItem(SearchInfo info):this()
+
+    public SearchHistoryItem(SearchInfo info) : this()
     {
         _info = info;
         SearchType.Text = info.Type switch
@@ -30,6 +26,8 @@ public partial class SearchHistoryItem : UserControl
         };
         SearchKey.Text = info.Key;
     }
+
+    public Action<SearchInfo>? SearchAction { get; set; }
 
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {

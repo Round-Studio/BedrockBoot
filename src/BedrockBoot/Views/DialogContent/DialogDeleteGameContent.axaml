@@ -18,7 +18,7 @@
                            Name="DeleteProgressText"
                            Text="0 %" />
             </StackPanel>
-            
+
             <ProgressBar IsIndeterminate="True"
                          Name="DeleteProgressBar"
                          Margin="0,8,0,0"

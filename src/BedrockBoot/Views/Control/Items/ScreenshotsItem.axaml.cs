@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing.Imaging;
+using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -7,15 +7,11 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.Screenshots;
-using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class ScreenshotsItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    public ScreenshotsInfo? ScreenshotsInfo { get; set; }
-
     public ScreenshotsItem()
     {
         InitializeComponent();
@@ -27,6 +23,9 @@ public partial class ScreenshotsItem : UserControl
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+    public ScreenshotsInfo? ScreenshotsInfo { get; set; }
+
     public void UpdateUI()
     {
         if (ScreenshotsInfo == null) return;
@@ -36,7 +35,6 @@ public partial class ScreenshotsItem : UserControl
         ShotTime.Text = localTime.ToString("MM.dd HH:mm:ss");
 
         if (!string.IsNullOrEmpty(ScreenshotsInfo.FilePath) && File.Exists(ScreenshotsInfo.FilePath))
-        {
             try
             {
                 // 使用 using 确保流在使用后关闭，DecodeToWidth 优化内存占用
@@ -49,9 +47,8 @@ public partial class ScreenshotsItem : UserControl
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load screenshot: {ex.Message}");
+                Debug.WriteLine($"Failed to load screenshot: {ex.Message}");
             }
-        }
     }
 
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -81,12 +78,11 @@ public partial class ScreenshotsItem : UserControl
         });
 
         if (file != null)
-        {
             try
             {
                 await using var stream = await file.OpenWriteAsync();
                 // 仅在必要时使用 System.Drawing 进行格式转换，或者直接复制原始文件
-                if (Path.GetExtension(ScreenshotsInfo.FilePath).ToLower() == ".jpg" || 
+                if (Path.GetExtension(ScreenshotsInfo.FilePath).ToLower() == ".jpg" ||
                     Path.GetExtension(ScreenshotsInfo.FilePath).ToLower() == ".jpeg")
                 {
                     await using var sourceStream = File.OpenRead(ScreenshotsInfo.FilePath);
@@ -100,8 +96,7 @@ public partial class ScreenshotsItem : UserControl
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to save screenshot: {ex.Message}");
+                Debug.WriteLine($"Failed to save screenshot: {ex.Message}");
             }
-        }
     }
 }

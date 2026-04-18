@@ -28,13 +28,9 @@ public class IsolationCore
 
         var type = DirectoryLinkChecker.CheckFolderType(path);
         if (type == DirectoryType.SymbolicLink)
-        {
             Directory.Delete(path);
-        }
         else
-        {
             throw new Exception("该实例的目标隔离文件需要进行迁移");
-        }
     }
 
     public static string GetRealPath(VersionConfig versionConfig)
@@ -61,10 +57,10 @@ public class IsolationCore
 
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            string dirName = versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Release
+            var dirName = versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release
                 ? "Minecraft Bedrock"
                 : "Minecraft Bedrock Preview";
-            
+
 #if LINUX
             return Path.Combine(PathsList.ProtonPath, "game_prefix", "pfx", "drive_c", "users", "steamuser", "AppData",
                 "Roaming", dirName);
@@ -93,9 +89,9 @@ public class IsolationCore
             InstanceFolderType.SkinPackFolder => GetInstanceFolderPath(versionConfig, "skin_packs", user),
             InstanceFolderType.UserFolder => versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP
                 ? string.Empty
-                : (versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Preview
+                : versionConfig.Info.VersionType == MinecraftGameTypeVersion.Preview
                     ? Path.Combine(GetRealPath(versionConfig), " Preview", "Users")
-                    : Path.Combine(GetRealPath(versionConfig), "Users")),
+                    : Path.Combine(GetRealPath(versionConfig), "Users"),
             InstanceFolderType.ScreenshotFolder => GetInstanceFolderPath(versionConfig, "Screenshots", user),
             _ => string.Empty
         };
@@ -111,13 +107,13 @@ public class IsolationCore
     public static List<string> GetInstanceUsers(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-            return new() { "Shared" };
+            return new List<string> { "Shared" };
 
         var userFolder = GetInstanceFolderPath(versionConfig, InstanceFolderType.UserFolder);
         if (Directory.Exists(userFolder))
             return Directory.GetDirectories(userFolder).Select(Path.GetFileName).ToList();
 
-        return new() { "Shared" };
+        return new List<string> { "Shared" };
     }
 
     private static string GetInstanceFolderPath(VersionConfig versionConfig, string folder, string user = "Shared")
@@ -127,8 +123,8 @@ public class IsolationCore
 
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
-            if (versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Preview ||
-                versionConfig.Info.VersionType == BedrockLauncher.Core.MinecraftGameTypeVersion.Beta)
+            if (versionConfig.Info.VersionType == MinecraftGameTypeVersion.Preview ||
+                versionConfig.Info.VersionType == MinecraftGameTypeVersion.Beta)
             {
                 var dir = Path.Combine(GetRealPath(versionConfig), " Preview", "Users", user, "games", "com.mojang",
                     folder);

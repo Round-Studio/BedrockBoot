@@ -26,8 +26,8 @@ public class ScreenshotsManager
 
         foreach (var user in users)
         {
-            if(!Directory.Exists(user.Value)) continue;
-            
+            if (!Directory.Exists(user.Value)) continue;
+
             var files = Directory.GetFiles(user.Value, "*.jpeg", SearchOption.AllDirectories)
                 .ToList();
             var resultInfos = new List<ScreenshotsInfo>();

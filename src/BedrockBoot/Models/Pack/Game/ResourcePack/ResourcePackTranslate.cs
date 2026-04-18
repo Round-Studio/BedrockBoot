@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using Round.SDK.Global;
 using Round.SDK.Helper;
 
@@ -17,9 +15,9 @@ namespace BedrockBoot.Models.Pack.Game.ResourcePack;
 
 public class ResourcePackTranslate
 {
-    private readonly ITranslationService _translationService;
-    private readonly SemaphoreSlim _translationSemaphore;
     private const int MaxConcurrentTranslations = 10; // 最大并发翻译数
+    private readonly SemaphoreSlim _translationSemaphore;
+    private readonly ITranslationService _translationService;
 
     public ResourcePackTranslate(ITranslationService translationService)
     {
@@ -28,7 +26,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 翻译完整的资源包，包括子包
+    ///     翻译完整的资源包，包括子包
     /// </summary>
     /// <param name="packagePath">未解压的主包路径</param>
     /// <param name="targetLanguage">目标语言代码，如 zh_CN</param>
@@ -49,16 +47,13 @@ public class ResourcePackTranslate
         var packInfo = analysis.GetPackInfo();
 
         var tempPath = packInfo.RootPath; // 使用分析类的临时路径
-        string finalOutputPath = string.IsNullOrEmpty(outputPath) ? packagePath : outputPath;
+        var finalOutputPath = string.IsNullOrEmpty(outputPath) ? packagePath : outputPath;
 
         try
         {
             // 确保输出目录存在
-            string outputDir = Path.GetDirectoryName(finalOutputPath);
-            if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
-            {
-                Directory.CreateDirectory(outputDir);
-            }
+            var outputDir = Path.GetDirectoryName(finalOutputPath);
+            if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
 
             // 查找所有lang文件
             var langFiles = Directory.GetFiles(tempPath, "*.lang", SearchOption.AllDirectories);
@@ -71,11 +66,11 @@ public class ResourcePackTranslate
             var subPackages = FindSubPackages(tempPath);
             if (subPackages.Any())
             {
-                int subPackageCount = subPackages.Count;
-                for (int i = 0; i < subPackageCount; i++)
+                var subPackageCount = subPackages.Count;
+                for (var i = 0; i < subPackageCount; i++)
                 {
                     var subPackagePath = subPackages[i];
-                    progressCallback?.Invoke(20 + (i * 50.0 / subPackageCount),
+                    progressCallback?.Invoke(20 + i * 50.0 / subPackageCount,
                         $"正在翻译子包 {i + 1}/{subPackageCount}: {Path.GetFileName(subPackagePath)}");
 
                     // 递归翻译子包
@@ -93,22 +88,15 @@ public class ResourcePackTranslate
             if (Directory.Exists(tempPath) && Directory.GetFiles(tempPath, "*", SearchOption.AllDirectories).Any())
             {
                 // 如果输出文件已存在，先删除
-                if (File.Exists(finalOutputPath))
-                {
-                    File.Delete(finalOutputPath);
-                }
+                if (File.Exists(finalOutputPath)) File.Delete(finalOutputPath);
 
                 ZipHelper.CreateZipFile(tempPath, finalOutputPath);
 
                 // 验证文件是否创建成功
                 if (File.Exists(finalOutputPath))
-                {
                     progressCallback?.Invoke(100, $"翻译完成！文件已保存到：{finalOutputPath}");
-                }
                 else
-                {
                     throw new Exception("打包失败：输出文件未创建");
-                }
             }
             else
             {
@@ -124,7 +112,6 @@ public class ResourcePackTranslate
         {
             // 清理临时目录（由ResourcePackAnalysis管理）
             if (Directory.Exists(tempPath))
-            {
                 try
                 {
                     Directory.Delete(tempPath, true);
@@ -133,14 +120,13 @@ public class ResourcePackTranslate
                 {
                     // 忽略清理错误
                 }
-            }
 
             _translationSemaphore?.Dispose();
         }
     }
 
     /// <summary>
-    /// 翻译指定的包，支持多种源语言，包括子包
+    ///     翻译指定的包，支持多种源语言，包括子包
     /// </summary>
     /// <param name="packagePath">未解压的主包路径</param>
     /// <param name="sourceLanguage">源语言代码，默认为 en_US</param>
@@ -165,16 +151,13 @@ public class ResourcePackTranslate
         var packInfo = analysis.GetPackInfo();
 
         var tempPath = packInfo.RootPath; // 使用分析类的临时路径
-        string finalOutputPath = string.IsNullOrEmpty(outputPath) ? packagePath : outputPath;
+        var finalOutputPath = string.IsNullOrEmpty(outputPath) ? packagePath : outputPath;
 
         try
         {
             // 确保输出目录存在
-            string outputDir = Path.GetDirectoryName(finalOutputPath);
-            if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
-            {
-                Directory.CreateDirectory(outputDir);
-            }
+            var outputDir = Path.GetDirectoryName(finalOutputPath);
+            if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
 
             // 翻译主包语言文件
             await TranslateLangFilesInDirectory(tempPath, targetLanguage, sourceLanguage, progressCallback);
@@ -183,11 +166,11 @@ public class ResourcePackTranslate
             var subPackages = FindSubPackages(tempPath);
             if (subPackages.Any())
             {
-                int subPackageCount = subPackages.Count;
-                for (int i = 0; i < subPackageCount; i++)
+                var subPackageCount = subPackages.Count;
+                for (var i = 0; i < subPackageCount; i++)
                 {
                     var subPackagePath = subPackages[i];
-                    progressCallback?.Invoke(20 + (i * 50.0 / subPackageCount),
+                    progressCallback?.Invoke(20 + i * 50.0 / subPackageCount,
                         $"正在翻译子包 {i + 1}/{subPackageCount}: {Path.GetFileName(subPackagePath)}");
 
                     // 递归翻译子包
@@ -206,22 +189,15 @@ public class ResourcePackTranslate
             if (Directory.Exists(tempPath) && Directory.GetFiles(tempPath, "*", SearchOption.AllDirectories).Any())
             {
                 // 如果输出文件已存在，先删除
-                if (File.Exists(finalOutputPath))
-                {
-                    File.Delete(finalOutputPath);
-                }
+                if (File.Exists(finalOutputPath)) File.Delete(finalOutputPath);
 
                 ZipHelper.CreateZipFile(tempPath, finalOutputPath);
 
                 // 验证文件是否创建成功
                 if (File.Exists(finalOutputPath))
-                {
                     progressCallback?.Invoke(100, $"翻译完成！文件已保存到：{finalOutputPath}");
-                }
                 else
-                {
                     throw new Exception("打包失败：输出文件未创建");
-                }
             }
             else
             {
@@ -237,7 +213,6 @@ public class ResourcePackTranslate
         {
             // 清理临时目录（由ResourcePackAnalysis管理）
             if (Directory.Exists(tempPath))
-            {
                 try
                 {
                     Directory.Delete(tempPath, true);
@@ -246,12 +221,11 @@ public class ResourcePackTranslate
                 {
                     // 忽略清理错误
                 }
-            }
         }
     }
 
     /// <summary>
-    /// 在指定目录中查找子包（子文件夹）
+    ///     在指定目录中查找子包（子文件夹）
     /// </summary>
     /// <param name="rootPath">根路径</param>
     /// <returns>子包路径列表</returns>
@@ -268,17 +242,14 @@ public class ResourcePackTranslate
             var langFiles = Directory.GetFiles(dir, "*.lang", SearchOption.TopDirectoryOnly);
             var manifestFiles = Directory.GetFiles(dir, "manifest.json", SearchOption.TopDirectoryOnly);
 
-            if (langFiles.Length > 0 || manifestFiles.Length > 0)
-            {
-                subPackages.Add(dir);
-            }
+            if (langFiles.Length > 0 || manifestFiles.Length > 0) subPackages.Add(dir);
         }
 
         return subPackages;
     }
 
     /// <summary>
-    /// 翻译指定目录中的所有语言文件
+    ///     翻译指定目录中的所有语言文件
     /// </summary>
     /// <param name="directoryPath">目录路径</param>
     /// <param name="targetLanguage">目标语言</param>
@@ -296,7 +267,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 翻译指定目录中的所有语言文件（带源语言）
+    ///     翻译指定目录中的所有语言文件（带源语言）
     /// </summary>
     /// <param name="directoryPath">目录路径</param>
     /// <param name="targetLanguage">目标语言</param>
@@ -314,7 +285,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 处理语言文件列表
+    ///     处理语言文件列表
     /// </summary>
     /// <param name="langFiles">语言文件列表</param>
     /// <param name="targetLanguage">目标语言</param>
@@ -339,10 +310,7 @@ public class ResourcePackTranslate
             {
                 // 尝试使用任意一个可用的语言文件作为源
                 sourceLangFile = langFiles.FirstOrDefault();
-                if (string.IsNullOrEmpty(sourceLangFile))
-                {
-                    return; // 没有任何语言文件可以翻译
-                }
+                if (string.IsNullOrEmpty(sourceLangFile)) return; // 没有任何语言文件可以翻译
             }
         }
 
@@ -361,7 +329,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 读取lang文件内容
+    ///     读取lang文件内容
     /// </summary>
     /// <param name="filePath">lang文件路径</param>
     /// <returns>键值对字典</returns>
@@ -404,7 +372,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 写入lang文件
+    ///     写入lang文件
     /// </summary>
     /// <param name="entries">翻译条目</param>
     /// <param name="filePath">输出文件路径</param>
@@ -413,7 +381,7 @@ public class ResourcePackTranslate
         var lines = new List<string>();
 
         // 添加文件头注释
-        lines.Add($"# Translated resource pack language file");
+        lines.Add("# Translated resource pack language file");
         lines.Add($"# Generated on {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
         lines.Add("");
 
@@ -427,7 +395,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 更新languages.json文件，添加新语言
+    ///     更新languages.json文件，添加新语言
     /// </summary>
     /// <param name="rootPath">包根路径</param>
     /// <param name="newLanguage">新增的语言代码</param>
@@ -439,7 +407,7 @@ public class ResourcePackTranslate
 
         var languagesJsonPath = Path.Combine(textsDir, "languages.json");
 
-        List<string> existingLanguages = new List<string>();
+        var existingLanguages = new List<string>();
 
         // 读取现有语言列表
         if (File.Exists(languagesJsonPath))
@@ -461,7 +429,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 翻译条目集合（使用批处理方式控制并发）
+    ///     翻译条目集合（使用批处理方式控制并发）
     /// </summary>
     private async Task<Dictionary<string, string>> TranslateEntriesAsync(
         Dictionary<string, string> entries,
@@ -471,7 +439,7 @@ public class ResourcePackTranslate
         var translatedEntries = new Dictionary<string, string>();
         var lockObject = new object();
 
-        int totalEntries = entries.Count;
+        var totalEntries = entries.Count;
         if (totalEntries == 0)
         {
             progressCallback?.Invoke(100, "无需翻译任何条目");
@@ -479,22 +447,21 @@ public class ResourcePackTranslate
         }
 
         var keys = entries.Keys.ToList();
-        string sourceLangCode = "en";
-        string targetLangCode = GetLanguageCodeFromFullCode(targetLanguage);
+        var sourceLangCode = "en";
+        var targetLangCode = GetLanguageCodeFromFullCode(targetLanguage);
 
         progressCallback?.Invoke(30, $"开始翻译 {totalEntries} 个条目，从 {sourceLangCode} 到 {targetLangCode}...");
 
-        int processedCount = 0;
-        int batchSize = MaxConcurrentTranslations; // 每批处理的数量等于最大并发数
+        var processedCount = 0;
+        var batchSize = MaxConcurrentTranslations; // 每批处理的数量等于最大并发数
 
         // 分批处理，确保同时最多只有 MaxConcurrentTranslations 个任务
-        for (int i = 0; i < keys.Count; i += batchSize)
+        for (var i = 0; i < keys.Count; i += batchSize)
         {
             var batchKeys = keys.Skip(i).Take(batchSize).ToList();
             var batchTasks = new List<Task>();
 
             foreach (var key in batchKeys)
-            {
                 batchTasks.Add(Task.Run(async () =>
                 {
                     var value = entries[key];
@@ -507,7 +474,7 @@ public class ResourcePackTranslate
                         }
 
                         var currentProgress = Interlocked.Increment(ref processedCount);
-                        var progress = 30 + ((double)currentProgress / totalEntries) * 50;
+                        var progress = 30 + (double)currentProgress / totalEntries * 50;
                         progressCallback?.Invoke(progress, $"跳过占位符条目 ({currentProgress}/{totalEntries})");
                         return;
                     }
@@ -529,30 +496,29 @@ public class ResourcePackTranslate
                             translatedEntries[key] = value;
                         }
 
-                        System.Diagnostics.Debug.WriteLine($"翻译失败 [{key}]: {ex.Message}");
+                        Debug.WriteLine($"翻译失败 [{key}]: {ex.Message}");
                     }
                     finally
                     {
                         var currentProgress = Interlocked.Increment(ref processedCount);
-                        var progress = 30 + ((double)currentProgress / totalEntries) * 50;
+                        var progress = 30 + (double)currentProgress / totalEntries * 50;
                         progressCallback?.Invoke(progress, $"正在翻译 ({currentProgress}/{totalEntries})");
                     }
                 }));
-            }
 
             // 等待当前批次的所有任务完成
             await Task.WhenAll(batchTasks);
         }
 
-        int translatedCount = translatedEntries.Count(kv => kv.Value != entries[kv.Key]);
+        var translatedCount = translatedEntries.Count(kv => kv.Value != entries[kv.Key]);
         progressCallback?.Invoke(80, $"翻译完成，成功翻译 {translatedCount}/{totalEntries} 个条目");
 
         return translatedEntries;
     }
 
     /// <summary>
-    /// 从完整语言代码中提取基础语言代码
-    /// 例如：zh_CN -> zh, en_US -> en
+    ///     从完整语言代码中提取基础语言代码
+    ///     例如：zh_CN -> zh, en_US -> en
     /// </summary>
     /// <param name="fullCode">完整语言代码</param>
     /// <returns>基础语言代码</returns>
@@ -563,7 +529,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 反转义字符串值
+    ///     反转义字符串值
     /// </summary>
     /// <param name="value">原始值</param>
     /// <returns>反转义后的值</returns>
@@ -578,7 +544,7 @@ public class ResourcePackTranslate
     }
 
     /// <summary>
-    /// 转义字符串值
+    ///     转义字符串值
     /// </summary>
     /// <param name="value">原始值</param>
     /// <returns>转义后的值</returns>

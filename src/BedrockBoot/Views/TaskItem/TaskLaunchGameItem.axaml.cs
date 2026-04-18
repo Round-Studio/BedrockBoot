@@ -18,7 +18,6 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskLaunchGameItem : UserControl
 {
-    
     private readonly CancellationTokenSource _cancellationTokenSource;
     public bool IsCancel;
     public Action LaunchCompleted;
@@ -92,7 +91,8 @@ public partial class TaskLaunchGameItem : UserControl
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         // 统一进度条文本格式
-                        LaunchProgressText.Text = string.Format(I18nManager.Instance["Task.Launch.Status.Progress"], percentage, status);
+                        LaunchProgressText.Text = string.Format(I18nManager.Instance["Task.Launch.Status.Progress"],
+                            percentage, status);
                         LaunchProgressBar.Value = percentage;
                     });
                 };
@@ -108,18 +108,21 @@ public partial class TaskLaunchGameItem : UserControl
                     Dispatcher.UIThread.Invoke(() => { LaunchProgressBar.IsIndeterminate = isIndeterminate; });
                 };
 
-                lc.LaunchCompleted = () => { Dispatcher.UIThread.Invoke(() =>
+                lc.LaunchCompleted = () =>
                 {
-                    LaunchCompleted?.Invoke();
-                    if (!GlobalModel.MainWindow.IsWindowActive)
-                        NoticeHelper.SentNotice("游戏退出", $"游戏 {VersionInfo.Info.VersionName} 已退出。");
-                }); };
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        LaunchCompleted?.Invoke();
+                        if (!GlobalModel.MainWindow.IsWindowActive)
+                            NoticeHelper.SentNotice("游戏退出", $"游戏 {VersionInfo.Info.VersionName} 已退出。");
+                    });
+                };
 
                 lc.Launched = process =>
                 {
                     MinecraftProcess = process;
 #if WINDOWS
-                    Dispatcher.UIThread.Invoke(() => new OverlayWindow(process,VersionInfo.Info.Version).Show());
+                    Dispatcher.UIThread.Invoke(() => new OverlayWindow(process, VersionInfo.Info.Version).Show());
 #endif
                 };
 
@@ -157,9 +160,14 @@ public partial class TaskLaunchGameItem : UserControl
         _cancellationTokenSource?.Cancel();
 
         if (MinecraftProcess != null && !MinecraftProcess.HasExited)
-        {
-            try { MinecraftProcess.Kill(true); } catch { /* Ignore */ }
-        }
+            try
+            {
+                MinecraftProcess.Kill(true);
+            }
+            catch
+            {
+                /* Ignore */
+            }
 
         MinecraftProcess?.Dispose();
         MinecraftProcess = null;

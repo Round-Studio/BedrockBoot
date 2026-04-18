@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -13,28 +13,29 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
-using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.DownloadSubPage;
 
 public partial class DownloadGamePage : UserControl, IDisposable
 {
-    private static I18nManager i18n => I18nManager.Instance;
     private CancellationTokenSource? _currentLoadingCancellation;
+    private MinecraftGameTypeVersion _currentType = MinecraftGameTypeVersion.Release;
     private string _searchKey = string.Empty;
-    private BedrockLauncher.Core.MinecraftGameTypeVersion _currentType = BedrockLauncher.Core.MinecraftGameTypeVersion.Release;
 
     public DownloadGamePage()
     {
         InitializeComponent();
         IsEdit = true;
-        
+
         // 初始加载
         UpdateUI(MinecraftGameTypeVersion.Release);
 
         Unloaded += (sender, args) => Dispose();
     }
+
+    private static I18nManager i18n => I18nManager.Instance;
 
     public bool IsEdit { get; set; }
 
@@ -47,7 +48,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
     }
 
     /// <summary>
-    /// 更新版本列表 UI
+    ///     更新版本列表 UI
     /// </summary>
     public async void UpdateUI(MinecraftGameTypeVersion type, string key = "")
     {
@@ -68,10 +69,13 @@ public partial class DownloadGamePage : UserControl, IDisposable
 
             await LoadVersionsAsync(type, key, token);
         }
-        catch (OperationCanceledException) { /* 忽略取消异常 */ }
+        catch (OperationCanceledException)
+        {
+            /* 忽略取消异常 */
+        }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error loading versions: {ex.Message}");
+            Debug.WriteLine($"Error loading versions: {ex.Message}");
             await SetLoadingState(false, false, true);
         }
     }
@@ -83,9 +87,9 @@ public partial class DownloadGamePage : UserControl, IDisposable
         {
             try
             {
-                var sourceIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.VersionSourceIndex;
+                var sourceIndex = GlobalModel.Config.Data.VersionSourceIndex;
                 var source = SourceList.VersionDataSources.ElementAtOrDefault(sourceIndex).Value;
-                
+
                 var buildDatabase = await VersionsHelper.GetBuildDatabaseAsync(source);
                 var rawList = await buildDatabase!.Builds.ToListAsync();
 
@@ -105,7 +109,8 @@ public partial class DownloadGamePage : UserControl, IDisposable
                     if (info.Type != type) continue;
 
                     // 关键词过滤
-                    if (!string.IsNullOrEmpty(key) && !info.ID.Contains(key, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (!string.IsNullOrEmpty(key) &&
+                        !info.ID.Contains(key, StringComparison.OrdinalIgnoreCase)) continue;
 
                     Version? vObj = null;
                     Version.TryParse(info.ID, out vObj);
@@ -113,9 +118,13 @@ public partial class DownloadGamePage : UserControl, IDisposable
                 }
 
                 // 2. 排序：版本号降序
-                return filtered.OrderByDescending(x => x.Ver).ThenByDescending(x => x.Item.ID).Select(x => x.Item).ToList();
+                return filtered.OrderByDescending(x => x.Ver).ThenByDescending(x => x.Item.ID).Select(x => x.Item)
+                    .ToList();
             }
-            catch { return new List<BuildInfo>(); }
+            catch
+            {
+                return new List<BuildInfo>();
+            }
         }, token);
 
         token.ThrowIfCancellationRequested();
@@ -138,7 +147,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
         var releaseIcon = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
         var previewIcon = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
-        for (int i = 0; i < versions.Count; i += batchSize)
+        for (var i = 0; i < versions.Count; i += batchSize)
         {
             token.ThrowIfCancellationRequested();
             var batch = versions.Skip(i).Take(batchSize).ToList();
@@ -147,8 +156,8 @@ public partial class DownloadGamePage : UserControl, IDisposable
             {
                 foreach (var x in batch)
                 {
-                    var iconPath = x.Type == BedrockLauncher.Core.MinecraftGameTypeVersion.Release ? releaseIcon : previewIcon;
-                    
+                    var iconPath = x.Type == MinecraftGameTypeVersion.Release ? releaseIcon : previewIcon;
+
                     var card = new SettingCard
                     {
                         Header = x.ID,
@@ -161,7 +170,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
                     card.Click += (s, e) =>
                     {
                         var title = $"{i18n["Download.Dialog.TitlePrefix"]}: {x.ID}";
-                        GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(x), title);
+                        Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(x), title);
                     };
 
                     ItemsPanel.Children.Add(card);
@@ -192,16 +201,11 @@ public partial class DownloadGamePage : UserControl, IDisposable
     private void ComboBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (IsEdit && ComboBox.SelectedIndex >= 0)
-        {
             UpdateUI((MinecraftGameTypeVersion)ComboBox.SelectedIndex, _searchKey);
-        }
     }
 
     private void TextBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (IsEdit)
-        {
-            UpdateUI(_currentType, TextBox.Text ?? string.Empty);
-        }
+        if (IsEdit) UpdateUI(_currentType, TextBox.Text ?? string.Empty);
     }
 }

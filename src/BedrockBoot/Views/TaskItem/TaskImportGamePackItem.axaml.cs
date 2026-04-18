@@ -5,6 +5,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Import;
+using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -12,15 +13,13 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskImportGamePackItem : UserControl
 {
-    
-
     public TaskImportGamePackItem()
     {
         InitializeComponent();
     }
 
     public TaskImportGamePackItem(string packFile, string installFolder, string installName,
-        BedrockLauncher.Core.MinecraftGameTypeVersion type, bool knowGameType) : this()
+        MinecraftGameTypeVersion type, bool knowGameType) : this()
     {
         PackFile = packFile;
         InstallName = installName;
@@ -33,7 +32,7 @@ public partial class TaskImportGamePackItem : UserControl
     public string InstallFolder { get; set; }
     public string InstallName { get; set; }
     public bool IsGDKUnknownBuildType { get; set; }
-    public BedrockLauncher.Core.MinecraftGameTypeVersion GDKGameType { get; set; } = BedrockLauncher.Core.MinecraftGameTypeVersion.Release;
+    public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
 
     public void Install(Action installed)
     {
@@ -43,7 +42,7 @@ public partial class TaskImportGamePackItem : UserControl
             IsGDKUnknownBuildType = IsGDKUnknownBuildType
         };
         double lastProgress = -1;
-        
+
         body.ImportProgress = new Progress<PackImportProgress>(s =>
         {
             var currentProgress = Math.Round(s.Progress, 2);
@@ -87,7 +86,7 @@ public partial class TaskImportGamePackItem : UserControl
         });
     }
 
-    public static void Install(string packFile, string installFolder, string installName, BedrockLauncher.Core.MinecraftGameTypeVersion type,
+    public static void Install(string packFile, string installFolder, string installName, MinecraftGameTypeVersion type,
         bool knowGameTypeCheckBox)
     {
         var body = new TaskImportGamePackItem(packFile, installFolder, installName, type, knowGameTypeCheckBox);

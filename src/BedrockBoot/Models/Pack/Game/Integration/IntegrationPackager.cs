@@ -38,15 +38,15 @@ public class IntegrationPackager
         var gameVersions = VersionHelper.GetVersions()
             .Find(x => x.ID.Replace(".", "") ==
                        GameInfoHelper.GetVersionConfig(VersionConfig.VersionPath).Info.Version.Replace(".", ""));
-        
-        if(gameVersions==null) throw new Exception("无法获取版本详细信息");
 
-        config.VersionInfo = new PackInfo.GameVersionInfo()
+        if (gameVersions == null) throw new Exception("无法获取版本详细信息");
+
+        config.VersionInfo = new PackInfo.GameVersionInfo
         {
             Version = gameVersions.ID.Replace(".", ""),
             BuildType = gameVersions.BuildType.ToString()
         };
-        
+
         var path = Path.Combine(PathsList.TempPath, $"integration_{Guid.NewGuid().ToString().Replace("-", "")}");
         Directory.CreateDirectory(path);
 
@@ -208,7 +208,7 @@ public class IntegrationPackager
             Progress = 100,
             Message = "整合包打包完毕"
         });
-        
+
         CompleteCallBack?.Invoke();
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.NetworkInformation;
@@ -21,14 +20,10 @@ using BedrockBoot.Models;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Helper.Notice;
 using BedrockBoot.Service;
-using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
-using BedrockBoot.Views.Windows.SubWindows;
-using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -38,9 +33,6 @@ namespace BedrockBoot.Views.Windows;
 
 public partial class MainWindow : BedrockBootWindow
 {
-    private I18nManager I18n => I18nManager.Instance;
-    public bool IsWindowActive => IsActive;
-
     public MainWindow()
     {
         // 核心引擎异步初始化
@@ -48,45 +40,44 @@ public partial class MainWindow : BedrockBootWindow
 
         GlobalModel.MainWindow = this;
         InitializeComponent();
-        if (!BedrockBoot.Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
+        if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         UpdateBack();
         InitializeWindowBounds();
-        
+
         // 绑定回调
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Post(UpdateTaskUI);
         EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Post(RunBehavior);
-        
+
         SetupDynamicHotkey();
         StartNetworkMonitoring();
         _ = InitializeAsync();
-        
+
         DragDrop.SetAllowDrop(this, true);
-    
-        this.AddHandler(DragDrop.DragOverEvent, OnDragOver, RoutingStrategies.Tunnel);
-        this.AddHandler(DragDrop.DropEvent, OnDrop, RoutingStrategies.Tunnel);
+
+        AddHandler(DragDrop.DragOverEvent, OnDragOver, RoutingStrategies.Tunnel);
+        AddHandler(DragDrop.DropEvent, OnDrop, RoutingStrategies.Tunnel);
     }
+
+    private I18nManager I18n => I18nManager.Instance;
+    public bool IsWindowActive => IsActive;
 
     #region 窗口拖拽事件
 
     /// <summary>
-    /// 当文件拖拽到窗口上方时触发，决定是否显示“拷贝”图标
+    ///     当文件拖拽到窗口上方时触发，决定是否显示“拷贝”图标
     /// </summary>
     private void OnDragOver(object? sender, DragEventArgs e)
     {
         // 只有当拖拽内容包含文件时才允许放置
         if (e.Data.Contains(DataFormats.Files))
-        {
             e.DragEffects = DragDropEffects.Copy;
-        }
         else
-        {
             e.DragEffects = DragDropEffects.None;
-        }
     }
 
     /// <summary>
-    /// 当用户松开鼠标完成放置时触发
+    ///     当用户松开鼠标完成放置时触发
     /// </summary>
     private void OnDrop(object? sender, DragEventArgs e)
     {
@@ -94,18 +85,13 @@ public partial class MainWindow : BedrockBootWindow
         var files = e.Data.GetFiles();
 
         if (files != null)
-        {
             foreach (var file in files)
             {
                 // 获取文件的绝对路径
-                string? filePath = file.Path.LocalPath;
-            
-                if (!string.IsNullOrEmpty(filePath))
-                {
-                    Console.WriteLine($"检测到拖入文件: {filePath}");
-                }
+                var filePath = file.Path.LocalPath;
+
+                if (!string.IsNullOrEmpty(filePath)) Console.WriteLine($"检测到拖入文件: {filePath}");
             }
-        }
     }
 
     #endregion
@@ -114,7 +100,7 @@ public partial class MainWindow : BedrockBootWindow
 
     private void InitializeWindowBounds()
     {
-        var winInfo = BedrockBoot.Core.Global.GlobalModel.Config.Data.WindowInfo;
+        var winInfo = Core.Global.GlobalModel.Config.Data.WindowInfo;
         if (winInfo.X != -1 && winInfo.Y != -1)
         {
             WindowStartupLocation = WindowStartupLocation.Manual;
@@ -131,8 +117,8 @@ public partial class MainWindow : BedrockBootWindow
         VersionBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         var buildTimestamp = (DateTime)CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly());
         BuildTime.Text = $"Build.2.{buildTimestamp:yy.MMdd.HHmmss}";
-        
-        if (!Directory.Exists(PathsList.TempPath)) 
+
+        if (!Directory.Exists(PathsList.TempPath))
             Directory.CreateDirectory(PathsList.TempPath);
     }
 
@@ -142,7 +128,8 @@ public partial class MainWindow : BedrockBootWindow
         try
         {
             GlobalModel.FunctionOption = await new JsonResourceEntity()
-                .LoadJsonResourceAsync<FunctionOptionEntry>("avares://BedrockBoot/Manifest/Function/FunctionOption.json");
+                .LoadJsonResourceAsync<FunctionOptionEntry>(
+                    "avares://BedrockBoot/Manifest/Function/FunctionOption.json");
         }
         catch (Exception ex)
         {
@@ -151,16 +138,13 @@ public partial class MainWindow : BedrockBootWindow
 
         CheckUserAgreement();
 
-#if WINDOWS 
+#if WINDOWS
         // 注册文件关联
         HandleFileAssociations();
 #endif
 
         // 完成初始化后回到 UI 线程进行页面跳转
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            LoadBox.IsVisible = false;
-        });
+        await Dispatcher.UIThread.InvokeAsync(() => { LoadBox.IsVisible = false; });
     }
 
     private void HandleFileAssociations()
@@ -182,9 +166,8 @@ public partial class MainWindow : BedrockBootWindow
         catch (Exception ex)
         {
             Console.WriteLine($@"BedrockCore Init Error: {ex}");
-            
+
             if (ex.Message.Contains("Not Support Windows Version"))
-            {
                 await Dispatcher.UIThread.InvokeAsync(() => DialogHost.Show(new DialogInfo
                 {
                     Title = I18n["MainWindow.Dialog.UnsupportedSys.Title"],
@@ -192,13 +175,12 @@ public partial class MainWindow : BedrockBootWindow
                     CloseButtonText = I18n["MainWindow.Dialog.UnsupportedSys.Close"],
                     CloseAction = () => Environment.Exit(1)
                 }));
-            }
         }
     }
 
     private void CheckUserAgreement()
     {
-        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;
+        if (Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;
 
         DialogHost.Show(new DialogInfo
         {
@@ -207,8 +189,8 @@ public partial class MainWindow : BedrockBootWindow
             CloseButtonText = I18n["MainWindow.Dialog.Agreement.Agree"],
             CloseAction = () =>
             {
-                BedrockBoot.Core.Global.GlobalModel.Config.Data.IsAgreeTerms = true;
-                BedrockBoot.Core.Global.GlobalModel.Config.Save();
+                Core.Global.GlobalModel.Config.Data.IsAgreeTerms = true;
+                Core.Global.GlobalModel.Config.Save();
             },
             PrimaryButtonText = I18n["MainWindow.Dialog.Agreement.Decline"],
             PrimaryAction = () => Environment.Exit(0),
@@ -228,7 +210,7 @@ public partial class MainWindow : BedrockBootWindow
         AccentBackgroundBox.IsVisible = false;
         AnimationBackground.IsVisible = false;
 
-        var style = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig;
+        var style = Core.Global.GlobalModel.Config.Data.StyleConfig;
 
         switch (style.StyleType)
         {
@@ -268,9 +250,9 @@ public partial class MainWindow : BedrockBootWindow
             BackgroundBox.IsVisible = true;
             BackgroundImage.IsVisible = false;
             BackgroundImage3D.IsVisible = false;
-            
+
             SetBackgroundBlur(style.BackgroundImageBlur);
-            
+
             var bitmap = new Bitmap(imgPath);
             if (style.Background3D)
             {
@@ -306,9 +288,10 @@ public partial class MainWindow : BedrockBootWindow
             BackgroundBox.Effect = null;
             BackgroundBox.Margin = new Thickness(0);
         }
-        
+
         // 透明度应用
-        BackgroundImageOpacity.Opacity = (100 - BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
+        BackgroundImageOpacity.Opacity =
+            (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
     }
 
     #endregion
@@ -344,7 +327,7 @@ public partial class MainWindow : BedrockBootWindow
 
     private void RunBehavior()
     {
-        switch (BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchBehavior)
+        switch (Core.Global.GlobalModel.Config.Data.LaunchBehavior)
         {
             case LaunchBehaviorEnum.Minimize:
                 WindowState = WindowState.Minimized;
@@ -357,20 +340,18 @@ public partial class MainWindow : BedrockBootWindow
 
     private void SetupDynamicHotkey()
     {
-        this.AddHandler(KeyDownEvent, OnPreviewKeyDown, RoutingStrategies.Tunnel);
+        AddHandler(KeyDownEvent, OnPreviewKeyDown, RoutingStrategies.Tunnel);
     }
 
     private async void OnPreviewKeyDown(object? sender, KeyEventArgs e)
     {
         // Ctrl + V 全局粘贴逻辑
         if (e.Key == Key.V && e.KeyModifiers == KeyModifiers.Control)
-        {
             if (e.Source is not (TextBox or TextBlock))
             {
                 CopyService.HandleCopyAction();
                 e.Handled = true;
             }
-        }
     }
 
     private void TaskBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -378,7 +359,7 @@ public partial class MainWindow : BedrockBootWindow
         if (IsTaskCardOpen) CloseTaskCard();
         else OpenTaskCard();
     }
-    
+
     private CancellationTokenSource? _netMonitorCts;
 
     private void StartNetworkMonitoring()
@@ -386,16 +367,13 @@ public partial class MainWindow : BedrockBootWindow
         _netMonitorCts = new CancellationTokenSource();
         var token = _netMonitorCts.Token;
 
-        NetworkChange.NetworkAvailabilityChanged += (s, e) => 
-        {
-            UpdateNetworkStatus(e.IsAvailable);
-        };
+        NetworkChange.NetworkAvailabilityChanged += (s, e) => { UpdateNetworkStatus(e.IsAvailable); };
 
         Task.Run(async () =>
         {
             while (!token.IsCancellationRequested)
             {
-                bool isAlive = await CheckInternetConnectivityAsync();
+                var isAlive = await CheckInternetConnectivityAsync();
                 UpdateNetworkStatus(isAlive);
                 await Task.Delay(TimeSpan.FromSeconds(5), token);
             }
@@ -419,23 +397,20 @@ public partial class MainWindow : BedrockBootWindow
     private void UpdateNetworkStatus(bool isAvailable)
     {
         GlobalModel.IsNetworkAvailable = isAvailable;
-        Dispatcher.UIThread.Invoke(() => 
-        {
-            OfflineBtn.IsVisible = !GlobalModel.IsNetworkAvailable;
-        });
+        Dispatcher.UIThread.Invoke(() => { OfflineBtn.IsVisible = !GlobalModel.IsNetworkAvailable; });
     }
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {
         // 保存窗口状态
-        BedrockBoot.Core.Global.GlobalModel.Config.Data.WindowInfo = new WindowInfo
+        Core.Global.GlobalModel.Config.Data.WindowInfo = new WindowInfo
         {
             Width = Bounds.Width,
             Height = Bounds.Height,
             X = Position.X,
             Y = Position.Y
         };
-        BedrockBoot.Core.Global.GlobalModel.Config.Save();
+        Core.Global.GlobalModel.Config.Save();
     }
 
     #endregion

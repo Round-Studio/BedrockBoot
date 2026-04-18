@@ -10,52 +10,52 @@
                     Spacing="8">
             <notice:InfoBar State="Warning"
                             Title="{DynamicResource Shared.Label.Notice}"
-                            Message="{DynamicResource Dialog.MakePack.Notice.Legal}"/>
-            
+                            Message="{DynamicResource Dialog.MakePack.Notice.Legal}" />
+
             <StackPanel Orientation="Horizontal"
                         Opacity="0.5">
                 <TextBlock Text="{DynamicResource Dialog.MakePack.Label.GuidePrefix}" />
                 <HyperlinkButton Content="{DynamicResource Dialog.MakePack.Action.ViewGuide}"
                                  NavigateUri="https://docs.roundstudio.top/docs/standard/bedrockPack/integrationPackage" />
             </StackPanel>
-            
+
             <TextBlock FontSize="17"
                        FontWeight="Bold"
                        Text="{DynamicResource Dialog.MakePack.Group.PackInfo}" />
-            
+
             <TextBlock Opacity="0.7"
                        Text="{DynamicResource Dialog.MakePack.Label.PackName}" />
             <TextBox Watermark="My Pack"
                      Name="PackName" />
-            
+
             <TextBlock Opacity="0.7"
                        Text="{DynamicResource Dialog.MakePack.Label.PackDescription}" />
             <TextBox Watermark="My Pack Description"
                      Name="PackDescription" />
-            
+
             <TextBlock Opacity="0.7"
                        Text="{DynamicResource Dialog.MakePack.Label.PackVersion}" />
             <TextBox Watermark="0.0.0.1"
                      Name="PackVersion" />
-            
+
             <TextBlock FontSize="17"
                        FontWeight="Bold"
                        Text="{DynamicResource Dialog.MakePack.Group.AuthorInfo}" />
-            
+
             <TextBlock Opacity="0.7"
                        Text="{DynamicResource Dialog.MakePack.Label.AuthorName}" />
             <TextBox Watermark="Creator"
                      Name="PackAuthorName" />
-            
+
             <TextBlock Opacity="0.7"
                        Text="{DynamicResource Dialog.MakePack.Label.AuthorLink}" />
             <TextBox Watermark="https://example.com"
                      Name="PackAuthorLink" />
-            
+
             <TextBlock FontSize="17"
                        FontWeight="Bold"
                        Text="{DynamicResource Dialog.MakePack.Group.Contents}" />
-            
+
             <Grid ColumnDefinitions="*,*">
                 <StackPanel Grid.Column="0"
                             Spacing="8">
@@ -68,7 +68,7 @@
                               Name="EnableDllMods"
                               IsChecked="True" />
                 </StackPanel>
-                
+
                 <StackPanel Grid.Column="1"
                             Spacing="8">
                     <CheckBox Content="{DynamicResource Download.Search.Category.Texture}"

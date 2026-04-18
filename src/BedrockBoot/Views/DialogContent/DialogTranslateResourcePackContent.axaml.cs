@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Models.Translate;
@@ -24,10 +22,10 @@ public partial class DialogTranslateResourcePackContent : UserControl
             var translator = new ResourcePackTranslate(new MicrosoftTranslateService());
 
             translator.TranslatePackageAsync(
-                packagePath: input,
-                targetLanguage: "zh_CN",
-                outputPath: save,
-                progressCallback: (progress, status) =>
+                input,
+                "zh_CN",
+                save,
+                (progress, status) =>
                 {
                     Console.WriteLine($@"进度: {progress:F2}% - {status}");
                     Dispatcher.UIThread.InvokeAsync(() =>
@@ -36,10 +34,7 @@ public partial class DialogTranslateResourcePackContent : UserControl
                         ProgressText.Text = $"{status} ({progress:F2} %)";
                     });
 
-                    if (progress == 100)
-                    {
-                        Dispatcher.UIThread.InvokeAsync(DialogHost.Close);
-                    }
+                    if (progress == 100) Dispatcher.UIThread.InvokeAsync(DialogHost.Close);
                 }
             );
         });

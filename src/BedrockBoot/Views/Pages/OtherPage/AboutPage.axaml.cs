@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Diagnostics;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using BedrockBoot.Interface;
@@ -15,8 +14,6 @@ namespace BedrockBoot.Views.Pages.OtherPage;
 
 public partial class AboutPage : ISettingPage
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public AboutPage()
     {
         InitializeComponent();
@@ -29,14 +26,16 @@ public partial class AboutPage : ISettingPage
 
         // 设置版本卡片描述
         VersionCard.Description = GlobalModel.BodyVersion;
-        
+
         // 动态显示框架驱动信息
         var avaloniaVersion = typeof(AppBuilder).Assembly.GetName().Version;
         PowerByTextBlock.Text = $"Power By: Avalonia {avaloniaVersion}";
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     /// <summary>
-    /// 处理检查更新按钮点击事件
+    ///     处理检查更新按钮点击事件
     /// </summary>
     private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -58,7 +57,7 @@ public partial class AboutPage : ISettingPage
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Update check failed: {ex.Message}");
+            Debug.WriteLine($"Update check failed: {ex.Message}");
         }
         finally
         {
@@ -69,7 +68,7 @@ public partial class AboutPage : ISettingPage
     }
 
     /// <summary>
-    /// 导航至开源组件页面
+    ///     导航至开源组件页面
     /// </summary>
     private void OpenSourceBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -77,7 +76,7 @@ public partial class AboutPage : ISettingPage
     }
 
     /// <summary>
-    /// 导航至贡献者页面
+    ///     导航至贡献者页面
     /// </summary>
     private void ContributorsBtn_OnClick(object? sender, RoutedEventArgs e)
     {

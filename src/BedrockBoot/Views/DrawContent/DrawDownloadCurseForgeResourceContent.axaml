@@ -44,7 +44,7 @@
                               HorizontalAlignment="Center">
                             <StackPanel Grid.Column="0">
                                 <TextBlock Name="RankingBox">0</TextBlock>
-                                <TextBlock Foreground="Gray" 
+                                <TextBlock Foreground="Gray"
                                            Text="{DynamicResource Shared.Label.Ranking}" />
                             </StackPanel>
 
@@ -56,7 +56,7 @@
 
                             <StackPanel Grid.Column="2">
                                 <TextBlock Name="DownCountBox">0</TextBlock>
-                                <TextBlock Foreground="Gray" 
+                                <TextBlock Foreground="Gray"
                                            Text="{DynamicResource Shared.Action.Download}" />
                             </StackPanel>
                         </Grid>

@@ -3,8 +3,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
@@ -14,13 +14,12 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
 public partial class PersonalizationColor : ISettingPage
 {
-    
     public bool IsEdit;
 
     public PersonalizationColor()
     {
         InitializeComponent();
-        
+
         // 面包屑导航国际化
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
@@ -37,7 +36,7 @@ public partial class PersonalizationColor : ISettingPage
         };
 
         // 还原主题选择索引
-        ChooseTheme.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType;
+        ChooseTheme.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.LightThemeType;
 
         // 渲染强调色色块列表
         AccentColor.Colors.ForEach(c => ColorsView.Items.Add(new ItemViewItem
@@ -52,7 +51,7 @@ public partial class PersonalizationColor : ISettingPage
             ClipToBounds = true
         }));
 
-        ColorsView.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex;
+        ColorsView.SelectedIndex = GlobalModel.Config.Data.StyleConfig.AccentColorIndex;
         IsEdit = true;
     }
 
@@ -60,8 +59,8 @@ public partial class PersonalizationColor : ISettingPage
     {
         if (IsEdit)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseTheme.SelectedIndex;
-            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+            GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseTheme.SelectedIndex;
+            GlobalModel.Config.Save();
 
             App.LoadColor();
         }
@@ -71,8 +70,8 @@ public partial class PersonalizationColor : ISettingPage
     {
         if (IsEdit)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex = ColorsView.SelectedIndex;
-            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+            GlobalModel.Config.Data.StyleConfig.AccentColorIndex = ColorsView.SelectedIndex;
+            GlobalModel.Config.Save();
 
             App.LoadColor();
         }

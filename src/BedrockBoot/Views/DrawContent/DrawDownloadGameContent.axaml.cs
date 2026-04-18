@@ -8,7 +8,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Services;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
@@ -21,10 +21,6 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawDownloadGameContent : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    public List<GameDownloadUrlInfo>? Sources { get; set; }
-    public BuildInfo BuildInfo { get; set; } = null!;
-
     public DrawDownloadGameContent()
     {
         InitializeComponent();
@@ -36,21 +32,23 @@ public partial class DrawDownloadGameContent : UserControl
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+    public List<GameDownloadUrlInfo>? Sources { get; set; }
+    public BuildInfo BuildInfo { get; set; } = null!;
+
     /// <summary>
-    /// 初始化 UI 与下载源列表
+    ///     初始化 UI 与下载源列表
     /// </summary>
     public void UpdateUI()
     {
         // 1. 初始化安装目录下拉框
         InstallFolder.Items.Clear();
-        var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
+        var folders = GlobalModel.Config.Data.GameFolders;
         if (folders is { Count: > 0 })
         {
             foreach (var folder in folders)
-            {
                 InstallFolder.Items.Add($"[{folder.GameFolderName}] {folder.GameFolderPath}");
-            }
-            InstallFolder.SelectedIndex = Math.Clamp(BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex, 0, folders.Count - 1);
+            InstallFolder.SelectedIndex = Math.Clamp(GlobalModel.Config.Data.GameFolderSelIndex, 0, folders.Count - 1);
         }
 
         InstallName.Text = BuildInfo.ID;
@@ -73,16 +71,16 @@ public partial class DrawDownloadGameContent : UserControl
                     return;
                 }
 
-                bool hasBestSourceSet = false;
+                var hasBestSourceSet = false;
                 var itemList = new List<GameDownloadSourceItem>();
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    for (int i = 0; i < Sources.Count; i++)
+                    for (var i = 0; i < Sources.Count; i++)
                     {
                         var urlInfo = Sources[i];
                         var item = new GameDownloadSourceItem(urlInfo);
-                        int currentIndex = i;
+                        var currentIndex = i;
 
                         // 当某个源 Ping 通后的回调
                         item.Pinged = index =>
@@ -105,10 +103,7 @@ public partial class DrawDownloadGameContent : UserControl
                 });
 
                 // 启动所有源的 Ping 测试
-                for (int i = 0; i < itemList.Count; i++)
-                {
-                    itemList[i].OnPing(i);
-                }
+                for (var i = 0; i < itemList.Count; i++) itemList[i].OnPing(i);
             }
             catch (Exception ex)
             {
@@ -126,13 +121,13 @@ public partial class DrawDownloadGameContent : UserControl
                 Title = i18n["MainWindow.Dialog.Error.Title"],
                 Content = message,
                 CloseButtonText = i18n["MainWindow.Common.Confirm"],
-                CloseAction = () => GlobalModel.MainWindow.CloseDraw()
+                CloseAction = () => Models.Global.GlobalModel.MainWindow.CloseDraw()
             });
         });
     }
 
     /// <summary>
-    /// 安装按钮逻辑
+    ///     安装按钮逻辑
     /// </summary>
     private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -155,13 +150,13 @@ public partial class DrawDownloadGameContent : UserControl
                             ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                             : dialog.FolderName;
 
-                        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders ??= new List<GameFolderInfo>();
-                        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                        GlobalModel.Config.Data.GameFolders ??= new List<GameFolderInfo>();
+                        GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                         {
                             GameFolderPath = dialog.FolderPath,
                             GameFolderName = name ?? "Minecraft"
                         });
-                        BedrockBoot.Core.Global.GlobalModel.Config.Save();
+                        GlobalModel.Config.Save();
 
                         UpdateUI();
                         ExecuteInstallTask();
@@ -180,17 +175,17 @@ public partial class DrawDownloadGameContent : UserControl
         if ((Sources == null || SourceSelBox.SelectedIndex < 0) && !CheckPack()) return;
 
         var selectedUrl = Sources[SourceSelBox.SelectedIndex].Url;
-        var targetPath = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
+        var targetPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
 
         TaskDownloadGameItem.Install(
-            BuildInfo, 
-            selectedUrl, 
+            BuildInfo,
+            selectedUrl,
             IsUsePackIns.IsChecked ?? false,
-            targetPath, 
+            targetPath,
             InstallName.Text
         );
 
-        GlobalModel.MainWindow.CloseDraw();
+        Models.Global.GlobalModel.MainWindow.CloseDraw();
     }
 
     private void IsUsePackIns_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -206,14 +201,17 @@ public partial class DrawDownloadGameContent : UserControl
         {
             CheckPack();
         }
-        catch { /* 路径无效忽略 */ }
+        catch
+        {
+            /* 路径无效忽略 */
+        }
     }
 
     private bool CheckPack()
     {
-        var selectedFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders
+        var selectedFolder = GlobalModel.Config.Data.GameFolders
             .ElementAtOrDefault(InstallFolder.SelectedIndex);
-    
+
         if (selectedFolder == null)
         {
             IsUsePackIns.IsChecked = false;

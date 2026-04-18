@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Pack.Plugin;
@@ -43,17 +44,15 @@ public partial class PluginManager : ISettingPage
             LoadingCard.IsVisible = false;
             InfoCard.IsVisible = true;
         }
-        
-        PluginLoader.Plugins.ForEach(plugin =>
-        {
-            PluginList.Children.Add(new PluginItem(plugin));
-        });
-        
+
+        PluginLoader.Plugins.ForEach(plugin => { PluginList.Children.Add(new PluginItem(plugin)); });
+
         ScrollViewer.IsVisible = true;
         LoadingCard.IsVisible = false;
         InfoCard.IsVisible = false;
     }
-    private async void ImportButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+
+    private async void ImportButton_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel == null) return;
@@ -73,14 +72,11 @@ public partial class PluginManager : ISettingPage
 
         if (files.Count > 0)
         {
-            string selectedPath = files[0].Path.LocalPath;
-            bool success = await PluginLoader.Install(selectedPath);
-            
-            if (success)
-            {
-                UpdateUI();
-                // 此处可根据需要调用 OnePointUI 的通知组件提示：导入成功，重启生效
-            }
+            var selectedPath = files[0].Path.LocalPath;
+            var success = await PluginLoader.Install(selectedPath);
+
+            if (success) UpdateUI();
+            // 此处可根据需要调用 OnePointUI 的通知组件提示：导入成功，重启生效
         }
     }
 }

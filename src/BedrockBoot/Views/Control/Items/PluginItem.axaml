@@ -18,7 +18,7 @@
                                            VerticalAlignment="Center" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
-        
+
         <onePointControls:SettingCard.Description>
             <TextBlock Text="Plugin Description" Name="DescriptionBox" TextWrapping="Wrap" />
         </onePointControls:SettingCard.Description>
@@ -27,13 +27,13 @@
                     Classes="NoBorder"
                     Padding="8"
                     VerticalAlignment="Center">
-                <onePointControls:FontIcon Glyph="&#xE74D;" 
-                                           Foreground="Red" 
-                                           FontSize="16"/>
+                <onePointControls:FontIcon Glyph="&#xE74D;"
+                                           Foreground="Red"
+                                           FontSize="16" />
             </Button>
-            
-            <ToggleSwitch Name="EnableSwitch" 
-                          VerticalAlignment="Center"/>
+
+            <ToggleSwitch Name="EnableSwitch"
+                          VerticalAlignment="Center" />
         </StackPanel>
     </onePointControls:SettingCard>
 </UserControl>

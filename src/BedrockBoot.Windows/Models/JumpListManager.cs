@@ -1,8 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Taskbar;
 

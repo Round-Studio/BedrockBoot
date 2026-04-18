@@ -15,5 +15,5 @@
                                         FontWeight="Bold"
                                         Text="{DynamicResource Home.Title}" />
     </entry:BedrockBootPage.HeaderView>
-    <Grid Name="MainGrid"></Grid>
+    <Grid Name="MainGrid" />
 </entry:BedrockBootPage>

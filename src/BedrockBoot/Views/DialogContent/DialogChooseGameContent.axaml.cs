@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Avalonia.Controls;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.DialogContent;
 
@@ -26,14 +25,14 @@ public partial class DialogChooseGameContent : ISetting
         IsEnabled = false;
 
         GameFolder.Items.Clear();
-        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.ForEach(f =>
+        GlobalModel.Config.Data.GameFolders.ForEach(f =>
         {
             GameFolder.Items.Add(new ComboBoxItem
             {
                 Content = $"{f.GameFolderName} - {f.GameFolderPath}"
             });
         });
-        GameFolder.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
+        GameFolder.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
         UpdateList();
 
         IsEnabled = true;
@@ -43,7 +42,7 @@ public partial class DialogChooseGameContent : ISetting
     {
         GameInstance.Items.Clear();
         var index = GameFolder.SelectedIndex;
-        var path = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[index].GameFolderPath;
+        var path = GlobalModel.Config.Data.GameFolders[index].GameFolderPath;
         Versions = GameInfoHelper.GetVersionConfigs(path);
         Versions.ForEach(v =>
         {
@@ -53,7 +52,7 @@ public partial class DialogChooseGameContent : ISetting
                 Tag = v
             });
         });
-        GameInstance.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[index].GameSelIndex;
+        GameInstance.SelectedIndex = GlobalModel.Config.Data.GameFolders[index].GameSelIndex;
     }
 
     private void GameFolder_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

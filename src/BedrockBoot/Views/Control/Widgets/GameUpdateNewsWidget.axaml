@@ -9,15 +9,13 @@
         <ScrollViewer>
             <StackPanel Margin="15"
                         Spacing="8"
-                        Name="NewsList">
-            
-            </StackPanel>
+                        Name="NewsList" />
         </ScrollViewer>
-        
+
         <onePointControls:ProgressRing HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        Name="LoadRing"
                                        Width="48"
-                                       Height="48"></onePointControls:ProgressRing>
+                                       Height="48" />
     </Grid>
 </UserControl>

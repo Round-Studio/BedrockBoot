@@ -3,8 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -13,17 +13,16 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
 public partial class UniversalSoftwareUpdate : ISettingPage
 {
-    
     public bool IsEdit;
 
     public UniversalSoftwareUpdate()
     {
         InitializeComponent();
-        IsAutoCheckUpdate.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsAutoCheckUpdate;
-        UpdateTypeBox.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.UpdateType;
-        
+        IsAutoCheckUpdate.IsChecked = GlobalModel.Config.Data.IsAutoCheckUpdate;
+        UpdateTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.UpdateType;
+
         // 版本描述：直接显示版本号，或拼接“当前版本：”
-        VersionCard.Description = GlobalModel.BodyVersion;
+        VersionCard.Description = Models.Global.GlobalModel.BodyVersion;
 
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
@@ -46,8 +45,8 @@ public partial class UniversalSoftwareUpdate : ISettingPage
     {
         if (IsEdit)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsAutoCheckUpdate = IsAutoCheckUpdate.IsChecked ?? false;
-            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+            GlobalModel.Config.Data.IsAutoCheckUpdate = IsAutoCheckUpdate.IsChecked ?? false;
+            GlobalModel.Config.Save();
         }
     }
 
@@ -55,15 +54,15 @@ public partial class UniversalSoftwareUpdate : ISettingPage
     {
         if (IsEdit)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.UpdateType = (UpdateType)UpdateTypeBox.SelectedIndex;
-            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+            GlobalModel.Config.Data.UpdateType = (UpdateType)UpdateTypeBox.SelectedIndex;
+            GlobalModel.Config.Save();
         }
     }
 
     private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         CheckUpdateBtn.IsEnabled = false;
-        
+
         // 替换为等待状态
         CheckUpdateBtn.Content = new ProgressRing
         {

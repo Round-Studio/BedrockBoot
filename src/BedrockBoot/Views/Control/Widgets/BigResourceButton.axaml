@@ -22,40 +22,40 @@
                                                 VerticalAlignment="Top"
                                                 Width="72"
                                                 Height="72" />
-                
+
                 <StackPanel Grid.Column="1" Spacing="6">
                     <TextBlock Name="ResourceNameText"
                                FontSize="20"
-                               Text="ResourceName" 
-                               TextTrimming="CharacterEllipsis"/>
-                    
+                               Text="ResourceName"
+                               TextTrimming="CharacterEllipsis" />
+
                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                         <StackPanel Spacing="4" Orientation="Horizontal">
-                            <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" VerticalAlignment="Center"/>
-                            <TextBlock Name="DownloadCountText" Text="0"/>
+                            <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" VerticalAlignment="Center" />
+                            <TextBlock Name="DownloadCountText" Text="0" />
                         </StackPanel>
 
                         <Border Background="Gray" Height="12" Width="1" />
 
                         <StackPanel Spacing="4" Orientation="Horizontal">
-                            <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" VerticalAlignment="Center"/>
+                            <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" VerticalAlignment="Center" />
                             <TextBlock Name="UpdateDateText" Text="未知" />
                         </StackPanel>
 
                         <Border Background="Gray" Height="12" Width="1" />
 
                         <StackPanel Spacing="4" Orientation="Horizontal">
-                            <onePointControls:FontIcon Glyph="&#xE716;" Opacity="0.5" VerticalAlignment="Center"/>
+                            <onePointControls:FontIcon Glyph="&#xE716;" Opacity="0.5" VerticalAlignment="Center" />
                             <TextBlock Name="AuthorText" Text="By Unknown" />
                         </StackPanel>
                     </StackPanel>
-                    
+
                     <StackPanel Orientation="Horizontal"
                                 Spacing="6"
-                                Name="LabelsControl"></StackPanel>
+                                Name="LabelsControl" />
                 </StackPanel>
             </Grid>
-            
+
             <TextBlock Grid.Row="1"
                        Opacity="0.5"
                        Name="DescriptionText"

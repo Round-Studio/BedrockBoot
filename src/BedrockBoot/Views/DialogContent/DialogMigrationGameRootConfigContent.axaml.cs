@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
@@ -53,13 +52,9 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 string? mojangSourcePath = null;
 
                 if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-                {
                     mojangSourcePath = Path.Combine(sourceRoot, "LocalState", "games", "com.mojang");
-                }
                 else if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK)
-                {
                     mojangSourcePath = Path.Combine(sourceRoot, "games", "com.mojang");
-                }
 
                 if (string.IsNullOrEmpty(mojangSourcePath) || !Directory.Exists(mojangSourcePath))
                 {
@@ -70,13 +65,9 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
                 // 确定目标 com.mojang 路径（根据 BuildType）
                 string mojangTargetPath;
                 if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-                {
                     mojangTargetPath = Path.Combine(targetIsolationRoot, "LocalState", "games", "com.mojang");
-                }
                 else
-                {
                     mojangTargetPath = Path.Combine(targetIsolationRoot, "Users", "Shared", "games", "com.mojang");
-                }
 
                 Directory.CreateDirectory(Path.GetDirectoryName(mojangTargetPath)!);
 
@@ -142,7 +133,6 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
 
         // 复制所有文件
         foreach (var file in files)
-        {
             try
             {
                 var relativePath = Path.GetRelativePath(sourceDir, file.FullName);
@@ -159,7 +149,6 @@ public partial class DialogMigrationGameRootConfigContent : UserControl
             {
                 Console.WriteLine($@"复制文件 {file.Name} 时出错: {ex.Message}");
             }
-        }
 
         // 如果需要复制子目录（递归），可以在这里添加逻辑
         // 但当前只需复制文件即可

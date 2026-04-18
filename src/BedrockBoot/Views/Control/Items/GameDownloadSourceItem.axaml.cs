@@ -6,17 +6,11 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Info;
-using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameDownloadSourceItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    
-    public GameDownloadUrlInfo GameDownloadUrlInfo { get; set; } = null!;
-    public Action<int>? Pinged { get; set; }
-
     public GameDownloadSourceItem()
     {
         InitializeComponent();
@@ -29,8 +23,13 @@ public partial class GameDownloadSourceItem : UserControl
         SourceUrl.Text = info.Url;
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
+    public GameDownloadUrlInfo GameDownloadUrlInfo { get; set; } = null!;
+    public Action<int>? Pinged { get; set; }
+
     /// <summary>
-    /// 执行下载速度测试
+    ///     执行下载速度测试
     /// </summary>
     /// <param name="index">当前源在列表中的索引</param>
     public async Task OnPing(int index)
@@ -52,20 +51,18 @@ public partial class GameDownloadSourceItem : UserControl
             var buffer = new byte[8192];
 
             using var response = await client.GetAsync(
-                       GameDownloadUrlInfo.Url,
-                       HttpCompletionOption.ResponseHeadersRead);
-            
+                GameDownloadUrlInfo.Url,
+                HttpCompletionOption.ResponseHeadersRead);
+
             response.EnsureSuccessStatusCode();
 
             using var stream = await response.Content.ReadAsStreamAsync();
-            int totalRead = 0;
+            var totalRead = 0;
             int read;
 
             // 循环读取直到达到测试大小或流结束
             while (totalRead < testSize && (read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-            {
                 totalRead += read;
-            }
 
             stopwatch.Stop();
 
@@ -86,21 +83,21 @@ public partial class GameDownloadSourceItem : UserControl
     private void UpdateSpeedUI(long bytesReceived, long elapsedMs, int index)
     {
         // 计算 Bytes/s (避免除以 0)
-        double speedBps = bytesReceived * 1000.0 / Math.Max(elapsedMs, 1);
-        
+        var speedBps = bytesReceived * 1000.0 / Math.Max(elapsedMs, 1);
+
         string formattedSpeed;
         IBrush color;
 
         // 速度阶梯判断
         if (speedBps >= 1024 * 1024) // >= 1MB/s
         {
-            double mbps = speedBps / (1024 * 1024);
+            var mbps = speedBps / (1024 * 1024);
             formattedSpeed = $"{mbps:F2} MB/s";
-            color = mbps > 5 ? Brushes.Green : (mbps > 1 ? Brushes.Olive : Brushes.Orange);
+            color = mbps > 5 ? Brushes.Green : mbps > 1 ? Brushes.Olive : Brushes.Orange;
         }
         else if (speedBps >= 1024) // >= 1KB/s
         {
-            double kbps = speedBps / 1024;
+            var kbps = speedBps / 1024;
             formattedSpeed = $"{kbps:F2} KB/s";
             color = kbps > 500 ? Brushes.Olive : Brushes.Orange;
         }
@@ -114,7 +111,7 @@ public partial class GameDownloadSourceItem : UserControl
         {
             PingBox.Text = formattedSpeed;
             PingBox.Background = color;
-            
+
             // 测速完成回调，父组件可据此选择最优源
             Pinged?.Invoke(index);
         });

@@ -12,11 +12,11 @@
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <TextBlock Name="PlayerName"
-                           Text="Name"></TextBlock>
+                           Text="Name" />
                 <onePointControls:LabelBox Name="HostBox"
                                            Text="房主"
                                            Foreground="White"
-                                           FontSize="12"></onePointControls:LabelBox>
+                                           FontSize="12" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
     </onePointControls:SettingCard>

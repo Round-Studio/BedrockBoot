@@ -1,19 +1,16 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using BedrockBoot.Core.Interface.Instance;
 using BedrockBoot.Models.Helper;
-using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class InstancePluginItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    public IInstancePlugin? InstancePlugin { get; set; }
-
     public InstancePluginItem()
     {
         InitializeComponent();
@@ -24,6 +21,9 @@ public partial class InstancePluginItem : UserControl
         InstancePlugin = plugin;
         _ = UpdateUIAsync();
     }
+
+    private static I18nManager i18n => I18nManager.Instance;
+    public IInstancePlugin? InstancePlugin { get; set; }
 
     public async Task UpdateUIAsync()
     {
@@ -45,7 +45,6 @@ public partial class InstancePluginItem : UserControl
 
         // 图标异步加载
         if (!string.IsNullOrEmpty(InstancePlugin.Icon))
-        {
             try
             {
                 var icon = await ImageLoader.LoadIconAsync(InstancePlugin.Icon);
@@ -57,9 +56,8 @@ public partial class InstancePluginItem : UserControl
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load plugin icon: {ex.Message}");
+                Debug.WriteLine($"Failed to load plugin icon: {ex.Message}");
             }
-        }
     }
 
     private void Card_OnClick(object? sender, RoutedEventArgs e)

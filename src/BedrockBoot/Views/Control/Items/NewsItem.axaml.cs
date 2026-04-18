@@ -1,10 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using BedrockBoot.Base.Entry.Info.News;
-using BedrockBoot.Base.Enum.News;
 
 namespace BedrockBoot.Views.Control.Items;
 
@@ -24,7 +22,7 @@ public partial class NewsItem : UserControl
 
     private void InputElement_OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        ImageRender.Effect = new BlurEffect()
+        ImageRender.Effect = new BlurEffect
         {
             Radius = 20
         };
@@ -34,7 +32,7 @@ public partial class NewsItem : UserControl
 
     private void InputElement_OnPointerExited(object? sender, PointerEventArgs e)
     {
-        ImageRender.Effect = new BlurEffect()
+        ImageRender.Effect = new BlurEffect
         {
             Radius = 0
         };

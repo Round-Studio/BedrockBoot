@@ -13,20 +13,20 @@
                     Spacing="8">
             <onePointControls:FontIcon Glyph="&#xE77B;"
                                        VerticalAlignment="Center"
-                                       FontSize="22"></onePointControls:FontIcon>
-            
+                                       FontSize="22" />
+
             <StackPanel>
                 <TextBlock Opacity="0.6"
-                           Text="Xbox Live"></TextBlock>
-                
+                           Text="Xbox Live" />
+
                 <TextBlock Text="PlayerName"
                            Name="PlayerName"
-                           FontSize="18"></TextBlock>
+                           FontSize="18" />
             </StackPanel>
         </StackPanel>
-        
+
         <onePointControls:ProgressRing HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
-                                       Name="LoadRing"/>
+                                       Name="LoadRing" />
     </Grid>
 </UserControl>

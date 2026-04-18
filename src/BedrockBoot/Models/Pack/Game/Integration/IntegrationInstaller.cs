@@ -56,7 +56,7 @@ public class IntegrationInstaller
         if (gameVersions == null) throw new Exception("无法获取整合包目标游戏版本");
 
         var unZip = 0.00;
-        bool isComp = false;
+        var isComp = false;
         var downloader = new EasyDownload(gameVersions, true, installFolder, installName)
         {
             DownloadProgress = (s, p) =>
@@ -90,7 +90,7 @@ public class IntegrationInstaller
                     });
                 }
             },
-            #if WINDOWS
+#if WINDOWS
             DeploymentProgress = (s, p) =>
             {
                 IntegrationProgress?.Report(new InstallIntegrationProgress
@@ -100,7 +100,7 @@ public class IntegrationInstaller
                     Status = InstallIntegrationProgressType.Installing
                 });
             },
-            #endif
+#endif
             StatusText = text =>
             {
                 IntegrationProgress?.Report(new InstallIntegrationProgress
@@ -119,7 +119,7 @@ public class IntegrationInstaller
                     Status = InstallIntegrationProgressType.Failed
                 });
             },
-            Completed = (gameConfig) =>
+            Completed = gameConfig =>
             {
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
@@ -299,13 +299,11 @@ public class IntegrationInstaller
         }
 
         if (isComp)
-        {
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 100,
                 Message = "安装完成",
                 Status = InstallIntegrationProgressType.Success
             });
-        }
     }
 }

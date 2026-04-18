@@ -13,7 +13,7 @@
                     VerticalAlignment="Center">
             <TextBlock FontSize="16"
                        Name="MigrationProgressText"
-                       Text="迁移中..."></TextBlock>
+                       Text="迁移中..." />
             <ProgressBar IsIndeterminate="True"
                          Name="MigrationProgressBar"
                          Margin="0,8,0,0"

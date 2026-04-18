@@ -17,20 +17,20 @@
         <TextBlock Grid.Row="0"
                    Text="资源预览"
                    FontSize="16"
-                   FontWeight="Bold"></TextBlock>
-        
+                   FontWeight="Bold" />
+
         <Grid Grid.Row="1">
             <ScrollViewer x:Name="PacksScrollViewer" IsVisible="False">
-                <StackPanel x:Name="PacksList" Spacing="8"/>
+                <StackPanel x:Name="PacksList" Spacing="8" />
             </ScrollViewer>
-    
+
             <notice:LoadCard x:Name="LoadingCard"
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center"
                              BigTitle="加载中"
-                             Message="正在加载包信息..."/>
+                             Message="正在加载包信息..." />
         </Grid>
-        
+
         <StackPanel Grid.Row="2"
                     Spacing="8"
                     Margin="0,0,0,0"
@@ -38,20 +38,20 @@
             <DockPanel>
                 <TextBlock Text="目标目录"
                            Width="60"
-                           VerticalAlignment="Center"></TextBlock>
-                <ComboBox x:Name="FolderComboBox" 
-                          HorizontalAlignment="Stretch" 
-                          SelectionChanged="FolderComboBox_SelectionChanged"></ComboBox>
+                           VerticalAlignment="Center" />
+                <ComboBox x:Name="FolderComboBox"
+                          HorizontalAlignment="Stretch"
+                          SelectionChanged="FolderComboBox_SelectionChanged" />
             </DockPanel>
             <DockPanel>
                 <TextBlock Text="目标实例"
                            Width="60"
-                           VerticalAlignment="Center"></TextBlock>
-                <ComboBox x:Name="InstanceComboBox" 
-                          HorizontalAlignment="Stretch"></ComboBox>
+                           VerticalAlignment="Center" />
+                <ComboBox x:Name="InstanceComboBox"
+                          HorizontalAlignment="Stretch" />
             </DockPanel>
         </StackPanel>
-        
+
         <StackPanel Grid.Row="3"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
@@ -64,8 +64,8 @@
                             Spacing="6">
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                FontSize="15"
-                                               Glyph="&#xE74E;"/>
-                    <TextBlock Text="开始导入"></TextBlock>
+                                               Glyph="&#xE74E;" />
+                    <TextBlock Text="开始导入" />
                 </StackPanel>
             </Button>
         </StackPanel>

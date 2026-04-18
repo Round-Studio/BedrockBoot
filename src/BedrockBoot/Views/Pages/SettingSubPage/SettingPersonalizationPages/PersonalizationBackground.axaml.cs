@@ -28,6 +28,9 @@ public partial class PersonalizationBackground : ISettingPage
         BlurBar.Value = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
         Image3D.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.Background3D;
         UpdateUI();
+        
+        MicaModel.IsEnabled = false;
+        BlurModel.IsEnabled = false;
 
         if (OperatingSystem.IsWindows())
         {

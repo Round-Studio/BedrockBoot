@@ -8,17 +8,39 @@
              d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.SearchSubPage.SearchDefault">
     <Grid ColumnDefinitions="2.5*,7.5*"
+          ColumnSpacing="8"
           Margin="20,5,20,20">
         <Grid Grid.Column="0"
-              RowDefinitions="Auto,*">
-            <onePointControls:LineTextBlock Grid.Row="0"
-                                            Text="历史记录"
-                                            FontSize="16"
-                                            HorizontalAlignment="Left"></onePointControls:LineTextBlock>
+              RowDefinitions="Auto,*"
+              RowSpacing="8">
+            <Grid Grid.Row="0"
+                  Height="24">
+                <onePointControls:LineTextBlock Margin="0"
+                                                Text="历史记录"
+                                                FontSize="16"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"></onePointControls:LineTextBlock>
+            
+                <Button Classes="NoBorder"
+                        HorizontalAlignment="Right"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Padding="4"
+                        Width="24" Height="24"
+                        Name="CleanBtn"
+                        Click="CleanBtn_OnClick">
+                    <onePointControls:FontIcon Glyph="&#xE74D;"></onePointControls:FontIcon>
+                </Button>
+            </Grid>
+            
+            <StackPanel Grid.Row="1"
+                        Spacing="8"
+                        Name="HistoryList"></StackPanel>
             
             <notice:InfoCard Grid.Row="1"
                              VerticalAlignment="Center"
                              HorizontalAlignment="Center"
+                             Name="NoneBox"
                              BigTitle="空"
                              Message="没有历史搜索记录"></notice:InfoCard>
         </Grid>

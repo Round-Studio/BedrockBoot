@@ -13,11 +13,14 @@ using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
+using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Entity;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
@@ -34,8 +37,33 @@ public partial class SearchDefault : UserControl
         InitializeComponent();
         DownloadSearch.SearchDetailed = null;
         
+        LoadSearchHistory();
         _ = FetchLatestVersions();
         _ = LoadFeaturedResourcesAsync();
+    }
+
+    private void LoadSearchHistory()
+    {
+        NoneBox.IsVisible = false;
+        HistoryList.IsVisible = false;
+        CleanBtn.IsVisible = false;
+        var searchHis = new ConfigEntity<List<SearchInfo>>(PathsList.HistoryPath, false);
+        if (searchHis.Data.Count <= 0)
+        {
+            NoneBox.IsVisible = true;
+            return;
+        }
+
+        searchHis.Data.Reverse();
+        searchHis.Data.ForEach(his => HistoryList.Children.Add(new SearchHistoryItem(his)
+        {
+            SearchAction = (info =>
+            {
+                DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(info));
+            })
+        }));
+        HistoryList.IsVisible = true;
+        CleanBtn.IsVisible = true;
     }
 
     private void CheckNetworkStatus()
@@ -174,5 +202,24 @@ public partial class SearchDefault : UserControl
     {
         var version = VersionHelper.GetVersions().Find(x => x.Type == type);
         if (version != null) GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version), $"{i18n["Download.Action.DownloadGame"]} {version.ID}");
+    }
+
+    private void CleanBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new()
+        {
+            Content = "您确定要清空您的搜索历史吗？",
+            Title = "清除确认",
+            CloseButtonText = "确定",
+            PrimaryButtonText = "取消",
+            CloseAction = () =>
+            {
+                var searchHis = new ConfigEntity<List<SearchInfo>>(PathsList.HistoryPath);
+                searchHis.Data.Clear();
+                searchHis.Save();
+                
+                LoadSearchHistory();
+            }
+        });
     }
 }

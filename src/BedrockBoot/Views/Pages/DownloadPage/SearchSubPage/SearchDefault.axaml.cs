@@ -49,6 +49,8 @@ public partial class SearchDefault : UserControl
         HistoryList.IsVisible = false;
         CleanBtn.IsVisible = false;
         var searchHis = new ConfigEntity<List<SearchInfo>>(PathsList.HistoryPath, false);
+        if (searchHis?.Data == null) searchHis.Data = new List<SearchInfo>();
+        searchHis.Save();
         if (searchHis.Data.Count <= 0)
         {
             NoneBox.IsVisible = true;

@@ -50,13 +50,10 @@ public partial class AboutContributor : ISettingPage
                 // 获取 Round-Studio/BedrockBoot 仓库的贡献者
                 var contributors = await githubClient.Repository.GetAllContributors("Round-Studio", "BedrockBoot");
 
-                // 预先准备好 UI 控件列表，减少跨线程调用开销
-                var items = contributors.Select(con => new ContributorItem(con)).ToList();
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                Dispatcher.UIThread.Invoke(() =>
                 {
                     ContributorBox.Children.Clear();
-                    foreach (var item in items) ContributorBox.Children.Add(item);
+                    foreach (var item in contributors) ContributorBox.Children.Add(new ContributorItem(item));
                     LoadingRing.IsVisible = false;
                 });
             }

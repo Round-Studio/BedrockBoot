@@ -184,7 +184,7 @@ public class PluginLoader
                         }
                         catch (Exception loadEx)
                         {
-                            Console.WriteLine($"插件加载错误: {loadEx}");
+                            Console.WriteLine($@"插件加载错误: {loadEx}");
                         }
 
                     return pluginInstance;

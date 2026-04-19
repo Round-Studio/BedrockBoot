@@ -23,7 +23,7 @@ public class CheckUpdate
 
         var latest =
             releases.FirstOrDefault(x => x.Prerelease == (GlobalModel.Config.Data.UpdateType == UpdateType.Preview));
-        Console.WriteLine($"预览版：{GlobalModel.Config.Data.UpdateType == UpdateType.Preview}");
+        Console.WriteLine($@"预览版：{GlobalModel.Config.Data.UpdateType == UpdateType.Preview}");
 
         Console.WriteLine($@"最新版本: {latest.TagName}");
 

@@ -21,7 +21,7 @@ public class ProtonDownloader
     public async Task Download(IProgress<DownloadProgress> progress, CancellationToken ct = default)
     {
 #if WINDOWS
-        Console.WriteLine("Windows 下无需下载 ProtonGDK");
+        Console.WriteLine(@"Windows 下无需下载 ProtonGDK");
         return;
 #endif
         

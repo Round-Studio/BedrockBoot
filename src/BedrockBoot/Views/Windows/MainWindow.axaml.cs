@@ -90,7 +90,7 @@ public partial class MainWindow : BedrockBootWindow
                 // 获取文件的绝对路径
                 var filePath = file.Path.LocalPath;
 
-                if (!string.IsNullOrEmpty(filePath)) Console.WriteLine($"检测到拖入文件: {filePath}");
+                if (!string.IsNullOrEmpty(filePath)) Console.WriteLine($@"检测到拖入文件: {filePath}");
             }
     }
 

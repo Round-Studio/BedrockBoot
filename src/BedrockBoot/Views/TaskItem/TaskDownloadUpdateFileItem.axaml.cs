@@ -41,7 +41,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         if (winAsset == null)
         {
             // 如果没有找到包含 "win" 的 asset，可以记录错误或回退到第一个 asset
-            Console.WriteLine("未找到包含 'win' 标志的 asset");
+            Console.WriteLine(@"未找到包含 'win' 标志的 asset");
             return;
         }
 

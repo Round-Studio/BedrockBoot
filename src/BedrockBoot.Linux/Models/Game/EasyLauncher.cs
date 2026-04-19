@@ -66,7 +66,7 @@ public class EasyLauncher
     }
 
     // Linux Proton 启动方法
-    private Process? LaunchWithProton()
+    private Process? LaunchWithProton(string filePath)
     {
         if (_linuxLaunchInfo == null)
             return null;
@@ -79,7 +79,7 @@ public class EasyLauncher
         ProcessStartInfo startInfo = new ProcessStartInfo
         {
             FileName = protonScript,
-            Arguments = $"run \"{Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile)}\"",
+            Arguments = $"run \"{filePath}\"",
             UseShellExecute = false,
             CreateNoWindow = true,
             RedirectStandardOutput = true,
@@ -153,13 +153,26 @@ public class EasyLauncher
         RegisterService.API.LaunchingEvent.ForEach(action =>
             new Thread(() => action.Invoke(VersionInfo.VersionPath)).Start());
 
+        if (!VersionInfo.VersionStatus.GameInputInstalled ||
+            !Path.Exists(_linuxLaunchInfo?.PrefixPath))
+        {
+            Console.WriteLine("正在运行 GameInput 安装...");
+            LaunchWithProton(Path.Combine(VersionInfo.VersionPath, "Installers", "GameInputRedist.msi"))?.WaitForExit();
+            Console.WriteLine("GameInput 安装完毕");
+            
+            var conf = new ConfigEntity<VersionConfig>(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2",
+                "config.json"));
+            conf.Data = VersionInfo;
+            conf.Save();
+        }
+
         try
         {
             // 重置计时器
             _gameplayStopwatch.Reset();
             _gameStartTime = DateTime.Now;
             
-            MinecraftProcess = LaunchWithProton();
+            MinecraftProcess = LaunchWithProton(Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile));
 
             if (MinecraftProcess != null)
             {

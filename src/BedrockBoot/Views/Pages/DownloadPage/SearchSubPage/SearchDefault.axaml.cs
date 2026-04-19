@@ -47,6 +47,7 @@ public partial class SearchDefault : UserControl
     {
         NoneBox.IsVisible = false;
         HistoryList.IsVisible = false;
+        HistoryListScrollViewer.IsVisible = false;
         CleanBtn.IsVisible = false;
         var searchHis = new ConfigEntity<List<SearchInfo>>(PathsList.HistoryPath, false);
         if (searchHis?.Data == null) searchHis.Data = new List<SearchInfo>();
@@ -63,6 +64,7 @@ public partial class SearchDefault : UserControl
             SearchAction = info => { DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(info)); }
         }));
         HistoryList.IsVisible = true;
+        HistoryListScrollViewer.IsVisible = true;
         CleanBtn.IsVisible = true;
     }
 

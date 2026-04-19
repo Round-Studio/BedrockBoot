@@ -33,9 +33,11 @@
                 </Button>
             </Grid>
 
-            <StackPanel Grid.Row="1"
-                        Spacing="8"
-                        Name="HistoryList" />
+            <ScrollViewer Grid.Row="1"
+                          Name="HistoryListScrollViewer">
+                <StackPanel Spacing="8"
+                            Name="HistoryList" />
+            </ScrollViewer>
 
             <notice:InfoCard Grid.Row="1"
                              VerticalAlignment="Center"

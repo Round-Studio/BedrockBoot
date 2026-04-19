@@ -9,15 +9,15 @@
     <Grid RowDefinitions="*,Auto"
           Margin="20,0,20,20">
         <StackPanel Spacing="8">
-            <TextBlock Text="需要转换到的版本 （Java Version.）："></TextBlock>
-        
+            <TextBlock Text="需要转换到的版本 （Java Version.）：" />
+
             <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Static chunker:Chunker.SupportJava}"
                       SelectedIndex="0"
-                      Name="GameVersionChoose"></ComboBox>
-        
-            <TextBlock Text="Bedrock 存档"></TextBlock>
-        
+                      Name="GameVersionChoose" />
+
+            <TextBlock Text="Bedrock 存档" />
+
             <DockPanel HorizontalSpacing="8">
                 <Button DockPanel.Dock="Right"
                         Name="ImportMcWorld"
@@ -26,11 +26,11 @@
                     <StackPanel Orientation="Horizontal"
                                 Spacing="4">
                         <onePointControls:FontIcon VerticalAlignment="Center"
-                                                   Glyph="&#xE7C3;"/>
-                        <TextBlock Text="导入 .mcworld"></TextBlock>
+                                                   Glyph="&#xE7C3;" />
+                        <TextBlock Text="导入 .mcworld" />
                     </StackPanel>
                 </Button>
-            
+
                 <Button DockPanel.Dock="Right"
                         Name="ChooseWorld"
                         Click="ChooseWorld_OnClick"
@@ -38,21 +38,21 @@
                     <StackPanel Orientation="Horizontal"
                                 Spacing="4">
                         <onePointControls:FontIcon VerticalAlignment="Center"
-                                                   Glyph="&#xE8B7;"/>
-                        <TextBlock Text="从实例中选择"></TextBlock>
+                                                   Glyph="&#xE8B7;" />
+                        <TextBlock Text="从实例中选择" />
                     </StackPanel>
                 </Button>
-            
+
                 <TextBox Watermark="存档路径（mcworld）"
-                         Name="WorldPath"></TextBox>
+                         Name="WorldPath" />
             </DockPanel>
         </StackPanel>
-        
+
         <TextBlock Grid.Row="1"
                    Opacity="0.6"
                    VerticalAlignment="Center"
-                   Text="使用 Chunker 开源项目，转换存档有风险"></TextBlock>
-        
+                   Text="使用 Chunker 开源项目，转换存档有风险" />
+
         <StackPanel Grid.Row="1"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
@@ -64,11 +64,11 @@
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">
                     <onePointControls:FontIcon VerticalAlignment="Center"
-                                               Glyph="&#xE8B7;"/>
-                    <TextBlock Text="导出为文件夹"></TextBlock>
+                                               Glyph="&#xE8B7;" />
+                    <TextBlock Text="导出为文件夹" />
                 </StackPanel>
             </Button>
-            
+
             <Button Classes="Accent"
                     Padding="8,0"
                     Name="SaveZipFile"
@@ -77,8 +77,8 @@
                 <StackPanel Orientation="Horizontal"
                             Spacing="4">
                     <onePointControls:FontIcon VerticalAlignment="Center"
-                                               Glyph="&#xF012;"/>
-                    <TextBlock Text="导出为 .zip"></TextBlock>
+                                               Glyph="&#xF012;" />
+                    <TextBlock Text="导出为 .zip" />
                 </StackPanel>
             </Button>
         </StackPanel>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -10,7 +9,6 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
@@ -30,7 +28,7 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = true;
 
 #if RELEASE
-        GameControls.IsEnabled = GlobalModel.FunctionOption.IsEnableGameInstanceControl;
+        GameControls.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableGameInstanceControl;
 #endif
 
 #if LINUX
@@ -54,7 +52,7 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = false;
 
         var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
-        if (VersionInfo.Info.VersionType != BedrockLauncher.Core.MinecraftGameTypeVersion.Release)
+        if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
             image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
         IconBox.Background = new ImageBrush
@@ -90,9 +88,9 @@ public partial class DrawInstanceContent : UserControl
 
         _refreshTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromSeconds(1) 
+            Interval = TimeSpan.FromSeconds(1)
         };
-        
+
         _refreshTimer.Tick += async (sender, e) => await RefreshPlayTimeAsync();
         _refreshTimer.Start();
 
@@ -121,7 +119,7 @@ public partial class DrawInstanceContent : UserControl
         try
         {
             VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
-            if (VersionInfo == null || 
+            if (VersionInfo == null ||
                 VersionInfo?.PlayerData == null)
                 return;
 
@@ -132,7 +130,7 @@ public partial class DrawInstanceContent : UserControl
                     var playerData = VersionInfo.PlayerData;
 
                     // 获取总游玩时间（秒）并转换为 TimeSpan
-                    TimeSpan totalTime = TimeSpan.FromSeconds(playerData.TotalPlayTime);
+                    var totalTime = TimeSpan.FromSeconds(playerData.TotalPlayTime);
 
                     TotalDuration.Text =
                         string.Format(I18nManager.Instance["Draw.Instance.TotalTime"],
@@ -156,10 +154,7 @@ public partial class DrawInstanceContent : UserControl
     {
         base.OnLoaded(e);
         // 确保定时器在控件加载时启动
-        if (VersionInfo != null)
-        {
-            StartPlayTimeRefresh();
-        }
+        if (VersionInfo != null) StartPlayTimeRefresh();
     }
 
     // 当控件卸载时（视图消失）- 修正为正确的签名

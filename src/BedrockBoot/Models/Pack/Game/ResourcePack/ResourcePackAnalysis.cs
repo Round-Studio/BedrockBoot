@@ -23,24 +23,6 @@ public class ResourcePackAnalysis
 
     public string FilePath { get; }
 
-    // 新增：子包节点类
-    public class SubPackNode
-    {
-        public string Name { get; set; }
-        public string Path { get; set; }
-        public ResourcePackManifest Manifest { get; set; }
-        public List<SubPackNode> Children { get; set; } = new List<SubPackNode>();
-        public bool IsEnabled { get; set; } = true; // 是否启用此子包
-    }
-
-    // 新增：主包信息类
-    public class PackInfo
-    {
-        public ResourcePackManifest MainManifest { get; set; }
-        public List<SubPackNode> SubPacks { get; set; } = new List<SubPackNode>();
-        public string RootPath { get; set; }
-    }
-
     public static ResourcePackType GetPackType(ResourcePackManifest conf)
     {
         if (conf?.Modules == null) return ResourcePackType.Unknown;
@@ -74,10 +56,10 @@ public class ResourcePackAnalysis
         }
 
         var packInfo = new PackInfo { RootPath = _tempPath };
-        
+
         // 获取所有manifest文件
         var manifestFiles = Directory.GetFiles(_tempPath, "manifest.json", SearchOption.AllDirectories);
-        
+
         // 构建子包树形结构
         foreach (var file in manifestFiles)
         {
@@ -85,7 +67,7 @@ public class ResourcePackAnalysis
             if (manifest != null)
             {
                 var directory = Path.GetDirectoryName(file);
-                
+
                 // 判断是否为主包manifest（根目录下的manifest）
                 if (directory == _tempPath)
                 {
@@ -110,7 +92,7 @@ public class ResourcePackAnalysis
     {
         var relativePath = Path.GetRelativePath(_tempPath, directory);
         var name = Path.GetFileName(directory);
-        
+
         return new SubPackNode
         {
             Name = name,
@@ -123,11 +105,11 @@ public class ResourcePackAnalysis
     private void BuildSubPackHierarchy(List<SubPackNode> allNodes)
     {
         var nodeMap = allNodes.ToDictionary(n => n.Path, n => n);
-        
+
         foreach (var node in allNodes.ToList())
         {
             var parentPath = Path.GetDirectoryName(node.Path);
-            
+
             if (nodeMap.ContainsKey(parentPath))
             {
                 nodeMap[parentPath].Children.Add(node);
@@ -150,10 +132,7 @@ public class ResourcePackAnalysis
         foreach (var file in manifestFiles)
         {
             var manifest = GetPackManifest(file);
-            if (manifest != null)
-            {
-                result.Add(manifest);
-            }
+            if (manifest != null) result.Add(manifest);
         }
 
         return result;
@@ -164,7 +143,8 @@ public class ResourcePackAnalysis
         var subPacks = Directory.GetFiles(targetPath, "*.mcpack", SearchOption.AllDirectories);
         foreach (var subPack in subPacks)
         {
-            var subExtractPath = Path.Combine(Path.GetDirectoryName(subPack), Path.GetFileNameWithoutExtension(subPack));
+            var subExtractPath =
+                Path.Combine(Path.GetDirectoryName(subPack), Path.GetFileNameWithoutExtension(subPack));
             if (!Directory.Exists(subExtractPath))
             {
                 ZipHelper.ExtractZipFile(subPack, subExtractPath);
@@ -207,15 +187,11 @@ public class ResourcePackAnalysis
         List<string> langFiles;
 
         if (!File.Exists(textManifest))
-        {
             langFiles = Directory.GetFiles(textFolder, "*.lang")
                 .Select(f => Path.GetFileNameWithoutExtension(f))
                 .ToList();
-        }
         else
-        {
             langFiles = new ConfigEntity<List<string>>(textManifest, false).Data;
-        }
 
         if (langFiles == null || langFiles.Count == 0) return langKey;
 
@@ -237,13 +213,11 @@ public class ResourcePackAnalysis
                 {
                     var key = trimmed.Substring(0, splitIndex).Trim();
                     if (key == langKey)
-                    {
                         return trimmed.Substring(splitIndex + 1)
                             .Split('\t')[0]
                             .Split('#')[0]
                             .Trim()
                             .Replace("\\n", "\n");
-                    }
                 }
             }
         }
@@ -272,8 +246,8 @@ public class ResourcePackAnalysis
         if (currentLanguage == "zh")
         {
             var region = currentFullLocale.Contains("CN") ? "zh_CN" :
-                         currentFullLocale.Contains("TW") ? "zh_TW" :
-                         currentFullLocale.Contains("HK") ? "zh_HK" : "zh_CN";
+                currentFullLocale.Contains("TW") ? "zh_TW" :
+                currentFullLocale.Contains("HK") ? "zh_HK" : "zh_CN";
 
             if (supportedLanguages.Any(l => string.Equals(l, region, StringComparison.OrdinalIgnoreCase)))
                 return supportedLanguages.First(l => string.Equals(l, region, StringComparison.OrdinalIgnoreCase));
@@ -293,10 +267,7 @@ public class ResourcePackAnalysis
 
         // 确保输出目录存在
         var outputDir = Path.GetDirectoryName(outputPath);
-        if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
-        {
-            Directory.CreateDirectory(outputDir);
-        }
+        if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
 
         // 创建临时工作目录
         var workPath = Path.Combine(PathsList.TempPath, $"repack_{Guid.NewGuid().ToString().Replace("-", "")}");
@@ -307,10 +278,7 @@ public class ResourcePackAnalysis
 
             // 删除所有原始子包文件（.mcpack）
             var originalSubPacks = Directory.GetFiles(workPath, "*.mcpack", SearchOption.AllDirectories);
-            foreach (var subPack in originalSubPacks)
-            {
-                File.Delete(subPack);
-            }
+            foreach (var subPack in originalSubPacks) File.Delete(subPack);
 
             // 根据子包节点信息重新组织结构
             ProcessSubPacks(workPath, packInfo.SubPacks, includeDisabledSubPacks);
@@ -321,10 +289,7 @@ public class ResourcePackAnalysis
         finally
         {
             // 清理临时工作目录
-            if (Directory.Exists(workPath))
-            {
-                Directory.Delete(workPath, true);
-            }
+            if (Directory.Exists(workPath)) Directory.Delete(workPath, true);
         }
     }
 
@@ -336,10 +301,7 @@ public class ResourcePackAnalysis
                 continue;
 
             // 如果子包有子节点，递归处理
-            if (subPack.Children.Any())
-            {
-                ProcessSubPacks(rootPath, subPack.Children, includeDisabledSubPacks);
-            }
+            if (subPack.Children.Any()) ProcessSubPacks(rootPath, subPack.Children, includeDisabledSubPacks);
 
             // 将子包移动到正确的相对位置
             MoveSubPackToCorrectLocation(rootPath, subPack);
@@ -363,13 +325,10 @@ public class ResourcePackAnalysis
             {
                 var relativeFile = Path.GetRelativePath(sourcePath, file);
                 var targetFile = Path.Combine(targetPath, relativeFile);
-                
+
                 var targetDir = Path.GetDirectoryName(targetFile);
-                if (!Directory.Exists(targetDir))
-                {
-                    Directory.CreateDirectory(targetDir);
-                }
-                
+                if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
+
                 File.Copy(file, targetFile, true);
             }
         }
@@ -380,10 +339,7 @@ public class ResourcePackAnalysis
         var dir = new DirectoryInfo(sourceDir);
         if (!dir.Exists) throw new DirectoryNotFoundException($"Source directory does not exist: {sourceDir}");
 
-        if (!Directory.Exists(destinationDir))
-        {
-            Directory.CreateDirectory(destinationDir);
-        }
+        if (!Directory.Exists(destinationDir)) Directory.CreateDirectory(destinationDir);
 
         foreach (var file in dir.GetFiles())
         {
@@ -396,5 +352,23 @@ public class ResourcePackAnalysis
             var targetSubDir = Path.Combine(destinationDir, subDir.Name);
             CopyDirectory(subDir.FullName, targetSubDir);
         }
+    }
+
+    // 新增：子包节点类
+    public class SubPackNode
+    {
+        public string Name { get; set; }
+        public string Path { get; set; }
+        public ResourcePackManifest Manifest { get; set; }
+        public List<SubPackNode> Children { get; set; } = new();
+        public bool IsEnabled { get; set; } = true; // 是否启用此子包
+    }
+
+    // 新增：主包信息类
+    public class PackInfo
+    {
+        public ResourcePackManifest MainManifest { get; set; }
+        public List<SubPackNode> SubPacks { get; set; } = new();
+        public string RootPath { get; set; }
     }
 }

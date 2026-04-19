@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
@@ -15,11 +14,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameFolderSettingItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    
-    public GameFolderInfo GameFolderInfo { get; set; } = null!;
-    public Action? CallBack { get; set; }
-
     public GameFolderSettingItem()
     {
         InitializeComponent();
@@ -32,6 +26,11 @@ public partial class GameFolderSettingItem : UserControl
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
+    public GameFolderInfo GameFolderInfo { get; set; } = null!;
+    public Action? CallBack { get; set; }
+
     private void UpdateUI()
     {
         Card.Header = GameFolderInfo.GameFolderName;
@@ -39,12 +38,12 @@ public partial class GameFolderSettingItem : UserControl
     }
 
     /// <summary>
-    /// 使用系统文件管理器打开目录
+    ///     使用系统文件管理器打开目录
     /// </summary>
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         if (string.IsNullOrEmpty(GameFolderInfo.GameFolderPath)) return;
-        
+
         try
         {
             OpenFolderHelper.Open(GameFolderInfo.GameFolderPath);
@@ -56,7 +55,7 @@ public partial class GameFolderSettingItem : UserControl
     }
 
     /// <summary>
-    /// 删除该目录索引
+    ///     删除该目录索引
     /// </summary>
     private void DeleteFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -69,15 +68,15 @@ public partial class GameFolderSettingItem : UserControl
             AccountButton = DialogButtons.SecondaryButton,
             CloseAction = () =>
             {
-                var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
-                var target = folders.Find(x => 
-                    x.GameFolderPath == GameFolderInfo.GameFolderPath && 
+                var folders = GlobalModel.Config.Data.GameFolders;
+                var target = folders.Find(x =>
+                    x.GameFolderPath == GameFolderInfo.GameFolderPath &&
                     x.GameFolderName == GameFolderInfo.GameFolderName);
 
                 if (target != null)
                 {
                     folders.Remove(target);
-                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
+                    GlobalModel.Config.Save();
                     CallBack?.Invoke();
                 }
             }
@@ -85,7 +84,7 @@ public partial class GameFolderSettingItem : UserControl
     }
 
     /// <summary>
-    /// 编辑现有目录配置
+    ///     编辑现有目录配置
     /// </summary>
     private void SettingBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -104,23 +103,23 @@ public partial class GameFolderSettingItem : UserControl
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
-                var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
+                var folders = GlobalModel.Config.Data.GameFolders;
                 // 查找原始对象进行修改
-                var target = folders.Find(x => 
-                    x.GameFolderPath == GameFolderInfo.GameFolderPath && 
+                var target = folders.Find(x =>
+                    x.GameFolderPath == GameFolderInfo.GameFolderPath &&
                     x.GameFolderName == GameFolderInfo.GameFolderName);
 
                 if (target != null)
                 {
                     target.GameFolderName = body.FolderName;
                     target.GameFolderPath = body.FolderPath;
-                    
-                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
-                    
+
+                    GlobalModel.Config.Save();
+
                     // 同步更新当前组件 UI
                     GameFolderInfo = target;
                     UpdateUI();
-                    
+
                     // 通知父级页面刷新列表
                     CallBack?.Invoke();
                 }

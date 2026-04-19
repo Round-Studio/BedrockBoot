@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <x:String x:Key="LanguageName">日本語 - BedrockBoot 公式</x:String>
-    
+
     <x:String x:Key="Shared.Action.Apply">適用</x:String>
     <x:String x:Key="Shared.Action.Back">戻る</x:String>
     <x:String x:Key="Shared.Action.Browse">参照</x:String>
@@ -15,20 +15,20 @@
     <x:String x:Key="Shared.Action.Save">保存</x:String>
     <x:String x:Key="Shared.Action.Search">検索</x:String>
     <x:String x:Key="Shared.Action.Settings">設定</x:String>
-    
+
     <x:String x:Key="Shared.Label.Information">情報</x:String>
     <x:String x:Key="Shared.Label.Notice">注意</x:String>
     <x:String x:Key="Shared.Label.Project">プロジェクト</x:String>
     <x:String x:Key="Shared.Label.Ranking">ランキング</x:String>
-    
+
     <x:String x:Key="Shared.Group.BasicSettings">基本設定</x:String>
-    
+
     <x:String x:Key="Shared.Status.Wait">しばらくお待ちください</x:String>
     <x:String x:Key="Shared.Status.Searching">検索中...</x:String>
     <x:String x:Key="Shared.Status.Progress.Title">進捗：</x:String>
     <x:String x:Key="Shared.Status.Error.Title">エラーが発生しました</x:String>
     <x:String x:Key="Shared.Status.Error.Network.Desc">ネットワークの問題によりリクエストに失敗した可能性があります。</x:String>
-    
+
     <x:String x:Key="Common.Action.Irreversible">この操作は元に戻せません。</x:String>
     <x:String x:Key="Common.Unit.Speed">{0}/s</x:String>
 
@@ -39,17 +39,17 @@
     <x:String x:Key="MainWindow.Common.Add">新增</x:String>
 
     <x:String x:Key="Home.Title">こんにちは、お帰りなさい</x:String>
-    
+
     <x:String x:Key="MainPage.Nav.Home">ホーム</x:String>
     <x:String x:Key="MainPage.Nav.Manager">インスタンス</x:String>
     <x:String x:Key="MainPage.Nav.Download">ダウンロード</x:String>
     <x:String x:Key="MainPage.Nav.Tools">ツール</x:String>
     <x:String x:Key="MainPage.Nav.Setting">設定</x:String>
-    
+
     <x:String x:Key="MainPage.Status.NoInstance">利用可能なインスタンスがありません</x:String>
     <x:String x:Key="MainPage.Status.NoFolder">ゲームフォルダを追加してください</x:String>
     <x:String x:Key="MainPage.Status.LoadFailed">読み込みに失敗しました</x:String>
-    
+
     <x:String x:Key="MainPage.Error.InvalidPage.Title">無効なページ</x:String>
     <x:String x:Key="MainPage.Error.InvalidPage.Content">ページ {0} は無効です</x:String>
 
@@ -61,26 +61,26 @@
     <x:String x:Key="Manager.Title">インスタンス管理</x:String>
     <x:String x:Key="Manager.IncludeGame">ゲームをインポート</x:String>
     <x:String x:Key="Manager.IncludePack">整合パックをインポート</x:String>
-    
+
     <x:String x:Key="Manager.GameType.AllType">すべてのタイプ</x:String>
     <x:String x:Key="Manager.GameType.Release">正式版</x:String>
     <x:String x:Key="Manager.GameType.Preview">プレビュー版</x:String>
-    
+
     <x:String x:Key="Manager.GameItem.Launch">起動</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">編集モード</x:String>
-    
+
     <x:String x:Key="Manager.Folder.Empty.Title">空</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">下の「ディレクトリ追加」をクリックして&#x0A;ディレクトリを追加してください</x:String>
-    
+
     <x:String x:Key="Manager.Games.Empty.Title">インスタンスがありません</x:String>
     <x:String x:Key="Manager.Games.Empty.Message">キーワードが無効、またはインスタンスがダウンロードされていません</x:String>
     <x:String x:Key="Manager.Games.Loading.Title">キューイング中</x:String>
     <x:String x:Key="Manager.Games.Loading.Message">バージョンを読み込んでいます...</x:String>
     <x:String x:Key="Manager.Search.Placeholder">インスタンスを検索...</x:String>
-    
+
     <x:String x:Key="Main.Action.Launch">起動</x:String>
     <x:String x:Key="Main.GameList.Empty">インスタンスがありません</x:String>
-    
+
     <x:String x:Key="MainPage.Manager.Import.Title">ゲームインストールパッケージのインポート</x:String>
     <x:String x:Key="MainPage.Manager.Import.Action">インポート開始</x:String>
     <x:String x:Key="MainPage.Manager.Import.Error.Pack">ゲームパッケージ {0} は無効です</x:String>
@@ -93,7 +93,7 @@
     <x:String x:Key="MainPage.Manager.Integration.Dialog.Action">インストール</x:String>
 
     <x:String x:Key="Instance.Title">インスタンス</x:String>
-    
+
     <x:String x:Key="Draw.Instance.Tab.Detail">インスタンス詳細</x:String>
     <x:String x:Key="Draw.Instance.Tab.Mods">Mod管理</x:String>
     <x:String x:Key="Draw.Instance.Tab.Packs">リソース / ビヘイビアパック</x:String>
@@ -112,7 +112,7 @@
     <x:String x:Key="Instance.Info.Icon.Path">土の道</x:String>
     <x:String x:Key="Instance.Info.Icon.EndStone">エンドストーン</x:String>
     <x:String x:Key="Instance.Info.Icon.Crafting">作業台</x:String>
-    
+
     <x:String x:Key="Instance.Info.Group.Launch">起動設定</x:String>
     <x:String x:Key="Instance.Info.Launch.Title">起動設定</x:String>
     <x:String x:Key="Instance.Info.Launch.Desc">インスタンスの起動に関する設定</x:String>
@@ -130,14 +130,14 @@
     <x:String x:Key="Instance.Controls.MouseLock.Desc">UWP版Bedrock向けのマウス最適化</x:String>
     <x:String x:Key="Instance.Controls.MouseLock.Range.Title">クリップ範囲</x:String>
     <x:String x:Key="Instance.Controls.MouseLock.Range.Desc">マウスロックのゲームに対する制限範囲</x:String>
-    
+
     <x:String x:Key="Instance.Controls.Shortcut.Title">ショートカット</x:String>
     <x:String x:Key="Instance.Controls.Shortcut.Desc">このインスタンスをすぐに起動するためのショートカットを保存</x:String>
     <x:String x:Key="Instance.Controls.ImportConfig.Title">設定をインポート</x:String>
     <x:String x:Key="Instance.Controls.ImportConfig.Desc">他のインスタンスの設定をインポート</x:String>
     <x:String x:Key="Instance.Controls.ExportPack.Title">整合パックをエクスポート</x:String>
     <x:String x:Key="Instance.Controls.ExportPack.Desc">Minecraft Bedrock整合パックとしてエクスポート</x:String>
-    
+
     <x:String x:Key="Instance.Controls.Group.DangerZone">危険な操作</x:String>
     <x:String x:Key="Instance.Controls.Delete.Title">インスタンスを削除</x:String>
     <x:String x:Key="Instance.Controls.Delete.Desc">このゲームバージョンを完全に削除</x:String>
@@ -234,10 +234,10 @@
     <x:String x:Key="Download.Title">ダウンロード</x:String>
     <x:String x:Key="Download.Tab.Assets">リソースパック</x:String>
     <x:String x:Key="Download.List.Empty">条件に合うバージョンが見つかりませんでした</x:String>
-    
+
     <x:String x:Key="Download.Action.GetResource">リソースをダウンロード</x:String>
     <x:String x:Key="Download.Action.DownloadGame">ゲームをダウンロード</x:String>
-    
+
     <x:String x:Key="Download.Game.Type.Release">正式版</x:String>
     <x:String x:Key="Download.Game.Type.Preview">プレビュー版</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta 版</x:String>
@@ -246,7 +246,7 @@
     <x:String x:Key="Download.Assets.Status.Loading.Message">全データ、整列！</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Title">あれ...？</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Message">入力されたキーワードは無効です</x:String>
-    
+
     <x:String x:Key="Download.Search.Watermark">キーワードを入力して検索...</x:String>
     <x:String x:Key="Download.Search.Action.VersionList">バージョン一覧</x:String>
     <x:String x:Key="Download.Search.Group.Latest">最新バージョン</x:String>
@@ -257,10 +257,10 @@
     <x:String x:Key="Download.Search.Category.Texture">テクスチャパック</x:String>
     <x:String x:Key="Download.Search.Category.Behavior">ビヘイビアパック</x:String>
     <x:String x:Key="Download.Search.Category.Map">マップパック</x:String>
-    
+
     <x:String x:Key="Download.Search.Status.NoResult.Title">結果が見つかりません</x:String>
     <x:String x:Key="Download.Search.Status.NoResult.Message">別のキーワードをお試しください</x:String>
-    
+
     <x:String x:Key="Download.Result.Author.Prefix">作者</x:String>
     <x:String x:Key="Download.Result.Action.ViewOnCurseForge">CurseForgeでこのリソースを表示</x:String>
     <x:String x:Key="Download.Result.Action.Get">リソースを取得</x:String>
@@ -280,7 +280,7 @@
 
     <x:String x:Key="Download.Source.Testing">テスト中...</x:String>
     <x:String x:Key="Download.Source.Failed">接続失敗</x:String>
-    
+
     <x:String x:Key="Download.Dialog.TitlePrefix">ゲームをダウンロード</x:String>
     <x:String x:Key="Download.Draw.Error.NoUrl">このバージョンのダウンロードURLを取得できません。ダウンロード元を変更してみてください。</x:String>
     <x:String x:Key="Download.Draw.AddFolder.Title">ゲームインストールルートディレクトリを追加</x:String>
@@ -381,7 +381,7 @@
     <x:String x:Key="Task.Launch.Migration.View.Title">バージョンを移行</x:String>
 
     <x:String x:Key="Settings.Title">設定</x:String>
-    
+
     <x:String x:Key="Settings.Nav.Personalization.Title">パーソナライズ</x:String>
     <x:String x:Key="Settings.Nav.Personalization.Desc">ランチャーのパーソナライズ設定</x:String>
     <x:String x:Key="Settings.Nav.Download.Title">ダウンロード</x:String>
@@ -430,7 +430,7 @@
     <x:String x:Key="Settings.Background.Image.Opacity.Desc">壁紙の透明度設定</x:String>
     <x:String x:Key="Settings.Background.Image.Blur.Title">壁紙のぼかし</x:String>
     <x:String x:Key="Settings.Background.Image.Blur.Desc">壁紙のぼかし効果</x:String>
-    
+
     <x:String x:Key="Setting.Personalization.Background.Title">背景</x:String>
     <x:String x:Key="Setting.Personalization.Background.Dialog.Import.Title">画像ファイルを選択</x:String>
     <x:String x:Key="Setting.Personalization.Background.Type.None">なし</x:String>
@@ -443,7 +443,7 @@
     <x:String x:Key="Settings.Color.Theme.Desc">ライト or ダーク</x:String>
     <x:String x:Key="Settings.Color.Theme.Dark">ダーク</x:String>
     <x:String x:Key="Settings.Color.Theme.Light">ライト</x:String>
-    
+
     <x:String x:Key="Setting.Personalization.Title">パーソナライズ</x:String>
     <x:String x:Key="Setting.Personalization.Breadcrumb.Root">パーソナライズ</x:String>
     <x:String x:Key="Setting.Personalization.Color.Title">カラー</x:String>
@@ -465,7 +465,7 @@
     <x:String x:Key="Settings.Personalization.Home.Type.Desc">ランチャーのホームページに表示するタイプ</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.None">なし</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.News">ニュースホーム</x:String>
-    
+
     <x:String x:Key="Setting.Personalization.Home.Title">ホーム</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.Header">ホームページコンテンツタイプ</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.None">空白 (None)</x:String>
@@ -552,7 +552,7 @@
     <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Dev">開発版 (Dev)</x:String>
     <x:String x:Key="Setting.Universal.GatherInfo.Title">ユーザー情報の収集</x:String>
     <x:String x:Key="Setting.Universal.GatherInfo.Desc">ユーザーの使用情報を収集するために使用され、ユーザー層の分析のみに使用され、第三者にデータを販売することは決してありません</x:String>
-    
+
     <x:String x:Key="MainPage.Update.Title">アップデートを確認</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">{0} にアップデート</x:String>
     <x:String x:Key="MainPage.Update.Content">新しいアップデートがあります：\n\n{0}</x:String>
@@ -570,7 +570,7 @@
     <x:String x:Key="Tools.UninstallMc.Description">インストール済みの Minecraft が原因で発生するエラーを解消するために使用</x:String>
     <x:String x:Key="Tools.Empty.Title">なにもないよ</x:String>
     <x:String x:Key="Tools.Empty.Message">ツールボックスにはツールがありません awa&#x0a;開発者に急いで追加するよう促すことができます.jpg</x:String>
-    
+
     <x:String x:Key="MainPage.Tools.Uninstall.Dialog.Title">ゲームをアンインストール中...</x:String>
     <x:String x:Key="MainPage.Tools.Uninstall.Dialog.Content">アンインストールが完了すると、このダイアログは自動的に閉じます。</x:String>
 
@@ -590,18 +590,18 @@
     <x:String x:Key="About.Developers.Core">BedrockBoot 本体：Dime、YoumiHa</x:String>
     <x:String x:Key="About.Developers.Kernel">BedrockBoot 起動コア：YoumiHa</x:String>
     <x:String x:Key="About.Developers.UI">BedrockBoot ユーザーインタラクション体験：DrMing</x:String>
-    
+
     <x:String x:Key="About.Section.Credits">謝辞</x:String>
     <x:String x:Key="About.Credits.MCAPPX">BedrockBoot が使用するバージョンリストは MCAPPX ウェブサイトから提供されています</x:String>
     <x:String x:Key="About.Credits.Akams">BedrockBoot のダウンロードアップデートに使用する一部の公共ソースは github.akams.cn から提供されています</x:String>
     <x:String x:Key="About.Credits.CurseForge">BedrockBoot が使用するゲームリソースのダウンロードは CurseForge から提供されています</x:String>
     <x:String x:Key="About.Credits.BMCBL">MCAPPX リストソースのアクセラレーションサイトを提供してくれた BMCBL に感謝します</x:String>
-    
+
     <x:String x:Key="About.Section.Inspiration">インスピレーションの源</x:String>
     <x:String x:Key="About.Inspiration.LauncherX">BedrockBoot の内部アニメーションの一部は LauncherX を参考にしています</x:String>
     <x:String x:Key="About.Inspiration.Polymerium">BedrockBoot の内部デザインの一部は Polymerium を参考にしています</x:String>
     <x:String x:Key="About.Inspiration.WonderLab">BedrockBoot の内部デザインの一部は WonderLab を参考にしています</x:String>
-    
+
     <x:String x:Key="About.Section.Components">コンポーネントライブラリ</x:String>
     <x:String x:Key="About.Components.OnePointUI">BedrockBoot はユーザーインタラクションスタイルとして OnePointUI を使用しています</x:String>
     <x:String x:Key="About.Components.Core">BedrockBoot は BedrockLauncher.Core ゲーム起動コアを使用しています</x:String>
@@ -612,7 +612,7 @@
     <x:String x:Key="About.Action.Contributors.Desc">BedrockBoot のすべての貢献者</x:String>
     <x:String x:Key="About.Action.Version.Title">内部バージョン番号</x:String>
     <x:String x:Key="About.Action.CheckUpdate">アップデートを確認</x:String>
-    
+
     <x:String x:Key="About.Contributor.Title">貢献者</x:String>
     <x:String x:Key="About.Contributor.Description">ここでは、BedrockBoot に貢献してくれたクリエイターを紹介しています！</x:String>
     <x:String x:Key="About.Contributor.Count.Prefix">貢献回数 </x:String>
@@ -629,12 +629,12 @@
     <x:String x:Key="Setup.Root.Slogan">次世代 Minecraft Bedrock版ランチャー</x:String>
     <x:String x:Key="Setup.Root.Action.Previous">戻る</x:String>
     <x:String x:Key="Setup.Root.Action.Next">次へ</x:String>
-    
+
     <x:String x:Key="Setup.Step.Welcome">ようこそ</x:String>
     <x:String x:Key="Setup.Step.Import">インポート</x:String>
     <x:String x:Key="Setup.Step.Completed">完了</x:String>
     <x:String x:Key="Setup.Step.Style">パーソナライズ</x:String>
-    
+
     <x:String x:Key="Setup.Welcome.Title">ようこそ</x:String>
     <x:String x:Key="Setup.Welcome.Description">BedrockBoot v2 へようこそ。これは初回使用時のウィザードです</x:String>
 
@@ -647,16 +647,16 @@
     <x:String x:Key="Setup.Import.Dialog.AddFolder.Title">ゲームルートディレクトリを追加</x:String>
     <x:String x:Key="Setup.Import.Dialog.AddFolder.Action">追加</x:String>
     <x:String x:Key="Setup.Import.Draw.ImportOther.Title">サードパーティランチャー設定をインポート</x:String>
-    
+
     <x:String x:Key="Setup.Style.Title">パーソナライズ</x:String>
     <x:String x:Key="Setup.Style.Description">ランチャーのパーソナライズ設定</x:String>
     <x:String x:Key="Setup.Style.Theme.Dark">ダーク (Dark)</x:String>
     <x:String x:Key="Setup.Style.Theme.Light">ライト (Light)</x:String>
-    
+
     <x:String x:Key="Setup.Completed.Title">完了</x:String>
     <x:String x:Key="Setup.Completed.Description">基本設定が完了しました！さあ、お楽しみください~</x:String>
     <x:String x:Key="Setup.Completed.Action.Start">使い始める</x:String>
-    
+
     <x:String x:Key="Import.Launcher.Description.Format">{0} ランチャーからデータをインポート中...</x:String>
     <x:String x:Key="Draw.ImportLauncher.Status.None.Title">利用可能な設定がありません</x:String>
     <x:String x:Key="Draw.ImportLauncher.Status.None.Message">現在のシステムには、利用可能なサードパーティ製Bedrockランチャーの設定ファイルがありません</x:String>
@@ -681,33 +681,33 @@
     <x:String x:Key="Dialog.AddGameFolder.Label.Path">ディレクトリパス：</x:String>
     <x:String x:Key="Dialog.AddFolder.Picker.Title">ゲームインスタンス保存フォルダを選択してください</x:String>
     <x:String x:Key="Dialog.AddFolder.Error.InvalidPath">選択されたパスは無効であるか、アクセスできません。&#x0a;このパスがシステムで保護されたルートディレクトリでないことを確認してください。</x:String>
-    
+
     <x:String x:Key="Dialog.AddInstance.Label.GameFolder">ゲームディレクトリ</x:String>
     <x:String x:Key="Dialog.AddInstance.Label.InstanceName">インスタンス名（カスタム）：</x:String>
-    
+
     <x:String x:Key="Dialog.AddServer.Label.Name">サーバー名（カスタム）：</x:String>
     <x:String x:Key="Dialog.AddServer.Watermark.Name">サードパーティサーバー</x:String>
     <x:String x:Key="Dialog.AddServer.Label.Address">サーバーアドレス：</x:String>
     <x:String x:Key="Dialog.AddServer.Label.Port">サーバーポート：</x:String>
     <x:String x:Key="Dialog.AddServer.DefaultName">サードパーティサーバー</x:String>
-    
+
     <x:String x:Key="Dialog.ChooseGame.Label.Instance">インスタンス：</x:String>
-    
+
     <x:String x:Key="Dialog.Import.Label.PackagePath">インストールパッケージパス：</x:String>
     <x:String x:Key="Dialog.Import.Label.InstallFolder">インストールディレクトリ：</x:String>
     <x:String x:Key="Dialog.Import.Label.InstallName">インストール名（カスタム）：</x:String>
     <x:String x:Key="Dialog.Import.Label.GDKTypeTip">実際のバージョンタイプ (GDK はこれを選択する必要があります。間違えると起動できません)：</x:String>
     <x:String x:Key="Dialog.Import.Action.DontKnowType">バージョンタイプはわかりません。上記のオプションは適当に選びました</x:String>
-    
+
     <x:String x:Key="Dialog.ImportConfig.Label.Title">インポートする内容を選択</x:String>
     <x:String x:Key="Dialog.ImportConfig.Option.Settings">インスタンス設定</x:String>
     <x:String x:Key="Dialog.ImportConfig.Option.Archive">存档</x:String>
-    
+
     <x:String x:Key="Dialog.ImportMod.Label.FilePath">ファイルパス：</x:String>
     <x:String x:Key="Dialog.ImportMod.Label.InjectionDelay">Mod 遅延（ms）：</x:String>
     <x:String x:Key="Dialog.ImportMod.Option.Preload">プリロードを有効化 *</x:String>
     <x:String x:Key="Dialog.ImportMod.Tip.Preload">* プリロードが何か分からない場合は、チェックを入れないでください</x:String>
-    
+
     <x:String x:Key="Dialog.ImportPack.Label.ConfirmList">以下のパックをインポートします：</x:String>
 
     <x:String x:Key="Dialog.MakePack.Notice.Legal">整合パック内のリソースパックの配布は、その開発者の許可を得る必要があることに注意してください。許可なく配布することは違法配布となる可能性があります。</x:String>
@@ -733,5 +733,5 @@
     <x:String x:Key="ExceptionWindow.Link.Issues">Github Issues</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.Title">エラーレポートを保存</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.FileType">BedrockBoot クラッシュレポート</x:String>
-    
+
 </ResourceDictionary>

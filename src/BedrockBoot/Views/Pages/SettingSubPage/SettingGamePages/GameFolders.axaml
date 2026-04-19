@@ -14,17 +14,16 @@
                                           Glyph="&#xECC8;"
                                           IsClickable="True"
                                           Name="AddFolderBtn"
-                                          Click="AddFolderBtn_OnClick">
-            </onePointControls:SettingCard>
+                                          Click="AddFolderBtn_OnClick" />
 
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Settings.Folders.Group.List}" />
-            
+
             <StackPanel Spacing="8"
                         Margin="5, 0"
-                        Name="ListBox"></StackPanel>
+                        Name="ListBox" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

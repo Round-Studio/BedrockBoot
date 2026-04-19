@@ -17,8 +17,7 @@
                     <ImageBrush Stretch="UniformToFill"
                                 Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png" />
                 </Border.Background>
-                <Grid>
-                </Grid>
+                <Grid />
             </Border>
 
             <StackPanel Grid.Column="1"
@@ -38,7 +37,7 @@
                 <StackPanel Orientation="Horizontal"
                             Name="ControlPanel"
                             Spacing="6">
-                    
+
                     <Button Width="24" Height="24"
                             Name="OpenFolderBtn"
                             Click="OpenFolderBtn_OnClick"
@@ -59,12 +58,12 @@
                             Name="DeleteBtn"
                             Click="DeleteBtn_OnClick"
                             Classes="NoBorder">
-                        <onePointControls:FontIcon Glyph="&#xE74D;" 
-                                                   Foreground="Red"/>
+                        <onePointControls:FontIcon Glyph="&#xE74D;"
+                                                   Foreground="Red" />
                     </Button>
                 </StackPanel>
             </StackPanel>
-            
+
             <StackPanel Grid.Column="2"
                         VerticalAlignment="Center"
                         Margin="12">
@@ -76,8 +75,8 @@
                     <StackPanel Orientation="Horizontal"
                                 Spacing="6">
                         <onePointControls:FontIcon VerticalAlignment="Center"
-                                                   Glyph="&#xE8A7;"></onePointControls:FontIcon>
-                        <TextBlock Text="回档至此备份"></TextBlock>
+                                                   Glyph="&#xE8A7;" />
+                        <TextBlock Text="回档至此备份" />
                     </StackPanel>
                 </Button>
             </StackPanel>

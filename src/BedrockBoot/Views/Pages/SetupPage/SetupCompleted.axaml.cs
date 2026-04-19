@@ -17,7 +17,7 @@ public partial class SetupCompleted : UserControl
     {
         Console.WriteLine(@"跳转主页面.jpg");
         Dispatcher.UIThread.Invoke(() => GlobalModel.MainWindow.MainFrame.NavigateTo(new MainPage()));
-        BedrockBoot.Core.Global.GlobalModel.Config.Data.IsFirstRun = false;
-        BedrockBoot.Core.Global.GlobalModel.Config.Save();
+        Core.Global.GlobalModel.Config.Data.IsFirstRun = false;
+        Core.Global.GlobalModel.Config.Save();
     }
 }

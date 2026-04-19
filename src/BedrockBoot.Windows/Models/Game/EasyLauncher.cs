@@ -12,6 +12,8 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
+using PeNet;
+using PeNet.Header.Pe;
 using Round.SDK.Plugin.BedrockBoot.Register;
 
 namespace BedrockBoot.Models.Game;

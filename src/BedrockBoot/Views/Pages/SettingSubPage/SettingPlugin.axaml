@@ -6,28 +6,28 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPlugin">
     <ScrollViewer>
-         <StackPanel Margin="15"
-                     Spacing="8">
-             <TextBlock Margin="5, 0"
-                        FontWeight="Bold"
-                        FontSize="14"
-                        Text="基础" />
-             
-             <onePointControls:SettingCard Margin="5, 0"
-                                           Header="插件管理"
-                                           Description="管理已安装的插件"
-                                           Name="PluginManager"
-                                           Click="PluginManager_OnClick"
-                                           IsClickable="True"
-                                           Glyph="&#xECAA;" />
-             
-             <StackPanel Name="PluginSetting"
-                         Margin="5, 0"
-                         Spacing="8">
-                 <TextBlock FontWeight="Bold"
-                            FontSize="14"
-                            Text="插件设置" />
-             </StackPanel>
-         </StackPanel>
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="基础" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="插件管理"
+                                          Description="管理已安装的插件"
+                                          Name="PluginManager"
+                                          Click="PluginManager_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xECAA;" />
+
+            <StackPanel Name="PluginSetting"
+                        Margin="5, 0"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
+                           Text="插件设置" />
+            </StackPanel>
+        </StackPanel>
     </ScrollViewer>
 </UserControl>

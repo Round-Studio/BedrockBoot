@@ -1,38 +1,38 @@
 ﻿using System.IO;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Core.Global;
 
 namespace BedrockBoot.Views.DialogContent;
 
 public partial class DialogAddGameInstanceConfigContent : UserControl
 {
-    public string GameInstallFolder => BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[GameFolder.SelectedIndex].GameFolderPath;
-    public string GameInstallName => GameName.Text;
     public DialogAddGameInstanceConfigContent()
     {
         InitializeComponent();
     }
-    public DialogAddGameInstanceConfigContent(string packName):this()
+
+    public DialogAddGameInstanceConfigContent(string packName) : this()
     {
         GameName.Text = Path.GetFileName(packName).Replace(".mcpint", "");
         Update();
     }
+
+    public string GameInstallFolder => GlobalModel.Config.Data.GameFolders[GameFolder.SelectedIndex].GameFolderPath;
+    public string GameInstallName => GameName.Text;
 
     public void Update()
     {
         IsEnabled = false;
 
         GameFolder.Items.Clear();
-        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.ForEach(f =>
+        GlobalModel.Config.Data.GameFolders.ForEach(f =>
         {
             GameFolder.Items.Add(new ComboBoxItem
             {
                 Content = $"{f.GameFolderName} - {f.GameFolderPath}"
             });
         });
-        GameFolder.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
+        GameFolder.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
 
         IsEnabled = true;
     }

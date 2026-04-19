@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 
@@ -10,7 +9,6 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
 public partial class UniversalDebug : ISettingPage
 {
-    
     public bool IsEdit;
 
     public UniversalDebug()
@@ -30,7 +28,7 @@ public partial class UniversalDebug : ISettingPage
             }
         };
 
-        IsConsoleModel.IsChecked = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsConsole;
+        IsConsoleModel.IsChecked = GlobalModel.Config.Data.IsConsole;
         IsEdit = true;
     }
 
@@ -38,9 +36,9 @@ public partial class UniversalDebug : ISettingPage
     {
         if (IsEdit)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsConsole = IsConsoleModel.IsChecked ?? false;
+            GlobalModel.Config.Data.IsConsole = IsConsoleModel.IsChecked ?? false;
 
-            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+            GlobalModel.Config.Save();
         }
     }
 

@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Interface;
-using System.Text.Json;
 
 namespace BedrockBoot.Models.Translate;
 
 public class MicrosoftTranslateService : ITranslationService
 {
-    private static readonly HttpClient _httpClient = new HttpClient();
+    private static readonly HttpClient _httpClient = new();
     private static string _token;
     private static DateTime _tokenExpiryTime = DateTime.MinValue;
-    
+
     // 简化语言代码映射表 - 不使用复杂的比较器
-    private static readonly Dictionary<string, string> _languageCodeMap = new Dictionary<string, string>
+    private static readonly Dictionary<string, string> _languageCodeMap = new()
     {
         // 中文变体
         { "zh_cn", "zh-Hans" },
@@ -26,7 +26,7 @@ public class MicrosoftTranslateService : ITranslationService
         { "zh-hk", "zh-Hant" },
         { "zh_sg", "zh-Hans" },
         { "zh", "zh-Hans" },
-        
+
         // 其他常见语言
         { "en_us", "en" },
         { "en_gb", "en" },
@@ -72,7 +72,7 @@ public class MicrosoftTranslateService : ITranslationService
 
             var requestBody = BuildRequestBody(new List<string> { text });
             var jsonResponse = await CallTranslationApiAsync(requestBody, sourceLanguage, targetLanguage);
-            
+
             // 解析单个结果
             var result = GetTextFromJson(jsonResponse);
             return result ?? text; // 如果翻译失败，返回原文
@@ -114,33 +114,24 @@ public class MicrosoftTranslateService : ITranslationService
     {
         if (string.IsNullOrEmpty(languageCode))
             return languageCode;
-            
+
         // 转为小写以便匹配字典
-        string lowerCode = languageCode.ToLowerInvariant();
-        
+        var lowerCode = languageCode.ToLowerInvariant();
+
         // 如果语言代码已经是标准格式，直接返回
         if (lowerCode.Contains("-"))
         {
             // 确保中文代码正确
-            if (lowerCode.StartsWith("zh"))
-            {
-                return lowerCode == "zh-hant" ? "zh-Hant" : "zh-Hans";
-            }
+            if (lowerCode.StartsWith("zh")) return lowerCode == "zh-hant" ? "zh-Hant" : "zh-Hans";
             return languageCode; // 保持原格式（可能包含大小写）
         }
-        
+
         // 查找映射
-        if (_languageCodeMap.TryGetValue(lowerCode, out string mappedCode))
-        {
-            return mappedCode;
-        }
-        
+        if (_languageCodeMap.TryGetValue(lowerCode, out var mappedCode)) return mappedCode;
+
         // 特殊处理中文
-        if (lowerCode.StartsWith("zh"))
-        {
-            return "zh-Hans";
-        }
-        
+        if (lowerCode.StartsWith("zh")) return "zh-Hans";
+
         // 如果没有映射，返回原代码（但记录警告）
         Console.WriteLine($@"警告: 未找到语言代码映射: {languageCode}，使用原代码");
         return languageCode;
@@ -152,29 +143,25 @@ public class MicrosoftTranslateService : ITranslationService
         await EnsureValidTokenAsync();
 
         // 转换语言代码
-        string convertedTargetLanguage = ConvertLanguageCode(targetLanguage);
+        var convertedTargetLanguage = ConvertLanguageCode(targetLanguage);
         string convertedSourceLanguage = null;
-        
+
         if (!string.IsNullOrEmpty(sourceLanguage) && !sourceLanguage.Equals("auto", StringComparison.OrdinalIgnoreCase))
-        {
             convertedSourceLanguage = ConvertLanguageCode(sourceLanguage);
-        }
 
         // 构建请求URL
-        var url = $"https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to={convertedTargetLanguage}&textType=plain";
-        
+        var url =
+            $"https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to={convertedTargetLanguage}&textType=plain";
+
         // 添加源语言参数
-        if (!string.IsNullOrEmpty(convertedSourceLanguage))
-        {
-            url += $"&from={convertedSourceLanguage}";
-        }
-        
+        if (!string.IsNullOrEmpty(convertedSourceLanguage)) url += $"&from={convertedSourceLanguage}";
+
         using var request = new HttpRequestMessage(HttpMethod.Post, url);
         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-        
+
         // 清除可能存在的旧请求头
         request.Headers.Clear();
-        
+
         // 按照正确顺序添加请求头
         request.Headers.UserAgent.ParseAdd("RoundSmartTerminals/ver2 (https://round-studio.github.io)");
         request.Headers.Add("Authorization", "Bearer " + _token);
@@ -186,7 +173,7 @@ public class MicrosoftTranslateService : ITranslationService
         try
         {
             var response = await _httpClient.SendAsync(request);
-            
+
             // 添加错误诊断
             if (!response.IsSuccessStatusCode)
             {
@@ -195,7 +182,7 @@ public class MicrosoftTranslateService : ITranslationService
                 Console.WriteLine($@"请求URL: {url}");
                 Console.WriteLine($@"请求体: {requestBody}");
                 Console.WriteLine($@"错误响应: {errorContent}");
-                
+
                 // 尝试提取更详细的错误信息
                 try
                 {
@@ -203,23 +190,18 @@ public class MicrosoftTranslateService : ITranslationService
                     if (errorDoc.RootElement.TryGetProperty("error", out var error))
                     {
                         if (error.TryGetProperty("message", out var message))
-                        {
                             Console.WriteLine($@"错误消息: {message.GetString()}");
-                        }
-                        if (error.TryGetProperty("code", out var code))
-                        {
-                            Console.WriteLine($@"错误代码: {code.GetString()}");
-                        }
+                        if (error.TryGetProperty("code", out var code)) Console.WriteLine($@"错误代码: {code.GetString()}");
                     }
                 }
                 catch
                 {
                     // 忽略JSON解析错误
                 }
-                
+
                 response.EnsureSuccessStatusCode();
             }
-            
+
             return await response.Content.ReadAsStringAsync();
         }
         catch (HttpRequestException ex)
@@ -238,6 +220,7 @@ public class MicrosoftTranslateService : ITranslationService
             var escapedText = JsonSerializer.Serialize(text);
             entries.Add($"{{\"Text\":{escapedText}}}");
         }
+
         return "[" + string.Join(",", entries) + "]";
     }
 
@@ -249,11 +232,12 @@ public class MicrosoftTranslateService : ITranslationService
             client.DefaultRequestHeaders.Accept.ParseAdd("*/*");
             client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
             client.DefaultRequestHeaders.ConnectionClose = false;
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("RoundSmartTerminals/ver2 (https://round-studio.github.io)");
-            
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(
+                "RoundSmartTerminals/ver2 (https://round-studio.github.io)");
+
             var response = await client.GetAsync("https://edge.microsoft.com/translate/auth");
             response.EnsureSuccessStatusCode();
-            
+
             var token = await response.Content.ReadAsStringAsync();
             return token;
         }
@@ -270,22 +254,18 @@ public class MicrosoftTranslateService : ITranslationService
         {
             using var doc = JsonDocument.Parse(json);
             foreach (var item in doc.RootElement.EnumerateArray())
-            {
-                if (item.TryGetProperty("translations", out var translations) && 
+                if (item.TryGetProperty("translations", out var translations) &&
                     translations.GetArrayLength() > 0)
                 {
                     var translation = translations[0];
-                    if (translation.TryGetProperty("text", out var text))
-                    {
-                        return text.GetString();
-                    }
+                    if (translation.TryGetProperty("text", out var text)) return text.GetString();
                 }
-            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"解析翻译响应失败: {ex.Message}, 响应: {json}");
         }
+
         return null;
     }
 
@@ -296,30 +276,25 @@ public class MicrosoftTranslateService : ITranslationService
         {
             using var doc = JsonDocument.Parse(json);
             foreach (var item in doc.RootElement.EnumerateArray())
-            {
-                if (item.TryGetProperty("translations", out var translations) && 
+                if (item.TryGetProperty("translations", out var translations) &&
                     translations.GetArrayLength() > 0)
                 {
                     var translation = translations[0];
                     if (translation.TryGetProperty("text", out var text))
-                    {
                         results.Add(text.GetString() ?? string.Empty);
-                    }
                     else
-                    {
                         results.Add(string.Empty);
-                    }
                 }
                 else
                 {
                     results.Add(string.Empty);
                 }
-            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"解析批量翻译响应失败: {ex.Message}, 响应: {json}");
         }
+
         return results;
     }
 }

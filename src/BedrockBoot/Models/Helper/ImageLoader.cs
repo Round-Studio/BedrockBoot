@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
@@ -18,10 +17,10 @@ public class ImageLoader : IDisposable
 {
     private readonly HttpClient _httpClient;
     private readonly Dictionary<string, Bitmap> _imageCache;
-    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     // 缓存根目录：优先使用 AppData，无权限则使用程序根目录
     private readonly string _localCacheFolder;
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     public ImageLoader()
     {
@@ -33,24 +32,26 @@ public class ImageLoader : IDisposable
 
         _localCacheFolder = PathsList.TempPath;
 
-        if (!Directory.Exists(_localCacheFolder))
-        {
-            Directory.CreateDirectory(_localCacheFolder);
-        }
+        if (!Directory.Exists(_localCacheFolder)) Directory.CreateDirectory(_localCacheFolder);
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        _semaphore.Dispose();
+        ClearMemoryCache();
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>
-    /// 从 URL 加载图片（内存 -> 磁盘 -> 网络）
+    ///     从 URL 加载图片（内存 -> 磁盘 -> 网络）
     /// </summary>
     public async Task<Bitmap?> LoadImageBrushAsync(string imageUrl, bool useCache = true)
     {
         if (string.IsNullOrWhiteSpace(imageUrl)) return null;
 
         // 1. 内存缓存检查
-        if (useCache && _imageCache.TryGetValue(imageUrl, out var cachedBitmap))
-        {
-            return cachedBitmap;
-        }
+        if (useCache && _imageCache.TryGetValue(imageUrl, out var cachedBitmap)) return cachedBitmap;
 
         // 使用信号量防止并发请求同一个 URL 时多次下载
         await _semaphore.WaitAsync();
@@ -59,12 +60,11 @@ public class ImageLoader : IDisposable
             // 二次检查内存（双重锁定检查）
             if (useCache && _imageCache.TryGetValue(imageUrl, out cachedBitmap)) return cachedBitmap;
 
-            string localPath = GetLocalFilePath(imageUrl);
+            var localPath = GetLocalFilePath(imageUrl);
             byte[]? imageData = null;
 
             // 2. 磁盘缓存检查
             if (useCache && File.Exists(localPath))
-            {
                 try
                 {
                     imageData = await File.ReadAllBytesAsync(localPath);
@@ -73,7 +73,6 @@ public class ImageLoader : IDisposable
                 {
                     Console.WriteLine($@"读取磁盘缓存失败: {ex.Message}");
                 }
-            }
 
             // 3. 网络下载
             if (imageData == null)
@@ -81,10 +80,7 @@ public class ImageLoader : IDisposable
                 imageData = await _httpClient.GetByteArrayAsync(imageUrl);
 
                 // 写入磁盘异步进行
-                if (useCache && imageData != null)
-                {
-                    _ = File.WriteAllBytesAsync(localPath, imageData);
-                }
+                if (useCache && imageData != null) _ = File.WriteAllBytesAsync(localPath, imageData);
             }
 
             if (imageData == null) return null;
@@ -97,10 +93,7 @@ public class ImageLoader : IDisposable
             });
 
             // 更新内存缓存
-            if (useCache && bitmap != null)
-            {
-                _imageCache[imageUrl] = bitmap;
-            }
+            if (useCache && bitmap != null) _imageCache[imageUrl] = bitmap;
 
             return bitmap;
         }
@@ -116,7 +109,7 @@ public class ImageLoader : IDisposable
     }
 
     /// <summary>
-    /// 从流创建图片
+    ///     从流创建图片
     /// </summary>
     public async Task<Bitmap?> LoadImageBrushFromStreamAsync(Stream stream)
     {
@@ -132,7 +125,7 @@ public class ImageLoader : IDisposable
     }
 
     /// <summary>
-    /// 根据 URL 生成唯一的本地文件名（SHA1）
+    ///     根据 URL 生成唯一的本地文件名（SHA1）
     /// </summary>
     private string GetLocalFilePath(string url)
     {
@@ -142,20 +135,17 @@ public class ImageLoader : IDisposable
     }
 
     /// <summary>
-    /// 清除内存缓存
+    ///     清除内存缓存
     /// </summary>
     public void ClearMemoryCache()
     {
-        foreach (var bitmap in _imageCache.Values)
-        {
-            bitmap.Dispose();
-        }
+        foreach (var bitmap in _imageCache.Values) bitmap.Dispose();
 
         _imageCache.Clear();
     }
 
     /// <summary>
-    /// 清除磁盘上的所有图片缓存
+    ///     清除磁盘上的所有图片缓存
     /// </summary>
     public void ClearDiskCache()
     {
@@ -171,14 +161,6 @@ public class ImageLoader : IDisposable
         {
             Console.WriteLine($@"清理磁盘缓存失败: {ex.Message}");
         }
-    }
-
-    public void Dispose()
-    {
-        _httpClient.Dispose();
-        _semaphore.Dispose();
-        ClearMemoryCache();
-        GC.SuppressFinalize(this);
     }
 
     public static async Task<Bitmap?> LoadIconAsync(string iconUri)

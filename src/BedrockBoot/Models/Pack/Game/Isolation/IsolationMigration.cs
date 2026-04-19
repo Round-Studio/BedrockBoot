@@ -20,14 +20,14 @@ public class IsolationMigration
     {
         var dirsEnable = new List<(bool isEnabled, string newPath, string oldPath)>();
 
-        var enables = new List<(bool isEnabled, InstanceFolderType type)>()
+        var enables = new List<(bool isEnabled, InstanceFolderType type)>
         {
             (migrationConfig.IsEnableArchive, InstanceFolderType.ArchiveFolder),
             (migrationConfig.IsEnableConfig, InstanceFolderType.OptionFolder),
             (migrationConfig.IsEnableResourcePack, InstanceFolderType.ResourcePackFolder),
             (migrationConfig.IsEnableBehaviorPack, InstanceFolderType.BehaviorPackFolder)
         };
-        
+
         enables.ForEach(enable =>
         {
             if (enable.isEnabled)
@@ -44,7 +44,7 @@ public class IsolationMigration
                 });
             }
         });
-        
+
         var enabledItems = dirsEnable.Where(x => x.isEnabled).ToList(); // 获取上面这坨启用的项
         var filesCount = enabledItems
             .Sum(item => Directory.Exists(item.oldPath)

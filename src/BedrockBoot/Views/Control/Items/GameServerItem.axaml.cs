@@ -14,7 +14,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameServerItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
     private readonly ServerItemInfo ServerItemInfo;
 
     public GameServerItem()
@@ -27,9 +26,13 @@ public partial class GameServerItem : UserControl
         ServerItemInfo = info;
         ServerName.Text = info.ServerName;
         ServerDescription.Text = $"{info.ServerAddress}:{info.ServerPort}";
-        
+
         _ = UpdateServerStatusAsync();
     }
+
+    private static I18nManager i18n => I18nManager.Instance;
+
+    public Action<ServerItemInfo>? DeleteServer { get; set; }
 
     private async Task UpdateServerStatusAsync()
     {
@@ -38,7 +41,7 @@ public partial class GameServerItem : UserControl
         {
             // 使用 await 替代 .Result 避免阻塞
             var sta = await checker.GetServerStatusAsync(ServerItemInfo);
-            
+
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 if (sta.Players != null)
@@ -48,10 +51,10 @@ public partial class GameServerItem : UserControl
                     ServerMotd.MinecraftText = string.IsNullOrEmpty(sta.MOTD) ? "" : sta.MOTD;
                     DelayBox.Text = $"{sta.Delay} ms";
                     PlayerBox.Text = $"{sta.Players.Online} / {sta.Players.Max}";
-                    
+
                     // 根据延迟设置颜色
-                    DelayBox.Background = sta.Delay < 100 ? Brushes.Green : 
-                                         sta.Delay < 250 ? Brushes.Orange : Brushes.Red;
+                    DelayBox.Background = sta.Delay < 100 ? Brushes.Green :
+                        sta.Delay < 250 ? Brushes.Orange : Brushes.Red;
                 }
                 else
                 {
@@ -72,8 +75,6 @@ public partial class GameServerItem : UserControl
         DelayBox.Text = i18n["Instance.Server.Status.Offline"];
         DelayBox.Background = Brushes.DarkRed;
     }
-
-    public Action<ServerItemInfo>? DeleteServer { get; set; }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -96,7 +97,7 @@ public partial class GameServerItem : UserControl
         // 构造快速加入指令
         versionConf.Config.OtherCommand =
             $"minecraft://connect/?serverUrl={ServerItemInfo.ServerAddress}&serverPort={ServerItemInfo.ServerPort} {versionConf.Config.OtherCommand}";
-        
+
         TaskLaunchGameItem.Launch(versionConf);
     }
 }

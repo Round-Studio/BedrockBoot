@@ -7,7 +7,6 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
@@ -18,7 +17,6 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstancePack : ISetting
 {
-    private static I18nManager i18n => I18nManager.Instance;
     private string _searchText = string.Empty;
     private string _type = "resource";
 
@@ -34,6 +32,8 @@ public partial class InstancePack : ISetting
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     public VersionConfig VersionInfo { get; set; }
     public ResourcePackManager? ResourcePackManager { get; set; }
 
@@ -46,10 +46,7 @@ public partial class InstancePack : ISetting
 
         Task.Run(() =>
         {
-            if (ResourcePackManager == null)
-            {
-                ResourcePackManager = new ResourcePackManager(VersionInfo);
-            }
+            if (ResourcePackManager == null) ResourcePackManager = new ResourcePackManager(VersionInfo);
 
             // 1. 在后台线程处理数据解析（IO 密集型）
             ResourcePackManager.GetAllPack();
@@ -66,7 +63,7 @@ public partial class InstancePack : ISetting
             {
                 NullBox.IsVisible = filteredPacks.Count == 0;
                 NumberBox.Text = string.Format(i18n["Instance.Pack.Count.Format"], filteredPacks.Count);
-                
+
                 // 必须在 UI 线程内 new 控件
                 var packItems = filteredPacks.Select(pack => new GameResourcePackItem(pack)
                 {

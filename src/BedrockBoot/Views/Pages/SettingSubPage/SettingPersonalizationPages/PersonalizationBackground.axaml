@@ -37,20 +37,22 @@
                                                       IsClickable="True"
                                                       Click="ImportBackgroundBtn_OnClick" />
 
-                        <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Image.Parallax.Title}"
-                                                      Description="{DynamicResource Settings.Background.Image.Parallax.Desc}"
-                                                      Glyph="&#xE81E;"
-                                                      Classes="Item"
-                                                      IsClickable="False">
+                        <onePointControls:SettingCard
+                            Header="{DynamicResource Settings.Background.Image.Parallax.Title}"
+                            Description="{DynamicResource Settings.Background.Image.Parallax.Desc}"
+                            Glyph="&#xE81E;"
+                            Classes="Item"
+                            IsClickable="False">
                             <ToggleSwitch Name="Image3D"
-                                          IsCheckedChanged="Image3D_OnIsCheckedChanged"></ToggleSwitch>
+                                          IsCheckedChanged="Image3D_OnIsCheckedChanged" />
                         </onePointControls:SettingCard>
 
-                        <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Image.Opacity.Title}"
-                                                      Description="{DynamicResource Settings.Background.Image.Opacity.Desc}"
-                                                      Glyph="&#xE81E;"
-                                                      Classes="Item"
-                                                      IsClickable="False">
+                        <onePointControls:SettingCard
+                            Header="{DynamicResource Settings.Background.Image.Opacity.Title}"
+                            Description="{DynamicResource Settings.Background.Image.Opacity.Desc}"
+                            Glyph="&#xE81E;"
+                            Classes="Item"
+                            IsClickable="False">
                             <Slider Width="200"
                                     Minimum="0"
                                     Maximum="100"

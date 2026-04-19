@@ -11,7 +11,7 @@
             <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Settings.Universal.Debug.Group.Base}" />
-            
+
             <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
                                           Description="{DynamicResource Settings.Universal.Debug.Console.Desc}"
                                           Glyph="&#xE756;">
@@ -19,18 +19,17 @@
                               Name="IsConsoleModel"
                               IsCheckedChanged="CheckBox_Change" />
             </onePointControls:SettingCard>
-            
+
             <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Settings.Universal.Debug.Group.Other}" />
-            
+
             <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Debug.Exception.Title}"
                                           Description="{DynamicResource Settings.Universal.Debug.Exception.Desc}"
                                           IsClickable="True"
                                           Name="ExceptionBtn"
                                           Click="ExceptionBtn_OnClick"
-                                          Glyph="&#xEBE8;">
-            </onePointControls:SettingCard>
+                                          Glyph="&#xEBE8;" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

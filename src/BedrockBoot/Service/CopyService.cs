@@ -16,21 +16,18 @@ public class CopyService
     public static async Task SetClipboard(string content, CopyType type, int Id)
     {
         var clipboard = TopLevel.GetTopLevel(GlobalModel.MainWindow)?.Clipboard;
-        if (clipboard != null)
-        {
-            await clipboard.SetTextAsync($"{content}\nID: {Id} Type: {type}");
-        }
+        if (clipboard != null) await clipboard.SetTextAsync($"{content}\nID: {Id} Type: {type}");
     }
 
     public static (int? Id, CopyType? Type) ParseIdAndType(string text)
     {
-        string pattern = @"ID:\s*(\d+).*?Type:\s*(\S+)";
+        var pattern = @"ID:\s*(\d+).*?Type:\s*(\S+)";
 
         var match = Regex.Match(text, pattern, RegexOptions.Singleline);
 
         if (match.Success && match.Groups.Count >= 3)
         {
-            int id = int.Parse(match.Groups[1].Value);
+            var id = int.Parse(match.Groups[1].Value);
             var type = match.Groups[2].Value switch
             {
                 "Resource" => CopyType.Resource
@@ -45,18 +42,17 @@ public class CopyService
     {
         var clipboard = TopLevel.GetTopLevel(GlobalModel.MainWindow)?.Clipboard;
         if (clipboard != null)
-        {
             try
             {
                 var (id, type) = ParseIdAndType(await clipboard.TryGetTextAsync());
-                GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                 {
                     Title = "剪切板",
                     Message = $"已获取剪切板，类型 {type}"
                 });
                 if (type == CopyType.Resource)
                 {
-                    DialogHost.Show(new DialogInfo()
+                    DialogHost.Show(new DialogInfo
                     {
                         Content = "正在等待 CurseForge 响应...",
                         Title = "获取模组信息"
@@ -82,6 +78,5 @@ public class CopyService
             catch
             {
             }
-        }
     }
 }

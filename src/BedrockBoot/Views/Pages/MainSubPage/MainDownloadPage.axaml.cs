@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using BedrockBoot.Base.Entry;
+﻿using BedrockBoot.Base.Entry;
 using BedrockBoot.Views.Pages.DownloadSubPage;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;

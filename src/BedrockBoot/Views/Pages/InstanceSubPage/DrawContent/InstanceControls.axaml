@@ -31,7 +31,7 @@
                                               Name="MakePack"
                                               Click="MakePack_OnClick"
                                               Glyph="&#xF012;"
-                                              Header="{DynamicResource Instance.Controls.ExportPack.Title}" 
+                                              Header="{DynamicResource Instance.Controls.ExportPack.Title}"
                                               Description="{DynamicResource Instance.Controls.ExportPack.Desc}" />
 
                 <TextBlock FontWeight="Bold"
@@ -43,17 +43,16 @@
                                               Name="DeleteBtn"
                                               Click="DeleteBtn_OnClick"
                                               Header="{DynamicResource Instance.Controls.Delete.Title}"
-                                              Description="{DynamicResource Instance.Controls.Delete.Desc}">
-                </onePointControls:SettingCard>
+                                              Description="{DynamicResource Instance.Controls.Delete.Desc}" />
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
                            IsVisible="False"
                            Name="Expansion"
                            Text="拓展" />
-                
+
                 <StackPanel Spacing="8"
-                            Name="ExpansionPanel"></StackPanel>
+                            Name="ExpansionPanel" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

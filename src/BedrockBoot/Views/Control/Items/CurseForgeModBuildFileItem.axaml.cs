@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -15,9 +13,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModBuildFileItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    public CurseForgeResponse.ModFile ModFile { get; set; } = null!;
-
     public CurseForgeModBuildFileItem()
     {
         InitializeComponent();
@@ -29,6 +24,9 @@ public partial class CurseForgeModBuildFileItem : UserControl
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+    public CurseForgeResponse.ModFile ModFile { get; set; } = null!;
+
     private void UpdateUI()
     {
         Card.Header = ModFile.DisplayName;
@@ -37,7 +35,7 @@ public partial class CurseForgeModBuildFileItem : UserControl
     }
 
     /// <summary>
-    /// 另存为：手动选择下载位置
+    ///     另存为：手动选择下载位置
     /// </summary>
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -45,7 +43,7 @@ public partial class CurseForgeModBuildFileItem : UserControl
         if (topLevel == null) return;
 
         // 获取文件后缀，如果没有则默认为 .mcpack
-        string extension = Path.GetExtension(ModFile.FileName);
+        var extension = Path.GetExtension(ModFile.FileName);
         if (string.IsNullOrEmpty(extension)) extension = ".mcpack";
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
@@ -70,12 +68,12 @@ public partial class CurseForgeModBuildFileItem : UserControl
     }
 
     /// <summary>
-    /// 下载到实例：弹出对话框选择目标游戏实例
+    ///     下载到实例：弹出对话框选择目标游戏实例
     /// </summary>
     private void DownloadBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogChooseGameContent();
-        
+
         DialogHost.Show(new DialogInfo
         {
             Content = dialog,
@@ -88,9 +86,9 @@ public partial class CurseForgeModBuildFileItem : UserControl
                 if (conf == null) return;
 
                 GlobalModel.MainWindow.CloseDraw();
-                
+
                 // 下载到临时目录并触发自动导入逻辑
-                string tempFilePath = Path.Combine(PathsList.TempPath, ModFile.FileName);
+                var tempFilePath = Path.Combine(PathsList.TempPath, ModFile.FileName);
                 TaskDownloadCurseForgeResourceItem.Download(ModFile, tempFilePath, conf);
             }
         });

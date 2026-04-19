@@ -16,8 +16,6 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadCurseForgeResourceItem : UserControl
 {
-    
-
     public TaskDownloadCurseForgeResourceItem()
     {
         InitializeComponent();
@@ -44,7 +42,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
         var url = new Uri(ModFile.DownloadUrl).AbsoluteUri.Replace("edge.forgecdn.net", "mediafilez.forgecdn.net");
         Console.WriteLine($@"下载文件：{url}");
-        
+
         await download.DownloadAsync(url, savePath, new Progress<DownloadProgress>(xprogress =>
         {
             Dispatcher.UIThread.Invoke(() =>
@@ -53,7 +51,8 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
                 DownloadProgressBar.Value = xprogress.ProgressPercentage;
                 // 进度文字国际化
-                MainText.Text = string.Format(I18nManager.Instance["Task.CurseForge.Status.Progress"], xprogress.ProgressPercentage);
+                MainText.Text = string.Format(I18nManager.Instance["Task.CurseForge.Status.Progress"],
+                    xprogress.ProgressPercentage);
                 MainSpeedText.Text = "??? / s";
             });
         }));
@@ -63,13 +62,13 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
         DownloadProgressBar.IsIndeterminate = true;
         // 导入状态国际化
         MainText.Text = I18nManager.Instance["Task.CurseForge.Status.Importing"];
-        
+
         Task.Run(() =>
         {
             if (savePath.EndsWith(".mcworld"))
             {
                 var worldManager = new ArchiveCheck(version);
-                worldManager.ImportWorldPack(savePath, "Shared");
+                worldManager.ImportWorldPack(savePath);
             }
             else
             {

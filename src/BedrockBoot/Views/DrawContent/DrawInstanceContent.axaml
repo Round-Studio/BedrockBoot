@@ -41,7 +41,7 @@
                                    Name="VersionReady">
                             Version Ready Version
                         </TextBlock>
-                        
+
                         <StackPanel HorizontalAlignment="Center"
                                     Margin="0,12,0,0"
                                     Spacing="8"
@@ -49,9 +49,9 @@
                             <StackPanel Spacing="4"
                                         Orientation="Horizontal">
                                 <onePointControls:FontIcon FontSize="16"
-                                                           Glyph="&#xE916;"></onePointControls:FontIcon>
+                                                           Glyph="&#xE916;" />
                                 <TextBlock Text="TotalDuration"
-                                           Name="TotalDuration"></TextBlock>
+                                           Name="TotalDuration" />
                             </StackPanel>
                         </StackPanel>
 
@@ -97,13 +97,14 @@
                         SelectedIndex="0"
                         SelectionChanged="InstanceTabControl_OnSelectionChanged"
                         Margin="5,0,10,0">
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Detail}" Tag="Info" Name="Info"/>
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Mods}" Tag="Mods" Name="Mods"/>
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Packs}" Tag="Pack" Name="Pack"/>
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Archive}" Tag="Save" Name="Save"/>
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Screenshots}" Tag="Screenshots" Name="Screenshots"/>
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Servers}" Tag="Server" Name="Server"/>
-                <TabItem Header="{DynamicResource Draw.Instance.Tab.Plugins}" Tag="Plugin" Name="Plugin" IsVisible="False"/>
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Detail}" Tag="Info" Name="Info" />
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Mods}" Tag="Mods" Name="Mods" />
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Packs}" Tag="Pack" Name="Pack" />
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Archive}" Tag="Save" Name="Save" />
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Screenshots}" Tag="Screenshots" Name="Screenshots" />
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Servers}" Tag="Server" Name="Server" />
+                <TabItem Header="{DynamicResource Draw.Instance.Tab.Plugins}" Tag="Plugin" Name="Plugin"
+                         IsVisible="False" />
                 <TabItem Header="{DynamicResource Draw.Instance.Tab.Controls}" Tag="Controls" Name="GameControls" />
             </TabControl>
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using BedrockBoot.Models.Global;
 using Microsoft.Win32;
 
@@ -9,7 +8,7 @@ public class OpenAgreement
 {
     public static void RegisterAssociation()
     {
-        string? exePath = Environment.ProcessPath;
+        var exePath = Environment.ProcessPath;
         var ResProgId = "BedrockBoot.Win32";
         var WorldProgId = "BedrockBoot.Desktop";
 

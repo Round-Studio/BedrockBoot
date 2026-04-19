@@ -12,18 +12,17 @@ namespace BedrockBoot.Models.Pack.Game.Archive;
 
 public class ArchiveBackup
 {
-    public ConfigEntity<BackupIndex> IndexConfig { get; set; }
     public ArchiveBackup()
     {
         IndexConfig = new ConfigEntity<BackupIndex>(Path.Combine(PathsList.ArchiveBackup, "index.json"));
     }
 
-    public async Task BackupAsync(ArchiveInfo info,string backupName, IProgress<string> progress, CancellationToken cancellationToken = default)
+    public ConfigEntity<BackupIndex> IndexConfig { get; set; }
+
+    public async Task BackupAsync(ArchiveInfo info, string backupName, IProgress<string> progress,
+        CancellationToken cancellationToken = default)
     {
-        if (!IndexConfig.Data.Index.Contains(info.Uuid))
-        {
-            IndexConfig.Data.Index.Add(info.Uuid);
-        }
+        if (!IndexConfig.Data.Index.Contains(info.Uuid)) IndexConfig.Data.Index.Add(info.Uuid);
 
         IndexConfig.Data.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         IndexConfig.Save();
@@ -31,10 +30,7 @@ public class ArchiveBackup
         var indexFolder = Path.Combine(PathsList.ArchiveBackup, "backups", info.Uuid);
         Directory.CreateDirectory(indexFolder);
 
-        if (File.Exists(info.IconPath))
-        {
-            File.Copy(info.IconPath, Path.Combine(indexFolder, "icon.jpeg"), true);
-        }
+        if (File.Exists(info.IconPath)) File.Copy(info.IconPath, Path.Combine(indexFolder, "icon.jpeg"), true);
 
         var newBackupUuid = Guid.NewGuid().ToString("N");
         var backupFolder = Path.Combine(indexFolder, newBackupUuid);
@@ -46,7 +42,7 @@ public class ArchiveBackup
         conf.Data.GameFolder = info.VersionInfo.VersionPath;
         conf.Data.UpdateTime = IndexConfig.Data.UpdateTime;
         conf.Data.Icon = "icon.jpeg";
-        conf.Data.Backups.Add(new BackupManifest.BackupInfo()
+        conf.Data.Backups.Add(new BackupManifest.BackupInfo
         {
             BackupTime = conf.Data.UpdateTime,
             FolderID = newBackupUuid,
@@ -56,19 +52,19 @@ public class ArchiveBackup
 
         // 使用异步复制方法
         await FolderCopier.CopyAsync(
-            sourceFolder: info.Path,
-            destinationFolder: backupFolder,
-            progressCallback: new Progress<(int current, int total, string file, long copied, long totalBytes)>(p =>
+            info.Path,
+            backupFolder,
+            new Progress<(int current, int total, string file, long copied, long totalBytes)>(p =>
             {
-                double percentage = p.totalBytes > 0 
-                    ? (double)p.copied / p.totalBytes * 100 
+                var percentage = p.totalBytes > 0
+                    ? (double)p.copied / p.totalBytes * 100
                     : 0;
-            
+
                 progress.Report($"{percentage:F2}%");
             }),
-            overwrite: true,
-            copySubDirectories: true,
-            cancellationToken: cancellationToken
+            true,
+            true,
+            cancellationToken
         );
     }
 
@@ -108,11 +104,11 @@ public class ArchiveBackup
     {
         if (!IndexConfig.Data.Index.Contains(archiveUuid))
             throw new NullReferenceException();
-        
+
         var indexFolder = Path.Combine(PathsList.ArchiveBackup, "backups", archiveUuid);
         var conf = new ConfigEntity<BackupManifest>(Path.Combine(indexFolder, "manifest.json"));
-        
-        conf.Data.Backups.RemoveAt(conf.Data.Backups.FindIndex(x=>x.FolderID == backupId));
+
+        conf.Data.Backups.RemoveAt(conf.Data.Backups.FindIndex(x => x.FolderID == backupId));
         conf.Save();
 
         try

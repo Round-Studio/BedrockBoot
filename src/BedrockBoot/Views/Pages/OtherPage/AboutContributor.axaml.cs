@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
 using Octokit;
@@ -17,8 +14,6 @@ namespace BedrockBoot.Views.Pages.OtherPage;
 
 public partial class AboutContributor : ISettingPage
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public AboutContributor()
     {
         InitializeComponent();
@@ -41,6 +36,8 @@ public partial class AboutContributor : ISettingPage
         FetchContributors();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     private void FetchContributors()
     {
         Task.Run(async () =>
@@ -49,28 +46,22 @@ public partial class AboutContributor : ISettingPage
             {
                 // 初始化 GitHub 客户端
                 var githubClient = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
-                
+
                 // 获取 Round-Studio/BedrockBoot 仓库的贡献者
                 var contributors = await githubClient.Repository.GetAllContributors("Round-Studio", "BedrockBoot");
 
-                // 预先准备好 UI 控件列表，减少跨线程调用开销
-                var items = contributors.Select(con => new ContributorItem(con)).ToList();
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                Dispatcher.UIThread.Invoke(() =>
                 {
                     ContributorBox.Children.Clear();
-                    foreach (var item in items)
-                    {
-                        ContributorBox.Children.Add(item);
-                    }
+                    foreach (var item in contributors) ContributorBox.Children.Add(new ContributorItem(item));
                     LoadingRing.IsVisible = false;
                 });
             }
             catch (Exception ex)
             {
                 // 记录错误并在 UI 上反馈（可选）
-                System.Diagnostics.Debug.WriteLine($"Failed to fetch contributors: {ex.Message}");
-                
+                Debug.WriteLine($"Failed to fetch contributors: {ex.Message}");
+
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     LoadingRing.IsVisible = false;

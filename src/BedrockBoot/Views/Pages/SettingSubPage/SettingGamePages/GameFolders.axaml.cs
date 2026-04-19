@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
@@ -29,14 +26,14 @@ public partial class GameFolders : ISettingPage
             new()
             {
                 ItemName = I18nManager.Instance["Setting.Game.Breadcrumb.Root"],
-                ItemClickAction = (s) => MainSettingPage.NavigateTo(new SettingGame())
+                ItemClickAction = s => MainSettingPage.NavigateTo(new SettingGame())
             },
             new()
             {
                 ItemName = I18nManager.Instance["Setting.Game.Folders.Title"]
             }
         };
-        
+
         UpdateUI();
         IsEdit = true;
     }
@@ -61,19 +58,20 @@ public partial class GameFolders : ISettingPage
                         ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                         : dialog.FolderName;
 
-                    BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                     {
                         GameFolderPath = dialog.FolderPath,
                         GameFolderName = name
                     });
-                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
+                    GlobalModel.Config.Save();
 
                     UpdateUI();
                 }
             },
             PrimaryAction = () =>
             {
-                GlobalModel.MainWindow.OpenDraw(new DrawImportOtherLauncherContent(), I18nManager.Instance["Setting.Game.Folders.Draw.Import.Title"]);
+                Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawImportOtherLauncherContent(),
+                    I18nManager.Instance["Setting.Game.Folders.Draw.Import.Title"]);
             }
         });
     }
@@ -81,8 +79,8 @@ public partial class GameFolders : ISettingPage
     private void UpdateUI()
     {
         ListBox.Children.Clear();
-        
-        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.ForEach(folder =>
+
+        GlobalModel.Config.Data.GameFolders.ForEach(folder =>
         {
             ListBox.Children.Add(new GameFolderSettingItem(folder, UpdateUI));
         });

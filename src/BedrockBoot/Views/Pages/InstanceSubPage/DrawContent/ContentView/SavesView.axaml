@@ -46,7 +46,7 @@
                     </DockPanel>
                 </Grid>
             </items:BorderCard>
-            
+
             <items:BorderCard Grid.Column="1"
                               Margin="0,8,20,10">
                 <StackPanel Orientation="Horizontal">

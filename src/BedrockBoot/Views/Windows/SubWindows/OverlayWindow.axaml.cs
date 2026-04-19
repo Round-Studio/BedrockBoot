@@ -1,23 +1,93 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Threading;
-using Avalonia.Platform;
-using Avalonia.Interactivity;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using BedrockBoot.Models.Global;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Threading;
+using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Views.Windows.SubWindows;
 
 public partial class OverlayWindow : Window
 {
+    // --- Win32 常量 ---
+    private const int GWL_EXSTYLE = -20;
+    private const int GWL_STYLE = -16;
+    private const int WS_CHILD = 0x40000000;
+    private const int WS_EX_TRANSPARENT = 0x00000020;
+    private const int WS_EX_LAYERED = 0x00080000;
+    private const int WS_EX_NOACTIVATE = 0x08000000;
+    private const int WS_EX_TOOLWINDOW = 0x00000080;
+    private const int SW_HIDE = 0;
+    private const int SW_SHOW = 5;
+    private const int SWP_NOMOVE = 0x0002;
+    private const int SWP_NOSIZE = 0x0001;
+    private const int SWP_NOZORDER = 0x0004;
+    private const int SWP_NOACTIVATE = 0x0010;
+    private const int HWND_TOP = 0;
+
+    private const int WH_KEYBOARD_LL = 13;
+    private const int WM_KEYDOWN = 0x0100;
+    private const int WM_SYSKEYDOWN = 0x0104; // 捕捉带 Alt 的组合键，增强稳定性
+    private const int VK_SHIFT = 0x10;
+    private const int VK_TAB = 0x09;
+    private const int VK_ESCAPE = 0x1B;
+    private readonly string _expectedVersion = string.Empty; // 期望的版本号
+
+    // --- 成员变量 ---
+    private readonly LowLevelKeyboardProc _proc;
+
+    // 目标进程信息
+    private readonly Process? _targetProcess;
+    private IntPtr _hookID = IntPtr.Zero;
+
+    // 动画控制
+    private volatile bool _isAnimating;
+    private bool _isEmbedded; // 跟踪是否已内嵌
+    private bool _isOverlayVisible;
+
+    // UWP特定变量
+    private bool _isUWPApp; // 是否是UWP应用
+    private IntPtr _myHandle = IntPtr.Zero;
+    private bool _nextAction; // 下一步要执行的动作(true=显示, false=false)
+    private int _originalHeight;
+    private int _originalWidth;
+    private int _originalX;
+    private int _originalY;
+    private volatile bool _pendingAction; // 存储待执行的操作
+    private DispatcherTimer? _syncTimer;
+    private IntPtr _targetHwnd = IntPtr.Zero;
+    private string _targetProcessName = string.Empty;
+
+    public OverlayWindow(Process targetProcess, string expectedVersion)
+    {
+#if LINUX
+        Console.WriteLine("Linux 无法开启窗口覆盖");
+        return;
+#endif
+        InitializeComponent();
+
+        // 保存目标进程和期望版本
+        _targetProcess = targetProcess;
+        _targetProcessName = targetProcess.ProcessName.ToLower();
+        _expectedVersion = expectedVersion;
+
+        VersionBox.Text = $"Game Overlay (Ver.{GlobalModel.BodyVersion})";
+
+        _proc = HookCallback;
+
+        // 确保窗口在最上层
+        Topmost = true;
+
+        Opened += OnWindowOpened;
+        Closed += OnWindowClosed;
+    }
+
     // --- Win32 API 导入 ---
     [DllImport("user32.dll")]
     private static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
@@ -93,94 +163,6 @@ public partial class OverlayWindow : Window
 
     [DllImport("user32.dll")]
     private static extern IntPtr GetForegroundWindow();
-
-    // --- Win32 常量 ---
-    private const int GWL_EXSTYLE = -20;
-    private const int GWL_STYLE = -16;
-    private const int WS_CHILD = 0x40000000;
-    private const int WS_EX_TRANSPARENT = 0x00000020;
-    private const int WS_EX_LAYERED = 0x00080000;
-    private const int WS_EX_NOACTIVATE = 0x08000000;
-    private const int WS_EX_TOOLWINDOW = 0x00000080;
-    private const int SW_HIDE = 0;
-    private const int SW_SHOW = 5;
-    private const int SWP_NOMOVE = 0x0002;
-    private const int SWP_NOSIZE = 0x0001;
-    private const int SWP_NOZORDER = 0x0004;
-    private const int SWP_NOACTIVATE = 0x0010;
-    private const int HWND_TOP = 0;
-
-    private const int WH_KEYBOARD_LL = 13;
-    private const int WM_KEYDOWN = 0x0100;
-    private const int WM_SYSKEYDOWN = 0x0104; // 捕捉带 Alt 的组合键，增强稳定性
-    private const int VK_SHIFT = 0x10;
-    private const int VK_TAB = 0x09;
-    private const int VK_ESCAPE = 0x1B;
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct RECT
-    {
-        public int Left, Top, Right, Bottom;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct POINT
-    {
-        public int X, Y;
-    }
-    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
-
-    private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-    // --- 成员变量 ---
-    private readonly LowLevelKeyboardProc _proc;
-    private IntPtr _hookID = IntPtr.Zero;
-    private IntPtr _targetHwnd = IntPtr.Zero;
-    private IntPtr _myHandle = IntPtr.Zero;
-    private bool _isOverlayVisible = false;
-    private bool _isEmbedded = false; // 跟踪是否已内嵌
-    private DispatcherTimer? _syncTimer;
-    private int _originalWidth = 0;
-    private int _originalHeight = 0;
-    private int _originalX = 0;
-    private int _originalY = 0;
-
-    // 动画控制
-    private volatile bool _isAnimating = false;
-    private volatile bool _pendingAction = false; // 存储待执行的操作
-    private bool _nextAction = false; // 下一步要执行的动作(true=显示, false=false)
-
-    // 目标进程信息
-    private Process? _targetProcess = null;
-    private string _targetProcessName = string.Empty;
-    private string _expectedVersion = string.Empty; // 期望的版本号
-
-    // UWP特定变量
-    private bool _isUWPApp = false; // 是否是UWP应用
-
-    public OverlayWindow(Process targetProcess, string expectedVersion)
-    {
-#if LINUX
-        Console.WriteLine("Linux 无法开启窗口覆盖");
-        return;
-#endif
-        InitializeComponent();
-
-        // 保存目标进程和期望版本
-        _targetProcess = targetProcess;
-        _targetProcessName = targetProcess.ProcessName.ToLower();
-        _expectedVersion = expectedVersion;
-
-        VersionBox.Text = $"Game Overlay (Ver.{GlobalModel.BodyVersion})";
-
-        _proc = HookCallback;
-
-        // 确保窗口在最上层
-        Topmost = true;
-
-        Opened += OnWindowOpened;
-        Closed += OnWindowClosed;
-    }
 
     private void OnWindowOpened(object? sender, EventArgs e)
     {
@@ -418,7 +400,7 @@ public partial class OverlayWindow : Window
     }
 
     /// <summary>
-    /// 检查窗口标题是否包含匹配的版本号
+    ///     检查窗口标题是否包含匹配的版本号
     /// </summary>
     /// <param name="windowTitle">窗口标题</param>
     /// <param name="expectedVersion">期望的版本号</param>
@@ -439,7 +421,7 @@ public partial class OverlayWindow : Window
     }
 
     /// <summary>
-    /// 从字符串中提取所有可能的版本号
+    ///     从字符串中提取所有可能的版本号
     /// </summary>
     /// <param name="input">输入字符串</param>
     /// <returns>版本号列表</returns>
@@ -462,7 +444,7 @@ public partial class OverlayWindow : Window
     }
 
     /// <summary>
-    /// 比较两个版本号是否等效
+    ///     比较两个版本号是否等效
     /// </summary>
     /// <param name="version1">第一个版本号</param>
     /// <param name="version2">第二个版本号</param>
@@ -499,7 +481,7 @@ public partial class OverlayWindow : Window
     }
 
     /// <summary>
-    /// 清理版本号字符串，移除非数字和点的字符
+    ///     清理版本号字符串，移除非数字和点的字符
     /// </summary>
     /// <param name="version">原始版本号</param>
     /// <returns>清理后的版本号</returns>
@@ -545,14 +527,14 @@ public partial class OverlayWindow : Window
     }
 
     /// <summary>
-    /// 解析版本号字符串为数字部分
+    ///     解析版本号字符串为数字部分
     /// </summary>
     /// <param name="version">版本号字符串</param>
     /// <returns>数字部分列表</returns>
     private List<int> ParseVersionParts(string version)
     {
         var parts = new List<int>();
-        var numberStrings = version.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+        var numberStrings = version.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
         foreach (var part in numberStrings)
             if (int.TryParse(part, out var num))
@@ -904,7 +886,7 @@ public partial class OverlayWindow : Window
 
     private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
+        if (nCode >= 0 && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
         {
             var vkCode = Marshal.ReadInt32(lParam);
 
@@ -921,7 +903,7 @@ public partial class OverlayWindow : Window
                     Dispatcher.UIThread.Post(() => SetOverlayState(!_isOverlayVisible));
 
                     // 返回 1 吞掉按键，防止游戏内弹出多余菜单
-                    return (IntPtr)1;
+                    return 1;
                 }
             }
 
@@ -936,7 +918,7 @@ public partial class OverlayWindow : Window
                     Dispatcher.UIThread.Post(() => SetOverlayState(false));
 
                     // 返回 1 吞掉按键，防止游戏响应ESC
-                    return (IntPtr)1;
+                    return 1;
                 }
             }
         }
@@ -954,6 +936,22 @@ public partial class OverlayWindow : Window
     {
         SetOverlayState(false);
     }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT
+    {
+        public int Left, Top, Right, Bottom;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT
+    {
+        public int X, Y;
+    }
+
+    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+    private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
     // 内部类用于存储窗口信息
     private class WindowInfo

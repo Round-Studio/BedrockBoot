@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.OtherPage;
-using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 
@@ -13,7 +12,7 @@ public partial class SettingNavigation : UserControl
         InitializeComponent();
 
 #if RELEASE
-        SetPersonalization.IsEnabled = GlobalModel.FunctionOption.IsEnableSettingPersonalization;
+        SetPersonalization.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingPersonalization;
 #endif
     }
 

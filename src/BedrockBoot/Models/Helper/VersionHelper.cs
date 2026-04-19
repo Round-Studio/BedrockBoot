@@ -6,17 +6,19 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core.VersionJsons;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Models.Helper;
 
 public class VersionHelper
 {
-    public static List<BuildInfo> Versions { get; private set; } = null;
-    // Event raised when a refreshed version list (from network) replaces the current list
-    public static event Action<List<BuildInfo>>? VersionsRefreshed;
-
     private static readonly object _refreshLock = new();
     private static readonly string CacheFilePath = Path.Combine(PathsList.TempPath, "version_cache.json");
+
+    public static List<BuildInfo> Versions { get; private set; }
+
+    // Event raised when a refreshed version list (from network) replaces the current list
+    public static event Action<List<BuildInfo>>? VersionsRefreshed;
 
     public static List<BuildInfo> GetVersions()
     {
@@ -26,10 +28,7 @@ public class VersionHelper
         try
         {
             var cached = LoadCache();
-            if (cached != null)
-            {
-                Versions = cached;
-            }
+            if (cached != null) Versions = cached;
         }
         catch
         {
@@ -102,9 +101,9 @@ public class VersionHelper
 
         try
         {
-            var url = BedrockBoot.Core.Global.GlobalModel.Config == null
+            var url = GlobalModel.Config == null
                 ? SourceList.VersionDataSources.ToList()[0].Value
-                : SourceList.VersionDataSources.ToList()[BedrockBoot.Core.Global.GlobalModel.Config.Data.VersionSourceIndex].Value;
+                : SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value;
 
             var db = await VersionsHelper.GetBuildDatabaseAsync(url).ConfigureAwait(false);
             var lst = await db!.Builds.ToListAsync().ConfigureAwait(false);
@@ -124,7 +123,13 @@ public class VersionHelper
                 if (isCon) continue;
 
                 Version? version = null;
-                try { version = new Version(item.Value.ID); } catch { }
+                try
+                {
+                    version = new Version(item.Value.ID);
+                }
+                catch
+                {
+                }
 
                 versionCache.Add((item.Value, version));
             }
@@ -162,10 +167,9 @@ public class VersionHelper
         if (a == null || b == null) return false;
         if (a.Count != b.Count) return false;
 
-        for (int i = 0; i < a.Count; i++)
-        {
-            if (!string.Equals(a[i].ID, b[i].ID, StringComparison.Ordinal)) return false;
-        }
+        for (var i = 0; i < a.Count; i++)
+            if (!string.Equals(a[i].ID, b[i].ID, StringComparison.Ordinal))
+                return false;
 
         return true;
     }

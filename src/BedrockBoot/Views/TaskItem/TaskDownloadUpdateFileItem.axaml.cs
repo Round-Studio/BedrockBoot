@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 using Path = System.IO.Path;
 
 namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadUpdateFileItem : UserControl
 {
-    
-
     public TaskDownloadUpdateFileItem()
     {
         InitializeComponent();
@@ -36,24 +33,24 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     {
         // 标题国际化
         CardTitle.Text = string.Format(I18nManager.Instance["Task.Update.Title.Format"], Release.TagName);
-    
+
         // 查找名称包含 "win" 的 asset
-        var winAsset = Release.Assets.FirstOrDefault(asset => 
+        var winAsset = Release.Assets.FirstOrDefault(asset =>
             asset.Name.Contains("win", StringComparison.OrdinalIgnoreCase));
-    
+
         if (winAsset == null)
         {
             // 如果没有找到包含 "win" 的 asset，可以记录错误或回退到第一个 asset
-            Console.WriteLine("未找到包含 'win' 标志的 asset");
+            Console.WriteLine(@"未找到包含 'win' 标志的 asset");
             return;
         }
-    
+
         var url = winAsset.BrowserDownloadUrl;
         var path = Path.Combine(PathsList.UpdatePath, $"{Release.TagName}.exe");
 
         Task.Run(async () =>
         {
-            var download = new GithubFilesDownloader(BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount,
+            var download = new GithubFilesDownloader(GlobalModel.Config.Data.DownloadChunkCount,
                 1024);
 
             await download.DownloadAsync(url, path, new Progress<DownloadProgress>(xprogress =>
@@ -85,7 +82,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     public static void Update(Release release)
     {
 #if WINDOWS
-        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+        Models.Global.GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = I18nManager.Instance["Task.Update.Notice.Title"],
             Message = I18nManager.Instance["Task.Update.Notice.Message"],
@@ -93,13 +90,13 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         });
 
         var body = new TaskDownloadUpdateFileItem(release);
-        var tuid = GlobalModel.TaskManager.AddTask(body);
+        var tuid = Models.Global.GlobalModel.TaskManager.AddTask(body);
 
         body.Update();
 #endif
 
 #if LINUX
-        DialogHost.Show(new DialogInfo()
+        OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog.DialogHost.Show(new DialogInfo()
         {
             Title = "您的系统尚不支持自动更新",
             Content = new StackPanel()

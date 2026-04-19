@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using OnePointUI.Avalonia.Base.Entry;
@@ -14,8 +13,6 @@ namespace BedrockBoot.Views.Pages.SetupPage;
 
 public partial class SetupImport : UserControl
 {
-    
-
     public SetupImport()
     {
         InitializeComponent();
@@ -42,12 +39,12 @@ public partial class SetupImport : UserControl
                         ? Path.GetFileName(Path.GetDirectoryName(dialog.FolderPath))
                         : dialog.FolderName;
 
-                    BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                    GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                     {
                         GameFolderPath = dialog.FolderPath,
                         GameFolderName = name
                     });
-                    BedrockBoot.Core.Global.GlobalModel.Config.Save();
+                    GlobalModel.Config.Save();
                 }
             }
         });
@@ -56,8 +53,8 @@ public partial class SetupImport : UserControl
     private void ImportOtherLauncherBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         // 侧边抽屉标题国际化
-        GlobalModel.MainWindow.OpenDraw(
-            new DrawImportOtherLauncherContent(), 
+        Models.Global.GlobalModel.MainWindow.OpenDraw(
+            new DrawImportOtherLauncherContent(),
             I18nManager.Instance["Setup.Import.Draw.ImportOther.Title"]
         );
     }

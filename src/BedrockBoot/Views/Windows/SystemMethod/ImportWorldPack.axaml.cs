@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -13,17 +12,17 @@ using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Desktop;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Views.Control.Items;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Windows.SystemMethod;
 
 public partial class ImportWorldPack : Window
 {
-    private string _filePath = string.Empty;
-    private List<VersionConfig> _currentGames = new();
     private ArchiveManifest? _currentArchiveManifest;
+    private List<VersionConfig> _currentGames = new();
+    private string _filePath = string.Empty;
 
     public ImportWorldPack()
     {
@@ -32,7 +31,7 @@ public partial class ImportWorldPack : Window
 
         if (Program.Args != null && Program.Args.Contains("-open"))
         {
-            int index = Program.Args.FindIndex(a => a == "-open");
+            var index = Program.Args.FindIndex(a => a == "-open");
             if (index + 2 < Program.Args.Count)
             {
                 _filePath = Program.Args[index + 2];
@@ -43,22 +42,22 @@ public partial class ImportWorldPack : Window
 
     private void InitGameFolders()
     {
-        var folders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
+        var folders = GlobalModel.Config.Data.GameFolders;
         if (folders == null || folders.Count <= 0) return;
 
         FolderComboBox.ItemsSource = folders.Select(f => $"{f.GameFolderName} - {f.GameFolderPath}").ToList();
-        
-        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex < folders.Count)
-            FolderComboBox.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
+
+        if (GlobalModel.Config.Data.GameFolderSelIndex < folders.Count)
+            FolderComboBox.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
     }
 
     private void FolderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (FolderComboBox.SelectedIndex < 0) return;
 
-        var selectedFolder = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[FolderComboBox.SelectedIndex];
+        var selectedFolder = GlobalModel.Config.Data.GameFolders[FolderComboBox.SelectedIndex];
         _currentGames = GameInfoHelper.GetVersionConfigs(selectedFolder.GameFolderPath);
-        
+
         InstanceComboBox.ItemsSource = _currentGames.Select(g => $"{g.Info.VersionName} - {g.Info.Version}").ToList();
 
         if (_currentGames.Count > 0)
@@ -86,7 +85,9 @@ public partial class ImportWorldPack : Window
             ImportButton.IsEnabled = true;
         }
         else
+        {
             ClearUserList();
+        }
     }
 
     private void ClearUserList()
@@ -96,7 +97,7 @@ public partial class ImportWorldPack : Window
     }
 
     /// <summary>
-    /// 加载并预览存档信息
+    ///     加载并预览存档信息
     /// </summary>
     public void LoadPack(string file)
     {
@@ -108,8 +109,8 @@ public partial class ImportWorldPack : Window
         Task.Run(() =>
         {
             // 创建临时目录用于解压预览
-            string tempPath = Path.Combine(PathsList.TempPath, "TempWorld_" + Guid.NewGuid().ToString("N"));
-            
+            var tempPath = Path.Combine(PathsList.TempPath, "TempWorld_" + Guid.NewGuid().ToString("N"));
+
             try
             {
                 if (Directory.Exists(tempPath)) Directory.Delete(tempPath, true);
@@ -144,10 +145,10 @@ public partial class ImportWorldPack : Window
             }
             catch (Exception ex)
             {
-                Dispatcher.UIThread.Invoke(() => 
-                { 
-                    LoadingCard.BigTitle = "解析存档失败"; 
-                    LoadingCard.Message = ex.Message; 
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    LoadingCard.BigTitle = "解析存档失败";
+                    LoadingCard.Message = ex.Message;
                 });
             }
         });
@@ -157,7 +158,7 @@ public partial class ImportWorldPack : Window
     {
         if (string.IsNullOrEmpty(_filePath) || UserComboBox.SelectedItem == null) return;
 
-        string targetUser = (string)UserComboBox.SelectedItem;
+        var targetUser = (string)UserComboBox.SelectedItem;
 
         LoadingCard.BigTitle = "正在导入";
         LoadingCard.Message = $"正在导入至用户目录: {targetUser}...";
@@ -175,7 +176,7 @@ public partial class ImportWorldPack : Window
                 // 调用后端逻辑执行正式解压到游戏目录
                 checker.ImportWorldPack(_filePath, targetUser);
             });
-            this.Close();
+            Close();
         }
         catch (Exception ex)
         {

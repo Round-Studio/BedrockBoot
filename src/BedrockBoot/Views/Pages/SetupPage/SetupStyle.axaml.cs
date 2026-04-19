@@ -1,8 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Styling;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Style.Core;
 
 namespace BedrockBoot.Views.Pages.SetupPage;
@@ -12,7 +12,7 @@ public partial class SetupStyle : ISetting
     public SetupStyle()
     {
         InitializeComponent();
-        ChooseThemeBox.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType;
+        ChooseThemeBox.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.LightThemeType;
 
         IsEdit = true;
     }
@@ -21,11 +21,11 @@ public partial class SetupStyle : ISetting
     {
         if (IsEdit)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseThemeBox.SelectedIndex;
-            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+            GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseThemeBox.SelectedIndex;
+            GlobalModel.Config.Save();
 
             ThemeManager.Instance.SetThemeModel(
-                BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
+                GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
                     ? ThemeVariant.Light
                     : ThemeVariant.Dark);
         }

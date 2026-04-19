@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,19 +20,19 @@ namespace BedrockBoot.Views.Pages.MainSubPage;
 
 public partial class MainToolsBoxPage : BedrockBootPage
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public MainToolsBoxPage()
     {
         InitializeComponent();
-        
+
 #if RELEASE
-        TranslateResourcePack.IsVisible = GlobalModel.FunctionOption.IsEnableToolsBoxUsingPackTranslate;
+        TranslateResourcePack.IsVisible = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableToolsBoxUsingPackTranslate;
 #endif
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     /// <summary>
-    /// 修复丢失的游戏文件
+    ///     修复丢失的游戏文件
     /// </summary>
     private void FoundLoseFilesBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -42,7 +41,7 @@ public partial class MainToolsBoxPage : BedrockBootPage
     }
 
     /// <summary>
-    /// 卸载所有已安装的 UWP 游戏组件
+    ///     卸载所有已安装的 UWP 游戏组件
     /// </summary>
     private async void DeleteMcBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -84,7 +83,7 @@ public partial class MainToolsBoxPage : BedrockBootPage
                 {
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        DialogHost.Show(new()
+                        DialogHost.Show(new DialogInfo
                         {
                             Title = "存档转换",
                             Content = "正在获取适合的 Jvm 运行器..."
@@ -94,14 +93,14 @@ public partial class MainToolsBoxPage : BedrockBootPage
                     var jvms = await JavaUtil.GetJavaListAsync();
                     jvms.ForEach(j => Console.WriteLine($@"Find Jvm: {j.JavaPath}"));
                     var jvm = jvms.Find(j => j.MajorVersion >= 17);
-                
+
                     Dispatcher.UIThread.Invoke(DialogHost.Close);
 
                     if (jvm == null)
                     {
                         Dispatcher.UIThread.Invoke(() =>
                         {
-                            DialogHost.Show(new()
+                            DialogHost.Show(new DialogInfo
                             {
                                 Title = "Jvm 错误",
                                 Content = "未找到合适的 Jvm 运行器",
@@ -110,13 +109,13 @@ public partial class MainToolsBoxPage : BedrockBootPage
                         });
                         return;
                     }
-                
+
                     Chunker.Chunker.DefaultJvmInfo = jvm;
                 }
-            
+
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    DialogHost.Show(new()
+                    DialogHost.Show(new DialogInfo
                     {
                         Title = "存档转换",
                         Content = new DialogChooseChunkerTypeContent(),
@@ -129,12 +128,12 @@ public partial class MainToolsBoxPage : BedrockBootPage
         if (!Chunker.Chunker.CheckChunker())
         {
             var dialog = new DialogDownloadChunkerContent();
-            DialogHost.Show(new ()
+            DialogHost.Show(new DialogInfo
             {
                 Title = "下载依赖",
                 Content = dialog
             });
-            
+
             dialog.Download(OpenDialog);
         }
         else
@@ -145,14 +144,14 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
     private async void TranslateResourcePack_OnClick(object? sender, RoutedEventArgs e)
     {
-        var window = this.VisualRoot as Window;
+        var window = VisualRoot as Window;
         var dialog = new OpenFileDialog
         {
             Title = "导入需要翻译的基岩版资源包",
             AllowMultiple = false,
             Filters = new List<FileDialogFilter>
             {
-                new FileDialogFilter
+                new()
                 {
                     Name = "基岩版资源包/行为包",
                     Extensions = new List<string> { "mcpack", "mcaddon" }
@@ -174,7 +173,7 @@ public partial class MainToolsBoxPage : BedrockBootPage
                 DefaultExtension = Path.GetExtension(selectedFile),
                 Filters = new List<FileDialogFilter>
                 {
-                    new FileDialogFilter
+                    new()
                     {
                         Name = "Minecraft 基岩版支持文件",
                         Extensions = new List<string> { Path.GetExtension(selectedFile) }
@@ -185,13 +184,13 @@ public partial class MainToolsBoxPage : BedrockBootPage
             if (window == null) return;
 
             var showAsync = await saveFileDialog.ShowAsync(window);
-        
+
             if (!string.IsNullOrWhiteSpace(showAsync))
             {
                 var saveFile = showAsync;
                 var inputFile = selectedFile;
-                
-                DialogHost.Show(new()
+
+                DialogHost.Show(new DialogInfo
                 {
                     Title = "翻译包",
                     Content = new DialogTranslateResourcePackContent(inputFile, saveFile)

@@ -9,7 +9,7 @@
         <TextBlock
             HorizontalAlignment="Left"
             Text="{DynamicResource Dialog.ImportConfig.Label.Title}" />
-        
+
         <CheckBox Content="{DynamicResource Download.Search.Category.Texture}"
                   Width="200"
                   IsChecked="True"

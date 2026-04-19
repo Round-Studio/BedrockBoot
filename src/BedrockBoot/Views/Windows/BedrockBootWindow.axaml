@@ -21,8 +21,8 @@
     <Grid>
         <Grid Background="{DynamicResource BackgroundBrush}"
               Name="BackgroundCover"
-              Opacity="0.58"></Grid>
-        
+              Opacity="0.58" />
+
         <Border>
             <Grid>
                 <Grid Name="BackgroundGroupBox">
@@ -30,10 +30,10 @@
                         <Transitions>
                             <EffectTransition Property="Effect"
                                               Duration="0:0:0.58"
-                                              Easing="QuinticEaseOut"></EffectTransition>
+                                              Easing="QuinticEaseOut" />
                             <ThicknessTransition Property="Margin"
                                                  Easing="ExponentialEaseOut"
-                                                 Duration="0:0:0.58"></ThicknessTransition>
+                                                 Duration="0:0:0.58" />
                         </Transitions>
                     </Grid.Transitions>
                     <view:AnimationBackground Name="AnimationBackground" />
@@ -49,13 +49,13 @@
                             <BlurEffect Radius="0" />
                         </Grid.Effect>
                         <Grid Name="BackgroundImage" />
-                        <classes:ParallaxImage3D Name="BackgroundImage3D"/>
+                        <classes:ParallaxImage3D Name="BackgroundImage3D" />
                         <Grid Name="BackgroundImageOpacity"
                               Opacity="0"
                               Background="{DynamicResource BackgroundBrush}" />
                     </Grid>
                 </Grid>
-                
+
                 <Grid HorizontalAlignment="Stretch"
                       VerticalAlignment="Top"
                       Height="76"
@@ -71,16 +71,15 @@
                         <Transitions>
                             <EffectTransition Property="Effect"
                                               Duration="0:0:0.58"
-                                              Easing="QuinticEaseOut"></EffectTransition>
+                                              Easing="QuinticEaseOut" />
                             <ThicknessTransition Property="Margin"
                                                  Easing="ExponentialEaseOut"
-                                                 Duration="0:0:0.58"></ThicknessTransition>
+                                                 Duration="0:0:0.58" />
                         </Transitions>
                     </Grid.Transitions>
                     <ContentControl Content="Hello OnePointUI.Avalonia!"
-                                Margin="0,0,0,0"
-                                Name="PART_MainContent">
-                    </ContentControl>
+                                    Margin="0,0,0,0"
+                                    Name="PART_MainContent" />
 
                     <Grid Name="BorderGrid"
                           IsVisible="False">
@@ -94,7 +93,7 @@
                                 </Transitions>
                             </Grid.Transitions>
                         </Grid>
-                
+
                         <Grid HorizontalAlignment="Stretch"
                               VerticalAlignment="Top"
                               Height="76"
@@ -146,7 +145,7 @@
                             </Grid>
                         </Border>
                     </Grid>
-                    
+
                     <info:NoticePanel HorizontalAlignment="Right"
                                       VerticalAlignment="Bottom"
                                       Name="NoticePanel"
@@ -154,7 +153,7 @@
 
                     <dialog:DialogHost Name="DialogHost" />
                 </Grid>
-                
+
                 <Grid HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
                       Opacity="0.0001"
@@ -166,11 +165,11 @@
                         <Transitions>
                             <ThicknessTransition Property="Margin"
                                                  Easing="ExponentialEaseOut"
-                                                 Duration="0:0:0.58"></ThicknessTransition>
+                                                 Duration="0:0:0.58" />
                         </Transitions>
                     </Grid.Transitions>
                 </Grid>
-                
+
                 <items:BorderCard Width="480"
                                   Margin="500,10,-500,10"
                                   Name="TaskCard"
@@ -181,27 +180,27 @@
                         <Transitions>
                             <ThicknessTransition Property="Margin"
                                                  Easing="ExponentialEaseOut"
-                                                 Duration="0:0:0.58"></ThicknessTransition>
+                                                 Duration="0:0:0.58" />
                         </Transitions>
                     </items:BorderCard.Transitions>
-                    
+
                     <Grid RowDefinitions="Auto,*">
                         <Grid Grid.Row="0"
                               MinHeight="58">
                             <TextBlock Text="{DynamicResource MainWindow.TaskView.Title}"
                                        VerticalAlignment="Center"
                                        FontSize="22"
-                                       Margin="20,0,0,0"></TextBlock>
+                                       Margin="20,0,0,0" />
                         </Grid>
-                        
-                        <notice:InfoCard Grid.Row="1" 
+
+                        <notice:InfoCard Grid.Row="1"
                                          VerticalAlignment="Center"
                                          HorizontalAlignment="Center"
                                          BigTitle="{DynamicResource MainWindow.TaskView.NoneTitle}"
                                          Message="{DynamicResource MainWindow.TaskView.NoneMessage}"
                                          Name="NoneBox" />
 
-                        <ScrollViewer Grid.Row="1" 
+                        <ScrollViewer Grid.Row="1"
                                       Name="TaskViewer"
                                       IsVisible="False">
                             <StackPanel Margin="15,0,15,5"

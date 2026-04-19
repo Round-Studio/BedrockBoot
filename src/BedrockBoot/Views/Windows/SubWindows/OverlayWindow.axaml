@@ -13,24 +13,24 @@
         SystemDecorations="None"
         ShowInTaskbar="False"
         CanResize="False">
-    <Grid Name="OverlayRoot" 
+    <Grid Name="OverlayRoot"
           Opacity="0">
         <Grid Background="{DynamicResource BackgroundBrush}"
-              Opacity="0.8"></Grid>
-        
+              Opacity="0.8" />
+
         <Grid RowDefinitions="Auto,*"
               Name="MainContent"
               Margin="30">
-            <Button Grid.Row="0" 
+            <Button Grid.Row="0"
                     Classes="NoBorder"
                     HorizontalAlignment="Right"
                     Name="CloseBtn"
                     Click="CloseBtn_OnClick"
                     Height="48" Width="48">
                 <onePointControls:FontIcon Glyph="&#xE8BB;"
-                                           FontSize="22"/>
+                                           FontSize="22" />
             </Button>
-            
+
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Left"
@@ -39,27 +39,27 @@
                             Spacing="8">
                     <onePointControls:FontIcon Glyph="&#xF156;"
                                                VerticalAlignment="Center"
-                                               FontSize="22"></onePointControls:FontIcon>
-                
+                                               FontSize="22" />
+
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="BedrockBoot"
-                                   Opacity="0.6"></TextBlock>
+                                   Opacity="0.6" />
                         <TextBlock Text="游戏叠层"
-                                   FontSize="18"></TextBlock>
+                                   FontSize="18" />
                     </StackPanel>
                 </StackPanel>
-                
-                <widgets:XboxUserInfoWidget VerticalAlignment="Center"/>
+
+                <widgets:XboxUserInfoWidget VerticalAlignment="Center" />
             </StackPanel>
-            
-            <overlayPage:OverlayMain Grid.Row="1"/>
+
+            <overlayPage:OverlayMain Grid.Row="1" />
         </Grid>
-        
+
         <TextBlock HorizontalAlignment="Left"
                    VerticalAlignment="Bottom"
                    Margin="8"
                    Opacity="0.6"
                    Name="VersionBox"
-                   Text="Game Overlay (Ver.???)"></TextBlock>
+                   Text="Game Overlay (Ver.???)" />
     </Grid>
 </Window>

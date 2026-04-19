@@ -1,0 +1,36 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="300"
+             x:Class="BedrockBoot.Views.Control.Items.SearchHistoryItem">
+    <items:BorderCard Padding="0">
+        <Button Classes="NoBorder"
+                Click="Button_OnClick"
+                Padding="8"
+                HorizontalContentAlignment="Stretch">
+            <Grid ColumnDefinitions="Auto,*,Auto"
+                  ColumnSpacing="6">
+                <onePointControls:FontIcon Grid.Column="0"
+                                           VerticalAlignment="Center"
+                                           FontSize="14"
+                                           Glyph="&#xE81C;" />
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="4"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Search Key"
+                               Name="SearchKey"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <onePointControls:LabelBox Grid.Column="2"
+                                           Name="SearchType"
+                                           Text="Search Type" />
+            </Grid>
+        </Button>
+    </items:BorderCard>
+</UserControl>

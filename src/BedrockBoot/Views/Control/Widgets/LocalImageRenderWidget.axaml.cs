@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,12 +15,6 @@ public partial class LocalImageRenderWidget : UserControl
     public static readonly StyledProperty<string?> ImageUrlProperty =
         AvaloniaProperty.Register<LocalImageRenderWidget, string?>(nameof(ImageUrl));
 
-    public string? ImageUrl
-    {
-        get => GetValue(ImageUrlProperty);
-        set => SetValue(ImageUrlProperty, value);
-    }
-
     public LocalImageRenderWidget()
     {
         InitializeComponent();
@@ -28,6 +23,12 @@ public partial class LocalImageRenderWidget : UserControl
     public LocalImageRenderWidget(string uri) : this()
     {
         ImageUrl = uri;
+    }
+
+    public string? ImageUrl
+    {
+        get => GetValue(ImageUrlProperty);
+        set => SetValue(ImageUrlProperty, value);
     }
 
     // 在属性发生变化时触发
@@ -39,10 +40,8 @@ public partial class LocalImageRenderWidget : UserControl
         {
             var newUrl = change.GetNewValue<string?>();
             if (!string.IsNullOrEmpty(newUrl))
-            {
                 // 触发异步更新，不阻塞 UI 线程
                 _ = Update(newUrl);
-            }
         }
     }
 
@@ -51,27 +50,23 @@ public partial class LocalImageRenderWidget : UserControl
         try
         {
             var image = await ImageLoader.LoadIconAsync(uri);
-            
+
             // 确保在 UI 线程更新界面
             Dispatcher.UIThread.Post(() =>
             {
                 if (image != null)
-                {
                     ImageBox.Background = new ImageBrush(image)
                     {
                         Stretch = Stretch.UniformToFill
                     };
-                }
                 else
-                {
                     // 如果图片加载失败，可以清空背景或设置占位图
                     ImageBox.Background = null;
-                }
             });
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to load image: {ex.Message}");
+            Debug.WriteLine($"Failed to load image: {ex.Message}");
         }
     }
 }

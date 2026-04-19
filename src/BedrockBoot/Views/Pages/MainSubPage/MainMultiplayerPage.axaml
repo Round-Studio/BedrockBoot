@@ -1,13 +1,12 @@
 ﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
-                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                 xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
-                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
-                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainMultiplayerPage">
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
+                       xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                       xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                       x:Class="BedrockBoot.Views.Pages.MainSubPage.MainMultiplayerPage">
     <entry:BedrockBootPage.HeaderView>
         <onePointControls:LineTextBlock Grid.Row="0"
                                         Margin="0"
@@ -27,35 +26,35 @@
                            FontSize="14">
                     简述
                 </TextBlock>
-                
+
                 <TextBlock Text="本联机基于协议 PaperConnect，转发基于 EasyTier"
                            TextWrapping="Wrap"
-                           Opacity="0.6"></TextBlock>
-                
+                           Opacity="0.6" />
+
                 <TextBlock Text="使用 P2P 技术进行联机，连接成功后房间内用户将会互相连接，将不会使用第三方服务器转发流量。最终联机体验由网络环境决定"
                            TextWrapping="Wrap"
-                           Opacity="0.6"></TextBlock>
-                
+                           Opacity="0.6" />
+
                 <TextBlock FontWeight="Bold"
                            FontSize="14">
                     相关文档
                 </TextBlock>
-                
+
                 <StackPanel>
                     <HyperlinkButton Content="PaperConnect 联机协议"
-                                     NavigateUri="https://docs.roundstudio.top/docs/standard/paperconnect"></HyperlinkButton>
-                
+                                     NavigateUri="https://docs.roundstudio.top/docs/standard/paperconnect" />
+
                     <HyperlinkButton Content="PaperConnect 开源仓库"
-                                     NavigateUri="https://github.com/Round-Studio/PaperConnect"></HyperlinkButton>
-                
+                                     NavigateUri="https://github.com/Round-Studio/PaperConnect" />
+
                     <HyperlinkButton Content="EasyTier 官方网站"
-                                     NavigateUri="https://easytier.cn"></HyperlinkButton>
+                                     NavigateUri="https://easytier.cn" />
                 </StackPanel>
             </StackPanel>
-            
+
             <navigation:NavigationFrame Margin="10,0,0,0"
                                         Grid.Column="1"
-                                        Name="MainFrame"></navigation:NavigationFrame>
+                                        Name="MainFrame" />
         </Grid>
     </Grid>
 </entry:BedrockBootPage>

@@ -17,23 +17,37 @@ public partial class SmallResourceButton : UserControl
     public static readonly StyledProperty<string> IconUrlProperty =
         AvaloniaProperty.Register<SmallResourceButton, string>(nameof(IconUrl));
 
-    public string ResourceName { get => GetValue(ResourceNameProperty); set => SetValue(ResourceNameProperty, value); }
-    public string Author { get => GetValue(AuthorProperty); set => SetValue(AuthorProperty, value); }
-    public string IconUrl { get => GetValue(IconUrlProperty); set => SetValue(IconUrlProperty, value); }
-
     // 定义向外暴露的 Click 事件
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
         RoutedEvent.Register<SmallResourceButton, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
+
+    public SmallResourceButton()
+    {
+        InitializeComponent();
+    }
+
+    public string ResourceName
+    {
+        get => GetValue(ResourceNameProperty);
+        set => SetValue(ResourceNameProperty, value);
+    }
+
+    public string Author
+    {
+        get => GetValue(AuthorProperty);
+        set => SetValue(AuthorProperty, value);
+    }
+
+    public string IconUrl
+    {
+        get => GetValue(IconUrlProperty);
+        set => SetValue(IconUrlProperty, value);
+    }
 
     public event EventHandler<RoutedEventArgs>? Click
     {
         add => AddHandler(ClickEvent, value);
         remove => RemoveHandler(ClickEvent, value);
-    }
-
-    public SmallResourceButton()
-    {
-        InitializeComponent();
     }
 
     // 内部 Button 点击时，触发 UserControl 的 Click 事件

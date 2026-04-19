@@ -56,7 +56,7 @@ public partial class DialogDeleteGameContent : UserControl
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         DeleteProgressText.Text = $"进度：{jd * 100.0 / files.Length:F2} %";
-                        DeleteProgressBar.Value = (int)jd;
+                        DeleteProgressBar.Value = jd;
                     });
             });
 

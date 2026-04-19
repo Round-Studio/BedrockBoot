@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -14,10 +15,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameResourcePackItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    public Action? RefreshCallBack { get; set; }
-    public ResourcePackManifest ResourcePackManifest { get; set; } = null!;
-
     public GameResourcePackItem()
     {
         InitializeComponent();
@@ -30,6 +27,10 @@ public partial class GameResourcePackItem : UserControl
         ControlBox.IsVisible = !isImport;
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+    public Action? RefreshCallBack { get; set; }
+    public ResourcePackManifest ResourcePackManifest { get; set; } = null!;
+
     public void UpdateUI()
     {
         if (ResourcePackManifest == null) return;
@@ -39,10 +40,7 @@ public partial class GameResourcePackItem : UserControl
             if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon) && File.Exists(ResourcePackManifest.PackIcon))
             {
                 // 释放旧的 Bitmap 资源，避免内存泄漏
-                if (Card.ImageIcon is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
+                if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
                 using var stream = File.OpenRead(ResourcePackManifest.PackIcon);
                 Card.ImageIcon = new Bitmap(stream);
@@ -50,7 +48,7 @@ public partial class GameResourcePackItem : UserControl
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to load pack icon: {ex.Message}");
+            Debug.WriteLine($"Failed to load pack icon: {ex.Message}");
         }
 
         PackName.MinecraftText = ResourcePackManifest.Header.Name;
@@ -75,7 +73,7 @@ public partial class GameResourcePackItem : UserControl
 
                 Task.Run(async () =>
                 {
-                    bool success = false;
+                    var success = false;
                     try
                     {
                         if (Directory.Exists(ResourcePackManifest.PackRootPath))

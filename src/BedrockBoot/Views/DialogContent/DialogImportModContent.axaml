@@ -34,7 +34,7 @@
         <CheckBox Margin="0,5,0,5"
                   Name="EnablePreLoad"
                   Content="{DynamicResource Dialog.ImportMod.Option.Preload}" />
-        
+
         <TextBlock FontSize="9"
                    Foreground="Gray"
                    Text="{DynamicResource Dialog.ImportMod.Tip.Preload}" />

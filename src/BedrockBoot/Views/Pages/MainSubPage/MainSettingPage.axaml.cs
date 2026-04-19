@@ -11,13 +11,6 @@ public partial class MainSettingPage : BedrockBootPage
     private static NavigationFrame NavigationFrame;
     private static BreadcrumbBar SettingBreadcrumbBar;
 
-    public static void NavigateTo(ISettingPage page)
-    {
-        NavigationFrame.NavigateTo(page);
-        SettingBreadcrumbBar.SetItems(page.BreadcrumbItem);
-        SettingBreadcrumbBar.RootItem = I18nManager.Instance["MainPage.Nav.Setting"];
-    }
-
     public MainSettingPage()
     {
         InitializeComponent();
@@ -29,5 +22,12 @@ public partial class MainSettingPage : BedrockBootPage
         NavigationFrame = SettingFrame;
 
         SettingFrame.NavigateTo(new SettingNavigation());
+    }
+
+    public static void NavigateTo(ISettingPage page)
+    {
+        NavigationFrame.NavigateTo(page);
+        SettingBreadcrumbBar.SetItems(page.BreadcrumbItem);
+        SettingBreadcrumbBar.RootItem = I18nManager.Instance["MainPage.Nav.Setting"];
     }
 }

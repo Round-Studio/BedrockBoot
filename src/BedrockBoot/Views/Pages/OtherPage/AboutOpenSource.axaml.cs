@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Avalonia;
-using Avalonia.Controls;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 
@@ -11,8 +9,6 @@ namespace BedrockBoot.Views.Pages.OtherPage;
 
 public partial class AboutOpenSource : ISettingPage
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public AboutOpenSource()
     {
         InitializeComponent();
@@ -34,8 +30,10 @@ public partial class AboutOpenSource : ISettingPage
         InitializeFrameworkVersion();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     /// <summary>
-    /// 获取并显示核心框架版本
+    ///     获取并显示核心框架版本
     /// </summary>
     private void InitializeFrameworkVersion()
     {

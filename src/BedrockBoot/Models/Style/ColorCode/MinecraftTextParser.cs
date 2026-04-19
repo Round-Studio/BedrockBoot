@@ -25,7 +25,6 @@ public class MinecraftTextParser
             input = "§7该包没有介绍...";
 
         for (var i = 0; i < input.Length; i++)
-        {
             if (input[i] == '§' && i + 1 < input.Length)
             {
                 if (!string.IsNullOrEmpty(currentSegment.Text))
@@ -39,11 +38,8 @@ public class MinecraftTextParser
                 i++;
 
                 if (MinecraftColorCode.ColorCodes.TryGetValue(code, out var colorCode))
-                {
                     currentColor = colorCode.Color;
-                }
                 else
-                {
                     switch (code)
                     {
                         case "§l": isBold = true; break;
@@ -56,7 +52,6 @@ public class MinecraftTextParser
                             isBold = isItalic = isUnderline = isStrikethrough = isObfuscated = false;
                             break;
                     }
-                }
 
                 currentSegment.Color = currentColor;
                 currentSegment.IsBold = isBold;
@@ -69,7 +64,6 @@ public class MinecraftTextParser
             {
                 currentSegment.Text += input[i];
             }
-        }
 
         if (!string.IsNullOrEmpty(currentSegment.Text))
         {
@@ -87,13 +81,12 @@ public class MinecraftTextParser
 
         foreach (var segment in segments)
         {
-            var displayText = segment.IsObfuscated ? GenerateObfuscatedText(segment.OriginalText) : segment.OriginalText;
+            var displayText = segment.IsObfuscated
+                ? GenerateObfuscatedText(segment.OriginalText)
+                : segment.OriginalText;
             var run = new Run(displayText);
 
-            if (segment.Color.HasValue)
-            {
-                run.Foreground = new SolidColorBrush(segment.Color.Value);
-            }
+            if (segment.Color.HasValue) run.Foreground = new SolidColorBrush(segment.Color.Value);
 
             run.FontWeight = segment.IsBold ? FontWeight.Bold : FontWeight.Normal;
             run.FontStyle = segment.IsItalic ? FontStyle.Italic : FontStyle.Normal;
@@ -101,10 +94,7 @@ public class MinecraftTextParser
             var decorations = new TextDecorationCollection();
             run.TextDecorations = decorations;
 
-            if (segment.IsObfuscated)
-            {
-                segment.ObfuscatedRun = run;
-            }
+            if (segment.IsObfuscated) segment.ObfuscatedRun = run;
 
             inlines.Add(run);
         }
@@ -114,19 +104,14 @@ public class MinecraftTextParser
 
     private static string GenerateObfuscatedText(string input)
     {
-        if (string.IsNullOrEmpty(input))
-        {
-            return string.Empty;
-        }
+        if (string.IsNullOrEmpty(input)) return string.Empty;
 
         const string chars = "!@#$%^&*()_+-=[]{}|;':\",./<>?";
         var random = new Random(Guid.NewGuid().GetHashCode());
         var result = new char[input.Length];
 
         for (var i = 0; i < input.Length; i++)
-        {
             result[i] = char.IsWhiteSpace(input[i]) ? input[i] : chars[random.Next(chars.Length)];
-        }
 
         return new string(result);
     }
@@ -165,12 +150,7 @@ public class MinecraftTextParser
             _obfuscationTimer = new Timer(_ =>
             {
                 if (ObfuscatedRun != null)
-                {
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        ObfuscatedRun.Text = GenerateObfuscatedText(OriginalText);
-                    });
-                }
+                    Dispatcher.UIThread.Post(() => { ObfuscatedRun.Text = GenerateObfuscatedText(OriginalText); });
             }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(50));
         }
 
@@ -178,14 +158,9 @@ public class MinecraftTextParser
         {
             _obfuscationTimer?.Dispose();
             _obfuscationTimer = null;
-            
+
             if (ObfuscatedRun != null && !string.IsNullOrEmpty(OriginalText))
-            {
-                Dispatcher.UIThread.Post(() =>
-                {
-                    ObfuscatedRun.Text = OriginalText;
-                });
-            }
+                Dispatcher.UIThread.Post(() => { ObfuscatedRun.Text = OriginalText; });
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Core.Models.Xbox;
 using BedrockBoot.Models.Global;
@@ -17,15 +15,12 @@ public partial class XboxUserInfoWidget : UserControl
         Task.Run(async () =>
         {
             if (GlobalModel.XboxUserInfo != null)
-            {
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     BoxContent.IsVisible = true;
                     PlayerName.Text = GlobalModel.XboxUserInfo.Gamertag;
                 });
-            }
             else
-            {
                 try
                 {
                     var checker = new XboxLoginStatusChecker();
@@ -46,7 +41,6 @@ public partial class XboxUserInfoWidget : UserControl
                         PlayerName.Text = "无法获取";
                     });
                 }
-            }
 
             Dispatcher.UIThread.Invoke(() => LoadRing.IsVisible = false);
         });

@@ -18,10 +18,10 @@
                     <StackPanel Spacing="4">
                         <onePointControls:LineTextBlock Text="BedrockBoot"
                                                         Margin="12,0,0,0" />
-                        
+
                         <TextBlock Name="PowerByTextBlock"
                                    Opacity="0.6"
-                                   Margin="12,0,0,0"></TextBlock>
+                                   Margin="12,0,0,0" />
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -34,21 +34,21 @@
                         Margin="20,1">
                 <TextBlock Text="{DynamicResource About.OpenSource.Repo}" />
                 <HyperlinkButton Content="{DynamicResource About.OpenSource.RepoName}"
-                                 NavigateUri="https://github.com/Round-Studio/BedrockBoot"></HyperlinkButton>
+                                 NavigateUri="https://github.com/Round-Studio/BedrockBoot" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
                         Margin="20,1">
                 <TextBlock Text="{DynamicResource About.OpenSource.Org}" />
                 <HyperlinkButton Content="{DynamicResource About.OpenSource.OrgName}"
-                                 NavigateUri="https://github.com/Round-Studio"></HyperlinkButton>
+                                 NavigateUri="https://github.com/Round-Studio" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
                         Margin="20,1">
                 <TextBlock Text="{DynamicResource About.OpenSource.Repo}" />
                 <HyperlinkButton Content="{DynamicResource About.OpenSource.Issues}"
-                                 NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues"></HyperlinkButton>
+                                 NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues" />
             </StackPanel>
             <TextBlock Margin="20,1" Text="{DynamicResource About.OpenSource.Invitation}" />
 

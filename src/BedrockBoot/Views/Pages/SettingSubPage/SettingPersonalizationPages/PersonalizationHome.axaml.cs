@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 
@@ -13,7 +10,6 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
 public partial class PersonalizationHome : ISettingPage
 {
-    
     public bool IsEdit;
 
     public PersonalizationHome()
@@ -41,9 +37,9 @@ public partial class PersonalizationHome : ISettingPage
     {
         IsEdit = false;
 
-        HomeTypeBox.SelectedIndex = (int)BedrockBoot.Core.Global.GlobalModel.Config.Data.HomeConfig.HomeType;
+        HomeTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.HomeConfig.HomeType;
 
-        switch (BedrockBoot.Core.Global.GlobalModel.Config.Data.HomeConfig.HomeType)
+        switch (GlobalModel.Config.Data.HomeConfig.HomeType)
         {
             case HomeType.None:
                 // 这里可以根据类型切换一些描述文本或控件显示
@@ -59,8 +55,8 @@ public partial class PersonalizationHome : ISettingPage
     {
         if (IsEdit)
         {
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.HomeConfig.HomeType = (HomeType)HomeTypeBox.SelectedIndex;
-            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+            GlobalModel.Config.Data.HomeConfig.HomeType = (HomeType)HomeTypeBox.SelectedIndex;
+            GlobalModel.Config.Save();
 
             Update();
         }

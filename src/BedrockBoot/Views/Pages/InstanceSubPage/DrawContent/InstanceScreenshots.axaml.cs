@@ -59,7 +59,7 @@ public partial class InstanceScreenshots : ISetting
     {
         var paths = new ScreenshotsManager(VersionInfo).GetInstanceScreenshotsPath();
         var path = paths.Values.ToList()[UserChooseBox.SelectedIndex];
-        
+
         OpenFolderHelper.Open(path);
     }
 }

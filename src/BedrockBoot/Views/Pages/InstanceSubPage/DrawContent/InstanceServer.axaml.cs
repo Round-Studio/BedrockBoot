@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Server;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
@@ -16,7 +14,6 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceServer : ISetting
 {
-    private static I18nManager i18n => I18nManager.Instance;
     private readonly ServerManager? _serverManager;
     private string _searchKey = string.Empty;
 
@@ -32,28 +29,28 @@ public partial class InstanceServer : ISetting
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     private int SelIndex => UserChooseBox.SelectedIndex;
     public VersionConfig VersionConfig { get; set; }
 
     /// <summary>
-    /// 初始化 UI 并扫描所有用户的服务器配置文件
+    ///     初始化 UI 并扫描所有用户的服务器配置文件
     /// </summary>
     public void UpdateUI()
     {
         if (_serverManager == null) return;
-        
+
         IsEdit = false;
         UserChooseBox.Items.Clear();
 
         var servers = _serverManager.GetServers();
         foreach (var user in servers)
-        {
             UserChooseBox.Items.Add(new ComboBoxItem
             {
                 Content = user.Key,
                 Tag = user.Value
             });
-        }
 
         if (servers.Count >= 1)
         {
@@ -65,7 +62,7 @@ public partial class InstanceServer : ISetting
     }
 
     /// <summary>
-    /// 根据当前选中的用户和搜索关键词更新服务器列表
+    ///     根据当前选中的用户和搜索关键词更新服务器列表
     /// </summary>
     public void UpdateServer(string userKey)
     {
@@ -90,7 +87,6 @@ public partial class InstanceServer : ISetting
             .ToList();
 
         foreach (var s in filteredList)
-        {
             ResultBox.Children.Add(new GameServerItem(s)
             {
                 DeleteServer = info =>
@@ -99,14 +95,13 @@ public partial class InstanceServer : ISetting
                     UpdateServer(userKey);
                 }
             });
-        }
 
         if (filteredList.Count <= 0)
             NullBox.IsVisible = true;
     }
 
     /// <summary>
-    /// 弹出对话框添加第三方服务器
+    ///     弹出对话框添加第三方服务器
     /// </summary>
     private void AddServerBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -138,12 +133,9 @@ public partial class InstanceServer : ISetting
         if (IsEdit && _serverManager != null)
         {
             _searchKey = SearchBox.Text ?? string.Empty;
-            
+
             var userKeys = _serverManager.GetServers().Keys.ToList();
-            if (SelIndex >= 0 && SelIndex < userKeys.Count)
-            {
-                UpdateServer(userKeys[SelIndex]);
-            }
+            if (SelIndex >= 0 && SelIndex < userKeys.Count) UpdateServer(userKeys[SelIndex]);
         }
     }
 
@@ -152,10 +144,7 @@ public partial class InstanceServer : ISetting
         if (IsEdit && _serverManager != null)
         {
             var userKeys = _serverManager.GetServers().Keys.ToList();
-            if (SelIndex >= 0 && SelIndex < userKeys.Count)
-            {
-                UpdateServer(userKeys[SelIndex]);
-            }
+            if (SelIndex >= 0 && SelIndex < userKeys.Count) UpdateServer(userKeys[SelIndex]);
         }
     }
 }

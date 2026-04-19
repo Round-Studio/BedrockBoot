@@ -1,15 +1,11 @@
 ﻿using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Control.Items.Multiplayer;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
-using PaperConnect.Core.Enum;
 
 namespace BedrockBoot.Views.Pages.MultiplayerPage;
 
@@ -19,7 +15,7 @@ public partial class MultiplayerRoomHost : UserControl
     {
         InitializeComponent();
 
-        GlobalModel.PaperConnectCore.OnPlayerInfoUpdated = (list =>
+        GlobalModel.PaperConnectCore.OnPlayerInfoUpdated = list =>
         {
             Dispatcher.UIThread.Invoke(() =>
             {
@@ -30,13 +26,13 @@ public partial class MultiplayerRoomHost : UserControl
                     PlayerList.Children.Add(new PlayerItem(p));
                 });
             });
-        });
+        };
     }
 
     private void CopyCode_OnClick(object? sender, RoutedEventArgs e)
     {
         TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(GlobalModel.PaperConnectCore.RoomCode);
-        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = "联机大厅",
             Message = "联机码已复制到剪切板"
@@ -47,7 +43,7 @@ public partial class MultiplayerRoomHost : UserControl
     {
         GlobalModel.PaperConnectCore.Stop();
         GlobalModel.PaperConnectCore = null;
-        
+
         Dispatcher.UIThread.Invoke(() =>
             MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoot()));
     }

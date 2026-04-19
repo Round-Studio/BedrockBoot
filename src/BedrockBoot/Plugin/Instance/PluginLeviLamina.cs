@@ -14,11 +14,11 @@ namespace BedrockBoot.Plugin.Instance;
 public class PluginLeviLamina : IInstancePlugin
 {
     private static I18nManager i18n => I18nManager.Instance;
+    public VersionConfig VersionConfig { get; set; } = null!;
 
     public string Name { get; set; } = "LeviLamina";
     public string Description { get; set; } = "基岩版客户端模组加载器";
     public string Icon { get; set; } = "avares://BedrockBoot/Assets/Icon/Other/LeviLauncher.png";
-    public VersionConfig VersionConfig { get; set; } = null!;
 
     public void Init(VersionConfig versionConfig)
     {
@@ -26,7 +26,7 @@ public class PluginLeviLamina : IInstancePlugin
     }
 
     /// <summary>
-    /// 检测当前实例是否已安装 LeviLamina
+    ///     检测当前实例是否已安装 LeviLamina
     /// </summary>
     public bool IsInstalled()
     {
@@ -38,7 +38,7 @@ public class PluginLeviLamina : IInstancePlugin
     }
 
     /// <summary>
-    /// 触发安装/版本选择流程
+    ///     触发安装/版本选择流程
     /// </summary>
     public async Task Install()
     {
@@ -50,7 +50,7 @@ public class PluginLeviLamina : IInstancePlugin
         });
 
         var llmInstaller = new LeviLaminaInstaller(VersionConfig);
-        
+
         try
         {
             // 获取远程版本列表
@@ -69,10 +69,8 @@ public class PluginLeviLamina : IInstancePlugin
                 {
                     var selectedVersion = chooseDialog.Version;
                     if (selectedVersion != null)
-                    {
                         // 触发下载与安装后台任务
                         TaskInstallLeviLaminaItem.Install(selectedVersion, VersionConfig);
-                    }
                 }
             });
         }

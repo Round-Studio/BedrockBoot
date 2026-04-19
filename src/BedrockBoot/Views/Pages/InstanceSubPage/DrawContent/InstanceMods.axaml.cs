@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -20,8 +19,6 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceMods : ISetting
 {
-    private static I18nManager i18n => I18nManager.Instance;
-
     public InstanceMods()
     {
         IsEdit = false;
@@ -39,12 +36,14 @@ public partial class InstanceMods : ISetting
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+
     public VersionConfig VersionInfo { get; set; }
     public ModsManager ModsManager { get; set; }
     private string SearchKey => SearchBox.Text ?? string.Empty;
 
     /// <summary>
-    /// 更新模组列表 UI
+    ///     更新模组列表 UI
     /// </summary>
     private void UpdateUI()
     {
@@ -56,30 +55,20 @@ public partial class InstanceMods : ISetting
         var resultMods = new List<ModInfo>();
 
         foreach (var info in mods)
-        {
             // 使用不区分大小写的包含匹配
             if (string.IsNullOrEmpty(SearchKey) ||
                 info.File.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
-            {
                 resultMods.Add(info);
-            }
-        }
 
         if (resultMods.Count <= 0)
-        {
             NullBox.IsVisible = true;
-        }
         else
-        {
             foreach (var info in resultMods)
-            {
                 ResultBox.Children.Add(new GameModItem(info, VersionInfo)
                 {
                     ModsManager = ModsManager,
                     UpdateCallBack = UpdateUI
                 });
-            }
-        }
 
         IsEdit = true;
     }
@@ -91,20 +80,17 @@ public partial class InstanceMods : ISetting
     }
 
     /// <summary>
-    /// 打开模组所在的物理文件夹
+    ///     打开模组所在的物理文件夹
     /// </summary>
     private void FolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var modPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods");
-        if (!Directory.Exists(modPath))
-        {
-            Directory.CreateDirectory(modPath);
-        }
+        if (!Directory.Exists(modPath)) Directory.CreateDirectory(modPath);
         OpenFolderHelper.Open(modPath);
     }
 
     /// <summary>
-    /// 导入模组文件
+    ///     导入模组文件
     /// </summary>
     private void ImportModBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -127,10 +113,11 @@ public partial class InstanceMods : ISetting
                     return;
                 }
 
-                try 
+                try
                 {
                     var modFileName = Path.GetFileName(dialog.ModFile);
-                    var targetPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods", modFileName);
+                    var targetPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
+                        modFileName);
 
                     // 确保目标目录存在
                     var targetDir = Path.GetDirectoryName(targetPath);

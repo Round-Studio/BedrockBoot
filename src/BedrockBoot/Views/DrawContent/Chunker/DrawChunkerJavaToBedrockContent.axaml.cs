@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Chunker.Base.Enum;
 using BedrockBoot.Models.Global;
@@ -29,6 +26,7 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
     {
         InitializeComponent();
     }
+
     private async void ImportArchive_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog
@@ -37,7 +35,7 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
             AllowMultiple = false,
             Filters = new List<FileDialogFilter>
             {
-                new FileDialogFilter
+                new()
                 {
                     Name = "压缩文件",
                     Extensions = new List<string> { "zip" }
@@ -45,29 +43,25 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
             }
         };
 
-        var window = this.VisualRoot as Window;
+        var window = VisualRoot as Window;
         if (window == null) return;
 
         var result = await dialog.ShowAsync(window);
-        
+
         if (result != null && result.Any())
         {
-            string selectedFile = result.First();
-            
-            string extension = Path.GetExtension(selectedFile).ToLower();
+            var selectedFile = result.First();
+
+            var extension = Path.GetExtension(selectedFile).ToLower();
             if (extension.Contains("zip"))
-            {
                 WorldPath.Text = selectedFile;
-            }
             else
-            {
-                DialogHost.Show(new()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = "错误的文件",
                     Content = "您选择的文件非 zip 文件",
                     CloseButtonText = "确定"
                 });
-            }
         }
     }
 
@@ -79,7 +73,7 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
             DefaultExtension = "mcworld",
             Filters = new List<FileDialogFilter>
             {
-                new FileDialogFilter
+                new()
                 {
                     Name = "Minecraft 基岩版存档文件",
                     Extensions = new List<string> { "mcworld" }
@@ -87,30 +81,28 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
             }
         };
 
-        var window = this.VisualRoot as Window;
+        var window = VisualRoot as Window;
         if (window == null) return;
 
         var result = await dialog.ShowAsync(window);
-        
+
         if (!string.IsNullOrWhiteSpace(result))
-        {
-            DialogHost.Show(new()
+            DialogHost.Show(new DialogInfo
             {
                 Title = "转换存档",
                 Content = new DialogChunkerConversionContent(
-                    ChunkerType.JavaToBedrock, 
+                    ChunkerType.JavaToBedrock,
                     SaveType.File,
-                    BedrockBoot.Chunker.Chunker.SupportJava[GameVersionChoose.SelectedIndex], 
-                    WorldPath.Text!, 
+                    BedrockBoot.Chunker.Chunker.SupportJava[GameVersionChoose.SelectedIndex],
+                    WorldPath.Text!,
                     result)
             });
-        }
     }
 
     private void SaveIns_OnClick(object? sender, RoutedEventArgs e)
     {
         var ins = new DialogChooseGameContent();
-        DialogHost.Show(new()
+        DialogHost.Show(new DialogInfo
         {
             Title = "选择实例",
             Content = ins,
@@ -119,7 +111,7 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
             {
                 var insInfo = ins.VersionConfig;
 
-                DialogHost.Show(new()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = "转换存档",
                     Content = new DialogChunkerConversionContent(
@@ -129,7 +121,7 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
                         WorldPath.Text!,
                         Path.Combine(ChunkerHelper.ChunkerTempFolderPath,
                             $"pack_input_{Guid.NewGuid().ToString().Replace("-", "")}.mcworld"),
-                        (s =>
+                        s =>
                         {
                             Task.Run(() =>
                             {
@@ -139,14 +131,14 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
 
                                 Dispatcher.UIThread.Invoke(() =>
                                 {
-                                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                                     {
                                         Title = "导入完成",
                                         Message = "已完成转换并导入"
                                     });
                                 });
                             });
-                        }))
+                        })
                 });
             },
             PrimaryButtonText = "取消",

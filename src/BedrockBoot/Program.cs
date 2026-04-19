@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -19,7 +18,7 @@ using Round.SDK.Entity;
 using Round.SDK.Enum;
 using Round.SDK.Global;
 using Round.SDK.Logger;
-
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 #if WINDOWS
 using System.Windows.Forms;
 using BedrockBoot.Win32;
@@ -30,27 +29,26 @@ namespace BedrockBoot.Desktop;
 
 internal sealed class Program
 {
+    public static List<string> Args { get; private set; }
+
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
-    
-    public static List<string> Args { get; private set; }
 
     [STAThread]
     public static void Main(string[] args)
     {
         Args = args.ToList();
-        BedrockBoot.Core.Global.GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-        BedrockBoot.Core.Global.GlobalModel.Config.Load();
+        GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
+        GlobalModel.Config.Load();
 
         AppUpdater.ProcessStartupArgs(args);
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
-        EnvironmentLabel.ClientId = $"BedrockBoot {GlobalModel.BodyVersion}";
+        EnvironmentLabel.ClientId = $"BedrockBoot {Models.Global.GlobalModel.BodyVersion}";
 
-        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GatherInfo)
-        {
-            Task.Run(() => AnalyticsService.PushDeviceLog(GlobalModel.BodyVersion).ContinueWith(_ => { }));
-        }
+        if (GlobalModel.Config.Data.GatherInfo)
+            Task.Run(() =>
+                AnalyticsService.PushDeviceLog(Models.Global.GlobalModel.BodyVersion).ContinueWith(_ => { }));
 
 #if WINDOWS
         ApplicationConfiguration.Initialize();
@@ -58,7 +56,7 @@ internal sealed class Program
         if (args.Length > 0 && ArgsAnalytical(args.ToList()))
             return;
 
-        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsConsole)
+        if (GlobalModel.Config.Data.IsConsole)
         {
             AllocConsole();
             Console.OutputEncoding = Encoding.UTF8;
@@ -68,22 +66,22 @@ internal sealed class Program
         var consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
             $"[BedrockBoot.Logger] {DateTime.Now:yyyy.MM.dd HHmmss.fff}.log"));
 
-        string bedrockBootLogo = $"""
-                                  [######]  [######] [######]  [#####]   [#######] [#]  [#]    [######]  [#######] [#######] [#######]
-                                  [#]   [#] [#]      [#]   [#] [#]   [#] [#]   [#] [#] [#]     [#]   [#] [#]   [#] [#]   [#]    [#]   
-                                  [######]  [#####]  [#]   [#] [######]  [#]   [#] [####]      [######]  [#]   [#] [#]   [#]    [#]   
-                                  [#]   [#] [#]      [#]   [#] [#]   [#] [#]   [#] [#] [#]     [#]   [#] [#]   [#] [#]   [#]    [#]   
-                                  [######]  [######] [######]  [#]   [#] [#######] [#]  [#]    [######]  [#######] [#######]    [#]   
+        var bedrockBootLogo = $"""
+                               [######]  [######] [######]  [#####]   [#######] [#]  [#]    [######]  [#######] [#######] [#######]
+                               [#]   [#] [#]      [#]   [#] [#]   [#] [#]   [#] [#] [#]     [#]   [#] [#]   [#] [#]   [#]    [#]   
+                               [######]  [#####]  [#]   [#] [######]  [#]   [#] [####]      [######]  [#]   [#] [#]   [#]    [#]   
+                               [#]   [#] [#]      [#]   [#] [#]   [#] [#]   [#] [#] [#]     [#]   [#] [#]   [#] [#]   [#]    [#]   
+                               [######]  [######] [######]  [#]   [#] [#######] [#]  [#]    [######]  [#######] [#######]    [#]   
 
-                                  >> BedrockBoot Ver.{GlobalModel.BodyVersion}
-                                  ------------------------------------------------------------------------------------------------------
-                                  """;
+                               >> BedrockBoot Ver.{Models.Global.GlobalModel.BodyVersion}
+                               ------------------------------------------------------------------------------------------------------
+                               """;
 
         Console.WriteLine(bedrockBootLogo);
 
-        if ((int)BedrockBoot.Core.Global.GlobalModel.Config.Data.IsolationModel != 0)
-            BedrockBoot.Core.Global.GlobalModel.Config.Data.IsolationModel = IsolationType.Hook;
-        BedrockBoot.Core.Global.GlobalModel.Config.Save();
+        if ((int)GlobalModel.Config.Data.IsolationModel != 0)
+            GlobalModel.Config.Data.IsolationModel = IsolationType.Hook;
+        GlobalModel.Config.Save();
 
 #if WINDOWS
         if (!VCRedistDetector.CheckInInstalledList().IsInstalled)
@@ -98,11 +96,11 @@ internal sealed class Program
                     .AppendLine("详情请参见")
                     .AppendLine("https://docs.roundstudio.top/docs/product/bb/commonQuestion")
                     .ToString(), @"BedrockBoot 警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-            
+
             if (dialog == DialogResult.OK)
             {
                 Application.Run(new DownloadVCWindow());
-                
+
                 return;
             }
         }
@@ -114,7 +112,6 @@ internal sealed class Program
     private static bool ArgsAnalytical(List<string> args)
     {
         foreach (var arg in args)
-        {
             switch (arg)
             {
                 case "-update":
@@ -160,7 +157,7 @@ internal sealed class Program
                     args.ForEach(Console.WriteLine);
 
 #if WINDOWS
-                    Application.Run(new LaunchWindow(args.ToList()));         
+                    Application.Run(new LaunchWindow(args.ToList()));
 #endif
                     return true;
 
@@ -169,14 +166,13 @@ internal sealed class Program
                     args.ForEach(Console.WriteLine);
 
                     // Application.Run(new ImportResourcePack(args.ToList()));
-                    GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+                    Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
 
-                    if (Args.Contains("--resource")) GlobalModel.AppRunType = AppRunType.OpenResourcePack;
-                    if (Args.Contains("--world")) GlobalModel.AppRunType = AppRunType.OpenWorldPack;
-                    
+                    if (Args.Contains("--resource")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+                    if (Args.Contains("--world")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenWorldPack;
+
                     return false;
             }
-        }
 
         return false;
     }

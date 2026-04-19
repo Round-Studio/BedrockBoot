@@ -1,12 +1,7 @@
-﻿using System.IO;
-using System.Linq;
-using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
@@ -17,9 +12,14 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 
 public partial class LevelSettingsBackup : UserControl
 {
-    private ArchiveInfo _info;
-    public LevelSettingsBackup() => InitializeComponent();
-    public LevelSettingsBackup(ArchiveInfo info):this()
+    private readonly ArchiveInfo _info;
+
+    public LevelSettingsBackup()
+    {
+        InitializeComponent();
+    }
+
+    public LevelSettingsBackup(ArchiveInfo info) : this()
     {
         _info = info;
         UpdateBackup();
@@ -28,7 +28,7 @@ public partial class LevelSettingsBackup : UserControl
     private void CreateBackup_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogCreateBackupContent();
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Content = dialog,
             Title = "新建备份",
@@ -38,17 +38,17 @@ public partial class LevelSettingsBackup : UserControl
             CloseAction = () =>
             {
                 var name = dialog.BackupNameInfo;
-                DialogHost.Show(new DialogInfo()
+                DialogHost.Show(new DialogInfo
                 {
                     Title = "备份存档",
                     Content = new DialogBackupProgressContent(_info, name, () =>
                     {
                         UpdateBackup();
-                        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                        GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                         {
                             Title = "存档备份",
                             Message = $"已成功备份 {name}",
-                            NoticeType = NoticeType.Info,
+                            NoticeType = NoticeType.Info
                         });
                     })
                 });
@@ -60,7 +60,7 @@ public partial class LevelSettingsBackup : UserControl
     {
         var uuid = _info.Uuid;
         var backups = GlobalModel.ArchiveBackup.GetArchiveBackupsWhitUuid(uuid);
-        
+
         NullBox.IsVisible = false;
         LoadingCard.IsVisible = true;
         ArchiveScrollViewer.IsVisible = false;
@@ -89,7 +89,7 @@ public partial class LevelSettingsBackup : UserControl
                 RefreshCallBack = UpdateBackup
             });
         });
-        
+
         NullBox.IsVisible = false;
         LoadingCard.IsVisible = false;
         ArchiveScrollViewer.IsVisible = true;

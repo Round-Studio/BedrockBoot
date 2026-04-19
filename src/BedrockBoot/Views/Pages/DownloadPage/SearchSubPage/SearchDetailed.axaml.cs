@@ -16,6 +16,7 @@ using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using BedrockLauncher.Core;
+using Round.SDK.Entity;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
@@ -74,6 +75,14 @@ public partial class SearchDetailed : ISetting
             // 同时更新UI控件的选择
             if (ResourceTypeBox != null && ResourceTypeBox.SelectedIndex != (int)info.Type)
                 ResourceTypeBox.SelectedIndex = (int)info.Type;
+        }
+
+        if (!string.IsNullOrEmpty(info.Key))
+        {
+            var searchHis = new ConfigEntity<List<SearchInfo>>(PathsList.HistoryPath);
+            searchHis.Data.RemoveAll(x => x.Key == info.Key);
+            searchHis.Data.Add(info);
+            searchHis.Save();
         }
 
         // 重置分页状态
@@ -138,9 +147,9 @@ public partial class SearchDetailed : ISetting
                     var allVersions = VersionHelper.GetVersions()
                         .Where(x => (x.ID.ToLower().Contains(info.Key) ||
                                      x.BuildType.ToString().ToLower().Contains(info.Key)) &&
-                                    x.Type == (BedrockLauncher.Core.MinecraftGameTypeVersion)GameType.SelectedIndex)
+                                    x.Type == (MinecraftGameTypeVersion)GameType.SelectedIndex)
 #if LINUX
-                        .Where(x=>x.BuildType == MinecraftBuildTypeVersion.GDK)           
+                        .Where(x=>x.BuildType == MinecraftBuildTypeVersion.GDK)
 #endif
                         .ToList();
 
@@ -159,7 +168,7 @@ public partial class SearchDetailed : ISetting
                         {
                             Name = i.ID,
                             Description = $"{i.BuildType}, {i.Date}",
-                            IconUri = i.Type == BedrockLauncher.Core.MinecraftGameTypeVersion.Release
+                            IconUri = i.Type == MinecraftGameTypeVersion.Release
                                 ? "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png"
                                 : "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png",
                             OnClick = s =>

@@ -13,6 +13,6 @@
                    VerticalAlignment="Bottom"
                    FontWeight="950"
                    Margin="0,0,0,0"
-                   Opacity="0.2"></TextBlock>
+                   Opacity="0.2" />
     </Grid>
 </UserControl>

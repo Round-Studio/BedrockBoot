@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Chunker.Base.Enum;
 using BedrockBoot.Chunker.Event;
@@ -16,12 +14,12 @@ public partial class DialogDownloadChunkerContent : UserControl
     {
         InitializeComponent();
     }
-    
+
     public void Download(Action action)
     {
         Task.Run(async () =>
         {
-           await BedrockBoot.Chunker.Chunker.DownloadChunker(DownloadType.Github,
+            await BedrockBoot.Chunker.Chunker.DownloadChunker(DownloadType.Github,
                 new Progress<DownloadProgressEventArgs>(pro =>
                 {
                     Dispatcher.UIThread.Invoke(() =>
@@ -30,9 +28,9 @@ public partial class DialogDownloadChunkerContent : UserControl
                         ProgressBar.Value = pro.Percentage;
                     });
                 }));
-           
-           Dispatcher.UIThread.Invoke(DialogHost.Close);
-           action.Invoke();
+
+            Dispatcher.UIThread.Invoke(DialogHost.Close);
+            action.Invoke();
         });
     }
 }

@@ -14,7 +14,7 @@ public class ExceptionHelper
     public static List<ErrorReport> GetAllReport()
     {
         if (!Path.Exists(ExceptionFilesFolder))
-            return new();
+            return new List<ErrorReport>();
 
         return Directory.GetFiles(ExceptionFilesFolder)
             .ToList()

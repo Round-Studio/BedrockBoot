@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace BedrockBoot.Interface;
 
 /// <summary>
-/// 翻译服务接口
+///     翻译服务接口
 /// </summary>
 public interface ITranslationService
 {
     /// <summary>
-    /// 翻译单个文本
+    ///     翻译单个文本
     /// </summary>
     /// <param name="text">待翻译文本</param>
     /// <param name="sourceLanguage">源语言代码</param>

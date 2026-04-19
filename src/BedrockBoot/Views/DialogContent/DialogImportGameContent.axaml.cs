@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Pack.Game.Import;
 using BedrockLauncher.Core;
 
@@ -16,20 +16,20 @@ public partial class DialogImportGameContent : UserControl
     {
         InitializeComponent();
 
-        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.ForEach(f =>
+        GlobalModel.Config.Data.GameFolders.ForEach(f =>
             GameInstallFoldersInputBox.Items.Add($"[{f.GameFolderName}] {f.GameFolderPath}"));
 
-        if (BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count > 0)
-            GameInstallFoldersInputBox.SelectedIndex = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex;
+        if (GlobalModel.Config.Data.GameFolders.Count > 0)
+            GameInstallFoldersInputBox.SelectedIndex = GlobalModel.Config.Data.GameFolderSelIndex;
     }
 
     public string PackFile => PathInputBox.Text;
     public string PackInstallName => NameInputBox.Text;
     public bool DontKnowGameType => (bool)DontKnowGameTypeCheckBox.IsChecked;
-    public BedrockLauncher.Core.MinecraftGameTypeVersion GameType => (MinecraftGameTypeVersion)RealGameBuildTypeInputBox.SelectedIndex;
+    public MinecraftGameTypeVersion GameType => (MinecraftGameTypeVersion)RealGameBuildTypeInputBox.SelectedIndex;
 
-    public string PackInstallFolder => BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Count != 0
-        ? BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders[GameInstallFoldersInputBox.SelectedIndex].GameFolderPath
+    public string PackInstallFolder => GlobalModel.Config.Data.GameFolders.Count != 0
+        ? GlobalModel.Config.Data.GameFolders[GameInstallFoldersInputBox.SelectedIndex].GameFolderPath
         : string.Empty;
 
     private async void OpenChooseFileBtn_OnClick(object? sender, RoutedEventArgs e)

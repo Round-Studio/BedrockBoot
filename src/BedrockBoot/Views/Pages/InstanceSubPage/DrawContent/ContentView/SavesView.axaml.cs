@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
@@ -15,15 +13,6 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ContentView;
 
 public partial class SavesView : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    public VersionConfig VersionInfo { get; set; }
-    public ArchiveManifest? ArchiveManifest { get; private set; }
-    public bool IsEdit { get; set; }
-    public Action<ArchiveInfo>? EditAction { get; set; }
-
-    private string SearchKey => SearchBox.Text ?? string.Empty;
-    private int SelIndex => UserChooseBox.SelectedIndex;
-
     public SavesView()
     {
         IsEdit = false;
@@ -36,13 +25,22 @@ public partial class SavesView : UserControl
         UpdateUI();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+    public VersionConfig VersionInfo { get; set; }
+    public ArchiveManifest? ArchiveManifest { get; private set; }
+    public bool IsEdit { get; set; }
+    public Action<ArchiveInfo>? EditAction { get; set; }
+
+    private string SearchKey => SearchBox.Text ?? string.Empty;
+    private int SelIndex => UserChooseBox.SelectedIndex;
+
     /// <summary>
-    /// 初始化并刷新存档元数据
+    ///     初始化并刷新存档元数据
     /// </summary>
     private void UpdateUI()
     {
         IsEdit = false;
-        
+
         // 执行存档目录扫描
         var checker = new ArchiveCheck(VersionInfo);
         ArchiveManifest = checker.Check();
@@ -52,13 +50,11 @@ public partial class SavesView : UserControl
         if (ArchiveManifest?.Manifest != null)
         {
             foreach (var user in ArchiveManifest.Manifest)
-            {
                 UserChooseBox.Items.Add(new ComboBoxItem
                 {
                     Content = user.Key,
                     Tag = user.Value
                 });
-            }
 
             if (ArchiveManifest.Manifest.Count > 0)
             {
@@ -72,7 +68,7 @@ public partial class SavesView : UserControl
     }
 
     /// <summary>
-    /// 将存档对象渲染到 UI 列表
+    ///     将存档对象渲染到 UI 列表
     /// </summary>
     public void UpdateSaves(List<ArchiveInfo> saves)
     {
@@ -80,18 +76,16 @@ public partial class SavesView : UserControl
         NullBox.IsVisible = saves.Count <= 0;
 
         foreach (var save in saves)
-        {
             SavesBox.Children.Add(new ArchiveItem(save)
             {
                 EditAction = () =>
                     EditAction?.Invoke(save),
                 RefreshCallBack = UpdateUI
             });
-        }
     }
 
     /// <summary>
-    /// 处理搜索和用户切换逻辑
+    ///     处理搜索和用户切换逻辑
     /// </summary>
     public void UpdateSearch()
     {
@@ -146,7 +140,7 @@ public partial class SavesView : UserControl
     }
 
     /// <summary>
-    /// 导入 .mcworld 存档包
+    ///     导入 .mcworld 存档包
     /// </summary>
     private async void ImportPackBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -173,8 +167,8 @@ public partial class SavesView : UserControl
 
             var checker = new ArchiveCheck(VersionInfo);
             // 默认导入到 Shared 目录（公共目录）
-            checker.ImportWorldPack(path, "Shared");
-            
+            checker.ImportWorldPack(path);
+
             UpdateUI();
         }
     }

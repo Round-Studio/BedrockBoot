@@ -10,25 +10,25 @@
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                 <TextBlock FontSize="22"
-                           Text="欢迎使用文件找回工具"></TextBlock>
+                           Text="欢迎使用文件找回工具" />
             </StackPanel>
         </Grid>
-        
+
         <Grid Grid.Row="1">
             <StackPanel HorizontalAlignment="Center"
                         Spacing="8">
                 <Button Padding="36,8">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="16">
-                        <onePointControls:FontIcon VerticalAlignment="Center"/>
-                        <TextBlock Text="开始使用"></TextBlock>
+                        <onePointControls:FontIcon VerticalAlignment="Center" />
+                        <TextBlock Text="开始使用" />
                     </StackPanel>
                 </Button>
                 <Button Padding="36,8">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="16">
-                        <onePointControls:FontIcon VerticalAlignment="Center"/>
-                        <TextBlock Text="开始使用"></TextBlock>
+                        <onePointControls:FontIcon VerticalAlignment="Center" />
+                        <TextBlock Text="开始使用" />
                     </StackPanel>
                 </Button>
             </StackPanel>

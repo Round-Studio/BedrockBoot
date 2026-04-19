@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.Integration;
@@ -14,14 +13,11 @@ namespace BedrockBoot.Views.DialogContent;
 
 public partial class DialogMakeIntegrationPackContent : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    public PackInfo? PackInfo { get; set; }
-
     public DialogMakeIntegrationPackContent()
     {
         InitializeComponent();
     }
-    
+
     public DialogMakeIntegrationPackContent(PackInfo packInfo) : this()
     {
         PackInfo = packInfo;
@@ -29,8 +25,11 @@ public partial class DialogMakeIntegrationPackContent : UserControl
         StartPackaging();
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+    public PackInfo? PackInfo { get; set; }
+
     /// <summary>
-    /// 开始打包整合包
+    ///     开始打包整合包
     /// </summary>
     public void StartPackaging()
     {
@@ -41,18 +40,18 @@ public partial class DialogMakeIntegrationPackContent : UserControl
             try
             {
                 var packer = new IntegrationPackager(PackInfo.VersionConfig);
-                
+
                 // 进度回调逻辑
                 packer.IntegrationProgress = new Progress<IntegrationProgress>(progress =>
                 {
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         // 首次接收到具体进度时关闭不确定状态
-                        if (ProgressBar.IsIndeterminate) 
+                        if (ProgressBar.IsIndeterminate)
                             ProgressBar.IsIndeterminate = false;
 
                         ProgressBar.Value = progress.Progress;
-                        
+
                         // 格式化输出：例如 (85.50 %) 正在压缩资源...
                         ProgressText.Text = $"({progress.Progress:F2} %) {progress.Message}";
                     });
@@ -62,7 +61,7 @@ public partial class DialogMakeIntegrationPackContent : UserControl
                 packer.CompleteCallBack = () => Dispatcher.UIThread.Invoke(() =>
                 {
                     DialogHost.Close();
-                    
+
                     GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                     {
                         NoticeType = NoticeType.Info,

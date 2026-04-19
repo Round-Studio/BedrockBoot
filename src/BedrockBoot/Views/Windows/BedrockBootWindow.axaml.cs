@@ -9,7 +9,7 @@ using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Enum;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Core.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;
 
@@ -36,7 +36,7 @@ public partial class BedrockBootWindow : Window
                     if (OperatingSystem.IsWindows())
                     {
                         if (WindowState == WindowState.Maximized &&
-                            !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow)
+                            !GlobalModel.Config.Data.IsUseSystemWindow)
                             Padding = new Thickness(8);
                         else Padding = new Thickness(0);
                     }
@@ -44,7 +44,7 @@ public partial class BedrockBootWindow : Window
                     if (WindowState == WindowState.Maximized) MaxBtnIcon.Glyph = "\uE923";
                     else MaxBtnIcon.Glyph = "\uE922";
 
-                    BackgroundCover.IsVisible = BedrockBoot.Core.Global.GlobalModel.Config.Data.StyleConfig.StyleType ==
+                    BackgroundCover.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType ==
                                                 StyleType.Blur;
 
                     TitleBlock.Text = Title;
@@ -56,18 +56,6 @@ public partial class BedrockBootWindow : Window
         });
         _stateTimer.Change(TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
         BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
-    }
-
-    public void UpdateWindowBorder()
-    {
-        MaxBtn.IsVisible = !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
-        MinBtn.IsVisible = !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
-        CloseBtn.IsVisible = !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
-        ExtendClientAreaToDecorationsHint = !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
-        ExtendClientAreaTitleBarHeightHint = -1;
-        ExtendClientAreaChromeHints = BedrockBoot.Core.Global.GlobalModel.Config.Data.IsUseSystemWindow
-            ? ExtendClientAreaChromeHints.Default
-            : ExtendClientAreaChromeHints.NoChrome;
     }
 
     public bool IsMainWindow
@@ -137,6 +125,20 @@ public partial class BedrockBootWindow : Window
     private bool _isMainWindow { get; set; }
     private bool _isMinBtn { get; set; } = true;
     private bool _isMaxBtn { get; set; } = true;
+
+    public bool IsTaskCardOpen { get; private set; }
+
+    public void UpdateWindowBorder()
+    {
+        MaxBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
+        MinBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
+        CloseBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
+        ExtendClientAreaToDecorationsHint = !GlobalModel.Config.Data.IsUseSystemWindow;
+        ExtendClientAreaTitleBarHeightHint = -1;
+        ExtendClientAreaChromeHints = GlobalModel.Config.Data.IsUseSystemWindow
+            ? ExtendClientAreaChromeHints.Default
+            : ExtendClientAreaChromeHints.NoChrome;
+    }
 
     private void UpdateUI()
     {
@@ -212,35 +214,34 @@ public partial class BedrockBootWindow : Window
         SetBorderState(false);
     }
 
-    public bool IsTaskCardOpen { get; private set; } = false;
     public void OpenTaskCard()
     {
         TaskCard.Margin = new Thickness(10);
-        ContentView.Effect = new BlurEffect()
+        ContentView.Effect = new BlurEffect
         {
             Radius = 50
         };
-        BackgroundGroupBox.Effect = new BlurEffect()
+        BackgroundGroupBox.Effect = new BlurEffect
         {
             Radius = 50
         };
-        BackgroundGroupBox.Margin = new(-50);
+        BackgroundGroupBox.Margin = new Thickness(-50);
         IsTaskCardOpen = true;
         BlackView.IsVisible = true;
     }
-    
+
     public void CloseTaskCard()
     {
-        TaskCard.Margin = new Thickness(500,10,-500,10);
-        ContentView.Effect = new BlurEffect()
+        TaskCard.Margin = new Thickness(500, 10, -500, 10);
+        ContentView.Effect = new BlurEffect
         {
             Radius = 0
         };
-        BackgroundGroupBox.Effect = new BlurEffect()
+        BackgroundGroupBox.Effect = new BlurEffect
         {
             Radius = 0
         };
-        BackgroundGroupBox.Margin = new(0);
+        BackgroundGroupBox.Margin = new Thickness(0);
         IsTaskCardOpen = false;
         BlackView.IsVisible = false;
     }

@@ -28,7 +28,7 @@
                     </DockPanel>
                 </Grid>
             </items:BorderCard>
-            
+
             <items:BorderCard Grid.Column="1"
                               Margin="12,8,20,10">
                 <StackPanel Orientation="Horizontal">
@@ -38,7 +38,7 @@
                             Height="32"
                             Name="OpenFolderBtn"
                             Click="OpenFolderBtn_OnClick">
-                        <onePointControls:FontIcon Glyph="&#xE8B7;"></onePointControls:FontIcon>
+                        <onePointControls:FontIcon Glyph="&#xE8B7;" />
                     </Button>
                 </StackPanel>
             </items:BorderCard>

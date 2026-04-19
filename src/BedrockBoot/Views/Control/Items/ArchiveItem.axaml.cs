@@ -7,7 +7,6 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Base.Entry.Game.Pack.Archive.Backup;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
@@ -18,11 +17,6 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class ArchiveItem : UserControl
 {
-    private static I18nManager i18n => I18nManager.Instance;
-    public ArchiveInfo? ArchiveInfo { get; set; }
-    public Action? EditAction { get; set; }
-    public Action? RefreshCallBack { get; set; }
-
     public ArchiveItem()
     {
         InitializeComponent();
@@ -32,12 +26,17 @@ public partial class ArchiveItem : UserControl
     {
         ArchiveInfo = info;
         UpdateUI();
-        
+
         ControlPanel.IsVisible = !isView;
     }
 
+    private static I18nManager i18n => I18nManager.Instance;
+    public ArchiveInfo? ArchiveInfo { get; set; }
+    public Action? EditAction { get; set; }
+    public Action? RefreshCallBack { get; set; }
+
     /// <summary>
-    /// 更新存档卡片 UI
+    ///     更新存档卡片 UI
     /// </summary>
     public void UpdateUI()
     {
@@ -77,7 +76,7 @@ public partial class ArchiveItem : UserControl
     }
 
     /// <summary>
-    /// 在资源管理器中打开存档目录
+    ///     在资源管理器中打开存档目录
     /// </summary>
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -87,7 +86,7 @@ public partial class ArchiveItem : UserControl
     }
 
     /// <summary>
-    /// 导出存档为 .mcworld 包
+    ///     导出存档为 .mcworld 包
     /// </summary>
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -141,7 +140,7 @@ public partial class ArchiveItem : UserControl
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "删除警告",
             Content = "你确定要删除此存档吗，这将会失去很久...",
@@ -150,7 +149,7 @@ public partial class ArchiveItem : UserControl
             CloseAction = () =>
             {
                 ArchiveInfo.Delete();
-                
+
                 RefreshCallBack?.Invoke();
             }
         });

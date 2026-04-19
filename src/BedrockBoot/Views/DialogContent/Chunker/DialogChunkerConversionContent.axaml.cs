@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Chunker.Base.Enum;
@@ -28,7 +26,7 @@ public partial class DialogChunkerConversionContent : UserControl
         Action<string>? complete = null) : this()
     {
         GlobalModel.MainWindow.CloseDraw();
-        
+
         Task.Run(() =>
         {
             var chunkerHelper = new ChunkerHelper(type, gameVersion, archivePath,

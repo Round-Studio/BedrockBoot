@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 
@@ -51,12 +52,12 @@ public class CurseForgeApiClient
         {
             Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
             BaseAddress =
-                new Uri(SourceList.CurseForgeSource.Values.ToList()[BedrockBoot.Core.Global.GlobalModel.Config.Data.CurseForgeSourceIndex]),
+                new Uri(SourceList.CurseForgeSource.Values.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex]),
             DefaultRequestVersion = HttpVersion.Version20
         };
 
         // 设置默认请求头
-        _sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"BedrockBoot/{GlobalModel.BodyVersion}");
+        _sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"BedrockBoot/{Global.GlobalModel.BodyVersion}");
         _sharedHttpClient.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
     }
@@ -546,10 +547,11 @@ public class CurseForgeApiClient
                 };
 
                 // 设置默认请求头
-                sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"BedrockBoot/{GlobalModel.BodyVersion}");
+                sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
+                    $"BedrockBoot/{Global.GlobalModel.BodyVersion}");
                 sharedHttpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
-                
+
                 var url = $"v1/mods/{modId}/description";
 
                 // 创建请求
@@ -568,7 +570,8 @@ public class CurseForgeApiClient
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
-                var descriptionResponse = JsonSerializer.Deserialize<CurseForgeResponse.ModDescriptionResponse>(json, options);
+                var descriptionResponse =
+                    JsonSerializer.Deserialize<CurseForgeResponse.ModDescriptionResponse>(json, options);
                 return descriptionResponse?.Data ?? string.Empty;
             }
             catch (HttpRequestException ex) when (retryCount < maxRetries &&

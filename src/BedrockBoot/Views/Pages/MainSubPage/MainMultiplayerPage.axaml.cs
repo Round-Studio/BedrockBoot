@@ -4,9 +4,6 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Core.Models.Xbox;
@@ -31,34 +28,27 @@ public partial class MainMultiplayerPage : BedrockBootPage
 
         if (!File.Exists(Path.Combine(PathsList.EasyTierPath, "easytier-windows-x86_64", "easytier-core.exe")) ||
             !File.Exists(Path.Combine(PathsList.EasyTierPath, "easytier-windows-x86_64", "easytier-cli.exe")))
-        {
             MainFrame.NavigateTo(new MultiplayerDependenceDownload());
-        }
         else
-        {
             MainFrame.NavigateTo(new MultiplayerRoot());
-        }
-        
-        if (GlobalModel.ETPublicServer == null)
-        {
-            GetETNodes();
-        }
+
+        if (GlobalModel.ETPublicServer == null) GetETNodes();
 
         if (GlobalModel.PaperConnectCore != null)
         {
             if (GlobalModel.PaperConnectCore.CoreType == CoreType.Server)
                 Dispatcher.UIThread.Invoke(() =>
-                    MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomHost()));
-            
+                    NavigationFrame.NavigateTo(new MultiplayerRoomHost()));
+
             if (GlobalModel.PaperConnectCore.CoreType == CoreType.Client)
                 Dispatcher.UIThread.Invoke(() =>
-                    MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomGuest()));
+                    NavigationFrame.NavigateTo(new MultiplayerRoomGuest()));
         }
     }
 
     private void GetETNodes()
     {
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "获取节点服务器",
             Content = "正在获取节点服务器..."
@@ -69,11 +59,11 @@ public partial class MainMultiplayerPage : BedrockBootPage
 
             try
             {
-                string url = "https://et-public-node.roundstudio.top/";
-                HttpResponseMessage response = await client.GetAsync(url);
+                var url = "https://et-public-node.roundstudio.top/";
+                var response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                List<string>? nodeList = JsonSerializer.Deserialize<List<string>>(jsonResponse);
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var nodeList = JsonSerializer.Deserialize<List<string>>(jsonResponse);
 
                 if (nodeList != null)
                 {
@@ -99,7 +89,7 @@ public partial class MainMultiplayerPage : BedrockBootPage
 
     private void GetXboxUser()
     {
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "获取 Xbox 登录状态",
             Content = "正在获取本机 Xbox 登录状态..."
@@ -114,7 +104,7 @@ public partial class MainMultiplayerPage : BedrockBootPage
                 Dispatcher.UIThread.Invoke(DialogHost.Close);
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    DialogHost.Show(new DialogInfo()
+                    DialogHost.Show(new DialogInfo
                     {
                         Title = "Xbox 服务",
                         Content = "未登录 Xbox，可能会导致无法进行多人游戏",
@@ -128,7 +118,7 @@ public partial class MainMultiplayerPage : BedrockBootPage
                 Dispatcher.UIThread.Invoke(DialogHost.Close);
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    DialogHost.Show(new DialogInfo()
+                    DialogHost.Show(new DialogInfo
                     {
                         Title = "Xbox 服务",
                         Content = "无法获取 Xbox 登录状态，可能会导致无法进行多人游戏",

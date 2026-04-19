@@ -8,49 +8,47 @@
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings.LevelSettingsBackup">
     <Grid RowSpacing="8">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.Row="0"
               Margin="20,0">
-            <TextBlock Text="存档备份" VerticalAlignment="Center" FontSize="16"/>
-            
+            <TextBlock Text="存档备份" VerticalAlignment="Center" FontSize="16" />
+
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
                 <Button Classes="Accent" Name="CreateBackup"
                         Click="CreateBackup_OnClick"
                         HorizontalAlignment="Right" Padding="12,0" Height="32">
                     <StackPanel Orientation="Horizontal" Spacing="6">
-                        <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE710;"/>
-                        <TextBlock Text="新建备份" VerticalAlignment="Center"/>
+                        <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE710;" />
+                        <TextBlock Text="新建备份" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
             </StackPanel>
         </Grid>
-        
+
         <ScrollViewer Grid.Row="1"
                       Name="ArchiveScrollViewer">
             <StackPanel Margin="20,0"
                         Name="ArchivesBox"
-                        Spacing="8">
-                
-            </StackPanel>
+                        Spacing="8" />
         </ScrollViewer>
-        
+
         <notice:InfoCard Grid.Row="1"
                          Name="NullBox"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          IsVisible="False"
                          BigTitle="空"
-                         Message="还没有任何一个备份"/>
-        
+                         Message="还没有任何一个备份" />
+
         <notice:LoadCard Grid.Row="1"
                          Name="LoadingCard"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          BigTitle="请稍后"
-                         Message="加载备份中"/>
+                         Message="加载备份中" />
     </Grid>
 </UserControl>

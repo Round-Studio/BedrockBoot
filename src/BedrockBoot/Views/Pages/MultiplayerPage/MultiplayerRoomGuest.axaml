@@ -13,25 +13,25 @@
                        FontSize="14">
                 你已加入房间，可启动游戏后加入
             </TextBlock>
-        
+
             <onePointControls:SettingCard Header="退出房间"
                                           Description="退出该房间"
                                           IsClickable="True"
                                           Name="CloseBtn"
                                           Click="CloseBtn_OnClick"
-                                          Glyph="&#xE711;"/>
-            
+                                          Glyph="&#xE711;" />
+
             <TextBlock FontWeight="Bold"
                        FontSize="14">
                 已连接的玩家
             </TextBlock>
         </StackPanel>
-        
+
         <ScrollViewer Grid.Row="1"
                       Margin="0,8,5,0">
             <StackPanel Margin="0,0,15,0"
                         Spacing="8"
-                        Name="PlayerList"></StackPanel>
+                        Name="PlayerList" />
         </ScrollViewer>
     </Grid>
 </UserControl>

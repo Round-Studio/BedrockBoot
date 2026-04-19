@@ -1,7 +1,5 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent.Chunker;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;

@@ -111,30 +111,28 @@ jobs:
           path: ./dist
           merge-multiple: true
 
-      - name: Generate Smart Changelog
+      - name: Generate Smart Changelog (only from releases)
         id: commits
         run: |
-          # 获取上一个 Release 的标签 (排除当前的 tag)
-          # 如果没有上一个标签，则获取所有 commit
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          # 获取上一个 Release 的标签 (排除当前 tag)
+          PREVIOUS_TAG=$(git tag -l "v2.*.*.*" | grep -v "${{ needs.version.outputs.tag }}" | sort -V | tail -n 1 || echo "")
           
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           if [ -z "$PREVIOUS_TAG" ]; then
-            echo "首次构建，显示最近 5 条变更：" >> $GITHUB_OUTPUT
-            git log -5 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+            echo "首次 Pre-Release 构建，显示最近 10 条变更：" >> $GITHUB_OUTPUT
+            git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            echo "自 $PREVIOUS_TAG 以来的变更：" >> $GITHUB_OUTPUT
-            # 获取从上一个标签到当前 HEAD 的所有提交记录
+            echo "自 Release [$PREVIOUS_TAG] 以来的变更：" >> $GITHUB_OUTPUT
+            # 只获取两个 release 标签之间的提交
             CHANGES=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)")
             if [ -z "$CHANGES" ]; then
-              echo "- 内部优化与小改动" >> $GITHUB_OUTPUT
+              echo "- 无功能变更，可能为依赖更新或配置调整" >> $GITHUB_OUTPUT
             else
               echo "$CHANGES" >> $GITHUB_OUTPUT
             fi
           fi
           echo "" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-      
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

@@ -18,7 +18,7 @@
                                   Name="IsAutoCheckUpdate"
                                   IsCheckedChanged="IsAutoCheckUpdate_OnIsCheckedChanged" />
                 </onePointControls:SettingCard>
-                
+
                 <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Update.Channel.Title}"
                                               Description="{DynamicResource Settings.Universal.Update.Channel.Desc}"
                                               Glyph="&#xE728;">
@@ -26,8 +26,8 @@
                               SelectedIndex="0"
                               Name="UpdateTypeBox"
                               SelectionChanged="UpdateTypeBox_OnSelectionChanged">
-                        <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Release}"></ComboBoxItem>
-                        <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Preview}"></ComboBoxItem>
+                        <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Release}" />
+                        <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Preview}" />
                     </ComboBox>
                 </onePointControls:SettingCard>
 
@@ -39,8 +39,7 @@
                             Height="36" Width="100"
                             Name="CheckUpdateBtn"
                             Content="{DynamicResource About.Action.CheckUpdate}"
-                            Click="CheckUpdateBtn_OnClick">
-                    </Button>
+                            Click="CheckUpdateBtn_OnClick" />
                 </onePointControls:SettingCard>
             </StackPanel>
 

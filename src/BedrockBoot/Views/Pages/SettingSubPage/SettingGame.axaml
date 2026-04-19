@@ -30,7 +30,7 @@
                                           Description="为了防止鼠标越过游戏窗口边界，导致误触其他东西的功能"
                                           Glyph="&#xE72E;">
                 <ToggleSwitch Name="MouseLockSwitch"
-                              IsCheckedChanged="MouseLockSwitch_OnIsCheckedChanged"></ToggleSwitch>
+                              IsCheckedChanged="MouseLockSwitch_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"

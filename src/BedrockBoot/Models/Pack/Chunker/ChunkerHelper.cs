@@ -11,7 +11,7 @@ public class ChunkerHelper
 {
     public static readonly string ChunkerTempFolderPath =
         Path.Combine(BedrockBoot.Chunker.Chunker.ChunkerFolderPath, "Temp");
-    
+
     private readonly ChunkerInfo _info;
 
     public ChunkerHelper(
@@ -21,7 +21,7 @@ public class ChunkerHelper
         JavaInfo javaInfo,
         IProgress<double> progress)
     {
-        _info = new()
+        _info = new ChunkerInfo
         {
             JvmInfo = javaInfo,
             ChunkerType = type,
@@ -36,31 +36,33 @@ public class ChunkerHelper
         if (!IsDirectory(archivePath))
         {
             _info.Progress?.Report(10);
-            var folder = Path.Combine(ChunkerTempFolderPath, $"pack_input_{Guid.NewGuid().ToString().Replace("-", "")}");
+            var folder = Path.Combine(ChunkerTempFolderPath,
+                $"pack_input_{Guid.NewGuid().ToString().Replace("-", "")}");
 
             ZipHelper.ExtractZipFile(archivePath, folder);
             archivePath = folder;
         }
-        
+
         if (type == ChunkerType.BedrockToJava)
             _info.BedrockWorldFolder = archivePath;
         if (type == ChunkerType.JavaToBedrock)
             _info.JavaWorldFolder = archivePath;
-        
+
         _info.Progress?.Report(20);
     }
 
     public string Conversion()
     {
-        var outputDir = Path.Combine(ChunkerTempFolderPath, $"pack_output_{Guid.NewGuid().ToString().Replace("-", "")}");
-        
+        var outputDir = Path.Combine(ChunkerTempFolderPath,
+            $"pack_output_{Guid.NewGuid().ToString().Replace("-", "")}");
+
         if (_info.ChunkerType == ChunkerType.BedrockToJava)
             _info.JavaWorldFolder = outputDir;
         if (_info.ChunkerType == ChunkerType.JavaToBedrock)
             _info.BedrockWorldFolder = outputDir;
         var chunker = new BedrockBoot.Chunker.Chunker();
         chunker.BeginChunker(_info);
-        
+
         return outputDir;
     }
 
@@ -97,10 +99,10 @@ public class ChunkerHelper
     {
         if (string.IsNullOrEmpty(path))
             return false;
-    
+
         try
         {
-            FileAttributes attr = File.GetAttributes(path);
+            var attr = File.GetAttributes(path);
             return attr.HasFlag(FileAttributes.Directory);
         }
         catch

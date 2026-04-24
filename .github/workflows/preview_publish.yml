@@ -109,32 +109,28 @@ jobs:
         id: commits
         shell: bash
         run: |
-          # 1. 使用 GitHub CLI 获取上一个 Pre-Release 的 Tag 和 SHA
-          # --json tagName,targetCommitish 会返回标签名和对应的提交哈希
-          # jq 过滤出第一个 prerelease 为 true 的项
-          PREV_RELEASE_INFO=$(gh release list --limit 100 --json tagName,isPrerelease,targetCommitish | jq -r '.[] | select(.isPrerelease == true) | "\(.tagName) \(.targetCommitish)"' | head -n 1)
-          
-          PREV_TAG=$(echo $PREV_RELEASE_INFO | cut -d' ' -f1)
-          PREV_SHA=$(echo $PREV_RELEASE_INFO | cut -d' ' -f2)
+          # 1. 获取最近一个 Pre-Release 的 Tag Name
+          # 过滤 isPrerelease 为 true 的第一项
+          PREV_TAG=$(gh release list --limit 50 --json tagName,isPrerelease | jq -r '.[] | select(.isPrerelease == true) | .tagName' | head -n 1)
 
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
 
-          if [ -z "$PREV_SHA" ] || [ "$PREV_SHA" = "null" ]; then
+          # 检查是否找到了上一个 Tag
+          if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "null" ]; then
             echo "首次 Pre-Release 构建，显示最近 10 条变更：" >> $GITHUB_OUTPUT
             git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            echo "自上一个测试版 [$PREV_TAG] ($PREV_SHA) 及其之后的变更：" >> $GITHUB_OUTPUT
-            # 获取从 PREV_SHA 到当前 HEAD 的变更
-            # 如果 PREV_SHA 就是当前 SHA，则说明没有新提交
-            if [ "$PREV_SHA" = "${{ github.sha }}" ]; then
-              echo "- 当前提交已发布，无新变更" >> $GITHUB_OUTPUT
+            # 2. 通过 Tag 获取其对应的 Commit SHA
+            PREV_SHA=$(git rev-parse "$PREV_TAG" 2>/dev/null || echo "")
+
+            if [ -z "$PREV_SHA" ]; then
+              echo "找到标签 [$PREV_TAG] 但本地无法解析其 SHA，显示最近 10 条变更：" >> $GITHUB_OUTPUT
+              git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+            elif [ "$PREV_SHA" = "${{ github.sha }}" ]; then
+              echo "自上一个测试版 [$PREV_TAG] 以来无新提交" >> $GITHUB_OUTPUT
             else
-              CHANGES=$(git log $PREV_SHA..${{ github.sha }} --pretty=format:"- %s (%h)")
-              if [ -z "$CHANGES" ]; then
-                echo "- 无功能变更（可能为非代码修改）" >> $GITHUB_OUTPUT
-              else
-                echo "$CHANGES" >> $GITHUB_OUTPUT
-              fi
+              echo "自上一个测试版 [$PREV_TAG] ($PREV_SHA) 以来的变更：" >> $GITHUB_OUTPUT
+              git log $PREV_SHA..${{ github.sha }} --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
             fi
           fi
 

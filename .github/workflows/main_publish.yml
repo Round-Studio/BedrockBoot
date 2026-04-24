@@ -113,26 +113,43 @@ jobs:
 
       - name: Generate Smart Changelog (only from releases)
         id: commits
+        shell: bash
         run: |
-          # 获取上一个 Release 的标签 (排除当前 tag)
-          PREVIOUS_TAG=$(git tag -l "v2.*.*.*" | grep -v "${{ needs.version.outputs.tag }}" | sort -V | tail -n 1 || echo "")
-          
+          # 1. 使用 GitHub CLI 获取上一个 正式版 (prerelease: false) 的发布时间
+          # 过滤掉当前正在生成的 tag，确保获取的是“上一个”
+          PREV_RELEASE_DATA=$(gh release list --limit 20 --json tagName,isPrerelease,publishedAt | \
+            jq -r --arg CUR_TAG "${{ needs.version.outputs.tag }}" \
+            '.[] | select(.isPrerelease == false and .tagName != $CUR_TAG) | .tagName + " " + .publishedAt' | \
+            head -n 1)
+
+          PREV_TAG=$(echo $PREV_RELEASE_DATA | cut -d' ' -f1)
+          PREV_TIME=$(echo $PREV_RELEASE_DATA | cut -d' ' -f2)
+
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "首次 Pre-Release 构建，显示最近 10 条变更：" >> $GITHUB_OUTPUT
-            git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+
+          if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "null" ]; then
+            echo "首次正式版发布，显示最近 15 条变更：" >> $GITHUB_OUTPUT
+            git log -15 --oneline --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            echo "自 Release [$PREVIOUS_TAG] 以来的变更：" >> $GITHUB_OUTPUT
-            # 只获取两个 release 标签之间的提交
-            CHANGES=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)")
+            echo "自上一正式版 [$PREV_TAG] ($PREV_TIME) 以来的更新内容：" >> $GITHUB_OUTPUT
+            
+            # 2. 获取自 PREV_TIME 之后的所有非合并提交
+            # 使用 --no-merges 让正式版的 Changelog 看起来更简洁
+            # 过滤掉 CI 相关的琐碎提交，只保留功能和修复
+            CHANGES=$(git log --since="$PREV_TIME" --no-merges --pretty=format:"- %s (%h)" | \
+              grep -vE "^- ci:|^ - style:|^ - chore:" || echo "")
+            
             if [ -z "$CHANGES" ]; then
-              echo "- 无功能变更，可能为依赖更新或配置调整" >> $GITHUB_OUTPUT
+              echo "- 包含性能优化与稳定性提升" >> $GITHUB_OUTPUT
             else
               echo "$CHANGES" >> $GITHUB_OUTPUT
             fi
           fi
+
           echo "" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

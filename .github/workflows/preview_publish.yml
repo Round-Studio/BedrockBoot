@@ -105,29 +105,43 @@ jobs:
           path: ./dist
           merge-multiple: true
 
-      - name: Generate Smart Changelog (only from pre-releases)
+      - name: Generate Smart Changelog (via GitHub API)
         id: commits
+        shell: bash
         run: |
-          # 获取上一个 Pre-Release 的标签 (排除当前 tag)
-          # 只匹配以 v 开头，且不是正式版的标签（prerelease 特征：日期格式）
-          PREVIOUS_TAG=$(git tag -l "v*" | grep -E 'v[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+' | grep -v "${{ needs.version.outputs.tag }}" | sort -r | head -n 1 || echo "")
+          # 1. 使用 GitHub CLI 获取上一个 Pre-Release 的 Tag 和 SHA
+          # --json tagName,targetCommitish 会返回标签名和对应的提交哈希
+          # jq 过滤出第一个 prerelease 为 true 的项
+          PREV_RELEASE_INFO=$(gh release list --limit 100 --json tagName,isPrerelease,targetCommitish | jq -r '.[] | select(.isPrerelease == true) | "\(.tagName) \(.targetCommitish)"' | head -n 1)
           
+          PREV_TAG=$(echo $PREV_RELEASE_INFO | cut -d' ' -f1)
+          PREV_SHA=$(echo $PREV_RELEASE_INFO | cut -d' ' -f2)
+
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          if [ -z "$PREVIOUS_TAG" ]; then
+
+          if [ -z "$PREV_SHA" ] || [ "$PREV_SHA" = "null" ]; then
             echo "首次 Pre-Release 构建，显示最近 10 条变更：" >> $GITHUB_OUTPUT
             git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            echo "自 Pre-Release [$PREVIOUS_TAG] 以来的变更：" >> $GITHUB_OUTPUT
-            # 只获取两个 pre-release 标签之间的提交
-            CHANGES=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)")
-            if [ -z "$CHANGES" ]; then
-              echo "- 无功能变更，可能为依赖更新或配置调整" >> $GITHUB_OUTPUT
+            echo "自上一个测试版 [$PREV_TAG] ($PREV_SHA) 及其之后的变更：" >> $GITHUB_OUTPUT
+            # 获取从 PREV_SHA 到当前 HEAD 的变更
+            # 如果 PREV_SHA 就是当前 SHA，则说明没有新提交
+            if [ "$PREV_SHA" = "${{ github.sha }}" ]; then
+              echo "- 当前提交已发布，无新变更" >> $GITHUB_OUTPUT
             else
-              echo "$CHANGES" >> $GITHUB_OUTPUT
+              CHANGES=$(git log $PREV_SHA..${{ github.sha }} --pretty=format:"- %s (%h)")
+              if [ -z "$CHANGES" ]; then
+                echo "- 无功能变更（可能为非代码修改）" >> $GITHUB_OUTPUT
+              else
+                echo "$CHANGES" >> $GITHUB_OUTPUT
+              fi
             fi
           fi
+
           echo "" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

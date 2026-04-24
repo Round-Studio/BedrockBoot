@@ -109,28 +109,34 @@ jobs:
         id: commits
         shell: bash
         run: |
-          # 1. 获取最近一个 Pre-Release 的 Tag Name
-          # 过滤 isPrerelease 为 true 的第一项
-          PREV_TAG=$(gh release list --limit 50 --json tagName,isPrerelease | jq -r '.[] | select(.isPrerelease == true) | .tagName' | head -n 1)
+          # 1. 获取所有 Pre-Release 标签并按版本号/时间逆序排序，取第 1 个
+          # 我们先获取最近 20 个，然后通过 sort 确保排序逻辑正确
+          PREV_TAG=$(gh release list --limit 20 --json tagName,isPrerelease | \
+            jq -r '.[] | select(.isPrerelease == true) | .tagName' | \
+            sort -r | head -n 1)
 
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
 
-          # 检查是否找到了上一个 Tag
           if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "null" ]; then
             echo "首次 Pre-Release 构建，显示最近 10 条变更：" >> $GITHUB_OUTPUT
             git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            # 2. 通过 Tag 获取其对应的 Commit SHA
+            # 2. 获取该 Tag 的 SHA
             PREV_SHA=$(git rev-parse "$PREV_TAG" 2>/dev/null || echo "")
+            
+            # 3. 检查当前提交是否就是上一个 Release 的提交（避免重复触发日志）
+            CURRENT_SHA=$(git rev-parse HEAD)
 
             if [ -z "$PREV_SHA" ]; then
-              echo "找到标签 [$PREV_TAG] 但本地无法解析其 SHA，显示最近 10 条变更：" >> $GITHUB_OUTPUT
+              echo "无法解析标签 [$PREV_TAG]，显示最近 10 条变更：" >> $GITHUB_OUTPUT
               git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
-            elif [ "$PREV_SHA" = "${{ github.sha }}" ]; then
-              echo "自上一个测试版 [$PREV_TAG] 以来无新提交" >> $GITHUB_OUTPUT
+            elif [ "$PREV_SHA" = "$CURRENT_SHA" ]; then
+              echo "- 本次构建无新代码变更（当前提交已在测试版 $PREV_TAG 中发布）" >> $GITHUB_OUTPUT
             else
-              echo "自上一个测试版 [$PREV_TAG] ($PREV_SHA) 以来的变更：" >> $GITHUB_OUTPUT
-              git log $PREV_SHA..${{ github.sha }} --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+              echo "自上一个测试版 [$PREV_TAG] 以来的变更：" >> $GITHUB_OUTPUT
+              # 使用 --oneline 风格并限制只拉取当前分支的直线历史
+              # 重点：PREV_SHA..HEAD 只获取两者之间的提交
+              git log ${PREV_SHA}..HEAD --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
             fi
           fi
 

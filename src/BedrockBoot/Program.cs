@@ -31,8 +31,10 @@ internal sealed class Program
 {
     public static List<string> Args { get; private set; }
 
+#if WINDOWS
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
+#endif
 
     [STAThread]
     public static void Main(string[] args)
@@ -56,12 +58,14 @@ internal sealed class Program
         if (args.Length > 0 && ArgsAnalytical(args.ToList()))
             return;
 
+#if WINDOWS
         if (GlobalModel.Config.Data.IsConsole)
         {
             AllocConsole();
             Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
         }
+#endif
 
         var consoleRedirector = new ConsoleRedirector(Path.Combine(PathsList.LogPath,
             $"[BedrockBoot.Logger] {DateTime.Now:yyyy.MM.dd HHmmss.fff}.log"));
@@ -146,11 +150,13 @@ internal sealed class Program
                         return true;
                     }
 
+#if WINDOWS
                 case "-console":
                     AllocConsole();
                     Console.OutputEncoding = Encoding.UTF8;
                     Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
                     break;
+#endif
 
                 case "-jump":
                     Console.WriteLine(@"快捷启动");

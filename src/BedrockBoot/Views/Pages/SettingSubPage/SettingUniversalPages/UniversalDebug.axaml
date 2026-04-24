@@ -14,6 +14,7 @@
 
             <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
                                           Description="{DynamicResource Settings.Universal.Debug.Console.Desc}"
+                                          Name="IsConsoleCard"
                                           Glyph="&#xE756;">
                 <ToggleSwitch IsChecked="False"
                               Name="IsConsoleModel"

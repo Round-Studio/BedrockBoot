@@ -28,6 +28,10 @@ public partial class UniversalDebug : ISettingPage
             }
         };
 
+#if LINUX
+        IsConsoleCard.IsEnabled = false;   
+#endif
+
         IsConsoleModel.IsChecked = GlobalModel.Config.Data.IsConsole;
         IsEdit = true;
     }

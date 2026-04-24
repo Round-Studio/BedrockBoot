@@ -109,11 +109,13 @@ jobs:
         id: commits
         shell: bash
         run: |
-          # 1. 获取所有 Pre-Release 标签并按版本号/时间逆序排序，取第 1 个
-          # 我们先获取最近 20 个，然后通过 sort 确保排序逻辑正确
-          PREV_TAG=$(gh release list --limit 20 --json tagName,isPrerelease | \
-            jq -r '.[] | select(.isPrerelease == true) | .tagName' | \
-            sort -r | head -n 1)
+          # 1. 获取最近 10 个 Pre-release
+          # 过滤掉当前正在构建的提交 (github.sha)，确保拿到的真的是“上一个”
+          # 使用 jq 过滤：不是 draft 且 isPrerelease 为 true 且 tagName 不等于当前计划生成的 tag
+          PREV_TAG=$(gh release list --limit 20 --json tagName,isPrerelease,isDraft | \
+            jq -r --arg CUR_TAG "${{ needs.version.outputs.tag }}" \
+            '.[] | select(.isPrerelease == true and .isDraft == false and .tagName != $CUR_TAG) | .tagName' | \
+            head -n 1)
 
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
 
@@ -121,22 +123,20 @@ jobs:
             echo "首次 Pre-Release 构建，显示最近 10 条变更：" >> $GITHUB_OUTPUT
             git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            # 2. 获取该 Tag 的 SHA
+            # 2. 获取该 Tag 对应的 SHA
             PREV_SHA=$(git rev-parse "$PREV_TAG" 2>/dev/null || echo "")
-            
-            # 3. 检查当前提交是否就是上一个 Release 的提交（避免重复触发日志）
-            CURRENT_SHA=$(git rev-parse HEAD)
+            CURRENT_SHA=${{ github.sha }}
 
             if [ -z "$PREV_SHA" ]; then
-              echo "无法解析标签 [$PREV_TAG]，显示最近 10 条变更：" >> $GITHUB_OUTPUT
+              echo "无法解析上一个标签 [$PREV_TAG] 的位置，显示最近 10 条变更：" >> $GITHUB_OUTPUT
               git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
             elif [ "$PREV_SHA" = "$CURRENT_SHA" ]; then
-              echo "- 本次构建无新代码变更（当前提交已在测试版 $PREV_TAG 中发布）" >> $GITHUB_OUTPUT
+              echo "- 当前提交已在 $PREV_TAG 中发布，无新变更" >> $GITHUB_OUTPUT
             else
               echo "自上一个测试版 [$PREV_TAG] 以来的变更：" >> $GITHUB_OUTPUT
-              # 使用 --oneline 风格并限制只拉取当前分支的直线历史
-              # 重点：PREV_SHA..HEAD 只获取两者之间的提交
-              git log ${PREV_SHA}..HEAD --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+              # 3. 获取增量日志
+              # --no-merges (可选): 如果你不希望看到 "Merge remote-tracking branch..." 这种冗余信息，可以加上
+              git log ${PREV_SHA}..${CURRENT_SHA} --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
             fi
           fi
 

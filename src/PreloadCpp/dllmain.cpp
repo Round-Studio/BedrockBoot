@@ -443,7 +443,7 @@ int LoadPreloadDlls(HINSTANCE hinstDLL,
 				if (lowerExt == ".dll")
 				{
 					std::string filename = entry.path().filename().string();
-					std::cout << "  -> " << filename << "... ";
+					Logger::Error("Loading DLL: " + filename + "...");
 
 					HMODULE hModule = LoadLibraryA(path.c_str());
 					if (hModule)
@@ -452,11 +452,11 @@ int LoadPreloadDlls(HINSTANCE hinstDLL,
 
 						loadedModules.push_back(hModule);
 						count++;
-						std::cout << "OK" << std::endl;
+						Logger::Success("Success for loading DLL: " + filename);
 					}
 					else
 					{
-						std::cout << "FAILED (Error: " << GetLastError() << ")" << std::endl;
+						Logger::Error("FAILED Error:" + GetLastError()); 
 					}
 				}
 			}

@@ -105,13 +105,11 @@ jobs:
           path: ./dist
           merge-multiple: true
 
-      - name: Generate Smart Changelog (via GitHub API)
+      - name: Generate Smart Changelog
         id: commits
         shell: bash
         run: |
-          # 1. 获取最近 10 个 Pre-release
-          # 过滤掉当前正在构建的提交 (github.sha)，确保拿到的真的是“上一个”
-          # 使用 jq 过滤：不是 draft 且 isPrerelease 为 true 且 tagName 不等于当前计划生成的 tag
+          # 1. 获取上一个 Pre-release 标签（排除当前的 tag）
           PREV_TAG=$(gh release list --limit 20 --json tagName,isPrerelease,isDraft | \
             jq -r --arg CUR_TAG "${{ needs.version.outputs.tag }}" \
             '.[] | select(.isPrerelease == true and .isDraft == false and .tagName != $CUR_TAG) | .tagName' | \
@@ -120,23 +118,21 @@ jobs:
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
 
           if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "null" ]; then
-            echo "首次 Pre-Release 构建，显示最近 10 条变更：" >> $GITHUB_OUTPUT
-            git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+            echo "首次构建，显示最近 10 条：" >> $GITHUB_OUTPUT
+            git log -10 --oneline --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            # 2. 获取该 Tag 对应的 SHA
+            # 2. 获取 SHA
             PREV_SHA=$(git rev-parse "$PREV_TAG" 2>/dev/null || echo "")
-            CURRENT_SHA=${{ github.sha }}
-
+            
             if [ -z "$PREV_SHA" ]; then
-              echo "无法解析上一个标签 [$PREV_TAG] 的位置，显示最近 10 条变更：" >> $GITHUB_OUTPUT
-              git log -10 --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
-            elif [ "$PREV_SHA" = "$CURRENT_SHA" ]; then
-              echo "- 当前提交已在 $PREV_TAG 中发布，无新变更" >> $GITHUB_OUTPUT
+              echo "无法解析标签 $PREV_TAG" >> $GITHUB_OUTPUT
             else
-              echo "自上一个测试版 [$PREV_TAG] 以来的变更：" >> $GITHUB_OUTPUT
-              # 3. 获取增量日志
-              # --no-merges (可选): 如果你不希望看到 "Merge remote-tracking branch..." 这种冗余信息，可以加上
-              git log ${PREV_SHA}..${CURRENT_SHA} --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+              echo "自测试版 [$PREV_TAG] 以来的直线增量变更：" >> $GITHUB_OUTPUT
+              
+              # 3. 使用 --first-parent 确保不回溯到被合并分支的旧历史
+              # 使用 --no-merges 过滤掉无意义的 "Merge branch..." 提示
+              # 只获取从 PREV_SHA 到 HEAD 的提交
+              git log ${PREV_SHA}..HEAD --first-parent --no-merges --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
             fi
           fi
 

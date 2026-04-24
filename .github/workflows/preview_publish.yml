@@ -109,31 +109,29 @@ jobs:
         id: commits
         shell: bash
         run: |
-          # 1. 获取上一个 Pre-release 标签（排除当前的 tag）
-          PREV_TAG=$(gh release list --limit 20 --json tagName,isPrerelease,isDraft | \
+          # 1. 获取上一个 Pre-release 的发布时间
+          # 取最近一个非当前的 tag 的发布时间 (publishedAt)
+          PREV_RELEASE_DATA=$(gh release list --limit 20 --json tagName,isPrerelease,publishedAt | \
             jq -r --arg CUR_TAG "${{ needs.version.outputs.tag }}" \
-            '.[] | select(.isPrerelease == true and .isDraft == false and .tagName != $CUR_TAG) | .tagName' | \
+            '.[] | select(.isPrerelease == true and .tagName != $CUR_TAG) | .tagName + " " + .publishedAt' | \
             head -n 1)
+
+          PREV_TAG=$(echo $PREV_RELEASE_DATA | cut -d' ' -f1)
+          PREV_TIME=$(echo $PREV_RELEASE_DATA | cut -d' ' -f2)
 
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
 
           if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "null" ]; then
-            echo "首次构建，显示最近 10 条：" >> $GITHUB_OUTPUT
+            echo "首次构建，显示最近 10 条提交：" >> $GITHUB_OUTPUT
             git log -10 --oneline --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           else
-            # 2. 获取 SHA
-            PREV_SHA=$(git rev-parse "$PREV_TAG" 2>/dev/null || echo "")
+            echo "自上一个测试版 [$PREV_TAG] ($PREV_TIME) 以来进入分支的变更：" >> $GITHUB_OUTPUT
             
-            if [ -z "$PREV_SHA" ]; then
-              echo "无法解析标签 $PREV_TAG" >> $GITHUB_OUTPUT
-            else
-              echo "自测试版 [$PREV_TAG] 以来的直线增量变更：" >> $GITHUB_OUTPUT
-              
-              # 3. 使用 --first-parent 确保不回溯到被合并分支的旧历史
-              # 使用 --no-merges 过滤掉无意义的 "Merge branch..." 提示
-              # 只获取从 PREV_SHA 到 HEAD 的提交
-              git log ${PREV_SHA}..HEAD --first-parent --no-merges --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
-            fi
+            # 2. 获取自 PREV_TIME 之后的所有提交
+            # --since 使用发布时间作为过滤基准
+            # --no-merges 过滤掉合并提交
+            # 使用 --reverse 让日志按时间顺序排列（可选）
+            git log --since="$PREV_TIME" --no-merges --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
           fi
 
           echo "" >> $GITHUB_OUTPUT

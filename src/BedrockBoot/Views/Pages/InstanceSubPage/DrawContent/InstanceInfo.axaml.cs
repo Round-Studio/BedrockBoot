@@ -91,6 +91,7 @@ public partial class InstanceInfo : UserControl
 
             VersionInfo.Config.OtherCommand = InstanceArgs.Text;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
+            VersionName.Text = VersionInfo.Info.VersionName;
         }
     }
 

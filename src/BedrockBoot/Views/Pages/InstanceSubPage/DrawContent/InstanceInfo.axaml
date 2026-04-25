@@ -9,7 +9,7 @@
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceInfo">
     <Grid>
         <ScrollViewer>
-            <StackPanel Margin="20,0,20,0"
+            <StackPanel Margin="20,0,20,15"
                         Spacing="8">
                 <items:BorderCard Padding="0"
                                   ClipToBounds="True">

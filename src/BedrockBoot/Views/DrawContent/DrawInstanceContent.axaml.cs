@@ -58,6 +58,7 @@ public partial class DrawInstanceContent : UserControl
         if (IsEditMode)
         {
             var tag = ((LeftSelectBarItem)InstanceTabControl.SelectedItem).Tag.ToString();
+            VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
 
             switch (tag)
             {

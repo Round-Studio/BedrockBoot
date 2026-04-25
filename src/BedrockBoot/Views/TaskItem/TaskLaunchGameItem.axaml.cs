@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper.Notice;
@@ -148,7 +149,7 @@ public partial class TaskLaunchGameItem : UserControl
             NoticeType = NoticeType.Info
         });
 
-        var body = new TaskLaunchGameItem(gameInfo);
+        var body = new TaskLaunchGameItem(GameInfoHelper.GetVersionConfig(gameInfo.VersionPath));
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
         body.Launch(() => { GlobalModel.TaskManager.RemoveTask(tuid); });

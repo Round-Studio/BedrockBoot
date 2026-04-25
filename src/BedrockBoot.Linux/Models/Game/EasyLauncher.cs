@@ -159,11 +159,9 @@ public class EasyLauncher
             Console.WriteLine("正在运行 GameInput 安装...");
             LaunchWithProton(Path.Combine(VersionInfo.VersionPath, "Installers", "GameInputRedist.msi"))?.WaitForExit();
             Console.WriteLine("GameInput 安装完毕");
-            
-            var conf = new ConfigEntity<VersionConfig>(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2",
-                "config.json"));
-            conf.Data = VersionInfo;
-            conf.Save();
+
+            VersionInfo.VersionStatus.GameInputInstalled = true;
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
 
         try

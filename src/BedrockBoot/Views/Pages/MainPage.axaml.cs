@@ -103,11 +103,12 @@ public partial class MainPage : UserControl
             }
 
             JumpListManager.ConfigureJumpList();
+            await UpdateUIAsync();
         };
 
         var sel = -1;
         var count = -1;
-        GlobalModel.Config.AfterSave += (sender, args) =>
+        GlobalModel.Config.AfterSave += async (sender, args) =>
         {
             if ((GlobalModel.Config.Data.GameFolderSelIndex != sel ||
                  GlobalModel.Config.Data.GameFolders.Count != count) &&
@@ -116,10 +117,9 @@ public partial class MainPage : UserControl
                 count = GlobalModel.Config.Data.GameFolders.Count;
                 sel = GlobalModel.Config.Data.GameFolderSelIndex;
 
-                Dispatcher.UIThread.Invoke(UpdateUI);
+                await Dispatcher.UIThread.InvokeAsync(async () => await UpdateUIAsync());
             }
         };
-        UpdateUI();
 
 #if LINUX
         if (!ProtonDownloader.IsInstalledProtonVersion())
@@ -239,7 +239,7 @@ public partial class MainPage : UserControl
             }
     }
 
-    public void UpdateUI()
+    public async Task UpdateUIAsync()
     {
         void NullFunc()
         {
@@ -301,7 +301,7 @@ public partial class MainPage : UserControl
                 return;
             }
 
-            var versions = GameInfoHelper.GetVersionConfigs(GlobalModel.Config.Data
+            var versions = await GameInfoHelper.GetVersionConfigsAsync(GlobalModel.Config.Data
                 .GameFolders[GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath);
 
             if (versions.Count <= 0)
@@ -437,3 +437,4 @@ public partial class MainPage : UserControl
         TaskLaunchGameItem.Launch(version);
     }
 }
+

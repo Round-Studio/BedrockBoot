@@ -71,8 +71,14 @@
                          Name="NoneBox" />
 
         <ScrollViewer Grid.Row="1" Name="ScrollViewer">
-            <StackPanel Name="ItemsPanel"
-                        Margin="15,0,15,15" />
+            <ItemsControl Name="ItemsPanel"
+                          Margin="15,0,15,15">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </ScrollViewer>
     </Grid>
 </UserControl>

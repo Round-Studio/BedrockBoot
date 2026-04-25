@@ -35,6 +35,14 @@ public static class GameInfoHelper
     }
 
     /// <summary>
+    /// 获取版本配置列表 (异步版本)
+    /// </summary>
+    public static async Task<List<VersionConfig>> GetVersionConfigsAsync(string gameFolder)
+    {
+        return await Task.Run(() => GetVersionConfigs(gameFolder));
+    }
+
+    /// <summary>
     /// 获取单个版本的详细配置
     /// </summary>
     public static VersionConfig GetVersionConfig(string gamePath)

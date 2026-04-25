@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -23,10 +24,12 @@ public partial class DownloadGamePage : UserControl, IDisposable
     private CancellationTokenSource? _currentLoadingCancellation;
     private MinecraftGameTypeVersion _currentType = MinecraftGameTypeVersion.Release;
     private string _searchKey = string.Empty;
+    private ObservableCollection<SettingCard> _items = new();
 
     public DownloadGamePage()
     {
         InitializeComponent();
+        ItemsPanel.ItemsSource = _items;
         IsEdit = true;
 
         // 初始加载
@@ -44,7 +47,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
         _currentLoadingCancellation?.Cancel();
         _currentLoadingCancellation?.Dispose();
         _currentLoadingCancellation = null;
-        ItemsPanel.Children.Clear();
+        _items.Clear();
     }
 
     /// <summary>
@@ -65,7 +68,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
         {
             // 进入加载状态
             await SetLoadingState(true, false, false);
-            ItemsPanel.Children.Clear();
+            _items.Clear();
 
             await LoadVersionsAsync(type, key, token);
         }
@@ -173,7 +176,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
                         Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(x), title);
                     };
 
-                    ItemsPanel.Children.Add(card);
+                    _items.Add(card);
                 }
             }, DispatcherPriority.Background);
 

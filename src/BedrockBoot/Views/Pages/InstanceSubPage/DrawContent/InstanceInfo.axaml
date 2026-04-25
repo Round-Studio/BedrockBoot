@@ -20,7 +20,7 @@
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
                                     <GradientStop Color="#00000000" Offset="0" />
-                                    <GradientStop Color="#CC000000" Offset="1" />
+                                    <GradientStop Color="Black" Offset="1" />
                                 </LinearGradientBrush>
                             </Border.Background>
                         </Border>

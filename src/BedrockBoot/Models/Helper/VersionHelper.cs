@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -13,112 +14,308 @@ public class VersionHelper
 {
     private static readonly HttpClient _httpClient = new HttpClient();
     private static List<BuildInfo> _versions = null;
-
-    public static List<BuildInfo> Versions => _versions;
-
-    public static List<BuildInfo> GetVersions()
+    private static readonly string CacheFilePath = Path.Combine(PathsList.TempPath, "version_cache.json");
+    private static readonly TimeSpan CacheMaxAge = TimeSpan.FromHours(24); // 缓存24小时有效期
+    
+    // 缓存数据结构
+    private class VersionCache
     {
-        if (_versions != null) return _versions;
-
+        public DateTime CacheTime { get; set; }
+        public List<BuildInfo> Versions { get; set; }
+        public int VersionSourceIndex { get; set; }
+        
+        public VersionCache()
+        {
+            Versions = new List<BuildInfo>();
+        }
+    }
+    
+    public static List<BuildInfo> Versions => _versions;
+    
+    /// <summary>
+    /// 强制刷新缓存，忽略缓存有效期
+    /// </summary>
+    public static List<BuildInfo> RefreshVersions()
+    {
+        _versions = null;
+        return GetVersions(forceRefresh: true);
+    }
+    
+    /// <summary>
+    /// 清除缓存文件
+    /// </summary>
+    public static void ClearCache()
+    {
         try
         {
-            var url = GetVersionSourceUrl();
-            var jsonString = _httpClient.GetStringAsync(url).Result;
-            
-            using var document = JsonDocument.Parse(jsonString);
-            var root = document.RootElement;
-            
-            // 获取 From_mcappx.com 属性（或者动态获取第一个非 CreationTime 的属性）
-            JsonElement versionsDict;
-            
-            if (root.TryGetProperty("From_mcappx.com", out var fromProperty))
+            if (File.Exists(CacheFilePath))
             {
-                versionsDict = fromProperty;
+                File.Delete(CacheFilePath);
+                Console.WriteLine($"缓存文件已删除: {CacheFilePath}");
             }
-            else
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"删除缓存文件失败: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// 获取缓存的年龄
+    /// </summary>
+    public static TimeSpan? GetCacheAge()
+    {
+        try
+        {
+            if (File.Exists(CacheFilePath))
             {
-                // 动态查找：跳过 CreationTime，取第一个属性
-                var firstProp = root.EnumerateObject().FirstOrDefault(p => p.Name != "CreationTime");
-                if (firstProp.Value.ValueKind == JsonValueKind.Undefined)
-                {
-                    _versions = new List<BuildInfo>();
-                    return _versions;
-                }
-                versionsDict = firstProp.Value;
+                var cacheTime = File.GetLastWriteTime(CacheFilePath);
+                return DateTime.Now - cacheTime;
             }
-            
-            if (versionsDict.ValueKind != JsonValueKind.Object)
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"获取缓存年龄失败: {ex.Message}");
+        }
+        return null;
+    }
+    
+    public static List<BuildInfo> GetVersions(bool forceRefresh = false)
+    {
+        // 如果内存中有缓存且不强制刷新，直接返回
+        if (!forceRefresh && _versions != null) return _versions;
+        
+        // 尝试从文件缓存加载
+        if (!forceRefresh && TryLoadFromCache(out var cachedVersions1))
+        {
+            _versions = cachedVersions1;
+            return _versions;
+        }
+        
+        // 从网络获取
+        try
+        {
+            var versions = FetchVersionsFromNetwork();
+            if (versions != null && versions.Count > 0)
             {
-                _versions = new List<BuildInfo>();
+                _versions = versions;
+                SaveToCache(versions);
                 return _versions;
             }
             
-            var versionCache = new List<(BuildInfo Item, Version Version)>();
-            
-            foreach (var versionProperty in versionsDict.EnumerateObject())
+            // 如果网络获取失败，尝试使用过期缓存作为后备
+            if (TryLoadFromCache(out var fallbackVersions, ignoreExpiry: true))
             {
-                var versionKey = versionProperty.Name;
-                var buildInfoElement = versionProperty.Value;
-                
-                if (buildInfoElement.ValueKind != JsonValueKind.Object) continue;
-                
-                try
-                {
-                    var buildInfo = JsonSerializer.Deserialize<BuildInfo>(buildInfoElement.GetRawText());
-                    if (buildInfo == null) continue;
-                    
-                    // 如果 ID 为空，使用字典的键作为 ID
-                    if (string.IsNullOrEmpty(buildInfo.ID))
-                    {
-                        buildInfo.ID = versionKey;
-                    }
-                    
-                    // 验证必要字段
-                    if (string.IsNullOrEmpty(buildInfo.ID)) continue;
-                    if (buildInfo.Variations == null || buildInfo.Variations.Count == 0) continue;
-                    
-                    // 检查是否有有效的 Variation（至少有一个 MetaData 不为空）
-                    var hasValidVariation = buildInfo.Variations.Any(v => v.MetaData != null && v.MetaData.Count > 0);
-                    if (!hasValidVariation) continue;
-                    
-                    Version version = null;
-                    try
-                    {
-                        version = new Version(buildInfo.ID);
-                    }
-                    catch
-                    {
-                        // 版本号解析失败，忽略
-                    }
-                    
-                    versionCache.Add((buildInfo, version));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"解析版本 {versionKey} 失败: {ex.Message}");
-                    continue;
-                }
+                Console.WriteLine("网络获取失败，使用过期缓存数据");
+                _versions = fallbackVersions;
+                return _versions;
             }
-            
-            // 排序：有效的 Version 对象按降序排前面，无效的按字符串排序
-            versionCache.Sort((x, y) =>
-            {
-                if (x.Version != null && y.Version != null)
-                    return y.Version.CompareTo(x.Version);
-                if (x.Version != null) return -1;
-                if (y.Version != null) return 1;
-                return string.Compare(y.Item.ID, x.Item.ID, StringComparison.Ordinal);
-            });
-            
-            _versions = versionCache.Select(x => x.Item).ToList();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"获取版本列表失败: {ex.Message}");
-            _versions = new List<BuildInfo>();
+            
+            // 网络异常时尝试使用缓存（包括过期缓存）
+            if (TryLoadFromCache(out var cachedVersions, ignoreExpiry: true))
+            {
+                Console.WriteLine("使用缓存数据作为后备");
+                _versions = cachedVersions;
+                return _versions;
+            }
         }
         
+        _versions = new List<BuildInfo>();
         return _versions;
+    }
+    
+    private static List<BuildInfo> FetchVersionsFromNetwork()
+    {
+        var url = GetVersionSourceUrl();
+        Console.WriteLine($"从网络获取版本列表: {url}");
+        
+        var jsonString = _httpClient.GetStringAsync(url).Result;
+        
+        using var document = JsonDocument.Parse(jsonString);
+        var root = document.RootElement;
+        
+        // 获取 From_mcappx.com 属性（或者动态获取第一个非 CreationTime 的属性）
+        JsonElement versionsDict;
+        
+        if (root.TryGetProperty("From_mcappx.com", out var fromProperty))
+        {
+            versionsDict = fromProperty;
+        }
+        else
+        {
+            // 动态查找：跳过 CreationTime，取第一个属性
+            var firstProp = root.EnumerateObject().FirstOrDefault(p => p.Name != "CreationTime");
+            if (firstProp.Value.ValueKind == JsonValueKind.Undefined)
+            {
+                return new List<BuildInfo>();
+            }
+            versionsDict = firstProp.Value;
+        }
+        
+        if (versionsDict.ValueKind != JsonValueKind.Object)
+        {
+            return new List<BuildInfo>();
+        }
+        
+        var versionCache = new List<(BuildInfo Item, Version Version)>();
+        
+        foreach (var versionProperty in versionsDict.EnumerateObject())
+        {
+            var versionKey = versionProperty.Name;
+            var buildInfoElement = versionProperty.Value;
+            
+            if (buildInfoElement.ValueKind != JsonValueKind.Object) continue;
+            
+            try
+            {
+                var buildInfo = JsonSerializer.Deserialize<BuildInfo>(buildInfoElement.GetRawText());
+                if (buildInfo == null) continue;
+                
+                // 如果 ID 为空，使用字典的键作为 ID
+                if (string.IsNullOrEmpty(buildInfo.ID))
+                {
+                    buildInfo.ID = versionKey;
+                }
+                
+                // 验证必要字段
+                if (string.IsNullOrEmpty(buildInfo.ID)) continue;
+                if (buildInfo.Variations == null || buildInfo.Variations.Count == 0) continue;
+                
+                // 检查是否有有效的 Variation（至少有一个 MetaData 不为空）
+                var hasValidVariation = buildInfo.Variations.Any(v => v.MetaData != null && v.MetaData.Count > 0);
+                if (!hasValidVariation) continue;
+                
+                Version version = null;
+                try
+                {
+                    version = new Version(buildInfo.ID);
+                }
+                catch
+                {
+                    // 版本号解析失败，忽略
+                }
+                
+                versionCache.Add((buildInfo, version));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"解析版本 {versionKey} 失败: {ex.Message}");
+                continue;
+            }
+        }
+        
+        // 排序：有效的 Version 对象按降序排前面，无效的按字符串排序
+        versionCache.Sort((x, y) =>
+        {
+            if (x.Version != null && y.Version != null)
+                return y.Version.CompareTo(x.Version);
+            if (x.Version != null) return -1;
+            if (y.Version != null) return 1;
+            return string.Compare(y.Item.ID, x.Item.ID, StringComparison.Ordinal);
+        });
+        
+        return versionCache.Select(x => x.Item).ToList();
+    }
+    
+    private static bool TryLoadFromCache(out List<BuildInfo> versions, bool ignoreExpiry = false)
+    {
+        versions = null;
+        
+        try
+        {
+            if (!File.Exists(CacheFilePath))
+            {
+                return false;
+            }
+            
+            var jsonString = File.ReadAllText(CacheFilePath);
+            var cache = JsonSerializer.Deserialize<VersionCache>(jsonString);
+            
+            if (cache == null || cache.Versions == null || cache.Versions.Count == 0)
+            {
+                return false;
+            }
+            
+            // 检查缓存是否过期（除非忽略过期检查）
+            if (!ignoreExpiry)
+            {
+                var cacheAge = DateTime.Now - cache.CacheTime;
+                if (cacheAge > CacheMaxAge)
+                {
+                    Console.WriteLine($"缓存已过期（{cacheAge.TotalHours:F1}小时前），将重新获取");
+                    return false;
+                }
+            }
+            
+            // 验证缓存使用的数据源是否与当前配置一致
+            var currentSourceIndex = GetCurrentSourceIndex();
+            if (cache.VersionSourceIndex != currentSourceIndex)
+            {
+                Console.WriteLine("缓存的数据源已更改，将重新获取");
+                return false;
+            }
+            
+            versions = cache.Versions;
+            Console.WriteLine($"从缓存加载版本列表成功，共 {versions.Count} 个版本");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"加载缓存失败: {ex.Message}");
+            ClearCache();
+            return false;
+        }
+    }
+    
+    private static void SaveToCache(List<BuildInfo> versions)
+    {
+        try
+        {
+            // 确保缓存目录存在
+            var cacheDir = Path.GetDirectoryName(CacheFilePath);
+            if (!string.IsNullOrEmpty(cacheDir) && !Directory.Exists(cacheDir))
+            {
+                Directory.CreateDirectory(cacheDir);
+            }
+            
+            var cache = new VersionCache
+            {
+                CacheTime = DateTime.Now,
+                Versions = versions,
+                VersionSourceIndex = GetCurrentSourceIndex()
+            };
+            
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            
+            var jsonString = JsonSerializer.Serialize(cache, options);
+            File.WriteAllText(CacheFilePath, jsonString);
+            
+            Console.WriteLine($"版本列表已缓存到文件: {CacheFilePath}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"保存缓存失败: {ex.Message}");
+        }
+    }
+    
+    private static int GetCurrentSourceIndex()
+    {
+        if (GlobalModel.Config != null && 
+            GlobalModel.Config.Data != null && 
+            GlobalModel.Config.Data.VersionSourceIndex >= 0 &&
+            GlobalModel.Config.Data.VersionSourceIndex < SourceList.VersionDataSources.Count)
+        {
+            return GlobalModel.Config.Data.VersionSourceIndex;
+        }
+        
+        return 0;
     }
     
     private static string GetVersionSourceUrl()

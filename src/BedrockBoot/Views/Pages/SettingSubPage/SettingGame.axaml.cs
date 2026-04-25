@@ -38,8 +38,8 @@ public partial class SettingGame : ISettingPage
         MouseLockCard.IsVisible = false;
 #endif
 
-#if WINDOWS
-        SeniorPanel.IsVisible = false;
+#if LINUX && DEBUG
+        SeniorPanel.IsVisible = true;
 #endif
 
         IsEdit = true;

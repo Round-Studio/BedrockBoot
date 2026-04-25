@@ -44,7 +44,8 @@
                                           Glyph="&#xE8B7;" />
             
             <StackPanel Spacing="8"
-                        Name="SeniorPanel">
+                        Name="SeniorPanel"
+                        IsVisible="False">
                 <TextBlock Margin="5,0"
                            FontWeight="Bold"
                            FontSize="14"

@@ -1,176 +1,139 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using BedrockBoot.Models.Global;
-using BedrockLauncher.Core.VersionJsons;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Models.Helper;
 
 public class VersionHelper
 {
-    private static readonly object _refreshLock = new();
-    private static readonly string CacheFilePath = Path.Combine(PathsList.TempPath, "version_cache.json");
+    private static readonly HttpClient _httpClient = new HttpClient();
+    private static List<BuildInfo> _versions = null;
 
-    public static List<BuildInfo> Versions { get; private set; }
-
-    // Event raised when a refreshed version list (from network) replaces the current list
-    public static event Action<List<BuildInfo>>? VersionsRefreshed;
+    public static List<BuildInfo> Versions => _versions;
 
     public static List<BuildInfo> GetVersions()
     {
-        if (Versions != null) return Versions;
-
-        // Try to load from disk cache first
-        try
-        {
-            var cached = LoadCache();
-            if (cached != null) Versions = cached;
-        }
-        catch
-        {
-            // ignore cache load errors
-        }
-
-        // Always trigger a background refresh from network. If we had no cache, perform a blocking fetch so caller gets data.
-        var didHaveCache = Versions != null;
-
-        if (didHaveCache)
-        {
-            _ = Task.Run(async () => await RefreshFromNetworkAsync());
-            return Versions!;
-        }
+        if (_versions != null) return _versions;
 
         try
         {
-            var fetched = RefreshFromNetworkAsync().GetAwaiter().GetResult();
-            Versions = fetched;
-            return Versions;
-        }
-        catch
-        {
-            return Versions; // may be null
-        }
-    }
-
-    private static List<BuildInfo>? LoadCache()
-    {
-        if (!File.Exists(CacheFilePath)) return null;
-
-        var json = File.ReadAllText(CacheFilePath);
-        if (string.IsNullOrWhiteSpace(json)) return null;
-
-        var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        try
-        {
-            var list = JsonSerializer.Deserialize<List<BuildInfo>>(json, opts);
-            return list;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private static void SaveCache(List<BuildInfo> list)
-    {
-        try
-        {
-            var dir = Path.GetDirectoryName(CacheFilePath);
-            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-            var opts = new JsonSerializerOptions { WriteIndented = true };
-            var json = JsonSerializer.Serialize(list, opts);
-            File.WriteAllText(CacheFilePath, json);
-        }
-        catch
-        {
-            // ignore cache save errors
-        }
-    }
-
-    private static async Task<List<BuildInfo>> RefreshFromNetworkAsync()
-    {
-        lock (_refreshLock)
-        {
-            // ensure only one refresh at a time
-        }
-
-        try
-        {
-            var url = GlobalModel.Config == null
-                ? SourceList.VersionDataSources.ToList()[0].Value
-                : SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value;
-
-            var db = await VersionsHelper.GetBuildDatabaseAsync(url).ConfigureAwait(false);
-            var lst = await db!.Builds.ToListAsync().ConfigureAwait(false);
-
-            var versionCache = new List<(BuildInfo item, Version? version)>();
-
-            foreach (var item in lst)
+            var url = GetVersionSourceUrl();
+            var jsonString = _httpClient.GetStringAsync(url).Result;
+            
+            using var document = JsonDocument.Parse(jsonString);
+            var root = document.RootElement;
+            
+            // 获取 From_mcappx.com 属性（或者动态获取第一个非 CreationTime 的属性）
+            JsonElement versionsDict;
+            
+            if (root.TryGetProperty("From_mcappx.com", out var fromProperty))
             {
-                if (string.IsNullOrEmpty(item.Value.ID)) continue;
-                if (item.Value.Variations.Count <= 0) continue;
-
-                var isCon = false;
-                foreach (var v in item.Value.Variations)
-                    if (v.MetaData.Count <= 0)
-                        isCon = true;
-
-                if (isCon) continue;
-
-                Version? version = null;
+                versionsDict = fromProperty;
+            }
+            else
+            {
+                // 动态查找：跳过 CreationTime，取第一个属性
+                var firstProp = root.EnumerateObject().FirstOrDefault(p => p.Name != "CreationTime");
+                if (firstProp.Value.ValueKind == JsonValueKind.Undefined)
+                {
+                    _versions = new List<BuildInfo>();
+                    return _versions;
+                }
+                versionsDict = firstProp.Value;
+            }
+            
+            if (versionsDict.ValueKind != JsonValueKind.Object)
+            {
+                _versions = new List<BuildInfo>();
+                return _versions;
+            }
+            
+            var versionCache = new List<(BuildInfo Item, Version Version)>();
+            
+            foreach (var versionProperty in versionsDict.EnumerateObject())
+            {
+                var versionKey = versionProperty.Name;
+                var buildInfoElement = versionProperty.Value;
+                
+                if (buildInfoElement.ValueKind != JsonValueKind.Object) continue;
+                
                 try
                 {
-                    version = new Version(item.Value.ID);
+                    var buildInfo = JsonSerializer.Deserialize<BuildInfo>(buildInfoElement.GetRawText());
+                    if (buildInfo == null) continue;
+                    
+                    // 如果 ID 为空，使用字典的键作为 ID
+                    if (string.IsNullOrEmpty(buildInfo.ID))
+                    {
+                        buildInfo.ID = versionKey;
+                    }
+                    
+                    // 验证必要字段
+                    if (string.IsNullOrEmpty(buildInfo.ID)) continue;
+                    if (buildInfo.Variations == null || buildInfo.Variations.Count == 0) continue;
+                    
+                    // 检查是否有有效的 Variation（至少有一个 MetaData 不为空）
+                    var hasValidVariation = buildInfo.Variations.Any(v => v.MetaData != null && v.MetaData.Count > 0);
+                    if (!hasValidVariation) continue;
+                    
+                    Version version = null;
+                    try
+                    {
+                        version = new Version(buildInfo.ID);
+                    }
+                    catch
+                    {
+                        // 版本号解析失败，忽略
+                    }
+                    
+                    versionCache.Add((buildInfo, version));
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.WriteLine($"解析版本 {versionKey} 失败: {ex.Message}");
+                    continue;
                 }
-
-                versionCache.Add((item.Value, version));
             }
-
+            
+            // 排序：有效的 Version 对象按降序排前面，无效的按字符串排序
             versionCache.Sort((x, y) =>
             {
-                if (x.version != null && y.version != null) return y.version.CompareTo(x.version);
-                if (x.version != null) return -1;
-                if (y.version != null) return 1;
-                return string.Compare(y.item.ID, x.item.ID, StringComparison.Ordinal);
+                if (x.Version != null && y.Version != null)
+                    return y.Version.CompareTo(x.Version);
+                if (x.Version != null) return -1;
+                if (y.Version != null) return 1;
+                return string.Compare(y.Item.ID, x.Item.ID, StringComparison.Ordinal);
             });
-
-            var sortedList = versionCache.Select(x => x.item).ToList();
-
-            // If different from current cache, replace and notify
-            var shouldUpdate = !AreListsEqual(sortedList, Versions);
-            if (shouldUpdate)
-            {
-                Versions = sortedList;
-                SaveCache(sortedList);
-                VersionsRefreshed?.Invoke(sortedList);
-            }
-
-            return Versions ?? sortedList;
+            
+            _versions = versionCache.Select(x => x.Item).ToList();
         }
-        catch
+        catch (Exception ex)
         {
-            return Versions ?? new List<BuildInfo>();
+            Console.WriteLine($"获取版本列表失败: {ex.Message}");
+            _versions = new List<BuildInfo>();
         }
+        
+        return _versions;
     }
-
-    private static bool AreListsEqual(List<BuildInfo>? a, List<BuildInfo>? b)
+    
+    private static string GetVersionSourceUrl()
     {
-        if (ReferenceEquals(a, b)) return true;
-        if (a == null || b == null) return false;
-        if (a.Count != b.Count) return false;
+        // 从配置获取 URL，如果没有配置则使用默认
+        if (GlobalModel.Config != null && 
+            GlobalModel.Config.Data != null && 
+            GlobalModel.Config.Data.VersionSourceIndex >= 0 &&
+            GlobalModel.Config.Data.VersionSourceIndex < SourceList.VersionDataSources.Count)
+        {
+            return SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value;
+        }
 
-        for (var i = 0; i < a.Count; i++)
-            if (!string.Equals(a[i].ID, b[i].ID, StringComparison.Ordinal))
-                return false;
-
-        return true;
+        GlobalModel.Config.Data.VersionSourceIndex = 0;
+        GlobalModel.Config.Save();
+        return GetVersionSourceUrl();
     }
 }

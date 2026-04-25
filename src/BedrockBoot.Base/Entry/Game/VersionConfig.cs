@@ -20,6 +20,7 @@ public class VersionConfig
         [JsonPropertyName("buildType")] public MinecraftBuildTypeVersion BuildType { get; set; }
         [JsonPropertyName("versionName")] public string VersionName { get; set; }
         [JsonPropertyName("versionType")] public MinecraftGameTypeVersion VersionType { get; set; }
+        [JsonPropertyName("coverImage")] public string? CoverImage { get; set; } = null;
     }
 
     public class VersionStatusEntry

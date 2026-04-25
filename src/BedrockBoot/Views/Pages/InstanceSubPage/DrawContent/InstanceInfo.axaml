@@ -14,8 +14,7 @@
                 <items:BorderCard Padding="0"
                                   ClipToBounds="True">
                     <Grid Height="240">
-                        <widgets:LocalImageRenderWidget Name="IconBox"
-                                                        Opacity="0.4"/>
+                        <widgets:LocalImageRenderWidget Name="IconBox"/>
                         
                         <Border CornerRadius="6">
                             <Border.Background>
@@ -25,6 +24,25 @@
                                 </LinearGradientBrush>
                             </Border.Background>
                         </Border>
+                        
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Spacing="8"
+                                    Margin="8">
+                            <Button Classes="NoBorder"
+                                    Name="ResetImageBtn"
+                                    Click="ResetImageBtn_OnClick"
+                                    Padding="8">
+                                <onePointControls:FontIcon Glyph="&#xE777;"></onePointControls:FontIcon>
+                            </Button>
+                            <Button Classes="NoBorder"
+                                    Name="ChooseNewImageBtn"
+                                    Click="ChooseNewImageBtn_OnClick"
+                                    Padding="8">
+                                <onePointControls:FontIcon Glyph="&#xE8AB;"></onePointControls:FontIcon>
+                            </Button>
+                        </StackPanel>
 
                         <Grid ColumnDefinitions="Auto, *, Auto" Margin="30">
                             <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Spacing="4">

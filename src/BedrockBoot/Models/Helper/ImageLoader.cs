@@ -170,6 +170,9 @@ public class ImageLoader : IDisposable
         if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
             iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             return await GlobalModel.ImageLoader.LoadImageBrushAsync(iconUri);
+
+        if (File.Exists(iconUri))
+            return new Bitmap(iconUri);
         return null;
     }
 }

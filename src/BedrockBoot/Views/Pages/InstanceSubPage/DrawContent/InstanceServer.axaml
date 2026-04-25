@@ -11,7 +11,7 @@
         <Grid Grid.Row="0"
               ColumnDefinitions="*,Auto">
             <items:BorderCard Grid.Column="0"
-                              Margin="20,8,12,10">
+                              Margin="20,0,12,10">
                 <Grid ColumnDefinitions="4*,Auto,6*">
                     <DockPanel Grid.Column="0"
                                Margin="0,0,12,0">
@@ -47,7 +47,7 @@
                 </Grid>
             </items:BorderCard>
             <items:BorderCard Grid.Column="1"
-                              Margin="0,8,20,10">
+                              Margin="0,0,20,10">
                 <Grid>
                     <StackPanel Orientation="Horizontal"
                                 Spacing="8">

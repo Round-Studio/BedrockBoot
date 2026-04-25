@@ -6,7 +6,7 @@
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstancePlugins">
     <Grid RowDefinitions="*">
         <ScrollViewer Grid.Row="0" Name="ScBox">
-            <StackPanel Margin="20,8,20,15"
+            <StackPanel Margin="20,0,20,15"
                         HorizontalAlignment="Stretch"
                         Spacing="8"
                         Name="ResultBox" />

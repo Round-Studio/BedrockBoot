@@ -50,10 +50,7 @@ public partial class InstanceInfo : UserControl
         var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
         if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
             image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
-        IconBox.Background = new ImageBrush
-        {
-            Source = await ImageLoader.LoadIconAsync(image)
-        };
+        IconBox.Update(image);
         VersionName.Text = VersionInfo.Info.VersionName;
         VersionReady.Text =
             $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";

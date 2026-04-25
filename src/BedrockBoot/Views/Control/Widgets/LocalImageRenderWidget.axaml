@@ -9,6 +9,7 @@
     <items:BorderCard Padding="0">
         <Grid>
             <onePointControls:FontIcon Glyph="&#xE91B;"
+                                       Name="NoImage"
                                        FontSize="24"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />

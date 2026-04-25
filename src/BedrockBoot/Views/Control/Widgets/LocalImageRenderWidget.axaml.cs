@@ -55,10 +55,13 @@ public partial class LocalImageRenderWidget : UserControl
             Dispatcher.UIThread.Post(() =>
             {
                 if (image != null)
+                {
                     ImageBox.Background = new ImageBrush(image)
                     {
                         Stretch = Stretch.UniformToFill
                     };
+                    NoImage.IsVisible = false;
+                }
                 else
                     // 如果图片加载失败，可以清空背景或设置占位图
                     ImageBox.Background = null;

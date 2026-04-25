@@ -115,7 +115,7 @@
             </StackPanel>
         </StackPanel>
 
-        <notice:InfoCard Name="NetworkErrorNotice" IsVisible="False" BigTitle="无效的网络连接" Message="无法连接至目标服务器"
+        <notice:InfoCard Grid.Column="1" Name="NetworkErrorNotice" IsVisible="False" BigTitle="无效的网络连接" Message="无法连接至目标服务器"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center" />
     </Grid>

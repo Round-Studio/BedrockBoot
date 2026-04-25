@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Core.Models.Download;
@@ -17,6 +19,8 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadUpdateFileItem : UserControl
 {
+    private Action _cancelCallBack;
+
     public TaskDownloadUpdateFileItem()
     {
         InitializeComponent();
@@ -28,25 +32,30 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     }
 
     public Release Release { get; set; }
+    private CancellationTokenSource _cts;
 
-    public void Update()
+    public void Update(Action cancelCallBack)
     {
+        _cancelCallBack = cancelCallBack;
         // 标题国际化
         CardTitle.Text = string.Format(I18nManager.Instance["Task.Update.Title.Format"], Release.TagName);
 
-        // 查找名称包含 "win" 的 asset
+        // 查找名���包含 "win" 的 asset
         var winAsset = Release.Assets.FirstOrDefault(asset =>
             asset.Name.Contains("win", StringComparison.OrdinalIgnoreCase));
 
         if (winAsset == null)
         {
-            // 如果没有找到包含 "win" 的 asset，可以记录错误或回退到第一个 asset
+            // 如果没有找到包含 "win" 的 asset，可以记录错误���回退到第一个 asset
             Console.WriteLine(@"未找到包含 'win' 标志的 asset");
             return;
         }
 
         var url = winAsset.BrowserDownloadUrl;
         var path = Path.Combine(PathsList.UpdatePath, $"{Release.TagName}.exe");
+
+        _cts = new CancellationTokenSource();
+        var token = _cts.Token;
 
         Task.Run(async () =>
         {
@@ -66,15 +75,15 @@ public partial class TaskDownloadUpdateFileItem : UserControl
                     ProgressBar.Value = (int)xprogress.ProgressPercentage;
                     ProgressText.Text = $"{xprogress.ProgressPercentage:F2} %";
                 });
-            }));
+            }), token);
 
             // 给予 UI 刷新的缓冲时间
-            await Task.Delay(100);
+            await Task.Delay(100, token);
 
             // 启动更新程序
             Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
 
-            await Task.Delay(100);
+            await Task.Delay(100, token);
             Environment.Exit(0);
         });
     }
@@ -92,7 +101,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         var body = new TaskDownloadUpdateFileItem(release);
         var tuid = Models.Global.GlobalModel.TaskManager.AddTask(body);
 
-        body.Update();
+        body.Update(() => Models.Global.GlobalModel.TaskManager.RemoveTask(tuid));
 #endif
 
 #if LINUX
@@ -119,5 +128,11 @@ public partial class TaskDownloadUpdateFileItem : UserControl
             CloseButtonText = "确定"
         });
 #endif
+    }
+
+    private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _cts?.Cancel();
+        _cancelCallBack.Invoke();
     }
 }

@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.TaskItem.TaskImportGamePackItem">
     <items:BorderCard>
-        <Grid ColumnDefinitions="Auto,*">
+        <Grid ColumnDefinitions="Auto,*,Auto">
             <onePointControls:ProgressRing Grid.Column="0"
                                            Width="36"
                                            Height="36"
@@ -33,6 +33,17 @@
                                Text="{DynamicResource Task.ImportPack.Status.Preparing}" />
                 </StackPanel>
             </StackPanel>
+
+            <Button Grid.Column="2"
+                    Classes="NoBorder"
+                    Width="32" Height="32"
+                    IsVisible="False"
+                    Name="CancelBtn"
+                    Click="CancelButton_OnClick">
+                <onePointControls:FontIcon Glyph="&#xE711;"
+                                           Foreground="DarkRed"
+                                           FontSize="16" />
+            </Button>
         </Grid>
     </items:BorderCard>
 </UserControl>

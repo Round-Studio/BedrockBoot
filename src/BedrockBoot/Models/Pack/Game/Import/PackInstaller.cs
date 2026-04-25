@@ -30,7 +30,7 @@ public class PackInstaller
     public IProgress<PackImportProgress> ImportProgress { get; set; } = new Progress<PackImportProgress>();
     public bool IsGDKUnknownBuildType { get; set; } = false;
 
-    public async Task Install(string dir, string gameName)
+    public async Task Install(string dir, string gameName, CancellationToken token = default)
     {
         ImportProgress.Report(new PackImportProgress { Progress = 10, StatusMessage = "判断文件类型..." });
         GameBuildType = PackAnalysis.GetPackBuildTypeWithFileHeader(PackFile);
@@ -38,14 +38,14 @@ public class PackInstaller
         ImportProgress.Report(new PackImportProgress { Progress = 20, StatusMessage = "判断文件类型..." });
 
         if (GameBuildType == MinecraftBuildTypeVersion.GDK)
-            await InstallWithGDK(dir, gameName);
+            await InstallWithGDK(dir, gameName, token);
         if (GameBuildType == MinecraftBuildTypeVersion.UWP)
-            await InstallWithUWP(dir, gameName);
+            await InstallWithUWP(dir, gameName, token);
     }
 
     #region UWP Installer
 
-    private async Task InstallWithUWP(string dir, string gameName)
+    private async Task InstallWithUWP(string dir, string gameName, CancellationToken token)
     {
         var path = Path.Combine(dir, "bedrock_versions", gameName);
         var manifest = PackageIdentity.ParseFromXml(ExtractAppxManifestFromAppx(PackFile));
@@ -69,7 +69,8 @@ public class PackInstaller
                     Progress = s.Percentage,
                     StatusMessage = $"解压文件中... ({s.Percentage:F2} %)"
                 });
-            })
+            }),
+            CancellationToken = token
         });
 
 
@@ -324,7 +325,7 @@ public class PackInstaller
         }
     }
 
-    private async Task InstallWithGDK(string dir, string gameName)
+    private async Task InstallWithGDK(string dir, string gameName, CancellationToken token)
     {
         // 创建文件副本以避免占用问题
         var tempFilePath = await CreateTempFileCopy(PackFile);
@@ -373,7 +374,8 @@ public class PackInstaller
                             StatusMessage = $"解压文件中... ({progress.Percentage:F2}%)"
                         });
                     }
-                })
+                }),
+                CancellationToken = token
             });
 
             // 验证安装结果

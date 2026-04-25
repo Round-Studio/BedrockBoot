@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Integration;
@@ -41,7 +42,7 @@ public class IntegrationInstaller
         return JsonSerializer.Deserialize<PackInfo>(packJson);
     }
 
-    public async Task BeginInstaller(string installFolder, string installName)
+    public async Task BeginInstaller(string installFolder, string installName, CancellationToken token = default)
     {
         var path = Path.Combine(PathsList.TempPath, $"integration_{Guid.NewGuid().ToString().Replace("-", "")}");
 
@@ -151,7 +152,6 @@ public class IntegrationInstaller
                 {
                     IsAutoCompleteVC = true,
                     IsAutoOpenDevelopment = true,
-                    IsAutoCompleteGameInput = true,
                     IsCheckMD5 = true
                 }
 #endif
@@ -180,7 +180,7 @@ public class IntegrationInstaller
 
         try
         {
-            await downloader.InstallAsync(url);
+            await downloader.InstallAsync(url, token);
         }
         catch (Exception ex)
         {

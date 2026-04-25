@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
@@ -29,6 +31,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
     public CurseForgeResponse.ModFile ModFile { get; set; }
     public Action CallBack { get; set; }
+    private CancellationTokenSource _cts;
 
     public void Update()
     {
@@ -38,6 +41,8 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
     public async Task Download(string savePath, VersionConfig version = null)
     {
+        _cts = new CancellationTokenSource();
+        var token = _cts.Token;
         var download = new MultiThreadDownloader();
 
         var url = new Uri(ModFile.DownloadUrl).AbsoluteUri.Replace("edge.forgecdn.net", "mediafilez.forgecdn.net");
@@ -55,7 +60,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
                     xprogress.ProgressPercentage);
                 MainSpeedText.Text = "??? / s";
             });
-        }));
+        }), token);
 
         if (version == null) CallBack?.Invoke();
 
@@ -78,7 +83,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
             }
 
             if (CallBack != null) Dispatcher.UIThread.Invoke(CallBack);
-        });
+        }, token);
     }
 
     public static void Download(CurseForgeResponse.ModFile modFile, string savePath, VersionConfig version = null)
@@ -95,5 +100,11 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
         body.CallBack = () => GlobalModel.TaskManager.RemoveTask(tuid);
         _ = body.Download(savePath, version); // 使用丢弃符号明确表示异步调用
+    }
+
+    private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _cts?.Cancel();
+        CallBack?.Invoke();
     }
 }

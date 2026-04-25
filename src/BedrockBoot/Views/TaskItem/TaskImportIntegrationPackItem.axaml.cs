@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Enum;
@@ -12,6 +14,8 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskImportIntegrationPackItem : UserControl
 {
+    private CancellationTokenSource? _cts;
+
     public TaskImportIntegrationPackItem()
     {
         InitializeComponent();
@@ -23,6 +27,8 @@ public partial class TaskImportIntegrationPackItem : UserControl
         string installName) : this()
     {
         MainProgressBar.IsIndeterminate = true;
+        _cts = new CancellationTokenSource();
+        var token = _cts.Token;
         Task.Run(async () =>
         {
             var installer = new IntegrationInstaller(filePath);
@@ -66,7 +72,7 @@ public partial class TaskImportIntegrationPackItem : UserControl
                     SuccessCallBack?.Invoke();
                 }
             });
-            installer.BeginInstaller(installFolder, installName);
+            await installer.BeginInstaller(installFolder, installName, token);
         });
     }
 
@@ -87,5 +93,12 @@ public partial class TaskImportIntegrationPackItem : UserControl
         var body = new TaskImportIntegrationPackItem(filePath, installFolder, installName);
         var tuid = GlobalModel.TaskManager.AddTask(body);
         body.SuccessCallBack = () => { GlobalModel.TaskManager.RemoveTask(tuid); };
+    }
+
+    private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _cts?.Cancel();
+        // Optionally, remove the task or update UI
+        SuccessCallBack?.Invoke();
     }
 }

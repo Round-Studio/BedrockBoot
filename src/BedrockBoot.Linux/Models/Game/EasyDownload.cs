@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
@@ -62,7 +63,7 @@ public class EasyDownload
 
     public VersionConfig GameConfig { get; private set; }
 
-    public async Task InstallAsync(string url)
+    public async Task InstallAsync(string url, CancellationToken token = default)
     {
         Console.WriteLine($@"下载游戏，地址：{url}");
         try
@@ -71,18 +72,22 @@ public class EasyDownload
             PrepareDownloadDirectory();
 
             // 2. 下载游戏包
-            var packagePath = await DownloadPackageAsync(url);
+            var packagePath = await DownloadPackageAsync(url, token);
+            token.ThrowIfCancellationRequested();
 
             MergeProgress?.Invoke("验证包...", 80);
 
             // 3. 验证包完整性
-            if (!await ValidatePackageAsync(packagePath)) return;
+            if (!await ValidatePackageAsync(packagePath, token)) return;
+            token.ThrowIfCancellationRequested();
 
             // 4. 标记合并完成
             OnMergeComplete();
+            token.ThrowIfCancellationRequested();
 
             // 5. 安装包
-            await InstallPackageAsync(packagePath);
+            await InstallPackageAsync(packagePath, token);
+            token.ThrowIfCancellationRequested();
 
             Completed?.Invoke(GameConfig);
         }
@@ -98,7 +103,7 @@ public class EasyDownload
         if (!Directory.Exists(versionSavePath)) Directory.CreateDirectory(versionSavePath);
     }
 
-    private async Task<string> DownloadPackageAsync(string url)
+    private async Task<string> DownloadPackageAsync(string url, CancellationToken token)
     {
         var packagePath = Path.Combine(InstallFolder, "version_save", $"{BuildInfo.ID}.insPack");
 
@@ -138,12 +143,12 @@ public class EasyDownload
 
             // 更新整合的下载进度
             DownloadProgress?.Invoke($"下载游戏 ({progress.ProgressPercentage:F2}%)", progressInfo);
-        }));
+        }), token);
 
         return packagePath;
     }
 
-    private async Task<bool> ValidatePackageAsync(string packagePath)
+    private async Task<bool> ValidatePackageAsync(string packagePath, CancellationToken token)
     {
         StatusText?.Invoke("正在验证包完整性...");
 
@@ -163,7 +168,7 @@ public class EasyDownload
         StatusText?.Invoke("本地安装中...");
     }
 
-    private async Task InstallPackageAsync(string packagePath)
+    private async Task InstallPackageAsync(string packagePath, CancellationToken token)
     {
         var installDir = Path.Combine(InstallFolder, "bedrock_versions", GameName);
 
@@ -183,7 +188,8 @@ public class EasyDownload
             {
                 InstallStateChanged?.Invoke(states);
                 HandleInstallState(states, installDir);
-            })
+            }),
+            CancellationToken = token
         });
     }
 

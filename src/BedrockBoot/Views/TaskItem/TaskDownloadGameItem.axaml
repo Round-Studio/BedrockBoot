@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="400"
              x:Class="BedrockBoot.Views.TaskItem.TaskDownloadGameItem">
     <items:BorderCard>
-        <Grid ColumnDefinitions="Auto,*">
+        <Grid ColumnDefinitions="Auto,*,Auto">
             <onePointControls:ProgressRing Grid.Column="0"
                                            Width="36"
                                            Height="36"
@@ -75,6 +75,16 @@
                     </Grid>
                 </StackPanel>
             </StackPanel>
+
+            <Button Grid.Column="2"
+                    Classes="NoBorder"
+                    Width="32" Height="32"
+                    Name="CancelBtn"
+                    Click="CancelButton_OnClick">
+                <onePointControls:FontIcon Glyph="&#xE711;"
+                                           Foreground="DarkRed"
+                                           FontSize="16" />
+            </Button>
         </Grid>
     </items:BorderCard>
 </UserControl>

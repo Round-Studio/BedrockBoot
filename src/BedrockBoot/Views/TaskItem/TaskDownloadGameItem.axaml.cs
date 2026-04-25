@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Services;
@@ -16,6 +18,7 @@ namespace BedrockBoot.Views.TaskItem;
 public partial class TaskDownloadGameItem : UserControl
 {
     private EasyDownload _downloader;
+    private CancellationTokenSource _cancellationTokenSource;
 
     public TaskDownloadGameItem()
     {
@@ -86,10 +89,20 @@ public partial class TaskDownloadGameItem : UserControl
         if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
             InsInstallGamePanel.IsVisible = false;
 
+        _cancellationTokenSource = new CancellationTokenSource();
+        var token = _cancellationTokenSource.Token;
+
         Task.Run(async () =>
         {
-            await _downloader.InstallAsync(Url);
-            installed?.Invoke();
+            try
+            {
+                await _downloader.InstallAsync(Url, token);
+                installed?.Invoke();
+            }
+            catch (OperationCanceledException)
+            {
+                // Handle cancellation
+            }
         });
     }
 
@@ -181,5 +194,10 @@ public partial class TaskDownloadGameItem : UserControl
             GlobalModel.TaskManager.RemoveTask(tuid);
             installedCallBack?.Invoke();
         });
+    }
+
+    private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _cancellationTokenSource?.Cancel();
     }
 }

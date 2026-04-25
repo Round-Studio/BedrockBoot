@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
 using BedrockBoot.Models.Global;
@@ -34,7 +36,9 @@ public partial class TaskImportGamePackItem : UserControl
     public bool IsGDKUnknownBuildType { get; set; }
     public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
 
-    public void Install(Action installed)
+    private CancellationTokenSource _cts;
+
+    public async Task Install(Action installed)
     {
         var body = new PackInstaller(PackFile)
         {
@@ -64,34 +68,39 @@ public partial class TaskImportGamePackItem : UserControl
         });
         body.ImportedAction = () => installed.Invoke();
 
-        Task.Run(async () =>
+        _cts = new CancellationTokenSource();
+        var token = _cts.Token;
+
+        try
         {
-            try
+            await body.Install(InstallFolder, InstallName, token);
+        }
+        catch (Exception e)
+        {
+            Dispatcher.UIThread.Invoke(() =>
             {
-                await body.Install(InstallFolder, InstallName);
-            }
-            catch (Exception e)
-            {
-                Dispatcher.UIThread.Invoke(() =>
+                DialogHost.Show(new DialogInfo
                 {
-                    DialogHost.Show(new DialogInfo
-                    {
-                        // 错误信息国际化
-                        Title = string.Format(I18nManager.Instance["Task.ImportPack.Error.Title"], InstallName),
-                        Content = I18nManager.Instance["Task.ImportPack.Error.Content"],
-                        CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
-                    });
+                    // 错误信息国际化
+                    Title = string.Format(I18nManager.Instance["Task.ImportPack.Error.Title"], InstallName),
+                    Content = I18nManager.Instance["Task.ImportPack.Error.Content"],
+                    CloseButtonText = I18nManager.Instance["MainWindow.Common.Confirm"]
                 });
-            }
-        });
+            });
+        }
     }
 
-    public static void Install(string packFile, string installFolder, string installName, MinecraftGameTypeVersion type,
+    public static async void Install(string packFile, string installFolder, string installName, MinecraftGameTypeVersion type,
         bool knowGameTypeCheckBox)
     {
         var body = new TaskImportGamePackItem(packFile, installFolder, installName, type, knowGameTypeCheckBox);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
-        body.Install(() => { GlobalModel.TaskManager.RemoveTask(tuid); });
+        await body.Install(() => { GlobalModel.TaskManager.RemoveTask(tuid); });
+    }
+
+    private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _cts?.Cancel();
     }
 }

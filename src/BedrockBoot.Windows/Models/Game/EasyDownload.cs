@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
@@ -62,7 +63,7 @@ public class EasyDownload
 
     public VersionConfig GameConfig { get; private set; }
 
-    public async Task InstallAsync(string url)
+    public async Task InstallAsync(string url, CancellationToken token = default)
     {
         Console.WriteLine($@"下载游戏，地址：{url}");
         try
@@ -71,20 +72,28 @@ public class EasyDownload
             PrepareDownloadDirectory();
 
             // 2. 下载游戏包
-            var packagePath = await DownloadPackageAsync(url);
+            var packagePath = await DownloadPackageAsync(url, token);
+            token.ThrowIfCancellationRequested();
 
             MergeProgress?.Invoke("验证包...", 80);
 
             // 3. 验证包完整性
-            if (!await ValidatePackageAsync(packagePath)) return;
+            if (!await ValidatePackageAsync(packagePath, token)) return;
+            token.ThrowIfCancellationRequested();
 
             // 4. 标记合并完成
             OnMergeComplete();
+            token.ThrowIfCancellationRequested();
 
             // 5. 安装包
-            await InstallPackageAsync(packagePath);
+            await InstallPackageAsync(packagePath, token);
+            token.ThrowIfCancellationRequested();
 
             Completed?.Invoke(GameConfig);
+        }
+        catch (OperationCanceledException)
+        {
+            // 取消操作，不显示错误
         }
         catch (Exception ex)
         {
@@ -98,13 +107,13 @@ public class EasyDownload
         if (!Directory.Exists(versionSavePath)) Directory.CreateDirectory(versionSavePath);
     }
 
-    private async Task<string> DownloadPackageAsync(string url)
+    private async Task<string> DownloadPackageAsync(string url, CancellationToken token)
     {
         var packagePath = Path.Combine(InstallFolder, "version_save", $"{BuildInfo.ID}.insPack");
 
         // 如果文件已存在且MD5校验通过，则跳过下载
         if (File.Exists(packagePath) &&
-            await CheckMD5(packagePath, false) &&
+            await CheckMD5(packagePath, token, false) &&
             IsUsePack)
         {
             StatusText?.Invoke("使用缓存包");
@@ -138,16 +147,16 @@ public class EasyDownload
 
             // 更新整合的下载进度
             DownloadProgress?.Invoke($"下载游戏 ({progress.ProgressPercentage:F2}%)", progressInfo);
-        }));
+        }), token);
 
         return packagePath;
     }
 
-    private async Task<bool> ValidatePackageAsync(string packagePath)
+    private async Task<bool> ValidatePackageAsync(string packagePath, CancellationToken token)
     {
         StatusText?.Invoke("正在验证包完整性...");
 
-        if (!await CheckMD5(packagePath))
+        if (!await CheckMD5(packagePath, token))
         {
             ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
             return false;
@@ -163,7 +172,7 @@ public class EasyDownload
         StatusText?.Invoke("本地安装中...");
     }
 
-    private async Task InstallPackageAsync(string packagePath)
+    private async Task InstallPackageAsync(string packagePath, CancellationToken token)
     {
         var installDir = Path.Combine(InstallFolder, "bedrock_versions", GameName);
 
@@ -179,16 +188,12 @@ public class EasyDownload
                 ExtractionProgress?.Invoke($"解压文件 ({progress.Percentage:F2}%)",
                     progress.Percentage);
             }),
-            DeployProgress = new Progress<DeploymentProgress>(progress =>
-            {
-                DeploymentProgress?.Invoke($"部署游戏 ({progress.state} [{progress.percentage}%])",
-                    progress);
-            }),
             InstallStates = new Progress<InstallStates>(states =>
             {
                 InstallStateChanged?.Invoke(states);
                 HandleInstallState(states, installDir);
-            })
+            }),
+            CancellationToken = token
         });
     }
 
@@ -234,11 +239,13 @@ public class EasyDownload
         GameInfoHelper.SaveVersionConfig(conf);
     }
 
-    public async Task<bool> CheckMD5(string file, bool showError = true)
+    public async Task<bool> CheckMD5(string file, CancellationToken token = default, bool showError = true)
     {
         try
         {
+            token.ThrowIfCancellationRequested();
             var fileMD5 = await ComputeFileMD5.ComputeFileMD5Async(file);
+            token.ThrowIfCancellationRequested();
 
             foreach (var variation in BuildInfo.Variations)
                 if (variation.MD5 == fileMD5)

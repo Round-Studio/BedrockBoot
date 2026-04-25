@@ -10,10 +10,12 @@
                     Spacing="8">
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
+                       Name="HelpInfo"
                        FontSize="14"
                        Text="{DynamicResource Settings.Universal.Group.Accessibility}" />
 
             <onePointControls:SettingCard Margin="5, 0"
+                                          Name="JumpListCard"
                                           Header="{DynamicResource Settings.Universal.JumpList.Title}"
                                           Description="{DynamicResource Settings.Universal.JumpList.Desc}"
                                           Glyph="&#xE8FC;">

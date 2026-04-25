@@ -39,4 +39,7 @@ public class FunctionOptionEntry
     
     [JsonPropertyName("isEnableToolsBoxUsingPackTranslate")]
     public bool IsEnableToolsBoxUsingPackTranslate { get; set; }
+    
+    [JsonPropertyName("isEnableGameProtonManager")]
+    public bool IsEnableGameProtonManager { get; set; }
 }

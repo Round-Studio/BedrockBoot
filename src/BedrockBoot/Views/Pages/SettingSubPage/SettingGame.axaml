@@ -14,6 +14,7 @@
                        Text="{DynamicResource Settings.Game.Group.Base}" />
 
             <onePointControls:SettingCard Margin="5, 0"
+                                          Name="IsolationCard"
                                           Header="{DynamicResource Settings.Game.Isolation.Title}"
                                           Description="{DynamicResource Settings.Game.Isolation.Desc}"
                                           Glyph="&#xE7B8;">
@@ -26,6 +27,7 @@
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"
+                                          Name="MouseLockCard"
                                           Header="鼠标锁"
                                           Description="为了防止鼠标越过游戏窗口边界，导致误触其他东西的功能"
                                           Glyph="&#xE72E;">
@@ -40,6 +42,22 @@
                                           Click="GameFolderBtn_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE8B7;" />
+            
+            <StackPanel Spacing="8"
+                        Name="SeniorPanel">
+                <TextBlock Margin="5,0"
+                           FontWeight="Bold"
+                           FontSize="14"
+                           Text="高级" />
+
+                <onePointControls:SettingCard Margin="5, 0"
+                                              Header="Proton"
+                                              Description="管理和设置 Proton 运行器"
+                                              Name="ProtonBtn"
+                                              Click="ProtonBtn_OnClick"
+                                              IsClickable="True"
+                                              Glyph="&#xE74C;" />
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

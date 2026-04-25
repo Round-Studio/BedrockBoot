@@ -29,6 +29,19 @@ public partial class SettingGame : ISettingPage
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
         MouseLockSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
 
+#if RELEASE
+        SeniorPanel.IsVisible = Models.Global.GlobalModel.FunctionOption.IsEnableGameProtonManager;
+#endif
+
+#if LINUX
+        IsolationCard.IsVisible = false;
+        MouseLockCard.IsVisible = false;
+#endif
+
+#if WINDOWS
+        SeniorPanel.IsVisible = false;
+#endif
+
         IsEdit = true;
     }
 
@@ -55,5 +68,10 @@ public partial class SettingGame : ISettingPage
             GlobalModel.Config.Data.IsMouseLock = (bool)MouseLockSwitch.IsChecked!;
             GlobalModel.Config.Save();
         }
+    }
+
+    private void ProtonBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new GameProton());
     }
 }

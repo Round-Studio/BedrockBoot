@@ -33,6 +33,11 @@ public partial class SettingUniversal : ISettingPage
         LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
         LaunchBehaviorChoose.SelectedIndex = (int)GlobalModel.Config.Data.LaunchBehavior;
 
+#if LINUX
+        JumpListCard.IsVisible = false;
+        HelpInfo.IsVisible = false;
+#endif
+
         IsEdit = true;
     }
 

@@ -11,5 +11,6 @@
   "isEnableMouseLock": false,
   "isEnableMcPackOpenWithBody": true,
   "isEnableSettingPersonalizationHome": true,
-  "isEnableToolsBoxUsingPackTranslate": true
+  "isEnableToolsBoxUsingPackTranslate": true,
+  "isEnableGameProtonManager": false
 }

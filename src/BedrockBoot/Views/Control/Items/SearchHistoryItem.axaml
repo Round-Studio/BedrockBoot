@@ -17,15 +17,12 @@
                                            VerticalAlignment="Center"
                                            FontSize="14"
                                            Glyph="&#xE81C;" />
-
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Spacing="4"
-                            VerticalAlignment="Center">
-                    <TextBlock Text="Search Key"
-                               Name="SearchKey"
-                               VerticalAlignment="Center" />
-                </StackPanel>
+                
+                <TextBlock Grid.Column="1"
+                           Text="Search Key"
+                           TextTrimming="CharacterEllipsis"
+                           Name="SearchKey"
+                           VerticalAlignment="Center" />
 
                 <onePointControls:LabelBox Grid.Column="2"
                                            Name="SearchType"

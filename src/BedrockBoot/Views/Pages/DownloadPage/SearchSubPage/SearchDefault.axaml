@@ -5,10 +5,10 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
              xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
-             d:DesignWidth="800"
+             d:DesignWidth="800" d:DesignHeight="400"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.SearchSubPage.SearchDefault">
     <Grid ColumnDefinitions="2.5*,7.5*"
-          ColumnSpacing="8"
+          ColumnSpacing="0"
           Margin="20,5,20,20">
         <Grid Grid.Column="0"
               RowDefinitions="Auto,*"
@@ -27,6 +27,7 @@
                         VerticalContentAlignment="Center"
                         Padding="4"
                         Width="24" Height="24"
+                        Margin="0,0,16,0"
                         Name="CleanBtn"
                         Click="CleanBtn_OnClick">
                     <onePointControls:FontIcon Glyph="&#xE74D;" />
@@ -36,6 +37,7 @@
             <ScrollViewer Grid.Row="1"
                           Name="HistoryListScrollViewer">
                 <StackPanel Spacing="8"
+                            Margin="0,0,16,0"
                             Name="HistoryList" />
             </ScrollViewer>
 

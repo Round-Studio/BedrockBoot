@@ -29,7 +29,7 @@ public partial class SettingGame : ISettingPage
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
         MouseLockSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
 
-#if RELEASE
+#if RELEASE && LINUX
         SeniorPanel.IsVisible = Models.Global.GlobalModel.FunctionOption.IsEnableGameProtonManager;
 #endif
 

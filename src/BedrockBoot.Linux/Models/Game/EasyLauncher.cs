@@ -6,6 +6,7 @@ using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Proton;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using Round.SDK.Entity;
@@ -33,7 +34,7 @@ public class EasyLauncher
         _linuxLaunchInfo = new ProtonInfo()
         {
             PrefixPath = Path.Combine(PathsList.ProtonPath, "game_prefix"),
-            ProtonPath = Path.Combine(Path.Combine(PathsList.ProtonPath, "work"), ProtonDownloader.ProtonVersion)
+            ProtonPath = ProtonCore.Config.Data.SelectProtonPath
         };
 
         var conf = new ConfigEntity<VersionConfig>(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2",

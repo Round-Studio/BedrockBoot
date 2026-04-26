@@ -45,7 +45,7 @@ public class ProtonCore
 
         return result.ToList();
     }
-    public static async Task InstallProton(ProtonInfo info, InstallInfo installInfo,
+    public static async Task<string> InstallProton(ProtonInfo info, InstallInfo installInfo,
         IProgress<DownloadProgress> progress = null)
     {
         progress?.Report(new()
@@ -94,6 +94,8 @@ public class ProtonCore
         conf.Data = info;
         conf.Data.Name = installInfo.InstallName;
         conf.Save();
+
+        return installPath;
     }
     public static IReadOnlyList<ProtonInfo>? GetInstalledVersions()
     {

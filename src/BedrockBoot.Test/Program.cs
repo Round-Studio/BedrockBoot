@@ -10,6 +10,8 @@ ProtonCore.InitializeEnvironment();
 var info = (await ProtonCore.GetInstallableVersion(ProtonSource.LukasPAH))!.ToList()[0];
 await ProtonCore.InstallProton(info,new InstallInfo()
 {
-    InstallName = "测试 Proton",
+    InstallName = "测试 Proton1",
     IsOverWrite = true
 },new Progress<DownloadProgress>(p=>Console.WriteLine($"{p.Message} {p.ProgressPercentage:F2}")));
+
+ProtonCore.GetInstalledVersions()?.ToList().ForEach(p=>Console.WriteLine($"{p.Name} {p.Version}"));

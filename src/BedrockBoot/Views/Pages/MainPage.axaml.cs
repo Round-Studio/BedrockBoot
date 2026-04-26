@@ -10,6 +10,7 @@ using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Pack.Plugin;
+using BedrockBoot.Proton;
 using BedrockBoot.Views.DialogContent.Linux;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage;
@@ -122,7 +123,10 @@ public partial class MainPage : UserControl
         };
 
 #if LINUX
-        if (!ProtonDownloader.IsInstalledProtonVersion())
+        ProtonCore.InitializeEnvironment();
+        
+        var lst = ProtonCore.GetInstalledVersions();
+        if (lst == null || lst.Count <= 0)
         {
             DialogHost.Show(new DialogInfo()
             {

@@ -14,6 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
       <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />
     </ItemGroup>
 

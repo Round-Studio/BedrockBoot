@@ -71,7 +71,14 @@ public class ProtonCore
         {
             var downloader = new GithubFilesDownloader();
             await downloader.DownloadAsync(url, filePath,
-                new Progress<DownloadProgress>(p => progress?.Report(p)));
+                new Progress<DownloadProgress>(p => progress?.Report(new DownloadProgress()
+                {
+                    BytesPerSecond = p.BytesPerSecond,
+                    DownloadedBytes = p.DownloadedBytes,
+                    EstimatedRemainingSeconds = p.EstimatedRemainingSeconds,
+                    Message = "下载文件",
+                    TotalBytes = p.TotalBytes
+                })));
         }
 
         var unZipPath = Path.Combine(PathsList.TempPath,
@@ -146,7 +153,7 @@ public class ProtonCore
         
             progress?.Report(new DownloadProgress
             {
-                Message = $"复制文件 ({processedFiles}/{allFiles.Length})",
+                Message = $"复制文件",
                 TotalBytes = totalFiles,
                 DownloadedBytes = processedFiles
             });

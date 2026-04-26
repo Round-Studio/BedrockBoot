@@ -6,9 +6,11 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Interface;
 using BedrockBoot.Proton;
+using BedrockBoot.Proton.Entry.Info;
 using BedrockBoot.Views.Control.Items.Proton;
 using BedrockBoot.Views.DialogContent.Linux.Proton;
 using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.TaskItem.Linux.Proton;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -72,6 +74,12 @@ public partial class GameProton : ISettingPage
                     CloseAction = () =>
                     {
                         var protonInfo = selVersionDialog.ProtonInfo;
+
+                        TaskDownloadProtonItem.Install(protonInfo, new InstallInfo()
+                        {
+                            InstallName = protonInfo.Name,
+                            IsOverWrite = true
+                        });
                     }
                 });
             }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
@@ -19,6 +20,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 
 public partial class GameProton : ISettingPage
 {
+    public static Action? UpdateList;
     public GameProton()
     {
         InitializeComponent();
@@ -35,11 +37,13 @@ public partial class GameProton : ISettingPage
             }
         };
 
+        UpdateList = UpdateUI;
         UpdateUI();
     }
 
     private void UpdateUI()
     {
+        if(ListBox == null) return;
         ListBox.Children.Clear();
 
         var lst = ProtonCore.GetInstalledVersions();

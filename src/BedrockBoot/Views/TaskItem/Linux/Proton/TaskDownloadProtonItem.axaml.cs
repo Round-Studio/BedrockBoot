@@ -9,6 +9,7 @@ using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Proton;
 using BedrockBoot.Proton.Entry.Info;
+using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.TaskItem.Linux.Proton;
@@ -31,7 +32,7 @@ public partial class TaskDownloadProtonItem : UserControl
         _installInfo = installInfo;
     }
 
-    public async Task Install()
+    public void Install()
     {
         Task.Run(async () =>
         {
@@ -45,7 +46,7 @@ public partial class TaskDownloadProtonItem : UserControl
                 });
             }));
 
-            CallBack?.Invoke();
+            Dispatcher.UIThread.Invoke(CallBack!);
         });
     }
 
@@ -66,7 +67,11 @@ public partial class TaskDownloadProtonItem : UserControl
         var body = new TaskDownloadProtonItem(info, installInfo);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
-        body.CallBack = () => GlobalModel.TaskManager.RemoveTask(tuid);
-        _ = body.Install();
+        body.CallBack = () =>
+        {
+            GlobalModel.TaskManager.RemoveTask(tuid);
+            GameProton.UpdateList?.Invoke();
+        };
+        body.Install();
     }
 }

@@ -44,7 +44,7 @@ public class EasyLauncher
     }
 
     public VersionConfig VersionInfo { get; }
-    public Action? OnMigration { get; set; }
+    public Action? NoRunTool { get; set; }
     public Action<Process>? Launched { get; set; }
     public Action? LaunchCompleted { get; set; }
     public Action<string, double>? UpdateProgress { get; set; }
@@ -136,6 +136,14 @@ public class EasyLauncher
 
     public async Task Launch()
     {
+        if (string.IsNullOrEmpty(_linuxLaunchInfo.ProtonPath) ||
+            ProtonCore.GetInstalledVersions()!.Count <= 0)
+        {
+            NoRunTool?.Invoke();
+            LaunchCompleted?.Invoke();
+            return;
+        }
+
         LaunchingCount++;
         if (CoreGlobal.BedrockCore == null)
         {

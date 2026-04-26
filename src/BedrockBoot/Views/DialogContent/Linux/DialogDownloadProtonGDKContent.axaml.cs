@@ -8,6 +8,7 @@ using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Proton;
 using BedrockBoot.Proton.Entry.Info;
 using BedrockBoot.Proton.Enum;
+using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -49,6 +50,10 @@ public partial class DialogDownloadProtonGDKContent : UserControl
 
                 ProtonCore.Config.Data.SelectProtonPath = path;
                 ProtonCore.Config.Save();
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    GameProton.UpdateList?.Invoke();
+                });
             });
         }
         else

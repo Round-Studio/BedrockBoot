@@ -30,6 +30,7 @@
                 <onePointControls:FontIcon Glyph="&#xE8B7;" />
             </Button>
             <Button Width="24" Height="24"
+                    IsVisible="False"
                     Name="DeleteProtonBtn"
                     Classes="NoBorder">
                 <onePointControls:FontIcon Glyph="&#xE74D;"

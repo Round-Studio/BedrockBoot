@@ -30,7 +30,7 @@ public partial class InstalledProtonItem : UserControl
         Card.Description = $"{_info.Version}, 来自 {_info.Branch}";
         ProtonName.Text = _info.Name;
         IsDefault.IsVisible = _info.IsDefault;
-        DeleteProtonBtn.IsVisible = !_info.IsDefault;
+        // DeleteProtonBtn.IsVisible = !_info.IsDefault;
     }
 
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)

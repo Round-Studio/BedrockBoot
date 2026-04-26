@@ -12,5 +12,5 @@
   "isEnableMcPackOpenWithBody": true,
   "isEnableSettingPersonalizationHome": true,
   "isEnableToolsBoxUsingPackTranslate": true,
-  "isEnableGameProtonManager": false
+  "isEnableGameProtonManager": true
 }

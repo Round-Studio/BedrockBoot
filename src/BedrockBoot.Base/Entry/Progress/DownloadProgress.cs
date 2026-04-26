@@ -13,4 +13,5 @@ public class DownloadProgress
 
     public double BytesPerSecond { get; set; }
     public double EstimatedRemainingSeconds { get; set; }
+    public string Message { get; set; } = string.Empty;
 }

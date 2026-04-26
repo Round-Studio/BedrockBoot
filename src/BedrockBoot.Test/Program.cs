@@ -1,13 +1,15 @@
-﻿using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.Game.Archive;
+﻿using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Proton;
+using BedrockBoot.Proton.Entry.Info;
+using BedrockBoot.Proton.Enum;
 
-var info = ArchiveCheck.GetInfo(
-    $"D:\\BedrockBoot\\bedrock_versions\\1.26.2\\config\\BedrockBoot2\\isolation\\Users\\2818413420751248947\\games\\com.mojang\\minecraftWorlds\\LkQVeDfcdM0=",
-    "D:\\BedrockBoot\\bedrock_versions\\1.26.2");
-var archiveMani = new ArchiveBackup();
-/*await archiveMani.BackupAsync(info, new Progress<string>((s) =>
+ProtonCore.InitializeEnvironment();
+/*((await ProtonCore.GetInstallableVersion(ProtonSource.WeatherOS))!).ToList().ForEach(re=>Console.WriteLine($"{re.Name} {re.ReleaseUrl}"));
+((await ProtonCore.GetInstallableVersion(ProtonSource.LukasPAH))!).ToList().ForEach(re=>Console.WriteLine($"{re.Name} {re.ReleaseUrl}"));*/
+
+var info = (await ProtonCore.GetInstallableVersion(ProtonSource.LukasPAH))!.ToList()[0];
+await ProtonCore.InstallProton(info,new InstallInfo()
 {
-    Console.WriteLine($@"备份进度：{s}");
-}));*/
-
-Console.WriteLine(archiveMani.GetArchiveBackupsWhitUuid("c85dc64f-7939-4e39-9447-19e698b54c9d")?.Backups.Count);
+    InstallName = "测试 Proton",
+    IsOverWrite = true
+},new Progress<DownloadProgress>(p=>Console.WriteLine($"{p.Message} {p.ProgressPercentage:F2}")));

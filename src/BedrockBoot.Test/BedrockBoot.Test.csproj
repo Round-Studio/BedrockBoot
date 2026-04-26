@@ -2,19 +2,16 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.1" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj" />
       <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj" />
       <ProjectReference Include="..\BedrockBoot.Netease\BedrockBoot.Netease.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
       <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
     </ItemGroup>
 

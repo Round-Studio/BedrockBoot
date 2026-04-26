@@ -2,7 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages.GameProton">
-    Welcome to Avalonia!
+    <ScrollViewer>
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="安装新 Proton"
+                                          Description="从提供的预设仓库中拉取 Proton 不同的版本"
+                                          Glyph="&#xECC8;"
+                                          IsClickable="True"
+                                          Name="InstallProtonBtn"
+                                          Click="InstallProtonBtn_OnClick" />
+
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="已安装的 GDKProton" />
+
+            <StackPanel Spacing="8"
+                        Margin="5, 0"
+                        Name="ListBox" />
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

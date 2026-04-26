@@ -40,7 +40,8 @@ public class ProtonCore
             ReleaseSize = release.Assets
                 .Where(asset => asset.Name.Contains("Proton", StringComparison.OrdinalIgnoreCase))
                 .Select(asset => asset.Size)
-                .FirstOrDefault()
+                .FirstOrDefault(),
+            Branch = sourceType
         });
 
         return result.ToList();
@@ -107,6 +108,7 @@ public class ProtonCore
         {
             var conf = new ConfigEntity<ProtonInfo>(Path.Combine(dir, ".bb", "version.json"), false);
             conf.Load();
+            conf.Data.InstallPath = dir;
 
             return conf.Data;
         }).ToList();

@@ -44,7 +44,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
                         ProgressBar.Value = (int)p.ProgressPercentage;
                         ProgressText.Text = $"下载 ProtonGDK ({p.ProgressPercentage:F2} %)";
                     });
-                }));
+                }), true);
                 await Dispatcher.UIThread.InvokeAsync(DialogHost.Close);
 
                 ProtonCore.Config.Data.SelectProtonPath = path;

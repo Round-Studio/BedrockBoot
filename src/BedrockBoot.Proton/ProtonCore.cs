@@ -46,7 +46,7 @@ public class ProtonCore
         return result.ToList();
     }
     public static async Task<string> InstallProton(ProtonInfo info, InstallInfo installInfo,
-        IProgress<DownloadProgress> progress = null)
+        IProgress<DownloadProgress> progress = null,bool isDefaultProton = false)
     {
         progress?.Report(new()
         {
@@ -93,6 +93,7 @@ public class ProtonCore
         var conf = new ConfigEntity<ProtonInfo>(Path.Combine(installPath, ".bb", "version.json"));
         conf.Data = info;
         conf.Data.Name = installInfo.InstallName;
+        conf.Data.IsDefault = isDefaultProton;
         conf.Save();
 
         return installPath;

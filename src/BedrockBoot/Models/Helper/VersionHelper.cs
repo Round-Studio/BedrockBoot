@@ -17,6 +17,18 @@ public class VersionHelper
     private static readonly string CacheFilePath = Path.Combine(PathsList.TempPath, "version_cache.json");
     private static readonly TimeSpan CacheMaxAge = TimeSpan.FromHours(24); // 缓存24小时有效期
     
+    static VersionHelper()
+    {
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", "mcappx_developer");
+        
+        var osVersion = Environment.OSVersion.VersionString;
+        
+        Console.WriteLine($"OS Version: {osVersion}");
+    
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", 
+            $"BedrockBoot/{Global.GlobalModel.BodyVersion} ({osVersion})");
+    }
+    
     // 缓存数据结构
     private class VersionCache
     {

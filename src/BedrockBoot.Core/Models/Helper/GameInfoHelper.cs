@@ -90,6 +90,12 @@ public static class GameInfoHelper
         data.VersionPath = gamePath;
         data.BodyFile = bodyFile;
 
+        if (data.Config.IsVersionIsolated && OperatingSystem.IsLinux())
+        {
+            data.Config.IsVersionIsolated = false;
+            SaveVersionConfig(data);
+        }
+
         return data;
     }
 

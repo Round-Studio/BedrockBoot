@@ -27,7 +27,8 @@ public class ProtonDownloader
         
         // 1. 修正异步获取逻辑，避免使用 .Result
         var client = new GitHubClient(new ProductHeaderValue("BedrockBoot.Linux"));
-        var releases = await client.Repository.Release.GetAll("Weather-OS", "GDK-Proton");
+        // var releases = await client.Repository.Release.GetAll("Weather-OS", "GDK-Proton");
+        var releases = await client.Repository.Release.GetAll("LukasPAH", "GDK-Proton-Custom");
         var latest = releases.FirstOrDefault(x => x.Name == ProtonVersion);
 
         if (latest == null)

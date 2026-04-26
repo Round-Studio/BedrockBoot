@@ -7,8 +7,11 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.Interface;
 using BedrockBoot.Proton;
 using BedrockBoot.Views.Control.Items.Proton;
+using BedrockBoot.Views.DialogContent.Linux.Proton;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 
@@ -46,6 +49,32 @@ public partial class GameProton : ISettingPage
 
     private void InstallProtonBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        var dialog = new DialogChooseDownloadBranchContent();
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "选择 GDKProton 分支",
+            Content = dialog,
+            CloseButtonText = "确定",
+            PrimaryButtonText = "取消",
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = () =>
+            {
+                var sleSource = dialog.SelSource;
+                var selVersionDialog = new DialogChooseDownloadVersionContent(sleSource);
+                
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = "选择 GDKProton 版本",
+                    Content = selVersionDialog,
+                    CloseButtonText = "确定",
+                    PrimaryButtonText = "取消",
+                    AccountButton = DialogButtons.CloseButton,
+                    CloseAction = () =>
+                    {
+                        var protonInfo = selVersionDialog.ProtonInfo;
+                    }
+                });
+            }
+        });
     }
 }

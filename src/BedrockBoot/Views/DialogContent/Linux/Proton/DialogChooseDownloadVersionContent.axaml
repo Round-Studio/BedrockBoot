@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.Linux.Proton.DialogChooseDownloadVersionContent">
+    <Grid Height="32">
+        <ComboBox SelectedIndex="1"
+                  Height="32"
+                  MinWidth="300"
+                  IsVisible="False"
+                  Name="SelBox">
+        </ComboBox>
+        
+        <onePointControls:ProgressRing Height="32" Width="32"
+                                       Name="LoadRing"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

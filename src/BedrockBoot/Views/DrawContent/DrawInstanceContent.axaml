@@ -4,48 +4,70 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:leftSelectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.LeftSelectBar;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="600"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DrawContent.DrawInstanceContent">
     <Grid ColumnDefinitions="Auto,*">
-        <leftSelectBar:LeftSelectBar Grid.Column="0"
-                                     Name="InstanceTabControl"
-                                     SelectedIndex="0"
-                                     SelectionChanged="InstanceTabControl_OnSelectionChanged"
-                                     Margin="10,0,0,0">
-            <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Detail}" 
-                                             Glyph="&#xE946;"
-                                             Tag="Info"
-                                             Name="Info" />
-            <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Mods}" 
-                                             Glyph="&#xE74C;"
-                                             Tag="Mods" 
-                                             Name="Mods" />
-            <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Packs}" 
-                                             Glyph="&#xE7B8;"
-                                             Tag="Pack"
-                                             Name="Pack" />
-            <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Archive}" 
-                                             Glyph="&#xE74E;"
-                                             Tag="Save"
-                                             Name="Save" />
-            <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Screenshots}"
-                                             Glyph="&#xF406;"
-                                             Tag="Screenshots" 
-                                             Name="Screenshots" />
-            <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Servers}" 
-                                             Glyph="&#xEDA2;"
-                                             Tag="Server"
-                                             Name="Server" />
-            <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Plugins}" 
-                                             Glyph="&#xEA86;"
-                                             Tag="Plugin"
-                                             Name="Plugin"
-                                             IsVisible="False" />
-            <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Controls}" 
-                                             Glyph="&#xE805;"
-                                             Tag="Controls"
-                                             Name="GameControls" />
-        </leftSelectBar:LeftSelectBar>
+        <Grid Grid.Column="0"
+              RowDefinitions="*,Auto"
+              Margin="10,0,0,10">
+            <leftSelectBar:LeftSelectBar Grid.Row="0"
+                                         Name="InstanceTabControl"
+                                         SelectedIndex="0"
+                                         SelectionChanged="InstanceTabControl_OnSelectionChanged">
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Detail}" 
+                                                 Glyph="&#xE946;"
+                                                 Tag="Info"
+                                                 Name="Info" />
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Mods}" 
+                                                 Glyph="&#xE74C;"
+                                                 Tag="Mods" 
+                                                 Name="Mods" />
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Packs}" 
+                                                 Glyph="&#xE7B8;"
+                                                 Tag="Pack"
+                                                 Name="Pack" />
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Archive}" 
+                                                 Glyph="&#xE74E;"
+                                                 Tag="Save"
+                                                 Name="Save" />
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Screenshots}"
+                                                 Glyph="&#xF406;"
+                                                 Tag="Screenshots" 
+                                                 Name="Screenshots" />
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Servers}" 
+                                                 Glyph="&#xEDA2;"
+                                                 Tag="Server"
+                                                 Name="Server" />
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Plugins}" 
+                                                 Glyph="&#xEA86;"
+                                                 Tag="Plugin"
+                                                 Name="Plugin"
+                                                 IsVisible="False" />
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Controls}" 
+                                                 Glyph="&#xE805;"
+                                                 Tag="Controls"
+                                                 Name="GameControls" />
+            </leftSelectBar:LeftSelectBar>
+            
+            <StackPanel Grid.Row="1"
+                        Spacing="8"
+                        Margin="5">
+                <Button Classes="NoBorder"
+                        Name="LaunchBtn"
+                        IsVisible="False"
+                        Background="{DynamicResource AccentBackgroundBrush}"
+                        Padding="8,10"
+                        Click="LaunchBtn_OnClick">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12">
+                        <onePointControls:FontIcon FontSize="16"
+                                                   Glyph="&#xE768;"/>
+                        <TextBlock Text="启动该实例"></TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <navigation:NavigationFrame Grid.Column="1"
                                     Margin="0,0,10,0"

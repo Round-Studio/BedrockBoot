@@ -60,6 +60,8 @@ public partial class DrawInstanceContent : UserControl
             var tag = ((LeftSelectBarItem)InstanceTabControl.SelectedItem).Tag.ToString();
             VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
 
+            LaunchBtn.IsVisible = tag != "Info";
+
             switch (tag)
             {
                 case "Info":
@@ -88,5 +90,11 @@ public partial class DrawInstanceContent : UserControl
                     break;
             }
         }
+    }
+
+    private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
+        TaskLaunchGameItem.Launch(VersionInfo);
     }
 }

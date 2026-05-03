@@ -6,7 +6,6 @@
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <Authors>Round-Studio</Authors>
         <Company>Round-Studio</Company>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -76,7 +75,6 @@
         <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj"/>
         <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
-        <ProjectReference Include="..\BedrockMapRender\BedrockRender.Avalonia\BedrockRender.Avalonia.csproj" />
         <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj"/>
         <ProjectReference Include="..\PaperConnect\src\PaperConnect.Core\PaperConnect.Core.csproj"/>
         <ProjectReference Include="..\Round.SDK\Round.SDK.Avalonia\Round.SDK.Avalonia.csproj"/>

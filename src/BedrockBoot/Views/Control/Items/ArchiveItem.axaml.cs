@@ -9,7 +9,6 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Views.Windows.SubWindows;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
@@ -154,10 +153,5 @@ public partial class ArchiveItem : UserControl
                 RefreshCallBack?.Invoke();
             }
         });
-    }
-
-    private void RenderBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        new LevelRenderWindow(ArchiveInfo.Path).Show();
     }
 }

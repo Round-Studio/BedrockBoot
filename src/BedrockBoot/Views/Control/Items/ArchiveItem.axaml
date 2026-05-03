@@ -46,13 +46,6 @@
                             Name="ControlPanel"
                             Spacing="6">
                     <Button Width="24" Height="24"
-                            Name="RenderBtn"
-                            Click="RenderBtn_OnClick"
-                            Classes="NoBorder">
-                        <onePointControls:FontIcon Glyph="&#xE713;" />
-                    </Button>
-                    
-                    <Button Width="24" Height="24"
                             Name="EditBtn"
                             Click="EditBtn_OnClick"
                             Classes="NoBorder">

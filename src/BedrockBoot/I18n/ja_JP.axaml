@@ -36,7 +36,7 @@
     <x:String x:Key="MainWindow.Common.Cancel">キャンセル</x:String>
     <x:String x:Key="MainWindow.Common.Delete">削除</x:String>
     <x:String x:Key="MainWindow.Common.Save">設定を保存</x:String>
-    <x:String x:Key="MainWindow.Common.Add">新增</x:String>
+    <x:String x:Key="MainWindow.Common.Add">追加</x:String>
 
     <x:String x:Key="Home.Title">こんにちは、お帰りなさい</x:String>
 
@@ -44,6 +44,7 @@
     <x:String x:Key="MainPage.Nav.Manager">インスタンス</x:String>
     <x:String x:Key="MainPage.Nav.Download">ダウンロード</x:String>
     <x:String x:Key="MainPage.Nav.Tools">ツール</x:String>
+    <x:String x:Key="MainPage.Nav.Multiplayer">マルチプレイ</x:String>
     <x:String x:Key="MainPage.Nav.Setting">設定</x:String>
 
     <x:String x:Key="MainPage.Status.NoInstance">利用可能なインスタンスがありません</x:String>
@@ -123,6 +124,8 @@
     <x:String x:Key="Instance.Info.Launch.Mods.Title">Modを有効化</x:String>
     <x:String x:Key="Instance.Info.Launch.Mods.Desc">ゲームプロセス起動後にModを自動的に注入するかどうか</x:String>
     <x:String x:Key="Instance.Info.Launch.Console.Desc">起動時にゲームコンソールを表示</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Title">詳細ログ</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Desc">ゲーム内部のファイル操作を含む詳細ログを出力します（有効にすると重くなる場合があります）</x:String>
     <x:String x:Key="Instance.Info.Isolation.Desc">バージョン分離を有効化 (ワールドデータ、リソースパックなどを分離。Modファイルは分離不要)</x:String>
 
     <x:String x:Key="Instance.Controls.Group.Accessibility">アクセシビリティ</x:String>
@@ -139,6 +142,7 @@
     <x:String x:Key="Instance.Controls.ExportPack.Desc">Minecraft Bedrock整合パックとしてエクスポート</x:String>
 
     <x:String x:Key="Instance.Controls.Group.DangerZone">危険な操作</x:String>
+    <x:String x:Key="Instance.Controls.Group.Expansion">拡張</x:String>
     <x:String x:Key="Instance.Controls.Delete.Title">インスタンスを削除</x:String>
     <x:String x:Key="Instance.Controls.Delete.Desc">このゲームバージョンを完全に削除</x:String>
 
@@ -159,8 +163,8 @@
     <x:String x:Key="Instance.Control.Import.Content.Title">インポート内容を選択</x:String>
     <x:String x:Key="Instance.Control.Import.Action.Start">インポート開始</x:String>
     <x:String x:Key="Instance.Control.Import.Progress.Title">リソースを移行中...</x:String>
-    <x:String x:Key="Instance.Isolation.Migration">导入资源</x:String>
-    <x:String x:Key="Instance.Isolation.Migrating">Migration</x:String>
+    <x:String x:Key="Instance.Isolation.Migration">リソースをインポート</x:String>
+    <x:String x:Key="Instance.Isolation.Migrating">移行</x:String>
 
     <x:String x:Key="Instance.Control.Pack.Dialog.Title">整合パック情報の入力</x:String>
     <x:String x:Key="Instance.Control.Pack.Save.Title">Minecraft Bedrock整合パックをエクスポート</x:String>
@@ -210,6 +214,89 @@
     <x:String x:Key="Archive.Export.FileType">Minecraft ワールドファイル (*.mcworld)</x:String>
     <x:String x:Key="Archive.Export.Success">ワールドデータは正常にエクスポートされました！</x:String>
 
+    <x:String x:Key="LevelSettings.Root.Title">ワールド設定</x:String>
+    <x:String x:Key="LevelSettings.Root.Action.BackToSaves">ワールド管理に戻る</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Backup">バックアップ</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.General">一般設定</x:String>
+    <x:String x:Key="LevelSettings.Backup.Title">ワールドバックアップ</x:String>
+    <x:String x:Key="LevelSettings.Backup.Action.Create">バックアップを作成</x:String>
+    <x:String x:Key="LevelSettings.Backup.Empty.Message">バックアップはまだありません</x:String>
+    <x:String x:Key="LevelSettings.Backup.Loading.Message">バックアップを読み込んでいます</x:String>
+    <x:String x:Key="LevelSettings.Editor.Title">ワールドエディター</x:String>
+    <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">変更を保存</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">ワールド情報</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Core">コア</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Interface">表示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.MobsEnvironment">モブと環境</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Player">プレイヤー</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.SpawnPoint">スポーン地点</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Permissions">権限</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Movement">移動</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WorldName">ワールド名</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Seed">シード値</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.GameMode">ゲームモード</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Difficulty">難易度</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WalkSpeed">歩行速度 (walkSpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.FlySpeed">飛行速度 (flySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.VerticalFlySpeed">垂直飛行速度 (verticalFlySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Survival">サバイバル</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Creative">クリエイティブ</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Adventure">アドベンチャー</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Spectator">スペクテイター</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Peaceful">ピースフル</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Easy">イージー</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Normal">ノーマル</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Hard">ハード</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Cheats">チート</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Hardcore">ハードコアモード</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlocks">コマンドブロック</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlockOutput">コマンドブロック出力</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AdminCommands">管理者コマンド</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandFeedback">コマンドフィードバック</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.BonusChest">ボーナスチェスト</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.StartingMap">初期地図</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ImmediateRespawn">即時リスポーン</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RecipeUnlocking">レシピ解除</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.LimitedCrafting">クラフト制限</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RequireResourcePacks">リソースパックを要求</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowCoordinates">座標を表示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDaysPlayed">プレイ日数を表示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDeathMessages">死亡メッセージを表示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowRecipeHints">レシピヒントを表示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowTags">タグを表示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowBorderEffect">境界効果を表示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DaylightCycle">昼夜サイクル</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WeatherCycle">天候サイクル</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobSpawning">モブのスポーン</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.PhantomSpawning">ファントムのスポーン</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobGriefing">モブによる破壊</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobLoot">モブのドロップ</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.EntityDrops">エンティティのドロップ</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TileDrops">ブロックのドロップ</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireSpreads">火の延焼</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TntExplodes">TNT 爆発</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RespawnBlocksExplode">リスポーンブロックの爆発</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.KeepInventory">インベントリ保持</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NaturalRegeneration">自然回復</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FallDamage">落下ダメージ</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireDamage">火炎ダメージ</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DrowningDamage">溺水ダメージ</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FreezingDamage">凍結ダメージ</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Mine">採掘</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Build">建築</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackMobs">モブを攻撃</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackPlayers">プレイヤーを攻撃</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DoorsAndSwitches">ドアとスイッチ</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.OpenContainers">コンテナを開く</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Operator">管理者</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Teleport">テレポート</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Flying">飛行</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AllowFlying">飛行を許可</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.InstantBuild">即時建築</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Invulnerable">無敵</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NoClip">壁抜け</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WorldBuilder">ワールドビルダー</x:String>
+
     <x:String x:Key="Instance.Screenshots.Empty.Title">空っぽです</x:String>
     <x:String x:Key="Instance.Screenshots.Empty.Message">まだスクリーンショットはありません.jpg</x:String>
     <x:String x:Key="Archive.Screenshot.Save.Title">スクリーンショットを保存</x:String>
@@ -248,8 +335,14 @@
     <x:String x:Key="Download.Assets.Status.Empty.Message">入力されたキーワードは無効です</x:String>
 
     <x:String x:Key="Download.Search.Watermark">キーワードを入力して検索...</x:String>
+    <x:String x:Key="Download.Search.History.Title">履歴</x:String>
+    <x:String x:Key="Download.Search.History.Empty.Message">検索履歴はありません</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Title">クリアの確認</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Content">検索履歴をクリアしてもよろしいですか？</x:String>
     <x:String x:Key="Download.Search.Action.VersionList">バージョン一覧</x:String>
+    <x:String x:Key="Download.Search.Action.SearchResource">リソースを検索</x:String>
     <x:String x:Key="Download.Search.Group.Latest">最新バージョン</x:String>
+    <x:String x:Key="Download.Search.Group.PopularResources">人気リソース</x:String>
     <x:String x:Key="Download.Search.Label.ResourceType">リソースタイプ</x:String>
     <x:String x:Key="Download.Search.Label.PublishType">公開タイプ</x:String>
     <x:String x:Key="Download.Search.Label.Category">リソースカテゴリ</x:String>
@@ -260,6 +353,10 @@
 
     <x:String x:Key="Download.Search.Status.NoResult.Title">結果が見つかりません</x:String>
     <x:String x:Key="Download.Search.Status.NoResult.Message">別のキーワードをお試しください</x:String>
+    <x:String x:Key="Download.Search.Tip.ManualSearch">一部のリソースを読み込めない場合は、キーワードを手動入力して検索できます</x:String>
+    <x:String x:Key="Download.Search.Tip.ChangeSource">それでも検索できない場合は、設定 &gt; ダウンロード でリスト取得元を切り替えてください</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Title">無効なネットワーク接続</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Message">対象サーバーに接続できません</x:String>
 
     <x:String x:Key="Download.Result.Author.Prefix">作者</x:String>
     <x:String x:Key="Download.Result.Action.ViewOnCurseForge">CurseForgeでこのリソースを表示</x:String>
@@ -268,7 +365,7 @@
     <x:String x:Key="Download.Result.Group.Preview">プレビュー</x:String>
     <x:String x:Key="Download.Result.Group.Details">詳細紹介</x:String>
     <x:String x:Key="Download.Result.Error.LoadDescription">説明の読み込み中にエラーが発生しました</x:String>
-    <x:String x:Key="Download.Result.Share.Format">友達からリソース【{0}】をおすすめされました&#x0a;アドレス：{1}&#x0a;[BedrockBoot] で Ctrl+V を押すとこのリソースを取得できます</x:String>
+    <x:String x:Key="Download.Result.Share.Format">友達からリソース【{0}】をおすすめされました&#x0a;アドレス：{1}&#x0a;「BedrockBoot」 で Ctrl+V を押すとこのリソースを取得できます</x:String>
     <x:String x:Key="Download.Result.Share.Success">共有内容をコピーしました。BedrockBoot 内で Ctrl+V を押すとこのリソースを表示できます</x:String>
 
     <x:String x:Key="Download.CurseForge.Label.PackInfo">関連パック情報</x:String>

@@ -2,8 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <x:String x:Key="LanguageName">English - BedrockBoot Official</x:String>
 
+    <x:String x:Key="Shared.Action.Apply">Apply</x:String>
     <x:String x:Key="Shared.Action.Back">Back</x:String>
     <x:String x:Key="Shared.Action.Browse">Browse</x:String>
+    <x:String x:Key="Shared.Action.Cancel">Cancel</x:String>
+    <x:String x:Key="Shared.Action.Close">Close</x:String>
+    <x:String x:Key="Shared.Action.Confirm">OK</x:String>
     <x:String x:Key="Shared.Action.Delete">Delete</x:String>
     <x:String x:Key="Shared.Action.Download">Download</x:String>
     <x:String x:Key="Shared.Action.Launch">Launch</x:String>
@@ -40,6 +44,7 @@
     <x:String x:Key="MainPage.Nav.Manager">Instances</x:String>
     <x:String x:Key="MainPage.Nav.Download">Download</x:String>
     <x:String x:Key="MainPage.Nav.Tools">Tools</x:String>
+    <x:String x:Key="MainPage.Nav.Multiplayer">Multiplayer</x:String>
     <x:String x:Key="MainPage.Nav.Setting">Settings</x:String>
 
     <x:String x:Key="MainPage.Status.NoInstance">No instances available</x:String>
@@ -119,6 +124,8 @@
     <x:String x:Key="Instance.Info.Launch.Mods.Title">Enable Mods</x:String>
     <x:String x:Key="Instance.Info.Launch.Mods.Desc">Whether to automatically inject mods after the game process starts</x:String>
     <x:String x:Key="Instance.Info.Launch.Console.Desc">Show the game console on launch</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Title">Detailed Logs</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Desc">Output detailed logs, including low-level game file operations (may cause lag when enabled)</x:String>
     <x:String x:Key="Instance.Info.Isolation.Desc">Enable version isolation (isolates only saves, resource packs, etc. Mod files do not need isolation)</x:String>
 
     <x:String x:Key="Instance.Controls.Group.Accessibility">Accessibility</x:String>
@@ -135,6 +142,7 @@
     <x:String x:Key="Instance.Controls.ExportPack.Desc">Export as a Minecraft Bedrock modpack</x:String>
 
     <x:String x:Key="Instance.Controls.Group.DangerZone">Danger Zone</x:String>
+    <x:String x:Key="Instance.Controls.Group.Expansion">Extensions</x:String>
     <x:String x:Key="Instance.Controls.Delete.Title">Delete Instance</x:String>
     <x:String x:Key="Instance.Controls.Delete.Desc">Completely delete this game version</x:String>
 
@@ -206,6 +214,89 @@
     <x:String x:Key="Archive.Export.FileType">Minecraft World File (*.mcworld)</x:String>
     <x:String x:Key="Archive.Export.Success">World exported successfully!</x:String>
 
+    <x:String x:Key="LevelSettings.Root.Title">World Settings</x:String>
+    <x:String x:Key="LevelSettings.Root.Action.BackToSaves">Back to World Management</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Backup">Backup</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.General">General Settings</x:String>
+    <x:String x:Key="LevelSettings.Backup.Title">World Backups</x:String>
+    <x:String x:Key="LevelSettings.Backup.Action.Create">Create Backup</x:String>
+    <x:String x:Key="LevelSettings.Backup.Empty.Message">No backups yet</x:String>
+    <x:String x:Key="LevelSettings.Backup.Loading.Message">Loading backups</x:String>
+    <x:String x:Key="LevelSettings.Editor.Title">World Editor</x:String>
+    <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">Save Changes</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">World Information</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Core">Core</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Interface">Interface</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.MobsEnvironment">Mobs and Environment</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Player">Player</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.SpawnPoint">Spawn Point</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Permissions">Permissions</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Movement">Movement</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WorldName">World Name</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Seed">Seed</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.GameMode">Game Mode</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Difficulty">Difficulty</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WalkSpeed">Walk Speed (walkSpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.FlySpeed">Fly Speed (flySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.VerticalFlySpeed">Vertical Fly Speed (verticalFlySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Survival">Survival</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Creative">Creative</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Adventure">Adventure</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Spectator">Spectator</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Peaceful">Peaceful</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Easy">Easy</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Normal">Normal</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Hard">Hard</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Cheats">Cheats</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Hardcore">Hardcore Mode</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlocks">Command Blocks</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlockOutput">Command Block Output</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AdminCommands">Admin Commands</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandFeedback">Command Feedback</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.BonusChest">Bonus Chest</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.StartingMap">Starting Map</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ImmediateRespawn">Immediate Respawn</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RecipeUnlocking">Recipe Unlocking</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.LimitedCrafting">Limited Crafting</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RequireResourcePacks">Require Resource Packs</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowCoordinates">Show Coordinates</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDaysPlayed">Show Days Played</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDeathMessages">Show Death Messages</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowRecipeHints">Show Recipe Hints</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowTags">Show Tags</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowBorderEffect">Show Border Effect</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DaylightCycle">Daylight Cycle</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WeatherCycle">Weather Cycle</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobSpawning">Mob Spawning</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.PhantomSpawning">Phantom Spawning</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobGriefing">Mob Griefing</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobLoot">Mob Loot</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.EntityDrops">Entity Drops</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TileDrops">Block Drops</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireSpreads">Fire Spreads</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TntExplodes">TNT Explodes</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RespawnBlocksExplode">Respawn Blocks Explode</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.KeepInventory">Keep Inventory</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NaturalRegeneration">Natural Regeneration</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FallDamage">Fall Damage</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireDamage">Fire Damage</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DrowningDamage">Drowning Damage</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FreezingDamage">Freezing Damage</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Mine">Mine</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Build">Build</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackMobs">Attack Mobs</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackPlayers">Attack Players</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DoorsAndSwitches">Doors and Switches</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.OpenContainers">Open Containers</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Operator">Operator</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Teleport">Teleport</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Flying">Flying</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AllowFlying">Allow Flying</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.InstantBuild">Instant Build</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Invulnerable">Invulnerable</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NoClip">No Clip</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WorldBuilder">World Builder</x:String>
+
     <x:String x:Key="Instance.Screenshots.Empty.Title">Empty</x:String>
     <x:String x:Key="Instance.Screenshots.Empty.Message">No screenshots yet.jpg</x:String>
     <x:String x:Key="Archive.Screenshot.Save.Title">Save Screenshot</x:String>
@@ -244,8 +335,14 @@
     <x:String x:Key="Download.Assets.Status.Empty.Message">The keyword you entered is invalid</x:String>
 
     <x:String x:Key="Download.Search.Watermark">Type keywords to search...</x:String>
+    <x:String x:Key="Download.Search.History.Title">History</x:String>
+    <x:String x:Key="Download.Search.History.Empty.Message">No search history</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Title">Clear Confirmation</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Content">Are you sure you want to clear your search history?</x:String>
     <x:String x:Key="Download.Search.Action.VersionList">Version List</x:String>
+    <x:String x:Key="Download.Search.Action.SearchResource">Search Resources</x:String>
     <x:String x:Key="Download.Search.Group.Latest">Latest Versions</x:String>
+    <x:String x:Key="Download.Search.Group.PopularResources">Popular Resources</x:String>
     <x:String x:Key="Download.Search.Label.ResourceType">Resource Type</x:String>
     <x:String x:Key="Download.Search.Label.PublishType">Release Type</x:String>
     <x:String x:Key="Download.Search.Label.Category">Category</x:String>
@@ -256,6 +353,10 @@
 
     <x:String x:Key="Download.Search.Status.NoResult.Title">No Results Found</x:String>
     <x:String x:Key="Download.Search.Status.NoResult.Message">Please try other keywords</x:String>
+    <x:String x:Key="Download.Search.Tip.ManualSearch">If a resource cannot be loaded, try searching by manually entering keywords</x:String>
+    <x:String x:Key="Download.Search.Tip.ChangeSource">If search still fails, go to Settings &gt; Download to switch the list source</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Title">Invalid Network Connection</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Message">Unable to connect to the target server</x:String>
 
     <x:String x:Key="Download.Result.Author.Prefix">Author</x:String>
     <x:String x:Key="Download.Result.Action.ViewOnCurseForge">View on CurseForge</x:String>
@@ -264,7 +365,7 @@
     <x:String x:Key="Download.Result.Group.Preview">Preview</x:String>
     <x:String x:Key="Download.Result.Group.Details">Details</x:String>
     <x:String x:Key="Download.Result.Error.LoadDescription">Error loading description</x:String>
-    <x:String x:Key="Download.Result.Share.Format">Your friend recommended a resource: 【{0}】&#x0a;Link: {1}&#x0a;Go to [B and press Ctrl+V to view it.</x:String>
+    <x:String x:Key="Download.Result.Share.Format">Your friend recommended a resource: 【{0}】&#x0a;Link: {1}&#x0a;Go to [BedrockBoot] and press Ctrl+V to view it.</x:String>
     <x:String x:Key="Download.Result.Share.Success">Share content copied. Press Ctrl+V in BedrockBoot to view the resource.</x:String>
 
     <x:String x:Key="Download.CurseForge.Label.PackInfo">Pack Information</x:String>

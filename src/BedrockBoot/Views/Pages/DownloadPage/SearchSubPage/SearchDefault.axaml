@@ -16,7 +16,7 @@
             <Grid Grid.Row="0"
                   Height="24">
                 <onePointControls:LineTextBlock Margin="0"
-                                                Text="历史记录"
+                                                                                                Text="{DynamicResource Download.Search.History.Title}"
                                                 FontSize="16"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center" />
@@ -45,8 +45,8 @@
                              VerticalAlignment="Center"
                              HorizontalAlignment="Center"
                              Name="NoneBox"
-                             BigTitle="空"
-                             Message="没有历史搜索记录" />
+                             BigTitle="{DynamicResource Manager.Folder.Empty.Title}"
+                             Message="{DynamicResource Download.Search.History.Empty.Message}" />
         </Grid>
 
         <StackPanel Grid.Column="1" Spacing="10">
@@ -84,10 +84,10 @@
                         <Button DockPanel.Dock="Right" Classes="NoBorder" Click="SearchRes_OnClick" Padding="6,4">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
-                                <TextBlock Text="搜索资源" />
+                                <TextBlock Text="{DynamicResource Download.Search.Action.SearchResource}" />
                             </StackPanel>
                         </Button>
-                        <TextBlock DockPanel.Dock="Left" Text="热门资源" VerticalAlignment="Center" />
+                        <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.Group.PopularResources}" VerticalAlignment="Center" />
                     </DockPanel>
 
                     <Grid Grid.Row="1" Name="RecommendationGrid" IsVisible="False" ColumnDefinitions="*,*"
@@ -108,16 +108,16 @@
 
             <StackPanel HorizontalAlignment="Center"
                         Opacity="0.6">
-                <TextBlock Text="如某一项资源无法加载，可通过手动输入关键词进行搜索"
+                <TextBlock Text="{DynamicResource Download.Search.Tip.ManualSearch}"
                            HorizontalAlignment="Center"
                            FontSize="9" />
-                <TextBlock Text="如还是无法进行搜素，请前往 设置>下载 中切换列表源"
+                <TextBlock Text="{DynamicResource Download.Search.Tip.ChangeSource}"
                            HorizontalAlignment="Center"
                            FontSize="9" />
             </StackPanel>
         </StackPanel>
 
-        <notice:InfoCard Grid.Column="1" Name="NetworkErrorNotice" IsVisible="False" BigTitle="无效的网络连接" Message="无法连接至目标服务器"
+        <notice:InfoCard Grid.Column="1" Name="NetworkErrorNotice" IsVisible="False" BigTitle="{DynamicResource Download.Search.NetworkError.Title}" Message="{DynamicResource Download.Search.NetworkError.Message}"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center" />
     </Grid>

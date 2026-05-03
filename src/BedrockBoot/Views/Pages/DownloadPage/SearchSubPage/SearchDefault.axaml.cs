@@ -238,10 +238,10 @@ public partial class SearchDefault : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Content = "您确定要清空您的搜索历史吗？",
-            Title = "清除确认",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Content = i18n["Download.Search.History.Clear.Confirm.Content"],
+            Title = i18n["Download.Search.History.Clear.Confirm.Title"],
+            CloseButtonText = i18n["Shared.Action.Confirm"],
+            PrimaryButtonText = i18n["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 var searchHis = new ConfigEntity<List<SearchInfo>>(PathsList.HistoryPath);

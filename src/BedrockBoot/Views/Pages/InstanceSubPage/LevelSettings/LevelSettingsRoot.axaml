@@ -21,10 +21,10 @@
             <Button Classes="NoBorder" Name="BackBtn" Click="BackBtn_OnClick" Padding="8" Height="32">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE76B;" />
-                    <TextBlock Text="返回存档管理" />
+                    <TextBlock Text="{DynamicResource LevelSettings.Root.Action.BackToSaves}" />
                 </StackPanel>
             </Button>
-            <TextBlock Text="存档设置" VerticalAlignment="Center" FontSize="16" />
+            <TextBlock Text="{DynamicResource LevelSettings.Root.Title}" VerticalAlignment="Center" FontSize="16" />
             <TextBlock Name="LevelNameLabel" Opacity="0.5" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Grid.Row="0" Margin="20,0" Spacing="8" Orientation="Horizontal"
@@ -38,7 +38,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xF28B;"
                                                    VerticalAlignment="Center" />
-                        <TextBlock Text="备份"
+                        <TextBlock Text="{DynamicResource LevelSettings.Root.Tab.Backup}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>
@@ -49,7 +49,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xE713;"
                                                    VerticalAlignment="Center" />
-                        <TextBlock Text="常规设置"
+                        <TextBlock Text="{DynamicResource LevelSettings.Root.Tab.General}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>

@@ -44,6 +44,7 @@
     <x:String x:Key="MainPage.Nav.Manager">实例</x:String>
     <x:String x:Key="MainPage.Nav.Download">下载</x:String>
     <x:String x:Key="MainPage.Nav.Tools">工具</x:String>
+    <x:String x:Key="MainPage.Nav.Multiplayer">多人联机</x:String>
     <x:String x:Key="MainPage.Nav.Setting">设置</x:String>
 
     <x:String x:Key="MainPage.Status.NoInstance">无可用实例</x:String>
@@ -123,6 +124,8 @@
     <x:String x:Key="Instance.Info.Launch.Mods.Title">启用 Mods</x:String>
     <x:String x:Key="Instance.Info.Launch.Mods.Desc">是否启用在出现游戏进程后自动注入 Mods</x:String>
     <x:String x:Key="Instance.Info.Launch.Console.Desc">启动时拉起游戏控制台</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Title">详细日志</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Desc">输出详细的日志，包括游戏底层的文件操作（开启后会有卡顿）</x:String>
     <x:String x:Key="Instance.Info.Isolation.Desc">启用版本隔离（仅隔离存档，资源包等。模组文件无需隔离）</x:String>
 
     <x:String x:Key="Instance.Controls.Group.Accessibility">辅助功能</x:String>
@@ -139,6 +142,7 @@
     <x:String x:Key="Instance.Controls.ExportPack.Desc">导出成 Minecraft Bedrock 整合包</x:String>
 
     <x:String x:Key="Instance.Controls.Group.DangerZone">高危操作</x:String>
+    <x:String x:Key="Instance.Controls.Group.Expansion">拓展</x:String>
     <x:String x:Key="Instance.Controls.Delete.Title">删除实例</x:String>
     <x:String x:Key="Instance.Controls.Delete.Desc">彻底删除该游戏版本</x:String>
 
@@ -210,6 +214,89 @@
     <x:String x:Key="Archive.Export.FileType">Minecraft 存档文件 (*.mcworld)</x:String>
     <x:String x:Key="Archive.Export.Success">存档已成功导出！</x:String>
 
+    <x:String x:Key="LevelSettings.Root.Title">存档设置</x:String>
+    <x:String x:Key="LevelSettings.Root.Action.BackToSaves">返回存档管理</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Backup">备份</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.General">常规设置</x:String>
+    <x:String x:Key="LevelSettings.Backup.Title">存档备份</x:String>
+    <x:String x:Key="LevelSettings.Backup.Action.Create">新建备份</x:String>
+    <x:String x:Key="LevelSettings.Backup.Empty.Message">还没有任何一个备份</x:String>
+    <x:String x:Key="LevelSettings.Backup.Loading.Message">加载备份中</x:String>
+    <x:String x:Key="LevelSettings.Editor.Title">存档编辑器</x:String>
+    <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">保存更改</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">存档信息</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Core">核心</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Interface">界面</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.MobsEnvironment">生物与环境</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Player">玩家</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.SpawnPoint">出生点</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Permissions">权限</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Movement">移动</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WorldName">世界名称</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Seed">种子</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.GameMode">游戏模式</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Difficulty">游戏难度</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WalkSpeed">行走速度 (walkSpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.FlySpeed">飞行速度 (flySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.VerticalFlySpeed">垂直飞行速度 (verticalFlySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Survival">生存</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Creative">创造</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Adventure">冒险</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Spectator">旁观</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Peaceful">和平</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Easy">简单</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Normal">普通</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Hard">困难</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Cheats">作弊</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Hardcore">极限模式</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlocks">命令方块</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlockOutput">命令方块输出</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AdminCommands">管理员命令</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandFeedback">命令反馈</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.BonusChest">奖励箱</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.StartingMap">初始地图</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ImmediateRespawn">立即重生</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RecipeUnlocking">配方解锁</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.LimitedCrafting">限制合成</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RequireResourcePacks">要求材质包</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowCoordinates">显示坐标</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDaysPlayed">显示游戏天数</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDeathMessages">显示死亡信息</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowRecipeHints">显示配方提示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowTags">显示标签</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowBorderEffect">显示边界效果</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DaylightCycle">昼夜循环</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WeatherCycle">天气循环</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobSpawning">生物生成</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.PhantomSpawning">幻翼生成</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobGriefing">生物破坏</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobLoot">生物掉落</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.EntityDrops">实体掉落</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TileDrops">方块掉落</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireSpreads">火焰蔓延</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TntExplodes">TNT 爆炸</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RespawnBlocksExplode">重生方块爆炸</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.KeepInventory">保留物品栏</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NaturalRegeneration">自然恢复</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FallDamage">掉落伤害</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireDamage">火焰伤害</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DrowningDamage">溺水伤害</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FreezingDamage">冻伤伤害</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Mine">挖掘</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Build">建造</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackMobs">攻击生物</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackPlayers">攻击玩家</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DoorsAndSwitches">门与开关</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.OpenContainers">打开容器</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Operator">管理员</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Teleport">传送</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Flying">飞行</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AllowFlying">允许飞行</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.InstantBuild">即时建造</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Invulnerable">无敌</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NoClip">穿墙</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WorldBuilder">雷击</x:String>
+
     <x:String x:Key="Instance.Screenshots.Empty.Title">空空如也</x:String>
     <x:String x:Key="Instance.Screenshots.Empty.Message">还没有任何一张截图.jpg</x:String>
     <x:String x:Key="Archive.Screenshot.Save.Title">保存截图</x:String>
@@ -248,8 +335,14 @@
     <x:String x:Key="Download.Assets.Status.Empty.Message">您所输入的关键词无效哦</x:String>
 
     <x:String x:Key="Download.Search.Watermark">键入关键词以搜索...</x:String>
+    <x:String x:Key="Download.Search.History.Title">历史记录</x:String>
+    <x:String x:Key="Download.Search.History.Empty.Message">没有历史搜索记录</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Title">清除确认</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Content">您确定要清空您的搜索历史吗？</x:String>
     <x:String x:Key="Download.Search.Action.VersionList">版本列表</x:String>
+    <x:String x:Key="Download.Search.Action.SearchResource">搜索资源</x:String>
     <x:String x:Key="Download.Search.Group.Latest">最新版本</x:String>
+    <x:String x:Key="Download.Search.Group.PopularResources">热门资源</x:String>
     <x:String x:Key="Download.Search.Label.ResourceType">资源类型</x:String>
     <x:String x:Key="Download.Search.Label.PublishType">发布类型</x:String>
     <x:String x:Key="Download.Search.Label.Category">资源分类</x:String>
@@ -260,6 +353,10 @@
 
     <x:String x:Key="Download.Search.Status.NoResult.Title">未找到结果</x:String>
     <x:String x:Key="Download.Search.Status.NoResult.Message">请尝试其他关键词</x:String>
+    <x:String x:Key="Download.Search.Tip.ManualSearch">如某一项资源无法加载，可通过手动输入关键词进行搜索</x:String>
+    <x:String x:Key="Download.Search.Tip.ChangeSource">如还是无法进行搜索，请前往 设置&gt;下载 中切换列表源</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Title">无效的网络连接</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Message">无法连接至目标服务器</x:String>
 
     <x:String x:Key="Download.Result.Author.Prefix">作者</x:String>
     <x:String x:Key="Download.Result.Action.ViewOnCurseForge">在 CurseForge 上查看此资源</x:String>
@@ -268,7 +365,7 @@
     <x:String x:Key="Download.Result.Group.Preview">预览</x:String>
     <x:String x:Key="Download.Result.Group.Details">详细介绍</x:String>
     <x:String x:Key="Download.Result.Error.LoadDescription">加载描述时出错</x:String>
-    <x:String x:Key="Download.Result.Share.Format">你的好友向你推荐了一个资源【{0}】&#x0a;地址：{1}&#x0a;前往 [BedrockBoot]，Ctrl+V 即可获取该资源</x:String>
+    <x:String x:Key="Download.Result.Share.Format">你的好友向你推荐了一个资源【{0}】&#x0a;资源主页：{1}&#x0a;前往「BedrockBoot」，Ctrl+V 即可获取该资源</x:String>
     <x:String x:Key="Download.Result.Share.Success">分享内容已复制，在 BedrockBoot 内按下 Ctrl+V 即可查看该资源</x:String>
 
     <x:String x:Key="Download.CurseForge.Label.PackInfo">相关包信息</x:String>

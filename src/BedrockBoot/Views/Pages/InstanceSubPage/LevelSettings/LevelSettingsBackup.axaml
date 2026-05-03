@@ -14,7 +14,7 @@
 
         <Grid Grid.Row="0"
               Margin="20,0">
-            <TextBlock Text="存档备份" VerticalAlignment="Center" FontSize="16" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Backup.Title}" VerticalAlignment="Center" FontSize="16" />
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
@@ -23,7 +23,7 @@
                         HorizontalAlignment="Right" Padding="12,0" Height="32">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE710;" />
-                        <TextBlock Text="新建备份" VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Backup.Action.Create}" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -41,14 +41,14 @@
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          IsVisible="False"
-                         BigTitle="空"
-                         Message="还没有任何一个备份" />
+                         BigTitle="{DynamicResource Manager.Folder.Empty.Title}"
+                         Message="{DynamicResource LevelSettings.Backup.Empty.Message}" />
 
         <notice:LoadCard Grid.Row="1"
                          Name="LoadingCard"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
-                         BigTitle="请稍后"
-                         Message="加载备份中" />
+                         BigTitle="{DynamicResource Shared.Status.Wait}"
+                         Message="{DynamicResource LevelSettings.Backup.Loading.Message}" />
     </Grid>
 </UserControl>

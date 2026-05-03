@@ -173,7 +173,8 @@ public partial class SearchDetailed : ISetting
                                 : "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png",
                             OnClick = s =>
                             {
-                                GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i), $"下载游戏 {i.ID}");
+                                GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),
+                                    $"{I18nManager.Instance["Download.Action.DownloadGame"]} {i.ID}");
                             }
                         });
                     });

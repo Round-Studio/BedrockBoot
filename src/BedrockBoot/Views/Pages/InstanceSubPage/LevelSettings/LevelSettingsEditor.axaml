@@ -14,105 +14,105 @@
 
         <Grid Grid.Row="0"
               Margin="20,0">
-            <TextBlock Text="存档编辑器" VerticalAlignment="Center" FontSize="16" />
+            <TextBlock Text="{DynamicResource LevelSettings.Editor.Title}" VerticalAlignment="Center" FontSize="16" />
             <Button Classes="Accent" Name="SaveBtn" Click="SaveBtn_OnClick"
                     HorizontalAlignment="Right" Padding="12,0" Height="32">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE74E;" />
-                    <TextBlock Text="保存更改" VerticalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource LevelSettings.Editor.Action.SaveChanges}" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
         </Grid>
 
         <ScrollViewer Grid.Row="1" Margin="0,10,0,0">
             <StackPanel Margin="20,0,20,20" Spacing="8">
-                <TextBlock Text="存档信息" Classes="Header" />
+                <TextBlock Text="{DynamicResource LevelSettings.Editor.Section.WorldInfo}" Classes="Header" />
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="15" RowDefinitions="Auto,Auto">
                     <StackPanel Grid.Row="0" Grid.Column="0" Spacing="5">
-                        <TextBlock Text="世界名称" FontSize="12" Opacity="0.6" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Editor.Field.WorldName}" FontSize="12" Opacity="0.6" />
                         <TextBox Name="LevelNameText" TextChanged="OnLevelNameChanged" />
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1" Spacing="5">
-                        <TextBlock Text="种子" FontSize="12" Opacity="0.6" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Editor.Field.Seed}" FontSize="12" Opacity="0.6" />
                         <widgets:CopyTextBox Name="SeedBox" IsReadOnly="True" />
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="0" Spacing="5" Margin="0,10,0,0">
-                        <TextBlock Text="游戏模式" FontSize="12" Opacity="0.6" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Editor.Field.GameMode}" FontSize="12" Opacity="0.6" />
                         <ComboBox Name="GameTypeCombo" HorizontalAlignment="Stretch"
                                   SelectionChanged="OnSelectionChanged">
-                            <ComboBoxItem Content="生存" />
-                            <ComboBoxItem Content="创造" />
-                            <ComboBoxItem Content="冒险" />
-                            <ComboBoxItem Content="旁观" />
+                            <ComboBoxItem Content="{DynamicResource LevelSettings.Editor.GameMode.Survival}" />
+                            <ComboBoxItem Content="{DynamicResource LevelSettings.Editor.GameMode.Creative}" />
+                            <ComboBoxItem Content="{DynamicResource LevelSettings.Editor.GameMode.Adventure}" />
+                            <ComboBoxItem Content="{DynamicResource LevelSettings.Editor.GameMode.Spectator}" />
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1" Spacing="5" Margin="0,10,0,0">
-                        <TextBlock Text="游戏难度" FontSize="12" Opacity="0.6" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Editor.Field.Difficulty}" FontSize="12" Opacity="0.6" />
                         <ComboBox Name="DifficultyCombo" HorizontalAlignment="Stretch"
                                   SelectionChanged="OnSelectionChanged">
-                            <ComboBoxItem Content="和平" />
-                            <ComboBoxItem Content="简单" />
-                            <ComboBoxItem Content="普通" />
-                            <ComboBoxItem Content="困难" />
+                            <ComboBoxItem Content="{DynamicResource LevelSettings.Editor.Difficulty.Peaceful}" />
+                            <ComboBoxItem Content="{DynamicResource LevelSettings.Editor.Difficulty.Easy}" />
+                            <ComboBoxItem Content="{DynamicResource LevelSettings.Editor.Difficulty.Normal}" />
+                            <ComboBoxItem Content="{DynamicResource LevelSettings.Editor.Difficulty.Hard}" />
                         </ComboBox>
                     </StackPanel>
                 </Grid>
 
-                <TextBlock Text="核心" Classes="Header" />
+                <TextBlock Text="{DynamicResource LevelSettings.Editor.Section.Core}" Classes="Header" />
 
                 <UniformGrid Columns="4">
-                    <CheckBox Name="CheatsSwitch" Content="作弊" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="HardcoreSwitch" Content="极限模式" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="CmdBlockSwitch" Content="命令方块" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="CmdOutputSwitch" Content="命令方块输出" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="AdminCmdSwitch" Content="管理员命令" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="CmdFeedbackSwitch" Content="命令反馈" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="BonusChestSwitch" Content="奖励箱" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="StartMapSwitch" Content="初始地图" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="ImmediateRespawnSwitch" Content="立即重生" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="RecipeUnlockSwitch" Content="配方解锁" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="LimitedCraftSwitch" Content="限制合成" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="TextureRequiredSwitch" Content="要求材质包" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="CheatsSwitch" Content="{DynamicResource LevelSettings.Editor.Option.Cheats}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="HardcoreSwitch" Content="{DynamicResource LevelSettings.Editor.Option.Hardcore}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="CmdBlockSwitch" Content="{DynamicResource LevelSettings.Editor.Option.CommandBlocks}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="CmdOutputSwitch" Content="{DynamicResource LevelSettings.Editor.Option.CommandBlockOutput}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="AdminCmdSwitch" Content="{DynamicResource LevelSettings.Editor.Option.AdminCommands}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="CmdFeedbackSwitch" Content="{DynamicResource LevelSettings.Editor.Option.CommandFeedback}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="BonusChestSwitch" Content="{DynamicResource LevelSettings.Editor.Option.BonusChest}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="StartMapSwitch" Content="{DynamicResource LevelSettings.Editor.Option.StartingMap}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="ImmediateRespawnSwitch" Content="{DynamicResource LevelSettings.Editor.Option.ImmediateRespawn}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="RecipeUnlockSwitch" Content="{DynamicResource LevelSettings.Editor.Option.RecipeUnlocking}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="LimitedCraftSwitch" Content="{DynamicResource LevelSettings.Editor.Option.LimitedCrafting}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="TextureRequiredSwitch" Content="{DynamicResource LevelSettings.Editor.Option.RequireResourcePacks}" IsCheckedChanged="OnCheckChanged" />
                 </UniformGrid>
 
-                <TextBlock Text="界面" Classes="Header" />
+                <TextBlock Text="{DynamicResource LevelSettings.Editor.Section.Interface}" Classes="Header" />
                 <UniformGrid Columns="4">
-                    <CheckBox Name="ShowCoordSwitch" Content="显示坐标" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="ShowDaysSwitch" Content="显示游戏天数" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="ShowDeathMsgSwitch" Content="显示死亡信息" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="ShowRecipeSwitch" Content="显示配方提示" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="ShowTagsSwitch" Content="显示标签" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="ShowBorderSwitch" Content="显示边界效果" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="ShowCoordSwitch" Content="{DynamicResource LevelSettings.Editor.Option.ShowCoordinates}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="ShowDaysSwitch" Content="{DynamicResource LevelSettings.Editor.Option.ShowDaysPlayed}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="ShowDeathMsgSwitch" Content="{DynamicResource LevelSettings.Editor.Option.ShowDeathMessages}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="ShowRecipeSwitch" Content="{DynamicResource LevelSettings.Editor.Option.ShowRecipeHints}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="ShowTagsSwitch" Content="{DynamicResource LevelSettings.Editor.Option.ShowTags}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="ShowBorderSwitch" Content="{DynamicResource LevelSettings.Editor.Option.ShowBorderEffect}" IsCheckedChanged="OnCheckChanged" />
                 </UniformGrid>
 
-                <TextBlock Text="生物与环境" Classes="Header" />
+                <TextBlock Text="{DynamicResource LevelSettings.Editor.Section.MobsEnvironment}" Classes="Header" />
                 <UniformGrid Columns="4">
-                    <CheckBox Name="DaylightCycleSwitch" Content="昼夜循环" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="WeatherCycleSwitch" Content="天气循环" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="MobSpawnSwitch" Content="生物生成" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="InsomniaSwitch" Content="幻翼生成" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="MobGriefSwitch" Content="生物破坏" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="MobLootSwitch" Content="生物掉落" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="EntityDropSwitch" Content="实体掉落" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="TileDropSwitch" Content="方块掉落" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="FireTickSwitch" Content="火焰蔓延" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="TntExplodeSwitch" Content="TNT 爆炸" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="RespawnExplodeSwitch" Content="重生方块爆炸" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="DaylightCycleSwitch" Content="{DynamicResource LevelSettings.Editor.Option.DaylightCycle}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="WeatherCycleSwitch" Content="{DynamicResource LevelSettings.Editor.Option.WeatherCycle}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="MobSpawnSwitch" Content="{DynamicResource LevelSettings.Editor.Option.MobSpawning}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="InsomniaSwitch" Content="{DynamicResource LevelSettings.Editor.Option.PhantomSpawning}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="MobGriefSwitch" Content="{DynamicResource LevelSettings.Editor.Option.MobGriefing}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="MobLootSwitch" Content="{DynamicResource LevelSettings.Editor.Option.MobLoot}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="EntityDropSwitch" Content="{DynamicResource LevelSettings.Editor.Option.EntityDrops}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="TileDropSwitch" Content="{DynamicResource LevelSettings.Editor.Option.TileDrops}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="FireTickSwitch" Content="{DynamicResource LevelSettings.Editor.Option.FireSpreads}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="TntExplodeSwitch" Content="{DynamicResource LevelSettings.Editor.Option.TntExplodes}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="RespawnExplodeSwitch" Content="{DynamicResource LevelSettings.Editor.Option.RespawnBlocksExplode}" IsCheckedChanged="OnCheckChanged" />
                 </UniformGrid>
 
-                <TextBlock Text="玩家" Classes="Header" />
+                <TextBlock Text="{DynamicResource LevelSettings.Editor.Section.Player}" Classes="Header" />
                 <UniformGrid Columns="4">
-                    <CheckBox Name="KeepInvSwitch" Content="保留物品栏" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="NaturalRegenSwitch" Content="自然恢复" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="KeepInvSwitch" Content="{DynamicResource LevelSettings.Editor.Option.KeepInventory}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="NaturalRegenSwitch" Content="{DynamicResource LevelSettings.Editor.Option.NaturalRegeneration}" IsCheckedChanged="OnCheckChanged" />
                     <CheckBox Name="PvpSwitch" Content="PVP" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="FallDamageSwitch" Content="掉落伤害" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="FireDamageSwitch" Content="火焰伤害" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="DrownDamageSwitch" Content="溺水伤害" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="FreezeDamageSwitch" Content="冻伤伤害" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="FallDamageSwitch" Content="{DynamicResource LevelSettings.Editor.Option.FallDamage}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="FireDamageSwitch" Content="{DynamicResource LevelSettings.Editor.Option.FireDamage}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="DrownDamageSwitch" Content="{DynamicResource LevelSettings.Editor.Option.DrowningDamage}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="FreezeDamageSwitch" Content="{DynamicResource LevelSettings.Editor.Option.FreezingDamage}" IsCheckedChanged="OnCheckChanged" />
                 </UniformGrid>
 
-                <TextBlock Text="出生点" Classes="Header" />
+                <TextBlock Text="{DynamicResource LevelSettings.Editor.Section.SpawnPoint}" Classes="Header" />
                 <Grid ColumnDefinitions="*,*,*">
                     <TextBox Name="SpawnXText" Grid.Column="0" Watermark="x" UseFloatingWatermark="True"
                              Margin="0,0,5,0" />
@@ -122,42 +122,42 @@
                              Margin="5,0,0,0" />
                 </Grid>
 
-                <TextBlock Text="权限" Classes="Header" />
+                <TextBlock Text="{DynamicResource LevelSettings.Editor.Section.Permissions}" Classes="Header" />
                 <UniformGrid Columns="4">
-                    <CheckBox Name="MineSwitch" Content="挖掘" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="BuildSwitch" Content="建造" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="AtkMobSwitch" Content="攻击生物" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="AtkPlayerSwitch" Content="攻击玩家" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="DoorSwitch" Content="门与开关" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="ContainerSwitch" Content="打开容器" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="OpSwitch" Content="管理员" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="TpSwitch" Content="传送" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="MineSwitch" Content="{DynamicResource LevelSettings.Editor.Option.Mine}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="BuildSwitch" Content="{DynamicResource LevelSettings.Editor.Option.Build}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="AtkMobSwitch" Content="{DynamicResource LevelSettings.Editor.Option.AttackMobs}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="AtkPlayerSwitch" Content="{DynamicResource LevelSettings.Editor.Option.AttackPlayers}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="DoorSwitch" Content="{DynamicResource LevelSettings.Editor.Option.DoorsAndSwitches}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="ContainerSwitch" Content="{DynamicResource LevelSettings.Editor.Option.OpenContainers}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="OpSwitch" Content="{DynamicResource LevelSettings.Editor.Option.Operator}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="TpSwitch" Content="{DynamicResource LevelSettings.Editor.Option.Teleport}" IsCheckedChanged="OnCheckChanged" />
                 </UniformGrid>
 
-                <TextBlock Text="移动" Classes="Header" />
+                <TextBlock Text="{DynamicResource LevelSettings.Editor.Section.Movement}" Classes="Header" />
                 <UniformGrid Columns="4">
-                    <CheckBox Name="FlyingSwitch" Content="飞行" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="MayflySwitch" Content="允许飞行" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="InstabuildSwitch" Content="即时建造" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="InvulnerableSwitch" Content="无敌" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="NoClipSwitch" Content="穿墙" IsCheckedChanged="OnCheckChanged" />
-                    <CheckBox Name="WorldBuilderSwitch" Content="雷击" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="FlyingSwitch" Content="{DynamicResource LevelSettings.Editor.Option.Flying}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="MayflySwitch" Content="{DynamicResource LevelSettings.Editor.Option.AllowFlying}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="InstabuildSwitch" Content="{DynamicResource LevelSettings.Editor.Option.InstantBuild}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="InvulnerableSwitch" Content="{DynamicResource LevelSettings.Editor.Option.Invulnerable}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="NoClipSwitch" Content="{DynamicResource LevelSettings.Editor.Option.NoClip}" IsCheckedChanged="OnCheckChanged" />
+                    <CheckBox Name="WorldBuilderSwitch" Content="{DynamicResource LevelSettings.Editor.Option.WorldBuilder}" IsCheckedChanged="OnCheckChanged" />
                 </UniformGrid>
 
                 <Grid ColumnDefinitions="*,*,*" Margin="0,10,0,0">
                     <StackPanel Grid.Column="0" Margin="0,0,5,0"
                                 Spacing="8">
-                        <TextBlock Text="行走速度 (walkSpeed)" Opacity="0.5" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Editor.Field.WalkSpeed}" Opacity="0.5" />
                         <TextBox Name="WalkSpeedText" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Margin="5,0,5,0"
                                 Spacing="8">
-                        <TextBlock Text="飞行速度 (flySpeed)" Opacity="0.5" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Editor.Field.FlySpeed}" Opacity="0.5" />
                         <TextBox Name="FlySpeedText" />
                     </StackPanel>
                     <StackPanel Grid.Column="2" Margin="5,0,0,0"
                                 Spacing="8">
-                        <TextBlock Text="垂直飞行速度 (verticalFlySpeed)" Opacity="0.5" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Editor.Field.VerticalFlySpeed}" Opacity="0.5" />
                         <TextBox Name="VFlySpeedText" />
                     </StackPanel>
                 </Grid>

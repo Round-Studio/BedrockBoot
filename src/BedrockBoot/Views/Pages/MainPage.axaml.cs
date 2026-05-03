@@ -29,6 +29,7 @@ public partial class MainPage : UserControl
 {
     public static MainPage Instance;
     private bool _isUpdatingGameList; // 添加：控制游戏列表更新的标志
+    private static I18nManager i18n => I18nManager.Instance;
 
     public MainPage()
     {
@@ -39,21 +40,21 @@ public partial class MainPage : UserControl
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "主页",
+            ItemText = i18n["MainPage.Nav.Home"],
             Tag = "Home",
             Page = typeof(MainHomePage)
         });
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "实例",
+            ItemText = i18n["MainPage.Nav.Manager"],
             Tag = "Manager",
             Page = typeof(MainManager)
         });
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "下载",
+            ItemText = i18n["MainPage.Nav.Download"],
             Tag = "Download",
             Page = typeof(DownloadRoot)
         });
@@ -61,14 +62,14 @@ public partial class MainPage : UserControl
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "工具",
+            ItemText = i18n["MainPage.Nav.Tools"],
             Tag = "ToolsBox",
             Page = typeof(MainToolsBoxPage)
         });
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "\uF0B9",
-            ItemText = "多人联机",
+            ItemText = i18n["MainPage.Nav.Multiplayer"],
             Tag = "Multiplayer",
             Page = typeof(MainMultiplayerPage)
         });
@@ -76,7 +77,7 @@ public partial class MainPage : UserControl
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
-            ItemText = "设置",
+            ItemText = i18n["MainPage.Nav.Setting"],
             Tag = "Setting",
             Page = typeof(MainSettingPage)
         });
@@ -170,18 +171,18 @@ public partial class MainPage : UserControl
             if (result != null)
                 DialogHost.Show(new DialogInfo
                 {
-                    Content = $"我们有新的更新：\n\n{result.Body}",
-                    Title = $"更新 {result.TagName}",
-                    CloseButtonText = "现在更新",
-                    PrimaryButtonText = "取消",
+                    Content = string.Format(i18n["MainPage.Update.Content"], result.Body),
+                    Title = string.Format(i18n["MainPage.Update.NewVersion"], result.TagName),
+                    CloseButtonText = i18n["MainPage.Update.Action.Now"],
+                    PrimaryButtonText = i18n["Shared.Action.Cancel"],
                     CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
                 });
             else if (isShowNeo)
                 DialogHost.Show(new DialogInfo
                 {
-                    Content = "当前已是最新版本",
-                    Title = "检查更新",
-                    CloseButtonText = "确定"
+                    Content = i18n["MainPage.Update.Action.Latest"],
+                    Title = i18n["MainPage.Update.Title"],
+                    CloseButtonText = i18n["Shared.Action.Confirm"]
                 });
         }
         catch (Exception ex)
@@ -228,9 +229,9 @@ public partial class MainPage : UserControl
                 else
                     DialogHost.Show(new DialogInfo
                     {
-                        Title = "页面无效",
-                        Content = $"页面 {tag} 无效",
-                        CloseButtonText = "确定"
+                        Title = i18n["MainPage.Error.InvalidPage.Title"],
+                        Content = string.Format(i18n["MainPage.Error.InvalidPage.Content"], tag),
+                        CloseButtonText = i18n["Shared.Action.Confirm"]
                     });
 
                 if (page.HeaderView != null) HeaderContent.NavigateTo(page.HeaderView);
@@ -251,7 +252,7 @@ public partial class MainPage : UserControl
             {
                 _isUpdatingGameList = true; // 添加：设置更新标志
                 GameListChoose.Items.Clear();
-                GameListChoose.Items.Add("无可用实例");
+                GameListChoose.Items.Add(i18n["MainPage.Status.NoInstance"]);
                 GameListChoose.SelectedIndex = 0;
                 GameControls.IsEnabled = false;
                 GameInfo.Text = "";
@@ -349,7 +350,7 @@ public partial class MainPage : UserControl
                 GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
                 GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
             {
-                GameInfo.Text = "无可用实例";
+                GameInfo.Text = i18n["MainPage.Status.NoInstance"];
                 GameName.Text = "";
                 GameBuildType.Text = "";
                 return;
@@ -362,7 +363,7 @@ public partial class MainPage : UserControl
                 gameFolder.GameSelIndex < 0 ||
                 gameFolder.GameSelIndex >= versions.Count)
             {
-                GameInfo.Text = "无可用实例";
+                GameInfo.Text = i18n["MainPage.Status.NoInstance"];
                 GameName.Text = "";
                 GameBuildType.Text = "";
                 return;
@@ -378,7 +379,7 @@ public partial class MainPage : UserControl
         {
             // 修复：添加异常处理
             Console.WriteLine($@"更新游戏信息失败：{ex.Message}");
-            GameInfo.Text = "加载失败";
+            GameInfo.Text = i18n["MainPage.Status.LoadFailed"];
             GameName.Text = "";
             GameBuildType.Text = "";
         }

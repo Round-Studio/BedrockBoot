@@ -49,7 +49,7 @@
                            FontSize="14"
                            IsVisible="False"
                            Name="Expansion"
-                           Text="拓展" />
+                           Text="{DynamicResource Instance.Controls.Group.Expansion}" />
 
                 <StackPanel Spacing="8"
                             Name="ExpansionPanel" />

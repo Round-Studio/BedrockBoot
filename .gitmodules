@@ -10,3 +10,6 @@
 [submodule "src/PaperConnect"]
 	path = src/PaperConnect
 	url = https://github.com/Round-Studio/PaperConnect.git
+[submodule "src/BedrockMapRender"]
+	path = src/BedrockMapRender
+	url = https://github.com/BE-Community-Dev/BedrockMapRender.git

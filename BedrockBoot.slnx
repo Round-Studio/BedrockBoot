@@ -3,10 +3,6 @@
     <Platform Name="Any CPU" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/Core/">
-    <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
-    <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />
-  </Folder>
   <Folder Name="/Dependence/">
     <Project Path="src/BedrockBoot.Chunker/BedrockBoot.Chunker.csproj" />
     <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />
@@ -18,6 +14,18 @@
       <Platform Solution="Debug|Any CPU" Project="Win32" />
       <Platform Solution="Release|x86" Project="x64" />
     </Project>
+  </Folder>
+  <Folder Name="/Dependence/BedrockMapRender/">
+    <Project Path="src/BedrockMapRender/BedrockLevelDB/BedrockLevelDB.csproj" />
+    <Project Path="src/BedrockMapRender/BedrockRender.Avalonia/BedrockRender.Avalonia.csproj" />
+    <Project Path="src/BedrockMapRender/BedrockRender.Avalonia.Demo/BedrockRender.Avalonia.Demo.csproj" />
+    <Project Path="src/BedrockMapRender/BedrockRender.Console/BedrockRender.Console.csproj" />
+    <Project Path="src/BedrockMapRender/BedrockRender/BedrockRender.csproj" />
+    <Project Path="src/BedrockMapRender/BedrockWorld/BedrockWorld.csproj" />
+  </Folder>
+  <Folder Name="/Dependence/Core/">
+    <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
+    <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />
   </Folder>
   <Folder Name="/Dependence/Linux/">
     <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />

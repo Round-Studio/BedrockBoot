@@ -487,6 +487,8 @@
     <x:String x:Key="Settings.Nav.Game.Desc">操作游戏的基本设置</x:String>
     <x:String x:Key="Settings.Nav.Universal.Title">通用</x:String>
     <x:String x:Key="Settings.Nav.Universal.Desc">启动器本体通用设置</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Title">插件</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Desc">设置、管理已安装的插件以及插件行为</x:String>
     <x:String x:Key="Settings.Nav.About.Title">关于</x:String>
     <x:String x:Key="Settings.Nav.About.Desc">关于 BedrockBoot</x:String>
 
@@ -562,6 +564,9 @@
     <x:String x:Key="Settings.Personalization.Home.Type.Desc">启动器主页显示的类型</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.None">无</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.News">新闻主页</x:String>
+    <x:String x:Key="Settings.Personalization.Group.Window">窗口</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">使用系统标题栏</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">使用系统自带的标题栏，并隐藏控制按钮</x:String>
 
     <x:String x:Key="Setting.Personalization.Home.Title">主页</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.Header">主页内容类型</x:String>
@@ -573,6 +578,20 @@
     <x:String x:Key="Settings.Game.Isolation.Desc">版本隔离使用的技术类型</x:String>
     <x:String x:Key="Settings.Game.Isolation.SymbolicLink">单一模式（Symbolic Link）</x:String>
     <x:String x:Key="Settings.Game.Isolation.HookSymbolicLink">混合模式（Hook + Symbolic Link）</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Title">鼠标锁</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Desc">防止鼠标越过游戏窗口边界，避免误触其他内容</x:String>
+    <x:String x:Key="Settings.Game.Group.Advanced">高级</x:String>
+    <x:String x:Key="Settings.Game.Proton.Desc">管理和设置 Proton 运行器</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Title">安装新 Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Desc">从提供的预设仓库中拉取 Proton 的不同版本</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Title">选择全局 Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Desc">从已安装的 Proton 中选择一个作为全局 Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Installed.Title">已安装的 GDKProton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Title">暂无安装</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Message">当前没有任何一个可用的 Proton 运行器</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Combo">请先安装 Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Branch.Title">选择 GDKProton 分支</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Version.Title">选择 GDKProton 版本</x:String>
 
     <x:String x:Key="Setting.Game.Title">游戏</x:String>
     <x:String x:Key="Setting.Game.Breadcrumb.Root">游戏</x:String>
@@ -628,6 +647,29 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本体调试模式</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">语言</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot 所显示的语言</x:String>
+    <x:String x:Key="Settings.Universal.Language.Chinese">中文（简体中文）</x:String>
+    <x:String x:Key="Settings.Universal.Language.English">英语（美国）</x:String>
+    <x:String x:Key="Settings.Universal.Language.Japanese">日语</x:String>
+    <x:String x:Key="Settings.Universal.Group.Behavior">行为</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Title">启动器行为</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">启动器在游戏启动后的行为</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.None">无</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Minimize">启动后最小化启动器</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Exit">启动后退出启动器</x:String>
+
+    <x:String x:Key="Settings.Plugin.Manager.Title">插件管理</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Desc">管理已安装的插件</x:String>
+    <x:String x:Key="Settings.Plugin.Settings.Title">插件设置</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Breadcrumb">管理</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Intro">通过导入第三方插件，BedrockBoot 可以运行第三方扩展内容。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.ImportGuide">点击“导入”按钮，开始导入插件包。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Action.Import">导入插件</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.SecurityNotice">请导入您信任的插件包。注意：加载来源不明的插件可能存在安全风险。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Title">未安装插件</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Message">还没有安装任何第三方插件</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Loading.Message">加载插件中</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.Title">选择插件包</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.FileType">BedrockBoot 插件包</x:String>
 
     <x:String x:Key="Setting.Universal.Title">通用</x:String>
     <x:String x:Key="Setting.Universal.Breadcrumb.Root">通用</x:String>

@@ -104,7 +104,7 @@ public partial class GameProton : ISettingPage
         else
         {
             _globalProtonComboBox.IsEnabled = false;
-            _globalProtonComboBox.Items.Add("请先安装 Proton");
+            _globalProtonComboBox.Items.Add(I18nManager.Instance["Settings.Game.Proton.Empty.Combo"]);
             _globalProtonComboBox.SelectedIndex = 0;
             
             ProtonCore.Config.Data.SelectProtonPath = string.Empty;
@@ -117,10 +117,10 @@ public partial class GameProton : ISettingPage
         var dialog = new DialogChooseDownloadBranchContent();
         DialogHost.Show(new DialogInfo()
         {
-            Title = "选择 GDKProton 分支",
+            Title = I18nManager.Instance["Settings.Game.Proton.Dialog.Branch.Title"],
             Content = dialog,
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
@@ -129,10 +129,10 @@ public partial class GameProton : ISettingPage
                 
                 DialogHost.Show(new DialogInfo()
                 {
-                    Title = "选择 GDKProton 版本",
+                    Title = I18nManager.Instance["Settings.Game.Proton.Dialog.Version.Title"],
                     Content = selVersionDialog,
-                    CloseButtonText = "确定",
-                    PrimaryButtonText = "取消",
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                    PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                     AccountButton = DialogButtons.CloseButton,
                     CloseAction = () =>
                     {

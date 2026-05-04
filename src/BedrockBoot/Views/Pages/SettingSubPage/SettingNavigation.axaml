@@ -43,8 +43,8 @@
                                               Glyph="&#xE71D;" />
 
                 <onePointControls:SettingCard Margin="5, 0"
-                                              Header="插件"
-                                              Description="设置，管理已安装的插件以及插件行为"
+                                              Header="{DynamicResource Settings.Nav.Plugin.Title}"
+                                              Description="{DynamicResource Settings.Nav.Plugin.Desc}"
                                               Name="Plugin"
                                               Click="Plugin_OnClick"
                                               IsClickable="True"

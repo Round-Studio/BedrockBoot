@@ -28,8 +28,8 @@
 
             <onePointControls:SettingCard Margin="5, 0"
                                           Name="MouseLockCard"
-                                          Header="鼠标锁"
-                                          Description="为了防止鼠标越过游戏窗口边界，导致误触其他东西的功能"
+                                          Header="{DynamicResource Settings.Game.MouseLock.Title}"
+                                          Description="{DynamicResource Settings.Game.MouseLock.Desc}"
                                           Glyph="&#xE72E;">
                 <ToggleSwitch Name="MouseLockSwitch"
                               IsCheckedChanged="MouseLockSwitch_OnIsCheckedChanged" />
@@ -49,11 +49,11 @@
                 <TextBlock Margin="5,0"
                            FontWeight="Bold"
                            FontSize="14"
-                           Text="高级" />
+                           Text="{DynamicResource Settings.Game.Group.Advanced}" />
 
                 <onePointControls:SettingCard Margin="5, 0"
                                               Header="Proton"
-                                              Description="管理和设置 Proton 运行器"
+                                              Description="{DynamicResource Settings.Game.Proton.Desc}"
                                               Name="ProtonBtn"
                                               Click="ProtonBtn_OnClick"
                                               IsClickable="True"

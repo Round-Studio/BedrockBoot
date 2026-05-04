@@ -15,11 +15,11 @@
                            FontSize="14"
                            Text="{DynamicResource Settings.Universal.Exception.Summary.Title}" />
 
-                <TextBlock Text="通过导入第三方插件，BedrockBoot 以运行第三方拓展内容。"
+                <TextBlock Text="{DynamicResource Settings.Plugin.Manager.Intro}"
                            TextWrapping="Wrap"
                            Opacity="0.6" />
 
-                <TextBlock Text="点击 导入 按钮，开始导入插件包。"
+                <TextBlock Text="{DynamicResource Settings.Plugin.Manager.ImportGuide}"
                            TextWrapping="Wrap"
                            Opacity="0.6" />
 
@@ -29,11 +29,11 @@
                                 Spacing="12">
                         <onePointControls:FontIcon VerticalAlignment="Center"
                                                    Glyph="&#xE710;" />
-                        <TextBlock Text="导入插件" />
+                        <TextBlock Text="{DynamicResource Settings.Plugin.Manager.Action.Import}" />
                     </StackPanel>
                 </Button>
 
-                <TextBlock Text="请导入您信任的插件包。注意：加载来源不明的插件可能存在安全风险。"
+                <TextBlock Text="{DynamicResource Settings.Plugin.Manager.SecurityNotice}"
                            TextWrapping="Wrap"
                            Opacity="0.6" />
             </StackPanel>
@@ -50,15 +50,15 @@
                              Name="InfoCard"
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center"
-                             BigTitle="未安装插件"
-                             Message="还没有安装任何第三方插件" />
+                             BigTitle="{DynamicResource Settings.Plugin.Manager.Empty.Title}"
+                             Message="{DynamicResource Settings.Plugin.Manager.Empty.Message}" />
 
             <notice:LoadCard Grid.Column="1"
                              Name="LoadingCard"
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center"
-                             BigTitle="请稍后"
-                             Message="加载插件中" />
+                             BigTitle="{DynamicResource Shared.Status.Wait}"
+                             Message="{DynamicResource Settings.Plugin.Manager.Loading.Message}" />
         </Grid>
     </Grid>
 </UserControl>

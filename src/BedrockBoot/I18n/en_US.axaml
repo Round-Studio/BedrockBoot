@@ -482,6 +482,8 @@
     <x:String x:Key="Settings.Nav.Game.Desc">Basic settings for operating the game</x:String>
     <x:String x:Key="Settings.Nav.Universal.Title">Universal</x:String>
     <x:String x:Key="Settings.Nav.Universal.Desc">General settings for the launcher itself</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Title">Plugins</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Desc">Configure and manage installed plugins and plugin behavior</x:String>
     <x:String x:Key="Settings.Nav.About.Title">About</x:String>
     <x:String x:Key="Settings.Nav.About.Desc">About BedrockBoot</x:String>
 
@@ -557,6 +559,9 @@
     <x:String x:Key="Settings.Personalization.Home.Type.Desc">Type displayed on the launcher homepage</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.None">None</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.News">News Homepage</x:String>
+    <x:String x:Key="Settings.Personalization.Group.Window">Window</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">Use System Title Bar</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">Use the system title bar and hide the control buttons</x:String>
 
     <x:String x:Key="Setting.Personalization.Home.Title">Home</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.Header">Home Content Type</x:String>
@@ -568,6 +573,20 @@
     <x:String x:Key="Settings.Game.Isolation.Desc">Technology type used for version isolation</x:String>
     <x:String x:Key="Settings.Game.Isolation.SymbolicLink">Single Mode (Symbolic Link)</x:String>
     <x:String x:Key="Settings.Game.Isolation.HookSymbolicLink">Hybrid Mode (Hook + Symbolic Link)</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Title">Mouse Lock</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Desc">Prevents the mouse from crossing the game window boundary to avoid accidental clicks elsewhere</x:String>
+    <x:String x:Key="Settings.Game.Group.Advanced">Advanced</x:String>
+    <x:String x:Key="Settings.Game.Proton.Desc">Manage and configure Proton runners</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Title">Install New Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Desc">Pull different Proton versions from the provided preset repositories</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Title">Select Global Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Desc">Select an installed Proton as the global Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Installed.Title">Installed GDKProton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Title">None Installed</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Message">No available Proton runners</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Combo">Please install Proton first</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Branch.Title">Select GDKProton Branch</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Version.Title">Select GDKProton Version</x:String>
 
     <x:String x:Key="Setting.Game.Title">Game</x:String>
     <x:String x:Key="Setting.Game.Breadcrumb.Root">Game</x:String>
@@ -623,6 +642,29 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot's own debug mode</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">Language</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot show language</x:String>
+    <x:String x:Key="Settings.Universal.Language.Chinese">Chinese (Simplified)</x:String>
+    <x:String x:Key="Settings.Universal.Language.English">English (US)</x:String>
+    <x:String x:Key="Settings.Universal.Language.Japanese">Japanese</x:String>
+    <x:String x:Key="Settings.Universal.Group.Behavior">Behavior</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Title">Launcher Behavior</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">What the launcher does after the game starts</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.None">None</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Minimize">Minimize launcher after launch</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Exit">Exit launcher after launch</x:String>
+
+    <x:String x:Key="Settings.Plugin.Manager.Title">Plugin Manager</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Desc">Manage installed plugins</x:String>
+    <x:String x:Key="Settings.Plugin.Settings.Title">Plugin Settings</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Breadcrumb">Manager</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Intro">By importing third-party plugins, BedrockBoot can run third-party extension content.</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.ImportGuide">Click the Import button to import a plugin package.</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Action.Import">Import Plugin</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.SecurityNotice">Only import plugin packages you trust. Loading plugins from unknown sources may pose security risks.</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Title">No Plugins Installed</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Message">No third-party plugins installed yet</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Loading.Message">Loading plugins</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.Title">Select Plugin Package</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.FileType">BedrockBoot Plugin Package</x:String>
 
     <x:String x:Key="Setting.Universal.Title">Universal</x:String>
     <x:String x:Key="Setting.Universal.Breadcrumb.Root">Universal</x:String>

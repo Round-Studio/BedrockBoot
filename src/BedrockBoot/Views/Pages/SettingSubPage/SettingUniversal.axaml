@@ -36,28 +36,28 @@
                 <ComboBox Width="200"
                           Name="LanguageChoose"
                           SelectionChanged="LanguageChoose_OnSelectionChanged">
-                    <ComboBoxItem Content="中文 (简体中文)" />
-                    <ComboBoxItem Content="English (US)" />
-                    <ComboBoxItem Content="Japanese" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Universal.Language.Chinese}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Universal.Language.English}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Universal.Language.Japanese}" />
                 </ComboBox>
             </onePointControls:SettingCard>
 
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="行为" />
+                       Text="{DynamicResource Settings.Universal.Group.Behavior}" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="启动器行为"
-                                          Description="启动器在游戏启动后的行为"
+                                          Header="{DynamicResource Settings.Universal.LaunchBehavior.Title}"
+                                          Description="{DynamicResource Settings.Universal.LaunchBehavior.Desc}"
                                           Glyph="&#xEBD2;">
                 <ComboBox Width="200"
                           Name="LaunchBehaviorChoose"
                           SelectionChanged="LaunchBehaviorChoose_OnSelectionChanged"
                           SelectedIndex="0">
-                    <ComboBoxItem Content="无" />
-                    <ComboBoxItem Content="启动后最小化启动器" />
-                    <ComboBoxItem Content="启动后退出启动器" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Universal.LaunchBehavior.None}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Universal.LaunchBehavior.Minimize}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Universal.LaunchBehavior.Exit}" />
                 </ComboBox>
             </onePointControls:SettingCard>
 

@@ -31,11 +31,11 @@
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="窗口" />
+                       Text="{DynamicResource Settings.Personalization.Group.Window}" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="使用系统标题栏"
-                                          Description="使用系统自带的标题栏，并隐藏控制按钮"
+                                          Header="{DynamicResource Settings.Personalization.SystemTitleBar.Title}"
+                                          Description="{DynamicResource Settings.Personalization.SystemTitleBar.Desc}"
                                           IsClickable="True"
                                           IsShowActionIcon="False"
                                           Glyph="&#xE737;">

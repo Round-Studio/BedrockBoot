@@ -487,6 +487,8 @@
     <x:String x:Key="Settings.Nav.Game.Desc">ゲーム操作の基本設定</x:String>
     <x:String x:Key="Settings.Nav.Universal.Title">共通</x:String>
     <x:String x:Key="Settings.Nav.Universal.Desc">ランチャー本体の共通設定</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Title">プラグイン</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Desc">インストール済みプラグインとプラグイン動作を設定・管理</x:String>
     <x:String x:Key="Settings.Nav.About.Title">このソフトについて</x:String>
     <x:String x:Key="Settings.Nav.About.Desc">BedrockBoot について</x:String>
 
@@ -562,6 +564,9 @@
     <x:String x:Key="Settings.Personalization.Home.Type.Desc">ランチャーのホームページに表示するタイプ</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.None">なし</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.News">ニュースホーム</x:String>
+    <x:String x:Key="Settings.Personalization.Group.Window">ウィンドウ</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">システムタイトルバーを使用</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">システム標準のタイトルバーを使用し、コントロールボタンを非表示にします</x:String>
 
     <x:String x:Key="Setting.Personalization.Home.Title">ホーム</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.Header">ホームページコンテンツタイプ</x:String>
@@ -573,6 +578,20 @@
     <x:String x:Key="Settings.Game.Isolation.Desc">使用するバージョン分離の技術タイプ</x:String>
     <x:String x:Key="Settings.Game.Isolation.SymbolicLink">シングルモード (Symbolic Link)</x:String>
     <x:String x:Key="Settings.Game.Isolation.HookSymbolicLink">ハイブリッドモード (Hook + Symbolic Link)</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Title">マウスロック</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Desc">マウスがゲームウィンドウ境界を越えないようにし、誤操作を防ぎます</x:String>
+    <x:String x:Key="Settings.Game.Group.Advanced">高度な設定</x:String>
+    <x:String x:Key="Settings.Game.Proton.Desc">Proton ランナーを管理・設定します</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Title">新しい Proton をインストール</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Desc">提供されたプリセットリポジトリから Proton の各バージョンを取得します</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Title">グローバル Proton を選択</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Desc">インストール済み Proton からグローバル Proton を選択します</x:String>
+    <x:String x:Key="Settings.Game.Proton.Installed.Title">インストール済み GDKProton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Title">未インストール</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Message">利用可能な Proton ランナーがありません</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Combo">先に Proton をインストールしてください</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Branch.Title">GDKProton ブランチを選択</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Version.Title">GDKProton バージョンを選択</x:String>
 
     <x:String x:Key="Setting.Game.Title">ゲーム</x:String>
     <x:String x:Key="Setting.Game.Breadcrumb.Root">ゲーム</x:String>
@@ -628,6 +647,29 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本体のデバッグモード</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">言語</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot の表示言語</x:String>
+    <x:String x:Key="Settings.Universal.Language.Chinese">中国語（簡体字）</x:String>
+    <x:String x:Key="Settings.Universal.Language.English">英語（米国）</x:String>
+    <x:String x:Key="Settings.Universal.Language.Japanese">日本語</x:String>
+    <x:String x:Key="Settings.Universal.Group.Behavior">動作</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Title">ランチャー動作</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">ゲーム起動後のランチャーの動作</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.None">なし</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Minimize">起動後にランチャーを最小化</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Exit">起動後にランチャーを終了</x:String>
+
+    <x:String x:Key="Settings.Plugin.Manager.Title">プラグイン管理</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Desc">インストール済みプラグインを管理</x:String>
+    <x:String x:Key="Settings.Plugin.Settings.Title">プラグイン設定</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Breadcrumb">管理</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Intro">サードパーティ製プラグインをインポートすると、BedrockBoot で拡張コンテンツを実行できます。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.ImportGuide">「インポート」ボタンをクリックしてプラグインパッケージをインポートします。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Action.Import">プラグインをインポート</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.SecurityNotice">信頼できるプラグインパッケージのみをインポートしてください。不明なソースのプラグインを読み込むとセキュリティリスクがあります。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Title">プラグイン未インストール</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Message">サードパーティ製プラグインはまだインストールされていません</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Loading.Message">プラグインを読み込み中</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.Title">プラグインパッケージを選択</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.FileType">BedrockBoot プラグインパッケージ</x:String>
 
     <x:String x:Key="Setting.Universal.Title">共通</x:String>
     <x:String x:Key="Setting.Universal.Breadcrumb.Root">共通</x:String>

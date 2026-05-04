@@ -20,7 +20,7 @@ public partial class SettingPlugin : ISettingPage
         {
             new()
             {
-                ItemName = "插件"
+                ItemName = I18nManager.Instance["Settings.Nav.Plugin.Title"]
             }
         };
 

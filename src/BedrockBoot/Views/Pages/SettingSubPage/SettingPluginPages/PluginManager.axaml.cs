@@ -21,13 +21,13 @@ public partial class PluginManager : ISettingPage
         {
             new()
             {
-                ItemName = "插件",
+                ItemName = I18nManager.Instance["Settings.Nav.Plugin.Title"],
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingPlugin())
             },
             new()
             {
-                ItemName = "管理"
+                ItemName = I18nManager.Instance["Settings.Plugin.Manager.Breadcrumb"]
             }
         };
     }
@@ -59,11 +59,11 @@ public partial class PluginManager : ISettingPage
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择插件包",
+            Title = I18nManager.Instance["Settings.Plugin.Manager.Picker.Title"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("BedrockBoot 插件包")
+                new FilePickerFileType(I18nManager.Instance["Settings.Plugin.Manager.Picker.FileType"])
                 {
                     Patterns = new[] { "*.rplck" }
                 }

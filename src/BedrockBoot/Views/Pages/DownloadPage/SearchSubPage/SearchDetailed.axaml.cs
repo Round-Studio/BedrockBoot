@@ -224,8 +224,12 @@ public partial class SearchDetailed : ISetting
                 }
                 else if (info.Type == SearchResourceType.PluginPack) // 插件包
                 {
-                    var result = new MarketClient().GetPluginsAsync().Result;
+                    var result = new MarketClient().GetPluginsAsync().Result
+                        .Where(x => x.PluginName.ToLower().Contains(info.Key.ToLower()))
+                        .Where(x => x.RepositoryUrl.ToLower().Contains(info.Key.ToLower()))
+                        .ToList();
                     _totalPages = (int)Math.Ceiling((double)result.Count / _pageSize);
+                    
                     result.ForEach(plugin =>
                     {
                         plugin.IconUrl = $"{SourceList.MarketApiHost}{plugin.IconUrl}";
@@ -244,7 +248,7 @@ public partial class SearchDetailed : ISetting
                         };
                         item.OnClick = s =>
                         {
-                            Console.WriteLine(s);
+                            Console.WriteLine($@"View Plugin: {s}");
                         };
                         items.Add(item);
                     });

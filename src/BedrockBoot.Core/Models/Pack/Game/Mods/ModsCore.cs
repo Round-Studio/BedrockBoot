@@ -103,10 +103,14 @@ public class ModsCore
             {
             }
         });
+        
+        Console.WriteLine(@"预加载文件复制完毕");
 
         try
         {
             File.WriteAllBytes(fullPath, Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreLoadCpp.dll"));
+            
+            Console.WriteLine(@"PreLoadCpp.DLL 释放完毕");
 
             // 然后修改 PE 文件
             if (!FileCheck.IsFileLocked(body))
@@ -121,10 +125,12 @@ public class ModsCore
                         System.Console.WriteLine("转换完成！Subsystem 已修改为 WindowsCui (3)");
                     }*/
                     peFile.Flush();
+                    Console.WriteLine(@"Main EXE 文件修改完毕，已导入 PreLoadCpp.DLL");
                 }
             }
             else
             {
+                Console.WriteLine($@"文件 {body} 被占用，无法修改目标文件");
                 throw new IOException($"文件 {body} 被锁定，无法修改");
             }
         }
@@ -136,6 +142,7 @@ public class ModsCore
 
     public void LoadAll(int pid)
     {
+        Console.WriteLine($@"开始注入进程：{pid}");
         _manager.InjectAll(pid);
     }
 

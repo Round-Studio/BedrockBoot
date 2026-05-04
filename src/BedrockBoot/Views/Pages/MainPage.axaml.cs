@@ -104,7 +104,14 @@ public partial class MainPage : UserControl
             {
             }
 
-            JumpListManager.ConfigureJumpList();
+            try
+            {
+                JumpListManager.ConfigureJumpList();
+            }
+            catch(Exception exception)
+            {
+                Console.WriteLine($@"创建 JumpList 出现错误：{exception}");
+            }
             await UpdateUIAsync();
         };
 

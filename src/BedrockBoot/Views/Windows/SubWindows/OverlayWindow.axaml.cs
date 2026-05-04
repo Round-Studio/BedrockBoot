@@ -186,22 +186,29 @@ public partial class OverlayWindow : Window
             // 最多重试20次，每次间隔1000毫秒
             for (var i = 0; i < 20; i++)
             {
-                var foundHwnd = FindTargetWindow();
-
-                if (foundHwnd != IntPtr.Zero)
+                try
                 {
-                    // 在UI线程中更新目标窗口句柄
-                    Dispatcher.UIThread.Invoke(() =>
+                    var foundHwnd = FindTargetWindow();
+
+                    if (foundHwnd != IntPtr.Zero)
                     {
-                        _targetHwnd = foundHwnd;
+                        // 在UI线程中更新目标窗口句柄
+                        Dispatcher.UIThread.Invoke(() =>
+                        {
+                            _targetHwnd = foundHwnd;
 
-                        // 检查是否是UWP应用
-                        _isUWPApp = IsUWPWindow(foundHwnd);
+                            // 检查是否是UWP应用
+                            _isUWPApp = IsUWPWindow(foundHwnd);
 
-                        // 现在找到了目标窗口，可以继续初始化
-                        InitializeOverlay();
-                    });
-                    break;
+                            // 现在找到了目标窗口，可以继续初始化
+                            InitializeOverlay();
+                        });
+                        break;
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
                 }
 
                 await Task.Delay(1000);
@@ -211,7 +218,7 @@ public partial class OverlayWindow : Window
             if (_targetHwnd == IntPtr.Zero)
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    Console.WriteLine($@"无法找到进程 {_targetProcess?.ProcessName} 的窗口");
+                    Console.WriteLine($@"无法找到目标进程的窗口");
                 });
         });
     }

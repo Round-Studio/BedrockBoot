@@ -28,6 +28,7 @@
                       Name="ResourceTypeBox">
                 <ComboBoxItem Content="Minecraft" />
                 <ComboBoxItem Content="{DynamicResource Download.Tab.Assets}" />
+                <ComboBoxItem Content="插件" />
             </ComboBox>
 
             <StackPanel Orientation="Horizontal"

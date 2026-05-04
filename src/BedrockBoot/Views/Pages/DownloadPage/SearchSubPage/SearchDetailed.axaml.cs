@@ -12,6 +12,7 @@ using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
+using BedrockBoot.Models.Pack.Plugin.Market;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
@@ -34,6 +35,8 @@ public partial class SearchDetailed : ISetting
     // 添加搜索状态
     private bool _isSearching;
     private int _totalPages;
+
+    public SearchResourceType ChooseType => (SearchResourceType)ResourceTypeBox.SelectedIndex;
 
     public SearchDetailed()
     {
@@ -142,7 +145,7 @@ public partial class SearchDetailed : ISetting
             try
             {
                 var items = new List<SearchResultItemInfo>();
-                if (info.Type == SearchResourceType.Minecraft) // 游戏本体
+                if (info.Type == SearchResourceType.Minecraft) // 游戏本体 
                 {
                     var allVersions = VersionHelper.GetVersions()
                         .Where(x => (x.ID.ToLower().Contains(info.Key) ||
@@ -179,7 +182,7 @@ public partial class SearchDetailed : ISetting
                         });
                     });
                 }
-                else if (info.Type == SearchResourceType.ResourcePack)
+                else if (info.Type == SearchResourceType.ResourcePack) // 资源包 
                 {
                     var result = _apiClient.SearchModsAsync(SearchInfo.Key, pageSize: _pageSize, index: _currentIndex)
                         .Result;
@@ -215,6 +218,33 @@ public partial class SearchDetailed : ISetting
                             // GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(i),$"资源详细信息 {i.Name}");
 
                             DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
+                        };
+                        items.Add(item);
+                    });
+                }
+                else if (info.Type == SearchResourceType.PluginPack) // 插件包
+                {
+                    var result = new MarketClient().GetPluginsAsync().Result;
+                    _totalPages = (int)Math.Ceiling((double)result.Count / _pageSize);
+                    result.ForEach(plugin =>
+                    {
+                        plugin.IconUrl = $"{SourceList.MarketApiHost}{plugin.IconUrl}";
+                        var item = new SearchResultItemInfo
+                        {
+                            Name = plugin.PluginName,
+                            Id = 0,
+                            Description = plugin.Description,
+                            Authors = new List<string>() { plugin.Username },
+                            DownloadCount = 0,
+                            IconUri = plugin.IconUrl,
+                            Labels = plugin.Labels,
+                            Images = null,
+                            SourceWebsite = plugin.RepositoryUrl,
+                            JsonData = JsonSerializer.Serialize(plugin)
+                        };
+                        item.OnClick = s =>
+                        {
+                            Console.WriteLine(s);
                         };
                         items.Add(item);
                     });

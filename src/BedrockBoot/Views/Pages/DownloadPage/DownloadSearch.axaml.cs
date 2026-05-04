@@ -13,9 +13,9 @@ namespace BedrockBoot.Views.Pages.DownloadPage;
 
 public partial class DownloadSearch : UserControl
 {
-    public static NavigationFrame SearchFrame;
-    public static SearchDetailed SearchDetailed;
-    public static DownloadSearch DownloadSearchView;
+    public static NavigationFrame? SearchFrame;
+    public static SearchDetailed? SearchDetailed;
+    public static DownloadSearch? DownloadSearchView;
 
     // 保存搜索状态
     private static string _lastSearchKey = string.Empty;
@@ -78,7 +78,7 @@ public partial class DownloadSearch : UserControl
     public SearchResourceType Classify(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
-            return SearchResourceType.ResourcePack;
+            return SearchResourceType.Minecraft;
 
         // 情况1：检查是否是版本号格式（支持多种格式）
         if (IsVersionNumber(text))
@@ -87,6 +87,11 @@ public partial class DownloadSearch : UserControl
         // 情况2：检查是否是带空格的数字序列
         if (IsNumberSequence(text))
             return SearchResourceType.Minecraft;
+
+        if (SearchDetailed != null)
+            if(SearchDetailed.ChooseType != _lastSearchType && 
+               SearchDetailed.ChooseType != SearchResourceType.Minecraft)
+                return SearchDetailed.ChooseType;
 
         return SearchResourceType.ResourcePack;
     }

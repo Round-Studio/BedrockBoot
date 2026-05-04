@@ -60,4 +60,6 @@ public class SourceList
     public static string MojangHost { get; } = "https://launchercontent.mojang.com/v2";
     public static string NewsUrl { get; } = MojangHost + "/bedrockPatchNotes.json";
     public static string VC20152022Url { get; } = "https://aka.ms/vc14/vc_redist.x64.exe";
+    public static string MarketApiHost { get; } = "https://market-api.roundstudio.top";
+    public static string PluginApi { get; } = $"{MarketApiHost}/api/plugins";
 }

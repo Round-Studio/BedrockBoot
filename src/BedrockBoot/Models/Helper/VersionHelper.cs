@@ -23,7 +23,7 @@ public class VersionHelper
         
         var osVersion = Environment.OSVersion.VersionString;
         
-        Console.WriteLine($"OS Version: {osVersion}");
+        Console.WriteLine($@"OS Version: {osVersion}");
     
         _httpClient.DefaultRequestHeaders.Add("User-Agent", 
             $"BedrockBoot/{Global.GlobalModel.BodyVersion} ({osVersion})");
@@ -63,12 +63,12 @@ public class VersionHelper
             if (File.Exists(CacheFilePath))
             {
                 File.Delete(CacheFilePath);
-                Console.WriteLine($"缓存文件已删除: {CacheFilePath}");
+                Console.WriteLine($@"缓存文件已删除: {CacheFilePath}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"删除缓存文件失败: {ex.Message}");
+            Console.WriteLine($@"删除缓存文件失败: {ex.Message}");
         }
     }
     
@@ -87,7 +87,7 @@ public class VersionHelper
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取缓存年龄失败: {ex.Message}");
+            Console.WriteLine($@"获取缓存年龄失败: {ex.Message}");
         }
         return null;
     }
@@ -118,19 +118,19 @@ public class VersionHelper
             // 如果网络获取失败，尝试使用过期缓存作为后备
             if (TryLoadFromCache(out var fallbackVersions, ignoreExpiry: true))
             {
-                Console.WriteLine("网络获取失败，使用过期缓存数据");
+                Console.WriteLine(@"网络获取失败，使用过期缓存数据");
                 _versions = fallbackVersions;
                 return _versions;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取版本列表失败: {ex.Message}");
+            Console.WriteLine($@"获取版本列表失败: {ex.Message}");
             
             // 网络异常时尝试使用缓存（包括过期缓存）
             if (TryLoadFromCache(out var cachedVersions, ignoreExpiry: true))
             {
-                Console.WriteLine("使用缓存数据作为后备");
+                Console.WriteLine(@"使用缓存数据作为后备");
                 _versions = cachedVersions;
                 return _versions;
             }
@@ -143,7 +143,7 @@ public class VersionHelper
     private static List<BuildInfo> FetchVersionsFromNetwork()
     {
         var url = GetVersionSourceUrl();
-        Console.WriteLine($"从网络获取版本列表: {url}");
+        Console.WriteLine($@"从网络获取版本列表: {url}");
         
         var jsonString = _httpClient.GetStringAsync(url).Result;
         
@@ -215,7 +215,7 @@ public class VersionHelper
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"解析版本 {versionKey} 失败: {ex.Message}");
+                Console.WriteLine($@"解析版本 {versionKey} 失败: {ex.Message}");
                 continue;
             }
         }
@@ -258,7 +258,7 @@ public class VersionHelper
                 var cacheAge = DateTime.Now - cache.CacheTime;
                 if (cacheAge > CacheMaxAge)
                 {
-                    Console.WriteLine($"缓存已过期（{cacheAge.TotalHours:F1}小时前），将重新获取");
+                    Console.WriteLine($@"缓存已过期（{cacheAge.TotalHours:F1}小时前），将重新获取");
                     return false;
                 }
             }
@@ -267,17 +267,17 @@ public class VersionHelper
             var currentSourceIndex = GetCurrentSourceIndex();
             if (cache.VersionSourceIndex != currentSourceIndex)
             {
-                Console.WriteLine("缓存的数据源已更改，将重新获取");
+                Console.WriteLine(@"缓存的数据源已更改，将重新获取");
                 return false;
             }
             
             versions = cache.Versions;
-            Console.WriteLine($"从缓存加载版本列表成功，共 {versions.Count} 个版本");
+            Console.WriteLine($@"从缓存加载版本列表成功，共 {versions.Count} 个版本");
             return true;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"加载缓存失败: {ex.Message}");
+            Console.WriteLine($@"加载缓存失败: {ex.Message}");
             ClearCache();
             return false;
         }
@@ -309,11 +309,11 @@ public class VersionHelper
             var jsonString = JsonSerializer.Serialize(cache, options);
             File.WriteAllText(CacheFilePath, jsonString);
             
-            Console.WriteLine($"版本列表已缓存到文件: {CacheFilePath}");
+            Console.WriteLine($@"版本列表已缓存到文件: {CacheFilePath}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"保存缓存失败: {ex.Message}");
+            Console.WriteLine($@"保存缓存失败: {ex.Message}");
         }
     }
     

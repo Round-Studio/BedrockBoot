@@ -17,6 +17,6 @@ public class SearchResultItemInfo
     public Type DataType { get; set; }
     public string JsonData { get; set; } = string.Empty;
     public Action<string>? OnClick { get; set; }
-    public List<string> Images { get; set; }
+    public List<string>?Images { get; set; }
     public string SourceWebsite { get; set; }
 }

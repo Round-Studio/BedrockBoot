@@ -22,6 +22,7 @@ public partial class SearchHistoryItem : UserControl
         {
             SearchResourceType.Minecraft => "Minecraft",
             SearchResourceType.ResourcePack => "资源包",
+            SearchResourceType.PluginPack => "插件",
             _ => "未知"
         };
         SearchKey.Text = info.Key;

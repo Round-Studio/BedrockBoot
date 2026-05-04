@@ -4,5 +4,6 @@ public enum SearchResourceType
 {
     Minecraft,
     ResourcePack,
+    PluginPack,
     Unknow
 }

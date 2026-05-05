@@ -172,10 +172,72 @@ public partial class DrawDownloadGameContent : UserControl
 
     private void ExecuteInstallTask()
     {
-        if ((Sources == null || SourceSelBox.SelectedIndex < 0) && !CheckPack()) return;
+        bool hasLocalPack = CheckPack();
 
-        var selectedUrl = Sources[SourceSelBox.SelectedIndex].Url;
-        var targetPath = GlobalModel.Config.Data.GameFolders[InstallFolder.SelectedIndex].GameFolderPath;
+        if (!hasLocalPack)
+        {
+            if (Sources == null || Sources.Count == 0)
+            {
+                ShowErrorDialogAsync(i18n["Download.Draw.Error.NoUrl"]);
+                return;
+            }
+
+            if (SourceSelBox.SelectedIndex < 0 || SourceSelBox.SelectedIndex >= Sources.Count)
+            {
+                ShowErrorDialogAsync("请选择一个有效的下载源");
+                return;
+            }
+
+            // 检查选中的下载源是否有效
+            var selectedSource = Sources[SourceSelBox.SelectedIndex];
+            if (selectedSource == null || string.IsNullOrEmpty(selectedSource.Url))
+            {
+                ShowErrorDialogAsync("选中的下载源无效");
+                return;
+            }
+        }
+
+        // 检查安装目录是否有效
+        if (InstallFolder.SelectedIndex < 0 || InstallFolder.SelectedIndex >= InstallFolder.Items.Count)
+        {
+            ShowErrorDialogAsync("请选择一个有效的安装目录");
+            return;
+        }
+
+        var gameFolders = GlobalModel.Config.Data.GameFolders;
+        if (gameFolders == null || InstallFolder.SelectedIndex >= gameFolders.Count)
+        {
+            ShowErrorDialogAsync("游戏目录配置无效");
+            return;
+        }
+
+        var targetFolder = gameFolders[InstallFolder.SelectedIndex];
+        if (targetFolder == null || string.IsNullOrEmpty(targetFolder.GameFolderPath))
+        {
+            ShowErrorDialogAsync("安装目录路径无效");
+            return;
+        }
+
+        var targetPath = targetFolder.GameFolderPath;
+
+        if (!Directory.Exists(targetPath))
+        {
+            try
+            {
+                Directory.CreateDirectory(targetPath);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorDialogAsync($"无法创建安装目录: {ex.Message}");
+                return;
+            }
+        }
+
+        string selectedUrl = null;
+        if (!hasLocalPack && Sources != null && SourceSelBox.SelectedIndex >= 0)
+        {
+            selectedUrl = Sources[SourceSelBox.SelectedIndex].Url;
+        }
 
         TaskDownloadGameItem.Install(
             BuildInfo,
@@ -186,6 +248,20 @@ public partial class DrawDownloadGameContent : UserControl
         );
 
         Models.Global.GlobalModel.MainWindow.CloseDraw();
+    }
+    
+    private async void ShowErrorDialogAsync(string message)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            DialogHost.Show(new DialogInfo
+            {
+                Title = i18n["MainWindow.Dialog.Error.Title"],
+                Content = message,
+                CloseButtonText = i18n["MainWindow.Common.Confirm"],
+                CloseAction = () => Models.Global.GlobalModel.MainWindow?.CloseDraw()
+            });
+        });
     }
 
     private void IsUsePackIns_OnIsCheckedChanged(object? sender, RoutedEventArgs e)

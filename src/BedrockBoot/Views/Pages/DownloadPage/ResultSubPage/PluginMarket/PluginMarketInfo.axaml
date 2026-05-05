@@ -1,0 +1,121 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.PluginMarket.PluginMarketInfo">
+    <Grid RowDefinitions="*,Auto"
+          Margin="0,0,0,20"
+          RowSpacing="8">
+        <!--Margin:20-->
+        <ScrollViewer Grid.Column="0"
+                      Margin="5,0,5,0">
+            <StackPanel Name="ContentPanel"
+                        Margin="15,0,15,0">
+                <items:BorderCard Padding="12">
+                    <Grid ColumnDefinitions="Auto,*,Auto"
+                          ColumnSpacing="12">
+                        <widgets:LocalImageRenderWidget Grid.Column="0"
+                                                        Name="ImageRender"
+                                                        Width="72"
+                                                        Height="72"/>
+                        
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="PluginName"
+                                       Name="PluginNameText"
+                                       FontSize="22"></TextBlock>
+                            
+                            <StackPanel
+                                Margin="0,6,0,0"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                VerticalAlignment="Center">
+                                <StackPanel Spacing="2">
+                                    <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" />
+                                    <TextBlock Name="DownloadCountText" Text="114514" />
+                                </StackPanel>
+
+                                <Border
+                                    Background="Gray"
+                                    Height="24"
+                                    Width="1" />
+
+                                <StackPanel Spacing="2">
+                                    <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" />
+                                    <TextBlock Name="UpdataDateText" Text="1 天前" />
+                                </StackPanel>
+
+                                <Border
+                                    Background="Gray"
+                                    Height="24"
+                                    Width="1" />
+
+                                <StackPanel Spacing="2">
+                                    <onePointControls:FontIcon Glyph="&#xE716;" Opacity="0.5" />
+                                    <TextBlock Name="AuthorText" Text="By xxx" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="2"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Right">
+                            <HyperlinkButton Content="在 Gtihub 中查看"
+                                             HorizontalAlignment="Right"></HyperlinkButton>
+                        </StackPanel>
+                
+                        <StackPanel Grid.Column="2" 
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Bottom"
+                                    Spacing="8"
+                                    Height="32">
+                            <Button Padding="8"
+                                    Width="32">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="6">
+                                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                                               Glyph="&#xE74D;"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <Button Padding="8"
+                                    Classes="Accent">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="6">
+                                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                                               Glyph="&#xE896;"/>
+                                    <TextBlock VerticalAlignment="Center"
+                                               Text="安装此插件"></TextBlock>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </items:BorderCard>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <notice:LoadCard Grid.Row="0"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="LoadingCard"
+                         BigTitle="获取中"
+                         Message="正在获取插件信息"/>
+        
+        <Grid Grid.Row="1"
+              Margin="20,0,20,20">
+            <StackPanel Orientation="Horizontal"
+                        Opacity="0.6"
+                        VerticalAlignment="Center"
+                        Spacing="4">
+                <onePointControls:FontIcon VerticalAlignment="Center"
+                                           Glyph="&#xE73E;"/>
+                <TextBlock Text="信任的插件"
+                           VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

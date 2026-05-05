@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Pack.Market;
 using BedrockBoot.Models.Global;
 using Octokit;
+using Octokit.Internal;
 
 namespace BedrockBoot.Models.Pack.Plugin.Market;
 
@@ -37,13 +38,38 @@ public class MarketClient
         }
     }
 
-    public static async Task<Release> GetPluginRelease(MarketResponse.PluginInfo info)
+    public static async Task<(Repository Repository, IReadOnlyList<Release> Releases)> 
+        GetPluginRepositoryFullInfo(MarketResponse.PluginInfo info)
     {
         var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
         var owner = info.RepositoryOwner;
         var repo = info.RepositoryName;
-        var release = await github.Repository.Release.GetLatest(owner, repo);
+    
+        // 并行获取数据以提高性能
+        var repositoryTask = github.Repository.Get(owner, repo);
+        var releasesTask = github.Repository.Release.GetAll(owner, repo);
+    
+        await Task.WhenAll(repositoryTask, releasesTask);
+    
+        return (await repositoryTask, await releasesTask);
+    }
+    
+    public static async Task<string> GetReadmeHtml(string owner, string repo)
+    {
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.github.html");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "BedrockBoot");
         
-        return release;
+            var url = $"https://api.github.com/repos/{owner}/{repo}/readme";
+            var response = await httpClient.GetAsync(url);
+        
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+        
+            return null;
+        }
     }
 }

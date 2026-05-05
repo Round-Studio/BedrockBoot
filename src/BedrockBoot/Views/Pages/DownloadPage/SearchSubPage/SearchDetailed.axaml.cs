@@ -249,6 +249,7 @@ public partial class SearchDetailed : ISetting
                         item.OnClick = s =>
                         {
                             Console.WriteLine($@"View Plugin: {s}");
+                            GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin),$"插件详细信息：{plugin.PluginName}");
                         };
                         items.Add(item);
                     });

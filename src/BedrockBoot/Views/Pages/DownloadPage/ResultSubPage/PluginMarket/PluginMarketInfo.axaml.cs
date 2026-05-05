@@ -1,0 +1,73 @@
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+using BedrockBoot.Base.Entry.Pack.Market;
+using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Plugin.Market;
+
+namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.PluginMarket;
+
+public partial class PluginMarketInfo : UserControl
+{
+    private readonly MarketResponse.PluginInfo _info;
+
+    public PluginMarketInfo()
+    {
+        InitializeComponent();
+    }
+    
+    public PluginMarketInfo(MarketResponse.PluginInfo info) : this()
+    {
+        _info = info;
+        _ = UpdateUi();
+    }
+
+    public async Task UpdateUi()
+    {
+        try
+        {
+            ContentPanel.IsVisible = false;
+            LoadingCard.IsVisible = true;
+
+            PluginNameText.Text = _info.PluginName;
+            ImageRender.Update(_info.IconUrl);
+
+            var (repository, releases) = await MarketClient.GetPluginRepositoryFullInfo(_info);
+
+            var totalDownloads = releases.Sum(r => r.Assets.Sum(a => a.DownloadCount));
+            DownloadCountText.Text = totalDownloads.ToString();
+
+            UpdataDateText.Text = GetTimeAgo(repository.UpdatedAt);
+            AuthorText.Text = $"By {_info.Username}";
+
+            ContentPanel.IsVisible = true;
+            LoadingCard.IsVisible = false;
+
+            var html = await MarketClient.GetReadmeHtml(_info.RepositoryOwner, _info.RepositoryName);
+
+            var controls = HtmlToControlConverter.ConvertHtmlToControls(html);
+            foreach (var control in controls) ContentPanel.Children.Add(control);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    
+    public static string GetTimeAgo(DateTimeOffset publishedAt)
+    {
+        var timeSince = DateTimeOffset.Now - publishedAt;
+    
+        if (timeSince.TotalDays >= 1)
+            return $"{(int)timeSince.TotalDays} 天前";
+        else if (timeSince.TotalHours >= 1)
+            return $"{(int)timeSince.TotalHours} 小时前";
+        else if (timeSince.TotalMinutes >= 1)
+            return $"{(int)timeSince.TotalMinutes} 分钟前";
+        else
+            return "刚刚";
+    }
+}

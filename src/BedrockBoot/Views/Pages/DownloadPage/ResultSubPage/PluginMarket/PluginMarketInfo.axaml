@@ -75,6 +75,8 @@
                                     Spacing="8"
                                     Height="32">
                             <Button Padding="8"
+                                    Name="DeleteBtn"
+                                    Click="DeleteBtn_OnClick"
                                     Width="32">
                                 <StackPanel Orientation="Horizontal"
                                             Spacing="6">
@@ -84,6 +86,21 @@
                             </Button>
                             
                             <Button Padding="8"
+                                    Name="ReInstallBtn"
+                                    Click="ReInstallBtn_OnClick"
+                                    Classes="Accent">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="6">
+                                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                                               Glyph="&#xE72C;"/>
+                                    <TextBlock VerticalAlignment="Center"
+                                               Text="重新安装"></TextBlock>
+                                </StackPanel>
+                            </Button>
+                            
+                            <Button Padding="8"
+                                    Name="InstallBtn"
+                                    Click="InstallBtn_OnClick"
                                     Classes="Accent">
                                 <StackPanel Orientation="Horizontal"
                                             Spacing="6">

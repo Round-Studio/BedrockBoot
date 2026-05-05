@@ -1,18 +1,23 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Pack.Market;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Models.Pack.Plugin.Market;
+using Round.SDK.Entry;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.PluginMarket;
 
 public partial class PluginMarketInfo : UserControl
 {
     private readonly MarketResponse.PluginInfo _info;
+    private PackConfig _packConfig;
 
     public PluginMarketInfo()
     {
@@ -38,6 +43,18 @@ public partial class PluginMarketInfo : UserControl
             ImageRender.Update(_info.IconUrl);
 
             var (repository, releases) = await MarketClient.GetPluginRepositoryFullInfo(_info);
+            
+            bool installStatus = releases.FirstOrDefault().Assets.All(x =>
+            {
+                var file = x.BrowserDownloadUrl;
+                var fileName = Path.GetFileName(file);
+                
+                return PluginLoader.TryGetPluginConfig(fileName, out _packConfig);
+            });
+
+            InstallBtn.IsVisible = !installStatus;
+            ReInstallBtn.IsVisible = installStatus;
+            DeleteBtn.IsVisible = installStatus;
 
             var totalDownloads = releases.Sum(r => r.Assets.Sum(a => a.DownloadCount));
             DownloadCountText.Text = totalDownloads.ToString();
@@ -71,5 +88,21 @@ public partial class PluginMarketInfo : UserControl
             return $"{(int)timeSince.TotalMinutes} 分钟前";
         else
             return "刚刚";
+    }
+
+    private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ReInstallBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DeleteBtn_OnClick(sender, e);
+    }
+
+    private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        PluginLoader.Delete(_packConfig);
+        UpdateUi();
     }
 }

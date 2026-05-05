@@ -215,4 +215,24 @@ public class PluginLoader
             return false;
         }
     }
+
+    public static bool TryGetPluginConfig(string fileName,out PackConfig? config)
+    {
+        var installed = File.Exists(Path.Combine(PathsList.PluginPath, fileName)) ||
+                        File.Exists(Path.Combine(PathsList.PluginPath, $"{fileName}.disable"));
+
+        if (!installed)
+        {
+            config = null;
+            return false;
+        }
+
+        var conf = Plugins.Find(plugin =>
+            plugin.PackFile == Path.Combine(PathsList.PluginPath, fileName) ||
+            plugin.PackFile == Path.Combine(PathsList.PluginPath, $"{fileName}.disable"));
+        
+        config = conf;
+        
+        return installed;
+    }
 }

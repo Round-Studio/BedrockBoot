@@ -113,6 +113,8 @@
                         </StackPanel>
                     </Grid>
                 </items:BorderCard>
+                
+                <StackPanel Name="BodyPanel"></StackPanel>
             </StackPanel>
         </ScrollViewer>
         

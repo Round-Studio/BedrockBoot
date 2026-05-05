@@ -7,9 +7,12 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Pack.Market;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Models.Pack.Plugin.Market;
+using BedrockBoot.Views.TaskItem.Plugin;
+using Octokit;
 using Round.SDK.Entry;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.PluginMarket;
@@ -18,6 +21,7 @@ public partial class PluginMarketInfo : UserControl
 {
     private readonly MarketResponse.PluginInfo _info;
     private PackConfig _packConfig;
+    private Release _release;
 
     public PluginMarketInfo()
     {
@@ -36,6 +40,7 @@ public partial class PluginMarketInfo : UserControl
         {
             ContentPanel.IsVisible = false;
             LoadingCard.IsVisible = true;
+            BodyPanel.Children.Clear();
 
             RepoBtn.NavigateUri = new Uri(_info.RepositoryUrl);
 
@@ -51,6 +56,8 @@ public partial class PluginMarketInfo : UserControl
                 
                 return PluginLoader.TryGetPluginConfig(fileName, out _packConfig);
             });
+
+            _release = releases.FirstOrDefault();
 
             InstallBtn.IsVisible = !installStatus;
             ReInstallBtn.IsVisible = installStatus;
@@ -68,7 +75,7 @@ public partial class PluginMarketInfo : UserControl
             var html = await MarketClient.GetReadmeHtml(_info.RepositoryOwner, _info.RepositoryName);
 
             var controls = HtmlToControlConverter.ConvertHtmlToControls(html);
-            foreach (var control in controls) ContentPanel.Children.Add(control);
+            foreach (var control in controls) BodyPanel.Children.Add(control);
         }
         catch (Exception ex)
         {
@@ -92,12 +99,15 @@ public partial class PluginMarketInfo : UserControl
 
     private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        TaskDownloadPluginItem.Install(_release);
+        GlobalModel.MainWindow.CloseDraw();
     }
 
     private void ReInstallBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         DeleteBtn_OnClick(sender, e);
+        TaskDownloadPluginItem.Install(_release);
+        GlobalModel.MainWindow.CloseDraw();
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)

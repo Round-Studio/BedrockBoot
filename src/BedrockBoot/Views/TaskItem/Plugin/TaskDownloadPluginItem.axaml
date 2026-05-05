@@ -38,6 +38,7 @@
             <Button Grid.Column="2"
                     Classes="NoBorder"
                     Width="32" Height="32"
+                    IsVisible="False"
                     Name="CancelBtn"
                     Click="CancelButton_OnClick">
                 <onePointControls:FontIcon Glyph="&#xE711;"

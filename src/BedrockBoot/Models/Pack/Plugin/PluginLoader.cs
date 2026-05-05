@@ -43,7 +43,7 @@ public class PluginLoader
                 catch (Exception ex)
                 {
                     Console.WriteLine($@"加载插件失败: {file}, 错误: {ex.Message}");
-                    conf.IsEnable = false;
+                    conf.IsEnable = true;
                 }
             else if (file.EndsWith(".disable"))
                 conf.IsEnable = false;
@@ -72,7 +72,7 @@ public class PluginLoader
             var existing = Plugins.FirstOrDefault(p => p.PackName == conf.PackName);
             if (existing != null) Plugins.Remove(existing);
 
-            conf.IsEnable = false;
+            conf.IsEnable = true;
             Plugins.Add(conf);
 
             return true;

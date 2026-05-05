@@ -9,7 +9,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.PluginMarket.PluginMarketInfo">
     <Grid RowDefinitions="*,Auto"
-          Margin="0,0,0,20"
+          Margin="0,0,0,0"
           RowSpacing="8">
         <!--Margin:20-->
         <ScrollViewer Grid.Column="0"
@@ -64,7 +64,8 @@
                         <StackPanel Grid.Column="2"
                                     VerticalAlignment="Top"
                                     HorizontalAlignment="Right">
-                            <HyperlinkButton Content="在 Gtihub 中查看"
+                            <HyperlinkButton Content="在 Github 中查看"
+                                             Name="RepoBtn"
                                              HorizontalAlignment="Right"></HyperlinkButton>
                         </StackPanel>
                 

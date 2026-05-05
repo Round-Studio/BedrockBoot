@@ -32,6 +32,8 @@ public partial class PluginMarketInfo : UserControl
             ContentPanel.IsVisible = false;
             LoadingCard.IsVisible = true;
 
+            RepoBtn.NavigateUri = new Uri(_info.RepositoryUrl);
+
             PluginNameText.Text = _info.PluginName;
             ImageRender.Update(_info.IconUrl);
 

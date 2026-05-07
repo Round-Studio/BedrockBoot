@@ -155,6 +155,11 @@ package_appimage() {
     # 添加图标参数
     if [ -n "${ICON_PATH}" ] && [ -f "${ICON_PATH}" ]; then
         CMD="${CMD} --icon \"${ICON_PATH}\""
+        MIME=$(file --mime-type -b "${ICON_PATH}")
+        if [[ "${MIME}" != "image/png" ]]; then
+            print_error "不受支持的图标格式"
+        fi
+        cp "${ICON_PATH}" "${PUBLISH_DIR_ABS}/bedrockboot.png"
         print_info "使用自定义图标: ${ICON_PATH}"
     fi
     

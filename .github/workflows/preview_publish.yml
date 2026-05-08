@@ -80,7 +80,7 @@ jobs:
       
       - name: Build Linux
         run: |
-          ./build-appimage.sh ./src/BedrockBoot/BedrockBoot.csproj "BedrockBoot" -version ${{ needs.version.outputs.v }}
+          ./build-appimage.sh ./src/BedrockBoot/BedrockBoot.csproj "BedrockBoot" ./assets/BedrockBoot.Icon.512x.png -version ${{ needs.version.outputs.v }}
       
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4

@@ -6,18 +6,19 @@
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.Control.Items.ContributorItem">
-    <items:BorderCard Width="120"
-                      Height="150">
+    <items:BorderCard Width="144"
+                      Height="180">
         <Grid RowDefinitions="*,Auto">
             <widgets:LocalImageRenderWidget Grid.Row="0"
                                             Name="IconBox" />
 
             <StackPanel Grid.Row="1"
+                        Spacing="4"
                         Margin="0,3,0,0">
-                <TextBlock Text="Name"
-                           FontSize="13"
-                           HorizontalAlignment="Center"
-                           Name="NameText" />
+                <HyperlinkButton Content="Name"
+                                 FontSize="13"
+                                 HorizontalAlignment="Center"
+                                 Name="NameText" />
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center">
                     <TextBlock Text="{DynamicResource About.Contributor.Count.Prefix}"

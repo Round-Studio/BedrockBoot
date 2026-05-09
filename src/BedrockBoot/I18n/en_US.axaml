@@ -750,7 +750,7 @@
 
     <x:String x:Key="About.Contributor.Title">Contributors</x:String>
     <x:String x:Key="About.Contributor.Description">Here are the creators who have contributed to BedrockBoot!</x:String>
-    <x:String x:Key="About.Contributor.Count.Prefix">Successfully contributed </x:String>
+    <x:String x:Key="About.Contributor.Count.Prefix">Contributed </x:String>
     <x:String x:Key="About.Contributor.Count.Suffix"> times</x:String>
 
     <x:String x:Key="AboutPage.Title">About Us</x:String>

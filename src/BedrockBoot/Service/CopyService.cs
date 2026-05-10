@@ -45,6 +45,8 @@ public class CopyService
         try
         {
             var result = await GetClipboardContentType(clipboard);
+            
+            Console.WriteLine($@"读取剪切板：{result.ContentType}");
 
             switch (result.ContentType)
             {
@@ -59,13 +61,12 @@ public class CopyService
 
                 case ClipboardContentType.None:
                 default:
-                    // 可选：添加一个“剪切板无有效内容”的轻量提示
                     break;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[CopyService] 调度异常: {ex.Message}");
+            Console.WriteLine($@"调度异常: {ex.Message}");
         }
     }
 

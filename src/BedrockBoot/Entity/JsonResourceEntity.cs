@@ -9,7 +9,7 @@ namespace BedrockBoot.Entity;
 
 public class JsonResourceEntity
 {
-    public async Task<string> ReadJsonResourceAsync(string uri)
+    public async Task<string> ReadTextResourceAsync(string uri)
     {
         using var stream = AssetLoader.Open(new Uri(uri));
         using var reader = new StreamReader(stream, Encoding.UTF8);

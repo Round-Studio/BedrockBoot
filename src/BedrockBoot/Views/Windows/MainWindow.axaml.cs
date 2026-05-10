@@ -21,6 +21,7 @@ using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Service;
+using BedrockBoot.Service.WebServer;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
@@ -40,6 +41,7 @@ public partial class MainWindow : BedrockBootWindow
 
         GlobalModel.MainWindow = this;
         InitializeComponent();
+        
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         UpdateBack();
@@ -414,4 +416,18 @@ public partial class MainWindow : BedrockBootWindow
     }
 
     #endregion
+
+    private void Button_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var server = new WebServer($"http://127.0.0.1:{new Random().Next(10000, 50000)}/");
+
+        server.RegisterRoute("GET", "/loginFinish", context =>
+        {
+            context.SendResponse(
+                new JsonResourceEntity().ReadTextResourceAsync("avares://BedrockBoot/Assets/Web/LoginFinish.html")
+                    .Result, "text/html");
+        });
+
+        server.Start();
+    }
 }

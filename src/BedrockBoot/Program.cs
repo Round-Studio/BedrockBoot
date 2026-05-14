@@ -121,7 +121,7 @@ internal sealed class Program
             {
                 case "-update":
                     Console.WriteLine(@"触发更新，本次启动将不会拉起窗体。");
-                    AppUpdater.StartUpdateFromOldVersion(args[args.FindIndex(x => x == "-update") + 1]);
+                    AppUpdater.StartUpdateFromDownloadedFile(args[args.FindIndex(x => x == "-update") + 1]);
                     return true;
 
                 case "-shell":

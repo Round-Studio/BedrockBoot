@@ -382,13 +382,30 @@ public static class AppUpdater
         if (!IsLinux || string.IsNullOrWhiteSpace(filePath))
             return;
 
-        var chmodProcess = Process.Start(new ProcessStartInfo
+        try
         {
-            FileName = "chmod",
-            Arguments = $"+x \"{filePath}\"",
-            UseShellExecute = false
-        });
-        chmodProcess?.WaitForExit();
+            File.SetUnixFileMode(
+                filePath,
+                UnixFileMode.UserRead
+                | UnixFileMode.UserWrite
+                | UnixFileMode.UserExecute
+                | UnixFileMode.GroupRead
+                | UnixFileMode.GroupExecute
+                | UnixFileMode.OtherRead
+                | UnixFileMode.OtherExecute);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"设置可执行权限失败 {filePath}: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    ///     给当前平台上的更新产物补齐执行权限。
+    /// </summary>
+    public static void EnsureExecutableForCurrentPlatform(string filePath)
+    {
+        EnsureExecutableBit(filePath);
     }
 
     private static void RestoreBackupIfNeeded(string targetPath, string backupPath)

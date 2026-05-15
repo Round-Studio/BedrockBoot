@@ -86,6 +86,8 @@ public partial class TaskDownloadUpdateFileItem : UserControl
             if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))
                 throw new FileNotFoundException("无法定位当前程序，不能启动更新引导流程", _currentExecutablePath);
 
+            AppUpdater.EnsureExecutableForCurrentPlatform(downloadPath);
+
             var startInfo = new ProcessStartInfo
             {
                 FileName = _currentExecutablePath,

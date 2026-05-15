@@ -102,13 +102,14 @@ public partial class MainWindow : BedrockBootWindow
 
     private void InitializeWindowBounds()
     {
-        var winInfo = Core.Global.GlobalModel.Config.Data.WindowInfo;
-        if (winInfo.X != -1 && winInfo.Y != -1)
+        if (Core.Global.GlobalModel.Config.Data.WindowInfo.X != -1 &&
+            Core.Global.GlobalModel.Config.Data.WindowInfo.Y != -1)
         {
             WindowStartupLocation = WindowStartupLocation.Manual;
-            Position = new PixelPoint(winInfo.X, winInfo.Y);
-            Width = winInfo.Width;
-            Height = winInfo.Height;
+            Position = new PixelPoint(Core.Global.GlobalModel.Config.Data.WindowInfo.X,
+                Core.Global.GlobalModel.Config.Data.WindowInfo.Y);
+            Width = Core.Global.GlobalModel.Config.Data.WindowInfo.Width;
+            Height = Core.Global.GlobalModel.Config.Data.WindowInfo.Height;
         }
 
 #if DEBUG

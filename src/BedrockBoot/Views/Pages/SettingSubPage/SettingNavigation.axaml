@@ -88,10 +88,6 @@
                            TextWrapping="WrapWithOverflow"
                            Text="{DynamicResource Settings.Nav.Tips.Game.Path}" />
 
-                <TextBlock Opacity="0.6"
-                           TextWrapping="WrapWithOverflow"
-                           Text="{DynamicResource Settings.Nav.Tips.Game.Isolation}" />
-
                 <HyperlinkButton Content="{DynamicResource Settings.Nav.Action.FAQ}"
                                  NavigateUri="https://docs.roundstudio.top/docs/product/bb/commonQuestion" />
             </StackPanel>

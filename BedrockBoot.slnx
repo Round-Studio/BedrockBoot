@@ -9,6 +9,7 @@
     <Project Path="src/BedrockBoot.Inject/BedrockBoot.Inject.csproj" />
     <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
     <Project Path="src/BedrockBoot.LeviLamina/BedrockBoot.LeviLamina.csproj" />
+    <Project Path="src/BedrockBoot.Microsoft/BedrockBoot.Microsoft.csproj" />
     <Project Path="src/BedrockBoot.Netease/BedrockBoot.Netease.csproj" />
     <Project Path="src/PreloadCpp/PreloadCpp.vcxproj">
       <Platform Solution="Debug|Any CPU" Project="Win32" />

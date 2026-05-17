@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -9,6 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
-      <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
     </ItemGroup>
+
 </Project>

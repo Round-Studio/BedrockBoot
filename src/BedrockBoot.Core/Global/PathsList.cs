@@ -7,8 +7,10 @@ public class PathsList
     public static readonly string RootConfigPath =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RoundStudio",
             "BedrockBoot2");
+    public static readonly string ConfigFolderPath = Path.Combine(RootConfigPath, "BedrockBoot.Config");
 
-    public static readonly string ConfigPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "Config.json");
+    public static readonly string ConfigPath = Path.Combine(ConfigFolderPath, "Config.json");
+    public static readonly string MsAccountPath = Path.Combine(ConfigFolderPath, "account", "MsAccount.json");
     public static readonly string ProtonConfigPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "ProtonConfig.json");
     public static readonly string HistoryPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "SearchHistory.json");
     public static readonly string LogPath = Path.Combine(RootConfigPath, "BedrockBoot.Log");

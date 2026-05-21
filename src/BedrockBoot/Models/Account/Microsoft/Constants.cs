@@ -10,6 +10,5 @@ public class Constants
 
     public const string PeopleHubEndpoint = "https://peoplehub.xboxlive.com/users/xuid({0})/people/social";
 
-    public const string AuthResultFile = "auth_result.json";
     public const string FriendsResponseFile = "friends_response.json";
 }

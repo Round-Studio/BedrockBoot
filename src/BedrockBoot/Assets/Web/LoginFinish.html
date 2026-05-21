@@ -5,15 +5,15 @@
     <title>BedrockBoot 授权登录成功</title>
     <style>
         :root {
-            --bg-window: #161616;
-            --primary-foreground: #FFFFFF;
-            --primary-disabled: #858585;
-            --primary-border: #313131;
-            --primary-bg: #242424;
-            --accent-border: #C97612;
-            --accent-bg: #FFBB00;
-            --accent-bg-over: #6E3D0E;
-            
+            --bg-window: {BackgroundBrush};
+            --primary-foreground: {PrimaryForegroundBrush};
+            --primary-disabled: {PrimaryDisabledForegroundBrush};
+            --primary-border: {PrimaryDisabled2ForegroundBrush};
+            --primary-bg: {PrimaryBorderBrush};
+            --accent-border: {AccentBorderBrush};
+            --accent-bg: {AccentBackgroundBrush};
+            --accent-bg-over: {AccentBackgroundOverBrush};
+
             --curve-expo: cubic-bezier(0.19, 1, 0.22, 1);
             --curve-back: cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -44,9 +44,13 @@
             position: absolute;
             border-radius: 50%;
             filter: blur(140px);
-            opacity: 0.15;
-            mix-blend-mode: screen;
+            opacity: 0.12;
+            mix-blend-mode: multiply;
             pointer-events: none;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .halo { mix-blend-mode: screen; opacity: 0.15; }
         }
 
         .halo-1 {
@@ -90,15 +94,26 @@
             position: relative;
             padding: 40px 60px;
             width: 440px;
-            border-radius: 6px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 10;
             backdrop-filter: blur(30px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            background: rgba(36, 36, 36, 0.4);
-            border: 1px solid rgba(255,255,255,0.08);
+
+            background: mix(var(--primary-foreground), var(--bg-window), 7%);
+            background-color: var(--primary-bg);
+            background: color-mix(in srgb, var(--primary-foreground) 8%, transparent);
+
+            border: 1px solid color-mix(in srgb, var(--primary-foreground) 10%, transparent);
+        }
+
+        @supports not (background: color-mix(in srgb, red, blue)) {
+            .border-card {
+                background: rgba(128, 128, 128, 0.1);
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+                border: 1px solid rgba(128, 128, 128, 0.2);
+            }
         }
 
         .icon-box {
@@ -107,7 +122,12 @@
             margin-bottom: 25px;
         }
         .medal-svg { fill: var(--accent-bg); animation: rotate-inf 25s linear infinite; }
-        .check-svg { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); fill: #000; }
+
+        .check-svg {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            fill: var(--bg-window);
+        }
 
         .line-text-block { position: relative; margin: 5px; padding: 0 5px; cursor: default; }
         .line-border {
@@ -117,7 +137,8 @@
             z-index: 0;
         }
         .text-layer { position: relative; font-size: 30px; font-weight: 700; z-index: 1; transition: opacity 0.3s; }
-        .text-white { position: absolute; top: 0; left: 5px; color: white; opacity: 0; }
+
+        .text-white { position: absolute; top: 0; left: 5px; color: var(--bg-window); opacity: 0; }
 
         .line-text-block:hover .line-border { height: 100%; }
         .line-text-block:hover .text-main { opacity: 0; }
@@ -126,12 +147,22 @@
         .description { font-size: 14px; color: var(--primary-disabled); text-align: center; margin: 15px 0 35px; line-height: 1.6; }
 
         .btn-accent {
-            position: relative; background: var(--accent-bg);
-            border: 1px solid var(--accent-border); color: #000;
-            font-size: 14px; font-weight: 700; padding: 12px 50px;
-            border-radius: 6px; cursor: pointer; transition: all 0.2s;
+            position: relative;
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            color: var(--bg-window);
+            font-size: 14px;
+            font-weight: 700;
+            padding: 12px 50px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .btn-accent:hover { border-bottom-width: 2px; transform: translateY(-1px); }
+        .btn-accent:hover {
+            background: var(--accent-bg-over);
+            border-bottom-width: 2px;
+            transform: translateY(-1px);
+        }
         .btn-accent:active { transform: translateY(1px); }
 
         @keyframes rotate-inf { from {transform:rotate(0)} to {transform:rotate(360deg)} }
@@ -139,34 +170,34 @@
 </head>
 <body>
 
-    <div class="oobe-bg">
-        <div class="halo halo-1"></div>
-        <div class="halo halo-2"></div>
-        <div class="halo halo-3"></div>
+<div class="oobe-bg">
+    <div class="halo halo-1"></div>
+    <div class="halo halo-2"></div>
+    <div class="halo halo-3"></div>
+</div>
+
+<div class="border-card">
+    <div class="icon-box">
+        <svg class="medal-svg" viewBox="0 0 120 120">
+            <path d="M107.332 72.938c-1.798 5.557 4.564 15.334 1.21 19.96-3.387 4.674-14.646 1.605-19.298 5.003-4.61 3.368-5.163 15.074-10.695 16.878-5.344 1.743-12.628-7.35-18.545-7.35-5.922 0-13.206 9.088-18.543 7.345-5.538-1.804-6.09-13.515-10.696-16.877-4.657-3.398-15.91-.334-19.297-5.002-3.356-4.627 3.006-14.404 1.208-19.962C10.93 67.576 0 63.442 0 57.5c0-5.943 10.93-10.076 12.668-15.438 1.798-5.557-4.564-15.334-1.21-19.96 3.387-4.674 14.646-1.605 19.298-5.003C35.366 13.73 35.92 2.025 41.45.22c5.344-1.743 12.628 7.35 18.545 7.35 5.922 0 13.206-9.088 18.543-7.345 5.538 1.804 6.09 13.515 10.696 16.877 4.657 3.398 15.91.334 19.297 5.002 3.356 4.627-3.006 14.404-1.208 19.962C109.07 47.424 120 51.562 120 57.5c0 5.943-10.93 10.076-12.668 15.438z"></path>
+        </svg>
+        <svg class="check-svg" width="32" height="32" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+        </svg>
     </div>
 
-    <div class="border-card">
-        <div class="icon-box">
-            <svg class="medal-svg" viewBox="0 0 120 120">
-                <path d="M107.332 72.938c-1.798 5.557 4.564 15.334 1.21 19.96-3.387 4.674-14.646 1.605-19.298 5.003-4.61 3.368-5.163 15.074-10.695 16.878-5.344 1.743-12.628-7.35-18.545-7.35-5.922 0-13.206 9.088-18.543 7.345-5.538-1.804-6.09-13.515-10.696-16.877-4.657-3.398-15.91-.334-19.297-5.002-3.356-4.627 3.006-14.404 1.208-19.962C10.93 67.576 0 63.442 0 57.5c0-5.943 10.93-10.076 12.668-15.438 1.798-5.557-4.564-15.334-1.21-19.96 3.387-4.674 14.646-1.605 19.298-5.003C35.366 13.73 35.92 2.025 41.45.22c5.344-1.743 12.628 7.35 18.545 7.35 5.922 0 13.206-9.088 18.543-7.345 5.538 1.804 6.09 13.515 10.696 16.877 4.657 3.398 15.91.334 19.297 5.002 3.356 4.627-3.006 14.404-1.208 19.962C109.07 47.424 120 51.562 120 57.5c0 5.943-10.93 10.076-12.668 15.438z"></path>
-            </svg>
-            <svg class="check-svg" width="32" height="32" viewBox="0 0 24 24">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
-            </svg>
-        </div>
-
-        <div class="line-text-block">
-            <div class="line-border"></div>
-            <div class="text-layer text-main">授权成功</div>
-            <div class="text-layer text-white">授权成功</div>
-        </div>
-
-        <p class="description">
-            BedrockBoot 已获取您账户的登录令牌<br>现在可以关闭该页面<br><br>回到 BedrockBoot 以继续
-        </p>
-
-        <button class="btn-accent" onclick="window.close()">我知道了</button>
+    <div class="line-text-block">
+        <div class="line-border"></div>
+        <div class="text-layer text-main">授权成功</div>
+        <div class="text-layer text-white">授权成功</div>
     </div>
+
+    <p class="description">
+        BedrockBoot 已获取您账户的登录令牌<br>现在可以关闭该页面<br><br>回到 BedrockBoot 以继续
+    </p>
+
+    <button class="btn-accent" onclick="window.close()">我知道了</button>
+</div>
 
 </body>
 </html>

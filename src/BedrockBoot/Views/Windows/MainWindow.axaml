@@ -74,6 +74,16 @@
             <Button Classes="NoBorder"
                     Height="32"
                     Padding="10,0"
+                    Name="LoginBtn"
+                    Click="LoginBtn_OnClick">
+                <onePointControls:FontIcon Glyph="&#xEB55;"
+                                           FontSize="12"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+            </Button>
+            <Button Classes="NoBorder"
+                    Height="32"
+                    Padding="10,0"
                     Click="TaskBtn_OnClick"
                     Name="TaskBtn">
                 <StackPanel Orientation="Horizontal"

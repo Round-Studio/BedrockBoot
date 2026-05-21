@@ -73,15 +73,15 @@ public class XboxAuthClient
                         var error = JsonSerializer.Deserialize<XboxAuthEntry.XboxErrorResponse?>(responseBody);
                         if (error?.XErr == 2148916233L)
                         {
-                            Console.WriteLine("错误: 该帐户已被限制访问 Xbox Live 功能");
+                            Console.WriteLine(@"错误: 该帐户已被限制访问 Xbox Live 功能");
                         }
                         else if (error?.XErr == 2148916238L)
                         {
-                            Console.WriteLine("错误: 该帐户尚未通过年龄验证");
+                            Console.WriteLine(@"错误: 该帐户尚未通过年龄验证");
                         }
                         else
                         {
-                            Console.WriteLine($"XSTS 错误代码: {error?.XErr}");
+                            Console.WriteLine($@"XSTS 错误代码: {error?.XErr}");
                         }
                     }
                     catch (Exception)

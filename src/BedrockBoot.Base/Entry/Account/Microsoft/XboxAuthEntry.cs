@@ -139,4 +139,22 @@ public class XboxAuthEntry
     }
 
     #endregion
+    
+    public class XboxProfileResponse
+    {
+        public ProfileUser[] ProfileUsers { get; set; }
+    }
+
+    public class ProfileUser
+    {
+        public string Id { get; set; }
+        public string HostId { get; set; }
+        public ProfileSetting[] Settings { get; set; }
+    }
+
+    public class ProfileSetting
+    {
+        public string Id { get; set; }
+        public string Value { get; set; }
+    }
 }

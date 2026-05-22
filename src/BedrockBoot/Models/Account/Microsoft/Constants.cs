@@ -9,6 +9,5 @@ public class Constants
     public const string XstsAuthEndpoint = "https://xsts.auth.xboxlive.com/xsts/authorize";
 
     public const string PeopleHubEndpoint = "https://peoplehub.xboxlive.com/users/xuid({0})/people/social";
-
-    public const string FriendsResponseFile = "friends_response.json";
+    public const string ProfileEndpoint = "https://profile.xboxlive.com/users/xuid({0})/profile/settings?settings=Gamertag,GameDisplayPicRaw";
 }

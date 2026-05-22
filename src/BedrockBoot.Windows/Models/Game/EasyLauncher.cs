@@ -72,6 +72,18 @@ public class EasyLauncher
             };
             await CoreGlobal.BedrockCore.InitAsync();
         }
+        
+        Console.WriteLine(@"开始检测 GameService 安装状态");
+
+        var gameServiceInstallStatue = IsGamingServicesInstalled();
+        Console.WriteLine($@"GameService 安装状态：{gameServiceInstallStatue}");
+
+        if (!gameServiceInstallStatue)
+        {
+            LaunchCompleted?.Invoke();
+            GameServiceNotice.UnInstallGameService();
+            return;
+        }
 
         _core = new ModsCore(VersionInfo);
 
@@ -189,6 +201,33 @@ public class EasyLauncher
                 _gameplayStopwatch.Stop();
                 
             LaunchCompleted?.Invoke();
+        }
+    }
+    
+    public static bool IsGamingServicesInstalled()
+    {
+        try
+        {
+            using (var process = new Process())
+            {
+                process.StartInfo.FileName = "powershell.exe";
+                
+                process.StartInfo.Arguments = "-NoProfile -Command \"Get-AppxPackage Microsoft.GamingServices\"";
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = true;
+            
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                return output.Contains("Microsoft.GamingServices");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"检测失败: {ex.StackTrace}");
+            return false;
         }
     }
 }

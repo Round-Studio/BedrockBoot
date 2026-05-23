@@ -31,7 +31,10 @@
                        FontSize="16"
                        FontWeight="Bold"></TextBlock>
             
-            <TextBlock Text="感谢您使用 BedrockBoot，当前版本的 BedrockBoot 为 LTS 长期维护版本、"
+            <TextBlock Text="感谢您使用 BedrockBoot 2.0，当前 BedrockBoot 2.0 为 LTS 长期维护版本。"
+                       Opacity="0.6"></TextBlock>
+            
+            <TextBlock Text="以下将 BedrockBoot 2.0 简称为 BedrockBoot。"
                        Opacity="0.6"></TextBlock>
             
             <TextBlock Text="跨平台版本支持"

@@ -41,13 +41,23 @@ public static class AppUpdater
                         Environment.Exit(0);
                     }
                     break;
-                    
-                // ===== 兼容旧版本的 -update 参数 =====
-                case "-update":
+                
+                // 新版更新参数
+                case "-updatev2":
                     if (TryGetArgument(args, i + 1, out var downloadedFilePath))
                     {
-                        Console.WriteLine($@"[AppUpdater] 检测到旧版本更新调用，使用新版更新流程处理: {downloadedFilePath}");
+                        Console.WriteLine($@"[AppUpdater] 检测到新版更新调用 (v2)，使用新文件: {downloadedFilePath}");
                         StartUpdateFromDownloadedFile(downloadedFilePath);
+                        Environment.Exit(0);
+                    }
+                    break;
+                
+                // 兼容旧版更新参数 - 仅用于旧版程序调用，新版程序自身不会使用
+                case "-update":
+                    if (TryGetArgument(args, i + 1, out var oldVersionPath))
+                    {
+                        Console.WriteLine($@"[AppUpdater] 检测到旧版更新调用 (legacy)，待更新旧版: {oldVersionPath}");
+                        StartUpdateFromOldVersion(oldVersionPath);
                         Environment.Exit(0);
                     }
                     break;

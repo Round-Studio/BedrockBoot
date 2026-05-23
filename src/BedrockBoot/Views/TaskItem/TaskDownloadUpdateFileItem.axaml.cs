@@ -88,13 +88,14 @@ public partial class TaskDownloadUpdateFileItem : UserControl
 
             AppUpdater.EnsureExecutableForCurrentPlatform(downloadPath);
 
+            // 下载完成后，启动新版本时使用 -updatev2 参数
             var startInfo = new ProcessStartInfo
             {
                 FileName = _currentExecutablePath,
                 UseShellExecute = false
             };
-            startInfo.ArgumentList.Add("-update");
-            startInfo.ArgumentList.Add(downloadPath);
+            startInfo.ArgumentList.Add("-updatev2");
+            startInfo.ArgumentList.Add(downloadPath);  // 参数是新文件路径
 
             Process.Start(startInfo);
 

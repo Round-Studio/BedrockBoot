@@ -16,6 +16,7 @@ public class VersionHelper
     private static List<BuildInfo> _versions = null;
     private static readonly string CacheFilePath = Path.Combine(PathsList.TempPath, "version_cache.json");
     private static readonly TimeSpan CacheMaxAge = TimeSpan.FromHours(24); // 缓存24小时有效期
+    private static readonly int MaxRetryCount = 3; // 最大重试次数
     
     static VersionHelper()
     {
@@ -97,56 +98,116 @@ public class VersionHelper
         // 如果内存中有缓存且不强制刷新，直接返回
         if (!forceRefresh && _versions != null) return _versions;
         
-        // 尝试从文件缓存加载
-        if (!forceRefresh && TryLoadFromCache(out var cachedVersions1))
+        // 尝试从文件缓存加载（未过期）
+        if (!forceRefresh && TryLoadFromCache(out var cachedVersions, ignoreExpiry: false))
         {
-            _versions = cachedVersions1;
+            _versions = cachedVersions;
             return _versions;
         }
         
-        // 从网络获取
-        try
+        // 从网络获取（带重试机制）
+        var versions = FetchVersionsWithRetry();
+        if (versions != null && versions.Count > 0)
         {
-            var versions = FetchVersionsFromNetwork();
-            if (versions != null && versions.Count > 0)
-            {
-                _versions = versions;
-                SaveToCache(versions);
-                return _versions;
-            }
-            
-            // 如果网络获取失败，尝试使用过期缓存作为后备
-            if (TryLoadFromCache(out var fallbackVersions, ignoreExpiry: true))
-            {
-                Console.WriteLine(@"网络获取失败，使用过期缓存数据");
-                _versions = fallbackVersions;
-                return _versions;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"获取版本列表失败: {ex.Message}");
-            
-            // 网络异常时尝试使用缓存（包括过期缓存）
-            if (TryLoadFromCache(out var cachedVersions, ignoreExpiry: true))
-            {
-                Console.WriteLine(@"使用缓存数据作为后备");
-                _versions = cachedVersions;
-                return _versions;
-            }
+            _versions = versions;
+            SaveToCache(versions);
+            return _versions;
         }
         
+        // 网络获取失败，优先读取本地缓存（忽略过期）
+        if (TryLoadFromCache(out var fallbackVersions, ignoreExpiry: true))
+        {
+            Console.WriteLine(@"网络获取失败，使用本地缓存数据（可能已过期）");
+            _versions = fallbackVersions;
+            return _versions;
+        }
+        
+        // 没有任何可用数据
+        Console.WriteLine(@"无法获取版本列表：网络请求失败且无本地缓存");
         _versions = new List<BuildInfo>();
         return _versions;
     }
     
-    private static List<BuildInfo> FetchVersionsFromNetwork()
+    /// <summary>
+    /// 带重试机制的网络获取
+    /// </summary>
+    private static List<BuildInfo> FetchVersionsWithRetry()
     {
-        var url = GetVersionSourceUrl();
-        Console.WriteLine($@"从网络获取版本列表: {url}");
+        // 首先尝试当前配置的源
+        var currentUrl = GetVersionSourceUrl();
+        var result = TryFetchFromUrl(currentUrl, 0);
+        if (result != null) return result;
         
-        var jsonString = _httpClient.GetStringAsync(url).Result;
+        // 如果当前源失败且不是源[0]，尝试源[0]
+        var currentSourceIndex = GetCurrentSourceIndex();
+        if (currentSourceIndex != 0)
+        {
+            Console.WriteLine($@"当前源 [{currentSourceIndex}] 获取失败，尝试使用源 [0] 重试");
+            var defaultUrl = GetVersionSourceUrl(0);
+            result = TryFetchFromUrl(defaultUrl, 0);
+            if (result != null) return result;
+        }
         
+        // 尝试其他所有可用的源
+        for (int i = 0; i < SourceList.VersionDataSources.Count; i++)
+        {
+            // 跳过已经尝试过的源
+            if (i == currentSourceIndex || (currentSourceIndex != 0 && i == 0)) continue;
+            
+            Console.WriteLine($@"尝试使用备用源 [{i}]");
+            var url = GetVersionSourceUrl(i);
+            result = TryFetchFromUrl(url, i);
+            if (result != null) return result;
+        }
+        
+        return null;
+    }
+    
+    /// <summary>
+    /// 尝试从指定URL获取版本信息（带重试）
+    /// </summary>
+    private static List<BuildInfo> TryFetchFromUrl(string url, int sourceIndex)
+    {
+        for (int retry = 0; retry < MaxRetryCount; retry++)
+        {
+            try
+            {
+                if (retry > 0)
+                {
+                    Console.WriteLine($@"第 {retry + 1} 次重试获取版本列表...");
+                    // 重试前等待一段时间
+                    System.Threading.Thread.Sleep(1000 * retry);
+                }
+                
+                Console.WriteLine($@"从网络获取版本列表: {url}");
+                var jsonString = _httpClient.GetStringAsync(url).Result;
+                
+                var versions = ParseVersionJson(jsonString);
+                if (versions != null && versions.Count > 0)
+                {
+                    Console.WriteLine($@"成功获取 {versions.Count} 个版本");
+                    return versions;
+                }
+                
+                Console.WriteLine(@"获取到的版本列表为空");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"从 {url} 获取版本失败 (尝试 {retry + 1}/{MaxRetryCount}): {ex.Message}");
+                
+                if (retry == MaxRetryCount - 1)
+                {
+                    Console.WriteLine($@"已达到最大重试次数，放弃该源");
+                    return null;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    private static List<BuildInfo> ParseVersionJson(string jsonString)
+    {
         using var document = JsonDocument.Parse(jsonString);
         var root = document.RootElement;
         
@@ -241,6 +302,7 @@ public class VersionHelper
         {
             if (!File.Exists(CacheFilePath))
             {
+                Console.WriteLine(@"缓存文件不存在");
                 return false;
             }
             
@@ -249,6 +311,7 @@ public class VersionHelper
             
             if (cache == null || cache.Versions == null || cache.Versions.Count == 0)
             {
+                Console.WriteLine(@"缓存数据为空");
                 return false;
             }
             
@@ -262,10 +325,15 @@ public class VersionHelper
                     return false;
                 }
             }
+            else
+            {
+                var cacheAge = DateTime.Now - cache.CacheTime;
+                Console.WriteLine($@"使用缓存数据（已过期 {cacheAge.TotalHours:F1} 小时，作为后备方案）");
+            }
             
             // 验证缓存使用的数据源是否与当前配置一致
             var currentSourceIndex = GetCurrentSourceIndex();
-            if (cache.VersionSourceIndex != currentSourceIndex)
+            if (cache.VersionSourceIndex != currentSourceIndex && !ignoreExpiry)
             {
                 Console.WriteLine(@"缓存的数据源已更改，将重新获取");
                 return false;
@@ -278,7 +346,8 @@ public class VersionHelper
         catch (Exception ex)
         {
             Console.WriteLine($@"加载缓存失败: {ex.Message}");
-            ClearCache();
+            // 缓存文件损坏时清除它
+            try { ClearCache(); } catch { }
             return false;
         }
     }
@@ -330,19 +399,17 @@ public class VersionHelper
         return 0;
     }
     
-    private static string GetVersionSourceUrl()
+    private static string GetVersionSourceUrl(int? sourceIndex = null)
     {
-        // 从配置获取 URL，如果没有配置则使用默认
-        if (GlobalModel.Config != null && 
-            GlobalModel.Config.Data != null && 
-            GlobalModel.Config.Data.VersionSourceIndex >= 0 &&
-            GlobalModel.Config.Data.VersionSourceIndex < SourceList.VersionDataSources.Count)
+        var index = sourceIndex ?? GetCurrentSourceIndex();
+        
+        // 确保索引有效
+        if (index < 0 || index >= SourceList.VersionDataSources.Count)
         {
-            return SourceList.VersionDataSources.ToList()[GlobalModel.Config.Data.VersionSourceIndex].Value;
+            index = 0;
         }
-
-        GlobalModel.Config.Data.VersionSourceIndex = 0;
-        GlobalModel.Config.Save();
-        return GetVersionSourceUrl();
+        
+        var sources = SourceList.VersionDataSources.ToList();
+        return sources[index].Value;
     }
 }

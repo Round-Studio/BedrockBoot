@@ -33,8 +33,8 @@ public static class GameInfoHelper
                              !string.IsNullOrEmpty(config.Info.Version))
             .ToList();
         
-        result.ForEach(config => Console.WriteLine($"Read {config.VersionPath}"));
-        Console.WriteLine($"共获取到 {result.Count} 个实例");
+        result.ForEach(config => Console.WriteLine($@"Read {config.VersionPath}"));
+        Console.WriteLine($@"共获取到 {result.Count} 个实例");
 
         return result;
     }
@@ -52,7 +52,7 @@ public static class GameInfoHelper
     /// </summary>
     public static VersionConfig GetVersionConfig(string gamePath)
     {
-        Console.WriteLine($"获取实例配置：{gamePath}");
+        Console.WriteLine($@"获取实例配置：{gamePath}");
         var configDir = Path.Combine(gamePath, ConfigSubPath);
         var configJsonPath = Path.Combine(configDir, ConfigFileName);
         
@@ -110,7 +110,7 @@ public static class GameInfoHelper
     /// </summary>
     public static string GetBodyFile(string gamePath)
     {
-        Console.WriteLine($"获取实例主文件：{gamePath}");
+        Console.WriteLine($@"获取实例主文件：{gamePath}");
         // 仅搜索顶级目录，避免递归产生的性能消耗
         var exeFiles = Directory.EnumerateFiles(gamePath, "Minecraft*.exe")
                                 .ToList();
@@ -125,7 +125,7 @@ public static class GameInfoHelper
                 $"请清理目录以防潜在风险。\n路径：{gamePath}");
         }
 
-        Console.WriteLine($"已获取主文件：{exeFiles[0]}");
+        Console.WriteLine($@"已获取主文件：{exeFiles[0]}");
         
         return Path.GetFileName(exeFiles[0]);
     }
@@ -173,7 +173,7 @@ public static class GameInfoHelper
 
     public static void SaveVersionConfig(VersionConfig config)
     {
-        Console.WriteLine($"保存版本配置：{config.VersionPath}");
+        Console.WriteLine($@"保存版本配置：{config.VersionPath}");
         if (config == null) return;
 
         var configDir = Path.Combine(config.VersionPath, ConfigSubPath);

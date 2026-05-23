@@ -55,6 +55,61 @@
                               Background="{DynamicResource BackgroundBrush}" />
                     </Grid>
                 </Grid>
+                
+                <Grid Height="76"
+                      VerticalAlignment="Top">
+                    <items:BorderCard Height="38"
+                                      Width="170"
+                                      CornerRadius="19"
+                                      Padding="12,0"
+                                      VerticalAlignment="Top" 
+                                      Margin="0,-76,0,0"
+                                      Name="MediaVolumeCard">
+                        <items:BorderCard.Transitions>
+                            <Transitions>
+                                <ThicknessTransition Easing="ExponentialEaseOut"
+                                                     Duration="0:0:0.64"
+                                                     Property="Margin"></ThicknessTransition>
+                                <DoubleTransition Easing="ExponentialEaseOut"
+                                                  Duration="0:0:0.22"
+                                                  Property="Width"></DoubleTransition>
+                            </Transitions>
+                        </items:BorderCard.Transitions>
+                        <Panel>
+                            <Grid>
+                                <onePointControls:FontIcon VerticalAlignment="Center"
+                                                           FontSize="14"
+                                                           Glyph="&#xE995;"
+                                                           Name="MediaVolumeIcon"></onePointControls:FontIcon><Grid VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
+                                    MaxWidth="80"
+                                    RowDefinitions="Auto,*">
+    
+                                    <TextBlock Grid.Row="0"
+                                               Text="音量"
+                                               FontSize="11"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,0,0,4"/>
+    
+                                    <Grid Grid.Row="1" 
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center">
+        
+                                        <ProgressBar Value="100"
+                                                     Name="MediaVolume"/>
+        
+                                        <TextBlock FontSize="9"
+                                                   Name="DisableVolumeText"
+                                                   Foreground="DarkRed"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Text="已静音"
+                                                   IsVisible="False"/> </Grid>
+                                </Grid>
+                            </Grid>
+                        </Panel>
+                    </items:BorderCard>
+                </Grid>
 
                 <Grid HorizontalAlignment="Stretch"
                       VerticalAlignment="Top"

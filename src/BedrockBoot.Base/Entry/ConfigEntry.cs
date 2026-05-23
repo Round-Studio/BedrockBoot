@@ -28,6 +28,7 @@ public class ConfigEntry
     [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;
     [JsonPropertyName("isUseSystemWindow")] public bool IsUseSystemWindow { get; set; } = false;
     [JsonPropertyName("launchBehavior")] public LaunchBehaviorEnum LaunchBehavior { get; set; } = LaunchBehaviorEnum.Normal;
+    [JsonPropertyName("mediaVolume")] public double MediaVolume { get; set; } = 64;
 }
 
 public class StyleConfig

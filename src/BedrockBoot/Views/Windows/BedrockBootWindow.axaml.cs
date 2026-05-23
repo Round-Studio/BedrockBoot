@@ -10,6 +10,7 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Global;
+using BedrockBoot.Models.Media;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;
 
@@ -18,14 +19,25 @@ namespace BedrockBoot.Views.Windows;
 public partial class BedrockBootWindow : Window
 {
     private readonly Timer _stateTimer;
-
+    private bool _ctrlPressed = false;
     public int DrawMarginLR = 10;
+    private DispatcherTimer _volumeControlTimer;
 
     public BedrockBootWindow()
     {
         InitializeComponent();
-
+        
+        MediaManager.Instance.Volume = (float)Math.Clamp(GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
+        this.AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
+        this.AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
+        Deactivated += OnWindowDeactivated;
+        this.AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Tunnel);
         Frame.NavigateTo("");
+        _volumeControlTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1.8)
+        };
+        _volumeControlTimer.Tick += VolumeControlTimer_Tick;
         _stateTimer = new Timer(state =>
         {
             try
@@ -57,7 +69,112 @@ public partial class BedrockBootWindow : Window
         _stateTimer.Change(TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
         BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
     }
+    
+    /// <summary>
+    /// 唤醒音量提示框
+    /// </summary>
+    public void ShowVolumeCard()
+    {
+        // 确保在 UI 线程执行
+        Dispatcher.UIThread.Post(() =>
+        {
+            _volumeControlTimer.Stop();
+            MediaVolumeCard.Margin = new Thickness(0, 19, 0, 0);
 
+            _volumeControlTimer.Start();
+        });
+    }
+
+    private void VolumeControlTimer_Tick(object? sender, EventArgs e)
+    {
+        // 时间到了，缩回顶部
+        MediaVolumeCard.Margin = new Thickness(0, -76, 0, 0);
+        _volumeControlTimer.Stop();
+    }
+    
+    private void OnKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+        {
+            _ctrlPressed = true;
+        }
+    }
+    
+    private void OnKeyUp(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+        {
+            _ctrlPressed = false;
+        }
+    }
+
+    private void OnWindowDeactivated(object sender, EventArgs e)
+    {
+        _ctrlPressed = false;
+    }
+    
+    private void OnPointerWheelChanged(object sender, PointerWheelEventArgs e)
+    {
+        if (_ctrlPressed)
+        {
+            ShowVolumeCard();
+            
+            double delta = e.Delta.Y;
+            double step = 0.05;
+        
+            double newVolume = MediaManager.Instance.Volume + (delta > 0 ? step : -step);
+            if (newVolume * 100 < 0)
+            {
+                newVolume = 0;  
+            }
+            else if (newVolume * 100 > 100)
+            {
+                newVolume = 1;
+            }
+
+            MediaVolume.Value = (newVolume * 100);
+
+            if (MediaVolume.Value != 0)
+            {
+                MediaVolumeCard.Width = 170;
+            }
+            else
+            {
+                MediaVolumeCard.Width = 150;
+            }
+            
+            DisableVolumeText.IsVisible = false;
+
+            switch (MediaVolume.Value)
+            {
+                case <= 0:
+                    MediaVolumeIcon.Glyph = "\uE74F";
+                    DisableVolumeText.IsVisible = true;
+                    break;
+                case < 33:
+                    MediaVolumeIcon.Glyph = "\uE993";
+                    break;
+                case < 66:
+                    MediaVolumeIcon.Glyph = "\uE994";
+                    break;
+                case < 100:
+                    MediaVolumeIcon.Glyph = "\uE995";
+                    break;
+            }
+        
+            Console.WriteLine($"当前音量：{(int)(newVolume * 100)}%");
+        
+            // 应用新音量
+            GlobalModel.Config.Data.MediaVolume = newVolume;
+            GlobalModel.Config.Save();
+            
+            MediaManager.Instance.Volume = (float)Math.Clamp(GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
+        
+            // 阻止事件继续冒泡
+            e.Handled = true;
+        }
+    }
+    
     public bool IsMainWindow
     {
         get => _isMainWindow;

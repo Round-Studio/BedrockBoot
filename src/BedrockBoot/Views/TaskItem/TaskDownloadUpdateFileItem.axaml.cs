@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,6 @@ using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 using Path = System.IO.Path;
 
@@ -19,7 +19,10 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadUpdateFileItem : UserControl
 {
-    private Action _cancelCallBack;
+    private readonly string _currentExecutablePath = GetCurrentLauncherPath();
+
+    private Action _cancelCallBack = () => { };
+    private CancellationTokenSource? _cts;
 
     public TaskDownloadUpdateFileItem()
     {
@@ -31,66 +34,77 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         Release = release;
     }
 
-    public Release Release { get; set; }
-    private CancellationTokenSource _cts;
+    public Release Release { get; set; } = null!;
 
     public void Update(Action cancelCallBack)
     {
         _cancelCallBack = cancelCallBack;
-        // 标题国际化
         CardTitle.Text = string.Format(I18nManager.Instance["Task.Update.Title.Format"], Release.TagName);
 
-        // 查找名���包含 "win" 的 asset
-        var winAsset = Release.Assets.FirstOrDefault(asset =>
-            asset.Name.Contains("win", StringComparison.OrdinalIgnoreCase));
-
-        if (winAsset == null)
+        var asset = SelectPreferredAsset();
+        if (asset == null)
         {
-            // 如果没有找到包含 "win" 的 asset，可以记录错误���回退到第一个 asset
-            Console.WriteLine(@"未找到包含 'win' 标志的 asset");
+            Console.WriteLine(@"未找到适用于当前平台的更新资源");
             return;
         }
 
-        var url = winAsset.BrowserDownloadUrl;
-        var path = Path.Combine(PathsList.UpdatePath, $"{Release.TagName}.exe");
+        Directory.CreateDirectory(PathsList.UpdatePath);
+
+        var downloadUrl = asset.BrowserDownloadUrl;
+        var downloadPath = Path.Combine(PathsList.UpdatePath, asset.Name);
 
         _cts = new CancellationTokenSource();
         var token = _cts.Token;
 
         Task.Run(async () =>
         {
-            var download = new GithubFilesDownloader(GlobalModel.Config.Data.DownloadChunkCount,
+            var download = new GithubFilesDownloader(
+                GlobalModel.Config.Data.DownloadChunkCount,
                 1024);
 
-            await download.DownloadAsync(url, path, new Progress<DownloadProgress>(xprogress =>
-            {
-                Dispatcher.UIThread.Invoke(() =>
+            await download.DownloadAsync(
+                downloadUrl,
+                downloadPath,
+                new Progress<DownloadProgress>(progress =>
                 {
-                    if (ProgressBar.IsIndeterminate)
+                    Dispatcher.UIThread.Invoke(() =>
                     {
-                        ProgressBar.IsIndeterminate = false;
-                        ProgressBar.Value = 100;
-                    }
+                        if (ProgressBar.IsIndeterminate)
+                        {
+                            ProgressBar.IsIndeterminate = false;
+                            ProgressBar.Value = 100;
+                        }
 
-                    ProgressBar.Value = (int)xprogress.ProgressPercentage;
-                    ProgressText.Text = $"{xprogress.ProgressPercentage:F2} %";
-                });
-            }), token);
+                        ProgressBar.Value = (int)progress.ProgressPercentage;
+                        ProgressText.Text = $"{progress.ProgressPercentage:F2} %";
+                    });
+                }),
+                token);
 
-            // 给予 UI 刷新的缓冲时间
             await Task.Delay(100, token);
 
-            // 启动更新程序
-            Process.Start(path, new[] { "-update", Process.GetCurrentProcess().MainModule?.FileName });
+            if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))
+                throw new FileNotFoundException("无法定位当前程序，不能启动更新引导流程", _currentExecutablePath);
+
+            AppUpdater.EnsureExecutableForCurrentPlatform(downloadPath);
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = _currentExecutablePath,
+                UseShellExecute = false
+            };
+            startInfo.ArgumentList.Add("-update");
+            startInfo.ArgumentList.Add(downloadPath);
+
+            Process.Start(startInfo);
 
             await Task.Delay(100, token);
             Environment.Exit(0);
-        });
+        }, token);
     }
 
     public static void Update(Release release)
     {
-#if WINDOWS
         Models.Global.GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = I18nManager.Instance["Task.Update.Notice.Title"],
@@ -99,40 +113,53 @@ public partial class TaskDownloadUpdateFileItem : UserControl
         });
 
         var body = new TaskDownloadUpdateFileItem(release);
-        var tuid = Models.Global.GlobalModel.TaskManager.AddTask(body);
+        var taskId = Models.Global.GlobalModel.TaskManager.AddTask(body);
 
-        body.Update(() => Models.Global.GlobalModel.TaskManager.RemoveTask(tuid));
-#endif
-
-#if LINUX
-        OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog.DialogHost.Show(new DialogInfo()
-        {
-            Title = "您的系统尚不支持自动更新",
-            Content = new StackPanel()
-            {
-                Spacing = 4,
-                Children =
-                {
-                    new TextBlock()
-                    {
-                        Text = "您的系统为 Linux 发行版，尚不支持使用内置更新工具进行自动更新。\n" +
-                               "请前往 Github Release 或 官网 下载新的程序包替换以完成更新"
-                    },
-                    new HyperlinkButton()
-                    {
-                        Content = $"Github Release {release.Name}",
-                        NavigateUri = new Uri(release.HtmlUrl)
-                    }
-                }
-            },
-            CloseButtonText = "确定"
-        });
-#endif
+        body.Update(() => Models.Global.GlobalModel.TaskManager.RemoveTask(taskId));
     }
 
     private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
     {
         _cts?.Cancel();
         _cancelCallBack.Invoke();
+    }
+
+    /// <summary>
+    ///     根据当前平台选择可直接替换的发行资源。
+    ///     Windows 选择单文件 .exe，Linux 选择可直接启动的 .AppImage。
+    /// </summary>
+    private ReleaseAsset? SelectPreferredAsset()
+    {
+        var assets = Release.Assets.ToList();
+        if (assets.Count == 0)
+            return null;
+
+        if (OperatingSystem.IsWindows())
+            return assets.FirstOrDefault(asset =>
+                       asset.Name.Contains("win", StringComparison.OrdinalIgnoreCase) &&
+                       asset.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                   ?? assets.FirstOrDefault(asset =>
+                       asset.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
+
+        if (OperatingSystem.IsLinux())
+            return assets.FirstOrDefault(asset =>
+                       asset.Name.Contains("linux", StringComparison.OrdinalIgnoreCase) &&
+                       asset.Name.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase))
+                   ?? assets.FirstOrDefault(asset =>
+                       asset.Name.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase));
+
+        return null;
+    }
+
+    private static string GetCurrentLauncherPath()
+    {
+        if (OperatingSystem.IsLinux())
+        {
+            var appImagePath = Environment.GetEnvironmentVariable("APPIMAGE");
+            if (!string.IsNullOrWhiteSpace(appImagePath))
+                return appImagePath;
+        }
+
+        return Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
     }
 }

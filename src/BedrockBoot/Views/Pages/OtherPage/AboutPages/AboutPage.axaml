@@ -114,7 +114,15 @@
                                           IsClickable="True" />
 
             <onePointControls:SettingCard Margin="5"
-                                          Glyph="&#xE7E3;"
+                                          Glyph="&#xE73A;"
+                                          Header="发行说明"
+                                          Description="关于当前版本的发行说明"
+                                          Name="ReleaseNotesBtn"
+                                          Click="VersionCard_OnClick"
+                                          IsClickable="True" />
+
+            <onePointControls:SettingCard Margin="5"
+                                          Glyph="&#xF4AA;"
                                           Name="VersionCard"
                                           Header="{DynamicResource About.Action.Version.Title}"
                                           Description="1.0.0.0">

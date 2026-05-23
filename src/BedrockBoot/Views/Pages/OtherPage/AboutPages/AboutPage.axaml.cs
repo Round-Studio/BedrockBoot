@@ -82,4 +82,9 @@ public partial class AboutPage : ISettingPage
     {
         MainSettingPage.NavigateTo(new AboutContributor());
     }
+
+    private void VersionCard_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new AboutReleaseNotes());
+    }
 }

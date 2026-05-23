@@ -1,0 +1,52 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:global="clr-namespace:BedrockBoot.Models.Global"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.OtherPage.AboutReleaseNotes">
+    <UserControl.Styles>
+        <Styles>
+            <Style Selector="TextBlock">
+                <Setter Property="TextWrapping"
+                        Value="WrapWithOverflow"></Setter>
+            </Style>
+        </Styles>
+    </UserControl.Styles>
+    <ScrollViewer>
+        <StackPanel Margin="20"
+                    Spacing="6">
+            <TextBlock Text="{x:Static global:GlobalModel.BodyVersion}"
+                       FontSize="26"
+                       FontWeight="Bold"></TextBlock>
+            
+            <TextBlock Text="当前运行的版本"
+                       Opacity="0.6"></TextBlock>
+            
+            <TextBlock Text="正式发布的版本"
+                       Margin="0,8,0,0"
+                       FontSize="16"
+                       FontWeight="Medium"></TextBlock>
+            
+            <TextBlock Text="感谢您使用 BedrockBoot，当前版本的 BedrockBoot 为 LTS 长期维护版本、"
+                       Opacity="0.6"></TextBlock>
+            
+            <TextBlock Text="跨平台版本支持"
+                       Margin="0,8,0,0"
+                       FontSize="16"
+                       FontWeight="Medium"></TextBlock>
+            
+            <TextBlock Text="得益于强大的 Avalonia 跨平台框架，现在 BedrockBoot 可以在更多操作系统上运行。"
+                       Opacity="0.6"></TextBlock>
+            
+            <TextBlock Text="您现在可以在绝大多数 x64 架构下的 Windows, Linux 两大操作系统下运行。"
+                       Opacity="0.6"></TextBlock>
+            
+            <TextBlock Text="目前 Linux 平台受游戏框架限制，仅支持 GDK 构建类型的 Minecraft Bedrock。"
+                       Opacity="0.6"></TextBlock>
+            
+            <TextBlock Text="在 Linux 平台，原生 Xbox 组件并不支持运行在 Wine 中，所以目前暂时无法在 Linux 平台使用游戏在线功能。当然，我们也正在开发一款新的账户代理组件。"
+                       Opacity="0.6"></TextBlock>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

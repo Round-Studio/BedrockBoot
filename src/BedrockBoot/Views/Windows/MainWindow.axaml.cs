@@ -48,8 +48,8 @@ public partial class MainWindow : BedrockBootWindow
         InitializeWindowBounds();
 
         // 绑定回调
-        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Post(UpdateTaskUI);
-        EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Post(RunBehavior);
+        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
+        EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Invoke(RunBehavior);
 
         SetupDynamicHotkey();
         StartNetworkMonitoring();

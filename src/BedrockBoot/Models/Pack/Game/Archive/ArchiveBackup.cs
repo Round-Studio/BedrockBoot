@@ -22,6 +22,7 @@ public class ArchiveBackup
     public async Task BackupAsync(ArchiveInfo info, string backupName, IProgress<string> progress,
         CancellationToken cancellationToken = default)
     {
+        Console.WriteLine($@"开始备份存档 {info.Path}");
         if (!IndexConfig.Data.Index.Contains(info.Uuid)) IndexConfig.Data.Index.Add(info.Uuid);
 
         IndexConfig.Data.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();

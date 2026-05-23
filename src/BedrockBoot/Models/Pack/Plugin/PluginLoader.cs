@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Plugin;
@@ -13,8 +15,17 @@ namespace BedrockBoot.Models.Pack.Plugin;
 
 public class PluginLoader
 {
-    public static readonly List<Assembly> _loadedAssemblies = new();
-
+    // 使用线程安全的集合
+    public static readonly ConcurrentBag<Assembly> _loadedAssemblies = new();
+    
+    // 用于同步的锁对象
+    private static readonly SemaphoreSlim _loadSemaphore = new(1, 1);
+    private static readonly object _pluginListLock = new();
+    private static readonly ReaderWriterLockSlim _assemblyLock = new();
+    
+    // 已加载的程序集名称缓存（线程安全）
+    private static readonly ConcurrentDictionary<string, byte> _loadedAssemblyNames = new(StringComparer.OrdinalIgnoreCase);
+    
     public static List<PackConfig> Plugins { get; set; } = new();
     public static Type PluginType { get; } = typeof(IPluginBedrockBoot);
 
@@ -25,38 +36,80 @@ public class PluginLoader
             Directory.CreateDirectory(PathsList.PluginPath);
 
         var files = Directory.GetFiles(PathsList.PluginPath);
-        Plugins.Clear();
+        
+        // 清空现有插件列表（线程安全）
+        lock (_pluginListLock)
+        {
+            Plugins.Clear();
+        }
 
+        // 并发加载任务列表
+        var loadTasks = new List<Task>();
+        
         foreach (var file in files)
+        {
+            // 跳过非插件文件
+            if (!file.EndsWith(".rplck") && !file.EndsWith(".disable"))
+                continue;
+                
+            loadTasks.Add(LoadPluginAsync(file));
+        }
+        
+        // 等待所有插件加载完成
+        await Task.WhenAll(loadTasks);
+        
+        Console.WriteLine($@"插件加载完成，共加载 {Plugins.Count} 个插件。");
+    }
+
+    private static async Task LoadPluginAsync(string file)
+    {
+        try
         {
             var conf = PluginHelper.ReadPackConfig(file);
             conf.PackFile = file;
 
-            // 逻辑判断
             if (file.EndsWith(".rplck"))
-                try
-                {
-                    LoadDependencies(conf.PackFolder, conf.BodyFile);
-                    LoadPluginBody(conf.PackFolder, conf.BodyFile);
-                    conf.IsEnable = true; // 正常加载
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($@"加载插件失败: {file}, 错误: {ex.Message}");
-                    conf.IsEnable = true;
-                }
+            {
+                // 使用信号量确保依赖加载的顺序性
+                await LoadDependenciesAsync(conf.PackFolder, conf.BodyFile);
+                
+                // 加载插件主体
+                await LoadPluginBodyAsync(conf.PackFolder, conf.BodyFile);
+                
+                conf.IsEnable = true;
+            }
             else if (file.EndsWith(".disable"))
+            {
                 conf.IsEnable = false;
-            else
-                // 跳过其他无关文件
-                continue;
+            }
 
-            Plugins.Add(conf);
+            // 线程安全地添加到插件列表
+            lock (_pluginListLock)
+            {
+                Plugins.Add(conf);
+            }
+            
+            Console.WriteLine($@"插件加载成功: {conf.PackName}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"加载插件失败: {file}, 错误: {ex.Message}");
+            
+            // 即使失败也添加到列表，标记为已禁用
+            var conf = PluginHelper.ReadPackConfig(file);
+            conf.PackFile = file;
+            conf.IsEnable = false;
+            
+            lock (_pluginListLock)
+            {
+                Plugins.Add(conf);
+            }
         }
     }
 
     public static async Task<bool> Install(string filePath)
     {
+        await _loadSemaphore.WaitAsync();
         try
         {
             if (!File.Exists(filePath)) return false;
@@ -69,11 +122,14 @@ public class PluginLoader
             var conf = PluginHelper.ReadPackConfig(targetPath);
             conf.PackFile = targetPath;
 
-            var existing = Plugins.FirstOrDefault(p => p.PackName == conf.PackName);
-            if (existing != null) Plugins.Remove(existing);
+            lock (_pluginListLock)
+            {
+                var existing = Plugins.FirstOrDefault(p => p.PackName == conf.PackName);
+                if (existing != null) Plugins.Remove(existing);
 
-            conf.IsEnable = true;
-            Plugins.Add(conf);
+                conf.IsEnable = true;
+                Plugins.Add(conf);
+            }
 
             return true;
         }
@@ -82,43 +138,48 @@ public class PluginLoader
             Console.WriteLine($@"导入插件失败: {ex.Message}");
             return false;
         }
+        finally
+        {
+            _loadSemaphore.Release();
+        }
     }
 
     public static void TogglePlugin(PackConfig config, bool enable)
     {
-        if (string.IsNullOrEmpty(config.PackFile)) return;
+        lock (_pluginListLock)
+        {
+            if (string.IsNullOrEmpty(config.PackFile)) return;
 
-        var currentPath = config.PackFile;
-        string newPath;
+            var currentPath = config.PackFile;
+            string newPath;
 
-        if (enable)
-            // 启用：如果以 .disable 结尾，则移除它
-            newPath = currentPath.EndsWith(".disable")
-                ? currentPath.Substring(0, currentPath.Length - ".disable".Length)
-                : currentPath;
-        else
-            // 禁用：如果没以 .disable 结尾，则加上它
-            newPath = currentPath.EndsWith(".disable")
-                ? currentPath
-                : currentPath + ".disable";
+            if (enable)
+                newPath = currentPath.EndsWith(".disable")
+                    ? currentPath.Substring(0, currentPath.Length - ".disable".Length)
+                    : currentPath;
+            else
+                newPath = currentPath.EndsWith(".disable")
+                    ? currentPath
+                    : currentPath + ".disable";
 
-        if (currentPath != newPath)
-            try
-            {
-                if (File.Exists(currentPath))
+            if (currentPath != newPath)
+                try
                 {
-                    File.Move(currentPath, newPath);
-                    config.PackFile = newPath; // 更新路径引用
-                    config.IsEnable = enable; // 同步内存状态
+                    if (File.Exists(currentPath))
+                    {
+                        File.Move(currentPath, newPath);
+                        config.PackFile = newPath;
+                        config.IsEnable = enable;
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"[Error] 切换插件状态失败: {ex.Message}");
-            }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"切换插件状态失败: {ex.Message}");
+                }
+        }
     }
 
-    public static void LoadDependencies(string extractDir, string bodyFile)
+    public static async Task LoadDependenciesAsync(string extractDir, string bodyFile)
     {
         var filesDir = Path.Combine(extractDir, "files");
         if (!Directory.Exists(filesDir)) return;
@@ -127,41 +188,74 @@ public class PluginLoader
             .Where(file => !Path.GetFileName(file).Equals(bodyFile, StringComparison.OrdinalIgnoreCase))
             .ToList();
 
-        var loadedNames = AppDomain.CurrentDomain.GetAssemblies()
-            .Select(a => a.GetName().Name)
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var loadTasks = new List<Task>();
+        var semaphore = new SemaphoreSlim(Environment.ProcessorCount); // 限制并发加载数量
 
         foreach (var dllPath in dllFiles)
-            try
+        {
+            await semaphore.WaitAsync();
+            
+            loadTasks.Add(Task.Run(async () =>
             {
-                var fileNameWithoutExt = Path.GetFileNameWithoutExtension(dllPath);
+                try
+                {
+                    await LoadAssemblyAsync(dllPath);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            }));
+        }
 
-                if (loadedNames.Contains(fileNameWithoutExt)) continue;
-
-                var assembly = Assembly.LoadFrom(dllPath);
-                _loadedAssemblies.Add(assembly);
-
-                loadedNames.Add(fileNameWithoutExt);
-
-                Console.WriteLine($@"已加载依赖: {Path.GetFileName(dllPath)}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"加载依赖失败 {dllPath}: {ex.Message}");
-            }
+        await Task.WhenAll(loadTasks);
     }
 
-    public static void LoadPluginBody(string extractDir, string bodyFile)
+    private static async Task LoadAssemblyAsync(string dllPath)
     {
-        Task.Run(() =>
+        var fileNameWithoutExt = Path.GetFileNameWithoutExtension(dllPath);
+
+        // 检查是否已加载（线程安全）
+        if (_loadedAssemblyNames.ContainsKey(fileNameWithoutExt))
+            return;
+
+        // 使用读写锁保护程序集加载
+        _assemblyLock.EnterWriteLock();
+        try
+        {
+            // 双重检查
+            if (_loadedAssemblyNames.ContainsKey(fileNameWithoutExt))
+                return;
+
+            var assembly = Assembly.LoadFrom(dllPath);
+            _loadedAssemblies.Add(assembly);
+            _loadedAssemblyNames.TryAdd(fileNameWithoutExt, 1);
+
+            Console.WriteLine($@"已加载依赖: {Path.GetFileName(dllPath)}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"加载依赖失败 {dllPath}: {ex.Message}");
+        }
+        finally
+        {
+            _assemblyLock.ExitWriteLock();
+        }
+    }
+
+    public static async Task<object> LoadPluginBodyAsync(string extractDir, string bodyFile)
+    {
+        return await Task.Run(() =>
         {
             var bodyFilePath = Path.Combine(extractDir, "files", bodyFile);
-            if (!File.Exists(bodyFilePath)) throw new FileNotFoundException($"插件主体文件不存在: {bodyFilePath}");
+            if (!File.Exists(bodyFilePath)) 
+                throw new FileNotFoundException($"插件主体文件不存在: {bodyFilePath}");
 
             try
             {
                 var bodyAssembly = Assembly.LoadFrom(bodyFilePath);
                 _loadedAssemblies.Add(bodyAssembly);
+                _loadedAssemblyNames.TryAdd(Path.GetFileNameWithoutExtension(bodyFilePath), 1);
 
                 // 查找实现了 IPluginBedrockBoot 的非抽象类
                 var pluginType = bodyAssembly.GetTypes()
@@ -171,23 +265,20 @@ public class PluginLoader
 
                 if (pluginType != null)
                 {
-                    // 1. 创建实例
                     var pluginInstance = Activator.CreateInstance(pluginType);
 
-                    // 2. 强转并执行 Initialize
                     if (pluginInstance is IPluginBedrockBoot bootPlugin)
                         try
                         {
                             bootPlugin.Initialize();
-
                             Console.WriteLine($@"插件已初始化: {pluginType.FullName}");
+                            return pluginInstance;
                         }
                         catch (Exception loadEx)
                         {
-                            Console.WriteLine($@"插件加载错误: {loadEx}");
+                            Console.WriteLine($@"插件初始化错误: {loadEx}");
+                            throw;
                         }
-
-                    return pluginInstance;
                 }
 
                 throw new InvalidOperationException($"在主体文件中未找到实现 IPluginBedrockBoot 的类: {bodyFile}");
@@ -202,37 +293,53 @@ public class PluginLoader
 
     public static bool Delete(PackConfig config)
     {
-        try
+        lock (_pluginListLock)
         {
-            if (File.Exists(config.PackFile)) File.Delete(config.PackFile);
+            try
+            {
+                if (File.Exists(config.PackFile)) 
+                    File.Delete(config.PackFile);
 
-            if (Plugins.Contains(config)) Plugins.Remove(config);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"删除插件文件失败: {ex.Message}");
-            return false;
+                if (Plugins.Contains(config)) 
+                    Plugins.Remove(config);
+                    
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"删除插件文件失败: {ex.Message}");
+                return false;
+            }
         }
     }
 
-    public static bool TryGetPluginConfig(string fileName,out PackConfig? config)
+    public static bool TryGetPluginConfig(string fileName, out PackConfig? config)
     {
-        var installed = File.Exists(Path.Combine(PathsList.PluginPath, fileName)) ||
-                        File.Exists(Path.Combine(PathsList.PluginPath, $"{fileName}.disable"));
-
-        if (!installed)
+        lock (_pluginListLock)
         {
-            config = null;
-            return false;
-        }
+            var installed = File.Exists(Path.Combine(PathsList.PluginPath, fileName)) ||
+                            File.Exists(Path.Combine(PathsList.PluginPath, $"{fileName}.disable"));
 
-        var conf = Plugins.Find(plugin =>
-            plugin.PackFile == Path.Combine(PathsList.PluginPath, fileName) ||
-            plugin.PackFile == Path.Combine(PathsList.PluginPath, $"{fileName}.disable"));
-        
-        config = conf;
-        
-        return installed;
+            if (!installed)
+            {
+                config = null;
+                return false;
+            }
+
+            var conf = Plugins.Find(plugin =>
+                plugin.PackFile == Path.Combine(PathsList.PluginPath, fileName) ||
+                plugin.PackFile == Path.Combine(PathsList.PluginPath, $"{fileName}.disable"));
+            
+            config = conf;
+            
+            return installed;
+        }
+    }
+    
+    // 清理资源
+    public static void Dispose()
+    {
+        _loadSemaphore?.Dispose();
+        _assemblyLock?.Dispose();
     }
 }

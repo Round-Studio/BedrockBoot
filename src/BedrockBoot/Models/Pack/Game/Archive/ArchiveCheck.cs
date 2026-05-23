@@ -23,6 +23,7 @@ public class ArchiveCheck
 
     public static ArchiveInfo? GetInfo(string save, string gameFolder)
     {
+        Console.WriteLine($@"读取存档：{save}");
         if (!File.Exists(Path.Combine(save, "levelname.txt")))
             return null;
 

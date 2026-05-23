@@ -19,6 +19,9 @@ public class IsolationCore
     }
 
     public VersionConfig VersionConfig { get; set; }
+
+    #region 弃用方法
+    
     public string RealRootPath => GetRealPath(VersionConfig); // config 中的文件夹
     public string RootPath => GetInstanceConfigRootPath(VersionConfig); // AppData 中的文件夹
 
@@ -32,6 +35,8 @@ public class IsolationCore
         else
             throw new Exception("该实例的目标隔离文件需要进行迁移");
     }
+
+    #endregion
 
     public static string GetRealPath(VersionConfig versionConfig)
     {
@@ -100,12 +105,15 @@ public class IsolationCore
     public static List<string> GetAllUserFolderPaths(VersionConfig versionConfig,
         InstanceFolderType folderType = InstanceFolderType.RootFolder)
     {
+        Console.WriteLine(@"获取实例所有用户的目标文件夹路径，folderType: {0}", folderType);
+        
         var users = GetInstanceUsers(versionConfig);
         return users.Select(x => GetInstanceFolderPath(versionConfig, folderType, x)).ToList();
     }
 
     public static List<string> GetInstanceUsers(VersionConfig versionConfig)
     {
+        Console.WriteLine(@"获取实例所有用户");
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
             return new List<string> { "Shared" };
 
@@ -118,6 +126,7 @@ public class IsolationCore
 
     private static string GetInstanceFolderPath(VersionConfig versionConfig, string folder, string user = "Shared")
     {
+        Console.WriteLine("获取目标实例的文件夹路径，folder: {0}, user: {1}", folder, user);
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
             return Path.Combine(GetRealPath(versionConfig), @"LocalState", "games", "com.mojang", folder);
 

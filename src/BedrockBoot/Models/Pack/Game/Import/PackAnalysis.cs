@@ -9,6 +9,7 @@ public class PackAnalysis
 {
     public static MinecraftBuildTypeVersion GetPackBuildTypeWithFileHeader(string filePath)
     {
+        Console.WriteLine(@"开始分析包文件类型");
         var header = GetFileHeader(filePath).Replace(" ", "");
 
         if (header.StartsWith("504B0304"))
@@ -19,19 +20,19 @@ public class PackAnalysis
 
     public static string GetFileHeader(string filePath, int bytesToRead = 8)
     {
+        Console.WriteLine($@"获取文件头：{filePath}");
         try
         {
             using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             using (var reader = new BinaryReader(fs))
             {
-                // 读取指定数量的字节
                 var headerBytes = reader.ReadBytes(bytesToRead);
 
-                // 将字节转换为十六进制字符串
                 var sb = new StringBuilder();
-                foreach (var b in headerBytes) sb.AppendFormat("{0:X2} ", b); // X2表示两位大写十六进制
+                foreach (var b in headerBytes) sb.AppendFormat("{0:X2} ", b);
 
-                return sb.ToString().Trim(); // 移除末尾空格
+                Console.WriteLine(@"文件头：{0}", sb);
+                return sb.ToString().Trim();
             }
         }
         catch (Exception ex)

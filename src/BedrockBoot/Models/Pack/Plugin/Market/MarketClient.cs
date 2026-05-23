@@ -25,6 +25,7 @@ public class MarketClient
     /// </summary>
     public async Task<List<MarketResponse.PluginInfo>> GetPluginsAsync()
     {
+        Console.WriteLine(@"获取可下载的插件列表...");
         try
         {
             var response = await _httpClient.GetFromJsonAsync<MarketResponse>(_apiUrl);
@@ -41,6 +42,7 @@ public class MarketClient
     public static async Task<(Repository Repository, IReadOnlyList<Release> Releases)> 
         GetPluginRepositoryFullInfo(MarketResponse.PluginInfo info)
     {
+        Console.WriteLine($@"获取目标插件仓库信息：{info.PluginName}");
         var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
         var owner = info.RepositoryOwner;
         var repo = info.RepositoryName;
@@ -56,6 +58,7 @@ public class MarketClient
     
     public static async Task<string> GetReadmeHtml(string owner, string repo)
     {
+        Console.WriteLine($@"获取仓库 README: {owner}/{repo}");
         using (var httpClient = new HttpClient())
         {
             httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.github.html");

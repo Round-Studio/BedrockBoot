@@ -1,4 +1,5 @@
-﻿using BedrockBoot.Models.Helper;
+﻿using System;
+using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Models.Media;
 
@@ -9,6 +10,7 @@ public class MediaHelper
     /// </summary>
     public static string? GetPlayingAppName()
     {
+        Console.WriteLine(@"获取播放状态");
 #if WINDOWS
         if (!SMTCHelper.IsStarted)
         {

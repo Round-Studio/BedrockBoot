@@ -130,7 +130,7 @@ public static class SMTCHelper
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取源程序名称失败: {ex.Message}");
+            Console.WriteLine($@"获取源程序名称失败: {ex.Message}");
             return null;
         }
     }

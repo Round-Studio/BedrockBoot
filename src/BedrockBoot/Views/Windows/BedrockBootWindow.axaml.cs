@@ -162,7 +162,7 @@ public partial class BedrockBootWindow : Window
                     break;
             }
         
-            Console.WriteLine($"当前音量：{(int)(newVolume * 100)}%");
+            Console.WriteLine($@"当前音量：{(int)(newVolume * 100)}%");
         
             // 应用新音量
             GlobalModel.Config.Data.MediaVolume = newVolume;

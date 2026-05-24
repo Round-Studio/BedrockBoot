@@ -224,6 +224,62 @@
                         </Transitions>
                     </Grid.Transitions>
                 </Grid>
+                
+                <items:BorderCard Margin="120,100"
+                                  Opacity="0"
+                                  IsVisible="False"
+                                  Name="DropBox">
+                    <items:BorderCard.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity"
+                                                 Easing="ExponentialEaseOut"
+                                                 Duration="0:0:0.36" />
+                        </Transitions>
+                    </items:BorderCard.Transitions>
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="8">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <onePointControls:FontIcon Glyph="&#xE76B;"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Opacity="0.6"
+                                                           FontSize="24"></onePointControls:FontIcon>
+                                
+                                <onePointControls:FontIcon Glyph="&#xE76B;"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="36"></onePointControls:FontIcon>
+                                
+                                <onePointControls:FontIcon Glyph="&#xF158;"
+                                                           HorizontalAlignment="Center"
+                                                           Margin="20,12"
+                                                           FontSize="48"></onePointControls:FontIcon>
+                                
+                                <onePointControls:FontIcon Glyph="&#xE76C;"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="36"></onePointControls:FontIcon>
+                                
+                                <onePointControls:FontIcon Glyph="&#xE76C;"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Opacity="0.6"
+                                                           FontSize="24"></onePointControls:FontIcon>
+                            </StackPanel>
+                        
+                            <TextBlock Text="将文件拖拽到此处"
+                                       FontSize="26"
+                                       HorizontalAlignment="Center"></TextBlock>
+                            
+                            <TextBlock Text="支持 zip, appx, mcpack, mcaddon, mcworld, rplck, dll 等文件"
+                                       HorizontalAlignment="Center"
+                                       Opacity="0.6"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </items:BorderCard>
 
                 <items:BorderCard Width="480"
                                   Margin="500,10,-500,10"

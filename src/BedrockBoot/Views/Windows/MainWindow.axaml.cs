@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading;
@@ -11,6 +12,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Manifest;
@@ -23,6 +25,7 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Service;
 using BedrockBoot.Service.WebServer;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using OnePointUI.Avalonia.Base.Entry;
@@ -57,8 +60,8 @@ public partial class MainWindow : BedrockBootWindow
 
         DragDrop.SetAllowDrop(this, true);
 
-        AddHandler(DragDrop.DragOverEvent, OnDragOver, RoutingStrategies.Tunnel);
-        AddHandler(DragDrop.DropEvent, OnDrop, RoutingStrategies.Tunnel);
+        AddHandler(DragDrop.DragOverEvent, OnDragOver);
+        AddHandler(DragDrop.DropEvent, OnDrop);
     }
 
     private I18nManager I18n => I18nManager.Instance;
@@ -69,31 +72,72 @@ public partial class MainWindow : BedrockBootWindow
     /// <summary>
     ///     当文件拖拽到窗口上方时触发，决定是否显示“拷贝”图标
     /// </summary>
-    private void OnDragOver(object? sender, DragEventArgs e)
+    private async void OnDragOver(object? sender, DragEventArgs e)
     {
-        // 只有当拖拽内容包含文件时才允许放置
-        if (e.Data.Contains(DataFormats.Files))
-            e.DragEffects = DragDropEffects.Copy;
-        else
+        var position = e.GetPosition(this);
+
+        // 哪怕系统认为还在 Over，但只要坐标出了窗口，立即转为隐藏流程
+        if (position.X < 10 || position.Y < 10 || 
+            position.X > Bounds.Width - 10 || position.Y > Bounds.Height - 10)
+        {
             e.DragEffects = DragDropEffects.None;
+            HideDropBox();
+            return;
+        }
+
+        if (e.Data.Contains(DataFormats.Files))
+        {
+            e.DragEffects = DragDropEffects.Copy;
+            DropBox.IsVisible = true;
+            DropBox.Opacity = 1;
+            SetBlurState(true);
+        }
+        else
+        {
+            e.DragEffects = DragDropEffects.None;
+            HideDropBox();
+        }
+    }
+    
+    private async void HideDropBox()
+    {
+        if (!DropBox.IsVisible) return; // 避免重复触发
+    
+        DropBox.Opacity = 0;
+        SetBlurState(false);
+        await Task.Delay(360);
+        DropBox.IsVisible = false;
     }
 
     /// <summary>
     ///     当用户松开鼠标完成放置时触发
     /// </summary>
-    private void OnDrop(object? sender, DragEventArgs e)
+    [Obsolete("Obsolete")]
+    private async void OnDrop(object? sender, DragEventArgs e)
     {
         // 获取文件路径列表
         var files = e.Data.GetFiles();
+        
+        DropBox.Opacity = 0;
+        SetBlurState(false);
+        await Task.Delay(360);
+        DropBox.IsVisible = false;
 
         if (files != null)
-            foreach (var file in files)
+        {
+            var storageItems = files as IStorageItem[] ?? files.ToArray();
+            Console.WriteLine($@"本次拖拽共 {storageItems.Length} 个文件。");
+            
+            foreach (var file in storageItems)
             {
                 // 获取文件的绝对路径
                 var filePath = file.Path.LocalPath;
 
                 if (!string.IsNullOrEmpty(filePath)) Console.WriteLine($@"检测到拖入文件: {filePath}");
             }
+
+            OpenDraw(new DrawDropFileContent(storageItems), "拖拽文件处理");
+        }
     }
 
     #endregion
@@ -417,18 +461,4 @@ public partial class MainWindow : BedrockBootWindow
     }
 
     #endregion
-
-    private void Button_OnClick(object? sender, RoutedEventArgs e)
-    {
-        var server = new WebServer($"http://127.0.0.1:{new Random().Next(10000, 50000)}/");
-
-        server.RegisterRoute("GET", "/loginFinish", context =>
-        {
-            context.SendResponse(
-                new JsonResourceEntity().ReadTextResourceAsync("avares://BedrockBoot/Assets/Web/LoginFinish.html")
-                    .Result, "text/html");
-        });
-
-        server.Start();
-    }
 }

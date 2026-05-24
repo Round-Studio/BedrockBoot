@@ -21,6 +21,7 @@ public class DropFileCheck
             { } s when s.EndsWith(".mcworld") => DropFileType.McWorld,
             { } s when s.EndsWith(".appx") => DropFileType.Appx,
             { } s when s.EndsWith(".rplck") => DropFileType.Rplck,
+            { } s when s.EndsWith(".mcpint") => DropFileType.Mcpint,
             _ => DropFileType.None
         };
     }
@@ -40,6 +41,7 @@ public class DropFileCheck
         DropFileType.McWorld => "存档包",
         DropFileType.Appx => "应用包",
         DropFileType.Rplck => "插件包",
+        DropFileType.Mcpint => "整合包",
         _ => "不支持的文件"
     };
 }

@@ -6,6 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Models.Pack.System.DropFile;
 using PeNet;
 
 namespace BedrockBoot.Views.Control.Items.System;
@@ -30,21 +32,11 @@ public partial class DropFileItem : UserControl
         var file = _file.Path.LocalPath;
         Card.Header = Path.GetFileName(file);
 
-        var fileType = file.ToLower() switch
-        {
-            { } s when s.EndsWith(".zip") => "压缩文件",
-            { } s when s.EndsWith(".exe") => "Windows 可执行文件",
-            { } s when s.EndsWith(".dll") => "动态链接库",
-            { } s when s.EndsWith(".mcpack") => "资源包",
-            { } s when s.EndsWith(".mcaddon") => "资源包",
-            { } s when s.EndsWith(".mcworld") => "存档包",
-            _ => "不支持的文件"
-        };
+        var fileType = DropFileCheck.GetFileTypeName(DropFileCheck.CheckFile(file));
 
         Card.Description = fileType;
         
-        if (file.ToLower()
-            .EndsWith(".exe"))
+        if (DropFileCheck.CheckFile(file) == DropFileType.Exe)
         {
             GetExeFileIconAsync();
         }

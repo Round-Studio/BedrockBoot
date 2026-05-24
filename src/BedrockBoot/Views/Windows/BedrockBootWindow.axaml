@@ -274,7 +274,7 @@
                                        FontSize="26"
                                        HorizontalAlignment="Center"></TextBlock>
                             
-                            <TextBlock Text="支持 zip, appx, mcpack, mcaddon, mcworld, rplck, dll 等文件"
+                            <TextBlock Text="支持 zip, appx, mcpint, mcpack, mcaddon, mcworld, rplck, dll 等文件"
                                        HorizontalAlignment="Center"
                                        Opacity="0.6"></TextBlock>
                         </StackPanel>

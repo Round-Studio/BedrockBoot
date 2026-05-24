@@ -321,18 +321,17 @@ public partial class BedrockBootWindow : Window
         {
             Radius = state ? 50 : 0
         };
+        BackgroundGroupBox.Margin = new Thickness(state ? -50 : 0);
     }
 
     public async void OpenTaskCard()
     {
         SetBlurState(true);
         TaskCard.Margin = new Thickness(10);
-        BackgroundGroupBox.Margin = new Thickness(-50);
         IsTaskCardOpen = true;
         BlackView.IsVisible = true;
         
         DropBox.Opacity = 0;
-        SetBlurState(false);
         await Task.Delay(360);
         DropBox.IsVisible = false;
     }
@@ -341,7 +340,6 @@ public partial class BedrockBootWindow : Window
     {
         SetBlurState(false);
         TaskCard.Margin = new Thickness(500, 10, -500, 10);
-        BackgroundGroupBox.Margin = new Thickness(0);
         IsTaskCardOpen = false;
         BlackView.IsVisible = false;
     }

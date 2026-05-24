@@ -116,7 +116,7 @@ public partial class MainWindow : BedrockBootWindow
     private async void OnDrop(object? sender, DragEventArgs e)
     {
         // 获取文件路径列表
-        var files = e.Data.GetFiles();
+        var files = e.Data.GetFiles().OfType<IStorageFile>().ToArray();;
         
         DropBox.Opacity = 0;
         SetBlurState(false);
@@ -127,6 +127,8 @@ public partial class MainWindow : BedrockBootWindow
         {
             var storageItems = files as IStorageItem[] ?? files.ToArray();
             Console.WriteLine($@"本次拖拽共 {storageItems.Length} 个文件。");
+            if (storageItems.Length <= 0)
+                return;
             
             foreach (var file in storageItems)
             {

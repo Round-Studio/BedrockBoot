@@ -8,6 +8,7 @@ public enum DropFileType
     McAddon,
     McWorld,
     Appx,
+    Mcpint,
     Rplck,
     Dll,
     Exe

@@ -40,10 +40,10 @@ public partial class MainWindow : BedrockBootWindow
     public MainWindow()
     {
         // 核心引擎异步初始化
-        InitBedrockCoreAsync();
+        _ = InitBedrockCoreAsync();
 
-        GlobalModel.MainWindow = this;
         InitializeComponent();
+        GlobalModel.MainWindow = this;
         
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
@@ -62,6 +62,8 @@ public partial class MainWindow : BedrockBootWindow
 
         AddHandler(DragDrop.DragOverEvent, OnDragOver);
         AddHandler(DragDrop.DropEvent, OnDrop);
+        
+        InitializeWindowBounds();
     }
 
     private I18nManager I18n => I18nManager.Instance;
@@ -148,8 +150,8 @@ public partial class MainWindow : BedrockBootWindow
 
     private void InitializeWindowBounds()
     {
-        if (Core.Global.GlobalModel.Config.Data.WindowInfo.X != -1 &&
-            Core.Global.GlobalModel.Config.Data.WindowInfo.Y != -1)
+        if (Core.Global.GlobalModel.Config.Data.WindowInfo.X >= 1 &&
+            Core.Global.GlobalModel.Config.Data.WindowInfo.Y >= 1)
         {
             WindowStartupLocation = WindowStartupLocation.Manual;
             Position = new PixelPoint(Core.Global.GlobalModel.Config.Data.WindowInfo.X,

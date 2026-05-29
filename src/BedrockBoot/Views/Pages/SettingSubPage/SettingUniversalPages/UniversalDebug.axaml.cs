@@ -41,6 +41,7 @@ public partial class UniversalDebug : ISettingPage
         if (IsEdit)
         {
             GlobalModel.Config.Data.IsConsole = IsConsoleModel.IsChecked ?? false;
+            Models.Global.GlobalModel.MainWindow.SetReboot();
 
             GlobalModel.Config.Save();
         }

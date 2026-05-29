@@ -170,6 +170,8 @@ public class PluginLoader
                         File.Move(currentPath, newPath);
                         config.PackFile = newPath;
                         config.IsEnable = enable;
+                        
+                        GlobalModel.MainWindow.SetReboot();
                     }
                 }
                 catch (Exception ex)

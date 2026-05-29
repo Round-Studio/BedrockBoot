@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -374,6 +375,50 @@ public partial class MainWindow : BedrockBootWindow
                 TaskList.Children.Add(task.Item);
             }
         }
+    }
+
+    public void SetReboot()
+    {
+        this.RebootBtn.IsVisible = true;
+    }
+
+    private void RebootBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "重启启动器",
+            Content = "当前需要重启。\n" +
+                      "请问是否需要重启启动器？",
+            CloseButtonText = "立即重启",
+            PrimaryButtonText = "稍后重启",
+            CloseAction = () =>
+            {
+                var exePath = Process.GetCurrentProcess().MainModule?.FileName 
+                              ?? throw new InvalidOperationException("无法获取可执行文件路径");
+    
+                var workingDir = Path.GetDirectoryName(exePath) ?? Environment.CurrentDirectory;
+                var args = string.Join(" ", Environment.GetCommandLineArgs().Skip(1)
+                    .Select(a => a.Contains(' ') ? $"\"{a}\"" : a));
+    
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Arguments = args,
+                    WorkingDirectory = workingDir,
+                    UseShellExecute = true,
+                    CreateNoWindow = false
+                };
+    
+                // Windows 特殊处理
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    startInfo.Verb = "open";
+                }
+                
+                Process.Start(startInfo);
+                Environment.Exit(0);
+            }
+        });
     }
 
     private void RunBehavior()

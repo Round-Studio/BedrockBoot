@@ -193,7 +193,7 @@ public class VersionHelper
             }
             catch (Exception ex)
             {
-                Console.WriteLine($@"从 {url} 获取版本失败 (尝试 {retry + 1}/{MaxRetryCount}): {ex.Message}");
+                Console.WriteLine($@"从 {url} 获取版本失败 (尝试 {retry + 1}/{MaxRetryCount}): {ex}");
                 
                 if (retry == MaxRetryCount - 1)
                 {

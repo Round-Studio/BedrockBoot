@@ -20,6 +20,7 @@
                     <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Accent}" />
                     <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Voronoi}" />
                     <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Bubble}" />
+                    <ComboBoxItem Name="LiveModel">LiveSituation (Windows only)</ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>
 

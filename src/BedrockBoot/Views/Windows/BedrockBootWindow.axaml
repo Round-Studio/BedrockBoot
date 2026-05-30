@@ -10,6 +10,7 @@
         xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
         xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
         xmlns:classes="clr-namespace:OnePointUI.Avalonia.Classes;assembly=OnePointUI.Avalonia"
+        xmlns:controls="clr-namespace:Wallpaper.Avalonia.Controls;assembly=Wallpaper.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BedrockBoot.Views.Windows.BedrockBootWindow"
         ExtendClientAreaToDecorationsHint="True"
@@ -37,6 +38,7 @@
                         </Transitions>
                     </Grid.Transitions>
                     <view:AnimationBackground Name="AnimationBackground" />
+                    <controls:DesktopThumbnailControl Name="DesktopThumbnailControl" Opacity="10"/>
 
                     <Grid Name="AccentBackgroundBox"
                           Background="{DynamicResource AccentBackgroundBrush}"

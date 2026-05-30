@@ -261,6 +261,7 @@ public partial class MainWindow : BedrockBootWindow
         BackgroundBox.IsVisible = false;
         AccentBackgroundBox.IsVisible = false;
         AnimationBackground.IsVisible = false;
+        DesktopThumbnailControl.IsVisible = false;
 
         var style = Core.Global.GlobalModel.Config.Data.StyleConfig;
 
@@ -286,6 +287,9 @@ public partial class MainWindow : BedrockBootWindow
             case StyleType.Bubble:
                 AnimationBackground.IsVisible = true;
                 AnimationBackground.BackgroundType = BackgroundType.Bubble;
+                break;
+            case StyleType.LiveModel:
+                DesktopThumbnailControl.IsVisible = true;
                 break;
         }
     }

@@ -29,11 +29,14 @@ public partial class PersonalizationBackground : ISettingPage
 
         MicaModel.IsEnabled = false;
         BlurModel.IsEnabled = false;
+        LiveModel.IsEnabled = false;
 
         if (OperatingSystem.IsWindows())
         {
             var osVersion = Environment.OSVersion;
             var buildNumber = osVersion.Version.Build;
+
+            LiveModel.IsEnabled = true;
 
             // Windows 版本判断逻辑
             if (osVersion.Version.Major == 10)

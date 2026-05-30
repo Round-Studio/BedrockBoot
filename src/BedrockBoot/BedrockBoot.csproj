@@ -82,6 +82,7 @@
         <ProjectReference Include="..\PaperConnect\src\PaperConnect.Core\PaperConnect.Core.csproj"/>
         <ProjectReference Include="..\Round.SDK\Round.SDK.Avalonia\Round.SDK.Avalonia.csproj"/>
         <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj"/>
+        <ProjectReference Include="..\Wallpaper.Avalonia\Wallpaper.Avalonia.csproj" />
     </ItemGroup>
 
     <ItemGroup>

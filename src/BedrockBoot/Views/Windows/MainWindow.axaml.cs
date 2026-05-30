@@ -263,6 +263,7 @@ public partial class MainWindow : BedrockBootWindow
         BackgroundBox.IsVisible = false;
         AccentBackgroundBox.IsVisible = false;
         AnimationBackground.IsVisible = false;
+        LiveOpacity.IsVisible = false;
 
         var style = Core.Global.GlobalModel.Config.Data.StyleConfig;
         if (DesktopThumbnailWindow != null)
@@ -300,8 +301,16 @@ public partial class MainWindow : BedrockBootWindow
                     DesktopThumbnailWindow = new DesktopThumbnailWindow();
                 }
                 DesktopThumbnailWindow?.ShowBelow(this);
+                LiveOpacity.IsVisible = true;
+                UpdateLiveOpacity();
                 break;
         }
+    }
+
+    public void UpdateLiveOpacity()
+    {
+        LiveOpacity.Opacity =
+            (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.LiveOpacity) * 0.01;
     }
 
     private void ApplyImageBackground(StyleConfig style)

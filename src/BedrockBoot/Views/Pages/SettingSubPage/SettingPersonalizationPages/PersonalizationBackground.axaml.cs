@@ -74,6 +74,7 @@ public partial class PersonalizationBackground : ISettingPage
     {
         IsEdit = false;
         BackgroundImageBox.IsVisible = false;
+        LiveOptCard.IsVisible = false;
 
         if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image)
         {
@@ -104,6 +105,12 @@ public partial class PersonalizationBackground : ISettingPage
                 if (GlobalModel.Config.Data.StyleConfig.BackgroundImages.Count >= 0)
                     BackgroundsList.SelectedIndex = index;
         }
+
+        if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel)
+        {
+            LiveOptCard.IsVisible = true;
+        }
+        LiveOptBar.Value = GlobalModel.Config.Data.StyleConfig.LiveOpacity;
 
         IsEdit = true;
     }
@@ -184,6 +191,17 @@ public partial class PersonalizationBackground : ISettingPage
 
             GlobalModel.Config.Save();
             Models.Global.GlobalModel.MainWindow.UpdateBack();
+        }
+    }
+
+    private void LiveOptBar_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.StyleConfig.LiveOpacity = (int)LiveOptBar.Value;
+
+            GlobalModel.Config.Save();
+            Models.Global.GlobalModel.MainWindow.UpdateLiveOpacity();
         }
     }
 }

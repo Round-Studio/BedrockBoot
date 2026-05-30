@@ -81,6 +81,22 @@
                          SelectionChanged="BackgroundsList_OnSelectionChanged"
                          Margin="5" />
             </StackPanel>
+
+            <onePointControls:SettingCard
+                Header="{DynamicResource Settings.Background.Image.Opacity.Title}"
+                Description="{DynamicResource Settings.Background.Image.Opacity.Desc}"
+                Glyph="&#xE81E;"
+                Name="LiveOptCard"
+                Margin="5"
+                IsClickable="False">
+                <Slider Width="200"
+                        Minimum="0"
+                        Maximum="100"
+                        Value="60"
+                        Classes="Number"
+                        Name="LiveOptBar"
+                        ValueChanged="LiveOptBar_OnValueChanged" />
+            </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

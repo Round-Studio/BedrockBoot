@@ -55,6 +55,9 @@
                               Opacity="0"
                               Background="{DynamicResource BackgroundBrush}" />
                     </Grid>
+                    <Grid Name="LiveOpacity"
+                          Opacity="0"
+                          Background="{DynamicResource BackgroundBrush}" />
                 </Grid>
                 
                 <Grid Height="76"

@@ -33,6 +33,7 @@ using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
+using Wallpaper.Avalonia.Controls;
 
 namespace BedrockBoot.Views.Windows;
 
@@ -69,6 +70,7 @@ public partial class MainWindow : BedrockBootWindow
 
     private I18nManager I18n => I18nManager.Instance;
     public bool IsWindowActive => IsActive;
+    private DesktopThumbnailWindow? DesktopThumbnailWindow { get; set; }
 
     #region 窗口拖拽事件
 
@@ -261,9 +263,13 @@ public partial class MainWindow : BedrockBootWindow
         BackgroundBox.IsVisible = false;
         AccentBackgroundBox.IsVisible = false;
         AnimationBackground.IsVisible = false;
-        DesktopThumbnailControl.IsVisible = false;
 
         var style = Core.Global.GlobalModel.Config.Data.StyleConfig;
+        if (DesktopThumbnailWindow != null)
+        {
+            DesktopThumbnailWindow.Close();
+            DesktopThumbnailWindow = null;
+        }
 
         switch (style.StyleType)
         {
@@ -289,7 +295,11 @@ public partial class MainWindow : BedrockBootWindow
                 AnimationBackground.BackgroundType = BackgroundType.Bubble;
                 break;
             case StyleType.LiveModel:
-                DesktopThumbnailControl.IsVisible = true;
+                if (DesktopThumbnailWindow == null)
+                {
+                    DesktopThumbnailWindow = new DesktopThumbnailWindow();
+                }
+                DesktopThumbnailWindow?.ShowBelow(this);
                 break;
         }
     }

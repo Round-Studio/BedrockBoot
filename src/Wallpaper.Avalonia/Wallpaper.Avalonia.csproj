@@ -14,4 +14,10 @@
     <PackageReference Include="Avalonia.Win32" Version="11.3.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Controls\DesktopThumbnailWindow.axaml.cs">
+      <DependentUpon>DesktopThumbnailWindow.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

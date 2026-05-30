@@ -38,8 +38,7 @@
                         </Transitions>
                     </Grid.Transitions>
                     <view:AnimationBackground Name="AnimationBackground" />
-                    <controls:DesktopThumbnailControl Name="DesktopThumbnailControl" Opacity="10"/>
-
+                    
                     <Grid Name="AccentBackgroundBox"
                           Background="{DynamicResource AccentBackgroundBrush}"
                           IsVisible="False" />

@@ -1,0 +1,12 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Wallpaper.Avalonia.Controls"
+        x:Class="Wallpaper.Avalonia.Controls.DesktopThumbnailWindow"
+        WindowState="Normal"
+        CanResize="False"
+        ShowInTaskbar="False"
+        SystemDecorations="None"
+        Background="Transparent">
+
+    <controls:DesktopThumbnailControl />
+</Window>

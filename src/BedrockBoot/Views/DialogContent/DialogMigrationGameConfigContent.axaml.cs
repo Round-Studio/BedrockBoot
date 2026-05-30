@@ -55,7 +55,7 @@ public partial class DialogMigrationGameConfigContent : UserControl
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Migration failed: {ex.Message}");
+                Console.WriteLine($"Migration failed: {ex.Message}");
             }
             finally
             {

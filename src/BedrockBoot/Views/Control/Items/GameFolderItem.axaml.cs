@@ -47,7 +47,7 @@ public partial class GameFolderItem : UserControl
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to open folder: {ex.Message}");
+            Console.WriteLine($"Failed to open folder: {ex.Message}");
         }
     }
 

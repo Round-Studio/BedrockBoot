@@ -73,7 +73,7 @@ public partial class ArchiveBackupItem : UserControl
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to load Backup icon: {ex.Message}");
+            Console.WriteLine($"Failed to load Backup icon: {ex.Message}");
         }
     }
 

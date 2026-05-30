@@ -216,7 +216,7 @@ public class CoreNative
 		}
 		catch (Exception ex)
 		{
-			Debug.WriteLine(ex.Message);
+			Console.WriteLine(ex.Message);
 		}
 		finally
 		{
@@ -253,7 +253,7 @@ public class CoreNative
 		}
 		catch (Exception ex)
 		{
-			Debug.WriteLine("c++ get h5 token" + ex.Message);
+			Console.WriteLine("c++ get h5 token" + ex.Message);
 		}
 
 		return result;

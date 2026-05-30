@@ -47,7 +47,7 @@ public partial class ScreenshotsItem : UserControl
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to load screenshot: {ex.Message}");
+                Console.WriteLine($"Failed to load screenshot: {ex.Message}");
             }
     }
 
@@ -96,7 +96,7 @@ public partial class ScreenshotsItem : UserControl
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to save screenshot: {ex.Message}");
+                Console.WriteLine($"Failed to save screenshot: {ex.Message}");
             }
     }
 }

@@ -48,7 +48,7 @@ public partial class GameResourcePackItem : UserControl
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to load pack icon: {ex.Message}");
+            Console.WriteLine($"Failed to load pack icon: {ex.Message}");
         }
 
         PackName.MinecraftText = ResourcePackManifest.Header.Name;

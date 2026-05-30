@@ -74,7 +74,7 @@ public partial class DialogAddGameFolderContent : UserControl
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Folder selection error: {ex.Message}");
+                Console.WriteLine($"Folder selection error: {ex.Message}");
 
                 // 提示用户路径无效
                 DialogHost.Close();

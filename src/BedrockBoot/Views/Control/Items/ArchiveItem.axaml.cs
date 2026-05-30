@@ -71,7 +71,7 @@ public partial class ArchiveItem : UserControl
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to load world icon: {ex.Message}");
+            Console.WriteLine($"Failed to load world icon: {ex.Message}");
         }
     }
 

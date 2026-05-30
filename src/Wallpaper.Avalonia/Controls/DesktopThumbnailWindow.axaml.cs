@@ -35,7 +35,7 @@ public partial class DesktopThumbnailWindow : Window
 
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            Debug.WriteLine("[DesktopThumbnailWindow] 当前仅支持 Windows。");
+            Console.WriteLine("[DesktopThumbnailWindow] 当前仅支持 Windows。");
             return;
         }
 

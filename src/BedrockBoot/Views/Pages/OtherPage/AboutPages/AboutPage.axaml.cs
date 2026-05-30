@@ -57,7 +57,7 @@ public partial class AboutPage : ISettingPage
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Update check failed: {ex.Message}");
+            Console.WriteLine($"Update check failed: {ex.Message}");
         }
         finally
         {

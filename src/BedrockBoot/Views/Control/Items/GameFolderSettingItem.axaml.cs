@@ -50,7 +50,7 @@ public partial class GameFolderSettingItem : UserControl
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"[Explorer] Failed to open folder: {ex.Message}");
+            Console.WriteLine($"[Explorer] Failed to open folder: {ex.Message}");
         }
     }
 

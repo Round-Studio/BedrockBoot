@@ -187,7 +187,7 @@ public partial class MainWindow : BedrockBootWindow
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to load FunctionOption: {ex.Message}");
+            Console.WriteLine($"Failed to load FunctionOption: {ex.Message}");
         }
 
         CheckUserAgreement();
@@ -347,7 +347,7 @@ public partial class MainWindow : BedrockBootWindow
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Background image render error: {ex.Message}");
+            Console.WriteLine($"Background image render error: {ex.Message}");
         }
     }
 

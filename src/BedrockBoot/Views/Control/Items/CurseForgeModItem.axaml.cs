@@ -76,7 +76,7 @@ public partial class CurseForgeModItem : UserControl
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to load CurseForge thumbnail: {ex.Message}");
+            Console.WriteLine($"Failed to load CurseForge thumbnail: {ex.Message}");
         }
     }
 

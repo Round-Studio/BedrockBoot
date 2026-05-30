@@ -14,6 +14,7 @@
       <Platform Solution="Debug|Any CPU" Project="Win32" />
       <Platform Solution="Release|x86" Project="x64" />
     </Project>
+    <Project Path="src/Wallpaper.Avalonia/Wallpaper.Avalonia.csproj" />
     <Project Path="src/Wallpaper/Wallpaper.vcxproj">
       <Platform Project="Win32" />
     </Project>

@@ -156,7 +156,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DwmThumbnail.cpp" />
     <ClCompile Include="Wallpaper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DwmThumbnail.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

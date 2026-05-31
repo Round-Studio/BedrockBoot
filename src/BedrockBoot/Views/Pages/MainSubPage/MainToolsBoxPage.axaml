@@ -54,11 +54,26 @@
                            Text="工具" />
 
                 <onePointControls:SettingCard Header="存档转换"
-                                              Description="Java 存档与 Bedrock 存档互相转换"
+                                              Description="Java 存档与 Bedrock 存档互相转换（基于 Chunker，需要 Jvm 运行器）"
                                               Glyph="&#xEBD2;"
                                               Name="WorldShift"
                                               Click="WorldShift_OnClick"
                                               IsClickable="True" />
+
+                <onePointControls:SettingCard Description="将 Java 版的资源包转换为基岩版支持的资源包"
+                                              Glyph="&#xE895;"
+                                              Name="ResourcePackShift"
+                                              Click="ResourcePackShift_OnClick"
+                                              IsClickable="True" >
+                    <onePointControls:SettingCard.Header>
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8">
+                            <TextBlock Text="资源包转换"></TextBlock>
+                            <onePointControls:LabelBox Text="Beta"
+                                                       VerticalAlignment="Center"></onePointControls:LabelBox>
+                        </StackPanel>
+                    </onePointControls:SettingCard.Header>
+                </onePointControls:SettingCard>
 
                 <onePointControls:SettingCard Header="翻译资源包"
                                               Description="导入一个资源包，并翻译成中文"

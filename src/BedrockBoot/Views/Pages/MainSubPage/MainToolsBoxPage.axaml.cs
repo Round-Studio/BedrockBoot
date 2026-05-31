@@ -198,4 +198,74 @@ public partial class MainToolsBoxPage : BedrockBootPage
             }
         }
     }
+
+    private void ResourcePackShift_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo()
+        {
+            Title = "警告",
+            Content = "当前资源包转换功能处于测试功能，\n" +
+                      "并不能完美的将 Java 版的资源包转换为基岩版所支持的包。\n" +
+                      "\n" +
+                      "有些包甚至会导致游戏崩溃.jpg",
+            CloseButtonText = "确定",
+            PrimaryButtonText = "取消",
+            CloseAction = async () =>
+            {
+                var window = VisualRoot as Window;
+                var dialog = new OpenFileDialog
+                {
+                    Title = "导入需要转换的 Java 版材质包",
+                    AllowMultiple = false,
+                    Filters = new List<FileDialogFilter>
+                    {
+                        new()
+                        {
+                            Name = "Java 版材质包",
+                            Extensions = new List<string> { "zip" }
+                        }
+                    }
+                };
+
+                if (window == null) return;
+
+                var result = await dialog.ShowAsync(window);
+
+                if (result != null && result.Any())
+                {
+                    var selectedFile = result.First();
+
+                    var saveFileDialog = new SaveFileDialog
+                    {
+                        Title = "保存为基岩版资源包",
+                        DefaultExtension = "mcpack",
+                        Filters = new List<FileDialogFilter>
+                        {
+                            new()
+                            {
+                                Name = "Minecraft 基岩版资源包",
+                                Extensions = new List<string> { "mcpack" }
+                            }
+                        }
+                    };
+
+                    if (window == null) return;
+
+                    var showAsync = await saveFileDialog.ShowAsync(window);
+
+                    if (!string.IsNullOrWhiteSpace(showAsync))
+                    {
+                        var saveFile = showAsync;
+                        var inputFile = selectedFile;
+
+                        DialogHost.Show(new DialogInfo
+                        {
+                            Title = "转换包",
+                            Content = new DialogJeToBeResourcePackContent(inputFile, saveFile)
+                        });
+                    }
+                }
+            }
+        });
+    }
 }

@@ -13,3 +13,6 @@
 [submodule "src/BedrockMapRender"]
 	path = src/BedrockMapRender
 	url = https://github.com/BE-Community-Dev/BedrockMapRender.git
+[submodule "src/ResourcePackConvert"]
+	path = src/ResourcePackConvert
+	url = https://github.com/Round-Studio/ResourcePackConvert.git

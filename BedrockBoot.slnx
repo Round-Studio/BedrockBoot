@@ -40,6 +40,10 @@
   <Folder Name="/Dependence/PaperConnect/">
     <Project Path="src/PaperConnect/src/PaperConnect.Core/PaperConnect.Core.csproj" />
   </Folder>
+  <Folder Name="/Dependence/ResourcePackConvert/">
+    <Project Path="src/ResourcePackConvert/ResourcePackConvert.Cli/ResourcePackConvert.Cli.csproj" />
+    <Project Path="src/ResourcePackConvert/ResourcePackConvert.Core/ResourcePackConvert.Core.csproj" />
+  </Folder>
   <Folder Name="/Dependence/SDK/">
     <Project Path="src/Round.SDK/Round.SDK.Avalonia/Round.SDK.Avalonia.csproj" />
     <Project Path="src/Round.SDK/Round.SDK.PluginTools/Round.SDK.PluginTools.csproj" />

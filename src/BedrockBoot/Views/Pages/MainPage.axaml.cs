@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
@@ -9,6 +11,7 @@ using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Proton;
 using BedrockBoot.Views.DialogContent.Linux;
@@ -176,21 +179,34 @@ public partial class MainPage : UserControl
         {
             var result = await CheckUpdate.Update();
             if (result != null)
+            {
+                var panel = new StackPanel();
+                var controls =
+                    HtmlToControlConverter.ConvertHtmlToControls(result.Body);
+                foreach (var control in controls) panel.Children.Add(control);
                 DialogHost.Show(new DialogInfo
                 {
-                    Content = string.Format(i18n["MainPage.Update.Content"], result.Body),
+                    Content = new ScrollViewer()
+                    {
+                        Content = panel,
+                        Padding = new Thickness(10,0),
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden
+                    },
                     Title = string.Format(i18n["MainPage.Update.NewVersion"], result.TagName),
                     CloseButtonText = i18n["MainPage.Update.Action.Now"],
                     PrimaryButtonText = i18n["Shared.Action.Cancel"],
                     CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
                 });
+            }
             else if (isShowNeo)
+            {
                 DialogHost.Show(new DialogInfo
                 {
                     Content = i18n["MainPage.Update.Action.Latest"],
                     Title = i18n["MainPage.Update.Title"],
                     CloseButtonText = i18n["Shared.Action.Confirm"]
                 });
+            }
         }
         catch (Exception ex)
         {

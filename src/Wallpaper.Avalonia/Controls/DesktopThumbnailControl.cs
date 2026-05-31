@@ -190,11 +190,11 @@ public class DesktopThumbnailControl : UserControl
         {
             _thumbnailRegistered = true;
             UpdateThumbnail();
-            Console.WriteLine($"[DesktopThumbnail] 缩略图已注册: window=0x{_windowHwnd:X}, source=0x{sourceHwnd:X}");
+            Console.WriteLine($"缩略图已注册: window=0x{_windowHwnd:X}, source=0x{sourceHwnd:X}");
         }
         else
         {
-            Console.WriteLine($"[DesktopThumbnail] DwmRegisterThumbnail 失败: HRESULT=0x{hr:X}");
+            Console.WriteLine($"DwmRegisterThumbnail 失败: HRESULT=0x{hr:X}");
         }
     }
 
@@ -237,7 +237,6 @@ public class DesktopThumbnailControl : UserControl
             int destRight  = destLeft + (int)Math.Round(Bounds.Width * scale);
             int destBottom = destTop  + (int)Math.Round(Bounds.Height * scale);
 
-            // 确保尺寸有效
             if (destRight <= destLeft) destRight = destLeft + 1;
             if (destBottom <= destTop) destBottom = destTop + 1;
 
@@ -263,7 +262,7 @@ public class DesktopThumbnailControl : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[DesktopThumbnail] UpdateThumbnail 出错: {ex.Message}");
+            Console.WriteLine($"UpdateThumbnail 出错: {ex}");
         }
     }
 }

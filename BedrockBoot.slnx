@@ -14,10 +14,6 @@
       <Platform Solution="Debug|Any CPU" Project="Win32" />
       <Platform Solution="Release|x86" Project="x64" />
     </Project>
-    <Project Path="src/Wallpaper.Avalonia/Wallpaper.Avalonia.csproj" />
-    <Project Path="src/Wallpaper/Wallpaper.vcxproj">
-      <Platform Project="Win32" />
-    </Project>
   </Folder>
   <Folder Name="/Dependence/BedrockMapRender/">
     <Project Path="src/BedrockMapRender/BedrockLevelDB/BedrockLevelDB.csproj" />
@@ -48,6 +44,12 @@
     <Project Path="src/Round.SDK/Round.SDK.Avalonia/Round.SDK.Avalonia.csproj" />
     <Project Path="src/Round.SDK/Round.SDK.PluginTools/Round.SDK.PluginTools.csproj" />
     <Project Path="src/Round.SDK/Round.SDK/Round.SDK.csproj" />
+  </Folder>
+  <Folder Name="/Dependence/Wallpaper/">
+    <Project Path="src/Wallpaper.Avalonia/Wallpaper.Avalonia.csproj" />
+    <Project Path="src/Wallpaper/Wallpaper.vcxproj">
+      <Platform Project="Win32" />
+    </Project>
   </Folder>
   <Folder Name="/Plugin/" />
   <Folder Name="/Test/">

@@ -139,6 +139,17 @@
             <TextBlock FontSize="22"
                        FontWeight="Bold"
                        Margin="5,20,5,8">
+                Markdig
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/xoofx/markdig)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="BSD 2-Clause Simplified License" />
+            <TextBlock Margin="5,0,5,0" FontSize="9"
+                       Text="(https://github.com/xoofx/markdig/blob/main/license.txt)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
                 Interop.IWshRuntimeLibrary
             </TextBlock>
             <TextBlock Margin="5,0,5,0" Text="(https://www.nuget.org/packages/Interop.IWshRuntimeLibrary)" />

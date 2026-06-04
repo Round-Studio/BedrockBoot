@@ -20,11 +20,16 @@ public class CurseForgeApiClient
     private static readonly object _lock = new();
     private readonly string _apiKey;
     private HttpClient _sharedHttpClient;
+    private HttpClient _fixedSourceHttpClient; // 新增：固定使用第一个源的 HttpClient
+    
+    // 统一获取 User-Agent 字符串
+    private string UserAgent => $"BedrockBoot/{Global.GlobalModel.BodyVersion}";
 
     public CurseForgeApiClient(string apiKey)
     {
         _apiKey = apiKey;
         InitializeHttpClient();
+        InitializeFixedSourceHttpClient(); // 初始化固定源的 HttpClient
     }
 
     private void InitializeHttpClient()
@@ -51,14 +56,51 @@ public class CurseForgeApiClient
         _sharedHttpClient = new HttpClient(handler)
         {
             Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
-            BaseAddress =
-                new Uri(SourceList.CurseForgeSource.Values.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex]),
+            BaseAddress = new Uri(SourceList.CurseForgeSource.Values.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex]),
+            DefaultRequestVersion = HttpVersion.Version20
+        };
+
+        // 设置默认请求头 - 使用统一的 User-Agent
+        _sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        _sharedHttpClient.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+    }
+
+    /// <summary>
+    /// 初始化固定使用第一个源的 HttpClient（用于获取推荐和描述）
+    /// </summary>
+    private void InitializeFixedSourceHttpClient()
+    {
+        var handler = new SocketsHttpHandler
+        {
+            SslOptions = new SslClientAuthenticationOptions
+            {
+                EnabledSslProtocols = SslProtocols.Tls12 |
+                                      SslProtocols.Tls13 |
+                                      SslProtocols.Tls11 |
+                                      SslProtocols.Tls
+            },
+            ConnectTimeout = TimeSpan.FromSeconds(30),
+            PooledConnectionLifetime = TimeSpan.FromMinutes(2),
+            MaxConnectionsPerServer = 5,
+            UseProxy = true,
+            AllowAutoRedirect = true,
+            MaxAutomaticRedirections = 3
+        };
+
+        // 固定使用第一个源（索引 0）
+        var fixedBaseAddress = new Uri(SourceList.CurseForgeSource.Values.ToList()[0]);
+        
+        _fixedSourceHttpClient = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromSeconds(60),
+            BaseAddress = fixedBaseAddress,
             DefaultRequestVersion = HttpVersion.Version20
         };
 
         // 设置默认请求头
-        _sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"BedrockBoot/{Global.GlobalModel.BodyVersion}");
-        _sharedHttpClient.DefaultRequestHeaders.Accept.Add(
+        _fixedSourceHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        _fixedSourceHttpClient.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
     }
 
@@ -69,6 +111,16 @@ public class CurseForgeApiClient
         {
             _sharedHttpClient?.Dispose();
             InitializeHttpClient();
+        }
+    }
+
+    // 重新初始化固定源HttpClient的方法
+    private void ReinitializeFixedSourceHttpClient()
+    {
+        lock (_lock)
+        {
+            _fixedSourceHttpClient?.Dispose();
+            InitializeFixedSourceHttpClient();
         }
     }
 
@@ -112,7 +164,7 @@ public class CurseForgeApiClient
                                                    ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($@"获取模组详情错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"获取模组详情错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
                 // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established"))
@@ -123,19 +175,19 @@ public class CurseForgeApiClient
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($@"获取模组详情错误: {ex.Message}");
+                Console.WriteLine($@"获取模组详情错误: {ex}");
                 if (ex.InnerException != null)
                     Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($@"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($@"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
 
@@ -206,7 +258,7 @@ public class CurseForgeApiClient
                                                    ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($@"HTTP请求错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"HTTP请求错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
                 // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established")) ReinitializeHttpClient();
@@ -216,18 +268,18 @@ public class CurseForgeApiClient
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($@"HTTP请求错误: {ex.Message}");
+                Console.WriteLine($@"HTTP请求错误: {ex}");
                 if (ex.InnerException != null) Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($@"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($@"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
 
@@ -235,61 +287,85 @@ public class CurseForgeApiClient
         throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 
+    /// <summary>
+    ///     获取推荐的模组（使用固定源 - 索引0）
+    /// </summary>
     public async Task<CurseForgeFeaturedResponse> GetFeaturedModsAsync(int gameId = 78022)
     {
-        try
-        {
-            // 构建请求体
-            var requestBody = new
+        var retryCount = 0;
+        const int maxRetries = 3;
+
+        while (retryCount <= maxRetries)
+            try
             {
-                gameId
-            };
+                // 构建请求体
+                var requestBody = new
+                {
+                    gameId
+                };
 
-            var jsonBody = JsonSerializer.Serialize(requestBody);
-            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                var jsonBody = JsonSerializer.Serialize(requestBody);
+                var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-            // 创建请求
-            using var request = new HttpRequestMessage(HttpMethod.Post, "v1/mods/featured")
+                // 创建请求 - 使用固定源的 HttpClient
+                using var request = new HttpRequestMessage(HttpMethod.Post, "v1/mods/featured")
+                {
+                    Content = content
+                };
+                request.Headers.Add("x-api-key", _apiKey);
+
+                var response = await _fixedSourceHttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var featuredResponse = JsonSerializer.Deserialize<CurseForgeFeaturedResponse>(json, options);
+                return featuredResponse;
+            }
+            catch (HttpRequestException ex) when (retryCount < maxRetries &&
+                                                  (ex.Message.Contains("SSL connection could not be established") ||
+                                                   ex.Message.Contains("remote host closed") ||
+                                                   ex.Message.Contains("Connection was closed")))
             {
-                Content = content
-            };
-            request.Headers.Add("x-api-key", _apiKey);
+                retryCount++;
+                Console.WriteLine($@"获取推荐内容错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
-            var response = await _sharedHttpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+                // 如果是SSL连接问题，重新初始化固定源HttpClient
+                if (ex.Message.Contains("SSL connection could not be established"))
+                    ReinitializeFixedSourceHttpClient();
 
-            var json = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
+                // 等待一段时间后重试
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
+            }
+            catch (HttpRequestException ex)
             {
-                PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
+                Console.WriteLine($@"获取推荐内容错误: {ex}");
+                if (ex.InnerException != null) Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($@"JSON解析错误: {ex}");
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($@"请求超时: {ex}");
+                throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
+            }
 
-            var featuredResponse = JsonSerializer.Deserialize<CurseForgeFeaturedResponse>(json, options);
-            return featuredResponse;
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($@"获取推荐内容错误: {ex.Message}");
-            if (ex.InnerException != null) Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
-            throw;
-        }
-        catch (JsonException ex)
-        {
-            Console.WriteLine($@"JSON解析错误: {ex.Message}");
-            throw;
-        }
+        throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 
     /// <summary>
     ///     获取指定 modId 的所有文件
     /// </summary>
-    /// <param name="modId">模组ID</param>
-    /// <param name="pageSize">每页大小</param>
-    /// <param name="index">起始索引</param>
-    /// <param name="gameVersion">游戏版本筛选</param>
-    /// <returns>文件列表响应</returns>
     public async Task<CurseForgeResponse.ModFilesResponse> GetModFilesAsync(
         int modId,
         int pageSize = 50,
@@ -329,40 +405,35 @@ public class CurseForgeApiClient
                                                    ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($@"获取文件列表错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"获取文件列表错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
-                // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established")) ReinitializeHttpClient();
 
-                // 等待一段时间后重试
-                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($@"获取文件列表错误: {ex.Message}");
+                Console.WriteLine($@"获取文件列表错误: {ex}");
                 if (ex.InnerException != null) Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($@"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($@"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
 
-        // 如果重试后仍然失败，抛出异常
         throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 
     /// <summary>
     ///     获取指定文件ID的详细信息
     /// </summary>
-    /// <param name="fileId">文件ID</param>
-    /// <returns>文件详细信息</returns>
     public async Task<CurseForgeResponse.ModFile> GetFileDetailsAsync(int fileId)
     {
         var retryCount = 0;
@@ -373,7 +444,6 @@ public class CurseForgeApiClient
             {
                 var url = $"v1/mods/files/{fileId}";
 
-                // 创建请求
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("x-api-key", _apiKey);
 
@@ -398,40 +468,35 @@ public class CurseForgeApiClient
                                                    ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($@"获取文件详情错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"获取文件详情错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
-                // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established")) ReinitializeHttpClient();
 
-                // 等待一段时间后重试
-                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($@"获取文件详情错误: {ex.Message}");
+                Console.WriteLine($@"获取文件详情错误: {ex}");
                 if (ex.InnerException != null) Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($@"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($@"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
 
-        // 如果重试后仍然失败，抛出异常
         throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 
     /// <summary>
     ///     获取多个文件的详细信息
     /// </summary>
-    /// <param name="fileIds">文件ID数组</param>
-    /// <returns>文件详细信息列表</returns>
     public async Task<List<CurseForgeResponse.ModFile>> GetMultipleFilesAsync(int[] fileIds)
     {
         var retryCount = 0;
@@ -440,7 +505,6 @@ public class CurseForgeApiClient
         while (retryCount <= maxRetries)
             try
             {
-                // 构建请求体
                 var requestBody = new
                 {
                     fileIds
@@ -449,7 +513,6 @@ public class CurseForgeApiClient
                 var jsonBody = JsonSerializer.Serialize(requestBody);
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-                // 创建请求
                 using var request = new HttpRequestMessage(HttpMethod.Post, "v1/mods/files")
                 {
                     Content = content
@@ -477,37 +540,34 @@ public class CurseForgeApiClient
                                                    ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($@"获取多个文件错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"获取多个文件错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
-                // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established")) ReinitializeHttpClient();
 
-                // 等待一段时间后重试
-                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($@"获取多个文件错误: {ex.Message}");
+                Console.WriteLine($@"获取多个文件错误: {ex}");
                 if (ex.InnerException != null) Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($@"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($@"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
 
-        // 如果重试后仍然失败，抛出异常
         throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
     }
 
     /// <summary>
-    ///     获取指定 modId 的 Markdown 格式描述
+    ///     获取指定 modId 的 Markdown 格式描述（使用固定源 - 索引0）
     /// </summary>
     /// <param name="modId">模组ID</param>
     /// <returns>模组的 Markdown 描述内容</returns>
@@ -519,46 +579,13 @@ public class CurseForgeApiClient
         while (retryCount <= maxRetries)
             try
             {
-                var handler = new SocketsHttpHandler
-                {
-                    // 配置SSL/TLS选项
-                    SslOptions = new SslClientAuthenticationOptions
-                    {
-                        // 启用所有TLS版本，让服务器选择
-                        EnabledSslProtocols = SslProtocols.Tls12 |
-                                              SslProtocols.Tls13 |
-                                              SslProtocols.Tls11 |
-                                              SslProtocols.Tls
-                    },
-                    ConnectTimeout = TimeSpan.FromSeconds(30),
-                    PooledConnectionLifetime = TimeSpan.FromMinutes(2), // 缩短连接生命周期
-                    MaxConnectionsPerServer = 5, // 限制每个服务器的连接数
-                    UseProxy = true,
-                    AllowAutoRedirect = true,
-                    MaxAutomaticRedirections = 3
-                };
-
-                var sharedHttpClient = new HttpClient(handler)
-                {
-                    Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
-                    BaseAddress =
-                        new Uri(SourceList.CurseForgeSource.Values.ToList()[0]),
-                    DefaultRequestVersion = HttpVersion.Version20
-                };
-
-                // 设置默认请求头
-                sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
-                    $"BedrockBoot/{Global.GlobalModel.BodyVersion}");
-                sharedHttpClient.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/json"));
-
                 var url = $"v1/mods/{modId}/description";
 
-                // 创建请求
+                // 创建请求 - 使用固定源的 HttpClient
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("x-api-key", _apiKey);
 
-                var response = await sharedHttpClient.SendAsync(request);
+                var response = await _fixedSourceHttpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -580,34 +607,42 @@ public class CurseForgeApiClient
                                                    ex.Message.Contains("Connection was closed")))
             {
                 retryCount++;
-                Console.WriteLine($@"获取模组描述错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"获取模组描述错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
-                // 如果是SSL连接问题，重新初始化HttpClient
+                // 如果是SSL连接问题，重新初始化固定源HttpClient
                 if (ex.Message.Contains("SSL connection could not be established"))
-                    ReinitializeHttpClient();
+                    ReinitializeFixedSourceHttpClient();
 
                 // 等待一段时间后重试
-                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($@"获取模组描述错误: {ex.Message}");
+                Console.WriteLine($@"获取模组描述错误: {ex}");
                 if (ex.InnerException != null)
                     Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
                 throw;
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($@"JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"JSON解析错误: {ex}");
                 throw;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($@"请求超时: {ex.Message}");
+                Console.WriteLine($@"请求超时: {ex}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
 
-        // 如果重试后仍然失败，抛出异常
         throw new HttpRequestException($"在重试{maxRetries}次后仍然无法建立连接");
+    }
+    
+    /// <summary>
+    /// 释放资源
+    /// </summary>
+    public void Dispose()
+    {
+        _sharedHttpClient?.Dispose();
+        _fixedSourceHttpClient?.Dispose();
     }
 }

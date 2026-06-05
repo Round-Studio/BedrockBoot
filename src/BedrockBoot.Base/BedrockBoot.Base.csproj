@@ -20,7 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avalonia" Version="11.3.15" />
+      <PackageReference Include="Avalonia" Version="11.3.17" />
     </ItemGroup>
     
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">

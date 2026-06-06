@@ -51,6 +51,18 @@
                                  NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues" />
             </StackPanel>
             <TextBlock Margin="20,1" Text="{DynamicResource About.OpenSource.Invitation}" />
+            
+            <TextBlock Margin="5,20,0,8"
+                       FontSize="16"
+                       Text="赞助" />
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="20,1">
+                <TextBlock Text="在 " />
+                <HyperlinkButton Content="爱发电"
+                                 NavigateUri="https://ifdian.net/a/yjq666" />
+                <TextBlock Text=" 上支持我们" />
+            </StackPanel>
 
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"

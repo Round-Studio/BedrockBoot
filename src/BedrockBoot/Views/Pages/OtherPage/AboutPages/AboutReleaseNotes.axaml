@@ -17,7 +17,7 @@
     </UserControl.Styles>
     <ScrollViewer>
         <StackPanel Margin="20"
-                    Spacing="6">
+                    Spacing="2">
             <TextBlock Text="{x:Static global:GlobalModel.BodyVersion}"
                        FontSize="28"
                        FontWeight="Heavy"></TextBlock>
@@ -43,6 +43,7 @@
                        FontWeight="Bold"></TextBlock>
             
             <items:BorderCard Width="320" Height="180"
+                              Margin="0,8"
                     HorizontalAlignment="Left"
                     Padding="0"
                     CornerRadius="6">

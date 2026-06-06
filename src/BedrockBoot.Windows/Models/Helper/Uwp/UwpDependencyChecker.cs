@@ -5,7 +5,6 @@ namespace BedrockBoot.Models.Helper.Uwp;
 
 public class UwpDependencyChecker
 {
-    // Define the dependencies (matching your Rust function)
     private static readonly List<(string Name, string? Version)> Dependencies = new()
     {
         ("Microsoft.VCLibs.140.00", "14.0.33519.0"),

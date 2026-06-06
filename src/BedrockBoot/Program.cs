@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -21,6 +22,7 @@ using Round.SDK.Logger;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 #if WINDOWS
 using System.Windows.Forms;
+using BedrockBoot.Models.Helper.Uwp;
 using BedrockBoot.Win32;
 using Application = System.Windows.Forms.Application;
 #endif
@@ -111,7 +113,37 @@ internal sealed class Program
         }
 #endif
 
+#if WINDOWS
+        if (UwpDependencyChecker.GetMissingDependencies().Count > 0 &&
+            !args.Contains("-runas"))
+        {
+            RebootWithRunas();
+        }
+#endif
+
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+    }
+
+    private static void RebootWithRunas()
+    {
+        var exePath = Process.GetCurrentProcess().MainModule?.FileName 
+                      ?? throw new InvalidOperationException("无法获取可执行文件路径");
+    
+        var workingDir = Path.GetDirectoryName(exePath) ?? Environment.CurrentDirectory;
+        var args = "-runas";
+    
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = exePath,
+            Arguments = args,
+            WorkingDirectory = workingDir,
+            UseShellExecute = true,
+            CreateNoWindow = false,
+            Verb = "runas"
+        };
+                
+        Process.Start(startInfo);
+        Environment.Exit(0);
     }
 
     private static bool ArgsAnalytical(List<string> args)

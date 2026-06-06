@@ -23,6 +23,7 @@ using BedrockBoot.Models;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Helper.Uwp;
 using BedrockBoot.Service;
 using BedrockBoot.Service.WebServer;
 using BedrockBoot.Views.DialogContent;
@@ -66,6 +67,7 @@ public partial class MainWindow : BedrockBootWindow
         AddHandler(DragDrop.DropEvent, OnDrop);
 
         _ = GetDevelopMode();
+        CheckUwpDependence();
     }
 
     private I18nManager I18n => I18nManager.Instance;
@@ -158,6 +160,27 @@ public partial class MainWindow : BedrockBootWindow
         if (!devMod)
             DeveloperModeHelper.ShowNotice();
 #endif
+    }
+
+    private void CheckUwpDependence()
+    {
+        Task.Run(() =>
+        {
+            Thread.Sleep(1000);
+            var depList = UwpDependencyChecker.GetMissingDependencies();
+            if (depList.Count > 0)
+            {
+                Console.WriteLine($@"当前系统未安装对应的 UWP 依赖，共 {depList.Count} 个依赖未安装。");
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Title = "安装 UWP 依赖",
+                        Content = new DialogDownloadUwpDependenceContent(depList)
+                    });
+                });
+            }
+        });
     }
 
     private void InitializeWindowBounds()

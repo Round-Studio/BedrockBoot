@@ -11,6 +11,10 @@
 #include <thread>
 #include <condition_variable>
 #include <atomic>
+#include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 enum class LogLevel {
     INFO,
@@ -45,6 +49,12 @@ private:
     static std::thread workerThread;
     static std::atomic<bool> shouldStop;
 
+    // 文件写入相关
+    static std::ofstream logFile;
+    static std::mutex fileMutex;
+    static bool fileEnabled;
+    static std::string logFilePath;
+
     static std::string GetTimestamp() {
         auto now = std::chrono::system_clock::now();
         auto time = std::chrono::system_clock::to_time_t(now);
@@ -57,13 +67,58 @@ private:
         return ss.str();
     }
 
+    static std::string GetFullTimestamp() {
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+
+        std::stringstream ss;
+        struct tm tm_info;
+        localtime_s(&tm_info, &time);
+        ss << std::put_time(&tm_info, "%Y-%m-%d %H:%M:%S") << "." << std::setfill('0') << std::setw(3) << ms.count();
+        return ss.str();
+    }
+
     static const char* GetLevelString(LogLevel level) {
         switch (level) {
-        case LogLevel::INFO: return "INFO";
+        case LogLevel::INFO:    return "INFO";
         case LogLevel::WARNING: return "WARN";
-        case LogLevel::ERR: return "ERROR";
+        case LogLevel::ERR:     return "EROR";
+        case LogLevel::SUCCESS: return "SUCC";
+        default:                return "LOG ";
+        }
+    }
+
+    static const char* GetLevelStringFull(LogLevel level) {
+        switch (level) {
+        case LogLevel::INFO:    return "INFO";
+        case LogLevel::WARNING: return "WARNING";
+        case LogLevel::ERR:     return "ERROR";
         case LogLevel::SUCCESS: return "SUCCESS";
-        default: return "LOG";
+        default:                return "LOG";
+        }
+    }
+
+    static WORD GetLevelColor(LogLevel level) {
+        switch (level) {
+        case LogLevel::INFO:    return CYAN_COLOR;
+        case LogLevel::SUCCESS: return INFO_COLOR;
+        case LogLevel::WARNING: return WARNING_COLOR;
+        case LogLevel::ERR:     return ERROR_COLOR;
+        default:                return DEFAULT_COLOR;
+        }
+    }
+
+    static void WriteToFile(const LogTask& task) {
+        if (!fileEnabled) return;
+
+        std::lock_guard<std::mutex> lock(fileMutex);
+        if (logFile.is_open()) {
+            logFile << GetFullTimestamp() << " "
+                << GetLevelStringFull(task.level) << " "
+                << "[" << task.context << "] "
+                << task.message << std::endl;
+            logFile.flush();
         }
     }
 
@@ -77,14 +132,13 @@ private:
 
                 if (shouldStop && logQueue.empty()) break;
 
-                // 批量交换队列，极大减少锁占用时间
                 std::swap(localQueue, logQueue);
             }
 
-            // 在锁外进行 I/O，不阻塞 Hook 线程
             while (!localQueue.empty()) {
                 const auto& task = localQueue.front();
                 Render(task);
+                WriteToFile(task);
                 localQueue.pop();
             }
         }
@@ -97,46 +151,96 @@ private:
         std::cout << task.timestamp << " ";
 
         // 2. 级别标签 (根据级别变色)
-        if (task.level == LogLevel::INFO)
-            SetConsoleTextAttribute(hConsole, CYAN_COLOR);
-        else if (task.level == LogLevel::SUCCESS)
-            SetConsoleTextAttribute(hConsole, INFO_COLOR);
-        else if (task.level == LogLevel::WARNING)
-            SetConsoleTextAttribute(hConsole, WARNING_COLOR);
-        else if (task.level == LogLevel::ERR)
-            SetConsoleTextAttribute(hConsole, ERROR_COLOR);
-
+        SetConsoleTextAttribute(hConsole, GetLevelColor(task.level));
         std::cout << GetLevelString(task.level);
 
         // 3. 恢复默认并输出内容
         SetConsoleTextAttribute(hConsole, DEFAULT_COLOR);
-        std::cout << " [" << task.context << "] " << task.message << "\n"; // 使用 \n 代替 std::endl 提高性能
+        std::cout << " [" << task.context << "] " << task.message << "\n";
+    }
+
+    static std::string CreateLogDirectory() {
+        // 获取 exe 所在目录
+        char exePath[MAX_PATH];
+        GetModuleFileNameA(NULL, exePath, MAX_PATH);
+        fs::path exeDir = fs::path(exePath).parent_path();
+
+        // 创建 logs 目录
+        fs::path logDir = exeDir / "config" / "BedrockBoot2" / "logs";
+        if (!fs::exists(logDir)) {
+            fs::create_directories(logDir);
+        }
+
+        // 生成日志文件名（按日期）
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
+        struct tm tm_info;
+        localtime_s(&tm_info, &time);
+
+        std::stringstream ss;
+        ss << "log_" << std::put_time(&tm_info, "%Y%m%d") << ".log";
+        logFilePath = (logDir / ss.str()).string();
+
+        return logFilePath;
     }
 
 public:
     static void Initialize() {
-        if (hConsole != INVALID_HANDLE_VALUE) return; // 防止重复初始化
+        if (hConsole != INVALID_HANDLE_VALUE) return;
 
         hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-        // 提升标准流性能
         std::ios_base::sync_with_stdio(false);
         std::cin.tie(NULL);
+
+        // 初始化文件日志
+        CreateLogDirectory();
+        logFile.open(logFilePath, std::ios::out | std::ios::app);
+        if (!logFile.is_open()) {
+            Logger::Log(LogLevel::ERR, "Unable to open log file!", "Logger");
+        }
+
+        if (logFile.is_open()) {
+            fileEnabled = true;
+            WriteToFile(LogTask{ LogLevel::INFO, "Log file started", GetFullTimestamp(), "Logger" });
+        }
+        else {
+            fileEnabled = false;
+        }
 
         shouldStop = false;
         workerThread = std::thread(ProcessLogs);
 
-        Logger::Log(LogLevel::INFO, "Logger Initialize.", "Logger");
+        Logger::Log(LogLevel::INFO, "Logger initialized (file: " + std::string(fileEnabled ? "enabled" : "disabled") + ")", "Logger");
+        Logger::Log(LogLevel::INFO, "Log file: " + logFilePath, "Logger");
     }
 
     static void Shutdown() {
+        if (fileEnabled) {
+            WriteToFile(LogTask{ LogLevel::INFO, "Logger shutting down", GetFullTimestamp(), "Logger" });
+            logFile.close();
+        }
+
         shouldStop = true;
         cv.notify_all();
         if (workerThread.joinable()) workerThread.join();
     }
 
+    static void EnableFileLogging(bool enable) {
+        fileEnabled = enable;
+    }
+
+    static void SetLogPath(const std::string& path) {
+        std::lock_guard<std::mutex> lock(fileMutex);
+        if (logFile.is_open()) {
+            logFile.close();
+        }
+        logFilePath = path;
+        logFile.open(logFilePath, std::ios::out | std::ios::app);
+        fileEnabled = logFile.is_open();
+    }
+
     static void Log(LogLevel level, const std::string& message, const std::string& context = "BedrockBoot") {
-        // 仅仅将数据打包进队列，耗时极短
         LogTask task{ level, message, GetTimestamp(), context };
         {
             std::lock_guard<std::mutex> lock(queueMutex);
@@ -145,10 +249,21 @@ public:
         cv.notify_one();
     }
 
-    static void Info(const std::string& msg) { Log(LogLevel::INFO, msg); }
-    static void Warning(const std::string& msg) { Log(LogLevel::WARNING, msg); }
-    static void Error(const std::string& msg) { Log(LogLevel::ERR, msg); }
-    static void Success(const std::string& msg) { Log(LogLevel::SUCCESS, msg); }
+    static void Info(const std::string& msg, const std::string& context = "BedrockBoot") {
+        Log(LogLevel::INFO, msg, context);
+    }
+
+    static void Warning(const std::string& msg, const std::string& context = "BedrockBoot") {
+        Log(LogLevel::WARNING, msg, context);
+    }
+
+    static void Error(const std::string& msg, const std::string& context = "BedrockBoot") {
+        Log(LogLevel::ERR, msg, context);
+    }
+
+    static void Success(const std::string& msg, const std::string& context = "BedrockBoot") {
+        Log(LogLevel::SUCCESS, msg, context);
+    }
 };
 
 // 静态成员初始化
@@ -158,3 +273,7 @@ std::mutex Logger::queueMutex;
 std::condition_variable Logger::cv;
 std::thread Logger::workerThread;
 std::atomic<bool> Logger::shouldStop{ false };
+std::ofstream Logger::logFile;
+std::mutex Logger::fileMutex;
+bool Logger::fileEnabled = true;
+std::string Logger::logFilePath;

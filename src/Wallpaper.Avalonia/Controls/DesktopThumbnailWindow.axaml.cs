@@ -79,6 +79,7 @@ public partial class DesktopThumbnailWindow : Window
         _owner.PositionChanged += OnOwnerPositionChanged;
         _owner.SizeChanged += OnOwnerSizeChanged;
         _owner.Activated += OnOwnerActivated;
+        _owner.Deactivated += OnOwnerDeactivated;
 
         // 启动定时器，轮询窗口状态（最小化检测、位置/大小同步）
         StartSyncTimer();
@@ -94,6 +95,7 @@ public partial class DesktopThumbnailWindow : Window
         _owner.PositionChanged -= OnOwnerPositionChanged;
         _owner.SizeChanged -= OnOwnerSizeChanged;
         _owner.Activated -= OnOwnerActivated;
+        _owner.Deactivated -= OnOwnerDeactivated;
         _owner = null;
         _ownerHwnd = IntPtr.Zero;
         _isFollowing = false;
@@ -149,6 +151,15 @@ public partial class DesktopThumbnailWindow : Window
         }, DispatcherPriority.Render);
     }
 
+    private void OnOwnerDeactivated(object? sender, EventArgs e)
+    {
+        // 主窗口失去焦点（如弹出新窗口）→ 立即确保 Z 序正确
+        Dispatcher.UIThread.Post(() =>
+        {
+            EnsureZOrder();
+        }, DispatcherPriority.Render);
+    }
+
     // ──────────────────────────────────────────────
     //  同步定时器（兜底）
     // ──────────────────────────────────────────────
@@ -200,10 +211,11 @@ public partial class DesktopThumbnailWindow : Window
             }
         }
 
-        // 主窗口非最小化时持续同步
+        // 主窗口非最小化时持续同步（位置 + Z 序）
         if (!isMinimized)
         {
             SyncPositionAndSize();
+            EnsureZOrder();
         }
     }
 
@@ -277,8 +289,11 @@ public partial class DesktopThumbnailWindow : Window
         IntPtr exStyle = WindowHelper.GetWindowLongPtrW(_myHwnd, WindowHelper.GWL_EXSTYLE);
         long exStyleVal = exStyle.ToInt64();
 
-        // 添加 WS_EX_TOOLWINDOW，移除 WS_EX_APPWINDOW
+        // 添加 WS_EX_TOOLWINDOW（不在任务栏显示）
+        // 添加 WS_EX_NOACTIVATE（禁止被激活，防止跳到主窗口上方）
+        // 移除 WS_EX_APPWINDOW
         exStyleVal |= WindowHelper.WS_EX_TOOLWINDOW;
+        exStyleVal |= WindowHelper.WS_EX_NOACTIVATE;
         exStyleVal &= ~WindowHelper.WS_EX_APPWINDOW;
 
         _ = WindowHelper.SetWindowLongPtrW(_myHwnd, WindowHelper.GWL_EXSTYLE, new IntPtr(exStyleVal));

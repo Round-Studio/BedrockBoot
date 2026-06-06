@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Models.Global;
@@ -314,27 +315,27 @@ public class PluginLoader
             }
         }
     }
-
-    public static bool TryGetPluginConfig(string fileName, out PackConfig? config)
+    
+    public static string? FindInstalledPackageFile(string originalFileName)
     {
         lock (_pluginListLock)
         {
-            var installed = File.Exists(Path.Combine(PathsList.PluginPath, fileName)) ||
-                            File.Exists(Path.Combine(PathsList.PluginPath, $"{fileName}.disable"));
-
-            if (!installed)
+            var pluginPath = PathsList.PluginPath;
+            var searchPattern = $"*({originalFileName}).rplck";
+        
+            // 查找匹配模式的文件
+            var matchedFiles = Directory.GetFiles(pluginPath, searchPattern);
+        
+            if (matchedFiles.Length > 0)
             {
-                config = null;
-                return false;
+                return matchedFiles[0]; // 返回第一个匹配的完整路径
             }
-
-            var conf = Plugins.Find(plugin =>
-                plugin.PackFile == Path.Combine(PathsList.PluginPath, fileName) ||
-                plugin.PackFile == Path.Combine(PathsList.PluginPath, $"{fileName}.disable"));
-            
-            config = conf;
-            
-            return installed;
+        
+            // 也检查 .disable 的
+            var disabledPattern = $"*({originalFileName}).rplck.disable";
+            var disabledFiles = Directory.GetFiles(pluginPath, disabledPattern);
+        
+            return disabledFiles.Length > 0 ? disabledFiles[0] : null;
         }
     }
     

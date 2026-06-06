@@ -11,6 +11,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Models.Pack.Plugin.Market;
+using BedrockBoot.Plugin;
 using BedrockBoot.Views.TaskItem.Plugin;
 using Octokit;
 using Round.SDK.Entry;
@@ -20,7 +21,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.PluginMarket;
 public partial class PluginMarketInfo : UserControl
 {
     private readonly MarketResponse.PluginInfo _info;
-    private PackConfig _packConfig;
+    private PackConfig? _packConfig;
     private Release _release;
 
     public PluginMarketInfo()
@@ -53,8 +54,15 @@ public partial class PluginMarketInfo : UserControl
             {
                 var file = x.BrowserDownloadUrl;
                 var fileName = Path.GetFileName(file);
+
+                var result = PluginLoader.FindInstalledPackageFile(fileName);
+                if (File.Exists(result))
+                {
+                    _packConfig = PluginHelper.ReadPackConfig(result);
+                    return true;
+                }
                 
-                return PluginLoader.TryGetPluginConfig(fileName, out _packConfig);
+                return false;
             });
 
             _release = releases.FirstOrDefault();
@@ -99,14 +107,14 @@ public partial class PluginMarketInfo : UserControl
 
     private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        TaskDownloadPluginItem.Install(_release);
+        TaskDownloadPluginItem.Install(_release,_info);
         GlobalModel.MainWindow.CloseDraw();
     }
 
     private void ReInstallBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         DeleteBtn_OnClick(sender, e);
-        TaskDownloadPluginItem.Install(_release);
+        TaskDownloadPluginItem.Install(_release, _info);
         GlobalModel.MainWindow.CloseDraw();
     }
 

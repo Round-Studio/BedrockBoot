@@ -2,17 +2,26 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <DefineConstants>WINDOWS</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <TargetFramework>net10.0</TargetFramework>
+        <DefineConstants>LINUX</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
-      <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj" />
-      <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj" />
-      <ProjectReference Include="..\BedrockBoot.Netease\BedrockBoot.Netease.csproj" />
-      <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
-      <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj" />
     </ItemGroup>
 
 </Project>

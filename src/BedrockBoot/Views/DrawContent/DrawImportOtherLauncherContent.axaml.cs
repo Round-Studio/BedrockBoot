@@ -71,7 +71,7 @@ public partial class DrawImportOtherLauncherContent : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load icon {url}: {ex.Message}");
+            Console.WriteLine($@"Failed to load icon {url}: {ex.Message}");
             return null;
         }
     }

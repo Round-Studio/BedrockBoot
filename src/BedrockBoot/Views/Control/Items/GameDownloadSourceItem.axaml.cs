@@ -71,7 +71,7 @@ public partial class GameDownloadSourceItem : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Speed test error for {GameDownloadUrlInfo.Host}: {ex.Message}");
+            Console.WriteLine($@"Speed test error for {GameDownloadUrlInfo.Host}: {ex.Message}");
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 PingBox.Background = Brushes.DarkRed;

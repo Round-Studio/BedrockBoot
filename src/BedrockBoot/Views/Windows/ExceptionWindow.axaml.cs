@@ -127,7 +127,7 @@ public partial class ExceptionWindow : OnePointWindow
         catch (Exception ex)
         {
             // 这里可以处理网络异常
-            Console.WriteLine($"Upload failed: {ex.Message}");
+            Console.WriteLine($@"Upload failed: {ex.Message}");
         }
 
         return null;

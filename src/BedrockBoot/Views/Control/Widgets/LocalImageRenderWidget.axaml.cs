@@ -69,7 +69,7 @@ public partial class LocalImageRenderWidget : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load image: {ex.Message}");
+            Console.WriteLine($@"Failed to load image: {ex.Message}");
         }
     }
 }

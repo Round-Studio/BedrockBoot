@@ -56,7 +56,7 @@ public partial class InstancePluginItem : UserControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to load plugin icon: {ex.Message}");
+                Console.WriteLine($@"Failed to load plugin icon: {ex.Message}");
             }
     }
 

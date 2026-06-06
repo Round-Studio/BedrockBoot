@@ -78,6 +78,20 @@ public class EasyLauncher
         var gameServiceInstallStatue = IsGamingServicesInstalled();
         Console.WriteLine($@"GameService 安装状态：{gameServiceInstallStatue}");
 
+        if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+        {
+            Console.WriteLine(@"当前实例为 UWP 构建类型，需要检测开发者模式。");
+            var devMod = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
+            
+            Console.WriteLine(@"开发者模式启用状态: " + devMod);
+            if (!devMod)
+            {
+                LaunchCompleted?.Invoke();
+                DeveloperModeHelper.ShowNotice();
+                return;
+            }
+        }
+
         if (!gameServiceInstallStatue)
         {
             LaunchCompleted?.Invoke();

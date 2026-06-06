@@ -496,7 +496,7 @@ public class ResourcePackTranslate
                             translatedEntries[key] = value;
                         }
 
-                        Console.WriteLine($"翻译失败 [{key}]: {ex.Message}");
+                        Console.WriteLine($@"翻译失败 [{key}]: {ex.Message}");
                     }
                     finally
                     {

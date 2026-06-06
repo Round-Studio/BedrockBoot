@@ -60,7 +60,7 @@ public partial class AboutContributor : ISettingPage
             catch (Exception ex)
             {
                 // 记录错误并在 UI 上反馈（可选）
-                Console.WriteLine($"Failed to fetch contributors: {ex.Message}");
+                Console.WriteLine($@"Failed to fetch contributors: {ex.Message}");
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {

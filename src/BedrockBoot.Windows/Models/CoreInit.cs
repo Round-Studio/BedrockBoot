@@ -15,7 +15,7 @@ public class CoreInit
             Options = new CoreOptions
             {
                 IsAutoCompleteVC = true,
-                IsAutoOpenDevelopment = true,
+                IsAutoOpenDevelopment = false,
                 IsAutoCompleteGameInput = true,
                 IsCheckMD5 = true
             }

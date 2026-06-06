@@ -64,8 +64,8 @@ public partial class MainWindow : BedrockBootWindow
 
         AddHandler(DragDrop.DragOverEvent, OnDragOver);
         AddHandler(DragDrop.DropEvent, OnDrop);
-        
-        InitializeWindowBounds();
+
+        _ = GetDevelopMode();
     }
 
     private I18nManager I18n => I18nManager.Instance;
@@ -151,6 +151,15 @@ public partial class MainWindow : BedrockBootWindow
 
     #region 初始化流程
 
+    private async Task GetDevelopMode()
+    {
+#if WINDOWS
+        var devMod = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
+        if (!devMod)
+            DeveloperModeHelper.ShowNotice();
+#endif
+    }
+
     private void InitializeWindowBounds()
     {
         if (Core.Global.GlobalModel.Config.Data.WindowInfo.X >= 1 &&
@@ -187,7 +196,7 @@ public partial class MainWindow : BedrockBootWindow
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load FunctionOption: {ex.Message}");
+            Console.WriteLine($@"Failed to load FunctionOption: {ex.Message}");
         }
 
         CheckUserAgreement();
@@ -347,7 +356,7 @@ public partial class MainWindow : BedrockBootWindow
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Background image render error: {ex.Message}");
+            Console.WriteLine($@"Background image render error: {ex.Message}");
         }
     }
 

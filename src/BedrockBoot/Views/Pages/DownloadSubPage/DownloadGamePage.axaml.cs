@@ -78,7 +78,7 @@ public partial class DownloadGamePage : UserControl, IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading versions: {ex.Message}");
+            Console.WriteLine($@"Error loading versions: {ex.Message}");
             await SetLoadingState(false, false, true);
         }
     }

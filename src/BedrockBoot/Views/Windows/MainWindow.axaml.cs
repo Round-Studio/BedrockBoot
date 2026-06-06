@@ -23,9 +23,7 @@ using BedrockBoot.Models;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Helper.Uwp;
 using BedrockBoot.Service;
-using BedrockBoot.Service.WebServer;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages;
@@ -35,6 +33,10 @@ using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
+
+#if WINDOWS
+using BedrockBoot.Models.Helper.Uwp;
+#endif
 
 namespace BedrockBoot.Views.Windows;
 
@@ -164,6 +166,7 @@ public partial class MainWindow : BedrockBootWindow
 
     private void CheckUwpDependence()
     {
+#if WINDOWS
         Task.Run(() =>
         {
             Thread.Sleep(1000);
@@ -181,6 +184,7 @@ public partial class MainWindow : BedrockBootWindow
                 });
             }
         });
+#endif
     }
 
     private void InitializeWindowBounds()

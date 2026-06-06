@@ -5,14 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper.Uwp;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+#if WINDOWS
+using BedrockBoot.Models.Helper.Uwp;
+#endif
 
 namespace BedrockBoot.Views.DialogContent;
 
@@ -91,8 +91,12 @@ public partial class DialogDownloadUwpDependenceContent : UserControl
     
     private async Task<(string Name, string Url, int Index)> GetUrlAsync(string name, string version, int index)
     {
+#if WINDOWS
         var url = await UwpFileUrl.GetUwpPackageDownloadUrl(name, version);
         return (name, url, index);
+#endif
+
+        return (null,null,0);
     }
 
     private async Task DownloadOneAsync(string name, string url, int index)

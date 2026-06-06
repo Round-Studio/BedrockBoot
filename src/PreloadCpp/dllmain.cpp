@@ -443,7 +443,7 @@ int LoadPreloadDlls(HINSTANCE hinstDLL,
 				if (lowerExt == ".dll")
 				{
 					std::string filename = entry.path().filename().string();
-					Logger::Error("Loading DLL: " + filename + "...");
+					Logger::Info("Loading DLL: " + filename + "...");
 
 					HMODULE hModule = LoadLibraryA(path.c_str());
 					if (hModule)
@@ -536,7 +536,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 {
 	switch (ul_reason_for_call)
 	{
-	case DLL_PROCESS_ATTACH:
+	case DLL_PROCESS_ATTACH:	
 		SetExeDirectoryAsWorkingDir();
 		if (g_configManager.GetBoolConfig("isConsole"))
 		{
@@ -548,8 +548,8 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 			Logger::Initialize();
 			PrintBanner();
 
-			Logger::Warning("BedrockBoot is free software licensed under GPLv3");
-			Logger::Warning("Submit issues and submit PR: https://github.com/Round-Studio/BedrockBoot");
+			Logger::Success("BedrockBoot is free software licensed under GPLv3");
+			Logger::Success("Submit issues and submit PR: https://github.com/Round-Studio/BedrockBoot");
 		}
 		if (g_configManager.GetBoolConfig("isVersionIsolated"))
 		{

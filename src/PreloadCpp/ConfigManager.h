@@ -5,6 +5,9 @@
 #include <fstream>
 #include <sstream>
 #include <windows.h>
+#include <unordered_map>
+#include <cctype>
+#include <algorithm>
 #include "logger.h"
 
 namespace fs = std::filesystem;
@@ -12,13 +15,12 @@ namespace fs = std::filesystem;
 class ConfigManager
 {
 private:
-    std::string m_jsonContent;
+    std::unordered_map<std::string, std::string> m_configValues;
+    bool m_isValid;
 
-    // 获取本体 EXE 所在的绝对路径目录
     std::wstring GetExeDirectory()
     {
         wchar_t path[MAX_PATH];
-        // 传入 NULL 获取当前进程 (.exe) 的路径
         if (GetModuleFileNameW(NULL, path, MAX_PATH) == 0)
         {
             return L"";
@@ -29,7 +31,6 @@ private:
 
     std::string ReadJsonFile()
     {
-        // 构建绝对路径：EXE目录 / config / BedrockBoot2 / config.json
         fs::path configPath = GetExeDirectory();
         if (configPath.empty()) return "";
 
@@ -37,18 +38,16 @@ private:
         configPath /= "BedrockBoot2";
         configPath /= "config.json";
 
-        std::string fullPathStr = configPath.string();
-
         if (!fs::exists(configPath))
         {
-            Logger::Error("Config file missing: " + fullPathStr);
+            Logger::Error("Config file missing: " + configPath.string());
             return "";
         }
 
         std::ifstream file(configPath);
         if (!file.is_open())
         {
-            Logger::Error("Access denied or failed to open: " + fullPathStr);
+            Logger::Error("Failed to open config file: " + configPath.string());
             return "";
         }
 
@@ -59,79 +58,194 @@ private:
         return buffer.str();
     }
 
-    // 通用修剪函数
-    std::string Trim(const std::string& str, const std::string& trimChars = " \t\n\r\"")
+    std::string Trim(const std::string& str)
     {
-        size_t first = str.find_first_not_of(trimChars);
+        size_t first = str.find_first_not_of(" \t\n\r");
         if (first == std::string::npos) return "";
-        size_t last = str.find_last_not_of(trimChars);
+        size_t last = str.find_last_not_of(" \t\n\r");
         return str.substr(first, last - first + 1);
     }
 
-    // 简易 JSON 解析逻辑
-    std::string GetJsonValue(const std::string& json, const std::string& key)
+    std::string ExtractValue(const std::string& json, size_t startPos)
     {
-        std::string searchKey = "\"" + key + "\"";
-        size_t keyPos = json.find(searchKey);
-        if (keyPos == std::string::npos) return "";
+        size_t pos = startPos;
+        size_t endPos;
+        char c;
 
-        size_t colonPos = json.find(':', keyPos);
-        if (colonPos == std::string::npos) return "";
-
-        size_t start = colonPos + 1;
-        // 跳过空白
-        while (start < json.length() && isspace(static_cast<unsigned char>(json[start])))
-            start++;
-
-        size_t end = start;
-        bool inString = false;
-        int braceCount = 0;
-        int bracketCount = 0;
-
-        while (end < json.length())
+        while (pos < json.length())
         {
-            char c = json[end];
-            if (c == '\"') inString = !inString;
-            if (!inString)
-            {
-                if (c == '{') braceCount++;
-                else if (c == '}') braceCount--;
-                else if (c == '[') bracketCount++;
-                else if (c == ']') bracketCount--;
-                else if ((c == ',' || c == '}' || c == ']') && braceCount <= 0 && bracketCount <= 0) break;
-            }
-            end++;
+            c = json[pos];
+            if (!(c == ' ' || c == '\t' || c == '\n' || c == '\r')) break;
+            pos++;
         }
-        return json.substr(start, end - start);
+
+        if (pos >= json.length()) return "";
+
+        if (json[pos] == '"')
+        {
+            pos++;
+            endPos = pos;
+            while (endPos < json.length())
+            {
+                if (json[endPos] == '"')
+                {
+                    if (endPos == pos || json[endPos - 1] != '\\')
+                    {
+                        break;
+                    }
+                }
+                endPos++;
+            }
+            return json.substr(pos, endPos - pos);
+        }
+
+        endPos = pos;
+        while (endPos < json.length())
+        {
+            c = json[endPos];
+            if (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == ',' || c == '}')
+            {
+                break;
+            }
+            endPos++;
+        }
+
+        return json.substr(pos, endPos - pos);
+    }
+
+    void ParseJson(const std::string& json)
+    {
+        size_t configPos;
+        size_t colonPos;
+        size_t objStart;
+        size_t objEnd;
+        int braceCount;
+        size_t currentPos;
+        size_t keyStart;
+        size_t keyEnd;
+        size_t valueColonPos;
+        size_t commaPos;
+        std::string key;
+        std::string value;
+
+        m_isValid = false;
+
+        configPos = json.find("\"config\"");
+        if (configPos == std::string::npos)
+        {
+            Logger::Error("JSON missing config key");
+            return;
+        }
+
+        colonPos = json.find(':', configPos);
+        if (colonPos == std::string::npos)
+        {
+            Logger::Error("Invalid JSON: missing colon");
+            return;
+        }
+
+        objStart = json.find('{', colonPos);
+        if (objStart == std::string::npos)
+        {
+            Logger::Error("Invalid JSON: config not an object");
+            return;
+        }
+
+        braceCount = 1;
+        objEnd = objStart + 1;
+        while (objEnd < json.length() && braceCount > 0)
+        {
+            if (json[objEnd] == '{') braceCount++;
+            else if (json[objEnd] == '}') braceCount--;
+            objEnd++;
+        }
+
+        if (braceCount != 0)
+        {
+            Logger::Error("Invalid JSON: unmatched braces");
+            return;
+        }
+
+        currentPos = objStart + 1;
+        while (currentPos < objEnd)
+        {
+            keyStart = json.find('"', currentPos);
+            if (keyStart == std::string::npos || keyStart >= objEnd) break;
+
+            keyEnd = json.find('"', keyStart + 1);
+            if (keyEnd == std::string::npos || keyEnd >= objEnd) break;
+
+            key = json.substr(keyStart + 1, keyEnd - keyStart - 1);
+
+            valueColonPos = json.find(':', keyEnd);
+            if (valueColonPos == std::string::npos || valueColonPos >= objEnd) break;
+
+            value = ExtractValue(json, valueColonPos + 1);
+
+            m_configValues[key] = value;
+
+            commaPos = json.find(',', valueColonPos);
+            if (commaPos == std::string::npos || commaPos >= objEnd) break;
+            currentPos = commaPos + 1;
+        }
+
+        m_isValid = true;
+        Logger::Info("Config loaded, items: " + std::to_string(m_configValues.size()));
     }
 
 public:
-    ConfigManager()
+    ConfigManager() : m_isValid(false)
     {
-        m_jsonContent = ReadJsonFile();
+        std::string jsonContent = ReadJsonFile();
+        if (!jsonContent.empty())
+        {
+            ParseJson(jsonContent);
+        }
+
+        if (!m_isValid)
+        {
+            Logger::Warning("Using default config values");
+            m_configValues["isConsole"] = "true";
+            m_configValues["isVersionIsolated"] = "true";
+            m_configValues["isDetailedLog"] = "false";
+            m_isValid = true;
+        }
     }
 
     bool GetBoolConfig(const std::string& key)
     {
-        std::string section = GetJsonValue(m_jsonContent, "config");
-        if (section.empty()) return false;
+        std::unordered_map<std::string, std::string>::iterator it;
+        std::string value;
 
-        std::string val = Trim(GetJsonValue(section, key));
-        // 转换为小写判断
-        for (auto& c : val) c = static_cast<char>(tolower(c));
-        return (val == "true" || val == "1");
+        it = m_configValues.find(key);
+        if (it == m_configValues.end())
+        {
+            Logger::Warning("Config key not found: " + key);
+            return false;
+        }
+
+        value = it->second;
+        std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+
+        return (value == "true" || value == "1");
     }
 
     std::string GetStringConfig(const std::string& key)
     {
-        std::string section = GetJsonValue(m_jsonContent, "config");
-        if (section.empty()) return "";
+        std::unordered_map<std::string, std::string>::iterator it;
 
-        return Trim(GetJsonValue(section, key));
+        it = m_configValues.find(key);
+        if (it == m_configValues.end())
+        {
+            Logger::Warning("Config key not found: " + key);
+            return "";
+        }
+
+        return it->second;
     }
 
     bool IsConfigValid() const
     {
-        return !m_jsonContent.empty();
+        return m_isValid;
     }
 };

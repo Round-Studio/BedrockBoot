@@ -389,21 +389,14 @@ public partial class BedrockBootWindow : Window
 
     public void SetBlurState(bool state)
     {
-        // 复用同一对 BlurEffect，避免每次拖拽都 new 离屏渲染目标
-        if (ContentView.Effect is not BlurEffect contentBlur)
-        {
-            contentBlur = new BlurEffect();
-            ContentView.Effect = contentBlur;
-        }
-        contentBlur.Radius = state ? 50 : 0;
-
-        if (BackgroundGroupBox.Effect is not BlurEffect bgBlur)
-        {
-            bgBlur = new BlurEffect();
-            BackgroundGroupBox.Effect = bgBlur;
-        }
-        bgBlur.Radius = state ? 50 : 0;
-
+        // 关键：XAML 中 ContentView/BackgroundGroupBox 配置了 EffectTransition，
+        // 它监听的是 Effect 属性本身变化（oldEffect -> newEffect 之间的交叉淡化），
+        // 所以必须"整体赋值"一个 BlurEffect，而不是修改现有实例的 Radius，
+        // 否则 Effect 属性没变，过渡不触发、变瞬时切换。
+        // BlurEffect 对象本身只是轻量描述符（Radius/...），真正贵的是离屏 layer，
+        // 而离屏 layer 由渲染系统管理，与 new 几次 BlurEffect 无关。
+        ContentView.Effect = new BlurEffect { Radius = state ? 50 : 0 };
+        BackgroundGroupBox.Effect = new BlurEffect { Radius = state ? 50 : 0 };
         BackgroundGroupBox.Margin = new Thickness(state ? -50 : 0);
     }
 

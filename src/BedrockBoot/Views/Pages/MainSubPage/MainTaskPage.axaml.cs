@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Models.Global;
@@ -18,7 +19,7 @@ public partial class MainTaskPage : BedrockBootPage
 
     public void UpdateUI()
     {
-        TaskList.Children.Clear();
+        TaskList.ItemsSource = null;
         TaskViewer.IsVisible = true;
         NoneBox.IsVisible = false;
 
@@ -26,18 +27,22 @@ public partial class MainTaskPage : BedrockBootPage
         {
             TaskViewer.IsVisible = false;
             NoneBox.IsVisible = true;
+            return;
         }
 
+        var items = new List<Avalonia.Controls.Control>(GlobalModel.TaskManager.Tasks.Count);
         GlobalModel.TaskManager.Tasks.ForEach(task =>
         {
             task.Item.Margin = new Thickness(5);
-            TaskList.Children.Add(task.Item);
+            items.Add(task.Item);
         });
+        // 一次性绑定到 ItemsSource，由 ListBox + VirtualizingStackPanel 按需实例化
+        TaskList.ItemsSource = items;
     }
 
     public void UnLoad()
     {
-        TaskList.Children.Clear();
+        TaskList.ItemsSource = null;
         GlobalModel.TaskManager.OnChanged = null;
     }
 }

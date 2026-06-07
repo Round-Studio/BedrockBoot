@@ -18,15 +18,21 @@ namespace BedrockBoot.Views.Windows;
 
 public partial class BedrockBootWindow : Window
 {
-    private readonly Timer _stateTimer;
     private bool _ctrlPressed = false;
     public int DrawMarginLR = 10;
     private DispatcherTimer _volumeControlTimer;
+    private DispatcherTimer _configRefreshDebounce;
+    private DispatcherTimer _configSaveDebounce;
+
+    private WindowState _lastWindowState;
+    private bool? _lastUseSystemWindow;
+    private bool? _lastIsBlurStyle;
+    private string? _lastTitle;
 
     public BedrockBootWindow()
     {
         InitializeComponent();
-        
+
         MediaManager.Instance.Volume = (float)Math.Clamp(GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
         this.AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
         this.AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
@@ -38,36 +44,103 @@ public partial class BedrockBootWindow : Window
             Interval = TimeSpan.FromSeconds(1.8)
         };
         _volumeControlTimer.Tick += VolumeControlTimer_Tick;
-        _stateTimer = new Timer(state =>
+
+        // 改用 PropertyChanged 事件驱动刷新窗口装饰，避免原先 100ms 轮询
+        PropertyChanged += OnSelfPropertyChanged;
+        GlobalModel.Config.AfterSave += OnConfigAfterSave;
+        Closed += (_, _) =>
         {
-            try
-            {
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    UpdateWindowBorder();
-                    if (OperatingSystem.IsWindows())
-                    {
-                        if (WindowState == WindowState.Maximized &&
-                            !GlobalModel.Config.Data.IsUseSystemWindow)
-                            Padding = new Thickness(8);
-                        else Padding = new Thickness(0);
-                    }
+            GlobalModel.Config.AfterSave -= OnConfigAfterSave;
+            PropertyChanged -= OnSelfPropertyChanged;
+        };
 
-                    if (WindowState == WindowState.Maximized) MaxBtnIcon.Glyph = "\uE923";
-                    else MaxBtnIcon.Glyph = "\uE922";
-
-                    BackgroundCover.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType ==
-                                                StyleType.Blur;
-
-                    TitleBlock.Text = Title;
-                });
-            }
-            catch
-            {
-            }
-        });
-        _stateTimer.Change(TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
+        RefreshWindowChrome();
         BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
+    }
+
+    private void OnSelfPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == WindowStateProperty || e.Property == TitleProperty)
+            RefreshWindowChrome();
+    }
+
+    private void OnConfigAfterSave(object? sender, EventArgs e)
+    {
+        // 防抖：滚轮/拖动等高频保存会短时间内触发数十次 RefreshWindowChrome，
+        // 合并到 120ms 一次，避免动画期间被频繁打断。
+        if (_configRefreshDebounce == null)
+        {
+            _configRefreshDebounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120) };
+            _configRefreshDebounce.Tick += (_, _) =>
+            {
+                _configRefreshDebounce!.Stop();
+                RefreshWindowChrome();
+            };
+        }
+        _configRefreshDebounce.Stop();
+        _configRefreshDebounce.Start();
+    }
+
+    private void ScheduleConfigSave()
+    {
+        if (_configSaveDebounce == null)
+        {
+            _configSaveDebounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(200) };
+            _configSaveDebounce.Tick += (_, _) =>
+            {
+                _configSaveDebounce!.Stop();
+                GlobalModel.Config.Save();
+            };
+        }
+        _configSaveDebounce.Stop();
+        _configSaveDebounce.Start();
+    }
+
+    private void RefreshWindowChrome()
+    {
+        var useSystemWindow = GlobalModel.Config.Data.IsUseSystemWindow;
+        var isBlurStyle = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Blur;
+        var currentState = WindowState;
+
+        if (useSystemWindow != _lastUseSystemWindow)
+        {
+            _lastUseSystemWindow = useSystemWindow;
+            MaxBtn.IsVisible = !useSystemWindow;
+            MinBtn.IsVisible = !useSystemWindow;
+            CloseBtn.IsVisible = !useSystemWindow;
+            ExtendClientAreaToDecorationsHint = !useSystemWindow;
+            ExtendClientAreaTitleBarHeightHint = -1;
+            ExtendClientAreaChromeHints = useSystemWindow
+                ? ExtendClientAreaChromeHints.Default
+                : ExtendClientAreaChromeHints.NoChrome;
+        }
+
+        if (OperatingSystem.IsWindows())
+        {
+            var newPadding = currentState == WindowState.Maximized && !useSystemWindow
+                ? new Thickness(8)
+                : new Thickness(0);
+            if (Padding != newPadding) Padding = newPadding;
+        }
+
+        if (currentState != _lastWindowState)
+        {
+            _lastWindowState = currentState;
+            var newGlyph = currentState == WindowState.Maximized ? "\uE923" : "\uE922";
+            if (MaxBtnIcon.Glyph != newGlyph) MaxBtnIcon.Glyph = newGlyph;
+        }
+
+        if (_lastIsBlurStyle != isBlurStyle)
+        {
+            _lastIsBlurStyle = isBlurStyle;
+            BackgroundCover.IsVisible = isBlurStyle;
+        }
+
+        if (_lastTitle != Title)
+        {
+            _lastTitle = Title;
+            if (TitleBlock.Text != Title) TitleBlock.Text = Title ?? "";
+        }
     }
     
     /// <summary>
@@ -166,7 +239,10 @@ public partial class BedrockBootWindow : Window
         
             // 应用新音量
             GlobalModel.Config.Data.MediaVolume = newVolume;
-            GlobalModel.Config.Save();
+            // 防抖保存：滚轮短时间会触发数十次 Config.Save()，
+            // 这中间会做 JsonSerializer + File.WriteAllText，阻塞 UI 线程。
+            // 用 200ms 防抖合并写入，避免动画期间被频繁打断。
+            ScheduleConfigSave();
             
             MediaManager.Instance.Volume = (float)Math.Clamp(GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
         
@@ -313,14 +389,21 @@ public partial class BedrockBootWindow : Window
 
     public void SetBlurState(bool state)
     {
-        ContentView.Effect = new BlurEffect
+        // 复用同一对 BlurEffect，避免每次拖拽都 new 离屏渲染目标
+        if (ContentView.Effect is not BlurEffect contentBlur)
         {
-            Radius = state ? 50 : 0
-        };
-        BackgroundGroupBox.Effect = new BlurEffect
+            contentBlur = new BlurEffect();
+            ContentView.Effect = contentBlur;
+        }
+        contentBlur.Radius = state ? 50 : 0;
+
+        if (BackgroundGroupBox.Effect is not BlurEffect bgBlur)
         {
-            Radius = state ? 50 : 0
-        };
+            bgBlur = new BlurEffect();
+            BackgroundGroupBox.Effect = bgBlur;
+        }
+        bgBlur.Radius = state ? 50 : 0;
+
         BackgroundGroupBox.Margin = new Thickness(state ? -50 : 0);
     }
 

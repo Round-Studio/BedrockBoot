@@ -59,7 +59,7 @@ public partial class SearchDefault : UserControl
         }
 
         searchHis.Data.Reverse();
-        searchHis.Data.ForEach(his => HistoryList.Children.Add(new SearchHistoryItem(his)
+        searchHis.Data.ForEach(his => HistoryList.Items.Add(new SearchHistoryItem(his)
         {
             SearchAction = info => { DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(info)); }
         }));

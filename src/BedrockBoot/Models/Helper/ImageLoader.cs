@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -16,11 +17,21 @@ namespace BedrockBoot.Models.Helper;
 public class ImageLoader : IDisposable
 {
     private readonly HttpClient _httpClient;
-    private readonly Dictionary<string, Bitmap> _imageCache;
 
-    // 缓存根目录：优先使用 AppData，无权限则使用程序根目录
+    // LRU 内存缓存（按访问顺序，最近访问的排到队首）
+    private readonly LinkedList<CacheEntry> _lruList = new();
+    private readonly Dictionary<string, LinkedListNode<CacheEntry>> _lruIndex = new(StringComparer.Ordinal);
+    private readonly object _lruLock = new();
+
+    // 每个 URL 一个信号量，保证同一张图不会并发下载，但不同图可并行
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> _urlLocks = new(StringComparer.Ordinal);
+
+    // 缓存总像素上限（默认 1.5 亿像素 ≈ 100 张 1280x720），超出后按 LRU 淘汰
+    private const long MaxCachePixels = 150_000_000L;
+    private long _currentPixels;
+
     private readonly string _localCacheFolder;
-    private readonly SemaphoreSlim _semaphore = new(1, 1);
+    private bool _disposed;
 
     public ImageLoader()
     {
@@ -28,72 +39,68 @@ public class ImageLoader : IDisposable
         {
             Timeout = TimeSpan.FromSeconds(30)
         };
-        _imageCache = new Dictionary<string, Bitmap>();
-
         _localCacheFolder = PathsList.TempPath;
-
         if (!Directory.Exists(_localCacheFolder)) Directory.CreateDirectory(_localCacheFolder);
     }
 
     public void Dispose()
     {
+        if (_disposed) return;
+        _disposed = true;
         _httpClient.Dispose();
-        _semaphore.Dispose();
         ClearMemoryCache();
+        foreach (var sem in _urlLocks.Values) sem.Dispose();
+        _urlLocks.Clear();
         GC.SuppressFinalize(this);
     }
 
     /// <summary>
-    ///     从 URL 加载图片（内存 -> 磁盘 -> 网络）
+    ///     从 URL 加载图片（内存 -> 磁盘 -> 网络）。同一 URL 并发只会下载一次。
     /// </summary>
     public async Task<Bitmap?> LoadImageBrushAsync(string imageUrl, bool useCache = true)
     {
         if (string.IsNullOrWhiteSpace(imageUrl)) return null;
 
-        // 1. 内存缓存检查
-        if (useCache && _imageCache.TryGetValue(imageUrl, out var cachedBitmap)) return cachedBitmap;
+        if (useCache && TryGetFromCache(imageUrl, out var cached)) return cached;
 
-        // 使用信号量防止并发请求同一个 URL 时多次下载
-        await _semaphore.WaitAsync();
+        var urlLock = _urlLocks.GetOrAdd(imageUrl, _ => new SemaphoreSlim(1, 1));
+        await urlLock.WaitAsync().ConfigureAwait(false);
         try
         {
-            // 二次检查内存（双重锁定检查）
-            if (useCache && _imageCache.TryGetValue(imageUrl, out cachedBitmap)) return cachedBitmap;
+            if (useCache && TryGetFromCache(imageUrl, out cached)) return cached;
 
-            var localPath = GetLocalFilePath(imageUrl);
             byte[]? imageData = null;
+            var localPath = GetLocalFilePath(imageUrl);
 
-            // 2. 磁盘缓存检查
             if (useCache && File.Exists(localPath))
                 try
                 {
-                    imageData = await File.ReadAllBytesAsync(localPath);
+                    imageData = await File.ReadAllBytesAsync(localPath).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($@"读取磁盘缓存失败: {ex.Message}");
                 }
 
-            // 3. 网络下载
             if (imageData == null)
             {
-                imageData = await _httpClient.GetByteArrayAsync(imageUrl);
-
-                // 写入磁盘异步进行
-                if (useCache && imageData != null) _ = File.WriteAllBytesAsync(localPath, imageData);
+                imageData = await _httpClient.GetByteArrayAsync(imageUrl).ConfigureAwait(false);
+                if (useCache && imageData != null)
+                {
+                    try { _ = File.WriteAllBytesAsync(localPath, imageData); }
+                    catch { /* 忽略磁盘写入失败 */ }
+                }
             }
 
             if (imageData == null) return null;
 
-            // 4. 在 UI 线程创建 Bitmap
             var bitmap = await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                using var memoryStream = new MemoryStream(imageData);
-                return new Bitmap(memoryStream);
+                using var ms = new MemoryStream(imageData);
+                return new Bitmap(ms);
             });
 
-            // 更新内存缓存
-            if (useCache && bitmap != null) _imageCache[imageUrl] = bitmap;
+            if (useCache && bitmap != null) AddToCache(imageUrl, bitmap);
 
             return bitmap;
         }
@@ -104,7 +111,7 @@ public class ImageLoader : IDisposable
         }
         finally
         {
-            _semaphore.Release();
+            urlLock.Release();
         }
     }
 
@@ -134,14 +141,68 @@ public class ImageLoader : IDisposable
         return Path.Combine(_localCacheFolder, fileName);
     }
 
+    private bool TryGetFromCache(string key, out Bitmap? bitmap)
+    {
+        lock (_lruLock)
+        {
+            if (_lruIndex.TryGetValue(key, out var node))
+            {
+                _lruList.Remove(node);
+                _lruList.AddFirst(node);
+                bitmap = node.Value.Bitmap;
+                return bitmap != null;
+            }
+        }
+        bitmap = null;
+        return false;
+    }
+
+    private void AddToCache(string key, Bitmap bitmap)
+    {
+        var pixels = (long)bitmap.PixelSize.Width * bitmap.PixelSize.Height;
+        if (pixels <= 0) return;
+
+        lock (_lruLock)
+        {
+            if (_lruIndex.TryGetValue(key, out var existing))
+            {
+                _currentPixels -= existing.Value.PixelCount;
+                existing.Value.Dispose();
+                _lruList.Remove(existing);
+                _lruIndex.Remove(key);
+            }
+
+            var entry = new CacheEntry(key, bitmap, pixels);
+            var node = new LinkedListNode<CacheEntry>(entry);
+            _lruList.AddFirst(node);
+            _lruIndex[key] = node;
+            _currentPixels += pixels;
+
+            // 超限则从最久未使用的一端淘汰
+            while (_currentPixels > MaxCachePixels && _lruList.Count > 1)
+            {
+                var last = _lruList.Last;
+                if (last == null) break;
+                _currentPixels -= last.Value.PixelCount;
+                _lruIndex.Remove(last.Value.Key);
+                last.Value.Dispose();
+                _lruList.RemoveLast();
+            }
+        }
+    }
+
     /// <summary>
     ///     清除内存缓存
     /// </summary>
     public void ClearMemoryCache()
     {
-        foreach (var bitmap in _imageCache.Values) bitmap.Dispose();
-
-        _imageCache.Clear();
+        lock (_lruLock)
+        {
+            foreach (var entry in _lruList) entry.Dispose();
+            _lruList.Clear();
+            _lruIndex.Clear();
+            _currentPixels = 0;
+        }
     }
 
     /// <summary>
@@ -174,5 +235,21 @@ public class ImageLoader : IDisposable
         if (File.Exists(iconUri))
             return new Bitmap(iconUri);
         return null;
+    }
+
+    private sealed class CacheEntry
+    {
+        public CacheEntry(string key, Bitmap bitmap, long pixelCount)
+        {
+            Key = key;
+            Bitmap = bitmap;
+            PixelCount = pixelCount;
+        }
+
+        public string Key { get; }
+        public Bitmap Bitmap { get; }
+        public long PixelCount { get; }
+
+        public void Dispose() => Bitmap.Dispose();
     }
 }

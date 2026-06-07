@@ -26,8 +26,22 @@
 
         <ScrollViewer Name="TaskViewer"
                       IsVisible="False">
-            <StackPanel Margin="15,10,15,15"
-                        Name="TaskList" />
+            <ListBox Name="TaskList"
+                     Margin="15,10,15,15"
+                     Background="Transparent"
+                     Padding="0">
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="MinHeight" Value="0" />
+                        <Setter Property="Template">
+                            <ControlTemplate>
+                                <ContentPresenter Content="{TemplateBinding Content}" />
+                            </ControlTemplate>
+                        </Setter>
+                    </Style>
+                </ListBox.Styles>
+            </ListBox>
         </ScrollViewer>
     </Grid>
 </entry:BedrockBootPage>

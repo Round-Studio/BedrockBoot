@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using BedrockBoot.LevelNbt.Base.Entry;
 using BedrockBoot.LevelNbt.Global;
@@ -17,14 +21,18 @@ public class LevelDatParser : IDisposable
 
     public Dictionary<string, object> GetRawRoot() => _rawRoot;
 
-    // 支持 Stream 初始化
+    // 反射属性缓存：避免每个 tag 触发 GetProperty + SetValue
+    private static readonly Dictionary<string, PropertyInfo> _propCache = new(StringComparer.Ordinal);
+
+    // UTF-8 字符串解析复用的解码器，避免每个字符串 tag 都 new 一个
+    private static readonly UTF8Encoding _utf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: false);
+
     public LevelDatParser(Stream stream)
     {
-        _reader = new BinaryReader(stream, Encoding.UTF8);
+        _reader = new BinaryReader(stream, _utf8);
         Parse();
     }
 
-    // 支持 文件路径 初始化
     public LevelDatParser(string filePath)
     {
         if (!File.Exists(filePath))
@@ -32,7 +40,7 @@ public class LevelDatParser : IDisposable
 
         // 使用 FileShare.ReadWrite 避免游戏运行中文件被锁定无法读取
         var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        _reader = new BinaryReader(fileStream, Encoding.UTF8);
+        _reader = new BinaryReader(fileStream, _utf8);
         Parse();
     }
 
@@ -47,7 +55,6 @@ public class LevelDatParser : IDisposable
             WorldVersion = _reader.ReadInt32();
             NBTDataSize = _reader.ReadInt32();
 
-            // --- 核心修改：将文件头版本同步到数据实体中 ---
             WorldData.HeaderVersion = WorldVersion;
 
             // 2. 读取 NBT 根 Compound
@@ -55,7 +62,7 @@ public class LevelDatParser : IDisposable
 
             // 3. 递归提取数据并自动赋值
             ExtractDataRecursive(rootTag);
-    
+
             _rawRoot = rootTag;
         }
         catch (Exception ex)
@@ -65,21 +72,27 @@ public class LevelDatParser : IDisposable
         }
     }
 
+    private static PropertyInfo? GetCachedProperty(string propName)
+    {
+        if (_propCache.TryGetValue(propName, out var cached)) return cached;
+        var prop = typeof(LevelWorldData).GetProperty(propName);
+        if (prop != null) _propCache[propName] = prop;
+        return prop;
+    }
+
     private void ExtractDataRecursive(Dictionary<string, object> dict)
     {
-        var type = typeof(LevelWorldData);
-
         foreach (var kvp in dict)
         {
             // 匹配映射表
-            if (TagMap.TagsMap.TryGetValue(kvp.Key, out string propName))
+            if (TagMap.TagsMap.TryGetValue(kvp.Key, out var propName))
             {
-                var prop = type.GetProperty(propName);
-                if (prop != null)
+                var prop = GetCachedProperty(propName);
+                if (prop != null && prop.CanWrite)
                 {
                     try
                     {
-                        object val = CastValue(kvp.Value, prop.PropertyType);
+                        var val = CastValue(kvp.Value, prop.PropertyType);
                         prop.SetValue(WorldData, val);
                     }
                     catch { /* 自动跳过类型严重不匹配的非法标签 */ }
@@ -93,11 +106,11 @@ public class LevelDatParser : IDisposable
         }
     }
 
-    private object CastValue(object value, Type targetType)
+    private static object? CastValue(object value, Type targetType)
     {
         if (value == null) return null;
 
-        // 处理布尔 (NBT Byte -> C# Bool)
+        // 优先匹配具体目标类型，避免 Convert.* 走 object 路径产生装箱
         if (targetType == typeof(bool))
         {
             return value switch
@@ -105,16 +118,52 @@ public class LevelDatParser : IDisposable
                 byte b => b != 0,
                 int i => i != 0,
                 long l => l != 0,
+                sbyte sb => sb != 0,
+                short s => s != 0,
+                float f => f != 0,
+                double d => d != 0,
                 _ => Convert.ToBoolean(value)
             };
         }
 
-        // 处理数值转换 (兼容基岩版不稳定的数值长度)
-        if (targetType == typeof(int)) return Convert.ToInt32(value);
-        if (targetType == typeof(long)) return Convert.ToInt64(value);
-        if (targetType == typeof(float)) return Convert.ToSingle(value);
-        if (targetType == typeof(double)) return Convert.ToDouble(value);
-        if (targetType == typeof(string)) return value.ToString();
+        if (targetType == typeof(int))
+        {
+            if (value is int i) return i;
+            if (value is long l) return (int)l;
+            if (value is short s) return s;
+            if (value is byte b) return b;
+            if (value is double d) return (int)d;
+            if (value is float f) return (int)f;
+            return Convert.ToInt32(value);
+        }
+
+        if (targetType == typeof(long))
+        {
+            if (value is long l) return l;
+            if (value is int i) return (long)i;
+            if (value is short s) return (long)s;
+            if (value is byte b) return (long)b;
+            return Convert.ToInt64(value);
+        }
+
+        if (targetType == typeof(float))
+        {
+            if (value is float f) return f;
+            if (value is double d) return (float)d;
+            return Convert.ToSingle(value);
+        }
+
+        if (targetType == typeof(double))
+        {
+            if (value is double d) return d;
+            if (value is float f) return (double)f;
+            return Convert.ToDouble(value);
+        }
+
+        if (targetType == typeof(string))
+        {
+            return value.ToString();
+        }
 
         return value;
     }
@@ -123,11 +172,13 @@ public class LevelDatParser : IDisposable
 
     private Dictionary<string, object> ReadCompoundTag()
     {
-        var compound = new Dictionary<string, object>();
+        // 预读 N 个键后能更准确估计初始容量，但 NBT 没法在读取前知道大小；
+        // 16 是一个常见小 Compound 的合理初始值，能减少 hashtable resize
+        var compound = new Dictionary<string, object>(16, StringComparer.Ordinal);
         while (true)
         {
             if (_reader.BaseStream.Position >= _reader.BaseStream.Length) break;
-            
+
             byte typeId = _reader.ReadByte();
             if (typeId == 0) break; // TAG_End
 
@@ -160,19 +211,22 @@ public class LevelDatParser : IDisposable
     {
         byte typeId = _reader.ReadByte();
         int count = _reader.ReadInt32();
+        // 预分配容量，避免 List 内部多次扩容
         var list = new List<object>(count);
         for (int i = 0; i < count; i++)
-        {
             list.Add(ReadTagValue(typeId));
-        }
         return list;
     }
 
     private int[] ReadIntArray()
     {
         int len = _reader.ReadInt32();
+        if (len < 0) return Array.Empty<int>();
         int[] arr = new int[len];
-        for (int i = 0; i < len; i++) arr[i] = _reader.ReadInt32();
+        // 用 Span/Array 批量读取，比逐元素 ReadInt32 减少 virtual call 开销
+        var bytes = _reader.ReadBytes(len * 4);
+        if (bytes.Length < len * 4) return arr;
+        Buffer.BlockCopy(bytes, 0, arr, 0, len * 4);
         return arr;
     }
 
@@ -180,7 +234,10 @@ public class LevelDatParser : IDisposable
     {
         ushort len = _reader.ReadUInt16();
         if (len == 0) return string.Empty;
-        return Encoding.UTF8.GetString(_reader.ReadBytes(len));
+        var bytes = _reader.ReadBytes(len);
+        if (bytes.Length == 0) return string.Empty;
+        // 使用复用的 UTF8Encoding，避免每个 string 都 new 一个 decoder
+        return _utf8.GetString(bytes);
     }
 
     public void Dispose()

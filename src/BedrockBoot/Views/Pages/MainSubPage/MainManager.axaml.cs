@@ -220,12 +220,12 @@ public partial class MainManager : BedrockBootPage
                 gameItems.Add(new GameItem(info!));
             }
 
-            GameList.Children.Clear();
+            GameScro.ItemsSource = null;
 
             if (gameItems.Count > 0)
             {
-                // 使用 AddRange 批量添加 UI 元素以优化渲染性能
-                GameList.Children.AddRange(gameItems);
+                // 一次性绑定到 ItemsSource，ListBox + VirtualizingStackPanel 会自动按需实例化
+                GameScro.ItemsSource = gameItems;
                 GamesLoad.IsVisible = false;
                 GameScro.IsVisible = true;
                 GamesNull.IsVisible = false;

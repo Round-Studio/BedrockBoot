@@ -136,12 +136,27 @@
                     Padding="0"
                     Margin="5">
                     <Grid>
-                        <ScrollViewer Name="GameScro"
-                                      Margin="8,8,0,8">
-                            <StackPanel Margin="5,5,13,5"
-                                        Spacing="8"
-                                        Name="GameList" />
-                        </ScrollViewer>
+                        <ListBox Name="GameScro"
+                                 Margin="8,8,0,8"
+                                 Padding="5,5,13,5"
+                                 Background="Transparent">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Margin" Value="0,0,0,8" />
+                                    <Setter Property="MinHeight" Value="0" />
+                                    <Setter Property="Template">
+                                        <ControlTemplate>
+                                            <ContentPresenter Content="{TemplateBinding Content}" />
+                                        </ControlTemplate>
+                                    </Setter>
+                                </Style>
+                            </ListBox.Styles>
+                        </ListBox>
 
                         <notice:InfoCard HorizontalAlignment="Center"
                                          VerticalAlignment="Center"

@@ -36,9 +36,22 @@
 
             <ScrollViewer Grid.Row="1"
                           Name="HistoryListScrollViewer">
-                <StackPanel Spacing="8"
-                            Margin="0,0,16,0"
-                            Name="HistoryList" />
+                <ListBox Name="HistoryList"
+                         Margin="0,0,16,0"
+                         Background="Transparent"
+                         Padding="0">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Margin" Value="0,0,0,8" />
+                            <Setter Property="MinHeight" Value="0" />
+                            <Setter Property="Template">
+                                <ControlTemplate>
+                                    <ContentPresenter Content="{TemplateBinding Content}" />
+                                </ControlTemplate>
+                            </Setter>
+                        </Style>
+                    </ListBox.Styles>
+                </ListBox>
             </ScrollViewer>
 
             <notice:InfoCard Grid.Row="1"

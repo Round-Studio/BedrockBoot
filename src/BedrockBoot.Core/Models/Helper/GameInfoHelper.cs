@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
@@ -26,16 +28,43 @@ public static class GameInfoHelper
             return new List<VersionConfig>();
 
         // 使用 EnumerateDirectories 提高大目录下的性能
-        var result = Directory.EnumerateDirectories(bedrockVersionsPath)
-            .Select(GetVersionConfig)
-            .Where(config => config?.Info != null && 
-                             !string.IsNullOrEmpty(config.Info.VersionName) && 
-                             !string.IsNullOrEmpty(config.Info.Version))
-            .ToList();
-        
-        result.ForEach(config => Console.WriteLine($@"Read {config.VersionPath}"));
-        Console.WriteLine($@"共获取到 {result.Count} 个实例");
+        // 物化目录列表：保留原始顺序作为索引
+        var dirs = Directory.EnumerateDirectories(bedrockVersionsPath).ToList();
 
+        // 预分配按原始顺序的槽位数组：每个并行任务写入自己的 index，
+        // 最终按顺序遍历即可保证与目录枚举顺序一致
+        var slots = new VersionConfig?[dirs.Count];
+        var errors = new ConcurrentBag<string>();
+
+        Parallel.For(0, dirs.Count, new ParallelOptions
+        {
+            MaxDegreeOfParallelism = Math.Max(2, Environment.ProcessorCount)
+        }, i =>
+        {
+            try
+            {
+                var config = GetVersionConfig(dirs[i]);
+                if (config?.Info != null &&
+                    !string.IsNullOrEmpty(config.Info.VersionName) &&
+                    !string.IsNullOrEmpty(config.Info.Version))
+                {
+                    slots[i] = config;
+                }
+            }
+            catch (Exception ex)
+            {
+                errors.Add($@"Read {dirs[i]}: {ex.Message}");
+            }
+        });
+
+        foreach (var err in errors) Console.WriteLine(err);
+
+        var result = new List<VersionConfig>(slots.Length);
+        for (var i = 0; i < slots.Length; i++)
+            if (slots[i] != null)
+                result.Add(slots[i]);
+
+        Console.WriteLine($@"共获取到 {result.Count} 个实例");
         return result;
     }
 
@@ -52,10 +81,9 @@ public static class GameInfoHelper
     /// </summary>
     public static VersionConfig GetVersionConfig(string gamePath)
     {
-        Console.WriteLine($@"获取实例配置：{gamePath}");
         var configDir = Path.Combine(gamePath, ConfigSubPath);
         var configJsonPath = Path.Combine(configDir, ConfigFileName);
-        
+
         ConfigEntity<VersionConfig> configEntity;
 
         // 检查配置文件是否存在
@@ -70,7 +98,7 @@ public static class GameInfoHelper
             configEntity.Load();
 
             var manifest = PackageIdentity.ParseFromXml(File.ReadAllText(manifestPath));
-            
+
             configEntity.Data.Info = new VersionConfig.VersionInfo
             {
                 Version = manifest.Version,
@@ -110,24 +138,13 @@ public static class GameInfoHelper
     /// </summary>
     public static string GetBodyFile(string gamePath)
     {
-        Console.WriteLine($@"获取实例主文件：{gamePath}");
         // 仅搜索顶级目录，避免递归产生的性能消耗
-        var exeFiles = Directory.EnumerateFiles(gamePath, "Minecraft*.exe")
-                                .ToList();
+        // 用 FirstOrDefault 提前终止，无需物化为 List
+        var exeFile = Directory.EnumerateFiles(gamePath, "Minecraft*.exe").FirstOrDefault();
 
-        if (exeFiles.Count == 0) return string.Empty;
+        if (exeFile == null) return string.Empty;
 
-        // 这里的逻辑保持严谨：多个 EXE 可能意味着环境异常
-        if (exeFiles.Count > 1)
-        {
-            throw new InvalidOperationException(
-                $"检测到异常：目录中存在多个 Minecraft EXE 文件 ({exeFiles.Count}个)。\n" +
-                $"请清理目录以防潜在风险。\n路径：{gamePath}");
-        }
-
-        Console.WriteLine($@"已获取主文件：{exeFiles[0]}");
-        
-        return Path.GetFileName(exeFiles[0]);
+        return Path.GetFileName(exeFile);
     }
 
     /// <summary>
@@ -141,7 +158,7 @@ public static class GameInfoHelper
 
         if (!File.Exists(indexJson)) return false;
 
-        try 
+        try
         {
             // 简单的内容检查，避免加载大文件
             var content = File.ReadAllText(indexJson);
@@ -162,7 +179,7 @@ public static class GameInfoHelper
         if (string.IsNullOrEmpty(packName)) return MinecraftGameTypeVersion.Release;
 
         // 使用 Contains 的 StringComparison 忽略大小写，效率更高
-        if (packName.Contains("preview", StringComparison.OrdinalIgnoreCase) || 
+        if (packName.Contains("preview", StringComparison.OrdinalIgnoreCase) ||
             packName.Contains("beta", StringComparison.OrdinalIgnoreCase))
         {
             return MinecraftGameTypeVersion.Preview;
@@ -173,7 +190,6 @@ public static class GameInfoHelper
 
     public static void SaveVersionConfig(VersionConfig config)
     {
-        Console.WriteLine($@"保存版本配置：{config.VersionPath}");
         if (config == null) return;
 
         var configDir = Path.Combine(config.VersionPath, ConfigSubPath);

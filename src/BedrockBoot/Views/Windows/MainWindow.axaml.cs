@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -391,7 +392,13 @@ public partial class MainWindow : BedrockBootWindow
     {
         if (radius > 0)
         {
-            BackgroundBox.Effect = new BlurEffect { Radius = radius };
+            // 复用同一个 BlurEffect 实例，避免每次都 new 一份离屏渲染目标
+            if (BackgroundBox.Effect is not BlurEffect blur)
+            {
+                blur = new BlurEffect();
+                BackgroundBox.Effect = blur;
+            }
+            blur.Radius = radius;
             BackgroundBox.Margin = new Thickness(-radius);
         }
         else
@@ -411,7 +418,7 @@ public partial class MainWindow : BedrockBootWindow
 
     public void UpdateTaskUI()
     {
-        TaskList.Children.Clear();
+        TaskList.ItemsSource = null;
         var tasks = GlobalModel.TaskManager.Tasks;
 
         if (tasks.Count == 0)
@@ -427,12 +434,15 @@ public partial class MainWindow : BedrockBootWindow
             TaskInfoText.IsVisible = true;
             TaskInfoText.Text = string.Format(I18n["MainWindow.Task.CountInfo"], tasks.Count);
 
+            var visible = new System.Collections.Generic.List<Avalonia.Controls.Control>(tasks.Count);
             foreach (var task in tasks)
             {
                 if (task.Item == null) continue;
                 task.Item.Margin = new Thickness(5);
-                TaskList.Children.Add(task.Item);
+                visible.Add(task.Item);
             }
+            // 一次性绑定，ListBox + VirtualizingStackPanel 会按需实例化
+            TaskList.ItemsSource = visible;
         }
     }
 

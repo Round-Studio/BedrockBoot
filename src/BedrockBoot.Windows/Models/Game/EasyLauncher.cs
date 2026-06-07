@@ -78,6 +78,13 @@ public class EasyLauncher
         var gameServiceInstallStatue = IsGamingServicesInstalled();
         Console.WriteLine($@"GameService 安装状态：{gameServiceInstallStatue}");
 
+        if (!gameServiceInstallStatue)
+        {
+            LaunchCompleted?.Invoke();
+            GameServiceNotice.UnInstallGameService();
+            return;
+        }
+
         if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
             Console.WriteLine(@"当前实例为 UWP 构建类型，需要检测开发者模式。");
@@ -92,13 +99,6 @@ public class EasyLauncher
             }
         }
 
-        if (!gameServiceInstallStatue)
-        {
-            LaunchCompleted?.Invoke();
-            GameServiceNotice.UnInstallGameService();
-            return;
-        }
-
         _core = new ModsCore(VersionInfo);
 
         var args = "";
@@ -110,6 +110,38 @@ public class EasyLauncher
 
         RegisterService.API.LaunchingEvent.ForEach(action =>
             new Thread(() => action.Invoke(VersionInfo.VersionPath)).Start());
+
+        if (!VersionInfo.VersionStatus.GameInputInstalled &&
+            VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+        {
+            Console.WriteLine(@"正在运行 GameInput 安装，请等待安装完成...");
+    
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "msiexec.exe",
+                // 使用 /qb 显示基本进度界面，/qn 是完全静默
+                Arguments = $"/i \"{Path.Combine(VersionInfo.VersionPath, "Installers", "GameInputRedist.msi")}\" /qb",
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+    
+            using (var process = Process.Start(startInfo))
+            {
+                process?.WaitForExit();
+                if (process?.ExitCode == 0)
+                {
+                    Console.WriteLine(@"GameInput 安装完毕");
+                }
+                else
+                {
+                    Console.WriteLine($"GameInput 安装失败，错误码: {process?.ExitCode}");
+                    return;
+                }
+            }
+
+            VersionInfo.VersionStatus.GameInputInstalled = true;
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
+        }
 
         try
         {

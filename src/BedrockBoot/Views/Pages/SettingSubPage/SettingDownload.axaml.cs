@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Pages.SettingSubPage.SettingDownloadPages;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -52,6 +53,11 @@ public partial class SettingDownload : ISettingPage
     private void SoftwareUpdate_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new UniversalSoftwareUpdate());
+    }
+
+    private void NetworkTestBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new NetworkTest());
     }
 
     private void ChunkCountSlider_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)

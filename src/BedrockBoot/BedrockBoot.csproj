@@ -112,5 +112,8 @@
         <DependentUpon>AboutReleaseNotes.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Pages\SettingSubPage\SettingDownloadPages\NetworkTest.axaml.cs">
+        <DependentUpon>NetworkTest.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

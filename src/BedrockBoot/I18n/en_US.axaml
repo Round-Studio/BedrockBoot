@@ -607,6 +607,21 @@
     <x:String x:Key="Settings.Download.Group.Advanced">Advanced</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Title">Software Updates</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Desc">Update settings for BedrockBoot</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Title">Network Test</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Desc">Test the network latency of all APIs used by BedrockBoot</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Title">Run Test</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Desc">Click the button below to test the latency of all APIs concurrently</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Test">Test All</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Testing">Testing...</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Failed">Failed</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Timeout">Timeout</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Mojang">Mojang Official</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Version">Version List Source</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.CurseForge">CurseForge Source</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Update">Software Update Source</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.GameFile">Game File Source</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Plugin">Plugin / Third Party</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Other">Other</x:String>
 
     <x:String x:Key="Setting.Download.Title">Download Settings</x:String>
     <x:String x:Key="Setting.Download.Breadcrumb.Root">Download</x:String>

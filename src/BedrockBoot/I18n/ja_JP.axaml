@@ -612,6 +612,21 @@
     <x:String x:Key="Settings.Download.Group.Advanced">高度な設定</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Title">ソフトウェアアップデート</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Desc">BedrockBoot のアップデート設定</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Title">ネットワークテスト</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Desc">BedrockBoot が使用するすべての API の通信遅延をテストします</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Title">テスト開始</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Desc">下のボタンをクリックして、すべての API の遅延を並列にテストします</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Test">すべてテスト</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Testing">テスト中...</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Failed">接続失敗</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Timeout">タイムアウト</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Mojang">Mojang 公式</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Version">バージョンリスト取得元</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.CurseForge">CurseForge 取得元</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Update">ソフトウェア更新元</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.GameFile">ゲームファイル取得元</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Plugin">プラグイン / サードパーティ</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Other">その他</x:String>
 
     <x:String x:Key="Setting.Download.Title">ダウンロード設定</x:String>
     <x:String x:Key="Setting.Download.Breadcrumb.Root">ダウンロード</x:String>

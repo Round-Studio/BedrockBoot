@@ -74,6 +74,14 @@
                                           Name="SoftwareUpdate"
                                           Click="SoftwareUpdate_OnClick"
                                           Glyph="&#xE895;" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="{DynamicResource Settings.Download.NetworkTest.Title}"
+                                          Description="{DynamicResource Settings.Download.NetworkTest.Desc}"
+                                          IsClickable="True"
+                                          Name="NetworkTestBtn"
+                                          Click="NetworkTestBtn_OnClick"
+                                          Glyph="&#xE839;" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

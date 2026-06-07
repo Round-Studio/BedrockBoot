@@ -612,6 +612,21 @@
     <x:String x:Key="Settings.Download.Group.Advanced">高级</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Title">软件更新</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Desc">BedrockBoot 的更新设置</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Title">网络测试</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Desc">测试 BedrockBoot 所使用的全部 API 网络通讯延迟</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Title">开始测试</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Desc">点击下方按钮，将并发测试所有 API 的网络延迟</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Test">测试全部</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Testing">测试中...</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Failed">连接失败</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Timeout">连接超时</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Mojang">Mojang 官方</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Version">版本列表源</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.CurseForge">CurseForge 源</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Update">软件更新源</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.GameFile">游戏文件下载源</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Plugin">插件 / 第三方</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Other">其他</x:String>
 
     <x:String x:Key="Setting.Download.Title">下载设置</x:String>
     <x:String x:Key="Setting.Download.Breadcrumb.Root">下载</x:String>

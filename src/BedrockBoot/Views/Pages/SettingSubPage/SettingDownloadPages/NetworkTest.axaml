@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingDownloadPages.NetworkTest">
+    <ScrollViewer>
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="{DynamicResource Settings.Download.NetworkTest.Action.Title}"
+                                          Description="{DynamicResource Settings.Download.NetworkTest.Action.Desc}"
+                                          Glyph="&#xE968;">
+                <Button Name="TestAllBtn"
+                        Padding="8"
+                        Height="36"
+                        Width="120"
+                        Content="{DynamicResource Settings.Download.NetworkTest.Action.Test}"
+                        Click="TestAllBtn_OnClick" />
+            </onePointControls:SettingCard>
+
+            <StackPanel Name="GroupsHost"
+                        Spacing="8" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

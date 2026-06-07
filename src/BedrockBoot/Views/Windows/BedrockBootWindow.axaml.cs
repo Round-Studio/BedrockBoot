@@ -108,20 +108,23 @@ public partial class BedrockBootWindow : Window
             MaxBtn.IsVisible = !useSystemWindow;
             MinBtn.IsVisible = !useSystemWindow;
             CloseBtn.IsVisible = !useSystemWindow;
+            // Avalonia 12 replaced ExtendClientAreaChromeHints with WindowDecorations.
+            // WindowDecorations.Full  ≈ old ExtendClientAreaChromeHints.Default
+            // WindowDecorations.None   ≈ old ExtendClientAreaChromeHints.NoChrome
+            WindowDecorations = useSystemWindow
+                ? WindowDecorations.Full
+                : WindowDecorations.BorderOnly;
             ExtendClientAreaToDecorationsHint = !useSystemWindow;
             ExtendClientAreaTitleBarHeightHint = -1;
-            ExtendClientAreaChromeHints = useSystemWindow
-                ? ExtendClientAreaChromeHints.Default
-                : ExtendClientAreaChromeHints.NoChrome;
         }
 
-        if (OperatingSystem.IsWindows())
+        /*if (OperatingSystem.IsWindows())
         {
             var newPadding = currentState == WindowState.Maximized && !useSystemWindow
                 ? new Thickness(8)
                 : new Thickness(0);
             if (Padding != newPadding) Padding = newPadding;
-        }
+        }*/
 
         if (currentState != _lastWindowState)
         {
@@ -306,11 +309,12 @@ public partial class BedrockBootWindow : Window
         MaxBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
         MinBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
         CloseBtn.IsVisible = !GlobalModel.Config.Data.IsUseSystemWindow;
+        // Avalonia 12: WindowDecorations replaces ExtendClientAreaChromeHints.
+        WindowDecorations = GlobalModel.Config.Data.IsUseSystemWindow
+            ? WindowDecorations.Full
+            : WindowDecorations.BorderOnly;
         ExtendClientAreaToDecorationsHint = !GlobalModel.Config.Data.IsUseSystemWindow;
         ExtendClientAreaTitleBarHeightHint = -1;
-        ExtendClientAreaChromeHints = GlobalModel.Config.Data.IsUseSystemWindow
-            ? ExtendClientAreaChromeHints.Default
-            : ExtendClientAreaChromeHints.NoChrome;
     }
 
     private void UpdateUI()

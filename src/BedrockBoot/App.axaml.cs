@@ -1,10 +1,8 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -103,9 +101,8 @@ public class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-            DisableAvaloniaDataAnnotationValidation();
+            // Avalonia 12 removed BindingPlugins.DataValidators; the data annotations
+            // validation plugin is disabled by default and no longer needs to be removed.
 
             Window window = null;
 
@@ -130,15 +127,10 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void DisableAvaloniaDataAnnotationValidation()
-    {
-        // Get an array of plugins to remove
-        var dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-        // remove each entry found
-        foreach (var plugin in dataValidationPluginsToRemove) BindingPlugins.DataValidators.Remove(plugin);
-    }
+    // Avalonia 12 removed the data-annotations binding plugin. If the project later
+    // wants to re-enable it, add .WithDataAnnotationsValidation() to the AppBuilder
+    // in Program.cs. The previous DisableAvaloniaDataAnnotationValidation helper is
+    // intentionally omitted because the API it relied on no longer exists.
 
     public static void LoadColor()
     {

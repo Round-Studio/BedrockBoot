@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Chunker.Jvm;
@@ -144,56 +145,48 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
     private async void TranslateResourcePack_OnClick(object? sender, RoutedEventArgs e)
     {
-        var window = VisualRoot as Window;
-        var dialog = new OpenFileDialog
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "导入需要翻译的基岩版资源包",
             AllowMultiple = false,
-            Filters = new List<FileDialogFilter>
+            FileTypeFilter = new[]
             {
-                new()
+                new FilePickerFileType("基岩版资源包/行为包")
                 {
-                    Name = "基岩版资源包/行为包",
-                    Extensions = new List<string> { "mcpack", "mcaddon" }
+                    Patterns = new[] { "*.mcpack", "*.mcaddon" }
                 }
             }
-        };
+        });
 
-        if (window == null) return;
-
-        var result = await dialog.ShowAsync(window);
-
-        if (result != null && result.Any())
+        if (files.Count > 0)
         {
-            var selectedFile = result.First();
+            var selectedFile = files[0].Path.LocalPath;
 
-            var saveFileDialog = new SaveFileDialog
+            var saveFile = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
                 Title = "保存为基岩版支持包文件",
                 DefaultExtension = Path.GetExtension(selectedFile),
-                Filters = new List<FileDialogFilter>
+                FileTypeChoices = new[]
                 {
-                    new()
+                    new FilePickerFileType("Minecraft 基岩版支持文件")
                     {
-                        Name = "Minecraft 基岩版支持文件",
-                        Extensions = new List<string> { Path.GetExtension(selectedFile) }
+                        Patterns = new[] { Path.GetExtension(selectedFile) }
                     }
                 }
-            };
+            });
 
-            if (window == null) return;
-
-            var showAsync = await saveFileDialog.ShowAsync(window);
-
-            if (!string.IsNullOrWhiteSpace(showAsync))
+            if (saveFile != null)
             {
-                var saveFile = showAsync;
+                var saveFilePath = saveFile.Path.LocalPath;
                 var inputFile = selectedFile;
 
                 DialogHost.Show(new DialogInfo
                 {
                     Title = "翻译包",
-                    Content = new DialogTranslateResourcePackContent(inputFile, saveFile)
+                    Content = new DialogTranslateResourcePackContent(inputFile, saveFilePath)
                 });
             }
         }
@@ -212,56 +205,48 @@ public partial class MainToolsBoxPage : BedrockBootPage
             PrimaryButtonText = "取消",
             CloseAction = async () =>
             {
-                var window = VisualRoot as Window;
-                var dialog = new OpenFileDialog
+                var topLevel = TopLevel.GetTopLevel(GlobalModel.MainWindow);
+                if (topLevel == null) return;
+
+                var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
                 {
                     Title = "导入需要转换的 Java 版材质包",
                     AllowMultiple = false,
-                    Filters = new List<FileDialogFilter>
+                    FileTypeFilter = new[]
                     {
-                        new()
+                        new FilePickerFileType("Java 版材质包")
                         {
-                            Name = "Java 版材质包",
-                            Extensions = new List<string> { "zip" }
+                            Patterns = new[] { "*.zip" }
                         }
                     }
-                };
+                });
 
-                if (window == null) return;
-
-                var result = await dialog.ShowAsync(window);
-
-                if (result != null && result.Any())
+                if (files.Count > 0)
                 {
-                    var selectedFile = result.First();
+                    var selectedFile = files[0].Path.LocalPath;
 
-                    var saveFileDialog = new SaveFileDialog
+                    var saveFile = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                     {
                         Title = "保存为基岩版资源包",
                         DefaultExtension = "mcpack",
-                        Filters = new List<FileDialogFilter>
+                        FileTypeChoices = new[]
                         {
-                            new()
+                            new FilePickerFileType("Minecraft 基岩版资源包")
                             {
-                                Name = "Minecraft 基岩版资源包",
-                                Extensions = new List<string> { "mcpack" }
+                                Patterns = new[] { "*.mcpack" }
                             }
                         }
-                    };
+                    });
 
-                    if (window == null) return;
-
-                    var showAsync = await saveFileDialog.ShowAsync(window);
-
-                    if (!string.IsNullOrWhiteSpace(showAsync))
+                    if (saveFile != null)
                     {
-                        var saveFile = showAsync;
+                        var saveFilePath = saveFile.Path.LocalPath;
                         var inputFile = selectedFile;
 
                         DialogHost.Show(new DialogInfo
                         {
                             Title = "转换包",
-                            Content = new DialogJeToBeResourcePackContent(inputFile, saveFile)
+                            Content = new DialogJeToBeResourcePackContent(inputFile, saveFilePath)
                         });
                     }
                 }

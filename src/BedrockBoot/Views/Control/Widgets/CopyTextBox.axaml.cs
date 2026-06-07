@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 

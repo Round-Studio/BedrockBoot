@@ -87,7 +87,7 @@ public partial class MainWindow : BedrockBootWindow
         var position = e.GetPosition(this);
 
         // 哪怕系统认为还在 Over，但只要坐标出了窗口，立即转为隐藏流程
-        if (position.X < 10 || position.Y < 10 || 
+        if (position.X < 10 || position.Y < 10 ||
             position.X > Bounds.Width - 10 || position.Y > Bounds.Height - 10)
         {
             e.DragEffects = DragDropEffects.None;
@@ -95,7 +95,7 @@ public partial class MainWindow : BedrockBootWindow
             return;
         }
 
-        if (e.Data.Contains(DataFormats.Files))
+        if (e.DataTransfer.Contains(DataFormat.File))
         {
             e.DragEffects = DragDropEffects.Copy;
             DropBox.IsVisible = true;
@@ -108,11 +108,11 @@ public partial class MainWindow : BedrockBootWindow
             HideDropBox();
         }
     }
-    
+
     private async void HideDropBox()
     {
         if (!DropBox.IsVisible) return; // 避免重复触发
-    
+
         DropBox.Opacity = 0;
         SetBlurState(false);
         await Task.Delay(360);
@@ -122,35 +122,33 @@ public partial class MainWindow : BedrockBootWindow
     /// <summary>
     ///     当用户松开鼠标完成放置时触发
     /// </summary>
-    [Obsolete("Obsolete")]
     private async void OnDrop(object? sender, DragEventArgs e)
     {
-        // 获取文件路径列表
-        var files = e.Data.GetFiles().OfType<IStorageFile>().ToArray();;
-        
         DropBox.Opacity = 0;
         SetBlurState(false);
         await Task.Delay(360);
         DropBox.IsVisible = false;
 
-        if (files != null)
+        var storageFiles = new List<IStorageFile>();
+        foreach (var item in e.DataTransfer.Items)
         {
-            var storageItems = files as IStorageItem[] ?? files.ToArray();
-            Console.WriteLine($@"本次拖拽共 {storageItems.Length} 个文件。");
-            if (storageItems.Length <= 0)
-                return;
-            
-            foreach (var file in storageItems)
-            {
-                // 获取文件的绝对路径
-                var filePath = file.Path.LocalPath;
-
-                if (!string.IsNullOrEmpty(filePath)) Console.WriteLine($@"检测到拖入文件: {filePath}");
-            }
-
-            OpenDraw(new DrawDropFileContent(storageItems), "拖拽文件处理");
+            if (item.TryGetFile() is IStorageFile file)
+                storageFiles.Add(file);
         }
+        if (storageFiles.Count <= 0) return;
+
+        var paths = storageFiles.Select(f => f.Path.LocalPath).ToArray();
+        Console.WriteLine($@"本次拖拽共 {paths.Length} 个文件。");
+        foreach (var filePath in paths)
+        {
+            if (!string.IsNullOrEmpty(filePath))
+                Console.WriteLine($@"检测到拖入文件: {filePath}");
+        }
+
+        OpenDraw(new DrawDropFileContent(storageFiles.ToArray()), "拖拽文件处理");
     }
+
+
 
     #endregion
 

@@ -10,7 +10,7 @@
         FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
         Background="Transparent"
         TransparencyLevelHint="Transparent"
-        SystemDecorations="None"
+        WindowDecorations="None"
         ShowInTaskbar="False"
         CanResize="False">
     <Grid Name="OverlayRoot"

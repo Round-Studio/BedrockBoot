@@ -288,7 +288,7 @@ public class PluginLoader
             }
             catch (Exception ex)
             {
-                Console.WriteLine($@"加载并初始化插件主体失败 {bodyFilePath}: {ex.Message}");
+                Console.WriteLine($@"加载并初始化插件主体失败 {bodyFilePath}: {ex}");
                 throw;
             }
         });

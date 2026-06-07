@@ -3,9 +3,10 @@
         xmlns:controls="clr-namespace:Wallpaper.Avalonia.Controls"
         x:Class="Wallpaper.Avalonia.Controls.DesktopThumbnailWindow"
         WindowState="Normal"
-        CanResize="False"
         ShowInTaskbar="False"
-        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        WindowDecorations="BorderOnly"
         Background="Transparent">
 
     <controls:DesktopThumbnailControl />

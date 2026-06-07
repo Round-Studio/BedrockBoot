@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Entity;
@@ -59,7 +60,6 @@ public partial class ExceptionWindow : OnePointWindow
                     Patterns = new[] { "*.json" }
                 }
             },
-            ShowOverwritePrompt = true
         });
 
         if (file != null)

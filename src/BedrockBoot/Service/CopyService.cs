@@ -76,10 +76,10 @@ public class CopyService
     /// </summary>
     private static async Task<ClipboardResult> GetClipboardContentType(IClipboard clipboard)
     {
-        var formats = await clipboard.GetFormatsAsync();
+        var formats = await clipboard.GetDataFormatsAsync();
 
         // 检查是否包含文件 (从资源管理器复制的文件)
-        if (formats.Contains(DataFormats.Files))
+        if (formats.Contains(DataFormat.File))
         {
             var files = await GetClipboardFiles(clipboard);
             if (files != null && files.Any())
@@ -89,9 +89,9 @@ public class CopyService
         }
 
         // 检查是否包含符合自定义正则的文本
-        if (formats.Contains(DataFormats.Text))
+        if (formats.Contains(DataFormat.Text))
         {
-            var text = await clipboard.GetTextAsync();
+            var text = await clipboard.TryGetTextAsync();
             var (id, type) = ParseIdAndType(text);
             if (id.HasValue && type != null)
             {
@@ -147,22 +147,20 @@ public class CopyService
     /// </summary>
     private static async Task<IEnumerable<string>?> GetClipboardFiles(IClipboard clipboard)
     {
-        var data = await clipboard.GetDataAsync(DataFormats.Files);
+        var data = await clipboard.TryGetDataAsync();
         if (data == null) return null;
 
-        // 兼容 Avalonia 11 的 IStorageItem (Explorer 复制通常走这里)
-        if (data is IEnumerable<IStorageItem> storageItems)
+        var paths = new List<string>();
+        foreach (var item in data.Items)
         {
-            return storageItems.Select(x => x.TryGetLocalPath()).Where(p => p != null)!;
+            if (item.Formats.Contains(DataFormat.File))
+            {
+                var fileData = await item.TryGetRawAsync(DataFormat.File);
+                if (fileData is IStorageFile storageFile)
+                    paths.Add(storageFile.Path.LocalPath);
+            }
         }
-
-        // 兼容传统的路径字符串集合
-        if (data is IEnumerable<string> paths)
-        {
-            return paths;
-        }
-
-        return null;
+        return paths.Count > 0 ? paths : null;
     }
 
     /// <summary>

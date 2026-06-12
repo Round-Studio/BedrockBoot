@@ -15,6 +15,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
 using BedrockBoot.Views.Windows;
 using BedrockBoot.Views.Windows.SystemMethod;
+using BedrockBoot.WatchDog.Entity;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 using Application = Avalonia.Application;
@@ -47,6 +48,9 @@ public class App : Application
 
         Console.WriteLine(@"异常订阅已完毕");
         LoadColor();
+
+        var watchDog = new WatchDog.WatchDog(new WatchConfig());
+        watchDog.Start();
     }
 
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

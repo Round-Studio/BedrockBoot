@@ -88,8 +88,8 @@ public class WatchDog
                         long freedManaged = beforeManaged - afterManaged;
                         long freedWorkingSet = beforeWorkingSet - afterWorkingSet;
                         
-                        // 只在有内存被释放时输出，或者强制输出
-                        if (freedManaged > 0 || freedWorkingSet > 0 || _config.AlwaysLogGC)
+                        // 仅强制输出
+                        if (_config.AlwaysLogGC)
                         {
                             Console.WriteLine($"GC executed. " +
                                 $"Managed: {beforeManaged}MB -> {afterManaged}MB (freed: {freedManaged}MB), " +

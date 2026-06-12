@@ -53,6 +53,37 @@
             <StackPanel Grid.Row="1"
                         Spacing="8"
                         Margin="5">
+                <Button Padding="8,10"
+                        Classes="NoBorder">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12">
+                        <onePointControls:FontIcon FontSize="16"
+                                                   Glyph="&#xE8B7;"/>
+                        <TextBlock Text="浏览目录"></TextBlock>
+                    </StackPanel>
+                    
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuItem Header="运行文件夹"
+                                      Name="MenuOpenRunFolder"
+                                      Click="MenuOpenFolder_OnClick">
+                                <MenuItem.Icon>
+                                    <onePointControls:FontIcon Glyph="&#xE7FC;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="配置文件夹"
+                                      Name="MenuOpenConfigFolder"
+                                      Click="MenuOpenConfigFolder_OnClick">
+                                <MenuItem.Icon>
+                                    <onePointControls:FontIcon Glyph="&#xE713;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+                
                 <Button Classes="NoBorder"
                         Name="LaunchBtn"
                         IsVisible="False"

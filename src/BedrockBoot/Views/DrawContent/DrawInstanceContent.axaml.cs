@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -96,5 +97,15 @@ public partial class DrawInstanceContent : UserControl
     {
         VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
         TaskLaunchGameItem.Launch(VersionInfo);
+    }
+
+    private void MenuOpenFolder_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFolderHelper.Open(VersionInfo.VersionPath);
+    }
+
+    private void MenuOpenConfigFolder_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFolderHelper.Open(Path.Combine(VersionInfo.VersionPath, "config"));
     }
 }

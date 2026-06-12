@@ -90,14 +90,6 @@
                                                    Foreground="White" />
                                     </StackPanel>
                                 </Button>
-
-                                <Button Name="OpenFolderBtn"
-                                        Click="OpenFolderBtn_OnClick"
-                                        Width="50"
-                                        Height="50"
-                                        BorderThickness="0">
-                                    <onePointControls:FontIcon Glyph="&#xE8B7;" FontSize="20" Foreground="White"/>
-                                </Button>
                             </StackPanel>
                         </Grid>
                     </Grid>

@@ -210,11 +210,6 @@ public partial class InstanceInfo : UserControl
         TaskLaunchGameItem.Launch(VersionInfo);
     }
 
-    private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        OpenFolderHelper.Open(VersionInfo.VersionPath);
-    }
-
     private void ResetImageBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         VersionInfo.Info.CoverImage = null;

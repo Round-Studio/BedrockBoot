@@ -74,6 +74,13 @@ public class EasyLauncher
 
         if (!Directory.Exists(_linuxLaunchInfo.PrefixPath)) 
             Directory.CreateDirectory(_linuxLaunchInfo.PrefixPath);
+        
+        string dosDevicesPath = Path.Combine(_linuxLaunchInfo.PrefixPath, "pfx", "dosdevices");
+        if (!Directory.Exists(dosDevicesPath))
+        {
+            Directory.CreateDirectory(dosDevicesPath);
+            Console.WriteLine($"已创建 dosdevices 目录: {dosDevicesPath}");
+        }
 
         string protonScript = Path.Combine(_linuxLaunchInfo.ProtonPath, "proton");
 

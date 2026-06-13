@@ -45,7 +45,17 @@ public class ResourcePackManifest
 
         [JsonPropertyName("description")] public string Description { get; set; }
 
-        [JsonPropertyName("uuid")] public string Uuid { get; set; }
+        [JsonPropertyName("pack_id")] public string PackId { get; set; }
+
+        [JsonPropertyName("packs_version")] public string PacksVersion { get; set; }
+
+        private string _uuid;
+        [JsonPropertyName("uuid")]
+        public string Uuid
+        {
+            get => !string.IsNullOrEmpty(_uuid) ? _uuid : PackId;
+            set => _uuid = value;
+        }
 
         [JsonPropertyName("pack_scope")] public string PackScope { get; set; }
 
@@ -72,6 +82,8 @@ public class ResourcePackManifest
                     var array = JsonSerializer.Deserialize<List<int>>(VersionElement.GetRawText());
                     return string.Join(".", array);
                 }
+                if (!string.IsNullOrEmpty(PacksVersion))
+                    return PacksVersion;
 
                 return string.Empty;
             }

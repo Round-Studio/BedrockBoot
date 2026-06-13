@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using Round.SDK.Entity;
+using Round.SDK.Global;
 using Round.SDK.Helper;
 
 namespace BedrockBoot.Models.Pack.Game.ResourcePack;
@@ -158,7 +161,9 @@ public class ResourcePackAnalysis
     {
         try
         {
-            var conf = new ConfigEntity<ResourcePackManifest>(file, false).Data;
+            var json = File.ReadAllText(file);
+            json = SanitizeJsonString(json);
+            var conf = JsonSerializer.Deserialize<ResourcePackManifest>(json, JsonSerializerOption.Options);
             if (conf?.Header == null) return null;
 
             conf.PackRootPath = Path.GetDirectoryName(file);
@@ -352,6 +357,61 @@ public class ResourcePackAnalysis
             var targetSubDir = Path.Combine(destinationDir, subDir.Name);
             CopyDirectory(subDir.FullName, targetSubDir);
         }
+    }
+
+    private static string SanitizeJsonString(string json)
+    {
+        var sb = new StringBuilder(json.Length);
+        var inString = false;
+        var escape = false;
+
+        foreach (var c in json)
+        {
+            if (escape)
+            {
+                escape = false;
+                sb.Append(c);
+                continue;
+            }
+
+            if (inString)
+            {
+                if (c == '\\')
+                {
+                    escape = true;
+                    sb.Append(c);
+                    continue;
+                }
+
+                if (c == '"')
+                {
+                    inString = false;
+                    sb.Append(c);
+                    continue;
+                }
+
+                if (c == '\r')
+                {
+                    sb.Append("\\r");
+                    continue;
+                }
+
+                if (c == '\n')
+                {
+                    sb.Append("\\n");
+                    continue;
+                }
+
+                sb.Append(c);
+            }
+            else
+            {
+                if (c == '"') inString = true;
+                sb.Append(c);
+            }
+        }
+
+        return sb.ToString();
     }
 
     // 新增：子包节点类

@@ -71,19 +71,12 @@ public class GlobalModel
                     if (Directory.Exists(folder))
                     {
                         var inPath = Path.Combine(folder, "bedrock_versions");
-                        if (!Directory.Exists(realPath) ||
-                            Directory.Exists(inPath))
+                        if (Directory.Exists(realPath) ||
+                            !Directory.Exists(inPath))
                         {
-                            DialogHost.Show(new DialogInfo
-                            {
-                                Title = "提示",
-                                Content = "该启动器已导入",
-                                CloseButtonText = "确定"
-                            });
-                            return;
+                            Directory.CreateSymbolicLink(inPath, realPath);
                         }
 
-                        Directory.CreateSymbolicLink(inPath, realPath);
                         BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                         {
                             GameFolderName = "BMCBL",

@@ -8,13 +8,21 @@
     <Grid ColumnDefinitions="*,Auto">
         <Grid Grid.Column="0"
               RowDefinitions="*,*">
-            <TextBlock Grid.Row="0"
-                       Margin="0,4,0,0"
-                       FontSize="16"
-                       TextTrimming="CharacterEllipsis"
-                       Name="FolderNameBox">
-                Folder Name
-            </TextBlock>
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        Margin="0,4,0,0"
+                        Spacing="4">
+                <onePointControls:LabelBox VerticalAlignment="Center"
+                                           IsVisible="True"
+                                           Name="FolderType"
+                                           Text="Folder Type"></onePointControls:LabelBox>
+                <TextBlock FontSize="16"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           Name="FolderNameBox">
+                    Folder Name
+                </TextBlock>
+            </StackPanel>
             <TextBlock Grid.Row="1"
                        Margin="0,0,0,4"
                        FontSize="11"

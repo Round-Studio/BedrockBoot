@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.DialogContent;
@@ -33,7 +34,9 @@ public partial class GameFolderSettingItem : UserControl
 
     private void UpdateUI()
     {
-        Card.Header = GameFolderInfo.GameFolderName;
+        FolderNameBox.Text = GameFolderInfo.GameFolderName;
+        FolderType.Text = GameFolderInfo.GameFolderType.ToString();
+        FolderType.IsVisible = GameFolderInfo.GameFolderType != GameFolderType.BedrockBoot;
         Card.Description = GameFolderInfo.GameFolderPath;
     }
 

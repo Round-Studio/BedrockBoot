@@ -3,15 +3,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.GameFolderSettingItem">
-    <onePointControls:SettingCard Header="FolderName"
-                                  Description="FolderPath"
+    <onePointControls:SettingCard Description="FolderPath"
                                   Name="Card"
                                   IsFontIcon="True"
                                   IsShowActionIcon="False"
                                   IsClickable="True"
                                   Glyph="&#xE8B7;">
+        <onePointControls:SettingCard.Header>
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        Margin="0,4,0,0"
+                        Spacing="4">
+                <onePointControls:LabelBox VerticalAlignment="Center"
+                                           IsVisible="True"
+                                           Name="FolderType"
+                                           Text="Folder Type"></onePointControls:LabelBox>
+                <TextBlock FontSize="16"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           Name="FolderNameBox">
+                    Folder Name
+                </TextBlock>
+            </StackPanel>
+        </onePointControls:SettingCard.Header>
         <StackPanel Orientation="Horizontal"
                     Spacing="5">
             <Button Width="24" Height="24"

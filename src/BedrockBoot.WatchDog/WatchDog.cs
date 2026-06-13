@@ -116,7 +116,7 @@ public class WatchDog
             {
                 if (_config.EnableVerboseLogging)
                 {
-                    Console.WriteLine($"Error: {ex.Message}");
+                    Console.WriteLine($@"Error: {ex.Message}");
                 }
                 await Task.Delay(5000, cancellationToken);
             }

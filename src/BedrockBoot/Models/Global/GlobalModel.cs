@@ -1,5 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Config;
 using BedrockBoot.Base.Entry.Info.Xbox;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum.Type;
@@ -7,6 +13,9 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Global;
 
@@ -28,4 +37,105 @@ public class GlobalModel
     public static AppRunType AppRunType { get; set; } = AppRunType.Default;
     public static bool IsNetworkAvailable { get; set; }
     public static ArchiveBackup ArchiveBackup { get; } = new();
+    public static List<OtherLauncherInfo> OtherLauncher = new()
+    {
+        new OtherLauncherInfo() // BMCBL
+        {
+            Name = "BMCBL",
+            IconUrl = "avares://BedrockBoot/Assets/Icon/Other/BMCBL.png",
+            IsExists = false,
+            OnImport = async _ =>
+            {
+                var storageProvider = TopLevel.GetTopLevel(GlobalModel.MainWindow);
+                var options = new FilePickerOpenOptions
+                {
+                    Title = "选择 BMCBL 本体",
+                    AllowMultiple = false,
+                    FileTypeFilter = new[]
+                    {
+                        new FilePickerFileType("EXE 可执行文件")
+                        {
+                            Patterns = new[] { "*.exe" }
+                        }
+                    }
+                };
+
+                var files = await storageProvider.StorageProvider.OpenFilePickerAsync(options);
+                if (files != null && files.Count > 0)
+                {
+                    var selectedFile = files[0];
+
+                    var filePath = selectedFile.Path.LocalPath;
+                    var folder = Path.Combine(Path.GetDirectoryName(filePath), "BMCBL");
+                    var realPath = Path.Combine(folder, "versions");
+                    if (Directory.Exists(folder))
+                    {
+                        var inPath = Path.Combine(folder, "bedrock_versions");
+                        if (!Directory.Exists(realPath) ||
+                            Directory.Exists(inPath))
+                        {
+                            DialogHost.Show(new DialogInfo
+                            {
+                                Title = "提示",
+                                Content = "该启动器已导入",
+                                CloseButtonText = "确定"
+                            });
+                            return;
+                        }
+
+                        Directory.CreateSymbolicLink(inPath, realPath);
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                        {
+                            GameFolderName = "BMCBL",
+                            GameFolderPath = folder,
+                            GameFolderType = GameFolderType.BMCBL
+                        });
+                        BedrockBoot.Core.Global.GlobalModel.Config.Save();
+
+                        MainWindow?.CloseDraw();
+                        DialogHost.Show(new DialogInfo
+                        {
+                            Title = "导入成功",
+                            Content = "导入 BMCBL 启动器的配置成功",
+                            CloseButtonText = "确定"
+                        });
+                    }
+                }
+            }
+        },
+        new OtherLauncherInfo() // LeviLauncher
+        {
+            Name = "LeviLauncher",
+            IconUrl = "avares://BedrockBoot/Assets/Icon/Other/LeviLauncher.png",
+            ConfigFile = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "levilauncher.exe",
+                "config.json"
+            ),
+            OnImport = s =>
+            {
+                var conf = new ConfigEntity<ConfigLeviLauncher>(s, false);
+                var realPath = Path.Combine(conf.Data.BaseRoot, "versions");
+                var inPath = Path.Combine(conf.Data.BaseRoot, "bedrock_versions");
+                if (!Directory.Exists(realPath)) Directory.CreateDirectory(realPath);
+
+                if (!Directory.Exists(inPath)) Directory.CreateSymbolicLink(inPath, realPath);
+                BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
+                {
+                    GameFolderName = "LeviLauncher",
+                    GameFolderPath = conf.Data.BaseRoot,
+                    GameFolderType = GameFolderType.LeviLauncher
+                });
+                BedrockBoot.Core.Global.GlobalModel.Config.Save();
+
+                GlobalModel.MainWindow.CloseDraw();
+                DialogHost.Show(new DialogInfo
+                {
+                    Title = "导入成功",
+                    Content = "导入 LeviLauncher 启动器的配置成功",
+                    CloseButtonText = "确定"
+                });
+            }
+        }
+    };
 }

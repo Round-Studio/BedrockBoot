@@ -134,8 +134,7 @@ public class EasyLauncher
                 }
                 else
                 {
-                    Console.WriteLine($"GameInput 安装失败，错误码: {process?.ExitCode}");
-                    return;
+                    Console.WriteLine($@"GameInput 安装失败，错误码: {process?.ExitCode}");
                 }
             }
 

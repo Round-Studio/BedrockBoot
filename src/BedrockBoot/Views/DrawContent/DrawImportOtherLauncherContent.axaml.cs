@@ -28,7 +28,7 @@ public partial class DrawImportOtherLauncherContent : UserControl
         var anyVisible = false;
 
         // PathsList.OtherLauncher 定义了支持扫描的启动器列表
-        foreach (var launcher in PathsList.OtherLauncher)
+        foreach (var launcher in GlobalModel.OtherLauncher)
             // 如果配置文件存在，或者该启动器标记为强制显示（!IsExists）
             if (File.Exists(launcher.ConfigFile) || !launcher.IsExists)
             {

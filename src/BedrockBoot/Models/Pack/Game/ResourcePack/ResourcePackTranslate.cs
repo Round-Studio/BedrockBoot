@@ -45,6 +45,7 @@ public class ResourcePackTranslate
 
         var analysis = new ResourcePackAnalysis(packagePath);
         var packInfo = analysis.GetPackInfo();
+        analysis.ExtractToTemp();
 
         var tempPath = packInfo.RootPath; // 使用分析类的临时路径
         var finalOutputPath = string.IsNullOrEmpty(outputPath) ? packagePath : outputPath;
@@ -149,6 +150,7 @@ public class ResourcePackTranslate
 
         var analysis = new ResourcePackAnalysis(packagePath);
         var packInfo = analysis.GetPackInfo();
+        analysis.ExtractToTemp();
 
         var tempPath = packInfo.RootPath; // 使用分析类的临时路径
         var finalOutputPath = string.IsNullOrEmpty(outputPath) ? packagePath : outputPath;

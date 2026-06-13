@@ -61,8 +61,10 @@ public class ResourcePackAnalysis
 
     public PackInfo GetPackInfo()
     {
-        var packInfo = new PackInfo { RootPath = _tempPath ?? string.Empty };
+        var _ = TempPath; // 强制初始化 _tempPath，即使 GetPackManifests 提前失败
         var manifests = GetPackManifests();
+
+        var packInfo = new PackInfo { RootPath = _tempPath ?? string.Empty };
 
         var mainDir = Path.GetDirectoryName(FilePath) ?? string.Empty;
 

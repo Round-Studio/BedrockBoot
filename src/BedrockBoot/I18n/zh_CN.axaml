@@ -67,6 +67,9 @@
     <x:String x:Key="Manager.GameType.Release">正式版</x:String>
     <x:String x:Key="Manager.GameType.Preview">测试版</x:String>
 
+    <x:String x:Key="Manager.Filter.PlayTimeAsc">游玩时长升序</x:String>
+    <x:String x:Key="Manager.Filter.PlayTimeDesc">游玩时长降序</x:String>
+
     <x:String x:Key="Manager.GameItem.Launch">启动</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">编辑模式</x:String>
 

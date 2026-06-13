@@ -100,12 +100,14 @@
 
                             <ComboBox DockPanel.Dock="Right"
                                       SelectedIndex="0"
-                                      Name="GameTypeSel"
-                                      SelectionChanged="GameTypeSel_OnSelectionChanged"
+                                      Name="GameFilterSel"
+                                      SelectionChanged="GameFilterSel_OnSelectionChanged"
                                       HorizontalAlignment="Stretch">
-                                <ComboBoxItem Tag="" Content="{DynamicResource Manager.GameType.AllType}" />
+                                <ComboBoxItem Tag="AllTypes" Content="{DynamicResource Manager.GameType.AllType}" />
                                 <ComboBoxItem Tag="Release" Content="{DynamicResource Manager.GameType.Release}" />
                                 <ComboBoxItem Tag="Preview" Content="{DynamicResource Manager.GameType.Preview}" />
+                                <ComboBoxItem Tag="PlayTimeAsc" Content="{DynamicResource Manager.Filter.PlayTimeAsc}" />
+                                <ComboBoxItem Tag="PlayTimeDesc" Content="{DynamicResource Manager.Filter.PlayTimeDesc}" />
                             </ComboBox>
                         </DockPanel>
 

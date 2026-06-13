@@ -9,6 +9,8 @@ using Avalonia.Layout;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Views.Control.Items;
@@ -28,7 +30,6 @@ public partial class MainManager : BedrockBootPage
 
     // 用于 FileSystemWatcher 的防抖
     private CancellationTokenSource? _watcherDebounceCts;
-    private string GameType = "";
     private string SearchKey = "";
 
     public MainManager()
@@ -153,6 +154,7 @@ public partial class MainManager : BedrockBootPage
                 foreach (var item in folderItems) FolderList.Items.Add(item);
 
                 FolderList.SelectedIndex = folders.Count == 1 ? 0 : GlobalModel.Config.Data.GameFolderSelIndex;
+                SyncFilterFromFolder();
             }
 
             InitializeConfigWatcher();
@@ -196,11 +198,13 @@ public partial class MainManager : BedrockBootPage
             GamesNull.IsVisible = false;
             GameScro.IsVisible = false;
 
-            var gameItems = new List<Avalonia.Controls.Control>();
+            var filter = currentFolder.GameFolderFilter;
             var hasSearchKey = !string.IsNullOrEmpty(SearchKey);
-            var hasGameType = !string.IsNullOrEmpty(GameType);
 
-            foreach (var info in GameInfoHelper.GetVersionConfigs(currentFolder.GameFolderPath))
+            var versionConfigs = GameInfoHelper.GetVersionConfigs(currentFolder.GameFolderPath);
+            var filteredConfigs = new List<VersionConfig>(versionConfigs.Count);
+
+            foreach (var info in versionConfigs)
             {
                 var vInfo = info?.Info;
                 if (string.IsNullOrEmpty(vInfo?.VersionName) || string.IsNullOrEmpty(vInfo?.Version))
@@ -211,20 +215,28 @@ public partial class MainManager : BedrockBootPage
                     !vInfo.Version.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                if (hasGameType)
-                {
-                    var type = vInfo.VersionType == MinecraftGameTypeVersion.Release ? "Release" : "Preview";
-                    if (GameType != type) continue;
-                }
+                if (filter == GameFolderFilterType.Release && vInfo.VersionType != MinecraftGameTypeVersion.Release)
+                    continue;
 
-                gameItems.Add(new GameItem(info!));
+                if (filter == GameFolderFilterType.Preview && vInfo.VersionType != MinecraftGameTypeVersion.Preview)
+                    continue;
+
+                filteredConfigs.Add(info!);
             }
+
+            if (filter == GameFolderFilterType.PlayTimeAsc)
+                filteredConfigs.Sort((a, b) => a.PlayerData.TotalPlayTime.CompareTo(b.PlayerData.TotalPlayTime));
+            else if (filter == GameFolderFilterType.PlayTimeDesc)
+                filteredConfigs.Sort((a, b) => -a.PlayerData.TotalPlayTime.CompareTo(b.PlayerData.TotalPlayTime));
+
+            var gameItems = new List<Avalonia.Controls.Control>(filteredConfigs.Count);
+            foreach (var config in filteredConfigs)
+                gameItems.Add(new GameItem(config));
 
             GameScro.ItemsSource = null;
 
             if (gameItems.Count > 0)
             {
-                // 一次性绑定到 ItemsSource，ListBox + VirtualizingStackPanel 会自动按需实例化
                 GameScro.ItemsSource = gameItems;
                 GamesLoad.IsVisible = false;
                 GameScro.IsVisible = true;
@@ -248,9 +260,6 @@ public partial class MainManager : BedrockBootPage
         GamesLoad.IsVisible = false;
         GameScro.IsVisible = false;
         GamesNull.IsVisible = true;
-
-        // 此处可通过绑定或 FindControl 获取 TextBlock 并设置多语言
-        // GamesNullText.Text = isNullBecauseNoFolder ? i18n["MainPage.Status.NoFolder"] : i18n["MainPage.Status.NoInstance"];
     }
 
     private void AddFolderBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -293,11 +302,45 @@ public partial class MainManager : BedrockBootPage
     {
         if (IsEditMode)
         {
+            var oldIndex = GlobalModel.Config.Data.GameFolderSelIndex;
+            if (oldIndex >= 0 && oldIndex < GlobalModel.Config.Data.GameFolders.Count)
+                SaveFilterToFolder(GlobalModel.Config.Data.GameFolders[oldIndex]);
+
+            SearchBox.Text = "";
+            SearchKey = "";
+
             GlobalModel.Config.Data.GameFolderSelIndex = FolderList.SelectedIndex;
+            SyncFilterFromFolder();
             GlobalModel.Config.Save();
             InitializeConfigWatcher();
             UpdateGameList();
             JumpListManager.ConfigureJumpList();
+        }
+    }
+
+    private void SaveFilterToFolder(GameFolderInfo folder)
+    {
+        if (GameFilterSel?.SelectedItem is ComboBoxItem { Tag: { } tag } &&
+            Enum.TryParse<GameFolderFilterType>(tag.ToString(), out var parsed))
+            folder.GameFolderFilter = parsed;
+    }
+
+    private void SyncFilterFromFolder()
+    {
+        var configData = GlobalModel.Config.Data;
+        if (configData.GameFolderSelIndex < 0 || configData.GameFolderSelIndex >= configData.GameFolders.Count)
+            return;
+
+        var folder = configData.GameFolders[configData.GameFolderSelIndex];
+        var tagName = folder.GameFolderFilter.ToString();
+
+        for (var i = 0; i < GameFilterSel.Items.Count; i++)
+        {
+            if (GameFilterSel.Items[i] is ComboBoxItem item && item.Tag?.ToString() == tagName)
+            {
+                GameFilterSel.SelectedIndex = i;
+                break;
+            }
         }
     }
 
@@ -348,13 +391,18 @@ public partial class MainManager : BedrockBootPage
         UpdateGameList();
     }
 
-    private void GameTypeSel_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void GameFilterSel_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (IsEditMode)
         {
-            GameType = GameTypeSel?.SelectedItem is ComboBoxItem { Tag: { } tag }
-                ? tag.ToString() ?? ""
-                : "";
+            var configData = GlobalModel.Config.Data;
+            if (configData.GameFolderSelIndex < 0 || configData.GameFolderSelIndex >= configData.GameFolders.Count)
+                return;
+
+            if (GameFilterSel?.SelectedItem is ComboBoxItem { Tag: { } tag } &&
+                Enum.TryParse<GameFolderFilterType>(tag.ToString(), out var parsed))
+                configData.GameFolders[configData.GameFolderSelIndex].GameFolderFilter = parsed;
+
             UpdateGameList();
         }
     }
@@ -401,7 +449,6 @@ public partial class MainManager : BedrockBootPage
         }
     }
 
-    // 提取公共弹窗逻辑减少代码冗余
     private void ShowErrorNotice(string message)
     {
         Models.Global.GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo

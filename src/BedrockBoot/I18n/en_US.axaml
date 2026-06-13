@@ -67,6 +67,9 @@
     <x:String x:Key="Manager.GameType.Release">Release</x:String>
     <x:String x:Key="Manager.GameType.Preview">Preview</x:String>
 
+    <x:String x:Key="Manager.Filter.PlayTimeAsc">Play Time ▲</x:String>
+    <x:String x:Key="Manager.Filter.PlayTimeDesc">Play Time降序</x:String>
+
     <x:String x:Key="Manager.GameItem.Launch">Launch</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">Edit Mode</x:String>
 

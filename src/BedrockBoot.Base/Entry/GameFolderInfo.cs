@@ -9,4 +9,5 @@ public class GameFolderInfo
     [JsonPropertyName("gameFolderName")] public string GameFolderName { get; set; }
     [JsonPropertyName("gameSelIndex")] public int GameSelIndex { get; set; } = 0;
     [JsonPropertyName("gameFolderType")] public GameFolderType GameFolderType { get; set; } = GameFolderType.BedrockBoot;
+    [JsonPropertyName("gameFolderFilter")] public GameFolderFilterType GameFolderFilter { get; set; } = GameFolderFilterType.AllTypes;
 }

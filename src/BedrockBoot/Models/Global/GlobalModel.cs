@@ -71,7 +71,7 @@ public class GlobalModel
                     if (Directory.Exists(folder))
                     {
                         var inPath = Path.Combine(folder, "bedrock_versions");
-                        if (Directory.Exists(realPath) ||
+                        if (Directory.Exists(realPath) &&
                             !Directory.Exists(inPath))
                         {
                             Directory.CreateSymbolicLink(inPath, realPath);

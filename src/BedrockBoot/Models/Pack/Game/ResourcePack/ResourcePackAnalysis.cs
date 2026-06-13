@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -16,8 +17,7 @@ namespace BedrockBoot.Models.Pack.Game.ResourcePack;
 
 public class ResourcePackAnalysis
 {
-    private readonly string _tempPath =
-        Path.Combine(PathsList.TempPath, $"pack_{Guid.NewGuid().ToString().Replace("-", "")}");
+    private string? _tempPath;
 
     public ResourcePackAnalysis(string filePath)
     {
@@ -25,6 +25,15 @@ public class ResourcePackAnalysis
     }
 
     public string FilePath { get; }
+
+    private string TempPath
+    {
+        get
+        {
+            _tempPath ??= Path.Combine(PathsList.TempPath, $"pack_{Guid.NewGuid().ToString().Replace("-", "")}");
+            return _tempPath;
+        }
+    }
 
     public static ResourcePackType GetPackType(ResourcePackManifest conf)
     {
@@ -52,50 +61,39 @@ public class ResourcePackAnalysis
 
     public PackInfo GetPackInfo()
     {
-        if (!Directory.Exists(_tempPath))
+        var packInfo = new PackInfo { RootPath = _tempPath ?? string.Empty };
+        var manifests = GetPackManifests();
+
+        var mainDir = Path.GetDirectoryName(FilePath) ?? string.Empty;
+
+        foreach (var manifest in manifests)
         {
-            ZipHelper.ExtractZipFile(FilePath, _tempPath);
-            ExtractSubPacks(_tempPath);
-        }
-
-        var packInfo = new PackInfo { RootPath = _tempPath };
-
-        // 获取所有manifest文件
-        var manifestFiles = Directory.GetFiles(_tempPath, "manifest.json", SearchOption.AllDirectories);
-
-        // 构建子包树形结构
-        foreach (var file in manifestFiles)
-        {
-            var manifest = GetPackManifest(file);
-            if (manifest != null)
+            if (manifest == null) continue;
+            if (string.IsNullOrEmpty(manifest.PackRootPath))
             {
-                var directory = Path.GetDirectoryName(file);
+                packInfo.MainManifest ??= manifest;
+                continue;
+            }
 
-                // 判断是否为主包manifest（根目录下的manifest）
-                if (directory == _tempPath)
-                {
-                    packInfo.MainManifest = manifest;
-                }
-                else
-                {
-                    // 将非根目录的manifest视为子包
-                    var subPackNode = CreateSubPackNode(directory, manifest);
-                    packInfo.SubPacks.Add(subPackNode);
-                }
+            var dir = manifest.PackRootPath;
+            if (dir == TempPath || string.IsNullOrEmpty(_tempPath))
+            {
+                packInfo.MainManifest = manifest;
+            }
+            else
+            {
+                var subPackNode = CreateSubPackNode(dir, manifest);
+                packInfo.SubPacks.Add(subPackNode);
             }
         }
 
-        // 构建父子关系
         BuildSubPackHierarchy(packInfo.SubPacks);
-
         return packInfo;
     }
 
     private SubPackNode CreateSubPackNode(string directory, ResourcePackManifest manifest)
     {
-        var relativePath = Path.GetRelativePath(_tempPath, directory);
         var name = Path.GetFileName(directory);
-
         return new SubPackNode
         {
             Name = name,
@@ -113,32 +111,164 @@ public class ResourcePackAnalysis
         {
             var parentPath = Path.GetDirectoryName(node.Path);
 
-            if (nodeMap.ContainsKey(parentPath))
+            if (parentPath != null && nodeMap.ContainsKey(parentPath))
             {
                 nodeMap[parentPath].Children.Add(node);
-                allNodes.Remove(node); // 从顶层移除，因为它属于另一个节点的子节点
+                allNodes.Remove(node);
             }
         }
     }
 
     public List<ResourcePackManifest> GetPackManifests()
     {
-        if (!Directory.Exists(_tempPath))
-        {
-            ZipHelper.ExtractZipFile(FilePath, _tempPath);
-            ExtractSubPacks(_tempPath);
-        }
-
         var result = new List<ResourcePackManifest>();
-        var manifestFiles = Directory.GetFiles(_tempPath, "manifest.json", SearchOption.AllDirectories);
 
-        foreach (var file in manifestFiles)
+        try
         {
-            var manifest = GetPackManifest(file);
-            if (manifest != null) result.Add(manifest);
+            using var archive = ZipFile.OpenRead(FilePath);
+
+            // 读取根/子目录下的 manifest.json
+            var manifestEntries = archive.Entries
+                .Where(e => e.Name.Equals("manifest.json", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var entry in manifestEntries)
+            {
+                var manifest = ReadManifestFromZipEntry(archive, entry, TempPath);
+                if (manifest == null) continue;
+
+                manifest.PackIconBytes = ReadIconBytesFromZipEntryDir(archive, entry);
+                result.Add(manifest);
+            }
+
+            // 读取嵌套的 .mcpack 内的 manifest (mcaddon 内含 mcpack)
+            var nestedMcpackEntries = archive.Entries
+                .Where(e => e.Name.EndsWith(".mcpack", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var entry in nestedMcpackEntries)
+            {
+                try
+                {
+                    using var subStream = entry.Open();
+                    using var subArchive = new ZipArchive(subStream, ZipArchiveMode.Read);
+                    var subManifestEntry = subArchive.Entries
+                        .FirstOrDefault(e => e.Name.Equals("manifest.json", StringComparison.OrdinalIgnoreCase));
+                    if (subManifestEntry == null) continue;
+
+                    var entryDir = Path.GetDirectoryName(entry.FullName)?.Replace('\\', '/') ?? "";
+                    var subPackRoot = string.IsNullOrEmpty(entryDir)
+                        ? Path.Combine(TempPath, Path.GetFileNameWithoutExtension(entry.Name))
+                        : Path.Combine(TempPath, entryDir, Path.GetFileNameWithoutExtension(entry.Name));
+
+                    var manifest = ReadManifestFromStream(subManifestEntry.Open(), subPackRoot);
+                    if (manifest == null) continue;
+
+                    ResolveI18nFromZip(subArchive, "", manifest);
+                    manifest.PackIconBytes = ReadIconBytesFromZip(subArchive);
+                    result.Add(manifest);
+                }
+                catch
+                {
+                    // 忽略无法读取的子包
+                }
+            }
+        }
+        catch
+        {
+            // 文件无法打开，返回空列表
         }
 
         return result;
+    }
+
+    private static byte[]? ReadIconBytesFromZipEntryDir(ZipArchive archive, ZipArchiveEntry manifestEntry)
+    {
+        var dir = Path.GetDirectoryName(manifestEntry.FullName)?.Replace('\\', '/') ?? "";
+        var iconName = string.IsNullOrEmpty(dir)
+            ? "pack_icon.png"
+            : $"{dir}/pack_icon.png";
+        var iconEntry = archive.GetEntry(iconName)
+                       ?? archive.GetEntry(string.IsNullOrEmpty(dir) ? "pack.png" : $"{dir}/pack.png");
+        if (iconEntry == null) return null;
+        try
+        {
+            using var ms = new MemoryStream();
+            using var s = iconEntry.Open();
+            s.CopyTo(ms);
+            return ms.ToArray();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static byte[]? ReadIconBytesFromZip(ZipArchive archive)
+    {
+        var iconEntry = archive.Entries
+            .FirstOrDefault(e => e.Name.Equals("pack_icon.png", StringComparison.OrdinalIgnoreCase) ||
+                                 e.Name.Equals("pack.png", StringComparison.OrdinalIgnoreCase));
+        if (iconEntry == null) return null;
+        try
+        {
+            using var ms = new MemoryStream();
+            using var s = iconEntry.Open();
+            s.CopyTo(ms);
+            return ms.ToArray();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static ResourcePackManifest? ReadManifestFromZipEntry(ZipArchive archive, ZipArchiveEntry entry, string tempPath)
+    {
+        var entryDir = Path.GetDirectoryName(entry.FullName)?.Replace('\\', '/') ?? "";
+        var packRoot = string.IsNullOrEmpty(entryDir)
+            ? tempPath
+            : Path.Combine(tempPath, entryDir);
+
+        using var stream = entry.Open();
+        var manifest = ReadManifestFromStream(stream, packRoot);
+        if (manifest != null)
+            ResolveI18nFromZip(archive, entryDir, manifest);
+        return manifest;
+    }
+
+    private static ResourcePackManifest? ReadManifestFromStream(Stream stream, string packRootPath)
+    {
+        try
+        {
+            using var reader = new StreamReader(stream);
+            var json = reader.ReadToEnd();
+            json = SanitizeJsonString(json);
+            var conf = JsonSerializer.Deserialize<ResourcePackManifest>(json, JsonSerializerOption.Options);
+            if (conf?.Header == null) return null;
+
+            conf.PackRootPath = packRootPath;
+            conf.PackType = GetPackType(conf);
+
+            if (conf.Header.Name == "pack.name")
+                conf.Header.Name = GetLangText(packRootPath, "pack.name");
+
+            if (conf.Header.Description == "pack.description")
+                conf.Header.Description = GetLangText(packRootPath, "pack.description");
+
+            return conf;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public void ExtractToTemp()
+    {
+        if (Directory.Exists(TempPath)) return;
+        ZipHelper.ExtractZipFile(FilePath, TempPath);
+        ExtractSubPacks(TempPath);
     }
 
     private void ExtractSubPacks(string targetPath)
@@ -147,13 +277,33 @@ public class ResourcePackAnalysis
         foreach (var subPack in subPacks)
         {
             var subExtractPath =
-                Path.Combine(Path.GetDirectoryName(subPack), Path.GetFileNameWithoutExtension(subPack));
+                Path.Combine(Path.GetDirectoryName(subPack)!, Path.GetFileNameWithoutExtension(subPack));
             if (!Directory.Exists(subExtractPath))
             {
                 ZipHelper.ExtractZipFile(subPack, subExtractPath);
-                // 递归处理嵌套的子包（例如 mcaddon 嵌套了文件夹，文件夹里又有 mcpack）
                 ExtractSubPacks(subExtractPath);
             }
+        }
+    }
+
+    public byte[]? GetPackIconBytes()
+    {
+        try
+        {
+            using var archive = ZipFile.OpenRead(FilePath);
+            var iconEntry = archive.Entries
+                .FirstOrDefault(e => e.Name.Equals("pack_icon.png", StringComparison.OrdinalIgnoreCase) ||
+                                     e.Name.Equals("pack.png", StringComparison.OrdinalIgnoreCase));
+            if (iconEntry == null) return null;
+
+            using var ms = new MemoryStream();
+            using var entryStream = iconEntry.Open();
+            entryStream.CopyTo(ms);
+            return ms.ToArray();
+        }
+        catch
+        {
+            return null;
         }
     }
 
@@ -234,6 +384,80 @@ public class ResourcePackAnalysis
         return langKey;
     }
 
+    private static void ResolveI18nFromZip(ZipArchive archive, string entryDir, ResourcePackManifest manifest)
+    {
+        if (manifest.Header.Name == "pack.name")
+            manifest.Header.Name = GetLangTextFromZip(archive, entryDir, "pack.name");
+        if (manifest.Header.Description == "pack.description")
+            manifest.Header.Description = GetLangTextFromZip(archive, entryDir, "pack.description");
+    }
+
+    private static string GetLangTextFromZip(ZipArchive archive, string entryDir, string langKey)
+    {
+        var textsPrefix = string.IsNullOrEmpty(entryDir) ? "texts/" : $"{entryDir}/texts/";
+
+        List<string> langFiles = [];
+        var langManifestEntry = archive.GetEntry($"{textsPrefix}languages.json");
+        if (langManifestEntry != null)
+        {
+            try
+            {
+                using var reader = new StreamReader(langManifestEntry.Open());
+                var json = reader.ReadToEnd();
+                langFiles = JsonSerializer.Deserialize<List<string>>(json, JsonSerializerOption.Options) ?? [];
+            }
+            catch
+            {
+                // 忽略
+            }
+        }
+
+        if (langFiles.Count == 0)
+        {
+            langFiles = archive.Entries
+                .Where(e => e.FullName.StartsWith(textsPrefix, StringComparison.OrdinalIgnoreCase) &&
+                            e.Name.EndsWith(".lang", StringComparison.OrdinalIgnoreCase))
+                .Select(e => Path.GetFileNameWithoutExtension(e.Name))
+                .ToList();
+        }
+
+        if (langFiles.Count == 0) return langKey;
+
+        var lang = FindBestMatchLanguage(langFiles);
+        var langEntry = archive.GetEntry($"{textsPrefix}{lang}.lang");
+        if (langEntry == null) return langKey;
+
+        try
+        {
+            using var reader = new StreamReader(langEntry.Open());
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                var trimmed = line.Trim();
+                if (trimmed.StartsWith("##")) continue;
+
+                var splitIndex = trimmed.IndexOf('=');
+                if (splitIndex > 0)
+                {
+                    var key = trimmed.Substring(0, splitIndex).Trim();
+                    if (key == langKey)
+                        return trimmed.Substring(splitIndex + 1)
+                            .Split('\t')[0]
+                            .Split('#')[0]
+                            .Trim()
+                            .Replace("\\n", "\n");
+                }
+            }
+        }
+        catch
+        {
+            // Ignore
+        }
+
+        return langKey;
+    }
+
     private static string FindBestMatchLanguage(List<string> supportedLanguages)
     {
         var currentCulture = CultureInfo.CurrentUICulture;
@@ -264,36 +488,30 @@ public class ResourcePackAnalysis
         return supportedLanguages[0];
     }
 
-    // 新增：重新打包方法
     public void Repack(string outputPath, PackInfo packInfo, bool includeDisabledSubPacks = false)
     {
         if (string.IsNullOrEmpty(outputPath))
             throw new ArgumentException("Output path cannot be null or empty", nameof(outputPath));
 
-        // 确保输出目录存在
         var outputDir = Path.GetDirectoryName(outputPath);
         if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
 
-        // 创建临时工作目录
         var workPath = Path.Combine(PathsList.TempPath, $"repack_{Guid.NewGuid().ToString().Replace("-", "")}");
         try
         {
-            // 复制主包内容
-            CopyDirectory(packInfo.RootPath, workPath);
+            ExtractToTemp();
 
-            // 删除所有原始子包文件（.mcpack）
+            CopyDirectory(TempPath, workPath);
+
             var originalSubPacks = Directory.GetFiles(workPath, "*.mcpack", SearchOption.AllDirectories);
             foreach (var subPack in originalSubPacks) File.Delete(subPack);
 
-            // 根据子包节点信息重新组织结构
             ProcessSubPacks(workPath, packInfo.SubPacks, includeDisabledSubPacks);
 
-            // 打包成新的zip文件
             ZipHelper.CreateZipFile(workPath, outputPath);
         }
         finally
         {
-            // 清理临时工作目录
             if (Directory.Exists(workPath)) Directory.Delete(workPath, true);
         }
     }
@@ -305,10 +523,7 @@ public class ResourcePackAnalysis
             if (!includeDisabledSubPacks && !subPack.IsEnabled)
                 continue;
 
-            // 如果子包有子节点，递归处理
             if (subPack.Children.Any()) ProcessSubPacks(rootPath, subPack.Children, includeDisabledSubPacks);
-
-            // 将子包移动到正确的相对位置
             MoveSubPackToCorrectLocation(rootPath, subPack);
         }
     }
@@ -319,13 +534,10 @@ public class ResourcePackAnalysis
         var relativePath = Path.GetRelativePath(rootPath, sourcePath);
         var targetPath = Path.Combine(rootPath, relativePath);
 
-        // 如果源路径和目标路径不同，则移动内容
         if (sourcePath != targetPath)
         {
-            // 创建目标目录
             Directory.CreateDirectory(targetPath);
 
-            // 移动所有内容
             foreach (var file in Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories))
             {
                 var relativeFile = Path.GetRelativePath(sourcePath, file);
@@ -414,17 +626,15 @@ public class ResourcePackAnalysis
         return sb.ToString();
     }
 
-    // 新增：子包节点类
     public class SubPackNode
     {
         public string Name { get; set; }
         public string Path { get; set; }
         public ResourcePackManifest Manifest { get; set; }
         public List<SubPackNode> Children { get; set; } = new();
-        public bool IsEnabled { get; set; } = true; // 是否启用此子包
+        public bool IsEnabled { get; set; } = true;
     }
 
-    // 新增：主包信息类
     public class PackInfo
     {
         public ResourcePackManifest MainManifest { get; set; }

@@ -107,13 +107,16 @@ public class ResourcePackManager
                 var analysis = new ResourcePackAnalysis(file);
                 var confs = analysis.GetPackManifests();
 
-                if (confs != null)
-                    confs.ForEach(pack =>
-                    {
-                        if (pack != null && pack.Header != null && !string.IsNullOrEmpty(pack.Header.Uuid))
-                            if (!ids.Contains(pack.Header.Uuid))
-                                // 确保PackRootPath有效
-                                if (!string.IsNullOrEmpty(pack.PackRootPath) && Directory.Exists(pack.PackRootPath))
+                if (confs == null || confs.Count == 0) return;
+
+                // 需要安装时才解压到临时目录
+                analysis.ExtractToTemp();
+
+                confs.ForEach(pack =>
+                {
+                    if (pack != null && pack.Header != null && !string.IsNullOrEmpty(pack.Header.Uuid))
+                        if (!ids.Contains(pack.Header.Uuid))
+                            if (!string.IsNullOrEmpty(pack.PackRootPath) && Directory.Exists(pack.PackRootPath))
                                 {
                                     if (pack.PackType == ResourcePackType.Resource)
                                     {

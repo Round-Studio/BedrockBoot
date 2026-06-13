@@ -37,9 +37,15 @@ public partial class GameResourcePackItem : UserControl
 
         try
         {
-            if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon) && File.Exists(ResourcePackManifest.PackIcon))
+            if (ResourcePackManifest.PackIconBytes != null)
             {
-                // 释放旧的 Bitmap 资源，避免内存泄漏
+                if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
+
+                using var ms = new MemoryStream(ResourcePackManifest.PackIconBytes);
+                Card.ImageIcon = new Bitmap(ms);
+            }
+            else if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon) && File.Exists(ResourcePackManifest.PackIcon))
+            {
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
                 using var stream = File.OpenRead(ResourcePackManifest.PackIcon);

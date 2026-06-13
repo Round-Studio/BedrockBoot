@@ -24,6 +24,7 @@ public class MultiThreadDownloader : IDisposable
     private readonly SocketsHttpHandler _handler;
     private readonly HttpClient _httpClient;
     private readonly int _maxConcurrency;
+    private Dictionary<string, string>? _additionalHeaders;
 
     /// <summary>
     ///     初始化
@@ -52,6 +53,18 @@ public class MultiThreadDownloader : IDisposable
             "Mozilla/5.0 (compatible; ImprovedMultiThreadDownloader/1.0)");
         _maxConcurrency = maxConcurrency;
         _bufferSize = bufferSize;
+    }
+
+    public Dictionary<string, string>? AdditionalHeaders
+    {
+        get => _additionalHeaders;
+        set
+        {
+            _additionalHeaders = value;
+            if (_additionalHeaders != null)
+                foreach (var header in _additionalHeaders)
+                    _httpClient.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
+        }
     }
 
     public void Dispose()
@@ -566,10 +579,16 @@ public class MultiThreadDownloader : IDisposable
             UseProxy = false
         };
 
-        return new HttpClient(handler)
+        var client = new HttpClient(handler)
         {
             Timeout = TimeSpan.FromSeconds(60) // 分段单独的超时设置
         };
+
+        if (_additionalHeaders != null)
+            foreach (var header in _additionalHeaders)
+                client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
+
+        return client;
     }
 
     private async Task DownloadSinglePartAsync(Uri uri, string filePath, long fileSize,

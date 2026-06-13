@@ -43,7 +43,13 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
     {
         _cts = new CancellationTokenSource();
         var token = _cts.Token;
-        var download = new MultiThreadDownloader();
+        var download = new MultiThreadDownloader
+        {
+            AdditionalHeaders = new Dictionary<string, string>
+            {
+                { "x-api-key", GlobalKeys.CurseForgeApiKey }
+            }
+        };
 
         var url = new Uri(ModFile.DownloadUrl).AbsoluteUri.Replace("edge.forgecdn.net", "mediafilez.forgecdn.net");
         Console.WriteLine($@"下载文件：{url}");

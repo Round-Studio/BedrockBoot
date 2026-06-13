@@ -246,6 +246,9 @@ public class EasyLauncher
                 
                 // 更新玩家数据
                 UpdatePlayerPlayTime(playTime);
+                
+                // 记录本次会话到独立文件
+                SessionStoreHelper.AddSession(VersionInfo.VersionPath, _gameStartTime, (long)playTime.TotalSeconds);
             }
             
             Console.WriteLine(@"游戏进程已退出（异步等待）");

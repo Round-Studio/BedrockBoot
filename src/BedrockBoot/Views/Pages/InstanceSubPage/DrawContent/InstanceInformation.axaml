@@ -1,0 +1,99 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceInformation">
+    <Grid Margin="20,0"
+          RowDefinitions="Auto,*">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto,*"
+              ColumnSpacing="12">
+            <Grid Grid.Column="1">
+                <Border BorderThickness="1"
+                        BorderBrush="{DynamicResource PrimaryBackgroundBrush}"
+                        Background="{DynamicResource BackgroundSubtleBrush}"
+                        CornerRadius="6"
+                        Padding="10">
+                    <Grid RowDefinitions="Auto,*">
+                        <TextBlock Grid.Row="0"
+                                   Text="本周每日游玩时长"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,8"/>
+                        <Canvas Grid.Row="1"
+                                Name="WeeklyChart"/>
+                    </Grid>
+                </Border>
+            </Grid>
+            
+            <Grid Grid.Column="0">
+                <items:SteamCard Width="200"
+                                 Height="220"
+                                 Background="Transparent"
+                                 HoverScale="1.2"
+                                 ParallaxDepth="3">
+                    <Grid>
+                        <Border Margin="0,40,0,0"
+                                BorderThickness="1"
+                                BorderBrush="{DynamicResource PrimaryBackgroundBrush}"
+                                Background="{DynamicResource BackgroundSubtleBrush}"
+                                CornerRadius="6">
+                            <Grid ColumnDefinitions="Auto,*"
+                                  VerticalAlignment="Bottom"
+                                  HorizontalAlignment="Stretch"
+                                  Margin="14,0,14,8"
+                                  RowDefinitions="Auto,Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                           Text="会话数"
+                                           Opacity="0.6"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                           Name="SessionsText"
+                                           HorizontalAlignment="Right"
+                                           Text="0"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0"
+                                           Text="活跃日"
+                                           Opacity="0.6"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1"
+                                           HorizontalAlignment="Right"
+                                           Name="ActiveDaysText"
+                                           Text="0"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0"
+                                           Text="总小时"
+                                           Opacity="0.6"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1"
+                                           HorizontalAlignment="Right"
+                                           Name="TotalHoursText"
+                                           Text="0"/>
+                            </Grid>
+                        </Border>
+                        <Border Margin="14,0,14,80"
+                                BorderThickness="2,2,2,4"
+                                BorderBrush="{DynamicResource AccentBorderBrush}"
+                                Background="{DynamicResource BackgroundSubtleBrush}"
+                                CornerRadius="6">
+                            <StackPanel VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Spacing="8">
+                                <TextBlock Text="游玩排名"
+                                           HorizontalAlignment="Center"></TextBlock>
+                                <onePointControls:LabelBox Name="TotalPlayRankingLabel"
+                                                           Padding="8,2"
+                                                           HorizontalAlignment="Center"
+                                                           Text="#1"
+                                                           FontSize="38"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </items:SteamCard>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

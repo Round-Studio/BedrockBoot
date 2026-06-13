@@ -107,6 +107,12 @@
     <x:String x:Key="Draw.Instance.Tab.Plugins">プラグイン</x:String>
     <x:String x:Key="Draw.Instance.Tab.Controls">操作</x:String>
     <x:String x:Key="Draw.Instance.TotalTime">{0} Hours</x:String>
+    <x:String x:Key="Draw.Instance.Information.Sessions">セッション数</x:String>
+    <x:String x:Key="Draw.Instance.Information.ActiveDays">アクティブ日</x:String>
+    <x:String x:Key="Draw.Instance.Information.TotalHours">合計時間</x:String>
+    <x:String x:Key="Draw.Instance.Information.Rank">ランク</x:String>
+    <x:String x:Key="Draw.Instance.Information.WeeklyChart">今週の毎日のプレイ時間</x:String>
+    <x:String x:Key="Draw.Instance.Information.WeeklyStats">今週の統計</x:String>
 
     <x:String x:Key="Instance.Info.Name.Title">インスタンス名</x:String>
     <x:String x:Key="Instance.Info.Name.Desc">ランチャーに表示されるインスタンスの名前</x:String>

@@ -107,6 +107,12 @@
     <x:String x:Key="Draw.Instance.Tab.Plugins">插件</x:String>
     <x:String x:Key="Draw.Instance.Tab.Controls">操作</x:String>
     <x:String x:Key="Draw.Instance.TotalTime">{0} 小时</x:String>
+    <x:String x:Key="Draw.Instance.Information.Sessions">会话数</x:String>
+    <x:String x:Key="Draw.Instance.Information.ActiveDays">活跃日</x:String>
+    <x:String x:Key="Draw.Instance.Information.TotalHours">总小时</x:String>
+    <x:String x:Key="Draw.Instance.Information.Rank">排行</x:String>
+    <x:String x:Key="Draw.Instance.Information.WeeklyChart">本周每日游玩时长</x:String>
+    <x:String x:Key="Draw.Instance.Information.WeeklyStats">本周统计</x:String>
 
     <x:String x:Key="Instance.Info.Name.Title">实例名称</x:String>
     <x:String x:Key="Instance.Info.Name.Desc">实例在启动器内显示的名称</x:String>

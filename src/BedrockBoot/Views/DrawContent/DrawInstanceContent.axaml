@@ -48,6 +48,10 @@
                                                  Glyph="&#xE805;"
                                                  Tag="Controls"
                                                  Name="GameControls" />
+                <leftSelectBar:LeftSelectBarItem ItemText="游玩数据" 
+                                                 Glyph="&#xE9D2;"
+                                                 Tag="Information"
+                                                 Name="Information" />
             </leftSelectBar:LeftSelectBar>
             
             <StackPanel Grid.Row="1"

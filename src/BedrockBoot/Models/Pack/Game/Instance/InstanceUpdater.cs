@@ -42,7 +42,7 @@ public class InstanceUpdater
     public async Task UpdateAsync(BuildInfo buildInfo)
     {
         Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.ID}");
-        var downloader = new EasyDownload(buildInfo, false, _versionConfig.VersionsRootPath,
+        var downloader = new EasyDownload(buildInfo, true, _versionConfig.VersionsRootPath,
             Path.GetFileName(_versionConfig.VersionPath));
         
         var deleteTask = Task.Run(() =>
@@ -185,13 +185,15 @@ public class InstanceUpdater
             var url = ChooseDownloadUrl.Invoke(urls);
             downloader.InstallAsync(url, default, true).Wait();
         });
-        
-        await deleteTask;
-        await installTask;
 
         _versionConfig.Info.BuildType = buildInfo.BuildType;
         _versionConfig.Info.Version = buildInfo.ID;
         _versionConfig.Info.VersionType = buildInfo.Type;
+        GameInfoHelper.SaveVersionConfig(_versionConfig);
+        
+        await deleteTask;
+        await installTask;
+        
         GameInfoHelper.SaveVersionConfig(_versionConfig);
         
         Console.WriteLine(@"更新完成");

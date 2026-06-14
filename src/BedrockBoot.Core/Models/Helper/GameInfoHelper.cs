@@ -76,10 +76,12 @@ public static class GameInfoHelper
         return await Task.Run(() => GetVersionConfigs(gameFolder));
     }
 
+    public static VersionConfig GetVersionConfig(string gamePath) => GetVersionConfig(gamePath, false);
+    
     /// <summary>
     /// 获取单个版本的详细配置
     /// </summary>
-    public static VersionConfig GetVersionConfig(string gamePath)
+    public static VersionConfig GetVersionConfig(string gamePath, bool isDebug = false)
     {
         var configDir = Path.Combine(gamePath, ConfigSubPath);
         var configJsonPath = Path.Combine(configDir, ConfigFileName);
@@ -118,10 +120,11 @@ public static class GameInfoHelper
 
         // 绑定运行时路径
         var bodyFile = GetBodyFile(gamePath);
-        if (string.IsNullOrEmpty(bodyFile)) return null;
+        if (string.IsNullOrEmpty(bodyFile) && !isDebug) return null;
 
         var data = configEntity.Data;
         data.VersionPath = gamePath;
+        data.VersionsRootPath = Path.GetFullPath(Path.Combine(gamePath, @"..\.."));
         data.BodyFile = bodyFile;
 
         if (data.Config.IsVersionIsolated && OperatingSystem.IsLinux())

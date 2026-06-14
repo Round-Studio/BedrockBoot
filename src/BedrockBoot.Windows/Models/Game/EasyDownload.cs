@@ -307,8 +307,9 @@ public class EasyDownload
 
             return res;
         }
-        catch
+        catch (Exception exception)
         {
+            Console.WriteLine(exception);
             return null;
         }
     }

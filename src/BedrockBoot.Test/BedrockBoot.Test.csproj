@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj" />
+      <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
     </ItemGroup>
 
 </Project>

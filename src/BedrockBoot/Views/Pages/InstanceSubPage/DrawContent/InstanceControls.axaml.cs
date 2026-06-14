@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -260,6 +261,24 @@ public partial class InstanceControls : ISetting
                         Content = new DialogMakeIntegrationPackContent(config)
                     });
                 }
+            }
+        });
+    }
+
+    private void UpdateBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new()
+        {
+            Title = "升级提示",
+            Content = new StringBuilder()
+                .AppendLine("此升级为强制升级，确认升级后将无法取消！")
+                .AppendLine("强制升级游戏版本可能导致部分资源包，地图等不兼容。")
+                .AppendLine("请问您确定要升级吗？"),
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
+            CloseAction = () =>
+            {
+                
             }
         });
     }

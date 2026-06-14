@@ -36,6 +36,17 @@
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
+                           Text="升级" />
+
+                <onePointControls:SettingCard IsClickable="True"
+                                              Glyph="&#xE822;"
+                                              Name="UpdateBtn"
+                                              Click="UpdateBtn_OnClick"
+                                              Header="更新版本"
+                                              Description="将此实例更新到其他版本的 Minecraft" />
+
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
                            Text="{DynamicResource Instance.Controls.Group.DangerZone}" />
 
                 <onePointControls:SettingCard IsClickable="True"

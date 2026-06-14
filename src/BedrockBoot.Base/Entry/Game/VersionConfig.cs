@@ -12,6 +12,7 @@ public class VersionConfig
     [JsonPropertyName("gameStatus")] public VersionStatusEntry VersionStatus { get; set; } = new();
 
     [JsonIgnore] public string VersionPath { get; set; }
+    [JsonIgnore] public string VersionsRootPath { get; set; }
     [JsonIgnore] public string BodyFile { get; set; }
 
     public class VersionInfo

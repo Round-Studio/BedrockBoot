@@ -31,11 +31,11 @@ public class InstanceUpdater
         var currentVersion = Version.Parse(_versionConfig.Info.Version);
 
         var allVersions = VersionHelper.GetVersions();
-        allVersions.Reverse();
 
         return allVersions
             .Where(buildInfo => Version.Parse(buildInfo.ID) > currentVersion)
             .Where(info => info.BuildType == _versionConfig.Info.BuildType)
+            .OrderBy(info => Version.Parse(info.ID))
             .ToList();
     }
 

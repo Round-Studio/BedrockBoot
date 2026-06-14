@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.UpdateContent.UpdateChooseSource">
+    <Grid Name="SourceGrid">
+        <StackPanel>
+            <TextBlock Margin="15,5"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="选择下载源" />
+            <ListBox HorizontalAlignment="Stretch"
+                     Margin="15,5"
+                     Name="SourceSelBox" />
+        </StackPanel>
+        <onePointControls:ProgressRing HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Width="36" Height="36"
+                                       Name="LoadRing" />
+    </Grid>
+</UserControl>

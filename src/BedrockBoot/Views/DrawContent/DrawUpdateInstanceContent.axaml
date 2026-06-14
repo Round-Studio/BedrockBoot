@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DrawContent.DrawUpdateInstanceContent">
     <Grid RowDefinitions="*,Auto"
@@ -18,12 +19,22 @@
                                        Width="48" Height="48"
                                        Name="LoadRing"></onePointControls:ProgressRing>
         
+        <notice:InfoCard Grid.Row="0"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="InfoCard"
+                         IsVisible="False"
+                         Message="当前实例为最新版"
+                         BigTitle="无可用更新"/>
+        
         <StackPanel Grid.Row="1"
                     Margin="15,0"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
                     Spacing="8">
-            <Button Padding="12,8">
+            <Button Padding="12,8"
+                    Name="PreviousBtn"
+                    Click="PreviousBtn_OnClick">
                 <StackPanel Orientation="Horizontal"
                             Spacing="8">
                     <onePointControls:FontIcon VerticalAlignment="Center"
@@ -33,7 +44,9 @@
                 </StackPanel>
             </Button>
             <Button Padding="12,8"
-                    Classes="Accent">
+                    Classes="Accent"
+                    Name="NextBtn"
+                    Click="NextBtn_OnClick">
                 <StackPanel Orientation="Horizontal"
                             Spacing="8">
                     <onePointControls:FontIcon VerticalAlignment="Center"

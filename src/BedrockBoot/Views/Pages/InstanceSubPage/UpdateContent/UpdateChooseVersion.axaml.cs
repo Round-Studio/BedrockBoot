@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Views.Control.Items;
+using BedrockLauncher.Core;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.UpdateContent;
 
@@ -22,12 +23,25 @@ public partial class UpdateChooseVersion : UserControl
         UpdateUi();
     }
 
+    public BuildInfo? SelectedBuildInfo { get; private set; }
+
     private void UpdateUi()
     {
         _buildInfos.ForEach(i =>
         {
             VersionsBox.Items.Add(new GameDownloadListBoxItem(i));
         });
-        VersionsBox.SelectedIndex = 0;
+
+        if (_buildInfos.Count > 0)
+        {
+            VersionsBox.SelectedIndex = 0;
+            SelectedBuildInfo = _buildInfos[0];
+        }
+
+        VersionsBox.SelectionChanged += (_, _) =>
+        {
+            if (VersionsBox.SelectedIndex >= 0 && VersionsBox.SelectedIndex < _buildInfos.Count)
+                SelectedBuildInfo = _buildInfos[VersionsBox.SelectedIndex];
+        };
     }
 }

@@ -60,10 +60,13 @@ public class EasyDownload
     public Action<InstallStates> InstallStateChanged { get; set; }
     public Action<string, string, Exception> ErrorOccurred { get; set; }
     public Action<VersionConfig> Completed { get; set; }
+    
+    // 安装锁定
+    public bool IsCanInstall { get; set; } = false;
 
     public VersionConfig GameConfig { get; private set; }
 
-    public async Task InstallAsync(string url, CancellationToken token = default)
+    public async Task InstallAsync(string url, CancellationToken token = default, bool receiveDownloadLock = false)
     {
         Console.WriteLine($@"下载游戏，地址：{url}");
         try
@@ -84,6 +87,14 @@ public class EasyDownload
             // 4. 标记合并完成
             OnMergeComplete();
             token.ThrowIfCancellationRequested();
+
+            if (receiveDownloadLock)
+            {
+                while (!IsCanInstall)
+                {
+                    Task.Delay(100).Wait();
+                }
+            } // 外部控制是否开始安装
 
             // 5. 安装包
             await InstallPackageAsync(packagePath, token);

@@ -10,6 +10,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.DrawContent;
 using IWshRuntimeLibrary;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -278,7 +279,8 @@ public partial class InstanceControls : ISetting
             PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
-                
+                GlobalModel.MainWindow.OpenDraw(new DrawUpdateInstanceContent(VersionInfo),
+                    $"升级实例向导 - {VersionInfo.Info.VersionName} ({VersionInfo.Info.Version})");
             }
         });
     }

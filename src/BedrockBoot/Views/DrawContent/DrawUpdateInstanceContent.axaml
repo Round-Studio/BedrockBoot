@@ -1,0 +1,47 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DrawContent.DrawUpdateInstanceContent">
+    <Grid RowDefinitions="*,Auto"
+          Margin="5,0,5,20"
+          RowSpacing="8">
+        <navigation:NavigationFrame Grid.Row="0"
+                                    Name="NavigationFrame"/>
+        
+        <onePointControls:ProgressRing Grid.Row="0"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Width="48" Height="48"
+                                       Name="LoadRing"></onePointControls:ProgressRing>
+        
+        <StackPanel Grid.Row="1"
+                    Margin="15,0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="8">
+            <Button Padding="12,8">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                               Glyph="&#xE760;"
+                                               FontSize="16"/>
+                    <TextBlock Text="上一步"></TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Padding="12,8"
+                    Classes="Accent">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                               Glyph="&#xE761;"
+                                               FontSize="16"/>
+                    <TextBlock Text="下一步"></TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -181,7 +181,7 @@ public class EasyDownload
 
     private async Task InstallPackageAsync(string packagePath, CancellationToken token)
     {
-        var installDir = Path.Combine(InstallFolder, "bedrock_versions", GameName);
+        var installDir = Path.Combine(InstallFolder, GameInfoHelper.GetGameFolderRootName(InstallFolder), GameName);
 
         await CoreGlobal.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
         {

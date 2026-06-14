@@ -47,7 +47,7 @@ public class PackInstaller
 
     private async Task InstallWithUWP(string dir, string gameName, CancellationToken token)
     {
-        var path = Path.Combine(dir, "bedrock_versions", gameName);
+        var path = Path.Combine(dir, GameInfoHelper.GetGameFolderRootName(dir), gameName);
         var manifest = PackageIdentity.ParseFromXml(ExtractAppxManifestFromAppx(PackFile));
         var gameType = GetVersionTypeWithUWP(manifest.Name);
 
@@ -332,7 +332,7 @@ public class PackInstaller
 
         try
         {
-            var path = Path.Combine(dir, "bedrock_versions", gameName);
+            var path = Path.Combine(dir, GameInfoHelper.GetGameFolderRootName(dir), gameName);
 
             // 确保目标目录的父目录存在
             var parentDir = Path.GetDirectoryName(path);

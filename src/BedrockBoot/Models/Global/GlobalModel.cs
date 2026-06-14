@@ -70,12 +70,12 @@ public class GlobalModel
                     var realPath = Path.Combine(folder, "versions");
                     if (Directory.Exists(folder))
                     {
-                        var inPath = Path.Combine(folder, "bedrock_versions");
+                        /*var inPath = Path.Combine(folder, GameInfoHelper.GetGameFolderRootName(currentFolder.GameFolderPath));
                         if (Directory.Exists(realPath) &&
                             !Directory.Exists(inPath))
                         {
                             Directory.CreateSymbolicLink(inPath, realPath);
-                        }
+                        }*/
 
                         BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                         {
@@ -108,11 +108,11 @@ public class GlobalModel
             OnImport = s =>
             {
                 var conf = new ConfigEntity<ConfigLeviLauncher>(s, false);
-                var realPath = Path.Combine(conf.Data.BaseRoot, "versions");
-                var inPath = Path.Combine(conf.Data.BaseRoot, "bedrock_versions");
+                /*var realPath = Path.Combine(conf.Data.BaseRoot, "versions");
+                var inPath = Path.Combine(conf.Data.BaseRoot, GameInfoHelper.GetGameFolderRootName(currentFolder.GameFolderPath));
                 if (!Directory.Exists(realPath)) Directory.CreateDirectory(realPath);
 
-                if (!Directory.Exists(inPath)) Directory.CreateSymbolicLink(inPath, realPath);
+                if (!Directory.Exists(inPath)) Directory.CreateSymbolicLink(inPath, realPath);*/
                 BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders.Add(new GameFolderInfo
                 {
                     GameFolderName = "LeviLauncher",

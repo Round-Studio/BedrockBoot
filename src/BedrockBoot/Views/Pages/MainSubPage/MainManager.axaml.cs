@@ -99,7 +99,7 @@ public partial class MainManager : BedrockBootPage
 
     private async void OnConfigFileChanged(object sender, FileSystemEventArgs e)
     {
-        if (!e.FullPath.Contains("bedrock_versions", StringComparison.OrdinalIgnoreCase))
+        if (!e.FullPath.Contains("versions", StringComparison.OrdinalIgnoreCase))
             return;
 
         // 防抖逻辑：避免单次保存触发多次事件导致重复刷新
@@ -186,7 +186,7 @@ public partial class MainManager : BedrockBootPage
             }
 
             var currentFolder = configData.GameFolders[configData.GameFolderSelIndex];
-            var versionsPath = Path.Combine(currentFolder.GameFolderPath, "bedrock_versions");
+            var versionsPath = Path.Combine(currentFolder.GameFolderPath, GameInfoHelper.GetGameFolderRootName(currentFolder.GameFolderPath));
 
             if (!Directory.Exists(versionsPath))
             {

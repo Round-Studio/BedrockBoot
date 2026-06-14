@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Core.Global;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 
@@ -17,12 +19,23 @@ public static class GameInfoHelper
     private const string ConfigFileName = "config.json";
     private const string IndexFileName = "index.json";
 
+    public static string GetGameFolderRootName(string gameFolder)
+    {
+        var type = GlobalModel.Config.Data.GameFolders.Find(x => x.GameFolderPath == gameFolder)?.GameFolderType ??
+                   GameFolderType.BedrockBoot;
+        var bedrockVersionsPath = type == GameFolderType.BedrockBoot
+            ? "bedrock_versions"
+            : "versions";
+
+        return bedrockVersionsPath;
+    }
+
     /// <summary>
     /// 获取版本配置列表
     /// </summary>
     public static List<VersionConfig> GetVersionConfigs(string gameFolder)
     {
-        var bedrockVersionsPath = Path.Combine(gameFolder, "bedrock_versions");
+        var bedrockVersionsPath = Path.Combine(gameFolder, GetGameFolderRootName(gameFolder));
 
         if (!Directory.Exists(bedrockVersionsPath))
             return new List<VersionConfig>();

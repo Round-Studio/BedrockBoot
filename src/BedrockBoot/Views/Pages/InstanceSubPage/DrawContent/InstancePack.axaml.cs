@@ -42,6 +42,7 @@ public partial class InstancePack : ISetting
         // UI 状态重置
         ResultBox.Children.Clear();
         ScBox.IsVisible = false;
+        NullBox.IsVisible = false;
         LoadBox.IsVisible = true;
 
         Task.Run(() =>

@@ -35,6 +35,15 @@
                             <TextBlock Margin="8,4,0,4" Text="{DynamicResource Instance.Packs.Tab.Behavior}" />
                         </StackPanel>
                     </ListBoxItem>
+                    <ListBoxItem Classes="Segmented"
+                                 Tag="Skin">
+                        <StackPanel Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xE805;"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="16" />
+                            <TextBlock Margin="8,4,0,4" Text="皮肤包" />
+                        </StackPanel>
+                    </ListBoxItem>
                 </ListBox>
             </items:BorderCard>
             <items:BorderCard Grid.Column="1"

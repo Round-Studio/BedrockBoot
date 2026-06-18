@@ -4,6 +4,6 @@ public enum ResourcePackType
 {
     Resource,
     Behavior,
-    Addon,
+    Skin,
     Unknown
 }

@@ -6,9 +6,12 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
+using Avalonia.Media.Imaging;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using Round.SDK.Entity;
 using Round.SDK.Global;
 using Round.SDK.Helper;
@@ -43,20 +46,10 @@ public class ResourcePackAnalysis
             return ResourcePackType.Resource;
         if (modules.Contains("data") || modules.Contains("script"))
             return ResourcePackType.Behavior;
+        if (modules.Contains("skin_pack") || modules.Contains("skin"))
+            return ResourcePackType.Skin;
 
         return ResourcePackType.Unknown;
-    }
-
-    public ResourcePackType GetPackType()
-    {
-        var manifests = GetPackManifests();
-        if (manifests.Count == 0) return ResourcePackType.Unknown;
-        if (manifests.Count > 1) return ResourcePackType.Addon;
-
-        var types = manifests.Select(m => m.PackType).Distinct().ToList();
-        if (types.Count > 1) return ResourcePackType.Addon;
-
-        return types.FirstOrDefault();
     }
 
     public PackInfo GetPackInfo()
@@ -138,8 +131,9 @@ public class ResourcePackAnalysis
             {
                 var manifest = ReadManifestFromZipEntry(archive, entry, TempPath);
                 if (manifest == null) continue;
-
-                manifest.PackIconBytes = ReadIconBytesFromZipEntryDir(archive, entry);
+                
+                manifest?.PackIconBytes = ReadIconBytesFromZipAsync(archive).Result;
+                if(manifest.PackIconBytes == null) manifest?.PackIconBytes = ReadIconBytesFromZipEntryDir(archive, entry);
                 result.Add(manifest);
             }
 
@@ -167,7 +161,7 @@ public class ResourcePackAnalysis
                     if (manifest == null) continue;
 
                     ResolveI18nFromZip(subArchive, "", manifest);
-                    manifest.PackIconBytes = ReadIconBytesFromZip(subArchive);
+                    manifest.PackIconBytes = ReadIconBytesFromZipAsync(subArchive).Result;
                     result.Add(manifest);
                 }
                 catch
@@ -206,23 +200,51 @@ public class ResourcePackAnalysis
         }
     }
 
-    private static byte[]? ReadIconBytesFromZip(ZipArchive archive)
+    private static async Task<byte[]?> ReadIconBytesFromZipAsync(ZipArchive archive)
     {
         var iconEntry = archive.Entries
             .FirstOrDefault(e => e.Name.Equals("pack_icon.png", StringComparison.OrdinalIgnoreCase) ||
                                  e.Name.Equals("pack.png", StringComparison.OrdinalIgnoreCase));
-        if (iconEntry == null) return null;
+    
+        if (iconEntry == null)
+        {
+            Console.WriteLine(@"未查找到包图标，使用默认图标");
+            // 使用默认图标
+            try
+            {
+                var bitmap = await ImageLoader.LoadIconAsync(
+                    "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+            
+                if (bitmap != null)
+                {
+                    return ConvertBitmapToByteArrayAsync(bitmap);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"加载默认图标失败: {ex}");
+            }
+            return null;
+        }
+    
         try
         {
             using var ms = new MemoryStream();
             using var s = iconEntry.Open();
-            s.CopyTo(ms);
+            await s.CopyToAsync(ms);
             return ms.ToArray();
         }
         catch
         {
             return null;
         }
+    }
+
+    private static byte[] ConvertBitmapToByteArrayAsync(Bitmap bitmap)
+    {
+        using var ms = new MemoryStream();
+        bitmap.Save(ms);
+        return ms.ToArray();
     }
 
     private static ResourcePackManifest? ReadManifestFromZipEntry(ZipArchive archive, ZipArchiveEntry entry, string tempPath)

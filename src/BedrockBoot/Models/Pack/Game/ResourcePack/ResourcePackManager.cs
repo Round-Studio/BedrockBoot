@@ -45,6 +45,12 @@ public class ResourcePackManager
             Directory.GetDirectories(behaviorPackDir).ToList()
                 .ForEach(dir => { files.AddRange(GetManifests(dir)); });
 
+        // 获取行为包目录
+        var skinPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.SkinPackFolder);
+        if (!string.IsNullOrEmpty(skinPackDir) && Directory.Exists(skinPackDir))
+            Directory.GetDirectories(skinPackDir).ToList()
+                .ForEach(dir => { files.AddRange(GetManifests(dir)); });
+
         files.ForEach(file =>
         {
             try
@@ -133,6 +139,17 @@ public class ResourcePackManager
                                     {
                                         var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
                                             InstanceFolderType.BehaviorPackFolder);
+                                        if (!string.IsNullOrEmpty(behaviorPackDir))
+                                        {
+                                            var destPath = Path.Combine(behaviorPackDir,
+                                                Path.GetFileName(pack.PackRootPath));
+                                            CopyDirectory(pack.PackRootPath, destPath);
+                                        }
+                                    }
+                                    else if (pack.PackType == ResourcePackType.Skin)
+                                    {
+                                        var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                            InstanceFolderType.SkinPackFolder);
                                         if (!string.IsNullOrEmpty(behaviorPackDir))
                                         {
                                             var destPath = Path.Combine(behaviorPackDir,

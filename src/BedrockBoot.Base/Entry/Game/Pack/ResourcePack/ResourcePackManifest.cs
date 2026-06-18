@@ -14,12 +14,12 @@ public class ResourcePackManifest
 
     [JsonIgnore]
     public string? PackIcon => PackIconBytes != null
-        ? string.Empty
+        ? "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png"
         : File.Exists(Path.Combine(PackRootPath!, "pack_icon.png"))
             ? Path.Combine(PackRootPath!, "pack_icon.png")
             : File.Exists(Path.Combine(PackRootPath!, "pack.png"))
                 ? Path.Combine(PackRootPath!, "pack.png")
-                : string.Empty;
+                : "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png";
 
     [JsonIgnore] public ResourcePackType PackType { get; set; } = ResourcePackType.Unknown;
 

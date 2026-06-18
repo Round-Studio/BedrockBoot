@@ -8,6 +8,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -31,7 +32,7 @@ public partial class GameResourcePackItem : UserControl
     public Action? RefreshCallBack { get; set; }
     public ResourcePackManifest ResourcePackManifest { get; set; } = null!;
 
-    public void UpdateUI()
+    public async Task UpdateUI()
     {
         if (ResourcePackManifest == null) return;
 
@@ -44,12 +45,11 @@ public partial class GameResourcePackItem : UserControl
                 using var ms = new MemoryStream(ResourcePackManifest.PackIconBytes);
                 Card.ImageIcon = new Bitmap(ms);
             }
-            else if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon) && File.Exists(ResourcePackManifest.PackIcon))
+            else if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon))
             {
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
-                using var stream = File.OpenRead(ResourcePackManifest.PackIcon);
-                Card.ImageIcon = new Bitmap(stream);
+                Card.ImageIcon = await ImageLoader.LoadIconAsync(ResourcePackManifest.PackIcon);
             }
         }
         catch (Exception ex)

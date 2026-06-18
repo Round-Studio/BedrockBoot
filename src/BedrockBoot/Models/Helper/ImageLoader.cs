@@ -53,6 +53,23 @@ public class ImageLoader : IDisposable
         _urlLocks.Clear();
         GC.SuppressFinalize(this);
     }
+    
+    public async Task<byte[]> BitmapTaskToByteArrayAsync(Task<Bitmap?> bitmapTask)
+    {
+        // 等待 Task 完成并获取 Bitmap
+        Bitmap? bitmap = await bitmapTask;
+    
+        if (bitmap == null)
+            return Array.Empty<byte>();
+    
+        // 使用 MemoryStream 保存编码后的数据
+        using var memoryStream = new MemoryStream();
+    
+        // 编码为 PNG 格式
+        bitmap.Save(memoryStream);
+    
+        return memoryStream.ToArray();
+    }
 
     /// <summary>
     ///     从 URL 加载图片（内存 -> 磁盘 -> 网络）。同一 URL 并发只会下载一次。

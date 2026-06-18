@@ -23,7 +23,7 @@
                                                  Glyph="&#xE74C;"
                                                  Tag="Mods" 
                                                  Name="Mods" />
-                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Packs}" 
+                <leftSelectBar:LeftSelectBarItem ItemText="包管理" 
                                                  Glyph="&#xE7B8;"
                                                  Tag="Pack"
                                                  Name="Pack" />

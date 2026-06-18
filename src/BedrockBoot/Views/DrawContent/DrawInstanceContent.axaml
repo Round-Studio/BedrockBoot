@@ -9,6 +9,7 @@
              x:Class="BedrockBoot.Views.DrawContent.DrawInstanceContent">
     <Grid ColumnDefinitions="Auto,*">
         <Grid Grid.Column="0"
+              MinWidth="120"
               RowDefinitions="*,Auto"
               Margin="10,0,0,10">
             <leftSelectBar:LeftSelectBar Grid.Row="0"

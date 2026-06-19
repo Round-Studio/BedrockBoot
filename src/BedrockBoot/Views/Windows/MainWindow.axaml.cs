@@ -25,6 +25,8 @@ using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Service;
+using BedrockBoot.Service.Protocol;
+using BedrockBoot.Service.Protocol.Routes;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages;
@@ -71,6 +73,7 @@ public partial class MainWindow : BedrockBootWindow
 
         _ = GetDevelopMode();
         CheckUwpDependence();
+        InitializeProtocolRoutes();
     }
 
     private I18nManager I18n => I18nManager.Instance;
@@ -234,6 +237,8 @@ public partial class MainWindow : BedrockBootWindow
 
         // 完成初始化后回到 UI 线程进行页面跳转
         await Dispatcher.UIThread.InvokeAsync(() => { LoadBox.IsVisible = false; });
+
+        await BedrockbootProtocolHandler.ExecutePendingCommandAsync();
     }
 
     private void HandleFileAssociations()
@@ -244,6 +249,13 @@ public partial class MainWindow : BedrockBootWindow
 #else
         OpenAgreement.RegisterAssociation();
 #endif
+
+        BedrockbootProtocolRegistration.Register();
+    }
+
+    private void InitializeProtocolRoutes()
+    {
+        ProtocolRouteRegistry.Instance.Register(new AboutProtocolRoute());
     }
 
     private async Task InitBedrockCoreAsync()

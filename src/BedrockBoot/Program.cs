@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using BedrockBoot.Base.Entry;
@@ -14,6 +15,7 @@ using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Service.Protocol;
 using PaperConnect.Core.Module.Global;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
@@ -199,6 +201,43 @@ internal sealed class Program
                     Application.Run(new LaunchWindow(args.ToList()));
 #endif
                     return true;
+
+                case "-bedrockboot":
+                    var protoIndex = args.FindIndex(x => x == "-bedrockboot");
+                    if (protoIndex + 1 >= args.Count)
+                    {
+                        Console.WriteLine(@"错误：-bedrockboot 参数后需要指定协议 URL");
+                        break;
+                    }
+
+                    var protocolUrl = args[protoIndex + 1];
+                    Console.WriteLine($@"收到 BedrockBoot 协议请求: {protocolUrl}");
+
+                    var parsedCommand = BedrockbootProtocolHandler.ParseProtocolUrl(protocolUrl);
+                    if (parsedCommand == null)
+                    {
+                        Console.WriteLine($@"无法解析协议 URL: {protocolUrl}");
+                        break;
+                    }
+
+                    if (BedrockbootProtocolHandler.TrySendCommand(parsedCommand))
+                    {
+                        Console.WriteLine(@"已转发至运行中的主窗口进程");
+                        return true;
+                    }
+
+                    Console.WriteLine(@"首次转发失败，2 秒后重试...");
+                    Thread.Sleep(2000);
+
+                    if (BedrockbootProtocolHandler.TrySendCommand(parsedCommand))
+                    {
+                        Console.WriteLine(@"已转发至运行中的主窗口进程");
+                        return true;
+                    }
+
+                    Console.WriteLine(@"未检测到运行中的主窗口，将在当前进程启动");
+                    BedrockbootProtocolHandler.PendingCommand = parsedCommand;
+                    return false;
 
                 case "-open":
                     Console.WriteLine(@"导入资源");

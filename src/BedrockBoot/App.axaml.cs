@@ -13,6 +13,7 @@ using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
+using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using BedrockBoot.Views.Windows.SystemMethod;
 using BedrockBoot.WatchDog.Entity;
@@ -108,6 +109,8 @@ public class App : Application
             // Avalonia 12 removed BindingPlugins.DataValidators; the data annotations
             // validation plugin is disabled by default and no longer needs to be removed.
 
+            StartProtocolServer();
+
             Window window = null;
 
             switch (Models.Global.GlobalModel.AppRunType)
@@ -129,6 +132,36 @@ public class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void StartProtocolServer()
+    {
+        try
+        {
+            var protoService = Models.Global.GlobalModel.ProtocolService;
+
+            protoService.Get("/shell", async (context, parameters) =>
+            {
+                var command = parameters.GetQuery("command");
+                if (!string.IsNullOrEmpty(command))
+                {
+                    Dispatcher.UIThread.Post(() => ProtocolCommand.OnCommand([command]));
+                    await ProtocolService.WriteTextResponseAsync(context, 200, "ok");
+                }
+                else
+                {
+                    await ProtocolService.WriteErrorResponseAsync(context, 400, "Bad Request",
+                        "Missing command parameter");
+                }
+            });
+
+            _ = protoService.StartAsync();
+            Console.WriteLine(@"BedrockBoot IPC 服务已启动");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"启动 BedrockBoot IPC 服务失败: {ex.Message}");
+        }
     }
 
     // Avalonia 12 removed the data-annotations binding plugin. If the project later

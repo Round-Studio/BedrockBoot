@@ -120,7 +120,7 @@
             </items:BorderCard>
 
             <StackPanel HorizontalAlignment="Center"
-                        Opacity="0.6">
+                        Opacity="0.8">
                 <TextBlock Text="{DynamicResource Download.Search.Tip.ManualSearch}"
                            HorizontalAlignment="Center"
                            FontSize="9" />

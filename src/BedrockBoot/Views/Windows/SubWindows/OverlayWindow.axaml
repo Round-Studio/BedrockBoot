@@ -43,7 +43,7 @@
 
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="BedrockBoot"
-                                   Opacity="0.6" />
+                                   Opacity="0.8" />
                         <TextBlock Text="游戏叠层"
                                    FontSize="18" />
                     </StackPanel>
@@ -58,7 +58,7 @@
         <TextBlock HorizontalAlignment="Left"
                    VerticalAlignment="Bottom"
                    Margin="8"
-                   Opacity="0.6"
+                   Opacity="0.8"
                    Name="VersionBox"
                    Text="Game Overlay (Ver.???)" />
     </Grid>

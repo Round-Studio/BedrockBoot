@@ -19,7 +19,7 @@
                        FontSize="16"
                        Name="VersionName"></TextBlock>
             <TextBlock Text="VersionD"
-                       Opacity="0.6"
+                       Opacity="0.8"
                        Name="VersionD"></TextBlock>
         </StackPanel>
     </Grid>

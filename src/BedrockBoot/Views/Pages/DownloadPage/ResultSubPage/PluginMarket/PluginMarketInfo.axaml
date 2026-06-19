@@ -128,7 +128,7 @@
         <Grid Grid.Row="1"
               Margin="20,0,20,20">
             <StackPanel Orientation="Horizontal"
-                        Opacity="0.6"
+                        Opacity="0.8"
                         VerticalAlignment="Center"
                         Spacing="4">
                 <onePointControls:FontIcon VerticalAlignment="Center"

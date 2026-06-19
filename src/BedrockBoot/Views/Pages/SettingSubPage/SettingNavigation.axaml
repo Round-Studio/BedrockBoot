@@ -66,15 +66,15 @@
                            FontSize="14"
                            Text="{DynamicResource Settings.Nav.Group.Download}" />
 
-                <TextBlock Opacity="0.6"
+                <TextBlock Opacity="0.8"
                            TextWrapping="WrapWithOverflow"
                            Text="{DynamicResource Settings.Nav.Tips.Download.Env}" />
 
-                <TextBlock Opacity="0.6"
+                <TextBlock Opacity="0.8"
                            TextWrapping="WrapWithOverflow"
                            Text="{DynamicResource Settings.Nav.Tips.Download.Source}" />
 
-                <TextBlock Opacity="0.6"
+                <TextBlock Opacity="0.8"
                            TextWrapping="WrapWithOverflow"
                            Text="{DynamicResource Settings.Nav.Tips.Download.Thread}" />
 
@@ -84,7 +84,7 @@
                            Margin="0,8,0,0"
                            Text="{DynamicResource Settings.Nav.Group.Game}" />
 
-                <TextBlock Opacity="0.6"
+                <TextBlock Opacity="0.8"
                            TextWrapping="WrapWithOverflow"
                            Text="{DynamicResource Settings.Nav.Tips.Game.Path}" />
 

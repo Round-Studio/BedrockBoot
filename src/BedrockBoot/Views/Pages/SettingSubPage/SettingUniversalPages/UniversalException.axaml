@@ -16,11 +16,11 @@
 
                 <TextBlock Text="{DynamicResource Settings.Universal.Exception.Summary.Intro}"
                            TextWrapping="Wrap"
-                           Opacity="0.6" />
+                           Opacity="0.8" />
 
                 <TextBlock Text="{DynamicResource Settings.Universal.Exception.Summary.Guide}"
                            TextWrapping="Wrap"
-                           Opacity="0.6" />
+                           Opacity="0.8" />
             </StackPanel>
 
             <ScrollViewer Grid.Column="1"

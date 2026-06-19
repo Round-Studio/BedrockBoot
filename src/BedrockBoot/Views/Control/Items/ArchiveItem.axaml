@@ -37,7 +37,7 @@
                     My World
                 </TextBlock>
                 <TextBlock FontSize="11"
-                           Opacity="0.6"
+                           Opacity="0.8"
                            Name="WorldLastPlayed">
                     LastPlayed Time
                 </TextBlock>

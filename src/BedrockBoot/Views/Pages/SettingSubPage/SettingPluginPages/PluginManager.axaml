@@ -17,11 +17,11 @@
 
                 <TextBlock Text="{DynamicResource Settings.Plugin.Manager.Intro}"
                            TextWrapping="Wrap"
-                           Opacity="0.6" />
+                           Opacity="0.8" />
 
                 <TextBlock Text="{DynamicResource Settings.Plugin.Manager.ImportGuide}"
                            TextWrapping="Wrap"
-                           Opacity="0.6" />
+                           Opacity="0.8" />
 
                 <Button Padding="8"
                         Click="ImportButton_OnClick">
@@ -35,7 +35,7 @@
 
                 <TextBlock Text="{DynamicResource Settings.Plugin.Manager.SecurityNotice}"
                            TextWrapping="Wrap"
-                           Opacity="0.6" />
+                           Opacity="0.8" />
             </StackPanel>
 
             <ScrollViewer Grid.Column="1"

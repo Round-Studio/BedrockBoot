@@ -64,7 +64,7 @@
                                                            Foreground="White" />
                                 <TextBlock Text="GameInfo" Name="GameInfo"
                                            VerticalAlignment="Center"
-                                           Opacity="0.6"
+                                           Opacity="0.8"
                                            FontSize="9" />
                             </StackPanel>
                         </StackPanel>

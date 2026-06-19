@@ -8,6 +8,11 @@
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationColor">
     <ScrollViewer>
         <StackPanel Margin="15">
+            <TextBlock FontWeight="Bold"
+                       Margin="5,0"
+                       FontSize="14"
+                       Text="主题颜色" />
+            
             <onePointControls:SettingCard Header="{DynamicResource Settings.Color.Theme.Title}"
                                           Margin="5"
                                           Description="{DynamicResource Settings.Color.Theme.Desc}"

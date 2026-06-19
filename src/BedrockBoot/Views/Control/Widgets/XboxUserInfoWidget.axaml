@@ -16,7 +16,7 @@
                                        FontSize="22" />
 
             <StackPanel>
-                <TextBlock Opacity="0.6"
+                <TextBlock Opacity="0.8"
                            Text="Xbox Live" />
 
                 <TextBlock Text="PlayerName"

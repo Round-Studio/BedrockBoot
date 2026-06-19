@@ -8,6 +8,10 @@
     <ScrollViewer>
         <StackPanel Margin="20"
                     Spacing="8">
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="背景" />
+            
             <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Mode.Title}"
                                           Description="{DynamicResource Settings.Background.Mode.Desc}"
                                           Glyph="&#xEC26;">

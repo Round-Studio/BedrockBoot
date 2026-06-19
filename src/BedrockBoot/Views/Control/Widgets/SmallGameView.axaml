@@ -21,7 +21,7 @@
                 <TextBlock Text="Date"
                            Name="DescriptionText"
                            FontSize="9"
-                           Opacity="0.6" />
+                           Opacity="0.8" />
             </StackPanel>
         </Grid>
     </Button>

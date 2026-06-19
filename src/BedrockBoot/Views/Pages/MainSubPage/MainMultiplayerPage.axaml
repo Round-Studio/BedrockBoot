@@ -29,11 +29,11 @@
 
                 <TextBlock Text="本联机基于协议 PaperConnect，转发基于 EasyTier"
                            TextWrapping="Wrap"
-                           Opacity="0.6" />
+                           Opacity="0.8" />
 
                 <TextBlock Text="使用 P2P 技术进行联机，连接成功后房间内用户将会互相连接，将不会使用第三方服务器转发流量。最终联机体验由网络环境决定"
                            TextWrapping="Wrap"
-                           Opacity="0.6" />
+                           Opacity="0.8" />
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14">

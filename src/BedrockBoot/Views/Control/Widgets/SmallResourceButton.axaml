@@ -23,7 +23,7 @@
                            TextTrimming="CharacterEllipsis" />
                 <TextBlock Text="{Binding #Root.Author}"
                            FontSize="11"
-                           Opacity="0.6"
+                           Opacity="0.8"
                            TextTrimming="CharacterEllipsis" />
             </StackPanel>
         </Grid>

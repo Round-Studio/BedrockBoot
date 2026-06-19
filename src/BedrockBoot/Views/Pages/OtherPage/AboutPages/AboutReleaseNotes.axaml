@@ -24,7 +24,7 @@
             
             <TextBlock Text="当前运行的版本"
                        Margin="0,0,0,8"
-                       Opacity="0.6"></TextBlock>
+                       Opacity="0.8"></TextBlock>
             
             <TextBlock Text="正式发布的版本"
                        Margin="0,8,0,0"
@@ -32,10 +32,10 @@
                        FontWeight="Bold"></TextBlock>
             
             <TextBlock Text="感谢您使用 BedrockBoot 2.0，当前 BedrockBoot 2.0 为 LTS 长期维护版本。"
-                       Opacity="0.6"></TextBlock>
+                       Opacity="0.8"></TextBlock>
             
             <TextBlock Text="以下将 BedrockBoot 2.0 简称为 BedrockBoot。"
-                       Opacity="0.6"></TextBlock>
+                       Opacity="0.8"></TextBlock>
             
             <TextBlock Text="跨平台版本支持"
                        Margin="0,8,0,0"
@@ -55,16 +55,16 @@
             </items:BorderCard>
             
             <TextBlock Text="得益于强大的 Avalonia 框架，现在 BedrockBoot 可以在更多操作系统上运行。"
-                       Opacity="0.6"></TextBlock>
+                       Opacity="0.8"></TextBlock>
             
             <TextBlock Text="您现在可以在绝大多数 x64 架构下的 Windows, Linux 两大操作系统下使用 BedrockBoot 来游玩 Minecraft Bedrock。"
-                       Opacity="0.6"></TextBlock>
+                       Opacity="0.8"></TextBlock>
             
             <TextBlock Text="目前 Linux 平台受游戏框架限制，仅支持 GDK 构建类型的 Minecraft Bedrock。"
-                       Opacity="0.6"></TextBlock>
+                       Opacity="0.8"></TextBlock>
             
             <TextBlock Text="在 Linux 平台，原生 Xbox 组件并不支持运行在 Wine 中，所以目前暂时无法在 Linux 平台使用游戏在线功能。当然，我们也正在开发一款新的账户代理组件。"
-                       Opacity="0.6"></TextBlock>
+                       Opacity="0.8"></TextBlock>
             
             <TextBlock Text="更多独一无二的功能"
                        Margin="0,8,0,0"
@@ -72,7 +72,7 @@
                        FontWeight="Bold"></TextBlock>
             
             <TextBlock Text="目前，您可以在启动器的工具箱页面体验到许多功能。例如：存档转换，资源包转换。这些内置工具可以帮助您转换游戏资源，将 Java 与 基岩版 的资源互相转换。"
-                       Opacity="0.6"></TextBlock>
+                       Opacity="0.8"></TextBlock>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -249,7 +249,7 @@
                                 <onePointControls:FontIcon Glyph="&#xE76B;"
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
-                                                           Opacity="0.6"
+                                                           Opacity="0.8"
                                                            FontSize="24"></onePointControls:FontIcon>
                                 
                                 <onePointControls:FontIcon Glyph="&#xE76B;"
@@ -270,7 +270,7 @@
                                 <onePointControls:FontIcon Glyph="&#xE76C;"
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center"
-                                                           Opacity="0.6"
+                                                           Opacity="0.8"
                                                            FontSize="24"></onePointControls:FontIcon>
                             </StackPanel>
                         
@@ -280,7 +280,7 @@
                             
                             <TextBlock Text="支持 zip, appx, mcpint, mcpack, mcaddon, mcworld, rplck, dll 等文件"
                                        HorizontalAlignment="Center"
-                                       Opacity="0.6"></TextBlock>
+                                       Opacity="0.8"></TextBlock>
                         </StackPanel>
                     </Grid>
                 </items:BorderCard>

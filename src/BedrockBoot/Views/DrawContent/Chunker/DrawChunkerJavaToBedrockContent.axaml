@@ -36,7 +36,7 @@
         </StackPanel>
 
         <TextBlock Grid.Row="1"
-                   Opacity="0.6"
+                   Opacity="0.8"
                    VerticalAlignment="Center"
                    Text="使用 Chunker 开源项目，转换存档有风险" />
 

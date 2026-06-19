@@ -2,7 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationAudio">
-    
+    <ScrollViewer>
+        <StackPanel Margin="20"
+                    Spacing="8">
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="音频" />
+            
+            <onePointControls:SettingCard
+                Header="音量"
+                Description="背景音量设置。"
+                Glyph="&#xE767;"
+                IsClickable="False">
+                <Slider Width="400"
+                        Classes="Number"></Slider>
+            </onePointControls:SettingCard>
+
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="在任意页面中，按下 Ctrl + 滚动鼠标滚轮 就可以快速调整音量" />
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

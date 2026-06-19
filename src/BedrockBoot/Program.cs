@@ -44,6 +44,11 @@ internal sealed class Program
     public static void Main(string[] args)
     {
         Args = args.ToList();
+
+#if WINDOWS
+        BedrockbootProtocolRegistration.Register();
+#endif
+
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
 
@@ -123,7 +128,8 @@ internal sealed class Program
         }
 #endif
 
-        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        var appArgs = args.Where(a => a != "-bedrockboot" && !a.StartsWith("bedrockboot:", StringComparison.OrdinalIgnoreCase)).ToArray();
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(appArgs);
     }
 
     private static void RebootWithRunas()
@@ -220,19 +226,14 @@ internal sealed class Program
                         break;
                     }
 
-                    if (BedrockbootProtocolHandler.TrySendCommand(parsedCommand))
+                    for (var retry = 0; retry < 5; retry++)
                     {
-                        Console.WriteLine(@"已转发至运行中的主窗口进程");
-                        return true;
-                    }
-
-                    Console.WriteLine(@"首次转发失败，2 秒后重试...");
-                    Thread.Sleep(2000);
-
-                    if (BedrockbootProtocolHandler.TrySendCommand(parsedCommand))
-                    {
-                        Console.WriteLine(@"已转发至运行中的主窗口进程");
-                        return true;
+                        if (BedrockbootProtocolHandler.TrySendCommand(parsedCommand))
+                        {
+                            Console.WriteLine(@"已转发至运行中的主窗口进程");
+                            return true;
+                        }
+                        Thread.Sleep(300);
                     }
 
                     Console.WriteLine(@"未检测到运行中的主窗口，将在当前进程启动");

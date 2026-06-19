@@ -249,8 +249,6 @@ public partial class MainWindow : BedrockBootWindow
 #else
         OpenAgreement.RegisterAssociation();
 #endif
-
-        BedrockbootProtocolRegistration.Register();
     }
 
     private void InitializeProtocolRoutes()

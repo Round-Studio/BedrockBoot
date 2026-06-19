@@ -6,7 +6,7 @@ namespace BedrockBoot.Service.Protocol;
 public static class BedrockbootProtocolRegistration
 {
     private const string ProtocolName = "bedrockboot";
-    private const string ProtocolDescription = "BedrockBoot 协议";
+    private const string ProtocolDescription = "BedrockBoot - Minecraft 基岩版启动器";
 
     public static void Register()
     {

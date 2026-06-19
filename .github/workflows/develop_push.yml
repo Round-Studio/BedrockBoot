@@ -3,7 +3,7 @@ name: 验证代码
 on:
   workflow_dispatch:
   push:
-    branches: ["2.0-preview"]
+    branches: ["2.0-develop"]
 
 permissions:
   contents: write

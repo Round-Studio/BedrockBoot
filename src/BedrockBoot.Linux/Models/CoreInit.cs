@@ -1,4 +1,5 @@
 ﻿using BedrockBoot.Models.Global;
+using BedrockBoot.Services;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 
@@ -9,5 +10,10 @@ public class CoreInit
     public static async Task Init()
     {
         CoreGlobal.BedrockCore = new BedrockCore {};
+    }
+
+    public static void UpdateUseHardwareDecode(bool isUse)
+    {
+        EasyDownload.UseHardwareDecode = isUse;
     }
 }

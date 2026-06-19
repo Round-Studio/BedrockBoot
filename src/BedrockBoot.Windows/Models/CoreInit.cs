@@ -1,6 +1,7 @@
 ﻿using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Services;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 
@@ -21,5 +22,10 @@ public class CoreInit
             }
         };
         await CoreGlobal.BedrockCore.InitAsync();
+    }
+
+    public static void UpdateUseHardwareDecode(bool isUse)
+    {
+        EasyDownload.UseHardwareDecode = isUse;
     }
 }

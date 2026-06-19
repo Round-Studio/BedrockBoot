@@ -61,6 +61,9 @@ public class EasyDownload
     public Action<string, string, Exception> ErrorOccurred { get; set; }
     public Action<VersionConfig> Completed { get; set; }
     
+    
+    public static bool UseHardwareDecode { get; set; }
+    
     // 安装锁定
     public bool IsCanInstall { get; set; } = false;
 
@@ -190,6 +193,7 @@ public class EasyDownload
             InstallDstFolder = installDir,
             GameTypeVersion = BuildInfo.Type,
             Type = BuildInfo.BuildType,
+            UseHardwareDecode = UseHardwareDecode,
             ExtractionProgress = new Progress<DecompressProgress>(progress =>
             {
                 ExtractionProgress?.Invoke($"解压文件 ({progress.Percentage:F2}%)",

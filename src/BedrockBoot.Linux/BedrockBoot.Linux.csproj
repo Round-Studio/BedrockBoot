@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="BedrockLauncher.Core.Linux" Version="1.0.0.2" />
+      <PackageReference Include="BedrockLauncher.Core.Linux" Version="1.0.0.3" />
     </ItemGroup>
 
     <ItemGroup>

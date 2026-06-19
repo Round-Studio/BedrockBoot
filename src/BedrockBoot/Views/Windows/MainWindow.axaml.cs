@@ -251,6 +251,8 @@ public partial class MainWindow : BedrockBootWindow
         try
         {
             await CoreInit.Init();
+            
+            CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
         }
         catch (Exception ex)
         {

@@ -26,6 +26,7 @@ public class CoreInit
 
     public static void UpdateUseHardwareDecode(bool isUse)
     {
+        Console.WriteLine($@"使用硬件解码：{isUse}");
         EasyDownload.UseHardwareDecode = isUse;
     }
 }

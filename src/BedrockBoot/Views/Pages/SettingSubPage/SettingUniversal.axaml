@@ -61,6 +61,14 @@
                 </ComboBox>
             </onePointControls:SettingCard>
 
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="硬件解码"
+                                          Description="设置安装游戏 (GDK) 时是否启用硬件解码，启用后可以提升安装速度，部分型号的 CPU 不支持此功能"
+                                          Glyph="&#xF012;">
+                <ToggleSwitch Name="UseHardwareDecode"
+                              IsCheckedChanged="UseHardwareDecode_OnIsCheckedChanged" />
+            </onePointControls:SettingCard>
+
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"

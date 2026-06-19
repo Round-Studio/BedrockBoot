@@ -21,6 +21,7 @@ public class ConfigEntry
     [JsonPropertyName("isAgreeTerms")] public bool IsAgreeTerms { get; set; } = false;
     [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
     [JsonPropertyName("isTaskBarJumpItem")] public bool IsTaskBarJumpItem { get; set; } = true;
+    [JsonPropertyName("isUseHardwareDecode")] public bool IsUseHardwareDecode { get; set; } = true;
     [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
     [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.Hook;
     [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;

@@ -5,6 +5,7 @@ using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Language;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
+using BedrockBoot.Models;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -32,6 +33,7 @@ public partial class SettingUniversal : ISettingPage
         GatInfo.IsChecked = GlobalModel.Config.Data.GatherInfo;
         LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
         LaunchBehaviorChoose.SelectedIndex = (int)GlobalModel.Config.Data.LaunchBehavior;
+        UseHardwareDecode.IsChecked = GlobalModel.Config.Data.IsUseHardwareDecode;
 
 #if LINUX
         JumpListCard.IsVisible = false;
@@ -95,6 +97,16 @@ public partial class SettingUniversal : ISettingPage
         {
             GlobalModel.Config.Data.LaunchBehavior = (LaunchBehaviorEnum)LaunchBehaviorChoose.SelectedIndex;
             GlobalModel.Config.Save();
+        }
+    }
+
+    private void UseHardwareDecode_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsUseHardwareDecode = (bool)UseHardwareDecode.IsChecked!;
+            GlobalModel.Config.Save();
+            CoreInit.UpdateUseHardwareDecode(GlobalModel.Config.Data.IsUseHardwareDecode);
         }
     }
 }

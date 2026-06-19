@@ -366,9 +366,7 @@ public partial class MainWindow : BedrockBootWindow
 
     private void ApplyImageBackground(StyleConfig style)
     {
-        if (style.BackgroundImageSelectedIndex == -1 || style.BackgroundImages.Count == 0) return;
-
-        var imgPath = style.BackgroundImages[style.BackgroundImageSelectedIndex];
+        var imgPath = style.BackgroundImage;
         if (!File.Exists(imgPath)) return;
 
         try

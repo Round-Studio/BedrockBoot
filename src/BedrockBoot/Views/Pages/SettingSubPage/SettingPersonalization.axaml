@@ -28,6 +28,15 @@
                                           Click="SetColor_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE790;" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="音频"
+                                          Description="BedrockBoot 背景音乐"
+                                          Name="SetAudio"
+                                          Click="SetAudio_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xE8D6;" />
+            
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"

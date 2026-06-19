@@ -79,37 +79,9 @@ public partial class PersonalizationBackground : ISettingPage
         if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image)
         {
             BackgroundImageBox.IsVisible = true;
-            BackgroundsList.SelectedIndex = -1;
-            BackgroundsList.Items.Clear();
-
-            var notFoundImages = new List<string>();
-
-            GlobalModel.Config.Data.StyleConfig.BackgroundImages.ForEach(image =>
-            {
-                if (File.Exists(image))
-                {
-                    var item = new BackgroundChooseItem { ImagePath = image };
-                    item.UpdateUI();
-                    BackgroundsList.Items.Add(item);
-                }
-                else
-                {
-                    notFoundImages.Add(image);
-                }
-            });
-
-            GlobalModel.Config.Data.StyleConfig.BackgroundImages.RemoveAll(f => notFoundImages.Contains(f));
-
-            var index = GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex;
-            if (index != -1)
-                if (GlobalModel.Config.Data.StyleConfig.BackgroundImages.Count >= 0)
-                    BackgroundsList.SelectedIndex = index;
         }
 
-        if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel)
-        {
-            LiveOptCard.IsVisible = true;
-        }
+        if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel) LiveOptCard.IsVisible = true;
         LiveOptBar.Value = GlobalModel.Config.Data.StyleConfig.LiveOpacity;
 
         IsEdit = true;
@@ -124,19 +96,6 @@ public partial class PersonalizationBackground : ISettingPage
 
             Models.Global.GlobalModel.MainWindow.UpdateBack();
 
-            UpdateUI();
-        }
-    }
-
-    private void BackgroundsList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (IsEdit)
-        {
-            GlobalModel.Config.Data.StyleConfig.BackgroundImageSelectedIndex = BackgroundsList.SelectedIndex;
-            GlobalModel.Config.Save();
-
-            Models.Global.GlobalModel.MainWindow.UpdateBack();
-            App.LoadColor();
             UpdateUI();
         }
     }
@@ -165,8 +124,10 @@ public partial class PersonalizationBackground : ISettingPage
             foreach (var file in files)
             {
                 var filePath = file.Path.LocalPath;
-                GlobalModel.Config.Data.StyleConfig.BackgroundImages.Add(filePath);
+                GlobalModel.Config.Data.StyleConfig.BackgroundImage = filePath;
+                GlobalModel.Config.Save();
                 UpdateUI();
+                Models.Global.GlobalModel.MainWindow.UpdateBack();
             }
     }
 

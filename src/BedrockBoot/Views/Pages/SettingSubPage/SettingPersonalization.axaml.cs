@@ -61,4 +61,9 @@ public partial class SettingPersonalization : ISettingPage
             Models.Global.GlobalModel.MainWindow.UpdateWindowBorder();
         }
     }
+
+    private void SetAudio_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new PersonalizationAudio());
+    }
 }

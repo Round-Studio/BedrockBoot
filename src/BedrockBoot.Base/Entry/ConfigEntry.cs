@@ -7,6 +7,7 @@ namespace BedrockBoot.Base.Entry;
 
 public class ConfigEntry
 {
+    [JsonPropertyName("configVersion")] public Version? ConfigVersion { get; set; } = null;
     [JsonPropertyName("windowInfo")] public WindowInfo WindowInfo { get; set; } = new();
     [JsonPropertyName("gameFolders")] public List<GameFolderInfo> GameFolders { get; set; } = new();
     [JsonPropertyName("gameFolderSelIndex")] public int GameFolderSelIndex { get; set; } = -1;
@@ -15,7 +16,6 @@ public class ConfigEntry
     [JsonPropertyName("curseForgeSourceIndex")] public int CurseForgeSourceIndex { get; set; } = 0;
     [JsonPropertyName("styleConfig")] public StyleConfig StyleConfig { get; set; } = new();
     [JsonPropertyName("homeConfig")] public HomeConfig HomeConfig { get; set; } = new();
-    [JsonPropertyName("isAutoCacheGamePack")] public bool IsAutoCacheGamePack { get; set; } = true;
     [JsonPropertyName("isAutoCheckUpdate")] public bool IsAutoCheckUpdate { get; set; } = true;
     [JsonPropertyName("isFirstRun")] public bool IsFirstRun { get; set; } = true;
     [JsonPropertyName("isAgreeTerms")] public bool IsAgreeTerms { get; set; } = false;
@@ -37,6 +37,7 @@ public class StyleConfig
     [JsonPropertyName("lightThemeType")] public ThemeModelEnum LightThemeType { get; set; } = ThemeModelEnum.Dark;
     [JsonPropertyName("backgroundImages")] public List<string> BackgroundImages { get; set; } = new();
     [JsonPropertyName("backgroundImageSelectedIndex")] public int BackgroundImageSelectedIndex { get; set; } = -1;
+    [JsonPropertyName("backgroundImage")] public string BackgroundImage { get; set; } = string.Empty;
     [JsonPropertyName("backgroundImageOpacity")] public int BackgroundImageOpacity { get; set; } = 100;
     [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 1;
     [JsonPropertyName("liveOpacity")] public int LiveOpacity { get; set; } = 40;

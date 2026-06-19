@@ -45,10 +45,6 @@ internal sealed class Program
     {
         Args = args.ToList();
 
-#if WINDOWS
-        BedrockbootProtocolRegistration.Register();
-#endif
-
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
 
@@ -224,16 +220,6 @@ internal sealed class Program
                     {
                         Console.WriteLine($@"无法解析协议 URL: {protocolUrl}");
                         break;
-                    }
-
-                    for (var retry = 0; retry < 5; retry++)
-                    {
-                        if (BedrockbootProtocolHandler.TrySendCommand(parsedCommand))
-                        {
-                            Console.WriteLine(@"已转发至运行中的主窗口进程");
-                            return true;
-                        }
-                        Thread.Sleep(300);
                     }
 
                     Console.WriteLine(@"未检测到运行中的主窗口，将在当前进程启动");

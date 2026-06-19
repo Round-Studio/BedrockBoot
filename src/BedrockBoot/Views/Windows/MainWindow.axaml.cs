@@ -73,6 +73,10 @@ public partial class MainWindow : BedrockBootWindow
 
         _ = GetDevelopMode();
         CheckUwpDependence();
+
+#if WINDOWS
+        BedrockbootProtocolRegistration.Register();
+#endif
         InitializeProtocolRoutes();
     }
 

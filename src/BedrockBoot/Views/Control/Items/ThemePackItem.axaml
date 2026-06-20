@@ -13,8 +13,16 @@
         
         <StackPanel Grid.Column="1"
                     VerticalAlignment="Center">
-            <TextBlock Name="PackName"
-                       Text="PackName"></TextBlock>
+            <StackPanel Orientation="Horizontal"
+                        Spacing="4">
+                <TextBlock Name="PackName"
+                           Text="PackName"></TextBlock>
+                <TextBlock Name="PackWriter"
+                           Text="By xxx"
+                           VerticalAlignment="Bottom"
+                           FontSize="8"
+                           Opacity="0.8"></TextBlock>
+            </StackPanel>
             <TextBlock Name="PackDescription"
                        Text="PackDescription"
                        FontSize="9"

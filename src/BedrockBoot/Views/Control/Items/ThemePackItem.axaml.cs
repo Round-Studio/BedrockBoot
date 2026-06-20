@@ -25,5 +25,6 @@ public partial class ThemePackItem : UserControl
         _ = ImageRenderWidget.Update(_manifest.PackIconFileName!);
         PackName.Text = _manifest.PackName;
         PackDescription.Text = _manifest.PackDescription;
+        PackWriter.Text = $"By {_manifest.PackAuthor}";
     }
 }

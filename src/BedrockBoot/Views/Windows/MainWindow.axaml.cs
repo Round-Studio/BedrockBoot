@@ -359,6 +359,10 @@ public partial class MainWindow : BedrockBootWindow
                 {
                     DesktopThumbnailWindow = new DesktopThumbnailWindow();
                 }
+                if (style.LiveBlur)
+                {
+                    TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
+                }
                 DesktopThumbnailWindow?.ShowBelow(this);
                 LiveOpacity.IsVisible = true;
                 UpdateLiveOpacity();

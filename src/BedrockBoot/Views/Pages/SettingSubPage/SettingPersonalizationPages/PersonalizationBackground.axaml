@@ -76,7 +76,6 @@
                 Description="{DynamicResource Settings.Background.Image.Opacity.Desc}"
                 Glyph="&#xE81E;"
                 Name="LiveOptCard"
-                Margin="5"
                 IsClickable="False">
                 <Slider Width="200"
                         Minimum="0"
@@ -85,6 +84,16 @@
                         Classes="Number"
                         Name="LiveOptBar"
                         ValueChanged="LiveOptBar_OnValueChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard
+                Header="模糊化"
+                Description="启用此选项可以使实况背景模糊化"
+                Glyph="&#xF5EF;"
+                Name="LiveBlurCard"
+                IsClickable="False">
+                <ToggleSwitch Name="LiveBlurSwitch"
+                              Click="LiveBlurSwitch_OnClick"></ToggleSwitch>
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

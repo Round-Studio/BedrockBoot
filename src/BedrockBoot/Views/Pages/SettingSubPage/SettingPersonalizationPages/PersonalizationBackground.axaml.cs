@@ -81,8 +81,10 @@ public partial class PersonalizationBackground : ISettingPage
             BackgroundImageBox.IsVisible = true;
         }
 
-        if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel) LiveOptCard.IsVisible = true;
+        LiveOptCard.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel;
+        LiveBlurCard.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel;
         LiveOptBar.Value = GlobalModel.Config.Data.StyleConfig.LiveOpacity;
+        LiveBlurSwitch.IsChecked = GlobalModel.Config.Data.StyleConfig.LiveBlur;
 
         IsEdit = true;
     }
@@ -163,6 +165,16 @@ public partial class PersonalizationBackground : ISettingPage
 
             GlobalModel.Config.Save();
             Models.Global.GlobalModel.MainWindow.UpdateLiveOpacity();
+        }
+    }
+
+    private void LiveBlurSwitch_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.StyleConfig.LiveBlur = LiveBlurSwitch.IsChecked ?? false;
+            GlobalModel.Config.Save();
+            Models.Global.GlobalModel.MainWindow.UpdateBack();
         }
     }
 }

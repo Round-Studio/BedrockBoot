@@ -1,0 +1,29 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.DialogMakeThemePackContent">
+    <StackPanel Width="400" 
+                Spacing="8">
+        <TextBlock Text="主题包名称"/>
+        <TextBox Name="ThemePackName"/>
+            
+        <TextBlock Text="主题包描述"/>
+        <TextBox Name="ThemePackDescription"/>
+            
+        <TextBlock Text="主题包作者"/>
+        <TextBox Name="ThemePackAuthor"/>
+
+        <TextBlock Text="主题包图标"/>
+        <DockPanel HorizontalSpacing="8">
+            <Button DockPanel.Dock="Right"
+                    Width="32"
+                    Height="32"
+                    Name="ImportPackIconButton"
+                    Click="ImportPackIconButton_OnClick"
+                    Content="..."></Button>
+            <TextBox Name="ThemePackIcon"/>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

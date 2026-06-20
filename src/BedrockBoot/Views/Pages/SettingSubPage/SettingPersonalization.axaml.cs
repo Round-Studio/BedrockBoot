@@ -4,9 +4,13 @@ using Avalonia.Interactivity;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Pack.Theme;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 
@@ -95,6 +99,21 @@ public partial class SettingPersonalization : ISettingPage
 
     private void SaveThemePack_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        var dialog = new DialogMakeThemePackContent();
+        DialogHost.Show(new ()
+        {
+            Content = dialog,
+            Title = "导出主题包",
+            CloseButtonText = "导出",
+            PrimaryButtonText = "取消",
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = () =>
+            {
+                var manifest = dialog.Manifest;
+                var maker = new ThemePackMaker(manifest);
+                
+                maker.StartMake("E://test.rskin");
+            }
+        });
     }
 }

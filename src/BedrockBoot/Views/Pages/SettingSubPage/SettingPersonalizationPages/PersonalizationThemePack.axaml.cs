@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -19,6 +20,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
     public partial class PersonalizationThemePack : ISettingPage
     {
         public ThemePackManager Manager { get; set; } = new ThemePackManager();
+        private bool _isUpdating;
 
         public PersonalizationThemePack()
         {
@@ -42,23 +44,56 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 
         public void UpdateUI()
         {
-            IsEdit = false;
+            _isUpdating = false;
 
             PacksList.Items.Clear();
 
             InfoCard.IsVisible = false;
             LoadingCard.IsVisible = true;
 
-            var packs = Manager.GetPackManifests();
-            packs.ForEach(conf => { PacksList.Items.Add(new ThemePackItem(conf)); });
+            Task.Run(() =>
+            {
+                try
+                {
+                    var packs = Manager.GetPackManifests();
+                    
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    {
+                        try
+                        {
+                            foreach (var conf in packs)
+                            {
+                                PacksList.Items.Add(new ThemePackItem(conf));
+                            }
 
-            var selIndex = packs.FindIndex(x => x.IsSelectThis);
-            PacksList.SelectedIndex = selIndex;
+                            var selIndex = packs.FindIndex(x => x.IsSelectThis);
+                            if (selIndex >= 0 && selIndex < PacksList.Items.Count)
+                            {
+                                PacksList.SelectedIndex = selIndex;
+                            }
 
-            InfoCard.IsVisible = packs.Count <= 0;
-            LoadingCard.IsVisible = false;
-
-            IsEdit = true;
+                            InfoCard.IsVisible = packs.Count <= 0;
+                            LoadingCard.IsVisible = false;
+                            _isUpdating = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($@"UI更新失败: {ex}");
+                            InfoCard.IsVisible = true;
+                            LoadingCard.IsVisible = false;
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"读取主题包失败: {ex}");
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    {
+                        InfoCard.IsVisible = true;
+                        LoadingCard.IsVisible = false;
+                    });
+                }
+            });
         }
 
         private async void ImportThemePack_OnClick(object? sender, RoutedEventArgs e)
@@ -89,12 +124,27 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 
         private void PacksList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
-            if (IsEdit)
+            if (!_isUpdating) return;
+            
+            try
             {
-                GlobalModel.Config.Data.StyleConfig.SelectThemePackHash = Manager.GetPackManifests()[PacksList.SelectedIndex].PackHash!;
+                var selectedIndex = PacksList.SelectedIndex;
+                if (selectedIndex < 0) return;
+
+                var packs = Manager.GetPackManifests();
+                if (selectedIndex >= packs.Count) return;
+
+                var selectedPack = packs[selectedIndex];
+                if (selectedPack?.PackHash == null) return;
+
+                GlobalModel.Config.Data.StyleConfig.SelectThemePackHash = selectedPack.PackHash;
                 GlobalModel.Config.Save();
                 
                 Models.Global.GlobalModel.MainWindow.UpdateTheme();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"切换主题包失败: {ex}");
             }
         }
     }

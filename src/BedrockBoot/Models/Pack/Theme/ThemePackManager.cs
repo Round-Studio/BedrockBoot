@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Pack.Theme;
 using BedrockBoot.Models.Global;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
@@ -19,28 +20,48 @@ namespace BedrockBoot.Models.Pack.Theme
         public List<ThemePackManifest> GetPackManifests()
         {
             var folder = PathsList.ThemePath;
+            var packFiles = Directory.GetFiles(folder, "*.rskin");
             var result = new List<ThemePackManifest>();
+            var lockObj = new object();
 
-            foreach (var pack in Directory.GetFiles(folder, "*.rskin"))
+            Parallel.ForEach(packFiles, pack =>
             {
-                var analyzer = new ThemePackAnalyze(pack);
-                var conf = analyzer.Manifest;
-                conf.BackgroundImageFileName = analyzer.GetBackgroundImagePath();
-                conf.BackgroundMusicFileName = analyzer.GetBackgroundMusicPath();
-                conf.PackIconFileName = analyzer.GetPackIconPath();
-                conf.IsSelectThis = pack.Contains(GlobalModel.Config.Data.StyleConfig.SelectThemePackHash);
-                result.Add(conf);
-                
-                Console.WriteLine($@"读取到主题包：{conf.PackName} 文件：{pack}");
-            }
-        
-            return result;
+                try
+                {
+                    using var analyzer = new ThemePackAnalyze(pack);
+                    var conf = analyzer.Manifest;
+                    
+                    var backgroundImagePath = analyzer.GetBackgroundImagePath();
+                    var backgroundMusicPath = analyzer.GetBackgroundMusicPath();
+                    var packIconPath = analyzer.GetPackIconPath();
+                    
+                    conf.BackgroundImageFileName = string.IsNullOrEmpty(backgroundImagePath) ? null : backgroundImagePath;
+                    conf.BackgroundMusicFileName = string.IsNullOrEmpty(backgroundMusicPath) ? null : backgroundMusicPath;
+                    conf.PackIconFileName = string.IsNullOrEmpty(packIconPath) ? null : packIconPath;
+                    conf.IsSelectThis = GlobalModel.Config.Data.StyleConfig.SelectThemePackHash == conf.PackHash;
+                    
+                    lock (lockObj)
+                    {
+                        result.Add(conf);
+                    }
+                    
+                    Console.WriteLine($@"读取到主题包：{conf.PackName} 文件：{pack}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"读取主题包失败：{pack} 错误：{ex}");
+                }
+            });
+
+            return result.OrderBy(x => x.PackHash ?? "").ToList();
         }
+
         public void AddPack(string selectedPath)
         {
             var hash = ComputeFileHash(selectedPath);
             File.Copy(selectedPath, Path.Combine(PathsList.ThemePath, $"{hash}.rskin"), true);
         }
+
         private string ComputeFileHash(string filePath)
         {
             using var sha256 = SHA256.Create();
@@ -53,6 +74,24 @@ namespace BedrockBoot.Models.Pack.Theme
         {
             var manager = new ThemePackManager();
             return manager.GetPackManifests().FindLast(x => x.PackHash == hash);
+        }
+
+        public void CleanupAllCache()
+        {
+            var cacheDir = PathsList.TempPath;
+            if (!Directory.Exists(cacheDir))
+                return;
+
+            foreach (var dir in Directory.GetDirectories(cacheDir, "theme_cache_*"))
+            {
+                try
+                {
+                    Directory.Delete(dir, true);
+                }
+                catch
+                {
+                }
+            }
         }
     }
 }

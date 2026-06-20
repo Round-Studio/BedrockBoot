@@ -12,10 +12,13 @@ namespace BedrockBoot.Models.Pack.Theme
     {
         private readonly string _filePath;
         private readonly string _tempExtractPath;
-        private readonly ThemePackManifest _manifest;
         private readonly string _fileHash;
+        private ThemePackManifest _manifest;
         private bool _extracted;
         private bool _disposed;
+        private string _cachedIconPath;
+        private string _cachedBackgroundPath;
+        private string _cachedMusicPath;
 
         public ThemePackAnalyze(string file)
         {
@@ -28,84 +31,123 @@ namespace BedrockBoot.Models.Pack.Theme
             var hashFolder = Path.Combine(PathsList.TempPath, $"theme_cache_{_fileHash}");
             _tempExtractPath = hashFolder;
 
-            if (Directory.Exists(_tempExtractPath) && File.Exists(Path.Combine(_tempExtractPath, "manifest.json")))
+            if (IsCacheValid())
             {
                 _extracted = true;
+                var manifestPath = Path.Combine(_tempExtractPath, "manifest.json");
+                var jsonContent = File.ReadAllText(manifestPath);
+                _manifest = JsonSerializer.Deserialize<ThemePackManifest>(jsonContent)
+                            ?? throw new InvalidOperationException("Failed to parse manifest.json");
+                _manifest.PackHash = _fileHash;
+                CacheFilePaths();
             }
             else
             {
                 if (Directory.Exists(_tempExtractPath))
                     Directory.Delete(_tempExtractPath, true);
-                Directory.CreateDirectory(_tempExtractPath);
                 
-                using var archive = ZipFile.OpenRead(file);
-                
-                var manifestEntry = archive.GetEntry("manifest.json");
-                if (manifestEntry == null)
-                    throw new InvalidOperationException("manifest.json not found in zip");
-                
-                using var stream = manifestEntry.Open();
-                using var ms = new MemoryStream();
-                stream.CopyTo(ms);
-                ms.Position = 0;
-                using var reader = new StreamReader(ms);
-                var jsonContent = reader.ReadToEnd();
-                _manifest = JsonSerializer.Deserialize<ThemePackManifest>(jsonContent)
-                            ?? throw new InvalidOperationException("Failed to parse manifest.json");
-                
-                manifestEntry.ExtractToFile(Path.Combine(_tempExtractPath, "manifest.json"), true);
-                
-                if (!string.IsNullOrEmpty(_manifest.PackIconFileName))
-                {
-                    var iconEntry = archive.GetEntry(_manifest.PackIconFileName);
-                    if (iconEntry != null)
-                    {
-                        var iconPath = Path.Combine(_tempExtractPath, _manifest.PackIconFileName);
-                        var iconDir = Path.GetDirectoryName(iconPath);
-                        if (!string.IsNullOrEmpty(iconDir) && !Directory.Exists(iconDir))
-                            Directory.CreateDirectory(iconDir);
-                        iconEntry.ExtractToFile(iconPath, true);
-                    }
-                }
-                
-                if (!string.IsNullOrEmpty(_manifest.BackgroundImageFileName))
-                {
-                    var bgEntry = archive.GetEntry($"background/{_manifest.BackgroundImageFileName}");
-                    if (bgEntry != null)
-                    {
-                        var bgPath = Path.Combine(_tempExtractPath, "background", _manifest.BackgroundImageFileName);
-                        var bgDir = Path.GetDirectoryName(bgPath);
-                        if (!string.IsNullOrEmpty(bgDir) && !Directory.Exists(bgDir))
-                            Directory.CreateDirectory(bgDir);
-                        bgEntry.ExtractToFile(bgPath, true);
-                    }
-                }
-                
-                if (!string.IsNullOrEmpty(_manifest.BackgroundMusicFileName))
-                {
-                    var musicEntry = archive.GetEntry($"music/{_manifest.BackgroundMusicFileName}");
-                    if (musicEntry != null)
-                    {
-                        var musicPath = Path.Combine(_tempExtractPath, "music", _manifest.BackgroundMusicFileName);
-                        var musicDir = Path.GetDirectoryName(musicPath);
-                        if (!string.IsNullOrEmpty(musicDir) && !Directory.Exists(musicDir))
-                            Directory.CreateDirectory(musicDir);
-                        musicEntry.ExtractToFile(musicPath, true);
-                    }
-                }
-                
+                ExtractAllFiles();
                 _extracted = true;
+                CacheFilePaths();
+            }
+        }
+
+        private bool IsCacheValid()
+        {
+            if (!Directory.Exists(_tempExtractPath))
+                return false;
+
+            var manifestPath = Path.Combine(_tempExtractPath, "manifest.json");
+            if (!File.Exists(manifestPath))
+                return false;
+
+            try
+            {
+                var jsonContent = File.ReadAllText(manifestPath);
+                var manifest = JsonSerializer.Deserialize<ThemePackManifest>(jsonContent);
+                if (manifest == null)
+                    return false;
+
+                if (!string.IsNullOrEmpty(manifest.PackIconFileName))
+                {
+                    var iconPath = Path.Combine(_tempExtractPath, manifest.PackIconFileName);
+                    if (!File.Exists(iconPath))
+                        return false;
+                }
+
+                if (!string.IsNullOrEmpty(manifest.BackgroundImageFileName))
+                {
+                    var bgPath = Path.Combine(_tempExtractPath, "background", manifest.BackgroundImageFileName);
+                    if (!File.Exists(bgPath))
+                        return false;
+                }
+
+                if (!string.IsNullOrEmpty(manifest.BackgroundMusicFileName))
+                {
+                    var musicPath = Path.Combine(_tempExtractPath, "music", manifest.BackgroundMusicFileName);
+                    if (!File.Exists(musicPath))
+                        return false;
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void ExtractAllFiles()
+        {
+            Directory.CreateDirectory(_tempExtractPath);
+            
+            using var archive = ZipFile.OpenRead(_filePath);
+            
+            foreach (var entry in archive.Entries)
+            {
+                if (string.IsNullOrEmpty(entry.Name))
+                    continue;
+
+                var targetPath = Path.Combine(_tempExtractPath, entry.FullName);
+                var targetDir = Path.GetDirectoryName(targetPath);
+                
+                if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir))
+                    Directory.CreateDirectory(targetDir);
+                
+                entry.ExtractToFile(targetPath, true);
             }
 
+            var manifestPath = Path.Combine(_tempExtractPath, "manifest.json");
+            if (!File.Exists(manifestPath))
+                throw new InvalidOperationException("manifest.json not found in zip");
+
+            var jsonContent = File.ReadAllText(manifestPath);
+            _manifest = JsonSerializer.Deserialize<ThemePackManifest>(jsonContent)
+                        ?? throw new InvalidOperationException("Failed to parse manifest.json");
+            _manifest.PackHash = _fileHash;
+        }
+
+        private void CacheFilePaths()
+        {
             if (_manifest == null)
+                return;
+
+            if (!string.IsNullOrEmpty(_manifest.PackIconFileName))
             {
-                var manifestPath = Path.Combine(_tempExtractPath, "manifest.json");
-                if (!File.Exists(manifestPath))
-                    throw new InvalidOperationException("manifest.json not found");
-                var jsonContent = File.ReadAllText(manifestPath);
-                _manifest = JsonSerializer.Deserialize<ThemePackManifest>(jsonContent)
-                            ?? throw new InvalidOperationException("Failed to parse manifest.json");
-                _manifest.PackHash = _fileHash;
+                var path = Path.Combine(_tempExtractPath, _manifest.PackIconFileName);
+                _cachedIconPath = File.Exists(path) ? path : null;
+            }
+
+            if (!string.IsNullOrEmpty(_manifest.BackgroundImageFileName))
+            {
+                var path = Path.Combine(_tempExtractPath, "background", _manifest.BackgroundImageFileName);
+                _cachedBackgroundPath = File.Exists(path) ? path : null;
+            }
+
+            if (!string.IsNullOrEmpty(_manifest.BackgroundMusicFileName))
+            {
+                var path = Path.Combine(_tempExtractPath, "music", _manifest.BackgroundMusicFileName);
+                _cachedMusicPath = File.Exists(path) ? path : null;
             }
         }
 
@@ -119,65 +161,38 @@ namespace BedrockBoot.Models.Pack.Theme
             return Convert.ToHexString(hash);
         }
 
-        private string GetFullPath(string relativePath)
-        {
-            if (string.IsNullOrEmpty(relativePath))
-                return null;
-
-            var fullPath = Path.Combine(_tempExtractPath, relativePath);
-            return File.Exists(fullPath) ? fullPath : null;
-        }
-
         public string GetPackIconPath()
         {
-            if (!_extracted || _manifest == null)
-                return null;
-            return GetFullPath(_manifest.PackIconFileName);
+            return _cachedIconPath;
         }
 
         public string GetBackgroundImagePath()
         {
-            if (!_extracted || _manifest == null)
-                return null;
-            if (string.IsNullOrEmpty(_manifest.BackgroundImageFileName))
-                return null;
-            return GetFullPath(Path.Combine("background", _manifest.BackgroundImageFileName));
+            return _cachedBackgroundPath;
         }
 
         public string GetBackgroundMusicPath()
         {
-            if (!_extracted || _manifest == null)
-                return null;
-            if (string.IsNullOrEmpty(_manifest.BackgroundMusicFileName))
-                return null;
-            return GetFullPath(Path.Combine("music", _manifest.BackgroundMusicFileName));
+            return _cachedMusicPath;
         }
 
         public bool HasPackIcon()
         {
-            return _manifest != null && !string.IsNullOrEmpty(_manifest.PackIconFileName) && GetPackIconPath() != null;
+            return _cachedIconPath != null;
         }
 
         public bool HasBackgroundImage()
         {
-            return _manifest != null && !string.IsNullOrEmpty(_manifest.BackgroundImageFileName) && GetBackgroundImagePath() != null;
+            return _cachedBackgroundPath != null;
         }
 
         public bool HasBackgroundMusic()
         {
-            return _manifest != null && !string.IsNullOrEmpty(_manifest.BackgroundMusicFileName) && GetBackgroundMusicPath() != null;
+            return _cachedMusicPath != null;
         }
 
         public void Cleanup()
         {
-            if (Directory.Exists(_tempExtractPath))
-                try
-                {
-                    Directory.Delete(_tempExtractPath, true);
-                }
-                catch
-                {
-                }
         }
 
         public void Dispose()
@@ -185,7 +200,6 @@ namespace BedrockBoot.Models.Pack.Theme
             if (_disposed)
                 return;
 
-            Cleanup();
             _disposed = true;
             GC.SuppressFinalize(this);
         }

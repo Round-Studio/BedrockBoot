@@ -6,59 +6,60 @@ using BedrockBoot.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 
-namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
-
-public partial class PersonalizationHome : ISettingPage
+namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 {
-    public bool IsEdit;
-
-    public PersonalizationHome()
+    public partial class PersonalizationHome : ISettingPage
     {
-        InitializeComponent();
-        BreadcrumbItem = new List<BreadcrumbItemInfo>
+        public bool IsEdit;
+
+        public PersonalizationHome()
         {
-            new()
+            InitializeComponent();
+            BreadcrumbItem = new List<BreadcrumbItemInfo>
             {
-                ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"],
-                ItemClickAction = info =>
-                    MainSettingPage.NavigateTo(new SettingPersonalization())
-            },
-            new()
-            {
-                ItemName = I18nManager.Instance["Setting.Personalization.Home.Title"]
-            }
-        };
-        Update();
+                new()
+                {
+                    ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"],
+                    ItemClickAction = info =>
+                        MainSettingPage.NavigateTo(new SettingPersonalization())
+                },
+                new()
+                {
+                    ItemName = I18nManager.Instance["Setting.Personalization.Home.Title"]
+                }
+            };
+            Update();
 
-        IsEdit = true;
-    }
-
-    public void Update()
-    {
-        IsEdit = false;
-
-        HomeTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.HomeConfig.HomeType;
-
-        switch (GlobalModel.Config.Data.HomeConfig.HomeType)
-        {
-            case HomeType.None:
-                // 这里可以根据类型切换一些描述文本或控件显示
-                break;
-            case HomeType.News:
-                break;
+            IsEdit = true;
         }
 
-        IsEdit = true;
-    }
-
-    private void HomeTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (IsEdit)
+        public void Update()
         {
-            GlobalModel.Config.Data.HomeConfig.HomeType = (HomeType)HomeTypeBox.SelectedIndex;
-            GlobalModel.Config.Save();
+            IsEdit = false;
 
-            Update();
+            HomeTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.HomeConfig.HomeType;
+
+            switch (GlobalModel.Config.Data.HomeConfig.HomeType)
+            {
+                case HomeType.None:
+                    // 这里可以根据类型切换一些描述文本或控件显示
+                    break;
+                case HomeType.News:
+                    break;
+            }
+
+            IsEdit = true;
+        }
+
+        private void HomeTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (IsEdit)
+            {
+                GlobalModel.Config.Data.HomeConfig.HomeType = (HomeType)HomeTypeBox.SelectedIndex;
+                GlobalModel.Config.Save();
+
+                Update();
+            }
         }
     }
 }

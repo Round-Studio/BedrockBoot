@@ -1,0 +1,59 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationThemePack">
+    <Grid Margin="0,15">
+        <Grid ColumnDefinitions="3*,7*">
+            <StackPanel Grid.Column="0"
+                        Margin="20,0,0,0"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
+                           Text="{DynamicResource Settings.Universal.Exception.Summary.Title}" />
+
+                <TextBlock Text="导入他人分享给你的主题包以个性化 BedrockBoot"
+                           TextWrapping="Wrap"
+                           Opacity="0.8" />
+
+                <TextBlock Text="您也可以自己制作 BedrockBoot 主题包"
+                           TextWrapping="Wrap"
+                           Opacity="0.8" />
+
+                <Button Padding="8">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12">
+                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                   Glyph="&#xE710;" />
+                        <TextBlock Text="导入主题包" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <ScrollViewer Grid.Column="1"
+                          Margin="10,0,5,0"
+                          Name="ScrollViewer">
+                <StackPanel Margin="0,0,15,0"
+                            Spacing="8"
+                            Name="PluginList" />
+            </ScrollViewer>
+
+            <notice:InfoCard Grid.Column="1"
+                             Name="InfoCard"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             BigTitle="未安装任何主题"
+                             Message="您还没安装任何主题包啊啊啊" />
+
+            <notice:LoadCard Grid.Column="1"
+                             Name="LoadingCard"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             BigTitle="{DynamicResource Shared.Status.Wait}"
+                             Message="翻箱倒柜" />
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Avalonia.Interactivity;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -41,6 +43,10 @@ public partial class SettingPersonalization : ISettingPage
 
         SetBackground.IsVisible = !GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
         SetColor.IsVisible = !GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
+        SaveThemePack.IsVisible = !GlobalModel.Config.Data.StyleConfig.IsUseThemePack &&
+                                  GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image &&
+                                  !string.IsNullOrEmpty(GlobalModel.Config.Data.StyleConfig.BackgroundImage);
+        ThemePackManager.IsVisible = GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
 
         IsEdit = true;
     }
@@ -85,5 +91,10 @@ public partial class SettingPersonalization : ISettingPage
             GlobalModel.Config.Save();
             UpdateUI();
         }
+    }
+
+    private void SaveThemePack_OnClick(object? sender, RoutedEventArgs e)
+    {
+        throw new System.NotImplementedException();
     }
 }

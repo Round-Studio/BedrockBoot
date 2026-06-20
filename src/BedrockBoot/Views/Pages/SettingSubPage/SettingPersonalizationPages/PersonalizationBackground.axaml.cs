@@ -177,4 +177,12 @@ public partial class PersonalizationBackground : ISettingPage
             Models.Global.GlobalModel.MainWindow.UpdateBack();
         }
     }
+
+    private void RestoreDefaultBackgroundBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GlobalModel.Config.Data.StyleConfig.BackgroundImage = string.Empty;
+        GlobalModel.Config.Save();
+        UpdateUI();
+        Models.Global.GlobalModel.MainWindow.UpdateBack();
+    }
 }

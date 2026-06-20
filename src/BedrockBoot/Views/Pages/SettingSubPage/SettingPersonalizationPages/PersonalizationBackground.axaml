@@ -35,11 +35,18 @@
                                               Glyph="&#xE8B0;"
                                               IsClickable="True"
                                               Click="ImportBackgroundBtn_OnClick" />
+            
+                <onePointControls:SettingCard Header="恢复默认背景图片"
+                                              Description="将背景图片恢复为默认设置"
+                                              Glyph="&#xE74D;"
+                                              IsClickable="True"
+                                              Name="RestoreDefaultBackgroundBtn"
+                                              Click="RestoreDefaultBackgroundBtn_OnClick"/>
 
                 <onePointControls:SettingCard
                     Header="{DynamicResource Settings.Background.Image.Parallax.Title}"
                     Description="{DynamicResource Settings.Background.Image.Parallax.Desc}"
-                    Glyph="&#xE81E;"
+                    Glyph="&#xF158;"
                     IsClickable="False">
                     <ToggleSwitch Name="Image3D"
                                   IsCheckedChanged="Image3D_OnIsCheckedChanged" />

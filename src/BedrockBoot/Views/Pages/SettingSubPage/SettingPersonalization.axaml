@@ -22,11 +22,31 @@
                 <ToggleSwitch Name="IsUseThemePack"
                               IsCheckedChanged="IsUseThemePack_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="导出主题包"
+                                          Description="将当前主题导出为 BedrockBoot 主题包"
+                                          Name="SaveThemePack"
+                                          Click="SaveThemePack_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xE74E;" />
+
+            <TextBlock Opacity="0.8"
+                       Margin="5,0"
+                       TextWrapping="WrapWithOverflow"
+                       Text="导出主题包仅可在背景类型为图片背景时使用。" />
             
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Settings.Personalization.Group.Base}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="主题包"
+                                          Description="管理，设置所有已安装的 BedrockBoot 主题包"
+                                          Name="ThemePackManager"
+                                          IsClickable="True"
+                                          Glyph="&#xF133;" />
 
             <onePointControls:SettingCard Margin="5, 0"
                                           Header="{DynamicResource Settings.Personalization.Background.Title}"

@@ -243,6 +243,9 @@ public class ImageLoader : IDisposable
 
     public static async Task<Bitmap?> LoadIconAsync(string iconUri)
     {
+        if (string.IsNullOrEmpty(iconUri))
+            return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+
         if (iconUri.StartsWith("avares://")) return new Bitmap(AssetLoader.Open(new Uri(iconUri)));
 
         if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
@@ -251,7 +254,8 @@ public class ImageLoader : IDisposable
 
         if (File.Exists(iconUri))
             return new Bitmap(iconUri);
-        return null;
+
+        return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
     }
 
     private sealed class CacheEntry

@@ -45,6 +45,7 @@
                                           Header="主题包"
                                           Description="管理，设置所有已安装的 BedrockBoot 主题包"
                                           Name="ThemePackManager"
+                                          Click="ThemePackManager_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xF133;" />
 

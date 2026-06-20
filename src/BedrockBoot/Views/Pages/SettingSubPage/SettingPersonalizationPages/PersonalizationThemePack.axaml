@@ -23,7 +23,9 @@
                            TextWrapping="Wrap"
                            Opacity="0.8" />
 
-                <Button Padding="8">
+                <Button Padding="8"
+                        Name="ImportThemePack"
+                        Click="ImportThemePack_OnClick">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="12">
                         <onePointControls:FontIcon VerticalAlignment="Center"
@@ -33,13 +35,12 @@
                 </Button>
             </StackPanel>
 
-            <ScrollViewer Grid.Column="1"
-                          Margin="10,0,5,0"
-                          Name="ScrollViewer">
-                <StackPanel Margin="0,0,15,0"
-                            Spacing="8"
-                            Name="PluginList" />
-            </ScrollViewer>
+            <ListBox Grid.Column="1"
+                     Margin="10,0,20,0"
+                     Name="PacksList"
+                     SelectionChanged="PacksList_OnSelectionChanged">
+                
+            </ListBox>
 
             <notice:InfoCard Grid.Column="1"
                              Name="InfoCard"

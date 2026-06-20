@@ -116,4 +116,9 @@ public partial class SettingPersonalization : ISettingPage
             }
         });
     }
+
+    private void ThemePackManager_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new PersonalizationThemePack());
+    }
 }

@@ -1,0 +1,24 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             mc:Ignorable="d" d:DesignWidth="800"
+             x:Class="BedrockBoot.Views.Control.Items.ThemePackItem">
+    <Grid ColumnDefinitions="Auto,*,Auto"
+          ColumnSpacing="8">
+        <widgets:LocalImageRenderWidget Grid.Column="0"
+                                        Width="32" Height="32"
+                                        Name="ImageRenderWidget"/>
+        
+        <StackPanel Grid.Column="1"
+                    VerticalAlignment="Center">
+            <TextBlock Name="PackName"
+                       Text="PackName"></TextBlock>
+            <TextBlock Name="PackDescription"
+                       Text="PackDescription"
+                       FontSize="9"
+                       Opacity="0.8"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -5,7 +5,6 @@ namespace BedrockBoot.Base.Entry.Pack.Theme
 {
     public class ThemePackManifest
     {
-        [JsonIgnore] public byte[]? IconData { get; set; }
         [JsonIgnore] public string? PackHash { get; set; } = string.Empty;
         [JsonIgnore] public bool IsSelectThis { get; set; } = false;
     

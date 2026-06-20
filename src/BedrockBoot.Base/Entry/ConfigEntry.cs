@@ -35,17 +35,16 @@ public class ConfigEntry
 
 public class StyleConfig
 {
+    [JsonPropertyName("isUseThemePack")] public bool IsUseThemePack { get; set; } = false;
     [JsonPropertyName("lightThemeType")] public ThemeModelEnum LightThemeType { get; set; } = ThemeModelEnum.Dark;
-    [JsonPropertyName("backgroundImages")] public List<string> BackgroundImages { get; set; } = new();
-    [JsonPropertyName("backgroundImageSelectedIndex")] public int BackgroundImageSelectedIndex { get; set; } = -1;
-    [JsonPropertyName("backgroundImage")] public string BackgroundImage { get; set; } = string.Empty;
     [JsonPropertyName("backgroundMusic")] public string BackgroundMusic { get; set; } = string.Empty;
+    [JsonPropertyName("backgroundImage")] public string BackgroundImage { get; set; } = string.Empty;
     [JsonPropertyName("backgroundImageOpacity")] public int BackgroundImageOpacity { get; set; } = 100;
     [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 1;
+    [JsonPropertyName("background3d")] public bool Background3D { get; set; } = false;
     [JsonPropertyName("liveOpacity")] public int LiveOpacity { get; set; } = 40;
     [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Voronoi;
     [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
-    [JsonPropertyName("background3d")] public bool Background3D { get; set; } = false;
 }
 
 public class HomeConfig

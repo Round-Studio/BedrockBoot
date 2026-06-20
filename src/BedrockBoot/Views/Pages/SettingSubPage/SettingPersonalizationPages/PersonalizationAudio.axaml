@@ -36,11 +36,33 @@
                                           Name="ChooseAudioFileBtn"
                                           Click="ChooseAudioFileBtn_OnClick"/>
             
+            <onePointControls:SettingCard Header="恢复默认背景音频"
+                                          Description="将背景音频恢复为默认设置"
+                                          Glyph="&#xE74D;"
+                                          IsClickable="True"
+                                          Name="RestoreDefaultAudioBtn"
+                                          Click="RestoreDefaultAudioBtn_OnClick"/>
+            
             <onePointControls:SettingCard Header="播放 BedrockBoot 背景音乐"
                                           Description="设置是否播放背景音乐"
                                           Glyph="&#xE769;">
                 <ToggleSwitch Name="IsPlayBackgroundMusic"
                               IsCheckedChanged="IsPlayBackgroundMusic_OnIsCheckedChanged"></ToggleSwitch>
+            </onePointControls:SettingCard>
+            
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="行为" />
+            
+            <onePointControls:SettingCard Header="音频来源"
+                                          Description="BedrockBoot 背景音乐的来源"
+                                          Glyph="&#xEBD2;">
+                <ComboBox Width="200"
+                          SelectedIndex="0">
+                    <ComboBoxItem Content="优先使用主题包"></ComboBoxItem>
+                    <ComboBoxItem Content="仅选择音频"></ComboBoxItem>
+                    <ComboBoxItem Content="仅主题包音频"></ComboBoxItem>
+                </ComboBox>
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

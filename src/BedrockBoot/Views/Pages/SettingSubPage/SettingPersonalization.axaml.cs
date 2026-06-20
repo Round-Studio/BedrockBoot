@@ -22,10 +22,7 @@ public partial class SettingPersonalization : ISettingPage
                 ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"]
             }
         };
-
-        IsUseSystemWindow.IsChecked = GlobalModel.Config.Data.IsUseSystemWindow;
-
-        IsEdit = true;
+        UpdateUI();
 
 #if RELEASE
         // 根据功能开关控制启用状态
@@ -33,6 +30,19 @@ public partial class SettingPersonalization : ISettingPage
         SetColor.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingColor;
         HomePanel.IsVisible = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingPersonalizationHome;
 #endif
+    }
+
+    public void UpdateUI()
+    {
+        IsEdit = false;
+
+        IsUseSystemWindow.IsChecked = GlobalModel.Config.Data.IsUseSystemWindow;
+        IsUseThemePack.IsChecked = GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
+
+        SetBackground.IsVisible = !GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
+        SetColor.IsVisible = !GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
+
+        IsEdit = true;
     }
 
     private void SetColor_OnClick(object? sender, RoutedEventArgs e)
@@ -65,5 +75,15 @@ public partial class SettingPersonalization : ISettingPage
     private void SetAudio_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new PersonalizationAudio());
+    }
+
+    private void IsUseThemePack_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.StyleConfig.IsUseThemePack = IsUseThemePack.IsChecked ?? false;
+            GlobalModel.Config.Save();
+            UpdateUI();
+        }
     }
 }

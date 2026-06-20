@@ -110,4 +110,11 @@ public partial class PersonalizationAudio : ISettingPage
             MediaManager.Instance.Play(GlobalModel.Config.Data.StyleConfig.BackgroundMusic);
         }
     }
+
+    private void RestoreDefaultAudioBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GlobalModel.Config.Data.StyleConfig.BackgroundMusic = string.Empty;
+        GlobalModel.Config.Save();
+        MediaManager.Instance.Play(GlobalModel.Config.Data.StyleConfig.BackgroundMusic);
+    }
 }

@@ -24,6 +24,7 @@ using BedrockBoot.Models;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Media;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Service.Protocol.Routes;
@@ -57,6 +58,13 @@ public partial class MainWindow : BedrockBootWindow
         else MainFrame.NavigateTo(new SetupRoot());
         UpdateBack();
         InitializeWindowBounds();
+
+        Task.Run(() =>
+        {
+            if (!string.IsNullOrEmpty(Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic))
+                if (File.Exists(Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic))
+                    MediaManager.Instance.Play(Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic);
+        });
 
         // 绑定回调
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);

@@ -18,12 +18,30 @@
                 Glyph="&#xE767;"
                 IsClickable="False">
                 <Slider Width="400"
-                        Classes="Number"></Slider>
+                        Minimum="0"
+                        Maximum="100"
+                        Classes="Number"
+                        Name="VolumeSlider"
+                        ValueChanged="VolumeSlider_OnValueChanged" />
             </onePointControls:SettingCard>
 
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
                        Text="在任意页面中，按下 Ctrl + 滚动鼠标滚轮 就可以快速调整音量" />
+            
+            <onePointControls:SettingCard Header="选择背景音频"
+                                          Description="选择 BedrockBoot 主页面所播放的音频文件"
+                                          Glyph="&#xE8B0;"
+                                          IsClickable="True"
+                                          Name="ChooseAudioFileBtn"
+                                          Click="ChooseAudioFileBtn_OnClick"/>
+            
+            <onePointControls:SettingCard Header="播放 BedrockBoot 背景音乐"
+                                          Description="设置是否播放背景音乐"
+                                          Glyph="&#xE769;">
+                <ToggleSwitch Name="IsPlayBackgroundMusic"
+                              IsCheckedChanged="IsPlayBackgroundMusic_OnIsCheckedChanged"></ToggleSwitch>
+            </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

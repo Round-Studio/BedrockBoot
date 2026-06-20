@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using NAudio.Wave;
 
 namespace BedrockBoot.Models.Media;
@@ -10,10 +11,10 @@ public class MediaManager
     private AudioFileReader? _audioFile;
     private float _volume = 1.0f;
 
-    public bool Enabled { get; set; } = false;
+    public bool Enabled { get; set; } = true;
     public bool IsPlaying => _waveOut?.PlaybackState == PlaybackState.Playing;
     public string? CurrentFilePath { get; private set; }
-    public bool Loop { get; set; } = false; // 新增循环播放属性
+    public bool Loop { get; set; } = true; // 新增循环播放属性
 
     public float Volume
     {
@@ -30,9 +31,10 @@ public class MediaManager
 
     public void Play(string filePath)
     {
-        if (!Enabled) return;
-
         Stop(); // 停止当前播放
+        
+        if (!Enabled) return;
+        if (!File.Exists(filePath)) return;
 
         try
         {

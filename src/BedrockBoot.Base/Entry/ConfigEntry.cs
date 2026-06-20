@@ -22,6 +22,7 @@ public class ConfigEntry
     [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
     [JsonPropertyName("isTaskBarJumpItem")] public bool IsTaskBarJumpItem { get; set; } = true;
     [JsonPropertyName("isUseHardwareDecode")] public bool IsUseHardwareDecode { get; set; } = true;
+    [JsonPropertyName("isPlayBackgroundMusic")] public bool IsPlayBackgroundMusic { get; set; } = true;
     [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
     [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.Hook;
     [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
@@ -29,7 +30,7 @@ public class ConfigEntry
     [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;
     [JsonPropertyName("isUseSystemWindow")] public bool IsUseSystemWindow { get; set; } = false;
     [JsonPropertyName("launchBehavior")] public LaunchBehaviorEnum LaunchBehavior { get; set; } = LaunchBehaviorEnum.Normal;
-    [JsonPropertyName("mediaVolume")] public double MediaVolume { get; set; } = 64;
+    [JsonPropertyName("mediaVolume")] public double MediaVolume { get; set; } = 20;
 }
 
 public class StyleConfig
@@ -38,6 +39,7 @@ public class StyleConfig
     [JsonPropertyName("backgroundImages")] public List<string> BackgroundImages { get; set; } = new();
     [JsonPropertyName("backgroundImageSelectedIndex")] public int BackgroundImageSelectedIndex { get; set; } = -1;
     [JsonPropertyName("backgroundImage")] public string BackgroundImage { get; set; } = string.Empty;
+    [JsonPropertyName("backgroundMusic")] public string BackgroundMusic { get; set; } = string.Empty;
     [JsonPropertyName("backgroundImageOpacity")] public int BackgroundImageOpacity { get; set; } = 100;
     [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 1;
     [JsonPropertyName("liveOpacity")] public int LiveOpacity { get; set; } = 40;

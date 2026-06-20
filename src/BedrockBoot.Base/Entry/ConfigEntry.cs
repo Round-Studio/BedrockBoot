@@ -47,6 +47,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("liveBlur")] public bool LiveBlur { get; set; } = false;
         [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Voronoi;
         [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
+        [JsonPropertyName("mediaSource")] public MediaSourceEnum MediaSource { get; set; } = MediaSourceEnum.PriorityThemePack;
     }
 
     public class HomeConfig

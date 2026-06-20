@@ -96,7 +96,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.StyleType = (StyleType)BackgroundTypeBox.SelectedIndex;
                 GlobalModel.Config.Save();
 
-                Models.Global.GlobalModel.MainWindow.UpdateBack();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
 
                 UpdateUI();
             }
@@ -129,7 +129,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                     GlobalModel.Config.Data.StyleConfig.BackgroundImage = filePath;
                     GlobalModel.Config.Save();
                     UpdateUI();
-                    Models.Global.GlobalModel.MainWindow.UpdateBack();
+                    Models.Global.GlobalModel.MainWindow.UpdateTheme();
                 }
         }
 
@@ -153,7 +153,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.Background3D = Image3D.IsChecked ?? false;
 
                 GlobalModel.Config.Save();
-                Models.Global.GlobalModel.MainWindow.UpdateBack();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }
         }
 
@@ -174,7 +174,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             {
                 GlobalModel.Config.Data.StyleConfig.LiveBlur = LiveBlurSwitch.IsChecked ?? false;
                 GlobalModel.Config.Save();
-                Models.Global.GlobalModel.MainWindow.UpdateBack();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }
         }
 
@@ -183,7 +183,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             GlobalModel.Config.Data.StyleConfig.BackgroundImage = string.Empty;
             GlobalModel.Config.Save();
             UpdateUI();
-            Models.Global.GlobalModel.MainWindow.UpdateBack();
+            Models.Global.GlobalModel.MainWindow.UpdateTheme();
         }
     }
 }

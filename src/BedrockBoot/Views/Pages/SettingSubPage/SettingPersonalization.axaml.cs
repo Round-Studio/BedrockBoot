@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Helper.Notice;
 using BedrockBoot.Models.Pack.Theme;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -94,6 +98,7 @@ public partial class SettingPersonalization : ISettingPage
             GlobalModel.Config.Data.StyleConfig.IsUseThemePack = IsUseThemePack.IsChecked ?? false;
             GlobalModel.Config.Save();
             UpdateUI();
+            Models.Global.GlobalModel.MainWindow.UpdateTheme();
         }
     }
 
@@ -107,12 +112,34 @@ public partial class SettingPersonalization : ISettingPage
             CloseButtonText = "导出",
             PrimaryButtonText = "取消",
             AccountButton = DialogButtons.CloseButton,
-            CloseAction = () =>
+            CloseAction = async () =>
             {
                 var manifest = dialog.Manifest;
                 var maker = new ThemePackMaker(manifest);
                 
-                maker.StartMake("E://test.rskin");
+                var storageProvider = TopLevel.GetTopLevel(this).StorageProvider;
+                var options = new FilePickerSaveOptions
+                {
+                    Title = "保存文件",
+                    DefaultExtension = ".rskin",
+                    FileTypeChoices = new[]
+                    {
+                        new FilePickerFileType("*.rskin")
+                    },
+                    SuggestedFileName = "My Theme Pack.rskin"
+                };
+
+                var file = await storageProvider.SaveFilePickerAsync(options);
+                Task.Run(async () =>
+                {
+                    await maker.StartMake(file?.Path.LocalPath!);
+                    Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                        Models.Global.GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
+                        {
+                            Title = "导出完毕",
+                            Message = $"主题包已导出至 {file?.Path.LocalPath}"
+                        }));
+                });
             }
         });
     }

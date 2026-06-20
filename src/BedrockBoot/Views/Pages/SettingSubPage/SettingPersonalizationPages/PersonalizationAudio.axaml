@@ -58,7 +58,9 @@
                                           Description="BedrockBoot 背景音乐的来源"
                                           Glyph="&#xEBD2;">
                 <ComboBox Width="200"
-                          SelectedIndex="0">
+                          SelectedIndex="0"
+                          Name="MediaSource"
+                          SelectionChanged="MediaSource_OnSelectionChanged">
                     <ComboBoxItem Content="优先使用主题包"></ComboBoxItem>
                     <ComboBoxItem Content="仅选择音频"></ComboBoxItem>
                     <ComboBoxItem Content="仅主题包音频"></ComboBoxItem>

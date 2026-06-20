@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using BedrockBoot.Base.Entry.Pack.Theme;
 using BedrockBoot.Models.Global;
@@ -35,19 +36,23 @@ namespace BedrockBoot.Models.Pack.Theme
         
             return result;
         }
-
         public void AddPack(string selectedPath)
         {
             var hash = ComputeFileHash(selectedPath);
             File.Copy(selectedPath, Path.Combine(PathsList.ThemePath, $"{hash}.rskin"), true);
         }
-
         private string ComputeFileHash(string filePath)
         {
             using var sha256 = SHA256.Create();
             using var stream = File.OpenRead(filePath);
             var hash = sha256.ComputeHash(stream);
             return Convert.ToHexString(hash);
+        }
+
+        public static ThemePackManifest? GetPackManifestWithHash(string hash)
+        {
+            var manager = new ThemePackManager();
+            return manager.GetPackManifests().FindLast(x => x.PackHash == hash);
         }
     }
 }

@@ -25,6 +25,8 @@ using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Media;
+using BedrockBoot.Models.Pack.Theme;
+using BedrockBoot.Models.Style;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Service.Protocol.Routes;
@@ -34,6 +36,7 @@ using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
+using OnePointUI.Avalonia.Style.Core;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
@@ -56,15 +59,8 @@ public partial class MainWindow : BedrockBootWindow
         
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
-        UpdateBack();
         InitializeWindowBounds();
-
-        Task.Run(() =>
-        {
-            if (!string.IsNullOrEmpty(Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic))
-                if (File.Exists(Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic))
-                    MediaManager.Instance.Play(Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic);
-        });
+        UpdateTheme();
 
         // 绑定回调
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
@@ -315,21 +311,9 @@ public partial class MainWindow : BedrockBootWindow
 
     #region 视觉渲染 (背景处理)
 
-    public void UpdateBack()
+    private void UpdateBack()
     {
-        // 状态重置
-        TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
-        BackgroundBox.IsVisible = false;
-        AccentBackgroundBox.IsVisible = false;
-        AnimationBackground.IsVisible = false;
-        LiveOpacity.IsVisible = false;
-
         var style = Core.Global.GlobalModel.Config.Data.StyleConfig;
-        if (DesktopThumbnailWindow != null)
-        {
-            DesktopThumbnailWindow.Close();
-            DesktopThumbnailWindow = null;
-        }
 
         switch (style.StyleType)
         {
@@ -434,6 +418,72 @@ public partial class MainWindow : BedrockBootWindow
         // 透明度应用
         BackgroundImageOpacity.Opacity =
             (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
+    }
+
+    public void ReSetBackground()
+    {
+        // 状态重置
+        TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
+        BackgroundBox.IsVisible = false;
+        AccentBackgroundBox.IsVisible = false;
+        AnimationBackground.IsVisible = false;
+        LiveOpacity.IsVisible = false;
+
+        if (DesktopThumbnailWindow != null)
+        {
+            DesktopThumbnailWindow.Close();
+            DesktopThumbnailWindow = null;
+        }
+    }
+
+    public void UpdateTheme()
+    {
+        var musicName = Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic;
+        if (Core.Global.GlobalModel.Config.Data.StyleConfig.IsUseThemePack)
+        {
+            Task.Run(() =>
+            {
+                var packConfig =
+                    ThemePackManager.GetPackManifestWithHash(Core.Global.GlobalModel.Config.Data.StyleConfig
+                        .SelectThemePackHash);
+
+                if (Core.Global.GlobalModel.Config.Data.StyleConfig.MediaSource == MediaSourceEnum.PriorityThemePack)
+                {
+                    if (!string.IsNullOrEmpty(packConfig.BackgroundMusicFileName) &&
+                        File.Exists(packConfig.BackgroundMusicFileName))
+                        musicName = packConfig.BackgroundMusicFileName;
+                }
+
+                if (Core.Global.GlobalModel.Config.Data.StyleConfig.MediaSource == MediaSourceEnum.OnlyThemePack)
+                    musicName = packConfig.BackgroundMusicFileName;
+
+                MediaManager.Instance.Play(musicName);
+
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    ReSetBackground();
+                    ApplyImageBackground(new StyleConfig()
+                    {
+                        Background3D = packConfig.BackgroundUse3D,
+                        BackgroundImage = packConfig.BackgroundImageFileName,
+                        BackgroundImageOpacity = packConfig.BackgroundImageOpacity,
+                        BackgroundImageBlur = packConfig.BackgroundImageBlur
+                    });
+
+                    App.LoadColor(packConfig.ThemeColor,
+                        packConfig.ThemeType);
+                });
+            });
+        }
+        else
+        {
+            ReSetBackground();
+            UpdateBack();
+            App.LoadColor(AccentColor.Colors[Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex],
+                Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType);
+
+            MediaManager.Instance.Play(musicName);
+        }
     }
 
     #endregion

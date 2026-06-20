@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Media;
@@ -41,6 +42,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             };
 
             IsPlayBackgroundMusic.IsChecked = GlobalModel.Config.Data.IsPlayBackgroundMusic;
+            MediaSource.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.MediaSource;
 
             IsEdit = true;
         }
@@ -95,7 +97,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                     var filePath = file.Path.LocalPath;
                     GlobalModel.Config.Data.StyleConfig.BackgroundMusic = filePath;
                     GlobalModel.Config.Save();
-                    MediaManager.Instance.Play(GlobalModel.Config.Data.StyleConfig.BackgroundMusic);
+                    Models.Global.GlobalModel.MainWindow.UpdateTheme();
                 }
         }
 
@@ -107,7 +109,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Save();
             
                 MediaManager.Instance.Enabled = GlobalModel.Config.Data.IsPlayBackgroundMusic;
-                MediaManager.Instance.Play(GlobalModel.Config.Data.StyleConfig.BackgroundMusic);
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }
         }
 
@@ -115,7 +117,18 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
         {
             GlobalModel.Config.Data.StyleConfig.BackgroundMusic = string.Empty;
             GlobalModel.Config.Save();
-            MediaManager.Instance.Play(GlobalModel.Config.Data.StyleConfig.BackgroundMusic);
+            Models.Global.GlobalModel.MainWindow.UpdateTheme();
+        }
+
+        private void MediaSource_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (IsEdit)
+            {
+                GlobalModel.Config.Data.StyleConfig.MediaSource = (MediaSourceEnum)MediaSource.SelectedIndex;
+                GlobalModel.Config.Save();
+            
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
+            }
         }
     }
 }

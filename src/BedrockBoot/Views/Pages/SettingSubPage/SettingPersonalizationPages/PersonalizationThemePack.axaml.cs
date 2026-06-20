@@ -93,6 +93,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             {
                 GlobalModel.Config.Data.StyleConfig.SelectThemePackHash = Manager.GetPackManifests()[PacksList.SelectedIndex].PackHash!;
                 GlobalModel.Config.Save();
+                
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }
         }
     }

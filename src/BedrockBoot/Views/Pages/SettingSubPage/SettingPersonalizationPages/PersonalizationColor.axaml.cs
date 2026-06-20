@@ -62,7 +62,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.LightThemeType = (ThemeModelEnum)ChooseTheme.SelectedIndex;
                 GlobalModel.Config.Save();
 
-                App.LoadColor();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }
         }
 
@@ -73,7 +73,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.AccentColorIndex = ColorsView.SelectedIndex;
                 GlobalModel.Config.Save();
 
-                App.LoadColor();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }
         }
     }

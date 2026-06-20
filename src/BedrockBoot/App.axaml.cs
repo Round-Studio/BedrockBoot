@@ -48,7 +48,6 @@ public class App : Application
         Dispatcher.UIThread.UnhandledException += UIThread_UnhandledException;
 
         Console.WriteLine(@"异常订阅已完毕");
-        LoadColor();
 
         var watchDog = new WatchDog.WatchDog(new WatchConfig());
         watchDog.Start();
@@ -164,19 +163,14 @@ public class App : Application
         }
     }
 
-    // Avalonia 12 removed the data-annotations binding plugin. If the project later
-    // wants to re-enable it, add .WithDataAnnotationsValidation() to the AppBuilder
-    // in Program.cs. The previous DisableAvaloniaDataAnnotationValidation helper is
-    // intentionally omitted because the API it relied on no longer exists.
-
-    public static void LoadColor()
+    public static void LoadColor(string colorCode,ThemeModelEnum theme)
     {
         try
         {
             ThemeManager.Instance.SetAccentColor(
-                Color.Parse(AccentColor.Colors[GlobalModel.Config.Data.StyleConfig.AccentColorIndex]));
+                Color.Parse(colorCode));
             ThemeManager.Instance.SetThemeModel(
-                GlobalModel.Config.Data.StyleConfig.LightThemeType == ThemeModelEnum.Light
+                theme == ThemeModelEnum.Light
                     ? ThemeVariant.Light
                     : ThemeVariant.Dark);
         }

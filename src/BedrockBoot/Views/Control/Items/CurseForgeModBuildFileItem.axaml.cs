@@ -3,12 +3,11 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
-using BedrockBoot.Core.Global;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
-using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Control.Items;
 

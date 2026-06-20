@@ -7,8 +7,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using IWshRuntimeLibrary;
@@ -17,7 +17,6 @@ using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Plugin.BedrockBoot.Register;
-using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 

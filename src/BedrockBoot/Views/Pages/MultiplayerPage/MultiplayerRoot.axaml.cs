@@ -2,13 +2,12 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using BedrockBoot.Core.Global;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent.Multiplayer;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using PaperConnect.Core.Enum;
-using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.MultiplayerPage;
 

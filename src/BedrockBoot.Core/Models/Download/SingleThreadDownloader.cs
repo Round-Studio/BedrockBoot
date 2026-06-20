@@ -8,7 +8,6 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Core.Global;
 
 namespace BedrockBoot.Core.Models.Download;
 
@@ -128,7 +127,7 @@ public class SingleThreadDownloader : IDisposable
         // Create temporary files for each chunk
         for (var i = 0; i < chunkCount; i++)
         {
-            var tempFile = Path.Combine(PathsList.TempPath, Guid.NewGuid().ToString());
+            var tempFile = Path.GetTempFileName();
             temporaryFiles.Add(tempFile);
 
             var startByte = i * _chunkSize;

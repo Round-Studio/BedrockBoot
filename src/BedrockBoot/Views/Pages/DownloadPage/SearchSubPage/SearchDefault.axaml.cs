@@ -9,7 +9,6 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Search;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -22,7 +21,6 @@ using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
-using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 

@@ -1,4 +1,11 @@
-﻿namespace BedrockBoot.Core.Global;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Config;
+using BedrockBoot.Core.Global;
+using Round.SDK.Entity;
+
+namespace BedrockBoot.Models.Global;
 
 public class PathsList
 {
@@ -12,7 +19,6 @@ public class PathsList
     public static readonly string LogPath = Path.Combine(RootConfigPath, "BedrockBoot.Log");
     public static readonly string ProtonPath = Path.Combine(RootConfigPath, "BedrockBoot.Linux", "ProtonGDK");
     public static readonly string UpdatePath = Path.Combine(RootConfigPath, "BedrockBoot.Update");
-    public static readonly string ThemePath = Path.Combine(RootConfigPath, "BedrockBoot.Theme", "packs");
     public static readonly string TempPath = Path.Combine(RootConfigPath, "BedrockBoot.Temp");
     public static readonly string PluginPath = Path.Combine(RootConfigPath, "BedrockBoot.Plugin");
     public static readonly string GamePublicRootPath = Path.Combine(RootConfigPath, "BedrockBoot.GamePublic");

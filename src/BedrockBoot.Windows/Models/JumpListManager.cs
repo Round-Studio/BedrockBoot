@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using Microsoft.WindowsAPICodePack.Shell;

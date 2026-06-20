@@ -11,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Core.Global;
 
 namespace BedrockBoot.Core.Models.Download;
 
@@ -212,7 +211,7 @@ public class MultiThreadDownloader : IDisposable
         Console.WriteLine($@"使用 {actualParts} 个分段进行下载 (文件大小: {fileSize} bytes)");
 
         // 创建临时文件
-        var tempDir = PathsList.TempPath;
+        var tempDir = Path.GetTempPath();
         var guid = Guid.NewGuid().ToString("N");
         var tempFilePrefix = Path.Combine(tempDir, $"dl_{guid}_part");
 

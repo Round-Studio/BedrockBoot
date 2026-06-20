@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using BedrockBoot.Core.Global;
-using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
+using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Models.Helper;
 

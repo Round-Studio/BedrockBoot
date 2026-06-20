@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Pack.Market;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using Octokit;
 using Octokit.Internal;

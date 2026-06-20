@@ -6,7 +6,6 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Integration;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Enum;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Global;

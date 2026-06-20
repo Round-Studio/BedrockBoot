@@ -6,14 +6,13 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Xbox;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MultiplayerPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;
 using PaperConnect.Core.Enum;
-using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
 

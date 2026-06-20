@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
 using Round.SDK.Enum;

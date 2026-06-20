@@ -13,7 +13,6 @@ using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Service.Protocol;

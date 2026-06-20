@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;

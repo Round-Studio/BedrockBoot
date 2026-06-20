@@ -10,7 +10,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using Microsoft.Win32;
 

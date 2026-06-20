@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;

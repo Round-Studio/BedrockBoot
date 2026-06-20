@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 

@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Search;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -18,6 +19,7 @@ using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
+using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 

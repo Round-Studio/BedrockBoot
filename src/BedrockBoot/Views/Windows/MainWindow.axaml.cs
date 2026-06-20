@@ -19,10 +19,10 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Entity;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Game;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Media;
 using BedrockBoot.Service;
@@ -37,6 +37,7 @@ using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
+using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 #if WINDOWS
 using BedrockBoot.Models.Helper.Uwp;

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Pack.Theme;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using Round.SDK.Entity;
 using Round.SDK.Helper;

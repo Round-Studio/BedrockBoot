@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;

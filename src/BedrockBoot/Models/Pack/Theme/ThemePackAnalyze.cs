@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using BedrockBoot.Base.Entry.Pack.Theme;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using Round.SDK.Helper;
 

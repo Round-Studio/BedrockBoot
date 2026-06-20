@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 

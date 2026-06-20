@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Info.News;
 using BedrockBoot.Base.Enum.News;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.News;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Control.Items;

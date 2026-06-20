@@ -7,10 +7,11 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Plugin;
 using Round.SDK.Entry;
 using Round.SDK.Plugin.BedrockBoot;
+using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Models.Pack.Plugin;
 

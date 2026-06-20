@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Core.Global;
 
 namespace BedrockBoot.Core.Models.Download;
 

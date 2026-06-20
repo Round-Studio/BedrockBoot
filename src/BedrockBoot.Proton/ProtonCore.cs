@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Proton.Entry.Config;
 using BedrockBoot.Proton.Entry.Info;
 using BedrockBoot.Proton.Enum;

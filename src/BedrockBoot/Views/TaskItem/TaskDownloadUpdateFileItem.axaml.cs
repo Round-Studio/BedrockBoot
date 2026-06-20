@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using Octokit;

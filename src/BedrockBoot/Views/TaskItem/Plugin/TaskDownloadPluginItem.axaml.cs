@@ -9,13 +9,14 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Pack.Market;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Plugin;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
+using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Views.TaskItem.Plugin;
 

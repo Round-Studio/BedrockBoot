@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using Round.SDK.Entity;

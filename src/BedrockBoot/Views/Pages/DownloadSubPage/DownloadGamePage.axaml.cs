@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;

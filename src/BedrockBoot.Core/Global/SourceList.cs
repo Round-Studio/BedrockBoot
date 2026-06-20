@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using BedrockBoot.Base.Entry.Info;
+﻿using BedrockBoot.Base.Entry.Info;
 
-namespace BedrockBoot.Models.Global;
+namespace BedrockBoot.Core.Global;
 
 public class SourceList
 {

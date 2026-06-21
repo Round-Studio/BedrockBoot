@@ -66,7 +66,7 @@ public class EasyLauncher
                 Options = new CoreOptions
                 {
                     IsAutoCompleteVC = true,
-                    IsAutoOpenDevelopment = true,
+                    IsAutoOpenDevelopment = false,
                     IsCheckMD5 = true
                 }
             };

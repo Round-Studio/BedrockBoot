@@ -32,13 +32,13 @@ public partial class LaunchWindow : Form
 
             // 确保在 UI 线程上更新控件
             if (GameNameBox.InvokeRequired)
-                GameNameBox.Invoke(new Action(() => GameNameBox.Text = $"启动游戏 {VersionInfo.Info.VersionName}"));
+                GameNameBox.Invoke(new Action(() => GameNameBox.Text = $@"启动游戏 {VersionInfo.Info.VersionName}"));
             else
-                GameNameBox.Text = $"启动游戏 {VersionInfo.Info.VersionName}";
+                GameNameBox.Text = $@"启动游戏 {VersionInfo.Info.VersionName}";
         }
         catch
         {
-            MessageBox.Show("无效版本", @"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(@"无效版本", @"错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Environment.Exit(1);
         }
     }
@@ -64,14 +64,14 @@ public partial class LaunchWindow : Form
                 {
                     Invoke(() =>
                     {
-                        MessageBox.Show("该版本不支持快捷启动，请进入启动器 UI 进行迁移",
+                        MessageBox.Show(@"该版本不支持快捷启动，请进入启动器 UI 进行迁移",
                             @"需要迁移", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Close();
                     });
                 }
                 else
                 {
-                    MessageBox.Show("该版本不支持快捷启动，请进入启动器 UI 进行迁移",
+                    MessageBox.Show(@"该版本不支持快捷启动，请进入启动器 UI 进行迁移",
                         @"需要迁移", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Close();
                 }
@@ -83,7 +83,7 @@ public partial class LaunchWindow : Form
                 // 使用 BeginInvoke 避免阻塞
                 BeginInvoke(() =>
                 {
-                    ProgressBox.Text = $"{status} ({percentage:F0}%)";
+                    ProgressBox.Text = $@"{status} ({percentage:F0}%)";
                     LaunchProgressBar.Value = (int)percentage;
                 });
             };
@@ -109,7 +109,7 @@ public partial class LaunchWindow : Form
             {
                 Console.WriteLine($@"游戏已启动，进程ID: {process.Id}");
                 // 可以更新 UI 显示游戏已启动
-                BeginInvoke(() => { ProgressBox.Text = "游戏已启动"; });
+                BeginInvoke(() => { ProgressBox.Text = $@"游戏已启动"; });
             };
 
             // 启动游戏
@@ -120,7 +120,7 @@ public partial class LaunchWindow : Form
             // 异常处理
             BeginInvoke(() =>
             {
-                MessageBox.Show($"启动失败: {ex.Message}", @"错误",
+                MessageBox.Show($@"启动失败: {ex}", @"错误",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             });

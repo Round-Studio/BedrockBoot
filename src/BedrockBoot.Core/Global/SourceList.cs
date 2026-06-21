@@ -54,6 +54,36 @@ public class SourceList
         {
             Host = "assets2.xboxlive.com",
             Url = "http://assets2.xboxlive.com/{router}"
+        },
+        new GameDownloadUrlInfo
+        {
+            Host = "xvcf1.xboxlive.com",
+            Url = "http://xvcf1.xboxlive.com{router}"
+        },
+        new GameDownloadUrlInfo
+        {
+            Host = "xvcf2.xboxlive.com",
+            Url = "http://xvcf2.xboxlive.com/{router}"
+        },
+        new GameDownloadUrlInfo
+        {
+            Host = "d1.xboxlive.cn",
+            Url = "http://d1.xboxlive.cn/{router}"
+        },
+        new GameDownloadUrlInfo
+        {
+            Host = "d2.xboxlive.cn",
+            Url = "http://d2.xboxlive.cn/{router}"
+        },
+        new GameDownloadUrlInfo
+        {
+            Host = "d1.xboxlive.com",
+            Url = "http://d1.xboxlive.com/{router}"
+        },
+        new GameDownloadUrlInfo
+        {
+            Host = "d2.xboxlive.com",
+            Url = "http://d2.xboxlive.com/{router}"
         }
     };
 

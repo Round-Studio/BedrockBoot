@@ -25,7 +25,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("isPlayBackgroundMusic")] public bool IsPlayBackgroundMusic { get; set; } = true;
         [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
         [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.Hook;
-        [JsonPropertyName("isolationPriority")] public IsolationModelEnum IsolationPriority { get; set; } = IsolationModelEnum.Plus;
+        [JsonPropertyName("isolationPriority")] public IsolationModelEnum IsolationPriority { get; set; } = IsolationModelEnum.Standard;
         [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
         [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
         [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;

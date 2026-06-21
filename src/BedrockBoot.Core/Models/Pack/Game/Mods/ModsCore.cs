@@ -84,7 +84,7 @@ public class ModsCore
             Console.WriteLine($@"文件被占用，跳过处理: {body}");
         }
 
-        Console.WriteLine($"当前版本隔离优先级：{GlobalModel.Config.Data.IsolationPriority}");
+        Console.WriteLine($@"当前版本隔离优先级：{GlobalModel.Config.Data.IsolationPriority}");
         if (GlobalModel.Config.Data.IsolationPriority == IsolationModelEnum.Plus)
         {
             if (GameInfoHelper.GetVersionRootFolderType(VersionInfo) == GameFolderType.LeviLauncher)
@@ -95,12 +95,12 @@ public class ModsCore
                     if (File.Exists(vcRuntimeFile))
                     {
                         File.Delete(vcRuntimeFile);
-                        Console.WriteLine($"vcruntime140_1.dll 删除成功");
+                        Console.WriteLine($@"vcruntime140_1.dll 删除成功");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"vcruntime140_1.dll 删除失败; {ex}");
+                    Console.WriteLine($@"vcruntime140_1.dll 删除失败; {ex}");
                 }
             }
         }

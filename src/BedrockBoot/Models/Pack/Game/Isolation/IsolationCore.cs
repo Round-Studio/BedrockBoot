@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
 using Round.SDK.Enum;
@@ -16,27 +18,44 @@ public class IsolationCore
     public IsolationCore(VersionConfig versionConfig)
     {
         VersionConfig = versionConfig;
+        var gameFolderType = GameInfoHelper.GetVersionRootFolderType(VersionConfig);
+        if (gameFolderType == GameFolderType.LeviLauncher)
+        {
+            var llIsoFolder = Path.Combine(versionConfig.VersionPath,
+                versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release
+                    ? "Minecraft Bedrock"
+                    : "Minecraft Bedrock Preview");
+
+            var bbIsoFolder = GetRealPath(versionConfig);
+
+            if (Directory.Exists(bbIsoFolder) || File.Exists(bbIsoFolder))
+            {
+                var attr = File.GetAttributes(bbIsoFolder);
+                if ((attr & FileAttributes.ReparsePoint) != FileAttributes.ReparsePoint)
+                {
+                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                    {
+                        Directory.Delete(bbIsoFolder, true);
+                    }
+                    else
+                    {
+                        File.Delete(bbIsoFolder);
+                    }
+                }
+            }
+
+            try
+            {
+                Directory.CreateSymbolicLink(bbIsoFolder, llIsoFolder);
+            }
+            catch(Exception exception)
+            {
+                Console.WriteLine($@"创建符号链接失败：{exception}");
+            }
+        }
     }
 
     public VersionConfig VersionConfig { get; set; }
-
-    #region 弃用方法
-    
-    public string RealRootPath => GetRealPath(VersionConfig); // config 中的文件夹
-    public string RootPath => GetInstanceConfigRootPath(VersionConfig); // AppData 中的文件夹
-
-    private void SafeDeleteIfSymbolicLink(string path)
-    {
-        if (!Directory.Exists(path)) return;
-
-        var type = DirectoryLinkChecker.CheckFolderType(path);
-        if (type == DirectoryType.SymbolicLink)
-            Directory.Delete(path);
-        else
-            throw new Exception("该实例的目标隔离文件需要进行迁移");
-    }
-
-    #endregion
 
     public static string GetRealPath(VersionConfig versionConfig)
     {
@@ -84,6 +103,7 @@ public class IsolationCore
         InstanceFolderType folderType = InstanceFolderType.RootFolder,
         string user = "Shared")
     {
+        var core = new IsolationCore(versionConfig);
         return folderType switch
         {
             InstanceFolderType.RootFolder => GetRealPath(versionConfig),

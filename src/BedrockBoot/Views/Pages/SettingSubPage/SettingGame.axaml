@@ -18,11 +18,25 @@
                                           Header="{DynamicResource Settings.Game.Isolation.Title}"
                                           Description="{DynamicResource Settings.Game.Isolation.Desc}"
                                           Glyph="&#xE7B8;">
-                <ComboBox Width="300"
+                <ComboBox Width="200"
                           Name="IsolationTypeBox"
                           SelectionChanged="IsolationTypeBox_OnSelectionChanged">
                     <!--<ComboBoxItem Content="{DynamicResource Settings.Game.Isolation.SymbolicLink}" />-->
-                    <ComboBoxItem Content="{DynamicResource Settings.Game.Isolation.HookSymbolicLink}" />
+                    <!--<ComboBoxItem Content="{DynamicResource Settings.Game.Isolation.HookSymbolicLink}" />-->
+                    <ComboBoxItem Content="Hook" />
+                </ComboBox>
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="版本隔离优先级"
+                                          Description="设置对于不同启动器的版本隔离策略。"
+                                          Glyph="&#xE964;">
+                <ComboBox Width="200"
+                          SelectedIndex="1"
+                          Name="IsolationPriority"
+                          SelectionChanged="IsolationPriority_OnSelectionChanged">
+                    <ComboBoxItem Content="标准" />
+                    <ComboBoxItem Content="优先" />
                 </ComboBox>
             </onePointControls:SettingCard>
 

@@ -27,6 +27,7 @@ public partial class SettingGame : ISettingPage
 
         // 从配置中还原隔离模式索引
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
+        IsolationPriority.SelectedIndex = (int)GlobalModel.Config.Data.IsolationPriority;
         MouseLockSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
 
 #if RELEASE && LINUX
@@ -73,5 +74,14 @@ public partial class SettingGame : ISettingPage
     private void ProtonBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new GameProton());
+    }
+
+    private void IsolationPriority_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsolationPriority = (IsolationModelEnum)IsolationPriority.SelectedIndex;
+            GlobalModel.Config.Save();
+        }
     }
 }

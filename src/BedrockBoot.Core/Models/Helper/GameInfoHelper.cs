@@ -90,7 +90,7 @@ public static class GameInfoHelper
     }
 
     public static VersionConfig GetVersionConfig(string gamePath) => GetVersionConfig(gamePath, false);
-    
+
     /// <summary>
     /// 获取单个版本的详细配置
     /// </summary>
@@ -216,5 +216,15 @@ public static class GameInfoHelper
 
         var cfg = new ConfigEntity<VersionConfig>(configJsonPath) { Data = config };
         cfg.Save();
+    }
+
+    public static GameFolderType GetVersionRootFolderType(VersionConfig? config)
+    {
+        if (config == null || string.IsNullOrEmpty(config.VersionPath)) return GameFolderType.Other;
+
+        var gameFolder = GlobalModel.Config.Data.GameFolders
+            .Find(x => config.VersionPath.StartsWith(x.GameFolderPath, StringComparison.OrdinalIgnoreCase));
+
+        return gameFolder?.GameFolderType ?? GameFolderType.Other;
     }
 }

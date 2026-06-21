@@ -8,6 +8,9 @@ using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Core.Global;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using PeNet;
 using PeNet.Header.Pe;
@@ -79,6 +82,27 @@ public class ModsCore
         else
         {
             Console.WriteLine($@"文件被占用，跳过处理: {body}");
+        }
+
+        Console.WriteLine($"当前版本隔离优先级：{GlobalModel.Config.Data.IsolationPriority}");
+        if (GlobalModel.Config.Data.IsolationPriority == IsolationModelEnum.Plus)
+        {
+            if (GameInfoHelper.GetVersionRootFolderType(VersionInfo) == GameFolderType.LeviLauncher)
+            {
+                try
+                {
+                    var vcRuntimeFile = Path.Combine(VersionInfo.VersionPath, "vcruntime140_1.dll");
+                    if (File.Exists(vcRuntimeFile))
+                    {
+                        File.Delete(vcRuntimeFile);
+                        Console.WriteLine($"vcruntime140_1.dll 删除成功");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"vcruntime140_1.dll 删除失败; {ex}");
+                }
+            }
         }
 
         PreLoadMods = new List<ModInfo>();

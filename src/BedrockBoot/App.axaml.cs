@@ -108,14 +108,13 @@ public class App : Application
             // Avalonia 12 removed BindingPlugins.DataValidators; the data annotations
             // validation plugin is disabled by default and no longer needs to be removed.
 
-            StartProtocolServer();
-
             Window window = null;
 
             switch (Models.Global.GlobalModel.AppRunType)
             {
                 case AppRunType.Default:
                     window = new MainWindow();
+                    StartProtocolServer();
                     break;
                 case AppRunType.OpenResourcePack:
                     window = new ImportResourcePack();

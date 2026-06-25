@@ -24,6 +24,7 @@ public class EasyLauncher
     private Stopwatch _gameplayStopwatch; // 计时器
     private DateTime _gameStartTime; // 游戏开始时间
     private string _playerDataFilePath; // 玩家数据文件路径
+	private ProcessMouseLocker? _mouseLocker;
     
     private static int LaunchingCount { get; set; } = 0;
 
@@ -194,8 +195,8 @@ public class EasyLauncher
                     // 正常情况下 GDK 窗口是不需要锁的呜
                     if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
                     {
-                        var mouse = new ProcessMouseLocker(MinecraftProcess.Id);
-                        mouse.Start();
+                        _mouseLocker = new ProcessMouseLocker(MinecraftProcess.Id);
+                        _mouseLocker.Start();
                     }
                 }
 
@@ -242,6 +243,14 @@ public class EasyLauncher
             }
             
             Console.WriteLine(@"游戏进程已退出（异步等待）");
+			if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
+			{
+    			if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
+			    {
+			        _mouseLocker?.Stop();
+			        _mouseLocker = null;
+			    }
+			}
             LaunchCompleted?.Invoke();
         }
         catch (Exception ex)

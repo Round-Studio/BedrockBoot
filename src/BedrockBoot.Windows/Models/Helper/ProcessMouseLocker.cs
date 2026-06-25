@@ -299,6 +299,7 @@ public class ProcessMouseLocker
 
         }
         ClipCursor(IntPtr.Zero);
+		_lastClipRect = null;
         _isMouseCurrentlyLocked = false;
 
     }

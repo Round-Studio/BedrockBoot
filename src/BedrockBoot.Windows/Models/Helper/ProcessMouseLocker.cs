@@ -208,16 +208,10 @@ public class ProcessMouseLocker
 
             // 3. 焦点判断与锁定逻辑
             IntPtr foregroundHwnd = GetForegroundWindow();
-            DateTime now = DateTime.Now;
-
-            System.Diagnostics.Debug.WriteLine(now+""+foregroundHwnd);
-
             bool isOurWindowFocused = IsWindowBelongsToTarget(foregroundHwnd);
 
             if (isOurWindowFocused)
             {
-
-                System.Diagnostics.Debug.WriteLine(now+"OurWindowFocused");
                 // 如果回到了游戏窗口，自动恢复锁定状态
 
                 // 前面解释了，不应该在这个时候将 _isManuallyUnlocked 赋值为 false

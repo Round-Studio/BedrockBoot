@@ -29,6 +29,9 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
         [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
         [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;
+        [JsonPropertyName("isMouseLockForGdk")] public bool IsMouseLockForGdk { get; set; } = false;
+        [JsonPropertyName("isMouseLockReserve")] public bool IsMouseLockReserve { get; set; } = false;
+        [JsonPropertyName("mouseLockHotkey")] public string MouseLockHotkey { get; set; } = "Ctrl+Alt";
         [JsonPropertyName("isUseSystemWindow")] public bool IsUseSystemWindow { get; set; } = false;
         [JsonPropertyName("launchBehavior")] public LaunchBehaviorEnum LaunchBehavior { get; set; } = LaunchBehaviorEnum.Normal;
         [JsonPropertyName("mediaVolume")] public double MediaVolume { get; set; } = 20;

@@ -28,7 +28,6 @@ public partial class SettingGame : ISettingPage
         // 从配置中还原隔离模式索引
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
         IsolationPriority.SelectedIndex = (int)GlobalModel.Config.Data.IsolationPriority;
-        MouseLockSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
 
 #if RELEASE && LINUX
         SeniorPanel.IsVisible = Models.Global.GlobalModel.FunctionOption.IsEnableGameProtonManager;
@@ -36,7 +35,7 @@ public partial class SettingGame : ISettingPage
 
 #if LINUX
         IsolationCard.IsVisible = false;
-        MouseLockCard.IsVisible = false;
+        MouseLockBtn.IsVisible = false;
 #endif
 
 #if LINUX && DEBUG
@@ -62,13 +61,9 @@ public partial class SettingGame : ISettingPage
         MainSettingPage.NavigateTo(new GameFolders());
     }
 
-    private void MouseLockSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+     private void MouseLockBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (IsEdit)
-        {
-            GlobalModel.Config.Data.IsMouseLock = (bool)MouseLockSwitch.IsChecked!;
-            GlobalModel.Config.Save();
-        }
+        MainSettingPage.NavigateTo(new MouseLock());
     }
 
     private void ProtonBtn_OnClick(object? sender, RoutedEventArgs e)

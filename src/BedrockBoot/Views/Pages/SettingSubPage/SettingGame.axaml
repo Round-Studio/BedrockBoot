@@ -41,12 +41,12 @@
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Name="MouseLockCard"
+                                          Name="MouseLockBtn"
+                                          Click="MouseLockBtn_OnClick"
+                                          IsClickable="True"
                                           Header="{DynamicResource Settings.Game.MouseLock.Title}"
                                           Description="{DynamicResource Settings.Game.MouseLock.Desc}"
                                           Glyph="&#xE72E;">
-                <ToggleSwitch Name="MouseLockSwitch"
-                              IsCheckedChanged="MouseLockSwitch_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"

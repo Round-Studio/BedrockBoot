@@ -1,0 +1,61 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages.MouseLock">
+	<ScrollViewer>
+		<StackPanel Margin="15"
+                    Spacing="8">
+			<onePointControls:SettingCard Margin="5, 0"
+                                          Name="MouseLockMainCard"
+                                          Header="{DynamicResource Settings.Game.MouseLock.Main.Title}"
+                                          Description="{DynamicResource Settings.Game.MouseLock.Main.Desc}"
+                                          Glyph="&#xF19E;">
+				<ToggleSwitch Name="MouseLockMainSwitch"
+                              IsCheckedChanged="MouseLockMainSwitch_OnIsCheckedChanged" />
+			</onePointControls:SettingCard>
+
+			<TextBlock Margin="5,0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Game.MouseLock.Advance}" />
+
+			<onePointControls:SettingCard Margin="5, 0"
+                                          Name="MouseLockForGdkCard"
+                                          Header="{DynamicResource Settings.Game.MouseLock.ForGdk.Title}"
+                                          Description="{DynamicResource Settings.Game.MouseLock.ForGdk.Desc}"
+                                          Glyph="&#xE737;">
+				<ToggleSwitch Name="MouseLockForGdkSwitch"
+                              IsCheckedChanged="MouseLockForGdkSwitch_OnIsCheckedChanged" />
+			</onePointControls:SettingCard>
+
+			<onePointControls:SettingCard Margin="5, 0"
+                                          Name="MouseLockReserveCard"
+                                          Header="{DynamicResource Settings.Game.MouseLock.Reserve.Title}"
+                                          Description="{DynamicResource Settings.Game.MouseLock.Reserve.Desc}"
+                                          Glyph="&#xE8AB;">
+				<ToggleSwitch Name="MouseLockReserveSwitch"
+                              IsCheckedChanged="MouseLockReserveSwitch_OnIsCheckedChanged" />
+			</onePointControls:SettingCard>
+
+			<onePointControls:SettingCard Margin="5, 0"
+                                          Name="MouseLockHotkeyCard"
+                                          Header="{DynamicResource Settings.Game.MouseLock.Hotkey.Title}"
+                                          Description="{DynamicResource Settings.Game.MouseLock.Hotkey.Desc}"
+                                          Glyph="&#xE92E;">
+				<Button Name="MouseLockHotkeyBtn"
+						Height="36"
+						MinWidth="100"
+						Padding="12,0"
+						Content=""
+						Click="MouseLockHotkeyBtn_OnCick"
+                               />
+			</onePointControls:SettingCard>
+
+
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

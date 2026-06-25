@@ -589,6 +589,17 @@
     <x:String x:Key="Settings.Game.Isolation.HookSymbolicLink">混合模式（Hook + Symbolic Link）</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Title">鼠标锁</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Desc">防止鼠标越过游戏窗口边界，避免误触其他内容</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Main.Title">总开关</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Main.Desc">只有总开关开启时，功能才会生效</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Advance">高级</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.ForGdk.Title">对 GDK 版本生效</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.ForGdk.Desc">正常情况下，只有 UWP 版本才需要鼠标锁</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Reserve.Title">旧版逻辑</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Reserve.Desc">除非新版鼠标锁逻辑未能按照预期工作，否则你不应该打开这个开关</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">旧版本鼠标锁逻辑更为粗暴，除了不必要的 CPU 浪费之外，还会导致其他应用或游戏自带的鼠标锁定逻辑出现异常，&#10;且会导致解除锁定的热键工作异常。&#10;除非新版鼠标锁逻辑未能按照预期工作，否则你的确不应该打开这个开关！&#10;&#10;确认仍要打开吗？</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Title">热键绑定</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Desc">绑定临时解除鼠标锁定的热键</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Capturing">捕获中，按 Esc 取消</x:String>
     <x:String x:Key="Settings.Game.Group.Advanced">高级</x:String>
     <x:String x:Key="Settings.Game.Proton.Desc">管理和设置 Proton 运行器</x:String>
     <x:String x:Key="Settings.Game.Proton.Install.Title">安装新 Proton</x:String>

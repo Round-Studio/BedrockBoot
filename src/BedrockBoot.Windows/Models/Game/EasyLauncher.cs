@@ -191,8 +191,12 @@ public class EasyLauncher
                 
                 if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
                 {
-                    var mouse = new ProcessMouseLocker(MinecraftProcess.Id);
-                    mouse.Start();
+                    // 正常情况下 GDK 窗口是不需要锁的呜
+                    if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
+                    {
+                        var mouse = new ProcessMouseLocker(MinecraftProcess.Id);
+                        mouse.Start();
+                    }
                 }
 
                 if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);

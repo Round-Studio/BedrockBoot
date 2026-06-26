@@ -415,8 +415,16 @@ public class ResourcePackTranslate
         if (File.Exists(languagesJsonPath))
         {
             var content = File.ReadAllText(languagesJsonPath);
-            existingLanguages = JsonSerializer.Deserialize<List<string>>(content, JsonSerializerOption.Options) ??
-                                new List<string>();
+            using var doc = JsonDocument.Parse(content);
+            if (doc.RootElement.ValueKind == JsonValueKind.Array)
+            {
+                existingLanguages = JsonSerializer.Deserialize<List<string>>(content, JsonSerializerOption.Options) ??
+                                    new List<string>();
+            }
+            else if (doc.RootElement.ValueKind == JsonValueKind.String)
+            {
+                existingLanguages = new List<string> { doc.RootElement.GetString()! };
+            }
         }
 
         // 添加新语言（如果不存在）

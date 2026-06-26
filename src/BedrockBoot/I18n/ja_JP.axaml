@@ -897,4 +897,15 @@
     <x:String x:Key="ExceptionWindow.SaveDialog.Title">エラーレポートを保存</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.FileType">BedrockBoot クラッシュレポート</x:String>
 
+    <x:String x:Key="Settings.Game.MouseLock.Main.Title">マスタースイッチ</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Main.Desc">マスタースイッチがオンの場合のみ機能が有効になります</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Advance">詳細設定</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.ForGdk.Title">GDK バージョンで有効にする</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.ForGdk.Desc">通常、マウスロックが必要なのは UWP バージョンのみです</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Title">従来のロジック</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Desc">新しいマウスロックロジックが期待通りに動作しない場合を除き、このスイッチをオンにしないでください</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">従来のマウスロックロジックはより強引です。不要な CPU 消費に加えて、他のアプリケーションやゲームに組み込まれているマウスロック機能に異常を引き起こす可能性があり、&#10;さらにロック解除ホットキーが正常に動作しなくなることもあります。&#10;新しいマウスロックロジックが期待通りに動作しない場合を除き、本当にこのスイッチをオンにすべきではありません！&#10;&#10;それでもオンにしますか？</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Title">ホットキーの割り当て</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Desc">マウスロックを一時的に解除するホットキーを割り当てます</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Capturing">入力をキャプチャ中… Esc キーでキャンセル</x:String>
 </ResourceDictionary>

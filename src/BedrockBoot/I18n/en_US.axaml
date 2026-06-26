@@ -892,5 +892,16 @@
     <x:String x:Key="ExceptionWindow.Link.Issues">GitHub Issues</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.Title">Save Error Report</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.FileType">BedrockBoot Crash Report</x:String>
-
+    
+    <x:String x:Key="Settings.Game.MouseLock.Main.Title">Master Switch</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Main.Desc">The feature will only take effect when the master switch is turned on</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Advance">Advanced</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.ForGdk.Title">Enable for GDK Version</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.ForGdk.Desc">Normally, only the UWP version requires mouse lock</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Title">Legacy Logic</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Desc">You should not enable this switch unless the new mouse lock logic does not work as expected</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">The legacy mouse lock logic is more aggressive. Aside from unnecessary CPU overhead, it may also cause issues with the built-in mouse locking of other applications or games,&#10;and may cause the unlock hotkey to malfunction.&#10;You really should not enable this switch unless the new mouse lock logic fails to work as expected!&#10;&#10;Are you sure you want to enable it?</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Title">Hotkey Binding</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Desc">Bind a hotkey to temporarily release the mouse lock</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Capturing">Capturing... Press Esc to cancel</x:String>
 </ResourceDictionary>

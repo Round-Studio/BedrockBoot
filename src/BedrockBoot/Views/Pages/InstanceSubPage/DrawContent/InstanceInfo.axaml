@@ -14,8 +14,8 @@
                 <items:BorderCard Padding="0"
                                   ClipToBounds="True">
                     <Grid Height="240">
-                        <widgets:LocalImageRenderWidget Name="IconBox"/>
-                        
+                        <widgets:LocalImageRenderWidget Name="IconBox" />
+
                         <Border CornerRadius="6">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
@@ -24,7 +24,7 @@
                                 </LinearGradientBrush>
                             </Border.Background>
                         </Border>
-                        
+
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
@@ -34,13 +34,13 @@
                                     Name="ResetImageBtn"
                                     Click="ResetImageBtn_OnClick"
                                     Padding="8">
-                                <onePointControls:FontIcon Glyph="&#xE777;"></onePointControls:FontIcon>
+                                <onePointControls:FontIcon Glyph="&#xE777;" />
                             </Button>
                             <Button Classes="NoBorder"
                                     Name="ChooseNewImageBtn"
                                     Click="ChooseNewImageBtn_OnClick"
                                     Padding="8">
-                                <onePointControls:FontIcon Glyph="&#xE8AB;"></onePointControls:FontIcon>
+                                <onePointControls:FontIcon Glyph="&#xE8AB;" />
                             </Button>
                         </StackPanel>
 
@@ -52,26 +52,27 @@
                                            Name="VersionName"
                                            Text="VERSION NAME"
                                            LetterSpacing="1" />
-                                
+
                                 <StackPanel Orientation="Horizontal" Spacing="15" Opacity="0.8">
                                     <TextBlock FontSize="13"
-                                               Foreground="#66C0F4" 
+                                               Foreground="#66C0F4"
                                                FontWeight="SemiBold"
                                                Name="VersionReady"
                                                Text="READY TO LAUNCH" />
-                                    
+
                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <onePointControls:FontIcon FontSize="14" Glyph="&#xE916;" Foreground="White"/>
-                                        <TextBlock FontSize="13" Foreground="White" Name="TotalDuration" Text="120 HOURS" />
+                                        <onePointControls:FontIcon FontSize="14" Glyph="&#xE916;" Foreground="White" />
+                                        <TextBlock FontSize="13" Foreground="White" Name="TotalDuration"
+                                                   Text="120 HOURS" />
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="2" 
-                                        VerticalAlignment="Bottom" 
-                                        Orientation="Horizontal" 
+                            <StackPanel Grid.Column="2"
+                                        VerticalAlignment="Bottom"
+                                        Orientation="Horizontal"
                                         Spacing="10">
-                                
+
                                 <Button Name="LaunchBtn"
                                         Click="LaunchBtn_OnClick"
                                         Width="160"
@@ -80,10 +81,10 @@
                                         BorderThickness="0"
                                         Classes="Accent">
                                     <StackPanel Orientation="Horizontal" Spacing="10">
-                                        <onePointControls:FontIcon Glyph="&#xE768;" 
-                                                                   FontSize="18" 
-                                                                   Foreground="White" 
-                                                                   VerticalAlignment="Center"/>
+                                        <onePointControls:FontIcon Glyph="&#xE768;"
+                                                                   FontSize="18"
+                                                                   Foreground="White"
+                                                                   VerticalAlignment="Center" />
                                         <TextBlock Text="{DynamicResource Shared.Action.Launch}"
                                                    FontSize="18"
                                                    FontWeight="Bold"
@@ -94,7 +95,7 @@
                         </Grid>
                     </Grid>
                 </items:BorderCard>
-                
+
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
                            Text="{DynamicResource Settings.Game.Group.Base}" />
@@ -124,53 +125,41 @@
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
                            Text="{DynamicResource Instance.Info.Group.Launch}" />
+                <onePointControls:SettingCard Glyph="&#xEC06;"
+                                              Header="{DynamicResource Instance.Info.Launch.Args.Title}"
+                                              Description="{DynamicResource Instance.Info.Launch.Args.Desc}">
+                    <TextBox Width="200"
+                             Name="InstanceArgs"
+                             TextChanged="TextTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
 
-                <onePointControls:SettingExpander Header="{DynamicResource Instance.Info.Launch.Title}"
-                                                  Description="{DynamicResource Instance.Info.Launch.Desc}"
-                                                  Glyph="&#xECAD;">
-                    <StackPanel>
-                        <onePointControls:SettingCard Glyph="&#xEC06;"
-                                                      Header="{DynamicResource Instance.Info.Launch.Args.Title}"
-                                                      Description="{DynamicResource Instance.Info.Launch.Args.Desc}"
-                                                      Classes="Item">
-                            <TextBox Width="200"
-                                     Name="InstanceArgs"
-                                     TextChanged="TextTypeConfig_OnChanged" />
-                        </onePointControls:SettingCard>
+                <onePointControls:SettingCard Glyph="&#xE70F;"
+                                              Header="{DynamicResource Instance.Info.Launch.EditMode.Title}"
+                                              Description="{DynamicResource Instance.Info.Launch.EditMode.Desc}">
+                    <ToggleSwitch Name="InstanceEdit"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
 
-                        <onePointControls:SettingCard Glyph="&#xE70F;"
-                                                      Header="{DynamicResource Instance.Info.Launch.EditMode.Title}"
-                                                      Description="{DynamicResource Instance.Info.Launch.EditMode.Desc}"
-                                                      Classes="Item">
-                            <ToggleSwitch Name="InstanceEdit"
-                                          IsCheckedChanged="BoolTypeConfig_OnChanged" />
-                        </onePointControls:SettingCard>
+                <onePointControls:SettingCard Glyph="&#xE822;"
+                                              Header="{DynamicResource Instance.Info.Launch.Mods.Title}"
+                                              Description="{DynamicResource Instance.Info.Launch.Mods.Desc}">
+                    <ToggleSwitch Name="InstanceMod"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
 
-                        <onePointControls:SettingCard Glyph="&#xE822;"
-                                                      Header="{DynamicResource Instance.Info.Launch.Mods.Title}"
-                                                      Description="{DynamicResource Instance.Info.Launch.Mods.Desc}"
-                                                      Classes="Item">
-                            <ToggleSwitch Name="InstanceMod"
-                                          IsCheckedChanged="BoolTypeConfig_OnChanged" />
-                        </onePointControls:SettingCard>
+                <onePointControls:SettingCard Glyph="&#xE756;"
+                                              Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
+                                              Description="{DynamicResource Instance.Info.Launch.Console.Desc}">
+                    <ToggleSwitch Name="InstanceConsole"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
 
-                        <onePointControls:SettingCard Glyph="&#xE756;"
-                                                      Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
-                                                      Description="{DynamicResource Instance.Info.Launch.Console.Desc}"
-                                                      Classes="Item">
-                            <ToggleSwitch Name="InstanceConsole"
-                                          IsCheckedChanged="BoolTypeConfig_OnChanged" />
-                        </onePointControls:SettingCard>
-
-                        <onePointControls:SettingCard Glyph="&#xE8A1;"
-                                                      Header="{DynamicResource Instance.Info.Launch.DetailedLogs.Title}"
-                                                      Description="{DynamicResource Instance.Info.Launch.DetailedLogs.Desc}"
-                                                      Classes="Item">
-                            <ToggleSwitch Name="InstanceDetailedLogs"
-                                          IsCheckedChanged="BoolTypeConfig_OnChanged" />
-                        </onePointControls:SettingCard>
-                    </StackPanel>
-                </onePointControls:SettingExpander>
+                <onePointControls:SettingCard Glyph="&#xE8A1;"
+                                              Header="{DynamicResource Instance.Info.Launch.DetailedLogs.Title}"
+                                              Description="{DynamicResource Instance.Info.Launch.DetailedLogs.Desc}">
+                    <ToggleSwitch Name="InstanceDetailedLogs"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
 
                 <TextBlock FontWeight="Bold"
                            Name="HighLevel"
@@ -184,6 +173,19 @@
                     <ToggleSwitch IsChecked="True"
                                   Name="InstanceIsolated"
                                   IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard Header="隔离目录"
+                                              Description="选择不同的目录隔离策略"
+                                              Glyph="&#xEC25;">
+                    <ComboBox Width="200"
+                              Name="CatalogStrategy"
+                              SelectionChanged="CatalogStrategy_OnSelectionChanged"
+                              SelectedIndex="2">
+                        <ComboBoxItem Content="跟随全局" />
+                        <ComboBoxItem Content="独立目录 (专属目录)" />
+                        <ComboBoxItem Content="与其他启动器共享" />
+                    </ComboBox>
                 </onePointControls:SettingCard>
             </StackPanel>
         </ScrollViewer>

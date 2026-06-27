@@ -10,6 +10,7 @@ using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
 using Round.SDK.Enum;
 using Round.SDK.Helper.IO;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Models.Pack.Game.Isolation;
 
@@ -26,7 +27,7 @@ public class IsolationCore
                     ? "Minecraft Bedrock"
                     : "Minecraft Bedrock Preview");
 
-            var bbIsoFolder = GetRealPath(versionConfig);
+            var bbIsoFolder = GetRealPath(versionConfig);/*
 
             if (Directory.Exists(bbIsoFolder) || File.Exists(bbIsoFolder))
             {
@@ -42,16 +43,18 @@ public class IsolationCore
                         File.Delete(bbIsoFolder);
                     }
                 }
-            }
+            }*/
+            
+            // Console.WriteLine(@"暂时不使用符号链接以适配新功能...");
 
-            try
+            /*try
             {
                 Directory.CreateSymbolicLink(bbIsoFolder, llIsoFolder);
             }
             catch(Exception exception)
             {
                 Console.WriteLine($@"创建符号链接失败：{exception}");
-            }
+            }*/
         }
     }
 
@@ -59,8 +62,26 @@ public class IsolationCore
 
     public static string GetRealPath(VersionConfig versionConfig)
     {
+        var sharedFolder = Path.Combine(versionConfig.VersionPath,
+            versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release
+                ? "Minecraft Bedrock"
+                : "Minecraft Bedrock Preview");
+        
         if (versionConfig.Config.IsVersionIsolated)
-            return Path.Combine(versionConfig.VersionPath, "config", "BedrockBoot2", "isolation");
+        {
+            if (versionConfig.Config.IsolationFolderPolicy == CatalogStrategyEnum.Independence ||
+                (versionConfig.Config.IsolationFolderPolicy == CatalogStrategyEnum.FollowTheBigPicture &&
+                 GlobalModel.Config.Data.CatalogStrategy == CatalogStrategyEnum.Independence))
+            {
+                return Path.Combine(versionConfig.VersionPath, "config", "BedrockBoot2", "isolation");
+            }
+            else if (versionConfig.Config.IsolationFolderPolicy == CatalogStrategyEnum.Shares ||
+                     (versionConfig.Config.IsolationFolderPolicy == CatalogStrategyEnum.FollowTheBigPicture &&
+                      GlobalModel.Config.Data.CatalogStrategy == CatalogStrategyEnum.Shares))
+            {
+                return sharedFolder;
+            }
+        }
 
 #if LINUX
         return Path.Combine(PathsList.ProtonPath, "game_prefix", "pfx", "drive_c", "users", "steamuser", "AppData",

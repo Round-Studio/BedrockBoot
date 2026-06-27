@@ -19,6 +19,8 @@ bool g_hooksInstalled = false;
 ConfigManager g_configManager;
 bool isOutFileHook = g_configManager.GetBoolConfig("isDetailedLog");
 
+std::string bbFolder = "config/BedrockBoot2/isolation";
+
 NtCreateFile_t OriginalNtCreateFile = nullptr;
 NtOpenFile_t OriginalNtOpenFile = nullptr;
 NtQueryAttributesFile_t OriginalNtQueryAttributesFile = nullptr;
@@ -94,7 +96,24 @@ void InitializeBaseDir()
 	wchar_t modulePath[MAX_PATH];
 	GetModuleFileNameW(nullptr, modulePath, MAX_PATH);
 	fs::path exePath = modulePath;
-	g_logicalBaseDir = exePath.parent_path() / "config/BedrockBoot2/isolation";
+	
+	if (g_configManager.GetStringConfig("folderPolicyString") == "shares")
+	{
+		int versionType = g_configManager.GetInfoInt("versionType");
+		if (versionType == 0 || versionType == 2)
+		{
+			g_logicalBaseDir = exePath.parent_path() / "Minecraft Bedrock Preview";
+		}
+		else if (versionType == 1)
+		{
+			g_logicalBaseDir = exePath.parent_path() / "Minecraft Bedrock";
+		}
+	}
+	
+	if (g_configManager.GetStringConfig("folderPolicyString") == "independence")
+	{
+		g_logicalBaseDir = exePath.parent_path() / bbFolder;
+	}
 
 	if (!fs::exists(g_logicalBaseDir))
 	{

@@ -41,6 +41,19 @@
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"
+                                          Header="隔离目录"
+                                          Description="选择不同的目录隔离策略"
+                                          Glyph="&#xEC25;">
+                <ComboBox Width="200"
+                          Name="CatalogStrategy"
+                          SelectionChanged="CatalogStrategy_OnSelectionChanged"
+                          SelectedIndex="1">
+                    <ComboBoxItem Content="独立目录 (专属目录)" />
+                    <ComboBoxItem Content="与其他启动器共享" />
+                </ComboBox>
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
                                           Name="MouseLockBtn"
                                           Click="MouseLockBtn_OnClick"
                                           IsClickable="True"

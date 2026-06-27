@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Helper;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
@@ -156,6 +157,13 @@ public class EasyLauncher
         {
             CoreGlobal.BedrockCore = new BedrockCore();
         }
+        
+        VersionInfo.Config.FolderPolicyStr =
+            IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
+            
+        GameInfoHelper.SaveVersionConfig(VersionInfo);
+        
+        Console.WriteLine(@"已同步策略状态");
 
         _core = new ModsCore(VersionInfo);
 

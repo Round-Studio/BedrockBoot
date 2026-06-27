@@ -19,6 +19,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Game;
@@ -56,6 +57,11 @@ public partial class MainWindow : BedrockBootWindow
 
         InitializeComponent();
         GlobalModel.MainWindow = this;
+        
+        Core.Global.GlobalModel.Config.AddAfterSaveCallback(entity =>
+        {
+            IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
+        });
         
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());

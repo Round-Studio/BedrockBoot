@@ -8,6 +8,8 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Helper;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -52,9 +54,9 @@ public partial class InstanceInfo : UserControl
         VersionName.Text = VersionInfo.Info.VersionName;
         VersionReady.Text =
             $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
-        
+
         StartPlayTimeRefresh();
-        
+
         Task.Run(() =>
         {
             IsEdit = false;
@@ -72,6 +74,7 @@ public partial class InstanceInfo : UserControl
                 InstanceMod.IsChecked = VersionInfo.Config.IsModes;
                 InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
                 InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
+                CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
             });
 
             Thread.Sleep(500);
@@ -84,11 +87,11 @@ public partial class InstanceInfo : UserControl
         var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
         if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
             image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
-        
-        if(!string.IsNullOrEmpty(VersionInfo.Info.CoverImage))
+
+        if (!string.IsNullOrEmpty(VersionInfo.Info.CoverImage))
             if (File.Exists(VersionInfo.Info.CoverImage))
                 image = VersionInfo.Info.CoverImage;
-        
+
         IconBox.Update(image);
     }
 
@@ -226,11 +229,11 @@ public partial class InstanceInfo : UserControl
         {
             Title = "选择图片文件",
             AllowMultiple = false,
-            FileTypeFilter = new[] 
-            { 
+            FileTypeFilter = new[]
+            {
                 new FilePickerFileType("图片文件")
                 {
-                    Patterns = new[] { "*.jpg", "*.jpeg", "*.png" },
+                    Patterns = new[] { "*.jpg", "*.jpeg", "*.png" }
                 }
             }
         });
@@ -238,11 +241,23 @@ public partial class InstanceInfo : UserControl
         if (files.Count > 0)
         {
             var selectedFile = files[0];
-            string filePath = selectedFile.Path.LocalPath;
-        
+            var filePath = selectedFile.Path.LocalPath;
+
             VersionInfo.Info.CoverImage = filePath;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
             UpdateImage();
+        }
+    }
+
+    private void CatalogStrategy_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            VersionInfo.Config.IsolationFolderPolicy = (CatalogStrategyEnum)CatalogStrategy.SelectedIndex;
+            VersionInfo.Config.FolderPolicyStr =
+                IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
+            
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
     }
 }

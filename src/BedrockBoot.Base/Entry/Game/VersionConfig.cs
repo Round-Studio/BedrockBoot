@@ -1,5 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
+using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Helper;
 using BedrockLauncher.Core;
 
 namespace BedrockBoot.Base.Entry.Game;
@@ -37,6 +39,8 @@ public class VersionConfig
         [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
         [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
+        [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
+        [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
     }
     
     // 新增：玩家数据类

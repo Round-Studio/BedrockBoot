@@ -26,6 +26,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
         [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.Hook;
         [JsonPropertyName("isolationPriority")] public IsolationModelEnum IsolationPriority { get; set; } = IsolationModelEnum.Standard;
+        [JsonPropertyName("catalogStrategy")] public CatalogStrategyEnum CatalogStrategy { get; set; } = CatalogStrategyEnum.Independence;
         [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
         [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
         [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;

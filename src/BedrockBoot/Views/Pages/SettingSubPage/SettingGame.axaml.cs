@@ -28,6 +28,7 @@ public partial class SettingGame : ISettingPage
         // 从配置中还原隔离模式索引
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
         IsolationPriority.SelectedIndex = (int)GlobalModel.Config.Data.IsolationPriority;
+        CatalogStrategy.SelectedIndex = ((int)GlobalModel.Config.Data.CatalogStrategy) - 1;
 
 #if RELEASE && LINUX
         SeniorPanel.IsVisible = Models.Global.GlobalModel.FunctionOption.IsEnableGameProtonManager;
@@ -76,6 +77,15 @@ public partial class SettingGame : ISettingPage
         if (IsEdit)
         {
             GlobalModel.Config.Data.IsolationPriority = (IsolationModelEnum)IsolationPriority.SelectedIndex;
+            GlobalModel.Config.Save();
+        }
+    }
+
+    private void CatalogStrategy_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.CatalogStrategy = (CatalogStrategyEnum)(CatalogStrategy.SelectedIndex + 1);
             GlobalModel.Config.Save();
         }
     }

@@ -62,6 +62,7 @@ public partial class MainWindow : BedrockBootWindow
         {
             IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
         });
+        IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
         
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());

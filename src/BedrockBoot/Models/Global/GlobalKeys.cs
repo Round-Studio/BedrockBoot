@@ -14,7 +14,7 @@ public class GlobalKeys
         { ".mcpack", (SupportedFileType.Mcpack, true, "基岩版资源包") },
         { ".mcaddon", (SupportedFileType.Mcaddon, true, "基岩版集合包") },
         { ".mcworld", (SupportedFileType.Mcworld, true, "基岩版存档包") },
-        { ".mcpint", (SupportedFileType.Mcpint, false, "BedrockBoot 整合包文件") },
+        /*{ ".mcpint", (SupportedFileType.Mcpint, false, "BedrockBoot 整合包文件") },*/
         { ".rskin", (SupportedFileType.Rskin, true, "Round-Studio 通用皮肤包") },
         { ".rplck", (SupportedFileType.Rplck, true, "Round-Studio 通用插件包") },
         /*{ ".dll", (SupportedFileType.Dll, false, "DLL 文件") },*/ // 这个还没想好逻辑，等以后想好再加

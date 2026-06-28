@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
@@ -29,6 +31,9 @@ public class DropFileHandler
             case SupportedFileType.Mcpack:
                 HandelMcPacks();
                 break;
+            case SupportedFileType.Mcworld:
+                HandelMcWorld();
+                break;
         }
     }
 
@@ -49,7 +54,7 @@ public class DropFileHandler
                 var ins = new DialogChooseGameContent();
                 DialogHost.Show(new()
                 {
-                    Title = "选择实例",
+                    Title = "选择实例以导入资源包",
                     Content = ins,
                     CloseButtonText = "确定",
                     PrimaryButtonText = "取消",
@@ -76,5 +81,40 @@ public class DropFileHandler
             }
         });
         body.Import(_files);
+    }
+    public void HandelMcWorld()
+    {
+        var ins = new DialogChooseGameContent();
+        DialogHost.Show(new()
+        {
+            Title = "选择实例以导入存档包",
+            Content = ins,
+            CloseButtonText = "确定",
+            PrimaryButtonText = "取消",
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = async () =>
+            {
+                DialogHost.Show(new DialogInfo
+                {
+                    Title = i18n["Instance.Pack.Import.Progress.Title"],
+                    Content = i18n["Instance.Pack.Import.Progress.Content"]
+                });
+
+                var manager = new ArchiveCheck(ins.VersionConfig);
+
+                // 导入操作在后台执行
+                await Task.Run(() => { _files.ForEach(f => manager?.ImportWorldPack(f)); });
+
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    DialogHost.Close();
+                    GlobalModel.MainWindow.Notice.AddNotice(new ()
+                    {
+                        Title = "存档已导入",
+                        Message = "所有存档已导入目标游戏实例中"
+                    });
+                });
+            }
+        });
     }
 }

@@ -6,6 +6,8 @@ using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
+using BedrockBoot.Models.Pack.Plugin;
+using BedrockBoot.Models.Pack.Theme;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -33,6 +35,12 @@ public class DropFileHandler
                 break;
             case SupportedFileType.Mcworld:
                 HandelMcWorld();
+                break;
+            case SupportedFileType.Rplck:
+                HandelPluginPacks();
+                break;
+            case SupportedFileType.Rskin:
+                HandelSkinPacks();
                 break;
         }
     }
@@ -84,6 +92,8 @@ public class DropFileHandler
     }
     public void HandelMcWorld()
     {
+        Console.WriteLine(@"处理拖入的基岩版存档包文件");
+        
         var ins = new DialogChooseGameContent();
         DialogHost.Show(new()
         {
@@ -115,6 +125,46 @@ public class DropFileHandler
                     });
                 });
             }
+        });
+    }
+    public void HandelPluginPacks()
+    {
+        Console.WriteLine(@"处理拖入的插件包文件");
+        
+        _files.ForEach(f =>
+        {
+            _ = PluginLoader.Install(f);
+        });
+        
+        DialogHost.Show(new()
+        {
+            Title = "插件包导入完毕",
+            Content = "Round Studio 通用插件包导入完毕。\n" +
+                      $"本次导入 {_files.Count} 个插件。\n" +
+                      $"可前往 启动器设置>插件>管理 中管理已安装的插件",
+            CloseButtonText = "确定",
+            AccountButton = DialogButtons.CloseButton
+        });
+    }
+    public void HandelSkinPacks()
+    {
+        Console.WriteLine(@"处理拖入的主题包文件");
+
+        var manager = new ThemePackManager();
+        
+        _files.ForEach(f =>
+        {
+            manager.AddPack(f);
+        });
+        
+        DialogHost.Show(new()
+        {
+            Title = "主题包导入完毕",
+            Content = "Round Studio 通用主题包导入完毕。\n" +
+                      $"本次导入 {_files.Count} 个主题。\n" +
+                      $"可前往 启动器设置>个性化>主题包 中管理已安装的主题",
+            CloseButtonText = "确定",
+            AccountButton = DialogButtons.CloseButton
         });
     }
 }

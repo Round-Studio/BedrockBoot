@@ -514,6 +514,9 @@ public partial class MainWindow : BedrockBootWindow
                 var packConfig =
                     ThemePackManager.GetPackManifestWithHash(Core.Global.GlobalModel.Config.Data.StyleConfig
                         .SelectThemePackHash);
+                
+                if(packConfig == null)
+                    return;
 
                 if (Core.Global.GlobalModel.Config.Data.StyleConfig.MediaSource == MediaSourceEnum.PriorityThemePack)
                 {

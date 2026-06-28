@@ -33,7 +33,7 @@
                     Name="DeleteBtn">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
                                            FontSize="16"
-                                           Foreground="DarkRed" />
+                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
             </Button>
         </StackPanel>
     </onePointControls:SettingCard>

@@ -28,7 +28,7 @@
                     Padding="8"
                     VerticalAlignment="Center">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
-                                           Foreground="Red"
+                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                                            FontSize="16" />
             </Button>
 

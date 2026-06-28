@@ -34,7 +34,7 @@
                     Name="DeleteProtonBtn"
                     Classes="NoBorder">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
-                                           Foreground="DarkRed" />
+                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
             </Button>
         </StackPanel>
     </onePointControls:SettingCard>

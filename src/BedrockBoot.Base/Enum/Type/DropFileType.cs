@@ -1,15 +1,15 @@
 ﻿namespace BedrockBoot.Base.Enum.Type;
 
-public enum DropFileType
+public enum SupportedFileType
 {
-    None,
-    Zip,
-    McPack,
-    McAddon,
-    McWorld,
-    Appx,
+    Mcpack,
+    Mcaddon,
+    Mcworld,
     Mcpint,
+    Rskin,
     Rplck,
     Dll,
-    Exe
+    Zip,
+    Appx,
+    Msixvc
 }

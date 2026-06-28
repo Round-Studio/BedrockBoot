@@ -11,6 +11,7 @@
         xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
         xmlns:classes="clr-namespace:OnePointUI.Avalonia.Classes;assembly=OnePointUI.Avalonia"
         xmlns:controls="clr-namespace:Wallpaper.Avalonia.Controls;assembly=Wallpaper.Avalonia"
+        xmlns:global="clr-namespace:BedrockBoot.Models.Global"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BedrockBoot.Views.Windows.BedrockBootWindow"
         ExtendClientAreaToDecorationsHint="True"
@@ -278,9 +279,14 @@
                                        FontSize="26"
                                        HorizontalAlignment="Center"></TextBlock>
                             
-                            <TextBlock Text="支持 zip, appx, mcpint, mcpack, mcaddon, mcworld, rplck, dll 等文件"
-                                       HorizontalAlignment="Center"
-                                       Opacity="0.8"></TextBlock>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Opacity="0.8">
+                            
+                                <TextBlock Text="支持 " />
+                                <TextBlock Text="{x:Static global:GlobalKeys.DropOverTypesOfSupportString}" />
+                                <TextBlock Text=" 等文件" />
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </items:BorderCard>

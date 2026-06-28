@@ -114,7 +114,8 @@ public class App : Application
             {
                 case AppRunType.Default:
                     window = new MainWindow();
-                    StartProtocolServer();
+                    // StartProtocolServer();
+                    Console.WriteLine(@"暂时先不启用 IPC 服务器了...");
                     break;
                 case AppRunType.OpenResourcePack:
                     window = new ImportResourcePack();

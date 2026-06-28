@@ -19,6 +19,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Base.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models;
@@ -26,6 +27,7 @@ using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Media;
+using BedrockBoot.Models.Pack.System.DropFile;
 using BedrockBoot.Models.Pack.Theme;
 using BedrockBoot.Models.Style;
 using BedrockBoot.Service;
@@ -37,7 +39,6 @@ using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
-using OnePointUI.Avalonia.Style.Core;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
@@ -57,13 +58,13 @@ public partial class MainWindow : BedrockBootWindow
 
         InitializeComponent();
         GlobalModel.MainWindow = this;
-        
+
         Core.Global.GlobalModel.Config.AddAfterSaveCallback(entity =>
         {
             IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
         });
         IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
-        
+
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();
@@ -96,15 +97,11 @@ public partial class MainWindow : BedrockBootWindow
     private DesktopThumbnailWindow? DesktopThumbnailWindow { get; set; }
 
     #region 窗口拖拽事件
-
-    /// <summary>
-    ///     当文件拖拽到窗口上方时触发，决定是否显示“拷贝”图标
-    /// </summary>
+    
     private async void OnDragOver(object? sender, DragEventArgs e)
     {
         var position = e.GetPosition(this);
 
-        // 哪怕系统认为还在 Over，但只要坐标出了窗口，立即转为隐藏流程
         if (position.X < 10 || position.Y < 10 ||
             position.X > Bounds.Width - 10 || position.Y > Bounds.Height - 10)
         {
@@ -115,10 +112,64 @@ public partial class MainWindow : BedrockBootWindow
 
         if (e.DataTransfer.Contains(DataFormat.File))
         {
-            e.DragEffects = DragDropEffects.Copy;
-            DropBox.IsVisible = true;
-            DropBox.Opacity = 1;
-            SetBlurState(true);
+            var files = e.DataTransfer.TryGetFiles();
+            if (files != null && files.Any())
+            {
+                var isValid = false;
+                SupportedFileType? fileType = null;
+                string displayName = "";
+                bool allowMany = false;
+                var fileCount = 0;
+
+                foreach (var file in files)
+                {
+                    fileCount++;
+                    var extension = System.IO.Path.GetExtension(file.Name).ToLowerInvariant();
+
+                    if (GlobalKeys.DropOverTypesOfSupport.TryGetValue(extension, out var supportInfo))
+                    {
+                        if (!fileType.HasValue)
+                        {
+                            fileType = supportInfo.Type;
+                            displayName = supportInfo.Name;
+                            allowMany = supportInfo.AllowMany;
+                            isValid = true;
+                        }
+
+                        if (fileType.Value != supportInfo.Type)
+                        {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (isValid)
+                {
+                    if (fileCount > 1 && !allowMany)
+                    {
+                        e.DragEffects = DragDropEffects.None;
+                        HideDropBox();
+                    }
+                    else
+                    {
+                        e.DragEffects = DragDropEffects.Copy;
+                        DropBox.IsVisible = true;
+                        DropBox.Opacity = 1;
+                        SetBlurState(true);
+                    }
+                }
+                else
+                {
+                    e.DragEffects = DragDropEffects.None;
+                    HideDropBox();
+                }
+            }
         }
         else
         {
@@ -150,10 +201,7 @@ public partial class MainWindow : BedrockBootWindow
                 SetBlurState(false);
             });
             await Task.Delay(360);
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                DropBox.IsVisible = false;
-            });
+            Dispatcher.UIThread.Invoke(() => { DropBox.IsVisible = false; });
         });
 
         var storageFiles = new List<IStorageFile>();
@@ -162,6 +210,7 @@ public partial class MainWindow : BedrockBootWindow
             if (item.TryGetFile() is IStorageFile file)
                 storageFiles.Add(file);
         }
+
         if (storageFiles.Count <= 0) return;
 
         var paths = storageFiles.Select(f => f.Path.LocalPath).ToArray();
@@ -172,10 +221,10 @@ public partial class MainWindow : BedrockBootWindow
                 Console.WriteLine($@"检测到拖入文件: {filePath}");
         }
 
-        OpenDraw(new DrawDropFileContent(storageFiles.ToArray()), "拖拽文件处理");
+        // OpenDraw(new DrawDropFileContent(storageFiles.ToArray()), "拖拽文件处理");
+        var handler = new DropFileHandler(paths.ToList());
+        handler.Handle();
     }
-
-
 
     #endregion
 
@@ -285,7 +334,7 @@ public partial class MainWindow : BedrockBootWindow
         try
         {
             await CoreInit.Init();
-            
+
             CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
         }
         catch (Exception ex)
@@ -359,10 +408,12 @@ public partial class MainWindow : BedrockBootWindow
                 {
                     DesktopThumbnailWindow = new DesktopThumbnailWindow();
                 }
+
                 if (style.LiveBlur)
                 {
                     TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
                 }
+
                 DesktopThumbnailWindow?.ShowBelow(this);
                 LiveOpacity.IsVisible = true;
                 UpdateLiveOpacity();
@@ -422,6 +473,7 @@ public partial class MainWindow : BedrockBootWindow
                 blur = new BlurEffect();
                 BackgroundBox.Effect = blur;
             }
+
             blur.Radius = radius;
             BackgroundBox.Margin = new Thickness(-radius);
         }
@@ -531,6 +583,7 @@ public partial class MainWindow : BedrockBootWindow
                 task.Item.Margin = new Thickness(5);
                 visible.Add(task.Item);
             }
+
             // 一次性绑定，ListBox + VirtualizingStackPanel 会按需实例化
             TaskList.ItemsSource = visible;
         }
@@ -552,13 +605,13 @@ public partial class MainWindow : BedrockBootWindow
             PrimaryButtonText = "稍后重启",
             CloseAction = () =>
             {
-                var exePath = Process.GetCurrentProcess().MainModule?.FileName 
+                var exePath = Process.GetCurrentProcess().MainModule?.FileName
                               ?? throw new InvalidOperationException("无法获取可执行文件路径");
-    
+
                 var workingDir = Path.GetDirectoryName(exePath) ?? Environment.CurrentDirectory;
                 var args = string.Join(" ", Environment.GetCommandLineArgs().Skip(1)
                     .Select(a => a.Contains(' ') ? $"\"{a}\"" : a));
-    
+
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = exePath,
@@ -567,13 +620,13 @@ public partial class MainWindow : BedrockBootWindow
                     UseShellExecute = true,
                     CreateNoWindow = false
                 };
-    
+
                 // Windows 特殊处理
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     startInfo.Verb = "open";
                 }
-                
+
                 Process.Start(startInfo);
                 Environment.Exit(0);
             }

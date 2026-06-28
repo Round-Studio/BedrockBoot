@@ -177,15 +177,19 @@ public class EasyLauncher
         RegisterService.API.LaunchingEvent.ForEach(action =>
             new Thread(() => action.Invoke(VersionInfo.VersionPath)).Start());
 
+        var protonConfig = ProtonCore.GetVersionConfig(_linuxLaunchInfo.ProtonPath);
         if (!VersionInfo.VersionStatus.GameInputInstalled ||
-            !Path.Exists(_linuxLaunchInfo?.PrefixPath))
+            !Path.Exists(_linuxLaunchInfo?.PrefixPath) ||
+            protonConfig.IsGameInputInstalled)
         {
             Console.WriteLine("正在运行 GameInput 安装...");
             LaunchWithProton(Path.Combine(VersionInfo.VersionPath, "Installers", "GameInputRedist.msi"))?.WaitForExit();
             Console.WriteLine("GameInput 安装完毕");
 
             VersionInfo.VersionStatus.GameInputInstalled = true;
+            protonConfig.IsGameInputInstalled = true;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
+            ProtonCore.SaveVersionConfig(protonConfig);
         }
 
         try

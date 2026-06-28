@@ -5,6 +5,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Proton.Entry.Config;
 using BedrockBoot.Proton.Entry.Info;
 using BedrockBoot.Proton.Enum;
+using Octokit;
 using Round.SDK.Entity;
 using SourceList = BedrockBoot.Proton.Global.SourceList;
 
@@ -113,12 +114,25 @@ public class ProtonCore
         var dirs = Directory.GetDirectories(Path.Combine(PathsList.ProtonPath, "bin"));
         return dirs.ToList().Select(dir =>
         {
-            var conf = new ConfigEntity<ProtonInfo>(Path.Combine(dir, ".bb", "version.json"), false);
-            conf.Load();
-            conf.Data.InstallPath = dir;
-
-            return conf.Data;
+            return GetVersionConfig(dir);
         }).ToList();
+    }
+
+    public static ProtonInfo GetVersionConfig(string folder)
+    {
+        var conf = new ConfigEntity<ProtonInfo>(Path.Combine(folder, ".bb", "version.json"), false);
+        conf.Load();
+        conf.Data.InstallPath = folder;
+
+        return conf.Data;
+    }
+
+    public static void SaveVersionConfig(ProtonInfo protonInfo)
+    {
+        var conf = new ConfigEntity<ProtonInfo>(Path.Combine(protonInfo.InstallPath, ".bb", "version.json"));
+        conf.Load();
+        
+        conf.Save();
     }
     
     private static async Task CopyFilesWithProgressAsync(string sourcePath, string destPath, IProgress<DownloadProgress> progress = null)

@@ -142,10 +142,19 @@ public partial class MainWindow : BedrockBootWindow
     /// </summary>
     private async void OnDrop(object? sender, DragEventArgs e)
     {
-        DropBox.Opacity = 0;
-        SetBlurState(false);
-        await Task.Delay(360);
-        DropBox.IsVisible = false;
+        Task.Run(async () =>
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                DropBox.Opacity = 0;
+                SetBlurState(false);
+            });
+            await Task.Delay(360);
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                DropBox.IsVisible = false;
+            });
+        });
 
         var storageFiles = new List<IStorageFile>();
         foreach (var item in e.DataTransfer.Items)

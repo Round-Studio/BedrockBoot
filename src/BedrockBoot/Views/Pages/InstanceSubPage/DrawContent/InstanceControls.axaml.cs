@@ -65,9 +65,9 @@ public partial class InstanceControls : ISetting
             Title = i18n["Instance.Control.Delete.Confirm.Title"],
             Content = string.Format(i18n["Instance.Control.Delete.Confirm.Content"],
                 VersionInfo.Info.VersionName, VersionInfo.Info.Version),
-            CloseButtonText = i18n["MainWindow.Common.Confirm"],
-            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
-            CloseAction = () =>
+            CloseButtonText = i18n["MainWindow.Common.Cancel"],
+            PrimaryButtonText = i18n["MainWindow.Common.Delete"],
+            PrimaryAction = () =>
             {
                 DialogHost.Show(new DialogInfo
                 {

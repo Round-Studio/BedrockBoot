@@ -41,6 +41,15 @@
 			</onePointControls:SettingCard>
 
 			<onePointControls:SettingCard Margin="5, 0"
+            			                  Name="MouseLockFullScreenCard"
+                        			      Header="{DynamicResource Settings.Game.MouseLock.FullScreen.Title}"
+                              			Description="{DynamicResource Settings.Game.MouseLock.FullScreen.Desc}"
+			                              Glyph="&#xE8AB;">
+				<ToggleSwitch Name="MouseLockFullScreenSwitch"
+                			  IsCheckedChanged="MouseLockFullScreenSwitch_OnIsCheckedChanged" />
+			</onePointControls:SettingCard>
+
+			<onePointControls:SettingCard Margin="5, 0"
                                           Name="MouseLockHotkeyCard"
                                           Header="{DynamicResource Settings.Game.MouseLock.Hotkey.Title}"
                                           Description="{DynamicResource Settings.Game.MouseLock.Hotkey.Desc}"

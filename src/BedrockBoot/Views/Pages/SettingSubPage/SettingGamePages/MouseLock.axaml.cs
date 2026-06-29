@@ -33,6 +33,7 @@ public partial class MouseLock : ISettingPage
         MouseLockMainSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
         MouseLockForGdkSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLockForGdk;
         MouseLockReserveSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLockReserve;
+		MouseLockFullScreenSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLockFullScreen;
         MouseLockHotkeyBtn.Content = GlobalModel.Config.Data.MouseLockHotkey;
         UpdateUI();
 
@@ -50,6 +51,7 @@ public partial class MouseLock : ISettingPage
             MouseLockMainCard.Glyph = "\uF19F";
             MouseLockForGdkCard.IsEnabled = true;
             MouseLockReserveCard.IsEnabled = true;
+			MouseLockFullScreenCard.IsEnabled = true;
             MouseLockHotkeyCard.IsEnabled = true;
         }
         else
@@ -57,6 +59,7 @@ public partial class MouseLock : ISettingPage
             MouseLockMainCard.Glyph = "\uF19E";
             MouseLockForGdkCard.IsEnabled = false;
             MouseLockReserveCard.IsEnabled = false;
+			MouseLockFullScreenCard.IsEnabled = false;
             MouseLockHotkeyCard.IsEnabled = false;
         }
     }
@@ -75,6 +78,14 @@ public partial class MouseLock : ISettingPage
         if (IsEdit)
         {
             GlobalModel.Config.Data.IsMouseLockForGdk = (bool)MouseLockForGdkSwitch.IsChecked!;
+            GlobalModel.Config.Save();
+        }
+    }
+    private void MouseLockFullScreenSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsMouseLockFullScreen = (bool)MouseLockFullScreenSwitch.IsChecked!;
             GlobalModel.Config.Save();
         }
     }

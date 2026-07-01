@@ -571,7 +571,7 @@ public partial class SearchDetailed : ISetting
         LoadingRing.IsVisible = false;
         NoneBox.IsVisible = true;
         ResultPage.IsVisible = false;
-        Console.WriteLine($"搜索失败: {ex}");
+        Console.WriteLine($@"搜索失败: {ex}");
     }
 
     private static ScrollViewer CreateResultsScrollViewer(List<SearchResultItemInfo> items)

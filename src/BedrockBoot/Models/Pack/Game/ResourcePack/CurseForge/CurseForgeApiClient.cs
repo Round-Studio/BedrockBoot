@@ -5,22 +5,24 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Security;
+using System.Reflection;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
+using static System.Reflection.BindingFlags;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 
-public class CurseForgeApiClient
+public class CurseForgeApiClient : IDisposable
 {
     private static readonly object _lock = new();
     private readonly string _apiKey;
     private HttpClient _sharedHttpClient;
-    private HttpClient _fixedSourceHttpClient; // 新增：固定使用第一个源的 HttpClient
+    private readonly HttpClient _fixedSourceHttpClient; // 固定使用第一个源的 HttpClient
     
     // 统一获取 User-Agent 字符串
     private string UserAgent => $"BedrockBoot/{Global.GlobalModel.BodyVersion}";
@@ -28,11 +30,11 @@ public class CurseForgeApiClient
     public CurseForgeApiClient(string apiKey)
     {
         _apiKey = apiKey;
-        InitializeHttpClient();
-        InitializeFixedSourceHttpClient(); // 初始化固定源的 HttpClient
+        _sharedHttpClient = CreateHttpClient(GetCurrentBaseAddress());
+        _fixedSourceHttpClient = CreateHttpClient(GetFixedBaseAddress());
     }
 
-    private void InitializeHttpClient()
+    private HttpClient CreateHttpClient(Uri baseAddress)
     {
         var handler = new SocketsHttpHandler
         {
@@ -53,82 +55,102 @@ public class CurseForgeApiClient
             MaxAutomaticRedirections = 3
         };
 
-        _sharedHttpClient = new HttpClient(handler)
+        var client = new HttpClient(handler)
         {
             Timeout = TimeSpan.FromSeconds(60), // 增加超时时间
-            BaseAddress = new Uri(SourceList.CurseForgeSource.Values.ToList()[GlobalModel.Config.Data.CurseForgeSourceIndex]),
+            BaseAddress = baseAddress,
             DefaultRequestVersion = HttpVersion.Version20
         };
 
         // 设置默认请求头 - 使用统一的 User-Agent
-        _sharedHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
-        _sharedHttpClient.DefaultRequestHeaders.Accept.Add(
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
+
+        return client;
     }
 
     /// <summary>
-    /// 初始化固定使用第一个源的 HttpClient（用于获取推荐和描述）
+    /// 获取当前选择的源地址
     /// </summary>
-    private void InitializeFixedSourceHttpClient()
+    private Uri GetCurrentBaseAddress()
     {
-        var handler = new SocketsHttpHandler
-        {
-            SslOptions = new SslClientAuthenticationOptions
-            {
-                EnabledSslProtocols = SslProtocols.Tls12 |
-                                      SslProtocols.Tls13 |
-                                      SslProtocols.Tls11 |
-                                      SslProtocols.Tls
-            },
-            ConnectTimeout = TimeSpan.FromSeconds(30),
-            PooledConnectionLifetime = TimeSpan.FromMinutes(2),
-            MaxConnectionsPerServer = 5,
-            UseProxy = true,
-            AllowAutoRedirect = true,
-            MaxAutomaticRedirections = 3
-        };
-
-        // 固定使用第一个源（索引 0）
-        var fixedBaseAddress = new Uri(SourceList.CurseForgeSource.Values.ToList()[0]);
+        var sourceList = SourceList.CurseForgeSource.Values.ToList();
+        var index = GlobalModel.Config.Data.CurseForgeSourceIndex;
         
-        _fixedSourceHttpClient = new HttpClient(handler)
+        // 确保索引在有效范围内
+        if (index < 0 || index >= sourceList.Count)
         {
-            Timeout = TimeSpan.FromSeconds(60),
-            BaseAddress = fixedBaseAddress,
-            DefaultRequestVersion = HttpVersion.Version20
-        };
-
-        // 设置默认请求头
-        _fixedSourceHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
-        _fixedSourceHttpClient.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+            index = 0;
+            GlobalModel.Config.Data.CurseForgeSourceIndex = index;
+            GlobalModel.Config.Save();
+        }
+        
+        return new Uri(sourceList[index]);
     }
 
-    // 重新初始化HttpClient的方法，用于处理连接问题
-    private void ReinitializeHttpClient()
+    /// <summary>
+    /// 获取固定第一个源的地址（索引0）
+    /// </summary>
+    private Uri GetFixedBaseAddress()
+    {
+        return new Uri(SourceList.CurseForgeSource.Values.ToList()[0]);
+    }
+
+    /// <summary>
+    /// 刷新HttpClient以使用当前选择的源
+    /// </summary>
+    private void RefreshHttpClient()
     {
         lock (_lock)
         {
-            _sharedHttpClient?.Dispose();
-            InitializeHttpClient();
+            var oldClient = _sharedHttpClient;
+            _sharedHttpClient = CreateHttpClient(GetCurrentBaseAddress());
+            oldClient?.Dispose();
         }
     }
 
-    // 重新初始化固定源HttpClient的方法
+    // 重新初始化固定源HttpClient的方法（仅当固定源连接失败时使用）
     private void ReinitializeFixedSourceHttpClient()
     {
         lock (_lock)
         {
             _fixedSourceHttpClient?.Dispose();
-            InitializeFixedSourceHttpClient();
+            // 重新创建固定源HttpClient，但保持固定地址不变
+            var fixedAddress = new Uri(SourceList.CurseForgeSource.Values.ToList()[0]);
+            // 由于_fixedSourceHttpClient是readonly，我们需要使用反射或者重新设计
+            // 这里采用重新创建的方式
+            var field = typeof(CurseForgeApiClient).GetField("_fixedSourceHttpClient", 
+                NonPublic | BindingFlags.Instance);
+            if (field != null)
+            {
+                var newClient = CreateHttpClient(fixedAddress);
+                field.SetValue(this, newClient);
+            }
         }
+    }
+
+    /// <summary>
+    /// 获取当前HttpClient（自动刷新）
+    /// </summary>
+    private HttpClient GetCurrentHttpClient()
+    {
+        Console.WriteLine($@"请求源地址：{_sharedHttpClient.BaseAddress}");
+        // 检查当前BaseAddress是否与配置一致
+        var currentAddress = _sharedHttpClient.BaseAddress?.ToString();
+        var expectedAddress = GetCurrentBaseAddress().ToString();
+        
+        if (currentAddress != expectedAddress)
+        {
+            RefreshHttpClient();
+        }
+        
+        return _sharedHttpClient;
     }
 
     /// <summary>
     ///     获取指定 modId 的详细信息
     /// </summary>
-    /// <param name="modId">模组ID</param>
-    /// <returns>模组详细信息</returns>
     public async Task<CurseForgeResponse.ModData> GetModDetailsAsync(int modId)
     {
         var retryCount = 0;
@@ -143,7 +165,8 @@ public class CurseForgeApiClient
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("x-api-key", _apiKey);
 
-                var response = await _sharedHttpClient.SendAsync(request);
+                var client = GetCurrentHttpClient(); // 使用刷新后的客户端
+                var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -168,7 +191,7 @@ public class CurseForgeApiClient
 
                 // 如果是SSL连接问题，重新初始化HttpClient
                 if (ex.Message.Contains("SSL connection could not be established"))
-                    ReinitializeHttpClient();
+                    RefreshHttpClient(); // 改用RefreshHttpClient
 
                 // 等待一段时间后重试
                 await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
@@ -237,7 +260,8 @@ public class CurseForgeApiClient
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("x-api-key", _apiKey);
 
-                var response = await _sharedHttpClient.SendAsync(request);
+                var client = GetCurrentHttpClient(); // 使用刷新后的客户端
+                var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -261,7 +285,8 @@ public class CurseForgeApiClient
                 Console.WriteLine($@"HTTP请求错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
                 // 如果是SSL连接问题，重新初始化HttpClient
-                if (ex.Message.Contains("SSL connection could not be established")) ReinitializeHttpClient();
+                if (ex.Message.Contains("SSL connection could not be established")) 
+                    RefreshHttpClient(); // 改用RefreshHttpClient
 
                 // 等待一段时间后重试
                 await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount))); // 指数退避
@@ -307,7 +332,7 @@ public class CurseForgeApiClient
                 var jsonBody = JsonSerializer.Serialize(requestBody);
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-                // 创建请求 - 使用固定源的 HttpClient
+                // 创建请求 - 使用固定源的 HttpClient（不刷新，固定使用索引0）
                 using var request = new HttpRequestMessage(HttpMethod.Post, "v1/mods/featured")
                 {
                     Content = content
@@ -384,7 +409,8 @@ public class CurseForgeApiClient
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("x-api-key", _apiKey);
 
-                var response = await _sharedHttpClient.SendAsync(request);
+                var client = GetCurrentHttpClient(); // 使用刷新后的客户端
+                var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -407,7 +433,8 @@ public class CurseForgeApiClient
                 retryCount++;
                 Console.WriteLine($@"获取文件列表错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
-                if (ex.Message.Contains("SSL connection could not be established")) ReinitializeHttpClient();
+                if (ex.Message.Contains("SSL connection could not be established")) 
+                    RefreshHttpClient(); // 改用RefreshHttpClient
 
                 await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
             }
@@ -447,7 +474,8 @@ public class CurseForgeApiClient
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("x-api-key", _apiKey);
 
-                var response = await _sharedHttpClient.SendAsync(request);
+                var client = GetCurrentHttpClient(); // 使用刷新后的客户端
+                var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -470,7 +498,8 @@ public class CurseForgeApiClient
                 retryCount++;
                 Console.WriteLine($@"获取文件详情错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
-                if (ex.Message.Contains("SSL connection could not be established")) ReinitializeHttpClient();
+                if (ex.Message.Contains("SSL connection could not be established")) 
+                    RefreshHttpClient(); // 改用RefreshHttpClient
 
                 await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
             }
@@ -519,7 +548,8 @@ public class CurseForgeApiClient
                 };
                 request.Headers.Add("x-api-key", _apiKey);
 
-                var response = await _sharedHttpClient.SendAsync(request);
+                var client = GetCurrentHttpClient(); // 使用刷新后的客户端
+                var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -542,7 +572,8 @@ public class CurseForgeApiClient
                 retryCount++;
                 Console.WriteLine($@"获取多个文件错误 (重试 {retryCount}/{maxRetries}): {ex}");
 
-                if (ex.Message.Contains("SSL connection could not be established")) ReinitializeHttpClient();
+                if (ex.Message.Contains("SSL connection could not be established")) 
+                    RefreshHttpClient(); // 改用RefreshHttpClient
 
                 await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
             }
@@ -569,8 +600,6 @@ public class CurseForgeApiClient
     /// <summary>
     ///     获取指定 modId 的 Markdown 格式描述（使用固定源 - 索引0）
     /// </summary>
-    /// <param name="modId">模组ID</param>
-    /// <returns>模组的 Markdown 描述内容</returns>
     public async Task<string> GetModDescriptionAsync(int modId)
     {
         var retryCount = 0;
@@ -581,7 +610,7 @@ public class CurseForgeApiClient
             {
                 var url = $"v1/mods/{modId}/description";
 
-                // 创建请求 - 使用固定源的 HttpClient
+                // 创建请求 - 使用固定源的 HttpClient（不刷新，固定使用索引0）
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Add("x-api-key", _apiKey);
 

@@ -42,6 +42,8 @@ public partial class SettingDownload : ISettingPage
             CurseForgeSourceBox.Items.Add(new ComboBoxItem { Content = s.Key });
         CurseForgeSourceBox.SelectedIndex = GlobalModel.Config.Data.CurseForgeSourceIndex;
 
+        EnableFuzzySearch.IsChecked = GlobalModel.Config.Data.IsEnableFuzzySearch;
+
         IsEdit = true;
     }
 
@@ -87,6 +89,15 @@ public partial class SettingDownload : ISettingPage
         if (IsEdit)
         {
             GlobalModel.Config.Data.CurseForgeSourceIndex = CurseForgeSourceBox.SelectedIndex;
+            GlobalModel.Config.Save();
+        }
+    }
+
+    private void EnableFuzzySearch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsEnableFuzzySearch = EnableFuzzySearch.IsChecked ?? false;
             GlobalModel.Config.Save();
         }
     }

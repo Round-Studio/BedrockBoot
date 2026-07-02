@@ -59,12 +59,6 @@ public partial class MainWindow : BedrockBootWindow
         InitializeComponent();
         GlobalModel.MainWindow = this;
 
-        Core.Global.GlobalModel.Config.AddAfterSaveCallback(entity =>
-        {
-            IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
-        });
-        IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
-
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();

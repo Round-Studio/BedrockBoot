@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Base.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
@@ -110,6 +111,12 @@ public class App : Application
 
             Window window = null;
 
+            Core.Global.GlobalModel.Config.AddAfterSaveCallback(entity =>
+            {
+                IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
+            });
+            IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;
+
             switch (Models.Global.GlobalModel.AppRunType)
             {
                 case AppRunType.Default:
@@ -122,6 +129,9 @@ public class App : Application
                     break;
                 case AppRunType.OpenWorldPack:
                     window = new ImportWorldPack();
+                    break;
+                case AppRunType.LaunchGame:
+                    window = new LaunchGameWindow();
                     break;
             }
 

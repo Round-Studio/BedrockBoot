@@ -1,0 +1,34 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="120"
+        CanMaximize="False" 
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen"
+        x:Class="BedrockBoot.Views.Windows.SystemMethod.LaunchGameWindow"
+        Title="BedrockBoot 快捷启动游戏">
+    <Grid>
+        <StackPanel Spacing="8"
+                    Width="300"
+                    Margin="10"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center">
+            <TextBlock Name="GameNameBox" 
+                       FontSize="16" 
+                       Text="启动游戏中..."/>
+            <ProgressBar Name="LaunchProgressBar" 
+                         IsIndeterminate="True"/>
+            <TextBlock Name="ProgressBox" 
+                       Text="准备中..."/>
+            <Button Name="KillButton"
+                    Content="结束游戏进程"
+                    Padding="8"
+                    Background="DarkRed"
+                    Classes="NoBorder"
+                    IsEnabled="False"
+                    Click="OnKillButtonClick"/>
+        </StackPanel>
+    </Grid>
+</Window>

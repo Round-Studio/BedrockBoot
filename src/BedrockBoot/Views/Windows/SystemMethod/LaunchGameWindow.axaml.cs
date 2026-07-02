@@ -165,17 +165,6 @@ public partial class LaunchGameWindow : Window
         {
             _launcher = new EasyLauncher(_versionInfo);
 
-            // 设置迁移回调
-            _launcher.OnMigration = () =>
-            {
-                UpdateUi(() =>
-                {
-                    ProgressBox.Text = "需要迁移，请使用完整启动器";
-                    _isClosing = true;
-                    Close();
-                });
-            };
-
             // 设置进度更新回调
             _launcher.UpdateProgress = (status, percentage) =>
             {

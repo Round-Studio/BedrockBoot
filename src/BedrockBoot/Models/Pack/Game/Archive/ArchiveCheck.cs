@@ -6,6 +6,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 using Round.SDK.Helper;
@@ -21,9 +22,15 @@ public class ArchiveCheck
 
     public VersionConfig VersionConfig { get; set; }
 
-    public static ArchiveInfo? GetInfo(string save, string gameFolder)
+    public static ArchiveInfo? GetInfo(string save, string? gameFolder = null)
     {
         Console.WriteLine($@"读取存档：{save}");
+        
+        var file = Directory.EnumerateFiles(save, "level.dat", SearchOption.AllDirectories)
+            .FirstOrDefault();
+    
+        save = Path.GetDirectoryName(file) ?? save;
+        
         if (!File.Exists(Path.Combine(save, "levelname.txt")))
             return null;
 
@@ -42,7 +49,7 @@ public class ArchiveCheck
             IconPath = File.Exists(icon) ? icon : "",
             IsProject = isProject,
             LevelWorldData = new ArchiveSerializer(save).Parser(),
-            VersionInfo = GameInfoHelper.GetVersionConfig(gameFolder)
+            VersionInfo = (gameFolder != null ? GameInfoHelper.GetVersionConfig(gameFolder) : null)!
         };
     }
 
@@ -90,9 +97,30 @@ public class ArchiveCheck
                 return;
 
             if (!Directory.Exists(path.Value)) Directory.CreateDirectory(path.Value);
-            var worldPath = Path.Combine(path.Value, $"{Guid.NewGuid().ToString().Replace("-", "").Substring(0, 12)}");
+
+            var worldPath = Path.Combine(PathsList.TempPath,
+                $"world_{Guid.NewGuid().ToString().Replace("-", "").Substring(0, 12)}");
             ZipHelper.ExtractZipFile(pack, worldPath);
+
+            worldPath = Path.GetDirectoryName(Directory
+                .EnumerateFiles(worldPath, "level.dat", SearchOption.AllDirectories)
+                .FirstOrDefault()) ?? worldPath;
+            CopyDirectory(worldPath, Path.Combine(path.Value, Path.GetFileName(worldPath)));
         });
+    }
+    
+    private void CopyDirectory(string sourceDir, string destDir)
+    {
+        Directory.CreateDirectory(destDir);
+
+        foreach (string filePath in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
+        {
+            string relativePath = Path.GetRelativePath(sourceDir, filePath);
+            string destFilePath = Path.Combine(destDir, relativePath);
+        
+            Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
+            File.Copy(filePath, destFilePath, true);
+        }
     }
 
     private Dictionary<string, string> GetInstanceWorldPackPath()

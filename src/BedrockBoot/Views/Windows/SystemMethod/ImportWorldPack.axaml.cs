@@ -118,24 +118,17 @@ public partial class ImportWorldPack : Window
 
                 ZipFile.ExtractToDirectory(file, tempPath);
 
-                var serializer = new ArchiveSerializer(tempPath);
-                var worldData = serializer.Parser();
-                var isProject = false;
-
-                var icon = Path.Combine(tempPath, "world_icon.jpeg");
-
-                if (Directory.Exists(Path.Combine(tempPath, "editor")))
-                    isProject = true;
+                var worldData = ArchiveCheck.GetInfo(tempPath);
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     // 添加 ArchiveItem 到预览列表
                     var item = new ArchiveItem(new ArchiveInfo
                     {
-                        Name = worldData.LevelName,
-                        Path = Path.Combine(tempPath),
-                        IconPath = File.Exists(icon) ? icon : "",
-                        IsProject = isProject,
-                        LevelWorldData = worldData
+                        Name = worldData.Name,
+                        Path = worldData.Path,
+                        IconPath = File.Exists(worldData.IconPath) ? worldData.IconPath : "",
+                        IsProject = worldData.IsProject,
+                        LevelWorldData = worldData.LevelWorldData
                     }, true);
                     PacksList.Children.Add(item);
 
@@ -149,6 +142,7 @@ public partial class ImportWorldPack : Window
                 {
                     LoadingCard.BigTitle = "解析存档失败";
                     LoadingCard.Message = ex.Message;
+                    ClearUserList();
                 });
             }
         });

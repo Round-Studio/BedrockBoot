@@ -3,6 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:global="clr-namespace:BedrockBoot.Models.Global"
+             xmlns:interopServices="clr-namespace:System.Runtime.InteropServices;assembly=System.Runtime"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.OtherPage.AboutPage">
     <ScrollViewer>
@@ -16,8 +19,10 @@
                            HorizontalAlignment="Left" />
 
                     <StackPanel Spacing="4">
-                        <onePointControls:LineTextBlock Text="BedrockBoot"
-                                                        Margin="12,0,0,0" />
+                        <StackPanel Orientation="Horizontal">
+                            <onePointControls:LineTextBlock Text="BedrockBoot"
+                                                            Margin="12,0,0,0" />
+                        </StackPanel>
 
                         <TextBlock Name="PowerByTextBlock"
                                    Opacity="0.8"
@@ -27,6 +32,38 @@
             </Grid>
 
             <TextBlock Margin="5,0,0,8"
+                       FontSize="16"
+                       Text="环境信息" />
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="20,1">
+                <TextBlock Text="本体版本: " />
+                <TextBlock Text="{x:Static global:GlobalModel.BodyVersion}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="20,1">
+                <TextBlock Text="运行时: " />
+                <TextBlock Text="{x:Static interopServices:RuntimeInformation.FrameworkDescription}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Margin="20,1">
+                <TextBlock Text="运行环境: " />
+                <TextBlock Text="{x:Static interopServices:RuntimeInformation.OSDescription}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="20,1">
+                <TextBlock Text="工作目录: " />
+                <TextBlock Text="{x:Static sys:Environment.CurrentDirectory}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="20,1">
+                <TextBlock Text="机器名: " />
+                <TextBlock Text="{x:Static sys:Environment.MachineName}" />
+            </StackPanel>
+
+            <TextBlock Margin="5,20,0,8"
                        FontSize="16"
                        Text="{DynamicResource About.Section.OpenSource}" />
 
@@ -137,7 +174,7 @@
                                           Glyph="&#xF4AA;"
                                           Name="VersionCard"
                                           Header="{DynamicResource About.Action.Version.Title}"
-                                          Description="1.0.0.0">
+                                          Description="{x:Static global:GlobalModel.BodyVersion}">
                 <Button Padding="8"
                         Height="36" Width="100"
                         Name="CheckUpdateBtn"

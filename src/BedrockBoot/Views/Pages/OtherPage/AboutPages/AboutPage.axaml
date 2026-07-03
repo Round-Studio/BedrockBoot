@@ -105,9 +105,10 @@
                        FontSize="16"
                        Text="{DynamicResource About.Section.Developers}" />
 
-            <TextBlock Margin="20,1" Text="{DynamicResource About.Developers.Core}" />
-            <TextBlock Margin="20,1" Text="{DynamicResource About.Developers.Kernel}" />
-            <TextBlock Margin="20,1" Text="{DynamicResource About.Developers.UI}" />
+            <TextBlock Margin="20,1" Text="BedrockBoot 本体：Dime12022, YoumiHa" />
+            <TextBlock Margin="20,1" Text="BedrockBoot 核心：YoumiHa, Dime12022" />
+            <TextBlock Margin="20,1" Text="BedrockBoot UI 交互体验：DrMing" />
+            <TextBlock Margin="20,1" Text="PaperConnect 技术支持：Tianpao" />
 
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
@@ -122,7 +123,8 @@
             <TextBlock Margin="20,1" Text="{DynamicResource About.Credits.CurseForge}" />
             <TextBlock Margin="20,1" Text="(https://curseforge.com/)" />
 
-            <TextBlock Margin="20,1" Text="{DynamicResource About.Credits.BMCBL}" />
+            <TextBlock Margin="20,1" Text="感谢来自 BMCBL 提供的 MCAPPX 列表源加速站点" />
+            <TextBlock Margin="20,1" Text="以及 BedrockBoot 中部分组件的技术支持" />
             <TextBlock Margin="20,1" Text="(https://www.bmcbl.com/)" />
 
             <TextBlock Margin="5,20,0,8"

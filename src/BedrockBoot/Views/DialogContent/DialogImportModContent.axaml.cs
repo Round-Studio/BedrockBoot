@@ -55,4 +55,9 @@ public partial class DialogImportModContent : UserControl
             if (File.Exists(filePath)) PathInputBox.Text = filePath;
         }
     }
+
+    private void EnablePreLoad_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        DelayPanel.IsVisible = !IsPreLoad;
+    }
 }

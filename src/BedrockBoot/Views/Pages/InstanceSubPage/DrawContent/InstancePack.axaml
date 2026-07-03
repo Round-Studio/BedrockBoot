@@ -56,6 +56,7 @@
                                                    FontSize="16"
                                                    Margin="5,5,12,5" />
                         <TextBox Name="SearchBox"
+                                 Watermark="键入关键词以搜索"
                                  HorizontalAlignment="Stretch"
                                  TextChanged="SearchBox_OnTextChanged"
                                  DockPanel.Dock="Right" />
@@ -67,6 +68,14 @@
                 <Grid>
                     <StackPanel Orientation="Horizontal"
                                 Spacing="8">
+                        <Button Classes="NoBorder"
+                                Name="FolderBtn"
+                                Click="FolderBtn_OnClick"
+                                Width="32"
+                                Height="32">
+                            <onePointControls:FontIcon Glyph="&#xE8B7;"
+                                                       VerticalAlignment="Center" />
+                        </Button>
                         <Button Classes="NoBorder"
                                 Name="ImportPackBtn"
                                 Click="ImportPackBtn_OnClick"

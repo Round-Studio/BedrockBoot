@@ -6,7 +6,10 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
@@ -150,8 +153,19 @@ public partial class InstancePack : ISetting
         }
     }
 
-    public void RefreshData()
+    private void FolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        UpdateUI();
+        if (IsEdit && TypeSel?.SelectedItem is ListBoxItem item)
+        {
+            var folder = IsolationCore.GetInstanceFolderPath(VersionInfo, (item.Tag?.ToString()?.ToLower() ?? "resource") switch
+            {
+                "resource" => InstanceFolderType.ResourcePackFolder,
+                "behavior" => InstanceFolderType.BehaviorPackFolder,
+                "skin" => InstanceFolderType.SkinPackFolder,
+                _ => InstanceFolderType.UserFolder
+            });
+            
+            OpenFolderHelper.Open(folder);
+        }
     }
 }

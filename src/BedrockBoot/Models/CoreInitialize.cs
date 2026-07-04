@@ -5,12 +5,10 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Helper.Uwp;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
-
 #if WINDOWS
 using BedrockBoot.Models.Helper.Uwp;
 #endif

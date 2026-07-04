@@ -53,9 +53,6 @@ public partial class MainWindow : BedrockBootWindow
 {
     public MainWindow()
     {
-        // 核心引擎异步初始化
-        _ = InitBedrockCoreAsync();
-
         InitializeComponent();
         GlobalModel.MainWindow = this;
 
@@ -76,14 +73,6 @@ public partial class MainWindow : BedrockBootWindow
 
         AddHandler(DragDrop.DragOverEvent, OnDragOver);
         AddHandler(DragDrop.DropEvent, OnDrop);
-
-        _ = GetDevelopMode();
-        CheckUwpDependence();
-
-#if WINDOWS
-        BedrockbootProtocolRegistration.Register();
-#endif
-        InitializeProtocolRoutes();
     }
 
     private I18nManager I18n => I18nManager.Instance;
@@ -224,38 +213,6 @@ public partial class MainWindow : BedrockBootWindow
 
     #region 初始化流程
 
-    private async Task GetDevelopMode()
-    {
-#if WINDOWS
-        var devMod = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
-        if (!devMod)
-            DeveloperModeHelper.ShowNotice();
-#endif
-    }
-
-    private void CheckUwpDependence()
-    {
-#if WINDOWS
-        Task.Run(() =>
-        {
-            Thread.Sleep(1000);
-            var depList = UwpDependencyChecker.GetMissingDependencies();
-            if (depList.Count > 0)
-            {
-                Console.WriteLine($@"当前系统未安装对应的 UWP 依赖，共 {depList.Count} 个依赖未安装。");
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    DialogHost.Show(new DialogInfo()
-                    {
-                        Title = "安装 UWP 依赖",
-                        Content = new DialogDownloadUwpDependenceContent(depList)
-                    });
-                });
-            }
-        });
-#endif
-    }
-
     private void InitializeWindowBounds()
     {
         if (Core.Global.GlobalModel.Config.Data.WindowInfo.X >= 1 &&
@@ -283,87 +240,8 @@ public partial class MainWindow : BedrockBootWindow
 
     private async Task InitializeAsync()
     {
-        // 加载功能配置文件
-        try
-        {
-            BedrockBoot.Models.Global.GlobalModel.FunctionOption = await new JsonResourceEntity()
-                .LoadJsonResourceAsync<FunctionOptionEntry>(
-                    "avares://BedrockBoot/Manifest/Function/FunctionOption.json");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"Failed to load FunctionOption: {ex.Message}");
-        }
-
-        CheckUserAgreement();
-
-#if WINDOWS
-        // 注册文件关联
-        HandleFileAssociations();
-#endif
-
-        // 完成初始化后回到 UI 线程进行页面跳转
+        CoreInitialize.Init();
         await Dispatcher.UIThread.InvokeAsync(() => { LoadBox.IsVisible = false; });
-
-        await BedrockbootProtocolHandler.ExecutePendingCommandAsync();
-    }
-
-    private void HandleFileAssociations()
-    {
-#if RELEASE
-        if (GlobalModel.FunctionOption?.IsEnableMcPackOpenWithBody == true)
-            OpenAgreement.RegisterAssociation();
-#else
-        OpenAgreement.RegisterAssociation();
-#endif
-    }
-
-    private void InitializeProtocolRoutes()
-    {
-        ProtocolRouteRegistry.Instance.Register(new AboutProtocolRoute());
-    }
-
-    private async Task InitBedrockCoreAsync()
-    {
-        try
-        {
-            await CoreInit.Init();
-
-            CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"BedrockCore Init Error: {ex}");
-
-            if (ex.Message.Contains("Not Support Windows Version"))
-                await Dispatcher.UIThread.InvokeAsync(() => DialogHost.Show(new DialogInfo
-                {
-                    Title = I18n["MainWindow.Dialog.UnsupportedSys.Title"],
-                    Content = I18n["MainWindow.Dialog.UnsupportedSys.Content"],
-                    CloseButtonText = I18n["MainWindow.Dialog.UnsupportedSys.Close"],
-                    CloseAction = () => Environment.Exit(1)
-                }));
-        }
-    }
-
-    private void CheckUserAgreement()
-    {
-        if (Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;
-
-        DialogHost.Show(new DialogInfo
-        {
-            Content = new DialogAgreementContent(),
-            Title = I18n["MainWindow.Dialog.Agreement.Title"],
-            CloseButtonText = I18n["MainWindow.Dialog.Agreement.Agree"],
-            CloseAction = () =>
-            {
-                Core.Global.GlobalModel.Config.Data.IsAgreeTerms = true;
-                Core.Global.GlobalModel.Config.Save();
-            },
-            PrimaryButtonText = I18n["MainWindow.Dialog.Agreement.Decline"],
-            PrimaryAction = () => Environment.Exit(0),
-            AccountButton = DialogButtons.CloseButton
-        });
     }
 
     #endregion

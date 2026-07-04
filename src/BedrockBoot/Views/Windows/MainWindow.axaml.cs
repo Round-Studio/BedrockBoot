@@ -43,10 +43,6 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
 
-#if WINDOWS
-using BedrockBoot.Models.Helper.Uwp;
-#endif
-
 namespace BedrockBoot.Views.Windows;
 
 public partial class MainWindow : BedrockBootWindow

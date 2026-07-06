@@ -11,6 +11,7 @@ public class OpenAgreement
         var exePath = Environment.ProcessPath;
         var ResProgId = "BedrockBoot.Win32";
         var WorldProgId = "BedrockBoot.Desktop";
+        var TemplateProgId = "BedrockBoot.Template";
 
         using (var extKey = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.mcpack"))
         {
@@ -27,9 +28,14 @@ public class OpenAgreement
             extKey.SetValue("", WorldProgId);
         }
 
+        using (var extKey = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.mctemplate"))
+        {
+            extKey.SetValue("", TemplateProgId);
+        }
+
         using (var progIdKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{ResProgId}"))
         {
-            progIdKey.SetValue("", "Minecraft Bedrock 支持文件");
+            progIdKey.SetValue("", "Minecraft Bedrock 附加包文件");
             using (var iconKey = progIdKey.CreateSubKey("DefaultIcon"))
             {
                 iconKey.SetValue("", $"\"{exePath}\",{SourceList.PackIconID}");
@@ -52,6 +58,20 @@ public class OpenAgreement
             using (var cmdKey = progIdKey.CreateSubKey(@"shell\open\command"))
             {
                 cmdKey.SetValue("", $"\"{exePath}\" -open --world \"%1\"");
+            }
+        }
+
+        using (var progIdKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{TemplateProgId}"))
+        {
+            progIdKey.SetValue("", "Minecraft Bedrock 世界模板文件");
+            using (var iconKey = progIdKey.CreateSubKey("DefaultIcon"))
+            {
+                iconKey.SetValue("", $"\"{exePath}\",{SourceList.PackIconID}");
+            }
+
+            using (var cmdKey = progIdKey.CreateSubKey(@"shell\open\command"))
+            {
+                cmdKey.SetValue("", $"\"{exePath}\" -open --template \"%1\"");
             }
         }
     }

@@ -234,6 +234,7 @@ internal sealed class Program
 
                     if (Args.Contains("--resource")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
                     if (Args.Contains("--world")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenWorldPack;
+                    if (Args.Contains("--template")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenTemplatePack;
 
                     return false;
             }

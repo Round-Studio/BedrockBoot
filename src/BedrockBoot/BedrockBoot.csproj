@@ -112,5 +112,9 @@
       <Compile Update="Views\Pages\SettingSubPage\SettingDownloadPages\NetworkTest.axaml.cs">
         <DependentUpon>NetworkTest.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\Windows\SystemMethod\ImportTemplatePack.axaml.cs">
+        <DependentUpon>ImportTemplatePack.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

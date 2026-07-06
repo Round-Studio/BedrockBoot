@@ -130,6 +130,9 @@ public class App : Application
                 case AppRunType.OpenWorldPack:
                     window = new ImportWorldPack();
                     break;
+                case AppRunType.OpenTemplatePack:
+                    window = new ImportTemplatePack();
+                    break;
                 case AppRunType.LaunchGame:
                     window = new LaunchGameWindow();
                     break;

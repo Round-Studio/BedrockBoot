@@ -79,7 +79,7 @@ public partial class LaunchGameWindow : Window
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"UI 更新失败: {ex.Message}");
+                    Console.WriteLine($@"UI 更新失败: {ex.Message}");
                 }
             }, DispatcherPriority.Background);
         }
@@ -91,7 +91,7 @@ public partial class LaunchGameWindow : Window
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"UI 更新失败: {ex.Message}");
+                Console.WriteLine($@"UI 更新失败: {ex.Message}");
             }
         }
     }
@@ -221,7 +221,7 @@ public partial class LaunchGameWindow : Window
                 _gameProcess = process;
                 _gameLaunched = true;
                 
-                Console.WriteLine($"游戏已启动，进程ID: {process.Id}");
+                Console.WriteLine($@"游戏已启动，进程ID: {process.Id}");
                 UpdateUi(() =>
                 {
                     ProgressBox.Text = $"游戏已启动 (PID: {process.Id})";

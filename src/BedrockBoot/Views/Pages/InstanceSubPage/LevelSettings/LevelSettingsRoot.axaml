@@ -33,6 +33,16 @@
                      SelectionChanged="SelectingItemsControl_OnSelectionChanged"
                      Name="NavBar">
                 <ListBoxItem Classes="Segmented"
+                             Tag="Controls">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                        <onePointControls:FontIcon Glyph="&#xEC7A;"
+                                                   VerticalAlignment="Center" />
+                        <TextBlock Text="操作"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Classes="Segmented"
                              Tag="Backup">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="6">
@@ -49,7 +59,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xE713;"
                                                    VerticalAlignment="Center" />
-                        <TextBlock Text="{DynamicResource LevelSettings.Root.Tab.General}"
+                        <TextBlock Text="世界设置"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>

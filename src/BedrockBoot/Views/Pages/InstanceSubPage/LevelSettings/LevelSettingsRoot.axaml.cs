@@ -48,6 +48,9 @@ public partial class LevelSettingsRoot : ISetting
                 case "Setting":
                     page = new LevelSettingsEditor(_info);
                     break;
+                case "Controls":
+                    page = new LevelSettingsControls(_info);
+                    break;
             }
 
         if (page != null) NavigationFrame.NavigateTo(page);

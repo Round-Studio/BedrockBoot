@@ -9,5 +9,6 @@ public enum InstanceFolderType
     OptionFolder,
     SkinPackFolder,
     UserFolder,
-    ScreenshotFolder
+    ScreenshotFolder,
+    WorldTemplateFolder
 }

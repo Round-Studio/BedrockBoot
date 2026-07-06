@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:style="clr-namespace:BedrockBoot.Models.Style"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.GameResourcePackItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
@@ -18,8 +18,19 @@
             </StackPanel>
         </onePointControls:SettingCard.Header>
         <onePointControls:SettingCard.Description>
-            <StackPanel Orientation="Horizontal"
-                        Spacing="8">
+            <StackPanel Orientation="Vertical"
+                        Spacing="2">
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,2,0,0"
+                            Spacing="8">
+                    <onePointControls:LabelBox VerticalAlignment="Center"
+                                               Text="PackVersion"
+                                               Name="PackVersion"></onePointControls:LabelBox>
+                    <onePointControls:LabelBox VerticalAlignment="Center"
+                                               Text="GameVersion"
+                                               Name="GameVersion"></onePointControls:LabelBox>
+                </StackPanel>
+                
                 <style:MinecraftTextBlock Name="PackDescription"
                                           TextWrapping="Wrap" />
             </StackPanel>

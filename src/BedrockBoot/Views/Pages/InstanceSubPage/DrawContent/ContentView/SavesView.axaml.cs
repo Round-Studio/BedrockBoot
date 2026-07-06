@@ -6,7 +6,10 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Pack.Game.Archive;
+using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ContentView;
@@ -33,15 +36,12 @@ public partial class SavesView : UserControl
 
     private string SearchKey => SearchBox.Text ?? string.Empty;
     private int SelIndex => UserChooseBox.SelectedIndex;
+    private string CurrentUser => (UserChooseBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
 
-    /// <summary>
-    ///     初始化并刷新存档元数据
-    /// </summary>
     private void UpdateUI()
     {
         IsEdit = false;
 
-        // 执行存档目录扫描
         var checker = new ArchiveCheck(VersionInfo);
         ArchiveManifest = checker.Check();
 
@@ -59,17 +59,17 @@ public partial class SavesView : UserControl
             if (ArchiveManifest.Manifest.Count > 0)
             {
                 UserChooseBox.SelectedIndex = 0;
-                // 默认显示第一个用户的存档
-                UpdateSaves(ArchiveManifest.Manifest.Values.FirstOrDefault() ?? new List<ArchiveInfo>());
+                UpdateContent();
             }
+        }
+        else
+        {
+            UpdateSaves(new List<ArchiveInfo>());
         }
 
         IsEdit = true;
     }
 
-    /// <summary>
-    ///     将存档对象渲染到 UI 列表
-    /// </summary>
     public void UpdateSaves(List<ArchiveInfo> saves)
     {
         SavesBox.Children.Clear();
@@ -84,12 +84,21 @@ public partial class SavesView : UserControl
             });
     }
 
-    /// <summary>
-    ///     处理搜索和用户切换逻辑
-    /// </summary>
-    public void UpdateSearch()
+    public void UpdateTemplates(List<ResourcePackManifest> resPacks)
     {
-        try
+        SavesBox.Children.Clear();
+        NullBox.IsVisible = resPacks.Count <= 0;
+
+        foreach (var save in resPacks)
+            SavesBox.Children.Add(new GameResourcePackItem(save)
+            {
+                RefreshCallBack = UpdateUI
+            });
+    }
+
+    private void UpdateContent()
+    {
+        if (TypeSel.SelectedIndex == 0)
         {
             if (ArchiveManifest?.Manifest == null || ArchiveManifest.Manifest.Count == 0)
             {
@@ -97,7 +106,6 @@ public partial class SavesView : UserControl
                 return;
             }
 
-            // 获取当前选中的用户存档列表
             List<ArchiveInfo> currentSaves;
             if (SelIndex >= 0 && SelIndex < UserChooseBox.Items.Count)
             {
@@ -109,7 +117,6 @@ public partial class SavesView : UserControl
                 currentSaves = ArchiveManifest.Manifest.Values.FirstOrDefault() ?? new List<ArchiveInfo>();
             }
 
-            // 执行搜索过滤
             if (!string.IsNullOrEmpty(SearchKey))
             {
                 var filtered = currentSaves
@@ -122,26 +129,43 @@ public partial class SavesView : UserControl
                 UpdateSaves(currentSaves);
             }
         }
-        catch (Exception ex)
+        else if (TypeSel.SelectedIndex == 1)
         {
-            Console.WriteLine($@"UpdateSearch error: {ex.Message}");
-            UpdateSaves(new List<ArchiveInfo>());
+            if (string.IsNullOrEmpty(CurrentUser))
+            {
+                UpdateTemplates(new List<ResourcePackManifest>());
+                return;
+            }
+
+            var resManager = new ResourcePackManager(VersionInfo);
+            var templates = resManager.GetAllPack(CurrentUser)
+                .Where(x => x.PackType == ResourcePackType.WorldTemplate)
+                .ToList();
+
+            if (!string.IsNullOrEmpty(SearchKey))
+            {
+                var filtered = templates
+                    .Where(t => t.Header.Name.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                UpdateTemplates(filtered);
+            }
+            else
+            {
+                UpdateTemplates(templates);
+            }
         }
     }
 
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (IsEdit) UpdateSearch();
+        if (IsEdit) UpdateContent();
     }
 
     private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (IsEdit) UpdateSearch();
+        if (IsEdit) UpdateContent();
     }
 
-    /// <summary>
-    ///     导入 .mcworld 存档包
-    /// </summary>
     private async void ImportPackBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
@@ -166,10 +190,15 @@ public partial class SavesView : UserControl
             if (string.IsNullOrEmpty(path)) return;
 
             var checker = new ArchiveCheck(VersionInfo);
-            // 默认导入到 Shared 目录（公共目录）
             checker.ImportWorldPack(path);
 
             UpdateUI();
         }
+    }
+
+    private void TypeSel_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (TypeSel == null) return;
+        UpdateContent();
     }
 }

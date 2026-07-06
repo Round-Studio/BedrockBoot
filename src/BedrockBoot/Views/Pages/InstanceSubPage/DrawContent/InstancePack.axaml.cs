@@ -95,7 +95,7 @@ public partial class InstancePack : ISetting
             {
                 new FilePickerFileType(i18n["Instance.Pack.Import.Picker.Type"])
                 {
-                    Patterns = new[] { "*.mcpack", "*.mcaddon" }
+                    Patterns = new[] { "*.mcpack", "*.mcaddon", "*.mctemplate" }
                 }
             }
         });
@@ -162,6 +162,7 @@ public partial class InstancePack : ISetting
                 "resource" => InstanceFolderType.ResourcePackFolder,
                 "behavior" => InstanceFolderType.BehaviorPackFolder,
                 "skin" => InstanceFolderType.SkinPackFolder,
+                "template" => InstanceFolderType.WorldTemplateFolder,
                 _ => InstanceFolderType.UserFolder
             });
             

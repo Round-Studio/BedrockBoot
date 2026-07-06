@@ -133,6 +133,7 @@ public class IsolationCore
             InstanceFolderType.ArchiveFolder => GetInstanceFolderPath(versionConfig, "minecraftWorlds", user),
             InstanceFolderType.OptionFolder => GetInstanceFolderPath(versionConfig, "minecraftpe", user),
             InstanceFolderType.SkinPackFolder => GetInstanceFolderPath(versionConfig, "skin_packs", user),
+            InstanceFolderType.WorldTemplateFolder => GetInstanceFolderPath(versionConfig, "world_templates", user),
             InstanceFolderType.UserFolder => versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP
                 ? string.Empty
                 : versionConfig.Info.VersionType == MinecraftGameTypeVersion.Preview

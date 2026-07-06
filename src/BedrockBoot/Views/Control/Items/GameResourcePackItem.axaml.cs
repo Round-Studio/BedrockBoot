@@ -58,7 +58,15 @@ public partial class GameResourcePackItem : UserControl
         }
 
         PackName.MinecraftText = ResourcePackManifest.Header.Name;
-        PackDescription.MinecraftText = ResourcePackManifest.Header.Description;
+        PackDescription.MinecraftText = string.IsNullOrEmpty(ResourcePackManifest.Header.Description)
+            ? "该包还没有介绍..."
+            : ResourcePackManifest.Header.Description;
+        if (!string.IsNullOrEmpty(ResourcePackManifest.Header.Version))
+            PackVersion.Text = ResourcePackManifest.Header.Version;
+        GameVersion.IsVisible = !string.IsNullOrEmpty(ResourcePackManifest.Header.Version);
+        if (!string.IsNullOrEmpty(ResourcePackManifest.Header.MinEngineVersion))
+            GameVersion.Text = $"Minecraft {ResourcePackManifest.Header.MinEngineVersion}";
+        GameVersion.IsVisible = !string.IsNullOrEmpty(ResourcePackManifest.Header.MinEngineVersion);
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)

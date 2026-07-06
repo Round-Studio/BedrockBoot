@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -11,6 +12,8 @@ using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ContentView;
 
@@ -179,7 +182,7 @@ public partial class SavesView : UserControl
             {
                 new FilePickerFileType(i18n["Instance.Save.Import.Picker.Type"])
                 {
-                    Patterns = new[] { "*.mcworld" }
+                    Patterns = new[] { "*.mcworld", "*.mctemplate" }
                 }
             }
         });
@@ -189,8 +192,33 @@ public partial class SavesView : UserControl
             var path = files[0].Path.LocalPath;
             if (string.IsNullOrEmpty(path)) return;
 
-            var checker = new ArchiveCheck(VersionInfo);
-            checker.ImportWorldPack(path);
+            DialogHost.Show(new DialogInfo
+            {
+                Title = i18n["Instance.Pack.Import.Progress.Title"],
+                Content = "正在导入包..."
+            });
+
+            var curUser = CurrentUser;
+            
+            Task.Run(() =>
+            {
+                if (path.ToLower().EndsWith(".mcworld", StringComparison.OrdinalIgnoreCase))
+                {
+                    var importer = new ArchiveCheck(VersionInfo);
+                    importer.ImportWorldPack(path);
+                }
+                else if (path.ToLower().EndsWith(".mctemplate", StringComparison.OrdinalIgnoreCase))
+                {
+                    var importer = new ResourcePackManager(VersionInfo);
+                    importer.AddRangePacks(new() { path }, curUser);
+                }
+
+                DialogHost.Close();
+                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                {
+                    UpdateUI();
+                });
+            });
 
             UpdateUI();
         }

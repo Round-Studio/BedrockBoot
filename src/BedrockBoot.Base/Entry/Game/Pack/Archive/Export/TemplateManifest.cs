@@ -18,6 +18,7 @@ public class TemplateManifest
         [JsonPropertyName("version")] public List<int> Version { get; set; }
         [JsonPropertyName("allow_random_seed")] public bool AllowRandomSeed { get; set; }
         [JsonPropertyName("lock_template_options")] public bool LockTemplateOptions { get; set; }
+        [JsonPropertyName("platform_locked")] public bool PlatformLocked { get; set; } = false;
     }
 
     public class ModuleEntry

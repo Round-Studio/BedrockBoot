@@ -32,7 +32,6 @@ public class ArchiveExport
 
         if (_config.ExportType == ArchiveExportType.Template)
         {
-            var uuid = Guid.NewGuid().ToString();
             var configFile = new ConfigEntity<TemplateManifest>(Path.Combine(TempFolder, "manifest.json"));
             if (string.IsNullOrEmpty(_config.PackVersion))
             {
@@ -45,7 +44,7 @@ public class ArchiveExport
                 Description = _config.PackDescription,
                 Version = _config.PackVersion.Split('.').Select(int.Parse).ToList(),
                 BaseGameVersion = _config.ArchiveInfo!.VersionInfo.Info.Version.Split('.').Select(int.Parse).ToList(),
-                Uuid = uuid,
+                Uuid = Guid.NewGuid().ToString(),
                 AllowRandomSeed = _config.AllowRandomSeed,
                 LockTemplateOptions = _config.LockTemplateOptions
             };
@@ -54,7 +53,7 @@ public class ArchiveExport
                 new()
                 {
                     Description = _config.PackDescription,
-                    Uuid = uuid,
+                    Uuid = Guid.NewGuid().ToString(),
                     Version = _config.PackVersion.Split('.').Select(int.Parse).ToList()
                 }
             };

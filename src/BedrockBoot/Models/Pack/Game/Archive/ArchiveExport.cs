@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ABI.Windows.Graphics.Printing3D;
 using BedrockBoot.Base.Entry.Game.Pack.Archive.Export;
 using BedrockBoot.Base.Enum.Type.Export;
 using BedrockBoot.Models.Global;
@@ -33,6 +34,11 @@ public class ArchiveExport
         {
             var uuid = Guid.NewGuid().ToString();
             var configFile = new ConfigEntity<TemplateManifest>(Path.Combine(TempFolder, "manifest.json"));
+            if (string.IsNullOrEmpty(_config.PackVersion))
+            {
+                _config.PackVersion = "1.0.0";
+            }
+            configFile.Data = new();
             configFile.Data.Header = new()
             {
                 Name = _config.PackName,

@@ -27,7 +27,9 @@
                 <onePointControls:SettingCard IsClickable="True"
                                               Glyph="&#xE74E;"
                                               Header="导出"
-                                              Description="导出基岩版存档包文件及其拓展" />
+                                              Description="导出基岩版存档包文件及其拓展" 
+                                              Name="ExportBtn"
+                                              Click="ExportBtn_OnClick"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

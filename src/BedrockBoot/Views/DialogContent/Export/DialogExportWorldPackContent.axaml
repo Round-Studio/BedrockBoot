@@ -1,0 +1,45 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Width="300"
+             x:Class="BedrockBoot.Views.DialogContent.Export.DialogExportWorldPackContent">
+    <ScrollViewer>
+        <StackPanel Spacing="8">
+            <TextBlock HorizontalAlignment="Left"
+                       Text="导出类型" />
+            <ComboBox Name="ExportType"
+                      HorizontalAlignment="Stretch"
+                      SelectionChanged="ExportType_OnSelectionChanged"
+                      SelectedIndex="0">
+                <ComboBoxItem Content="普通存档"></ComboBoxItem>
+                <ComboBoxItem Content="世界模版"></ComboBoxItem>
+            </ComboBox>
+
+            <StackPanel Name="TemplateItems"
+                        Spacing="8"
+                        IsVisible="False">
+                <TextBlock HorizontalAlignment="Left"
+                           Text="模版名称" />
+                <TextBox Name="NameInputBox" />
+                
+                <TextBlock HorizontalAlignment="Left"
+                           Text="模版介绍" />
+                <TextBox Name="DescriptionInputBox" />
+                
+                <TextBlock HorizontalAlignment="Left"
+                           Text="模版版本" />
+                <TextBox Name="VersionInputBox" />
+                
+                <CheckBox Content="使用当前世界设置"
+                          IsChecked="True"
+                          Name="LockTemplateOptions"
+                          Margin="0"></CheckBox>
+                <CheckBox Content="随机种子码"
+                          Name="AllowRandomSeed"
+                          Margin="0"></CheckBox>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

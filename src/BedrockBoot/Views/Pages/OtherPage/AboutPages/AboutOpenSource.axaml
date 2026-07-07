@@ -106,6 +106,18 @@
             <TextBlock FontSize="22"
                        FontWeight="Bold"
                        Margin="5,20,5,8">
+                LiteSkinViewer
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/YangSpring429/LiteSkinViewer)" />
+            <TextBlock Margin="5,0,5,0" Text="fork: https://github.com/Round-Studio/LiteSkinViewer" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9"
+                       Text="(https://github.com/YangSpring429/LiteSkinViewer/blob/master/LICENSE.txt)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
                 Octokit
             </TextBlock>
             <TextBlock Margin="5,0,5,0" Text="(https://github.com/octokit/octokit.net)" />

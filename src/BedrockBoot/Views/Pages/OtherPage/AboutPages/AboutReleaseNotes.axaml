@@ -73,6 +73,9 @@
             
             <TextBlock Text="目前，您可以在启动器的工具箱页面体验到许多功能。例如：存档转换，资源包转换。这些内置工具可以帮助您转换游戏资源，将 Java 与 基岩版 的资源互相转换。"
                        Opacity="0.8"></TextBlock>
+            
+            <TextBlock Text="甚至可以管理游戏内的多种资源，例如：资源包、行为包、皮肤包、存档以及世界模版等..."
+                       Opacity="0.8"></TextBlock>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

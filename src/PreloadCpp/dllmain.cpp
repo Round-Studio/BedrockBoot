@@ -560,6 +560,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		if (g_configManager.GetBoolConfig("isConsole"))
 		{
 			AllocConsole();
+			system("title Minecraft Bedrock Console");
 			FILE* fDummy;
 			freopen_s(&fDummy, "CONOUT$", "w", stdout);
 			freopen_s(&fDummy, "CONOUT$", "w", stderr);

@@ -40,6 +40,14 @@
                     Spacing="8">
             <Button Width="32" Height="32"
                     Classes="NoBorder"
+                    IsVisible="False"
+                    Click="ViewBtn_OnClick"
+                    Name="ViewBtn">
+                <onePointControls:FontIcon Glyph="&#xE890;"
+                                           FontSize="16"/>
+            </Button>
+            <Button Width="32" Height="32"
+                    Classes="NoBorder"
                     Click="DeleteBtn_OnClick"
                     Name="DeleteBtn">
                 <onePointControls:FontIcon Glyph="&#xE74D;"

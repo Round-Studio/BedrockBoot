@@ -76,6 +76,8 @@
         <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
         <ProjectReference Include="..\BedrockBoot.WatchDog\BedrockBoot.WatchDog.csproj" />
+        <ProjectReference Include="..\LiteSkinViewer\LiteSkinViewer.2D\LiteSkinViewer.2D.csproj" />
+        <ProjectReference Include="..\LiteSkinViewer\LiteSkinViewer.3D\LiteSkinViewer.3D.csproj" />
         <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj"/>
         <ProjectReference Include="..\PaperConnect\src\PaperConnect.Core\PaperConnect.Core.csproj"/>
         <ProjectReference Include="..\ResourcePackConvert\ResourcePackConvert.Core\ResourcePackConvert.Core.csproj" />

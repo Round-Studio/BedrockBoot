@@ -31,6 +31,13 @@
   <Folder Name="/Dependence/Linux/">
     <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
   </Folder>
+  <Folder Name="/Dependence/LiteSkinViewer/">
+    <Project Path="src/LiteSkinViewer/LiteSkinViewer.2D/LiteSkinViewer.2D.csproj" />
+    <Project Path="src/LiteSkinViewer/LiteSkinViewer.2D.Simple/LiteSkinViewer.2D.Simple.csproj" />
+    <Project Path="src/LiteSkinViewer/LiteSkinViewer.3D/LiteSkinViewer.3D.csproj" />
+    <Project Path="src/LiteSkinViewer/LiteSkinViewer.3D.Simple/LiteSkinViewer.3D.Simple.csproj" />
+    <Project Path="src/LiteSkinViewer/LiteSkinViewer.Shared/LiteSkinViewer.Shared.csproj" />
+  </Folder>
   <Folder Name="/Dependence/OnePointUI.Avalonia/">
     <Project Path="src/OnePointUI.Avalonia/src/OnePointUI.Avalonia.Test/OnePointUI.Avalonia.Test.csproj" />
     <Project Path="src/OnePointUI.Avalonia/src/OnePointUI.Avalonia/OnePointUI.Avalonia.csproj" />

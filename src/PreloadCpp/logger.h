@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #include <iostream>
 #include <sstream>
@@ -13,6 +13,7 @@
 #include <atomic>
 #include <fstream>
 #include <filesystem>
+#include <functional>
 
 namespace fs = std::filesystem;
 
@@ -42,14 +43,12 @@ private:
     static const WORD DEFAULT_COLOR = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
     static const WORD CYAN_COLOR = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
 
-    // “Ï≤Ωœ‡πÿ≥…‘±
     static std::queue<LogTask> logQueue;
     static std::mutex queueMutex;
     static std::condition_variable cv;
     static std::thread workerThread;
     static std::atomic<bool> shouldStop;
 
-    // Œƒº˛–¥»Îœ‡πÿ
     static std::ofstream logFile;
     static std::mutex fileMutex;
     static bool fileEnabled;
@@ -122,7 +121,6 @@ private:
         }
     }
 
-    // ∫ÛÃ®‰÷»æœﬂ≥Ã÷˜—≠ª∑
     static void ProcessLogs() {
         while (true) {
             std::queue<LogTask> localQueue;
@@ -147,31 +145,25 @@ private:
     static void Render(const LogTask& task) {
         if (hConsole == INVALID_HANDLE_VALUE) return;
 
-        // 1.  ±º‰¥¡ (ƒ¨»œ…´)
         std::cout << task.timestamp << " ";
 
-        // 2. º∂±±Í«© (∏˘æ›º∂±±‰…´)
         SetConsoleTextAttribute(hConsole, GetLevelColor(task.level));
         std::cout << GetLevelString(task.level);
 
-        // 3. ª÷∏¥ƒ¨»œ≤¢ ‰≥ˆƒ⁄»›
         SetConsoleTextAttribute(hConsole, DEFAULT_COLOR);
         std::cout << " [" << task.context << "] " << task.message << "\n";
     }
 
     static std::string CreateLogDirectory() {
-        // ªÒ»° exe À˘‘⁄ƒø¬º
         char exePath[MAX_PATH];
         GetModuleFileNameA(NULL, exePath, MAX_PATH);
         fs::path exeDir = fs::path(exePath).parent_path();
 
-        // ¥¥Ω® logs ƒø¬º
         fs::path logDir = exeDir / "config" / "BedrockBoot2" / "logs";
         if (!fs::exists(logDir)) {
             fs::create_directories(logDir);
         }
 
-        // …˙≥…»’÷æŒƒº˛√˚£®∞¥»’∆⁄£©
         auto now = std::chrono::system_clock::now();
         auto time = std::chrono::system_clock::to_time_t(now);
         struct tm tm_info;
@@ -185,6 +177,8 @@ private:
     }
 
 public:
+    static std::function<void(const std::vector<LogTask>&)> safeLogBatchCallback;
+
     static void Initialize() {
         if (hConsole != INVALID_HANDLE_VALUE) return;
 
@@ -193,7 +187,6 @@ public:
         std::ios_base::sync_with_stdio(false);
         std::cin.tie(NULL);
 
-        // ≥ı ºªØŒƒº˛»’÷æ
         CreateLogDirectory();
         logFile.open(logFilePath, std::ios::out | std::ios::app);
         if (!logFile.is_open()) {
@@ -215,14 +208,21 @@ public:
         Logger::Log(LogLevel::INFO, "Log file: " + logFilePath, "Logger");
     }
 
-    static void Shutdown() {
-        if (fileEnabled) {
-            WriteToFile(LogTask{ LogLevel::INFO, "Logger shutting down", GetFullTimestamp(), "Logger" });
-            logFile.close();
-        }
-
+    static void SignalStop() {
         shouldStop = true;
         cv.notify_all();
+        {
+            std::lock_guard<std::mutex> lock(fileMutex);
+            if (logFile.is_open()) {
+                logFile.flush();
+                logFile.close();
+            }
+        }
+        fileEnabled = false;
+    }
+
+    static void Shutdown() {
+        SignalStop();
         if (workerThread.joinable()) workerThread.join();
     }
 
@@ -266,7 +266,7 @@ public:
     }
 };
 
-// æ≤Ã¨≥…‘±≥ı ºªØ
+std::function<void(const std::vector<LogTask>&)> Logger::safeLogBatchCallback = nullptr;
 HANDLE Logger::hConsole = INVALID_HANDLE_VALUE;
 std::queue<LogTask> Logger::logQueue;
 std::mutex Logger::queueMutex;

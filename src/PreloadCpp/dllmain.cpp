@@ -11,13 +11,14 @@
 #include "redirctor.h"
 #include "logger.h"
 #include "ConfigManager.h"
+#include "ConsoleCommander.h"
 #pragma comment(lib, "detours.lib")
 fs::path g_logicalBaseDir;
 HANDLE g_localDataHandle = INVALID_HANDLE_VALUE;
 std::mutex g_handleMutex;
 bool g_hooksInstalled = false;
 ConfigManager g_configManager;
-bool isOutFileHook = g_configManager.GetBoolConfig("isDetailedLog");
+std::atomic<bool> isOutFileHook(g_configManager.GetBoolConfig("isDetailedLog"));
 
 std::string bbFolder = "config/BedrockBoot2/isolation";
 
@@ -176,7 +177,7 @@ bool ApplyRedirection(POBJECT_ATTRIBUTES objectAttributes, RedirectContext& cont
 {
 	isRedirected = false; 
 	
-	if (objectAttributes && objectAttributes->ObjectName && isOutFileHook) {
+	if (objectAttributes && objectAttributes->ObjectName && isOutFileHook.load()) {
 		std::wstring path(objectAttributes->ObjectName->Buffer, objectAttributes->ObjectName->Length / sizeof(wchar_t));
 		Logger::Info(opType + ": " + WStringToString(path));
 	}
@@ -548,6 +549,17 @@ inline void PrintBanner()
 	}
 }
 
+BOOL WINAPI ConsoleCloseHandler(DWORD dwCtrlType)
+{
+	if (dwCtrlType == CTRL_CLOSE_EVENT || dwCtrlType == CTRL_SHUTDOWN_EVENT)
+	{
+		Logger::SignalStop();
+		ConsoleCommander::Stop();
+		return TRUE;
+	}
+	return FALSE;
+}
+
 BOOL APIENTRY DllMain(HMODULE hModule,
 	DWORD ul_reason_for_call,
 	LPVOID lpReserved
@@ -559,12 +571,16 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		SetExeDirectoryAsWorkingDir();
 		if (g_configManager.GetBoolConfig("isConsole"))
 		{
-			AllocConsole();
+			if (!AttachConsole(ATTACH_PARENT_PROCESS))
+			{
+				AllocConsole();
+			}
 			system("title Minecraft Bedrock Console");
 			FILE* fDummy;
 			freopen_s(&fDummy, "CONOUT$", "w", stdout);
 			freopen_s(&fDummy, "CONOUT$", "w", stderr);
 			freopen_s(&fDummy, "CONIN$", "r", stdin);
+			SetConsoleCtrlHandler(ConsoleCloseHandler, TRUE);
 			Logger::Initialize();
 			PrintBanner();
 
@@ -624,9 +640,13 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		}
 		Load();
 		LoadPreloadDlls(hModule, ul_reason_for_call, lpReserved);
+		break;
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
+		break;
 	case DLL_PROCESS_DETACH:
+		Logger::SignalStop();
+		ConsoleCommander::Stop();
 		break;
 	}
 	return TRUE;

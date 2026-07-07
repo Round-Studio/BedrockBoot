@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Base.Entry.Task;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using Octokit;
@@ -17,12 +18,34 @@ using Path = System.IO.Path;
 
 namespace BedrockBoot.Views.TaskItem;
 
-public partial class TaskDownloadUpdateFileItem : UserControl
+public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 {
     private readonly string _currentExecutablePath = GetCurrentLauncherPath();
 
     private Action _cancelCallBack = () => { };
     private CancellationTokenSource? _cts;
+    private double _taskProgress;
+    private string _taskStatusText = "";
+    private string _taskTitle = "";
+    private bool _taskIsCompleted;
+    private bool _taskIsIndeterminate = true;
+
+    public double Progress => _taskProgress;
+    public string StatusText => _taskStatusText;
+    public string Title => _taskTitle;
+    public bool IsCompleted => _taskIsCompleted;
+    public bool IsIndeterminate => _taskIsIndeterminate;
+
+    public event Action<ITaskItem>? ProgressUpdated;
+
+    protected void ReportProgress(double progress, string statusText, bool isIndeterminate = false)
+    {
+        _taskProgress = progress;
+        _taskStatusText = statusText;
+        _taskIsIndeterminate = isIndeterminate;
+        if (progress >= 100) _taskIsCompleted = true;
+        ProgressUpdated?.Invoke(this);
+    }
 
     public TaskDownloadUpdateFileItem()
     {
@@ -32,6 +55,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     public TaskDownloadUpdateFileItem(Release release) : this()
     {
         Release = release;
+        _taskTitle = string.Format(I18nManager.Instance["Task.Update.Title.Format"], release.TagName);
     }
 
     public Release Release { get; set; } = null!;
@@ -39,7 +63,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
     public void Update(Action cancelCallBack)
     {
         _cancelCallBack = cancelCallBack;
-        CardTitle.Text = string.Format(I18nManager.Instance["Task.Update.Title.Format"], Release.TagName);
+        CardTitle.Text = _taskTitle;
 
         var asset = SelectPreferredAsset();
         if (asset == null)
@@ -67,6 +91,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl
                 downloadPath,
                 new Progress<DownloadProgress>(progress =>
                 {
+                    ReportProgress(progress.ProgressPercentage, $"{progress.ProgressPercentage:F2} %");
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         if (ProgressBar.IsIndeterminate)

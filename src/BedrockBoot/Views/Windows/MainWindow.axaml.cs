@@ -69,7 +69,49 @@ public partial class MainWindow : BedrockBootWindow
 
         AddHandler(DragDrop.DragOverEvent, OnDragOver);
         AddHandler(DragDrop.DropEvent, OnDrop);
+
+        InitializeTaskbarProgress();
     }
+
+#if WINDOWS
+    private IntPtr _windowHandle;
+
+    private double _lastReportedProgress = -1;
+    private DateTime _lastUpdateTime = DateTime.MinValue;
+    private readonly TimeSpan _minInterval = TimeSpan.FromMilliseconds(100);
+    private const double MinProgressDelta = 1;
+
+    private void InitializeTaskbarProgress()
+    {
+        Opened += (sender, args) =>
+        {
+            _windowHandle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+
+            GlobalModel.TaskManager.AddOverallProgressCallback(progress =>
+            {
+                if ((DateTime.Now - _lastUpdateTime) < _minInterval && 
+                    Math.Abs(progress - _lastReportedProgress) < MinProgressDelta)
+                    return;
+            
+                _lastReportedProgress = progress;
+                _lastUpdateTime = DateTime.Now;
+                
+                var hasRunningTasks = GlobalModel.TaskManager.Tasks
+                    .Any(t => t.TaskItem is { IsCompleted: false });
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    BedrockBoot.Windows.Models.TaskbarProgress.SetProgress(
+                        _windowHandle, (int)progress, hasRunningTasks);
+                });
+            });
+        };
+    }
+#else
+    private void InitializeTaskbarProgress()
+    {
+    }
+#endif
 
     private I18nManager I18n => I18nManager.Instance;
     public bool IsWindowActive => IsActive;

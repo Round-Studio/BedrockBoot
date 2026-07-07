@@ -7,4 +7,5 @@ public class TaskEntry
 {
     public Control Item { get; set; }
     public string TUID { get; set; } = Guid.NewGuid().ToString();
+    public ITaskItem? TaskItem => Item as ITaskItem;
 }

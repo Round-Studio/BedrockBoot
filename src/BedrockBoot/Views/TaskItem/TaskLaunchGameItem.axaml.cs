@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Entry.Task;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
@@ -19,12 +20,34 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.TaskItem;
 
-public partial class TaskLaunchGameItem : UserControl
+public partial class TaskLaunchGameItem : UserControl, ITaskItem
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
     public bool IsCancel;
     public Action LaunchCompleted;
     private Process MinecraftProcess;
+    private double _taskProgress;
+    private string _taskStatusText = "";
+    private string _taskTitle = "";
+    private bool _taskIsCompleted;
+    private bool _taskIsIndeterminate = true;
+
+    public double Progress => _taskProgress;
+    public string StatusText => _taskStatusText;
+    public string Title => _taskTitle;
+    public bool IsCompleted => _taskIsCompleted;
+    public bool IsIndeterminate => _taskIsIndeterminate;
+
+    public event Action<ITaskItem>? ProgressUpdated;
+
+    protected void ReportProgress(double progress, string statusText, bool isIndeterminate = false)
+    {
+        _taskProgress = progress;
+        _taskStatusText = statusText;
+        _taskIsIndeterminate = isIndeterminate;
+        if (progress >= 100) _taskIsCompleted = true;
+        ProgressUpdated?.Invoke(this);
+    }
 
     public TaskLaunchGameItem()
     {
@@ -35,6 +58,7 @@ public partial class TaskLaunchGameItem : UserControl
     {
         VersionInfo = info;
         _cancellationTokenSource = new CancellationTokenSource();
+        _taskTitle = string.Format(I18nManager.Instance["Task.Launch.Title.Format"], info.Info.VersionName);
     }
 
     public VersionConfig VersionInfo { get; set; }
@@ -46,7 +70,7 @@ public partial class TaskLaunchGameItem : UserControl
 
         LaunchCompleted = launchCompleted;
         // 标题国际化
-        CardTitle.Text = string.Format(I18nManager.Instance["Task.Launch.Title.Format"], VersionInfo.Info.VersionName);
+        CardTitle.Text = _taskTitle;
 
         Task.Run(async () =>
         {
@@ -91,9 +115,9 @@ public partial class TaskLaunchGameItem : UserControl
                 // 设置进度更新回调
                 lc.UpdateProgress = (status, percentage) =>
                 {
+                    ReportProgress(percentage, string.Format(I18nManager.Instance["Task.Launch.Status.Progress"], percentage, status));
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        // 统一进度条文本格式
                         LaunchProgressText.Text = string.Format(I18nManager.Instance["Task.Launch.Status.Progress"],
                             percentage, status);
                         LaunchProgressBar.Value = percentage;

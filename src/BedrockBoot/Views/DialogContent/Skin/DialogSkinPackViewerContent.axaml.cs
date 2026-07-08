@@ -30,6 +30,7 @@ public partial class DialogSkinPackViewerContent : UserControl
         SkinViewer.PointerMoved += SkinViewer_PointerMoved;
         SkinViewer.PointerPressed += SkinViewer_PointerPressed;
         SkinViewer.PointerReleased += SkinViewer_PointerReleased;
+        SkinViewer.PointerWheelChanged += SkinViewer_PointerWheelChanged;
     }
     public DialogSkinPackViewerContent(string packFolder):this()
     {
@@ -90,10 +91,15 @@ public partial class DialogSkinPackViewerContent : UserControl
         SkinItem.SelectedIndex = 0;
     }
 
+    private void SkinViewer_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        SkinViewer.UpdatePointerWheelChanged(e.Delta.Y > 0);
+    }
+
     private void SkinItem_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         var file = _files[SkinItem.SelectedIndex];
-        SkinViewer.Skin = new Bitmap(file);
+        SkinViewer.Skin = file;
     }
 
     private double Sensitivity = 5.0;

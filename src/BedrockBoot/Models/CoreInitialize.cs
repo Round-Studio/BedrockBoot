@@ -11,6 +11,7 @@ using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 #if WINDOWS
+using BedrockBoot.Models.Helper.Gdk;
 using BedrockBoot.Models.Helper.Uwp;
 #endif
 
@@ -44,6 +45,7 @@ public class CoreInitialize
         HandleFileAssociations();
 #endif
         _ = GetDevelopMode();
+        _ = GetSdkInstalledMode();
         CheckUwpDependence();
     }
 
@@ -108,6 +110,21 @@ public class CoreInitialize
         var devMod = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
         if (!devMod)
             DeveloperModeHelper.ShowNotice();
+#endif
+    }
+
+    private static async Task GetSdkInstalledMode()
+    {
+#if WINDOWS
+        if (!AppSdkChecker.GetInstalled())
+            if (await AppSdkChecker.ShowNotice())
+            {
+                DialogHost.Show(new()
+                {
+                    Title = "下载 SDK",
+                    Content = new DialogDownloadAppSdkContent()
+                });
+            };
 #endif
     }
 

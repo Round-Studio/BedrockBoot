@@ -44,16 +44,6 @@
                             <TextBlock Margin="8,4,0,4" Text="皮肤包" />
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Classes="Segmented"
-                                 IsVisible="False"
-                                 Tag="WorldTemplate">
-                        <StackPanel Orientation="Horizontal">
-                            <onePointControls:FontIcon Glyph="&#xF012;"
-                                                       VerticalAlignment="Center"
-                                                       FontSize="16" />
-                            <TextBlock Margin="8,4,0,4" Text="世界模版" />
-                        </StackPanel>
-                    </ListBoxItem>
                 </ListBox>
             </items:BorderCard>
             <items:BorderCard Grid.Column="1"

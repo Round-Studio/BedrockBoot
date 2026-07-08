@@ -361,21 +361,7 @@ public:
         return m_isValid;
     }
 
-	void Reload()
-	{
-		std::string jsonContent = ReadJsonFile();
-		if (!jsonContent.empty())
-		{
-			ParseFullJson(jsonContent);
-		}
-		else
-		{
-			SetDefaultValues();
-		}
-		Logger::Info("Configuration reloaded");
-	}
-
-	void PrintAllData() const
+    void PrintAllData() const
     {
         Logger::Info("========== Config Data ==========");
         for (const auto& obj : m_allData)

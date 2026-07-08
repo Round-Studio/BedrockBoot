@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Windows.Management.Deployment;
 using Avalonia.Threading;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -10,32 +11,44 @@ public class AppSdkChecker
 {
     public static bool GetInstalled()
     {
-        var command =
-            $"$p=@(\"MicrosoftCorporationII.WinAppRuntime.Main\",\"MicrosoftCorporationII.WinAppRuntime.Singleton\",\"Microsoft.WinAppRuntime.DDLM\"); $r=$true; foreach($i in $p){{if(-not(Get-AppxPackage -Name \"$i*\"|?{{$_.Version -like \"8000.*\"}})){{$r=$false}}}}; $r";
-        
+        var command = @"
+        $p = @('MicrosoftCorporationII.WinAppRuntime.Main', 'MicrosoftCorporationII.WinAppRuntime.Singleton', 'Microsoft.WinAppRuntime.DDLM');
+        $r = $true;
+        foreach ($i in $p) {
+            if (-not (Get-AppxPackage -Name ""$i*"" | Where-Object { $_.Version.StartsWith('8000.') })) {
+                $r = $false;
+                break;
+            }
+        };
+        $r
+    ";
+
         var startInfo = new ProcessStartInfo
         {
             FileName = "powershell.exe",
-            Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command {command}",
+            Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{command}\"",
             UseShellExecute = false,
             CreateNoWindow = true,
             RedirectStandardOutput = true,
             RedirectStandardError = true
         };
-        
+    
         try
         {
             using (var process = Process.Start(startInfo))
             {
                 if (process == null) return false;
-                
+            
                 string output = process.StandardOutput.ReadToEnd().Trim();
+                string error = process.StandardError.ReadToEnd().Trim();
                 process.WaitForExit();
-
-                var result = output.Equals("true", StringComparison.OrdinalIgnoreCase);
-                Console.WriteLine($@"Pwsh 调用输出：{result}");
-                
-                return result;
+            
+                // 关键：输出错误信息
+                Console.WriteLine($"Output: '{output}'");
+                Console.WriteLine($"Error: '{error}'");
+                Console.WriteLine($"ExitCode: {process.ExitCode}");
+            
+                return output.Equals("true", StringComparison.OrdinalIgnoreCase);
             }
         }
         catch (Exception ex)

@@ -416,6 +416,7 @@ public partial class MainWindow : BedrockBootWindow
 
     public void UpdateTheme()
     {
+        MediaManager.Instance.Enabled = Core.Global.GlobalModel.Config.Data.IsPlayBackgroundMusic;
         var musicName = Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic;
         if (Core.Global.GlobalModel.Config.Data.StyleConfig.IsUseThemePack)
         {

@@ -30,6 +30,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("catalogStrategy")] public CatalogStrategyEnum CatalogStrategy { get; set; } = CatalogStrategyEnum.Independence;
         [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
         [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
+        [JsonPropertyName("isShowConnectPage")] public bool IsShowConnectPage { get; set; } = false;
         [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;
         [JsonPropertyName("isMouseLockForGdk")] public bool IsMouseLockForGdk { get; set; } = false;
         [JsonPropertyName("isMouseLockReserve")] public bool IsMouseLockReserve { get; set; } = false;

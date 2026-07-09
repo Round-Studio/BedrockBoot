@@ -69,13 +69,14 @@ public partial class MainPage : UserControl
             Tag = "ToolsBox",
             Page = typeof(MainToolsBoxPage)
         });
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "\uF0B9",
-            ItemText = i18n["MainPage.Nav.Multiplayer"],
-            Tag = "Multiplayer",
-            Page = typeof(MainMultiplayerPage)
-        });
+        if (GlobalModel.Config.Data.IsShowConnectPage)
+            RegisterTopItem(new TopBarItemInfo
+            {
+                ItemGlyph = "\uF0B9",
+                ItemText = i18n["MainPage.Nav.Multiplayer"],
+                Tag = "Multiplayer",
+                Page = typeof(MainMultiplayerPage)
+            });
 #endif
         RegisterTopItem(new TopBarItemInfo
         {

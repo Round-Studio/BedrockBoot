@@ -89,16 +89,24 @@ public class IsolationCore
                 ? "Minecraft Bedrock"
                 : "Minecraft Bedrock Preview");
 #endif
-        return PathsList.GamePublicRootPath;
+        return GetInstanceConfigRootPath(versionConfig);
     }
 
     public static string GetInstanceConfigRootPath(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe"
-            );
+        {
+            var dirName = versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release
+                ? Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe"
+                )
+                : Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    @"AppData\Local\Packages\Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe"
+                );
+            return dirName;
+        }
 
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {

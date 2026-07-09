@@ -37,6 +37,14 @@ std::wstring GetRedirectedRelativePath(const std::wstring& originalPath)
 		L"AppData\\Roaming\\Minecraft Bedrock Preview"
 	};
 
+	const std::vector<std::wstring> excludedPatterns = {
+		L"AC",
+		L"LocalCache",
+		L"SystemAppData",
+		L"Settings",
+		L"TempState",
+		L"RoamingState"
+	};
 
 	std::wstring matchedKeyword;
 	size_t pos = std::wstring::npos;
@@ -69,9 +77,36 @@ std::wstring GetRedirectedRelativePath(const std::wstring& originalPath)
 	{
 		return L"";
 	}
+
 	for (wchar_t& c : relativePart)
 	{
 		if (c == L'/') c = L'\\';
+	}
+
+	size_t firstSlashPos = relativePart.find(L'\\');
+	std::wstring topLevelFolder;
+
+	if (firstSlashPos != std::wstring::npos)
+	{
+		topLevelFolder = relativePart.substr(0, firstSlashPos);
+	}
+	else
+	{
+		topLevelFolder = relativePart;
+	}
+
+	std::wstring lowerTopLevel = topLevelFolder;
+	std::transform(lowerTopLevel.begin(), lowerTopLevel.end(), lowerTopLevel.begin(), ::towlower);
+
+	for (const auto& pattern : excludedPatterns)
+	{
+		std::wstring lowerPattern = pattern;
+		std::transform(lowerPattern.begin(), lowerPattern.end(), lowerPattern.begin(), ::towlower);
+
+		if (lowerTopLevel.find(lowerPattern) != std::wstring::npos)
+		{
+			return L"";
+		}
 	}
 
 	fs::path fullTarget = g_logicalBaseDir / relativePart;

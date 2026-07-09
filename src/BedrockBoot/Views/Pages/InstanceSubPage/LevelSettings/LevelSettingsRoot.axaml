@@ -53,6 +53,16 @@
                     </StackPanel>
                 </ListBoxItem>
                 <ListBoxItem Classes="Segmented"
+                             Tag="Addon">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                        <onePointControls:FontIcon Glyph="&#xF133;"
+                                                   VerticalAlignment="Center" />
+                        <TextBlock Text="附加包管理"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Classes="Segmented"
                              Tag="Setting"
                              IsSelected="True">
                     <StackPanel Orientation="Horizontal"

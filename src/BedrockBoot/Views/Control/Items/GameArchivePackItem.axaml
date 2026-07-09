@@ -1,0 +1,61 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:style="clr-namespace:BedrockBoot.Models.Style"
+             mc:Ignorable="d" d:DesignWidth="800"
+             x:Class="BedrockBoot.Views.Control.Items.GameArchivePackItem">
+    <onePointControls:SettingCard IsClickable="True"
+                                  Name="Card"
+                                  IsShowActionIcon="False"
+                                  IsFontIcon="False">
+        <onePointControls:SettingCard.Header>
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <style:MinecraftTextBlock Name="PackName"
+                                          MinecraftText="Name"
+                                          TextWrapping="Wrap" />
+            </StackPanel>
+        </onePointControls:SettingCard.Header>
+        <onePointControls:SettingCard.Description>
+            <StackPanel Orientation="Vertical"
+                        Spacing="2">
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,2,0,0"
+                            Spacing="8">
+                    <onePointControls:LabelBox VerticalAlignment="Center"
+                                               Text="PackVersion"
+                                               Name="PackVersion"></onePointControls:LabelBox>
+                    <onePointControls:LabelBox VerticalAlignment="Center"
+                                               Text="GameVersion"
+                                               Name="GameVersion"></onePointControls:LabelBox>
+                </StackPanel>
+                
+                <style:MinecraftTextBlock Name="PackDescription"
+                                          MinecraftText="PackDescription"
+                                          TextWrapping="Wrap" />
+            </StackPanel>
+        </onePointControls:SettingCard.Description>
+        <StackPanel Orientation="Horizontal"
+                    Name="ControlBox"
+                    Spacing="8">
+            <Button Width="32" Height="32"
+                    Name="CheckBtn"
+                    Click="ActBtn_Click"
+                    Classes="NoBorder">
+                <onePointControls:FontIcon Glyph="&#xE8FB;"
+                                           Foreground="Green"
+                                           FontSize="16"/>
+            </Button>
+            <Button Width="32" Height="32"
+                    Name="CancelBtn"
+                    Click="ActBtn_Click"
+                    Classes="NoBorder">
+                <onePointControls:FontIcon Glyph="&#xE711;"
+                                           Foreground="DarkRed"
+                                           FontSize="16"/>
+            </Button>
+        </StackPanel>
+    </onePointControls:SettingCard>
+</UserControl>

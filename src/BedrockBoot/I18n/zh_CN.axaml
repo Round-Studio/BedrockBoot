@@ -678,8 +678,8 @@
     <x:String x:Key="Settings.Universal.Update.Status.Latest.Title">当前已是最新版本</x:String>
     <x:String x:Key="Settings.Universal.Update.Status.Latest.Message">尽情享用吧~</x:String>
     <x:String x:Key="Settings.Universal.Group.Accessibility">辅助功能</x:String>
-    <x:String x:Key="Settings.Universal.JumpList.Title">任务栏快捷菜单</x:String>
-    <x:String x:Key="Settings.Universal.JumpList.Desc">当程序固定在任务栏时，右键其固定项时显示最近启动</x:String>
+    <x:String x:Key="Settings.Universal.JumpList.Title">跳转列表快捷菜单</x:String>
+    <x:String x:Key="Settings.Universal.JumpList.Desc">当程序固定在任务栏或开始菜单时，右键其固定项时显示快捷启动</x:String>
     <x:String x:Key="Settings.Universal.Debug.Title">调试模式</x:String>
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本体调试模式</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">语言</x:String>

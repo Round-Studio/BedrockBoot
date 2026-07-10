@@ -1,4 +1,3 @@
-// MinecraftRedirector.h
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 #define _CRT_SECURE_NO_WARNINGS
@@ -12,13 +11,16 @@
 
 namespace fs = std::filesystem;
 
-// Minimal NT structures used by the redirector
+#ifndef _UNICODE_STRING_DEFINED
 typedef struct _UNICODE_STRING {
     USHORT Length;
     USHORT MaximumLength;
     PWSTR Buffer;
 } UNICODE_STRING, * PUNICODE_STRING;
+#define _UNICODE_STRING_DEFINED
+#endif
 
+#ifndef _OBJECT_ATTRIBUTES_DEFINED
 typedef struct _OBJECT_ATTRIBUTES {
     ULONG Length;
     HANDLE RootDirectory;
@@ -27,7 +29,10 @@ typedef struct _OBJECT_ATTRIBUTES {
     PVOID SecurityDescriptor;
     PVOID SecurityQualityOfService;
 } OBJECT_ATTRIBUTES, * POBJECT_ATTRIBUTES;
+#define _OBJECT_ATTRIBUTES_DEFINED
+#endif
 
+#ifndef _IO_STATUS_BLOCK_DEFINED
 typedef struct _IO_STATUS_BLOCK {
     union {
         LONG Status;
@@ -35,7 +40,10 @@ typedef struct _IO_STATUS_BLOCK {
     };
     ULONG_PTR Information;
 } IO_STATUS_BLOCK, * PIO_STATUS_BLOCK;
+#define _IO_STATUS_BLOCK_DEFINED
+#endif
 
+#ifndef _FILE_RENAME_INFORMATION_DEFINED
 typedef struct _FILE_RENAME_INFORMATION {
     union {
         BOOLEAN ReplaceIfExists;
@@ -45,10 +53,13 @@ typedef struct _FILE_RENAME_INFORMATION {
     ULONG FileNameLength;
     WCHAR FileName[1];
 } FILE_RENAME_INFORMATION, * PFILE_RENAME_INFORMATION;
+#define _FILE_RENAME_INFORMATION_DEFINED
+#endif
 
 typedef LONG NTSTATUS;
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
 
+#ifndef _FILE_INFORMATION_CLASS_DEFINED
 typedef enum _FILE_INFORMATION_CLASS {
     FileDirectoryInformation = 1,
     FileFullDirectoryInformation,
@@ -127,6 +138,8 @@ typedef enum _FILE_INFORMATION_CLASS {
     FileCaseSensitiveInformationForceAccessCheck,
     FileMaximumInformation
 } FILE_INFORMATION_CLASS;
+#define _FILE_INFORMATION_CLASS_DEFINED
+#endif
 
 typedef NTSTATUS(NTAPI* NtCreateFile_t)(
     PHANDLE FileHandle,
@@ -173,6 +186,36 @@ typedef NTSTATUS(NTAPI* NtDeleteFile_t)(
     POBJECT_ATTRIBUTES ObjectAttributes
     );
 
+typedef VOID(NTAPI* PIO_APC_ROUTINE)(
+    PVOID ApcContext,
+    PIO_STATUS_BLOCK IoStatusBlock,
+    ULONG Reserved
+    );
+
+typedef NTSTATUS(NTAPI* NtQueryDirectoryFile_t)(
+    HANDLE FileHandle,
+    HANDLE Event,
+    PIO_APC_ROUTINE ApcRoutine,
+    PVOID ApcContext,
+    PIO_STATUS_BLOCK IoStatusBlock,
+    PVOID FileInformation,
+    ULONG Length,
+    FILE_INFORMATION_CLASS FileInformationClass,
+    BOOLEAN ReturnSingleEntry,
+    PUNICODE_STRING FileName,
+    BOOLEAN RestartScan
+    );
+
+typedef NTSTATUS(NTAPI* NtCreateSection_t)(
+    PHANDLE SectionHandle,
+    ACCESS_MASK DesiredAccess,
+    POBJECT_ATTRIBUTES ObjectAttributes,
+    PLARGE_INTEGER MaximumSize,
+    ULONG PageProtection,
+    ULONG AllocationAttributes,
+    HANDLE FileHandle
+    );
+
 struct Config {
     bool enable_debug_console = false;
     bool enable_redirection = false;
@@ -201,6 +244,8 @@ extern NtQueryAttributesFile_t OriginalNtQueryAttributesFile;
 extern NtQueryFullAttributesFile_t OriginalNtQueryFullAttributesFile;
 extern NtSetInformationFile_t OriginalNtSetInformationFile;
 extern NtDeleteFile_t OriginalNtDeleteFile;
+extern NtQueryDirectoryFile_t OriginalNtQueryDirectoryFile;
+extern NtCreateSection_t OriginalNtCreateSection;
 
 NTSTATUS NTAPI HookedNtCreateFile(
     PHANDLE FileHandle,
@@ -245,4 +290,28 @@ NTSTATUS NTAPI HookedNtSetInformationFile(
 
 NTSTATUS NTAPI HookedNtDeleteFile(
     POBJECT_ATTRIBUTES ObjectAttributes
+);
+
+NTSTATUS NTAPI HookedNtQueryDirectoryFile(
+    HANDLE FileHandle,
+    HANDLE Event,
+    PIO_APC_ROUTINE ApcRoutine,
+    PVOID ApcContext,
+    PIO_STATUS_BLOCK IoStatusBlock,
+    PVOID FileInformation,
+    ULONG Length,
+    FILE_INFORMATION_CLASS FileInformationClass,
+    BOOLEAN ReturnSingleEntry,
+    PUNICODE_STRING FileName,
+    BOOLEAN RestartScan
+);
+
+NTSTATUS NTAPI HookedNtCreateSection(
+    PHANDLE SectionHandle,
+    ACCESS_MASK DesiredAccess,
+    POBJECT_ATTRIBUTES ObjectAttributes,
+    PLARGE_INTEGER MaximumSize,
+    ULONG PageProtection,
+    ULONG AllocationAttributes,
+    HANDLE FileHandle
 );

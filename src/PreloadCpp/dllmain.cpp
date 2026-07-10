@@ -2,7 +2,6 @@
 #include <shellapi.h>
 #include <algorithm>
 #include <iostream>
-#include <windows.h>
 #include <stdio.h>
 #include <fstream>
 #include <vector>
@@ -27,103 +26,107 @@ NtQueryAttributesFile_t OriginalNtQueryAttributesFile = nullptr;
 NtQueryFullAttributesFile_t OriginalNtQueryFullAttributesFile = nullptr;
 NtSetInformationFile_t OriginalNtSetInformationFile = nullptr;
 NtDeleteFile_t OriginalNtDeleteFile = nullptr;
+NtQueryDirectoryFile_t OriginalNtQueryDirectoryFile = nullptr;
+NtCreateSection_t OriginalNtCreateSection = nullptr;
 
 std::wstring GetRedirectedRelativePath(const std::wstring& originalPath)
 {
-	const std::vector<std::wstring> keywords = {
-		L"AppData\\Roaming\\Minecraft Bedrock",
+    const std::vector<std::wstring> keywords = {
+    	L"AppData\\Roaming\\Minecraft Bedrock",
 		L"AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe",
 		L"AppData\\Local\\Packages\\Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe",
-		L"AppData\\Roaming\\Minecraft Bedrock Preview"
-	};
+		L"AppData\\Local\\Packages\\Microsoft.MinecraftUWP_8wekyb3d8bbwe\\LocalState",
+    	L"AppData\\Local\\Packages\\Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe\\LocalState",
+        L"AppData\\Roaming\\Minecraft Bedrock Preview"
+    };
 
-	const std::vector<std::wstring> excludedPatterns = {
-		L"AC",
-		L"LocalCache",
-		L"SystemAppData",
-		L"Settings",
-		L"TempState",
-		L"RoamingState"
-	};
+    const std::vector<std::wstring> excludedPatterns = {
+        L"AC",
+        L"LocalCache",
+        L"SystemAppData",
+        L"Settings",
+        L"TempState",
+        L"RoamingState"
+    };
 
-	std::wstring matchedKeyword;
-	size_t pos = std::wstring::npos;
+    std::wstring matchedKeyword;
+    size_t pos = std::wstring::npos;
 
-	for (const auto& keyword : keywords)
-	{
-		size_t foundPos = originalPath.find(keyword);
-		if (foundPos != std::wstring::npos)
-		{
-			pos = foundPos;
-			matchedKeyword = keyword;
-			break;
-		}
-	}
+    for (const auto& keyword : keywords)
+    {
+        size_t foundPos = originalPath.find(keyword);
+        if (foundPos != std::wstring::npos)
+        {
+            pos = foundPos;
+            matchedKeyword = keyword;
+            break;
+        }
+    }
 
-	if (pos == std::wstring::npos)
-	{
-		return L"";
-	}
+    if (pos == std::wstring::npos)
+    {
+        return L"";
+    }
 
-	std::wstring relativePart = originalPath.substr(pos + matchedKeyword.length());
+    std::wstring relativePart = originalPath.substr(pos + matchedKeyword.length());
 
-	while (!relativePart.empty() &&
-		(relativePart[0] == L'\\' || relativePart[0] == L'/'))
-	{
-		relativePart.erase(0, 1);
-	}
+    while (!relativePart.empty() &&
+        (relativePart[0] == L'\\' || relativePart[0] == L'/'))
+    {
+        relativePart.erase(0, 1);
+    }
 
-	if (relativePart.empty())
-	{
-		return L"";
-	}
+    if (relativePart.empty())
+    {
+        return L"";
+    }
 
-	for (wchar_t& c : relativePart)
-	{
-		if (c == L'/') c = L'\\';
-	}
+    for (wchar_t& c : relativePart)
+    {
+        if (c == L'/') c = L'\\';
+    }
 
-	size_t firstSlashPos = relativePart.find(L'\\');
-	std::wstring topLevelFolder;
+    size_t firstSlashPos = relativePart.find(L'\\');
+    std::wstring topLevelFolder;
 
-	if (firstSlashPos != std::wstring::npos)
-	{
-		topLevelFolder = relativePart.substr(0, firstSlashPos);
-	}
-	else
-	{
-		topLevelFolder = relativePart;
-	}
+    if (firstSlashPos != std::wstring::npos)
+    {
+        topLevelFolder = relativePart.substr(0, firstSlashPos);
+    }
+    else
+    {
+        topLevelFolder = relativePart;
+    }
 
-	std::wstring lowerTopLevel = topLevelFolder;
-	std::transform(lowerTopLevel.begin(), lowerTopLevel.end(), lowerTopLevel.begin(), ::towlower);
+    std::wstring lowerTopLevel = topLevelFolder;
+    std::transform(lowerTopLevel.begin(), lowerTopLevel.end(), lowerTopLevel.begin(), ::towlower);
 
-	for (const auto& pattern : excludedPatterns)
-	{
-		std::wstring lowerPattern = pattern;
-		std::transform(lowerPattern.begin(), lowerPattern.end(), lowerPattern.begin(), ::towlower);
+    for (const auto& pattern : excludedPatterns)
+    {
+        std::wstring lowerPattern = pattern;
+        std::transform(lowerPattern.begin(), lowerPattern.end(), lowerPattern.begin(), ::towlower);
 
-		if (lowerTopLevel.find(lowerPattern) != std::wstring::npos)
-		{
-			return L"";
-		}
-	}
+        if (lowerTopLevel == lowerPattern)
+        {
+            return L"";
+        }
+    }
 
-	fs::path fullTarget = g_logicalBaseDir / relativePart;
-	fs::path parentDir = fullTarget.parent_path();
+    fs::path fullTarget = g_logicalBaseDir / relativePart;
+    fs::path parentDir = fullTarget.parent_path();
 
-	if (!parentDir.empty() && !fs::exists(parentDir))
-	{
-		try
-		{
-			fs::create_directories(parentDir);
-		}
-		catch (...)
-		{
-		}
-	}
+    if (!parentDir.empty() && !fs::exists(parentDir))
+    {
+        try
+        {
+            fs::create_directories(parentDir);
+        }
+        catch (...)
+        {
+        }
+    }
 
-	return relativePart;
+    return relativePart;
 }
 
 void InitializeBaseDir()
@@ -264,7 +267,6 @@ bool IsDirectory(const std::wstring& relativePath)
 	return fs::is_directory(fullPath);
 }
 
-
 NTSTATUS NTAPI HookedNtCreateFile(
 	PHANDLE FileHandle,
 	ACCESS_MASK DesiredAccess,
@@ -283,17 +285,28 @@ NTSTATUS NTAPI HookedNtCreateFile(
 	bool isRedirected = false;
 	POBJECT_ATTRIBUTES actualAttributes = ObjectAttributes;
 
+	ULONG originalCreateOptions = CreateOptions;
+
 	if (ApplyRedirection(ObjectAttributes, context, isRedirected, "NtCreateFile"))
 	{
 		actualAttributes = &context.objectAttributes;
 
 		if (isRedirected)
 		{
-			bool isDir = IsDirectory(context.wideBuffer.data());
-			if (isDir)
+			std::wstring relativePath(context.wideBuffer.data());
+
+			if (IsDirectory(relativePath))
 			{
 				CreateOptions &= ~0x00000040;
 				CreateOptions |= 0x00000001;
+			}
+			else
+			{
+				if (!relativePath.empty() && relativePath.back() == L'\\')
+				{
+					CreateOptions &= ~0x00000040;
+					CreateOptions |= 0x00000001;
+				}
 			}
 		}
 	}
@@ -430,6 +443,86 @@ NTSTATUS NTAPI HookedNtSetInformationFile(
 
 	return OriginalNtSetInformationFile(
 		FileHandle, IoStatusBlock, FileInformation, Length, FileInformationClass
+	);
+}
+
+NTSTATUS NTAPI HookedNtQueryDirectoryFile(
+	HANDLE FileHandle,
+	HANDLE Event,
+	PIO_APC_ROUTINE ApcRoutine,
+	PVOID ApcContext,
+	PIO_STATUS_BLOCK IoStatusBlock,
+	PVOID FileInformation,
+	ULONG Length,
+	FILE_INFORMATION_CLASS FileInformationClass,
+	BOOLEAN ReturnSingleEntry,
+	PUNICODE_STRING FileName,
+	BOOLEAN RestartScan
+)
+{
+	if (FileName && FileName->Buffer)
+	{
+		std::wstring queryPath(FileName->Buffer, FileName->Length / sizeof(wchar_t));
+	}
+
+	return OriginalNtQueryDirectoryFile(
+		FileHandle, Event, ApcRoutine, ApcContext, IoStatusBlock,
+		FileInformation, Length, FileInformationClass, ReturnSingleEntry,
+		FileName, RestartScan
+	);
+}
+
+NTSTATUS NTAPI HookedNtCreateSection(
+	PHANDLE SectionHandle,
+	ACCESS_MASK DesiredAccess,
+	POBJECT_ATTRIBUTES ObjectAttributes,
+	PLARGE_INTEGER MaximumSize,
+	ULONG PageProtection,
+	ULONG AllocationAttributes,
+	HANDLE FileHandle
+)
+{
+	RedirectContext context;
+	bool isRedirected = false;
+
+	if (ObjectAttributes && ObjectAttributes->ObjectName)
+	{
+		std::wstring originalPath(
+			ObjectAttributes->ObjectName->Buffer,
+			ObjectAttributes->ObjectName->Length / sizeof(wchar_t)
+		);
+
+		std::wstring relativePath = GetRedirectedRelativePath(originalPath);
+
+		if (!relativePath.empty())
+		{
+			HANDLE rootHandle = GetLocalDataRoot();
+			if (rootHandle != INVALID_HANDLE_VALUE)
+			{
+				isRedirected = true;
+
+				context.wideBuffer.assign(relativePath.begin(), relativePath.end());
+				context.wideBuffer.push_back(L'\0');
+
+				context.unicodeString.Length = static_cast<USHORT>(relativePath.length() * sizeof(wchar_t));
+				context.unicodeString.MaximumLength = static_cast<USHORT>(context.wideBuffer.size() * sizeof(wchar_t));
+				context.unicodeString.Buffer = context.wideBuffer.data();
+
+				OBJECT_ATTRIBUTES newAttr = *ObjectAttributes;
+				newAttr.ObjectName = &context.unicodeString;
+				newAttr.RootDirectory = rootHandle;
+
+				return OriginalNtCreateSection(
+					SectionHandle, DesiredAccess, &newAttr,
+					MaximumSize, PageProtection, AllocationAttributes, FileHandle
+				);
+			}
+		}
+	}
+
+	return OriginalNtCreateSection(
+		SectionHandle, DesiredAccess, ObjectAttributes,
+		MaximumSize, PageProtection, AllocationAttributes, FileHandle
 	);
 }
 
@@ -628,6 +721,8 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 				GetProcAddress(ntdll, "NtSetInformationFile"));
 			OriginalNtDeleteFile = reinterpret_cast<NtDeleteFile_t>(
 				GetProcAddress(ntdll, "NtDeleteFile"));
+			OriginalNtQueryDirectoryFile = reinterpret_cast<NtQueryDirectoryFile_t>(GetProcAddress(ntdll, "NtQueryDirectoryFile"));
+			OriginalNtCreateSection = reinterpret_cast<NtCreateSection_t>(GetProcAddress(ntdll, "NtCreateSection"));
 
 			Logger::Info("NtCreateFile addr: " + std::to_string(reinterpret_cast<unsigned long long>(OriginalNtCreateFile)));
 			Logger::Info("NtOpenFile addr: " + std::to_string(reinterpret_cast<unsigned long long>(OriginalNtOpenFile)));
@@ -645,6 +740,8 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 			DetourAttach(&(PVOID&)OriginalNtQueryFullAttributesFile, HookedNtQueryFullAttributesFile);
 			DetourAttach(&(PVOID&)OriginalNtSetInformationFile, HookedNtSetInformationFile);
 			DetourAttach(&(PVOID&)OriginalNtDeleteFile, HookedNtDeleteFile);
+			DetourAttach(&(PVOID&)OriginalNtQueryDirectoryFile, HookedNtQueryDirectoryFile);
+			DetourAttach(&(PVOID&)OriginalNtCreateSection, HookedNtCreateSection);
 
 			LONG error = DetourTransactionCommit();
 			if (error == NO_ERROR)

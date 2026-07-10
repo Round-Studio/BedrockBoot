@@ -52,7 +52,8 @@ public partial class MainWindow : BedrockBootWindow
         InitializeComponent();
         GlobalModel.MainWindow = this;
 
-        if (!Core.Global.GlobalModel.Config.Data.IsFirstRun) MainFrame.NavigateTo(new MainPage());
+        if (!Core.Global.GlobalModel.Config.Data.IsFirstRun)
+            MainFrame.NavigateTo(Core.Global.GlobalModel.Config.Data.IsUseBetaUI ? new NeoMainPage() : new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();
         UpdateTheme();

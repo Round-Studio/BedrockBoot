@@ -75,6 +75,16 @@
                        Text="{DynamicResource Settings.Download.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"
+                                          Header="Beta UI"
+                                          Description="启用或关闭 BedrockBoot 的 Beta UI 测试项"
+                                          IsClickable="True"
+                                          IsShowActionIcon="False"
+                                          Glyph="&#xF1AD;">
+                <ToggleSwitch Name="UseBetaUI"
+                              IsCheckedChanged="UseBetaUI_OnIsCheckedChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="{DynamicResource Setting.Universal.GatherInfo.Title}"
                                           Description="{DynamicResource Setting.Universal.GatherInfo.Desc}"
                                           IsClickable="True"

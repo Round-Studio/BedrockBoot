@@ -13,9 +13,9 @@ public class VersionConfig
     [JsonPropertyName("playerData")] public PlayerDataEntry PlayerData { get; set; } = new();
     [JsonPropertyName("gameStatus")] public VersionStatusEntry VersionStatus { get; set; } = new();
 
-    [JsonIgnore] public string VersionPath { get; set; }
-    [JsonIgnore] public string VersionsRootPath { get; set; }
-    [JsonIgnore] public string BodyFile { get; set; }
+    [JsonIgnore] public string? VersionPath { get; set; } = string.Empty;
+    [JsonIgnore] public string? VersionsRootPath { get; set; } = string.Empty;
+    [JsonIgnore] public string? BodyFile { get; set; } = string.Empty;
 
     public class VersionInfo
     {
@@ -39,26 +39,14 @@ public class VersionConfig
         [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
         [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
-        [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
-        [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
+        [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
     }
     
-    // 新增：玩家数据类
     public class PlayerDataEntry
     {
         [JsonPropertyName("totalPlayTime")] public long TotalPlayTime { get; set; }
         [JsonPropertyName("lastPlayTime")] public DateTime? LastPlayTime { get; set; }
         [JsonPropertyName("totalSessions")] public int TotalSessions { get; set; }
         [JsonPropertyName("firstPlayTime")] public DateTime? FirstPlayTime { get; set; }
-        
-        [JsonIgnore]
-        public string FormattedTotalPlayTime
-        {
-            get
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(TotalPlayTime);
-                return $"{(int)ts.TotalHours}小时{ts.Minutes}分钟{ts.Seconds}秒";
-            }
-        }
     }
 }

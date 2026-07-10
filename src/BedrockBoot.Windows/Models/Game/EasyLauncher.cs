@@ -74,9 +74,6 @@ public class EasyLauncher
             };
             await CoreGlobal.BedrockCore.InitAsync();
         }
-        
-        VersionInfo.Config.FolderPolicyStr =
-            IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
             
         GameInfoHelper.SaveVersionConfig(VersionInfo);
         

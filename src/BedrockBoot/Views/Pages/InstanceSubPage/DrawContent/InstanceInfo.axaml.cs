@@ -253,9 +253,7 @@ public partial class InstanceInfo : UserControl
     {
         if (IsEdit)
         {
-            VersionInfo.Config.IsolationFolderPolicy = (CatalogStrategyEnum)CatalogStrategy.SelectedIndex;
-            VersionInfo.Config.FolderPolicyStr =
-                IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
+            VersionInfo.Config.IsolationFolderPolicy = IsolationPolicyHelper.ParsePolicyConfig((CatalogStrategyEnum)CatalogStrategy.SelectedIndex);
             
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }

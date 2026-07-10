@@ -84,9 +84,7 @@ public partial class InstanceInfo : UserControl
 
     private void UpdateImage()
     {
-        var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
-        if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
-            image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
+        var image = "avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png";
 
         if (!string.IsNullOrEmpty(VersionInfo.Info.CoverImage))
             if (File.Exists(VersionInfo.Info.CoverImage))

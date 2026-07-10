@@ -11,14 +11,14 @@
     <Project Path="src/BedrockBoot.LeviLamina/BedrockBoot.LeviLamina.csproj" />
     <Project Path="src/BedrockBoot.Netease/BedrockBoot.Netease.csproj" />
     <Project Path="src/BedrockBoot.WatchDog/BedrockBoot.WatchDog.csproj" />
-    <Project Path="src/PreLoadCpp/src/PreloadCpp.vcxproj">
+    <Project Path="src/PreLoadCpp/src/PreloadCpp.vcxproj" Id="bfdc1f1a-af77-47c7-897e-673ead85364d">
       <Platform Project="Win32" />
     </Project>
   </Folder>
   <Folder Name="/Dependence/BedrockMapRender/">
     <Project Path="src/BedrockMapRender/BedrockLevelDB/BedrockLevelDB.csproj" />
-    <Project Path="src/BedrockMapRender/BedrockRender.Avalonia/BedrockRender.Avalonia.csproj" />
     <Project Path="src/BedrockMapRender/BedrockRender.Avalonia.Demo/BedrockRender.Avalonia.Demo.csproj" />
+    <Project Path="src/BedrockMapRender/BedrockRender.Avalonia/BedrockRender.Avalonia.csproj" />
     <Project Path="src/BedrockMapRender/BedrockRender.Console/BedrockRender.Console.csproj" />
     <Project Path="src/BedrockMapRender/BedrockRender/BedrockRender.csproj" />
     <Project Path="src/BedrockMapRender/BedrockWorld/BedrockWorld.csproj" />
@@ -31,10 +31,10 @@
     <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
   </Folder>
   <Folder Name="/Dependence/LiteSkinViewer/">
-    <Project Path="src/LiteSkinViewer/LiteSkinViewer.2D/LiteSkinViewer.2D.csproj" />
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.2D.Simple/LiteSkinViewer.2D.Simple.csproj" />
-    <Project Path="src/LiteSkinViewer/LiteSkinViewer.3D/LiteSkinViewer.3D.csproj" />
+    <Project Path="src/LiteSkinViewer/LiteSkinViewer.2D/LiteSkinViewer.2D.csproj" />
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.3D.Simple/LiteSkinViewer.3D.Simple.csproj" />
+    <Project Path="src/LiteSkinViewer/LiteSkinViewer.3D/LiteSkinViewer.3D.csproj" />
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.Shared/LiteSkinViewer.Shared.csproj" />
   </Folder>
   <Folder Name="/Dependence/OnePointUI.Avalonia/">

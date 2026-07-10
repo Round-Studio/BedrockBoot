@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Base.Helper;
 using BedrockLauncher.Core;
 
@@ -24,6 +25,8 @@ public class VersionConfig
         [JsonPropertyName("versionName")] public string VersionName { get; set; }
         [JsonPropertyName("versionType")] public MinecraftGameTypeVersion VersionType { get; set; }
         [JsonPropertyName("coverImage")] public string? CoverImage { get; set; } = null;
+        [JsonPropertyName("gameIconType")] public GameIconType GameIconType { get; set; } = GameIconType.Default;
+        [JsonPropertyName("gameIconPath")] public string GameIconPath { get; set; } = string.Empty;
     }
 
     public class VersionStatusEntry

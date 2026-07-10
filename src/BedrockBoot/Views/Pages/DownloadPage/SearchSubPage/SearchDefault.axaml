@@ -16,7 +16,7 @@
             <Grid Grid.Row="0"
                   Height="24">
                 <onePointControls:LineTextBlock Margin="0"
-                                                                                                Text="{DynamicResource Download.Search.History.Title}"
+                                                Text="{DynamicResource Download.Search.History.Title}"
                                                 FontSize="16"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Center" />
@@ -79,9 +79,9 @@
                     <Grid Grid.Row="1" IsVisible="False" Name="RecommendationPanel" ColumnDefinitions="*,*"
                           ColumnSpacing="6">
                         <widgets:SmallGameView Grid.Column="0" Name="ReleaseBtn" Click="ReleaseBtn_OnClick"
-                                               Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png" />
+                                               Icon="avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png" />
                         <widgets:SmallGameView Grid.Column="1" Name="PreviewBtn" Click="PreviewBtn_OnClick"
-                                               Icon="avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png" />
+                                               Icon="avares://BedrockBoot/Assets/Icon/Minecraft/GrassScript.png" />
                     </Grid>
 
                     <Border Grid.Row="1" Height="44">

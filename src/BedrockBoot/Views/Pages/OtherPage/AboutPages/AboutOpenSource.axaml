@@ -85,6 +85,16 @@
             <TextBlock FontSize="22"
                        FontWeight="Bold"
                        Margin="5,20,5,8">
+                PreLoadCpp
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/PreLoadCpp)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Gpl}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/Round-Studio/PreLoadCpp/blob/main/LICENSE)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
                 PeNet
             </TextBlock>
             <TextBlock Margin="5,0,5,0" Text="(https://github.com/secana/PeNet)" />

@@ -34,6 +34,7 @@ public partial class SettingUniversal : ISettingPage
         LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
         LaunchBehaviorChoose.SelectedIndex = (int)GlobalModel.Config.Data.LaunchBehavior;
         UseHardwareDecode.IsChecked = GlobalModel.Config.Data.IsUseHardwareDecode;
+        UseBetaUI.IsChecked = GlobalModel.Config.Data.IsUseBetaUI;
 
 #if LINUX
         JumpListCard.IsVisible = false;
@@ -107,6 +108,17 @@ public partial class SettingUniversal : ISettingPage
             GlobalModel.Config.Data.IsUseHardwareDecode = (bool)UseHardwareDecode.IsChecked!;
             GlobalModel.Config.Save();
             CoreInit.UpdateUseHardwareDecode(GlobalModel.Config.Data.IsUseHardwareDecode);
+        }
+    }
+
+    private void UseBetaUI_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsUseBetaUI = (bool)UseBetaUI.IsChecked!;
+            GlobalModel.Config.Save();
+            
+            Models.Global.GlobalModel.MainWindow.SetReboot();
         }
     }
 }

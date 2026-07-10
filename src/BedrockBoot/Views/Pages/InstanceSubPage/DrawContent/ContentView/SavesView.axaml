@@ -9,9 +9,37 @@
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ContentView.SavesView">
     <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto">
+              ColumnDefinitions="Auto,*,Auto">
             <items:BorderCard Grid.Column="0"
-                              Margin="20,0,12,10">
+                              Margin="20,0,0,10"
+                              Padding="10,0">
+                <ListBox Classes="Segmented"
+                         SelectionChanged="TypeSel_OnSelectionChanged"
+                         Name="TypeSel"
+                         SelectedIndex="0">
+                    <ListBoxItem Classes="Segmented"
+                                 Tag="Skin">
+                        <StackPanel Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xE74E;"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="16" />
+                            <TextBlock Margin="8,4,0,4" Text="存档" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Classes="Segmented"
+                                 Tag="WorldTemplate">
+                        <StackPanel Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xF012;"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="16" />
+                            <TextBlock Margin="8,4,0,4" Text="模版" />
+                        </StackPanel>
+                    </ListBoxItem>
+                </ListBox>
+            </items:BorderCard>
+            
+            <items:BorderCard Grid.Column="1"
+                              Margin="12,0,12,10">
                 <Grid ColumnDefinitions="4*,Auto,6*">
                     <DockPanel Grid.Column="0"
                                Margin="0,0,12,0">
@@ -40,6 +68,7 @@
                                                    FontSize="16"
                                                    Margin="12,5,12,5" />
                         <TextBox Name="SearchBox"
+                                 Watermark="键入关键词以搜索"
                                  TextChanged="SearchBox_OnTextChanged"
                                  HorizontalAlignment="Stretch"
                                  DockPanel.Dock="Right" />
@@ -47,7 +76,7 @@
                 </Grid>
             </items:BorderCard>
 
-            <items:BorderCard Grid.Column="1"
+            <items:BorderCard Grid.Column="2"
                               Margin="0,0,20,10">
                 <StackPanel Orientation="Horizontal">
                     <Button Classes="NoBorder"
@@ -58,7 +87,7 @@
                             <onePointControls:FontIcon Glyph="&#xE710;"
                                                        VerticalAlignment="Center"
                                                        Margin="0,1,8,0" />
-                            <TextBlock Text="{DynamicResource Instance.Saves.Action.Import}" />
+                            <TextBlock Text="导入包" />
                         </StackPanel>
                     </Button>
                 </StackPanel>

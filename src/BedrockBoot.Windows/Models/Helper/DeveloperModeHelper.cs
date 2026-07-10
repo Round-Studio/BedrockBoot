@@ -71,7 +71,7 @@ public class DeveloperModeHelper
     {
         Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo
         {
-            Title = "未开启管理员模式",
+            Title = "未开启开发者模式",
             Content = "当前系统未开启管理员模式，\n" +
                       "需要前往 系统设置>高级 中开启开发者模式",
             CloseButtonText = "打开系统高级设置",

@@ -36,6 +36,9 @@ public class DropFileHandler
             case SupportedFileType.Mcworld:
                 HandelMcWorld();
                 break;
+            case SupportedFileType.Mctemplate:
+                HandelMcTemplate();
+                break;
             case SupportedFileType.Rplck:
                 HandelPluginPacks();
                 break;
@@ -43,6 +46,44 @@ public class DropFileHandler
                 HandelSkinPacks();
                 break;
         }
+    }
+
+    public void HandelMcTemplate()
+    {
+        Console.WriteLine(@"处理拖入的基岩版世界模版包文件");
+
+        var ins = new DialogChooseGameContent(true);
+        DialogHost.Show(new()
+        {
+            Title = "选择实例与用户以导入模版包",
+            Content = ins,
+            CloseButtonText = "确定",
+            PrimaryButtonText = "取消",
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = async () =>
+            {
+                DialogHost.Show(new DialogInfo
+                {
+                    Title = i18n["Instance.Pack.Import.Progress.Title"],
+                    Content = i18n["Instance.Pack.Import.Progress.Content"]
+                });
+
+                var manager = new ResourcePackManager(ins.VersionConfig);
+
+                // 导入操作在后台执行
+                await Task.Run(() => { _files.ForEach(f => manager?.AddRangePacks(new() { f }, ins.SelectUser)); });
+
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    DialogHost.Close();
+                    GlobalModel.MainWindow.Notice.AddNotice(new()
+                    {
+                        Title = "模版已导入",
+                        Message = "所有模版已导入目标游戏实例用户中"
+                    });
+                });
+            }
+        });
     }
 
     public void HandelMcPacks()

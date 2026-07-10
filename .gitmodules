@@ -16,3 +16,11 @@
 [submodule "src/ResourcePackConvert"]
 	path = src/ResourcePackConvert
 	url = https://github.com/BE-Community-Dev/ResourcePackConvert.git
+[submodule "src/LiteSkinViewer"]
+	path = src/LiteSkinViewer
+	url = https://github.com/Round-Studio/LiteSkinViewer.git
+	branch = master
+[submodule "src/PreLoadCpp"]
+	path = src/PreLoadCpp
+	url = https://github.com/Round-Studio/PreLoadCpp.git
+	branch = main

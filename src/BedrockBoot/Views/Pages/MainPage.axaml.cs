@@ -69,13 +69,14 @@ public partial class MainPage : UserControl
             Tag = "ToolsBox",
             Page = typeof(MainToolsBoxPage)
         });
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "\uF0B9",
-            ItemText = i18n["MainPage.Nav.Multiplayer"],
-            Tag = "Multiplayer",
-            Page = typeof(MainMultiplayerPage)
-        });
+        if (GlobalModel.Config.Data.IsShowConnectPage)
+            RegisterTopItem(new TopBarItemInfo
+            {
+                ItemGlyph = "\uF0B9",
+                ItemText = i18n["MainPage.Nav.Multiplayer"],
+                Tag = "Multiplayer",
+                Page = typeof(MainMultiplayerPage)
+            });
 #endif
         RegisterTopItem(new TopBarItemInfo
         {
@@ -132,41 +133,6 @@ public partial class MainPage : UserControl
                 await Dispatcher.UIThread.InvokeAsync(async () => await UpdateUIAsync());
             }
         };
-
-#if LINUX
-        ProtonCore.InitializeEnvironment();
-        
-        var lst = ProtonCore.GetInstalledVersions();
-        if (lst == null || lst.Count <= 0)
-        {
-            DialogHost.Show(new DialogInfo()
-            {
-                Content = "当前您正在 Linux 环境下运行本启动器\n" +
-                          "我们需要 ProtonGDK 组件才能正常启动 Minecraft for Windows (GDK)\n" +
-                          "\n" +
-                          "现在我们需要您同意 ProtonGDK 组件的下载",
-                Title = "必要运行时下载",
-                CloseButtonText = "立即下载",
-                PrimaryButtonText = "退出启动器",
-                AccountButton = DialogButtons.CloseButton,
-                PrimaryAction = () =>
-                {
-                    Console.WriteLine("用户不同意下载 ProtonGDK，正在退出启动器...");
-                    Environment.Exit(0);
-                },
-                CloseAction = () =>
-                {
-                    var dialog = new DialogDownloadProtonGDKContent();
-                    DialogHost.Show(new DialogInfo()
-                    {
-                        Content = dialog,
-                        Title = "下载游戏运行组件"
-                    });
-                    dialog.Download();
-                }
-            });
-        }
-#endif
     }
 
     public bool IsEditMode { get; set; }

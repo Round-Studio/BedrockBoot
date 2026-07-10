@@ -8,6 +8,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Base.Entry.Task;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
@@ -16,7 +17,7 @@ using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.TaskItem;
 
-public partial class TaskDownloadCurseForgeResourceItem : UserControl
+public partial class TaskDownloadCurseForgeResourceItem : UserControl, ITaskItem
 {
     public TaskDownloadCurseForgeResourceItem()
     {
@@ -26,6 +27,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
     public TaskDownloadCurseForgeResourceItem(CurseForgeResponse.ModFile modFile) : this()
     {
         ModFile = modFile;
+        _taskTitle = string.Format(I18nManager.Instance["Task.CurseForge.Title.Format"], ModFile.DisplayName);
         Update();
     }
 
@@ -33,10 +35,32 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
     public Action CallBack { get; set; }
     private CancellationTokenSource _cts;
 
+    private double _taskProgress;
+    private string _taskStatusText = "";
+    private string _taskTitle = "";
+    private bool _taskIsCompleted;
+    private bool _taskIsIndeterminate = true;
+
+    public double Progress => _taskProgress;
+    public string StatusText => _taskStatusText;
+    public string Title => _taskTitle;
+    public bool IsCompleted => _taskIsCompleted;
+    public bool IsIndeterminate => _taskIsIndeterminate;
+
+    public event Action<ITaskItem>? ProgressUpdated;
+
+    protected void ReportProgress(double progress, string statusText, bool isIndeterminate = false)
+    {
+        _taskProgress = progress;
+        _taskStatusText = statusText;
+        _taskIsIndeterminate = isIndeterminate;
+        if (progress >= 100) _taskIsCompleted = true;
+        ProgressUpdated?.Invoke(this);
+    }
+
     public void Update()
     {
-        // 使用动态格式化字符串
-        CardTitle.Text = string.Format(I18nManager.Instance["Task.CurseForge.Title.Format"], ModFile.DisplayName);
+        CardTitle.Text = _taskTitle;
     }
 
     public async Task Download(string savePath, VersionConfig version = null)
@@ -56,12 +80,12 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl
 
         await download.DownloadAsync(url, savePath, new Progress<DownloadProgress>(xprogress =>
         {
+            ReportProgress(xprogress.ProgressPercentage, string.Format(I18nManager.Instance["Task.CurseForge.Status.Progress"], xprogress.ProgressPercentage));
             Dispatcher.UIThread.Invoke(() =>
             {
                 if (DownloadProgressBar.IsIndeterminate) DownloadProgressBar.IsIndeterminate = false;
 
                 DownloadProgressBar.Value = xprogress.ProgressPercentage;
-                // 进度文字国际化
                 MainText.Text = string.Format(I18nManager.Instance["Task.CurseForge.Status.Progress"],
                     xprogress.ProgressPercentage);
                 MainSpeedText.Text = "??? / s";

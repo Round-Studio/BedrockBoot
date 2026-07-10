@@ -19,7 +19,9 @@ public class ResourcePackManifest
             ? Path.Combine(PackRootPath!, "pack_icon.png")
             : File.Exists(Path.Combine(PackRootPath!, "pack.png"))
                 ? Path.Combine(PackRootPath!, "pack.png")
-                : "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png";
+                : File.Exists(Path.Combine(PackRootPath!, "world_icon.jpeg"))
+                    ? Path.Combine(PackRootPath!, "world_icon.jpeg")
+                    : "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png";
 
     [JsonIgnore] public ResourcePackType PackType { get; set; } = ResourcePackType.Unknown;
 

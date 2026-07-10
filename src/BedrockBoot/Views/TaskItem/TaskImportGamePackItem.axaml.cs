@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.Import;
+using BedrockBoot.Base.Entry.Task;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Import;
 using BedrockLauncher.Core;
@@ -13,7 +14,7 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.TaskItem;
 
-public partial class TaskImportGamePackItem : UserControl
+public partial class TaskImportGamePackItem : UserControl, ITaskItem
 {
     public TaskImportGamePackItem()
     {
@@ -37,6 +38,28 @@ public partial class TaskImportGamePackItem : UserControl
     public MinecraftGameTypeVersion GDKGameType { get; set; } = MinecraftGameTypeVersion.Release;
 
     private CancellationTokenSource _cts;
+    private double _taskProgress;
+    private string _taskStatusText = "";
+    private string _taskTitle = "";
+    private bool _taskIsCompleted;
+    private bool _taskIsIndeterminate = true;
+
+    public double Progress => _taskProgress;
+    public string StatusText => _taskStatusText;
+    public string Title => _taskTitle;
+    public bool IsCompleted => _taskIsCompleted;
+    public bool IsIndeterminate => _taskIsIndeterminate;
+
+    public event Action<ITaskItem>? ProgressUpdated;
+
+    protected void ReportProgress(double progress, string statusText, bool isIndeterminate = false)
+    {
+        _taskProgress = progress;
+        _taskStatusText = statusText;
+        _taskIsIndeterminate = isIndeterminate;
+        if (progress >= 100) _taskIsCompleted = true;
+        ProgressUpdated?.Invoke(this);
+    }
 
     public async Task Install(Action installed)
     {
@@ -54,11 +77,11 @@ public partial class TaskImportGamePackItem : UserControl
             if (Math.Abs(currentProgress - lastProgress) > 0.0001)
             {
                 lastProgress = currentProgress;
+                ReportProgress(currentProgress, s.StatusMessage);
 
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     ProgressBar.Value = (int)s.Progress;
-                    // 注意：s.StatusMessage 如果来自核心库硬编码，建议后续在核心库也进行 I18n 处理
                     ProgressText.Text = s.StatusMessage;
 
                     if (ProgressBar.IsIndeterminate)

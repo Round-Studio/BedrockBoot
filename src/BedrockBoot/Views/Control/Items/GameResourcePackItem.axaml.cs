@@ -7,8 +7,10 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Views.DialogContent.Skin;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -57,8 +59,17 @@ public partial class GameResourcePackItem : UserControl
             Console.WriteLine($@"Failed to load pack icon: {ex.Message}");
         }
 
+        ViewBtn.IsVisible = ResourcePackManifest.PackType == ResourcePackType.Skin;
         PackName.MinecraftText = ResourcePackManifest.Header.Name;
-        PackDescription.MinecraftText = ResourcePackManifest.Header.Description;
+        PackDescription.MinecraftText = string.IsNullOrEmpty(ResourcePackManifest.Header.Description)
+            ? "该包还没有介绍..."
+            : ResourcePackManifest.Header.Description;
+        if (!string.IsNullOrEmpty(ResourcePackManifest.Header.Version))
+            PackVersion.Text = ResourcePackManifest.Header.Version;
+        GameVersion.IsVisible = !string.IsNullOrEmpty(ResourcePackManifest.Header.Version);
+        if (!string.IsNullOrEmpty(ResourcePackManifest.Header.MinEngineVersion))
+            GameVersion.Text = $"Minecraft {ResourcePackManifest.Header.MinEngineVersion}";
+        GameVersion.IsVisible = !string.IsNullOrEmpty(ResourcePackManifest.Header.MinEngineVersion);
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -108,6 +119,16 @@ public partial class GameResourcePackItem : UserControl
                     });
                 });
             }
+        });
+    }
+
+    private void ViewBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new()
+        {
+            Title = "预览皮肤包",
+            Content = new DialogSkinPackViewerContent(ResourcePackManifest.PackRootPath),
+            CloseButtonText = "完成"
         });
     }
 }

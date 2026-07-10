@@ -86,20 +86,20 @@ public class InstanceUpdater
                         }
                         
                         deletedCount++;
-                        
-                        int progressPercent = (int)((double)deletedCount / totalCount * 100);
-                        Progress?.Report(new()
-                        {
-                            Message = $"正在删除文件 ({deletedCount}/{totalCount})",
-                            Progress = progressPercent,
-                            Step = InstanceUpdateStep.DeleteOld
-                        });
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($@"删除失败: {item.FullName}, 错误: {ex.Message}");
                         deletedCount++;
                     }
+                        
+                    int progressPercent = (int)((double)deletedCount / totalCount * 100);
+                    Progress?.Report(new()
+                    {
+                        Message = $"正在删除文件 ({deletedCount}/{totalCount})",
+                        Progress = progressPercent,
+                        Step = InstanceUpdateStep.DeleteOld
+                    });
                 }
             }
             

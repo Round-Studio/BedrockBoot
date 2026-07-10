@@ -14,6 +14,7 @@ public class GlobalKeys
         { ".mcpack", (SupportedFileType.Mcpack, true, "基岩版资源包") },
         { ".mcaddon", (SupportedFileType.Mcaddon, true, "基岩版集合包") },
         { ".mcworld", (SupportedFileType.Mcworld, true, "基岩版存档包") },
+        { ".mctemplate", (SupportedFileType.Mctemplate, false, "基岩版世界模版") },
         /*{ ".mcpint", (SupportedFileType.Mcpint, false, "BedrockBoot 整合包文件") },*/
         { ".rskin", (SupportedFileType.Rskin, true, "Round-Studio 通用皮肤包") },
         { ".rplck", (SupportedFileType.Rplck, true, "Round-Studio 通用插件包") },

@@ -28,27 +28,36 @@ public class ResourcePackManager
         return Directory.GetFiles(dir, "manifest.json", SearchOption.AllDirectories).ToList();
     }
 
-    public List<ResourcePackManifest> GetAllPack()
+    public List<ResourcePackManifest> GetAllPack(string user = "Shared")
     {
         var files = new List<string>();
         var result = new List<ResourcePackManifest>();
 
         // 获取资源包目录
-        var resourcePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ResourcePackFolder);
+        var resourcePackDir =
+            IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.ResourcePackFolder, user);
         if (!string.IsNullOrEmpty(resourcePackDir) && Directory.Exists(resourcePackDir))
             Directory.GetDirectories(resourcePackDir).ToList()
                 .ForEach(dir => { files.AddRange(GetManifests(dir)); });
 
         // 获取行为包目录
-        var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.BehaviorPackFolder);
+        var behaviorPackDir =
+            IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.BehaviorPackFolder, user);
         if (!string.IsNullOrEmpty(behaviorPackDir) && Directory.Exists(behaviorPackDir))
             Directory.GetDirectories(behaviorPackDir).ToList()
                 .ForEach(dir => { files.AddRange(GetManifests(dir)); });
 
-        // 获取行为包目录
-        var skinPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.SkinPackFolder);
+        // 获取皮肤包目录
+        var skinPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.SkinPackFolder, user);
         if (!string.IsNullOrEmpty(skinPackDir) && Directory.Exists(skinPackDir))
             Directory.GetDirectories(skinPackDir).ToList()
+                .ForEach(dir => { files.AddRange(GetManifests(dir)); });
+
+        // 获取世界模板包目录
+        var templatePackDir =
+            IsolationCore.GetInstanceFolderPath(VersionConfig, InstanceFolderType.WorldTemplateFolder, user);
+        if (!string.IsNullOrEmpty(templatePackDir) && Directory.Exists(templatePackDir))
+            Directory.GetDirectories(templatePackDir).ToList()
                 .ForEach(dir => { files.AddRange(GetManifests(dir)); });
 
         files.ForEach(file =>
@@ -94,7 +103,7 @@ public class ResourcePackManager
             }
     }
 
-    public void AddRangePacks(List<string> files)
+    public void AddRangePacks(List<string> files, string user = "Shared")
     {
         if (files == null || !files.Any())
             return;
@@ -123,45 +132,56 @@ public class ResourcePackManager
                     if (pack != null && pack.Header != null && !string.IsNullOrEmpty(pack.Header.Uuid))
                         if (!ids.Contains(pack.Header.Uuid))
                             if (!string.IsNullOrEmpty(pack.PackRootPath) && Directory.Exists(pack.PackRootPath))
+                            {
+                                if (pack.PackType == ResourcePackType.Resource)
                                 {
-                                    if (pack.PackType == ResourcePackType.Resource)
+                                    var resourcePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                        InstanceFolderType.ResourcePackFolder, user);
+                                    if (!string.IsNullOrEmpty(resourcePackDir))
                                     {
-                                        var resourcePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
-                                            InstanceFolderType.ResourcePackFolder);
-                                        if (!string.IsNullOrEmpty(resourcePackDir))
-                                        {
-                                            var destPath = Path.Combine(resourcePackDir,
-                                                Path.GetFileName(pack.PackRootPath));
-                                            CopyDirectory(pack.PackRootPath, destPath);
-                                        }
+                                        var destPath = Path.Combine(resourcePackDir,
+                                            Path.GetFileName(pack.PackRootPath));
+                                        CopyDirectory(pack.PackRootPath, destPath);
                                     }
-                                    else if (pack.PackType == ResourcePackType.Behavior)
-                                    {
-                                        var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
-                                            InstanceFolderType.BehaviorPackFolder);
-                                        if (!string.IsNullOrEmpty(behaviorPackDir))
-                                        {
-                                            var destPath = Path.Combine(behaviorPackDir,
-                                                Path.GetFileName(pack.PackRootPath));
-                                            CopyDirectory(pack.PackRootPath, destPath);
-                                        }
-                                    }
-                                    else if (pack.PackType == ResourcePackType.Skin)
-                                    {
-                                        var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
-                                            InstanceFolderType.SkinPackFolder);
-                                        if (!string.IsNullOrEmpty(behaviorPackDir))
-                                        {
-                                            var destPath = Path.Combine(behaviorPackDir,
-                                                Path.GetFileName(pack.PackRootPath));
-                                            CopyDirectory(pack.PackRootPath, destPath);
-                                        }
-                                    }
-
-                                    // 添加到ID集合，避免重复
-                                    ids.Add(pack.Header.Uuid);
                                 }
-                    });
+                                else if (pack.PackType == ResourcePackType.Behavior)
+                                {
+                                    var behaviorPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                        InstanceFolderType.BehaviorPackFolder, user);
+                                    if (!string.IsNullOrEmpty(behaviorPackDir))
+                                    {
+                                        var destPath = Path.Combine(behaviorPackDir,
+                                            Path.GetFileName(pack.PackRootPath));
+                                        CopyDirectory(pack.PackRootPath, destPath);
+                                    }
+                                }
+                                else if (pack.PackType == ResourcePackType.Skin)
+                                {
+                                    var skinPackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                        InstanceFolderType.SkinPackFolder, user);
+                                    if (!string.IsNullOrEmpty(skinPackDir))
+                                    {
+                                        var destPath = Path.Combine(skinPackDir,
+                                            Path.GetFileName(pack.PackRootPath));
+                                        CopyDirectory(pack.PackRootPath, destPath);
+                                    }
+                                }
+                                else if (pack.PackType == ResourcePackType.WorldTemplate)
+                                {
+                                    var templatePackDir = IsolationCore.GetInstanceFolderPath(VersionConfig,
+                                        InstanceFolderType.WorldTemplateFolder, user);
+                                    if (!string.IsNullOrEmpty(templatePackDir))
+                                    {
+                                        var destPath = Path.Combine(templatePackDir,
+                                            Path.GetFileName(pack.PackRootPath));
+                                        CopyDirectory(pack.PackRootPath, destPath);
+                                    }
+                                }
+
+                                // 添加到ID集合，避免重复
+                                ids.Add(pack.Header.Uuid);
+                            }
+                });
             }
             catch (Exception ex)
             {

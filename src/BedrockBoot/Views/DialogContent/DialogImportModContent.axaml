@@ -4,36 +4,38 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.DialogContent.DialogImportModContent">
-    <StackPanel>
-        <TextBlock Margin="0,5,0,5"
-                   HorizontalAlignment="Left"
+    <StackPanel Spacing="8">
+        <TextBlock HorizontalAlignment="Left"
                    Text="{DynamicResource Dialog.ImportMod.Label.FilePath}" />
         <DockPanel MinWidth="320">
             <Button DockPanel.Dock="Right"
-                    Margin="5,5,0,5"
+                    Margin="5,0,0,0"
                     Padding="12,0"
                     Classes="NoBorder"
                     Name="OpenChooseFolderBtn"
                     Click="OpenChooseFolderBtn_OnClick"
                     Content="{DynamicResource Shared.Action.Browse}" />
 
-            <TextBox Margin="0,5,5,5"
+            <TextBox Margin="0,0,5,0"
                      Name="PathInputBox" />
         </DockPanel>
+        
+        <StackPanel Name="DelayPanel"
+                    Spacing="8">
+            <TextBlock HorizontalAlignment="Left"
+                       Text="{DynamicResource Dialog.ImportMod.Label.InjectionDelay}" />
+        
+            <NumericUpDown Value="5"
+                           HorizontalAlignment="Stretch"
+                           Minimum="0"
+                           Maximum="200000"
+                           Name="InjectionDelay" />
+        </StackPanel>
 
-        <TextBlock Margin="0,5,0,5"
-                   HorizontalAlignment="Left"
-                   Text="{DynamicResource Dialog.ImportMod.Label.InjectionDelay}" />
-        <Slider Margin="0,5,0,5"
-                HorizontalAlignment="Stretch"
-                Maximum="5000"
-                Minimum="0"
-                Classes="Number"
-                Name="InjectionDelay" />
-
-        <CheckBox Margin="0,5,0,5"
+        <CheckBox Margin="0,0,0,0"
                   Name="EnablePreLoad"
-                  Content="{DynamicResource Dialog.ImportMod.Option.Preload}" />
+                  Content="{DynamicResource Dialog.ImportMod.Option.Preload}" 
+                  IsCheckedChanged="EnablePreLoad_OnIsCheckedChanged"/>
 
         <TextBlock FontSize="9"
                    Foreground="Gray"

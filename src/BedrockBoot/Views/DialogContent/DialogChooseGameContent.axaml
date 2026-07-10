@@ -17,6 +17,17 @@
             HorizontalAlignment="Left"
             Text="{DynamicResource Dialog.ChooseGame.Label.Instance}" />
         <ComboBox Width="320"
-                  Name="GameInstance" />
+                  Name="GameInstance" 
+                  SelectionChanged="GameInstance_OnSelectionChanged"/>
+        
+        <StackPanel Spacing="10"
+                    Name="UserBox"
+                    IsVisible="False">
+            <TextBlock
+                HorizontalAlignment="Left"
+                Text="用户" />
+            <ComboBox Width="320"
+                      Name="InstanceUsers" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

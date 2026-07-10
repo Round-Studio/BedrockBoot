@@ -108,7 +108,6 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.IsPlayBackgroundMusic = IsPlayBackgroundMusic.IsChecked ?? false;
                 GlobalModel.Config.Save();
             
-                MediaManager.Instance.Enabled = GlobalModel.Config.Data.IsPlayBackgroundMusic;
                 Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }
         }

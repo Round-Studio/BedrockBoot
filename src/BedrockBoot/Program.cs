@@ -199,10 +199,9 @@ internal sealed class Program
                     Console.WriteLine(@"快捷启动");
                     args.ForEach(Console.WriteLine);
 
-#if WINDOWS
-                    Application.Run(new LaunchWindow(args.ToList()));
-#endif
-                    return true;
+                    Models.Global.GlobalModel.AppRunType = AppRunType.LaunchGame;
+
+                    return false;
 
                 case "-bedrockboot":
                     var protoIndex = args.FindIndex(x => x == "-bedrockboot");
@@ -235,6 +234,7 @@ internal sealed class Program
 
                     if (Args.Contains("--resource")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
                     if (Args.Contains("--world")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenWorldPack;
+                    if (Args.Contains("--template")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenTemplatePack;
 
                     return false;
             }

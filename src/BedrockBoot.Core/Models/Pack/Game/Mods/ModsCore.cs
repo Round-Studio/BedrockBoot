@@ -39,7 +39,7 @@ public class ModsCore
         var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", VersionInfo.BodyFile);
         var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");
-        var fullPath = Path.Combine(VersionInfo.VersionPath, "PreLoadCpp.dll");
+        var fullPath = Path.Combine(VersionInfo.VersionPath, "PreloadCpp.dll");
 
         if (!Directory.Exists(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row")))
             Directory.CreateDirectory(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row"));
@@ -132,7 +132,7 @@ public class ModsCore
 
         try
         {
-            File.WriteAllBytes(fullPath, Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreLoadCpp.dll"));
+            File.WriteAllBytes(fullPath, Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreloadCpp.dll"));
             
             Console.WriteLine(@"PreLoadCpp.DLL 释放完毕");
 
@@ -142,7 +142,7 @@ public class ModsCore
                 using (var fs = new FileStream(body, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
                 using (var peFile = new PeFile(fs))
                 {
-                    peFile.AddImport("PreLoadCpp.dll", "Load");
+                    peFile.AddImport("PreloadCpp.dll", "Load");
                     /*if (peFile.ImageNtHeaders != null)
                     {
                         peFile.ImageNtHeaders.OptionalHeader.Subsystem = SubsystemType.WindowsCui;

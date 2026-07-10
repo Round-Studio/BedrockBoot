@@ -6,6 +6,7 @@
         ShowInTaskbar="False"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
+        Width="0" Height="0"
         WindowDecorations="BorderOnly"
         Background="Transparent">
 

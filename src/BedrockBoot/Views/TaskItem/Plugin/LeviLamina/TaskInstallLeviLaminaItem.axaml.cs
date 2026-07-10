@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Entry.Task;
 using BedrockBoot.LeviLamina.Base.Entry.Porgress;
 using BedrockBoot.LeviLamina.Base.Enum;
 using BedrockBoot.LeviLamina.Models.Installer;
@@ -12,8 +13,31 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.TaskItem.Plugin.LeviLamina;
 
-public partial class TaskInstallLeviLaminaItem : UserControl
+public partial class TaskInstallLeviLaminaItem : UserControl, ITaskItem
 {
+    private double _taskProgress;
+    private string _taskStatusText = "";
+    private string _taskTitle = "";
+    private bool _taskIsCompleted;
+    private bool _taskIsIndeterminate = true;
+
+    public double Progress => _taskProgress;
+    public string StatusText => _taskStatusText;
+    public string Title => _taskTitle;
+    public bool IsCompleted => _taskIsCompleted;
+    public bool IsIndeterminate => _taskIsIndeterminate;
+
+    public event Action<ITaskItem>? ProgressUpdated;
+
+    protected void ReportProgress(double progress, string statusText, bool isIndeterminate = false)
+    {
+        _taskProgress = progress;
+        _taskStatusText = statusText;
+        _taskIsIndeterminate = isIndeterminate;
+        if (progress >= 100) _taskIsCompleted = true;
+        ProgressUpdated?.Invoke(this);
+    }
+
     public TaskInstallLeviLaminaItem()
     {
         InitializeComponent();
@@ -23,6 +47,7 @@ public partial class TaskInstallLeviLaminaItem : UserControl
     {
         VersionConfig = versionConfig;
         LeviLaminaVersion = version;
+        _taskTitle = string.Format(I18nManager.Instance["Task.LeviLamina.Notice.Title"]);
     }
 
     public VersionConfig VersionConfig { get; set; }
@@ -46,20 +71,26 @@ public partial class TaskInstallLeviLaminaItem : UserControl
                     {
                         case InstallerStatus.DownloadSource:
                             InsDownSourceBar.Value = (int)p.Progress;
+                            ReportProgress(p.Progress * 0.2, p.Message);
                             break;
                         case InstallerStatus.DownloadLeviLamina:
                             InsLLMBar.Value = (int)p.Progress;
+                            ReportProgress(20 + p.Progress * 0.2, p.Message);
                             break;
                         case InstallerStatus.DownloadCrashLogger:
                             InsLogBar.Value = (int)p.Progress;
+                            ReportProgress(40 + p.Progress * 0.2, p.Message);
                             break;
                         case InstallerStatus.DownloadBedrockRtd:
                             InsRuntimeBar.Value = (int)p.Progress;
+                            ReportProgress(60 + p.Progress * 0.2, p.Message);
                             break;
                         case InstallerStatus.DownloadPreLoader:
                             InsPreLoaderBar.Value = (int)p.Progress;
+                            ReportProgress(80 + p.Progress * 0.2, p.Message);
                             break;
                         case InstallerStatus.Complete:
+                            ReportProgress(100, p.Message);
                             CompleteCallBack?.Invoke();
                             break;
                         case InstallerStatus.Error:

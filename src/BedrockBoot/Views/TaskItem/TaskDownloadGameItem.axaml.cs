@@ -5,6 +5,7 @@ using Windows.Management.Deployment;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using BedrockBoot.Base.Entry.Task;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Services;
 using BedrockLauncher.Core;
@@ -15,10 +16,33 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.TaskItem;
 
-public partial class TaskDownloadGameItem : UserControl
+public partial class TaskDownloadGameItem : UserControl, ITaskItem
 {
     private EasyDownload _downloader;
     private CancellationTokenSource _cancellationTokenSource;
+    private string _taskStage = "";
+    private double _taskProgress;
+    private string _taskStatusText = "";
+    private string _taskTitle = "";
+    private bool _taskIsCompleted;
+    private bool _taskIsIndeterminate = true;
+
+    public double Progress => _taskProgress;
+    public string StatusText => _taskStatusText;
+    public string Title => _taskTitle;
+    public bool IsCompleted => _taskIsCompleted;
+    public bool IsIndeterminate => _taskIsIndeterminate;
+
+    public event Action<ITaskItem>? ProgressUpdated;
+
+    protected void ReportProgress(double progress, string statusText, bool isIndeterminate = false)
+    {
+        _taskProgress = progress;
+        _taskStatusText = statusText;
+        _taskIsIndeterminate = isIndeterminate;
+        if (progress >= 100) _taskIsCompleted = true;
+        ProgressUpdated?.Invoke(this);
+    }
 
     public TaskDownloadGameItem()
     {
@@ -33,6 +57,7 @@ public partial class TaskDownloadGameItem : UserControl
         Url = url;
         IsUsePack = (bool)isUsePack!;
 
+        _taskTitle = string.Format(I18nManager.Instance["Task.Game.Title.Format"], GameName, info.ID);
         InitializeDownloader();
     }
 
@@ -78,12 +103,12 @@ public partial class TaskDownloadGameItem : UserControl
         InsMergeBar.IsIndeterminate = false;
         InsMergeBar.Value = percentage;
         MainText.Text = text;
+        ReportProgress(35 + percentage * 0.15, text);
     }
 
     public void Install(Action installed)
     {
-        // 标题国际化
-        CardTitle.Text = string.Format(I18nManager.Instance["Task.Game.Title.Format"], GameName, BuildInfo.ID);
+        CardTitle.Text = _taskTitle;
 
         InsGetUrlBar.IsIndeterminate = true;
         if (BuildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
@@ -116,9 +141,9 @@ public partial class TaskDownloadGameItem : UserControl
 
         InsDownGameBar.Value = progressInfo.Percentage;
         MainText.Text = text;
+        ReportProgress(progressInfo.Percentage * 0.35, text);
 
         if (!string.IsNullOrEmpty(progressInfo.Speed))
-            // 速度单位国际化
             MainSpeedText.Text = string.Format(I18nManager.Instance["Common.Unit.Speed"], progressInfo.Speed);
     }
 
@@ -127,12 +152,14 @@ public partial class TaskDownloadGameItem : UserControl
         InsUnZipBar.IsIndeterminate = false;
         InsUnZipBar.Value = percentage;
         MainText.Text = text;
+        ReportProgress(50 + percentage * 0.25, text);
     }
 
     private void UpdateDeploymentProgress(string text, DeploymentProgress progress)
     {
         InsInstallGameBar.Value = progress.percentage;
         MainText.Text = text;
+        ReportProgress(75 + progress.percentage * 0.25, text);
     }
 
     private void HandleInstallState(InstallStates states)
@@ -146,6 +173,7 @@ public partial class TaskDownloadGameItem : UserControl
             case InstallStates.Extracted:
                 InsUnZipBar.Value = 100;
                 MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.LocalInstalling"];
+                ReportProgress(75, I18nManager.Instance["Task.Game.Status.LocalInstalling"]);
                 break;
 
 #if WINDOWS
@@ -159,6 +187,7 @@ public partial class TaskDownloadGameItem : UserControl
 
             case InstallStates.Registered:
                 InsInstallGameBar.Value = 100;
+                ReportProgress(100, I18nManager.Instance["Task.Game.Status.Completed"]);
                 break;
 #endif
         }

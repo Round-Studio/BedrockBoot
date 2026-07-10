@@ -1,10 +1,12 @@
 ﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
@@ -35,11 +37,7 @@ public partial class GameItem : UserControl
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
 
-        var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
-        if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
-            image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
-
-        Card.ImageIcon = GetImage(image);
+        Card.ImageIcon = GetImage(IconHelper.GetGameIconUrl(VersionInfo));
     }
 
     public Bitmap GetImage(string url)

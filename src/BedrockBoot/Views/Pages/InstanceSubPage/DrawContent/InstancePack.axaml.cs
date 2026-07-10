@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -6,7 +7,11 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
@@ -18,7 +23,9 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 public partial class InstancePack : ISetting
 {
     private string _searchText = string.Empty;
-    private string _type = "resource";
+    private string _currentType = "resource";
+    private ResourcePackManager? _packManager;
+    private bool _isLoading = false;
 
     public InstancePack()
     {
@@ -29,54 +36,70 @@ public partial class InstancePack : ISetting
     public InstancePack(VersionConfig versionConfig) : this()
     {
         VersionInfo = versionConfig;
-        UpdateUI();
+        _ = RefreshPacksAsync();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
 
     public VersionConfig VersionInfo { get; set; }
-    public ResourcePackManager? ResourcePackManager { get; set; }
 
-    private void UpdateUI()
+    public ResourcePackManager? PackManager => _packManager;
+
+    private async Task RefreshPacksAsync()
     {
-        // UI 状态重置
-        ResultBox.Children.Clear();
-        ScBox.IsVisible = false;
-        NullBox.IsVisible = false;
-        LoadBox.IsVisible = true;
+        if (_isLoading) return;
+        _isLoading = true;
 
-        Task.Run(() =>
+        try
         {
-            if (ResourcePackManager == null) ResourcePackManager = new ResourcePackManager(VersionInfo);
+            LoadBox.IsVisible = _isLoading;
+            ScBox.IsVisible = !_isLoading;
+            NullBox.IsVisible = !_isLoading;
+            ResultBox.Children.Clear();
 
-            // 1. 在后台线程处理数据解析（IO 密集型）
-            ResourcePackManager.GetAllPack();
+            _packManager ??= VersionInfo != null ? new ResourcePackManager(VersionInfo) : null;
+            if (_packManager == null) return;
 
-            var filteredPacks = ResourcePackManager.Packs
-                .Where(x => x?.Header != null)
-                .Where(x => x.PackType.ToString().Equals(_type, StringComparison.OrdinalIgnoreCase))
-                .Where(x => string.IsNullOrWhiteSpace(_searchText) ||
-                            x.Header.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            // 2. 切回 UI 线程进行控件实例化和渲染
-            Dispatcher.UIThread.Invoke(() =>
+            var filteredPacks = await Task.Run(() =>
             {
-                NullBox.IsVisible = filteredPacks.Count == 0;
-                NumberBox.Text = string.Format(i18n["Instance.Pack.Count.Format"], filteredPacks.Count);
-
-                // 必须在 UI 线程内 new 控件
-                var packItems = filteredPacks.Select(pack => new GameResourcePackItem(pack)
-                {
-                    RefreshCallBack = UpdateUI
-                }).ToList();
-
-                ResultBox.Children.AddRange(packItems);
-
-                ScBox.IsVisible = true;
-                LoadBox.IsVisible = false;
+                _packManager.GetAllPack();
+                return _packManager.Packs
+                    .AsParallel()
+                    .Where(x => x?.Header != null &&
+                                x.PackType.ToString().Equals(_currentType, StringComparison.OrdinalIgnoreCase) &&
+                                (string.IsNullOrWhiteSpace(_searchText) ||
+                                 x.Header.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
             });
-        });
+            
+            NullBox.IsVisible = filteredPacks.Count == 0;
+
+            await Dispatcher.UIThread.InvokeAsync(() => UpdateUiWithPacks(filteredPacks));
+        }
+        finally
+        {
+            _isLoading = false;
+            LoadBox.IsVisible = _isLoading;
+            ScBox.IsVisible = !_isLoading;
+        }
+    }
+
+    private void UpdateUiWithPacks(List<ResourcePackManifest> packs)
+    {
+        NumberBox.Text = string.Format(i18n["Instance.Pack.Count.Format"], packs.Count);
+
+        if (packs.Count == 0)
+        {
+            NullBox.IsVisible = true;
+            return;
+        }
+
+        NullBox.IsVisible = false;
+        ScBox.IsVisible = true;
+        ResultBox.Children.AddRange(packs.Select(pack => new GameResourcePackItem(pack)
+        {
+            RefreshCallBack = () => _ = RefreshPacksAsync()
+        }));
     }
 
     private async void ImportPackBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -99,9 +122,9 @@ public partial class InstancePack : ISetting
 
         if (files is { Count: >= 1 })
         {
-            var selectedFiles = files.Select(f => f.Path.LocalPath).ToList();
+            var filePaths = files.Select(f => f.Path.LocalPath).ToList();
             var body = new DialogImportResourcePackContent();
-
+            
             DialogHost.Show(new DialogInfo
             {
                 Title = i18n["Instance.Pack.Import.Dialog.Title"],
@@ -110,48 +133,60 @@ public partial class InstancePack : ISetting
                 PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
                 CloseAction = async () =>
                 {
+                    DialogHost.Close();
                     DialogHost.Show(new DialogInfo
                     {
                         Title = i18n["Instance.Pack.Import.Progress.Title"],
                         Content = i18n["Instance.Pack.Import.Progress.Content"]
                     });
 
-                    // 导入操作在后台执行
-                    await Task.Run(() => { ResourcePackManager?.AddRangePacks(selectedFiles); });
-
-                    Dispatcher.UIThread.Invoke(() =>
+                    try
+                    {
+                        await Task.Run(() => _packManager?.AddRangePacks(filePaths));
+                        await RefreshPacksAsync();
+                    }
+                    finally
                     {
                         DialogHost.Close();
-                        UpdateUI();
-                    });
+                    }
                 }
             });
-            body.Import(selectedFiles);
+            
+            body.Import(filePaths);
         }
     }
 
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         _searchText = SearchBox.Text ?? string.Empty;
-        UpdateUI();
+        _ = RefreshPacksAsync();
     }
 
     private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        // 增加 IsEdit 判断防止初始化时的意外触发
-        if (IsEdit && TypeSel?.SelectedItem is ListBoxItem item)
+        if (!IsEdit || TypeSel?.SelectedItem is not ListBoxItem item) return;
+
+        var newType = item.Tag?.ToString()?.ToLower() ?? "resource";
+        if (_currentType != newType)
         {
-            var newType = item.Tag?.ToString()?.ToLower() ?? "resource";
-            if (_type != newType)
-            {
-                _type = newType;
-                UpdateUI();
-            }
+            _currentType = newType;
+            _ = RefreshPacksAsync();
         }
     }
 
-    public void RefreshData()
+    private void FolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        UpdateUI();
+        if (!IsEdit || TypeSel?.SelectedItem is not ListBoxItem item) return;
+
+        var typeTag = item.Tag?.ToString()?.ToLower() ?? "resource";
+        var folderType = typeTag switch
+        {
+            "resource" => InstanceFolderType.ResourcePackFolder,
+            "behavior" => InstanceFolderType.BehaviorPackFolder,
+            "skin" => InstanceFolderType.SkinPackFolder,
+            _ => InstanceFolderType.UserFolder
+        };
+
+        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, folderType));
     }
 }

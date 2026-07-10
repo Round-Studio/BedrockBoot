@@ -1,0 +1,91 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings.LevelSettingsPack">
+    <Grid RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"
+              Margin="20,0"
+              Height="32">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Spacing="8">
+                <TextBlock Text="附加包管理" 
+                           FontSize="16"
+                           VerticalAlignment="Center"/>
+                
+                <Button Classes="NoBorder"
+                        Padding="8"
+                        Name="RefreshBtn"
+                        Click="RefreshBtn_OnClick"
+                        Width="32" Height="32">
+                    <onePointControls:FontIcon Glyph="&#xE72C;"></onePointControls:FontIcon>
+                </Button>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+                <onePointControls:FontIcon Glyph="&#xE71C;"
+                                           VerticalAlignment="Center"></onePointControls:FontIcon>
+                <ComboBox Width="120"
+                          SelectedIndex="0"
+                          SelectionChanged="TypeSelBox_OnSelectionChanged"
+                          Name="TypeSelBox">
+                    <ComboBoxItem Content="资源包"
+                                  Tag="Resource"></ComboBoxItem>
+                    <ComboBoxItem Content="行为包"
+                                  Tag="Behavior"></ComboBoxItem>
+                </ComboBox>
+                <TextBox Width="200"
+                         Name="SearchBox"
+                         TextChanged="SearchBox_OnTextChanged"
+                         Watermark="键入关键词以搜索..."></TextBox>
+            </StackPanel>
+        </Grid>
+        
+        <Grid Grid.Row="1">
+            <Grid ColumnDefinitions="*,*"
+                  Margin="10,0,0,0"
+                  ColumnSpacing="8">
+                <Grid Grid.Column="0"
+                      RowDefinitions="Auto,*"
+                      RowSpacing="8">
+                    <TextBlock Grid.Row="0"
+                               Text="未激活"
+                               Margin="10,0,0,0"></TextBlock>
+                    <ScrollViewer Grid.Row="1"
+                                  Margin="10,0,0,0">
+                        <StackPanel Name="UnActivatedViewer"
+                                    Spacing="8"
+                                    Margin="0,0,15,0">
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+                
+                <Grid Grid.Column="1"
+                      RowDefinitions="Auto,*"
+                      RowSpacing="8">
+                    <TextBlock Grid.Row="0"
+                               Text="已激活"></TextBlock>
+                    <ScrollViewer Grid.Row="1"
+                                  Margin="0,0,5,0">
+                        <StackPanel Name="ActivatedViewer"
+                                    Spacing="8"
+                                    Margin="0,0,15,0">
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+            
+            
+        </Grid>
+    </Grid>
+</UserControl>

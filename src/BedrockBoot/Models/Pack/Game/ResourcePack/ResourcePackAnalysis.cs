@@ -48,6 +48,8 @@ public class ResourcePackAnalysis
             return ResourcePackType.Behavior;
         if (modules.Contains("skin_pack") || modules.Contains("skin"))
             return ResourcePackType.Skin;
+        if (modules.Contains("world_template") || modules.Contains("template"))
+            return ResourcePackType.WorldTemplate;
 
         return ResourcePackType.Unknown;
     }

@@ -23,12 +23,15 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("isTaskBarJumpItem")] public bool IsTaskBarJumpItem { get; set; } = true;
         [JsonPropertyName("isUseHardwareDecode")] public bool IsUseHardwareDecode { get; set; } = true;
         [JsonPropertyName("isPlayBackgroundMusic")] public bool IsPlayBackgroundMusic { get; set; } = true;
+        [JsonPropertyName("isEnableFuzzySearch")] public bool IsEnableFuzzySearch { get; set; } = true;
         [JsonPropertyName("updateType")] public UpdateType UpdateType { get; set; } = UpdateType.Release;
         [JsonPropertyName("isolationModel")] public IsolationType IsolationModel { get; set; } = IsolationType.Hook;
         [JsonPropertyName("isolationPriority")] public IsolationModelEnum IsolationPriority { get; set; } = IsolationModelEnum.Plus;
         [JsonPropertyName("catalogStrategy")] public CatalogStrategyEnum CatalogStrategy { get; set; } = CatalogStrategyEnum.Independence;
         [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
         [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
+        [JsonPropertyName("isShowConnectPage")] public bool IsShowConnectPage { get; set; } = false;
+        [JsonPropertyName("isUseBetaUI")] public bool IsUseBetaUI { get; set; } = false;
         [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;
         [JsonPropertyName("isMouseLockForGdk")] public bool IsMouseLockForGdk { get; set; } = false;
         [JsonPropertyName("isMouseLockReserve")] public bool IsMouseLockReserve { get; set; } = false;

@@ -1,0 +1,27 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:LiteSkinViewer3D.Avalonia.Controls;assembly=LiteSkinViewer.3D"
+             xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.Skin.DialogSkinPackViewerContent">
+    <Grid ColumnDefinitions="Auto,*">
+        <ScrollViewer Grid.Column="0"
+                      Width="68">
+            <view:ItemView Name="SkinItem"
+                           SelectionChanged="SkinItem_OnSelectionChanged"
+                           Margin="0,0,10,0"/>
+        </ScrollViewer>
+        
+        <controls:SkinViewer3D Grid.Column="1"
+                               Name="SkinViewer" 
+                               IsTopLayer3D="True"
+                               IsUpperLayerVisible="True"
+                               IsEnableAnimation="False"
+                               RenderMode="FXAA" 
+                               HorizontalAlignment="Stretch"
+                               MinWidth="600"
+                               Height="380"/>
+    </Grid>
+</UserControl>

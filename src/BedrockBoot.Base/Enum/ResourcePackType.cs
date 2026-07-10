@@ -5,5 +5,6 @@ public enum ResourcePackType
     Resource,
     Behavior,
     Skin,
+    WorldTemplate,
     Unknown
 }

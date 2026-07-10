@@ -1,0 +1,36 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings.LevelSettingsControls">
+    <Grid RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"
+              Margin="20,0"
+              Height="32">
+            <TextBlock Text="存档操作" VerticalAlignment="Center" FontSize="16"/>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="20,0"
+                        Spacing="8" >
+                <onePointControls:SettingCard IsClickable="True"
+                                              Glyph="&#xE74E;"
+                                              Header="导出"
+                                              Description="导出基岩版存档包文件及其拓展" 
+                                              Name="ExportBtn"
+                                              Click="ExportBtn_OnClick"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

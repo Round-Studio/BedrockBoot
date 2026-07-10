@@ -4,5 +4,7 @@ public enum AppRunType
 {
     Default,
     OpenResourcePack,
-    OpenWorldPack
+    OpenWorldPack,
+    OpenTemplatePack,
+    LaunchGame
 }

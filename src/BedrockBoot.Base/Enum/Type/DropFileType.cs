@@ -5,6 +5,7 @@ public enum SupportedFileType
     Mcpack,
     Mcaddon,
     Mcworld,
+    Mctemplate,
     Mcpint,
     Rskin,
     Rplck,

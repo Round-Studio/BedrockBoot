@@ -89,16 +89,24 @@ public class IsolationCore
                 ? "Minecraft Bedrock"
                 : "Minecraft Bedrock Preview");
 #endif
-        return PathsList.GamePublicRootPath;
+        return GetInstanceConfigRootPath(versionConfig);
     }
 
     public static string GetInstanceConfigRootPath(VersionConfig versionConfig)
     {
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe"
-            );
+        {
+            var dirName = versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release
+                ? Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    @"AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe"
+                )
+                : Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    @"AppData\Local\Packages\Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe"
+                );
+            return dirName;
+        }
 
         if (versionConfig.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
@@ -133,6 +141,7 @@ public class IsolationCore
             InstanceFolderType.ArchiveFolder => GetInstanceFolderPath(versionConfig, "minecraftWorlds", user),
             InstanceFolderType.OptionFolder => GetInstanceFolderPath(versionConfig, "minecraftpe", user),
             InstanceFolderType.SkinPackFolder => GetInstanceFolderPath(versionConfig, "skin_packs", user),
+            InstanceFolderType.WorldTemplateFolder => GetInstanceFolderPath(versionConfig, "world_templates", user),
             InstanceFolderType.UserFolder => versionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP
                 ? string.Empty
                 : versionConfig.Info.VersionType == MinecraftGameTypeVersion.Preview

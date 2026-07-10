@@ -157,6 +157,9 @@ public class EasyLauncher
         {
             CoreGlobal.BedrockCore = new BedrockCore();
         }
+        
+        VersionInfo.Config.FolderPolicyStr =
+            IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
             
         GameInfoHelper.SaveVersionConfig(VersionInfo);
         

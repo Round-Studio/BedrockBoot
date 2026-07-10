@@ -84,7 +84,9 @@ public partial class InstanceInfo : UserControl
 
     private void UpdateImage()
     {
-        var image = "avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png";
+        var image = "avares://Round.SDK.Avalonia/Image/Icon/mc_grassblock_neo.png";
+        if (VersionInfo.Info.VersionType != MinecraftGameTypeVersion.Release)
+            image = "avares://Round.SDK.Avalonia/Image/Icon/mc_soilblock_neo.png";
 
         if (!string.IsNullOrEmpty(VersionInfo.Info.CoverImage))
             if (File.Exists(VersionInfo.Info.CoverImage))
@@ -251,7 +253,9 @@ public partial class InstanceInfo : UserControl
     {
         if (IsEdit)
         {
-            VersionInfo.Config.IsolationFolderPolicy = IsolationPolicyHelper.ParsePolicyConfig((CatalogStrategyEnum)CatalogStrategy.SelectedIndex);
+            VersionInfo.Config.IsolationFolderPolicy = (CatalogStrategyEnum)CatalogStrategy.SelectedIndex;
+            VersionInfo.Config.FolderPolicyStr =
+                IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
             
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }

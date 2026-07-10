@@ -5,13 +5,13 @@ namespace BedrockBoot.Base.Helper;
 public class IsolationPolicyHelper
 {
     public static CatalogStrategyEnum PublicCatalogStrategy { get; set; }
-    public static CatalogStrategyEnum ParsePolicyConfig(CatalogStrategyEnum strategy)
+    public static string ParsePolicyConfig(CatalogStrategyEnum strategy)
     {
         return strategy switch
         {
-            CatalogStrategyEnum.Independence => CatalogStrategyEnum.Independence,
-            CatalogStrategyEnum.Shares => CatalogStrategyEnum.Shares,
-            CatalogStrategyEnum.FollowTheBigPicture => PublicCatalogStrategy
+            CatalogStrategyEnum.Independence => "independence",
+            CatalogStrategyEnum.Shares => "shares",
+            CatalogStrategyEnum.FollowTheBigPicture => ParsePolicyConfig(PublicCatalogStrategy)
         };
     }
 }

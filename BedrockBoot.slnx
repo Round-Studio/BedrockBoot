@@ -11,9 +11,8 @@
     <Project Path="src/BedrockBoot.LeviLamina/BedrockBoot.LeviLamina.csproj" />
     <Project Path="src/BedrockBoot.Netease/BedrockBoot.Netease.csproj" />
     <Project Path="src/BedrockBoot.WatchDog/BedrockBoot.WatchDog.csproj" />
-    <Project Path="src/PreloadCpp/PreloadCpp.vcxproj" Id="bfdc1f1a-af77-47c7-897e-673ead85364d">
-      <Platform Solution="Debug|Any CPU" Project="Win32" />
-      <Platform Solution="Release|x86" Project="x64" />
+    <Project Path="src/PreLoadCpp/src/PreloadCpp.vcxproj">
+      <Platform Project="Win32" />
     </Project>
   </Folder>
   <Folder Name="/Dependence/BedrockMapRender/">

@@ -20,3 +20,7 @@
 	path = src/LiteSkinViewer
 	url = https://github.com/Round-Studio/LiteSkinViewer.git
 	branch = master
+[submodule "src/PreLoadCpp"]
+	path = src/PreLoadCpp
+	url = https://github.com/Round-Studio/PreLoadCpp.git
+	branch = main

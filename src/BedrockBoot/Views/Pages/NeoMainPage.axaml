@@ -101,7 +101,7 @@
                                 Margin="6"
                                 Name="GameControls">
                         <Button Padding="28,0"
-                                Margin="2,2,2,3"
+                                Margin="3,2,2,3"
                                 CornerRadius="6"
                                 Classes="NoBorder"
                                 Click="GameLaunchBtn_OnClick"

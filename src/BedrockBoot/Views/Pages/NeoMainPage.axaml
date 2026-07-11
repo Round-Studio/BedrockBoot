@@ -11,7 +11,7 @@
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
              x:Class="BedrockBoot.Views.Pages.NeoMainPage">
     <UserControl.Styles>
-        <Style Selector="items|BorderCard#VersionChooseCard">
+        <Style Selector="Border#VersionChooseCard">
             <Setter Property="Width" Value="220" />
             <Setter Property="Height" Value="58" />
             <Setter Property="Transitions">
@@ -19,7 +19,7 @@
                     <DoubleTransition Duration="0:0:0.22"
                                       Easing="ExponentialEaseOut"
                                       Property="Width"></DoubleTransition>
-                    <DoubleTransition Duration="0:0:0.38"
+                    <DoubleTransition Duration="0:0:0.42"
                                       Easing="ExponentialEaseOut"
                                       Property="Height"></DoubleTransition>
                 </Transitions>
@@ -27,7 +27,7 @@
             
             <Style Selector="^:pointerover">
                 <Setter Property="Width" Value="300" />
-                <Setter Property="Height" Value="340" />
+                <Setter Property="Height" Value="360" />
         
                 <Style Selector="^ Button#GameSettingBtn">
                     <Setter Property="Opacity" Value="1" />
@@ -36,6 +36,10 @@
         
                 <Style Selector="^ Border#BackgroundBorder">
                     <Setter Property="Opacity" Value="1" />
+                </Style>
+        
+                <Style Selector="^ items|BorderCard#BackgroundBackBorder">
+                    <Setter Property="IsVisible" Value="True" />
                 </Style>
             </Style>
         </Style>
@@ -67,14 +71,6 @@
         </Style>
     </UserControl.Styles>
     <Grid>
-        <notice:InfoBar HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Height="48"
-                        State="Warning"
-                        Margin="4"
-                        Title="Beta UI"
-                        Message="您当前正在使用新的测试 UI 界面&#x0A;可前往 设置>通用 中返回旧版 UI"/>
-        
         <Grid RowDefinitions="Auto,*,Auto">
             <navigation:NavigationFrame Grid.Row="0"
                                         Name="HeaderContent"
@@ -86,13 +82,17 @@
 
             <navigation:NavigationFrame Grid.Row="1"
                                         Name="MainFrame" />
-
+            
             <items:BorderCard Grid.Row="2"
-                              Margin="-1,0,0,-1"
-                              Height="58"
-                              Padding="0"
-                              CornerRadius="0,18,0,0"
-                              HorizontalAlignment="Left">
+                              CornerRadius="8,8,0,0"
+                              Height="58"></items:BorderCard>
+
+            <Border Grid.Row="2"
+                    Margin="-1,0,0,-1"
+                    Height="58"
+                    Padding="0"
+                    CornerRadius="0,12,0,0"
+                    HorizontalAlignment="Stretch">
                 <Grid>
                     <StackPanel HorizontalAlignment="Left"
                                 VerticalAlignment="Stretch"
@@ -100,57 +100,65 @@
                                 Orientation="Horizontal"
                                 Margin="6"
                                 Name="GameControls">
-                        <Button Padding="22,0"
+                        <Button Padding="28,0"
                                 Margin="2,2,2,3"
-                                CornerRadius="12"
+                                CornerRadius="6"
                                 Classes="NoBorder"
                                 Click="GameLaunchBtn_OnClick"
                                 Background="{DynamicResource AccentBackgroundBrush}"
                                 Name="GameLaunchBtn">
                             <StackPanel Orientation="Horizontal"
-                                        Spacing="8">
+                                        VerticalAlignment="Center"
+                                        Spacing="12">
                                 <onePointControls:FontIcon VerticalAlignment="Center"
-                                                           FontSize="17"
+                                                           FontSize="18"
                                                            Foreground="White"
                                                            Glyph="&#xE768;" />
 
                                 <TextBlock Text="{DynamicResource Main.Action.Launch}"
+                                           VerticalAlignment="Center"
                                            Foreground="White"
-                                           FontSize="15" />
+                                           FontSize="16" />
                             </StackPanel>
                         </Button>
-                        
-                        <selectBar:SelectBar SelectedIndex="0"
-                                             SelectionChanged="SelTag_OnSelectionChanged"
-                                             HorizontalAlignment="Center"
-                                             VerticalAlignment="Stretch"
-                                             Margin="0,0,0,-2"
-                                             Name="SelTag" />
                     </StackPanel>
+                        
+                    <selectBar:SelectBar SelectedIndex="0"
+                                         SelectionChanged="SelTag_OnSelectionChanged"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Stretch"
+                                         Name="SelTag" />
                 </Grid>
-            </items:BorderCard>
+            </Border>
         </Grid>
             
-        <items:BorderCard HorizontalAlignment="Right"
-                          VerticalAlignment="Bottom"
-                          CornerRadius="18,0,0,0"
-                          MinHeight="58"
-                          Padding="0"
-                          ClipToBounds="True"
-                          Margin="0,0,-1,-1"
-                          Name="VersionChooseCard">
+        <Border HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                CornerRadius="12,0,0,0"
+                MinHeight="58"
+                Padding="0"
+                ClipToBounds="False"
+                Margin="0,0,-1,-1"
+                Name="VersionChooseCard">
             <Grid>
-                 <Border Background="{DynamicResource PrimaryBorderBrush}"
-                         CornerRadius="18,0,0,0"
-                         Margin="1,1,0,0"
-                         Name="BackgroundBorder"></Border>
+                <items:BorderCard CornerRadius="12,0,0,0"
+                                  Name="BackgroundBackBorder"
+                                  IsVisible="False"></items:BorderCard>
+                
+                <Border Background="{DynamicResource PrimaryBorderBrush}"
+                        CornerRadius="8,0,0,0"
+                        Margin="1,1,0,0"
+                        BoxShadow="0 0 120 0 Gray"
+                        Name="BackgroundBorder"></Border>
             
                 <Grid RowDefinitions="*,Auto">
                     <ListBox Grid.Row="0"
                              Name="GameListChoose"
                              SelectionChanged="GameListChoose_OnSelectionChanged"
-                             Margin="8,8,0,8"
-                             Padding="0,0,18,0"></ListBox>
+                             Background="#01FFFFFF"
+                             Margin="8,4,0,8"
+                             Padding="0,0,18,0">
+                    </ListBox>
                     
                     <Grid Grid.Row="1"
                           Name="GameInstanceShowBox"
@@ -159,11 +167,12 @@
                           ColumnSpacing="8"
                           Margin="10,0,0,8">
                         <Border Grid.Column="0"
-                                CornerRadius="12"
+                                CornerRadius="6"
                                 Height="38"
                                 Width="38"
                                 ClipToBounds="True">
-                            <Image Source="avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png"></Image>
+                            <Image Source="avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png"
+                                   Name="GameIcon"></Image>
                         </Border>
                         
                         <StackPanel Grid.Column="1"
@@ -200,6 +209,6 @@
                     </Grid>
                 </Grid>
             </Grid>
-        </items:BorderCard>
+        </Border>
     </Grid>
 </UserControl>

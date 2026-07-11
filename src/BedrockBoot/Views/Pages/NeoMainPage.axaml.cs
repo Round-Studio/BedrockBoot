@@ -5,13 +5,17 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
+using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -306,7 +310,12 @@ public partial class NeoMainPage : UserControl
             {
                 GameListChoose.Items.Add(new ListBoxItem()
                 {
-                    Content = $"{v.Info.VersionName}"
+                    Content = new MainChooseGameItem(v)
+                    {
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Left
+                    },
+                    Padding = new Thickness(0),
                 });
             });
 
@@ -366,6 +375,7 @@ public partial class NeoMainPage : UserControl
             GameInfo.Text = $"{version.Info.VersionType} {version.Info.Version}";
             GameName.Text = version.Info.VersionName;
             GameBuildType.Text = version.Info.BuildType.ToString();
+            GameIcon.Source = GetImage(IconHelper.GetGameIconUrl(version));
         }
         catch (Exception ex)
         {
@@ -374,6 +384,16 @@ public partial class NeoMainPage : UserControl
             GameInfo.Text = i18n["MainPage.Status.LoadFailed"];
             GameName.Text = "";
             GameBuildType.Text = "";
+        }
+    }
+
+    public Bitmap GetImage(string url)
+    {
+        var uri = new Uri(url);
+
+        using (var stream = AssetLoader.Open(uri))
+        {
+            return new Bitmap(stream);
         }
     }
 

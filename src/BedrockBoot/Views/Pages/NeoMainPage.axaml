@@ -171,7 +171,7 @@
                                 Height="38"
                                 Width="38"
                                 ClipToBounds="True">
-                            <Image Source="avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png"
+                            <Image Source="avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
                                    Name="GameIcon"></Image>
                         </Border>
                         

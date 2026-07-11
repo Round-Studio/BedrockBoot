@@ -12,20 +12,21 @@ public class IconHelper
         {
             GameIconType.Customization => string.IsNullOrEmpty(conf.Info.GameIconPath)
                 ? conf.Info.VersionType == MinecraftGameTypeVersion.Release
-                    ? "avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png"
-                    : "avares://BedrockBoot/Assets/Icon/Minecraft/GrassScript.png"
+                    ? "avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
+                    : "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png"
                 : conf.Info.GameIconPath,
             GameIconType.Default => conf.Info.VersionType == MinecraftGameTypeVersion.Release
-                ? "avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png"
-                : "avares://BedrockBoot/Assets/Icon/Minecraft/GrassScript.png",
-            GameIconType.Grass => "avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png",
-            GameIconType.GrassScript => "avares://BedrockBoot/Assets/Icon/Minecraft/GrassScript.png",
-            GameIconType.Worktable => "avares://BedrockBoot/Assets/Icon/Minecraft/Worktable.png",
-            GameIconType.Stone => "avares://BedrockBoot/Assets/Icon/Minecraft/Stone.png",
-            GameIconType.EndlandStone => "avares://BedrockBoot/Assets/Icon/Minecraft/EndlandStone.png",
+                ? "avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
+                : "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png",
+            GameIconType.Grass => "avares://BedrockBoot/Assets/Icon/Logo/Grass.png",
+            GameIconType.GrassScript => "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png",
+            GameIconType.Worktable => "avares://BedrockBoot/Assets/Icon/Logo/Worktable.png",
+            GameIconType.Stone => "avares://BedrockBoot/Assets/Icon/Logo/Stone.png",
+            GameIconType.EndlandStone => "avares://BedrockBoot/Assets/Icon/Logo/EndlandStone.png",
+            GameIconType.Falcons => "avares://BedrockBoot/Assets/Icon/Logo/Falcons.png",
             _ => conf.Info.VersionType == MinecraftGameTypeVersion.Release
-                ? "avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png"
-                : "avares://BedrockBoot/Assets/Icon/Minecraft/GrassScript.png"
+                ? "avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
+                : "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png"
         };
     }
 }

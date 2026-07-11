@@ -311,8 +311,8 @@ public partial class SearchDetailed : ISetting
                     Name = i.ID,
                     Description = $"{i.BuildType}, {i.Date}",
                     IconUri = i.Type == MinecraftGameTypeVersion.Release
-                        ? "avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png"
-                        : "avares://BedrockBoot/Assets/Icon/Minecraft/GrassScript.png",
+                        ? "avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
+                        : "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png",
                     OnClick = s =>
                     {
                         GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),

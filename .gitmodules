@@ -24,3 +24,7 @@
 	path = src/PreLoadCpp
 	url = https://github.com/Round-Studio/PreLoadCpp.git
 	branch = main
+[submodule "src/MapRender"]
+	path = src/MapRender
+	url = https://github.com/BE-Community-Dev/MapRender.git
+	branch = master

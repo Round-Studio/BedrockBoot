@@ -5,7 +5,7 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationFont">
-    <Grid>
+    <Grid RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -37,7 +37,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="20,8,20,0" Spacing="8" Name="PreviewPanel">
+            <StackPanel Margin="20,0" Spacing="8" Name="PreviewPanel">
                 <TextBlock Name="PreviewRegular"/>
                 <TextBlock Name="PreviewItalic" FontStyle="Italic"/>
                 <TextBlock Name="PreviewBold" FontWeight="Bold"/>

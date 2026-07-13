@@ -24,18 +24,24 @@
 
             <TextBlock FontWeight="Bold" FontSize="14" Text="预览" />
 
-            <DockPanel>
+            <DockPanel HorizontalSpacing="8">
                 <TextBlock Text="预览字号" VerticalAlignment="Center"></TextBlock>
-                <Slider Classes="Number" Minimum="8" Maximum="72" Name="FontSizeSlider" Value="14" ValueChanged="FontSizeSlider_ValueChanged"></Slider>
+                <Slider Classes="Number" Minimum="8" Maximum="72" Name="FontSizeSlider" Value="72" ValueChanged="FontSizeSlider_ValueChanged"
+                        Margin="0"></Slider>
+            </DockPanel>
+
+            <DockPanel HorizontalSpacing="8">
+                <TextBlock Text="预览文本" VerticalAlignment="Center"></TextBlock>
+                <TextBox Name="PreviewTextInput" Watermark="请输入预览文本..." TextChanged="PreviewTextInput_TextChanged"></TextBox>
             </DockPanel>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="20,0" Spacing="8" Name="PreviewPanel">
-                <TextBlock Text="Regular 0123 你好中国" Name="PreviewRegular"/>
-                <TextBlock Text="Italic 0123 你好中国" FontStyle="Italic" Name="PreviewItalic"/>
-                <TextBlock Text="Bold 0123 你好中国" FontWeight="Bold" Name="PreviewBold"/>
-                <TextBlock Text="Bold Italic 0123 你好中国" FontStyle="Italic" FontWeight="Bold" Name="PreviewBoldItalic"/>
+            <StackPanel Margin="20,8,20,0" Spacing="8" Name="PreviewPanel">
+                <TextBlock Name="PreviewRegular"/>
+                <TextBlock Name="PreviewItalic" FontStyle="Italic"/>
+                <TextBlock Name="PreviewBold" FontWeight="Bold"/>
+                <TextBlock Name="PreviewBoldItalic" FontStyle="Italic" FontWeight="Bold"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

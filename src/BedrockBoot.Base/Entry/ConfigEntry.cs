@@ -57,7 +57,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
         [JsonPropertyName("mediaSource")] public MediaSourceEnum MediaSource { get; set; } = MediaSourceEnum.PriorityThemePack;
         [JsonPropertyName("mainFont")] public string MainFont { get; set; } = "DINPro";
-        [JsonPropertyName("fallbackFont")] public string FallbackFont { get; set; } = string.Empty;
+        [JsonPropertyName("fallbackFont")] public string FallbackFont { get; set; } = "Noto Sans SC";
     }
 
     public class HomeConfig

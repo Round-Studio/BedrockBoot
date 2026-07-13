@@ -13,6 +13,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
 public partial class PersonalizationFont : ISettingPage
 {
+    private const string DefaultPreviewText = "Regular 0123 你好中国";
+
     public PersonalizationFont()
     {
         InitializeComponent();
@@ -76,6 +78,9 @@ public partial class PersonalizationFont : ISettingPage
         SelectComboBoxItem(MainFontComboBox, config.MainFont, 0);
         SelectComboBoxItem(FallbackFontComboBox, config.FallbackFont, -1);
 
+        // 初始化预览文本框的状态
+        PreviewTextInput_TextChanged(null, null);
+        
         UpdatePreview();
     }
 
@@ -123,6 +128,11 @@ public partial class PersonalizationFont : ISettingPage
         SaveConfig();
     }
 
+    private void PreviewTextInput_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        UpdatePreview();
+    }
+
     private void SaveConfig()
     {
         var mainItem = MainFontComboBox.SelectedItem as ComboBoxItem;
@@ -150,15 +160,24 @@ public partial class PersonalizationFont : ISettingPage
             fontSize = 14;
         }
 
+        // 获取预览文本，如果为空则使用默认文本
+        string previewText = string.IsNullOrWhiteSpace(PreviewTextInput.Text) 
+            ? DefaultPreviewText 
+            : PreviewTextInput.Text;
+
+        PreviewRegular.Text = previewText;
         PreviewRegular.FontFamily = combinedFont;
         PreviewRegular.FontSize = fontSize;
 
+        PreviewItalic.Text = previewText;
         PreviewItalic.FontFamily = combinedFont;
         PreviewItalic.FontSize = fontSize;
 
+        PreviewBold.Text = previewText;
         PreviewBold.FontFamily = combinedFont;
         PreviewBold.FontSize = fontSize;
 
+        PreviewBoldItalic.Text = previewText;
         PreviewBoldItalic.FontFamily = combinedFont;
         PreviewBoldItalic.FontSize = fontSize;
     }

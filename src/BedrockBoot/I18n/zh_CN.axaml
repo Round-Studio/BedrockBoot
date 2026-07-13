@@ -598,7 +598,7 @@
 	<x:String x:Key="Settings.Game.MouseLock.Reserve.Desc">除非新版鼠标锁逻辑未能按照预期工作，否则你不应该打开这个开关</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">旧版本鼠标锁逻辑更为粗暴，除了不必要的 CPU 消耗之外，还会导致其他应用或游戏自带的鼠标锁定逻辑出现异常，&#10;且会导致解除锁定的热键工作异常。&#10;除非新版鼠标锁逻辑未能按照预期工作，否则你的确不应该打开这个开关！&#10;&#10;确认仍要打开吗？</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.FullScreen.Title">全屏时防止误触任务栏</x:String>
-	<x:String x:Key="Settings.Game.MouseLock.FullScreen.Desc">在窗口四边与监视器四边重合时减去少量像素，防止在游戏全屏或者在隐藏任务栏且游戏最大化时鼠标误触任务栏</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.FullScreen.Desc">在窗口四边减去少量像素，防止在游戏全屏或者在隐藏任务栏且游戏最大化时鼠标误触任务栏</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Title">热键绑定</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Desc">绑定临时解除鼠标锁定的热键</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Capturing">捕获中，按 Esc 取消</x:String>

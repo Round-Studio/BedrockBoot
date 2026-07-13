@@ -269,6 +269,15 @@ public class ProcessMouseLocker
         }
         if (TryGetWindowBounds(_targetHwnd, out Rect rect))
         {
+			// 本来写了判断游戏窗口是否和监视器的边缘重合的判断
+			// 但是想了想还是算了，没啥必要，反正全局抠掉一点点也没啥影响
+			if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockFullScreen)
+            {
+                rect.Left += 2;
+                rect.Top += 2;
+                rect.Right -= 2;
+                rect.Bottom -= 2;
+            }
             // 如果裁切不需要改变就不重新进行裁切
             if (_lastClipRect.HasValue && _lastClipRect.Value.Equals(rect) && !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockReserve) return;
 

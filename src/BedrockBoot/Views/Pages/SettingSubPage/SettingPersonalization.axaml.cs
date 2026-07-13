@@ -148,4 +148,9 @@ public partial class SettingPersonalization : ISettingPage
     {
         MainSettingPage.NavigateTo(new PersonalizationThemePack());
     }
+
+    private void SetFont_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new PersonalizationThemePack());
+    }
 }

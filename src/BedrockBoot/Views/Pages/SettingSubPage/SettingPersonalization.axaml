@@ -72,6 +72,14 @@
                                           Click="SetAudio_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE8D6;" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="字体"
+                                          Description="BedrockBoot 界面显示字体"
+                                          Name="SetFont"
+                                          Click="SetFont_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xE8D6;" />
             
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"

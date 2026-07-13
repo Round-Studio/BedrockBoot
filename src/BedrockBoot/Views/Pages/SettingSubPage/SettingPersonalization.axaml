@@ -79,7 +79,7 @@
                                           Name="SetFont"
                                           Click="SetFont_OnClick"
                                           IsClickable="True"
-                                          Glyph="&#xE8D6;" />
+                                          Glyph="&#xE8D2;" />
             
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"

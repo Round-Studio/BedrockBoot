@@ -151,6 +151,6 @@ public partial class SettingPersonalization : ISettingPage
 
     private void SetFont_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigateTo(new PersonalizationThemePack());
+        MainSettingPage.NavigateTo(new PersonalizationFont());
     }
 }

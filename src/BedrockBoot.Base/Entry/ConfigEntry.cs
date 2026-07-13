@@ -56,6 +56,8 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Voronoi;
         [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
         [JsonPropertyName("mediaSource")] public MediaSourceEnum MediaSource { get; set; } = MediaSourceEnum.PriorityThemePack;
+        [JsonPropertyName("mainFont")] public string MainFont { get; set; } = "DINPro";
+        [JsonPropertyName("fallbackFont")] public string FallbackFont { get; set; } = string.Empty;
     }
 
     public class HomeConfig

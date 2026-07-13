@@ -47,6 +47,20 @@ namespace BedrockBoot.Views.Windows;
 
 public partial class MainWindow : BedrockBootWindow
 {
+    private static List<string> _installedFontNames;
+    public static List<string> InstalledFontNames
+    {
+        get
+        {
+            if (_installedFontNames == null)
+            {
+                _installedFontNames = FontManager.Current.SystemFonts
+                    .Select(f => f.Name)
+                    .ToList();
+            }
+            return _installedFontNames;
+        }
+    }
     public MainWindow()
     {
         InitializeComponent();
@@ -72,6 +86,28 @@ public partial class MainWindow : BedrockBootWindow
         AddHandler(DragDrop.DropEvent, OnDrop);
 
         InitializeTaskbarProgress();
+    }
+
+    public FontFamily GetFontFamily(string mainFont,string fallbackFont)
+    {
+        FontFamily combinedFont = new("DINPro, Noto Sans SC");
+        
+        if (!string.IsNullOrEmpty(mainFont) && !string.IsNullOrEmpty(fallbackFont))
+        {
+            combinedFont = new FontFamily($"{mainFont}, {fallbackFont}");
+        }
+        else if (!string.IsNullOrEmpty(mainFont))
+        {
+            combinedFont = new FontFamily(mainFont);
+        }
+        else if (!string.IsNullOrEmpty(fallbackFont))
+        {
+            combinedFont = new FontFamily(fallbackFont);
+        }
+
+        Models.Global.GlobalModel.MainWindow.FontFamily = combinedFont;
+
+        return combinedFont;
     }
 
 #if WINDOWS
@@ -417,6 +453,8 @@ public partial class MainWindow : BedrockBootWindow
 
     public void UpdateTheme()
     {
+        GetFontFamily(Core.Global.GlobalModel.Config.Data.StyleConfig.MainFont,
+            Core.Global.GlobalModel.Config.Data.StyleConfig.FallbackFont);
         MediaManager.Instance.Enabled = Core.Global.GlobalModel.Config.Data.IsPlayBackgroundMusic;
         var musicName = Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic;
         if (Core.Global.GlobalModel.Config.Data.StyleConfig.IsUseThemePack)

@@ -93,30 +93,4 @@
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Views\Pages\OtherPage\AboutPages\AboutContributor.axaml.cs">
-        <DependentUpon>AboutContributor.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Pages\OtherPage\AboutPages\AboutOpenSource.axaml.cs">
-        <DependentUpon>AboutOpenSource.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Pages\OtherPage\AboutPages\AboutPage.axaml.cs">
-        <DependentUpon>AboutPage.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Pages\OtherPage\AboutPages\AboutReleaseNotes.axaml.cs">
-        <DependentUpon>AboutReleaseNotes.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Pages\SettingSubPage\SettingDownloadPages\NetworkTest.axaml.cs">
-        <DependentUpon>NetworkTest.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="Views\Windows\SystemMethod\ImportTemplatePack.axaml.cs">
-        <DependentUpon>ImportTemplatePack.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-    </ItemGroup>
 </Project>

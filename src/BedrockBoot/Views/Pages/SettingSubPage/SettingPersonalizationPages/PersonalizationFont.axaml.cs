@@ -13,7 +13,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 
 public partial class PersonalizationFont : ISettingPage
 {
-    private const string DefaultPreviewText = "Regular 0123 你好中国";
+    private const string DefaultPreviewText = @"Hello 0123 你好中国 \(^_^"")/";
 
     public PersonalizationFont()
     {

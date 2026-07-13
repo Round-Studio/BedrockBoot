@@ -27,6 +27,10 @@
     <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
     <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />
   </Folder>
+  <Folder Name="/Dependence/CrashStackAnalyzer/">
+    <Project Path="src/CrashStackAnalyzer/CrashStackAnalyzer.Console/CrashStackAnalyzer.Console.csproj" />
+    <Project Path="src/CrashStackAnalyzer/CrashStackAnalyzer/CrashStackAnalyzer.csproj" />
+  </Folder>
   <Folder Name="/Dependence/Linux/">
     <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
   </Folder>

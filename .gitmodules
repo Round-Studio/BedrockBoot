@@ -28,3 +28,7 @@
 	path = src/MapRender
 	url = https://github.com/BE-Community-Dev/MapRender.git
 	branch = master
+[submodule "src/CrashStackAnalyzer"]
+	path = src/CrashStackAnalyzer
+	url = https://github.com/Round-Studio/CrashStackAnalyzer.git
+	branch = main

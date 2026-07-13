@@ -75,6 +75,7 @@ public class App : Application
 
     private void ShowErrorDialog(Exception ex)
     {
+        if (ex.ToString().Contains("System.Net.Sockets.Socket")) return;
         try
         {
             if (!Directory.Exists(PathsList.ReportPath)) Directory.CreateDirectory(PathsList.ReportPath);

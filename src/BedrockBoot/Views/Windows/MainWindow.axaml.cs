@@ -86,6 +86,7 @@ public partial class MainWindow : BedrockBootWindow
         AddHandler(DragDrop.DropEvent, OnDrop);
 
         InitializeTaskbarProgress();
+        InitRefreshTaskItemTask();
     }
 
     public FontFamily GetFontFamily(string mainFont,string fallbackFont)
@@ -511,6 +512,18 @@ public partial class MainWindow : BedrockBootWindow
 
     #region 任务与交互
 
+    public void InitRefreshTaskItemTask()
+    {
+        Task.Run(() =>
+        {
+            while (true)
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Invoke(UpdateTaskUI);
+                Thread.Sleep(30000);
+            }
+        });
+    }
+
     public void UpdateTaskUI()
     {
         TaskList.ItemsSource = null;
@@ -672,6 +685,7 @@ public partial class MainWindow : BedrockBootWindow
             Y = Position.Y
         };
         Core.Global.GlobalModel.Config.Save();
+        Environment.Exit(0);
     }
 
     #endregion

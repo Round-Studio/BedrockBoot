@@ -43,7 +43,7 @@ public class InstanceUpdater
     {
         Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.ID}");
         var downloader = new EasyDownload(buildInfo, true, _versionConfig.VersionsRootPath,
-            Path.GetFileName(_versionConfig.VersionPath));
+            _versionConfig.Info.VersionName, true);
         
         var deleteTask = Task.Run(() =>
         {

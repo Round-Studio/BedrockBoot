@@ -17,10 +17,15 @@ public partial class MainChooseGameItem : UserControl
     {
         InitializeComponent();
     }
-    public MainChooseGameItem(VersionConfig versionConfig):this()
+
+    public MainChooseGameItem(VersionConfig versionConfig) : this()
     {
         _versionConfig = versionConfig;
+        Update(_versionConfig);
+    }
 
+    public void Update(VersionConfig versionConfig)
+    {
         GameInfo.Text = $"{versionConfig.Info.VersionType} {versionConfig.Info.Version}";
         GameName.Text = versionConfig.Info.VersionName;
         GameBuildType.Text = versionConfig.Info.BuildType.ToString();

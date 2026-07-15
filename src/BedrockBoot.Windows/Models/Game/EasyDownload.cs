@@ -38,8 +38,11 @@ public class DownloadProgressInfo
 
 public class EasyDownload
 {
-    public EasyDownload(BuildInfo info, bool isUsePack, string dir, string gameName)
+    private readonly bool _isUpdate;
+
+    public EasyDownload(BuildInfo info, bool isUsePack, string dir, string gameName, bool isUpdate = false)
     {
+        _isUpdate = isUpdate;
         BuildInfo = info;
         InstallFolder = dir;
         GameName = gameName;
@@ -238,6 +241,7 @@ public class EasyDownload
 
     private void SaveVersionConfig(string installDir)
     {
+        if (_isUpdate) return;
         var conf = new VersionConfig
         {
             VersionPath = installDir,

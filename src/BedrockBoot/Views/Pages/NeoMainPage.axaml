@@ -8,6 +8,7 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
              xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:items1="clr-namespace:BedrockBoot.Views.Control.Items"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
              x:Class="BedrockBoot.Views.Pages.NeoMainPage">
     <UserControl.Styles>
@@ -163,39 +164,14 @@
                     <Grid Grid.Row="1"
                           Name="GameInstanceShowBox"
                           VerticalAlignment="Bottom"
-                          ColumnDefinitions="Auto,*,Auto"
+                          ColumnDefinitions="*,Auto"
                           ColumnSpacing="8"
                           Margin="10,0,0,8">
-                        <Border Grid.Column="0"
-                                CornerRadius="6"
-                                Height="38"
-                                Width="38"
-                                ClipToBounds="True">
-                            <Image Source="avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
-                                   Name="GameIcon"></Image>
-                        </Border>
+                        <items1:MainChooseGameItem Grid.Column="0"
+                                                   Name="GameInfoItem"
+                                                   IsVisible="False"/>
                         
-                        <StackPanel Grid.Column="1"
-                                    Margin="0,0,0,0">
-                            <TextBlock Text="InstanceName"
-                                       Name="GameName"
-                                       FontSize="18"
-                                       FontWeight="Bold"></TextBlock>
-                            
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="4">
-                                <onePointControls:LabelBox Text="GDK"
-                                                           Name="GameBuildType"
-                                                           Foreground="White" />
-                                <TextBlock Text="GameInfo"
-                                           Name="GameInfo"
-                                           VerticalAlignment="Center"
-                                           Opacity="0.8"
-                                           FontSize="9" />
-                            </StackPanel>
-                        </StackPanel>
-                        
-                        <Button Grid.Column="2"
+                        <Button Grid.Column="1"
                                 Name="GameSettingBtn"
                                 Click="GameSettingBtn_OnClick"
                                 Classes="NoBorder"

@@ -31,7 +31,7 @@ namespace BedrockBoot.Views.Pages;
 public partial class NeoMainPage : UserControl
 {
     public static NeoMainPage Instance;
-    private bool _isUpdatingGameList; // 添加：控制游戏列表更新的标志
+    private bool _isUpdatingGameList;
     private static I18nManager i18n => I18nManager.Instance;
 
     public NeoMainPage()
@@ -102,7 +102,7 @@ public partial class NeoMainPage : UserControl
         {
             try
             {
-                await PluginLoader.LoadAll();
+                PluginLoader.LoadAll();
             }
             catch
             {
@@ -116,8 +116,8 @@ public partial class NeoMainPage : UserControl
             {
                 Console.WriteLine($@"创建 JumpList 出现错误：{exception}");
             }
-            await UpdateUIAsync();
         };
+        _ = UpdateUIAsync();
 
         var sel = -1;
         var count = -1;
@@ -137,6 +137,8 @@ public partial class NeoMainPage : UserControl
 
     public bool IsEditMode { get; set; }
 
+    #region 导航栏
+    
     public Dictionary<string, TopBarItemInfo> TopBarItem { get; } = new();
 
     public static async Task Update(bool isShowNeo = false)
@@ -233,37 +235,35 @@ public partial class NeoMainPage : UserControl
             }
     }
 
-    public async Task UpdateUIAsync()
-    {
-        void NullFunc()
-        {
-            try
-            {
-                _isUpdatingGameList = true; // 添加：设置更新标志
-                GameListChoose.Items.Clear();
-                GameListChoose.Items.Add(i18n["MainPage.Status.NoInstance"]);
-                GameListChoose.SelectedIndex = 0;
-                GameControls.IsEnabled = false;
-                GameInfo.Text = "";
-                GameName.Text = "";
-                GameSettingBtn.IsVisible = false;
-                _isUpdatingGameList = false; // 添加：清除更新标志
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"NullFunc执行出错: {ex.Message}");
-                _isUpdatingGameList = false;
-            }
-        }
+    #endregion
 
+    public void SetNullInfo(bool isNull = true)
+    {
         try
         {
-            // 在开始更新前先设置标志
+            if (isNull)
+                GameListChoose.Items.Clear();
+            _isUpdatingGameList = true;
+            GameListChoose.IsVisible = !isNull;
+            GameControls.IsEnabled = !isNull;
+            GameInfoItem.IsVisible = !isNull;
+            GameSettingBtn.IsVisible = !isNull;
+            _isUpdatingGameList = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"NullFunc执行出错: {ex.Message}");
+            _isUpdatingGameList = false;
+        }
+    }
+
+    public async Task UpdateUIAsync()
+    {
+        try
+        {
+            SetNullInfo();
             IsEditMode = false;
             _isUpdatingGameList = true;
-
-            GameControls.IsEnabled = true;
-            GameSettingBtn.IsVisible = true;
 
             // 确保控件已初始化
             if (GameListChoose == null)
@@ -272,26 +272,16 @@ public partial class NeoMainPage : UserControl
                 return;
             }
 
-            // 清空现有项目
-            try
-            {
-                GameListChoose.Items.Clear();
-            }
-            catch
-            {
-            }
-
             if (GlobalModel.Config.Data.GameFolders.Count <= 0)
             {
-                NullFunc();
+                SetNullInfo();
                 return;
             }
 
-            // 修复：检查 GameFolderSelIndex 是否有效
             if (GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
                 GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
             {
-                NullFunc();
+                SetNullInfo();
                 return;
             }
 
@@ -300,12 +290,11 @@ public partial class NeoMainPage : UserControl
 
             if (versions.Count <= 0)
             {
-                NullFunc();
+                SetNullInfo();
                 return;
             }
 
             GameListChoose.Items.Clear();
-            // 添加版本到选择框
             versions.ForEach(v =>
             {
                 GameListChoose.Items.Add(new ListBoxItem()
@@ -330,13 +319,11 @@ public partial class NeoMainPage : UserControl
         catch (Exception ex)
         {
             Console.WriteLine($@"UpdateUI执行出错: {ex}");
-            // 发生异常时也要确保标志位被重置
             _isUpdatingGameList = false;
             IsEditMode = true;
         }
         finally
         {
-            // 确保在finally块中重置标志，即使发生异常也能恢复
             _isUpdatingGameList = false;
             IsEditMode = true;
         }
@@ -346,14 +333,11 @@ public partial class NeoMainPage : UserControl
     {
         try
         {
-            // 修复：添加边界检查防止数组越界
             if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
                 GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
                 GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
             {
-                GameInfo.Text = i18n["MainPage.Status.NoInstance"];
-                GameName.Text = "";
-                GameBuildType.Text = "";
+                SetNullInfo();
                 return;
             }
 
@@ -364,42 +348,25 @@ public partial class NeoMainPage : UserControl
                 gameFolder.GameSelIndex < 0 ||
                 gameFolder.GameSelIndex >= versions.Count)
             {
-                GameInfo.Text = i18n["MainPage.Status.NoInstance"];
-                GameName.Text = "";
-                GameBuildType.Text = "";
+                SetNullInfo();
                 return;
             }
 
             var version = versions[gameFolder.GameSelIndex];
 
-            GameInfo.Text = $"{version.Info.VersionType} {version.Info.Version}";
-            GameName.Text = version.Info.VersionName;
-            GameBuildType.Text = version.Info.BuildType.ToString();
-            GameIcon.Source = GetImage(IconHelper.GetGameIconUrl(version));
+            GameInfoItem.Update(version);
+            SetNullInfo(false);
         }
         catch (Exception ex)
         {
             // 修复：添加异常处理
             Console.WriteLine($@"更新游戏信息失败：{ex.Message}");
-            GameInfo.Text = i18n["MainPage.Status.LoadFailed"];
-            GameName.Text = "";
-            GameBuildType.Text = "";
-        }
-    }
-
-    public Bitmap GetImage(string url)
-    {
-        var uri = new Uri(url);
-
-        using (var stream = AssetLoader.Open(uri))
-        {
-            return new Bitmap(stream);
+            SetNullInfo();
         }
     }
 
     private void GameListChoose_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        // 修改：添加 _isUpdatingGameList 检查，防止在更新列表时触发
         if (IsEditMode && !_isUpdatingGameList)
         {
             var selIndex = GameListChoose.SelectedIndex;

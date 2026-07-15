@@ -85,7 +85,7 @@ public partial class InstanceInformation : UserControl
             var (sessions, activeDays, totalHours) = SessionStoreHelper.GetWeeklyStats(_versionInfo.VersionPath);
             SessionsText.Text = sessions.ToString();
             ActiveDaysText.Text = activeDays.ToString();
-            TotalHoursText.Text = $"{(playerData.TotalPlayTime / 3600).ToString("F2")}";
+            TotalHoursText.Text = $"{(playerData.TotalPlayTime / 3600.00).ToString("F2")}";
 
             _dailyTotals = SessionStoreHelper.GetDailyTotals(_versionInfo.VersionPath, 7);
 

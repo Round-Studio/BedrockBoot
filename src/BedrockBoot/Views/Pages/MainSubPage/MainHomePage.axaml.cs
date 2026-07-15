@@ -5,6 +5,7 @@ using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Style.Widgets;
 using BedrockBoot.Views.Control.Widgets;
+using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;

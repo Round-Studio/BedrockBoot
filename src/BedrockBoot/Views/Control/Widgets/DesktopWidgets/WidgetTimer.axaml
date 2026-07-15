@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="180"
+             x:Class="BedrockBoot.Views.Control.Widgets.DesktopWidgets.WidgetTimer">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <onePointControls:FontIcon Grid.Row="0"
+                                   Glyph="&#xE823;"
+                                   FontSize="32"/>
+        
+        <StackPanel Grid.Row="2">
+            <TextBlock FontSize="42"
+                       FontWeight="SemiBold"
+                       Name="TimeTextBlock"
+                       Text="Time"></TextBlock>
+            
+            <TextBlock Opacity="0.6"
+                       Text="当前时间"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -20,5 +20,5 @@ public class WidgetLayoutData
 public class WidgetConfig
 {
     [JsonPropertyName("widgetType")]
-    public WidgetType WidgetType { get; set; }
+    public WidgetType WidgetType { get; set; } =  WidgetType.Timer;
 }

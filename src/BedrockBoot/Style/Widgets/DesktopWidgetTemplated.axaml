@@ -3,7 +3,6 @@
         xmlns:controls="using:BedrockBoot.Style.Widgets"
         xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
         xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia">
-    
     <Design.PreviewWith>
         <controls:DesktopWidgetTemplated Background="#2D2D30">
             <Button Content="Hover Drag Me" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
@@ -36,7 +35,7 @@
                             <ContentControl Content="{TemplateBinding Content}"
                                             HorizontalAlignment="Stretch"
                                             VerticalAlignment="Stretch"
-                                            Margin="12"/>
+                                            Margin="16"/>
                             
                             <Border Height="36" Width="36"
                                     HorizontalAlignment="Right"

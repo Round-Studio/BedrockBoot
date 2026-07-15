@@ -13,7 +13,7 @@ using BedrockBoot.Base.Entry.Config;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Style.Widgets;
 
-namespace BedrockBoot.Views.Control.Widgets
+namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 {
     public class DesktopWorkspace : UserControl
     {
@@ -179,9 +179,15 @@ namespace BedrockBoot.Views.Control.Widgets
         {
             if (config == null) return null;
             
-            return config.WidgetType switch
+            var content = config.WidgetType switch
             {
-                _ => new DesktopWidgetTemplated()
+                WidgetType.Timer => new WidgetTimer(),
+                _ => null
+            };
+
+            return new DesktopWidgetTemplated()
+            {
+                Content = content
             };
         }
 

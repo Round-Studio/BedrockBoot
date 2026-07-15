@@ -43,9 +43,4 @@ public partial class MainHomePage : BedrockBootPage
                 break;
         }
     }
-
-    private void Button_OnClick(object? sender, RoutedEventArgs e)
-    {
-        DesktopWorkspace.AddWidget(new DesktopWidgetTemplated());
-    }
 }

@@ -19,10 +19,5 @@
     </entry:BedrockBootPage.HeaderView>
     <Grid>
         <Grid Name="MainGrid" />
-        
-        <Button Content="add"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Click="Button_OnClick"></Button>
     </Grid>
 </entry:BedrockBootPage>

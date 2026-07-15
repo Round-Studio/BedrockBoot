@@ -1,0 +1,96 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:BedrockBoot.Style.Widgets"
+        xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia">
+    
+    <Design.PreviewWith>
+        <controls:DesktopWidgetTemplated Background="#2D2D30">
+            <Button Content="Hover Drag Me" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </controls:DesktopWidgetTemplated>
+    </Design.PreviewWith>
+
+    <Style Selector="controls|DesktopWidgetTemplated">
+        <Setter Property="MinWidth" Value="180"></Setter>
+        <Setter Property="MinHeight" Value="180"></Setter>
+        <Setter Property="MaxWidth" Value="360"></Setter>
+        <Setter Property="MaxHeight" Value="360"></Setter>
+        
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Width" Duration="0:0:0.2" Easing="ExponentialEaseOut"/>
+                <DoubleTransition Property="Height" Duration="0:0:0.2" Easing="ExponentialEaseOut"/>
+            </Transitions>
+        </Setter>
+        
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <items:BorderCard Margin="5"
+                                      CornerRadius="11"
+                                      Padding="0"
+                                      Name="MainCard"
+                                      ClipToBounds="False">
+                        
+                        <Grid>
+                            <ContentControl Content="{TemplateBinding Content}"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Margin="12"/>
+                            
+                            <Border Height="36" Width="36"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Background="#01FFFFFF"
+                                    Name="HoverBorder"
+                                    Cursor="BottomRightCorner">
+                                
+                                <PathIcon Width="36" Height="36"
+                                          Margin="8"
+                                          Opacity="0"
+                                          Data="M544.682667 838.4q121.642667 0 207.658666-86.016 86.058667-86.016 86.058667-207.701333V149.333333q0-15.018667 10.624-25.6 10.624-10.666667 25.6-10.666666 15.061333 0 25.685333 10.666666 10.581333 10.581333 10.581334 25.6v395.349334q0 151.722667-107.221334 258.986666-107.306667 107.264-258.986666 107.264H149.333333q-15.018667 0-25.642666-10.666666-10.666667-10.581333-10.666667-25.6t10.666667-25.642667q10.624-10.624 25.6-10.624h395.392z" 
+                                          Foreground="White"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Bottom"
+                                          Name="CursorFont"
+                                          Cursor="BottomRightCorner">
+                                    
+                                    <PathIcon.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="Opacity" 
+                                                              Duration="0:0:0.18"
+                                                              Easing="ExponentialEaseOut"/>
+                                            <ThicknessTransition Property="Margin" 
+                                                                 Duration="0:0:0.18"
+                                                                 Easing="ExponentialEaseOut"/>
+                                        </Transitions>
+                                    </PathIcon.Transitions>
+                                </PathIcon>
+                            </Border>
+                        </Grid>
+                    </items:BorderCard>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^ /template/ items|BorderCard#MainCard:pointerover /template/ PathIcon#CursorFont">
+            <Setter Property="Margin" Value="-5"/>
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        
+        <Style Selector="^ /template/ Border#HoverBorder:pointerover > PathIcon#CursorFont">
+            <Setter Property="Margin" Value="-5"/>
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+
+        <Style Selector="^ /template/ PathIcon#CursorFont:pointerover">
+            <Setter Property="Margin" Value="-5"/>
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        
+        <Style Selector="^ /template/ PathIcon#CursorFont">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+    </Style>
+</Styles>

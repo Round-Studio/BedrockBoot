@@ -93,4 +93,8 @@
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Views\Control\Widgets\DesktopWidgets\" />
+    </ItemGroup>
 </Project>

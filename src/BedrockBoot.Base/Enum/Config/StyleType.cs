@@ -14,5 +14,6 @@ public enum StyleType
 public enum HomeType
 {
     None,
-    News
+    News,
+    Widgets
 }

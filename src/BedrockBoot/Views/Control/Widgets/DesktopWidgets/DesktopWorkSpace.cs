@@ -492,8 +492,8 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
                 if (bottomEdge > maxHeight) maxHeight = bottomEdge;
             }
 
-            _canvas.Width = Math.Max(viewportWidth, maxWidth);
-            _canvas.Height = Math.Max(viewportHeight, maxHeight);
+            _canvas.Width = Math.Max(viewportWidth, maxWidth) - (2 * Padding);
+            _canvas.Height = Math.Max(viewportHeight, maxHeight) - (2 * Padding);
         }
 
         private void OnLayoutChanged(DesktopWidgetTemplated widget)

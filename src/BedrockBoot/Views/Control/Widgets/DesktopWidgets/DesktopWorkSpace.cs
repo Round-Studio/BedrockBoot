@@ -83,11 +83,11 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             }
         }
 
-        public void AddWidget(DesktopWidgetTemplated widget, WidgetSize size = WidgetSize.Small)
+        public void AddWidget(WidgetConfig config)
         {
             if (_canvas == null) return;
 
-            SetWidgetSize(widget, size);
+            var widget = CreateWidgetFromConfig(config);
             
             var startPos = FindNearestFreeGridPosition(new Point(0, 0), widget);
             PlaceWidgetAtGrid(widget, startPos);

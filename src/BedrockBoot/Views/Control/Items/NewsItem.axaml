@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="300"
              Height="180"
              PointerEntered="InputElement_OnPointerEntered"
@@ -11,7 +12,8 @@
     <Grid>
         <Border ClipToBounds="True"
                 CornerRadius="6">
-            <widgets:LocalImageRenderWidget Name="ImageRender">
+            <widgets:LocalImageRenderWidget Name="ImageRender"
+                                            Margin="0">
                 <widgets:LocalImageRenderWidget.Transitions>
                     <Transitions>
                         <EffectTransition Property="Effect"
@@ -34,9 +36,10 @@
             </Border.Background>
         </Border>
 
-        <StackPanel Margin="20"
+        <StackPanel Margin="20,20,20,16"
                     VerticalAlignment="Bottom">
             <TextBlock Text="Title"
+                       TextWrapping="Wrap"
                        Foreground="White"
                        FontSize="24"
                        FontWeight="Bold"
@@ -44,8 +47,35 @@
             <TextBlock Text="SubTitle"
                        Foreground="White"
                        FontSize="11"
-                       TextWrapping="Wrap"
+                       TextTrimming="CharacterEllipsis"
                        Name="ItemSubTitle" />
+            
+            <Grid ColumnDefinitions="Auto,*"
+                  Margin="0,3,0,0">
+                <StackPanel Grid.Column="0"
+                            Spacing="4"
+                            Orientation="Horizontal">
+                    <onePointControls:FontIcon Glyph="&#xE823;"
+                                               VerticalAlignment="Center"/>
+                    <TextBlock Text="114514h ago"
+                               Foreground="White"
+                               Name="ItemTimeAgo" />
+                </StackPanel>
+                
+                <HyperlinkButton Grid.Column="1"
+                                 HorizontalAlignment="Right"
+                                 Name="HyperlinkButton">
+                    <StackPanel Spacing="4"
+                                Orientation="Horizontal">
+                        <onePointControls:FontIcon Glyph="&#xE8A7;"
+                                                   Foreground="{DynamicResource AccentBackgroundBrush}"
+                                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="阅读更多"
+                                   Foreground="{DynamicResource AccentBackgroundBrush}"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                </HyperlinkButton>
+            </Grid>
         </StackPanel>
     </Grid>
 </UserControl>

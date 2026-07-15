@@ -306,9 +306,8 @@ namespace BedrockBoot.Views.Control.Widgets
 
             _ghostPlaceholder = new Border
             {
-                Background = new SolidColorBrush(Color.Parse("#4CAF50"), 0.2),
-                BorderBrush = new SolidColorBrush(Color.Parse("#4CAF50")),
-                BorderThickness = new Thickness(2),
+                Background = new SolidColorBrush(Color.Parse("#313131"), 0.2),
+                BorderThickness = new Thickness(0),
                 CornerRadius = new CornerRadius(11),
                 Width = cols * CellSize,
                 Height = rows * CellSize,

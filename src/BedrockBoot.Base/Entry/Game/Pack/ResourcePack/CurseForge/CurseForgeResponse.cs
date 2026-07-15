@@ -197,7 +197,7 @@ public class CurseForgeResponse
 
         [JsonPropertyName("categories")] public List<Category> Categories { get; set; }
 
-        [JsonPropertyName("classId")] public int ClassId { get; set; }
+        [JsonPropertyName("classId")] public int? ClassId { get; set; }
 
         [JsonPropertyName("authors")] public List<Author> Authors { get; set; }
 

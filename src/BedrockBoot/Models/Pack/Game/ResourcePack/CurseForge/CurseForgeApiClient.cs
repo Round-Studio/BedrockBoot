@@ -220,7 +220,6 @@ public class CurseForgeApiClient : IDisposable
 
     public async Task<CurseForgeResponse> SearchModsAsync(
         string searchFilter,
-        int gameId = 78022,
         int pageSize = 20,
         string gameVersion = null,
         int? classId = null,
@@ -235,7 +234,7 @@ public class CurseForgeApiClient : IDisposable
             {
                 // 构建参数
                 var queryParams = new StringBuilder();
-                queryParams.Append($"?gameId={gameId}");
+                queryParams.Append($"?gameId={78022}");
 
                 if (!string.IsNullOrEmpty(searchFilter))
                     queryParams.Append($"&searchFilter={Uri.EscapeDataString(searchFilter)}");

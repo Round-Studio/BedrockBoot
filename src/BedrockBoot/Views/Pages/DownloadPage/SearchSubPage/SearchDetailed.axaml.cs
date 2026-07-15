@@ -368,7 +368,7 @@ public partial class SearchDetailed : ISetting
 
     private async Task<List<SearchResultItemInfo>> SearchResourcePacksAsync(SearchInfo info)
     {
-        var result = await _apiClient.SearchModsAsync(info.Key, PageSize, _currentIndex);
+        var result = await _apiClient.SearchModsAsync(info.Key, PageSize, index: _currentIndex);
         _totalPages = (int)Math.Ceiling((double)result.Pagination.TotalCount / PageSize);
 
         // 应用模糊搜索过滤

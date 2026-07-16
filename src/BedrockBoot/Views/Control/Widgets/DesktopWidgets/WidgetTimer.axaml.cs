@@ -2,17 +2,27 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System;
+using System.Collections.Generic;
 using System.Timers;
+using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Interface;
 
 namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 
-public partial class WidgetTimer : UserControl
+public partial class WidgetTimer : IWidgetTemplated
 {
     private TextBlock? _timeTextBlock;
     private Timer? _timer;
 
     public WidgetTimer()
     {
+        SupportWidgetSize = new()
+        {
+            WidgetSize.Small,
+            WidgetSize.Medium,
+            WidgetSize.Large,
+            WidgetSize.ExtraLarge
+        };
         InitializeComponent();
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;

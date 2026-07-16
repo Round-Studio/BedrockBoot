@@ -5,13 +5,32 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using System;
+using System.Collections.Generic;
 using BedrockBoot.Base.Entry.Config;
+using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Interface;
 
 namespace BedrockBoot.Style.Widgets
 {
     public class DesktopWidgetTemplated : ContentControl
     {
         public event Action<DesktopWidgetTemplated>? Resized;
+        public event EventHandler<PointerPressedEventArgs>? RightButtonPressed;
+        public static readonly StyledProperty<IWidgetTemplated> WidgetContentProperty = AvaloniaProperty.Register<DesktopWidgetTemplated, IWidgetTemplated>(nameof (WidgetContent));
+
+        public IWidgetTemplated WidgetContent
+        {
+            get
+            {
+                return this.GetValue<IWidgetTemplated>(DesktopWidgetTemplated.WidgetContentProperty);
+            }
+            set
+            {
+                this.SetValue<IWidgetTemplated>(DesktopWidgetTemplated.WidgetContentProperty, value);
+                this.SetValue<object?>(DesktopWidgetTemplated.ContentProperty, value);
+                UpdateMaxSize();
+            }
+        }
 
         private static readonly Size[] SnapSizes = new Size[]
         {
@@ -21,14 +40,39 @@ namespace BedrockBoot.Style.Widgets
             new Size(360, 360)
         };
 
+        private void UpdateMaxSize()
+        {
+            WidgetContent.SupportWidgetSize.ForEach(x =>
+            {
+                switch (x)
+                {
+                    case WidgetSize.ExtraLarge:
+                        this.MaxWidth = this.MaxHeight = 360;
+                        break;
+                    case WidgetSize.Large:
+                        this.MaxWidth = 360;
+                        this.MaxHeight = 180;
+                        break;
+                    case WidgetSize.Medium:
+                        this.MaxWidth = 180;
+                        this.MaxHeight = 360;
+                        break;
+                    case WidgetSize.Small:
+                        this.MaxWidth = 180;
+                        this.MaxHeight = 180;
+                        break;
+                }
+            });
+        }
+
         private Border? _resizeHandle;
         private Point _startMousePoint;
         private Size _startSize;
         private bool _isResizing = false;
         private Pointer? _activePointer;
-        private WidgetConfig _widgetConfig = new WidgetConfig();
+        private WidgetLayoutData _widgetConfig = new WidgetLayoutData();
 
-        public WidgetConfig WidgetConfig
+        public WidgetLayoutData WidgetConfig
         {
             get => _widgetConfig;
             set => _widgetConfig = value;
@@ -50,6 +94,16 @@ namespace BedrockBoot.Style.Widgets
             }
 
             this.SizeChanged += OnSizeChanged;
+            this.PointerPressed += OnPointerPressed;
+        }
+
+        private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
+            {
+                RightButtonPressed?.Invoke(this, e);
+                e.Handled = true;
+            }
         }
 
         private void OnSizeChanged(object? sender, SizeChangedEventArgs e)

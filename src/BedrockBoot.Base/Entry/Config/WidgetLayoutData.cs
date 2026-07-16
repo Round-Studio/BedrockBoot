@@ -5,20 +5,14 @@ namespace BedrockBoot.Base.Entry.Config;
 
 public class WidgetLayoutData
 {
-    [JsonPropertyName("widgetConfig")] public WidgetConfig WidgetConfig { get; set; } = new();
-        
     [JsonPropertyName("gridX")]
     public int GridX { get; set; }
         
     [JsonPropertyName("gridY")]
     public int GridY { get; set; }
+    [JsonPropertyName("widgetType")]
+    public WidgetType WidgetType { get; set; } =  WidgetType.Timer;
         
     [JsonPropertyName("size")]
     public WidgetSize Size { get; set; }
-}
-
-public class WidgetConfig
-{
-    [JsonPropertyName("widgetType")]
-    public WidgetType WidgetType { get; set; } =  WidgetType.Timer;
 }

@@ -19,26 +19,85 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
     {
         private const double CellSize = 180.0;
         private const double Padding = 15;
-        
+
         private ScrollViewer? _scrollViewer;
         private Canvas? _canvas;
-        
+
         private DesktopWidgetTemplated? _draggingWidget;
         private Point _dragStartPoint;
         private Point _widgetInitialPosition;
 
         private Border? _ghostPlaceholder;
-        private Dictionary<Point, DesktopWidgetTemplated> _occupiedGridCells = new Dictionary<Point, DesktopWidgetTemplated>();
+
+        private Dictionary<Point, DesktopWidgetTemplated> _occupiedGridCells =
+            new Dictionary<Point, DesktopWidgetTemplated>();
+
         private List<DesktopWidgetTemplated> _allWidgets = new List<DesktopWidgetTemplated>();
 
+        private ContextMenu? _widgetContextMenu;
+        private ContextMenu? _emptyContextMenu;
+        private DesktopWidgetTemplated? _contextMenuWidget;
+
         public event EventHandler<WidgetLayoutChangedEventArgs>? LayoutChanged;
+        public event EventHandler<WidgetDeletedEventArgs>? WidgetDeleted;
+        public event EventHandler<WidgetAddedEventArgs>? WidgetAdded;
 
         public DesktopWorkspace()
         {
             this.Content = CreateLayout();
             this.AttachedToVisualTree += OnAttachedToVisualTree;
             this.DetachedFromVisualTree += OnDetachedFromVisualTree;
+            InitializeContextMenus();
             UpdateCanvasSize();
+        }
+
+        private void InitializeContextMenus()
+        {
+            _widgetContextMenu = new ContextMenu();
+            var deleteItem = new MenuItem
+            {
+                Header = "删除组件",
+                Background = new SolidColorBrush(Colors.Transparent)
+            };
+            deleteItem.Click += OnDeleteWidgetClick;
+            _widgetContextMenu.Items.Add(deleteItem);
+
+            _emptyContextMenu = new ContextMenu();
+            var addTimerItem = new MenuItem
+            {
+                Header = "添加计时器",
+                Background = new SolidColorBrush(Colors.Transparent)
+            };
+            addTimerItem.Click += OnAddTimerClick;
+            _emptyContextMenu.Items.Add(addTimerItem);
+        }
+
+        private void OnDeleteWidgetClick(object? sender, EventArgs e)
+        {
+            if (_contextMenuWidget == null || _canvas == null) return;
+
+            _contextMenuWidget.PointerPressed -= OnWidgetPointerPressed;
+            _contextMenuWidget.PointerReleased -= OnWidgetPointerReleased;
+            _contextMenuWidget.Resized -= OnWidgetResized;
+
+            ClearWidgetOccupancy(_contextMenuWidget);
+            _canvas.Children.Remove(_contextMenuWidget);
+            _allWidgets.Remove(_contextMenuWidget);
+
+            WidgetDeleted?.Invoke(this, new WidgetDeletedEventArgs(_contextMenuWidget));
+            OnLayoutChanged(_contextMenuWidget);
+            _contextMenuWidget = null;
+
+            UpdateCanvasSize();
+        }
+
+        private void OnAddTimerClick(object? sender, EventArgs e)
+        {
+            var config = new WidgetLayoutData
+            {
+                WidgetType = WidgetType.Timer
+            };
+            AddWidget(config);
         }
 
         private Avalonia.Controls.Control CreateLayout()
@@ -51,12 +110,24 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
                 {
                     Margin = new Thickness(Padding),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Stretch
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    Background = new SolidColorBrush(Colors.Transparent)
                 }
             };
-            
+
             _canvas.PointerMoved += OnCanvasPointerMoved;
+            _canvas.PointerPressed += OnCanvasPointerPressed;
             return _scrollViewer;
+        }
+
+        private void OnCanvasPointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
+            {
+                _contextMenuWidget = null;
+                _emptyContextMenu?.Open(_canvas);
+                e.Handled = true;
+            }
         }
 
         private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
@@ -83,47 +154,60 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             }
         }
 
-        public void AddWidget(WidgetConfig config)
+        public void AddWidget(WidgetLayoutData config)
         {
             if (_canvas == null) return;
 
             var widget = CreateWidgetFromConfig(config);
-            
+            if (widget == null) return;
+
             var startPos = FindNearestFreeGridPosition(new Point(0, 0), widget);
             PlaceWidgetAtGrid(widget, startPos);
-            
+
             _canvas.Children.Add(widget);
             _allWidgets.Add(widget);
-            
+
             widget.PointerPressed += OnWidgetPointerPressed;
             widget.PointerReleased += OnWidgetPointerReleased;
             widget.Resized += OnWidgetResized;
-            
+            widget.RightButtonPressed += OnWidgetRightButtonDown;
+
             UpdateCanvasSize();
             OnLayoutChanged(widget);
+            WidgetAdded?.Invoke(this, new WidgetAddedEventArgs(widget, config));
+        }
+
+        private void OnWidgetRightButtonDown(object? sender, PointerPressedEventArgs e)
+        {
+            if (sender is DesktopWidgetTemplated widget)
+            {
+                _contextMenuWidget = widget;
+                _widgetContextMenu?.Open(widget);
+                e.Handled = true;
+            }
         }
 
         public string ExportLayout()
         {
             var layoutData = new List<WidgetLayoutData>();
-            
+
             foreach (var widget in _allWidgets)
             {
                 var gridPos = GetWidgetGridPosition(widget);
                 var size = GetWidgetSize(widget);
-                
+
                 var data = new WidgetLayoutData
                 {
                     GridX = (int)gridPos.X,
                     GridY = (int)gridPos.Y,
                     Size = size,
-                    WidgetConfig = widget.WidgetConfig
+                    WidgetType = widget.WidgetConfig.WidgetType
                 };
                 layoutData.Add(data);
             }
-            
-            return JsonSerializer.Serialize(layoutData, new JsonSerializerOptions 
-            { 
+
+            return JsonSerializer.Serialize(layoutData, new JsonSerializerOptions
+            {
                 WriteIndented = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
@@ -132,63 +216,69 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
         public void ImportLayout(string json)
         {
             if (_canvas == null) return;
-            
+
             var layoutData = JsonSerializer.Deserialize<List<WidgetLayoutData>>(json);
             if (layoutData == null) return;
-            
+
             ClearAllWidgets();
-            
+
             foreach (var data in layoutData)
             {
-                var widget = CreateWidgetFromConfig(data.WidgetConfig);
+                var widget = CreateWidgetFromConfig(data);
                 if (widget == null) continue;
-                
+
                 SetWidgetSize(widget, data.Size);
-                
+
                 var gridPos = new Point(data.GridX, data.GridY);
                 PlaceWidgetAtGrid(widget, gridPos);
-                
+
                 _canvas.Children.Add(widget);
                 _allWidgets.Add(widget);
-                
+
                 widget.PointerPressed += OnWidgetPointerPressed;
                 widget.PointerReleased += OnWidgetPointerReleased;
                 widget.Resized += OnWidgetResized;
+                widget.RightButtonPressed += OnWidgetRightButtonDown;
             }
-            
+
             UpdateCanvasSize();
         }
 
         private void ClearAllWidgets()
         {
             if (_canvas == null) return;
-            
+
             foreach (var widget in _allWidgets)
             {
                 widget.PointerPressed -= OnWidgetPointerPressed;
                 widget.PointerReleased -= OnWidgetPointerReleased;
                 widget.Resized -= OnWidgetResized;
+                widget.RightButtonPressed -= OnWidgetRightButtonDown;
                 _canvas.Children.Remove(widget);
             }
-            
+
             _allWidgets.Clear();
             _occupiedGridCells.Clear();
         }
 
-        private DesktopWidgetTemplated? CreateWidgetFromConfig(WidgetConfig config)
+        private DesktopWidgetTemplated? CreateWidgetFromConfig(WidgetLayoutData config)
         {
             if (config == null) return null;
-            
+
+            var widget = new DesktopWidgetTemplated();
+
             var content = config.WidgetType switch
             {
                 WidgetType.Timer => new WidgetTimer(),
                 _ => null
             };
 
-            return new DesktopWidgetTemplated()
-            {
-                Content = content
-            };
+            if (content == null) return null;
+
+            widget.WidgetContent = content;
+            widget.WidgetConfig = config;
+
+            return widget;
         }
 
         private void SetWidgetSize(DesktopWidgetTemplated widget, WidgetSize size)
@@ -212,9 +302,13 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
         private WidgetSize GetWidgetSize(DesktopWidgetTemplated widget)
         {
-            double width = widget.Bounds.Width > 0 ? widget.Bounds.Width : (double.IsNaN(widget.Width) ? 180 : widget.Width);
-            double height = widget.Bounds.Height > 0 ? widget.Bounds.Height : (double.IsNaN(widget.Height) ? 180 : widget.Height);
-            
+            double width = widget.Bounds.Width > 0
+                ? widget.Bounds.Width
+                : (double.IsNaN(widget.Width) ? 180 : widget.Width);
+            double height = widget.Bounds.Height > 0
+                ? widget.Bounds.Height
+                : (double.IsNaN(widget.Height) ? 180 : widget.Height);
+
             if (Math.Abs(width - 180) < 1 && Math.Abs(height - 180) < 1)
                 return WidgetSize.Small;
             if (Math.Abs(width - 180) < 1 && Math.Abs(height - 360) < 1)
@@ -223,7 +317,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
                 return WidgetSize.Large;
             if (Math.Abs(width - 360) < 1 && Math.Abs(height - 360) < 1)
                 return WidgetSize.ExtraLarge;
-                
+
             return WidgetSize.Small;
         }
 
@@ -243,7 +337,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             var currentPos = new Point(Canvas.GetLeft(widget), Canvas.GetTop(widget));
             var freeGridPos = FindNearestFreeGridPosition(currentPos, widget);
             PlaceWidgetAtGrid(widget, freeGridPos);
-            
+
             UpdateCanvasSize();
             OnLayoutChanged(widget);
         }
@@ -263,7 +357,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
             _canvas?.Children.Remove(widget);
             _canvas?.Children.Add(widget);
-            
+
             e.Pointer.Capture(widget);
         }
 
@@ -279,7 +373,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
             var currentPos = new Point(Canvas.GetLeft(widget), Canvas.GetTop(widget));
             var freeGridPos = FindNearestFreeGridPosition(currentPos, widget);
-            
+
             PlaceWidgetAtGrid(widget, freeGridPos);
             UpdateCanvasSize();
             OnLayoutChanged(widget);
@@ -290,7 +384,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             if (_draggingWidget == null || _canvas == null) return;
 
             var currentMousePos = e.GetPosition(_canvas);
-            
+
             double deltaX = currentMousePos.X - _dragStartPoint.X;
             double deltaY = currentMousePos.Y - _dragStartPoint.Y;
 
@@ -360,7 +454,8 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             }
         }
 
-        private Point? FindNearestFreeGridPositionByCenter(double centerX, double centerY, int widgetCols, int widgetRows)
+        private Point? FindNearestFreeGridPositionByCenter(double centerX, double centerY, int widgetCols,
+            int widgetRows)
         {
             int startCol = (int)Math.Floor(centerX / CellSize);
             int startRow = (int)Math.Floor(centerY / CellSize);
@@ -430,6 +525,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
                     }
                 }
             }
+
             return true;
         }
 
@@ -448,7 +544,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
         {
             int cols = GetWidgetCols(widget);
             int rows = GetWidgetRows(widget);
-            
+
             for (int c = 0; c < cols; c++)
             {
                 for (int r = 0; r < rows; r++)
@@ -481,9 +577,13 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             {
                 double left = Canvas.GetLeft(widget);
                 double top = Canvas.GetTop(widget);
-                
-                double width = widget.Bounds.Width > 0 ? widget.Bounds.Width : (double.IsNaN(widget.Width) ? 180 : widget.Width);
-                double height = widget.Bounds.Height > 0 ? widget.Bounds.Height : (double.IsNaN(widget.Height) ? 180 : widget.Height);
+
+                double width = widget.Bounds.Width > 0
+                    ? widget.Bounds.Width
+                    : (double.IsNaN(widget.Width) ? 180 : widget.Width);
+                double height = widget.Bounds.Height > 0
+                    ? widget.Bounds.Height
+                    : (double.IsNaN(widget.Height) ? 180 : widget.Height);
 
                 double rightEdge = left + width;
                 double bottomEdge = top + height;
@@ -492,8 +592,8 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
                 if (bottomEdge > maxHeight) maxHeight = bottomEdge;
             }
 
-            _canvas.Width = Math.Max(viewportWidth, maxWidth) - (2 * Padding);
-            _canvas.Height = Math.Max(viewportHeight, maxHeight) - (2 * Padding);
+            _canvas.Width = Math.Max(viewportWidth, maxWidth) - 2 * Padding;
+            _canvas.Height = Math.Max(viewportHeight, maxHeight) - 2 * Padding;
         }
 
         private void OnLayoutChanged(DesktopWidgetTemplated widget)
@@ -509,6 +609,28 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
         public WidgetLayoutChangedEventArgs(DesktopWidgetTemplated widget)
         {
             Widget = widget;
+        }
+    }
+
+    public class WidgetDeletedEventArgs : EventArgs
+    {
+        public DesktopWidgetTemplated Widget { get; }
+
+        public WidgetDeletedEventArgs(DesktopWidgetTemplated widget)
+        {
+            Widget = widget;
+        }
+    }
+
+    public class WidgetAddedEventArgs : EventArgs
+    {
+        public DesktopWidgetTemplated Widget { get; }
+        public WidgetLayoutData Config { get; }
+
+        public WidgetAddedEventArgs(DesktopWidgetTemplated widget, WidgetLayoutData config)
+        {
+            Widget = widget;
+            Config = config;
         }
     }
 }

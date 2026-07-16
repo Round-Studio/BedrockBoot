@@ -46,9 +46,12 @@ public class CoreInitialize
         // 注册文件关联
         HandleFileAssociations();
 #endif
-        _ = GetDevelopMode();
-        _ = GetSdkInstalledMode();
-        CheckUwpDependence();
+        Task.Run(() =>
+        {
+            _ = GetDevelopMode();
+            _ = GetSdkInstalledMode();
+            CheckUwpDependence();
+        });
 
 #if LINUX
         ProtonCore.InitializeEnvironment();

@@ -46,6 +46,8 @@ public partial class ResultRoot : UserControl
         // 1. 基础文字信息
         ResourceName.Text = SearchResultItemInfo.Name;
         AuthorText.Text = $"{i18n["Download.Result.Author.Prefix"]} {string.Join(", ", SearchResultItemInfo.Authors)}";
+        ResourceName2.Text = SearchResultItemInfo.Name;
+        AuthorText2.Text = $"{string.Join(", ", SearchResultItemInfo.Authors)}";
         DescriptionText.Text = SearchResultItemInfo.Description;
         DownloadCountText.Text = SearchResultItemInfo.DownloadCount.ToString("N0"); // 格式化数字
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
@@ -53,8 +55,12 @@ public partial class ResultRoot : UserControl
         // 2. 外部链接
         var hasWebsite = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
         HyperlinkButton.IsVisible = hasWebsite;
+        HyperlinkButton2.IsVisible = hasWebsite;
         if (hasWebsite && Uri.TryCreate(SearchResultItemInfo.SourceWebsite, UriKind.Absolute, out var uri))
+        {
+            HyperlinkButton2.NavigateUri = uri;
             HyperlinkButton.NavigateUri = uri;
+        }
 
         // 3. 预览图列表渲染
         PreviewList.Children.Clear();
@@ -78,6 +84,8 @@ public partial class ResultRoot : UserControl
         if (icon != null)
         {
             IconBox.Source = icon;
+            ResourceIcon.Source = icon;
+            ResourceIconIcon.IsVisible = false;
             IconFont.IsVisible = false;
         }
 
@@ -147,5 +155,21 @@ public partial class ResultRoot : UserControl
             Title = i18n["Common.Clipboard.Title"],
             Message = i18n["Download.Result.Share.Success"]
         });
+    }
+
+    private void ScrollViewer_OnScrollChanged(object? sender, ScrollChangedEventArgs e)
+    {
+        if (MainScrollViewer != null)
+        {
+            var value = MainScrollViewer.Offset.Y;
+            if (value >= 80)
+            {
+                SmallBox.Margin = new(30, 25, 30, 0);
+            }
+            else
+            {
+                SmallBox.Margin = new(30, -72, 30, 0);
+            }
+        }
     }
 }

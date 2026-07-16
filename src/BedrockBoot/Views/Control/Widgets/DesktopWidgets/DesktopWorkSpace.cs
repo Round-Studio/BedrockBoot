@@ -10,7 +10,9 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using BedrockBoot.Base.Entry.Config;
+using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Interface;
 using BedrockBoot.Style.Widgets;
 
 namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
@@ -41,6 +43,14 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
         public event EventHandler<WidgetLayoutChangedEventArgs>? LayoutChanged;
         public event EventHandler<WidgetDeletedEventArgs>? WidgetDeleted;
         public event EventHandler<WidgetAddedEventArgs>? WidgetAdded;
+        public event EventHandler? AddWidgetCallOn;
+
+        public static List<WidgetRegisterInfo> RegistedWidgets { get; private set; } = new();
+
+        public static void WidgetRegister(WidgetRegisterInfo info)
+        {
+            RegistedWidgets.Add(info);
+        }
 
         public DesktopWorkspace()
         {
@@ -63,13 +73,16 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             _widgetContextMenu.Items.Add(deleteItem);
 
             _emptyContextMenu = new ContextMenu();
-            var addTimerItem = new MenuItem
+            var addItem = new MenuItem
             {
-                Header = "添加计时器",
+                Header = "添加组件",
                 Background = new SolidColorBrush(Colors.Transparent)
             };
-            addTimerItem.Click += OnAddTimerClick;
-            _emptyContextMenu.Items.Add(addTimerItem);
+            addItem.Click += ((sender, args) =>
+            {
+                AddWidgetCallOn?.Invoke(sender, args);
+            });
+            _emptyContextMenu.Items.Add(addItem);
         }
 
         private void OnDeleteWidgetClick(object? sender, EventArgs e)
@@ -89,15 +102,6 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             _contextMenuWidget = null;
 
             UpdateCanvasSize();
-        }
-
-        private void OnAddTimerClick(object? sender, EventArgs e)
-        {
-            var config = new WidgetLayoutData
-            {
-                WidgetType = WidgetType.Timer
-            };
-            AddWidget(config);
         }
 
         private Avalonia.Controls.Control CreateLayout()
@@ -154,9 +158,15 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             }
         }
 
-        public void AddWidget(WidgetLayoutData config)
+        public void AddWidget(WidgetType type)
         {
             if (_canvas == null) return;
+
+            var config = new WidgetLayoutData()
+            {
+                WidgetType = type,
+                Size = RegistedWidgets.Find(x => x.Type == type).DefaultSize
+            };
 
             var widget = CreateWidgetFromConfig(config);
             if (widget == null) return;
@@ -267,16 +277,13 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
             var widget = new DesktopWidgetTemplated();
 
-            var content = config.WidgetType switch
-            {
-                WidgetType.Timer => new WidgetTimer(),
-                _ => null
-            };
+            var content = Activator.CreateInstance(RegistedWidgets.Find(x=>x.Type == config.WidgetType).WidgetTypeof);
 
             if (content == null) return null;
 
-            widget.WidgetContent = content;
+            widget.WidgetContent = (IWidgetTemplated)content;
             widget.WidgetConfig = config;
+            SetWidgetSize(widget, config.Size);
 
             return widget;
         }

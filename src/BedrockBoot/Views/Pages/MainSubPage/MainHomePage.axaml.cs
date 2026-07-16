@@ -1,7 +1,10 @@
 ﻿using System.IO;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Config;
+using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Style.Widgets;
 using BedrockBoot.Views.Control.Widgets;
@@ -16,6 +19,15 @@ public partial class MainHomePage : BedrockBootPage
     public MainHomePage()
     {
         InitializeComponent();
+        
+        DesktopWorkspace.WidgetRegister(new()
+        {
+            Name = "时钟",
+            Description = "时钟",
+            Type = WidgetType.Timer,
+            WidgetTypeof = typeof(WidgetTimer),
+            DefaultSize = WidgetSize.Small
+        });
         UpdateHome();
     }
 
@@ -25,6 +37,10 @@ public partial class MainHomePage : BedrockBootPage
         DesktopWorkspace = new DesktopWorkspace();
         if (File.Exists(PathsList.WidgetsConfigPath))
             DesktopWorkspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
+        DesktopWorkspace.AddWidgetCallOn += (sender, args) =>
+        {
+            DesktopWorkspace.AddWidget(WidgetType.Timer);
+        };
         DesktopWorkspace.LayoutChanged += (sender, args) =>
         {
             var json = DesktopWorkspace.ExportLayout();

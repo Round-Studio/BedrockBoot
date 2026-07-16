@@ -91,7 +91,7 @@ internal sealed class Program
 
         if ((int)GlobalModel.Config.Data.IsolationModel != 0)
             GlobalModel.Config.Data.IsolationModel = IsolationType.Hook;
-        GlobalModel.Config.Save();
+        _ = Task.Run(() => GlobalModel.Config.Save());
 
 #if WINDOWS
         if (!VCRedistDetector.CheckInInstalledList().IsInstalled)

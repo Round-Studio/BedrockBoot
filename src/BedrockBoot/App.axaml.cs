@@ -33,7 +33,6 @@ public class App : Application
         if (GlobalModel.Config == null)
         {
             GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
-            GlobalModel.Config.Load();
         }
 
         ServicePointManager.DefaultConnectionLimit = 1024;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -46,11 +47,17 @@ public class I18nManager : INotifyPropertyChanged
 
     public static class LanguageEnumExtensions
     {
+        private static readonly ConcurrentDictionary<string, string> _uriCache = new();
+
         public static string GetUri(LanguageEnum language)
         {
-            var field = language.GetType().GetField(language.ToString());
-            var attribute = field?.GetCustomAttribute<LanguageResourceAttribute>();
-            return attribute?.Uri ?? string.Empty;
+            var key = language.ToString();
+            return _uriCache.GetOrAdd(key, static k =>
+            {
+                var field = typeof(LanguageEnum).GetField(k);
+                var attribute = field?.GetCustomAttribute<LanguageResourceAttribute>();
+                return attribute?.Uri ?? string.Empty;
+            });
         }
     }
 }

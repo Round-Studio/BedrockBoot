@@ -70,7 +70,6 @@ public partial class MainWindow : BedrockBootWindow
             MainFrame.NavigateTo(Core.Global.GlobalModel.Config.Data.IsUseBetaUI ? new NeoMainPage() : new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();
-        UpdateTheme();
 
         // 绑定回调
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
@@ -309,15 +308,23 @@ public partial class MainWindow : BedrockBootWindow
         VersionBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         var buildTimestamp = (DateTime)CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly());
         BuildTime.Text = $"Build.2.{buildTimestamp:yy.MMdd.HHmmss}";
-
-        if (!Directory.Exists(PathsList.TempPath))
-            Directory.CreateDirectory(PathsList.TempPath);
     }
 
     private async Task InitializeAsync()
     {
+        Task.Run(() =>
+        {
+            if (!Directory.Exists(PathsList.TempPath))
+                Directory.CreateDirectory(PathsList.TempPath);
+        });
+
         CoreInitialize.Init();
-        await Dispatcher.UIThread.InvokeAsync(() => { LoadBox.IsVisible = false; });
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            UpdateTheme();
+            LoadBox.IsVisible = false;
+        });
     }
 
     #endregion
@@ -375,7 +382,7 @@ public partial class MainWindow : BedrockBootWindow
             (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.LiveOpacity) * 0.01;
     }
 
-    private void ApplyImageBackground(StyleConfig style)
+    private async void ApplyImageBackground(StyleConfig style)
     {
         var imgPath = style.BackgroundImage;
         if (!File.Exists(imgPath)) return;
@@ -388,7 +395,7 @@ public partial class MainWindow : BedrockBootWindow
 
             SetBackgroundBlur(style.BackgroundImageBlur);
 
-            var bitmap = new Bitmap(imgPath);
+            var bitmap = await Task.Run(() => new Bitmap(imgPath));
             if (style.Background3D)
             {
                 BackgroundImage3D.IsVisible = true;
@@ -504,7 +511,8 @@ public partial class MainWindow : BedrockBootWindow
             App.LoadColor(AccentColor.Colors[Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex],
                 Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType);
 
-            MediaManager.Instance.Play(musicName);
+            var music = musicName;
+            Task.Run(() => MediaManager.Instance.Play(music));
         }
     }
 

@@ -11,7 +11,7 @@
                                    FontSize="32"/>
         
         <StackPanel Grid.Row="2">
-            <TextBlock FontSize="42"
+            <TextBlock FontSize="36"
                        FontWeight="SemiBold"
                        Name="TimeTextBlock"
                        Text="Time"></TextBlock>

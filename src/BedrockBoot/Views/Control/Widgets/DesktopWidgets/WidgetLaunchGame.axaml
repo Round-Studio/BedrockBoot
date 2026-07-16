@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="180"
+             x:Class="BedrockBoot.Views.Control.Widgets.DesktopWidgets.WidgetLaunchGame">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border Grid.Row="0"
+                CornerRadius="6"
+                Height="48"
+                Width="48"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                ClipToBounds="True">
+            <Image Source="avares://BedrockBoot/Assets/Icon/Logo/Grass.png" 
+                   Name="GameIcon"/>
+        </Border>
+        
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0">
+                <TextBlock FontSize="36"
+                           FontWeight="SemiBold"
+                           Name="GameNameText"
+                           Text="游戏"></TextBlock>
+            
+                <TextBlock Opacity="0.6"
+                           Name="GameVersionText"
+                           Text="未选择版本"></TextBlock>
+            </StackPanel>
+            
+            <Button Grid.Column="1"
+                    Name="LaunchButton"
+                    Classes="NoBorder"
+                    Width="64" Height="64"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    CornerRadius="36"
+                    Background="{DynamicResource AccentBackgroundBrush}">
+                <onePointControls:FontIcon Glyph="&#xE768;"
+                                           FontSize="28"
+                                           Margin="0,0,-2,0"></onePointControls:FontIcon>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

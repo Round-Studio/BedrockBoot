@@ -34,6 +34,14 @@ public class CoreInitialize
             WidgetTypeof = typeof(WidgetTimer),
             DefaultSize = WidgetSize.Small
         });
+        DesktopWorkspace.WidgetRegister(new()
+        {
+            Name = "最近游玩",
+            Description = "显示最近游玩的一个游戏实例",
+            Type = WidgetType.LeastPlay,
+            WidgetTypeof = typeof(WidgetLaunchGame),
+            DefaultSize = WidgetSize.Large
+        });
         
         CheckUserAgreement();
         if (!Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;

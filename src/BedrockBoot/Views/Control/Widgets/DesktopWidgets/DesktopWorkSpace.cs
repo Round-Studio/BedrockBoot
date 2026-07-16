@@ -14,6 +14,7 @@ using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Interface;
 using BedrockBoot.Style.Widgets;
+using Octokit;
 
 namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 {
@@ -44,6 +45,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
         public event EventHandler<WidgetDeletedEventArgs>? WidgetDeleted;
         public event EventHandler<WidgetAddedEventArgs>? WidgetAdded;
         public event EventHandler? AddWidgetCallOn;
+        public static DesktopWorkspace Instance { get; private set; }
 
         public static List<WidgetRegisterInfo> RegistedWidgets { get; private set; } = new();
 
@@ -54,6 +56,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
         public DesktopWorkspace()
         {
+            Instance = this;
             this.Content = CreateLayout();
             this.AttachedToVisualTree += OnAttachedToVisualTree;
             this.DetachedFromVisualTree += OnDetachedFromVisualTree;
@@ -162,13 +165,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
         {
             if (_canvas == null) return;
 
-            var config = new WidgetLayoutData()
-            {
-                WidgetType = type,
-                Size = RegistedWidgets.Find(x => x.Type == type).DefaultSize
-            };
-
-            var widget = CreateWidgetFromConfig(config);
+            var widget = CreateWidgetFromType(type);
             if (widget == null) return;
 
             var startPos = FindNearestFreeGridPosition(new Point(0, 0), widget);
@@ -184,7 +181,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
             UpdateCanvasSize();
             OnLayoutChanged(widget);
-            WidgetAdded?.Invoke(this, new WidgetAddedEventArgs(widget, config));
+            WidgetAdded?.Invoke(this, new WidgetAddedEventArgs(widget, widget.WidgetConfig));
         }
 
         private void OnWidgetRightButtonDown(object? sender, PointerPressedEventArgs e)
@@ -234,7 +231,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
             foreach (var data in layoutData)
             {
-                var widget = CreateWidgetFromConfig(data);
+                var widget = CreateWidgetFromType(data.WidgetType);
                 if (widget == null) continue;
 
                 SetWidgetSize(widget, data.Size);
@@ -271,8 +268,13 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             _occupiedGridCells.Clear();
         }
 
-        private DesktopWidgetTemplated? CreateWidgetFromConfig(WidgetLayoutData config)
+        public static DesktopWidgetTemplated? CreateWidgetFromType(WidgetType type)
         {
+            var config = new WidgetLayoutData()
+            {
+                WidgetType = type,
+                Size = RegistedWidgets.Find(x => x.Type == type).DefaultSize
+            };
             if (config == null) return null;
 
             var widget = new DesktopWidgetTemplated();
@@ -288,14 +290,14 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             return widget;
         }
 
-        private void SetWidgetSize(DesktopWidgetTemplated widget, WidgetSize size)
+        public static void SetWidgetSize(DesktopWidgetTemplated widget, WidgetSize size)
         {
             var (width, height) = GetSizeDimensions(size);
             widget.Width = width;
             widget.Height = height;
         }
 
-        private (double width, double height) GetSizeDimensions(WidgetSize size)
+        public static (double width, double height) GetSizeDimensions(WidgetSize size)
         {
             return size switch
             {

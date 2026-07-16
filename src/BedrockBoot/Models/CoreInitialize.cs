@@ -3,10 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Manifest;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Proton;
+using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Linux;
 using OnePointUI.Avalonia.Base.Entry;
@@ -24,6 +26,15 @@ public class CoreInitialize
     private static I18nManager I18n => I18nManager.Instance;
     public static async Task Init()
     {
+        DesktopWorkspace.WidgetRegister(new()
+        {
+            Name = "时钟",
+            Description = "一个非常普通的时间显示组件",
+            Type = WidgetType.Timer,
+            WidgetTypeof = typeof(WidgetTimer),
+            DefaultSize = WidgetSize.Small
+        });
+        
         CheckUserAgreement();
         if (!Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;
         

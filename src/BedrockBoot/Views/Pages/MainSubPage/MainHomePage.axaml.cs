@@ -9,6 +9,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Style.Widgets;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
+using BedrockBoot.Views.DrawContent;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
@@ -16,19 +17,11 @@ namespace BedrockBoot.Views.Pages.MainSubPage;
 public partial class MainHomePage : BedrockBootPage
 {
     public DesktopWorkspace DesktopWorkspace;
+
     public MainHomePage()
     {
         InitializeComponent();
-        
-        DesktopWorkspace.WidgetRegister(new()
-        {
-            Name = "时钟",
-            Description = "时钟",
-            Type = WidgetType.Timer,
-            WidgetTypeof = typeof(WidgetTimer),
-            DefaultSize = WidgetSize.Small
-        });
-        UpdateHome();
+        this.Loaded += (s, e) => UpdateHome();
     }
 
     public void UpdateHome()
@@ -39,7 +32,8 @@ public partial class MainHomePage : BedrockBootPage
             DesktopWorkspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
         DesktopWorkspace.AddWidgetCallOn += (sender, args) =>
         {
-            DesktopWorkspace.AddWidget(WidgetType.Timer);
+            // DesktopWorkspace.AddWidget(WidgetType.Timer);
+            Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawAddWidgetContent(), "添加小组件");
         };
         DesktopWorkspace.LayoutChanged += (sender, args) =>
         {

@@ -20,42 +20,6 @@ public class IsolationCore
     {
         VersionConfig = versionConfig;
         var gameFolderType = GameInfoHelper.GetVersionRootFolderType(VersionConfig);
-        if (gameFolderType == GameFolderType.LeviLauncher)
-        {
-            var llIsoFolder = Path.Combine(versionConfig.VersionPath,
-                versionConfig.Info.VersionType == MinecraftGameTypeVersion.Release
-                    ? "Minecraft Bedrock"
-                    : "Minecraft Bedrock Preview");
-
-            var bbIsoFolder = GetRealPath(versionConfig);/*
-
-            if (Directory.Exists(bbIsoFolder) || File.Exists(bbIsoFolder))
-            {
-                var attr = File.GetAttributes(bbIsoFolder);
-                if ((attr & FileAttributes.ReparsePoint) != FileAttributes.ReparsePoint)
-                {
-                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-                    {
-                        Directory.Delete(bbIsoFolder, true);
-                    }
-                    else
-                    {
-                        File.Delete(bbIsoFolder);
-                    }
-                }
-            }*/
-            
-            // Console.WriteLine(@"暂时不使用符号链接以适配新功能...");
-
-            /*try
-            {
-                Directory.CreateSymbolicLink(bbIsoFolder, llIsoFolder);
-            }
-            catch(Exception exception)
-            {
-                Console.WriteLine($@"创建符号链接失败：{exception}");
-            }*/
-        }
     }
 
     public VersionConfig VersionConfig { get; set; }
@@ -148,6 +112,9 @@ public class IsolationCore
                     ? Path.Combine(GetRealPath(versionConfig), " Preview", "Users")
                     : Path.Combine(GetRealPath(versionConfig), "Users"),
             InstanceFolderType.ScreenshotFolder => GetInstanceFolderPath(versionConfig, "Screenshots", user),
+            InstanceFolderType.DevelopBehaviorPackFolder => GetInstanceFolderPath(versionConfig,"development_behavior_packs",user),
+            InstanceFolderType.DevelopResourcePackFolder => GetInstanceFolderPath(versionConfig,"development_resource_packs",user),
+            InstanceFolderType.DevelopSkinPackFolder => GetInstanceFolderPath(versionConfig,"development_skin_packs",user),
             _ => string.Empty
         };
     }

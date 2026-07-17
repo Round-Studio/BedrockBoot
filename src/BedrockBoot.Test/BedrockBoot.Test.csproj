@@ -25,4 +25,8 @@
       <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="websocket-sharp.net" Version="1.0.3.3" />
+    </ItemGroup>
+
 </Project>

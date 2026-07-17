@@ -9,8 +9,10 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
@@ -110,5 +112,35 @@ public partial class DrawInstanceContent : UserControl
     private void MenuOpenConfigFolder_OnClick(object? sender, RoutedEventArgs e)
     {
         OpenFolderHelper.Open(Path.Combine(VersionInfo.VersionPath, "config"));
+    }
+
+    private void MenuOpenSkinFolder_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.SkinPackFolder));
+    }
+
+    private void MenuOpenBehaviorFolder_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.BehaviorPackFolder));
+    }
+
+    private void MenuOpenResourceFolder_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.ResourcePackFolder));
+    }
+
+    private void MenuOpenSkinDevFolder_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopSkinPackFolder));
+    }
+
+    private void MenuOpenBehaviorDevFolder_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopBehaviorPackFolder));
+    }
+
+    private void MenuOpenResourceDevFolder_OnClick(object? sender, RoutedEventArgs e)
+    {
+        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopResourcePackFolder));
     }
 }

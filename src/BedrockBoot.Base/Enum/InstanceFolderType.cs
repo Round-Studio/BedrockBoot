@@ -10,5 +10,8 @@ public enum InstanceFolderType
     SkinPackFolder,
     UserFolder,
     ScreenshotFolder,
-    WorldTemplateFolder
+    WorldTemplateFolder,
+    DevelopResourcePackFolder,
+    DevelopBehaviorPackFolder,
+    DevelopSkinPackFolder
 }

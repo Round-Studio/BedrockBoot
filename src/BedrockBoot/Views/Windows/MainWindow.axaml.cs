@@ -358,7 +358,6 @@ public partial class MainWindow : BedrockBootWindow
                 break;
             case StyleType.AccentColor:
                 AccentBackgroundBox.IsVisible = true;
-                AccentBackgroundBox.Opacity = 0.7;
                 break;
             case StyleType.Voronoi:
                 AnimationBackground.IsVisible = true;

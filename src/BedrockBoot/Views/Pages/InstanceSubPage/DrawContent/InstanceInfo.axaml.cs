@@ -1,14 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Base.Helper;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
@@ -48,13 +52,26 @@ public partial class InstanceInfo : UserControl
     private CancellationTokenSource _refreshCancellationTokenSource;
     private DispatcherTimer _refreshTimer;
 
+    private bool _isEditGameIcon = true;
+
     public async Task UpdateUI()
     {
         UpdateImage();
         VersionName.Text = VersionInfo.Info.VersionName;
         VersionReady.Text =
             $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
-
+        CustomizationBox.IsEnabled = VersionInfo.Info.GameIconType == GameIconType.Customization;
+        IconPathInput.Text = VersionInfo.Info.GameIconPath;
+        if ((int)VersionInfo.Info.GameIconType >= 2025)
+        {
+            GameIconCard.IsVisible = false;
+            _isEditGameIcon = false;
+        }
+        else
+        {
+            GameIconSel.SelectedIndex = (int)VersionInfo.Info.GameIconType;
+        }
+        
         StartPlayTimeRefresh();
 
         Task.Run(() =>
@@ -82,7 +99,7 @@ public partial class InstanceInfo : UserControl
         });
     }
 
-    private void UpdateImage()
+    private async Task UpdateImage()
     {
         var image = "avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png";
 
@@ -91,6 +108,8 @@ public partial class InstanceInfo : UserControl
                 image = VersionInfo.Info.CoverImage;
 
         IconBox.Update(image);
+        
+        GameIcon.Source = await ImageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
     }
 
     private void TextTypeConfig_OnChanged(object? sender, TextChangedEventArgs e)
@@ -257,5 +276,38 @@ public partial class InstanceInfo : UserControl
             
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
+    }
+
+    private void GameIconSel_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit && _isEditGameIcon)
+        {
+            VersionInfo.Info.GameIconType = (GameIconType)GameIconSel.SelectedIndex;
+
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
+            UpdateUI();
+        }
+    }
+
+    private async void IconPathChooseBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "选择图片",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+                new FilePickerFileType("图片文件")
+                {
+                    Patterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.bmp" }
+                }
+            }
+        });
+
+        var file = files.FirstOrDefault()?.Path.AbsolutePath;
+        VersionInfo.Info.GameIconPath = file;
+        GameInfoHelper.SaveVersionConfig(VersionInfo);
+
+        UpdateUI();
     }
 }

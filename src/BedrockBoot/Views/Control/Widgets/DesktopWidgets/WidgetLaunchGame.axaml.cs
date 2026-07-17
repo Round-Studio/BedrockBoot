@@ -106,7 +106,7 @@ public partial class WidgetLaunchGame : IWidgetTemplated
         }
     }
 
-    private void UpdateGameInfo(VersionConfig version)
+    private async Task UpdateGameInfo(VersionConfig version)
     {
         if (version == null)
         {
@@ -116,7 +116,7 @@ public partial class WidgetLaunchGame : IWidgetTemplated
 
         GameNameText.Text = version.Info.VersionName;
         GameVersionText.Text = version.Info.Version;
-        GameIcon.Source = GetImage(IconHelper.GetGameIconUrl(version));
+        GameIcon.Source = await ImageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(version));
         LaunchButton.IsEnabled = true;
         _hasValidGame = true;
     }

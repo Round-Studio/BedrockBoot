@@ -109,17 +109,46 @@
                 </onePointControls:SettingCard>
 
                 <onePointControls:SettingCard Glyph="&#xEB9F;"
-                                              IsEnabled="False"
-                                              IsVisible="False"
+                                              Name="GameIconCard"
                                               Header="{DynamicResource Instance.Info.Icon.Title}"
                                               Description="{DynamicResource Instance.Info.Icon.Desc}">
-                    <ComboBox Width="200"
-                              SelectedIndex="0">
-                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Grass}" />
-                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Path}" />
-                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.EndStone}" />
-                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Crafting}" />
-                    </ComboBox>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                        <Border CornerRadius="6"
+                                Height="74"
+                                Width="74"
+                                ClipToBounds="True">
+                            <Image Source="avares://BedrockBoot/Assets/Icon/Logo/Grass.png" 
+                                   Name="GameIcon"/>
+                        </Border>
+                        
+                        <StackPanel Spacing="8"
+                                    MaxWidth="200"
+                                    Width="200">
+                            <ComboBox Name="GameIconSel"
+                                      Width="200"
+                                      SelectionChanged="GameIconSel_OnSelectionChanged"
+                                      SelectedIndex="1">
+                                <ComboBoxItem Content="自定义" />
+                                <ComboBoxItem Content="默认" />
+                                <ComboBoxItem Content="草方块" />
+                                <ComboBoxItem Content="草经" />
+                                <ComboBoxItem Content="工作台" />
+                                <ComboBoxItem Content="圆石" />
+                                <ComboBoxItem Content="末地石" />
+                            </ComboBox>
+                        
+                            <DockPanel HorizontalSpacing="8"
+                                       Name="CustomizationBox">
+                                <Button DockPanel.Dock="Right"
+                                        Content="选择"
+                                        Padding="8"
+                                        Name="IconPathChooseBtn"
+                                        Click="IconPathChooseBtn_OnClick"></Button>
+                                <TextBox Name="IconPathInput"></TextBox>
+                            </DockPanel>
+                        </StackPanel>
+                    </StackPanel>
                 </onePointControls:SettingCard>
 
                 <TextBlock FontWeight="Bold"

@@ -251,9 +251,11 @@ public class ImageLoader : IDisposable
         if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
             iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             return await GlobalModel.ImageLoader.LoadImageBrushAsync(iconUri);
+        
+        string decodedPath = Uri.UnescapeDataString(iconUri);
 
-        if (File.Exists(iconUri))
-            return new Bitmap(iconUri);
+        if (File.Exists(decodedPath))
+            return new Bitmap(decodedPath);
 
         return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
     }

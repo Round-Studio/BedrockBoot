@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -24,21 +25,11 @@ public partial class MainChooseGameItem : UserControl
         Update(_versionConfig);
     }
 
-    public void Update(VersionConfig versionConfig)
+    public async Task Update(VersionConfig versionConfig)
     {
         GameInfo.Text = $"{versionConfig.Info.VersionType} {versionConfig.Info.Version}";
         GameName.Text = versionConfig.Info.VersionName;
         GameBuildType.Text = versionConfig.Info.BuildType.ToString();
-        GameIcon.Source = GetImage(IconHelper.GetGameIconUrl(versionConfig));
-    }
-
-    public Bitmap GetImage(string url)
-    {
-        var uri = new Uri(url);
-
-        using (var stream = AssetLoader.Open(uri))
-        {
-            return new Bitmap(stream);
-        }
+        GameIcon.Source = await ImageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(versionConfig));
     }
 }

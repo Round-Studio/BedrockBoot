@@ -252,6 +252,7 @@ public partial class MainManager : BedrockBootPage
         finally
         {
             IsEditMode = true;
+            Models.Global.GlobalModel.MainPageUpdateInstance?.Invoke();
         }
     }
 

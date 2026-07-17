@@ -28,6 +28,8 @@ public class GlobalModel
 
     public static string BodyVersion =>
         $"{Assembly.GetExecutingAssembly().GetName().Version!.ToString()}-{CheckUpdate.GetBodyUpdateType()}";
+    
+    public static Action? MainPageUpdateInstance { get; set; }
 
     public static ProtocolService ProtocolService { get; set; } = new();
     public static ImageLoader ImageLoader { get; set; } = new();

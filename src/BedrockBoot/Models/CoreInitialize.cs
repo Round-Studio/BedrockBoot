@@ -68,7 +68,6 @@ public class CoreInitialize
         Task.Run(() =>
         {
             _ = GetDevelopMode();
-            _ = GetSdkInstalledMode();
             CheckUwpDependence();
         });
 
@@ -172,10 +171,11 @@ public class CoreInitialize
 #endif
     }
 
-    private static async Task GetSdkInstalledMode()
+    public static async Task GetSdkInstalledMode()
     {
 #if WINDOWS
         if (!AppSdkChecker.GetInstalled())
+        {
             if (await AppSdkChecker.ShowNotice())
             {
                 DialogHost.Show(new()
@@ -183,7 +183,17 @@ public class CoreInitialize
                     Title = "下载 SDK",
                     Content = new DialogDownloadAppSdkContent()
                 });
-            };
+            }
+        }
+        else
+        {
+            DialogHost.Show(new()
+            {
+                Title = "您已安装 SDK 1.8",
+                Content = "您已安装 SDK 1.8，可无需再次安装",
+                CloseButtonText = "确定"
+            });
+        }
 #endif
     }
 

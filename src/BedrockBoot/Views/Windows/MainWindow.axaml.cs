@@ -91,6 +91,16 @@ public partial class MainWindow : BedrockBootWindow
     public FontFamily GetFontFamily(string mainFont,string fallbackFont)
     {
         FontFamily combinedFont = new("DINPro, Noto Sans SC");
+
+        if (mainFont == "DINPro")
+        {
+            mainFont = "resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro";
+        }
+
+        if (fallbackFont == "DINPro")
+        {
+            fallbackFont = "resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro";
+        }
         
         if (!string.IsNullOrEmpty(mainFont) && !string.IsNullOrEmpty(fallbackFont))
         {

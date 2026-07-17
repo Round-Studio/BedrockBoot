@@ -14,7 +14,7 @@ public class MinecraftCommandService : WebSocketBehavior
     {
         // 保存当前实例供外部调用
         Instance = this;
-        Console.WriteLine("游戏客户端已连接！");
+        Console.WriteLine(@"游戏客户端已连接！");
         
         // 可选：订阅聊天事件
         // SendSubscribe("PlayerMessage");
@@ -27,13 +27,13 @@ public class MinecraftCommandService : WebSocketBehavior
         {
             Instance = null;
         }
-        Console.WriteLine($"游戏客户端已断开: {e.Reason}");
+        Console.WriteLine($@"游戏客户端已断开: {e.Reason}");
     }
 
     // 处理游戏发来的消息（用于监听事件）
     protected override void OnMessage(MessageEventArgs e)
     {
-        Console.WriteLine($"收到游戏消息: {e.Data}");
+        Console.WriteLine($@"收到游戏消息: {e.Data}");
         // 可以在这里解析游戏事件
     }
 
@@ -42,7 +42,7 @@ public class MinecraftCommandService : WebSocketBehavior
     {
         if (!IsAlive)
         {
-            Console.WriteLine("WebSocket未连接，无法发送命令。");
+            Console.WriteLine(@"WebSocket未连接，无法发送命令。");
             return;
         }
 
@@ -64,7 +64,7 @@ public class MinecraftCommandService : WebSocketBehavior
 
         string json = JsonSerializer.Serialize(payload);
         Send(json);
-        Console.WriteLine($"已发送命令: {command}");
+        Console.WriteLine($@"已发送命令: {command}");
     }
 
     // 订阅事件（可选）
@@ -96,19 +96,19 @@ class Program
         _wssv = new WebSocketServer("ws://localhost:8080");
         _wssv.AddWebSocketService<MinecraftCommandService>("/mc");
         _wssv.Start();
-        Console.WriteLine("WebSocket 服务已启动，地址: ws://localhost:8080/mc");
-        Console.WriteLine("请在游戏内输入: /connect localhost:8080/mc");
+        Console.WriteLine(@"WebSocket 服务已启动，地址: ws://localhost:8080/mc");
+        Console.WriteLine(@"请在游戏内输入: /connect localhost:8080/mc");
 
         // 启动 HTTP 服务器用于接收外部命令
         var httpListener = new HttpListener();
         httpListener.Prefixes.Add("http://localhost:8081/");
         httpListener.Start();
-        Console.WriteLine("HTTP 命令接口已启动，地址: http://localhost:8081/command");
+        Console.WriteLine(@"HTTP 命令接口已启动，地址: http://localhost:8081/command");
 
         // 异步处理 HTTP 请求
         Task.Run(async () => await HandleHttpRequests(httpListener));
 
-        Console.WriteLine("按任意键退出...");
+        Console.WriteLine(@"按任意键退出...");
         Console.ReadKey();
         _wssv.Stop();
         httpListener.Stop();

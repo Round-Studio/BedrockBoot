@@ -101,7 +101,7 @@ public class WatchDog : IDisposable
         if (!_config.EnableVerboseLogging && level == WatchAlertLevel.Info) return;
 
         var args = new WatchAlertEventArgs(metric, level, message, currentValue, threshold);
-        Console.WriteLine($"[WatchDog][{level}] {message}");
+        Console.WriteLine($@"[WatchDog][{level}] {message}");
         AlertRaised?.Invoke(this, args);
     }
 
@@ -167,7 +167,7 @@ public class WatchDog : IDisposable
             catch (Exception ex)
             {
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] MonitorMemory error: {ex.Message}");
+                    Console.WriteLine($@"[WatchDog] MonitorMemory error: {ex.Message}");
                 await Task.Delay(5000, cancellationToken);
             }
         }
@@ -231,13 +231,13 @@ public class WatchDog : IDisposable
                 }
 
                 if (_config.EnableVerboseLogging && cpuPercent > 10)
-                    Console.WriteLine($"[WatchDog] CPU: {cpuPercent}%");
+                    Console.WriteLine($@"[WatchDog] CPU: {cpuPercent}%");
             }
             catch (OperationCanceledException) { break; }
             catch (Exception ex)
             {
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] MonitorCpu error: {ex.Message}");
+                    Console.WriteLine($@"[WatchDog] MonitorCpu error: {ex.Message}");
                 await Task.Delay(5000, cancellationToken);
             }
         }
@@ -271,13 +271,13 @@ public class WatchDog : IDisposable
                         pending, _config.ThreadPoolStarvationPendingThreshold);
 
                 if (_config.EnableVerboseLogging && pending > 10)
-                    Console.WriteLine($"[WatchDog] ThreadPool: {pending} pending, {threadCount} threads");
+                    Console.WriteLine($@"[WatchDog] ThreadPool: {pending} pending, {threadCount} threads");
             }
             catch (OperationCanceledException) { break; }
             catch (Exception ex)
             {
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] MonitorThreadPool error: {ex.Message}");
+                    Console.WriteLine($@"[WatchDog] MonitorThreadPool error: {ex.Message}");
                 await Task.Delay(5000, cancellationToken);
             }
         }
@@ -310,13 +310,13 @@ public class WatchDog : IDisposable
                         handleCount, _config.HandleCountWarningThreshold);
 
                 if (_config.EnableVerboseLogging && handleCount > 1000)
-                    Console.WriteLine($"[WatchDog] Handles: {handleCount}");
+                    Console.WriteLine($@"[WatchDog] Handles: {handleCount}");
             }
             catch (OperationCanceledException) { break; }
             catch (Exception ex)
             {
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] MonitorHandleCount error: {ex.Message}");
+                    Console.WriteLine($@"[WatchDog] MonitorHandleCount error: {ex.Message}");
                 await Task.Delay(5000, cancellationToken);
             }
         }
@@ -362,13 +362,13 @@ public class WatchDog : IDisposable
                         $"Total GC pause time: {totalPause:F0}ms", totalPause);
 
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] Heap: Gen0={gen0 / 1024}KB Gen1={gen1 / 1024}KB Gen2={gen2MB}MB LOH={lohMB}MB Pause={totalPause:F0}ms");
+                    Console.WriteLine($@"[WatchDog] Heap: Gen0={gen0 / 1024}KB Gen1={gen1 / 1024}KB Gen2={gen2MB}MB LOH={lohMB}MB Pause={totalPause:F0}ms");
             }
             catch (OperationCanceledException) { break; }
             catch (Exception ex)
             {
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] MonitorGcHeap error: {ex.Message}");
+                    Console.WriteLine($@"[WatchDog] MonitorGcHeap error: {ex.Message}");
                 await Task.Delay(5000, cancellationToken);
             }
         }
@@ -402,7 +402,7 @@ public class WatchDog : IDisposable
                 else if (sw.ElapsedMilliseconds > _config.UiThreadMaxPauseMs / 2)
                 {
                     if (_config.EnableVerboseLogging)
-                        Console.WriteLine($"[WatchDog] UI thread response: {sw.ElapsedMilliseconds}ms");
+                        Console.WriteLine($@"[WatchDog] UI thread response: {sw.ElapsedMilliseconds}ms");
                 }
             }
             catch (OperationCanceledException) { break; }
@@ -444,7 +444,7 @@ public class WatchDog : IDisposable
                     RaiseAlert(WatchMetricType.Network, WatchAlertLevel.Info,
                         $"High latency to {_config.NetworkPingTarget}: {reply.RoundtripTime}ms", reply.RoundtripTime);
                 else if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] Network: {reply.RoundtripTime}ms to {_config.NetworkPingTarget}");
+                    Console.WriteLine($@"[WatchDog] Network: {reply.RoundtripTime}ms to {_config.NetworkPingTarget}");
             }
             catch (OperationCanceledException) { break; }
             catch (PingException)
@@ -454,7 +454,7 @@ public class WatchDog : IDisposable
             catch (Exception ex)
             {
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] MonitorNetwork error: {ex.Message}");
+                    Console.WriteLine($@"[WatchDog] MonitorNetwork error: {ex.Message}");
                 await Task.Delay(10000, cancellationToken);
             }
         }
@@ -491,13 +491,13 @@ public class WatchDog : IDisposable
                 _lastDiskSampleTime = now;
 
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] Disk I/O sampled (no per-process I/O counters on all platforms)");
+                    Console.WriteLine($@"[WatchDog] Disk I/O sampled (no per-process I/O counters on all platforms)");
             }
             catch (OperationCanceledException) { break; }
             catch (Exception ex)
             {
                 if (_config.EnableVerboseLogging)
-                    Console.WriteLine($"[WatchDog] MonitorDiskIo error: {ex.Message}");
+                    Console.WriteLine($@"[WatchDog] MonitorDiskIo error: {ex.Message}");
                 await Task.Delay(10000, cancellationToken);
             }
         }

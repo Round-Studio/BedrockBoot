@@ -34,6 +34,7 @@ public class CurseForgeApiClient : IDisposable
     public CurseForgeApiClient(string apiKey)
     {
         _apiKey = apiKey;
+        // 初始化时创建默认客户端
         _sharedHttpClient = CreateHttpClient(GetCurrentBaseAddress());
         _fixedSourceHttpClient = CreateHttpClient(GetFixedBaseAddress());
     }
@@ -71,8 +72,6 @@ public class CurseForgeApiClient : IDisposable
 
         client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        // 注意：如果启用了 AutomaticDecompression，通常不需要手动添加 Accept-Encoding，
-        // 但保留它也没坏处，Handler 会处理。
         client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
         client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
 
@@ -109,12 +108,15 @@ public class CurseForgeApiClient : IDisposable
     /// <summary>
     /// 刷新共享 HttpClient
     /// </summary>
-    private void RefreshSharedHttpClient()
+    private void RefreshSharedHttpClient(Uri newBaseAddress)
     {
         lock (_lock)
         {
+            // 双重检查，避免重复创建
+            if (_sharedHttpClient.BaseAddress == newBaseAddress) return;
+
             var oldClient = _sharedHttpClient;
-            _sharedHttpClient = CreateHttpClient(GetCurrentBaseAddress());
+            _sharedHttpClient = CreateHttpClient(newBaseAddress);
             oldClient?.Dispose();
         }
     }
@@ -133,23 +135,8 @@ public class CurseForgeApiClient : IDisposable
     }
 
     /// <summary>
-    /// 获取当前共享 HttpClient（自动检查配置变更）
-    /// </summary>
-    private HttpClient GetSharedHttpClient()
-    {
-        var currentAddress = _sharedHttpClient.BaseAddress?.ToString();
-        var expectedAddress = GetCurrentBaseAddress().ToString();
-        
-        if (currentAddress != expectedAddress)
-        {
-            RefreshSharedHttpClient();
-        }
-        
-        return _sharedHttpClient;
-    }
-
-    /// <summary>
     /// 执行带有重试逻辑的 HTTP 请求
+    /// 每次请求都会检查并更新 BaseURL
     /// </summary>
     private async Task<T> ExecuteRequestAsync<T>(
         Func<HttpClient, HttpRequestMessage> requestFactory,
@@ -164,7 +151,28 @@ public class CurseForgeApiClient : IDisposable
         {
             try
             {
-                var client = useFixedSource ? _fixedSourceHttpClient : GetSharedHttpClient();
+                HttpClient client;
+                
+                if (useFixedSource)
+                {
+                    // 对于固定源，通常不需要频繁检查 URL 变更，除非为了重置连接
+                    // 但为了保持一致性，我们也可以在 SSL 错误时重置它
+                    client = _fixedSourceHttpClient;
+                }
+                else
+                {
+                    // 【核心修改】每次请求都获取最新的 BaseAddress
+                    var currentExpectedBase = GetCurrentBaseAddress();
+                    Console.WriteLine($@"当前 BaseURL: {currentExpectedBase}");
+                    
+                    // 如果当前客户端的 BaseAddress 与配置不符，立即重建
+                    if (_sharedHttpClient.BaseAddress != currentExpectedBase)
+                    {
+                        RefreshSharedHttpClient(currentExpectedBase);
+                    }
+                    
+                    client = _sharedHttpClient;
+                }
                 
                 using var request = requestFactory(client);
                 request.Headers.Add("x-api-key", _apiKey);
@@ -173,29 +181,28 @@ public class CurseForgeApiClient : IDisposable
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                // 关键修复：确保正确读取字符串，处理可能的压缩流
-                // 虽然 AutomaticDecompression 应该处理了，但 ReadAsStringAsync 是最安全的方式
+                // 读取内容
                 var json = await response.Content.ReadAsStringAsync();
                 
-                // 调试用：如果仍然出错，可以取消注释下面这行查看原始字节的前几个字节
-                // if (json.Length > 0 && json[0] == 0x1F) throw new Exception("Received Gzip data despite decompression settings");
-
                 return deserializeFunc(json);
             }
             catch (HttpRequestException ex) when (retryCount < maxRetries && IsRetryableError(ex))
             {
                 retryCount++;
-                Console.WriteLine($"[{operationName}] 错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
+                Console.WriteLine($@"[{operationName}] 错误 (重试 {retryCount}/{maxRetries}): {ex.Message}");
                 if (ex.InnerException != null)
-                    Console.WriteLine($"内部异常: {ex.InnerException.Message}");
+                    Console.WriteLine($@"内部异常: {ex.InnerException.Message}");
 
-                // 策略：如果是 SSL 错误，重建对应的 HttpClient
+                // 策略：如果是 SSL 错误，强制重建对应的 HttpClient 以重置连接池和 SSL 上下文
                 if (IsSslError(ex))
                 {
                     if (useFixedSource)
                         RefreshFixedSourceHttpClient();
                     else
-                        RefreshSharedHttpClient();
+                    {
+                        // 即使 URL 没变，SSL 错误时也强制刷新以获取新的连接
+                        RefreshSharedHttpClient(GetCurrentBaseAddress());
+                    }
                 }
 
                 // 指数退避等待
@@ -204,14 +211,14 @@ public class CurseForgeApiClient : IDisposable
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"[{operationName}] JSON解析错误: {ex.Message}");
+                Console.WriteLine($@"[{operationName}] JSON解析错误: {ex.Message}");
                 // 如果是由于压缩问题导致的，可以尝试重新创建客户端再重试一次
                 if (retryCount < maxRetries)
                 {
                      if (useFixedSource)
                         RefreshFixedSourceHttpClient();
                     else
-                        RefreshSharedHttpClient();
+                        RefreshSharedHttpClient(GetCurrentBaseAddress());
                      
                      retryCount++;
                      await Task.Delay(TimeSpan.FromSeconds(1));
@@ -221,7 +228,7 @@ public class CurseForgeApiClient : IDisposable
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($"[{operationName}] 请求超时: {ex.Message}");
+                Console.WriteLine($@"[{operationName}] 请求超时: {ex.Message}");
                 throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
             }
         }

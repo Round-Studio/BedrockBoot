@@ -77,6 +77,12 @@ public class EasyLauncher
         
         VersionInfo.Config.FolderPolicyStr =
             IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
+
+        if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP) // 为了兼容 UWP 不能被 hook 的傻逼设定，详见 #74
+        {
+            VersionInfo.Config.IsVersionIsolated = false;
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
+        }
             
         GameInfoHelper.SaveVersionConfig(VersionInfo);
         

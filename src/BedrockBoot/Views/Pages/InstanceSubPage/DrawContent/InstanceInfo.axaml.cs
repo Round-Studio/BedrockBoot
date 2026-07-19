@@ -62,6 +62,8 @@ public partial class InstanceInfo : UserControl
             $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
         CustomizationBox.IsEnabled = VersionInfo.Info.GameIconType == GameIconType.Customization;
         IconPathInput.Text = VersionInfo.Info.GameIconPath;
+        InstanceIsolationPanel.IsVisible = InstanceIsolationPanel.IsEnabled = VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK;
+        
         if ((int)VersionInfo.Info.GameIconType >= 2025)
         {
             GameIconCard.IsVisible = false;

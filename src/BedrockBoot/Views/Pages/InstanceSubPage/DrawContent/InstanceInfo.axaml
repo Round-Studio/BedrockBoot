@@ -189,33 +189,50 @@
                     <ToggleSwitch Name="InstanceDetailedLogs"
                                   IsCheckedChanged="BoolTypeConfig_OnChanged" />
                 </onePointControls:SettingCard>
-
+                
                 <TextBlock FontWeight="Bold"
                            Name="HighLevel"
                            FontSize="14"
                            Text="{DynamicResource Settings.Download.Group.Advanced}" />
+                
+                <StackPanel>
+                    <TextBlock Text="当前版本的 BedrockBoot 尚不支持为 UWP 类型的游戏进行版本隔离。"
+                               Opacity="0.6" />
+                
+                    <DockPanel>
+                
+                        <TextBlock Text="详情可参见："
+                                   Opacity="0.6" />
+                
+                        <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues/74"
+                                         Content="https://github.com/Round-Studio/BedrockBoot/issues/74"></HyperlinkButton>
+                    </DockPanel>
+                </StackPanel>
 
-                <onePointControls:SettingCard Glyph="&#xE7B8;"
-                                              Name="IsolationCard"
-                                              Header="{DynamicResource Settings.Game.Isolation.Title}"
-                                              Description="{DynamicResource Instance.Info.Isolation.Desc}">
-                    <ToggleSwitch IsChecked="True"
-                                  Name="InstanceIsolated"
-                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
-                </onePointControls:SettingCard>
+                <StackPanel Spacing="8"
+                            Name="InstanceIsolationPanel">
+                    <onePointControls:SettingCard Glyph="&#xE7B8;"
+                                                  Name="IsolationCard"
+                                                  Header="{DynamicResource Settings.Game.Isolation.Title}"
+                                                  Description="{DynamicResource Instance.Info.Isolation.Desc}">
+                        <ToggleSwitch IsChecked="True"
+                                      Name="InstanceIsolated"
+                                      IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                    </onePointControls:SettingCard>
 
-                <onePointControls:SettingCard Header="隔离目录"
-                                              Description="选择不同的目录隔离策略"
-                                              Glyph="&#xEC25;">
-                    <ComboBox Width="200"
-                              Name="CatalogStrategy"
-                              SelectionChanged="CatalogStrategy_OnSelectionChanged"
-                              SelectedIndex="2">
-                        <ComboBoxItem Content="跟随全局" />
-                        <ComboBoxItem Content="独立目录 (专属目录)" />
-                        <ComboBoxItem Content="与其他启动器共享" />
-                    </ComboBox>
-                </onePointControls:SettingCard>
+                    <onePointControls:SettingCard Header="隔离目录"
+                                                  Description="选择不同的目录隔离策略"
+                                                  Glyph="&#xEC25;">
+                        <ComboBox Width="200"
+                                  Name="CatalogStrategy"
+                                  SelectionChanged="CatalogStrategy_OnSelectionChanged"
+                                  SelectedIndex="2">
+                            <ComboBoxItem Content="跟随全局" />
+                            <ComboBoxItem Content="独立目录 (专属目录)" />
+                            <ComboBoxItem Content="与其他启动器共享" />
+                        </ComboBox>
+                    </onePointControls:SettingCard>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

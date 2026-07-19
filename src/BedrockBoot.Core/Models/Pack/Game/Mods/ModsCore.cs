@@ -46,6 +46,16 @@ public class ModsCore
         if (!Directory.Exists(preLoadPath))
             Directory.CreateDirectory(preLoadPath);
 
+        try
+        {
+            if(File.Exists(fullPath)) File.Delete(fullPath);
+            File.WriteAllBytes(fullPath,
+                Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreloadCpp.dll"));
+
+            Console.WriteLine(@"PreLoadCpp.DLL 释放完毕");
+        }
+        catch(Exception exception) {Console.WriteLine($"PreloadCpp.dll 释放失败 {exception}"); }
+
         // 如果raw文件不存在，直接从body复制创建
         if (!File.Exists(rawBody))
         {
@@ -132,11 +142,6 @@ public class ModsCore
 
         try
         {
-            File.WriteAllBytes(fullPath, Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreloadCpp.dll"));
-            
-            Console.WriteLine(@"PreLoadCpp.DLL 释放完毕");
-
-            // 然后修改 PE 文件
             if (!FileCheck.IsFileLocked(body))
             {
                 using (var fs = new FileStream(body, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))

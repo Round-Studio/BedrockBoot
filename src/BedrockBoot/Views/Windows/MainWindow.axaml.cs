@@ -49,19 +49,19 @@ namespace BedrockBoot.Views.Windows;
 public partial class MainWindow : Window
 {
     private static List<string> _installedFontNames;
+
     public static List<string> InstalledFontNames
     {
         get
         {
             if (_installedFontNames == null)
-            {
                 _installedFontNames = FontManager.Current.SystemFonts
                     .Select(f => f.Name)
                     .ToList();
-            }
             return _installedFontNames;
         }
     }
+
     private bool _ctrlPressed = false;
     public int DrawMarginLR = 10;
     private DispatcherTimer _volumeControlTimer;
@@ -101,10 +101,10 @@ public partial class MainWindow : Window
         InitRefreshTaskItemTask();
 
         MediaManager.Instance.Volume = (float)Math.Clamp(Core.Global.GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
-        this.AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
-        this.AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
+        AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
+        AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
         Deactivated += OnWindowDeactivated;
-        this.AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Tunnel);
+        AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Tunnel);
         Frame.NavigateTo("");
         _volumeControlTimer = new DispatcherTimer
         {
@@ -125,34 +125,23 @@ public partial class MainWindow : Window
         BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
     }
 
-    public FontFamily GetFontFamily(string mainFont,string fallbackFont)
+    public FontFamily GetFontFamily(string mainFont, string fallbackFont)
     {
         FontFamily combinedFont = new("DINPro, Noto Sans SC");
 
         if (mainFont == "DINPro")
-        {
             mainFont = "resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro";
-        }
 
         if (fallbackFont == "DINPro")
-        {
             fallbackFont = "resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro";
-        }
-        
-        if (!string.IsNullOrEmpty(mainFont) && !string.IsNullOrEmpty(fallbackFont))
-        {
-            combinedFont = new FontFamily($"{mainFont}, {fallbackFont}");
-        }
-        else if (!string.IsNullOrEmpty(mainFont))
-        {
-            combinedFont = new FontFamily(mainFont);
-        }
-        else if (!string.IsNullOrEmpty(fallbackFont))
-        {
-            combinedFont = new FontFamily(fallbackFont);
-        }
 
-        Models.Global.GlobalModel.MainWindow.FontFamily = combinedFont;
+        if (!string.IsNullOrEmpty(mainFont) && !string.IsNullOrEmpty(fallbackFont))
+            combinedFont = new FontFamily($"{mainFont}, {fallbackFont}");
+        else if (!string.IsNullOrEmpty(mainFont))
+            combinedFont = new FontFamily(mainFont);
+        else if (!string.IsNullOrEmpty(fallbackFont)) combinedFont = new FontFamily(fallbackFont);
+
+        GlobalModel.MainWindow.FontFamily = combinedFont;
 
         return combinedFont;
     }
@@ -173,13 +162,13 @@ public partial class MainWindow : Window
 
             GlobalModel.TaskManager.AddOverallProgressCallback(progress =>
             {
-                if ((DateTime.Now - _lastUpdateTime) < _minInterval && 
+                if (DateTime.Now - _lastUpdateTime < _minInterval &&
                     Math.Abs(progress - _lastReportedProgress) < MinProgressDelta)
                     return;
-            
+
                 _lastReportedProgress = progress;
                 _lastUpdateTime = DateTime.Now;
-                
+
                 var hasRunningTasks = GlobalModel.TaskManager.Tasks
                     .Any(t => t.TaskItem is { IsCompleted: false });
 
@@ -202,7 +191,7 @@ public partial class MainWindow : Window
     private DesktopThumbnailWindow? DesktopThumbnailWindow { get; set; }
 
     #region 窗口拖拽事件
-    
+
     private async void OnDragOver(object? sender, DragEventArgs e)
     {
         var position = e.GetPosition(this);
@@ -222,14 +211,14 @@ public partial class MainWindow : Window
             {
                 var isValid = false;
                 SupportedFileType? fileType = null;
-                string displayName = "";
-                bool allowMany = false;
+                var displayName = "";
+                var allowMany = false;
                 var fileCount = 0;
 
                 foreach (var file in files)
                 {
                     fileCount++;
-                    var extension = System.IO.Path.GetExtension(file.Name).ToLowerInvariant();
+                    var extension = Path.GetExtension(file.Name).ToLowerInvariant();
 
                     if (GlobalKeys.DropOverTypesOfSupport.TryGetValue(extension, out var supportInfo))
                     {
@@ -311,20 +300,16 @@ public partial class MainWindow : Window
 
         var storageFiles = new List<IStorageFile>();
         foreach (var item in e.DataTransfer.Items)
-        {
             if (item.TryGetFile() is IStorageFile file)
                 storageFiles.Add(file);
-        }
 
         if (storageFiles.Count <= 0) return;
 
         var paths = storageFiles.Select(f => f.Path.LocalPath).ToArray();
         Console.WriteLine($@"本次拖拽共 {paths.Length} 个文件。");
         foreach (var filePath in paths)
-        {
             if (!string.IsNullOrEmpty(filePath))
                 Console.WriteLine($@"检测到拖入文件: {filePath}");
-        }
 
         // OpenDraw(new DrawDropFileContent(storageFiles.ToArray()), "拖拽文件处理");
         var handler = new DropFileHandler(paths.ToList());
@@ -396,15 +381,9 @@ public partial class MainWindow : Window
                 AnimationBackground.BackgroundType = BackgroundType.Bubble;
                 break;
             case StyleType.LiveModel:
-                if (DesktopThumbnailWindow == null)
-                {
-                    DesktopThumbnailWindow = new DesktopThumbnailWindow();
-                }
+                if (DesktopThumbnailWindow == null) DesktopThumbnailWindow = new DesktopThumbnailWindow();
 
-                if (style.LiveBlur)
-                {
-                    TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
-                }
+                if (style.LiveBlur) TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
 
                 DesktopThumbnailWindow?.ShowBelow(this);
                 LiveOpacity.IsVisible = true;
@@ -509,16 +488,14 @@ public partial class MainWindow : Window
                 var packConfig =
                     ThemePackManager.GetPackManifestWithHash(Core.Global.GlobalModel.Config.Data.StyleConfig
                         .SelectThemePackHash);
-                
-                if(packConfig == null)
+
+                if (packConfig == null)
                     return;
 
                 if (Core.Global.GlobalModel.Config.Data.StyleConfig.MediaSource == MediaSourceEnum.PriorityThemePack)
-                {
                     if (!string.IsNullOrEmpty(packConfig.BackgroundMusicFileName) &&
                         File.Exists(packConfig.BackgroundMusicFileName))
                         musicName = packConfig.BackgroundMusicFileName;
-                }
 
                 if (Core.Global.GlobalModel.Config.Data.StyleConfig.MediaSource == MediaSourceEnum.OnlyThemePack)
                     musicName = packConfig.BackgroundMusicFileName;
@@ -528,7 +505,7 @@ public partial class MainWindow : Window
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     ReSetBackground();
-                    ApplyImageBackground(new StyleConfig()
+                    ApplyImageBackground(new StyleConfig
                     {
                         Background3D = packConfig.BackgroundUse3D,
                         BackgroundImage = packConfig.BackgroundImageFileName,
@@ -563,7 +540,7 @@ public partial class MainWindow : Window
         {
             while (true)
             {
-                Avalonia.Threading.Dispatcher.UIThread.Invoke(UpdateTaskUI);
+                Dispatcher.UIThread.Invoke(UpdateTaskUI);
                 Thread.Sleep(30000);
             }
         });
@@ -587,7 +564,7 @@ public partial class MainWindow : Window
             TaskInfoText.IsVisible = true;
             TaskInfoText.Text = string.Format(I18n["MainWindow.Task.CountInfo"], tasks.Count);
 
-            var visible = new System.Collections.Generic.List<Avalonia.Controls.Control>(tasks.Count);
+            var visible = new List<Avalonia.Controls.Control>(tasks.Count);
             foreach (var task in tasks)
             {
                 if (task.Item == null) continue;
@@ -602,12 +579,12 @@ public partial class MainWindow : Window
 
     public void SetReboot()
     {
-        this.RebootBtn.IsVisible = true;
+        RebootBtn.IsVisible = true;
     }
 
     private void RebootBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "重启启动器",
             Content = "当前需要重启。\n" +
@@ -633,10 +610,7 @@ public partial class MainWindow : Window
                 };
 
                 // Windows 特殊处理
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    startInfo.Verb = "open";
-                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) startInfo.Verb = "open";
 
                 Process.Start(startInfo);
                 Environment.Exit(0);
@@ -734,8 +708,7 @@ public partial class MainWindow : Window
     }
 
     #endregion
-    
-    
+
 
     private void OnSelfPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
@@ -756,6 +729,7 @@ public partial class MainWindow : Window
                 RefreshWindowChrome();
             };
         }
+
         _configRefreshDebounce.Stop();
         _configRefreshDebounce.Start();
     }
@@ -771,6 +745,7 @@ public partial class MainWindow : Window
                 Core.Global.GlobalModel.Config.Save();
             };
         }
+
         _configSaveDebounce.Stop();
         _configSaveDebounce.Start();
     }
@@ -824,7 +799,7 @@ public partial class MainWindow : Window
             if (TitleBlock.Text != Title) TitleBlock.Text = Title ?? "";
         }
     }
-    
+
     /// <summary>
     /// 唤醒音量提示框
     /// </summary>
@@ -846,58 +821,43 @@ public partial class MainWindow : Window
         MediaVolumeCard.Margin = new Thickness(0, -76, 0, 0);
         _volumeControlTimer.Stop();
     }
-    
+
     private void OnKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
-        {
-            _ctrlPressed = true;
-        }
+        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl) _ctrlPressed = true;
     }
-    
+
     private void OnKeyUp(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
-        {
-            _ctrlPressed = false;
-        }
+        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl) _ctrlPressed = false;
     }
 
     private void OnWindowDeactivated(object sender, EventArgs e)
     {
         _ctrlPressed = false;
     }
-    
+
     private void OnPointerWheelChanged(object sender, PointerWheelEventArgs e)
     {
         if (_ctrlPressed)
         {
             ShowVolumeCard();
-            
-            double delta = e.Delta.Y;
-            double step = 0.05;
-        
-            double newVolume = MediaManager.Instance.Volume + (delta > 0 ? step : -step);
-            if (newVolume * 100 < 0)
-            {
-                newVolume = 0;  
-            }
-            else if (newVolume * 100 > 100)
-            {
-                newVolume = 1;
-            }
 
-            MediaVolume.Value = (newVolume * 100);
+            var delta = e.Delta.Y;
+            var step = 0.05;
+
+            var newVolume = MediaManager.Instance.Volume + (delta > 0 ? step : -step);
+            if (newVolume * 100 < 0)
+                newVolume = 0;
+            else if (newVolume * 100 > 100) newVolume = 1;
+
+            MediaVolume.Value = newVolume * 100;
 
             if (MediaVolume.Value != 0)
-            {
                 MediaVolumeCard.Width = 170;
-            }
             else
-            {
                 MediaVolumeCard.Width = 150;
-            }
-            
+
             DisableVolumeText.IsVisible = false;
 
             switch (MediaVolume.Value)
@@ -916,18 +876,18 @@ public partial class MainWindow : Window
                     MediaVolumeIcon.Glyph = "\uE995";
                     break;
             }
-        
+
             Console.WriteLine($@"当前音量：{(int)(newVolume * 100)}%");
-        
+
             // 应用新音量
             Core.Global.GlobalModel.Config.Data.MediaVolume = newVolume;
             // 防抖保存：滚轮短时间会触发数十次 Config.Save()，
             // 这中间会做 JsonSerializer + File.WriteAllText，阻塞 UI 线程。
             // 用 200ms 防抖合并写入，避免动画期间被频繁打断。
             ScheduleConfigSave();
-            
+
             MediaManager.Instance.Volume = (float)Math.Clamp(Core.Global.GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
-        
+
             // 阻止事件继续冒泡
             e.Handled = true;
         }
@@ -1033,7 +993,7 @@ public partial class MainWindow : Window
         TaskCard.Margin = new Thickness(10);
         IsTaskCardOpen = true;
         BlackView.IsVisible = true;
-        
+
         DropBox.Opacity = 0;
         await Task.Delay(360);
         DropBox.IsVisible = false;

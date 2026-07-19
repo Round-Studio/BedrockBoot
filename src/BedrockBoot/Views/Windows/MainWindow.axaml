@@ -46,7 +46,8 @@
                                                  Duration="0:0:0.58" />
                         </Transitions>
                     </Grid.Transitions>
-                    <view:AnimationBackground Name="AnimationBackground" />
+                    <view:AnimationBackground Name="AnimationBackground" 
+                                              IsVisible="False" />
 
                     <Grid Name="AccentBackgroundBox"
                           Background="{DynamicResource AccentBackgroundBrush}"

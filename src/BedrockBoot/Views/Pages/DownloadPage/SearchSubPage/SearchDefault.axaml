@@ -118,6 +118,37 @@
                     </Border>
                 </Grid>
             </items:BorderCard>
+            
+            <items:BorderCard Name="PluginCard">
+                <Grid RowDefinitions="Auto,*">
+                    <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                        <Button DockPanel.Dock="Right" Classes="NoBorder" Name="SearchPlugin"
+                                Click="SearchPlugin_OnClick" Padding="6,4">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
+                                <TextBlock Text="搜索插件" />
+                            </StackPanel>
+                        </Button>
+                        <TextBlock DockPanel.Dock="Left" Text="插件"
+                                   VerticalAlignment="Center" />
+                    </DockPanel>
+
+                    <Grid Grid.Row="1" IsVisible="False" Name="PluginItem" ColumnDefinitions="*,*"
+                          ColumnSpacing="6">
+                        <widgets:SmallPluginView Grid.Column="0"
+                                                 Name="PluginView1"
+                                                 Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                        <widgets:SmallPluginView Grid.Column="1"
+                                                 Name="PluginView2"
+                                                 Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                    </Grid>
+
+                    <Border Grid.Row="1" Height="44">
+                        <onePointControls:ProgressRing Name="PluginLoadRing" HorizontalAlignment="Center" Height="36"
+                                                       Width="36" />
+                    </Border>
+                </Grid>
+            </items:BorderCard>
 
             <StackPanel HorizontalAlignment="Center"
                         Opacity="0.8">

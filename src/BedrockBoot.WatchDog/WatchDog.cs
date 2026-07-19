@@ -101,7 +101,7 @@ public class WatchDog : IDisposable
         if (!_config.EnableVerboseLogging && level == WatchAlertLevel.Info) return;
 
         var args = new WatchAlertEventArgs(metric, level, message, currentValue, threshold);
-        Console.WriteLine($@"[WatchDog][{level}] {message}");
+        // Console.WriteLine($@"[WatchDog][{level}] {message}");
         AlertRaised?.Invoke(this, args);
     }
 

@@ -13,6 +13,7 @@ using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
+using BedrockBoot.Models.Pack.Plugin.Market;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
@@ -39,6 +40,7 @@ public partial class SearchDefault : UserControl
         LoadSearchHistory();
         _ = FetchLatestVersions();
         _ = LoadFeaturedResourcesAsync();
+        _ = LoadPluginAsync();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
@@ -165,6 +167,48 @@ public partial class SearchDefault : UserControl
             CheckNetworkStatus();
         }
     }
+    
+    // --- 插件加载 ---
+    private async Task LoadPluginAsync()
+    {
+        try
+        {
+            var client = new MarketClient();
+            var pluginList = await client.GetPluginsAsync();
+            var plugin1 = pluginList[0];
+            var plugin2 = pluginList[1];
+
+            plugin1.IconUrl = $"{SourceList.MarketApiHost}{plugin1.IconUrl}";
+            plugin2.IconUrl = $"{SourceList.MarketApiHost}{plugin2.IconUrl}";
+
+            PluginView1.PluginName = plugin1.PluginName;
+            PluginView1.Description = plugin1.Description;
+            PluginView2.PluginName = plugin2.PluginName;
+            PluginView2.Description = plugin2.Description;
+
+            PluginView1.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin1),
+                $"插件详细信息：{plugin1.PluginName}");
+            PluginView2.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin2),
+                $"插件详细信息：{plugin2.PluginName}");
+
+            PluginLoadRing.IsVisible = false;
+            PluginItem.IsVisible = true;
+
+            var tasks = new[]
+            {
+                ImageLoader.LoadIconAsync(plugin1.IconUrl),
+                ImageLoader.LoadIconAsync(plugin2.IconUrl)
+            };
+
+            await Task.WhenAll(tasks);
+            PluginView1.Icon = await tasks[0];
+            PluginView2.Icon = await tasks[1];
+        }
+        catch
+        {
+            PluginCard.IsVisible = false;
+        }
+    }
 
     // --- 数据填充辅助方法 ---
     private void UpdateBigButton(CurseForgeResponse.ModData mod)
@@ -251,5 +295,10 @@ public partial class SearchDefault : UserControl
                 LoadSearchHistory();
             }
         });
+    }
+
+    private void SearchPlugin_OnClick(object? sender, RoutedEventArgs e)
+    {
+        NavigateSearch(SearchResourceType.PluginPack);
     }
 }

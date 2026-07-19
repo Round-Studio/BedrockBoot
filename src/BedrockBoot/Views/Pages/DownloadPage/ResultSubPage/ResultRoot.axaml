@@ -190,7 +190,7 @@
                 </items:BorderCard>
             </StackPanel>
         </ScrollViewer>
-        
+
         <items:BorderCard HorizontalAlignment="Stretch"
                           VerticalAlignment="Top"
                           Name="SmallBox"
@@ -200,65 +200,78 @@
                 <Transitions>
                     <ThicknessTransition Duration="0:0:0.42"
                                          Easing="ExponentialEaseOut"
-                                         Property="Margin"></ThicknessTransition>
+                                         Property="Margin" />
                 </Transitions>
             </items:BorderCard.Transitions>
-            <Grid ColumnDefinitions="Auto,*,Auto"
-                  ColumnSpacing="8">
-                <items:BorderCard
-                    Grid.Column="0"
-                    Height="56"
-                    Width="56"
-                    Padding="0"
-                    VerticalAlignment="Top">
-                    <Grid>
-                        <onePointControls:FontIcon
-                            FontSize="24"
-                            Glyph="&#xE91B;"
-                            Name="ResourceIconIcon"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
+            <Grid>
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                      ColumnSpacing="8">
+                    <items:BorderCard
+                        Grid.Column="0"
+                        Height="56"
+                        Width="56"
+                        Padding="0"
+                        VerticalAlignment="Top">
+                        <Grid>
+                            <onePointControls:FontIcon
+                                FontSize="24"
+                                Glyph="&#xE91B;"
+                                Name="ResourceIconIcon"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
 
-                        <Border ClipToBounds="True"
-                                CornerRadius="6">
-                            <Image
-                                Name="ResourceIcon"
-                                Height="56"
-                                Width="56" />
-                        </Border>
-                    </Grid>
-                </items:BorderCard>
+                            <Border ClipToBounds="True"
+                                    CornerRadius="6">
+                                <Image
+                                    Name="ResourceIcon"
+                                    Height="56"
+                                    Width="56" />
+                            </Border>
+                        </Grid>
+                    </items:BorderCard>
+
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="Name"
+                                   Name="ResourceName2"
+                                   FontSize="18"
+                                   FontWeight="SemiBold" />
+
+                        <TextBlock Text="By xxx"
+                                   Name="AuthorText2"
+                                   Opacity="0.6" />
+                    </StackPanel>
                 
-                <StackPanel Grid.Column="1"
-                            VerticalAlignment="Center">
-                    <TextBlock Text="Name"
-                               Name="ResourceName2"
-                               FontSize="18"
-                               FontWeight="SemiBold"></TextBlock>
-                    
-                    <TextBlock Text="By xxx"
-                               Name="AuthorText2" 
-                               Opacity="0.6"></TextBlock>
-                </StackPanel>
-                
-                <Grid Grid.Column="2"
-                      RowDefinitions="*,Auto"
-                      RowSpacing="4">
-                    <Button Grid.Row="0"
-                            Click="GetResourceBtn_OnClick"
-                            Background="{DynamicResource AccentBackgroundBrush}"
+                    <Button Grid.Column="2" Width="48" Height="48"
+                            VerticalAlignment="Center"
+                            Margin="0,0,4,0"
+                            Name="GoTopBtn"
+                            Click="GoTopBtn_OnClick"
                             Classes="NoBorder"
-                            Width="140">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <onePointControls:FontIcon Glyph="&#xE896;" VerticalAlignment="Center" />
-                            <TextBlock Text="{DynamicResource Download.Result.Action.Get}" />
-                        </StackPanel>
+                            CornerRadius="24">
+                        <onePointControls:FontIcon Glyph="&#xE752;"
+                                                   FontSize="18"></onePointControls:FontIcon>
                     </Button>
-                    
-                    <HyperlinkButton Grid.Row="1"
-                                     HorizontalAlignment="Right"
-                                     Name="HyperlinkButton2"
-                                     Content="在 CurseForge 中查看"></HyperlinkButton>
+
+                    <Grid Grid.Column="3"
+                          RowDefinitions="*,Auto"
+                          RowSpacing="4">
+                        <Button Grid.Row="0"
+                                Click="GetResourceBtn_OnClick"
+                                Background="{DynamicResource AccentBackgroundBrush}"
+                                Classes="NoBorder"
+                                Width="140">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <onePointControls:FontIcon Glyph="&#xE896;" VerticalAlignment="Center" />
+                                <TextBlock Text="{DynamicResource Download.Result.Action.Get}" />
+                            </StackPanel>
+                        </Button>
+
+                        <HyperlinkButton Grid.Row="1"
+                                         HorizontalAlignment="Right"
+                                         Name="HyperlinkButton2"
+                                         Content="在 CurseForge 中查看" />
+                    </Grid>
                 </Grid>
             </Grid>
         </items:BorderCard>

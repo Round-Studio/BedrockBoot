@@ -163,13 +163,14 @@ public partial class ResultRoot : UserControl
         {
             var value = MainScrollViewer.Offset.Y;
             if (value >= 80)
-            {
-                SmallBox.Margin = new(30, 25, 30, 0);
-            }
+                SmallBox.Margin = new Thickness(30, 25, 30, 0);
             else
-            {
-                SmallBox.Margin = new(30, -72, 30, 0);
-            }
+                SmallBox.Margin = new Thickness(30, -72, 30, 0);
         }
+    }
+
+    private void GoTopBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainScrollViewer.Offset = new Vector(MainScrollViewer.Offset.X, 0);
     }
 }

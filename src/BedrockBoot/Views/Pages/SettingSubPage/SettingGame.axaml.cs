@@ -89,4 +89,9 @@ public partial class SettingGame : ISettingPage
             GlobalModel.Config.Save();
         }
     }
+
+    private void PublicSyncBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new GamePublicSync());
+    }
 }

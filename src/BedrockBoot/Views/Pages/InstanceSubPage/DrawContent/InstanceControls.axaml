@@ -47,14 +47,14 @@
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
-                           Text="{DynamicResource Instance.Controls.Group.DangerZone}" />
+                           Text="同步" />
 
                 <onePointControls:SettingCard IsClickable="True"
-                                              Glyph="&#xE74D;"
-                                              Name="DeleteBtn"
-                                              Click="DeleteBtn_OnClick"
-                                              Header="{DynamicResource Instance.Controls.Delete.Title}"
-                                              Description="{DynamicResource Instance.Controls.Delete.Desc}" />
+                                              Glyph="&#xECAF;"
+                                              Name="PublicSyncBtn"
+                                              Click="PublicSyncBtn_OnClick"
+                                              Header="设置为全局配置"
+                                              Description="将当前实例的游戏设置 (options.txt) 文件设置为所有实例的同步源配置" />
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
@@ -63,7 +63,19 @@
                            Text="{DynamicResource Instance.Controls.Group.Expansion}" />
 
                 <StackPanel Spacing="8"
+                            IsVisible="False"
                             Name="ExpansionPanel" />
+
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
+                           Text="{DynamicResource Instance.Controls.Group.DangerZone}" />
+
+                <onePointControls:SettingCard IsClickable="True"
+                                              Glyph="&#xE74D;"
+                                              Name="DeleteBtn"
+                                              Click="DeleteBtn_OnClick"
+                                              Header="{DynamicResource Instance.Controls.Delete.Title}"
+                                              Description="{DynamicResource Instance.Controls.Delete.Desc}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

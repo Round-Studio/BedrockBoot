@@ -54,7 +54,7 @@ public class ModsCore
 
             Console.WriteLine(@"PreLoadCpp.DLL 释放完毕");
         }
-        catch(Exception exception) {Console.WriteLine($"PreloadCpp.dll 释放失败 {exception}"); }
+        catch(Exception exception) {Console.WriteLine($@"PreloadCpp.dll 释放失败 {exception}"); }
 
         // 如果raw文件不存在，直接从body复制创建
         if (!File.Exists(rawBody))

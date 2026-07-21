@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Options;
 using BedrockBoot.Proton;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
@@ -14,6 +16,7 @@ using BedrockBoot.Views.DialogContent.Linux;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Plugin.BedrockBoot.Register;
 #if WINDOWS
 using BedrockBoot.Models.Helper.Gdk;
 using BedrockBoot.Models.Helper.Uwp;
@@ -69,6 +72,32 @@ public class CoreInitialize
         {
             _ = GetDevelopMode();
             CheckUwpDependence();
+        });
+
+        RegisterService.API.LaunchingEvent.Add(path =>
+        {
+            Console.WriteLine(@"开始同步游戏配置文件");
+            var config = GameInfoHelper.GetVersionConfig(path);
+            Console.WriteLine($@"当前实例配置：{config.Config.IsSyncPublicOptions}");
+            if (config.Config.IsSyncPublicOptions)
+            {
+                if (Core.Global.GlobalModel.Config.Data.PublicOptionsConfig == null) return;
+                if (Core.Global.GlobalModel.Config.Data.PublicOptionsConfig.PubOptionsInstancePath != null &&
+                    Core.Global.GlobalModel.Config.Data.PublicOptionsConfig.PubUser != null)
+                {
+                    var sourceManager =
+                        new GameOptionsManager(GameInfoHelper.GetVersionConfig(Core.Global.GlobalModel.Config.Data
+                            .PublicOptionsConfig.PubOptionsInstancePath));
+                    
+                    var aimManager = new GameOptionsManager(GameInfoHelper.GetVersionConfig(path));
+                    aimManager.GetUsers().ForEach(user =>
+                    {
+                        aimManager.SaveGameOptions(
+                            sourceManager.GetGameOptions(
+                                Core.Global.GlobalModel.Config.Data.PublicOptionsConfig.PubUser), user);
+                    });
+                }
+            }
         });
 
 #if LINUX

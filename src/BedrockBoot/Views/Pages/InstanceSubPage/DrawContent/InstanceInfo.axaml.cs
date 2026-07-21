@@ -93,6 +93,7 @@ public partial class InstanceInfo : UserControl
                 InstanceMod.IsChecked = VersionInfo.Config.IsModes;
                 InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
                 InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
+                GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
                 CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
             });
 
@@ -222,6 +223,7 @@ public partial class InstanceInfo : UserControl
             VersionInfo.Config.IsVersionIsolated = (bool)InstanceIsolated.IsChecked!;
             VersionInfo.Config.IsModes = (bool)InstanceMod.IsChecked!;
             VersionInfo.Config.IsDetailedLog = (bool)InstanceDetailedLogs.IsChecked!;
+            VersionInfo.Config.IsSyncPublicOptions = (bool)GameConfigSwitch.IsChecked!;
 
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }

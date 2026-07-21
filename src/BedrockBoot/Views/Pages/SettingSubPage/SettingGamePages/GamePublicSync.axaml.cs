@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
@@ -26,5 +28,11 @@ public partial class GamePublicSync : ISettingPage
                 ItemName = "全局配置"
             }
         };
+    }
+
+    private void ResetBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GlobalModel.Config.Data.PublicOptionsConfig = null;
+        GlobalModel.Config.Save();
     }
 }

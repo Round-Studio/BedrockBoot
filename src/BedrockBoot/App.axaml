@@ -4,9 +4,6 @@
              xmlns:local="using:BedrockBoot"
              xmlns:core="clr-namespace:OnePointUI.Avalonia.Style.Core;assembly=OnePointUI.Avalonia"
              RequestedThemeVariant="Dark">
-    <Application.DataTemplates>
-        <local:ViewLocator />
-    </Application.DataTemplates>
 
     <Application.Styles>
         <core:OnePointTheme AccentColor="#486860"

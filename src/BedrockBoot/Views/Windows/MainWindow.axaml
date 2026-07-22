@@ -20,9 +20,9 @@
         Background="Transparent"
         TextOptions.TextRenderingMode="Antialias"
         TextOptions.TextHintingMode="None"
-        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaToDecorationsHint="False"
         ExtendClientAreaTitleBarHeightHint="-1"
-        WindowDecorations="BorderOnly"
+        WindowDecorations="Full"
         WindowStartupLocation="CenterScreen"
         FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
         Title="BedrockBoot">

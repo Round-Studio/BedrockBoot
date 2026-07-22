@@ -762,12 +762,6 @@ public partial class MainWindow : Window
             MaxBtn.IsVisible = !useSystemWindow;
             MinBtn.IsVisible = !useSystemWindow;
             CloseBtn.IsVisible = !useSystemWindow;
-            // Avalonia 12 replaced ExtendClientAreaChromeHints with WindowDecorations.
-            // WindowDecorations.Full  ≈ old ExtendClientAreaChromeHints.Default
-            // WindowDecorations.None   ≈ old ExtendClientAreaChromeHints.NoChrome
-            WindowDecorations = useSystemWindow
-                ? WindowDecorations.Full
-                : WindowDecorations.BorderOnly;
             ExtendClientAreaToDecorationsHint = !useSystemWindow;
             ExtendClientAreaTitleBarHeightHint = -1;
         }

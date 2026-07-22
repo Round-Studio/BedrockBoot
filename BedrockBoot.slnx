@@ -9,6 +9,7 @@
     <Project Path="src/BedrockBoot.Inject/BedrockBoot.Inject.csproj" />
     <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
     <Project Path="src/BedrockBoot.LeviLamina/BedrockBoot.LeviLamina.csproj" />
+    <Project Path="src/BedrockBoot.Lip/BedrockBoot.Lip.csproj" />
     <Project Path="src/BedrockBoot.Netease/BedrockBoot.Netease.csproj" />
     <Project Path="src/BedrockBoot.WatchDog/BedrockBoot.WatchDog.csproj" />
     <Project Path="src/PreLoadCpp/src/PreloadCpp.vcxproj" Id="bfdc1f1a-af77-47c7-897e-673ead85364d">

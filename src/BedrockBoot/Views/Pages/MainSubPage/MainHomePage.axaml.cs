@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Config;
@@ -22,6 +23,18 @@ public partial class MainHomePage : BedrockBootPage
     {
         InitializeComponent();
         this.Loaded += (s, e) => UpdateHome();
+        Loaded += (_, _) =>
+        {
+            if (Models.Global.GlobalModel.CustomManifest?.PageTitles != null)
+            {
+                if (!string.IsNullOrEmpty(LineTextBlock.Text =
+                        Models.Global.GlobalModel.CustomManifest.PageTitles.PageHome))
+                    LineTextBlock.Text = Models.Global.GlobalModel.CustomManifest.PageTitles.PageHome.Replace(
+                        "{{random}}",
+                        Models.Global.GlobalModel.CustomManifest.RandomStr[
+                            (new Random()).Next(0, Models.Global.GlobalModel.CustomManifest.RandomStr.Count)]);
+            }
+        };
     }
 
     public void UpdateHome()

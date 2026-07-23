@@ -45,6 +45,8 @@
         <AvaloniaResource Include="Manifest\Function\FunctionOption.json"/>
         <None Remove="Assets\Web\LoginFinish.html" />
         <AvaloniaResource Include="Assets\Web\LoginFinish.html" />
+        <None Remove="Manifest\DefaultCustomManifest.json" />
+        <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
     </ItemGroup>
 
     <ItemGroup>

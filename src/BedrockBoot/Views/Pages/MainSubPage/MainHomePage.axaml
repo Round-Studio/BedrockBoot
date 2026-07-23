@@ -15,6 +15,7 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
+                                        Name="LineTextBlock"
                                         Text="{DynamicResource Home.Title}" />
     </entry:BedrockBootPage.HeaderView>
     <Grid>

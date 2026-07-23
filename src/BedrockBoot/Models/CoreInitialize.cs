@@ -52,13 +52,16 @@ public class CoreInitialize
         // 加载功能配置文件
         try
         {
-            BedrockBoot.Models.Global.GlobalModel.FunctionOption = await new JsonResourceEntity()
+            GlobalModel.FunctionOption = await new JsonResourceEntity()
                 .LoadJsonResourceAsync<FunctionOptionEntry>(
                     "avares://BedrockBoot/Manifest/Function/FunctionOption.json");
+            GlobalModel.CustomManifest = await new JsonResourceEntity()
+                .LoadJsonResourceAsync<CustomManifest>(
+                    "avares://BedrockBoot/Manifest/DefaultCustomManifest.json");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"Failed to load FunctionOption: {ex.Message}");
+            Console.WriteLine($@"Failed to load FunctionOption: {ex}");
         }
         
         // 核心引擎异步初始化

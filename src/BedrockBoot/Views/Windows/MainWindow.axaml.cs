@@ -12,6 +12,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
@@ -39,6 +40,7 @@ using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;
 using Round.SDK.Helper;
@@ -123,6 +125,39 @@ public partial class MainWindow : Window
 
         RefreshWindowChrome();
         BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
+
+        Loaded += (_, _) =>
+        {
+            Title = GlobalModel.CustomManifest.Title.Replace("{{version}}", GlobalModel.BodyVersion);
+            HelpBtn.IsVisible = GlobalModel.CustomManifest.IsShowHelpBtn;
+            if (GlobalModel.CustomManifest.IsShowHelpBtn)
+            {
+                var flyout = new MenuFlyout();
+                HelpBtn.Flyout = flyout;
+                GlobalModel.CustomManifest.HelpLinks.ForEach(link =>
+                {
+                    var item = new MenuItem()
+                    {
+                        Header = link.Name,
+                        Icon = new FontIcon()
+                        {
+                            Glyph = link.Icon,
+                            VerticalAlignment = VerticalAlignment.Center
+                        }
+                    };
+                    item.Click += (_, _) =>
+                    {
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = link.Link,
+                            UseShellExecute = true
+                        };
+                        Process.Start(psi);
+                    };
+                    flyout.Items.Add(item);
+                });
+            }
+        };
     }
 
     public FontFamily GetFontFamily(string mainFont, string fallbackFont)

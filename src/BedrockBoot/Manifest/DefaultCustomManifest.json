@@ -17,13 +17,12 @@
     "您好，欢迎回来",
     "您好，欢迎回来",
     "您好，欢迎回来",
-    "新的一天，你有什么计划？",
-    "BugsBoot"
+    "您好，欢迎使用 BugsBoot"
   ],
   "pageTitles": {
     "pageHome": "{{random}}"
   },
-  "isShowHelpBtn": true,
+  "isShowHelpBtn": false,
   "helpLinks": [
     {
       "name": "Bug 反馈",

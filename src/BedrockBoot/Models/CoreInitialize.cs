@@ -208,14 +208,26 @@ public class CoreInitialize
 #if WINDOWS
         if (!AppSdkChecker.GetInstalled())
         {
-            if (await AppSdkChecker.ShowNotice())
+            var dialogInfo = new DialogInfo
             {
-                DialogHost.Show(new()
+                Title = "未安装 SDK 1.8",
+                Content = "当前系统未检测到完整的 Windows App SDK 1.8 (8000.x) 组件。\n" +
+                          "缺失组件可能包括: Main, Singleton 或 DDLM。\n" +
+                          "这会导致游戏无法启动。",
+                CloseButtonText = "立即安装",
+                PrimaryButtonText = "放任不管",
+                AccountButton = DialogButtons.CloseButton,
+                
+                CloseAction = () =>
                 {
-                    Title = "下载 SDK",
-                    Content = new DialogDownloadAppSdkContent()
-                });
-            }
+                    DialogHost.Show(new()
+                    {
+                        Title = "下载 SDK",
+                        Content = new DialogDownloadAppSdkContent()
+                    });
+                },
+            };
+            DialogHost.Show(dialogInfo);
         }
         else
         {

@@ -24,6 +24,13 @@ public class IsolationCore
 
     public VersionConfig VersionConfig { get; set; }
 
+    private void CreateSymbolLink(string source, string target)
+    {
+        SafeSymbolicLinkCreator.Create(source, target, true);
+    }
+
+    #region 静态方法
+
     public static string GetRealPath(VersionConfig versionConfig)
     {
         var sharedFolder = Path.Combine(versionConfig.VersionPath,
@@ -96,7 +103,6 @@ public class IsolationCore
         InstanceFolderType folderType = InstanceFolderType.RootFolder,
         string user = "Shared")
     {
-        var core = new IsolationCore(versionConfig);
         return folderType switch
         {
             InstanceFolderType.RootFolder => GetRealPath(versionConfig),
@@ -169,4 +175,6 @@ public class IsolationCore
 
         throw new NotSupportedException($"不支持的 Minecraft 构建类型: {versionConfig.Info.BuildType}");
     }
+
+    #endregion
 }

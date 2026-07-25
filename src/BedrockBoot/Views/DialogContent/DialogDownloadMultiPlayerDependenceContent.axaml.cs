@@ -23,7 +23,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
         "GravityCone");
     
     public static readonly string EasyTierPath = Path.Combine(GravityConePath, "easytier");
-    public static readonly string GravityConeExePath = Path.Combine(GravityConePath, "gravitycone");
+    public static readonly string GravityConeExePath = Path.Combine(PathsList.PaperConnectPath, "gravitycone");
 
     private bool _easyTierCompleted = false;
     private bool _gravityConeCompleted = false;
@@ -231,7 +231,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     DialogHost.Close();
-                    MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
+                    MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeInit());
                 });
             });
         }

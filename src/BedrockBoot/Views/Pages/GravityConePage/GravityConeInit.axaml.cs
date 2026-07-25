@@ -72,6 +72,7 @@ public partial class GravityConeInit : UserControl
                 {
                     Title = "获取节点失败",
                     Content = "请尝试更换网络，然后重试",
+                    CloseButtonText = "确定",
                     CloseAction = () => { MainPage.Instance.SelTag.SelectedIndex = 0; }
                 });
             });
@@ -127,8 +128,7 @@ public partial class GravityConeInit : UserControl
         await Task.Delay(100);
         GlobalModel.GravityConeClient = new GravityConeClient();
         await GlobalModel.GravityConeClient.StartAsync(
-            Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath,
-                "gravitycone-cli-windows-amd64.exe"),
+            Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath, "gravitycone-cli-windows-amd64.exe"),
             GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", "BedrockBoot 联机房间");
 
         GlobalModel.GravityConeClient.OnEvent += (sender, eventArgs) =>

@@ -21,9 +21,17 @@ public partial class GravityConeRoomCreate : UserControl
     {
         InitializeComponent();
         RoomCodeCard.IsVisible = false;
-        
-        if (!GlobalModel.GravityConeClient.IsRunning)
+
+        if (GlobalModel.GravityConeClient == null)
+        {
             MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeInit());
+            return;
+        }
+        if (!GlobalModel.GravityConeClient.IsRunning)
+        {
+            MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeInit());
+            return;
+        }
 
         GlobalModel.GravityConeClient.OnEvent += (sender, @event) =>
         {

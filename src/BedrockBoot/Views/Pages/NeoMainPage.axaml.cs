@@ -69,14 +69,13 @@ public partial class NeoMainPage : UserControl
             Tag = "ToolsBox",
             Page = typeof(MainToolsBoxPage)
         });
-        if (GlobalModel.Config.Data.IsShowConnectPage)
-            RegisterTopItem(new TopBarItemInfo
-            {
-                ItemGlyph = "\uF0B9",
-                ItemText = i18n["MainPage.Nav.Multiplayer"],
-                Tag = "Multiplayer",
-                Page = typeof(MainGravityConePage)
-            });
+        RegisterTopItem(new TopBarItemInfo
+        {
+            ItemGlyph = "\uF0B9",
+            ItemText = i18n["MainPage.Nav.Multiplayer"],
+            Tag = "Multiplayer",
+            Page = typeof(MainGravityConePage)
+        });
 #endif
         RegisterTopItem(new TopBarItemInfo
         {

@@ -93,7 +93,7 @@ public class GithubFilesDownloader
                 cts.Cancel();
 
                 // 所有加速源都超时，使用 GitHub 原始源
-                Console.WriteLine($"所有加速源测试超时，使用 GitHub 原始源");
+                Console.WriteLine($@"所有加速源测试超时，使用 GitHub 原始源");
                 var githubUrl = SourceList.UpdateDownloadSources["Github"].Replace("{url}", fileUrl);
                 return ("Github (fallback)", githubUrl);
             }
@@ -115,7 +115,7 @@ public class GithubFilesDownloader
             }
 
             // 如果所有测试都失败了，使用 GitHub 原始源
-            Console.WriteLine($"所有加速源测试失败: {ex.Message}，使用 GitHub 原始源");
+            Console.WriteLine($@"所有加速源测试失败: {ex.Message}，使用 GitHub 原始源");
             var githubUrl = SourceList.UpdateDownloadSources["Github"].Replace("{url}", fileUrl);
             return ("Github (fallback)", githubUrl);
         }

@@ -55,6 +55,7 @@ public class ImageLoader : IDisposable
     }
 	public async Task<Bitmap?> LoadIconAsync(string iconUri)
 	{
+        Console.WriteLine($@"获取图片：{iconUri}");
 		if (string.IsNullOrEmpty(iconUri))
 			return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
 
@@ -94,6 +95,7 @@ public class ImageLoader : IDisposable
     /// </summary>
     public async Task<Bitmap?> LoadImageBrushAsync(string imageUrl, bool useCache = true)
     {
+        if (imageUrl.StartsWith("avares://")) return await LoadIconAsync(imageUrl);
         if (string.IsNullOrWhiteSpace(imageUrl)) return null;
 
         if (useCache && TryGetFromCache(imageUrl, out var cached)) return cached;

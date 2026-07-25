@@ -129,16 +129,18 @@ public partial class GravityConeInit : UserControl
         await Task.Delay(100);
         GlobalModel.GravityConeClient = new GravityConeClient();
         await GlobalModel.GravityConeClient.StartAsync(
-            Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath, "gravitycone-cli-windows-amd64.exe"),
-            GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", "BedrockBoot 联机房间");
+            Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath,
+                "gravitycone-cli-windows-amd64.exe"),
+            GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", "BedrockBoot 联机房间",
+            DialogDownloadMultiPlayerDependenceContent.GravityConeExePath);
 
         GlobalModel.GravityConeClient.OnEvent += (sender, eventArgs) =>
         {
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
-                MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                 if (eventArgs.Event == "paperconnect.connection.error")
                 {
+                    MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
                         Title = "出现错误",
@@ -149,6 +151,7 @@ public partial class GravityConeInit : UserControl
 
                 if (eventArgs.Event == "paperconnect.connection.port_busy")
                 {
+                    MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
                         Title = "出现错误",

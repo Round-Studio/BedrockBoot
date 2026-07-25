@@ -16,6 +16,7 @@ using BedrockLauncher.Core.CoreOption;
 using PeNet;
 using PeNet.Header.Pe;
 using Round.SDK.Plugin.BedrockBoot.Register;
+using BedrockBoot.Models.Helper.Uwp;
 
 namespace BedrockBoot.Models.Game;
 
@@ -26,7 +27,10 @@ public class EasyLauncher
     private DateTime _gameStartTime; // 游戏开始时间
     private string _playerDataFilePath; // 玩家数据文件路径
 	private ProcessMouseLocker? _mouseLocker;
-    
+    private FrameMonitor? _frameMonitor;
+    IntPtr _frameHwnd  = IntPtr.Zero ;
+
+
     private static int LaunchingCount { get; set; } = 0;
 
     public EasyLauncher(VersionConfig versionConfig)
@@ -171,7 +175,21 @@ public class EasyLauncher
             // 重置计时器
             _gameplayStopwatch.Reset();
             _gameStartTime = DateTime.Now;
+
+            if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+            {
+                // 开始监视 ApplicationFrameHost 窗口信息
+                _frameMonitor = new FrameMonitor();
+                _frameMonitor.GameName = VersionInfo.Info.VersionName;
+
+                _ = Task.Run(async () =>
+                {
+                    _frameHwnd = await _frameMonitor.StartFrameMonitorAsync();
+
+                });
+            }
             
+
             MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
             {
                 GameFolder = VersionInfo.VersionPath,
@@ -201,7 +219,9 @@ public class EasyLauncher
             if (MinecraftProcess != null)
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
+
                 
+
                 LaunchingCount--;
                 if (LaunchingCount == 0) LaunchedBehavior?.Invoke();
                 
@@ -218,7 +238,7 @@ public class EasyLauncher
                     // 正常情况下 GDK 窗口是不需要锁的呜
                     if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
                     {
-                        _mouseLocker = new ProcessMouseLocker(MinecraftProcess.Id);
+                        _mouseLocker = new ProcessMouseLocker(MinecraftProcess.Id, _frameHwnd);
                         _mouseLocker.Start();
                     }
                 }

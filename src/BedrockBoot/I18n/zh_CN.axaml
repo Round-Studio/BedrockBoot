@@ -596,7 +596,13 @@
 	<x:String x:Key="Settings.Game.MouseLock.ForGdk.Desc">正常情况下，只有 UWP 版本才需要鼠标锁</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Reserve.Title">旧版逻辑</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Reserve.Desc">除非新版鼠标锁逻辑未能按照预期工作，否则你不应该打开这个开关</x:String>
-	<x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">旧版本鼠标锁逻辑更为粗暴，除了不必要的 CPU 浪费之外，还会导致其他应用或游戏自带的鼠标锁定逻辑出现异常，&#10;且会导致解除锁定的热键工作异常。&#10;除非新版鼠标锁逻辑未能按照预期工作，否则你的确不应该打开这个开关！&#10;&#10;确认仍要打开吗？</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">旧版本鼠标锁逻辑更为粗暴，除了不必要的 CPU 消耗之外，还会导致其他应用或游戏自带的鼠标锁定逻辑出现异常，&#10;且会导致解除锁定的热键工作异常。&#10;除非新版鼠标锁逻辑未能按照预期工作，否则你的确不应该打开这个开关！&#10;&#10;确认仍要打开吗？</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.WindowTrimming.Title">四边减去的像素数量</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.WindowTrimming.Desc">在窗口四边减去少量像素，防止在游戏全屏或者在隐藏任务栏且游戏最大化时鼠标误触任务栏</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.GetFrame.Title">UWP 窗口捕获优先设置</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.GetFrame.Desc">设置 UWP 框架窗口捕获策略。</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.GetFrame.Default">启动时监视框架</x:String>
+	<x:String x:Key="Settings.Game.MouseLock.GetFrame.Legacy">从游戏获取框架</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Title">热键绑定</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Desc">绑定临时解除鼠标锁定的热键</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Hotkey.Capturing">捕获中，按 Esc 取消</x:String>
@@ -676,8 +682,8 @@
     <x:String x:Key="Settings.Universal.Update.Status.Latest.Title">当前已是最新版本</x:String>
     <x:String x:Key="Settings.Universal.Update.Status.Latest.Message">尽情享用吧~</x:String>
     <x:String x:Key="Settings.Universal.Group.Accessibility">辅助功能</x:String>
-    <x:String x:Key="Settings.Universal.JumpList.Title">任务栏快捷菜单</x:String>
-    <x:String x:Key="Settings.Universal.JumpList.Desc">当程序固定在任务栏时，右键其固定项时显示最近启动</x:String>
+    <x:String x:Key="Settings.Universal.JumpList.Title">跳转列表快捷菜单</x:String>
+    <x:String x:Key="Settings.Universal.JumpList.Desc">当程序固定在任务栏或开始菜单时，右键其固定项时显示快捷启动</x:String>
     <x:String x:Key="Settings.Universal.Debug.Title">调试模式</x:String>
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本体调试模式</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">语言</x:String>

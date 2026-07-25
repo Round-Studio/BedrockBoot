@@ -35,6 +35,8 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;
         [JsonPropertyName("isMouseLockForGdk")] public bool IsMouseLockForGdk { get; set; } = false;
         [JsonPropertyName("isMouseLockReserve")] public bool IsMouseLockReserve { get; set; } = false;
+        [JsonPropertyName("mouseLockWindowTrimming")] public int MouseLockWindowTrimming { get; set; } = 2;
+        [JsonPropertyName("isMouseLockGetFrame")] public bool IsMouseLockGetFrame { get; set; } = true;
         [JsonPropertyName("mouseLockHotkey")] public string MouseLockHotkey { get; set; } = "Ctrl+Alt";
         [JsonPropertyName("isUseSystemWindow")] public bool IsUseSystemWindow { get; set; } = false;
         [JsonPropertyName("launchBehavior")] public LaunchBehaviorEnum LaunchBehavior { get; set; } = LaunchBehaviorEnum.Normal;

@@ -15,32 +15,24 @@ public class JumpListManager
             jumpList.Refresh();
             return;
         }
-
-        var myToolsCategory = new JumpListCustomCategory("快捷启动");
-
         try
         {
             var versions = GameInfoHelper.GetVersionConfigs(BedrockBoot.Core.Global.GlobalModel.Config.Data
                 .GameFolders[BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolderSelIndex].GameFolderPath);
 
-            versions.ForEach(v =>
-            {
-                myToolsCategory.AddJumpListItems(
-                    new JumpListLink(Process.GetCurrentProcess().MainModule.FileName, v.Info.VersionName)
-                    {
-                        Arguments = $"-jump \"{v.VersionPath}\"",
-                        IconReference = new IconReference(Process.GetCurrentProcess().MainModule.FileName,
-                            SourceList.MinecraftIconID)
-                    });
+           var tasks = versions.Select(v =>
+               new JumpListLink(Process.GetCurrentProcess().MainModule!.FileName, v.Info.VersionName)
+               {
+                   Arguments = $"-jump \"{v.VersionPath}\"",
+                    IconReference = new IconReference(Process.GetCurrentProcess().MainModule!.FileName,
+                        SourceList.MinecraftIconID)
+               });
 
-                Console.WriteLine($@"添加任务栏快捷启动项 {v.Info.VersionName}");
-            });
+           Console.WriteLine($@"添加跳转列表快捷启动项");
 
-            jumpList.AddCustomCategories(myToolsCategory);
-            jumpList.KnownCategoryToDisplay = JumpListKnownCategoryType.Frequent;
-
-            jumpList.Refresh();
-        }
+ 		   jumpList.AddUserTasks(tasks.ToArray());
+           jumpList.Refresh();
+		}
         catch
         {
         }

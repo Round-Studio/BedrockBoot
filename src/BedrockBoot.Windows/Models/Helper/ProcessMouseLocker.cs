@@ -62,18 +62,37 @@ public class ProcessMouseLocker
     [DllImport("dwmapi.dll")]
     private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out Rect pvAttribute, int cbAttribute);
 
- 
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetDesktopWindow();
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
+    private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
     private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
+    [DllImport("user32.dll")]
+    private static extern int GetWindowTextLength(IntPtr hWnd);
+    
     // --- 常量定义 ---
     private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
+    private const uint GA_ROOTOWNER = 3;
+    private const int GWL_EXSTYLE = -20;
+    private const uint WS_EX_TOPMOST = 0x00000008;
+    private const uint WS_EX_TOOLWINDOW = 0x00000080;
+    private const uint WS_EX_NOACTIVATE = 0x08000000;
+
 
 
     // --- 成员变量 ---
     private readonly int _targetPid;
     private readonly DateTime _targetStartTime;
     private IntPtr _targetHwnd = IntPtr.Zero;
+    private IntPtr _targetHwndNew = IntPtr.Zero;
     private bool _isRunning = false;
     private bool _isManuallyUnlocked = false;
     private bool _isMouseCurrentlyLocked;
@@ -83,11 +102,12 @@ public class ProcessMouseLocker
     private HotKey _hotKey = HotKey.Parse(GlobalModel.Config.Data.MouseLockHotkey);
     private Rect? _lastClipRect;
 
-    public int BorderMargin { get; set; } = 20;
+    public int BorderMargin { get; set; } = BedrockBoot.Core.Global.GlobalModel.Config.Data.MouseLockWindowTrimming;
 
-    public ProcessMouseLocker(int processId)
+    public ProcessMouseLocker(int processId, IntPtr frameHwnd)
     {
         _targetPid = processId;
+        _targetHwndNew = frameHwnd;
         try
         {
             using var p = Process.GetProcessById(processId);
@@ -107,7 +127,12 @@ public class ProcessMouseLocker
         if (_isRunning) return;
         _isRunning = true;
         _wasWindowFound = false;
-        _targetHwnd = IntPtr.Zero;
+
+        // 如果是 UWP 的话，一般情况下直接使用在启动时监视到的 Frame 即可。
+        if (_targetHwndNew != IntPtr.Zero && BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockGetFrame)
+            _targetHwnd = _targetHwndNew;
+        else _targetHwnd = IntPtr.Zero;
+
 
 
         // 监视热键和监视焦点窗口分为两个，热键需要高频率监视，但是焦点窗口不需要
@@ -173,7 +198,7 @@ public class ProcessMouseLocker
     {
         while (_isRunning)
         {
-            
+
 
             // 2. 窗口有效性检查与持续搜索
             bool isCurrentWindowValid = _targetHwnd != IntPtr.Zero && IsWindowVisible(_targetHwnd);
@@ -269,9 +294,18 @@ public class ProcessMouseLocker
         }
         if (TryGetWindowBounds(_targetHwnd, out Rect rect))
         {
+            // 本来写了判断游戏窗口是否和监视器的边缘重合的判断
+            // 但是想了想还是算了，没啥必要，反正全局抠掉一点点也没啥影响
+            
+             rect.Left += BorderMargin;
+             rect.Top += BorderMargin;
+             rect.Right -= BorderMargin;
+             rect.Bottom -= BorderMargin;
+            
             // 如果裁切不需要改变就不重新进行裁切
             if (_lastClipRect.HasValue && _lastClipRect.Value.Equals(rect) && !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockReserve) return;
 
+            Console.WriteLine($"鼠标已锁定为: Left={rect.Left}, Top={rect.Top}, Right={rect.Right}, Bottom={rect.Bottom}");
             ClipCursor(ref rect);
             _lastClipRect = rect;
 
@@ -292,8 +326,9 @@ public class ProcessMouseLocker
             ShowCursor(true);
 
         }
+        Console.WriteLine("鼠标已解锁");
         ClipCursor(IntPtr.Zero);
-		_lastClipRect = null;
+        _lastClipRect = null;
         _isMouseCurrentlyLocked = false;
 
     }
@@ -308,6 +343,33 @@ public class ProcessMouseLocker
 
         // 处理 UWP 框架窗口焦点判定
         return CheckIfUwpFrameMatches(hwnd);
+    }
+    static void PrintWindow(IntPtr hWnd)
+    {
+        StringBuilder title = new StringBuilder(256);
+
+        GetWindowText(hWnd, title, title.Capacity);
+
+        GetWindowThreadProcessId(hWnd, out uint pid);
+
+        Process process;
+
+        try
+        {
+            process = Process.GetProcessById((int)pid);
+        }
+        catch
+        {
+            return;
+        }
+
+        Console.WriteLine("--------------------------------------");
+        Console.WriteLine($"Handle : 0x{hWnd.ToInt64():X} / {hWnd}");
+        Console.WriteLine($"Title  : {title}");
+        Console.WriteLine($"PID    : {pid}");
+        Console.WriteLine($"Process: {process.ProcessName}");
+
+        Console.WriteLine();
     }
 
     private IntPtr SearchForTargetWindow()
@@ -353,12 +415,41 @@ public class ProcessMouseLocker
             return true;
         }, IntPtr.Zero);
 
+        if (foundHandle != IntPtr.Zero)
+            return foundHandle;
+
+        // 路径3：全屏 UWP
+        EnumChildWindows(GetDesktopWindow(), (hWnd, lParam) =>
+        {
+            StringBuilder sbClass = new StringBuilder(256);
+            GetClassName(hWnd, sbClass, sbClass.Capacity);
+
+            if (sbClass.ToString() != "ApplicationFrameInputSinkWindow")
+                return true;
+
+            IntPtr root = GetAncestor(hWnd, GA_ROOTOWNER);
+
+            if (!IsFullScreenUwp(root))
+                return true;
+            //PrintWindow(root);
+
+            if (CheckIfFullScreenUwpMatches(root))
+            {
+                foundHandle = root;
+                return false;
+            }
+
+            return true;
+        }, IntPtr.Zero);
+
         return foundHandle;
     }
-
+    private bool CheckStartTime(IntPtr frameHwnd)
+    {
+        return frameHwnd == _targetHwndNew;
+    }
     private bool CheckIfUwpFrameMatches(IntPtr frameHwnd)
     {
-        bool isMatch = false;
 
         // 核心：检查 Frame 内部是否包含目标进程的子窗口
         EnumChildWindows(frameHwnd, (childHwnd, l) =>
@@ -366,11 +457,16 @@ public class ProcessMouseLocker
             GetWindowThreadProcessId(childHwnd, out uint childPid);
             if (childPid == _targetPid)
             {
-                isMatch = true;
                 return false;
             }
             return true;
         }, IntPtr.Zero);
+
+        return CheckStartTime(frameHwnd);
+
+        /*
+         * 说实话时间戳检测似乎不太好用
+         * 因为 ApplicationFrameHost 持续存在，所有的 handle 都是同一个 Process，启动时间是一样的
 
         // 辅助：如果子窗口枚举不可用，尝试时间戳关联
         if (!isMatch)
@@ -384,11 +480,23 @@ public class ProcessMouseLocker
                 if (diff < 10) isMatch = true;
             }
             catch { }
-        }
+        }*/
 
-        return isMatch;
     }
+    private bool CheckIfFullScreenUwpMatches(IntPtr frameHwnd)
+    {
+        // 全屏 UWP EnumChildWindows 搞不出东西来，呜闹，只能纯检查时间了
+        return CheckStartTime(frameHwnd);
+        
+    }
+    private bool IsFullScreenUwp(IntPtr hWnd)
+    {
+        uint style = (uint)GetWindowLongPtr(hWnd, GWL_EXSTYLE).ToInt64();
 
+        if ((style & WS_EX_TOPMOST) == 0 || (style & WS_EX_NOACTIVATE) != 0 || (style & WS_EX_TOOLWINDOW) != 0)
+            return false;
+        return true;
+    }
     private bool TryGetWindowBounds(IntPtr hWnd, out Rect bounds)
     {
         // 优先使用 DWM 获取视觉边界，避免 ClipCursor 锁定到透明阴影区

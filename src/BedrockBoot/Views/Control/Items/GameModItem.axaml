@@ -31,7 +31,7 @@
                     Name="DeleteBtn">
                 <onePointControls:FontIcon Glyph="&#xE74D;"
                                            FontSize="16"
-                                           Foreground="DarkRed" />
+                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
             </Button>
             <Button Width="32" Height="32"
                     Classes="NoBorder"

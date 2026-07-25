@@ -73,7 +73,7 @@
                             Click="DeleteBtn_OnClick"
                             Classes="NoBorder">
                         <onePointControls:FontIcon Glyph="&#xE74D;"
-                                                   Foreground="Red" />
+                                                   Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
                     </Button>
                 </StackPanel>
             </StackPanel>

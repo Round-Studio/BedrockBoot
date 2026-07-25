@@ -33,6 +33,9 @@ public partial class MouseLock : ISettingPage
         MouseLockMainSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
         MouseLockForGdkSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLockForGdk;
         MouseLockReserveSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLockReserve;
+        MouseLockWindowTrimmingNum.Value = GlobalModel.Config.Data.MouseLockWindowTrimming;
+        if (GlobalModel.Config.Data.IsMouseLockGetFrame == true) MouseLockGetFrameCombo.SelectedIndex = 0;
+        else MouseLockGetFrameCombo.SelectedIndex = 1;
         MouseLockHotkeyBtn.Content = GlobalModel.Config.Data.MouseLockHotkey;
         UpdateUI();
 
@@ -50,6 +53,8 @@ public partial class MouseLock : ISettingPage
             MouseLockMainCard.Glyph = "\uF19F";
             MouseLockForGdkCard.IsEnabled = true;
             MouseLockReserveCard.IsEnabled = true;
+            MouseLockWindowTrimmingCard.IsEnabled = true;
+            MouseLockGetFrameCard.IsEnabled = true;
             MouseLockHotkeyCard.IsEnabled = true;
         }
         else
@@ -57,6 +62,8 @@ public partial class MouseLock : ISettingPage
             MouseLockMainCard.Glyph = "\uF19E";
             MouseLockForGdkCard.IsEnabled = false;
             MouseLockReserveCard.IsEnabled = false;
+            MouseLockWindowTrimmingCard.IsEnabled = false;
+            MouseLockGetFrameCard.IsEnabled = false;
             MouseLockHotkeyCard.IsEnabled = false;
         }
     }
@@ -75,6 +82,23 @@ public partial class MouseLock : ISettingPage
         if (IsEdit)
         {
             GlobalModel.Config.Data.IsMouseLockForGdk = (bool)MouseLockForGdkSwitch.IsChecked!;
+            GlobalModel.Config.Save();
+        }
+    }
+    private void MouseLockWindowTrimmingNum_OnValueChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.MouseLockWindowTrimming = (int)MouseLockWindowTrimmingNum.Value;
+            GlobalModel.Config.Save();
+        }
+    }
+private void MouseLockGetFrameCombo_OnSelectionChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            if (MouseLockGetFrameCombo.SelectedIndex == 0) GlobalModel.Config.Data.IsMouseLockGetFrame = true;
+            else GlobalModel.Config.Data.IsMouseLockGetFrame = false;
             GlobalModel.Config.Save();
         }
     }

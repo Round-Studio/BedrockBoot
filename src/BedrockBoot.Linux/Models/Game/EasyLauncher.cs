@@ -174,9 +174,6 @@ public class EasyLauncher
 
         _core.PreLoad(); // 启动 PreLoad
 
-        RegisterService.API.LaunchingEvent.ForEach(action =>
-            new Thread(() => action.Invoke(VersionInfo.VersionPath)).Start());
-
         var protonConfig = ProtonCore.GetVersionConfig(_linuxLaunchInfo.ProtonPath);
         if (!VersionInfo.VersionStatus.GameInputInstalled ||
             !Path.Exists(_linuxLaunchInfo?.PrefixPath) ||
@@ -191,6 +188,18 @@ public class EasyLauncher
             GameInfoHelper.SaveVersionConfig(VersionInfo);
             ProtonCore.SaveVersionConfig(protonConfig);
         }
+
+        RegisterService.API.LaunchingEvent.ForEach(action => new Thread(() =>
+        {
+            try
+            {
+                if (VersionInfo.VersionPath != null) action.Invoke(VersionInfo.VersionPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"执行启动前方法失败：{ex}");
+            }
+        }).Start());
 
         try
         {

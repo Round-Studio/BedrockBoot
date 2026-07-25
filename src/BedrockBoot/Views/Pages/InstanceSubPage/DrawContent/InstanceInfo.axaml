@@ -109,17 +109,46 @@
                 </onePointControls:SettingCard>
 
                 <onePointControls:SettingCard Glyph="&#xEB9F;"
-                                              IsEnabled="False"
-                                              IsVisible="False"
+                                              Name="GameIconCard"
                                               Header="{DynamicResource Instance.Info.Icon.Title}"
                                               Description="{DynamicResource Instance.Info.Icon.Desc}">
-                    <ComboBox Width="200"
-                              SelectedIndex="0">
-                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Grass}" />
-                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Path}" />
-                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.EndStone}" />
-                        <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Crafting}" />
-                    </ComboBox>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                        <Border CornerRadius="6"
+                                Height="74"
+                                Width="74"
+                                ClipToBounds="True">
+                            <Image Source="avares://BedrockBoot/Assets/Icon/Logo/Grass.png" 
+                                   Name="GameIcon"/>
+                        </Border>
+                        
+                        <StackPanel Spacing="8"
+                                    MaxWidth="200"
+                                    Width="200">
+                            <ComboBox Name="GameIconSel"
+                                      Width="200"
+                                      SelectionChanged="GameIconSel_OnSelectionChanged"
+                                      SelectedIndex="1">
+                                <ComboBoxItem Content="自定义" />
+                                <ComboBoxItem Content="默认" />
+                                <ComboBoxItem Content="草方块" />
+                                <ComboBoxItem Content="草经" />
+                                <ComboBoxItem Content="工作台" />
+                                <ComboBoxItem Content="圆石" />
+                                <ComboBoxItem Content="末地石" />
+                            </ComboBox>
+                        
+                            <DockPanel HorizontalSpacing="8"
+                                       Name="CustomizationBox">
+                                <Button DockPanel.Dock="Right"
+                                        Content="选择"
+                                        Padding="8"
+                                        Name="IconPathChooseBtn"
+                                        Click="IconPathChooseBtn_OnClick"></Button>
+                                <TextBox Name="IconPathInput"></TextBox>
+                            </DockPanel>
+                        </StackPanel>
+                    </StackPanel>
                 </onePointControls:SettingCard>
 
                 <TextBlock FontWeight="Bold"
@@ -160,33 +189,58 @@
                     <ToggleSwitch Name="InstanceDetailedLogs"
                                   IsCheckedChanged="BoolTypeConfig_OnChanged" />
                 </onePointControls:SettingCard>
-
+                
                 <TextBlock FontWeight="Bold"
                            Name="HighLevel"
                            FontSize="14"
                            Text="{DynamicResource Settings.Download.Group.Advanced}" />
-
-                <onePointControls:SettingCard Glyph="&#xE7B8;"
-                                              Name="IsolationCard"
-                                              Header="{DynamicResource Settings.Game.Isolation.Title}"
-                                              Description="{DynamicResource Instance.Info.Isolation.Desc}">
+                
+                <StackPanel>
+                    <TextBlock Text="当前版本的 BedrockBoot 尚不支持为 UWP 类型的游戏进行版本隔离。"
+                               Opacity="0.6" />
+                
+                    <DockPanel>
+                
+                        <TextBlock Text="详情可参见："
+                                   Opacity="0.6" />
+                
+                        <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues/74"
+                                         Content="https://github.com/Round-Studio/BedrockBoot/issues/74"></HyperlinkButton>
+                    </DockPanel>
+                </StackPanel>
+                
+                <onePointControls:SettingCard Glyph="&#xECAF;"
+                                              Header="同步配置"
+                                              Description="同步全局游戏设置 (options.txt)">
                     <ToggleSwitch IsChecked="True"
-                                  Name="InstanceIsolated"
+                                  Name="GameConfigSwitch"
                                   IsCheckedChanged="BoolTypeConfig_OnChanged" />
                 </onePointControls:SettingCard>
 
-                <onePointControls:SettingCard Header="隔离目录"
-                                              Description="选择不同的目录隔离策略"
-                                              Glyph="&#xEC25;">
-                    <ComboBox Width="200"
-                              Name="CatalogStrategy"
-                              SelectionChanged="CatalogStrategy_OnSelectionChanged"
-                              SelectedIndex="2">
-                        <ComboBoxItem Content="跟随全局" />
-                        <ComboBoxItem Content="独立目录 (专属目录)" />
-                        <ComboBoxItem Content="与其他启动器共享" />
-                    </ComboBox>
-                </onePointControls:SettingCard>
+                <StackPanel Spacing="8"
+                            Name="InstanceIsolationPanel">
+                    <onePointControls:SettingCard Glyph="&#xE7B8;"
+                                                  Name="IsolationCard"
+                                                  Header="{DynamicResource Settings.Game.Isolation.Title}"
+                                                  Description="{DynamicResource Instance.Info.Isolation.Desc}">
+                        <ToggleSwitch IsChecked="True"
+                                      Name="InstanceIsolated"
+                                      IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                    </onePointControls:SettingCard>
+
+                    <onePointControls:SettingCard Header="隔离目录"
+                                                  Description="选择不同的目录隔离策略"
+                                                  Glyph="&#xEC25;">
+                        <ComboBox Width="200"
+                                  Name="CatalogStrategy"
+                                  SelectionChanged="CatalogStrategy_OnSelectionChanged"
+                                  SelectedIndex="2">
+                            <ComboBoxItem Content="跟随全局" />
+                            <ComboBoxItem Content="独立目录 (专属目录)" />
+                            <ComboBoxItem Content="与其他启动器共享" />
+                        </ComboBox>
+                    </onePointControls:SettingCard>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

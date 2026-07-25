@@ -13,6 +13,7 @@
                                   Name="BreadcrumbBar" />
     </entry:BedrockBootPage.HeaderView>
     <Grid>
-        <navigation:NavigationFrame Name="SettingFrame" />
+        <navigation:NavigationFrame Name="SettingFrame" 
+                                    Margin="0,0,0,15"/>
     </Grid>
 </entry:BedrockBootPage>

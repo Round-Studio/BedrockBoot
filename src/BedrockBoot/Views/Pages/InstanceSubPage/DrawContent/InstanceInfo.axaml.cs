@@ -1,14 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Base.Helper;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
@@ -20,10 +24,12 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceInfo : UserControl
 {
+	private ImageLoader _imageLoader = new ImageLoader();
+	
     public InstanceInfo()
     {
         IsEdit = false;
-
+       
         InitializeComponent();
 
 #if LINUX
@@ -48,13 +54,28 @@ public partial class InstanceInfo : UserControl
     private CancellationTokenSource _refreshCancellationTokenSource;
     private DispatcherTimer _refreshTimer;
 
+    private bool _isEditGameIcon = true;
+
     public async Task UpdateUI()
     {
         UpdateImage();
         VersionName.Text = VersionInfo.Info.VersionName;
         VersionReady.Text =
             $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
-
+        CustomizationBox.IsEnabled = VersionInfo.Info.GameIconType == GameIconType.Customization;
+        IconPathInput.Text = VersionInfo.Info.GameIconPath;
+        InstanceIsolationPanel.IsVisible = InstanceIsolationPanel.IsEnabled = VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK;
+        
+        if ((int)VersionInfo.Info.GameIconType >= 2025)
+        {
+            GameIconCard.IsVisible = false;
+            _isEditGameIcon = false;
+        }
+        else
+        {
+            GameIconSel.SelectedIndex = (int)VersionInfo.Info.GameIconType;
+        }
+        
         StartPlayTimeRefresh();
 
         Task.Run(() =>
@@ -74,6 +95,7 @@ public partial class InstanceInfo : UserControl
                 InstanceMod.IsChecked = VersionInfo.Config.IsModes;
                 InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
                 InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
+                GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
                 CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
             });
 
@@ -81,8 +103,9 @@ public partial class InstanceInfo : UserControl
             IsEdit = true;
         });
     }
+    
 
-    private void UpdateImage()
+    private async Task UpdateImage()
     {
         var image = "avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png";
 
@@ -91,6 +114,8 @@ public partial class InstanceInfo : UserControl
                 image = VersionInfo.Info.CoverImage;
 
         IconBox.Update(image);
+        
+        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
     }
 
     private void TextTypeConfig_OnChanged(object? sender, TextChangedEventArgs e)
@@ -190,6 +215,7 @@ public partial class InstanceInfo : UserControl
         // 停止定时刷新
         StopPlayTimeRefresh();
         base.OnUnloaded(e);
+        _imageLoader.Dispose();
     }
 
     private void BoolTypeConfig_OnChanged(object? sender, RoutedEventArgs e)
@@ -201,6 +227,7 @@ public partial class InstanceInfo : UserControl
             VersionInfo.Config.IsVersionIsolated = (bool)InstanceIsolated.IsChecked!;
             VersionInfo.Config.IsModes = (bool)InstanceMod.IsChecked!;
             VersionInfo.Config.IsDetailedLog = (bool)InstanceDetailedLogs.IsChecked!;
+            VersionInfo.Config.IsSyncPublicOptions = (bool)GameConfigSwitch.IsChecked!;
 
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
@@ -257,5 +284,38 @@ public partial class InstanceInfo : UserControl
             
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
+    }
+
+    private void GameIconSel_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit && _isEditGameIcon)
+        {
+            VersionInfo.Info.GameIconType = (GameIconType)GameIconSel.SelectedIndex;
+
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
+            UpdateUI();
+        }
+    }
+
+    private async void IconPathChooseBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "选择图片",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+                new FilePickerFileType("图片文件")
+                {
+                    Patterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.bmp" }
+                }
+            }
+        });
+
+        var file = files.FirstOrDefault()?.Path.AbsolutePath;
+        VersionInfo.Info.GameIconPath = file;
+        GameInfoHelper.SaveVersionConfig(VersionInfo);
+
+        UpdateUI();
     }
 }

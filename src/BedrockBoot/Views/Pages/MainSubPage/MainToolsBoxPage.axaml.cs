@@ -9,6 +9,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Chunker.Jvm;
+using BedrockBoot.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Chunker;
@@ -252,5 +253,10 @@ public partial class MainToolsBoxPage : BedrockBootPage
                 }
             }
         });
+    }
+
+    private void CheckSDK_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _ = CoreInitialize.GetSdkInstalledMode();
     }
 }

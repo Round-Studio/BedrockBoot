@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Models.Helper;
@@ -12,12 +13,19 @@ namespace BedrockBoot.Views.Control.Widgets;
 public partial class LocalImageRenderWidget : UserControl
 {
     // 定义 AvaloniaProperty，以便支持 XAML 绑定和更改通知
+    private ImageLoader _imageLoader = new ImageLoader();
     public static readonly StyledProperty<string?> ImageUrlProperty =
         AvaloniaProperty.Register<LocalImageRenderWidget, string?>(nameof(ImageUrl));
 
     public LocalImageRenderWidget()
     {
         InitializeComponent();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     public LocalImageRenderWidget(string uri) : this()
@@ -49,7 +57,7 @@ public partial class LocalImageRenderWidget : UserControl
     {
         try
         {
-            var image = await ImageLoader.LoadIconAsync(uri);
+            var image = await _imageLoader.LoadIconAsync(uri);
 
             // 确保在 UI 线程更新界面
             Dispatcher.UIThread.Post(() =>

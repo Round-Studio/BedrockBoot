@@ -12,7 +12,14 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 
 public partial class SettingPlugin : ISettingPage
 {
-    public SettingPlugin()
+	private ImageLoader _imageLoader = new ImageLoader();
+	protected override void OnUnloaded(RoutedEventArgs e)
+	{
+		base.OnUnloaded(e);
+		_imageLoader.Dispose();
+	}
+
+	public SettingPlugin()
     {
         InitializeComponent();
 
@@ -34,7 +41,7 @@ public partial class SettingPlugin : ISettingPage
                 Glyph = it.IconSource,
                 IsClickable = true,
                 IsFontIcon = it.IsUseFontIcon,
-                ImageIcon = !it.IsUseFontIcon ? null : ImageLoader.LoadIconAsync(it.IconSource).Result
+                ImageIcon = !it.IsUseFontIcon ? null : _imageLoader.LoadIconAsync(it.IconSource).Result
             };
             item.Click += (sender, args) => MainSettingPage.NavigateTo((it.Page as ISettingPage)!);
             PluginSetting.Children.Add(item);

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum;
@@ -22,9 +24,11 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 public partial class ResultRoot : UserControl
 {
+	private ImageLoader imageLoader = new ImageLoader();
     public ResultRoot()
     {
         InitializeComponent();
+       
     }
 
     public ResultRoot(SearchResultItemInfo info) : this()
@@ -32,6 +36,12 @@ public partial class ResultRoot : UserControl
         SearchResultItemInfo = info;
         // 触发异步更新，不阻塞 UI 线程
         _ = UpdateAsync();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    imageLoader.Dispose();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
@@ -46,6 +56,8 @@ public partial class ResultRoot : UserControl
         // 1. 基础文字信息
         ResourceName.Text = SearchResultItemInfo.Name;
         AuthorText.Text = $"{i18n["Download.Result.Author.Prefix"]} {string.Join(", ", SearchResultItemInfo.Authors)}";
+        ResourceName2.Text = SearchResultItemInfo.Name;
+        AuthorText2.Text = $"{string.Join(", ", SearchResultItemInfo.Authors)}";
         DescriptionText.Text = SearchResultItemInfo.Description;
         DownloadCountText.Text = SearchResultItemInfo.DownloadCount.ToString("N0"); // 格式化数字
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
@@ -53,8 +65,12 @@ public partial class ResultRoot : UserControl
         // 2. 外部链接
         var hasWebsite = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
         HyperlinkButton.IsVisible = hasWebsite;
+        HyperlinkButton2.IsVisible = hasWebsite;
         if (hasWebsite && Uri.TryCreate(SearchResultItemInfo.SourceWebsite, UriKind.Absolute, out var uri))
+        {
+            HyperlinkButton2.NavigateUri = uri;
             HyperlinkButton.NavigateUri = uri;
+        }
 
         // 3. 预览图列表渲染
         PreviewList.Children.Clear();
@@ -74,10 +90,14 @@ public partial class ResultRoot : UserControl
         }
 
         // 5. 异步图标加载
-        var icon = await ImageLoader.LoadIconAsync(SearchResultItemInfo.IconUri);
-        if (icon != null)
+        var icon = await imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
+	
+
+		if (icon != null)
         {
-            IconBox.Source = icon;
+			IconBox.Source = icon;
+            ResourceIcon.Source = icon;
+            ResourceIconIcon.IsVisible = false;
             IconFont.IsVisible = false;
         }
 
@@ -147,5 +167,22 @@ public partial class ResultRoot : UserControl
             Title = i18n["Common.Clipboard.Title"],
             Message = i18n["Download.Result.Share.Success"]
         });
+    }
+
+    private void ScrollViewer_OnScrollChanged(object? sender, ScrollChangedEventArgs e)
+    {
+        if (MainScrollViewer != null)
+        {
+            var value = MainScrollViewer.Offset.Y;
+            if (value >= 80)
+                SmallBox.Margin = new Thickness(30, 25, 30, 0);
+            else
+                SmallBox.Margin = new Thickness(30, -72, 30, 0);
+        }
+    }
+
+    private void GoTopBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainScrollViewer.Offset = new Vector(MainScrollViewer.Offset.X, 0);
     }
 }

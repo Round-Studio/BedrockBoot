@@ -3,15 +3,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Manifest;
+using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Options;
 using BedrockBoot.Proton;
+using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Linux;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Plugin.BedrockBoot.Register;
 #if WINDOWS
 using BedrockBoot.Models.Helper.Gdk;
 using BedrockBoot.Models.Helper.Uwp;
@@ -24,19 +29,39 @@ public class CoreInitialize
     private static I18nManager I18n => I18nManager.Instance;
     public static async Task Init()
     {
+        DesktopWorkspace.WidgetRegister(new()
+        {
+            Name = "时钟",
+            Description = "一个非常普通的时间显示组件",
+            Type = WidgetType.Timer,
+            WidgetTypeof = typeof(WidgetTimer),
+            DefaultSize = WidgetSize.Small
+        });
+        DesktopWorkspace.WidgetRegister(new()
+        {
+            Name = "最近游玩",
+            Description = "显示最近游玩的一个游戏实例",
+            Type = WidgetType.LeastPlay,
+            WidgetTypeof = typeof(WidgetLaunchGame),
+            DefaultSize = WidgetSize.Large
+        });
+        
         CheckUserAgreement();
         if (!Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;
         
         // 加载功能配置文件
         try
         {
-            BedrockBoot.Models.Global.GlobalModel.FunctionOption = await new JsonResourceEntity()
+            GlobalModel.FunctionOption = await new JsonResourceEntity()
                 .LoadJsonResourceAsync<FunctionOptionEntry>(
                     "avares://BedrockBoot/Manifest/Function/FunctionOption.json");
+            GlobalModel.CustomManifest = await new JsonResourceEntity()
+                .LoadJsonResourceAsync<CustomManifest>(
+                    "avares://BedrockBoot/Manifest/DefaultCustomManifest.json");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"Failed to load FunctionOption: {ex.Message}");
+            Console.WriteLine($@"Failed to load FunctionOption: {ex}");
         }
         
         // 核心引擎异步初始化
@@ -46,9 +71,37 @@ public class CoreInitialize
         // 注册文件关联
         HandleFileAssociations();
 #endif
-        _ = GetDevelopMode();
-        _ = GetSdkInstalledMode();
-        CheckUwpDependence();
+        Task.Run(() =>
+        {
+            _ = GetDevelopMode();
+            CheckUwpDependence();
+        });
+
+        RegisterService.API.LaunchingEvent.Add(path =>
+        {
+            Console.WriteLine(@"开始同步游戏配置文件");
+            var config = GameInfoHelper.GetVersionConfig(path);
+            Console.WriteLine($@"当前实例配置：{config.Config.IsSyncPublicOptions}");
+            if (config.Config.IsSyncPublicOptions)
+            {
+                if (Core.Global.GlobalModel.Config.Data.PublicOptionsConfig == null) return;
+                if (Core.Global.GlobalModel.Config.Data.PublicOptionsConfig.PubOptionsInstancePath != null &&
+                    Core.Global.GlobalModel.Config.Data.PublicOptionsConfig.PubUser != null)
+                {
+                    var sourceManager =
+                        new GameOptionsManager(GameInfoHelper.GetVersionConfig(Core.Global.GlobalModel.Config.Data
+                            .PublicOptionsConfig.PubOptionsInstancePath));
+                    
+                    var aimManager = new GameOptionsManager(GameInfoHelper.GetVersionConfig(path));
+                    aimManager.GetUsers().ForEach(user =>
+                    {
+                        aimManager.SaveGameOptions(
+                            sourceManager.GetGameOptions(
+                                Core.Global.GlobalModel.Config.Data.PublicOptionsConfig.PubUser), user);
+                    });
+                }
+            }
+        });
 
 #if LINUX
         ProtonCore.InitializeEnvironment();
@@ -150,18 +203,41 @@ public class CoreInitialize
 #endif
     }
 
-    private static async Task GetSdkInstalledMode()
+    public static async Task GetSdkInstalledMode()
     {
 #if WINDOWS
         if (!AppSdkChecker.GetInstalled())
-            if (await AppSdkChecker.ShowNotice())
+        {
+            var dialogInfo = new DialogInfo
             {
-                DialogHost.Show(new()
+                Title = "未安装 SDK 1.8",
+                Content = "当前系统未检测到完整的 Windows App SDK 1.8 (8000.x) 组件。\n" +
+                          "缺失组件可能包括: Main, Singleton 或 DDLM。\n" +
+                          "这会导致游戏无法启动。",
+                CloseButtonText = "立即安装",
+                PrimaryButtonText = "放任不管",
+                AccountButton = DialogButtons.CloseButton,
+                
+                CloseAction = () =>
                 {
-                    Title = "下载 SDK",
-                    Content = new DialogDownloadAppSdkContent()
-                });
+                    DialogHost.Show(new()
+                    {
+                        Title = "下载 SDK",
+                        Content = new DialogDownloadAppSdkContent()
+                    });
+                },
             };
+            DialogHost.Show(dialogInfo);
+        }
+        else
+        {
+            DialogHost.Show(new()
+            {
+                Title = "您已安装 SDK 1.8",
+                Content = "您已安装 SDK 1.8，可无需再次安装",
+                CloseButtonText = "确定"
+            });
+        }
 #endif
     }
 

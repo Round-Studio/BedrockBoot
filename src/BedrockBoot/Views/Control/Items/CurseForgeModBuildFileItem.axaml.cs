@@ -30,10 +30,22 @@ public partial class CurseForgeModBuildFileItem : UserControl
     private void UpdateUI()
     {
         Card.Header = ModFile.DisplayName;
-        // 使用本地化时间格式
-        Card.Description = ModFile.FileDate.ToString("yyyy/MM/dd HH:mm");
+        Card.Description = $"{ModFile.FileDate.ToString("yyyy/MM/dd HH:mm")}, {ToFileSizeString(ModFile.FileLength)}";
     }
-
+    
+    public static string ToFileSizeString(long bytes)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        double len = bytes;
+        int order = 0;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len /= 1024;
+        }
+        return $"{len:0.##} {sizes[order]}";
+    }
+    
     /// <summary>
     ///     另存为：手动选择下载位置
     /// </summary>

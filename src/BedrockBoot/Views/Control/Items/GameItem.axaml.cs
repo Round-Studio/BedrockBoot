@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -15,9 +16,16 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameItem : UserControl
 {
+	private ImageLoader _imageLoader = new ImageLoader();
     public GameItem()
     {
         InitializeComponent();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     public GameItem(VersionConfig info) : this()
@@ -29,7 +37,7 @@ public partial class GameItem : UserControl
 
     public VersionConfig VersionInfo { get; set; }
 
-    public void Update()
+    public async Task Update()
     {
         VersionName.Text = VersionInfo.Info.VersionName;
         Card.Description = $"{VersionInfo.Info.VersionType}, {VersionInfo.Info.BuildType}, {VersionInfo.Info.Version}";
@@ -37,17 +45,7 @@ public partial class GameItem : UserControl
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
 
-        Card.ImageIcon = GetImage(IconHelper.GetGameIconUrl(VersionInfo));
-    }
-
-    public Bitmap GetImage(string url)
-    {
-        var uri = new Uri(url);
-
-        using (var stream = AssetLoader.Open(uri))
-        {
-            return new Bitmap(stream);
-        }
+        Card.ImageIcon = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)

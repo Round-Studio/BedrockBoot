@@ -21,6 +21,7 @@ public partial class TaskUpdateInstanceItem : UserControl, ITaskItem
     private string _taskTitle = "";
     private bool _taskIsCompleted;
     private bool _taskIsIndeterminate = true;
+    private Action? Completed;
 
     public double Progress => _taskProgress;
     public string StatusText => _taskStatusText;
@@ -54,6 +55,7 @@ public partial class TaskUpdateInstanceItem : UserControl, ITaskItem
 
     public void Start(Action completed)
     {
+        Completed = completed;
         CardTitle.Text = _taskTitle;
 
         var progress = new Progress<InstanceUpdateProgress>(p =>
@@ -122,6 +124,7 @@ public partial class TaskUpdateInstanceItem : UserControl, ITaskItem
                 MainProgressBar.IsIndeterminate = false;
                 MainProgressBar.Value = 100;
                 ReportProgress(100, p.Message);
+                Completed?.Invoke();
                 break;
         }
     }

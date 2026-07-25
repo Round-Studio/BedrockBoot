@@ -70,6 +70,19 @@
                                           IsClickable="True"
                                           Glyph="&#xE8B7;" />
             
+            <TextBlock Margin="5,0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="全局同步" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          IsClickable="True"
+                                          Glyph="&#xECAF;"
+                                          Name="PublicSyncBtn"
+                                          Click="PublicSyncBtn_OnClick"
+                                          Header="全局配置"
+                                          Description="全局实例的游戏设置 (options.txt) 文件来源的设置" />
+            
             <StackPanel Spacing="8"
                         Name="SeniorPanel"
                         IsVisible="False">

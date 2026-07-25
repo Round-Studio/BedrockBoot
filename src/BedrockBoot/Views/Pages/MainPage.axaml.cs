@@ -133,6 +133,10 @@ public partial class MainPage : UserControl
                 await Dispatcher.UIThread.InvokeAsync(async () => await UpdateUIAsync());
             }
         };
+        Models.Global.GlobalModel.MainPageUpdateInstance = () =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() => UpdateUIAsync());
+        };
     }
 
     public bool IsEditMode { get; set; }

@@ -1,20 +1,17 @@
-﻿using BedrockBoot.Base.Entry.Game;
+﻿using BedrockBoot.Lip;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models;
-using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.Game.Instance;
 
-await CoreInit.Init();
-var updater = new InstanceUpdater(GameInfoHelper.GetVersionConfig($"E:\\Bedrock\\bedrock_versions\\1.26.29", true))
+var lipCore = new LipCore("github.com/LiteLDev/LeviLamina#client@26.20.4");
+
+var progress = new Progress<DownloadProgress>(p =>
 {
-    ChooseDownloadUrl = list => list[0].Url,
-    Progress = new Progress<InstanceUpdateProgress>(progress =>
-    {
-        Console.WriteLine($@"[{progress.Step}] {progress.Message} {progress.Detailed} {progress.Progress}%");
-    })
-};
-var lst = updater.GetUpdateableVersions();
-lst.ForEach(x=>Console.WriteLine($@"{x.ID} - {x.Type} - {x.BuildType}"));
+    Console.Write($"\r总大小: {p.TotalBytes / 1024 / 1024:F2} MB | " +
+                  $"已下载: {p.DownloadedBytes / 1024 / 1024:F2} MB | " +
+                  $"进度: {p.ProgressPercentage:F2}% | " +
+                  $"速度: {p.BytesPerSecond / 1024 / 1024:F2} MB/s | " +
+                  $"剩余: {p.EstimatedRemainingSeconds:F0}s | " +
+                  $"{p.Message}");
+});
 
-await updater.UpdateAsync(lst[0]);
+await lipCore.Install("D:\\BedrockBoot\\bedrock_versions\\1.26.2004", progress);
+Console.WriteLine("\n安装完成！");

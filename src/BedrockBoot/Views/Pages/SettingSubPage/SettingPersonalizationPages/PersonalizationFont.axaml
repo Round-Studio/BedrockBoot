@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages.PersonalizationFont">
+    <Grid RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="8" Margin="20,20,20,0">
+            <TextBlock FontWeight="Bold" FontSize="14" Text="界面字体" />
+
+            <onePointControls:SettingCard Header="首选字体" Description="选择启动器显示的主要字体" Glyph="&#xE8D2;">
+                <ComboBox Width="300" Name="MainFontComboBox" SelectionChanged="MainFontComboBox_SelectionChanged"></ComboBox>
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Header="备选字体" Description="当首选字体缺失字符时自动回退到此字体" Glyph="&#xE8D2;">
+                <ComboBox Width="300" Name="FallbackFontComboBox" SelectionChanged="FallbackFontComboBox_SelectionChanged"></ComboBox>
+            </onePointControls:SettingCard>
+
+            <TextBlock FontWeight="Bold" FontSize="14" Text="预览" />
+
+            <DockPanel HorizontalSpacing="8">
+                <TextBlock Text="预览字号" VerticalAlignment="Center"></TextBlock>
+                <Slider Classes="Number" Minimum="8" Maximum="72" Name="FontSizeSlider" Value="72" ValueChanged="FontSizeSlider_ValueChanged"
+                        Margin="0"></Slider>
+            </DockPanel>
+
+            <DockPanel HorizontalSpacing="8">
+                <TextBlock Text="预览文本" VerticalAlignment="Center"></TextBlock>
+                <TextBox Name="PreviewTextInput" Watermark="请输入预览文本..." TextChanged="PreviewTextInput_TextChanged"></TextBox>
+            </DockPanel>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20,0" Spacing="8" Name="PreviewPanel">
+                <TextBlock Name="PreviewRegular"/>
+                <TextBlock Name="PreviewItalic" FontStyle="Italic"/>
+                <TextBlock Name="PreviewBold" FontWeight="Bold"/>
+                <TextBlock Name="PreviewBoldItalic" FontStyle="Italic" FontWeight="Bold"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

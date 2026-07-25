@@ -63,7 +63,7 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl, ITaskItem
         CardTitle.Text = _taskTitle;
     }
 
-    public async Task Download(string savePath, VersionConfig version = null)
+    public async Task Download(string savePath, VersionConfig? version = null)
     {
         _cts = new CancellationTokenSource();
         var token = _cts.Token;
@@ -92,28 +92,31 @@ public partial class TaskDownloadCurseForgeResourceItem : UserControl, ITaskItem
             });
         }), token);
 
-        if (version == null) CallBack?.Invoke();
-
-        DownloadProgressBar.IsIndeterminate = true;
-        // 导入状态国际化
-        MainText.Text = I18nManager.Instance["Task.CurseForge.Status.Importing"];
-
-        Task.Run(() =>
+        if (version != null)
         {
-            if (savePath.EndsWith(".mcworld"))
-            {
-                var worldManager = new ArchiveCheck(version);
-                worldManager.ImportWorldPack(savePath);
-            }
-            else
-            {
-                var manager = new ResourcePackManager(version);
-                manager.GetAllPack();
-                manager.AddRangePacks(new List<string> { savePath });
-            }
+            DownloadProgressBar.IsIndeterminate = true;
+            // 导入状态国际化
+            MainText.Text = I18nManager.Instance["Task.CurseForge.Status.Importing"];
 
-            if (CallBack != null) Dispatcher.UIThread.Invoke(CallBack);
-        }, token);
+            Task.Run(() =>
+            {
+                if (savePath.EndsWith(".mcworld"))
+                {
+                    var worldManager = new ArchiveCheck(version);
+                    worldManager.ImportWorldPack(savePath);
+                }
+                else
+                {
+                    var manager = new ResourcePackManager(version);
+                    manager.GetAllPack();
+                    manager.AddRangePacks(new List<string> { savePath });
+                }
+
+                if (CallBack != null) Dispatcher.UIThread.Invoke(CallBack);
+            }, token);
+        }
+
+        Dispatcher.UIThread.Invoke(CallBack);
     }
 
     public static void Download(CurseForgeResponse.ModFile modFile, string savePath, VersionConfig version = null)

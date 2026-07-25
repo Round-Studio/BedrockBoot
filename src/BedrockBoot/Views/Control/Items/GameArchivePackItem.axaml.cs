@@ -16,7 +16,7 @@ public partial class GameArchivePackItem : UserControl
 {
     private readonly ResourcePackManifest _info;
     private readonly bool _isAct;
-    
+    private ImageLoader _imageLoader = new ImageLoader();
     public Action<ResourcePackManifest>? ActiveAction { get; set; }
 
     public GameArchivePackItem()
@@ -28,6 +28,12 @@ public partial class GameArchivePackItem : UserControl
         _info = info;
         _isAct = isAct;
         _ = UpdateUi();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     public async Task UpdateUi()
@@ -52,7 +58,7 @@ public partial class GameArchivePackItem : UserControl
             {
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
-                Card.ImageIcon = await ImageLoader.LoadIconAsync(info.PackIcon);
+                Card.ImageIcon = await _imageLoader.LoadIconAsync(info.PackIcon);
             }
         }
         catch (Exception ex)

@@ -9,6 +9,7 @@ using Avalonia.Layout;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.DrawContent;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
@@ -16,6 +17,7 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModItem : UserControl
 {
+	private ImageLoader _imageLoader = new ImageLoader();
     public CurseForgeModItem()
     {
         InitializeComponent();
@@ -26,6 +28,12 @@ public partial class CurseForgeModItem : UserControl
         ModData = modData;
         // 触发异步更新
         _ = UpdateAsync();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
@@ -65,7 +73,7 @@ public partial class CurseForgeModItem : UserControl
         try
         {
             // 修正：使用 await 替代 .Result，防止阻塞 UI 线程或造成死锁
-            var image = await GlobalModel.ImageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl);
+            var image = await _imageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl);
 
             if (image != null)
                 await Dispatcher.UIThread.InvokeAsync(() =>

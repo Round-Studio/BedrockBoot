@@ -6,9 +6,11 @@
   <Folder Name="/Dependence/">
     <Project Path="src/BedrockBoot.Chunker/BedrockBoot.Chunker.csproj" />
     <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />
+    <Project Path="src/BedrockBoot.GravityCone/BedrockBoot.GravityCone.csproj" />
     <Project Path="src/BedrockBoot.Inject/BedrockBoot.Inject.csproj" />
     <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
     <Project Path="src/BedrockBoot.LeviLamina/BedrockBoot.LeviLamina.csproj" />
+    <Project Path="src/BedrockBoot.Lip/BedrockBoot.Lip.csproj" />
     <Project Path="src/BedrockBoot.Netease/BedrockBoot.Netease.csproj" />
     <Project Path="src/BedrockBoot.WatchDog/BedrockBoot.WatchDog.csproj" />
     <Project Path="src/PreLoadCpp/src/PreloadCpp.vcxproj" Id="bfdc1f1a-af77-47c7-897e-673ead85364d">
@@ -27,6 +29,10 @@
     <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
     <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />
   </Folder>
+  <Folder Name="/Dependence/CrashStackAnalyzer/">
+    <Project Path="src/CrashStackAnalyzer/CrashStackAnalyzer.Console/CrashStackAnalyzer.Console.csproj" />
+    <Project Path="src/CrashStackAnalyzer/CrashStackAnalyzer/CrashStackAnalyzer.csproj" />
+  </Folder>
   <Folder Name="/Dependence/Linux/">
     <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
   </Folder>
@@ -36,6 +42,12 @@
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.3D.Simple/LiteSkinViewer.3D.Simple.csproj" />
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.3D/LiteSkinViewer.3D.csproj" />
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.Shared/LiteSkinViewer.Shared.csproj" />
+  </Folder>
+  <Folder Name="/Dependence/MapRender/">
+    <Project Path="src/MapRender/src/BedrockLevel/BedrockLevel.csproj" />
+    <Project Path="src/MapRender/src/BedrockRender.Controls/BedrockRender.Controls.csproj" />
+    <Project Path="src/MapRender/src/BedrockRender.Demo/BedrockRender.Demo.csproj" />
+    <Project Path="src/MapRender/src/BedrockRender/BedrockRender.csproj" />
   </Folder>
   <Folder Name="/Dependence/OnePointUI.Avalonia/">
     <Project Path="src/OnePointUI.Avalonia/src/OnePointUI.Avalonia.Test/OnePointUI.Avalonia.Test.csproj" />

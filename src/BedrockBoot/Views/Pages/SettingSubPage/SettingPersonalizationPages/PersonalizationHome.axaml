@@ -16,6 +16,7 @@
                           SelectionChanged="HomeTypeBox_OnSelectionChanged">
                     <ComboBoxItem Content="{DynamicResource Settings.Personalization.Home.Type.None}" />
                     <ComboBoxItem Content="{DynamicResource Settings.Personalization.Home.Type.News}" />
+                    <ComboBoxItem Content="小组件" />
                 </ComboBox>
             </onePointControls:SettingCard>
         </StackPanel>

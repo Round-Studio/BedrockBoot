@@ -1,115 +1,480 @@
-<windows:BedrockBootWindow xmlns="https://github.com/avaloniaui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                           xmlns:vm="using:BedrockBoot.ViewModels"
-                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                           xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-                           xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
-                           xmlns:windows="clr-namespace:BedrockBoot.Views.Windows"
-                           mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
-                           x:Class="BedrockBoot.Views.Windows.MainWindow"
-                           x:DataType="vm:MainWindowViewModel"
-                           Width="1100" Height="620"
-                           MinWidth="1100" MinHeight="620"
-                           IsMainWindow="True"
-                           Closing="Window_OnClosing"
-                           Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
-                           Background="Transparent"
-                           Title="BedrockBoot">
-    <windows:BedrockBootWindow.TitleBarContent>
-        <StackPanel Orientation="Horizontal">
-            <onePointControls:LabelBox Text="2"
-                                       Name="VersionBox"
-                                       FontSize="14"
-                                       Foreground="White"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+        xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+        xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+        xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+        xmlns:classes="clr-namespace:OnePointUI.Avalonia.Classes;assembly=OnePointUI.Avalonia"
+        xmlns:info="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;assembly=OnePointUI.Avalonia"
+        xmlns:dialog="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;assembly=OnePointUI.Avalonia"
+        xmlns:global="clr-namespace:BedrockBoot.Models.Global"
+        xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
+        x:Class="BedrockBoot.Views.Windows.MainWindow"
+        Width="1100" Height="620"
+        MinWidth="1100" MinHeight="620"
+        Closing="Window_OnClosing"
+        Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
+        Background="Transparent"
+        TextOptions.TextRenderingMode="Antialias"
+        TextOptions.TextHintingMode="None"
+        ExtendClientAreaToDecorationsHint="False"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        WindowDecorations="Full"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
+        Title="BedrockBoot">
+    <Grid>
+        <Grid Background="{DynamicResource BackgroundBrush}"
+              Name="BackgroundCover"
+              Opacity="0.58" />
 
-            <onePointControls:LabelBox Text="Beta"
-                                       FontSize="14"
-                                       Foreground="White"
-                                       Background="Orange"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
+        <Border>
+            <Grid>
+                <Grid Name="BackgroundGroupBox">
+                    <Grid.Transitions>
+                        <Transitions>
+                            <EffectTransition Property="Effect"
+                                              Duration="0:0:0.58"
+                                              Easing="QuinticEaseOut" />
+                            <ThicknessTransition Property="Margin"
+                                                 Easing="ExponentialEaseOut"
+                                                 Duration="0:0:0.58" />
+                        </Transitions>
+                    </Grid.Transitions>
+                    <view:AnimationBackground Name="AnimationBackground" 
+                                              IsVisible="False" />
 
-            <onePointControls:LabelBox Text="Build Time"
-                                       FontSize="14"
-                                       Foreground="Black"
-                                       Background="White"
-                                       Name="BuildTime"
-                                       IsVisible="False"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
+                    <Grid Name="AccentBackgroundBox"
+                          Background="{DynamicResource AccentBackgroundBrush}"
+                          IsVisible="False" />
 
-            <onePointControls:LabelBox Text="Debug"
-                                       FontSize="14"
-                                       Foreground="White"
-                                       Background="Green"
-                                       Name="DebugModule"
-                                       IsVisible="False"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center" />
-        </StackPanel>
-    </windows:BedrockBootWindow.TitleBarContent>
-    <windows:BedrockBootWindow.TitleBarContentContent>
-        <StackPanel Orientation="Horizontal"
-                    Spacing="8">
-            <onePointControls:ProgressRing Name="LoadBox"
-                                           Width="24" Height="24" />
-            <Button Classes="NoBorder"
-                    Height="32"
-                    IsVisible="False"
-                    Padding="10,0"
-                    Name="OfflineBtn">
-                <StackPanel Orientation="Horizontal"
-                            Spacing="8">
-                    <onePointControls:FontIcon Glyph="&#xEB55;"
-                                               FontSize="12"
+                    <Grid Name="BackgroundBox"
+                          Margin="0"
+                          IsVisible="False">
+                        <Grid.Effect>
+                            <BlurEffect Radius="0" />
+                        </Grid.Effect>
+                        <Grid Name="BackgroundImage" />
+                        <classes:ParallaxImage3D Name="BackgroundImage3D" />
+                        <Grid Name="BackgroundImageOpacity"
+                              Opacity="0"
+                              Background="{DynamicResource BackgroundBrush}" />
+                    </Grid>
+                    <Grid Name="LiveOpacity"
+                          Opacity="0"
+                          Background="{DynamicResource BackgroundBrush}" />
+                </Grid>
+
+                <Grid Height="76"
+                      VerticalAlignment="Top">
+                    <items:BorderCard Height="38"
+                                      Width="170"
+                                      CornerRadius="19"
+                                      Padding="12,0"
+                                      VerticalAlignment="Top"
+                                      Margin="0,-76,0,0"
+                                      Name="MediaVolumeCard">
+                        <items:BorderCard.Transitions>
+                            <Transitions>
+                                <ThicknessTransition Easing="ExponentialEaseOut"
+                                                     Duration="0:0:0.64"
+                                                     Property="Margin" />
+                                <DoubleTransition Easing="ExponentialEaseOut"
+                                                  Duration="0:0:0.22"
+                                                  Property="Width" />
+                            </Transitions>
+                        </items:BorderCard.Transitions>
+                        <Panel>
+                            <Grid>
+                                <onePointControls:FontIcon VerticalAlignment="Center"
+                                                           FontSize="14"
+                                                           Glyph="&#xE995;"
+                                                           Name="MediaVolumeIcon" />
+                                <Grid VerticalAlignment="Center"
+                                      HorizontalAlignment="Stretch"
+                                      MaxWidth="80"
+                                      RowDefinitions="Auto,*">
+
+                                    <TextBlock Grid.Row="0"
+                                               Text="音量"
+                                               FontSize="11"
                                                HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
-                    <TextBlock Text="脱机状态"
-                               Name="OfflineTextBlock" />
-                </StackPanel>
-            </Button>
-            <Button Classes="NoBorder"
-                    Height="32"
-                    IsVisible="False"
-                    Padding="10,0"
-                    Click="RebootBtn_OnClick"
-                    Name="RebootBtn">
-                <StackPanel Orientation="Horizontal"
-                            Spacing="8">
-                    <onePointControls:FontIcon Glyph="&#xE72C;"
-                                               FontSize="12"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
-                    <TextBlock Text="需要重启" />
-                </StackPanel>
-            </Button>
-            <Button Classes="NoBorder"
-                    Height="32"
-                    Padding="10,0"
-                    Click="TaskBtn_OnClick"
-                    Name="TaskBtn">
-                <StackPanel Orientation="Horizontal"
-                            Spacing="8">
-                    <onePointControls:FontIcon Glyph="&#xE7C4;"
-                                               FontSize="12"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
-                    <TextBlock Text="当前有 0 项任务"
-                               IsVisible="False"
-                               Name="TaskInfoText" />
-                </StackPanel>
-            </Button>
-        </StackPanel>
-    </windows:BedrockBootWindow.TitleBarContentContent>
-    <windows:BedrockBootWindow.MainContent>
-        <Panel>
-            <navigation:NavigationFrame Name="MainFrame"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Margin="0" />
-        </Panel>
-    </windows:BedrockBootWindow.MainContent>
-</windows:BedrockBootWindow>
+                                               Margin="0,0,0,4" />
+
+                                    <Grid Grid.Row="1"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center">
+
+                                        <ProgressBar Value="100"
+                                                     Name="MediaVolume" />
+
+                                        <TextBlock FontSize="9"
+                                                   Name="DisableVolumeText"
+                                                   Foreground="DarkRed"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Text="已静音"
+                                                   IsVisible="False" />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Panel>
+                    </items:BorderCard>
+                </Grid>
+
+                <Grid HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top"
+                      Height="76"
+                      Background="#01000000"
+                      PointerPressed="InputElement_OnPointerPressed"
+                      Opacity="0.0001" />
+
+                <Grid Name="ContentView">
+                    <Grid.Effect>
+                        <BlurEffect Radius="0" />
+                    </Grid.Effect>
+                    <Grid.Transitions>
+                        <Transitions>
+                            <EffectTransition Property="Effect"
+                                              Duration="0:0:0.58"
+                                              Easing="QuinticEaseOut" />
+                            <ThicknessTransition Property="Margin"
+                                                 Easing="ExponentialEaseOut"
+                                                 Duration="0:0:0.58" />
+                        </Transitions>
+                    </Grid.Transitions>
+
+                    <Panel>
+                        <navigation:NavigationFrame Name="MainFrame"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Margin="0" />
+                    </Panel>
+
+                    <Grid Name="BorderGrid"
+                          IsVisible="False">
+                        <Grid Background="{DynamicResource PrimaryForegroundBrush}"
+                              Opacity="0"
+                              Name="BorderBackground">
+                            <Grid.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Duration="0:0:0.38"
+                                                      Property="Opacity" />
+                                </Transitions>
+                            </Grid.Transitions>
+                        </Grid>
+
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Top"
+                              Height="76"
+                              Background="#01000000"
+                              PointerPressed="InputElement_OnPointerPressed"
+                              Opacity="0.0001" />
+
+                        <Border CornerRadius="16,16,0,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                BorderThickness="1,1,1,0"
+                                BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                                Margin="10,0,10,0"
+                                Name="BottomBorder"
+                                Background="{DynamicResource BackgroundBrush}">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <ThicknessTransition Duration="0:0:0.7"
+                                                         Easing="ExponentialEaseOut"
+                                                         Property="Margin" />
+                                </Transitions>
+                            </Border.Transitions>
+
+                            <Grid Grid.RowDefinitions="Auto,*">
+                                <Button CornerRadius="8"
+                                        Width="36"
+                                        Height="36"
+                                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                                        Margin="12"
+                                        Name="CloseBorderBtn"
+                                        Click="CloseBorderBtn_OnClick"
+                                        Classes="NoBorder">
+                                    <onePointControls:FontIcon Glyph="&#xE8BB;"
+                                                               FontSize="12" />
+                                </Button>
+
+                                <TextBlock Grid.Row="0"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Margin="18,18,12,12"
+                                           Foreground="{DynamicResource AccentBackgroundBrush}"
+                                           FontWeight="Bold"
+                                           FontSize="18"
+                                           Name="BorderTitle"
+                                           Text="Title" />
+
+                                <navigation:NavigationFrame Grid.Row="1"
+                                                            Name="Frame" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <info:NoticePanel HorizontalAlignment="Right"
+                                      VerticalAlignment="Bottom"
+                                      Name="NoticePanel"
+                                      Margin="0,0,0,58" />
+
+                    <dialog:DialogHost Name="DialogHost" />
+                </Grid>
+
+                <Grid HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Opacity="0.0001"
+                      IsVisible="False"
+                      Name="BlackView"
+                      PointerPressed="BlackView_OnPointerPressed"
+                      Background="#01000000">
+                    <Grid.Transitions>
+                        <Transitions>
+                            <ThicknessTransition Property="Margin"
+                                                 Easing="ExponentialEaseOut"
+                                                 Duration="0:0:0.58" />
+                        </Transitions>
+                    </Grid.Transitions>
+                </Grid>
+
+                <items:BorderCard Margin="120,100"
+                                  Opacity="0"
+                                  IsVisible="False"
+                                  Name="DropBox">
+                    <items:BorderCard.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity"
+                                              Easing="ExponentialEaseOut"
+                                              Duration="0:0:0.36" />
+                        </Transitions>
+                    </items:BorderCard.Transitions>
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="8">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <onePointControls:FontIcon Glyph="&#xE76B;"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Opacity="0.8"
+                                                           FontSize="24" />
+
+                                <onePointControls:FontIcon Glyph="&#xE76B;"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="36" />
+
+                                <onePointControls:FontIcon Glyph="&#xF158;"
+                                                           HorizontalAlignment="Center"
+                                                           Margin="20,12"
+                                                           FontSize="48" />
+
+                                <onePointControls:FontIcon Glyph="&#xE76C;"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="36" />
+
+                                <onePointControls:FontIcon Glyph="&#xE76C;"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Opacity="0.8"
+                                                           FontSize="24" />
+                            </StackPanel>
+
+                            <TextBlock Text="将文件拖拽到此处"
+                                       FontSize="26"
+                                       HorizontalAlignment="Center" />
+
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Opacity="0.8">
+
+                                <TextBlock Text="支持 " />
+                                <TextBlock Text="{x:Static global:GlobalKeys.DropOverTypesOfSupportString}" />
+                                <TextBlock Text=" 等文件" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </items:BorderCard>
+
+                <items:BorderCard Width="480"
+                                  Margin="500,10,-500,10"
+                                  Name="TaskCard"
+                                  Padding="0"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Right">
+                    <items:BorderCard.Transitions>
+                        <Transitions>
+                            <ThicknessTransition Property="Margin"
+                                                 Easing="ExponentialEaseOut"
+                                                 Duration="0:0:0.58" />
+                        </Transitions>
+                    </items:BorderCard.Transitions>
+
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid Grid.Row="0"
+                              MinHeight="58">
+                            <TextBlock Text="{DynamicResource MainWindow.TaskView.Title}"
+                                       VerticalAlignment="Center"
+                                       FontSize="22"
+                                       Margin="20,0,0,0" />
+                        </Grid>
+
+                        <notice:InfoCard Grid.Row="1"
+                                         VerticalAlignment="Center"
+                                         HorizontalAlignment="Center"
+                                         BigTitle="{DynamicResource MainWindow.TaskView.NoneTitle}"
+                                         Message="{DynamicResource MainWindow.TaskView.NoneMessage}"
+                                         Name="NoneBox" />
+
+                        <ScrollViewer Grid.Row="1"
+                                      Name="TaskViewer"
+                                      IsVisible="False">
+                            <ListBox Name="TaskList"
+                                     Margin="15,0,15,5"
+                                     Background="Transparent"
+                                     Padding="0">
+                                <ListBox.Styles>
+                                    <Style Selector="ListBoxItem">
+                                        <Setter Property="Margin" Value="0" />
+                                        <Setter Property="MinHeight" Value="0" />
+                                        <Setter Property="Template">
+                                            <ControlTemplate>
+                                                <ContentPresenter Content="{TemplateBinding Content}" />
+                                            </ControlTemplate>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.Styles>
+                            </ListBox>
+                        </ScrollViewer>
+                    </Grid>
+                </items:BorderCard>
+
+                <Grid HorizontalAlignment="Right"
+                      VerticalAlignment="Top"
+                      Height="76">
+                    <Grid Background="{DynamicResource PrimaryBackgroundBrush}"
+                          IsVisible="False"
+                          Opacity="0.85" />
+
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                IsVisible="False"
+                                Margin="15,0,0,0">
+                        <TextBlock FontSize="16"
+                                   Name="TitleBlock">
+                            OnePointUI.Avalonia
+                        </TextBlock>
+
+                        <ContentControl Margin="8,0,0,0"
+                                        Name="TitleContent" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Margin="0,0,22,0"
+                                Spacing="8">
+
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8">
+                            <onePointControls:ProgressRing Name="LoadBox"
+                                                           Width="24" Height="24" />
+                            <Button Classes="NoBorder"
+                                    Height="32"
+                                    IsVisible="False"
+                                    Padding="10,0"
+                                    Name="OfflineBtn">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xEB55;"
+                                                               FontSize="12"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center" />
+                                    <TextBlock Text="脱机状态"
+                                               Name="OfflineTextBlock" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="NoBorder"
+                                    Height="32"
+                                    IsVisible="False"
+                                    Padding="10,0"
+                                    Click="RebootBtn_OnClick"
+                                    Name="RebootBtn">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xE72C;"
+                                                               FontSize="12"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center" />
+                                    <TextBlock Text="需要重启" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="NoBorder"
+                                    Height="32"
+                                    Padding="10,0"
+                                    Click="TaskBtn_OnClick"
+                                    Name="TaskBtn">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xE7C4;"
+                                                               FontSize="12"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center" />
+                                    <TextBlock Text="当前有 0 项任务"
+                                               IsVisible="False"
+                                               Name="TaskInfoText" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="NoBorder"
+                                    Height="32"
+                                    Padding="10,0"
+                                    Name="HelpBtn">
+                                <onePointControls:FontIcon Glyph="&#xE897;"
+                                                           FontSize="12"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center" />
+                            </Button>
+                        </StackPanel>
+                        <Button Classes="NoBorder"
+                                Width="32" Height="32"
+                                Name="MinBtn"
+                                Click="MinBtn_OnClick">
+                            <onePointControls:FontIcon Glyph="&#xE921;"
+                                                       FontSize="10"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                        </Button>
+                        <Button Classes="NoBorder"
+                                Width="32" Height="32"
+                                Name="MaxBtn"
+                                Click="MaxBtn_OnClick">
+                            <onePointControls:FontIcon Glyph="&#xE922;"
+                                                       FontSize="10"
+                                                       Name="MaxBtnIcon"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                        </Button>
+                        <Button Classes="NoBorder"
+                                Width="32" Height="32"
+                                Name="CloseBtn"
+                                Click="CloseBtn_OnClick">
+                            <onePointControls:FontIcon Glyph="&#xE8BB;"
+                                                       FontSize="10"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

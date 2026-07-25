@@ -29,6 +29,9 @@ public partial class SearchDetailed : ISetting
     private readonly CurseForgeApiClient _apiClient;
     private readonly MarketClient _marketClient;
     private bool _isSearching;
+    private int? _selectedClassId;
+
+    private static readonly int[] CurseForgeClassIds = [4984, 6913, 6929, 6940, 6925];
     private int _currentPage = 1;
     private int _totalPages;
     private int _currentIndex => (_currentPage - 1) * PageSize;
@@ -151,6 +154,13 @@ public partial class SearchDetailed : ISetting
             ResourceTypeBox.SelectedIndex = (int)info.Type;
         else
             info.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
+
+        // 非资源包搜索时重置 CurseForge 分类筛选
+        if (info.Type != SearchResourceType.ResourcePack)
+        {
+            _selectedClassId = null;
+            CurseForgeResTypeBox.SelectedIndex = 0;
+        }
 
         info.Key ??= "";
     }
@@ -311,8 +321,8 @@ public partial class SearchDetailed : ISetting
                     Name = i.ID,
                     Description = $"{i.BuildType}, {i.Date}",
                     IconUri = i.Type == MinecraftGameTypeVersion.Release
-                        ? "avares://BedrockBoot/Assets/Icon/Minecraft/Grass.png"
-                        : "avares://BedrockBoot/Assets/Icon/Minecraft/GrassScript.png",
+                        ? "avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
+                        : "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png",
                     OnClick = s =>
                     {
                         GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),
@@ -368,7 +378,7 @@ public partial class SearchDetailed : ISetting
 
     private async Task<List<SearchResultItemInfo>> SearchResourcePacksAsync(SearchInfo info)
     {
-        var result = await _apiClient.SearchModsAsync(info.Key, PageSize, _currentIndex);
+        var result = await _apiClient.SearchModsAsync(info.Key, PageSize, classId: _selectedClassId, index: _currentIndex);
         _totalPages = (int)Math.Ceiling((double)result.Pagination.TotalCount / PageSize);
 
         // 应用模糊搜索过滤
@@ -619,6 +629,24 @@ public partial class SearchDetailed : ISetting
         MinecraftTypePanel.IsVisible = SearchInfo.Type == SearchResourceType.Minecraft;
         CurseForgeResTypePanel.IsVisible = SearchInfo.Type == SearchResourceType.ResourcePack;
 
+        // 非资源包搜索时清除 CurseForge 分类筛选
+        if (SearchInfo.Type != SearchResourceType.ResourcePack)
+            _selectedClassId = null;
+
+        OnSearch(SearchInfo);
+    }
+
+    private void CurseForgeResTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (!IsEdit) return;
+
+        var index = CurseForgeResTypeBox.SelectedIndex;
+        _selectedClassId = index > 0 && index <= CurseForgeClassIds.Length
+            ? CurseForgeClassIds[index - 1]
+            : null;
+
+        SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;
+        SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
         OnSearch(SearchInfo);
     }
 

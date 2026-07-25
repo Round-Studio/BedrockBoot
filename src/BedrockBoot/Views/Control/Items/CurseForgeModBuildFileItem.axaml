@@ -9,7 +9,6 @@
                                   Name="Card"
                                   Margin="5,0"
                                   Glyph="&#xE7C3;"
-                                  Description="{DynamicResource Shared.Label.Information}"
                                   IsShowActionIcon="False"
                                   Header="Name">
         <StackPanel Orientation="Horizontal"

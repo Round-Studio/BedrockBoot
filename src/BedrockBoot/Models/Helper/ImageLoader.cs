@@ -53,8 +53,27 @@ public class ImageLoader : IDisposable
         _urlLocks.Clear();
         GC.SuppressFinalize(this);
     }
-    
-    public async Task<byte[]> BitmapTaskToByteArrayAsync(Task<Bitmap?> bitmapTask)
+	public async Task<Bitmap?> LoadIconAsync(string iconUri)
+	{
+        Console.WriteLine($@"获取图片：{iconUri}");
+		if (string.IsNullOrEmpty(iconUri))
+			return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+
+		if (iconUri.StartsWith("avares://")) return new Bitmap(AssetLoader.Open(new Uri(iconUri)));
+
+		if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+			iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+			return await LoadImageBrushAsync(iconUri);
+
+		string decodedPath = Uri.UnescapeDataString(iconUri);
+
+		if (File.Exists(decodedPath))
+			return new Bitmap(decodedPath);
+
+		return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+	}
+
+	public async Task<byte[]> BitmapTaskToByteArrayAsync(Task<Bitmap?> bitmapTask)
     {
         // 等待 Task 完成并获取 Bitmap
         Bitmap? bitmap = await bitmapTask;
@@ -76,6 +95,7 @@ public class ImageLoader : IDisposable
     /// </summary>
     public async Task<Bitmap?> LoadImageBrushAsync(string imageUrl, bool useCache = true)
     {
+        if (imageUrl.StartsWith("avares://")) return await LoadIconAsync(imageUrl);
         if (string.IsNullOrWhiteSpace(imageUrl)) return null;
 
         if (useCache && TryGetFromCache(imageUrl, out var cached)) return cached;
@@ -241,22 +261,7 @@ public class ImageLoader : IDisposable
         }
     }
 
-    public static async Task<Bitmap?> LoadIconAsync(string iconUri)
-    {
-        if (string.IsNullOrEmpty(iconUri))
-            return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
 
-        if (iconUri.StartsWith("avares://")) return new Bitmap(AssetLoader.Open(new Uri(iconUri)));
-
-        if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-            iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-            return await GlobalModel.ImageLoader.LoadImageBrushAsync(iconUri);
-
-        if (File.Exists(iconUri))
-            return new Bitmap(iconUri);
-
-        return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
-    }
 
     private sealed class CacheEntry
     {

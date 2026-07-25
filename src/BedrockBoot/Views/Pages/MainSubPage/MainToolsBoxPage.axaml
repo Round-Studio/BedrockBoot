@@ -42,6 +42,13 @@
                                               Name="FoundLoseFilesBtn"
                                               Click="FoundLoseFilesBtn_OnClick" />
 
+                <onePointControls:SettingCard Header="检测 SDK1.8 安装"
+                                              Description="检查系统是否安装游戏运行时之一 SDK1.8"
+                                              Glyph="&#xE930;"
+                                              IsClickable="True"
+                                              Name="CheckSDK"
+                                              Click="CheckSDK_OnClick" />
+
                 <onePointControls:SettingCard Header="{DynamicResource Tools.UninstallMc.Title}"
                                               Description="{DynamicResource Tools.UninstallMc.Description}"
                                               Glyph="&#xE74D;"

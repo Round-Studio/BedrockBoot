@@ -12,6 +12,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
@@ -39,24 +40,51 @@ using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;
 using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
 
 namespace BedrockBoot.Views.Windows;
 
-public partial class MainWindow : BedrockBootWindow
+public partial class MainWindow : Window
 {
+    private static List<string> _installedFontNames;
+
+    public static List<string> InstalledFontNames
+    {
+        get
+        {
+            if (_installedFontNames == null)
+                _installedFontNames = FontManager.Current.SystemFonts
+                    .Select(f => f.Name)
+                    .ToList();
+            return _installedFontNames;
+        }
+    }
+
+    private bool _ctrlPressed = false;
+    public int DrawMarginLR = 10;
+    private DispatcherTimer _volumeControlTimer;
+    private DispatcherTimer _configRefreshDebounce;
+    private DispatcherTimer _configSaveDebounce;
+
+    private WindowState _lastWindowState;
+    private bool? _lastUseSystemWindow;
+    private bool? _lastIsBlurStyle;
+    private string? _lastTitle;
+
     public MainWindow()
     {
         InitializeComponent();
+        DialogHost.SetHost(DialogHost);
         GlobalModel.MainWindow = this;
 
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun)
             MainFrame.NavigateTo(Core.Global.GlobalModel.Config.Data.IsUseBetaUI ? new NeoMainPage() : new MainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();
-        UpdateTheme();
 
         // 绑定回调
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
@@ -72,6 +100,85 @@ public partial class MainWindow : BedrockBootWindow
         AddHandler(DragDrop.DropEvent, OnDrop);
 
         InitializeTaskbarProgress();
+        InitRefreshTaskItemTask();
+
+        MediaManager.Instance.Volume = (float)Math.Clamp(Core.Global.GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
+        AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
+        AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
+        Deactivated += OnWindowDeactivated;
+        AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Tunnel);
+        Frame.NavigateTo("");
+        _volumeControlTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1.8)
+        };
+        _volumeControlTimer.Tick += VolumeControlTimer_Tick;
+
+        // 改用 PropertyChanged 事件驱动刷新窗口装饰，避免原先 100ms 轮询
+        PropertyChanged += OnSelfPropertyChanged;
+        Core.Global.GlobalModel.Config.AfterSave += OnConfigAfterSave;
+        Closed += (_, _) =>
+        {
+            Core.Global.GlobalModel.Config.AfterSave -= OnConfigAfterSave;
+            PropertyChanged -= OnSelfPropertyChanged;
+        };
+
+        RefreshWindowChrome();
+        BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
+
+        Loaded += (_, _) =>
+        {
+            Title = GlobalModel.CustomManifest.Title.Replace("{{version}}", GlobalModel.BodyVersion);
+            HelpBtn.IsVisible = GlobalModel.CustomManifest.IsShowHelpBtn;
+            if (GlobalModel.CustomManifest.IsShowHelpBtn)
+            {
+                var flyout = new MenuFlyout();
+                HelpBtn.Flyout = flyout;
+                GlobalModel.CustomManifest.HelpLinks.ForEach(link =>
+                {
+                    var item = new MenuItem()
+                    {
+                        Header = link.Name,
+                        Icon = new FontIcon()
+                        {
+                            Glyph = link.Icon,
+                            VerticalAlignment = VerticalAlignment.Center
+                        }
+                    };
+                    item.Click += (_, _) =>
+                    {
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = link.Link,
+                            UseShellExecute = true
+                        };
+                        Process.Start(psi);
+                    };
+                    flyout.Items.Add(item);
+                });
+            }
+        };
+    }
+
+    public FontFamily GetFontFamily(string mainFont, string fallbackFont)
+    {
+        FontFamily combinedFont = new("DINPro, Noto Sans SC");
+
+        if (mainFont == "DINPro")
+            mainFont = "resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro";
+
+        if (fallbackFont == "DINPro")
+            fallbackFont = "resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro";
+
+        if (!string.IsNullOrEmpty(mainFont) && !string.IsNullOrEmpty(fallbackFont))
+            combinedFont = new FontFamily($"{mainFont}, {fallbackFont}");
+        else if (!string.IsNullOrEmpty(mainFont))
+            combinedFont = new FontFamily(mainFont);
+        else if (!string.IsNullOrEmpty(fallbackFont)) combinedFont = new FontFamily(fallbackFont);
+
+        GlobalModel.MainWindow.FontFamily = combinedFont;
+
+        return combinedFont;
     }
 
 #if WINDOWS
@@ -90,13 +197,13 @@ public partial class MainWindow : BedrockBootWindow
 
             GlobalModel.TaskManager.AddOverallProgressCallback(progress =>
             {
-                if ((DateTime.Now - _lastUpdateTime) < _minInterval && 
+                if (DateTime.Now - _lastUpdateTime < _minInterval &&
                     Math.Abs(progress - _lastReportedProgress) < MinProgressDelta)
                     return;
-            
+
                 _lastReportedProgress = progress;
                 _lastUpdateTime = DateTime.Now;
-                
+
                 var hasRunningTasks = GlobalModel.TaskManager.Tasks
                     .Any(t => t.TaskItem is { IsCompleted: false });
 
@@ -119,7 +226,7 @@ public partial class MainWindow : BedrockBootWindow
     private DesktopThumbnailWindow? DesktopThumbnailWindow { get; set; }
 
     #region 窗口拖拽事件
-    
+
     private async void OnDragOver(object? sender, DragEventArgs e)
     {
         var position = e.GetPosition(this);
@@ -139,14 +246,14 @@ public partial class MainWindow : BedrockBootWindow
             {
                 var isValid = false;
                 SupportedFileType? fileType = null;
-                string displayName = "";
-                bool allowMany = false;
+                var displayName = "";
+                var allowMany = false;
                 var fileCount = 0;
 
                 foreach (var file in files)
                 {
                     fileCount++;
-                    var extension = System.IO.Path.GetExtension(file.Name).ToLowerInvariant();
+                    var extension = Path.GetExtension(file.Name).ToLowerInvariant();
 
                     if (GlobalKeys.DropOverTypesOfSupport.TryGetValue(extension, out var supportInfo))
                     {
@@ -228,20 +335,16 @@ public partial class MainWindow : BedrockBootWindow
 
         var storageFiles = new List<IStorageFile>();
         foreach (var item in e.DataTransfer.Items)
-        {
             if (item.TryGetFile() is IStorageFile file)
                 storageFiles.Add(file);
-        }
 
         if (storageFiles.Count <= 0) return;
 
         var paths = storageFiles.Select(f => f.Path.LocalPath).ToArray();
         Console.WriteLine($@"本次拖拽共 {paths.Length} 个文件。");
         foreach (var filePath in paths)
-        {
             if (!string.IsNullOrEmpty(filePath))
                 Console.WriteLine($@"检测到拖入文件: {filePath}");
-        }
 
         // OpenDraw(new DrawDropFileContent(storageFiles.ToArray()), "拖拽文件处理");
         var handler = new DropFileHandler(paths.ToList());
@@ -263,24 +366,23 @@ public partial class MainWindow : BedrockBootWindow
             Width = Core.Global.GlobalModel.Config.Data.WindowInfo.Width;
             Height = Core.Global.GlobalModel.Config.Data.WindowInfo.Height;
         }
-
-#if DEBUG
-        DebugModule.IsVisible = true;
-        VersionBox.IsVisible = false;
-#endif
-
-        VersionBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        var buildTimestamp = (DateTime)CheckVersion.GetBuildTimestamp(Assembly.GetExecutingAssembly());
-        BuildTime.Text = $"Build.2.{buildTimestamp:yy.MMdd.HHmmss}";
-
-        if (!Directory.Exists(PathsList.TempPath))
-            Directory.CreateDirectory(PathsList.TempPath);
     }
 
     private async Task InitializeAsync()
     {
+        Task.Run(() =>
+        {
+            if (!Directory.Exists(PathsList.TempPath))
+                Directory.CreateDirectory(PathsList.TempPath);
+        });
+
         CoreInitialize.Init();
-        await Dispatcher.UIThread.InvokeAsync(() => { LoadBox.IsVisible = false; });
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            UpdateTheme();
+            LoadBox.IsVisible = false;
+        });
     }
 
     #endregion
@@ -304,7 +406,6 @@ public partial class MainWindow : BedrockBootWindow
                 break;
             case StyleType.AccentColor:
                 AccentBackgroundBox.IsVisible = true;
-                AccentBackgroundBox.Opacity = 0.7;
                 break;
             case StyleType.Voronoi:
                 AnimationBackground.IsVisible = true;
@@ -315,15 +416,9 @@ public partial class MainWindow : BedrockBootWindow
                 AnimationBackground.BackgroundType = BackgroundType.Bubble;
                 break;
             case StyleType.LiveModel:
-                if (DesktopThumbnailWindow == null)
-                {
-                    DesktopThumbnailWindow = new DesktopThumbnailWindow();
-                }
+                if (DesktopThumbnailWindow == null) DesktopThumbnailWindow = new DesktopThumbnailWindow();
 
-                if (style.LiveBlur)
-                {
-                    TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
-                }
+                if (style.LiveBlur) TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
 
                 DesktopThumbnailWindow?.ShowBelow(this);
                 LiveOpacity.IsVisible = true;
@@ -338,7 +433,7 @@ public partial class MainWindow : BedrockBootWindow
             (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.LiveOpacity) * 0.01;
     }
 
-    private void ApplyImageBackground(StyleConfig style)
+    private async void ApplyImageBackground(StyleConfig style)
     {
         var imgPath = style.BackgroundImage;
         if (!File.Exists(imgPath)) return;
@@ -351,7 +446,7 @@ public partial class MainWindow : BedrockBootWindow
 
             SetBackgroundBlur(style.BackgroundImageBlur);
 
-            var bitmap = new Bitmap(imgPath);
+            var bitmap = await Task.Run(() => new Bitmap(imgPath));
             if (style.Background3D)
             {
                 BackgroundImage3D.IsVisible = true;
@@ -417,6 +512,8 @@ public partial class MainWindow : BedrockBootWindow
 
     public void UpdateTheme()
     {
+        GetFontFamily(Core.Global.GlobalModel.Config.Data.StyleConfig.MainFont,
+            Core.Global.GlobalModel.Config.Data.StyleConfig.FallbackFont);
         MediaManager.Instance.Enabled = Core.Global.GlobalModel.Config.Data.IsPlayBackgroundMusic;
         var musicName = Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundMusic;
         if (Core.Global.GlobalModel.Config.Data.StyleConfig.IsUseThemePack)
@@ -426,16 +523,14 @@ public partial class MainWindow : BedrockBootWindow
                 var packConfig =
                     ThemePackManager.GetPackManifestWithHash(Core.Global.GlobalModel.Config.Data.StyleConfig
                         .SelectThemePackHash);
-                
-                if(packConfig == null)
+
+                if (packConfig == null)
                     return;
 
                 if (Core.Global.GlobalModel.Config.Data.StyleConfig.MediaSource == MediaSourceEnum.PriorityThemePack)
-                {
                     if (!string.IsNullOrEmpty(packConfig.BackgroundMusicFileName) &&
                         File.Exists(packConfig.BackgroundMusicFileName))
                         musicName = packConfig.BackgroundMusicFileName;
-                }
 
                 if (Core.Global.GlobalModel.Config.Data.StyleConfig.MediaSource == MediaSourceEnum.OnlyThemePack)
                     musicName = packConfig.BackgroundMusicFileName;
@@ -445,7 +540,7 @@ public partial class MainWindow : BedrockBootWindow
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     ReSetBackground();
-                    ApplyImageBackground(new StyleConfig()
+                    ApplyImageBackground(new StyleConfig
                     {
                         Background3D = packConfig.BackgroundUse3D,
                         BackgroundImage = packConfig.BackgroundImageFileName,
@@ -465,13 +560,26 @@ public partial class MainWindow : BedrockBootWindow
             App.LoadColor(AccentColor.Colors[Core.Global.GlobalModel.Config.Data.StyleConfig.AccentColorIndex],
                 Core.Global.GlobalModel.Config.Data.StyleConfig.LightThemeType);
 
-            MediaManager.Instance.Play(musicName);
+            var music = musicName;
+            Task.Run(() => MediaManager.Instance.Play(music));
         }
     }
 
     #endregion
 
     #region 任务与交互
+
+    public void InitRefreshTaskItemTask()
+    {
+        Task.Run(() =>
+        {
+            while (true)
+            {
+                Dispatcher.UIThread.Invoke(UpdateTaskUI);
+                Thread.Sleep(30000);
+            }
+        });
+    }
 
     public void UpdateTaskUI()
     {
@@ -491,7 +599,7 @@ public partial class MainWindow : BedrockBootWindow
             TaskInfoText.IsVisible = true;
             TaskInfoText.Text = string.Format(I18n["MainWindow.Task.CountInfo"], tasks.Count);
 
-            var visible = new System.Collections.Generic.List<Avalonia.Controls.Control>(tasks.Count);
+            var visible = new List<Avalonia.Controls.Control>(tasks.Count);
             foreach (var task in tasks)
             {
                 if (task.Item == null) continue;
@@ -506,12 +614,12 @@ public partial class MainWindow : BedrockBootWindow
 
     public void SetReboot()
     {
-        this.RebootBtn.IsVisible = true;
+        RebootBtn.IsVisible = true;
     }
 
     private void RebootBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        DialogHost.Show(new DialogInfo()
+        DialogHost.Show(new DialogInfo
         {
             Title = "重启启动器",
             Content = "当前需要重启。\n" +
@@ -537,10 +645,7 @@ public partial class MainWindow : BedrockBootWindow
                 };
 
                 // Windows 特殊处理
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    startInfo.Verb = "open";
-                }
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) startInfo.Verb = "open";
 
                 Process.Start(startInfo);
                 Environment.Exit(0);
@@ -634,7 +739,305 @@ public partial class MainWindow : BedrockBootWindow
             Y = Position.Y
         };
         Core.Global.GlobalModel.Config.Save();
+        Environment.Exit(0);
     }
 
     #endregion
+
+
+    private void OnSelfPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == WindowStateProperty || e.Property == TitleProperty)
+            RefreshWindowChrome();
+    }
+
+    private void OnConfigAfterSave(object? sender, EventArgs e)
+    {
+        // 防抖：滚轮/拖动等高频保存会短时间内触发数十次 RefreshWindowChrome，
+        // 合并到 120ms 一次，避免动画期间被频繁打断。
+        if (_configRefreshDebounce == null)
+        {
+            _configRefreshDebounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120) };
+            _configRefreshDebounce.Tick += (_, _) =>
+            {
+                _configRefreshDebounce!.Stop();
+                RefreshWindowChrome();
+            };
+        }
+
+        _configRefreshDebounce.Stop();
+        _configRefreshDebounce.Start();
+    }
+
+    private void ScheduleConfigSave()
+    {
+        if (_configSaveDebounce == null)
+        {
+            _configSaveDebounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(200) };
+            _configSaveDebounce.Tick += (_, _) =>
+            {
+                _configSaveDebounce!.Stop();
+                Core.Global.GlobalModel.Config.Save();
+            };
+        }
+
+        _configSaveDebounce.Stop();
+        _configSaveDebounce.Start();
+    }
+
+    private void RefreshWindowChrome()
+    {
+        var useSystemWindow = Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        var isBlurStyle = Core.Global.GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Blur;
+        var currentState = WindowState;
+
+        if (useSystemWindow != _lastUseSystemWindow)
+        {
+            _lastUseSystemWindow = useSystemWindow;
+            MaxBtn.IsVisible = !useSystemWindow;
+            MinBtn.IsVisible = !useSystemWindow;
+            CloseBtn.IsVisible = !useSystemWindow;
+            ExtendClientAreaToDecorationsHint = !useSystemWindow;
+            ExtendClientAreaTitleBarHeightHint = -1;
+        }
+
+        /*if (OperatingSystem.IsWindows())
+        {
+            var newPadding = currentState == WindowState.Maximized && !useSystemWindow
+                ? new Thickness(8)
+                : new Thickness(0);
+            if (Padding != newPadding) Padding = newPadding;
+        }*/
+
+        if (currentState != _lastWindowState)
+        {
+            _lastWindowState = currentState;
+            var newGlyph = currentState == WindowState.Maximized ? "\uE923" : "\uE922";
+            if (MaxBtnIcon.Glyph != newGlyph) MaxBtnIcon.Glyph = newGlyph;
+        }
+
+        if (_lastIsBlurStyle != isBlurStyle)
+        {
+            _lastIsBlurStyle = isBlurStyle;
+            BackgroundCover.IsVisible = isBlurStyle;
+        }
+
+        if (_lastTitle != Title)
+        {
+            _lastTitle = Title;
+            if (TitleBlock.Text != Title) TitleBlock.Text = Title ?? "";
+        }
+    }
+
+    /// <summary>
+    /// 唤醒音量提示框
+    /// </summary>
+    public void ShowVolumeCard()
+    {
+        // 确保在 UI 线程执行
+        Dispatcher.UIThread.Post(() =>
+        {
+            _volumeControlTimer.Stop();
+            MediaVolumeCard.Margin = new Thickness(0, 19, 0, 0);
+
+            _volumeControlTimer.Start();
+        });
+    }
+
+    private void VolumeControlTimer_Tick(object? sender, EventArgs e)
+    {
+        // 时间到了，缩回顶部
+        MediaVolumeCard.Margin = new Thickness(0, -76, 0, 0);
+        _volumeControlTimer.Stop();
+    }
+
+    private void OnKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl) _ctrlPressed = true;
+    }
+
+    private void OnKeyUp(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl) _ctrlPressed = false;
+    }
+
+    private void OnWindowDeactivated(object sender, EventArgs e)
+    {
+        _ctrlPressed = false;
+    }
+
+    private void OnPointerWheelChanged(object sender, PointerWheelEventArgs e)
+    {
+        if (_ctrlPressed)
+        {
+            ShowVolumeCard();
+
+            var delta = e.Delta.Y;
+            var step = 0.05;
+
+            var newVolume = MediaManager.Instance.Volume + (delta > 0 ? step : -step);
+            if (newVolume * 100 < 0)
+                newVolume = 0;
+            else if (newVolume * 100 > 100) newVolume = 1;
+
+            MediaVolume.Value = newVolume * 100;
+
+            if (MediaVolume.Value != 0)
+                MediaVolumeCard.Width = 170;
+            else
+                MediaVolumeCard.Width = 150;
+
+            DisableVolumeText.IsVisible = false;
+
+            switch (MediaVolume.Value)
+            {
+                case <= 0:
+                    MediaVolumeIcon.Glyph = "\uE74F";
+                    DisableVolumeText.IsVisible = true;
+                    break;
+                case < 33:
+                    MediaVolumeIcon.Glyph = "\uE993";
+                    break;
+                case < 66:
+                    MediaVolumeIcon.Glyph = "\uE994";
+                    break;
+                case < 100:
+                    MediaVolumeIcon.Glyph = "\uE995";
+                    break;
+            }
+
+            Console.WriteLine($@"当前音量：{(int)(newVolume * 100)}%");
+
+            // 应用新音量
+            Core.Global.GlobalModel.Config.Data.MediaVolume = newVolume;
+            // 防抖保存：滚轮短时间会触发数十次 Config.Save()，
+            // 这中间会做 JsonSerializer + File.WriteAllText，阻塞 UI 线程。
+            // 用 200ms 防抖合并写入，避免动画期间被频繁打断。
+            ScheduleConfigSave();
+
+            MediaManager.Instance.Volume = (float)Math.Clamp(Core.Global.GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
+
+            // 阻止事件继续冒泡
+            e.Handled = true;
+        }
+    }
+
+    public NoticePanel Notice => NoticePanel;
+    private bool _isMainWindow { get; set; }
+    private bool _isMinBtn { get; set; } = true;
+    private bool _isMaxBtn { get; set; } = true;
+
+    public bool IsTaskCardOpen { get; private set; }
+
+    public void UpdateWindowBorder()
+    {
+        MaxBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        MinBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        CloseBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        // Avalonia 12: WindowDecorations replaces ExtendClientAreaChromeHints.
+        WindowDecorations = Core.Global.GlobalModel.Config.Data.IsUseSystemWindow
+            ? WindowDecorations.Full
+            : WindowDecorations.BorderOnly;
+        ExtendClientAreaToDecorationsHint = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+        ExtendClientAreaTitleBarHeightHint = -1;
+    }
+
+    private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        BeginMoveDrag(e);
+    }
+
+    private void MinBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
+
+    private void MaxBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    }
+
+    private void CloseBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        Close();
+
+        Environment.Exit(0);
+    }
+
+    public void CloseDraw()
+    {
+        SetBorderState(false);
+    }
+
+    public async void OpenDraw(object? page, string title)
+    {
+        BorderTitle.Text = title;
+        await SetBorderState(true);
+
+        Frame.NavigateTo(page);
+    }
+
+    private async Task SetBorderState(bool state)
+    {
+        if (state)
+        {
+            BottomBorder.Margin = new Thickness(DrawMarginLR, Height, DrawMarginLR, -Height);
+            await Task.Delay(100);
+            BorderGrid.IsVisible = true;
+            BottomBorder.Margin = new Thickness(DrawMarginLR, 76, DrawMarginLR, 0);
+            BorderBackground.Opacity = 0.3;
+            await Task.Delay(200);
+        }
+        else
+        {
+            BottomBorder.Margin = new Thickness(DrawMarginLR, Height, DrawMarginLR, -Height);
+            BorderBackground.Opacity = 0;
+            await Task.Delay(800);
+            BorderGrid.IsVisible = false;
+            Frame.NavigateTo("");
+        }
+    }
+
+    private void CloseBorderBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        SetBorderState(false);
+    }
+
+    public void SetBlurState(bool state)
+    {
+        // 关键：XAML 中 ContentView/BackgroundGroupBox 配置了 EffectTransition，
+        // 它监听的是 Effect 属性本身变化（oldEffect -> newEffect 之间的交叉淡化），
+        // 所以必须"整体赋值"一个 BlurEffect，而不是修改现有实例的 Radius，
+        // 否则 Effect 属性没变，过渡不触发、变瞬时切换。
+        // BlurEffect 对象本身只是轻量描述符（Radius/...），真正贵的是离屏 layer，
+        // 而离屏 layer 由渲染系统管理，与 new 几次 BlurEffect 无关。
+        ContentView.Effect = new BlurEffect { Radius = state ? 50 : 0 };
+        BackgroundGroupBox.Effect = new BlurEffect { Radius = state ? 50 : 0 };
+        BackgroundGroupBox.Margin = new Thickness(state ? -50 : 0);
+    }
+
+    public async void OpenTaskCard()
+    {
+        SetBlurState(true);
+        TaskCard.Margin = new Thickness(10);
+        IsTaskCardOpen = true;
+        BlackView.IsVisible = true;
+
+        DropBox.Opacity = 0;
+        await Task.Delay(360);
+        DropBox.IsVisible = false;
+    }
+
+    public void CloseTaskCard()
+    {
+        SetBlurState(false);
+        TaskCard.Margin = new Thickness(500, 10, -500, 10);
+        IsTaskCardOpen = false;
+        BlackView.IsVisible = false;
+    }
+
+    private void BlackView_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        CloseTaskCard();
+    }
 }

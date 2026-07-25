@@ -1,0 +1,24 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages.GamePublicSync">
+    <ScrollViewer>
+        <StackPanel Margin="20,15"
+                    Spacing="8">
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="配置同步" />
+            
+            <onePointControls:SettingCard Header="重置同步源"
+                                          Description="将当前设置的同步源实例设置为"
+                                          Glyph="&#xE72C;"
+                                          IsClickable="True"
+                                          Name="ResetBtn"
+                                          Click="ResetBtn_OnClick"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

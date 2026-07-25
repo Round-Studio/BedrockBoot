@@ -43,6 +43,7 @@ public partial class InstanceControls : ISetting
             };
             item.Click += (sender, args) => it.Callback?.Invoke(VersionInfo?.VersionPath!);
             ExpansionPanel.Children.Add(item);
+            ExpansionPanel.IsVisible = true;
         });
     }
 
@@ -281,6 +282,29 @@ public partial class InstanceControls : ISetting
             {
                 GlobalModel.MainWindow.OpenDraw(new DrawUpdateInstanceContent(VersionInfo),
                     $"升级实例向导 - {VersionInfo.Info.VersionName} ({VersionInfo.Info.Version})");
+            }
+        });
+    }
+
+    private void PublicSyncBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new DialogChooseInstanceUserContent(VersionInfo);
+        DialogHost.Show(new()
+        {
+            Title = "选择用户配置",
+            Content = dialog,
+            CloseButtonText = i18n["MainWindow.Common.Confirm"],
+            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = () =>
+            {
+                var user = dialog.ChooseUser;
+                Core.Global.GlobalModel.Config.Data.PublicOptionsConfig = new()
+                {
+                    PubOptionsInstancePath = VersionInfo.VersionPath,
+                    PubUser = user
+                };
+                Core.Global.GlobalModel.Config.Save();
             }
         });
     }

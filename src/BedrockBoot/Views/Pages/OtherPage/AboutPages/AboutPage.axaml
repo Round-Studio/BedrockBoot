@@ -137,6 +137,8 @@
             <TextBlock Margin="20,1" Text="(https://github.com/d3ara1n/Polymerium)" />
             <TextBlock Margin="20,1" Text="{DynamicResource About.Inspiration.WonderLab}" />
             <TextBlock Margin="20,1" Text="(https://github.com/Lunova-Studio/WonderLab.Override)" />
+            <TextBlock Margin="20,1" Text="BedrockBoot 内部分功能参考自 BakaXL" />
+            <TextBlock Margin="20,1" Text="(https://bakaxl.com/)" />
 
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"

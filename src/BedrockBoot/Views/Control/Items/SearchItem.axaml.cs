@@ -11,10 +11,16 @@ namespace BedrockBoot.Views.Control.Items;
 public partial class SearchItem : UserControl
 {
     private static readonly HttpClient _httpClient = new();
-
+    private ImageLoader _imageLoader = new ImageLoader();
     public SearchItem()
     {
         InitializeComponent();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     public SearchItem(SearchResultItemInfo info) : this()
@@ -35,7 +41,7 @@ public partial class SearchItem : UserControl
 
     private async Task Update()
     {
-        var icon = await ImageLoader.LoadIconAsync(SearchResultItemInfo.IconUri);
+        var icon = await _imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
         if (icon != null)
         {
             Card.IsFontIcon = false;

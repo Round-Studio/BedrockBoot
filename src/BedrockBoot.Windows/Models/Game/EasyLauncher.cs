@@ -81,6 +81,12 @@ public class EasyLauncher
         
         VersionInfo.Config.FolderPolicyStr =
             IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
+
+        if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP) // 为了兼容 UWP 不能被 hook 的傻逼设定，详见 #74
+        {
+            VersionInfo.Config.IsVersionIsolated = false;
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
+        }
             
         GameInfoHelper.SaveVersionConfig(VersionInfo);
         
@@ -121,9 +127,6 @@ public class EasyLauncher
 
         _core.PreLoad(); // 启动 PreLoad
 
-        RegisterService.API.LaunchingEvent.ForEach(action =>
-            new Thread(() => action.Invoke(VersionInfo.VersionPath)).Start());
-
         if (!VersionInfo.VersionStatus.GameInputInstalled &&
             VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
@@ -154,6 +157,18 @@ public class EasyLauncher
             VersionInfo.VersionStatus.GameInputInstalled = true;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
+
+        RegisterService.API.LaunchingEvent.ForEach(action => new Thread(() =>
+        {
+            try
+            {
+                if (VersionInfo.VersionPath != null) action.Invoke(VersionInfo.VersionPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"执行启动前方法失败：{ex}");
+            }
+        }).Start());
 
         try
         {

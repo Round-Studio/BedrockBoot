@@ -41,6 +41,13 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("isUseSystemWindow")] public bool IsUseSystemWindow { get; set; } = false;
         [JsonPropertyName("launchBehavior")] public LaunchBehaviorEnum LaunchBehavior { get; set; } = LaunchBehaviorEnum.Normal;
         [JsonPropertyName("mediaVolume")] public double MediaVolume { get; set; } = 20;
+        [JsonPropertyName("pubOptionsConfig")] public PublicOptionsConfig? PublicOptionsConfig { get; set; } = null;
+    }
+
+    public class PublicOptionsConfig
+    {
+        [JsonPropertyName("pubOptionsInstance")] public string? PubOptionsInstancePath { get; set; } = string.Empty;
+        [JsonPropertyName("pubUser")] public string? PubUser { get; set; } = string.Empty;
     }
 
     public class StyleConfig
@@ -58,6 +65,8 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Voronoi;
         [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
         [JsonPropertyName("mediaSource")] public MediaSourceEnum MediaSource { get; set; } = MediaSourceEnum.PriorityThemePack;
+        [JsonPropertyName("mainFont")] public string MainFont { get; set; } = "DINPro";
+        [JsonPropertyName("fallbackFont")] public string FallbackFont { get; set; } = "Noto Sans SC";
     }
 
     public class HomeConfig

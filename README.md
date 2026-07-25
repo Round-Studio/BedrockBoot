@@ -34,24 +34,41 @@
 
 *\* PaperConnect 联机是与 **BMCBL** 共同开发的一款 Xbox 联机替代方案*
 
+## 特色功能
+
+|功能|支持性 (✅️表示完全支持，❌️表示不支持)|简述|
+|---|---|---|
+|下载游戏|✅️|GDK，UWP 类型的游戏均支持，全版本均可完整支持|
+|下载资源|✅️|在 CurseForge 中下载游戏资源，基岩版启动器首创|
+|管理游戏支持包|✅️|在启动器内管理游戏内资源，包括资源包，行为包，皮肤包 (4D)，存档，世界模版，截图，服务器|
+|资源转换|✅️|可直接在启动器中使用 Java 与基岩版的资源转换。现已支持存档的相互转换，Java 资源包转换至基岩版。甚至还能翻译资源包，行为包|
+|dll 注入|✅️|可在启动器内为游戏实例添加 dll 文件，以实现修改游戏|
+|多种辅助功能|✅️|启动器内置多种辅助功能，例如鼠标锁，存档备份|
+|多目录，多实例共存|✅️|可添加多个游戏目录，并同时运行多个不同的 Minecraft 实例|
+|联机|✅️|内置联机组件，可与 BMCBL 一同联机，可不使用 Xbox|
+|版本隔离|✅️|将每一个不同的游戏实例隔离开，实现游戏资源不互通 (可理解为 Java 版的版本隔离)|
+|跨平台支持|✅️|现支持 Windows 与 Linux 平台，Linux 平台使用 ProtonGDK 组件实现 GDK 运行|
+|兼容其他启动器|✅️|兼容其他第三方基岩版启动器，例如 BMCBL，LeviLauncher (未完全支持)|
+|运行时补全|✅️|启动游戏前会自动检测当前的启动环境，自动补全缺失的运行组件，保证游戏运行|
+|启动器插件|✅️|可在启动器内下载到官方上架的插件，可用于拓展启动器|
+|高度个性化|✅️|可高度个性化启动器，包括显示字体，背景，背景音乐等等。甚至背景还能 3D 视差。还可以将您当前的个性化设置导出成主题包，分享给您的好友|
+|存档地图编辑与预览|❌️|在启动器内预览与编辑存档，在未来会支持（在做了.jpg）|
+|LeviLamina|❌️|-|
+
 ## 相关链接
 
 * **官网**：[BedrockBoot 官方网站](https://roundstudio.top/bedrockboot)
 * **文档**：[BedrockBoot 帮助文档](https://docs.roundstudio.top/docs/product/bb)
 * **隐私策略**：[BedrockBoot 隐私策略](https://docs.roundstudio.top/docs/product/bb/privacyPolicy)
 
----
-
 # 下载 | Download
 
 你可以从以下官方渠道获取 BedrockBoot 的编译产物：
 
 | 渠道 | 链接 |
-| :--- | :--- |
+| --- | --- |
 | **官方下载门户** | [Round Studio Download](https://roundstudio.top/bedrockboot) |
 | **GitHub Releases** | [GitHub Release Assets](https://github.com/Round-Studio/BedrockBoot/releases) |
-
----
 
 # 快速开始 | Quick Start
 
@@ -59,20 +76,26 @@
 
 1. **环境准备**：确保宿主环境为 Windows 10 (19041+) 或 Windows 11。
 2. **初始化部署**：下载发行包至非系统保护目录，运行 `BedrockBoot.exe`。
-3. **版本调度**：进入“下载”模块，下载所需的基岩版版本或资源包。
+3. **版本调度**：进入"下载"模块，下载所需的基岩版版本或资源包。
 4. **启动执行**：配置实例参数后，点击启动即可进入游戏。
-
----
 
 ## Linux
 
-1. **环境准备**：确保宿主环境为 Linux 发行版，并带有桌面环境。
-2. **初始化部署**：下载发行包，运行 `BedrockBoot.AppImage`。
-3. **下载依赖**：初次进入启动器时，需要下载 `ProtonGDK` 游戏运行依赖。
-4. **版本调度**：进入“下载”模块，下载所需的基岩版版本或资源包。
-5. **启动执行**：配置实例参数后，点击启动即可进入游戏。
+### 安装
 
----
+#### Arch Linux ([AUR](https://aur.archlinux.org/packages/bedrockboot))
+
+```
+paru -S bedrockboot
+```
+
+#### 其他 Linux 发行版
+
+下载发行包，运行 `BedrockBoot.AppImage`。
+
+1. **下载依赖**：初次进入启动器时，需要下载 `ProtonGDK` 游戏运行依赖。
+2. **版本调度**：进入“下载”模块，下载所需的基岩版版本或资源包。
+3. **启动执行**：配置实例参数后，点击启动即可进入游戏。
 
 # 参与贡献 | Contribution
 
@@ -81,8 +104,6 @@ BedrockBoot 是一个开源且社区驱动的项目，欢迎任何形式的贡�
 * **反馈**：通过 [GitHub Issues](https://github.com/Round-Studio/BedrockBoot/issues) 提交缺陷报告或功能建议。
 * **贡献**：Fork 本仓库并提交 Pull Request。请在提交前确保代码通过基础单元测试。
 * **技术栈**：C# / C++ / .NET / [Avalonia](https://github.com/avaloniaui/avalonia)。
-
----
 
 # 构建项目 | Build From Source
 
@@ -97,16 +118,12 @@ BedrockBoot 是一个开源且社区驱动的项目，欢迎任何形式的贡�
    dotnet build -c Release
    ```
 
----
-
 # 团队与致谢 | Team & Credits
 
 ## 核心开发者
 - **Lead Developers**: Dime, YoumiHa
 - **UI/UX Design**: Dime, DrMing
 - **Core Architecture**: YoumiHa
-
----
 
 # 开源协议 | License
 

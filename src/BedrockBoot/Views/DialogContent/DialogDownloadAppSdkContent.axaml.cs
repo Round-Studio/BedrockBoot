@@ -8,6 +8,8 @@ using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using Octokit;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.DialogContent;
@@ -28,38 +30,73 @@ public partial class DialogDownloadAppSdkContent : UserControl
 
         try
         {
-            var client = new GitHubClient(new ProductHeaderValue("BedrockBoot.Desktop"));
-            var release = await client.Repository.Release.Get(owner, repo, tag);
-
-            if (release == null)
+            DialogHost.Show(new DialogInfo()
             {
-                return;
-            }
-
-            if (release.Assets != null && release.Assets.Count > 0)
-            {
-                var downloadUrl = release.Assets[0].BrowserDownloadUrl;
-                var downloader = new GithubFilesDownloader();
-                var savePath = Path.Combine(PathsList.TempPath, $"sdkinstaller_{Guid.NewGuid()}.exe");
-                
-                await downloader.DownloadAsync(downloadUrl, savePath, new Progress<DownloadProgress>(p =>
+                Content = "选择下载方式，我们推荐 方式 2",
+                Title = "下载 SDK 1.8",
+                PrimaryButtonText = "方式 1",
+                CloseButtonText = "方式 2",
+                AccountButton = DialogButtons.CloseButton,
+                PrimaryAction = new(async () =>
                 {
-                    Dispatcher.UIThread.Invoke(() =>
+                    var client = new GitHubClient(new ProductHeaderValue("BedrockBoot.Desktop"));
+                    var release = await client.Repository.Release.Get(owner, repo, tag);
+
+                    if (release == null)
                     {
-                        if (ProgressBar.IsIndeterminate)
-                            ProgressBar.IsIndeterminate = false;
+                        return;
+                    }
 
-                        ProgressBar.Value = p.ProgressPercentage;
-                        ProgressText.Text = $"下载依赖 {p.ProgressPercentage:F2} %";
-                    });
-                }));
+                    if (release.Assets != null && release.Assets.Count > 0)
+                    {
+                        var downloadUrl = release.Assets[0].BrowserDownloadUrl;
+                        var downloader = new GithubFilesDownloader();
+                        var savePath = Path.Combine(PathsList.TempPath, $"sdkinstaller_{Guid.NewGuid()}.exe");
 
-                if (File.Exists(savePath))
+                        await downloader.DownloadAsync(downloadUrl, savePath, new Progress<DownloadProgress>(p =>
+                        {
+                            Dispatcher.UIThread.Invoke(() =>
+                            {
+                                if (ProgressBar.IsIndeterminate)
+                                    ProgressBar.IsIndeterminate = false;
+
+                                ProgressBar.Value = p.ProgressPercentage;
+                                ProgressText.Text = $"下载依赖 {p.ProgressPercentage:F2} %";
+                            });
+                        }));
+
+                        if (File.Exists(savePath))
+                        {
+                            await RunAsAdministratorAndWaitAsync(savePath);
+                            DialogHost.Close();
+                        }
+                    }
+                }),
+                CloseAction = async () =>
                 {
-                    await RunAsAdministratorAndWaitAsync(savePath);
-                    DialogHost.Close();
+                    var downloader = new MultiThreadDownloader();
+                    var downloadUrl = "https://aka.ms/windowsappsdk/1.8/1.8.260710003/windowsappruntimeinstall-x64.exe";
+
+                    var savePath = Path.Combine(PathsList.TempPath, $"sdkinstaller_{Guid.NewGuid()}.exe");
+                    await downloader.DownloadAsync(downloadUrl, savePath, new Progress<DownloadProgress>(p =>
+                    {
+                        Dispatcher.UIThread.Invoke(() =>
+                        {
+                            if (ProgressBar.IsIndeterminate)
+                                ProgressBar.IsIndeterminate = false;
+
+                            ProgressBar.Value = p.ProgressPercentage;
+                            ProgressText.Text = $"下载依赖 {p.ProgressPercentage:F2} %";
+                        });
+                    }));
+
+                    if (File.Exists(savePath))
+                    {
+                        await RunAsAdministratorAndWaitAsync(savePath);
+                        DialogHost.Close();
+                    }
                 }
-            }
+            });
         }
         catch (Exception ex)
         {

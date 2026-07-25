@@ -1,0 +1,38 @@
+﻿{
+  "format_version": 0,
+  "title": "BedrockBoot v{{version}}",
+  "randomStr": [
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎回来",
+    "您好，欢迎使用 BugsBoot"
+  ],
+  "pageTitles": {
+    "pageHome": "{{random}}"
+  },
+  "isShowHelpBtn": false,
+  "helpLinks": [
+    {
+      "name": "Bug 反馈",
+      "icon": "\uEBE8",
+      "link": "https://github.com/Round-Studio/BedrockBoot"
+    },
+    {
+      "name": "帮助文档",
+      "icon": "\uE7C3",
+      "link": "https://docs.roundstudio.top/docs/product/bb"
+    }
+  ]
+}

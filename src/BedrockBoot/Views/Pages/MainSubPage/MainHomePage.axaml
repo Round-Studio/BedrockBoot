@@ -4,6 +4,8 @@
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
                        xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
+                       xmlns:widgets="clr-namespace:BedrockBoot.Style.Widgets"
+                       xmlns:widgets1="clr-namespace:BedrockBoot.Views.Control.Widgets"
                        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                        x:Class="BedrockBoot.Views.Pages.MainSubPage.MainHomePage">
     <entry:BedrockBootPage.HeaderView>
@@ -13,7 +15,10 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
+                                        Name="LineTextBlock"
                                         Text="{DynamicResource Home.Title}" />
     </entry:BedrockBootPage.HeaderView>
-    <Grid Name="MainGrid" />
+    <Grid>
+        <Grid Name="MainGrid" />
+    </Grid>
 </entry:BedrockBootPage>

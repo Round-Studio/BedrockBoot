@@ -41,6 +41,7 @@ public class VersionConfig
         [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
         [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
         [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
+        [JsonPropertyName("isSyncPubOptions")] public bool IsSyncPublicOptions { get; set; } = true;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
         [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
         [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);    }

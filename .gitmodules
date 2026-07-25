@@ -1,21 +1,27 @@
 [submodule "src/OnePointUI.Avalonia"]
 	path = src/OnePointUI.Avalonia
 	url = https://github.com/Round-Studio/OnePointUI.Avalonia.git
+	branch = master
 [submodule "src/Round.SDK"]
 	path = src/Round.SDK
 	url = https://github.com/Round-Studio/Round.SDK.git
+	branch = master
 [submodule "src/PeNet"]
 	path = src/PeNet
 	url = https://github.com/Round-Studio/PeNet.git
+	branch = master
 [submodule "src/PaperConnect"]
 	path = src/PaperConnect
 	url = https://github.com/Round-Studio/PaperConnect.git
+	branch = master
 [submodule "src/BedrockMapRender"]
 	path = src/BedrockMapRender
 	url = https://github.com/BE-Community-Dev/BedrockMapRender.git
+	branch = main
 [submodule "src/ResourcePackConvert"]
 	path = src/ResourcePackConvert
 	url = https://github.com/BE-Community-Dev/ResourcePackConvert.git
+	branch = main
 [submodule "src/LiteSkinViewer"]
 	path = src/LiteSkinViewer
 	url = https://github.com/Round-Studio/LiteSkinViewer.git
@@ -23,4 +29,12 @@
 [submodule "src/PreLoadCpp"]
 	path = src/PreLoadCpp
 	url = https://github.com/Round-Studio/PreLoadCpp.git
+	branch = main
+[submodule "src/MapRender"]
+	path = src/MapRender
+	url = https://github.com/BE-Community-Dev/MapRender.git
+	branch = master
+[submodule "src/CrashStackAnalyzer"]
+	path = src/CrashStackAnalyzer
+	url = https://github.com/Round-Studio/CrashStackAnalyzer.git
 	branch = main

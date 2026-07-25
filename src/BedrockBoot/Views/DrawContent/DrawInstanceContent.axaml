@@ -69,6 +69,54 @@
                     
                     <Button.Flyout>
                         <MenuFlyout>
+                            <MenuItem Header="皮肤包目录（开发）"
+                                      Name="MenuOpenSkinDevFolder"
+                                      Click="MenuOpenSkinDevFolder_OnClick">
+                                <MenuItem.Icon>
+                                    <onePointControls:FontIcon Glyph="&#xE943;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="行为包目录（开发）"
+                                      Name="MenuOpenBehaviorDevFolder"
+                                      Click="MenuOpenBehaviorDevFolder_OnClick">
+                                <MenuItem.Icon>
+                                    <onePointControls:FontIcon Glyph="&#xE943;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="资源包目录（开发）"
+                                      Name="MenuOpenResourceDevFolder"
+                                      Click="MenuOpenResourceDevFolder_OnClick">
+                                <MenuItem.Icon>
+                                    <onePointControls:FontIcon Glyph="&#xE943;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="皮肤包目录"
+                                      Name="MenuOpenSkinFolder"
+                                      Click="MenuOpenSkinFolder_OnClick">
+                                <MenuItem.Icon>
+                                    <onePointControls:FontIcon Glyph="&#xE805;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="行为包目录"
+                                      Name="MenuOpenBehaviorFolder"
+                                      Click="MenuOpenBehaviorFolder_OnClick">
+                                <MenuItem.Icon>
+                                    <onePointControls:FontIcon Glyph="&#xF156;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="资源包目录"
+                                      Name="MenuOpenResourceFolder"
+                                      Click="MenuOpenResourceFolder_OnClick">
+                                <MenuItem.Icon>
+                                    <onePointControls:FontIcon Glyph="&#xF133;"
+                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="运行文件夹"
                                       Name="MenuOpenRunFolder"
                                       Click="MenuOpenFolder_OnClick">

@@ -207,16 +207,17 @@ public class ResourcePackAnalysis
         var iconEntry = archive.Entries
             .FirstOrDefault(e => e.Name.Equals("pack_icon.png", StringComparison.OrdinalIgnoreCase) ||
                                  e.Name.Equals("pack.png", StringComparison.OrdinalIgnoreCase));
-    
+
         if (iconEntry == null)
         {
             Console.WriteLine(@"未查找到包图标，使用默认图标");
             // 使用默认图标
             try
             {
-                var bitmap = await ImageLoader.LoadIconAsync(
+                using var loader = new ImageLoader();
+                var bitmap = await loader.LoadIconAsync(
                     "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
-            
+
                 if (bitmap != null)
                 {
                     return ConvertBitmapToByteArrayAsync(bitmap);
@@ -228,7 +229,7 @@ public class ResourcePackAnalysis
             }
             return null;
         }
-    
+
         try
         {
             using var ms = new MemoryStream();

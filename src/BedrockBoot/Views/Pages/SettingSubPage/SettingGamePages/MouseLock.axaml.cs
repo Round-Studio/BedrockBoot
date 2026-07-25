@@ -33,7 +33,9 @@ public partial class MouseLock : ISettingPage
         MouseLockMainSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;
         MouseLockForGdkSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLockForGdk;
         MouseLockReserveSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLockReserve;
-		MouseLockFullScreenSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLockFullScreen;
+        MouseLockWindowTrimmingNum.Value = GlobalModel.Config.Data.MouseLockWindowTrimming;
+        if (GlobalModel.Config.Data.IsMouseLockGetFrame == true) MouseLockGetFrameCombo.SelectedIndex = 0;
+        else MouseLockGetFrameCombo.SelectedIndex = 1;
         MouseLockHotkeyBtn.Content = GlobalModel.Config.Data.MouseLockHotkey;
         UpdateUI();
 
@@ -51,7 +53,8 @@ public partial class MouseLock : ISettingPage
             MouseLockMainCard.Glyph = "\uF19F";
             MouseLockForGdkCard.IsEnabled = true;
             MouseLockReserveCard.IsEnabled = true;
-			MouseLockFullScreenCard.IsEnabled = true;
+            MouseLockWindowTrimmingCard.IsEnabled = true;
+            MouseLockGetFrameCard.IsEnabled = true;
             MouseLockHotkeyCard.IsEnabled = true;
         }
         else
@@ -59,7 +62,8 @@ public partial class MouseLock : ISettingPage
             MouseLockMainCard.Glyph = "\uF19E";
             MouseLockForGdkCard.IsEnabled = false;
             MouseLockReserveCard.IsEnabled = false;
-			MouseLockFullScreenCard.IsEnabled = false;
+            MouseLockWindowTrimmingCard.IsEnabled = false;
+            MouseLockGetFrameCard.IsEnabled = false;
             MouseLockHotkeyCard.IsEnabled = false;
         }
     }
@@ -81,11 +85,20 @@ public partial class MouseLock : ISettingPage
             GlobalModel.Config.Save();
         }
     }
-    private void MouseLockFullScreenSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    private void MouseLockWindowTrimmingNum_OnValueChanged(object? sender, RoutedEventArgs e)
     {
         if (IsEdit)
         {
-            GlobalModel.Config.Data.IsMouseLockFullScreen = (bool)MouseLockFullScreenSwitch.IsChecked!;
+            GlobalModel.Config.Data.MouseLockWindowTrimming = (int)MouseLockWindowTrimmingNum.Value;
+            GlobalModel.Config.Save();
+        }
+    }
+private void MouseLockGetFrameCombo_OnSelectionChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            if (MouseLockGetFrameCombo.SelectedIndex == 0) GlobalModel.Config.Data.IsMouseLockGetFrame = true;
+            else GlobalModel.Config.Data.IsMouseLockGetFrame = false;
             GlobalModel.Config.Save();
         }
     }

@@ -77,7 +77,7 @@ public class ProcessMouseLocker
 
     [DllImport("user32.dll")]
     private static extern int GetWindowTextLength(IntPtr hWnd);
-
+    
     // --- 常量定义 ---
     private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
     private const uint GA_ROOTOWNER = 3;
@@ -92,6 +92,7 @@ public class ProcessMouseLocker
     private readonly int _targetPid;
     private readonly DateTime _targetStartTime;
     private IntPtr _targetHwnd = IntPtr.Zero;
+    private IntPtr _targetHwndNew = IntPtr.Zero;
     private bool _isRunning = false;
     private bool _isManuallyUnlocked = false;
     private bool _isMouseCurrentlyLocked;
@@ -101,11 +102,12 @@ public class ProcessMouseLocker
     private HotKey _hotKey = HotKey.Parse(GlobalModel.Config.Data.MouseLockHotkey);
     private Rect? _lastClipRect;
 
-    public int BorderMargin { get; set; } = 20;
+    public int BorderMargin { get; set; } = BedrockBoot.Core.Global.GlobalModel.Config.Data.MouseLockWindowTrimming;
 
-    public ProcessMouseLocker(int processId)
+    public ProcessMouseLocker(int processId, IntPtr frameHwnd)
     {
         _targetPid = processId;
+        _targetHwndNew = frameHwnd;
         try
         {
             using var p = Process.GetProcessById(processId);
@@ -125,7 +127,12 @@ public class ProcessMouseLocker
         if (_isRunning) return;
         _isRunning = true;
         _wasWindowFound = false;
-        _targetHwnd = IntPtr.Zero;
+
+        // 如果是 UWP 的话，一般情况下直接使用在启动时监视到的 Frame 即可。
+        if (_targetHwndNew != IntPtr.Zero && BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockGetFrame)
+            _targetHwnd = _targetHwndNew;
+        else _targetHwnd = IntPtr.Zero;
+
 
 
         // 监视热键和监视焦点窗口分为两个，热键需要高频率监视，但是焦点窗口不需要
@@ -289,17 +296,16 @@ public class ProcessMouseLocker
         {
             // 本来写了判断游戏窗口是否和监视器的边缘重合的判断
             // 但是想了想还是算了，没啥必要，反正全局抠掉一点点也没啥影响
-            if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockFullScreen)
-            {
-                rect.Left += 2;
-                rect.Top += 2;
-                rect.Right -= 2;
-                rect.Bottom -= 2;
-            }
+            
+             rect.Left += BorderMargin;
+             rect.Top += BorderMargin;
+             rect.Right -= BorderMargin;
+             rect.Bottom -= BorderMargin;
+            
             // 如果裁切不需要改变就不重新进行裁切
             if (_lastClipRect.HasValue && _lastClipRect.Value.Equals(rect) && !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockReserve) return;
 
-            Console.WriteLine($"Locking mouse to rect: Left={rect.Left}, Top={rect.Top}, Right={rect.Right}, Bottom={rect.Bottom}");
+            Console.WriteLine($"鼠标已锁定为: Left={rect.Left}, Top={rect.Top}, Right={rect.Right}, Bottom={rect.Bottom}");
             ClipCursor(ref rect);
             _lastClipRect = rect;
 
@@ -320,7 +326,7 @@ public class ProcessMouseLocker
             ShowCursor(true);
 
         }
-        Console.WriteLine("Unlock mouse");
+        Console.WriteLine("鼠标已解锁");
         ClipCursor(IntPtr.Zero);
         _lastClipRect = null;
         _isMouseCurrentlyLocked = false;
@@ -425,7 +431,7 @@ public class ProcessMouseLocker
 
             if (!IsFullScreenUwp(root))
                 return true;
-            PrintWindow(root);
+            //PrintWindow(root);
 
             if (CheckIfFullScreenUwpMatches(root))
             {
@@ -438,10 +444,12 @@ public class ProcessMouseLocker
 
         return foundHandle;
     }
-
+    private bool CheckStartTime(IntPtr frameHwnd)
+    {
+        return frameHwnd == _targetHwndNew;
+    }
     private bool CheckIfUwpFrameMatches(IntPtr frameHwnd)
     {
-        bool isMatch = false;
 
         // 核心：检查 Frame 内部是否包含目标进程的子窗口
         EnumChildWindows(frameHwnd, (childHwnd, l) =>
@@ -449,11 +457,16 @@ public class ProcessMouseLocker
             GetWindowThreadProcessId(childHwnd, out uint childPid);
             if (childPid == _targetPid)
             {
-                isMatch = true;
                 return false;
             }
             return true;
         }, IntPtr.Zero);
+
+        return CheckStartTime(frameHwnd);
+
+        /*
+         * 说实话时间戳检测似乎不太好用
+         * 因为 ApplicationFrameHost 持续存在，所有的 handle 都是同一个 Process，启动时间是一样的
 
         // 辅助：如果子窗口枚举不可用，尝试时间戳关联
         if (!isMatch)
@@ -467,26 +480,14 @@ public class ProcessMouseLocker
                 if (diff < 10) isMatch = true;
             }
             catch { }
-        }
+        }*/
 
-        return isMatch;
     }
-    private bool CheckIfFullScreenUwpMatches(IntPtr hwnd)
+    private bool CheckIfFullScreenUwpMatches(IntPtr frameHwnd)
     {
-        // 全屏 UWP EnumChildWindows 搞不出东西来，呜闹
-        return true;
-        /*try
-        {
-            GetWindowThreadProcessId(hwnd, out uint framePid);
-            using var p = Process.GetProcessById((int)framePid);
-            // 判断 ApplicationFrameHost 启动时间是否与目标应用接近
-            double diff = Math.Abs((p.StartTime - _targetStartTime).TotalSeconds);
-            Log($"p.StartTime = {p.StartTime}, _targetStartTime={_targetStartTime}");
-            if (diff < 10) return true ;
-        }
-        catch { }
-
-        return false;*/
+        // 全屏 UWP EnumChildWindows 搞不出东西来，呜闹，只能纯检查时间了
+        return CheckStartTime(frameHwnd);
+        
     }
     private bool IsFullScreenUwp(IntPtr hWnd)
     {

@@ -41,14 +41,32 @@
 			</onePointControls:SettingCard>
 
 			<onePointControls:SettingCard Margin="5, 0"
-            			                  Name="MouseLockFullScreenCard"
-                        			      Header="{DynamicResource Settings.Game.MouseLock.FullScreen.Title}"
-                              			Description="{DynamicResource Settings.Game.MouseLock.FullScreen.Desc}"
-			                              Glyph="&#xE8AB;">
-				<ToggleSwitch Name="MouseLockFullScreenSwitch"
-                			  IsCheckedChanged="MouseLockFullScreenSwitch_OnIsCheckedChanged" />
+            			                  Name="MouseLockWindowTrimmingCard"
+                        			      Header="{DynamicResource Settings.Game.MouseLock.WindowTrimming.Title}"
+                              			Description="{DynamicResource Settings.Game.MouseLock.WindowTrimming.Desc}"
+			                              Glyph="&#xE78A;">
+				<Slider
+					Name="MouseLockWindowTrimmingNum"
+					Classes="Number"
+					Width="200"
+					Value="2"
+					ValueChanged="MouseLockWindowTrimmingNum_OnValueChanged"
+               Minimum="0" Maximum="50" />
+				
 			</onePointControls:SettingCard>
-
+			<onePointControls:SettingCard Margin="5, 0"
+				Name="MouseLockGetFrameCard"
+				Header="{DynamicResource Settings.Game.MouseLock.GetFrame.Title}"
+				Description="{DynamicResource Settings.Game.MouseLock.GetFrame.Desc}"
+				Glyph="&#xF7ED;">
+				<ComboBox Width="200"
+          SelectedIndex="1"
+          Name="MouseLockGetFrameCombo"
+          SelectionChanged="MouseLockGetFrameCombo_OnSelectionChanged">
+					<ComboBoxItem Content="{DynamicResource Settings.Game.MouseLock.GetFrame.Default}" />
+					<ComboBoxItem Content="{DynamicResource Settings.Game.MouseLock.GetFrame.Legacy}" />
+				</ComboBox>
+			</onePointControls:SettingCard>
 			<onePointControls:SettingCard Margin="5, 0"
                                           Name="MouseLockHotkeyCard"
                                           Header="{DynamicResource Settings.Game.MouseLock.Hotkey.Title}"

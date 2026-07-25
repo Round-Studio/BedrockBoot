@@ -25,7 +25,7 @@
             <TextBlock HorizontalAlignment="Left"
                        Text="{DynamicResource Dialog.ImportMod.Label.InjectionDelay}" />
         
-            <NumericUpDown Value="5"
+            <NumericUpDown Value="5000"
                            HorizontalAlignment="Stretch"
                            Minimum="0"
                            Maximum="200000"

@@ -5,23 +5,13 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Pages.GravityConePage.GravityConeRoomCreate">
+             x:Class="BedrockBoot.Views.Pages.GravityConePage.GravityConeRoom">
     <StackPanel Spacing="8"
                 Margin="0,0,20,0">
         <TextBlock FontWeight="Bold"
                    FontSize="14">
-            联机大厅 - 创建房间
+            联机大厅
         </TextBlock>
-        
-        <DockPanel HorizontalSpacing="8"
-                   Name="SearchGame">
-            <TextBlock Text="搜索局域网游戏"></TextBlock>
-        
-            <ProgressBar HorizontalAlignment="Stretch"
-                         VerticalAlignment="Center"
-                         Name="LoadCreateBar"
-                         IsIndeterminate="True"></ProgressBar>
-        </DockPanel>
         
         <items:BorderCard Name="RoomCodeCard"
                           Padding="0,24">
@@ -45,15 +35,14 @@
         </items:BorderCard>
 
         <onePointControls:SettingCard Header="退出"
-                                      Description="停止扫描与创建联机房间"
+                                      Description="退出房间"
                                       IsClickable="True"
                                       Click="CloseBtn_OnClick"
                                       Name="CloseBtn"
                                       Glyph="&#xE711;" />
         
         <StackPanel Spacing="8"
-                    Name="PlayersBox"
-                    IsVisible="False">
+                    Name="PlayersBox">
             <TextBlock FontWeight="Bold"
                        FontSize="14">
                 已加入的玩家

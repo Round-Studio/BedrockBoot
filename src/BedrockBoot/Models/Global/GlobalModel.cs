@@ -10,6 +10,7 @@ using BedrockBoot.Base.Entry.Info.Xbox;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.GravityCone;
+using BedrockBoot.GravityCone.Entry;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Service.Protocol;
@@ -23,6 +24,7 @@ namespace BedrockBoot.Models.Global;
 public class GlobalModel
 {
     public static GravityConeClient? GravityConeClient { get; set; } = null;
+    public static RoomState? CurrentRoomState { get; set; } = null;
     public static MainWindow MainWindow;
     public static TaskManager TaskManager { get; set; } = new();
     public static bool IsAbleToLaunchGame { get; set; } = false;

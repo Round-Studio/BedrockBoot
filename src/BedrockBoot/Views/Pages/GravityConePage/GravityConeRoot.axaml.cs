@@ -1,7 +1,6 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
+using BedrockBoot.GravityCone.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent.Multiplayer;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -19,7 +18,7 @@ public partial class GravityConeRoot : UserControl
 
     private void CreateRoom_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoomCreate());
+        MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeLoadRoom(RoomType.Host));
     }
 
     private void LinkRoom_OnClick(object? sender, RoutedEventArgs e)
@@ -35,7 +34,7 @@ public partial class GravityConeRoot : UserControl
             {
                 if (string.IsNullOrEmpty(dialog.RoomCode))
                 {
-                    GlobalModel.MainWindow.Notice.AddNotice(new ()
+                    GlobalModel.MainWindow.Notice.AddNotice(new()
                     {
                         Title = "不得为空",
                         Message = "联机码不得为空",
@@ -43,7 +42,9 @@ public partial class GravityConeRoot : UserControl
                     });
                     return;
                 }
-                MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoomJoin(dialog.RoomCode));
+
+                MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeLoadRoom(RoomType.Guest,
+                    dialog.RoomCode));
             }
         });
     }

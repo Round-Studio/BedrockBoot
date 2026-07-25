@@ -205,10 +205,11 @@ public class GravityConeClient : IDisposable
 
             return await tcs.Task;
         }
-        catch
+        catch(Exception exception)
         {
             _pendingRequests.TryRemove(id, out _);
-            throw;
+            OnError?.Invoke(this, exception);
+            return null;
         }
     }
 

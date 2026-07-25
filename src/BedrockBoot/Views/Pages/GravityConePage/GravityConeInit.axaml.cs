@@ -94,6 +94,7 @@ public partial class GravityConeInit : UserControl
                 {
                     Title = "获取 Xbox 用户失败",
                     Content = "无法获取 Xbox 用户，请尝试重新登录 Xbox 账户",
+                    CloseButtonText = "确定",
                     CloseAction = () => { MainPage.Instance.SelTag.SelectedIndex = 0; }
                 });
             });
@@ -133,28 +134,45 @@ public partial class GravityConeInit : UserControl
 
         GlobalModel.GravityConeClient.OnEvent += (sender, eventArgs) =>
         {
-            if (eventArgs.Event == "paperconnect.connection.error")
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
                 MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
-                DialogHost.Show(new()
+                if (eventArgs.Event == "paperconnect.connection.error")
                 {
-                    Title = "出现错误",
-                    Content = "当前无法与游戏进行通讯，请联系开发者并向开发者提供信息",
-                    CloseButtonText = "确定"
-                });
-            }
+                    DialogHost.Show(new()
+                    {
+                        Title = "出现错误",
+                        Content = "当前无法与游戏进行通讯，请联系开发者并向开发者提供信息",
+                        CloseButtonText = "确定"
+                    });
+                }
 
-            if (eventArgs.Event == "paperconnect.connection.port_busy")
+                if (eventArgs.Event == "paperconnect.connection.port_busy")
+                {
+                    DialogHost.Show(new()
+                    {
+                        Title = "出现错误",
+                        Content = "目标端口被游戏占用，请确保当前后台无游戏运行。\n" +
+                                  "成功进入房间后即可启动游戏",
+                        CloseButtonText = "确定"
+                    });
+                }
+            });
+        };
+
+        GlobalModel.GravityConeClient.OnError += (sender, eventArgs) =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
                 MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
+
                 DialogHost.Show(new()
                 {
                     Title = "出现错误",
-                    Content = "目标端口被游戏占用，请确保当前后台无游戏运行。\n" +
-                              "成功进入房间后即可启动游戏",
+                    Content = eventArgs.Message,
                     CloseButtonText = "确定"
                 });
-            }
+            });
         };
 
         Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>

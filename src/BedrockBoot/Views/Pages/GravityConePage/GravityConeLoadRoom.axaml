@@ -1,0 +1,32 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.GravityConePage.GravityConeLoadRoom">
+    <StackPanel Spacing="8"
+                Margin="0,0,20,0">
+        <TextBlock FontWeight="Bold"
+                   FontSize="14">
+            联机大厅
+        </TextBlock>
+        
+        <DockPanel HorizontalSpacing="8"
+                   Name="SearchGame">
+            <TextBlock Text="搜索局域网游戏"></TextBlock>
+        
+            <ProgressBar HorizontalAlignment="Stretch"
+                         VerticalAlignment="Center"
+                         Name="LoadCreateBar"
+                         IsIndeterminate="True"></ProgressBar>
+        </DockPanel>
+
+        <onePointControls:SettingCard Header="退出"
+                                      Description="停止创建/加入房间并退出"
+                                      IsClickable="True"
+                                      Click="CloseBtn_OnClick"
+                                      Name="CloseBtn"
+                                      Glyph="&#xE711;" />
+    </StackPanel>
+</UserControl>

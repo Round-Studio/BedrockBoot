@@ -38,18 +38,11 @@ public class RoomCreateResult
 public class RoomJoinResult
 {
     [JsonPropertyName("room_code")] public string RoomCode { get; set; } = string.Empty;
-
     [JsonPropertyName("host_address")] public string HostAddress { get; set; } = string.Empty;
-
     [JsonPropertyName("game_port")] public int GamePort { get; set; }
-
     [JsonPropertyName("connected")] public bool Connected { get; set; }
-
     [JsonPropertyName("online_count")] public int OnlineCount { get; set; }
-
-    [JsonPropertyName("players")] public PlayerInfo[] Players { get; set; } = Array.Empty<PlayerInfo>();
-
+    [JsonPropertyName("players")] public List<PlayerInfo> Players { get; set; } = new();
     [JsonPropertyName("protocol")] public string Protocol { get; set; } = string.Empty;
-
     [JsonPropertyName("sub_protocol")] public string? SubProtocol { get; set; }
 }

@@ -32,7 +32,14 @@ public partial class MainGravityConePage : BedrockBootPage
             }
             else if (GlobalModel.GravityConeClient != null)
             {
-                NavigationFrame.NavigateTo(new GravityConeRoot());
+                if (GlobalModel.CurrentRoomState != null)
+                {
+                    NavigationFrame.NavigateTo(new GravityConeRoom());
+                }
+                else
+                {
+                    NavigationFrame.NavigateTo(new GravityConeRoot());
+                }
             }
         }
     }

@@ -1,17 +1,8 @@
-﻿using BedrockBoot.Lip;
-using BedrockBoot.Base.Entry.Progress;
+﻿using BedrockBoot.GravityCone;
 
-var lipCore = new LipCore("github.com/LiteLDev/LeviLamina#client@26.20.4");
+var client = new GravityConeClient();
+await client.StartAsync(@"E:\gravitycone\gravitycone-cli-windows-amd64.exe", new List<string>(){"wss://center.node.1tmc.top"},"BedrockBoot","BedrockBoot 联机房间");
+var code = await client.CreatePaperConnectRoomAsync("MinecraftYJQ_");   
+Console.WriteLine($@"{code.Code}");
 
-var progress = new Progress<DownloadProgress>(p =>
-{
-    Console.Write($"\r总大小: {p.TotalBytes / 1024 / 1024:F2} MB | " +
-                  $"已下载: {p.DownloadedBytes / 1024 / 1024:F2} MB | " +
-                  $"进度: {p.ProgressPercentage:F2}% | " +
-                  $"速度: {p.BytesPerSecond / 1024 / 1024:F2} MB/s | " +
-                  $"剩余: {p.EstimatedRemainingSeconds:F0}s | " +
-                  $"{p.Message}");
-});
-
-await lipCore.Install("D:\\BedrockBoot\\bedrock_versions\\1.26.2004", progress);
-Console.WriteLine("\n安装完成！");
+client._process.WaitForExit();

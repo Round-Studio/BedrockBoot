@@ -75,7 +75,7 @@ public partial class MainPage : UserControl
                 ItemGlyph = "\uF0B9",
                 ItemText = i18n["MainPage.Nav.Multiplayer"],
                 Tag = "Multiplayer",
-                Page = typeof(MainMultiplayerPage)
+                Page = typeof(MainGravityConePage)
             });
 #endif
         RegisterTopItem(new TopBarItemInfo

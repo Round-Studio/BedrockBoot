@@ -1,0 +1,42 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.GravityConePage.GravityConeInit">
+    <StackPanel Spacing="8"
+                Margin="0,0,20,0">
+        <TextBlock FontWeight="Bold"
+                   FontSize="14">
+            初始化环境中...
+        </TextBlock>
+        
+        <DockPanel HorizontalSpacing="8">
+            <TextBlock Text="获取节点服务器"></TextBlock>
+            
+            <ProgressBar HorizontalAlignment="Stretch"
+                         VerticalAlignment="Center"
+                         Name="LoadGetPeersBar"
+                         IsIndeterminate="True"></ProgressBar>
+        </DockPanel>
+        
+        <DockPanel HorizontalSpacing="8">
+            <TextBlock Text="获取本机账户名"></TextBlock>
+        
+            <ProgressBar HorizontalAlignment="Stretch"
+                         VerticalAlignment="Center"
+                         Name="LoadGetXboxUserBar"
+                         IsIndeterminate="True"></ProgressBar>
+        </DockPanel>
+        
+        <DockPanel HorizontalSpacing="8">
+            <TextBlock Text="初始化联机核心"></TextBlock>
+        
+            <ProgressBar HorizontalAlignment="Stretch"
+                         VerticalAlignment="Center"
+                         Name="LoadInitBar"
+                         IsIndeterminate="True"></ProgressBar>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

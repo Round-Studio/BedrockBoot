@@ -98,7 +98,7 @@ public class LipCore
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"发生错误: {ex.Message}");
+            Console.WriteLine($@"发生错误: {ex.Message}");
             throw;
         }
     }
@@ -129,7 +129,7 @@ public class LipCore
             if (dest.StartsWith(mapping.src))
             {
                 result = dest.Replace(mapping.src, mapping.dest);
-                Console.WriteLine($"路径映射: {dest} -> {result}");
+                Console.WriteLine($@"路径映射: {dest} -> {result}");
                 break;
             }
         }
@@ -142,7 +142,7 @@ public class LipCore
         {
             if (tooth.Contains(skipTooth))
             {
-                Console.WriteLine($"跳过依赖: {tooth}");
+                Console.WriteLine($@"跳过依赖: {tooth}");
                 return true;
             }
         }
@@ -158,7 +158,7 @@ public class LipCore
 
         if (string.IsNullOrEmpty(tagName))
         {
-            Console.WriteLine($"可用tags: {string.Join(", ", tags.Take(10))}...");
+            Console.WriteLine($@"可用tags: {string.Join(", ", tags.Take(10))}...");
             throw new Exception($"找不到匹配的版本: {_version}");
         }
 
@@ -184,13 +184,13 @@ public class LipCore
         if (variant == null)
             throw new Exception("没有找到合适的 variant");
 
-        Console.WriteLine($"正在安装 {_tooth}@{_version} (label: {_label})");
+        Console.WriteLine($@"正在安装 {_tooth}@{_version} (label: {_label})");
 
         await InstallDependencies(variant.Dependencies, progressCallback);
 
         if (variant.Assets == null || variant.Assets.Count == 0)
         {
-            Console.WriteLine($"没有需要下载的资源: {_tooth}");
+            Console.WriteLine($@"没有需要下载的资源: {_tooth}");
             return;
         }
 
@@ -216,7 +216,7 @@ public class LipCore
 
             if (asset.Urls == null || asset.Urls.Count == 0)
             {
-                Console.WriteLine($"Asset 类型 {asset.Type} 没有 URLs，跳过");
+                Console.WriteLine($@"Asset 类型 {asset.Type} 没有 URLs，跳过");
                 Interlocked.Increment(ref completedAssets);
                 continue;
             }
@@ -237,7 +237,7 @@ public class LipCore
 
                 if (File.Exists(cachePath))
                 {
-                    Console.WriteLine($"缓存文件已存在: {fileName}");
+                    Console.WriteLine($@"缓存文件已存在: {fileName}");
                     await ProcessZipAsset(asset, cachePath, extractPath);
                     Interlocked.Increment(ref completedAssets);
                     continue;
@@ -263,12 +263,12 @@ public class LipCore
                 {
                     if (downloadTask.Result)
                     {
-                        Console.WriteLine($"下载完成: {fileName}");
+                        Console.WriteLine($@"下载完成: {fileName}");
                         await ProcessZipAsset(asset, cachePath, extractPath);
                     }
                     else
                     {
-                        Console.WriteLine($"下载失败: {fileName}");
+                        Console.WriteLine($@"下载失败: {fileName}");
                     }
 
                     Interlocked.Increment(ref completedAssets);
@@ -280,20 +280,20 @@ public class LipCore
         }
 
         await Task.WhenAll(downloadTasks);
-        Console.WriteLine($"安装完成: {_tooth}@{_version}");
+        Console.WriteLine($@"安装完成: {_tooth}@{_version}");
     }
 
     private async Task ProcessZipAsset(Asset asset, string zipPath, string extractPath)
     {
         if (asset.Placements == null || asset.Placements.Count == 0)
         {
-            Console.WriteLine($"ZIP 文件没有 placements 配置: {zipPath}");
+            Console.WriteLine($@"ZIP 文件没有 placements 配置: {zipPath}");
             return;
         }
 
         if (Directory.Exists(extractPath))
         {
-            Console.WriteLine($"已解压: {extractPath}");
+            Console.WriteLine($@"已解压: {extractPath}");
             await ApplyPlacements(asset, extractPath);
             return;
         }
@@ -302,15 +302,15 @@ public class LipCore
 
         try
         {
-            Console.WriteLine($"解压 ZIP: {zipPath}");
+            Console.WriteLine($@"解压 ZIP: {zipPath}");
             ZipFile.ExtractToDirectory(zipPath, extractPath);
-            Console.WriteLine($"解压完成: {extractPath}");
+            Console.WriteLine($@"解压完成: {extractPath}");
 
             await ApplyPlacements(asset, extractPath);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"处理 ZIP 失败: {ex.Message}");
+            Console.WriteLine($@"处理 ZIP 失败: {ex.Message}");
             throw;
         }
     }
@@ -332,13 +332,13 @@ public class LipCore
 
                 if (!File.Exists(srcFile))
                 {
-                    Console.WriteLine($"源文件不存在: {srcFile}");
+                    Console.WriteLine($@"源文件不存在: {srcFile}");
                     continue;
                 }
 
                 Directory.CreateDirectory(Path.GetDirectoryName(destFile)!);
                 File.Copy(srcFile, destFile, true);
-                Console.WriteLine($"已复制文件: {placement.Src} -> {destFile}");
+                Console.WriteLine($@"已复制文件: {placement.Src} -> {destFile}");
             }
             else if (placement.Type == "dir")
             {
@@ -347,7 +347,7 @@ public class LipCore
 
                 if (!Directory.Exists(srcPath))
                 {
-                    Console.WriteLine($"源目录不存在: {srcPath}");
+                    Console.WriteLine($@"源目录不存在: {srcPath}");
                     continue;
                 }
 
@@ -359,12 +359,12 @@ public class LipCore
                     var targetFile = Path.Combine(destPath, relativePath);
                     Directory.CreateDirectory(Path.GetDirectoryName(targetFile)!);
                     File.Copy(file, targetFile, true);
-                    Console.WriteLine($"已复制目录: {relativePath} -> {targetFile}");
+                    Console.WriteLine($@"已复制目录: {relativePath} -> {targetFile}");
                 }
             }
             else
             {
-                Console.WriteLine($"未知的 placement 类型: {placement.Type}");
+                Console.WriteLine($@"未知的 placement 类型: {placement.Type}");
             }
         }
     }
@@ -400,11 +400,11 @@ public class LipCore
 
                     Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
                     await File.WriteAllBytesAsync(destPath, fileContent);
-                    Console.WriteLine($"已复制文件: {placement.Src} -> {destPath}");
+                    Console.WriteLine($@"已复制文件: {placement.Src} -> {destPath}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"处理 self asset (file) 失败: {ex.Message}");
+                    Console.WriteLine($@"处理 self asset (file) 失败: {ex.Message}");
                     throw;
                 }
             }
@@ -438,19 +438,19 @@ public class LipCore
 
                             Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
                             await File.WriteAllBytesAsync(destPath, fileContent);
-                            Console.WriteLine($"已复制: {content.Path} -> {destPath}");
+                            Console.WriteLine($@"已复制: {content.Path} -> {destPath}");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"处理 self asset (dir) 失败: {ex.Message}");
+                    Console.WriteLine($@"处理 self asset (dir) 失败: {ex.Message}");
                     throw;
                 }
             }
             else
             {
-                Console.WriteLine($"未知的 placement 类型: {placement.Type}");
+                Console.WriteLine($@"未知的 placement 类型: {placement.Type}");
             }
         }
     }
@@ -461,7 +461,7 @@ public class LipCore
         if (dependencies == null || dependencies.Count == 0)
             return;
 
-        Console.WriteLine($"开始安装 {dependencies.Count} 个依赖...");
+        Console.WriteLine($@"开始安装 {dependencies.Count} 个依赖...");
 
         var dependencyTasks = dependencies
             .Where(dep => !ShouldSkipDependency(dep.Key))
@@ -481,14 +481,14 @@ public class LipCore
             {
                 try
                 {
-                    Console.WriteLine($"开始安装依赖: {dep.Key} ({versionRange})");
+                    Console.WriteLine($@"开始安装依赖: {dep.Key} ({versionRange})");
                     var depCore = new LipCore(depTooth);
                     await depCore.Install(_installFolder, progressCallback);
-                    Console.WriteLine($"依赖 {dep.Key} 安装完成");
+                    Console.WriteLine($@"依赖 {dep.Key} 安装完成");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"安装依赖 {dep.Key} 失败: {ex.Message}");
+                    Console.WriteLine($@"安装依赖 {dep.Key} 失败: {ex.Message}");
                     throw;
                 }
             });
@@ -496,11 +496,11 @@ public class LipCore
 
         if (dependencyTasks.Count == 0)
         {
-            Console.WriteLine("所有依赖都已跳过");
+            Console.WriteLine(@"所有依赖都已跳过");
             return;
         }
 
         await Task.WhenAll(dependencyTasks);
-        Console.WriteLine("所有依赖安装完成");
+        Console.WriteLine(@"所有依赖安装完成");
     }
 }

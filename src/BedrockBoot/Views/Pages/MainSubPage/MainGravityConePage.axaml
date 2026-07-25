@@ -1,0 +1,64 @@
+﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
+                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainGravityConePage">
+    <entry:BedrockBootPage.HeaderView>
+        <onePointControls:LineTextBlock Grid.Row="0"
+                                        Margin="0"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        FontSize="28"
+                                        FontWeight="Bold"
+                                        Text="多人联机" />
+    </entry:BedrockBootPage.HeaderView>
+    <Grid>
+        <Grid ColumnDefinitions="3*,7*"
+              Margin="0,15,0,0">
+            <StackPanel Grid.Column="0"
+                        Margin="20,0,0,0"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14">
+                    简述
+                </TextBlock>
+
+                <TextBlock Text="GravityCone 属于第三方开源软件，在使用过程中遇到问题请通过相关渠道进行反馈。"
+                           TextWrapping="Wrap"
+                           Opacity="0.8" />
+
+                <TextBlock Text="本联机基于协议 PaperConnect v2，使用 P2P 技术进行联机，连接成功后房间内用户将会互相连接，将不会使用第三方服务器转发流量。最终联机体验由网络环境决定"
+                           TextWrapping="Wrap"
+                           Opacity="0.8" />
+
+                <TextBlock Text="多人联机过程中，您务必遵循所在的国家与地区的全部法律法规。"
+                           TextWrapping="Wrap"
+                           Opacity="0.8" />
+
+                <TextBlock FontWeight="Bold"
+                           FontSize="14">
+                    相关链接
+                </TextBlock>
+
+                <StackPanel>
+                    <HyperlinkButton Content="PaperConnect 联机协议"
+                                     NavigateUri="https://docs.roundstudio.top/docs/standard/paperconnect" />
+
+                    <HyperlinkButton Content="GravityCone 开源仓库"
+                                     NavigateUri="https://github.com/Tianpao/GravityCone" />
+
+                    <HyperlinkButton Content="EasyTier 官方网站"
+                                     NavigateUri="https://easytier.cn" />
+                </StackPanel>
+            </StackPanel>
+
+            <navigation:NavigationFrame Margin="10,0,0,0"
+                                        Grid.Column="1"
+                                        Name="MainFrame" />
+        </Grid>
+    </Grid>
+</entry:BedrockBootPage>

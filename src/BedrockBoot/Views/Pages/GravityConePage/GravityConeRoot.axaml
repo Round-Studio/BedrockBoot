@@ -1,0 +1,29 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.GravityConePage.GravityConeRoot">
+    <StackPanel Spacing="8"
+                Margin="0,0,20,0">
+        <TextBlock FontWeight="Bold"
+                   FontSize="14">
+            联机大厅 (联机核心已初始化完毕)
+        </TextBlock>
+
+        <onePointControls:SettingCard Header="创建房间"
+                                      Description="创建一个你自己的房间，并邀请你的好友加入"
+                                      IsClickable="True"
+                                      Name="CreateRoom"
+                                      Click="CreateRoom_OnClick"
+                                      Glyph="&#xE8CE;" />
+
+        <onePointControls:SettingCard Header="加入房间"
+                                      Description="加入你好友的房间，加入游戏"
+                                      IsClickable="True"
+                                      Name="LinkRoom"
+                                      Click="LinkRoom_OnClick"
+                                      Glyph="&#xECC8;" />
+    </StackPanel>
+</UserControl>

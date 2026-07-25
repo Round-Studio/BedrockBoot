@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using BedrockBoot.Core.Models.Xbox;
 using BedrockBoot.GravityCone;
 using BedrockBoot.GravityCone.Entry;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -124,7 +126,9 @@ public partial class GravityConeInit : UserControl
     {
         await Task.Delay(100);
         GlobalModel.GravityConeClient = new GravityConeClient();
-        await GlobalModel.GravityConeClient.StartAsync(@"E:\gravitycone\gravitycone-cli-windows-amd64.exe",
+        await GlobalModel.GravityConeClient.StartAsync(
+            Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath,
+                "gravitycone-cli-windows-amd64.exe"),
             GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", "BedrockBoot 联机房间");
 
         GlobalModel.GravityConeClient.OnEvent += (sender, eventArgs) =>
@@ -139,6 +143,7 @@ public partial class GravityConeInit : UserControl
                     CloseButtonText = "确定"
                 });
             }
+
             if (eventArgs.Event == "paperconnect.connection.port_busy")
             {
                 MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());

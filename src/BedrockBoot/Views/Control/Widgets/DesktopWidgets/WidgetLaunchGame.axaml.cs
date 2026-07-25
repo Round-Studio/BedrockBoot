@@ -22,7 +22,7 @@ public partial class WidgetLaunchGame : IWidgetTemplated
 {
     private bool _isUpdating;
     private bool _hasValidGame;
-
+    private ImageLoader _imageLoader = new ImageLoader();
     public WidgetLaunchGame()
     {
         SupportWidgetSize = new()
@@ -44,6 +44,12 @@ public partial class WidgetLaunchGame : IWidgetTemplated
         };
 
         LaunchButton.Click += LaunchButton_OnClick;
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     private Bitmap GetImage(string url)
@@ -116,7 +122,7 @@ public partial class WidgetLaunchGame : IWidgetTemplated
 
         GameNameText.Text = version.Info.VersionName;
         GameVersionText.Text = version.Info.Version;
-        GameIcon.Source = await ImageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(version));
+        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(version));
         LaunchButton.IsEnabled = true;
         _hasValidGame = true;
     }

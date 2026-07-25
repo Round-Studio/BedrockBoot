@@ -11,9 +11,16 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class InstancePluginItem : UserControl
 {
+	private ImageLoader _imageLoader = new ImageLoader();
     public InstancePluginItem()
     {
         InitializeComponent();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     public InstancePluginItem(IInstancePlugin plugin) : this()
@@ -47,7 +54,7 @@ public partial class InstancePluginItem : UserControl
         if (!string.IsNullOrEmpty(InstancePlugin.Icon))
             try
             {
-                var icon = await ImageLoader.LoadIconAsync(InstancePlugin.Icon);
+                var icon = await _imageLoader.LoadIconAsync(InstancePlugin.Icon);
                 if (icon != null)
                 {
                     Card.IsFontIcon = false;

@@ -24,10 +24,12 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceInfo : UserControl
 {
+	private ImageLoader _imageLoader = new ImageLoader();
+	
     public InstanceInfo()
     {
         IsEdit = false;
-
+       
         InitializeComponent();
 
 #if LINUX
@@ -101,6 +103,7 @@ public partial class InstanceInfo : UserControl
             IsEdit = true;
         });
     }
+    
 
     private async Task UpdateImage()
     {
@@ -112,7 +115,7 @@ public partial class InstanceInfo : UserControl
 
         IconBox.Update(image);
         
-        GameIcon.Source = await ImageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
+        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
     }
 
     private void TextTypeConfig_OnChanged(object? sender, TextChangedEventArgs e)
@@ -212,6 +215,7 @@ public partial class InstanceInfo : UserControl
         // 停止定时刷新
         StopPlayTimeRefresh();
         base.OnUnloaded(e);
+        _imageLoader.Dispose();
     }
 
     private void BoolTypeConfig_OnChanged(object? sender, RoutedEventArgs e)

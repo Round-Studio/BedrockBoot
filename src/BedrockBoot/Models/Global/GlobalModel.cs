@@ -33,7 +33,6 @@ public class GlobalModel
     public static Action? MainPageUpdateInstance { get; set; }
 
     public static ProtocolService ProtocolService { get; set; } = new();
-    public static ImageLoader ImageLoader { get; set; } = new();
     public static PaperConnectCore PaperConnectCore { get; set; }
     public static List<string> ETPublicServer { get; set; }
     public static XboxUserInfo XboxUserInfo { get; set; }

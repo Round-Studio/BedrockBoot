@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum;
@@ -22,9 +24,11 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 public partial class ResultRoot : UserControl
 {
+	private ImageLoader imageLoader = new ImageLoader();
     public ResultRoot()
     {
         InitializeComponent();
+       
     }
 
     public ResultRoot(SearchResultItemInfo info) : this()
@@ -32,6 +36,12 @@ public partial class ResultRoot : UserControl
         SearchResultItemInfo = info;
         // 触发异步更新，不阻塞 UI 线程
         _ = UpdateAsync();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    imageLoader.Dispose();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
@@ -80,10 +90,12 @@ public partial class ResultRoot : UserControl
         }
 
         // 5. 异步图标加载
-        var icon = await ImageLoader.LoadIconAsync(SearchResultItemInfo.IconUri);
-        if (icon != null)
+        var icon = await imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
+	
+
+		if (icon != null)
         {
-            IconBox.Source = icon;
+			IconBox.Source = icon;
             ResourceIcon.Source = icon;
             ResourceIconIcon.IsVisible = false;
             IconFont.IsVisible = false;

@@ -31,7 +31,7 @@ public partial class SearchDefault : UserControl
     private bool _resourceLoadSuccess;
 
     private bool _versionLoadSuccess;
-
+    private ImageLoader _imageLoader = new ImageLoader();
     public SearchDefault()
     {
         InitializeComponent();
@@ -44,6 +44,11 @@ public partial class SearchDefault : UserControl
     }
 
     private static I18nManager i18n => I18nManager.Instance;
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
+    }
 
     private void LoadSearchHistory()
     {
@@ -196,8 +201,8 @@ public partial class SearchDefault : UserControl
 
             var tasks = new[]
             {
-                ImageLoader.LoadIconAsync(plugin1.IconUrl),
-                ImageLoader.LoadIconAsync(plugin2.IconUrl)
+                _imageLoader.LoadIconAsync(plugin1.IconUrl),
+                _imageLoader.LoadIconAsync(plugin2.IconUrl)
             };
 
             await Task.WhenAll(tasks);

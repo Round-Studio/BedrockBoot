@@ -6,7 +6,6 @@
                        xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
                        xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
                        xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
-                       xmlns:localItems="clr-namespace:BedrockBoot.Views.Control.Items"
                        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                        x:Class="BedrockBoot.Views.Pages.MainSubPage.MainManager">
     <entry:BedrockBootPage.HeaderView>
@@ -148,23 +147,13 @@
                                     <VirtualizingStackPanel Orientation="Vertical" />
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
-                            <!-- ItemsSource 绑定的是数据（VersionConfig），由模板按需实例化 GameItem。
-                                 若直接把构造好的控件列表赋给 ItemsSource，虚拟化将完全失效。 -->
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <localItems:GameItem />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
                             <ListBox.Styles>
                                 <Style Selector="ListBoxItem">
                                     <Setter Property="Margin" Value="0,0,0,8" />
                                     <Setter Property="MinHeight" Value="0" />
                                     <Setter Property="Template">
                                         <ControlTemplate>
-                                            <!-- 必须同时转发 ContentTemplate，
-                                                 否则 ItemTemplate 不生效，会直接显示数据对象的 ToString() -->
-                                            <ContentPresenter Content="{TemplateBinding Content}"
-                                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                            <ContentPresenter Content="{TemplateBinding Content}" />
                                         </ControlTemplate>
                                     </Setter>
                                 </Style>

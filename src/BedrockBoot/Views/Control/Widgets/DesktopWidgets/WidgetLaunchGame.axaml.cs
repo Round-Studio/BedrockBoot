@@ -22,7 +22,7 @@ public partial class WidgetLaunchGame : IWidgetTemplated
 {
     private bool _isUpdating;
     private bool _hasValidGame;
-    private ImageLoader _imageLoader = ImageLoader.Shared;
+    private ImageLoader _imageLoader = new ImageLoader();
     public WidgetLaunchGame()
     {
         SupportWidgetSize = new()
@@ -35,25 +35,21 @@ public partial class WidgetLaunchGame : IWidgetTemplated
 
         _ = UpdateUIAsync();
 
-        // 使用具名方法订阅，保证卸载时能真正取消订阅（lambda 无法被 -= 移除）
-        GlobalModel.Config.AfterSave += OnConfigAfterSave;
+        GlobalModel.Config.AfterSave += async (sender, args) =>
+        {
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await UpdateUIAsync();
+            });
+        };
 
         LaunchButton.Click += LaunchButton_OnClick;
-    }
-
-    private async void OnConfigAfterSave(object? sender, EventArgs args)
-    {
-        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            await UpdateUIAsync();
-        });
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
     {
 	    base.OnUnloaded(e);
-	    // AfterSave 挂在全局配置对象上，不取消订阅会永久持有本控件
-	    GlobalModel.Config.AfterSave -= OnConfigAfterSave;
+	    _imageLoader.Dispose();
     }
 
     private Bitmap GetImage(string url)

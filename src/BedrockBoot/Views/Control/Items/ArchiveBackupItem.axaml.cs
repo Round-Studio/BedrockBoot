@@ -64,8 +64,7 @@ public partial class ArchiveBackupItem : UserControl
         try
         {
             using var stream = File.OpenRead(path);
-            // 备份截图原图分辨率高而展示区域小，解码时直接降采样以节省内存
-            var bitmap = Bitmap.DecodeToWidth(stream, 256);
+            var bitmap = new Bitmap(stream);
             ImageBox.Background = new ImageBrush
             {
                 Stretch = Stretch.UniformToFill,

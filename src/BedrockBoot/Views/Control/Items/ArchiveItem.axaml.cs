@@ -62,9 +62,7 @@ public partial class ArchiveItem : UserControl
         try
         {
             using var stream = File.OpenRead(path);
-            // 世界截图原图可达游戏分辨率（1080p+），而展示区域仅约 120px 宽。
-            // 解码时直接降采样，避免全分辨率位图常驻内存。256px 已覆盖 2x DPI。
-            var bitmap = Bitmap.DecodeToWidth(stream, 256);
+            var bitmap = new Bitmap(stream);
             ImageBox.Background = new ImageBrush
             {
                 Stretch = Stretch.UniformToFill,

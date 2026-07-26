@@ -2,22 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:items="clr-namespace:BedrockBoot.Views.Control.Items"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.UpdateContent.UpdateChooseVersion">
-    <!-- 版本列表通常有数百项，必须走虚拟化：
-         ItemsSource 绑定数据（BuildInfo），由 ItemTemplate 按需实例化条目控件。 -->
     <ListBox Name="VersionsBox"
              Padding="15,0">
-        <ListBox.ItemsPanel>
-            <ItemsPanelTemplate>
-                <VirtualizingStackPanel Orientation="Vertical" />
-            </ItemsPanelTemplate>
-        </ListBox.ItemsPanel>
-        <ListBox.ItemTemplate>
-            <DataTemplate>
-                <items:GameDownloadListBoxItem />
-            </DataTemplate>
-        </ListBox.ItemTemplate>
+        
     </ListBox>
 </UserControl>

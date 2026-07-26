@@ -85,20 +85,11 @@ public partial class LevelSettingsPack : UserControl
         UpdateUi();
     }
 
-    private readonly Models.Helper.UiDebouncer _searchDebouncer = new();
-
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         if (SearchBox != null)
         {
-            // UpdateUi 会重建资源包列表，逐字符触发时做防抖
-            _searchDebouncer.Debounce(() => UpdateUi());
+            UpdateUi();
         }
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-        base.OnUnloaded(e);
-        _searchDebouncer.Dispose();
     }
 }

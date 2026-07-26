@@ -119,45 +119,24 @@ public partial class MainPage : UserControl
             await UpdateUIAsync();
         };
 
-        // 使用具名方法订阅，保证卸载时能真正取消订阅（lambda 无法被 -= 移除）
-        GlobalModel.Config.AfterSave += OnConfigAfterSave;
+        var sel = -1;
+        var count = -1;
+        GlobalModel.Config.AfterSave += async (sender, args) =>
+        {
+            if ((GlobalModel.Config.Data.GameFolderSelIndex != sel ||
+                 GlobalModel.Config.Data.GameFolders.Count != count) &&
+                IsEditMode)
+            {
+                count = GlobalModel.Config.Data.GameFolders.Count;
+                sel = GlobalModel.Config.Data.GameFolderSelIndex;
 
-        _updateInstanceHandler = () =>
+                await Dispatcher.UIThread.InvokeAsync(async () => await UpdateUIAsync());
+            }
+        };
+        Models.Global.GlobalModel.MainPageUpdateInstance = () =>
         {
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() => UpdateUIAsync());
         };
-        Models.Global.GlobalModel.MainPageUpdateInstance = _updateInstanceHandler;
-    }
-
-    private int _lastFolderSel = -1;
-    private int _lastFolderCount = -1;
-
-    /// <summary>持有回调委托引用，便于卸载时精确解绑静态字段</summary>
-    private Action? _updateInstanceHandler;
-
-    private async void OnConfigAfterSave(object? sender, EventArgs args)
-    {
-        if ((GlobalModel.Config.Data.GameFolderSelIndex != _lastFolderSel ||
-             GlobalModel.Config.Data.GameFolders.Count != _lastFolderCount) &&
-            IsEditMode)
-        {
-            _lastFolderCount = GlobalModel.Config.Data.GameFolders.Count;
-            _lastFolderSel = GlobalModel.Config.Data.GameFolderSelIndex;
-
-            await Dispatcher.UIThread.InvokeAsync(async () => await UpdateUIAsync());
-        }
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-        base.OnUnloaded(e);
-
-        // AfterSave 挂在全局配置对象上，不取消订阅会永久持有整个页面
-        GlobalModel.Config.AfterSave -= OnConfigAfterSave;
-
-        // 静态字段持有本页面实例，导航离开后需要清理
-        if (ReferenceEquals(Models.Global.GlobalModel.MainPageUpdateInstance, _updateInstanceHandler))
-            Models.Global.GlobalModel.MainPageUpdateInstance = null;
     }
 
     public bool IsEditMode { get; set; }

@@ -34,29 +34,25 @@
                 </Button>
             </Grid>
 
-            <!-- ListBox 自带 ScrollViewer，若再外套一层 ScrollViewer 会使其获得无限高度约束，导致虚拟化失效 -->
-            <ListBox Grid.Row="1"
-                     Name="HistoryList"
-                     Margin="0,0,16,0"
-                     Background="Transparent"
-                     Padding="0">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel Orientation="Vertical" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.Styles>
-                    <Style Selector="ListBoxItem">
-                        <Setter Property="Margin" Value="0,0,0,8" />
-                        <Setter Property="MinHeight" Value="0" />
-                        <Setter Property="Template">
-                            <ControlTemplate>
-                                <ContentPresenter Content="{TemplateBinding Content}" />
-                            </ControlTemplate>
-                        </Setter>
-                    </Style>
-                </ListBox.Styles>
-            </ListBox>
+            <ScrollViewer Grid.Row="1"
+                          Name="HistoryListScrollViewer">
+                <ListBox Name="HistoryList"
+                         Margin="0,0,16,0"
+                         Background="Transparent"
+                         Padding="0">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Margin" Value="0,0,0,8" />
+                            <Setter Property="MinHeight" Value="0" />
+                            <Setter Property="Template">
+                                <ControlTemplate>
+                                    <ContentPresenter Content="{TemplateBinding Content}" />
+                                </ControlTemplate>
+                            </Setter>
+                        </Style>
+                    </ListBox.Styles>
+                </ListBox>
+            </ScrollViewer>
 
             <notice:InfoCard Grid.Row="1"
                              VerticalAlignment="Center"

@@ -17,18 +17,10 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class CurseForgeModItem : UserControl
 {
-	private ImageLoader _imageLoader = ImageLoader.Shared;
+	private ImageLoader _imageLoader = new ImageLoader();
     public CurseForgeModItem()
     {
         InitializeComponent();
-
-        // 作为 DataTemplate 使用时，虚拟化回收/复用容器会重新赋 DataContext
-        DataContextChanged += (_, _) =>
-        {
-            if (DataContext is not CurseForgeResponse.ModData data) return;
-            ModData = data;
-            _ = UpdateAsync();
-        };
     }
 
     public CurseForgeModItem(CurseForgeResponse.ModData modData) : this()
@@ -36,6 +28,12 @@ public partial class CurseForgeModItem : UserControl
         ModData = modData;
         // 触发异步更新
         _ = UpdateAsync();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
@@ -64,8 +62,7 @@ public partial class CurseForgeModItem : UserControl
                     Margin = new Thickness(4, 0)
                 });
 
-        // 3. 复位图标状态后再异步加载（控件被复用时避免残留上一条数据的图标）
-        Card.ImageIcon = null;
+        // 3. 异步加载图标（非阻塞）
         await LoadThumbnailAsync();
     }
 
@@ -73,18 +70,14 @@ public partial class CurseForgeModItem : UserControl
     {
         if (ModData.Logo?.ThumbnailUrl == null) return;
 
-        // 记录当前请求对应的数据，避免图片返回时控件已被复用给另一条数据
-        var requested = ModData;
-
         try
         {
             // 修正：使用 await 替代 .Result，防止阻塞 UI 线程或造成死锁
-            var image = await _imageLoader.LoadImageBrushAsync(requested.Logo.ThumbnailUrl);
+            var image = await _imageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl);
 
             if (image != null)
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    if (!ReferenceEquals(requested, ModData)) return;
                     Card.IsFontIcon = false;
                     Card.ImageIcon = image;
                 });

@@ -24,7 +24,7 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
 public partial class InstanceInfo : UserControl
 {
-	private ImageLoader _imageLoader = ImageLoader.Shared;
+	private ImageLoader _imageLoader = new ImageLoader();
 	
     public InstanceInfo()
     {
@@ -215,6 +215,7 @@ public partial class InstanceInfo : UserControl
         // 停止定时刷新
         StopPlayTimeRefresh();
         base.OnUnloaded(e);
+        _imageLoader.Dispose();
     }
 
     private void BoolTypeConfig_OnChanged(object? sender, RoutedEventArgs e)

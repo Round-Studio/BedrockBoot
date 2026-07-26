@@ -18,7 +18,7 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameResourcePackItem : UserControl
 {
-	private ImageLoader _imageLoader = ImageLoader.Shared;
+	private ImageLoader _imageLoader = new ImageLoader();
     public GameResourcePackItem()
     {
         InitializeComponent();
@@ -34,6 +34,11 @@ public partial class GameResourcePackItem : UserControl
     private static I18nManager i18n => I18nManager.Instance;
     public Action? RefreshCallBack { get; set; }
     public ResourcePackManifest ResourcePackManifest { get; set; } = null!;
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
+    }
 
     public async Task UpdateUI()
     {

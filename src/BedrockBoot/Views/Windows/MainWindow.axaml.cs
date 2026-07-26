@@ -86,11 +86,9 @@ public partial class MainWindow : Window
         else MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();
 
-        // 绑定回调（保存委托引用，便于窗口关闭时精确解绑）
-        _taskChangedHandler = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
-        _launchedBehaviorHandler = () => Dispatcher.UIThread.Invoke(RunBehavior);
-        GlobalModel.TaskManager.OnChanged += _taskChangedHandler;
-        EasyLauncher.LaunchedBehavior = _launchedBehaviorHandler;
+        // 绑定回调
+        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
+        EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Invoke(RunBehavior);
 
         SetupDynamicHotkey();
         StartNetworkMonitoring();
@@ -123,15 +121,6 @@ public partial class MainWindow : Window
         {
             Core.Global.GlobalModel.Config.AfterSave -= OnConfigAfterSave;
             PropertyChanged -= OnSelfPropertyChanged;
-
-            // 这两个静态字段捕获了 this，不清理会让 MainWindow 在进程生命周期内无法回收
-            if (ReferenceEquals(EasyLauncher.LaunchedBehavior, _launchedBehaviorHandler))
-                EasyLauncher.LaunchedBehavior = null;
-            if (_taskChangedHandler != null)
-                GlobalModel.TaskManager.OnChanged -= _taskChangedHandler;
-
-            // 退出前把防抖队列中尚未落盘的配置修改写入磁盘
-            Core.Global.ConfigSaveScheduler.Flush();
         };
 
         RefreshWindowChrome();
@@ -580,52 +569,32 @@ public partial class MainWindow : Window
 
     #region 任务与交互
 
-    private DispatcherTimer? _taskRefreshTimer;
-
-    /// <summary>持有回调委托引用，便于窗口关闭时精确解绑静态字段</summary>
-    private Action? _taskChangedHandler;
-
-    private Action? _launchedBehaviorHandler;
-
     public void InitRefreshTaskItemTask()
     {
-        // 原实现为 Task.Run + while(true) + Thread.Sleep(30000)：
-        // 占用一个永不退出且不可取消的线程，并以阻塞方式回调 UI 线程。
-        // 改为 DispatcherTimer，可随窗口关闭停止。
-        _taskRefreshTimer = new DispatcherTimer
+        Task.Run(() =>
         {
-            Interval = TimeSpan.FromSeconds(30)
-        };
-        _taskRefreshTimer.Tick += (_, _) => UpdateTaskUI();
-        _taskRefreshTimer.Start();
-
-        Closed += (_, _) => _taskRefreshTimer?.Stop();
-
-        UpdateTaskUI();
+            while (true)
+            {
+                Dispatcher.UIThread.Invoke(UpdateTaskUI);
+                Thread.Sleep(30000);
+            }
+        });
     }
-
-    /// <summary>上次绑定到任务列表的控件集合，用于跳过无变化的重建</summary>
-    private List<Avalonia.Controls.Control>? _lastTaskItems;
 
     public void UpdateTaskUI()
     {
+        TaskList.ItemsSource = null;
         var tasks = GlobalModel.TaskManager.Tasks;
 
         if (tasks.Count == 0)
         {
-            if (_lastTaskItems is { Count: > 0 } || _lastTaskItems == null)
-            {
-                TaskList.ItemsSource = null;
-                _lastTaskItems = new List<Avalonia.Controls.Control>();
-            }
-
-            TaskList.IsVisible = false;
+            TaskViewer.IsVisible = false;
             NoneBox.IsVisible = true;
             TaskInfoText.IsVisible = false;
         }
         else
         {
-            TaskList.IsVisible = true;
+            TaskViewer.IsVisible = true;
             NoneBox.IsVisible = false;
             TaskInfoText.IsVisible = true;
             TaskInfoText.Text = string.Format(I18n["MainWindow.Task.CountInfo"], tasks.Count);
@@ -638,26 +607,9 @@ public partial class MainWindow : Window
                 visible.Add(task.Item);
             }
 
-            // 集合未发生变化时跳过重建：
-            // 该方法每 30 秒被定时调用一次，无条件 ItemsSource=null + 重新赋值
-            // 会导致整个任务列表被拆除并重建，即使内容完全没变。
-            if (IsSameTaskItems(_lastTaskItems, visible)) return;
-
-            TaskList.ItemsSource = null;
+            // 一次性绑定，ListBox + VirtualizingStackPanel 会按需实例化
             TaskList.ItemsSource = visible;
-            _lastTaskItems = visible;
         }
-    }
-
-    /// <summary>按引用逐项比较两个控件集合是否等价</summary>
-    private static bool IsSameTaskItems(
-        List<Avalonia.Controls.Control>? a,
-        List<Avalonia.Controls.Control> b)
-    {
-        if (a == null || a.Count != b.Count) return false;
-        for (var i = 0; i < a.Count; i++)
-            if (!ReferenceEquals(a[i], b[i])) return false;
-        return true;
     }
 
     public void SetReboot()
@@ -1059,46 +1011,10 @@ public partial class MainWindow : Window
         // 否则 Effect 属性没变，过渡不触发、变瞬时切换。
         // BlurEffect 对象本身只是轻量描述符（Radius/...），真正贵的是离屏 layer，
         // 而离屏 layer 由渲染系统管理，与 new 几次 BlurEffect 无关。
-        //
-        // 注意：模糊结束后必须把 Effect 置回 null。只要 Effect 非 null，
-        // 即便 Radius 为 0，渲染系统仍会为整棵内容树分配离屏渲染目标并逐帧合成。
-        if (state)
-        {
-            // 递增 token，作废尚未执行的清理任务
-            _blurClearToken++;
-            ContentView.Effect = new BlurEffect { Radius = 50 };
-            BackgroundGroupBox.Effect = new BlurEffect { Radius = 50 };
-            BackgroundGroupBox.Margin = new Thickness(-50);
-        }
-        else
-        {
-            ContentView.Effect = new BlurEffect { Radius = 0 };
-            BackgroundGroupBox.Effect = new BlurEffect { Radius = 0 };
-            BackgroundGroupBox.Margin = new Thickness(0);
-
-            // 等过渡动画播完再彻底移除 Effect，避免常驻离屏合成
-            _ = ClearBlurEffectAfterTransitionAsync();
-        }
+        ContentView.Effect = new BlurEffect { Radius = state ? 50 : 0 };
+        BackgroundGroupBox.Effect = new BlurEffect { Radius = state ? 50 : 0 };
+        BackgroundGroupBox.Margin = new Thickness(state ? -50 : 0);
     }
-
-    /// <summary>
-    /// 淡出动画结束后移除 Effect，消除非模糊状态下的离屏渲染开销。
-    /// </summary>
-    private async Task ClearBlurEffectAfterTransitionAsync()
-    {
-        var token = ++_blurClearToken;
-
-        // 略长于 XAML 中 EffectTransition 的 0.58s
-        await Task.Delay(650);
-
-        // 期间又被重新打开模糊则放弃本次清理（SetBlurState 会递增 token）
-        if (token != _blurClearToken) return;
-
-        if (ContentView.Effect is BlurEffect { Radius: <= 0 }) ContentView.Effect = null;
-        if (BackgroundGroupBox.Effect is BlurEffect { Radius: <= 0 }) BackgroundGroupBox.Effect = null;
-    }
-
-    private int _blurClearToken;
 
     public async void OpenTaskCard()
     {

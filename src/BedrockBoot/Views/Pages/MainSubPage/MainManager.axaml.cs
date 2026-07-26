@@ -30,10 +30,6 @@ public partial class MainManager : BedrockBootPage
 
     // 用于 FileSystemWatcher 的防抖
     private CancellationTokenSource? _watcherDebounceCts;
-
-    // 用于搜索框输入的防抖，避免逐字符触发全量目录扫描
-    private readonly Models.Helper.UiDebouncer _searchDebouncer = new();
-
     private string SearchKey = "";
 
     public MainManager()
@@ -126,7 +122,6 @@ public partial class MainManager : BedrockBootPage
     {
         base.OnUnloaded(e);
         CleanupConfigWatcher();
-        _searchDebouncer.Dispose();
     }
 
     public void UpdateUI()
@@ -234,13 +229,15 @@ public partial class MainManager : BedrockBootPage
             else if (filter == GameFolderFilterType.PlayTimeDesc)
                 filteredConfigs.Sort((a, b) => -a.PlayerData.TotalPlayTime.CompareTo(b.PlayerData.TotalPlayTime));
 
-            // 直接绑定数据源，由 ItemTemplate 按需实例化 GameItem，保证虚拟化生效。
-            // 旧实现在此处 new 出全部 GameItem 再赋给 ItemsSource，会使虚拟化形同虚设。
+            var gameItems = new List<Avalonia.Controls.Control>(filteredConfigs.Count);
+            foreach (var config in filteredConfigs)
+                gameItems.Add(new GameItem(config));
+
             GameScro.ItemsSource = null;
 
-            if (filteredConfigs.Count > 0)
+            if (gameItems.Count > 0)
             {
-                GameScro.ItemsSource = filteredConfigs;
+                GameScro.ItemsSource = gameItems;
                 GamesLoad.IsVisible = false;
                 GameScro.IsVisible = true;
                 GamesNull.IsVisible = false;
@@ -392,9 +389,7 @@ public partial class MainManager : BedrockBootPage
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         SearchKey = SearchBox.Text?.Trim() ?? "";
-
-        // UpdateGameList 会全量扫描游戏目录并重建列表，逐字符触发代价极高，此处做防抖
-        _searchDebouncer.Debounce(UpdateGameList);
+        UpdateGameList();
     }
 
     private void GameFilterSel_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

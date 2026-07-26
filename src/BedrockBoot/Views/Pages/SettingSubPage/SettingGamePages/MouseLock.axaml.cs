@@ -90,8 +90,7 @@ public partial class MouseLock : ISettingPage
         if (IsEdit)
         {
             GlobalModel.Config.Data.MouseLockWindowTrimming = (int)MouseLockWindowTrimmingNum.Value;
-            // 滑块拖动为高频事件，合并写盘
-            ConfigSaveScheduler.RequestSave();
+            GlobalModel.Config.Save();
         }
     }
 private void MouseLockGetFrameCombo_OnSelectionChanged(object? sender, RoutedEventArgs e)

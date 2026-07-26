@@ -16,7 +16,7 @@ public partial class GameArchivePackItem : UserControl
 {
     private readonly ResourcePackManifest _info;
     private readonly bool _isAct;
-    private ImageLoader _imageLoader = ImageLoader.Shared;
+    private ImageLoader _imageLoader = new ImageLoader();
     public Action<ResourcePackManifest>? ActiveAction { get; set; }
 
     public GameArchivePackItem()
@@ -28,6 +28,12 @@ public partial class GameArchivePackItem : UserControl
         _info = info;
         _isAct = isAct;
         _ = UpdateUi();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+	    base.OnUnloaded(e);
+	    _imageLoader.Dispose();
     }
 
     public async Task UpdateUi()

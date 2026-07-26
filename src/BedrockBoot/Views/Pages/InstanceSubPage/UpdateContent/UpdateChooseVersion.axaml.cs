@@ -27,8 +27,10 @@ public partial class UpdateChooseVersion : UserControl
 
     private void UpdateUi()
     {
-        // 绑定数据源，由 ItemTemplate 按需实例化条目，保证虚拟化生效
-        VersionsBox.ItemsSource = _buildInfos;
+        _buildInfos.ForEach(i =>
+        {
+            VersionsBox.Items.Add(new GameDownloadListBoxItem(i));
+        });
 
         if (_buildInfos.Count > 0)
         {

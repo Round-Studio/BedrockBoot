@@ -73,19 +73,10 @@ public partial class InstanceMods : ISetting
         IsEdit = true;
     }
 
-    private readonly Models.Helper.UiDebouncer _searchDebouncer = new();
-
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         if (IsEdit)
-            // UpdateUI 会重扫模组目录并重建列表，逐字符触发代价高，此处做防抖
-            _searchDebouncer.Debounce(() => UpdateUI());
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-        base.OnUnloaded(e);
-        _searchDebouncer.Dispose();
+            UpdateUI();
     }
 
     /// <summary>

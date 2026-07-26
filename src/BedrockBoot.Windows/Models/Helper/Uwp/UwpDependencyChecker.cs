@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using Windows.Management.Deployment;
 
 namespace BedrockBoot.Models.Helper.Uwp;
 
@@ -16,6 +17,22 @@ public class UwpDependencyChecker
         ("Microsoft.NET.Native.Framework.2.2", "2.2.29512.0"),
         ("Microsoft.GamingServices", "33.108.12001.0")
     };
+
+    /// <summary>
+    /// 缓存已安装包列表。枚举一次约需数十毫秒，而 PowerShell 方案需要 1~3 秒，
+    /// 且启动器运行期间包列表基本不变，因此只在首次调用时枚举。
+    /// </summary>
+    private static Dictionary<string, string>? _cachedPackages;
+
+    private static readonly object CacheLock = new();
+
+    /// <summary>
+    /// 丢弃缓存，用于安装依赖之后重新检测
+    /// </summary>
+    public static void InvalidateCache()
+    {
+        lock (CacheLock) _cachedPackages = null;
+    }
 
     public static List<(string,string)> GetMissingDependencies()
     {
@@ -35,8 +52,70 @@ public class UwpDependencyChecker
 
     private static Dictionary<string, string> GetInstalledUwpPackages()
     {
+        lock (CacheLock)
+        {
+            if (_cachedPackages != null) return _cachedPackages;
+        }
+
         var installedPackages = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        // 优先使用 WinRT API 直接枚举，避免启动 PowerShell 进程
+        if (TryGetPackagesViaWinRt(installedPackages) == false)
+        {
+            // WinRT 不可用时回退到原有的 PowerShell 方案
+            GetInstalledUwpPackagesViaPowerShell(installedPackages);
+        }
+
+        lock (CacheLock)
+        {
+            _cachedPackages = installedPackages;
+        }
+
+        return installedPackages;
+    }
+
+    /// <summary>
+    /// 通过 WinRT PackageManager 枚举当前用户已安装的包
+    /// </summary>
+    private static bool TryGetPackagesViaWinRt(Dictionary<string, string> installedPackages)
+    {
+        try
+        {
+            var manager = new PackageManager();
+
+            // 传入空字符串表示当前用户
+            foreach (var package in manager.FindPackagesForUser(string.Empty))
+            {
+                var id = package.Id;
+                if (id?.Name == null) continue;
+
+                var v = id.Version;
+                var version = $"{v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
+
+                // 同名包保留版本最高的一个
+                if (installedPackages.TryGetValue(id.Name, out var existingVersion))
+                {
+                    if (CompareVersions(version, existingVersion) > 0)
+                        installedPackages[id.Name] = version;
+                }
+                else
+                {
+                    installedPackages[id.Name] = version;
+                }
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"通过 WinRT 枚举 UWP 包失败，将回退至 PowerShell: {ex.Message}");
+            installedPackages.Clear();
+            return false;
+        }
+    }
+
+    private static void GetInstalledUwpPackagesViaPowerShell(Dictionary<string, string> installedPackages)
+    {
         try
         {
             var psi = new ProcessStartInfo
@@ -54,7 +133,7 @@ public class UwpDependencyChecker
                 if (process == null)
                 {
                     Console.WriteLine(@"Failed to start PowerShell process");
-                    return installedPackages;
+                    return;
                 }
 
                 string output = process.StandardOutput.ReadToEnd();
@@ -76,8 +155,6 @@ public class UwpDependencyChecker
         {
             Console.WriteLine($@"Exception while checking installed packages: {ex.Message}");
         }
-
-        return installedPackages;
     }
 
     private static void ParsePackageOutput(string csvOutput, Dictionary<string, string> installedPackages)

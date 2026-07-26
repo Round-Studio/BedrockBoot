@@ -24,7 +24,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 public partial class ResultRoot : UserControl
 {
-	private ImageLoader imageLoader = new ImageLoader();
+	private ImageLoader imageLoader = ImageLoader.Shared;
     public ResultRoot()
     {
         InitializeComponent();
@@ -36,12 +36,6 @@ public partial class ResultRoot : UserControl
         SearchResultItemInfo = info;
         // 触发异步更新，不阻塞 UI 线程
         _ = UpdateAsync();
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    imageLoader.Dispose();
     }
 
     private static I18nManager i18n => I18nManager.Instance;

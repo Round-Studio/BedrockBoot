@@ -81,7 +81,8 @@ public partial class GameLaunchCommand : ISettingPage
         config.PreLaunchCommand = PreLaunchInput.Text ?? string.Empty;
         config.PostExitCommand = PostExitInput.Text ?? string.Empty;
         config.WrapperCommand = WrapperInput.Text ?? string.Empty;
-        GlobalModel.Config.Save();
+        // 输入框逐字符触发，合并写盘
+        ConfigSaveScheduler.RequestSave();
     }
 
     private void WaitSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -98,7 +99,8 @@ public partial class GameLaunchCommand : ISettingPage
         if (!IsEdit) return;
 
         GlobalModel.Config.Data.LaunchCommandConfig.PreLaunchTimeout = (int)TimeoutNum.Value;
-        GlobalModel.Config.Save();
+        // 滑块拖动为高频事件，合并写盘
+        ConfigSaveScheduler.RequestSave();
     }
 
     private void AbortSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)

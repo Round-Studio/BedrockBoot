@@ -31,7 +31,7 @@ public partial class SearchDefault : UserControl
     private bool _resourceLoadSuccess;
 
     private bool _versionLoadSuccess;
-    private ImageLoader _imageLoader = new ImageLoader();
+    private ImageLoader _imageLoader = ImageLoader.Shared;
     public SearchDefault()
     {
         InitializeComponent();
@@ -44,17 +44,11 @@ public partial class SearchDefault : UserControl
     }
 
     private static I18nManager i18n => I18nManager.Instance;
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
-    }
 
     private void LoadSearchHistory()
     {
         NoneBox.IsVisible = false;
         HistoryList.IsVisible = false;
-        HistoryListScrollViewer.IsVisible = false;
         CleanBtn.IsVisible = false;
         var searchHis = new ConfigEntity<List<SearchInfo>>(PathsList.HistoryPath, false);
         if (searchHis?.Data == null) searchHis.Data = new List<SearchInfo>();
@@ -71,7 +65,6 @@ public partial class SearchDefault : UserControl
             SearchAction = info => { DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(info)); }
         }));
         HistoryList.IsVisible = true;
-        HistoryListScrollViewer.IsVisible = true;
         CleanBtn.IsVisible = true;
     }
 

@@ -47,6 +47,15 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             IsEdit = true;
         }
 
+        /// <summary>
+        /// AfterSave 挂在全局配置对象上，页面被导航替换后若不取消订阅会导致整个页面被永久持有
+        /// </summary>
+        protected override void OnUnloaded(RoutedEventArgs e)
+        {
+            base.OnUnloaded(e);
+            GlobalModel.Config.AfterSave -= OnConfigAfterSave;
+        }
+
         private void OnConfigAfterSave(object? sender, EventArgs e)
         {
             var configVolume = GlobalModel.Config.Data.MediaVolume * 100;
@@ -64,7 +73,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 
             var newVolume = VolumeSlider.Value / 100.0;
             GlobalModel.Config.Data.MediaVolume = newVolume;
-            GlobalModel.Config.Save();
+            // 滑块拖动为高频事件，合并写盘
+            ConfigSaveScheduler.RequestSave();
             MediaManager.Instance.Volume = (float)newVolume;
         }
 

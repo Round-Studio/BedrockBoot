@@ -16,16 +16,22 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameItem : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+	private ImageLoader _imageLoader = ImageLoader.Shared;
     public GameItem()
     {
         InitializeComponent();
+
+        // 作为 DataTemplate 使用时，容器被虚拟化回收/复用会重新赋 DataContext，
+        // 此处据此刷新内容，使同一个控件实例可以承载不同的实例数据。
+        DataContextChanged += OnDataContextChanged;
     }
 
-    protected override void OnUnloaded(RoutedEventArgs e)
+    private void OnDataContextChanged(object? sender, EventArgs e)
     {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
+        if (DataContext is not VersionConfig config) return;
+
+        VersionInfo = config;
+        _ = Update();
     }
 
     public GameItem(VersionConfig info) : this()
@@ -39,13 +45,20 @@ public partial class GameItem : UserControl
 
     public async Task Update()
     {
+        if (VersionInfo == null) return;
+
         VersionName.Text = VersionInfo.Info.VersionName;
         Card.Description = $"{VersionInfo.Info.VersionType}, {VersionInfo.Info.BuildType}, {VersionInfo.Info.Version}";
 
-        if (VersionInfo.Config.IsEditModel)
-            EditModule.IsVisible = true;
+        // 控件复用时需要显式复位，否则会残留上一条数据的状态
+        EditModule.IsVisible = VersionInfo.Config.IsEditModel;
 
-        Card.ImageIcon = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
+        // 记录当前请求对应的实例，避免图片异步返回时控件已被复用给另一条数据
+        var requested = VersionInfo;
+        var icon = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(requested));
+        if (!ReferenceEquals(requested, VersionInfo)) return;
+
+        Card.ImageIcon = icon;
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)

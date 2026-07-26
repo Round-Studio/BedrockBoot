@@ -13,18 +13,12 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class MainChooseGameItem : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+	private ImageLoader _imageLoader = ImageLoader.Shared;
     private readonly VersionConfig _versionConfig;
 
     public MainChooseGameItem()
     {
         InitializeComponent();
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
     }
 
     public MainChooseGameItem(VersionConfig versionConfig) : this()

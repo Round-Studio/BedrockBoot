@@ -128,15 +128,27 @@ public partial class InstanceServer : ISetting
         });
     }
 
+    private readonly Models.Helper.UiDebouncer _searchDebouncer = new();
+
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         if (IsEdit && _serverManager != null)
         {
             _searchKey = SearchBox.Text ?? string.Empty;
 
-            var userKeys = _serverManager.GetServers().Keys.ToList();
-            if (SelIndex >= 0 && SelIndex < userKeys.Count) UpdateServer(userKeys[SelIndex]);
+            // 重建服务器列表代价较高，逐字符触发时做防抖
+            _searchDebouncer.Debounce(() =>
+            {
+                var userKeys = _serverManager.GetServers().Keys.ToList();
+                if (SelIndex >= 0 && SelIndex < userKeys.Count) UpdateServer(userKeys[SelIndex]);
+            });
         }
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        _searchDebouncer.Dispose();
     }
 
     private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

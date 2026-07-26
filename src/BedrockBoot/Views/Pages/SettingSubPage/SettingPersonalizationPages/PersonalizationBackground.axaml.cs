@@ -140,7 +140,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity = (int)OptBar.Value;
                 GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
 
-                GlobalModel.Config.Save();
+                // 滑块拖动为高频事件，合并写盘
+                ConfigSaveScheduler.RequestSave();
                 Models.Global.GlobalModel.MainWindow.SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig
                     .BackgroundImageBlur);
             }
@@ -163,7 +164,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             {
                 GlobalModel.Config.Data.StyleConfig.LiveOpacity = (int)LiveOptBar.Value;
 
-                GlobalModel.Config.Save();
+                // 滑块拖动为高频事件，合并写盘
+                ConfigSaveScheduler.RequestSave();
                 Models.Global.GlobalModel.MainWindow.UpdateLiveOpacity();
             }
         }

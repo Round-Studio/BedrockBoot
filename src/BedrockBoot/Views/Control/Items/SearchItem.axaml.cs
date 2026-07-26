@@ -11,16 +11,10 @@ namespace BedrockBoot.Views.Control.Items;
 public partial class SearchItem : UserControl
 {
     private static readonly HttpClient _httpClient = new();
-    private ImageLoader _imageLoader = new ImageLoader();
+    private ImageLoader _imageLoader = ImageLoader.Shared;
     public SearchItem()
     {
         InitializeComponent();
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
     }
 
     public SearchItem(SearchResultItemInfo info) : this()

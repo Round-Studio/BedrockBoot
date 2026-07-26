@@ -8,11 +8,15 @@ namespace BedrockBoot.Views.Pages.MainSubPage;
 
 public partial class MainTaskPage : BedrockBootPage
 {
+    /// <summary>持有回调引用以便卸载时精确解绑（改为 += 订阅，不再覆盖其他订阅者）</summary>
+    private readonly System.Action _onTaskChanged;
+
     public MainTaskPage()
     {
         InitializeComponent();
 
-        GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateUI);
+        _onTaskChanged = () => Dispatcher.UIThread.Invoke(UpdateUI);
+        GlobalModel.TaskManager.OnChanged += _onTaskChanged;
         UpdateUI();
         Unloaded += (sender, args) => UnLoad();
     }
@@ -43,6 +47,7 @@ public partial class MainTaskPage : BedrockBootPage
     public void UnLoad()
     {
         TaskList.ItemsSource = null;
-        GlobalModel.TaskManager.OnChanged = null;
+        // 只解绑自己的订阅，不影响 MainWindow 等其他订阅者
+        GlobalModel.TaskManager.OnChanged -= _onTaskChanged;
     }
 }

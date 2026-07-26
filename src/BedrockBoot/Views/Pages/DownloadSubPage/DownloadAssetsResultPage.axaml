@@ -2,10 +2,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:BedrockBoot.Views.Control.Items"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DownloadSubPage.DownloadAssetsResultPage">
-    <ScrollViewer Name="ScrollViewer">
-        <StackPanel Name="ItemsPanel"
-                    Margin="15,0,15,15" />
-    </ScrollViewer>
+    <!-- 搜索结果数量不受控且每项都要下载缩略图，必须走虚拟化。
+         注意 ScrollViewer 需位于 ItemsControl 模板内部，
+         若把 ItemsControl 套在外层 ScrollViewer 里会得到无限高度约束、导致虚拟化失效。 -->
+    <ListBox Name="ItemsPanel"
+             Margin="15,0,15,15"
+             Background="Transparent"
+             Padding="0">
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <VirtualizingStackPanel Orientation="Vertical" />
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <items:CurseForgeModItem />
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+        <ListBox.Styles>
+            <Style Selector="ListBoxItem">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="MinHeight" Value="0" />
+                <Setter Property="Template">
+                    <ControlTemplate>
+                        <!-- 必须同时转发 ContentTemplate，
+                             否则 ItemTemplate 不生效，会直接显示数据对象的 ToString() -->
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </ControlTemplate>
+                </Setter>
+            </Style>
+        </ListBox.Styles>
+    </ListBox>
 </UserControl>

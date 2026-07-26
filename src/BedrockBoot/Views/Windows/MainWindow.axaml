@@ -51,12 +51,11 @@
                           Background="{DynamicResource AccentBackgroundBrush}"
                           IsVisible="False" />
 
+                    <!-- 背景模糊由 SetBackgroundBlur() 按需赋值，
+                         此处不预置 Radius=0 的 Effect，避免常驻离屏合成 -->
                     <Grid Name="BackgroundBox"
                           Margin="0"
                           IsVisible="False">
-                        <Grid.Effect>
-                            <BlurEffect Radius="0" />
-                        </Grid.Effect>
                         <Grid Name="BackgroundImage" />
                         <classes:ParallaxImage3D Name="BackgroundImage3D" />
                         <Grid Name="BackgroundImageOpacity"
@@ -132,10 +131,10 @@
                       PointerPressed="InputElement_OnPointerPressed"
                       Opacity="0.0001" />
 
+                <!-- 不在此声明 Radius=0 的 BlurEffect：只要 Effect 非 null，
+                     渲染系统就会为整棵内容树分配离屏渲染目标并逐帧合成。
+                     模糊由 SetBlurState() 按需赋值、结束后置回 null。 -->
                 <Grid Name="ContentView">
-                    <Grid.Effect>
-                        <BlurEffect Radius="0" />
-                    </Grid.Effect>
                     <Grid.Transitions>
                         <Transitions>
                             <EffectTransition Property="Effect"
@@ -334,26 +333,32 @@
                                          Message="{DynamicResource MainWindow.TaskView.NoneMessage}"
                                          Name="NoneBox" />
 
-                        <ScrollViewer Grid.Row="1"
-                                      Name="TaskViewer"
-                                      IsVisible="False">
-                            <ListBox Name="TaskList"
-                                     Margin="15,0,15,5"
-                                     Background="Transparent"
-                                     Padding="0">
-                                <ListBox.Styles>
-                                    <Style Selector="ListBoxItem">
-                                        <Setter Property="Margin" Value="0" />
-                                        <Setter Property="MinHeight" Value="0" />
-                                        <Setter Property="Template">
-                                            <ControlTemplate>
-                                                <ContentPresenter Content="{TemplateBinding Content}" />
-                                            </ControlTemplate>
-                                        </Setter>
-                                    </Style>
-                                </ListBox.Styles>
-                            </ListBox>
-                        </ScrollViewer>
+                        <!-- 任务项是持有实时进度状态的控件实例，不能改为 DataTemplate 复用，
+                             因此这里保留直接绑定控件集合的方式；任务数通常很少，影响可忽略。
+                             ListBox 自带 ScrollViewer，故不再外套一层 ScrollViewer。 -->
+                        <ListBox Grid.Row="1"
+                                 Name="TaskList"
+                                 IsVisible="False"
+                                 Margin="15,0,15,5"
+                                 Background="Transparent"
+                                 Padding="0">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Margin" Value="0" />
+                                    <Setter Property="MinHeight" Value="0" />
+                                    <Setter Property="Template">
+                                        <ControlTemplate>
+                                            <ContentPresenter Content="{TemplateBinding Content}" />
+                                        </ControlTemplate>
+                                    </Setter>
+                                </Style>
+                            </ListBox.Styles>
+                        </ListBox>
                     </Grid>
                 </items:BorderCard>
 

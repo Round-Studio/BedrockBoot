@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia.Interactivity;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Helper;
@@ -12,12 +14,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage;
 
 public partial class SettingPlugin : ISettingPage
 {
-	private ImageLoader _imageLoader = new ImageLoader();
-	protected override void OnUnloaded(RoutedEventArgs e)
-	{
-		base.OnUnloaded(e);
-		_imageLoader.Dispose();
-	}
+	private ImageLoader _imageLoader = ImageLoader.Shared;
 
 	public SettingPlugin()
     {
@@ -40,12 +37,30 @@ public partial class SettingPlugin : ISettingPage
                 Description = it.Description,
                 Glyph = it.IconSource,
                 IsClickable = true,
-                IsFontIcon = it.IsUseFontIcon,
-                ImageIcon = !it.IsUseFontIcon ? null : _imageLoader.LoadIconAsync(it.IconSource).Result
+                IsFontIcon = it.IsUseFontIcon
             };
             item.Click += (sender, args) => MainSettingPage.NavigateTo((it.Page as ISettingPage)!);
             PluginSetting.Children.Add(item);
+
+            // 图标异步加载，避免每个插件都在 UI 线程上阻塞一次解码
+            if (it.IsUseFontIcon)
+            {
+                _ = LoadIconAsync(item, it.IconSource);
+            }
         });
+    }
+
+    private async Task LoadIconAsync(SettingCard card, string iconSource)
+    {
+        try
+        {
+            var icon = await _imageLoader.LoadIconAsync(iconSource);
+            if (icon != null) card.ImageIcon = icon;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"加载插件设置项图标失败: {ex.Message}");
+        }
     }
 
     private void PluginManager_OnClick(object? sender, RoutedEventArgs e)

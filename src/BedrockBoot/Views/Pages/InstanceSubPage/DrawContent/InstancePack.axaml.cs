@@ -156,10 +156,20 @@ public partial class InstancePack : ISetting
         }
     }
 
+    private readonly Models.Helper.UiDebouncer _searchDebouncer = new();
+
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         _searchText = SearchBox.Text ?? string.Empty;
-        _ = RefreshPacksAsync();
+
+        // RefreshPacksAsync 会重扫资源包目录并重建列表，逐字符触发代价高，此处做防抖
+        _searchDebouncer.Debounce(() => _ = RefreshPacksAsync());
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        _searchDebouncer.Dispose();
     }
 
     private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

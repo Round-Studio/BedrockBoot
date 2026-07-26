@@ -159,9 +159,18 @@ public partial class SavesView : UserControl
         }
     }
 
+    private readonly Models.Helper.UiDebouncer _searchDebouncer = new();
+
     private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if (IsEdit) UpdateContent();
+        // UpdateContent 会重扫存档目录并重建列表，逐字符触发时做防抖
+        if (IsEdit) _searchDebouncer.Debounce(() => UpdateContent());
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        _searchDebouncer.Dispose();
     }
 
     private void UserChooseBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

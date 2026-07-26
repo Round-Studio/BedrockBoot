@@ -70,7 +70,8 @@ public partial class SettingDownload : ISettingPage
             if (newValue != GlobalModel.Config.Data.DownloadChunkCount)
             {
                 GlobalModel.Config.Data.DownloadChunkCount = newValue;
-                GlobalModel.Config.Save();
+                // 滑块拖动为高频事件，合并写盘
+                Core.Global.ConfigSaveScheduler.RequestSave();
             }
         }
     }

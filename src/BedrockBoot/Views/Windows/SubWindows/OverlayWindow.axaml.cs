@@ -354,10 +354,9 @@ public partial class OverlayWindow : Window
             _hookID = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, GetModuleHandle(curModule?.ModuleName), 0);
         }
 
-        // 4. 启动同步计时器 (30 FPS 左右)
+        // 4. 创建同步计时器 (30 FPS 左右)。仅在浮层可见时运行，避免隐藏状态下持续唤醒 UI 线程
         _syncTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(32) };
-        _syncTimer.Tick += (s, ev) => SyncSize();
-        _syncTimer.Start();
+        _syncTimer.Tick += SyncTimer_Tick;
 
         // 确保初始状态为隐藏（已在InitializeHiddenState中设置）
         SetOverlayState(false);
@@ -433,9 +432,14 @@ public partial class OverlayWindow : Window
         OverlayRoot.Opacity = endOpacity;
     }
 
+    private void SyncTimer_Tick(object? sender, EventArgs e) => SyncSize();
+
     private void ShowOverlayImmediate()
     {
         _isOverlayVisible = true;
+
+        // 浮层可见时才需要持续同步窗口位置/尺寸
+        _syncTimer?.Start();
 
         if (_targetHwnd != IntPtr.Zero)
         {
@@ -545,6 +549,9 @@ public partial class OverlayWindow : Window
     private void HideOverlayInternal()
     {
         _isOverlayVisible = false;
+
+        // 隐藏后停止 30FPS 同步，避免空转
+        _syncTimer?.Stop();
 
         // 在Avalonia层面也设置为不可点击
         IsHitTestVisible = false;

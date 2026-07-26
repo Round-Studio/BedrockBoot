@@ -11,16 +11,10 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class InstancePluginItem : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+	private ImageLoader _imageLoader = ImageLoader.Shared;
     public InstancePluginItem()
     {
         InitializeComponent();
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
     }
 
     public InstancePluginItem(IInstancePlugin plugin) : this()

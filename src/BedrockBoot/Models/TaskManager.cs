@@ -9,7 +9,13 @@ namespace BedrockBoot.Models;
 public class TaskManager
 {
     public List<TaskEntry> Tasks { get; } = new();
-    public Action OnChanged { get; set; }
+
+    /// <summary>
+    /// 任务集合变化事件。
+    /// 使用 event 而非可赋值属性：此前 MainWindow 与 MainTaskPage 都用 = 赋值，
+    /// 后者会覆盖前者的回调，且离开任务页时置 null 会连带砍掉主窗口的任务刷新。
+    /// </summary>
+    public event Action? OnChanged;
 
     public double OverallProgress { get; private set; }
 

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -15,18 +16,12 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawDownloadCurseForgeResourceContent : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+	private ImageLoader _imageLoader = ImageLoader.Shared;
     public CurseForgeResponse.ModData ModData;
 
     public DrawDownloadCurseForgeResourceContent()
     {
         InitializeComponent();
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
     }
 
     public DrawDownloadCurseForgeResourceContent(CurseForgeResponse.ModData mod) : this()
@@ -53,17 +48,26 @@ public partial class DrawDownloadCurseForgeResourceContent : UserControl
             });
         });
 
-        Task.Run(() =>
+        _ = Task.Run(async () =>
         {
-            var image =_imageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl).Result;
-            Dispatcher.UIThread.Invoke(() =>
+            try
             {
-                NullImage.IsVisible = false;
-                IconBox.Background = new ImageBrush
+                var image = await _imageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl);
+                if (image == null) return;
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    Source = image
-                };
-            });
+                    NullImage.IsVisible = false;
+                    IconBox.Background = new ImageBrush
+                    {
+                        Source = image
+                    };
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"加载 CurseForge 资源图标失败: {ex.Message}");
+            }
         });
     }
 }

@@ -33,8 +33,32 @@ public class ImageLoader : IDisposable
     private readonly string _localCacheFolder;
     private bool _disposed;
 
-    public ImageLoader()
+    /// <summary>
+    /// 是否为共享实例。共享实例不允许被 Dispose，
+    /// 否则任意一个列表项卸载都会释放掉其他控件仍在使用的位图。
+    /// </summary>
+    private readonly bool _isShared;
+
+    /// <summary>
+    /// 全局共享的图片加载器。
+    ///
+    /// <para>
+    /// 每个控件各自 new 一个 ImageLoader 会导致：
+    /// 1) 每个实例持有独立的 HttpClient（大量列表项时可能耗尽连接）；
+    /// 2) LRU 缓存按实例隔离，同一张图标会被重复解码 N 次；
+    /// 3) MaxCachePixels 上限按实例计算，总内存不受控。
+    /// 因此列表项等场景应统一使用该共享实例。
+    /// </para>
+    /// </summary>
+    public static ImageLoader Shared { get; } = new(true);
+
+    public ImageLoader() : this(false)
     {
+    }
+
+    private ImageLoader(bool isShared)
+    {
+        _isShared = isShared;
         _httpClient = new HttpClient
         {
             Timeout = TimeSpan.FromSeconds(30)
@@ -45,7 +69,8 @@ public class ImageLoader : IDisposable
 
     public void Dispose()
     {
-        if (_disposed) return;
+        // 共享实例的生命周期与进程一致，忽略释放请求
+        if (_isShared || _disposed) return;
         _disposed = true;
         _httpClient.Dispose();
         ClearMemoryCache();
@@ -53,22 +78,59 @@ public class ImageLoader : IDisposable
         _urlLocks.Clear();
         GC.SuppressFinalize(this);
     }
+
 	public async Task<Bitmap?> LoadIconAsync(string iconUri)
 	{
-        Console.WriteLine($@"获取图片：{iconUri}");
 		if (string.IsNullOrEmpty(iconUri))
 			return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
-
-		if (iconUri.StartsWith("avares://")) return new Bitmap(AssetLoader.Open(new Uri(iconUri)));
 
 		if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
 			iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
 			return await LoadImageBrushAsync(iconUri);
 
+		// 内置资源与本地文件同样进入缓存，避免同一图标在列表中被重复解码
+		if (TryGetFromCache(iconUri, out var cached)) return cached;
+
+		if (iconUri.StartsWith("avares://"))
+		{
+			var asset = await Task.Run(() =>
+			{
+				try
+				{
+					using var stream = AssetLoader.Open(new Uri(iconUri));
+					return new Bitmap(stream);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($@"加载内置图片失败: {iconUri}, 错误: {ex.Message}");
+					return null;
+				}
+			}).ConfigureAwait(false);
+
+			if (asset != null) AddToCache(iconUri, asset);
+			return asset;
+		}
+
 		string decodedPath = Uri.UnescapeDataString(iconUri);
 
 		if (File.Exists(decodedPath))
-			return new Bitmap(decodedPath);
+		{
+			var local = await Task.Run(() =>
+			{
+				try
+				{
+					return new Bitmap(decodedPath);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($@"加载本地图片失败: {decodedPath}, 错误: {ex.Message}");
+					return null;
+				}
+			}).ConfigureAwait(false);
+
+			if (local != null) AddToCache(iconUri, local);
+			return local;
+		}
 
 		return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
 	}
@@ -131,11 +193,12 @@ public class ImageLoader : IDisposable
 
             if (imageData == null) return null;
 
-            var bitmap = await Dispatcher.UIThread.InvokeAsync(() =>
+            // 解码是纯 CPU 操作，放到线程池执行，避免阻塞 UI 线程
+            var bitmap = await Task.Run(() =>
             {
                 using var ms = new MemoryStream(imageData);
                 return new Bitmap(ms);
-            });
+            }).ConfigureAwait(false);
 
             if (useCache && bitmap != null) AddToCache(imageUrl, bitmap);
 
@@ -159,7 +222,8 @@ public class ImageLoader : IDisposable
     {
         try
         {
-            return await Dispatcher.UIThread.InvokeAsync(() => new Bitmap(stream));
+            // 解码是纯 CPU 操作，放到线程池执行，避免阻塞 UI 线程
+            return await Task.Run(() => new Bitmap(stream)).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

@@ -13,12 +13,9 @@ public partial class DownloadAssetsResultPage : UserControl
     {
         InitializeComponent();
 
-        Task.Run(() =>
-        {
-            mods.ForEach(i =>
-            {
-                Dispatcher.UIThread.Invoke(() => ItemsPanel.Children.Add(new CurseForgeModItem(i)));
-            });
-        });
+        // 绑定数据源，由 ItemTemplate 按需实例化条目。
+        // 旧实现逐条 Dispatcher.UIThread.Invoke 往 StackPanel 里塞控件，
+        // 既无虚拟化，又会为每一条结果阻塞一次 UI 线程。
+        ItemsPanel.ItemsSource = mods;
     }
 }

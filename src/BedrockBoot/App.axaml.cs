@@ -111,6 +111,9 @@ public class App : Application
 
             Window window = null;
 
+            // 退出前把防抖队列中尚未落盘的配置修改写入磁盘
+            desktop.ShutdownRequested += (_, _) => Core.Global.ConfigSaveScheduler.Flush();
+
             Core.Global.GlobalModel.Config.AddAfterSaveCallback(entity =>
             {
                 IsolationPolicyHelper.PublicCatalogStrategy = Core.Global.GlobalModel.Config.Data.CatalogStrategy;

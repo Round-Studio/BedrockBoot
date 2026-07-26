@@ -197,7 +197,7 @@ public class CoreInitialize
     private static async Task GetDevelopMode()
     {
 #if WINDOWS
-        var devMod = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
+        var devMod = DeveloperModeHelper.IsDeveloperMode();
         if (!devMod)
             DeveloperModeHelper.ShowNotice();
 #endif
@@ -211,8 +211,10 @@ public class CoreInitialize
             var dialogInfo = new DialogInfo
             {
                 Title = "未安装 SDK 1.8",
-                Content = "当前系统未检测到完整的 Windows App SDK 1.8 (8000.x) 组件。\n" +
-                          "缺失组件可能包括: Main, Singleton 或 DDLM。\n" +
+                Content = "当前系统未检测到完整的 Windows App SDK 1.8 运行时组件。\n" +
+                          (string.IsNullOrEmpty(AppSdkChecker.LastDiagnostics)
+                              ? "缺失组件可能包括: Main, Singleton 或 DDLM。"
+                              : AppSdkChecker.LastDiagnostics) + "\n" +
                           "这会导致游戏无法启动。",
                 CloseButtonText = "立即安装",
                 PrimaryButtonText = "放任不管",

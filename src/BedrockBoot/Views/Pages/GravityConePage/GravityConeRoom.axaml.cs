@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.GravityCone.Entry;
 using BedrockBoot.GravityCone.Entry.Result;
+using BedrockBoot.GravityCone.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Control.Items.Multiplayer;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -34,6 +35,9 @@ public partial class GravityConeRoom : UserControl
     {
         Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
         {
+            if(RoomCodeBtn == null)
+                return;
+            
             RoomCodeBtn.Content = GlobalModel.CurrentRoomState?.RoomCode;
         });
         if (PlayersList != null)
@@ -56,6 +60,7 @@ public partial class GravityConeRoom : UserControl
             }
 
             if (result == null) return;
+            if(result.Players == null) return;
 
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
@@ -69,8 +74,10 @@ public partial class GravityConeRoom : UserControl
     {
         try
         {
-            GlobalModel.GravityConeClient.LeaveRoomAsync();
-            GlobalModel.GravityConeClient.StopRoomAsync();
+            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Host)
+                GlobalModel.GravityConeClient?.StopRoomAsync();
+            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Guest)
+                GlobalModel.GravityConeClient?.LeaveRoomAsync();
         }
         catch
         {

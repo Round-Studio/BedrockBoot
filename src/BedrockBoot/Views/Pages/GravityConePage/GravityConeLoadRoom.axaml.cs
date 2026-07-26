@@ -8,6 +8,7 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.GravityCone.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.GravityConePage;
 
@@ -26,26 +27,38 @@ public partial class GravityConeLoadRoom : UserControl
         _roomType = roomType;
         _roomCode = roomCode;
 
+        if (string.IsNullOrEmpty(GlobalModel.XboxUserInfo.Gamertag))
+        {
+            DialogHost.Show(new()
+            {
+                Title = "出现错误",
+                Content = "Xbox 未登录，请尝试进入游戏后登录 Xbox 账户后重试。",
+                CloseButtonText = "确定",
+                CloseAction = () => { MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot()); }
+            });
+            return;
+        }
+
         Task.Run(async () =>
         {
             Thread.Sleep(500);
-            if (roomType == RoomType.Host)
+            try
             {
-                var room = await GlobalModel.GravityConeClient?.CreatePaperConnectRoomAsync(GlobalModel.XboxUserInfo
-                    .Gamertag)!;
-                GlobalModel.CurrentRoomState = new()
+                if (roomType == RoomType.Host)
                 {
-                    RoomCode = room.Code,
-                    RoomType = RoomType.Host
-                };
-                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
-                {
-                    MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoom());
-                });
-            }
-            else
-            {
-                try
+                    var room = await GlobalModel.GravityConeClient?.CreatePaperConnectRoomAsync(GlobalModel.XboxUserInfo
+                        .Gamertag)!;
+                    GlobalModel.CurrentRoomState = new()
+                    {
+                        RoomCode = room.Code,
+                        RoomType = RoomType.Host
+                    };
+                    Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                    {
+                        MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoom());
+                    });
+                }
+                else
                 {
                     var room = await GlobalModel.GravityConeClient?.JoinRoomAsync(_roomCode,
                         GlobalModel.XboxUserInfo.Gamertag)!;
@@ -59,8 +72,7 @@ public partial class GravityConeLoadRoom : UserControl
                         MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoom());
                     });
                 }
-                catch { }
-            }
+            }catch{ }
         });
     }
 
@@ -68,8 +80,10 @@ public partial class GravityConeLoadRoom : UserControl
     {
         try
         {
-            GlobalModel.GravityConeClient.LeaveRoomAsync();
-            GlobalModel.GravityConeClient.StopRoomAsync();
+            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Host)
+                GlobalModel.GravityConeClient?.StopRoomAsync();
+            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Guest)
+                GlobalModel.GravityConeClient?.LeaveRoomAsync();
         }
         catch
         {

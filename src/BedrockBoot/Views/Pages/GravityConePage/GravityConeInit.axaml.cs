@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using BedrockBoot.Core.Models.Xbox;
 using BedrockBoot.GravityCone;
 using BedrockBoot.GravityCone.Entry;
+using BedrockBoot.GravityCone.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -131,7 +132,7 @@ public partial class GravityConeInit : UserControl
         await GlobalModel.GravityConeClient.StartAsync(
             Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath,
                 "gravitycone-cli-windows-amd64.exe"),
-            GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", "BedrockBoot 联机房间",
+            GlobalModel.ETPublicServer, $"\"BedrockBoot {GlobalModel.BodyVersion}\"", "\"BedrockBoot 联机房间\"",
             DialogDownloadMultiPlayerDependenceContent.GravityConeExePath);
 
         GlobalModel.GravityConeClient.OnEvent += (sender, eventArgs) =>
@@ -148,7 +149,6 @@ public partial class GravityConeInit : UserControl
                         CloseButtonText = "确定"
                     });
                 }
-
                 if (eventArgs.Event == "paperconnect.connection.port_busy")
                 {
                     MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
@@ -160,9 +160,81 @@ public partial class GravityConeInit : UserControl
                         CloseButtonText = "确定"
                     });
                 }
+                if (eventArgs.Event == "paperconnect.connection.disconnected" ||
+                    eventArgs.Event == "paperconnect.connection.closed")
+                {
+                    MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
+                    DialogHost.Show(new()
+                    {
+                        Title = "房间已断开连接",
+                        Content = "当前房间已断开连接，可能房主已关闭房间，也可能您的网络环境有问题。",
+                        CloseButtonText = "确定"
+                    });
+                }
             });
         };
 
+        GlobalModel.GravityConeClient.OnResponse += (sender, eventArgs) =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            {
+                if (eventArgs.Error == null)
+                    return;
+
+                var message = (eventArgs.Error != null && eventArgs.Error?.Message != null)
+                    ? eventArgs.Error?.Message
+                    : "未知错误";
+
+                if (eventArgs.Error.Code == "ROOM_ALREADY_RUNNING")
+                {
+                    try
+                    {
+                        try
+                        {
+                            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Host)
+                                GlobalModel.GravityConeClient?.StopRoomAsync();
+                            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Guest)
+                                GlobalModel.GravityConeClient?.LeaveRoomAsync();
+                        }
+                        catch
+                        {
+
+                        }
+
+                        Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                        {
+                            if (GlobalModel.CurrentRoomState == null) return;
+                            MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeLoadRoom(
+                                GlobalModel.CurrentRoomState!.RoomType,
+                                string.IsNullOrEmpty(GlobalModel.CurrentRoomState.RoomCode)
+                                    ? null
+                                    : GlobalModel.CurrentRoomState.RoomCode));
+                        });
+                        return;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+                if (eventArgs.Error.Code == "INTERNAL_ERROR")
+                {
+                    message = "未检测到本地 Minecraft 基岩版房间，请尝试重启游戏，并在 Minecraft 中开启局域网游戏。";
+                }
+
+                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                {
+                    MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
+                });
+                DialogHost.Show(new()
+                {
+                    Title = "出现错误",
+                    Content = message,
+                    CloseButtonText = "确定"
+                });   
+            });
+        };
+        
         GlobalModel.GravityConeClient.OnError += (sender, eventArgs) =>
         {
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>

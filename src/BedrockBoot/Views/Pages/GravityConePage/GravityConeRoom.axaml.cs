@@ -23,50 +23,66 @@ public partial class GravityConeRoom : UserControl
     {
         InitializeComponent();
 
-        GlobalModel.GravityConeClient.OnEvent += OnClientEvent;
-        Unloaded += (_, _) =>
+        var client = GlobalModel.GravityConeClient;
+        if (client != null)
         {
-            GlobalModel.GravityConeClient.OnEvent -= OnClientEvent;
-        };
+            client.OnEvent += OnClientEvent;
+            Unloaded += (_, _) =>
+            {
+                client.OnEvent -= OnClientEvent;
+            };
+        }
+
         OnClientEvent(null, null);
     }
 
     public async void OnClientEvent(object? obj, CliEvent? e)
     {
-        Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+        // async void：任何未捕获异常都会直接终止进程，必须整体兜底
+        try
         {
-            if(RoomCodeBtn == null)
-                return;
-            
-            RoomCodeBtn.Content = GlobalModel.CurrentRoomState?.RoomCode;
-        });
-        if (PlayersList != null)
-        {
-            RoomJoinResult? result = null;
-            if (e != null)
-            {
-                var even = e;
-                if (even.Event == "room.player_joined" ||
-                    even.Event == "room.player_left" ||
-                    even.Event == "paperconnect.room.info")
-                {
-                    result = even.Data.Deserialize<RoomJoinResult>();
-                }
-            }
-            else
-            {
-                var status = await GlobalModel.GravityConeClient.GetRoomStatusAsync();
-                result = status.Data.Deserialize<RoomJoinResult>();
-            }
-
-            if (result == null) return;
-            if(result.Players == null) return;
-
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
-                PlayersList.Children.Clear();
-                result.Players.ToList().ForEach(x => { PlayersList.Children.Add(new PlayerItem(x)); });
+                if(RoomCodeBtn == null)
+                    return;
+                
+                RoomCodeBtn.Content = GlobalModel.CurrentRoomState?.RoomCode;
             });
+            if (PlayersList != null)
+            {
+                RoomJoinResult? result = null;
+                if (e != null)
+                {
+                    var even = e;
+                    if (even.Event == "room.player_joined" ||
+                        even.Event == "room.player_left" ||
+                        even.Event == "paperconnect.room.info")
+                    {
+                        result = even.Data.Deserialize<RoomJoinResult>();
+                    }
+                }
+                else
+                {
+                    var client = GlobalModel.GravityConeClient;
+                    if (client == null || !client.IsRunning) return;
+
+                    var status = await client.GetRoomStatusAsync();
+                    result = status.Data.Deserialize<RoomJoinResult>();
+                }
+
+                if (result == null) return;
+                if(result.Players == null) return;
+
+                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                {
+                    PlayersList.Children.Clear();
+                    result.Players.ToList().ForEach(x => { PlayersList.Children.Add(new PlayerItem(x)); });
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"刷新房间玩家列表失败: {ex.Message}");
         }
     }
 
@@ -89,11 +105,14 @@ public partial class GravityConeRoom : UserControl
 
     private void RoomCodeBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        var roomCode = GlobalModel.CurrentRoomState?.RoomCode;
+        if (string.IsNullOrEmpty(roomCode)) return;
+
         var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
 
         if (clipboard is not null)
         {
-            clipboard.SetTextAsync(GlobalModel.CurrentRoomState?.RoomCode);
+            clipboard.SetTextAsync(roomCode);
             GlobalModel.MainWindow.Notice.AddNotice(new ()
             {
                 Title = "剪切板",

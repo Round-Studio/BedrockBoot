@@ -41,6 +41,14 @@
                             Content="{DynamicResource About.Action.CheckUpdate}"
                             Click="CheckUpdateBtn_OnClick" />
                 </onePointControls:SettingCard>
+
+                <!-- 联机依赖组件更新入口（仅 Windows，Linux 下由代码隐藏） -->
+                <onePointControls:SettingCard Name="DependencyUpdateBtn"
+                                              Header="依赖更新"
+                                              Description="检查并更新联机组件（EasyTier / GravityCone）"
+                                              IsClickable="True"
+                                              Click="DependencyUpdateBtn_OnClick"
+                                              Glyph="&#xE968;" />
             </StackPanel>
 
             <Grid Grid.Row="1"

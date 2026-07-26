@@ -13,6 +13,22 @@ using BedrockBoot.GravityCone.Entry.Result;
 
 namespace BedrockBoot.GravityCone;
 
+/// <summary>
+/// CLI 返回业务错误响应（status = error）时抛出。
+/// 全局 OnResponse 订阅者会统一处理这类错误的用户提示，
+/// 调用方可据此类型判断是否需要再做本地提示，避免重复弹窗。
+/// </summary>
+public class CliErrorException : Exception
+{
+    public CliError? Error { get; }
+
+    public CliErrorException(CliError? error, string method)
+        : base(error?.Message ?? $"请求 {method} 失败")
+    {
+        Error = error;
+    }
+}
+
 public class GravityConeClient : IDisposable
 {
     public Process _process;
@@ -59,7 +75,6 @@ public class GravityConeClient : IDisposable
         var startInfo = new ProcessStartInfo
         {
             FileName = cliPath,
-            Arguments = string.Join(" ", args),
             UseShellExecute = false,
             RedirectStandardInput = true,
             RedirectStandardOutput = true,
@@ -70,22 +85,15 @@ public class GravityConeClient : IDisposable
             WorkingDirectory = workingDirectory ?? Path.GetDirectoryName(cliPath) ?? "."
         };
 
+        // 使用 ArgumentList 而非手动拼接字符串，
+        // 由运行时负责转义，vendor/motd 含空格时调用方无需再嵌入引号
+        foreach (var arg in args)
+            startInfo.ArgumentList.Add(arg);
+
         _process = new Process { StartInfo = startInfo };
 
-        try
-        {
-            _process.Start();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"启动 CLI 失败: {ex.Message}", ex);
-        }
-
-        _stdinWriter = _process.StandardInput;
-
-        _ = Task.Run(() => ReadOutputLoopAsync(_cts.Token));
-        _ = Task.Run(() => ReadErrorLoopAsync(_cts.Token));
-
+        // 必须在启动读取循环之前订阅 ready 处理器，
+        // 否则 CLI 若在订阅完成前就输出 system.ready，会错过事件并误报超时
         var readyTcs = new TaskCompletionSource<bool>();
         EventHandler<CliEvent>? handler = null;
         handler = (s, e) =>
@@ -98,6 +106,21 @@ public class GravityConeClient : IDisposable
             }
         };
         OnEvent += handler;
+
+        try
+        {
+            _process.Start();
+        }
+        catch (Exception ex)
+        {
+            OnEvent -= handler;
+            throw new Exception($"启动 CLI 失败: {ex.Message}", ex);
+        }
+
+        _stdinWriter = _process.StandardInput;
+
+        _ = Task.Run(() => ReadOutputLoopAsync(_cts.Token));
+        _ = Task.Run(() => ReadErrorLoopAsync(_cts.Token));
 
         var timeout = Task.Delay(10000);
         var completed = await Task.WhenAny(readyTcs.Task, timeout);
@@ -139,8 +162,10 @@ public class GravityConeClient : IDisposable
                     {
                         var id = idElement.GetInt32();
                         var response = JsonSerializer.Deserialize<CliResponse>(line);
-                        if (response != null && _pendingRequests.TryRemove(id, out var tcs)) tcs.TrySetResult(response);
-                        OnResponse?.Invoke(this, response!);
+                        if (response == null) continue; // 反序列化失败时不向订阅者传 null
+
+                        if (_pendingRequests.TryRemove(id, out var tcs)) tcs.TrySetResult(response);
+                        OnResponse?.Invoke(this, response);
                     }
                 }
                 catch (JsonException ex)
@@ -207,10 +232,20 @@ public class GravityConeClient : IDisposable
         }
         catch(Exception exception)
         {
+            // 清理挂起请求后重抛：
+            // 此前这里返回 null，所有 `(await RequestAsync(...)).Data` 形式的
+            // 类型化包装器都会在超时/失败时抛出 NullReferenceException。
             _pendingRequests.TryRemove(id, out _);
             OnError?.Invoke(this, exception);
-            return null;
+            throw;
         }
+    }
+
+    /// <summary>校验响应是否为业务错误，是则抛出 CliErrorException</summary>
+    private static CliResponse EnsureSuccess(CliResponse response, string method)
+    {
+        if (response.IsError) throw new CliErrorException(response.Error, method);
+        return response;
     }
 
     public async Task ShutdownAsync()
@@ -220,20 +255,21 @@ public class GravityConeClient : IDisposable
 
     public async Task<StunResult> StunProbeAsync()
     {
-        return JsonSerializer.Deserialize<StunResult>((await RequestAsync("stun.probe")).Data.ToString())!;
+        var response = EnsureSuccess(await RequestAsync("stun.probe"), "stun.probe");
+        return JsonSerializer.Deserialize<StunResult>(response.Data.ToString())!;
     }
 
     public async Task<RoomCreateResult> CreatePaperConnectRoomAsync(string playerName)
     {
         var @params = new { player_name = playerName, protocol = "paperconnect" };
-        var response = await RequestAsync("room.create", @params);
+        var response = EnsureSuccess(await RequestAsync("room.create", @params), "room.create");
         return JsonSerializer.Deserialize<RoomCreateResult>(response.Data.ToString())!;
     }
 
     public async Task<RoomJoinResult> JoinRoomAsync(string code, string playerName)
     {
         var @params = new { code, player_name = playerName };
-        var response = await RequestAsync("room.join", @params, 60000);
+        var response = EnsureSuccess(await RequestAsync("room.join", @params, 60000), "room.join");
         return JsonSerializer.Deserialize<RoomJoinResult>(response.Data.ToString())!;
     }
 
@@ -269,7 +305,7 @@ public class GravityConeClient : IDisposable
 
     public async Task<LanServer[]> ListLanServersAsync()
     {
-        var response = await RequestAsync("lan.list_servers");
+        var response = EnsureSuccess(await RequestAsync("lan.list_servers"), "lan.list_servers");
         return JsonSerializer.Deserialize<LanServer[]>(response.Data.GetProperty("servers").ToString())!;
     }
 

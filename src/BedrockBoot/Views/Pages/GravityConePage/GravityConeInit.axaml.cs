@@ -32,10 +32,25 @@ public partial class GravityConeInit : UserControl
 
         await Task.WhenAll(task1, task2);
 
+        // 任一前置任务失败时不能继续启动 CLI：
+        // 节点列表为空会让打洞失败，Xbox 用户为空会让房间玩家名非法。
+        // 此前这里无条件继续，失败弹窗和后台初始化会同时发生。
+        if (!task1.Result || !task2.Result) return;
+
         await ThirdTaskAsync();
     }
 
-    private async Task GetNodesAsync()
+    /// <summary>
+    /// 返回主页。MainPage.Instance 在使用 NeoMainPage（Beta UI）时为 null，
+    /// 直接访问会在错误弹窗的回调里再抛一个 NullReferenceException。
+    /// </summary>
+    private static void BackToMain()
+    {
+        if (MainPage.Instance != null)
+            MainPage.Instance.SelTag.SelectedIndex = 0;
+    }
+
+    private async Task<bool> GetNodesAsync()
     {
         using var client = new HttpClient();
 
@@ -56,12 +71,11 @@ public partial class GravityConeInit : UserControl
                     this.LoadGetPeersBar.IsIndeterminate = false;
                     this.LoadGetPeersBar.Value = 100;
                 });
+                return true;
             }
-            else
-            {
-                Console.WriteLine(@"反序列化结果为空。");
-                throw new Exception();
-            }
+
+            Console.WriteLine(@"反序列化结果为空。");
+            throw new Exception();
         }
         catch
         {
@@ -74,18 +88,21 @@ public partial class GravityConeInit : UserControl
                     Title = "获取节点失败",
                     Content = "请尝试更换网络，然后重试",
                     CloseButtonText = "确定",
-                    CloseAction = () => { MainPage.Instance.SelTag.SelectedIndex = 0; }
+                    CloseAction = BackToMain
                 });
             });
+            return false;
         }
     }
 
-    private async Task GetXboxUserAsync()
+    private async Task<bool> GetXboxUserAsync()
     {
         var checker = new XboxLoginStatusChecker();
         var status = await checker.GetDetailedXboxStatus();
 
-        if (!status.IsLoggedIn)
+        if (!status.IsLoggedIn ||
+            status.XboxUserInfo == null ||
+            string.IsNullOrEmpty(status.XboxUserInfo.Gamertag))
         {
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
@@ -96,44 +113,59 @@ public partial class GravityConeInit : UserControl
                     Title = "获取 Xbox 用户失败",
                     Content = "无法获取 Xbox 用户，请尝试重新登录 Xbox 账户",
                     CloseButtonText = "确定",
-                    CloseAction = () => { MainPage.Instance.SelTag.SelectedIndex = 0; }
+                    CloseAction = BackToMain
                 });
             });
+            return false;
         }
-        else if (status.XboxUserInfo == null || string.IsNullOrEmpty(status.XboxUserInfo.Gamertag))
+
+        GlobalModel.XboxUserInfo = status.XboxUserInfo;
+        Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
         {
-            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
-            {
-                this.LoadGetPeersBar.IsIndeterminate = false;
-                this.LoadGetPeersBar.Value = 0;
-                DialogHost.Show(new()
-                {
-                    Title = "获取 Xbox 用户失败",
-                    Content = "无法获取 Xbox 用户，请尝试重新登录 Xbox 账户",
-                    CloseAction = () => { MainPage.Instance.SelTag.SelectedIndex = 0; }
-                });
-            });
-        }
-        else
-        {
-            GlobalModel.XboxUserInfo = status.XboxUserInfo;
-            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
-            {
-                this.LoadGetXboxUserBar.IsIndeterminate = false;
-                this.LoadGetXboxUserBar.Value = 100;
-            });
-        }
+            this.LoadGetXboxUserBar.IsIndeterminate = false;
+            this.LoadGetXboxUserBar.Value = 100;
+        });
+        return true;
     }
 
     private async Task ThirdTaskAsync()
     {
         await Task.Delay(100);
-        GlobalModel.GravityConeClient = new GravityConeClient();
-        await GlobalModel.GravityConeClient.StartAsync(
-            Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath,
-                "gravitycone-cli-windows-amd64.exe"),
-            GlobalModel.ETPublicServer, $"\"BedrockBoot {GlobalModel.BodyVersion}\"", "\"BedrockBoot 联机房间\"",
-            DialogDownloadMultiPlayerDependenceContent.GravityConeExePath);
+
+        var client = new GravityConeClient();
+        try
+        {
+            // Client 已改用 ArgumentList 传参，vendor/motd 不需要再嵌入引号
+            await client.StartAsync(
+                Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath,
+                    "gravitycone-cli-windows-amd64.exe"),
+                GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", "BedrockBoot 联机房间",
+                DialogDownloadMultiPlayerDependenceContent.GravityConeExePath);
+        }
+        catch (Exception ex)
+        {
+            // 启动失败时必须释放并保持 GlobalModel.GravityConeClient 为 null：
+            // 否则 MainGravityConePage 会把残留的半初始化客户端当作可用状态，
+            // 之后所有请求都会失败且用户永远停在加载页。
+            Console.WriteLine($@"GravityCone CLI 启动失败: {ex}");
+            try { client.Dispose(); } catch { }
+
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            {
+                LoadInitBar.IsIndeterminate = false;
+                LoadInitBar.Value = 0;
+                DialogHost.Show(new()
+                {
+                    Title = "联机组件启动失败",
+                    Content = $"无法启动联机组件，请重试或联系开发者。\n{ex.Message}",
+                    CloseButtonText = "确定",
+                    CloseAction = BackToMain
+                });
+            });
+            return;
+        }
+
+        GlobalModel.GravityConeClient = client;
 
         GlobalModel.GravityConeClient.OnEvent += (sender, eventArgs) =>
         {
@@ -141,6 +173,7 @@ public partial class GravityConeInit : UserControl
             {
                 if (eventArgs.Event == "paperconnect.connection.error")
                 {
+                    GlobalModel.CurrentRoomState = null;
                     MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
@@ -151,6 +184,7 @@ public partial class GravityConeInit : UserControl
                 }
                 if (eventArgs.Event == "paperconnect.connection.port_busy")
                 {
+                    GlobalModel.CurrentRoomState = null;
                     MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
@@ -163,6 +197,9 @@ public partial class GravityConeInit : UserControl
                 if (eventArgs.Event == "paperconnect.connection.disconnected" ||
                     eventArgs.Event == "paperconnect.connection.closed")
                 {
+                    // 必须清除房间状态：否则下次进入联机页时，
+                    // MainGravityConePage 会依据残留的 CurrentRoomState 导航进已死的房间
+                    GlobalModel.CurrentRoomState = null;
                     MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
@@ -237,15 +274,19 @@ public partial class GravityConeInit : UserControl
         
         GlobalModel.GravityConeClient.OnError += (sender, eventArgs) =>
         {
+            // OnError 会因 CLI 的任意 stderr 输出行 / stdout 非 JSON 行而触发，
+            // 大多是日志噪声。此前的实现是弹模态框并把用户踢回大厅，
+            // 会导致正常联机过程中被随机中断。
+            // 真正的致命状态（连接断开、端口占用等）由上面的 OnEvent 分支处理，
+            // 这里只做非阻塞通知与日志记录。
+            Console.WriteLine($@"[GravityCone] {eventArgs.Message}");
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
-                MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
-
-                DialogHost.Show(new()
+                GlobalModel.MainWindow?.Notice?.AddNotice(new()
                 {
-                    Title = "出现错误",
-                    Content = eventArgs.Message,
-                    CloseButtonText = "确定"
+                    Title = "联机组件警告",
+                    Message = eventArgs.Message,
+                    NoticeType = NoticeType.Warning
                 });
             });
         };

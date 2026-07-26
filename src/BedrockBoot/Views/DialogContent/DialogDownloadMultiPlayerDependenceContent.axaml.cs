@@ -28,8 +28,15 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
     private bool _easyTierCompleted = false;
     private bool _gravityConeCompleted = false;
 
-    public DialogDownloadMultiPlayerDependenceContent()
+    /// <summary>下载完成后是否导航联机页去初始化（从设置页更新依赖时为 false）</summary>
+    private readonly bool _navigateAfterComplete;
+
+    /// <summary>下载安装全部完成后的回调（无论来源）</summary>
+    public Action? Completed { get; set; }
+
+    public DialogDownloadMultiPlayerDependenceContent(bool navigateAfterComplete = true)
     {
+        _navigateAfterComplete = navigateAfterComplete;
         InitializeComponent();
         
         EasyTierProgressBar.IsIndeterminate = true;
@@ -42,6 +49,14 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
     {
         try
         {
+            // 更新场景下 CLI 可能正在运行并锁定 exe 文件，必须先关闭
+            if (GlobalModel.GravityConeClient != null)
+            {
+                try { GlobalModel.GravityConeClient.Dispose(); } catch { }
+                GlobalModel.GravityConeClient = null;
+                GlobalModel.CurrentRoomState = null;
+            }
+
             var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
 
             if (!Directory.Exists(EasyTierPath))
@@ -160,7 +175,12 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                         {
                         }
                     });
-                
+
+                // 记录已安装的版本号，供 设置>通用>软件更新>依赖更新 检查更新使用
+                Models.Helper.MultiplayerDependencyHelper.WriteLocalVersion(
+                    Models.Helper.MultiplayerDependencyHelper.EasyTierVersionFile,
+                    "EasyTier", easyTierRelease.TagName);
+
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     EasyTierProgressBar.IsIndeterminate = false;
@@ -176,7 +196,12 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 ExtractGravityCone(gravityConeDownloadPath, GravityConeExePath);
                 if (File.Exists(gravityConeDownloadPath))
                     File.Delete(gravityConeDownloadPath);
-                
+
+                // 记录已安装的版本号，供 设置>通用>软件更新>依赖更新 检查更新使用
+                Models.Helper.MultiplayerDependencyHelper.WriteLocalVersion(
+                    Models.Helper.MultiplayerDependencyHelper.GravityConeVersionFile,
+                    "GravityCone", gravityConeRelease.TagName);
+
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     GravityConeProgressBar.IsIndeterminate = false;
@@ -231,7 +256,13 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     DialogHost.Close();
-                    MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeInit());
+
+                    Completed?.Invoke();
+
+                    // 从设置页（依赖更新）打开时不重新初始化联机页；
+                    // 且联机页可能从未打开过，NavigationFrame 为 null
+                    if (_navigateAfterComplete)
+                        MainGravityConePage.NavigationFrame?.NavigateTo(new GravityConeInit());
                 });
             });
         }

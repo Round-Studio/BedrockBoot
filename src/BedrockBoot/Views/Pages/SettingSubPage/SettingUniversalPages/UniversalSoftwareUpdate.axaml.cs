@@ -38,7 +38,17 @@ public partial class UniversalSoftwareUpdate : ISettingPage
             }
         };
 
+        // 联机依赖组件仅 Windows 提供，Linux 下隐藏入口
+#if LINUX
+        DependencyUpdateBtn.IsVisible = false;
+#endif
+
         IsEdit = true;
+    }
+
+    private void DependencyUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new UniversalDependencyUpdate());
     }
 
     private void IsAutoCheckUpdate_OnIsCheckedChanged(object? sender, RoutedEventArgs e)

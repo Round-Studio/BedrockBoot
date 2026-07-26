@@ -37,9 +37,6 @@ public class App : Application
 
         ServicePointManager.DefaultConnectionLimit = 1024;
 
-        // 防抖保存回调运行在线程池线程，AfterSave 订阅者会访问 UI 控件，需调度回 UI 线程
-        Core.Global.ConfigSaveScheduler.Dispatcher = a => Dispatcher.UIThread.Post(a);
-
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
 

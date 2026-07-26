@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages.GameLaunchCommand">
+    <ScrollViewer>
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="MainCard"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Main.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Main.Desc}"
+                                          Glyph="&#xE756;">
+                <ToggleSwitch Name="MainSwitch"
+                              IsCheckedChanged="MainSwitch_OnIsCheckedChanged" />
+            </onePointControls:SettingCard>
+
+            <TextBlock Margin="5,0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Game.LaunchCommand.Group.Hooks}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="PreLaunchCard"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Pre.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Pre.Desc}"
+                                          Glyph="&#xE768;">
+                <TextBox Width="260"
+                         Name="PreLaunchInput"
+                         Watermark="{DynamicResource Settings.Game.LaunchCommand.Pre.Watermark}"
+                         TextChanged="CommandInput_OnTextChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="PostExitCard"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Post.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Post.Desc}"
+                                          Glyph="&#xE71A;">
+                <TextBox Width="260"
+                         Name="PostExitInput"
+                         Watermark="{DynamicResource Settings.Game.LaunchCommand.Post.Watermark}"
+                         TextChanged="CommandInput_OnTextChanged" />
+            </onePointControls:SettingCard>
+
+            <TextBlock Margin="5,0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Game.LaunchCommand.Group.Wrapper}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="WrapperCard"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Wrapper.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Wrapper.Desc}"
+                                          Glyph="&#xE945;">
+                <TextBox Width="260"
+                         Name="WrapperInput"
+                         Watermark="{DynamicResource Settings.Game.LaunchCommand.Wrapper.Watermark}"
+                         TextChanged="CommandInput_OnTextChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="WrapperUnsupportedCard"
+                                          IsVisible="False"
+                                          IsShowActionIcon="False"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Wrapper.Unsupported.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Wrapper.Unsupported.Desc}"
+                                          Glyph="&#xE7BA;" />
+
+            <TextBlock Margin="5,0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Game.LaunchCommand.Group.Behavior}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="WaitCard"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Wait.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Wait.Desc}"
+                                          Glyph="&#xE916;">
+                <ToggleSwitch Name="WaitSwitch"
+                              IsCheckedChanged="WaitSwitch_OnIsCheckedChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="TimeoutCard"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Timeout.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Timeout.Desc}"
+                                          Glyph="&#xEC92;">
+                <Slider Name="TimeoutNum"
+                        Classes="Number"
+                        Width="200"
+                        Value="30"
+                        Minimum="0"
+                        Maximum="300"
+                        ValueChanged="TimeoutNum_OnValueChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="AbortCard"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Abort.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Abort.Desc}"
+                                          Glyph="&#xE711;">
+                <ToggleSwitch Name="AbortSwitch"
+                              IsCheckedChanged="AbortSwitch_OnIsCheckedChanged" />
+            </onePointControls:SettingCard>
+
+            <TextBlock Margin="5,0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Game.LaunchCommand.Group.Placeholder}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          IsShowActionIcon="False"
+                                          Header="{DynamicResource Settings.Game.LaunchCommand.Placeholder.Title}"
+                                          Description="{DynamicResource Settings.Game.LaunchCommand.Placeholder.Desc}"
+                                          Glyph="&#xE943;" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -94,4 +94,10 @@ public partial class SettingGame : ISettingPage
     {
         MainSettingPage.NavigateTo(new GamePublicSync());
     }
+
+    private void LaunchCommandBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        // 导航至自定义启动命令子页面
+        MainSettingPage.NavigateTo(new GameLaunchCommand());
+    }
 }

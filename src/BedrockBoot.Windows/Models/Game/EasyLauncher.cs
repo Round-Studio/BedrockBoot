@@ -170,6 +170,29 @@ public class EasyLauncher
             }
         }).Start());
 
+        // 执行用户自定义的启动前命令
+        var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
+        if (launchCommandConfig.IsEnable && !string.IsNullOrWhiteSpace(launchCommandConfig.PreLaunchCommand))
+        {
+            UpdateProgressText?.Invoke("状态：正在执行启动前命令");
+
+            var exitCode = await LaunchCommandHelper.RunHookAsync(
+                launchCommandConfig.PreLaunchCommand,
+                VersionInfo,
+                launchCommandConfig.IsWaitForPreLaunch,
+                launchCommandConfig.PreLaunchTimeout,
+                "启动前命令");
+
+            // 命令返回非零退出码且用户要求中止时，取消本次启动
+            if (launchCommandConfig.IsAbortOnPreLaunchFailure && exitCode is not null and not 0)
+            {
+                Console.WriteLine($@"启动前命令返回非零退出码 {exitCode}，已中止启动");
+                LaunchingCount--;
+                LaunchCompleted?.Invoke();
+                return;
+            }
+        }
+
         try
         {
             // 重置计时器
@@ -294,6 +317,7 @@ public class EasyLauncher
 			        _mouseLocker = null;
 			    }
 			}
+            await RunPostExitCommandAsync();
             LaunchCompleted?.Invoke();
         }
         catch (Exception ex)
@@ -306,6 +330,20 @@ public class EasyLauncher
                 
             LaunchCompleted?.Invoke();
         }
+    }
+
+    /// <summary>执行用户自定义的启动后（游戏退出后）命令</summary>
+    private async Task RunPostExitCommandAsync()
+    {
+        var config = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
+        if (!config.IsEnable || string.IsNullOrWhiteSpace(config.PostExitCommand)) return;
+
+        await LaunchCommandHelper.RunHookAsync(
+            config.PostExitCommand,
+            VersionInfo,
+            true,
+            config.PreLaunchTimeout,
+            "启动后命令");
     }
     
     public static bool IsGamingServicesInstalled()

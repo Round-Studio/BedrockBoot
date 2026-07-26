@@ -68,7 +68,7 @@ public class EasyLauncher
     }
 
     // Linux Proton 启动方法
-    private Process? LaunchWithProton(string filePath)
+    private Process? LaunchWithProton(string filePath, bool allowWrapper = false)
     {
         if (_linuxLaunchInfo == null)
             return null;
@@ -103,6 +103,15 @@ public class EasyLauncher
         string currentLdPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH") ?? "";
         startInfo.EnvironmentVariables["LD_LIBRARY_PATH"] = $"{libPath}:{currentLdPath}";
         startInfo.EnvironmentVariables["WINEDLLOVERRIDES"] = "dxgi,d3d11,d3d10core,d3d9=b";
+
+        // 应用用户自定义的运行包装器（例如 gamemoderun %command%）
+        // 仅在启动游戏本体时生效，依赖安装等内部调用不使用包装器
+        if (allowWrapper)
+        {
+            var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
+            if (launchCommandConfig.IsEnable && !string.IsNullOrWhiteSpace(launchCommandConfig.WrapperCommand))
+                LaunchCommandHelper.TryApplyWrapper(startInfo, launchCommandConfig.WrapperCommand, VersionInfo);
+        }
 
         try
         {
@@ -201,13 +210,36 @@ public class EasyLauncher
             }
         }).Start());
 
+        // 执行用户自定义的启动前命令
+        var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
+        if (launchCommandConfig.IsEnable && !string.IsNullOrWhiteSpace(launchCommandConfig.PreLaunchCommand))
+        {
+            UpdateProgressText?.Invoke("状态：正在执行启动前命令");
+
+            var exitCode = await LaunchCommandHelper.RunHookAsync(
+                launchCommandConfig.PreLaunchCommand,
+                VersionInfo,
+                launchCommandConfig.IsWaitForPreLaunch,
+                launchCommandConfig.PreLaunchTimeout,
+                "启动前命令");
+
+            // 命令返回非零退出码且用户要求中止时，取消本次启动
+            if (launchCommandConfig.IsAbortOnPreLaunchFailure && exitCode is not null and not 0)
+            {
+                Console.WriteLine($@"启动前命令返回非零退出码 {exitCode}，已中止启动");
+                LaunchingCount--;
+                LaunchCompleted?.Invoke();
+                return;
+            }
+        }
+
         try
         {
             // 重置计时器
             _gameplayStopwatch.Reset();
             _gameStartTime = DateTime.Now;
             
-            MinecraftProcess = LaunchWithProton(Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile));
+            MinecraftProcess = LaunchWithProton(Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile), true);
 
             if (MinecraftProcess != null)
             {
@@ -273,6 +305,7 @@ public class EasyLauncher
             }
             
             Console.WriteLine(@"游戏进程已退出（异步等待）");
+            await RunPostExitCommandAsync();
             LaunchCompleted?.Invoke();
         }
         catch (Exception ex)
@@ -285,5 +318,19 @@ public class EasyLauncher
                 
             LaunchCompleted?.Invoke();
         }
+    }
+
+    /// <summary>执行用户自定义的启动后（游戏退出后）命令</summary>
+    private async Task RunPostExitCommandAsync()
+    {
+        var config = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
+        if (!config.IsEnable || string.IsNullOrWhiteSpace(config.PostExitCommand)) return;
+
+        await LaunchCommandHelper.RunHookAsync(
+            config.PostExitCommand,
+            VersionInfo,
+            true,
+            config.PreLaunchTimeout,
+            "启动后命令");
     }
 }

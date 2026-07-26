@@ -112,7 +112,16 @@ public class OptimizedIpResolver : IDisposable
 
         foreach (var ip in ipAddresses.Take(20))
         {
-            await semaphore.WaitAsync(cts.Token);
+            try
+            {
+                await semaphore.WaitAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // 已达到 MinResults（或整体超时）触发取消，停止派发新任务，正常返回已收集的结果
+                break;
+            }
+
             tasks.Add(Task.Run(async () =>
             {
                 try

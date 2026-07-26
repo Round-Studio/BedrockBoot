@@ -48,6 +48,10 @@ internal sealed class Program
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();
 
+        // 迁移旧版 0~100 刻度的音量配置到 0~1 刻度
+        if (GlobalModel.Config.Data.MediaVolume > 1)
+            GlobalModel.Config.Data.MediaVolume /= 100;
+
         AppUpdater.ProcessStartupArgs(args);
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;

@@ -34,6 +34,9 @@ public class ProtonDownloader
         if (latest == null)
             throw new Exception($"未找到版本: {ProtonVersion}");
 
+        if (latest.Assets == null || latest.Assets.Count == 0)
+            throw new Exception($"版本 {ProtonVersion} 的 Release 中没有可下载的资源文件");
+
         var downloadDir = Path.Combine(PathsList.ProtonPath, "download");
         var workDir = Path.Combine(PathsList.ProtonPath, "work");
         var fileName = Path.Combine(downloadDir, $"{ProtonVersion}.tar.gz");
@@ -66,6 +69,9 @@ public class ProtonDownloader
         if (process == null)
             throw new Exception("无法启动 tar 进程。");
 
+        // 先启动错误流读取，避免 stderr 缓冲区写满导致与 WaitForExitAsync 互相死锁
+        var stderrTask = process.StandardError.ReadToEndAsync(ct);
+
         // 等待解压完成
         await process.WaitForExitAsync(ct);
 
@@ -73,7 +79,7 @@ public class ProtonDownloader
         if (process.ExitCode != 0)
         {
             // 如果报错，读取错误信息
-            string errorOutput = await process.StandardError.ReadToEndAsync(ct);
+            string errorOutput = await stderrTask;
             throw new Exception($"解压失败 (ExitCode {process.ExitCode}): {errorOutput}");
         }
     }

@@ -5,7 +5,7 @@ using NAudio.Wave;
 
 namespace BedrockBoot.Models.Media;
 
-public class MediaManager
+public class MediaManager : IDisposable
 {
     public static MediaManager Instance { get; } = new MediaManager();
 
@@ -108,6 +108,13 @@ public class MediaManager
                 _audioFile?.Seek(0, SeekOrigin.Begin);
                 _waveOut?.Play();
             }
+            else if (_waveOut != null)
+            {
+                // 非循环播放自然结束时释放播放器资源
+                _waveOut.PlaybackStopped -= OnPlaybackStopped;
+                DisposeResources();
+                CurrentFilePath = null;
+            }
         }
         catch (Exception ex)
         {
@@ -183,8 +190,11 @@ public class MediaManager
         _audioFile = null;
     }
 
-    ~MediaManager()
+    public void Dispose()
     {
-        DisposeResources();
+        lock (_gate)
+        {
+            StopInternal();
+        }
     }
 }

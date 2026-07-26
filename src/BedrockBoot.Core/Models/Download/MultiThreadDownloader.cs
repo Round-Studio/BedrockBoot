@@ -47,7 +47,9 @@ public class MultiThreadDownloader : IDisposable
 
         _httpClient = new HttpClient(_handler);
         _defaultTimeout = TimeSpan.FromSeconds(defaultTimeoutSeconds);
-        _httpClient.Timeout = _defaultTimeout;
+        // HttpClient.Timeout 覆盖整个响应体读取，大文件慢速网络必然超时。
+        // 这里设为无限，短请求（如获取文件信息）单独用 CancellationTokenSource 控制超时。
+        _httpClient.Timeout = Timeout.InfiniteTimeSpan;
 
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (compatible; ImprovedMultiThreadDownloader/1.0)");
@@ -74,8 +76,13 @@ public class MultiThreadDownloader : IDisposable
     }
 
     private async Task<(long fileSize, bool supportsRange)> GetFileInfoAsync(Uri uri,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
+        // 获取文件信息是短请求，单独限制超时，避免 HttpClient 无限超时导致挂起
+        using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        timeoutCts.CancelAfter(_defaultTimeout);
+        var cancellationToken = timeoutCts.Token;
+
         try
         {
             using var headRequest = new HttpRequestMessage(HttpMethod.Head, uri);
@@ -581,7 +588,8 @@ public class MultiThreadDownloader : IDisposable
 
         var client = new HttpClient(handler)
         {
-            Timeout = TimeSpan.FromSeconds(60) // 分段单独的超时设置
+            // 分段下载耗时取决于分段大小与网速，超时交由 CancellationToken 控制
+            Timeout = Timeout.InfiniteTimeSpan
         };
 
         if (_additionalHeaders != null)
@@ -681,7 +689,14 @@ public class MultiThreadDownloader : IDisposable
 
     private async Task MergeTempFilesAsync(string[] tempFiles, string outputPath, CancellationToken cancellationToken)
     {
-        Thread.Sleep(1000);
+        await Task.Delay(1000, cancellationToken);
+
+        // 缺失任何分段都会产出损坏文件，必须显式报错而不是静默跳过
+        var missingFiles = tempFiles.Where(f => !File.Exists(f)).ToArray();
+        if (missingFiles.Length > 0)
+            throw new FileNotFoundException(
+                $"合并临时文件失败: 缺失 {missingFiles.Length} 个分段文件: {string.Join(", ", missingFiles)}");
+
         // 增加缓冲区大小
         const int largeBufferSize = 81920 * 4; // 320KB缓冲区
 
@@ -692,7 +707,6 @@ public class MultiThreadDownloader : IDisposable
 
         // 按顺序处理文件
         var sortedFiles = tempFiles
-            .Where(File.Exists)
             .Select(f => new FileInfo(f))
             .ToArray();
 

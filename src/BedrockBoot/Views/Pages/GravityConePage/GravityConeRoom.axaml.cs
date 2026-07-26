@@ -86,17 +86,22 @@ public partial class GravityConeRoom : UserControl
         }
     }
 
-    private void CloseBtn_OnClick(object? sender, RoutedEventArgs e)
+    private async void CloseBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         try
         {
-            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Host)
-                GlobalModel.GravityConeClient?.StopRoomAsync();
-            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Guest)
-                GlobalModel.GravityConeClient?.LeaveRoomAsync();
+            var client = GlobalModel.GravityConeClient;
+            if (client != null)
+            {
+                if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Host)
+                    await client.StopRoomAsync();
+                if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Guest)
+                    await client.LeaveRoomAsync();
+            }
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine($@"关闭/退出房间失败: {ex.Message}");
         }
 
         MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());

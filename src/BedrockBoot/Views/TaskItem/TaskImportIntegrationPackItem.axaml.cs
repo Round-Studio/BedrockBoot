@@ -134,7 +134,32 @@ public partial class TaskImportIntegrationPackItem : UserControl, ITaskItem
                     SuccessCallBack?.Invoke();
                 }
             });
-            await installer.BeginInstaller(installFolder, installName, token);
+            try
+            {
+                await installer.BeginInstaller(installFolder, installName, token);
+            }
+            catch (Exception ex)
+            {
+                // BeginInstaller 抛异常（损坏包/版本不存在等）时任务会永远卡在进行中，
+                // 这里按 Failed 状态的处理方式通知用户并移除任务项
+                Console.WriteLine($@"整合包导入失败: {ex}");
+                var text = string.Format(I18nManager.Instance["Task.IntegrationPack.Status.Format"], 0, ex.Message);
+                ReportProgress(100, text);
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    MainProgressBar.IsIndeterminate = false;
+                    MainProgressBar.Value = 0;
+                    MainText.Text = ex.Message;
+
+                    GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
+                    {
+                        Title = I18nManager.Instance["Task.IntegrationPack.Notice.Title"],
+                        Message = ex.Message,
+                        NoticeType = NoticeType.Error
+                    });
+                });
+                SuccessCallBack?.Invoke();
+            }
         });
     }
 

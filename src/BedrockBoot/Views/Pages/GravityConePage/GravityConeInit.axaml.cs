@@ -213,7 +213,7 @@ public partial class GravityConeInit : UserControl
 
         GlobalModel.GravityConeClient.OnResponse += (sender, eventArgs) =>
         {
-            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 if (eventArgs.Error == null)
                     return;
@@ -228,10 +228,15 @@ public partial class GravityConeInit : UserControl
                     {
                         try
                         {
-                            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Host)
-                                GlobalModel.GravityConeClient?.StopRoomAsync();
-                            if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Guest)
-                                GlobalModel.GravityConeClient?.LeaveRoomAsync();
+                            // 先 await 停止/离开房间，异步异常才能被捕获；完成后再导航重试
+                            var gravityConeClient = GlobalModel.GravityConeClient;
+                            if (gravityConeClient != null)
+                            {
+                                if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Host)
+                                    await gravityConeClient.StopRoomAsync();
+                                if (GlobalModel.CurrentRoomState?.RoomType == RoomType.Guest)
+                                    await gravityConeClient.LeaveRoomAsync();
+                            }
                         }
                         catch
                         {

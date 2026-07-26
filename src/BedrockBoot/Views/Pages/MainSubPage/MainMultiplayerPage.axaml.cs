@@ -33,6 +33,8 @@ public partial class MainMultiplayerPage : BedrockBootPage
             MainFrame.NavigateTo(new MultiplayerRoot());
 
         if (GlobalModel.ETPublicServer == null) GetETNodes();
+        // 节点已获取但 Xbox 用户为空时仍需获取，否则后续创建/加入房间会空引用
+        else if (GlobalModel.XboxUserInfo == null) GetXboxUser();
 
         if (GlobalModel.PaperConnectCore != null)
         {

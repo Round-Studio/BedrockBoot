@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -20,6 +21,17 @@ public partial class MultiplayerRoot : UserControl
 
     private void CreateRoom_OnClick(object? sender, RoutedEventArgs e)
     {
+        if (GlobalModel.XboxUserInfo == null)
+        {
+            GlobalModel.MainWindow.Notice.AddNotice(new()
+            {
+                Title = "Xbox 未登录",
+                Message = "无法获取 Xbox 用户，请登录 Xbox 账户后重试",
+                NoticeType = NoticeType.Error
+            });
+            return;
+        }
+
         GlobalModel.PaperConnectCore = new PaperConnectCore
         {
             EasyTierCliPath = PathsList.EasyTierCliPath,
@@ -33,6 +45,17 @@ public partial class MultiplayerRoot : UserControl
 
     private void LinkRoom_OnClick(object? sender, RoutedEventArgs e)
     {
+        if (GlobalModel.XboxUserInfo == null)
+        {
+            GlobalModel.MainWindow.Notice.AddNotice(new()
+            {
+                Title = "Xbox 未登录",
+                Message = "无法获取 Xbox 用户，请登录 Xbox 账户后重试",
+                NoticeType = NoticeType.Error
+            });
+            return;
+        }
+
         var dialog = new DialogMultiplayerLinkRoomContent();
         DialogHost.Show(new DialogInfo
         {
@@ -43,6 +66,17 @@ public partial class MultiplayerRoot : UserControl
             CloseAction = () =>
             {
                 var roomCode = dialog.RoomCode;
+
+                if (string.IsNullOrEmpty(roomCode))
+                {
+                    GlobalModel.MainWindow.Notice.AddNotice(new()
+                    {
+                        Title = "不得为空",
+                        Message = "联机码不得为空",
+                        NoticeType = NoticeType.Error
+                    });
+                    return;
+                }
 
                 GlobalModel.PaperConnectCore = new PaperConnectCore
                 {
@@ -55,7 +89,30 @@ public partial class MultiplayerRoot : UserControl
                 {
                     Dispatcher.UIThread.Invoke(() => DialogHost.Close());
                 };
-                Task.Run(() => GlobalModel.PaperConnectCore.Initialize(CoreType.Client, GlobalModel.ETPublicServer));
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        GlobalModel.PaperConnectCore.Initialize(CoreType.Client, GlobalModel.ETPublicServer);
+                    }
+                    catch (Exception ex)
+                    {
+                        // 联机码非法等情况 Initialize 会抛异常，
+                        // 必须关闭"连接房间中"对话框并回到联机首页，否则 UI 永久卡死
+                        Console.WriteLine($@"连接房间失败: {ex}");
+                        Dispatcher.UIThread.Invoke(() =>
+                        {
+                            DialogHost.Close();
+                            MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoot());
+                            GlobalModel.MainWindow.Notice.AddNotice(new()
+                            {
+                                Title = "连接房间失败",
+                                Message = ex.Message,
+                                NoticeType = NoticeType.Error
+                            });
+                        });
+                    }
+                });
                 Dispatcher.UIThread.Invoke(() =>
                     MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomGuest()));
                 DialogHost.Show(new DialogInfo

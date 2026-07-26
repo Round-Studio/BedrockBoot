@@ -229,6 +229,10 @@ namespace BedrockBoot.Models.Helper.Uwp
                 _isCompleted = true;
             }
 
+            // 停止（含 AutoStop 超时）时完成等待任务，避免 StartFrameMonitorAsync 返回的 Task 永久挂起；
+            // 正常捕获路径已先 TrySetResult(hwnd)，此处的 TrySetResult 为无害的空操作
+            _hwndSource?.TrySetResult(IntPtr.Zero);
+
             if (_hook != IntPtr.Zero)
             {
                 UnhookWinEvent(_hook);

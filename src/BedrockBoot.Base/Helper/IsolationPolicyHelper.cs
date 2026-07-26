@@ -11,7 +11,11 @@ public class IsolationPolicyHelper
         {
             CatalogStrategyEnum.Independence => "independence",
             CatalogStrategyEnum.Shares => "shares",
-            CatalogStrategyEnum.FollowTheBigPicture => ParsePolicyConfig(PublicCatalogStrategy)
+            // 全局值同为 FollowTheBigPicture 时回退到默认值，避免无限递归
+            CatalogStrategyEnum.FollowTheBigPicture => PublicCatalogStrategy == CatalogStrategyEnum.FollowTheBigPicture
+                ? "independence"
+                : ParsePolicyConfig(PublicCatalogStrategy),
+            _ => "independence"
         };
     }
 }

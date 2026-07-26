@@ -65,227 +65,238 @@ public class EasyLauncher
     public async Task Launch()
     {
         LaunchingCount++;
-        if (CoreGlobal.BedrockCore == null)
-        {
-            CoreGlobal.BedrockCore = new BedrockCore
-            {
-                Options = new CoreOptions
-                {
-                    IsAutoCompleteVC = true,
-                    IsAutoOpenDevelopment = false,
-                    IsCheckMD5 = true
-                }
-            };
-            await CoreGlobal.BedrockCore.InitAsync();
-        }
-        
-        VersionInfo.Config.FolderPolicyStr =
-            IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
-
-        if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP) // 为了兼容 UWP 不能被 hook 的傻逼设定，详见 #74
-        {
-            VersionInfo.Config.IsVersionIsolated = false;
-            GameInfoHelper.SaveVersionConfig(VersionInfo);
-        }
-            
-        GameInfoHelper.SaveVersionConfig(VersionInfo);
-        
-        Console.WriteLine(@"已同步策略状态");
-        
-        Console.WriteLine(@"开始检测 GameService 安装状态");
-
-        var gameServiceInstallStatue = IsGamingServicesInstalled();
-        Console.WriteLine($@"GameService 安装状态：{gameServiceInstallStatue}");
-
-        if (!gameServiceInstallStatue)
-        {
-            LaunchCompleted?.Invoke();
-            GameServiceNotice.UnInstallGameService();
-            return;
-        }
-
-        if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
-        {
-            Console.WriteLine(@"当前实例为 UWP 构建类型，需要检测开发者模式。");
-            var devMod = DeveloperModeHelper.IsDeveloperMode();
-            
-            Console.WriteLine(@"开发者模式启用状态: " + devMod);
-            if (!devMod)
-            {
-                LaunchCompleted?.Invoke();
-                DeveloperModeHelper.ShowNotice();
-                return;
-            }
-        }
-
-        _core = new ModsCore(VersionInfo);
-
-        var args = "";
-
-        if (VersionInfo.Config.IsEditModel) args += "minecraft://creator/?Editor=true ";
-        args += VersionInfo.Config.OtherCommand;
-
-        _core.PreLoad(); // 启动 PreLoad
-
-        if (!VersionInfo.VersionStatus.GameInputInstalled &&
-            VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK)
-        {
-            Console.WriteLine(@"正在运行 GameInput 安装，请等待安装完成...");
-    
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "msiexec.exe",
-                // 使用 /qb 显示基本进度界面，/qn 是完全静默
-                Arguments = $"/i \"{Path.Combine(VersionInfo.VersionPath, "Installers", "GameInputRedist.msi")}\" /qb",
-                UseShellExecute = true,
-                Verb = "runas"
-            };
-    
-            using (var process = Process.Start(startInfo))
-            {
-                process?.WaitForExit();
-                if (process?.ExitCode == 0)
-                {
-                    Console.WriteLine(@"GameInput 安装完毕");
-                }
-                else
-                {
-                    Console.WriteLine($@"GameInput 安装失败，错误码: {process?.ExitCode}");
-                }
-            }
-
-            VersionInfo.VersionStatus.GameInputInstalled = true;
-            GameInfoHelper.SaveVersionConfig(VersionInfo);
-        }
-
-        RegisterService.API.LaunchingEvent.ForEach(action => new Thread(() =>
-        {
-            try
-            {
-                if (VersionInfo.VersionPath != null) action.Invoke(VersionInfo.VersionPath);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($@"执行启动前方法失败：{ex}");
-            }
-        }).Start());
-
-        // 执行用户自定义的启动前命令
-        var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
-        if (launchCommandConfig.IsEnable && !string.IsNullOrWhiteSpace(launchCommandConfig.PreLaunchCommand))
-        {
-            UpdateProgressText?.Invoke("状态：正在执行启动前命令");
-
-            var exitCode = await LaunchCommandHelper.RunHookAsync(
-                launchCommandConfig.PreLaunchCommand,
-                VersionInfo,
-                launchCommandConfig.IsWaitForPreLaunch,
-                launchCommandConfig.PreLaunchTimeout,
-                "启动前命令");
-
-            // 命令返回非零退出码且用户要求中止时，取消本次启动
-            if (launchCommandConfig.IsAbortOnPreLaunchFailure && exitCode is not null and not 0)
-            {
-                Console.WriteLine($@"启动前命令返回非零退出码 {exitCode}，已中止启动");
-                LaunchingCount--;
-                LaunchCompleted?.Invoke();
-                return;
-            }
-        }
-
+        // 正常路径会在游戏进程创建成功后立即递减并置位该标记；
+        // 其余早退/异常路径由 finally 补偿递减，防止 LaunchingCount 泄漏导致 LaunchedBehavior 永不触发
+        var launchingCountDecremented = false;
         try
         {
-            // 重置计时器
-            _gameplayStopwatch.Reset();
-            _gameStartTime = DateTime.Now;
+            if (CoreGlobal.BedrockCore == null)
+            {
+                CoreGlobal.BedrockCore = new BedrockCore
+                {
+                    Options = new CoreOptions
+                    {
+                        IsAutoCompleteVC = true,
+                        IsAutoOpenDevelopment = false,
+                        IsCheckMD5 = true
+                    }
+                };
+                await CoreGlobal.BedrockCore.InitAsync();
+            }
+
+            VersionInfo.Config.FolderPolicyStr =
+                IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
+
+            if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP) // 为了兼容 UWP 不能被 hook 的傻逼设定，详见 #74
+            {
+                VersionInfo.Config.IsVersionIsolated = false;
+                GameInfoHelper.SaveVersionConfig(VersionInfo);
+            }
+
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
+
+            Console.WriteLine(@"已同步策略状态");
+
+            Console.WriteLine(@"开始检测 GameService 安装状态");
+
+            var gameServiceInstallStatue = IsGamingServicesInstalled();
+            Console.WriteLine($@"GameService 安装状态：{gameServiceInstallStatue}");
+
+            if (!gameServiceInstallStatue)
+            {
+                LaunchCompleted?.Invoke();
+                GameServiceNotice.UnInstallGameService();
+                return;
+            }
 
             if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
             {
-                // 开始监视 ApplicationFrameHost 窗口信息
-                _frameMonitor = new FrameMonitor();
-                _frameMonitor.GameName = VersionInfo.Info.VersionName;
+                Console.WriteLine(@"当前实例为 UWP 构建类型，需要检测开发者模式。");
+                var devMod = DeveloperModeHelper.IsDeveloperMode();
 
-                _ = Task.Run(async () =>
+                Console.WriteLine(@"开发者模式启用状态: " + devMod);
+                if (!devMod)
                 {
-                    _frameHwnd = await _frameMonitor.StartFrameMonitorAsync();
-
-                });
+                    LaunchCompleted?.Invoke();
+                    DeveloperModeHelper.ShowNotice();
+                    return;
+                }
             }
-            
 
-            MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
+            _core = new ModsCore(VersionInfo);
+
+            var args = "";
+
+            if (VersionInfo.Config.IsEditModel) args += "minecraft://creator/?Editor=true ";
+            args += VersionInfo.Config.OtherCommand;
+
+            _core.PreLoad(); // 启动 PreLoad
+
+            if (!VersionInfo.VersionStatus.GameInputInstalled &&
+                VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK)
             {
-                GameFolder = VersionInfo.VersionPath,
-                GameType = VersionInfo.Info.VersionType,
-                MinecraftBuildType = VersionInfo.Info.BuildType,
-                RegisterProgress = new Progress<DeploymentProgress>(progress =>
-                {
-                    Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
+                Console.WriteLine(@"正在运行 GameInput 安装，请等待安装完成...");
 
-                    // 使用回调更新进度，而不是直接操作 UI
-                    UpdateProgress?.Invoke($"步骤：{progress.state}", progress.percentage);
-                }),
-                Progress = new Progress<LaunchState>(state =>
+                var startInfo = new ProcessStartInfo
                 {
-                    Console.WriteLine(state);
-                    UpdateProgressText?.Invoke($"状态：{state}");
-                    
-                    // 当游戏启动状态变化时，更新进度文本
-                    if (state == LaunchState.Launched)
+                    FileName = "msiexec.exe",
+                    // 使用 /qb 显示基本进度界面，/qn 是完全静默
+                    Arguments = $"/i \"{Path.Combine(VersionInfo.VersionPath, "Installers", "GameInputRedist.msi")}\" /qb",
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
+
+                using (var process = Process.Start(startInfo))
+                {
+                    process?.WaitForExit();
+                    if (process?.ExitCode == 0)
                     {
-                        UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
+                        Console.WriteLine(@"GameInput 安装完毕");
                     }
-                }),
-                LaunchArgs = string.IsNullOrEmpty(args) ? null : args
-            });
-
-            if (MinecraftProcess != null)
-            {
-                Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
-
-                
-
-                LaunchingCount--;
-                if (LaunchingCount == 0) LaunchedBehavior?.Invoke();
-                
-                // 开始计时
-                _gameplayStopwatch.Start();
-                Console.WriteLine($@"游戏计时开始：{_gameStartTime:yyyy-MM-dd HH:mm:ss}");
-                
-                Launched?.Invoke(MinecraftProcess);
-                UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
-                SetProgressIndeterminate?.Invoke(true);
-                
-                if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
-                {
-                    // 正常情况下 GDK 窗口是不需要锁的呜
-                    if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
+                    else
                     {
-                        _mouseLocker = new ProcessMouseLocker(MinecraftProcess.Id, _frameHwnd);
-                        _mouseLocker.Start();
+                        Console.WriteLine($@"GameInput 安装失败，错误码: {process?.ExitCode}");
                     }
                 }
 
-                if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
-
-                MinecraftProcess.EnableRaisingEvents = true;
-
-                await WaitForProcessExitAsync(MinecraftProcess);
+                VersionInfo.VersionStatus.GameInputInstalled = true;
+                GameInfoHelper.SaveVersionConfig(VersionInfo);
             }
-            else
+
+            RegisterService.API.LaunchingEvent.ForEach(action => new Thread(() =>
             {
+                try
+                {
+                    if (VersionInfo.VersionPath != null) action.Invoke(VersionInfo.VersionPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"执行启动前方法失败：{ex}");
+                }
+            }).Start());
+
+            // 执行用户自定义的启动前命令
+            var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
+            if (launchCommandConfig.IsEnable && !string.IsNullOrWhiteSpace(launchCommandConfig.PreLaunchCommand))
+            {
+                UpdateProgressText?.Invoke("状态：正在执行启动前命令");
+
+                var exitCode = await LaunchCommandHelper.RunHookAsync(
+                    launchCommandConfig.PreLaunchCommand,
+                    VersionInfo,
+                    launchCommandConfig.IsWaitForPreLaunch,
+                    launchCommandConfig.PreLaunchTimeout,
+                    "启动前命令");
+
+                // 命令返回非零退出码且用户要求中止时，取消本次启动
+                if (launchCommandConfig.IsAbortOnPreLaunchFailure && exitCode is not null and not 0)
+                {
+                    Console.WriteLine($@"启动前命令返回非零退出码 {exitCode}，已中止启动");
+                    LaunchCompleted?.Invoke();
+                    return;
+                }
+            }
+
+            try
+            {
+                // 重置计时器
+                _gameplayStopwatch.Reset();
+                _gameStartTime = DateTime.Now;
+
+                if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
+                {
+                    // 开始监视 ApplicationFrameHost 窗口信息
+                    _frameMonitor = new FrameMonitor();
+                    _frameMonitor.GameName = VersionInfo.Info.VersionName;
+
+                    _ = Task.Run(async () =>
+                    {
+                        _frameHwnd = await _frameMonitor.StartFrameMonitorAsync();
+
+                    });
+                }
+
+
+                MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
+                {
+                    GameFolder = VersionInfo.VersionPath,
+                    GameType = VersionInfo.Info.VersionType,
+                    MinecraftBuildType = VersionInfo.Info.BuildType,
+                    RegisterProgress = new Progress<DeploymentProgress>(progress =>
+                    {
+                        Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
+
+                        // 使用回调更新进度，而不是直接操作 UI
+                        UpdateProgress?.Invoke($"步骤：{progress.state}", progress.percentage);
+                    }),
+                    Progress = new Progress<LaunchState>(state =>
+                    {
+                        Console.WriteLine(state);
+                        UpdateProgressText?.Invoke($"状态：{state}");
+
+                        // 当游戏启动状态变化时，更新进度文本
+                        if (state == LaunchState.Launched)
+                        {
+                            UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
+                        }
+                    }),
+                    LaunchArgs = string.IsNullOrEmpty(args) ? null : args
+                });
+
+                if (MinecraftProcess != null)
+                {
+                    Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
+
+
+
+                    LaunchingCount--;
+                    launchingCountDecremented = true;
+                    if (LaunchingCount == 0) LaunchedBehavior?.Invoke();
+
+                    // 开始计时
+                    _gameplayStopwatch.Start();
+                    Console.WriteLine($@"游戏计时开始：{_gameStartTime:yyyy-MM-dd HH:mm:ss}");
+
+                    Launched?.Invoke(MinecraftProcess);
+                    UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
+                    SetProgressIndeterminate?.Invoke(true);
+
+                    if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
+                    {
+                        // 正常情况下 GDK 窗口是不需要锁的呜
+                        if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
+                        {
+                            _mouseLocker = new ProcessMouseLocker(MinecraftProcess.Id, _frameHwnd);
+                            _mouseLocker.Start();
+                        }
+                    }
+
+                    if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
+
+                    MinecraftProcess.EnableRaisingEvents = true;
+
+                    await WaitForProcessExitAsync(MinecraftProcess);
+                }
+                else
+                {
+                    LaunchCompleted?.Invoke();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"启动游戏时发生错误: {ex}");
+
+                // 确保计时器停止
+                if (_gameplayStopwatch.IsRunning)
+                    _gameplayStopwatch.Stop();
+
                 LaunchCompleted?.Invoke();
             }
         }
-        catch (Exception ex)
+        finally
         {
-            Console.WriteLine($@"启动游戏时发生错误: {ex}");
-            
-            // 确保计时器停止
-            if (_gameplayStopwatch.IsRunning)
-                _gameplayStopwatch.Stop();
-                
-            LaunchCompleted?.Invoke();
+            // 早退或异常路径未走到正常递减点时，在此补偿递减
+            if (!launchingCountDecremented) LaunchingCount--;
         }
     }
 
@@ -342,7 +353,7 @@ public class EasyLauncher
             config.PostExitCommand,
             VersionInfo,
             true,
-            config.PreLaunchTimeout,
+            0, // 0 表示无限等待：启动后命令（如备份存档）不应复用启动前超时被强制终止
             "启动后命令");
     }
     

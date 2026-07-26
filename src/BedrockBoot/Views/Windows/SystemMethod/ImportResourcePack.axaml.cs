@@ -28,7 +28,7 @@ public partial class ImportResourcePack : Window
         if (Program.Args != null && Program.Args.Contains("-open"))
         {
             var index = Program.Args.FindIndex(a => a == "-open");
-            if (index + 1 < Program.Args.Count)
+            if (index + 2 < Program.Args.Count)
             {
                 _filePath = Program.Args[index + 2];
                 LoadPack(_filePath);

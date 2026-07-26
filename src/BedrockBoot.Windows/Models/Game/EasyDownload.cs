@@ -103,7 +103,8 @@ public class EasyDownload
             {
                 while (!IsCanInstall)
                 {
-                    Task.Delay(100).Wait();
+                    token.ThrowIfCancellationRequested();
+                    await Task.Delay(100, token);
                 }
             } // 外部控制是否开始安装
 
@@ -304,6 +305,11 @@ public class EasyDownload
             if (showError) ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
 
             return false;
+        }
+        catch (OperationCanceledException)
+        {
+            // 取消操作不应被当作校验失败上报
+            throw;
         }
         catch (Exception ex)
         {

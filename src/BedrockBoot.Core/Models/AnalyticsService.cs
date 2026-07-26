@@ -409,7 +409,8 @@ namespace BedrockBoot.Core.Models
 
             if (osDescription.Contains("Windows"))
             {
-                if (osDescription.Contains("10.0") && osDescription.Contains("22000"))
+                int build = Environment.OSVersion.Version.Build;
+                if (osDescription.Contains("10.0") && build >= 22000)
                 {
                     return $"Windows 11.{GetOSBuildNumber()}";
                 }
@@ -439,9 +440,8 @@ namespace BedrockBoot.Core.Models
         {
             if (!_disposed)
             {
-                _httpClient?.Dispose();
-                _ipResolver?.Dispose();
-                _initLock?.Dispose();
+                // _httpClient / _ipResolver / _initLock 均为静态资源，随进程生命周期存活。
+                // 不能在实例 Dispose 中释放，否则后续所有静态调用会抛 ObjectDisposedException。
                 _disposed = true;
             }
         }

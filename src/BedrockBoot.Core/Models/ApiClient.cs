@@ -336,14 +336,17 @@ namespace BedrockBoot.Core.Models
         /// </summary>
         private string BuildUrl(string endpoint, Dictionary<string, string> queryParams = null)
         {
+            string url;
             if (BaseUrl == null)
             {
-                return endpoint;
+                url = endpoint;
             }
-
-            var baseUrl = BaseUrl.ToString().TrimEnd('/');
-            var endpointPath = endpoint.TrimStart('/');
-            var url = $"{baseUrl}/{endpointPath}";
+            else
+            {
+                var baseUrl = BaseUrl.ToString().TrimEnd('/');
+                var endpointPath = endpoint.TrimStart('/');
+                url = $"{baseUrl}/{endpointPath}";
+            }
 
             if (queryParams != null && queryParams.Count > 0)
             {

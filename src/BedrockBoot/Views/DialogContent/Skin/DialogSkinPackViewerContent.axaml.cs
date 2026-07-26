@@ -40,55 +40,70 @@ public partial class DialogSkinPackViewerContent : UserControl
 
     private async Task UpdateUI()
     {
-        var ans = new SkinPackAnalysis(_packFolder);
-        _files = ans.GetAllSkin().ToList();
-
-        var items = new List<ItemViewItem>(_files.Count);
-        var semaphore = new SemaphoreSlim(5, 5);
-
-        var tasks = _files.Select(async filePath =>
+        try
         {
-            await semaphore.WaitAsync();
-            try
+            var ans = new SkinPackAnalysis(_packFolder);
+            var files = ans.GetAllSkin().ToList();
+
+            var semaphore = new SemaphoreSlim(5, 5);
+
+            var tasks = files.Select(async filePath =>
             {
-                var image = await Task.Run(() =>
+                await semaphore.WaitAsync();
+                try
                 {
-                    using var bitmap = SKBitmap.Decode(filePath);
-                    var captured = HeadCapturer.Default.Capture(bitmap);
-                    return captured.ToBitmap();
-                });
-        
-                return new ItemViewItem()
-                {
-                    Content = new Border()
+                    var image = await Task.Run(() =>
                     {
-                        Background = new ImageBrush()
+                        using var bitmap = SKBitmap.Decode(filePath);
+                        // 无效 PNG 时 Decode 返回 null，跳过该图片
+                        if (bitmap == null) return null;
+                        var captured = HeadCapturer.Default.Capture(bitmap);
+                        return captured.ToBitmap();
+                    });
+
+                    if (image == null) return (filePath, item: (ItemViewItem?)null);
+
+                    return (filePath, item: (ItemViewItem?)new ItemViewItem()
+                    {
+                        Content = new Border()
                         {
-                            Stretch = Stretch.UniformToFill,
-                            Source = image
+                            Background = new ImageBrush()
+                            {
+                                Stretch = Stretch.UniformToFill,
+                                Source = image
+                            },
+                            CornerRadius = new CornerRadius(6),
+                            Width = 48,
+                            Height = 48
                         },
-                        CornerRadius = new CornerRadius(6),
                         Width = 48,
                         Height = 48
-                    },
-                    Width = 48,
-                    Height = 48
-                };
-            }
-            finally
+                    });
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            var results = await Task.WhenAll(tasks);
+
+            // 过滤解码失败的图片，并保持 _files 与列表项索引一致
+            var valid = results.Where(r => r.item != null).ToList();
+            _files = valid.Select(r => r.filePath).ToList();
+
+            foreach (var (_, item) in valid)
             {
-                semaphore.Release();
+                SkinItem.Items.Add(item);
             }
-        });
 
-        var results = await Task.WhenAll(tasks);
-
-        foreach (var item in results)
-        {
-            SkinItem.Items.Add(item);
+            if (_files.Count > 0)
+                SkinItem.SelectedIndex = 0;
         }
-
-        SkinItem.SelectedIndex = 0;
+        catch (System.Exception ex)
+        {
+            System.Console.WriteLine($@"加载皮肤包预览失败: {ex}");
+        }
     }
 
     private void SkinViewer_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
@@ -98,6 +113,8 @@ public partial class DialogSkinPackViewerContent : UserControl
 
     private void SkinItem_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
+        if (_files == null || SkinItem.SelectedIndex < 0 || SkinItem.SelectedIndex >= _files.Count) return;
+
         var file = _files[SkinItem.SelectedIndex];
         SkinViewer.Skin = file;
     }
@@ -106,13 +123,13 @@ public partial class DialogSkinPackViewerContent : UserControl
 
     private void SkinViewer_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        var po = e.GetCurrentPoint(this);
         var pos = e.GetPosition(this);
 
+        // 释放事件时 Properties.IsLeftButtonPressed 恒为 false，需用 InitialPressMouseButton 判断
         var type = PointerType.None;
-        if (po.Properties.IsLeftButtonPressed)
+        if (e.InitialPressMouseButton == MouseButton.Left)
             type = PointerType.PointerLeft;
-        else if (po.Properties.IsRightButtonPressed) return;
+        else if (e.InitialPressMouseButton == MouseButton.Right) return;
 
         SkinViewer.UpdatePointerReleased(type, new Vector2((float)((float)pos.X * Sensitivity), (float)((float)pos.Y* Sensitivity)));
     }

@@ -72,7 +72,7 @@ public static class LaunchCommandHelper
             if (!string.IsNullOrEmpty(versionInfo?.VersionPath) && Directory.Exists(versionInfo.VersionPath))
                 startInfo.WorkingDirectory = versionInfo.VersionPath;
 
-            using var process = new Process { StartInfo = startInfo };
+            var process = new Process { StartInfo = startInfo };
 
             process.OutputDataReceived += (_, e) =>
             {
@@ -89,31 +89,38 @@ public static class LaunchCommandHelper
 
             if (!waitForExit)
             {
+                // 后台模式下不能立即 Dispose：会关闭重定向的输出管道，可能导致后台命令被终止，
+                // 改为挂接 Exited 事件，在进程退出后再释放
+                process.Exited += (_, _) => process.Dispose();
+                process.EnableRaisingEvents = true;
                 Console.WriteLine($@"[{label}] 已在后台启动，不等待其结束");
                 return null;
             }
 
-            if (timeoutSeconds > 0)
+            using (process)
             {
-                using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
-                try
+                if (timeoutSeconds > 0)
                 {
-                    await process.WaitForExitAsync(cts.Token);
+                    using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+                    try
+                    {
+                        await process.WaitForExitAsync(cts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Console.WriteLine($@"[{label}] 执行超时（{timeoutSeconds} 秒），正在终止该命令");
+                        TryKill(process);
+                        return null;
+                    }
                 }
-                catch (OperationCanceledException)
+                else
                 {
-                    Console.WriteLine($@"[{label}] 执行超时（{timeoutSeconds} 秒），正在终止该命令");
-                    TryKill(process);
-                    return null;
+                    await process.WaitForExitAsync();
                 }
-            }
-            else
-            {
-                await process.WaitForExitAsync();
-            }
 
-            Console.WriteLine($@"[{label}] 执行结束，退出码: {process.ExitCode}");
-            return process.ExitCode;
+                Console.WriteLine($@"[{label}] 执行结束，退出码: {process.ExitCode}");
+                return process.ExitCode;
+            }
         }
         catch (Exception ex)
         {

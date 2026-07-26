@@ -24,6 +24,15 @@ public static class ConfigSaveScheduler
     /// <summary>默认防抖间隔（毫秒）</summary>
     private const int DefaultDelayMs = 400;
 
+    /// <summary>
+    /// 可选的调度委托。防抖 Timer 的回调运行在线程池线程上，而 Save() 触发的
+    /// AfterSave 回调链可能访问 UI 控件；主程序应在启动时设置本属性把保存动作
+    /// 调度回 UI 线程，例如：
+    /// <c>ConfigSaveScheduler.Dispatcher = a => Avalonia.Threading.Dispatcher.UIThread.Post(a);</c>
+    /// 未设置时直接在当前线程执行。
+    /// </summary>
+    public static Action<Action>? Dispatcher { get; set; }
+
     private static readonly object Gate = new();
 
     private static Timer? _timer;
@@ -62,9 +71,11 @@ public static class ConfigSaveScheduler
         {
             if (!_pending) return;
             _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+            _pending = false;
         }
 
-        Commit();
+        // Flush 用于程序退出等关键节点，必须同步落盘，不经过 Dispatcher 异步调度
+        SaveCore();
     }
 
     private static void Commit()
@@ -75,6 +86,19 @@ public static class ConfigSaveScheduler
             _pending = false;
         }
 
+        var dispatcher = Dispatcher;
+        if (dispatcher != null)
+        {
+            dispatcher(SaveCore);
+        }
+        else
+        {
+            SaveCore();
+        }
+    }
+
+    private static void SaveCore()
+    {
         try
         {
             GlobalModel.Config?.Save();

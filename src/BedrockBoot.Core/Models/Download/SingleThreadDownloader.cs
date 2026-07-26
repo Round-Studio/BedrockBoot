@@ -121,7 +121,7 @@ public class SingleThreadDownloader : IDisposable
 
         var totalSize = fileInfo.ContentLength.Value;
         var chunkCount = (int)Math.Ceiling((double)totalSize / _chunkSize);
-        var tasks = new List<Task>();
+        var chunks = new List<(string TempFile, long StartByte, long EndByte)>();
         var temporaryFiles = new List<string>();
 
         // Create temporary files for each chunk
@@ -130,20 +130,20 @@ public class SingleThreadDownloader : IDisposable
             var tempFile = Path.GetTempFileName();
             temporaryFiles.Add(tempFile);
 
-            var startByte = i * _chunkSize;
+            long startByte = (long)i * _chunkSize;
             var endByte = Math.Min(startByte + _chunkSize - 1, totalSize - 1);
 
-            tasks.Add(DownloadChunkAsync(url, tempFile, startByte, endByte, cancellationToken));
+            chunks.Add((tempFile, startByte, endByte));
         }
 
-        // Limit concurrent downloads
+        // Limit concurrent downloads (start each chunk only after acquiring the semaphore)
         var semaphore = new SemaphoreSlim(_maxThreads);
-        var limitedTasks = tasks.Select(async task =>
+        var limitedTasks = chunks.Select(async chunk =>
         {
             await semaphore.WaitAsync(cancellationToken);
             try
             {
-                await task;
+                await DownloadChunkAsync(url, chunk.TempFile, chunk.StartByte, chunk.EndByte, cancellationToken);
             }
             finally
             {

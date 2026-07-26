@@ -112,6 +112,27 @@ public partial class TaskImportIntegrationPackItem : UserControl, ITaskItem
                     Dispatcher.UIThread.Invoke(() => { InsInstallGameBar.Value = (int)progress.Progress; });
                     SuccessCallBack?.Invoke();
                 }
+
+                if (progress.Status == InstallIntegrationProgressType.Failed)
+                {
+                    // 此前 Failed 状态没有任何处理：任务永远停在进行中，
+                    // 用户既看不到失败原因，任务也无法从列表消失
+                    ReportProgress(100, text);
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        MainProgressBar.IsIndeterminate = false;
+                        MainProgressBar.Value = 0;
+                        MainText.Text = progress.Message;
+
+                        GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
+                        {
+                            Title = I18nManager.Instance["Task.IntegrationPack.Notice.Title"],
+                            Message = progress.Message,
+                            NoticeType = NoticeType.Error
+                        });
+                    });
+                    SuccessCallBack?.Invoke();
+                }
             });
             await installer.BeginInstaller(installFolder, installName, token);
         });

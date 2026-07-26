@@ -50,6 +50,26 @@ public class IntegrationPackager
         var path = Path.Combine(PathsList.TempPath, $"integration_{Guid.NewGuid().ToString().Replace("-", "")}");
         Directory.CreateDirectory(path);
 
+        try
+        {
+            PackCore(config, path);
+        }
+        finally
+        {
+            // 打包产物已写入 PackSavePath，临时目录无论成败都应清理
+            try
+            {
+                if (Directory.Exists(path)) Directory.Delete(path, true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"清理整合包临时目录失败: {ex.Message}");
+            }
+        }
+    }
+
+    private void PackCore(PackInfo config, string path)
+    {
         var conf = new ConfigEntity<PackInfo>(Path.Combine(path, "pack.json"));
         conf.Data = config;
         conf.Save();
@@ -157,6 +177,12 @@ public class IntegrationPackager
             packFolders.ForEach(pa =>
             {
                 var file = Path.Combine(path, "worlds", $"{Path.GetFileName(pa)}.mcworld");
+
+                // 不同用户目录下可能存在同名存档文件夹，避免后者静默覆盖前者
+                if (File.Exists(file))
+                    file = Path.Combine(path, "worlds",
+                        $"{Path.GetFileName(pa)}_{Guid.NewGuid().ToString("N")[..8]}.mcworld");
+
                 Console.WriteLine($@"正在处理存档：{file}");
                 ZipHelper.CreateZipFile(pa, file);
                 count++;
@@ -175,6 +201,12 @@ public class IntegrationPackager
             var count = 0;
             var modConf =
                 new ConfigEntity<Dictionary<string, PackModInfo>>(Path.Combine(path, "mods", "mods.json"));
+
+            // 字典必须在循环外初始化一次。
+            // 此前每次循环都 new 一个新字典，导致 mods.json 只记录最后一个 mod，
+            // 安装端按 mods.json 安装时其余 mod 全部丢失。
+            modConf.Data = new Dictionary<string, PackModInfo>();
+
             modManager.Mods.ForEach(mod =>
             {
                 var file = mod.File;
@@ -184,13 +216,12 @@ public class IntegrationPackager
                     Message = $@"正在处理 dll 文件：{Path.GetFileName(file)}",
                     Progress = (double)count / modManager.Mods.Count * 100
                 });
-                File.Copy(file, Path.Combine(path, "mods", Path.GetFileName(file)));
-                modConf.Data = new Dictionary<string, PackModInfo>();
-                modConf.Data.Add(Path.GetFileName(file), new PackModInfo
+                File.Copy(file, Path.Combine(path, "mods", Path.GetFileName(file)), true);
+                modConf.Data[Path.GetFileName(file)] = new PackModInfo
                 {
                     Delay = mod.InjectDelay,
                     IsPreLoad = mod.IsPreLoad
-                });
+                };
             });
             modConf.Save();
         }

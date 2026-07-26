@@ -160,15 +160,25 @@ public class IntegrationInstaller
         var url = await CoreGlobal.BedrockCore.GetPackageUri(gameVersions, Architecture.X64);
 
         // 添加错误处理
+        // 整合包安装固定启用缓存（isUsePack: true）：
+        // 即使无法获取下载地址，只要本地或全局索引中存在该版本的缓存包，也允许继续安装
         if (string.IsNullOrEmpty(url))
         {
-            IntegrationProgress?.Report(new InstallIntegrationProgress
+            var localPack = Path.Combine(installFolder, "version_save", $"{gameVersions.ID}.insPack");
+            var hasCache = File.Exists(localPack) ||
+                           BedrockBoot.Core.Models.Helper.GamePackageCacheIndex.Find(
+                               gameVersions.ID, gameVersions.BuildType.ToString()) != null;
+
+            if (!hasCache)
             {
-                Progress = 0,
-                Message = "无法获取下载地址",
-                Status = InstallIntegrationProgressType.Failed
-            });
-            return;
+                IntegrationProgress?.Report(new InstallIntegrationProgress
+                {
+                    Progress = 0,
+                    Message = "无法获取下载地址",
+                    Status = InstallIntegrationProgressType.Failed
+                });
+                return;
+            }
         }
 
         IntegrationProgress?.Report(new InstallIntegrationProgress
@@ -182,6 +192,16 @@ public class IntegrationInstaller
         {
             await downloader.InstallAsync(url, token);
         }
+        catch (OperationCanceledException)
+        {
+            // 用户主动取消，不作为下载失败上报
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = 0,
+                Message = "安装已取消",
+                Status = InstallIntegrationProgressType.Failed
+            });
+        }
         catch (Exception ex)
         {
             IntegrationProgress?.Report(new InstallIntegrationProgress
@@ -193,7 +213,48 @@ public class IntegrationInstaller
         }
     }
 
-    private async Task InstallPack(string path, VersionConfig gameConfig)
+    private void InstallPack(string path, VersionConfig gameConfig)
+    {
+        // 此前该方法为 async Task 且调用处丢弃返回值：
+        // 解压/导入过程中任何异常都会被无声吞掉，任务永远停在安装中。
+        try
+        {
+            InstallPackCore(path, gameConfig);
+
+            // 无论整合包内包含哪些内容（即使为空包），都必须上报 Success，
+            // 否则任务项永远不会被移除
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = 100,
+                Message = "安装完成",
+                Status = InstallIntegrationProgressType.Success
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"安装整合包内容失败: {ex}");
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = 0,
+                Message = $"安装整合包内容失败: {ex.Message}",
+                Status = InstallIntegrationProgressType.Failed
+            });
+        }
+        finally
+        {
+            // 清理解压用的临时目录
+            try
+            {
+                if (Directory.Exists(path)) Directory.Delete(path, true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"清理整合包临时目录失败: {ex.Message}");
+            }
+        }
+    }
+
+    private void InstallPackCore(string path, VersionConfig gameConfig)
     {
         IntegrationProgress?.Report(new InstallIntegrationProgress
         {
@@ -203,8 +264,6 @@ public class IntegrationInstaller
         });
 
         ZipHelper.ExtractZipFile(PackageFile, path);
-
-        var isComp = false;
 
         // 安装资源包
         if (Directory.Exists(Path.Combine(path, "packs", "resource_packs")))
@@ -224,7 +283,6 @@ public class IntegrationInstaller
                 packManager.AddRangePacks(new List<string> { file });
                 count++;
             });
-            isComp = true;
         }
 
         // 安装行为包
@@ -245,7 +303,28 @@ public class IntegrationInstaller
                 packManager.AddRangePacks(new List<string> { file });
                 count++;
             });
-            isComp = true;
+        }
+
+        // 安装皮肤包
+        // 注意：打包端会把皮肤包放进 packs/skin_packs，
+        // 此前安装端没有对应分支，皮肤包被静默丢弃
+        if (Directory.Exists(Path.Combine(path, "packs", "skin_packs")))
+        {
+            var packManager = new ResourcePackManager(gameConfig);
+            packManager.GetAllPack();
+            var files = Directory.GetFiles(Path.Combine(path, "packs", "skin_packs")).ToList();
+            var count = 0;
+            files.ForEach(file =>
+            {
+                IntegrationProgress?.Report(new InstallIntegrationProgress
+                {
+                    Progress = (double)count / files.Count * 100.00,
+                    Message = "解压整合包皮肤包文件",
+                    Status = InstallIntegrationProgressType.Uninstalling
+                });
+                packManager.AddRangePacks(new List<string> { file });
+                count++;
+            });
         }
 
         // 导入世界
@@ -265,7 +344,6 @@ public class IntegrationInstaller
                 packManager.ImportWorldPack(file);
                 count++;
             });
-            isComp = true;
         }
 
         // 安装Mods
@@ -275,7 +353,7 @@ public class IntegrationInstaller
                 new ConfigEntity<Dictionary<string, PackModInfo>>(Path.Combine(path, "mods", "mods.json"));
 
             var modManager = new ModsManager(gameConfig);
-            modConf.Data.ToList().ForEach(mod =>
+            modConf.Data?.ToList().ForEach(mod =>
             {
                 var modFilePath = Path.Combine(path, "mods", Path.GetFileName(mod.Key));
                 if (File.Exists(modFilePath))
@@ -295,15 +373,6 @@ public class IntegrationInstaller
                     });
                 }
             });
-            isComp = true;
         }
-
-        if (isComp)
-            IntegrationProgress?.Report(new InstallIntegrationProgress
-            {
-                Progress = 100,
-                Message = "安装完成",
-                Status = InstallIntegrationProgressType.Success
-            });
     }
 }

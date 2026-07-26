@@ -89,6 +89,11 @@ public class EasyDownload
             if (!await ValidatePackageAsync(packagePath, token)) return;
             token.ThrowIfCancellationRequested();
 
+            // 校验通过后登记到全局缓存索引（与配置文件同目录），
+            // 供任意安装目录复用该缓存包
+            GamePackageCacheIndex.Register(BuildInfo.ID, BuildInfo.BuildType.ToString(),
+                packagePath, LastComputedMd5 ?? string.Empty);
+
             // 4. 标记合并完成
             OnMergeComplete();
             token.ThrowIfCancellationRequested();
@@ -123,20 +128,29 @@ public class EasyDownload
     {
         var packagePath = Path.Combine(InstallFolder, "version_save", $"{BuildInfo.ID}.insPack");
 
-        // 如果文件已存在且MD5校验通过，则跳过下载
-        if (File.Exists(packagePath) &&
-            await CheckMD5(packagePath, false) &&
-            IsUsePack)
+        if (IsUsePack)
         {
-            StatusText?.Invoke("使用缓存包");
+            // 1) 优先使用当前安装目录下的缓存包
+            if (File.Exists(packagePath) &&
+                await CheckMD5(packagePath, false))
+            {
+                ReportCacheUsed();
+                return packagePath;
+            }
 
-            // 使用缓存时，报告100%进度
-            var progressInfo = new DownloadProgressInfo(100, "使用缓存", 0, 0);
-            DownloadProgress?.Invoke("使用缓存包 (100%)", progressInfo);
-
-            OnMergeComplete(); // 使用缓存时也触发合并完成
-            return packagePath;
+            // 2) 自动检测全局缓存索引：其他安装目录可能已缓存同版本的包
+            var cached = GamePackageCacheIndex.Find(BuildInfo.ID, BuildInfo.BuildType.ToString());
+            if (cached != null &&
+                await CheckMD5(cached.FilePath, false))
+            {
+                Console.WriteLine($@"命中全局缓存索引：{cached.FilePath}");
+                ReportCacheUsed();
+                return cached.FilePath;
+            }
         }
+
+        if (string.IsNullOrEmpty(url))
+            throw new Exception("没有可用的缓存包，且未提供下载地址");
 
         StatusText?.Invoke("正在下载游戏包...");
         var downloadCount = BedrockBoot.Core.Global.GlobalModel.Config == null ? 4 : BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount;
@@ -162,6 +176,18 @@ public class EasyDownload
         }), token);
 
         return packagePath;
+    }
+
+    /// <summary>上报"使用缓存包"的进度状态</summary>
+    private void ReportCacheUsed()
+    {
+        StatusText?.Invoke("使用缓存包");
+
+        // 使用缓存时，报告100%进度
+        var progressInfo = new DownloadProgressInfo(100, "使用缓存", 0, 0);
+        DownloadProgress?.Invoke("使用缓存包 (100%)", progressInfo);
+
+        OnMergeComplete(); // 使用缓存时也触发合并完成
     }
 
     private async Task<bool> ValidatePackageAsync(string packagePath, CancellationToken token)
@@ -244,11 +270,16 @@ public class EasyDownload
         GameInfoHelper.SaveVersionConfig(conf);
     }
 
+    /// <summary>最近一次 CheckMD5 计算出的文件哈希，用于登记缓存索引时避免二次哈希</summary>
+    public string? LastComputedMd5 { get; private set; }
+
     public async Task<bool> CheckMD5(string file, bool showError = true)
     {
         try
         {
             var fileMD5 = await ComputeFileMD5.ComputeFileMD5Async(file);
+
+            LastComputedMd5 = fileMD5;
 
             foreach (var variation in BuildInfo.Variations)
                 if (variation.MD5 == fileMD5)

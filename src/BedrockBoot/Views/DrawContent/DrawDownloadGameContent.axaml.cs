@@ -36,6 +36,9 @@ public partial class DrawDownloadGameContent : UserControl
     public List<GameDownloadUrlInfo>? Sources { get; set; }
     public BuildInfo BuildInfo { get; set; } = null!;
 
+    /// <summary>下载源是否已就绪（至少一个源 Ping 通）。用于在无缓存时决定安装按钮可用性。</summary>
+    private bool _sourcesReady;
+
     /// <summary>
     ///     初始化 UI 与下载源列表
     /// </summary>
@@ -90,6 +93,7 @@ public partial class DrawDownloadGameContent : UserControl
                                 hasBestSourceSet = true;
                                 Dispatcher.UIThread.Invoke(() =>
                                 {
+                                    _sourcesReady = true;
                                     LoadRing.IsVisible = false;
                                     InstallBtn.IsEnabled = true;
                                     SourceSelBox.SelectedIndex = index;
@@ -172,7 +176,11 @@ public partial class DrawDownloadGameContent : UserControl
 
     private void ExecuteInstallTask()
     {
-        bool hasLocalPack = CheckPack();
+        // 使用纯查询，且尊重用户对"使用缓存"勾选框的手动选择。
+        // 此前这里调用 CheckPack() 会把勾选框强制重置为 hasPack，
+        // 用户取消勾选想强制重新下载时会被无声改回使用缓存。
+        var usePack = IsUsePackIns.IsChecked ?? false;
+        var hasLocalPack = usePack && HasAnyCachedPack();
 
         if (!hasLocalPack)
         {
@@ -233,8 +241,12 @@ public partial class DrawDownloadGameContent : UserControl
             }
         }
 
+        // 即使使用缓存也尽量携带下载地址：
+        // 万一缓存文件校验失败，EasyDownload 仍可回退到网络下载
         string selectedUrl = null;
-        if (!hasLocalPack && Sources != null && SourceSelBox.SelectedIndex >= 0)
+        if (Sources != null &&
+            SourceSelBox.SelectedIndex >= 0 &&
+            SourceSelBox.SelectedIndex < Sources.Count)
         {
             selectedUrl = Sources[SourceSelBox.SelectedIndex].Url;
         }
@@ -242,7 +254,7 @@ public partial class DrawDownloadGameContent : UserControl
         TaskDownloadGameItem.Install(
             BuildInfo,
             selectedUrl,
-            IsUsePackIns.IsChecked ?? false,
+            usePack,
             targetPath,
             InstallName.Text
         );
@@ -283,6 +295,23 @@ public partial class DrawDownloadGameContent : UserControl
         }
     }
 
+    /// <summary>
+    /// 纯查询：当前选中目录或全局缓存索引中是否存在该版本的缓存包（不修改任何 UI 状态）
+    /// </summary>
+    private bool HasAnyCachedPack()
+    {
+        var selectedFolder = GlobalModel.Config.Data.GameFolders
+            .ElementAtOrDefault(InstallFolder.SelectedIndex);
+        if (selectedFolder == null) return false;
+
+        var packagePath = Path.Combine(selectedFolder.GameFolderPath, "version_save", $"{BuildInfo.ID}.insPack");
+        if (File.Exists(packagePath)) return true;
+
+        // 全局缓存索引：其他安装目录缓存的同版本包也可复用（EasyDownload 会自动检测）
+        return Core.Models.Helper.GamePackageCacheIndex.Find(
+            BuildInfo.ID, BuildInfo.BuildType.ToString()) != null;
+    }
+
     private bool CheckPack()
     {
         var selectedFolder = GlobalModel.Config.Data.GameFolders
@@ -292,17 +321,17 @@ public partial class DrawDownloadGameContent : UserControl
         {
             IsUsePackIns.IsChecked = false;
             IsUsePackIns.IsVisible = false;
-            InstallBtn.IsEnabled = false;
+            InstallBtn.IsEnabled = _sourcesReady;
             return false;
         }
 
-        var folderPath = selectedFolder.GameFolderPath;
-        var packagePath = Path.Combine(folderPath, "version_save", $"{BuildInfo.ID}.insPack");
-
-        var hasPack = File.Exists(packagePath);
+        var hasPack = HasAnyCachedPack();
         IsUsePackIns.IsChecked = hasPack;
         IsUsePackIns.IsVisible = hasPack;
-        InstallBtn.IsEnabled = hasPack;
+
+        // 注意：不能无条件用 hasPack 覆盖按钮可用性。
+        // 此前切换到没有缓存的目录会把按钮永久禁用（下载源早已 Ping 通，但无人再启用它）。
+        InstallBtn.IsEnabled = hasPack || _sourcesReady;
 
         return hasPack;
     }

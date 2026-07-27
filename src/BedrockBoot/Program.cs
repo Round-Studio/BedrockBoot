@@ -34,10 +34,12 @@ namespace BedrockBoot.Desktop;
 internal sealed class Program
 {
     public static List<string> Args { get; private set; }
-
+    
 #if WINDOWS
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
+
+    private static bool IsStartMemClean = false;
 #endif
 
     [STAThread]
@@ -127,8 +129,94 @@ internal sealed class Program
             RebootWithRunas();
         }
 #endif
+#if WINDOWS
+		var primemthrd = new Thread((() =>
+		{
+			string GetInstanceNameByPid(string processName, int pid)
+			{
+				PerformanceCounterCategory category = new PerformanceCounterCategory("Process");
 
-        var appArgs = args.Where(a => a != "-bedrockboot" && !a.StartsWith("bedrockboot:", StringComparison.OrdinalIgnoreCase)).ToArray();
+				string[] instanceNames = category.GetInstanceNames();
+
+				var matchedInstances = instanceNames
+					.Where(name => name.StartsWith(processName, StringComparison.OrdinalIgnoreCase));
+
+				foreach (string instance in matchedInstances)
+				{
+					using (PerformanceCounter pidCounter = new PerformanceCounter(
+						"Process",
+						"ID Process",
+						instance,
+						true))
+					{
+						try
+						{
+							int instancePid = (int)pidCounter.RawValue;
+							if (instancePid == pid)
+							{
+								return instance;
+							}
+						}
+						catch (InvalidOperationException)
+						{
+							continue;
+						}
+					}
+				}
+
+				return null;
+			}
+			using (Process currentProcess = Process.GetCurrentProcess())
+			{
+				string processName = currentProcess.ProcessName;
+				int pid = currentProcess.Id;
+
+
+				string instanceName = GetInstanceNameByPid(processName, pid);
+
+				if (string.IsNullOrEmpty(instanceName))
+				{
+					Console.WriteLine("无法找到当前进程的性能计数器实例。");
+					return;
+				}
+
+				Console.WriteLine($"当前进程实例名: {instanceName} (PID: {pid})");
+
+
+				using (PerformanceCounter memoryCounter = new PerformanceCounter(
+					"Process",
+					"Working Set - Private",
+					instanceName,
+					true))
+				{
+					while (true)
+					{
+						try
+						{
+							long value = memoryCounter.RawValue;
+							double mb = value / 1024.0 / 1024.0;
+							if (IsStartMemClean == false && mb >= 95)
+							{
+								IsStartMemClean = true;
+								ProcessMemoryTrimmer.TrimProcess();
+								Console.WriteLine("Memory Cleaned");
+							}
+							
+						}
+						catch (Exception ex)
+						{
+							Console.WriteLine($"读取内存失败: {ex.Message}");
+						}
+
+						Thread.Sleep(2000);
+					}
+				}
+			}
+		}));
+		primemthrd.Name = "PriMemeWorkingSetMonitor";
+		primemthrd.Start();
+#endif
+		var appArgs = args.Where(a => a != "-bedrockboot" && !a.StartsWith("bedrockboot:", StringComparison.OrdinalIgnoreCase)).ToArray();
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(appArgs);
     }
 

@@ -26,6 +26,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             BlurBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
             Image3D.IsChecked = GlobalModel.Config.Data.StyleConfig.Background3D;
             ImageQuality.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.ImageQuality;
+            UpdateUI();
             
             MicaModel.IsEnabled = false;
             BlurModel.IsEnabled = false;

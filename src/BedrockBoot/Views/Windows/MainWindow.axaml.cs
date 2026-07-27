@@ -741,7 +741,7 @@ public partial class MainWindow : Window
         try
         {
             using var ping = new Ping();
-            var reply = await ping.SendPingAsync("223.5.5.5", 2000);
+            var reply = await ping.SendPingAsync("223.5.5.5", 5000);
             return reply.Status == IPStatus.Success;
         }
         catch

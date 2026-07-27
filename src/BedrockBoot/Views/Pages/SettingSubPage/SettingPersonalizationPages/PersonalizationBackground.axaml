@@ -53,6 +53,21 @@
                 </onePointControls:SettingCard>
 
                 <onePointControls:SettingCard
+                    Header="背景图片质量"
+                    Description="选择渲染质量 (越高越清晰，但所占用的内存就越大)"
+                    Glyph="&#xEF20;"
+                    IsClickable="False">
+                    <ComboBox Width="200"
+                              SelectedIndex="1"
+                              Name="ImageQuality"
+                              SelectionChanged="ImageQuality_OnSelectionChanged">
+                        <ComboBoxItem Content="低"></ComboBoxItem>
+                        <ComboBoxItem Content="中"></ComboBoxItem>
+                        <ComboBoxItem Content="高 (原始质量)"></ComboBoxItem>
+                    </ComboBox>
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard
                     Header="{DynamicResource Settings.Background.Image.Opacity.Title}"
                     Description="{DynamicResource Settings.Background.Image.Opacity.Desc}"
                     Glyph="&#xE81E;"

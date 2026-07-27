@@ -176,11 +176,11 @@ internal sealed class Program
 
 				if (string.IsNullOrEmpty(instanceName))
 				{
-					Console.WriteLine("无法找到当前进程的性能计数器实例。");
+					Console.WriteLine(@"无法找到当前进程的性能计数器实例。");
 					return;
 				}
 
-				Console.WriteLine($"当前进程实例名: {instanceName} (PID: {pid})");
+				Console.WriteLine($@"当前进程实例名: {instanceName} (PID: {pid})");
 
 
 				using (PerformanceCounter memoryCounter = new PerformanceCounter(
@@ -199,13 +199,13 @@ internal sealed class Program
 							{
 								IsStartMemClean = true;
 								ProcessMemoryTrimmer.TrimProcess();
-								Console.WriteLine("Memory Cleaned");
+								Console.WriteLine(@"Memory Cleaned");
 							}
 							
 						}
 						catch (Exception ex)
 						{
-							Console.WriteLine($"读取内存失败: {ex.Message}");
+							Console.WriteLine($@"读取内存失败: {ex.Message}");
 						}
 
 						Thread.Sleep(2000);

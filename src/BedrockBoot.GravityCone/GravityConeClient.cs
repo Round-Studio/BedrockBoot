@@ -140,7 +140,7 @@ public class GravityConeClient : IDisposable
                 var line = await _process.StandardOutput.ReadLineAsync();
                 if (line == null) break;
                 
-                Console.WriteLine($"[RAW] {line}");
+                Console.WriteLine($@"[RAW] {line}");
 
                 try
                 {
@@ -220,7 +220,7 @@ public class GravityConeClient : IDisposable
             lock (_lock)
             {
                 _stdinWriter.WriteLine(json);
-                Console.WriteLine($"[SEND] {json}");
+                Console.WriteLine($@"[SEND] {json}");
                 _stdinWriter.Flush();
             }
 

@@ -459,11 +459,22 @@ public partial class MainWindow : Window
 
             SetBackgroundBlur(style.BackgroundImageBlur);
 
-			
-			var bitmap = await Task.Run<Bitmap>((() =>
-			{
-				return LoadScaledByFactorOptimized(imgPath,0.3);
-			}));
+
+            var bitmap = await Task.Run<Bitmap>((() =>
+            {
+                return LoadScaledByFactorOptimized(imgPath,
+                    Core.Global.GlobalModel.Config.Data.StyleConfig.ImageQuality switch
+                    {
+                        ImageQuality.High => 1,
+                        ImageQuality.Medium => 0.3,
+                        ImageQuality.Lower => 0.1
+                    }, Core.Global.GlobalModel.Config.Data.StyleConfig.ImageQuality switch
+                    {
+                        ImageQuality.High => BitmapInterpolationMode.HighQuality,
+                        ImageQuality.Medium => BitmapInterpolationMode.LowQuality,
+                        ImageQuality.Lower => BitmapInterpolationMode.LowQuality
+                    });
+            }));
             if (style.Background3D)
             {
                 BackgroundImage3D.IsVisible = true;

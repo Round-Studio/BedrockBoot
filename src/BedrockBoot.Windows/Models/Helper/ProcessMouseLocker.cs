@@ -305,7 +305,7 @@ public class ProcessMouseLocker
             // 如果裁切不需要改变就不重新进行裁切
             if (_lastClipRect.HasValue && _lastClipRect.Value.Equals(rect) && !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockReserve) return;
 
-            Console.WriteLine($"鼠标已锁定为: Left={rect.Left}, Top={rect.Top}, Right={rect.Right}, Bottom={rect.Bottom}");
+            Console.WriteLine($@"鼠标已锁定为: Left={rect.Left}, Top={rect.Top}, Right={rect.Right}, Bottom={rect.Bottom}");
             ClipCursor(ref rect);
             _lastClipRect = rect;
 
@@ -326,7 +326,7 @@ public class ProcessMouseLocker
             ShowCursor(true);
 
         }
-        Console.WriteLine("鼠标已解锁");
+        Console.WriteLine(@"鼠标已解锁");
         ClipCursor(IntPtr.Zero);
         _lastClipRect = null;
         _isMouseCurrentlyLocked = false;
@@ -363,11 +363,11 @@ public class ProcessMouseLocker
             return;
         }
 
-        Console.WriteLine("--------------------------------------");
-        Console.WriteLine($"Handle : 0x{hWnd.ToInt64():X} / {hWnd}");
-        Console.WriteLine($"Title  : {title}");
-        Console.WriteLine($"PID    : {pid}");
-        Console.WriteLine($"Process: {process.ProcessName}");
+        Console.WriteLine(@"--------------------------------------");
+        Console.WriteLine($@"Handle : 0x{hWnd.ToInt64():X} / {hWnd}");
+        Console.WriteLine($@"Title  : {title}");
+        Console.WriteLine($@"PID    : {pid}");
+        Console.WriteLine($@"Process: {process.ProcessName}");
 
         Console.WriteLine();
     }

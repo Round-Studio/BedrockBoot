@@ -253,7 +253,7 @@ namespace BedrockBoot.Models.Helper.Uwp
             }
 
 
-            Console.WriteLine("停止监视 ApplicationFrameHost");
+            Console.WriteLine(@"停止监视 ApplicationFrameHost");
         }
 
 
@@ -381,7 +381,7 @@ namespace BedrockBoot.Models.Helper.Uwp
                     Console.WriteLine($"Time : {info.Created:HH:mm:ss.fff}");
                     Console.WriteLine();
 					*/
-                    Console.WriteLine($"捕获 ApplicationFrameHost，HWND: 0x{hwnd.ToInt64():X}/ {hwnd}");
+                    Console.WriteLine($@"捕获 ApplicationFrameHost，HWND: 0x{hwnd.ToInt64():X}/ {hwnd}");
 
                     StopFrameMonitor();
 

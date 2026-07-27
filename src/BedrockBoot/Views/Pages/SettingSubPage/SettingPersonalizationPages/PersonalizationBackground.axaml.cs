@@ -25,8 +25,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             OptBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity;
             BlurBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
             Image3D.IsChecked = GlobalModel.Config.Data.StyleConfig.Background3D;
-            UpdateUI();
-
+            ImageQuality.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.ImageQuality;
+            
             MicaModel.IsEnabled = false;
             BlurModel.IsEnabled = false;
             LiveModel.IsEnabled = false;
@@ -184,6 +184,16 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             GlobalModel.Config.Save();
             UpdateUI();
             Models.Global.GlobalModel.MainWindow.UpdateTheme();
+        }
+
+        private void ImageQuality_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (IsEdit)
+            {
+                GlobalModel.Config.Data.StyleConfig.ImageQuality = (ImageQuality)ImageQuality.SelectedIndex;
+                GlobalModel.Config.Save();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
+            }
         }
     }
 }

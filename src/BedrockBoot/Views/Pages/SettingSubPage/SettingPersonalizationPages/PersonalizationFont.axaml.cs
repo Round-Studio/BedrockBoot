@@ -125,7 +125,6 @@ public partial class PersonalizationFont : ISettingPage
     {
         if (!IsEdit) return;
         UpdatePreview();
-        SaveConfig();
     }
 
     private void PreviewTextInput_TextChanged(object sender, TextChangedEventArgs e)

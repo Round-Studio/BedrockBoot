@@ -1,0 +1,59 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+        mc:Ignorable="d"
+        x:Class="BedrockBoot.Views.Windows.SubWindows.XboxWindow"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        ExtendClientAreaChromeHints="NoChrome"
+        FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
+        Width="600" Height="450"
+        MinWidth="600" MinHeight="450"
+        WindowStartupLocation="CenterOwner"
+        Title="Xbox 好友">
+    <Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0"
+                HorizontalAlignment="Stretch"
+                Background="#01010101"
+                Opacity="0.00001"
+                PointerPressed="InputElement_OnPointerPressed"></Border>
+        
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    Margin="20" 
+                    Spacing="10">
+            <TextBlock Text="Xbox"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource AccentBackgroundBrush}"></TextBlock>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Margin="20" 
+                    Spacing="10">
+            <Button CornerRadius="8"
+                    Width="36"
+                    Height="36"
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Top"
+                    Name="CloseBorderBtn"
+                    Click="CloseBorderBtn_OnClick"
+                    Classes="NoBorder">
+                <onePointControls:FontIcon Glyph="&#xE8BB;"
+                                           FontSize="12" />
+            </Button>
+        </StackPanel>
+        
+        <Grid Row="1">
+            <onePointControls:ProgressRing HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Width="48" Height="48"
+                                           Name="LoadProgress"></onePointControls:ProgressRing>
+        </Grid>
+    </Grid>
+</Window>

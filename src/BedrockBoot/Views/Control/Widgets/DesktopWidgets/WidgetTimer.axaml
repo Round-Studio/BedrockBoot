@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:text="clr-namespace:AvaMotion.Controls.Text;assembly=AvaMotion"
              mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="180"
              x:Class="BedrockBoot.Views.Control.Widgets.DesktopWidgets.WidgetTimer">
     <Grid RowDefinitions="Auto,*,Auto">
@@ -11,10 +12,11 @@
                                    FontSize="32"/>
         
         <StackPanel Grid.Row="2">
-            <TextBlock FontSize="36"
-                       FontWeight="SemiBold"
-                       Name="TimeTextBlock"
-                       Text="Time"></TextBlock>
+            <text:AnimationTextBlock FontSize="36"
+                                     FontWeight="SemiBold"
+                                     AnimationType="NumberRolling"
+                                     Name="TimeTextBlock"
+                                     Text="Time"></text:AnimationTextBlock>
             
             <TextBlock Opacity="0.6"
                        Text="当前时间"></TextBlock>

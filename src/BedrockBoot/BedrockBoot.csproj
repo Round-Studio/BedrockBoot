@@ -69,6 +69,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\AvaMotion\src\AvaMotion\AvaMotion.csproj" />
         <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj"/>

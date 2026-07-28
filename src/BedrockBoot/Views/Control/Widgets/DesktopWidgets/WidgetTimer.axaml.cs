@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Timers;
+using AvaMotion.Controls.Text;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Interface;
 
@@ -11,7 +12,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 
 public partial class WidgetTimer : IWidgetTemplated
 {
-    private TextBlock? _timeTextBlock;
+    private AnimationTextBlock? _timeTextBlock;
     private Timer? _timer;
 
     public WidgetTimer()
@@ -31,7 +32,7 @@ public partial class WidgetTimer : IWidgetTemplated
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        _timeTextBlock = this.FindControl<TextBlock>("TimeTextBlock");
+        _timeTextBlock = this.FindControl<AnimationTextBlock>("TimeTextBlock");
     }
 
     private void OnLoaded(object? sender, EventArgs e)

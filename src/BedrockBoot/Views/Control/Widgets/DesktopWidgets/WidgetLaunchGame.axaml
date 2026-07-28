@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:text="clr-namespace:AvaMotion.Controls.Text;assembly=AvaMotion"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="180"
              x:Class="BedrockBoot.Views.Control.Widgets.DesktopWidgets.WidgetLaunchGame">
     <Grid RowDefinitions="Auto,*,Auto">
@@ -20,10 +21,11 @@
         <Grid Grid.Row="2"
               ColumnDefinitions="*,Auto">
             <StackPanel Grid.Column="0">
-                <TextBlock FontSize="36"
-                           FontWeight="SemiBold"
-                           Name="GameNameText"
-                           Text="游戏"></TextBlock>
+                <text:AnimationTextBlock FontSize="36"
+                                         AnimationType="NumberRolling"
+                                         FontWeight="SemiBold"
+                                         Name="GameNameText"
+                                         Text="游戏"></text:AnimationTextBlock>
             
                 <TextBlock Opacity="0.6"
                            Name="GameVersionText"

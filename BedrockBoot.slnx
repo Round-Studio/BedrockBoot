@@ -17,6 +17,10 @@
       <Platform Project="Win32" />
     </Project>
   </Folder>
+  <Folder Name="/Dependence/AvaMotion/">
+    <Project Path="src/AvaMotion/example/AvaMotion.Demo/AvaMotion.Demo.csproj" />
+    <Project Path="src/AvaMotion/src/AvaMotion/AvaMotion.csproj" />
+  </Folder>
   <Folder Name="/Dependence/BedrockMapRender/">
     <Project Path="src/BedrockMapRender/BedrockLevelDB/BedrockLevelDB.csproj" />
     <Project Path="src/BedrockMapRender/BedrockRender.Avalonia.Demo/BedrockRender.Avalonia.Demo.csproj" />

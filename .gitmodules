@@ -38,3 +38,7 @@
 	path = src/CrashStackAnalyzer
 	url = https://github.com/Round-Studio/CrashStackAnalyzer.git
 	branch = main
+[submodule "src/AvaMotion"]
+	path = src/AvaMotion
+	url = https://github.com/Round-Studio/AvaMotion.git
+	branch = master

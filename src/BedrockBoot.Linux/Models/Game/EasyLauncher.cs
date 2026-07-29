@@ -34,7 +34,7 @@ public class EasyLauncher
         _playerDataFilePath = Path.Combine(versionConfig.VersionPath, "playerdata.json"); // 玩家数据文件路径
         _linuxLaunchInfo = new ProtonInfo()
         {
-            PrefixPath = Path.Combine(PathsList.ProtonPath, "game_prefix"),
+            PrefixPath = PathsList.PreFixPath,
             ProtonPath = ProtonCore.Config.Data.SelectProtonPath
         };
 

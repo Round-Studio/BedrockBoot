@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d"
+             Width="320" Height="72"
+             x:Class="BedrockBoot.Views.Control.Items.XboxUserItem">
+    <Grid>
+        <items:BorderCard Opacity="0.8"/>
+        
+        <Grid ColumnDefinitions="Auto,*,Auto"
+              Margin="8,0"
+              ColumnSpacing="8">
+            <widgets:LocalImageRenderWidget Grid.Column="0"
+                                            Name="UserIcon"
+                                            Width="56" Height="56"/>
+        
+            <StackPanel Grid.Column="1"
+                        VerticalAlignment="Center">
+                <TextBlock FontSize="18"
+                           Text="UserName"
+                           Name="UserName"></TextBlock>
+                <TextBlock FontSize="12"
+                           Opacity="0.6"
+                           Text="Login Time"
+                           Name="UserLoginTime"></TextBlock>
+            </StackPanel>
+        
+            <StackPanel Grid.Column="2"
+                        VerticalAlignment="Center">
+                <Button Classes="NoBorder"
+                        Padding="10">
+                    <onePointControls:FontIcon Glyph="&#xE74d;"
+                                               Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -76,17 +76,12 @@ public class MicrosoftOAuthClient
         try
         {
             var result = await tcs.Task;
-
-            // 💡 主线程拿到结果后，在此处静默等待 500ms。
-            // 此时服务器仍在运行，浏览器有充裕的时间读取完网络流并优雅断开 TCP。
             await Task.Delay(500); 
 
             return result;
         }
         finally
         {
-            // 💡 统一收拢生命周期：不论是成功、超时还是抛出异常，
-            // 均由主线程在离开方法前，最后一次性、且安全地关闭服务器。
             try
             {
                 server.Stop();
@@ -329,7 +324,7 @@ public class MicrosoftOAuthClient
     /// <summary>
     /// 保存认证结果到文件
     /// </summary>
-    public void SaveAuthResult(XboxAuthEntry.AuthResult auth)
+    public static void SaveAuthResult(XboxAuthEntry.AuthResult auth)
     {
         try
         {
@@ -348,7 +343,7 @@ public class MicrosoftOAuthClient
     /// <summary>
     /// 从文件加载认证结果
     /// </summary>
-    public XboxAuthEntry.AuthResult? LoadAuthResult()
+    public static XboxAuthEntry.AuthResult? LoadAuthResult()
     {
         try
         {

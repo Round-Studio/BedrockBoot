@@ -1069,9 +1069,4 @@ public partial class MainWindow : Window
     {
         CloseTaskCard();
     }
-
-    private void LoginBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        XboxWindow.ShowOrActivate();
-    }
 }

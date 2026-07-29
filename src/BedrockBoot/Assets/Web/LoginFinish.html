@@ -170,6 +170,13 @@
 </head>
 <body>
 
+<script>
+    function closeWindow() {
+        window.open('about:blank', '_self');
+        window.close();
+    }
+</script>
+
 <div class="oobe-bg">
     <div class="halo halo-1"></div>
     <div class="halo halo-2"></div>
@@ -196,7 +203,7 @@
         BedrockBoot 已获取您账户的登录令牌<br>现在可以关闭该页面<br><br>回到 BedrockBoot 以继续
     </p>
 
-    <button class="btn-accent" onclick="window.close()">我知道了</button>
+    <button class="btn-accent" onclick="closeWindow()">我知道了</button>
 </div>
 
 </body>

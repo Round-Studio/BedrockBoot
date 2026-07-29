@@ -1,0 +1,51 @@
+<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
+                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+                 xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainAccountPage">
+    <entry:BedrockBootPage.HeaderView>
+        <Grid Width="400"
+              HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Spacing="8">
+                <onePointControls:LineTextBlock VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                FontSize="28"
+                                                Margin="0"
+                                                FontWeight="Bold"
+                                                Text="账户管理" />
+
+                <Button Padding="12,8"
+                        Height="32"
+                        Name="LoginBtn"
+                        Click="LoginBtn_OnClick">
+                    <StackPanel Orientation="Horizontal">
+                        <onePointControls:FontIcon Glyph="&#xE8fa;"
+                                                   VerticalAlignment="Center" />
+                        <TextBlock Margin="4,0,0,0"
+                                   Text="关联 XBOX 账户" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </entry:BedrockBootPage.HeaderView>
+    <Grid>
+        <ScrollViewer>
+            <view:ItemView Name="UsersList" 
+                           SelectionChanged="UsersList_OnSelectionChanged"
+                           Margin="10"/>
+        </ScrollViewer>
+        
+        <notice:InfoCard HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="NoneCard"
+                         BigTitle="未关联任何账户"
+                         Message="当前未关联任何 XBOX 账户。&#10;请点击左上角关联账户以关联 XBOX 账户" />
+    </Grid>
+</entry:BedrockBootPage>

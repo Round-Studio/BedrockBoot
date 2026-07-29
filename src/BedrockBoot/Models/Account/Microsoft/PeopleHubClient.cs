@@ -64,6 +64,7 @@ public class PeopleHubClient
                 return null;
             }
 
+            Console.WriteLine(responseBody);
             var profileResponse = JsonSerializer.Deserialize<XboxAuthEntry.XboxProfileResponse>(responseBody);
 
             if (profileResponse?.ProfileUsers != null && profileResponse.ProfileUsers.Length > 0)

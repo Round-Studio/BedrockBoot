@@ -19,7 +19,7 @@ public class PathsList
 
     public static readonly string
         HistoryPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "SearchHistory.json");
-    public static readonly string MsAccountPath = Path.Combine(ConfigFolderPath, "account", "MsAccount.json");
+    public static readonly string MsAccountPath = Path.Combine(ConfigFolderPath, "account", "MsAccounts.json");
     public static readonly string LogPath = Path.Combine(RootConfigPath, "BedrockBoot.Log");
     public static readonly string ProtonPath = Path.Combine(RootConfigPath, "BedrockBoot.Linux", "ProtonGDK");
     public static readonly string PreFixPath = Path.Combine(ProtonPath, "game_prefix");

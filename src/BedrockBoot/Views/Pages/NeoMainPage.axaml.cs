@@ -77,6 +77,15 @@ public partial class NeoMainPage : UserControl
             Page = typeof(MainGravityConePage)
         });
 #endif
+#if LINUX
+        RegisterTopItem(new TopBarItemInfo
+        {
+            ItemGlyph = "\uE716",
+            ItemText = "账户管理",
+            Tag = "AccountManager",
+            Page = typeof(MainAccountPage)
+        });
+#endif
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",

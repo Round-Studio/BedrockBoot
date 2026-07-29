@@ -12,8 +12,8 @@ namespace BedrockBoot.Views.Control.Widgets;
 
 public partial class LocalImageRenderWidget : UserControl
 {
-    // 定义 AvaloniaProperty，以便支持 XAML 绑定和更改通知
     private ImageLoader _imageLoader = new ImageLoader();
+    
     public static readonly StyledProperty<string?> ImageUrlProperty =
         AvaloniaProperty.Register<LocalImageRenderWidget, string?>(nameof(ImageUrl));
 

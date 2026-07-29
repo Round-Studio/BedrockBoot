@@ -28,6 +28,7 @@ public class GlobalModel
     public static MainWindow MainWindow;
     public static TaskManager TaskManager { get; set; } = new();
     public static bool IsAbleToLaunchGame { get; set; } = false;
+    public static bool IsProgressRunning { get; set; } = false;
     public static FunctionOptionEntry FunctionOption { get; set; }
     public static CustomManifest CustomManifest { get; set; }
 

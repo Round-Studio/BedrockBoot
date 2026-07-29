@@ -22,6 +22,7 @@ public partial class XboxWindow : Window
 
     private async Task LoadAccount()
     {
+        if (!Models.Global.GlobalModel.IsProgressRunning) return;
         var oauth = new MicrosoftOAuthClient();
         var xbox = new XboxAuthClient();
         var people = new PeopleHubClient();

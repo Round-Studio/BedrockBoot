@@ -7,7 +7,7 @@
         x:Class="BedrockBoot.Views.Windows.SubWindows.XboxWindow"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
-        ExtendClientAreaChromeHints="NoChrome"
+        WindowDecorations="Full"
         FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
         Width="600" Height="450"
         MinWidth="600" MinHeight="450"

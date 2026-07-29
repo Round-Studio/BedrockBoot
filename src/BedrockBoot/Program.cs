@@ -46,6 +46,7 @@ internal sealed class Program
     public static void Main(string[] args)
     {
         Args = args.ToList();
+        Models.Global.GlobalModel.IsProgressRunning = true;
 
         GlobalModel.Config = new ConfigEntity<ConfigEntry>(PathsList.ConfigPath);
         GlobalModel.Config.Load();

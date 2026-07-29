@@ -38,6 +38,7 @@ using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
+using BedrockBoot.Views.Windows.SubWindows;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -1067,5 +1068,10 @@ public partial class MainWindow : Window
     private void BlackView_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         CloseTaskCard();
+    }
+
+    private void LoginBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        XboxWindow.ShowOrActivate();
     }
 }

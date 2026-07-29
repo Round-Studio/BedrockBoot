@@ -89,6 +89,7 @@ public class EasyLauncher
         {
             FileName = protonScript,
             Arguments = $"run \"{filePath}\"",
+            WorkingDirectory = _linuxLaunchInfo.ProtonPath,
             UseShellExecute = false,
             CreateNoWindow = true,
             RedirectStandardOutput = true,
@@ -103,6 +104,7 @@ public class EasyLauncher
         string currentLdPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH") ?? "";
         startInfo.EnvironmentVariables["LD_LIBRARY_PATH"] = $"{libPath}:{currentLdPath}";
         startInfo.EnvironmentVariables["WINEDLLOVERRIDES"] = "dxgi,d3d11,d3d10core,d3d9=b";
+        // startInfo.EnvironmentVariables["WINEDEBUG"] = "+all";
 
         // 应用用户自定义的运行包装器（例如 gamemoderun %command%）
         // 仅在启动游戏本体时生效，依赖安装等内部调用不使用包装器

@@ -37,12 +37,12 @@ public partial class MainAccountPage : BedrockBootPage
                     Content = new XboxUserItem(user)
                 });
             });
-            if (string.IsNullOrEmpty(MsAccountManager.Accounts?.SelectUserBuid))
+            if (string.IsNullOrEmpty(MsAccountManager.Accounts?.SelectUserBUID))
             {
-                MsAccountManager.AccountConfigEntity?.Data.SelectUserBuid = users[0].BUID;
+                MsAccountManager.AccountConfigEntity?.Data.SelectUserBUID = users[0].BUID;
                 MsAccountManager.AccountConfigEntity?.Save();
             }
-            var selIndex = users.FindLastIndex(user => user.BUID == MsAccountManager.Accounts?.SelectUserBuid);
+            var selIndex = users.FindLastIndex(user => user.BUID == MsAccountManager.Accounts?.SelectUserBUID);
             UsersList.SelectedIndex = selIndex;
             UsersList.IsVisible = true;
         }
@@ -60,7 +60,7 @@ public partial class MainAccountPage : BedrockBootPage
     {
         if (IsEdit)
         {
-            MsAccountManager.AccountConfigEntity?.Data.SelectUserBuid =
+            MsAccountManager.AccountConfigEntity?.Data.SelectUserBUID =
                 MsAccountManager.Accounts?.Accounts[UsersList.SelectedIndex].BUID;
             MsAccountManager.AccountConfigEntity?.Save();
         }

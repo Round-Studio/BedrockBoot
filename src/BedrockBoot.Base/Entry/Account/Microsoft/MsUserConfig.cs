@@ -13,5 +13,5 @@ public class MsUserConfig
 public class MsUserConfigRoot
 {
     [JsonPropertyName("accounts")] public List<MsUserConfig> Accounts { get; set; } = new();
-    [JsonPropertyName("selectUserBuid")] public string? SelectUserBuid { get; set; }
+    [JsonPropertyName("selectUserBuid")] public string? SelectUserBUID { get; set; }
 }

@@ -79,8 +79,8 @@ public static class MsAccountManager
             UserIconUrl = userInfo.Settings?.FirstOrDefault(s => s.Id == "GameDisplayPicRaw")?.Value
         };
         AccountConfigEntity?.Data.Accounts.Add(config);
-        if (string.IsNullOrEmpty(AccountConfigEntity!.Data.SelectUserBuid))
-            AccountConfigEntity.Data.SelectUserBuid = config.BUID;
+        if (string.IsNullOrEmpty(AccountConfigEntity!.Data.SelectUserBUID))
+            AccountConfigEntity.Data.SelectUserBUID = config.BUID;
         AccountConfigEntity?.Save();
 
         IsLogging = false;

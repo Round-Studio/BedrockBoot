@@ -48,6 +48,8 @@ public class MsaDeviceCodeClient
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
         WriteIndented = true,
     };
+    
+    public Action<string,string>? OnLoginCallback { get; set; }
 
     public TokenData? Refresh(string refreshToken)
     {
@@ -185,6 +187,8 @@ public class MsaDeviceCodeClient
 
         progress?.Report($"请在浏览器中打开: {dc.VerificationUri}");
         progress?.Report($"输入代码: {dc.UserCode}");
+
+        OnLoginCallback?.Invoke(dc.VerificationUri, dc.UserCode);
 
         var deadline = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + dc.ExpiresIn;
         var interval = Math.Max(dc.Interval, 5);

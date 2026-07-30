@@ -47,9 +47,11 @@ public static class MsAccountManager
         if (IsLogging) throw new Exception("已有登录任务进行中");
         IsLogging = true;
 
+        var dialog = new DialogLoginMsAccountContent();
+
         DialogHost.Show(new()
         {
-            Content = new DialogLoginMsAccountContent(),
+            Content = dialog,
             Title = "关联 XBOX 账户",
             CloseButtonText = "取消",
             CloseAction = () =>
@@ -63,7 +65,9 @@ public static class MsAccountManager
             var client = new MsaDeviceCodeClient();
             
             Console.WriteLine("开始设备代码登录流程...");
-            
+
+            client.OnLoginCallback = (s, s1) =>
+                dialog.SetCopyCode(s1, s);
             var progress = new Progress<string>(msg => 
             {
                 Console.WriteLine(msg);

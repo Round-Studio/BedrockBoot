@@ -181,7 +181,7 @@ public class EasyLauncher
         if (_linuxLaunchInfo == null) return null;
 
         return IsUseNeoLaunch 
-            ? LaunchWithNeoProton(filePath) 
+            ? LaunchWithNeoProton(filePath, allowWrapper) 
             : LaunchWithStandardProton(filePath, allowWrapper);
     }
 
@@ -251,7 +251,7 @@ public class EasyLauncher
         }
     }
 
-    private Process? LaunchWithNeoProton(string filePath)
+    private Process? LaunchWithNeoProton(string filePath, bool allowWrapper)
     {
         var umu = Path.Combine(PathsList.NeoProtonPath, "umu", "umu-run");
         if (!File.Exists(umu))
@@ -290,6 +290,15 @@ public class EasyLauncher
         foreach (var (k, v) in env)
         {
             psi.EnvironmentVariables[k] = v;
+        }
+        
+        if (allowWrapper)
+        {
+            var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
+            if (launchCommandConfig.IsEnable && !string.IsNullOrWhiteSpace(launchCommandConfig.WrapperCommand))
+            {
+                LaunchCommandHelper.TryApplyWrapper(psi, launchCommandConfig.WrapperCommand, VersionInfo);
+            }
         }
 
         var proc = Process.Start(psi);

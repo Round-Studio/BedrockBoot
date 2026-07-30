@@ -17,4 +17,11 @@ public class SourceList
             _client.Repository.Release.GetAll("LukasPAH", "GDK-Proton-Custom")
         }
     };
+
+    public static string GameFixUrl =>
+        "https://github.com/RoundMCDev/ProtonGDK-Release/releases/download/Release10-32/GameRunningFixKit.tar.gz";
+    public static string ProtonXUserUrl =>
+        "https://github.com/RoundMCDev/ProtonGDK-Release/releases/download/Release10-32/GDK-Proton-xuser.tar.gz";
+    public static string ProtonLauncher =>
+        "https://github.com/RoundMCDev/ProtonGDK-Release/releases/download/Release10-32/Proton-Launch-umu.tar.gz";
 }

@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Models;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Views.Control.Items;
 using OnePointUI.Avalonia.Base.Enum;
@@ -100,6 +101,13 @@ public partial class MainAccountPage : BedrockBootPage
             MsAccountManager.AccountConfigEntity?.Data.SelectUserBUID =
                 MsAccountManager.Accounts?.Accounts[UsersList.SelectedIndex].BUID;
             MsAccountManager.AccountConfigEntity?.Save();
+
+#if LINUX
+            CoreInit.SetMsAccount(MsAccountManager.Accounts.Accounts
+                .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID).AuthResult.AccessToken, 
+                MsAccountManager.Accounts.Accounts
+                .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID).AuthResult.RefreshToken);
+#endif
         }
     }
 }

@@ -11,6 +11,7 @@
         xmlns:dialog="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;assembly=OnePointUI.Avalonia"
         xmlns:global="clr-namespace:BedrockBoot.Models.Global"
         xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+        xmlns:global1="clr-namespace:BedrockBoot.Models.Global;assembly=BedrockBoot.Core"
         mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
         x:Class="BedrockBoot.Views.Windows.MainWindow"
         Width="1100" Height="620"
@@ -297,7 +298,7 @@
                                         Opacity="0.8">
 
                                 <TextBlock Text="支持 " />
-                                <TextBlock Text="{x:Static global:GlobalKeys.DropOverTypesOfSupportString}" />
+                                <TextBlock Text="{x:Static global1:GlobalKeys.DropOverTypesOfSupportString}" />
                                 <TextBlock Text=" 等文件" />
                             </StackPanel>
                         </StackPanel>

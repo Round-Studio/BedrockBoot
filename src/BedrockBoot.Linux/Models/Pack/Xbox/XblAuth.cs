@@ -142,7 +142,7 @@ public class XblAuth
             var ua = PostJson("https://user.auth.xboxlive.com/user/authenticate", new
             {
                 RelyingParty = rpAuth, TokenType = "JWT",
-                Properties = new { AuthMethod = "RPS", SiteName = "user.auth.xboxlive.com", RpsTicket = "t=" + msaAccessToken }
+                Properties = new { AuthMethod = "RPS", SiteName = "user.auth.xboxlive.com", RpsTicket = "d=" + msaAccessToken }
             }, key);
             if (ua != null)
             {
@@ -175,7 +175,7 @@ public class XblAuth
             if (string.IsNullOrEmpty(msaAccessToken)) return (null, null, null, null);
             var r = PostJson("https://sisu.xboxlive.com/authorize", new
             {
-                AccessToken = "t=" + msaAccessToken, AppId = "0000000048183522",
+                AccessToken = "t=" + msaAccessToken, AppId = GlobalKeys.MsClientId,
                 DeviceToken = deviceToken, Sandbox = "RETAIL", UseModernGamertag = true,
                 SiteName = "user.auth.xboxlive.com", RelyingParty = rp,
                 OfferTermsAcceptance = true, AcceptOffers = true, ProofKey = proofKey
@@ -208,7 +208,7 @@ public class XblAuth
             // Parse claims - we need to re-fetch to get DisplayClaims
             var profileSisu = PostJson("https://sisu.xboxlive.com/authorize", new
             {
-                AccessToken = "t=" + msaAccessToken, AppId = "0000000048183522",
+                AccessToken = "t=" + msaAccessToken, AppId = "e24f843a-df5c-47b9-a407-865d474ccdad",
                 DeviceToken = deviceToken, Sandbox = "RETAIL", UseModernGamertag = true,
                 SiteName = "user.auth.xboxlive.com", RelyingParty = "http://xboxlive.com",
                 OfferTermsAcceptance = true, AcceptOffers = true, ProofKey = proofKey

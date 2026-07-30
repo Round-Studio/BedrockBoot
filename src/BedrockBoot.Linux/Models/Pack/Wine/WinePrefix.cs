@@ -39,7 +39,7 @@ public static class WinePrefix
         Console.WriteLine("Initialising Wine prefix...");
         var psi = new ProcessStartInfo
         {
-            FileName = Path.Combine(ProtonCore.Config.Data.SelectProtonPath, "proton"),
+            FileName = Path.Combine(PathsList.NeoProtonPath, "proton", "GDK-Proton-xuser", "proton"),
             Arguments = "run wineboot -u",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -96,6 +96,7 @@ public static class WinePrefix
 
     public static void ApplyWinegdkPrereqs()
     {
+        Console.WriteLine("ApplyWinegdkPrereqs");
         var machine = new List<RegChange>
         {
             WineRegistry.RegDword(@"Software\Microsoft\Windows NT\CurrentVersion\OEM", "ConsoleMode", 8),
@@ -124,7 +125,7 @@ public static class WinePrefix
     public static void SetRefreshToken(string token)
     {
         WineRegistry.UpdatePrefix(PathsList.PreFixPath,
-            machine: new[] { WineRegistry.RegSz(PathsList.PreFixPath, "RefreshToken", token) });
+            machine: new[] { WineRegistry.RegSz(PathsList.WinegdkReg, "RefreshToken", token) });
         Console.WriteLine("Refresh token written to Wine registry");
     }
 

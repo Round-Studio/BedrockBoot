@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
@@ -149,9 +150,35 @@ public class CoreInitialize
             CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
 #if LINUX
             CoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
-            CoreInit.SetMsAccount(MsAccountManager.Accounts.Accounts
-                .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID).AuthResult.AccessToken,MsAccountManager.Accounts.Accounts
-                .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID).AuthResult.RefreshToken);
+            CoreInit.OnRefreshAccount = async void (account) =>
+            {
+                Console.WriteLine("正在刷新账户凭证...");
+                var client = new MsaDeviceCodeClient();
+                var tokenData = await client.RefreshTokenAsync(account.AuthResult.RefreshToken);
+                Console.WriteLine("刷新完毕。");
+
+                if (tokenData != null)
+                {
+                    var index = MsAccountManager.AccountConfigEntity.Data.Accounts.FindIndex(x => x.BUID == account.BUID);
+                    MsAccountManager.AccountConfigEntity.Data.Accounts[index].AuthResult = new()
+                    {
+                        Code = tokenData?.Code,
+                        AccessToken = tokenData?.AccessToken,
+                        ClientId = tokenData?.ClientId,
+                        CodeVerifier = tokenData?.CodeVerifier,
+                        ExpiresIn = (int)tokenData.ExpiresIn,
+                        RedirectUri = tokenData?.RedirectUri,
+                        RefreshToken = tokenData.RefreshToken,
+                        SavedAt = DateTime.Now
+                    };
+                
+                    MsAccountManager.AccountConfigEntity.Save();
+                    CoreInit.SetMsAccount(MsAccountManager.AccountConfigEntity.Data.Accounts[index]);
+                    Console.WriteLine("新用户数据已保存");
+                }
+            };
+            CoreInit.SetMsAccount(
+                MsAccountManager.Accounts.Accounts.Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID));
 #endif
         }
         catch (Exception ex)

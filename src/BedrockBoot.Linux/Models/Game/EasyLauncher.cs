@@ -318,9 +318,11 @@ public class EasyLauncher
 
     private void PrepareNeoLaunchEnvironment()
     {
+        CoreInit.OnRefreshAccount?.Invoke(CoreInit.MsUserConfig);
+        
         UpdateProgressText?.Invoke("正在登录账户");
         var xbl = new XblAuth();
-        if (!xbl.RunPreauth(CoreInit.AccessToken))
+        if (!xbl.RunPreauth(CoreInit.MsUserConfig.AuthResult.AccessToken))
             Console.WriteLine("Xbox Live pre-auth failed");
 
         UpdateProgressText?.Invoke("正在准备 Proton 环境");
@@ -340,7 +342,7 @@ public class EasyLauncher
 
         InstallCryptbase();
 
-        try { WinePrefix.SetRefreshToken(CoreInit.RefreshToken); }
+        try { WinePrefix.SetRefreshToken(CoreInit.MsUserConfig.AuthResult.RefreshToken); }
         catch (Exception ex) { Console.WriteLine($"SetRefreshToken failed: {ex.Message}"); }
 
         ProtonPatcher.Patch(ProtonNeoCore.ProtonRootPath);

@@ -1,4 +1,5 @@
-﻿using BedrockBoot.Models.Game;
+﻿using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Services;
 using BedrockLauncher.Core;
@@ -12,15 +13,14 @@ public class CoreInit
     {
         CoreGlobal.BedrockCore = new BedrockCore {};
     }
+    
+    public static MsUserConfig? MsUserConfig { get;private set; }
+    public static Action<MsUserConfig>? OnRefreshAccount { get; set; }
 
-    public static void SetMsAccount(string accessToken,string refreshToken)
+    public static void SetMsAccount(MsUserConfig config)
     {
-        AccessToken = accessToken;
-        RefreshToken = refreshToken;
+        MsUserConfig = config;
     }
-
-    public static string AccessToken { get; set; }
-    public static string RefreshToken { get; set; }
 
     public static void UpdateUseHardwareDecode(bool isUse)
     {

@@ -104,9 +104,7 @@ public partial class MainAccountPage : BedrockBootPage
 
 #if LINUX
             CoreInit.SetMsAccount(MsAccountManager.Accounts.Accounts
-                .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID).AuthResult.AccessToken, 
-                MsAccountManager.Accounts.Accounts
-                .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID).AuthResult.RefreshToken);
+                .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID));
 #endif
         }
     }

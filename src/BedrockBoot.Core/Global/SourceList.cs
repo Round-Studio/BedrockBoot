@@ -14,11 +14,11 @@ public class SourceList
     {
         { "Github", "{url}" },
         { "加速源 ①", "https://github1.roundstudio.top/{url}" },
+        { "gh.tiouo.xyz", "https://gh.tiouo.xyz/{route}" },
         { "gh-proxy.com", "https://gh-proxy.com/{url}" },
         { "gh-proxy.net", "https://gh-proxy.net/{url}" },
         { "gh-proxy.org", "https://gh-proxy.org/{url}" },
-        { "github-speedup.com", "https://github-speedup.com/{url}" },
-        { "gitproxy.click", "https://gitproxy.click/{url}" },
+        { "gitproxy.click", "https://gitproxy.click/{url}" }
         /*{ "", "{route}" }*/
     };
 

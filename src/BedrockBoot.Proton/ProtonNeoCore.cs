@@ -15,9 +15,9 @@ public class ProtonNeoCore
     {
         var rootPath = PathsList.NeoProtonPath;
         var protonPath = ProtonRootPath;
-        var umuPath = Path.Combine(rootPath);
+        var umuPath = Path.Combine(rootPath, "umu");
         var gameFix = Path.Combine(rootPath, "gameFix");
 
-        return Path.Exists(protonPath) || Path.Exists(umuPath) || Path.Exists(gameFix);
+        return Path.Exists(protonPath) && Path.Exists(umuPath) && Path.Exists(gameFix);
     }
 }

@@ -16,9 +16,9 @@
                 下载 ProtonGDK
             </TextBlock>
             <ProgressBar IsIndeterminate="True"
+                         HorizontalAlignment="Stretch"
                          Name="ProgressBar"
-                         Margin="0,8,0,0"
-                         MinWidth="200" />
+                         Margin="0,8,0,0"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

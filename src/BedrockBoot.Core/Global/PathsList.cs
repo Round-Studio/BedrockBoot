@@ -34,6 +34,7 @@ public class PathsList
     
     public static readonly string NeoProtonPath = Path.Combine(RootConfigPath, "BedrockBoot.Linux", "xuserProject");
     public static readonly string PreFixPath = Path.Combine(ProtonPath, "game_prefix");
+    public static readonly string GamePatch = Path.Combine(NeoProtonPath, "GamePatch");
 
     public static readonly string EasyTierPath = Path.Combine(PaperConnectPath, "EasyTier");
 

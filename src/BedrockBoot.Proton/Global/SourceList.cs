@@ -24,4 +24,6 @@ public class SourceList
         "https://github.com/RoundMCDev/ProtonGDK-Release/releases/download/Release10-32/GDK-Proton-xuser.tar.gz";
     public static string ProtonLauncher =>
         "https://github.com/RoundMCDev/ProtonGDK-Release/releases/download/Release10-32/Proton-Launch-umu.tar.gz";
+    public static string GamePatchUrl =>
+        "https://github.com/RoundMCDev/ProtonGDK-Release/releases/download/Release10-32/GamePatch.zip";
 }

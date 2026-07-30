@@ -109,7 +109,7 @@ public class CoreInitialize
         ProtonCore.InitializeEnvironment();
         
         var lst = ProtonCore.GetInstalledVersions();
-        if (lst == null || lst.Count <= 0)
+        if (lst == null || lst.Count <= 0 || !ProtonNeoCore.IsInstalledKits())
         {
             DialogHost.Show(new DialogInfo()
             {

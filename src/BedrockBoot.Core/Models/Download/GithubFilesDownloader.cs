@@ -13,8 +13,6 @@ public class GithubFilesDownloader
         _downloader = new MultiThreadDownloader(maxConcurrency, bufferSize, defaultTimeoutSeconds);
     }
 
-    /// <summary>
-    /// 测试下载源速度 - 第一个成功完成的源即被使用
     private async Task<(string SourceName, string Url)> TestDownloadSourcesAsync(
         string fileUrl,
         long testSize = 1024 * 512,
@@ -24,7 +22,6 @@ public class GithubFilesDownloader
         var completionSource = new TaskCompletionSource<(string SourceName, string Url)>();
         var testTasks = new List<Task>();
         var activeSources = new ConcurrentDictionary<string, CancellationTokenSource>();
-        var githubSourceFound = false;
 
         foreach (var source in SourceList.UpdateDownloadSources)
         {
@@ -34,30 +31,25 @@ public class GithubFilesDownloader
 
             activeSources[sourceKey] = sourceCts;
 
-            // 如果是 GitHub 源，标记一下
-            if (sourceKey == "Github")
-            {
-                githubSourceFound = true;
-            }
-
             testTasks.Add(Task.Run(async () =>
             {
                 try
                 {
+                    var sourceUrl = sourcePattern.Replace("{url}", fileUrl)
+                        .Replace("{route}", fileUrl.Replace("https://github.com/", "").Replace("http://github.com/", ""));
+
                     var result = await TestSingleSourceAsync(
                         sourceKey,
-                        sourcePattern,
-                        fileUrl,
+                        sourceUrl,
                         testSize,
                         timeoutSeconds,
                         sourceCts.Token);
 
                     if (result.Speed > 0 && !completionSource.Task.IsCompleted)
                     {
-                        var selectedUrl = SourceList.UpdateDownloadSources[sourceKey].Replace("{url}", fileUrl);
                         Console.WriteLine($@"源 {sourceKey} 测试成功，速度: {result.Speed:F2} B/s，开始下载");
 
-                        if (completionSource.TrySetResult((sourceKey, selectedUrl)))
+                        if (completionSource.TrySetResult((sourceKey, sourceUrl)))
                         {
                             cts.Cancel();
                             Console.WriteLine($@"使用第一个成功源: {sourceKey}");
@@ -66,7 +58,6 @@ public class GithubFilesDownloader
                 }
                 catch (OperationCanceledException) when (sourceCts.Token.IsCancellationRequested)
                 {
-                    // 正常取消，忽略
                 }
                 catch (Exception ex)
                 {
@@ -92,9 +83,9 @@ public class GithubFilesDownloader
             {
                 cts.Cancel();
 
-                // 所有加速源都超时，使用 GitHub 原始源
                 Console.WriteLine($@"所有加速源测试超时，使用 GitHub 原始源");
-                var githubUrl = SourceList.UpdateDownloadSources["Github"].Replace("{url}", fileUrl);
+                var githubUrl = SourceList.UpdateDownloadSources["Github"].Replace("{url}", fileUrl)
+                    .Replace("{route}", fileUrl.Replace("https://github.com/", "").Replace("http://github.com/", ""));
                 return ("Github (fallback)", githubUrl);
             }
 
@@ -111,12 +102,11 @@ public class GithubFilesDownloader
             }
             catch
             {
-                // 忽略所有取消异常
             }
 
-            // 如果所有测试都失败了，使用 GitHub 原始源
             Console.WriteLine($@"所有加速源测试失败: {ex.Message}，使用 GitHub 原始源");
-            var githubUrl = SourceList.UpdateDownloadSources["Github"].Replace("{url}", fileUrl);
+            var githubUrl = SourceList.UpdateDownloadSources["Github"].Replace("{url}", fileUrl)
+                .Replace("{route}", fileUrl.Replace("https://github.com/", "").Replace("http://github.com/", ""));
             return ("Github (fallback)", githubUrl);
         }
         finally
@@ -133,22 +123,17 @@ public class GithubFilesDownloader
 
     private async Task<(string SourceName, double Speed, string Url)> TestSingleSourceAsync(
         string sourceName,
-        string sourcePattern,
-        string fileUrl,
+        string sourceUrl,
         long testSize,
         int timeoutSeconds,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var sourceUrl = sourcePattern.Replace("{url}", fileUrl)
-                .Replace("{route}", fileUrl.Replace("https://github.com/", "").Replace("http://github.com/", ""));
-
             var uri = new Uri(sourceUrl);
 
             using var testClient = new HttpClient();
 
-            // 对 GitHub 源使用更长的超时时间
             var actualTimeout = sourceName == "Github" ? timeoutSeconds * 2 : timeoutSeconds;
             testClient.Timeout = TimeSpan.FromSeconds(actualTimeout);
             testClient.DefaultRequestHeaders.UserAgent.ParseAdd(
@@ -243,17 +228,10 @@ public class GithubFilesDownloader
 #endif
             }
 
-            return (sourceName, 0, sourcePattern.Replace("{url}", fileUrl));
+            return (sourceName, 0, sourceUrl);
         }
     }
 
-    /// <summary>
-    /// 下载文件
-    /// </summary>
-    /// <param name="fileUrl">原始Github文件URL</param>
-    /// <param name="savePath">保存路径</param>
-    /// <param name="progressCallback">进度回调</param>
-    /// <param name="cancellationToken">取消令牌</param>
     public async Task<bool> DownloadAsync(
         string fileUrl,
         string savePath,
@@ -268,14 +246,12 @@ public class GithubFilesDownloader
 
         try
         {
-            // 1. 并行测试所有下载源，使用第一个成功的源
             Console.WriteLine(@"开始并行测试下载源...");
             var (selectedSourceName, selectedUrl) = await TestDownloadSourcesAsync(fileUrl);
 
             Console.WriteLine($@"使用下载源: {selectedSourceName}");
             Console.WriteLine($@"下载URL: {selectedUrl}");
 
-            // 2. 使用多线程下载器下载文件
             var result = await _downloader.DownloadAsync(
                 selectedUrl,
                 savePath,

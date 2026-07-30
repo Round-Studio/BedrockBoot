@@ -22,6 +22,28 @@ public class EasyLauncher
     private DateTime _gameStartTime;
     private readonly string _playerDataFilePath;
     private readonly ProtonInfo? _linuxLaunchInfo;
+    
+    public static void MakeAllFilesExecutableByChmod(string directoryPath)
+    {
+        string arguments = $"-R 755 \"{directoryPath}\"";
+    
+        var processInfo = new ProcessStartInfo("chmod", arguments)
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using var process = Process.Start(processInfo);
+        process.WaitForExit();
+
+        if (process.ExitCode != 0)
+        {
+            string error = process.StandardError.ReadToEnd();
+            throw new Exception($"chmod 命令执行失败: {error}");
+        }
+    }
 
     public EasyLauncher(VersionConfig versionConfig)
     {
@@ -64,6 +86,8 @@ public class EasyLauncher
 
     public async Task Launch()
     {
+        MakeAllFilesExecutableByChmod(PathsList.NeoProtonPath);
+        
         // 校验 Linux Proton 环境
         if (string.IsNullOrEmpty(_linuxLaunchInfo?.ProtonPath) || ProtonCore.GetInstalledVersions()?.Count <= 0)
         {
@@ -260,6 +284,12 @@ public class EasyLauncher
             return null;
         }
 
+        if (!File.GetUnixFileMode(umu).HasFlag(UnixFileMode.UserExecute))
+        {
+            Console.WriteLine($"umu-run at {umu} is not executable, setting execute permission");
+            File.SetUnixFileMode(umu, File.GetUnixFileMode(umu) | UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
+        }
+
         var steamCompat = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam");
         Directory.CreateDirectory(steamCompat);
 
@@ -341,6 +371,7 @@ public class EasyLauncher
         catch (Exception ex) { Console.WriteLine($"ApplyWinegdkPrereqs failed: {ex.Message}"); }
 
         InstallCryptbase();
+        InstallD3d8();
 
         try { WinePrefix.SetRefreshToken(CoreInit.MsUserConfig.AuthResult.RefreshToken); }
         catch (Exception ex) { Console.WriteLine($"SetRefreshToken failed: {ex.Message}"); }
@@ -438,6 +469,45 @@ public class EasyLauncher
         catch (Exception ex)
         {
             Console.WriteLine($"安装 cryptbase.dll 失败: {ex.Message}");
+        }
+    }
+
+    private static void InstallD3d8()
+    {
+        try
+        {
+            var defaultPfx = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "share", "default_pfx");
+            var sys32 = Path.Combine(defaultPfx, "drive_c", "windows", "system32");
+            var syswow64 = Path.Combine(defaultPfx, "drive_c", "windows", "syswow64");
+
+            var src64 = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "x86_64-windows", "d3d8.dll");
+            var src32 = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "i386-windows", "d3d8.dll");
+
+            if (File.Exists(src64))
+            {
+                var dst = Path.Combine(sys32, "d3d8.dll");
+                if (!File.Exists(dst))
+                {
+                    Directory.CreateDirectory(sys32);
+                    File.Copy(src64, dst);
+                    Console.WriteLine("d3d8.dll installed in default_pfx system32");
+                }
+            }
+
+            if (File.Exists(src32))
+            {
+                var dst = Path.Combine(syswow64, "d3d8.dll");
+                if (!File.Exists(dst))
+                {
+                    Directory.CreateDirectory(syswow64);
+                    File.Copy(src32, dst);
+                    Console.WriteLine("d3d8.dll installed in default_pfx syswow64");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"安装 d3d8.dll 失败: {ex.Message}");
         }
     }
 

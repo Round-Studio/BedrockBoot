@@ -316,12 +316,23 @@ public class EasyLauncher
 
         UpdateProgressText?.Invoke("正在准备 Proton 环境");
 
-        if (!WinePrefix.Boot())
-            Console.WriteLine("Could not initialise Wine prefix");
+        try
+        {
+            if (!WinePrefix.Boot())
+                Console.WriteLine("Could not initialise Wine prefix");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"WinePrefix.Boot failed: {ex.Message}");
+        }
 
-        WinePrefix.ApplyWinegdkPrereqs();
+        try { WinePrefix.ApplyWinegdkPrereqs(); }
+        catch (Exception ex) { Console.WriteLine($"ApplyWinegdkPrereqs failed: {ex.Message}"); }
+
         InstallCryptbase();
-        WinePrefix.SetRefreshToken(CoreInit.RefreshToken);
+
+        try { WinePrefix.SetRefreshToken(CoreInit.RefreshToken); }
+        catch (Exception ex) { Console.WriteLine($"SetRefreshToken failed: {ex.Message}"); }
 
         ProtonPatcher.Patch(ProtonNeoCore.ProtonRootPath);
         GameInputInstaller.Install(PathsList.PreFixPath, VersionInfo.VersionPath);
@@ -401,7 +412,7 @@ public class EasyLauncher
     {
         try
         {
-            var builtin = Path.Combine(PathsList.NeoProtonPath, "files", "lib", "wine", "x86_64-windows", "cryptbase.dll");
+            var builtin = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "x86_64-windows", "cryptbase.dll");
             var dst = Path.Combine(PathsList.PreFixPath, "drive_c", "windows", "system32", "cryptbase.dll");
 
             if (File.Exists(builtin) && !File.Exists(dst))

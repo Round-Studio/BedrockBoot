@@ -78,13 +78,14 @@ public partial class NeoMainPage : UserControl
         });
 #endif
 #if LINUX
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "\uE716",
-            ItemText = "账户管理",
-            Tag = "AccountManager",
-            Page = typeof(MainAccountPage)
-        });
+        if(GlobalModel.Config.Data.IsUseNeoLaunch)
+            RegisterTopItem(new TopBarItemInfo
+            {
+                ItemGlyph = "\uE716",
+                ItemText = "账户管理",
+                Tag = "AccountManager",
+                Page = typeof(MainAccountPage)
+            });
 #endif
         RegisterTopItem(new TopBarItemInfo
         {

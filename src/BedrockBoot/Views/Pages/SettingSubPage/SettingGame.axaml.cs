@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
+using BedrockBoot.Models;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -29,18 +30,14 @@ public partial class SettingGame : ISettingPage
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
         IsolationPriority.SelectedIndex = (int)GlobalModel.Config.Data.IsolationPriority;
         CatalogStrategy.SelectedIndex = ((int)GlobalModel.Config.Data.CatalogStrategy) - 1;
-
-#if RELEASE && LINUX
-        SeniorPanel.IsVisible = Models.Global.GlobalModel.FunctionOption.IsEnableGameProtonManager;
-#endif
+        IsUseNeoLaunchBox.IsVisible = false;
 
 #if LINUX
         IsolationCard.IsVisible = false;
         MouseLockBtn.IsVisible = false;
-#endif
-
-#if LINUX && DEBUG
-        SeniorPanel.IsVisible = true;
+        ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
+        IsUseNeoLaunchBox.IsVisible = true;
+        IsUseNeoLaunchToggleSwitch.IsChecked = GlobalModel.Config.Data.IsUseNeoLaunch;
 #endif
 
         IsEdit = true;
@@ -97,7 +94,22 @@ public partial class SettingGame : ISettingPage
 
     private void LaunchCommandBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        // 导航至自定义启动命令子页面
         MainSettingPage.NavigateTo(new GameLaunchCommand());
+    }
+
+    private void IsUseNeoLaunchToggleSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsUseNeoLaunch = (bool)IsUseNeoLaunchToggleSwitch.IsChecked!;
+            GlobalModel.Config.Save();
+            
+            Models.Global.GlobalModel.MainWindow.SetReboot();
+
+#if LINUX
+            CoreInit.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
+            ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
+#endif
+        }
     }
 }

@@ -148,7 +148,7 @@ public class CoreInitialize
 
             CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
 #if LINUX
-            CoreInit.UpdateUseNeoLaunch(true);
+            CoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
             CoreInit.SetMsAccount(MsAccountManager.Accounts.Accounts
                 .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID).AuthResult.AccessToken,MsAccountManager.Accounts.Accounts
                 .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID).AuthResult.RefreshToken);

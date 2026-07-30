@@ -96,17 +96,22 @@
                                           IsClickable="True"
                                           Glyph="&#xE756;" />
 
-            <StackPanel Spacing="8"
-                        Name="SeniorPanel"
-                        IsVisible="False">
-                <onePointControls:SettingCard Margin="5, 0"
-                                              Header="Proton"
-                                              Description="{DynamicResource Settings.Game.Proton.Desc}"
-                                              Name="ProtonBtn"
-                                              Click="ProtonBtn_OnClick"
-                                              IsClickable="True"
-                                              Glyph="&#xE74C;" />
-            </StackPanel>
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="IsUseNeoLaunchBox"
+                                          Header="新启动方式"
+                                          Description="在 Linux 中使用新的启动方式，包含 XBOX 账户登录"
+                                          Glyph="&#xEBD2;">
+                <ToggleSwitch Name="IsUseNeoLaunchToggleSwitch"
+                              IsCheckedChanged="IsUseNeoLaunchToggleSwitch_OnIsCheckedChanged"></ToggleSwitch>
+            </onePointControls:SettingCard>
+            
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="Proton"
+                                          Description="{DynamicResource Settings.Game.Proton.Desc}"
+                                          Name="ProtonBtn"
+                                          Click="ProtonBtn_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xE74C;" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

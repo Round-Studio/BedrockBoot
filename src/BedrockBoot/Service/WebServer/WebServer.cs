@@ -12,6 +12,13 @@ public class WebServer
     private readonly HttpListener _listener;
     private readonly Dictionary<string, Action<HttpContext>> _routes = new();
     private bool _isRunning;
+    
+    private static WebServer? _instance;
+
+    public static void StopInstance()
+    {
+        _instance?.Stop();
+    }
 
     public WebServer(params string[] prefixes)
     {
@@ -24,6 +31,7 @@ public class WebServer
         {
             _listener.Prefixes.Add(prefix);
         }
+        _instance = this;
     }
 
     /// <summary>

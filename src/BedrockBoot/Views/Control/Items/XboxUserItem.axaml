@@ -5,14 +5,31 @@
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:items1="clr-namespace:BedrockBoot.Views.Control.Items"
              mc:Ignorable="d"
              Width="320" Height="72"
+             PointerEntered="InputElement_OnPointerEntered"
+             PointerExited="InputElement_OnPointerExited"
+             Background="Transparent"
              x:Class="BedrockBoot.Views.Control.Items.XboxUserItem">
-    <Grid>
+    <UserControl.Styles>
+        <Style Selector="StackPanel#PART_ControlPanel">
+            <Setter Property="Opacity" Value="0.5" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" 
+                                      Duration="0:0:0.28"
+                                      Easing="ExponentialEaseInOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="Transparent">
         <items:BorderCard Opacity="0.8"/>
         
         <Grid ColumnDefinitions="Auto,*,Auto"
-              Margin="8,0"
+              Margin="8"
               ColumnSpacing="8">
             <widgets:LocalImageRenderWidget Grid.Column="0"
                                             Name="UserIcon"
@@ -22,16 +39,20 @@
                         VerticalAlignment="Center">
                 <TextBlock FontSize="18"
                            Text="UserName"
-                           Name="UserName"></TextBlock>
+                           Name="UserName"/>
                 <TextBlock FontSize="12"
                            Opacity="0.6"
                            Text="Login Time"
-                           Name="UserLoginTime"></TextBlock>
+                           Name="UserLoginTime"/>
             </StackPanel>
         
             <StackPanel Grid.Column="2"
-                        VerticalAlignment="Center">
+                        Name="PART_ControlPanel"
+                        Opacity="0"
+                        VerticalAlignment="Top">
                 <Button Classes="NoBorder"
+                        Name="DelBtn"
+                        Click="DelBtn_OnClick"
                         Padding="10">
                     <onePointControls:FontIcon Glyph="&#xE74d;"
                                                Foreground="{DynamicResource SystemFillColorCriticalBrush}" />

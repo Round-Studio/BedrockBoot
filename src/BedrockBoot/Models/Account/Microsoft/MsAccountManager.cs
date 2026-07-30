@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Account.Microsoft;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Service.WebServer;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
@@ -25,6 +26,20 @@ public static class MsAccountManager
     {
         AccountConfigEntity = new ConfigEntity<MsUserConfigRoot>(PathsList.MsAccountPath);
         AccountConfigEntity.Load();
+
+        AccountConfigEntity.AfterSave += (_, _) =>
+        {
+            if (AccountConfigEntity.Data.SelectUserBUID != null &&
+                AccountConfigEntity.Data.Accounts.Count >= 1)
+            {
+                var buids = AccountConfigEntity.Data.Accounts.Select(x=>x.BUID);
+                if (!buids.Contains(AccountConfigEntity.Data.SelectUserBUID))
+                {
+                    AccountConfigEntity.Data.SelectUserBUID = buids.ToArray()[0];
+                    AccountConfigEntity.Save();
+                }
+            }
+        };
     }
 
     public static async Task LoginAccount()
@@ -37,33 +52,57 @@ public static class MsAccountManager
             Content = new DialogLoginMsAccountContent(),
             Title = "关联 XBOX 账户",
             CloseButtonText = "取消",
-            CloseAction = () => { }
+            CloseAction = () =>
+            {
+                WebServer.StopInstance();
+                IsLogging = false;
+            }
         });
 
         var client = new MicrosoftOAuthClient();
         Console.WriteLine("开始关联微软账户");
         var account = await client.GetAuthorizationCodeAsync();
         if (account.authCode == null ||
-            account.codeVerifier == null) throw new NullReferenceException();
+            account.codeVerifier == null)
+        {
+            IsLogging = false;
+            throw new NullReferenceException();
+        }
         Console.WriteLine("开始获取微软账户登录凭证");
         var exchangeCode = await client.ExchangeCodeForTokensAsync(account.authCode, account.codeVerifier);
-        if (exchangeCode == null) throw new NullReferenceException();
+        if (exchangeCode == null)
+        {
+            IsLogging = false;
+            throw new NullReferenceException();
+        }
 
         Console.WriteLine("开始获取 Xbox 用户凭证");
         var xboxClient = new XboxAuthClient();
         var xboxUserToken = await xboxClient.GetXboxUserTokenAsync(exchangeCode.AccessToken);
-        if (string.IsNullOrEmpty(xboxUserToken)) throw new NullReferenceException();
+        if (string.IsNullOrEmpty(xboxUserToken))
+        {
+            IsLogging = false;
+            throw new NullReferenceException();
+        }
         Console.WriteLine("开始获取 Xbox 用户登录凭证 (XstsToken)");
         var xstsToken = await xboxClient.GetXstsTokenAsync(xboxUserToken);
         if (string.IsNullOrEmpty(xstsToken.xstsToken) ||
             string.IsNullOrEmpty(xstsToken.xuid) ||
-            string.IsNullOrEmpty(xstsToken.userHash)) throw new NullReferenceException();
+            string.IsNullOrEmpty(xstsToken.userHash))
+        {
+            IsLogging = false;
+            throw new NullReferenceException();
+        }
 
         Console.WriteLine("开始获取 Xbox 用户档案");
         var peopleClient = new PeopleHubClient();
         string authHeader = $"XBL3.0 x={xstsToken.userHash};{xstsToken.xstsToken}";
         var userProfile = await peopleClient.GetProfileAsync(authHeader, xstsToken.xuid);
-        if (userProfile == null) throw new NullReferenceException();
+        if (userProfile == null)
+        {
+            IsLogging = false;
+            throw new NullReferenceException();
+        }
         var userInfo = userProfile.ProfileUsers[0];
 
         var config = new MsUserConfig()

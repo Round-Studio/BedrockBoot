@@ -150,6 +150,11 @@ public class CoreInitialize
             CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
 #if LINUX
             CoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
+            RegisterService.RegisterLaunchingEvent(s =>
+            {
+                CoreInit.SetMsAccount(
+                    MsAccountManager.Accounts.Accounts.Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID));
+            });
             CoreInit.OnRefreshAccount = async void (account) =>
             {
                 Console.WriteLine("正在刷新账户凭证...");

@@ -215,10 +215,10 @@ public partial class MainPage : UserControl
                 // 修复：检查 tag 是否存在于字典中
                 if (string.IsNullOrEmpty(tag) || !TopBarItem.ContainsKey(tag)) return;
 
-                BedrockBootPage page = null;
+                BedrockBootPage? page = null;
 
                 if (TopBarItem[tag].Page is Type selPageType)
-                    page = (BedrockBootPage)Activator.CreateInstance(selPageType);
+                    page = Activator.CreateInstance(selPageType) as BedrockBootPage;
                 else
                     DialogHost.Show(new DialogInfo
                     {
@@ -226,6 +226,8 @@ public partial class MainPage : UserControl
                         Content = string.Format(i18n["MainPage.Error.InvalidPage.Content"], tag),
                         CloseButtonText = i18n["Shared.Action.Confirm"]
                     });
+
+                if (page == null) return;
 
                 if (page.HeaderView != null) HeaderContent.NavigateTo(page.HeaderView);
 

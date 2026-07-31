@@ -18,7 +18,7 @@ namespace BedrockBoot.Views.DialogContent;
 
 public partial class DialogDownloadUwpDependenceContent : UserControl
 {
-    private readonly List<(string Name, string Version)> _deps;
+    private readonly List<(string Name, string Version)> _deps = new();
     private readonly List<ProgressBar> _progressBars = new();
     private readonly HashSet<int> _installed = new(); // 记录已安装的包
     private int _completedCount;
@@ -94,9 +94,9 @@ public partial class DialogDownloadUwpDependenceContent : UserControl
 #if WINDOWS
         var url = await UwpFileUrl.GetUwpPackageDownloadUrl(name, version);
         return (name, url, index);
+#else
+        return (null, null, 0);
 #endif
-
-        return (null,null,0);
     }
 
     private async Task DownloadOneAsync(string name, string url, int index)
@@ -147,15 +147,24 @@ public partial class DialogDownloadUwpDependenceContent : UserControl
                 FileName = "powershell.exe",
                 Arguments = $"-NoProfile -Command \"Add-AppxPackage -Path '{filePath}'\"",
                 UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 CreateNoWindow = true
             };
         
             using var process = System.Diagnostics.Process.Start(psi);
+            if (process == null)
+            {
+                Console.WriteLine(@"无法启动 PowerShell 进程安装依赖包");
+                return;
+            }
+
+            process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
             process.WaitForExit();
         
             if (process.ExitCode != 0)
             {
-                var error = process.StandardError.ReadToEnd();
                 Console.WriteLine($@"安装失败: {error}");
             }
         });

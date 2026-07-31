@@ -159,7 +159,7 @@ public class CoreInitialize
 
                 if (tokenData != null)
                 {
-                    var index = MsAccountManager.AccountConfigEntity.Data.Accounts.FindIndex(x => x.BUID == account.BUID);
+                    var index = MsAccountManager.Accounts.Accounts.FindIndex(x => x.BUID == account.BUID);
                     MsAccountManager.AccountConfigEntity.Data.Accounts[index].AuthResult = new()
                     {
                         Code = tokenData?.Code,

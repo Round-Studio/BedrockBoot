@@ -31,6 +31,7 @@ public partial class SettingGame : ISettingPage
         IsolationPriority.SelectedIndex = (int)GlobalModel.Config.Data.IsolationPriority;
         CatalogStrategy.SelectedIndex = ((int)GlobalModel.Config.Data.CatalogStrategy) - 1;
         IsUseNeoLaunchBox.IsVisible = false;
+        ProtonBtn.IsVisible = false;
 
 #if LINUX
         IsolationCard.IsVisible = false;

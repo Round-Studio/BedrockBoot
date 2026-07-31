@@ -5,20 +5,5 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DialogContent.Linux.DialogDownloadProtonGDKContent">
-    <StackPanel Orientation="Horizontal">
-        <onePointControls:ProgressRing Height="36" Width="36"
-                                       Background="Transparent" />
-
-        <StackPanel Margin="12,0,0,0"
-                    VerticalAlignment="Center">
-            <TextBlock FontSize="16"
-                       Name="ProgressText">
-                下载 ProtonGDK
-            </TextBlock>
-            <ProgressBar IsIndeterminate="True"
-                         HorizontalAlignment="Stretch"
-                         Name="ProgressBar"
-                         Margin="0,8,0,0"/>
-        </StackPanel>
-    </StackPanel>
+    
 </UserControl>

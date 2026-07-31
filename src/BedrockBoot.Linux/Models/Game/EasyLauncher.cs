@@ -321,6 +321,11 @@ public class EasyLauncher
         {
             psi.EnvironmentVariables[k] = v;
         }
+        string libPath = $"{Path.Combine(ProtonNeoCore.ProtonRootPath, "files/lib64")}:{Path.Combine(ProtonNeoCore.ProtonRootPath, "files/lib")}";
+        string currentLdPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH") ?? "";
+        
+        psi.EnvironmentVariables["LD_LIBRARY_PATH"] = $"{libPath}:{currentLdPath}";
+        psi.EnvironmentVariables["WINEDLLOVERRIDES"] = "dxgi,d3d11,d3d10core,d3d9=b";
         
         if (allowWrapper)
         {
@@ -371,7 +376,7 @@ public class EasyLauncher
         catch (Exception ex) { Console.WriteLine($"ApplyWinegdkPrereqs failed: {ex.Message}"); }
 
         InstallCryptbase();
-        InstallD3d8();
+        // InstallD3d8();
 
         try { WinePrefix.SetRefreshToken(CoreInit.MsUserConfig.AuthResult.RefreshToken); }
         catch (Exception ex) { Console.WriteLine($"SetRefreshToken failed: {ex.Message}"); }

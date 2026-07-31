@@ -67,7 +67,8 @@ public partial class DialogDownloadProtonGDKContent : UserControl
         var textStack = new StackPanel
         {
             Margin = new Thickness(12, 0, 0, 0),
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Stretch
         };
 
         _mainProgressText = new TextBlock
@@ -80,7 +81,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
         {
             IsIndeterminate = true,
             Margin = new Thickness(0, 8, 0, 0),
-            MinWidth = 200
+            HorizontalAlignment = HorizontalAlignment.Stretch
         };
 
         textStack.Children.Add(_mainProgressText);
@@ -152,90 +153,71 @@ public partial class DialogDownloadProtonGDKContent : UserControl
     public async Task Download()
     {
         ProtonCore.InitializeEnvironment();
-        
-        var lst = await ProtonCore.GetInstallableVersion(ProtonSource.LukasPAH);
-        var info = lst?.ToList().FirstOrDefault();
 
-        if (info != null)
+        /*var lst = await ProtonCore.GetInstallableVersion(ProtonSource.LukasPAH);
+        var info = lst?.ToList().FirstOrDefault();*/
+
+        Task.Run(async () =>
         {
-            Task.Run(async () =>
+            try
             {
-                try
+                var githubDownloader = new GithubFilesDownloader();
+                string targetFolder = Path.Combine(PathsList.NeoProtonPath, "ProtonGDK_Components");
+                Directory.CreateDirectory(targetFolder);
+
+                var filesToDownload = new List<(string Name, string Url, string SavePath)>
                 {
-                    var githubDownloader = new GithubFilesDownloader();
-                    string targetFolder = Path.Combine(PathsList.NeoProtonPath, "ProtonGDK_Components");
-                    Directory.CreateDirectory(targetFolder);
+                    ("GameRunningFixKit", GameFixUrl, Path.Combine(targetFolder, "GameRunningFixKit.tar.gz")),
+                    ("GDK-Proton-xuser", ProtonXUserUrl, Path.Combine(targetFolder, "GDK-Proton-xuser.tar.gz")),
+                    ("Proton-Launch-umu", ProtonLauncher, Path.Combine(targetFolder, "Proton-Launch-umu.tar.gz")),
+                    ("GamePatch", GamePatchUrl, Path.Combine(targetFolder, "GamePatch.zip"))
+                };
 
-                    var filesToDownload = new List<(string Name, string Url, string SavePath)>
-                    {
-                        ("GameRunningFixKit", GameFixUrl, Path.Combine(targetFolder, "GameRunningFixKit.tar.gz")),
-                        ("GDK-Proton-xuser", ProtonXUserUrl, Path.Combine(targetFolder, "GDK-Proton-xuser.tar.gz")),
-                        ("Proton-Launch-umu", ProtonLauncher, Path.Combine(targetFolder, "Proton-Launch-umu.tar.gz")),
-                        ("GamePatch", GamePatchUrl, Path.Combine(targetFolder, "GamePatch.zip"))
-                    };
+                foreach (var file in filesToDownload)
+                {
+                    _filePaths[file.Name] = file.SavePath;
+                }
 
-                    foreach (var file in filesToDownload)
+                var tasks = new List<Task>();
+
+                foreach (var file in filesToDownload)
+                {
+                    if (File.Exists(file.SavePath))
                     {
-                        _filePaths[file.Name] = file.SavePath;
+                        Dispatcher.UIThread.Invoke(() => { UpdateTaskProgress(file.Name, 100, "已存在"); });
+                        _completedTasks++;
+                        UpdateMainProgress();
+
+                        await InstallComponent(file.Name);
+                        continue;
                     }
 
-                    var tasks = new List<Task>();
-
-                    foreach (var file in filesToDownload)
-                    {
-                        if (File.Exists(file.SavePath))
-                        {
-                            Dispatcher.UIThread.Invoke(() =>
-                            {
-                                UpdateTaskProgress(file.Name, 100, "已存在");
-                            });
-                            _completedTasks++;
-                            UpdateMainProgress();
-                            
-                            await InstallComponent(file.Name);
-                            continue;
-                        }
-
-                        var downloadTask = DownloadFileWithProgress(githubDownloader, file);
-                        tasks.Add(downloadTask);
-                    }
-
-                    _totalTasks = tasks.Count;
-
-                    await Task.WhenAll(tasks);
-
-                    await Dispatcher.UIThread.InvokeAsync(DialogHost.Close);
-
-                    Dispatcher.UIThread.Invoke(() =>
-                    {
-                        GameProton.UpdateList?.Invoke();
-                    });
+                    var downloadTask = DownloadFileWithProgress(githubDownloader, file);
+                    tasks.Add(downloadTask);
                 }
-                catch (Exception ex)
-                {
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        DialogHost.Show(new DialogInfo()
-                        {
-                            Title = "下载失败",
-                            Content = $"下载过程中出现错误：{ex.Message}",
-                            CloseButtonText = "确定",
-                            CloseAction = () => { Environment.Exit(0); }
-                        });
-                    });
-                }
-            });
-        }
-        else
-        {
-            DialogHost.Show(new DialogInfo()
+
+                _totalTasks = tasks.Count;
+
+                await Task.WhenAll(tasks);
+
+                await Dispatcher.UIThread.InvokeAsync(DialogHost.Close);
+
+                Dispatcher.UIThread.Invoke(() => { GameProton.UpdateList?.Invoke(); });
+            }
+            catch (Exception ex)
             {
-                Title = "下载失败",
-                Content = "请检查网络是否有问题，然后重启启动器重试。",
-                CloseButtonText = "确定",
-                CloseAction = () => { Environment.Exit(0); }
-            });
-        }
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    DialogHost.Show(new DialogInfo()
+                    {
+                        Title = "下载失败",
+                        Content = $"下载过程中出现错误：{ex.Message}",
+                        CloseButtonText = "确定",
+                        CloseAction = () => { Environment.Exit(0); }
+                    });
+                });
+            }
+        });
     }
 
     private async Task InstallComponent(string componentName)

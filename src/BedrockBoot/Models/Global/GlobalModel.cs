@@ -30,7 +30,7 @@ public class GlobalModel
     public static bool IsAbleToLaunchGame { get; set; } = false;
     public static bool IsProgressRunning { get; set; } = false;
     public static FunctionOptionEntry FunctionOption { get; set; }
-    public static CustomManifest CustomManifest { get; set; }
+    public static CustomManifest CustomManifest { get; set; } = new();
 
     public static string BodyVersion =>
         $"{Assembly.GetExecutingAssembly().GetName().Version!.ToString()}-{CheckUpdate.GetBodyUpdateType()}";

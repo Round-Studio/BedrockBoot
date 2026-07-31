@@ -157,6 +157,14 @@ public class CoreInitialize
             });
             CoreInit.OnRefreshAccount = async void (account) =>
             {
+                if (account == null)
+                {
+                    var accounts = MsAccountManager.Accounts;
+                    account =
+                        MsAccountManager.Accounts.Accounts.Find(x =>
+                            x.BUID == MsAccountManager.Accounts.SelectUserBUID);
+                    CoreInit.SetMsAccount(account);
+                };
                 Console.WriteLine("正在刷新账户凭证...");
                 var client = new MsaDeviceCodeClient();
                 var tokenData = await client.RefreshTokenAsync(account.AuthResult.RefreshToken);

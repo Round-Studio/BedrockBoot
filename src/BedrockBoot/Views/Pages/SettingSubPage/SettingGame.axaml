@@ -102,6 +102,7 @@
                                           Description="在 Linux 中使用新的启动方式，包含 XBOX 账户登录"
                                           Glyph="&#xEBD2;">
                 <ToggleSwitch Name="IsUseNeoLaunchToggleSwitch"
+                              IsEnabled="False"
                               IsCheckedChanged="IsUseNeoLaunchToggleSwitch_OnIsCheckedChanged"></ToggleSwitch>
             </onePointControls:SettingCard>
             

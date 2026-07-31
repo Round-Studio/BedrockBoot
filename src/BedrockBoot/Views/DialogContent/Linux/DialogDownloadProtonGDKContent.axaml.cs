@@ -226,7 +226,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                UpdateTaskProgress(componentName, 100, "安装中...");
+                UpdateTaskProgress(componentName, 50, "安装中...");
             });
 
             var filePath = _filePaths[componentName];

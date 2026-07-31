@@ -124,6 +124,34 @@ public class EasyLauncher
             // 触发 SDK 注册的 LaunchingEvent 回调
             TriggerPluginLaunchingEvents();
 
+            if (IsUseNeoLaunch)
+            {
+                var gameFix = Path.Combine(PathsList.NeoProtonPath, "gameFix");
+                var gamePatch = Path.Combine(PathsList.GamePatch, "gdk", "mcpatcher_core.dll");
+
+                try
+                {
+                    Console.WriteLine("开始复制 Patch 文件");
+                    File.Copy(gamePatch, Path.Combine(VersionInfo.VersionPath, "preload", "mcpatcher_core.dll"));
+                    Console.WriteLine("Patch 文件处理完毕");
+                }
+                catch
+                {
+                    Console.WriteLine("Patch 文件处理失败");
+                }
+
+                try
+                {
+                    Console.WriteLine("开始复制 OpenSSL 文件");
+                    CopyDirectory(gameFix, VersionInfo.VersionPath, true);
+                    Console.WriteLine("OpenSSL 文件处理完毕");
+                }
+                catch
+                {
+                    Console.WriteLine("OpenSSL 文件处理失败");
+                }
+            }
+
             // 执行用户自定义启动前 Hook 命令
             if (!await TryExecutePreLaunchCommandAsync())
             {
@@ -618,6 +646,28 @@ public class EasyLauncher
     {
         if (_gameplayStopwatch.IsRunning)
             _gameplayStopwatch.Stop();
+    }
+    
+    private static void CopyDirectory(string sourceDir, string destDir, bool overwrite = true)
+    {
+        // 1. 创建目标根目录
+        Directory.CreateDirectory(destDir);
+
+        // 2. 复制当前目录下所有文件
+        foreach (string file in Directory.GetFiles(sourceDir))
+        {
+            string fileName = Path.GetFileName(file);
+            string destFile = Path.Combine(destDir, fileName);
+            File.Copy(file, destFile, overwrite);
+        }
+
+        // 3. 递归复制所有子目录
+        foreach (string subDir in Directory.GetDirectories(sourceDir))
+        {
+            string dirName = Path.GetFileName(subDir);
+            string destSubDir = Path.Combine(destDir, dirName);
+            CopyDirectory(subDir, destSubDir, overwrite);
+        }
     }
 
     #endregion

@@ -69,7 +69,7 @@ public class IsolationMigration
 
             if (!Directory.Exists(oldPath))
             {
-                MigrationProgress.Report(new MigrationProgress
+                MigrationProgress?.Report(new MigrationProgress
                 {
                     FileCountTotal = filesCount,
                     CurrentFile = processedFiles,
@@ -85,7 +85,7 @@ public class IsolationMigration
             // 获取所有文件
             var allFiles = Directory.GetFiles(oldPath, "*", SearchOption.AllDirectories);
 
-            MigrationProgress.Report(new MigrationProgress
+            MigrationProgress?.Report(new MigrationProgress
             {
                 FileCountTotal = filesCount,
                 CurrentFile = processedFiles,
@@ -117,13 +117,13 @@ public class IsolationMigration
 
                             // 每批报告一次进度，减少UI更新
                             if (processedFiles % 25 == 0 || processedFiles == filesCount)
-                                MigrationProgress.Report(new MigrationProgress
+                                MigrationProgress?.Report(new MigrationProgress
                                 {
                                     FileCountTotal = filesCount,
                                     CurrentFile = processedFiles,
                                     Status = $"正在迁移 {currentType}: {Path.GetFileName(file)}",
                                     CurrentType = currentType,
-                                    Percentage = (double)processedFiles / filesCount * 100
+                                    Percentage = (filesCount > 0 ? (double)processedFiles / filesCount * 100 : 100)
                                 });
                         }
                         catch (Exception ex)
@@ -134,18 +134,18 @@ public class IsolationMigration
                 });
             }
 
-            MigrationProgress.Report(new MigrationProgress
+            MigrationProgress?.Report(new MigrationProgress
             {
                 FileCountTotal = filesCount,
                 CurrentFile = processedFiles,
                 Status = $"{currentType} 迁移完成",
                 CurrentType = currentType,
-                Percentage = (double)processedFiles / filesCount * 100
+                Percentage = (filesCount > 0 ? (double)processedFiles / filesCount * 100 : 100)
             });
         }
 
         // 完成
-        MigrationProgress.Report(new MigrationProgress
+        MigrationProgress?.Report(new MigrationProgress
         {
             FileCountTotal = filesCount,
             CurrentFile = processedFiles,

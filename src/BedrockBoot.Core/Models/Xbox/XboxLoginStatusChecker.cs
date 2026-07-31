@@ -241,6 +241,12 @@ public class XboxLoginStatusChecker
             };
             
             using var process = Process.Start(psi);
+            if (process == null)
+            {
+                Console.WriteLine(@"无法启动 PowerShell 进程检查 Xbox 应用包");
+                return false;
+            }
+
             string output = process.StandardOutput.ReadToEnd();
             string error = process.StandardError.ReadToEnd();
             

@@ -113,7 +113,7 @@ public static class MsAccountManager
             string authHeader = $"XBL3.0 x={xstsToken.userHash};{xstsToken.xstsToken}";
             var userProfile = await peopleClient.GetProfileAsync(authHeader, xstsToken.xuid);
             
-            if (userProfile == null)
+            if (userProfile == null || userProfile.ProfileUsers == null || userProfile.ProfileUsers.Length == 0)
             {
                 IsLogging = false;
                 await DialogHost.Close();
@@ -121,7 +121,7 @@ public static class MsAccountManager
             }
 
             var userInfo = userProfile.ProfileUsers[0];
-            var gamertag = userInfo.Settings.FirstOrDefault(s => s.Id == "Gamertag")?.Value;
+            var gamertag = userInfo.Settings?.FirstOrDefault(s => s.Id == "Gamertag")?.Value;
             var avatarUrl = userInfo.Settings?.FirstOrDefault(s => s.Id == "GameDisplayPicRaw")?.Value;
 
             var config = new MsUserConfig

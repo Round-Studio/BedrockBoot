@@ -39,9 +39,9 @@ public partial class DownloadSearch : UserControl
             // 如果有保存的搜索记录，自动导航到详细搜索页面
             if (!string.IsNullOrEmpty(_lastSearchKey))
             {
-                if (SearchDetailed == null) NavigationFrame.NavigateTo(new SearchDetailed());
+                if (!EnsureSearchDetailed()) return;
 
-                SearchDetailed.OnSearch(new SearchInfo
+                SearchDetailed!.OnSearch(new SearchInfo
                 {
                     Key = _lastSearchKey,
                     Type = _lastSearchType
@@ -59,7 +59,7 @@ public partial class DownloadSearch : UserControl
 
     private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (SearchDetailed == null) NavigationFrame.NavigateTo(new SearchDetailed());
+        if (!EnsureSearchDetailed()) return;
 
         var searchKey = KeyBox.Text;
         var searchType = Classify(searchKey);
@@ -68,11 +68,19 @@ public partial class DownloadSearch : UserControl
         _lastSearchKey = searchKey;
         _lastSearchType = searchType;
 
-        SearchDetailed.OnSearch(new SearchInfo
+        SearchDetailed!.OnSearch(new SearchInfo
         {
             Key = searchKey,
             Type = searchType
         });
+    }
+
+    private bool EnsureSearchDetailed()
+    {
+        if (SearchDetailed != null) return true;
+
+        NavigationFrame.NavigateTo(new SearchDetailed());
+        return SearchDetailed != null;
     }
 
     public SearchResourceType Classify(string text)

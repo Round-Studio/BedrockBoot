@@ -11,7 +11,7 @@ namespace BedrockBoot.Models;
 
 public class CheckUpdate
 {
-    public static async Task<Release> Update()
+    public static async Task<Release?> Update()
     {
         // 创建客户端
         var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
@@ -24,6 +24,12 @@ public class CheckUpdate
         var latest =
             releases.FirstOrDefault(x => x.Prerelease == (GlobalModel.Config.Data.UpdateType == UpdateType.Preview));
         Console.WriteLine($@"预览版：{GlobalModel.Config.Data.UpdateType == UpdateType.Preview}");
+
+        if (latest == null)
+        {
+            Console.WriteLine(@"未找到匹配的 Release，跳过更新检查。");
+            return null;
+        }
 
         Console.WriteLine($@"最新版本: {latest.TagName}");
 

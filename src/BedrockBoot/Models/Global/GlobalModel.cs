@@ -54,6 +54,12 @@ public class GlobalModel
             OnImport = async _ =>
             {
                 var storageProvider = TopLevel.GetTopLevel(GlobalModel.MainWindow);
+                if (storageProvider == null)
+                {
+                    Console.WriteLine(@"无法获取主窗口的顶层存储提供程序");
+                    return;
+                }
+
                 var options = new FilePickerOpenOptions
                 {
                     Title = "选择 BMCBL 本体",

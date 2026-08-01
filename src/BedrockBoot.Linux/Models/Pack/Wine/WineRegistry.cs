@@ -184,7 +184,7 @@ public static class WineRegistry
                     throw new InvalidOperationException($"Wine process {pid} still running for prefix {prefix}");
             }
             catch (UnauthorizedAccessException) { }
-            catch (FileNotFoundException) { }
+            catch (IOException) { }
         }
     }
 

@@ -89,11 +89,16 @@ public class EasyLauncher
         MakeAllFilesExecutableByChmod(PathsList.NeoProtonPath);
         
         // 校验 Linux Proton 环境
-        if (string.IsNullOrEmpty(_linuxLaunchInfo?.ProtonPath) || ProtonCore.GetInstalledVersions()?.Count <= 0)
+        if (string.IsNullOrEmpty(_linuxLaunchInfo?.ProtonPath) || 
+            ProtonCore.GetInstalledVersions()?.Count <= 0 || 
+            (ProtonNeoCore.IsInstalledKits() && IsUseNeoLaunch))
         {
-            NoRunTool?.Invoke();
-            LaunchCompleted?.Invoke();
-            return;
+            if (!IsUseNeoLaunch)
+            {
+                NoRunTool?.Invoke();
+                LaunchCompleted?.Invoke();
+                return;
+            }
         }
 
         LaunchingCount++;
@@ -436,11 +441,13 @@ public class EasyLauncher
 
         if (!IsUseNeoLaunch)
         {
-            LaunchWithProton(msiPath)?.WaitForExit();
+            var proc = LaunchWithProton(msiPath);
+            proc?.WaitForExit();
+            if (proc?.ExitCode != 0) return;
         }
         else
         {
-            InstallGameInputWithWine(PathsList.PreFixPath, msiPath);
+            if (!InstallGameInputWithWine(PathsList.PreFixPath, msiPath)) return;
         }
         Console.WriteLine("GameInput 安装完毕");
 
@@ -451,14 +458,22 @@ public class EasyLauncher
         ProtonCore.SaveVersionConfig(protonConfig);
     }
 
-    private void InstallGameInputWithWine(string prefix, string msiPath)
+    private bool InstallGameInputWithWine(string prefix, string msiPath)
     {
-        if (!File.Exists(msiPath)) return;
+        if (!File.Exists(msiPath)) return false;
+
+        var wineBin = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "bin", "wine");
+        if (!File.Exists(wineBin))
+        {
+            Console.WriteLine($"wine binary not found: {wineBin}");
+            return false;
+        }
 
         var psi = new ProcessStartInfo
         {
-            FileName = "wine",
+            FileName = wineBin,
             Arguments = $"msiexec /i \"{msiPath}\" /quiet /norestart",
+            WorkingDirectory = Path.GetDirectoryName(wineBin),
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true
@@ -467,19 +482,21 @@ public class EasyLauncher
         psi.EnvironmentVariables["WINEPREFIX"] = prefix;
         psi.EnvironmentVariables["WINEDEBUG"] = "-all";
         psi.EnvironmentVariables["WINEDLLOVERRIDES"] = "advapi32=n,b";
+        psi.EnvironmentVariables["LD_LIBRARY_PATH"] = $"{Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib64")}:{Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib")}:{Environment.GetEnvironmentVariable("LD_LIBRARY_PATH") ?? ""}";
 
         try
         {
             using var proc = Process.Start(psi);
-            if (proc != null)
-            {
-                proc.WaitForExit(300000); // 5分钟超时限制
-                Console.WriteLine($"GameInput installation completed with exit code: {proc.ExitCode}");
-            }
+            if (proc == null) return false;
+
+            proc.WaitForExit(300000); // 5分钟超时限制
+            Console.WriteLine($"GameInput installation completed with exit code: {proc.ExitCode}");
+            return proc.ExitCode == 0;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"GameInput 安装时出错: {ex.Message}");
+            return false;
         }
     }
 

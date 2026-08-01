@@ -18,6 +18,6 @@ public class ProtonNeoCore
         var umuPath = Path.Combine(rootPath, "umu");
         var gameFix = Path.Combine(rootPath, "gameFix");
 
-        return Path.Exists(protonPath) && Path.Exists(umuPath) && Path.Exists(gameFix);
+        return Directory.Exists(protonPath) && Directory.Exists(umuPath) && Directory.Exists(gameFix);
     }
 }

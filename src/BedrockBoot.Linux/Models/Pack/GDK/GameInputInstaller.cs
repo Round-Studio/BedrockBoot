@@ -1,5 +1,4 @@
 using BedrockBoot.Models.Pack.Wine;
-using System.IO.Compression;
 
 namespace BedrockBoot.Models.Pack.GDK;
 
@@ -152,17 +151,20 @@ public static class GameInputInstaller
     static List<(string name, byte[] data)> DecompressCab(byte[] cab)
     {
         var result = new List<(string, byte[])>();
-        if (cab.Length < 4 || cab[0] != 'M' || cab[1] != 'S' || cab[2] != 'C' || cab[3] != 'F')
+        if (cab.Length < 40 || cab[0] != 'M' || cab[1] != 'S' || cab[2] != 'C' || cab[3] != 'F')
             return result;
 
         var coffFiles = BitConverter.ToInt32(cab, 16);
         var cfolders = BitConverter.ToUInt16(cab, 26);
-        var flags = BitConverter.ToUInt16(cab, 28);
+        var cFiles = BitConverter.ToUInt16(cab, 28);
+        var flags = BitConverter.ToUInt16(cab, 30);
         int o = 36, cbHeader = 0, cbFolder = 0, cbData = 0;
 
         if ((flags & 4) != 0)
         {
-            cbHeader = cab[o]; cbFolder = cab[o + 1]; cbData = cab[o + 2];
+            cbHeader = BitConverter.ToUInt16(cab, o);
+            cbFolder = cab[o + 2];
+            cbData = cab[o + 3];
             o += 4 + cbHeader;
         }
 
@@ -175,41 +177,34 @@ public static class GameInputInstaller
             folders.Add((coff, nd));
         }
 
-        if (coffFiles > cab.Length)
+        if (coffFiles <= 0 || coffFiles >= cab.Length)
         {
-            Console.WriteLine("Invalid coffFiles offset");
+            Console.WriteLine($"Invalid coffFiles offset: {coffFiles}");
             return result;
         }
-        
+
+        var fileEntries = new List<(string name, int size, int uoff, int folder)>();
         int p = coffFiles;
-        
-        for (int i = 0; i < BitConverter.ToUInt16(cab, 30); i++)
+        for (int i = 0; i < cFiles; i++)
         {
-            if (p + 12 > cab.Length) break;
-            
-            var cb = BitConverter.ToInt32(cab, p);
-            p += 12;
-            
+            if (p + 16 > cab.Length) break;
+
+            var size = BitConverter.ToInt32(cab, p);
+            var uoff = BitConverter.ToInt32(cab, p + 4);
+            var folder = BitConverter.ToUInt16(cab, p + 8);
             int nameEnd = -1;
-            for (int j = p; j < cab.Length && j < p + 256; j++)
+            for (int j = p + 16; j < cab.Length && j < p + 16 + 256; j++)
             {
-                if (cab[j] == 0)
-                {
-                    nameEnd = j;
-                    break;
-                }
+                if (cab[j] == 0) { nameEnd = j; break; }
             }
-            
-            if (nameEnd == -1)
-            {
-                p += 64;
-                continue;
-            }
-            
+            if (nameEnd == -1) break;
+
+            var name = System.Text.Encoding.ASCII.GetString(cab, p + 16, nameEnd - (p + 16));
+            fileEntries.Add((name, size, uoff, folder));
             p = nameEnd + 1;
         }
 
-        var fdata = new List<byte[]>();
+        var folderData = new List<byte[]>();
         foreach (var (coff, ndata) in folders)
         {
             if (coff < 0 || coff >= cab.Length)
@@ -217,38 +212,24 @@ public static class GameInputInstaller
                 Console.WriteLine($"Invalid folder offset: {coff}");
                 continue;
             }
-            
-            int q = coff;
-            using var outStream = new MemoryStream();
-            byte[] prev = [];
 
+            int q = coff;
+            var inflate = MsZipInflate.CreateFolder();
             for (int j = 0; j < ndata; j++)
             {
-                if (q + 10 > cab.Length) break;
-                
-                var cbComp = BitConverter.ToUInt16(cab, q + 2);
-                q += 8 + cbData;
-                
-                if (q + cbComp > cab.Length) break;
-                
-                var blk = cab.AsSpan(q, cbComp).ToArray();
-                q += cbComp;
+                if (q + 8 > cab.Length) break;
 
-                if (blk.Length < 2 || blk[0] != 'C' || blk[1] != 'K')
-                {
-                    Console.WriteLine("Invalid compression block header");
-                    continue;
-                }
+                var cbComp = BitConverter.ToUInt16(cab, q + 4);
+                q += 8 + cbData;
+
+                if (q + cbComp > cab.Length) break;
+
+                var blk = cab.AsSpan(q, cbComp);
+                q += cbComp;
 
                 try
                 {
-                    using var input = new MemoryStream(blk, 2, blk.Length - 2);
-                    using var deflate = new DeflateStream(input, CompressionMode.Decompress);
-                    using var output = new MemoryStream();
-                    deflate.CopyTo(output);
-                    var decompressed = output.ToArray();
-                    outStream.Write(decompressed);
-                    prev = decompressed;
+                    inflate.PushBlock(blk);
                 }
                 catch (Exception ex)
                 {
@@ -256,7 +237,15 @@ public static class GameInputInstaller
                     return result;
                 }
             }
-            fdata.Add(outStream.ToArray());
+            folderData.Add(inflate.Result);
+        }
+
+        foreach (var (name, size, uoff, folder) in fileEntries)
+        {
+            if (folder < 0 || folder >= folderData.Count) continue;
+            var data = folderData[folder];
+            if (uoff < 0 || size < 0 || uoff + size > data.Length) continue;
+            result.Add((name, data.AsSpan(uoff, size).ToArray()));
         }
         return result;
     }

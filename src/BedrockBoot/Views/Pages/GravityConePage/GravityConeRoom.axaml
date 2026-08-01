@@ -6,50 +6,52 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.GravityConePage.GravityConeRoom">
-    <StackPanel Spacing="8"
-                Margin="0,0,20,0">
-        <TextBlock FontWeight="Bold"
-                   FontSize="14">
-            联机大厅
-        </TextBlock>
-        
-        <items:BorderCard Name="RoomCodeCard"
-                          Padding="0,24">
-            <StackPanel Spacing="0">
-                <onePointControls:FontIcon Glyph="&#xE8C8;"
-                                           Margin="8,4,8,12"
-                                           HorizontalAlignment="Center"
-                                           FontSize="36"></onePointControls:FontIcon>
-                <TextBlock Text="联机码 (点击下方复制)"
-                           HorizontalAlignment="Center"
-                           Opacity="0.6"></TextBlock>
-                <Button Content="RoomCode"
-                        Name="RoomCodeBtn"
-                        Classes="NoBorder"
-                        Click="RoomCodeBtn_OnClick"
-                        Padding="8,2"
-                        Margin="0,4,0,0"
-                        HorizontalAlignment="Center"
-                        FontSize="28"></Button>
-            </StackPanel>
-        </items:BorderCard>
-
-        <onePointControls:SettingCard Header="退出"
-                                      Description="退出房间"
-                                      IsClickable="True"
-                                      Click="CloseBtn_OnClick"
-                                      Name="CloseBtn"
-                                      Glyph="&#xE711;" />
-        
+    <ScrollViewer>
         <StackPanel Spacing="8"
-                    Name="PlayersBox">
+                    Margin="0,0,20,0">
             <TextBlock FontWeight="Bold"
                        FontSize="14">
-                已加入的玩家
+                联机大厅
             </TextBlock>
+        
+            <items:BorderCard Name="RoomCodeCard"
+                              Padding="0,24">
+                <StackPanel Spacing="0">
+                    <onePointControls:FontIcon Glyph="&#xE8C8;"
+                                               Margin="8,4,8,12"
+                                               HorizontalAlignment="Center"
+                                               FontSize="36"></onePointControls:FontIcon>
+                    <TextBlock Text="联机码 (点击下方复制)"
+                               HorizontalAlignment="Center"
+                               Opacity="0.6"></TextBlock>
+                    <Button Content="RoomCode"
+                            Name="RoomCodeBtn"
+                            Classes="NoBorder"
+                            Click="RoomCodeBtn_OnClick"
+                            Padding="8,2"
+                            Margin="0,4,0,0"
+                            HorizontalAlignment="Center"
+                            FontSize="28"></Button>
+                </StackPanel>
+            </items:BorderCard>
+
+            <onePointControls:SettingCard Header="退出"
+                                          Description="退出房间"
+                                          IsClickable="True"
+                                          Click="CloseBtn_OnClick"
+                                          Name="CloseBtn"
+                                          Glyph="&#xE711;" />
+        
             <StackPanel Spacing="8"
-                        Name="PlayersList">
+                        Name="PlayersBox">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14">
+                    已加入的玩家
+                </TextBlock>
+                <StackPanel Spacing="8"
+                            Name="PlayersList">
+                </StackPanel>
             </StackPanel>
         </StackPanel>
-    </StackPanel>
+    </ScrollViewer>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -9,6 +10,7 @@ using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.GravityConePage;
 using BedrockBoot.Views.Pages.MultiplayerPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;
+using Round.SDK.Helper;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;
 
@@ -21,8 +23,9 @@ public partial class MainGravityConePage : BedrockBootPage
         InitializeComponent();
         NavigationFrame = this.MainFrame;
         
-        if (!File.Exists(Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath, "gravitycone-cli-windows-amd64.exe")) ||
-            !File.Exists(Path.Combine(DialogDownloadMultiPlayerDependenceContent.EasyTierPath, "easytier-cli.exe")))
+        var ext = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ".exe" : "";
+        if (!File.Exists(Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath, $"gravitycone-cli-{OS.GetSystemType()}-amd64{ext}")) ||
+            !File.Exists(Path.Combine(DialogDownloadMultiPlayerDependenceContent.EasyTierPath, $"easytier-cli{ext}")))
             MainFrame.NavigateTo(new MultiplayerDependenceDownload());
         else
         {

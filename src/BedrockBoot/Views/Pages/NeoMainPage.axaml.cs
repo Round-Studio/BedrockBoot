@@ -69,6 +69,7 @@ public partial class NeoMainPage : UserControl
             Tag = "ToolsBox",
             Page = typeof(MainToolsBoxPage)
         });
+#endif
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "\uF0B9",
@@ -76,7 +77,6 @@ public partial class NeoMainPage : UserControl
             Tag = "Multiplayer",
             Page = typeof(MainGravityConePage)
         });
-#endif
 #if LINUX
         if(GlobalModel.Config.Data.IsUseNeoLaunch)
             RegisterTopItem(new TopBarItemInfo

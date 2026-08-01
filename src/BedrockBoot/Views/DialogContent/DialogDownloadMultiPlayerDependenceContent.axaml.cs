@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -28,10 +29,8 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
     private bool _easyTierCompleted = false;
     private bool _gravityConeCompleted = false;
 
-    /// <summary>下载完成后是否导航联机页去初始化（从设置页更新依赖时为 false）</summary>
     private readonly bool _navigateAfterComplete;
 
-    /// <summary>下载安装全部完成后的回调（无论来源）</summary>
     public Action? Completed { get; set; }
 
     public DialogDownloadMultiPlayerDependenceContent(bool navigateAfterComplete = true)
@@ -49,7 +48,6 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
     {
         try
         {
-            // 更新场景下 CLI 可能正在运行并锁定 exe 文件，必须先关闭
             if (GlobalModel.GravityConeClient != null)
             {
                 try { GlobalModel.GravityConeClient.Dispose(); } catch { }
@@ -77,25 +75,27 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
             var easyTierRelease = await easyTierTask;
             var gravityConeRelease = await gravityConeTask;
 
+            var os = GetSystemType();
+
             var easyTierAsset = easyTierRelease.Assets.FirstOrDefault(x => 
-                x.Name.Contains("easytier-windows-x86_64") && x.Name.EndsWith(".zip"));
+                x.Name.Contains($"easytier-{os}-x86_64") && (x.Name.EndsWith(".zip") || x.Name.EndsWith(".tar.gz")));
             
             var gravityConeAsset = gravityConeRelease.Assets.FirstOrDefault(x => 
-                (x.Name.Contains("windows") || x.Name.Contains("Windows")) && 
+                (x.Name.ToLower().Contains(os)) && (x.Name.ToLower().Contains("amd64")) &&
                 x.Name.Contains("cli") && 
-                (x.Name.EndsWith(".zip") || x.Name.EndsWith(".7z")));
+                (x.Name.EndsWith(".zip") || x.Name.EndsWith(".7z") || x.Name.EndsWith(".tar.gz")));
 
             if (gravityConeAsset == null)
             {
                 gravityConeAsset = gravityConeRelease.Assets.FirstOrDefault(x => 
-                    (x.Name.Contains("windows") || x.Name.Contains("Windows")) && 
-                    (x.Name.EndsWith(".zip") || x.Name.EndsWith(".7z")));
+                    (x.Name.ToLower().Contains(os)) && (x.Name.ToLower().Contains("amd64")) &&
+                    (x.Name.EndsWith(".zip") || x.Name.EndsWith(".7z") || x.Name.EndsWith(".tar.gz")));
             }
 
             if (easyTierAsset == null)
-                throw new Exception("未找到 EasyTier Windows 版本下载包");
+                throw new Exception($"未找到 EasyTier {os} 版本下载包");
             if (gravityConeAsset == null)
-                throw new Exception("未找到 GravityCone Windows CLI 版本下载包");
+                throw new Exception($"未找到 GravityCone {os} CLI 版本下载包");
 
             Dispatcher.UIThread.Invoke(() =>
             {
@@ -157,30 +157,8 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
 
             var easyTierExtractTask = Task.Run(() =>
             {
-                ZipHelper.ExtractZipFile(easyTierDownloadPath, EasyTierPath, true);
-                if (File.Exists(easyTierDownloadPath))
-                    File.Delete(easyTierDownloadPath);
-
-                var folder = Path.Combine(EasyTierPath, "easytier-windows-x86_64");
-                Directory.GetFiles(folder).ToList()
-                    .ForEach(f =>
-                    {
-                        try
-                        {
-                            if (File.Exists(Path.Combine(EasyTierPath, Path.GetFileName(f))))
-                                File.Delete(f);
-                            File.Copy(f, Path.Combine(EasyTierPath, Path.GetFileName(f)));
-                        }
-                        catch
-                        {
-                        }
-                    });
-
-                // 记录已安装的版本号，供 设置>通用>软件更新>依赖更新 检查更新使用
-                Models.Helper.MultiplayerDependencyHelper.WriteLocalVersion(
-                    Models.Helper.MultiplayerDependencyHelper.EasyTierVersionFile,
-                    "EasyTier", easyTierRelease.TagName);
-
+                ExtractEasyTier(easyTierDownloadPath, easyTierRelease.TagName);
+                
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     EasyTierProgressBar.IsIndeterminate = false;
@@ -193,15 +171,8 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
 
             var gravityConeExtractTask = Task.Run(() =>
             {
-                ExtractGravityCone(gravityConeDownloadPath, GravityConeExePath);
-                if (File.Exists(gravityConeDownloadPath))
-                    File.Delete(gravityConeDownloadPath);
-
-                // 记录已安装的版本号，供 设置>通用>软件更新>依赖更新 检查更新使用
-                Models.Helper.MultiplayerDependencyHelper.WriteLocalVersion(
-                    Models.Helper.MultiplayerDependencyHelper.GravityConeVersionFile,
-                    "GravityCone", gravityConeRelease.TagName);
-
+                ExtractGravityCone(gravityConeDownloadPath, gravityConeRelease.TagName);
+                
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     GravityConeProgressBar.IsIndeterminate = false;
@@ -225,23 +196,88 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
         }
     }
 
-    private void ExtractGravityCone(string archivePath, string extractPath)
+    private void ExtractEasyTier(string archivePath, string version)
     {
-        if (archivePath.EndsWith(".7z"))
+        if (archivePath.EndsWith(".tar.gz"))
         {
-            try
-            {
-                ZipHelper.ExtractZipFile(archivePath, extractPath, true);
-            }
-            catch
-            {
-                throw new Exception("GravityCone 发布包为 7z 格式，当前不支持解压。请添加 7z 支持或联系开发者改用 zip 格式。");
-            }
+            ZipHelper.ExtractTarGz(archivePath, EasyTierPath, true);
         }
         else
         {
-            ZipHelper.ExtractZipFile(archivePath, extractPath, true);
+            ZipHelper.ExtractZipFile(archivePath, EasyTierPath, true);
         }
+        
+        if (File.Exists(archivePath))
+            File.Delete(archivePath);
+
+        var os = GetSystemType();
+        var extractedFolder = Path.Combine(EasyTierPath, $"easytier-{os}-x86_64");
+        
+        if (Directory.Exists(extractedFolder))
+        {
+            foreach (var file in Directory.GetFiles(extractedFolder))
+            {
+                var targetFile = Path.Combine(EasyTierPath, Path.GetFileName(file));
+                try
+                {
+                    if (File.Exists(targetFile))
+                        File.Delete(targetFile);
+                    File.Move(file, targetFile);
+                }
+                catch { }
+            }
+            
+            try { Directory.Delete(extractedFolder, true); } catch { }
+        }
+
+        if (IsLinux())
+        {
+            var easyTierCli = Path.Combine(EasyTierPath, "easytier-cli");
+            var easyTierCore = Path.Combine(EasyTierPath, "easytier-core");
+            
+            if (File.Exists(easyTierCli))
+                SetExecutablePermission(easyTierCli);
+            if (File.Exists(easyTierCore))
+                SetExecutablePermission(easyTierCore);
+        }
+
+        Models.Helper.MultiplayerDependencyHelper.WriteLocalVersion(
+            Models.Helper.MultiplayerDependencyHelper.EasyTierVersionFile,
+            "EasyTier", version);
+    }
+
+    private void ExtractGravityCone(string archivePath, string version)
+    {
+        if (archivePath.EndsWith(".tar.gz"))
+        {
+            ZipHelper.ExtractTarGz(archivePath, GravityConeExePath, true);
+        }
+        else if (archivePath.EndsWith(".zip"))
+        {
+            ZipHelper.ExtractZipFile(archivePath, GravityConeExePath, true);
+        }
+        else if (archivePath.EndsWith(".7z"))
+        {
+            throw new Exception("GravityCone 发布包为 7z 格式，当前不支持解压。请添加 7z 支持或联系开发者改用 zip 格式。");
+        }
+        else
+        {
+            ZipHelper.ExtractZipFile(archivePath, GravityConeExePath, true);
+        }
+        
+        if (File.Exists(archivePath))
+            File.Delete(archivePath);
+
+        if (IsLinux())
+        {
+            var gravityConeBin = Path.Combine(GravityConeExePath, "gravitycone");
+            if (File.Exists(gravityConeBin))
+                SetExecutablePermission(gravityConeBin);
+        }
+
+        Models.Helper.MultiplayerDependencyHelper.WriteLocalVersion(
+            Models.Helper.MultiplayerDependencyHelper.GravityConeVersionFile,
+            "GravityCone", version);
     }
 
     private void CheckAllCompleted()
@@ -259,12 +295,46 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
 
                     Completed?.Invoke();
 
-                    // 从设置页（依赖更新）打开时不重新初始化联机页；
-                    // 且联机页可能从未打开过，NavigationFrame 为 null
                     if (_navigateAfterComplete)
                         MainGravityConePage.NavigationFrame?.NavigateTo(new GravityConeInit());
                 });
             });
         }
+    }
+
+    private static string GetSystemType()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return "windows";
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            return "linux";
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return "darwin";
+        return "unknown";
+    }
+
+    private static bool IsLinux()
+    {
+        return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+    }
+
+    private static void SetExecutablePermission(string filePath)
+    {
+        try
+        {
+            var process = new System.Diagnostics.Process
+            {
+                StartInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "chmod",
+                    Arguments = $"+x \"{filePath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+        }
+        catch { }
     }
 }

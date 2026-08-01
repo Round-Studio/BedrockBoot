@@ -19,6 +19,9 @@ public class XboxLoginStatusChecker
     
     public async Task<XboxStatus> GetDetailedXboxStatus()
     {
+#if LINUX
+        return null;
+#endif
         var status = new XboxStatus();
         
         Console.WriteLine(@"正在检测 Xbox 登录状态...");

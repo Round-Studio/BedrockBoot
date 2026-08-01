@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -9,11 +10,13 @@ using BedrockBoot.Core.Models.Xbox;
 using BedrockBoot.GravityCone;
 using BedrockBoot.GravityCone.Entry;
 using BedrockBoot.GravityCone.Enum;
+using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Helper;
 
 namespace BedrockBoot.Views.Pages.GravityConePage;
 
@@ -97,6 +100,17 @@ public partial class GravityConeInit : UserControl
 
     private async Task<bool> GetXboxUserAsync()
     {
+#if LINUX
+        if (MsAccountManager.Accounts.Accounts.Count <= 0)
+            return false;
+        GlobalModel.XboxUserInfo = new()
+        {
+            Gamertag = MsAccountManager.Accounts.Accounts.Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID)
+                .UserName
+        };
+        
+        return true;
+#endif
         var checker = new XboxLoginStatusChecker();
         var status = await checker.GetDetailedXboxStatus();
 
@@ -135,10 +149,11 @@ public partial class GravityConeInit : UserControl
         var client = new GravityConeClient();
         try
         {
+            var ext = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ".exe" : "";
             // Client 已改用 ArgumentList 传参，vendor/motd 不需要再嵌入引号
             await client.StartAsync(
                 Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath,
-                    "gravitycone-cli-windows-amd64.exe"),
+                    $"gravitycone-cli-{OS.GetSystemType()}-amd64{ext}"),
                 GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", "BedrockBoot 联机房间",
                 DialogDownloadMultiPlayerDependenceContent.GravityConeExePath);
         }

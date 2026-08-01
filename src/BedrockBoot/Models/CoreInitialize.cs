@@ -150,12 +150,36 @@ public class CoreInitialize
             CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
 #if LINUX
             CoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
-            RegisterService.RegisterLaunchingEvent(s =>
+            CoreInit.GetMsAccountConfig = () =>
             {
-                CoreInit.SetMsAccount(
-                    MsAccountManager.Accounts.Accounts.Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID));
-            });
-            CoreInit.OnRefreshAccount = async void (account) =>
+                if (Core.Global.GlobalModel.Config.Data.IsChooseAccountBeforeLaunch)
+                {
+                    var user = GlobalModel.MainWindow.ChooseAccount().Result;
+                    return user;
+                }
+                else
+                {
+                    if (MsAccountManager.Accounts!.Accounts.Count >= 1)
+                    {
+                        var account = MsAccountManager.Accounts.Accounts.Find(x =>
+                            x.BUID == MsAccountManager.Accounts.SelectUserBUID);
+
+                        return account;
+                    }
+                    else
+                    {
+                        DialogHost.Show(new()
+                        {
+                            Title = "无账户",
+                            Content = "当前未登录微软账户，请前往账户管理页面登录账户以启动游戏",
+                            CloseButtonText = "确定"
+                        });
+                    }
+                }
+                
+                return null;
+            };
+            CoreInit.OnRefreshAccount = async account =>
             {
                 if (account == null)
                 {
@@ -163,7 +187,6 @@ public class CoreInitialize
                     account =
                         MsAccountManager.Accounts.Accounts.Find(x =>
                             x.BUID == MsAccountManager.Accounts.SelectUserBUID);
-                    CoreInit.SetMsAccount(account);
                 };
                 Console.WriteLine("正在刷新账户凭证...");
                 var client = new MsaDeviceCodeClient();
@@ -184,14 +207,16 @@ public class CoreInitialize
                         RefreshToken = tokenData.RefreshToken,
                         SavedAt = DateTime.Now
                     };
-                
+
+                    var accountResult = MsAccountManager.AccountConfigEntity.Data.Accounts[index];
                     MsAccountManager.AccountConfigEntity.Save();
-                    CoreInit.SetMsAccount(MsAccountManager.AccountConfigEntity.Data.Accounts[index]);
                     Console.WriteLine("新用户数据已保存");
+
+                    return accountResult;
                 }
+                
+                return null;
             };
-            CoreInit.SetMsAccount(
-                MsAccountManager.Accounts.Accounts.Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID));
 #endif
         }
         catch (Exception ex)

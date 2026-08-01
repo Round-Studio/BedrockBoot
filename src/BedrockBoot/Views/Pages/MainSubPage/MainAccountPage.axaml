@@ -35,17 +35,28 @@
             </StackPanel>
         </Grid>
     </entry:BedrockBootPage.HeaderView>
-    <Grid>
-        <ScrollViewer>
+    <Grid RowDefinitions="*,Auto">
+        <ScrollViewer Grid.Row="0">
             <view:ItemView Name="UsersList" 
                            SelectionChanged="UsersList_OnSelectionChanged"
                            Margin="10"/>
         </ScrollViewer>
         
-        <notice:InfoCard HorizontalAlignment="Center"
+        <notice:InfoCard Grid.Row="0"
+                         HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="NoneCard"
                          BigTitle="未关联任何账户"
                          Message="当前未关联任何 XBOX 账户。&#10;请点击左上角关联账户以关联 XBOX 账户" />
+        
+        <StackPanel Grid.Row="1"
+                    Margin="20,0,0,10"
+                    Orientation="Horizontal"
+                    Spacing="8">
+            <ToggleSwitch Name="IsChooseAccountBeforeLaunch"
+                          IsCheckedChanged="IsChooseAccountBeforeLaunch_OnIsCheckedChanged"></ToggleSwitch>
+            <TextBlock Text="在启动游戏前询问我以选择账户"
+                       VerticalAlignment="Center"></TextBlock>
+        </StackPanel>
     </Grid>
 </entry:BedrockBootPage>

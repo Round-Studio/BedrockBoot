@@ -12,6 +12,7 @@
         xmlns:global="clr-namespace:BedrockBoot.Models.Global"
         xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
         xmlns:global1="clr-namespace:BedrockBoot.Models.Global;assembly=BedrockBoot.Core"
+        xmlns:controls="clr-namespace:BedrockBoot.Style.Controls"
         mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
         x:Class="BedrockBoot.Views.Windows.MainWindow"
         Width="1100" Height="620"
@@ -477,5 +478,75 @@
                 </Grid>
             </Grid>
         </Border>
+        
+        <Grid Name="PART_ChooseAccount"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              IsVisible="False">
+            <Grid HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Background="Black"
+                  PointerPressed="PART_AccountChooseBackground_OnPointerPressed"
+                  Name="PART_AccountChooseBackground"
+                  Opacity="0">
+                <Grid.Transitions>
+                    <Transitions>
+                        <DoubleTransition Easing="ExponentialEaseOut"
+                                          Duration="0:0:0.82"
+                                          Property="Opacity"></DoubleTransition>
+                    </Transitions>
+                </Grid.Transitions>
+            </Grid>
+            
+            <items:BorderCard VerticalAlignment="Bottom"
+                              HorizontalAlignment="Stretch"
+                              Name="PART_AccountChooseBorderCard"
+                              Height="260"
+                              Padding="20,20,20,5"
+                              Margin="0,340,0,-340"
+                              CornerRadius="18,18,0,0">
+                <items:BorderCard.Transitions>
+                    <Transitions>
+                        <DoubleTransition Easing="ExponentialEaseOut"
+                                          Duration="0:0:0.62"
+                                          Property="Opacity"></DoubleTransition>
+                        <ThicknessTransition Easing="ExponentialEaseOut"
+                                             Duration="0:0:0.62"
+                                             Property="Margin"></ThicknessTransition>
+                    </Transitions>
+                </items:BorderCard.Transitions>
+                
+                <Grid RowDefinitions="Auto,*"
+                      RowSpacing="12">
+                    <StackPanel Grid.Row="0"
+                                Orientation="Horizontal">
+                        <TextBlock Text="选择一个账户"
+                                   Foreground="{DynamicResource AccentBackgroundBrush}"
+                                   FontWeight="Bold"
+                                   FontSize="18"></TextBlock>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Row="0"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                        <TextBlock Opacity="0.4"
+                                   FontSize="14"
+                                   Text="点击上方空白处可取消启动"></TextBlock>
+                    </StackPanel>
+                    
+                    <ScrollViewer Grid.Row="1"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,0,0,10"
+                                    VerticalAlignment="Top"
+                                    Spacing="8"
+                                    Name="PART_AccountList"
+                                    Orientation="Horizontal">
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </items:BorderCard>
+        </Grid>
     </Grid>
 </Window>

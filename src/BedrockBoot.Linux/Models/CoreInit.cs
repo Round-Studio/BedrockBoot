@@ -14,13 +14,8 @@ public class CoreInit
         CoreGlobal.BedrockCore = new BedrockCore {};
     }
     
-    public static MsUserConfig? MsUserConfig { get;private set; }
-    public static Action<MsUserConfig>? OnRefreshAccount { get; set; }
-
-    public static void SetMsAccount(MsUserConfig config)
-    {
-        MsUserConfig = config;
-    }
+    public static Func<MsUserConfig?>? GetMsAccountConfig;
+    public static Func<MsUserConfig, Task<MsUserConfig>> OnRefreshAccount { get; set; }
 
     public static void UpdateUseHardwareDecode(bool isUse)
     {

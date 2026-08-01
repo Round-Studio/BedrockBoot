@@ -109,7 +109,11 @@ public class EasyLauncher
             // NeoLaunch 专属前置准备
             if (IsUseNeoLaunch)
             {
-                PrepareNeoLaunchEnvironment();
+                if (!PrepareNeoLaunchEnvironment())
+                {
+                    LaunchCompleted?.Invoke();
+                    return;
+                }
             }
 
             // 初始化 BedrockCore 全局实例
@@ -384,13 +388,18 @@ public class EasyLauncher
 
     #region Helper & Auxiliary Methods
 
-    private void PrepareNeoLaunchEnvironment()
+    private bool PrepareNeoLaunchEnvironment()
     {
-        CoreInit.OnRefreshAccount?.Invoke(CoreInit.MsUserConfig);
+        var accountOld = CoreInit.GetMsAccountConfig?.Invoke();
+        if (accountOld == null)
+        {
+            return false;
+        }
+        var account = CoreInit.OnRefreshAccount?.Invoke(accountOld).Result;
         
         UpdateProgressText?.Invoke("正在登录账户");
         var xbl = new XblAuth();
-        if (!xbl.RunPreauth(CoreInit.MsUserConfig.AuthResult.AccessToken))
+        if (!xbl.RunPreauth(account.AuthResult.AccessToken))
             Console.WriteLine("Xbox Live pre-auth failed");
 
         UpdateProgressText?.Invoke("正在准备 Proton 环境");
@@ -411,7 +420,7 @@ public class EasyLauncher
         InstallCryptbase();
         // InstallD3d8();
 
-        try { WinePrefix.SetRefreshToken(CoreInit.MsUserConfig.AuthResult.RefreshToken); }
+        try { WinePrefix.SetRefreshToken(account.AuthResult.RefreshToken); }
         catch (Exception ex) { Console.WriteLine($"SetRefreshToken failed: {ex.Message}"); }
 
         ProtonPatcher.Patch(ProtonNeoCore.ProtonRootPath);
@@ -424,6 +433,7 @@ public class EasyLauncher
         Directory.CreateDirectory(prioDir);
         var prioPath = Path.Combine(prioDir, "gnutls-no-tls13.cfg");
         File.WriteAllText(prioPath, "[priorities]\nSYSTEM = NORMAL:-VERS-TLS1.3:%COMPAT\n");
+        return true;
     }
 
     private void EnsureGameInputInstalled()

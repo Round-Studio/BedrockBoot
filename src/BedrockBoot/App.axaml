@@ -10,5 +10,6 @@
                             ThemeVariant="Dark" />
         <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
         <StyleInclude Source="avares://BedrockBoot/Style/Widgets/DesktopWidgetTemplated.axaml"/>
+        <StyleInclude Source="avares://BedrockBoot/Style/Controls/AccountButton.axaml"/>
     </Application.Styles>
 </Application>

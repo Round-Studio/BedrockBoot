@@ -17,6 +17,12 @@ public partial class LocalImageRenderWidget : UserControl
     public static readonly StyledProperty<string?> ImageUrlProperty =
         AvaloniaProperty.Register<LocalImageRenderWidget, string?>(nameof(ImageUrl));
 
+    public string? ImageUrl
+    {
+        get => GetValue(ImageUrlProperty);
+        set => SetValue(ImageUrlProperty, value);
+    }
+
     public LocalImageRenderWidget()
     {
         InitializeComponent();
@@ -31,12 +37,6 @@ public partial class LocalImageRenderWidget : UserControl
     public LocalImageRenderWidget(string uri) : this()
     {
         ImageUrl = uri;
-    }
-
-    public string? ImageUrl
-    {
-        get => GetValue(ImageUrlProperty);
-        set => SetValue(ImageUrlProperty, value);
     }
 
     // 在属性发生变化时触发

@@ -18,12 +18,14 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
+using BedrockBoot.Base.Entry.Account.Microsoft;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Base.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models;
+using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -34,6 +36,7 @@ using BedrockBoot.Models.Style;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Service.Protocol.Routes;
+using BedrockBoot.Style.Controls;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages;
@@ -1069,4 +1072,62 @@ public partial class MainWindow : Window
     {
         CloseTaskCard();
     }
+
+    #region 选择账户（Linux）
+
+    private async Task AccountChoose_Show(bool show)
+    {
+        if (show)
+        {
+            PART_ChooseAccount.IsVisible = true;
+            PART_AccountChooseBackground.Opacity = 0.7;
+            await Task.Delay(200);
+            PART_AccountChooseBorderCard.Margin = new(0);
+        }
+        else
+        {
+            PART_AccountChooseBorderCard.Margin = new(0,260,0,-260);
+            await Task.Delay(200);
+            PART_AccountChooseBackground.Opacity = 0;
+            await Task.Delay(820);
+            PART_ChooseAccount.IsVisible = false;
+        }
+    }
+
+    private TaskCompletionSource<MsUserConfig>? _chooseAccountTcs;
+
+    private void PART_AccountChooseBackground_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        AccountChoose_Show(false);
+        _chooseAccountTcs?.TrySetResult(null!);
+    }
+
+    public async Task<MsUserConfig?> ChooseAccount()
+    {
+        _chooseAccountTcs = new TaskCompletionSource<MsUserConfig>();
+    
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            PART_AccountList.Children.Clear();
+            MsAccountManager.Accounts.Accounts.ForEach(user =>
+            {
+                var btn = new AccountButton()
+                {
+                    HeaderImageUrl = user.UserIconUrl,
+                    AccountName = user.UserName
+                };
+                btn.Click += (_, _) =>
+                {
+                    _chooseAccountTcs?.TrySetResult(user);
+                    AccountChoose_Show(false);
+                };
+                PART_AccountList.Children.Add(btn);
+            });
+            AccountChoose_Show(true);
+        });
+    
+        return await _chooseAccountTcs.Task;
+    }
+
+    #endregion
 }

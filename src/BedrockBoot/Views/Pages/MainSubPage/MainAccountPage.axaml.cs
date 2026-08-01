@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Views.Control.Items;
@@ -25,6 +26,7 @@ public partial class MainAccountPage : BedrockBootPage
     public void UpdateUi()
     {
         IsEdit = false;
+        IsChooseAccountBeforeLaunch.IsChecked = GlobalModel.Config.Data.IsChooseAccountBeforeLaunch;
         var users = MsAccountManager.Accounts?.Accounts;
         UsersList.IsVisible = false;
         UsersList.Items.Clear();
@@ -101,11 +103,15 @@ public partial class MainAccountPage : BedrockBootPage
             MsAccountManager.AccountConfigEntity?.Data.SelectUserBUID =
                 MsAccountManager.Accounts?.Accounts[UsersList.SelectedIndex].BUID;
             MsAccountManager.AccountConfigEntity?.Save();
+        }
+    }
 
-#if LINUX
-            CoreInit.SetMsAccount(MsAccountManager.Accounts.Accounts
-                .Find(x => x.BUID == MsAccountManager.Accounts.SelectUserBUID));
-#endif
+    private void IsChooseAccountBeforeLaunch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsChooseAccountBeforeLaunch= (bool)IsChooseAccountBeforeLaunch.IsChecked!;
+            GlobalModel.Config.Save();
         }
     }
 }

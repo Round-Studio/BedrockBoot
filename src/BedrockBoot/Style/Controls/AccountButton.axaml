@@ -1,0 +1,67 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:BedrockBoot.Style.Controls"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+        xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+        xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets">
+    <Design.PreviewWith>
+        <controls:AccountButton AccountName="Dime12022"/>
+    </Design.PreviewWith>
+
+    <Style Selector="controls|AccountButton">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryForegroundBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="8" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <items:BorderCard CornerRadius="{TemplateBinding CornerRadius}"
+                                  Padding="0">
+                    <Grid>
+                        <StackPanel Margin="{TemplateBinding Padding}"
+                                    Spacing="8">
+                            <widgets:LocalImageRenderWidget Name="PART_HeaderImage"
+                                                            Width="128" Height="128"/>
+                            <TextBlock FontSize="18"
+                                       HorizontalAlignment="Center"
+                                       Name="PART_AccountName"></TextBlock>
+                        </StackPanel>
+                        
+                        <Border Name="PATH_Background"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Opacity="0"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{DynamicResource PrimaryBackgroundBrush}" />
+
+                        <Border ClipToBounds="True"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                            <onePointControls:PointHalo CornerRadius="6" />
+                        </Border>
+                    </Grid>
+                </items:BorderCard>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ Border#PATH_Background">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity"
+                                      Duration="0:0:0.18"
+                                      Easing="QuinticEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="^:pressed Border#PATH_Background">
+            <Setter Property="Opacity" Value="0.2" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+    </Style>
+</Styles>

@@ -14,6 +14,7 @@ public class SourceList
     {
         { "Github", "{url}" },
         { "加速源 ①", "https://github1.roundstudio.top/{url}" },
+        { "gh.tianpao.top", "https://gh.tianpao.top/{url}" },
         { "gh.tiouo.cc", "https://gh.tiouo.cc/{route}" },
         { "gh-proxy.com", "https://gh-proxy.com/{url}" },
         { "gh-proxy.net", "https://gh-proxy.net/{url}" },

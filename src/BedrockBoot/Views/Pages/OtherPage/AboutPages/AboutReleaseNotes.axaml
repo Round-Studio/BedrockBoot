@@ -63,7 +63,15 @@
             <TextBlock Text="目前 Linux 平台受游戏框架限制，仅支持 GDK 构建类型的 Minecraft Bedrock。"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="在 Linux 平台，原生 Xbox 组件并不支持运行在 Wine 中，所以目前暂时无法在 Linux 平台使用游戏在线功能。当然，我们也正在开发一款新的账户代理组件。"
+            <TextBlock Text="在 Linux 平台，现已支持在启动器内登录账户，并直接在游戏内访问此账户，进行在线游戏。"
+                       Opacity="0.8"></TextBlock>
+            
+            <TextBlock Text="全新联机支持"
+                       Margin="0,8,0,0"
+                       FontSize="16"
+                       FontWeight="Bold"></TextBlock>
+            
+            <TextBlock Text="重构通信逻辑，诞生 PaperConnect v2 联机协议，并由 GravityCone 联机模块强力支持。"
                        Opacity="0.8"></TextBlock>
             
             <TextBlock Text="更多独一无二的功能"

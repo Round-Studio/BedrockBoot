@@ -1109,6 +1109,16 @@ public partial class MainWindow : Window
         Dispatcher.UIThread.Invoke(() =>
         {
             PART_AccountList.Children.Clear();
+            if (MsAccountManager.Accounts.Accounts.Count <= 0)
+            {
+                Notice.AddNotice(new()
+                {
+                    Title = "无账户",
+                    Message = "未登录任何账户"
+                });
+                _chooseAccountTcs?.TrySetResult(null);
+                return;
+            }
             MsAccountManager.Accounts.Accounts.ForEach(user =>
             {
                 var btn = new AccountButton()

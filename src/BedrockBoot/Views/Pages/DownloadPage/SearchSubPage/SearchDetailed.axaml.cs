@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Entry.Pack.Market;
 using BedrockBoot.Base.Enum.Search;
@@ -18,7 +14,15 @@ using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using BedrockLauncher.Core;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
@@ -305,6 +309,34 @@ public partial class SearchDetailed : ISetting
                 .Where(version => IsMinecraftMatch(version, info.Key))
                 .ToList();
 
+            // 输入 1.21.2，1.21.2 应该优先于 1.21.20 这些
+            // 输入 1.2，1.2.* 应该优先于 1.26 这些
+            var inputParts = info.Key.Split('.');
+            if (inputParts.Length >= 2 && inputParts[0] == "1" && int.TryParse(inputParts[1], out int second) && second >= 26)
+            {
+                inputParts = inputParts.Skip(1).ToArray();
+            }
+            int MatchCount(string version)
+            {
+                var parts = version.Split('.');
+                int count = 0;
+                int len = Math.Min(parts.Length, inputParts.Length);
+
+                for (int i = 0; i < len; i++)
+                {
+                    if (parts[i] == inputParts[i])
+                        count++;
+                    else
+                        break;
+                }
+                return count;
+            }
+            filteredVersions = filteredVersions
+                .OrderByDescending(x => MatchCount(x.Key))
+                .ToList();
+
+
+
             _totalPages = (int)Math.Ceiling((double)filteredVersions.Count / PageSize);
 
             var currentPageVersions = filteredVersions
@@ -334,14 +366,62 @@ public partial class SearchDetailed : ISetting
         });
     }
 
+
     private bool IsMinecraftMatch(dynamic version, string keyword)
     {
         if (string.IsNullOrEmpty(keyword)) return true;
 
+        keyword = keyword.Trim();
+
         var versionId = version.ID ?? string.Empty;
+        var versionKey = version.Key ?? string.Empty;
         var buildType = version.BuildType?.ToString() ?? string.Empty;
+
+        // 啊，搜这些不是会被跳到资源包吗
+        if (keyword.ToLower() == "uwp") return buildType == "UWP";
+        else if (keyword.ToLower() == "gdk") return buildType == "GDK";
+
+        // 避免搜 1.1 出现 1.2[1.1]32 这种情况捏
+        if (keyword.StartsWith("1."))
+        {
+            if (versionId.StartsWith(keyword) || versionKey.StartsWith(keyword)) return true;
+        }
+        else if (versionId.Contains(keyword) || versionKey.Contains(keyword)) return true;
+
+        var parts = keyword.Split('.');
+        if (parts.Length == 4)
+        {
+            // 例如：
+            // 1.26.33.1  -> 26.33
+            // 1.26.33.01 -> 26.33
+            // （这里只针对 1.x.x.x）
+            // 例如 1.16.100.04 会被处理成 16.100，因为是 contain 所以没关系（）
+            
+            if (parts[0] == "1")
+            {
+                // 以及，1.21.2 可以出现 1.21.20 这些；但是 1.21.2.2 或者纯粹「1.21.2.」，就不应该出现 1.21.20 这些
+                // 不过以点结尾看起来似乎会被跳到资源包，那无所谓了（
+                return ("."+versionKey+".").Contains($".{parts[1]}.{parts[2]}.") && !versionKey.StartsWith("0."); 
+            }
+        }
+        else if (parts.Length == 3)
+        {
+            // 第一位不是1
+            // 26.33.1  -> 26.33
+            // 26.33.01 -> 26.33
+            if (parts[0] != "1")
+            {
+                // 同理，假如给出 26.3，可以有 26.33；但是 26.3.1（尽管不规范）就不应该有 26.33 这些
+                return ("."+versionKey+".").Contains($".{parts[0]}.{parts[1]}.");
+            }
+        }
+        return false;
+
+        // 不模糊搜索了捏，打错字了活该（）
+        /*
         var combinedText = $"{versionId} {buildType}".ToLower();
 
+        
         // 如果不启用模糊搜索，使用包含匹配
         if (!EnableFuzzySearch)
         {
@@ -369,6 +449,8 @@ public partial class SearchDetailed : ISetting
 
         // 3. 整体文本模糊匹配
         return IsFuzzyMatch(combinedText, keywordLower, 0.7);
+        */
+
     }
 
     #endregion
@@ -604,7 +686,16 @@ public partial class SearchDetailed : ISetting
     #endregion
 
     #region 事件处理
-
+    private void HelpBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo
+        {
+            Title = "找不到想要的版本？",
+            Content = "1. 请确保正式版、预览版、Beta 版选择正确。注意预览版和 Beta 版是两个不同的版本类型\n2. Windows 和 Android 的内部版本号格式不一致。\n   例如在 Android 上的 1.26.30.5 对应 Windows 上的 1.26.3005\n   请以游戏主屏幕右下角的版本号为准，例如上述版本的版本号为 26.30",
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            
+        });
+    }
     private void GameType_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (!IsEdit) return;

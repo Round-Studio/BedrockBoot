@@ -52,6 +52,13 @@
                     <ComboBoxItem Content="{DynamicResource Download.Game.Type.Release}" />
                     <ComboBoxItem Content="{DynamicResource Download.Game.Type.Beta}" />
                 </ComboBox>
+				<onePointControls:FontIcon Glyph="&#xE9CE;"
+															   VerticalAlignment="Center"
+															   FontSize="15" />
+				<HyperlinkButton HorizontalAlignment="Right"
+                                 Content="找不到想要的版本？"
+								 Click="HelpBtn_OnClick">
+				</HyperlinkButton>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"

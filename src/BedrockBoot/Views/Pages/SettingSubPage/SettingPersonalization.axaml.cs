@@ -47,6 +47,7 @@ public partial class SettingPersonalization : ISettingPage
         IsEdit = false;
 
         IsUseSystemWindow.IsChecked = GlobalModel.Config.Data.IsUseSystemWindow;
+        IsRightLaunchButton.SelectedIndex = GlobalModel.Config.Data.IsRightLaunchButton ? 1 : 0;
         IsUseThemePack.IsChecked = GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
 
         SetBackground.IsVisible = !GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
@@ -83,6 +84,17 @@ public partial class SettingPersonalization : ISettingPage
             GlobalModel.Config.Save();
 
             Models.Global.GlobalModel.MainWindow.UpdateWindowBorder();
+        }
+    }
+    private void IsRightLaunchButton_OnSelectionChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsRightLaunchButton =
+                (IsRightLaunchButton.SelectedIndex == 1);
+            GlobalModel.Config.Save();
+            Models.Global.GlobalModel.MainWindow.SetReboot();
+
         }
     }
 

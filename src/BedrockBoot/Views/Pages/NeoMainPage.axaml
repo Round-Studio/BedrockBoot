@@ -92,6 +92,7 @@
                     Margin="-1,0,0,-1"
                     Height="58"
                     Padding="0"
+					Name="BottomBorder"
                     CornerRadius="0,12,0,0"
                     HorizontalAlignment="Stretch">
                 <Grid>

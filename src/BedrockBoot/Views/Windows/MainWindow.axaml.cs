@@ -96,7 +96,6 @@ public partial class MainWindow : Window
         EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Invoke(RunBehavior);
 
         SetupDynamicHotkey();
-        StartNetworkMonitoring();
         _ = InitializeAsync();
 
         DragDrop.SetAllowDrop(this, true);
@@ -718,46 +717,6 @@ public partial class MainWindow : Window
     {
         if (IsTaskCardOpen) CloseTaskCard();
         else OpenTaskCard();
-    }
-
-    private CancellationTokenSource? _netMonitorCts;
-
-    private void StartNetworkMonitoring()
-    {
-        _netMonitorCts = new CancellationTokenSource();
-        var token = _netMonitorCts.Token;
-
-        NetworkChange.NetworkAvailabilityChanged += (s, e) => { UpdateNetworkStatus(e.IsAvailable); };
-
-        Task.Run(async () =>
-        {
-            while (!token.IsCancellationRequested)
-            {
-                var isAlive = await CheckInternetConnectivityAsync();
-                UpdateNetworkStatus(isAlive);
-                await Task.Delay(TimeSpan.FromSeconds(5), token);
-            }
-        }, token);
-    }
-
-    private async Task<bool> CheckInternetConnectivityAsync()
-    {
-        try
-        {
-            using var ping = new Ping();
-            var reply = await ping.SendPingAsync("223.5.5.5", 5000);
-            return reply.Status == IPStatus.Success;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    private void UpdateNetworkStatus(bool isAvailable)
-    {
-        GlobalModel.IsNetworkAvailable = isAvailable;
-        Dispatcher.UIThread.Invoke(() => { OfflineBtn.IsVisible = !GlobalModel.IsNetworkAvailable; });
     }
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)

@@ -394,21 +394,6 @@
                                     Height="32"
                                     IsVisible="False"
                                     Padding="10,0"
-                                    Name="OfflineBtn">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="8">
-                                    <onePointControls:FontIcon Glyph="&#xEB55;"
-                                                               FontSize="12"
-                                                               HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center" />
-                                    <TextBlock Text="脱机状态"
-                                               Name="OfflineTextBlock" />
-                                </StackPanel>
-                            </Button>
-                            <Button Classes="NoBorder"
-                                    Height="32"
-                                    IsVisible="False"
-                                    Padding="10,0"
                                     Click="RebootBtn_OnClick"
                                     Name="RebootBtn">
                                 <StackPanel Orientation="Horizontal"

@@ -181,7 +181,8 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                 {
                     MinecraftProcess = process;
 #if WINDOWS
-                    Dispatcher.UIThread.Invoke(() => new OverlayWindow(process, VersionInfo.Info.Version).Show());
+                    if (Core.Global.GlobalModel.Config.Data.IsOpenGameLayering)
+                        Dispatcher.UIThread.Invoke(() => new OverlayWindow(process, VersionInfo.Info.Version).Show());
 #endif
                 };
 

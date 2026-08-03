@@ -30,11 +30,13 @@ public partial class SettingGame : ISettingPage
         IsolationTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.IsolationModel;
         IsolationPriority.SelectedIndex = (int)GlobalModel.Config.Data.IsolationPriority;
         CatalogStrategy.SelectedIndex = ((int)GlobalModel.Config.Data.CatalogStrategy) - 1;
+        IsOpenGameLayering.IsChecked = GlobalModel.Config.Data.IsOpenGameLayering;
         IsUseNeoLaunchBox.IsVisible = false;
         ProtonBtn.IsVisible = false;
 
 #if LINUX
         IsolationCard.IsVisible = false;
+        HelperPanel.IsVisible = false;
         MouseLockBtn.IsVisible = false;
         ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
         IsUseNeoLaunchBox.IsVisible = true;
@@ -111,6 +113,15 @@ public partial class SettingGame : ISettingPage
             CoreInit.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
             ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
 #endif
+        }
+    }
+
+    private void IsOpenGameLayering_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsOpenGameLayering = (bool)IsOpenGameLayering.IsChecked!;
+            GlobalModel.Config.Save();
         }
     }
 }

@@ -144,14 +144,14 @@ public partial class SearchDefault : UserControl
                 _versionLoadSuccess = true;
                 if (release != null)
                 {
-                    ReleaseBtn.Version = release.ID;
-                    ReleaseBtn.Description = $"{release.Date}, {release.BuildType}";
+                    ReleaseBtn.Version = release.Key;
+                    ReleaseBtn.Description = $"{release.ID}, {release.Date}, {release.BuildType}";
                 }
 
                 if (preview != null)
                 {
-                    PreviewBtn.Version = preview.ID;
-                    PreviewBtn.Description = $"{preview.Date}, {preview.BuildType}";
+                    PreviewBtn.Version = preview.Key;
+                    PreviewBtn.Description = $"{preview.ID}, {preview.Date}, {preview.BuildType}";
                 }
 
                 RecommendationPanel.IsVisible = true;
@@ -280,7 +280,7 @@ public partial class SearchDefault : UserControl
         var version = VersionHelper.GetVersions().Find(x => x.Type == type);
         if (version != null)
             GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version),
-                $"{i18n["Download.Action.DownloadGame"]} {version.ID}");
+                $"{i18n["Download.Action.DownloadGame"]} {version.Key}");
     }
 
     private void CleanBtn_OnClick(object? sender, RoutedEventArgs e)

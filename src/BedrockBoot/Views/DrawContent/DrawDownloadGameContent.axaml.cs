@@ -54,7 +54,7 @@ public partial class DrawDownloadGameContent : UserControl
             InstallFolder.SelectedIndex = Math.Clamp(GlobalModel.Config.Data.GameFolderSelIndex, 0, folders.Count - 1);
         }
 
-        InstallName.Text = BuildInfo.ID;
+        InstallName.Text = BuildInfo.Key;
         SourceSelBox.Items.Clear();
         LoadRing.IsVisible = true;
         InstallBtn.IsEnabled = false;

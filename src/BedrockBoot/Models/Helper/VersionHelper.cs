@@ -247,7 +247,8 @@ public class VersionHelper
             {
                 var buildInfo = JsonSerializer.Deserialize<BuildInfo>(buildInfoElement.GetRawText());
                 if (buildInfo == null) continue;
-                
+
+                buildInfo.Key = versionKey;
                 // 如果 ID 为空，使用字典的键作为 ID
                 if (string.IsNullOrEmpty(buildInfo.ID))
                 {

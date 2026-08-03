@@ -300,7 +300,6 @@ public partial class SearchDetailed : ISetting
                 .Where(x => x.BuildType == MinecraftBuildTypeVersion.GDK)
 #endif
                 .ToList();
-
             // 应用模糊搜索
             var filteredVersions = allVersions
                 .Where(version => IsMinecraftMatch(version, info.Key))
@@ -318,15 +317,15 @@ public partial class SearchDetailed : ISetting
             {
                 items.Add(new SearchResultItemInfo
                 {
-                    Name = i.ID,
-                    Description = $"{i.BuildType}, {i.Date}",
+                    Name = i.Key,
+                    Description = $"{i.ID}, {i.BuildType}, {i.Date}",
                     IconUri = i.Type == MinecraftGameTypeVersion.Release
                         ? "avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
                         : "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png",
                     OnClick = s =>
                     {
                         GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),
-                            $"{I18nManager.Instance["Download.Action.DownloadGame"]} {i.ID}");
+                            $"{I18nManager.Instance["Download.Action.DownloadGame"]} {i.Key}");
                     }
                 });
             });

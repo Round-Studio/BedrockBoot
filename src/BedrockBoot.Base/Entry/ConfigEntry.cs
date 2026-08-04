@@ -41,6 +41,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("isMouseLockGetFrame")] public bool IsMouseLockGetFrame { get; set; } = true;
         [JsonPropertyName("mouseLockHotkey")] public string MouseLockHotkey { get; set; } = "Ctrl+Alt";
         [JsonPropertyName("isUseSystemWindow")] public bool IsUseSystemWindow { get; set; } = false;
+        [JsonPropertyName("isRightLaunchButton")] public bool IsRightLaunchButton { get; set; } = false;
         [JsonPropertyName("launchBehavior")] public LaunchBehaviorEnum LaunchBehavior { get; set; } = LaunchBehaviorEnum.Normal;
         [JsonPropertyName("mediaVolume")] public double MediaVolume { get; set; } = 0.2;
         [JsonPropertyName("pubOptionsConfig")] public PublicOptionsConfig? PublicOptionsConfig { get; set; } = null;

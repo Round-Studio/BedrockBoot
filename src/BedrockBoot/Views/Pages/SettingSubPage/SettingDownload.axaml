@@ -46,7 +46,7 @@
 
             <onePointControls:SettingCard Margin="5, 0"
                                           Header="模糊匹配"
-                                          Description="对搜索资源时的模糊匹配行为进行启用或禁用，启用后搜索结果会更丰富，但也会出现不相关的结果。"
+                                          Description="对搜索资源时的模糊匹配行为进行配置，启用后搜索结果会更丰富，但也会出现不相关的结果。该选项不影响搜索 Minecraft 的行为。"
                                           Glyph="&#xF6FA;">
                 <ToggleSwitch Name="EnableFuzzySearch"
                               IsCheckedChanged="EnableFuzzySearch_OnIsCheckedChanged"></ToggleSwitch>

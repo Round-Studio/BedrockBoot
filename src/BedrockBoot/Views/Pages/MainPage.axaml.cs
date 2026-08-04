@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using Avalonia.Layout; 
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
@@ -37,7 +38,7 @@ public partial class MainPage : UserControl
     public MainPage()
     {
         InitializeComponent();
-
+        UpdateLaunchLayout();
         #region 注册导航项
 
         RegisterTopItem(new TopBarItemInfo
@@ -142,7 +143,7 @@ public partial class MainPage : UserControl
     public bool IsEditMode { get; set; }
 
     public Dictionary<string, TopBarItemInfo> TopBarItem { get; } = new();
-
+    
     public static async Task Update(bool isShowNeo = false)
     {
         try
@@ -335,7 +336,19 @@ public partial class MainPage : UserControl
             IsEditMode = true;
         }
     }
-
+    public void UpdateLaunchLayout()
+    {
+        if (GlobalModel.Config.Data.IsRightLaunchButton)
+        {
+            GameControls.HorizontalAlignment = HorizontalAlignment.Right;
+            GameListChoose.HorizontalAlignment = HorizontalAlignment.Left;
+        }
+        else
+        {
+            GameControls.HorizontalAlignment = HorizontalAlignment.Left;
+            GameListChoose.HorizontalAlignment = HorizontalAlignment.Right;
+        }
+    }
     public void UpdateGameInfo()
     {
         try

@@ -37,6 +37,7 @@ public partial class NeoMainPage : UserControl
     public NeoMainPage()
     {
         InitializeComponent();
+        UpdateLaunchLayout();
 
         #region 注册导航项
 
@@ -271,7 +272,27 @@ public partial class NeoMainPage : UserControl
             _isUpdatingGameList = false;
         }
     }
-
+    public void UpdateLaunchLayout()
+    {
+        if (GlobalModel.Config.Data.IsRightLaunchButton)
+        {
+            GameControls.HorizontalAlignment = HorizontalAlignment.Right;
+            VersionChooseCard.HorizontalAlignment = HorizontalAlignment.Left;
+            BottomBorder.CornerRadius = new CornerRadius(12, 0, 0, 0);
+            VersionChooseCard.CornerRadius = new CornerRadius(0, 12, 0, 0);
+            BackgroundBackBorder.CornerRadius = new CornerRadius(0, 12, 0, 0);
+            BackgroundBorder.CornerRadius = new CornerRadius(0, 8, 0, 0);
+        }
+        else
+        {
+            GameControls.HorizontalAlignment = HorizontalAlignment.Left;
+            VersionChooseCard.HorizontalAlignment = HorizontalAlignment.Right;
+            BottomBorder.CornerRadius = new CornerRadius(0, 12, 0, 0);
+            VersionChooseCard.CornerRadius = new CornerRadius(12, 0, 0, 0);
+            BackgroundBackBorder.CornerRadius = new CornerRadius(12, 0, 0, 0);
+            BackgroundBorder.CornerRadius = new CornerRadius(8, 0, 0, 0);
+        }
+    }
     public async Task UpdateUIAsync()
     {
         try

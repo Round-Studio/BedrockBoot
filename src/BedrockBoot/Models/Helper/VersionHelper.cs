@@ -246,8 +246,10 @@ public class VersionHelper
             try
             {
                 var buildInfo = JsonSerializer.Deserialize<BuildInfo>(buildInfoElement.GetRawText());
-                if (buildInfo == null) continue;
-                
+                // arm only 的去掉捏
+                if (buildInfo == null || versionKey == "1.21.72(02)") continue;
+
+                buildInfo.Key = versionKey.Replace("1.21.72(01)", "1.21.72"); 
                 // 如果 ID 为空，使用字典的键作为 ID
                 if (string.IsNullOrEmpty(buildInfo.ID))
                 {
@@ -271,6 +273,7 @@ public class VersionHelper
                 {
                     // 版本号解析失败，忽略
                 }
+                
                 
                 versionCache.Add((buildInfo, version));
             }

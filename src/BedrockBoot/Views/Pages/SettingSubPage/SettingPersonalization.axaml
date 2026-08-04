@@ -96,6 +96,20 @@
                               IsCheckedChanged="IsUseSystemWindow_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
 
+			<onePointControls:SettingCard Margin="5, 0"
+                                          Header="启动按钮位置"
+                                          Description="配置启动按钮和版本选择的位置"
+                                          IsClickable="True"
+                                          IsShowActionIcon="False"
+                                          Glyph="&#xF7ED;">
+				<ComboBox Width="200"
+                          Name="IsRightLaunchButton"
+                          SelectionChanged="IsRightLaunchButton_OnSelectionChanged">
+					<ComboBoxItem Content="启动按钮在左侧" />
+					<ComboBoxItem Content="启动按钮在右侧" />
+				</ComboBox>
+			</onePointControls:SettingCard>
+
             <StackPanel Name="HomePanel"
                         Spacing="8">
                 <TextBlock Margin="5, 0"

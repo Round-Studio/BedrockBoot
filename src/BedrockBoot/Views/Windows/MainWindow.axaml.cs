@@ -87,7 +87,7 @@ public partial class MainWindow : Window
         GlobalModel.MainWindow = this;
 
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun)
-            MainFrame.NavigateTo(Core.Global.GlobalModel.Config.Data.IsUseBetaUI ? new NeoMainPage() : new MainPage());
+            MainFrame.NavigateTo( new NeoMainPage());
         else MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();
 

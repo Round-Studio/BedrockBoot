@@ -108,9 +108,9 @@ public partial class MainAccountPage : BedrockBootPage
 
     private void IsChooseAccountBeforeLaunch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
-        if (IsEdit)
+        if (IsChooseAccountBeforeLaunch != null)
         {
-            GlobalModel.Config.Data.IsChooseAccountBeforeLaunch= (bool)IsChooseAccountBeforeLaunch.IsChecked!;
+            GlobalModel.Config.Data.IsChooseAccountBeforeLaunch = (bool)IsChooseAccountBeforeLaunch.IsChecked!;
             GlobalModel.Config.Save();
         }
     }

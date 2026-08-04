@@ -79,7 +79,7 @@ public partial class NeoMainPage : UserControl
             Page = typeof(MainGravityConePage)
         });
 #if LINUX
-        if(GlobalModel.Config.Data.IsUseNeoLaunch)
+        if (GlobalModel.Config.Data.IsUseNeoLaunch)
             RegisterTopItem(new TopBarItemInfo
             {
                 ItemGlyph = "\uE716",
@@ -87,6 +87,15 @@ public partial class NeoMainPage : UserControl
                 Tag = "AccountManager",
                 Page = typeof(MainAccountPage)
             });
+#endif
+#if WINDOWS && DEBUG
+        RegisterTopItem(new TopBarItemInfo
+        {
+            ItemGlyph = "\uE716",
+            ItemText = "账户管理",
+            Tag = "AccountManager",
+            Page = typeof(MainAccountPage)
+        });
 #endif
         RegisterTopItem(new TopBarItemInfo
         {

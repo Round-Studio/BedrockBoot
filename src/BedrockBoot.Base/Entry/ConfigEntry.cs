@@ -33,7 +33,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("isShowConnectPage")] public bool IsShowConnectPage { get; set; } = false;
         [JsonPropertyName("isChooseAccountBeforeLaunch")] public bool IsChooseAccountBeforeLaunch { get; set; } = false;
         [JsonPropertyName("isOpenGameLayering")] public bool IsOpenGameLayering { get; set; } = true;
-        [JsonPropertyName("isUseBetaUI")] public bool IsUseBetaUI { get; set; } = true;
+        [JsonPropertyName("isUseBeta")] public bool IsUseBeta { get; set; } = false;
         [JsonPropertyName("isMouseLock")] public bool IsMouseLock { get; set; } = false;
         [JsonPropertyName("isMouseLockForGdk")] public bool IsMouseLockForGdk { get; set; } = false;
         [JsonPropertyName("isMouseLockReserve")] public bool IsMouseLockReserve { get; set; } = false;

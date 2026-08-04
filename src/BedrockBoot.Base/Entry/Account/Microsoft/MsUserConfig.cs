@@ -8,6 +8,7 @@ public class MsUserConfig
     [JsonPropertyName("msAuth")] public XboxAuthEntry.AuthResult? AuthResult { get; set; }
     [JsonPropertyName("userName")] public string? UserName { get; set; }
     [JsonPropertyName("userIconUrl")] public string? UserIconUrl { get; set; }
+    [JsonPropertyName("isDefault")] public bool IsDefault { get; set; } = false;
 }
 
 public class MsUserConfigRoot

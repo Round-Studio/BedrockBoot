@@ -24,11 +24,11 @@
     </ItemGroup>
     
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.7" />
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.8" />
     </ItemGroup>
     
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-        <PackageReference Include="BedrockLauncher.Core.Linux" Version="1.0.0.3" />
+        <PackageReference Include="BedrockLauncher.Core.Linux" Version="1.0.0.4" />
     </ItemGroup>
 
     <ItemGroup>

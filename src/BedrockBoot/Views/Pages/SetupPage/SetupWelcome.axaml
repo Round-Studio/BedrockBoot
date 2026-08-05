@@ -7,16 +7,19 @@
              x:Class="BedrockBoot.Views.Pages.SetupPage.SetupWelcome">
     <StackPanel VerticalAlignment="Center"
                 Margin="45">
-        <StackPanel HorizontalAlignment="Left"
+        <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Top">
             <onePointControls:FontIcon Margin="5"
                                        FontSize="28"
+                                       HorizontalAlignment="Center"
                                        Glyph="&#xE909;"
                                        Foreground="{DynamicResource PrimaryForegroundBrush}" />
             <TextBlock FontSize="22"
-                       Margin="5,10,0,0"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,0"
                        Text="{DynamicResource Setup.Welcome.Title}" />
-            <TextBlock Margin="5"
+            <TextBlock HorizontalAlignment="Center"
+                       Margin="5"
                        Text="{DynamicResource Setup.Welcome.Description}" />
         </StackPanel>
 

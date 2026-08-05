@@ -2,6 +2,7 @@
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 // 确保引用了 I18nManager 所在的命名空间
 
@@ -14,6 +15,7 @@ public partial class SetupRoot : UserControl
     {
         ["Setup.Step.Welcome"] = new SetupWelcome(),
         ["Setup.Step.Style"] = new SetupStyle(),
+        ["布局"] = new SetupLayout(),
         ["Setup.Step.Import"] = new SetupImport(),
         ["Setup.Step.Completed"] = new SetupCompleted()
     };
@@ -29,7 +31,8 @@ public partial class SetupRoot : UserControl
             TopProgressBar.Items.Add(new TabItem
             {
                 // 从 I18nManager 获取翻译后的文本作为 Header
-                Header = I18nManager.Instance[x.Key]
+                Header = I18nManager.Instance[x.Key],
+                FontWeight = FontWeight.Heavy
             });
 
         UpdatePage();

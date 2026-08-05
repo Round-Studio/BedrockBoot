@@ -94,7 +94,6 @@ public partial class SettingPersonalization : ISettingPage
                 (IsRightLaunchButton.SelectedIndex == 1);
             GlobalModel.Config.Save();
             Models.Global.GlobalModel.MainWindow.SetReboot();
-
         }
     }
 

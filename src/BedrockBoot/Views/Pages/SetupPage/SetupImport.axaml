@@ -7,23 +7,26 @@
              x:Class="BedrockBoot.Views.Pages.SetupPage.SetupImport">
     <StackPanel VerticalAlignment="Center"
                 Margin="45">
-        <StackPanel HorizontalAlignment="Left"
+        <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Top">
             <onePointControls:FontIcon Margin="5"
+                                       HorizontalAlignment="Center"
                                        FontSize="28"
                                        Glyph="&#xE8B7;"
                                        Foreground="{DynamicResource PrimaryForegroundBrush}" />
             <TextBlock FontSize="22"
-                       Margin="5,10,0,0"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,0"
                        Text="{DynamicResource Setup.Import.Title}" />
-            <TextBlock Margin="5"
+            <TextBlock HorizontalAlignment="Center"
+                       Margin="5"
                        Text="{DynamicResource Setup.Import.Description}" />
         </StackPanel>
 
-        <Grid Margin="0,10,0,0">
+        <Grid Margin="0,10,0,0"
+              HorizontalAlignment="Center">
             <StackPanel Margin="5"
-                        HorizontalAlignment="Left"
-                        Width="460"
+                        Width="320"
                         Spacing="10">
                 <onePointControls:SettingCard Header="{DynamicResource Setup.Import.Folder.Header}"
                                               Description="{DynamicResource Setup.Import.Folder.Description}"
@@ -33,7 +36,7 @@
                                               IsClickable="True" />
 
                 <onePointControls:SettingCard Header="{DynamicResource Setup.Import.Other.Header}"
-                                              Description="{DynamicResource Setup.Import.Other.Description}"
+                                              Description="导入第三方启动器目录"
                                               Glyph="&#xE835;"
                                               Name="ImportOtherLauncherBtn"
                                               Click="ImportOtherLauncherBtn_OnClick"

@@ -5,8 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.OtherPage.AboutOpenSource">
     <ScrollViewer>
-        <StackPanel Margin="20"
-                    Spacing="4">
+        <StackPanel Margin="20">
             <TextBlock FontSize="22"
                        FontWeight="Bold"
                        Margin="5,20,5,8">
@@ -77,6 +76,15 @@
                 GravityCone
             </TextBlock>
             <TextBlock Margin="5,0,5,0" Text="(https://github.com/Tianpao/GravityCone)" />
+
+
+            <TextBlock FontSize="22"
+                       FontWeight="Bold"
+                       Margin="5,20,5,8">
+                XUserLauncher.Core
+            </TextBlock>
+            <TextBlock Margin="5,0,5,0" Text="(https://github.com/BE-Community-Dev/xgameruntime)" />
+            <TextBlock Margin="5,0,5,0" Text="(https://www.nuget.org/packages/XUserLauncher.Core)" />
 
 
             <TextBlock FontSize="22"

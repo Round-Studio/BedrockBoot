@@ -109,6 +109,7 @@
             <TextBlock Margin="20,1" Text="BedrockBoot 核心：YoumiHa, Dime12022" />
             <TextBlock Margin="20,1" Text="BedrockBoot UI 交互体验：DrMing" />
             <TextBlock Margin="20,1" Text="PaperConnect 技术支持：Tianpao" />
+            <TextBlock Margin="20,1" Text="Windows 多用户登录技术支持：Chlna6666, YoumiHa" />
 
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"

@@ -68,7 +68,7 @@ public class App : Application
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
         LogException(e.Exception, "Task");
-        ShowErrorDialog(e.Exception);
+        // ShowErrorDialog(e.Exception);
         e.SetObserved(); // 标记为已处理
     }
 

@@ -1,4 +1,5 @@
-﻿using BedrockBoot.Core.Global;
+﻿using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Services;
@@ -23,6 +24,9 @@ public class CoreInit
         };
         await CoreGlobal.BedrockCore.InitAsync();
     }
+    
+    public static Func<MsUserConfig?> GetMsAccountConfig;
+    public static Func<MsUserConfig, Task<MsUserConfig>>? OnRefreshAccount { get; set; }
 
     public static void UpdateUseHardwareDecode(bool isUse)
     {

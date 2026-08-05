@@ -7,6 +7,7 @@ using System.Threading;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Helper;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Global;
@@ -17,6 +18,7 @@ using PeNet;
 using PeNet.Header.Pe;
 using Round.SDK.Plugin.BedrockBoot.Register;
 using BedrockBoot.Models.Helper.Uwp;
+using XUserLauncher.Core;
 
 namespace BedrockBoot.Models.Game;
 
@@ -208,42 +210,89 @@ public class EasyLauncher
                 _ = Task.Run(async () =>
                 {
                     _frameHwnd = await _frameMonitor.StartFrameMonitorAsync();
-
                 });
             }
-            
 
-            MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
+            File.WriteAllText(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", ".bb.version"),
+                VersionInfo.Info.Version);
+
+            var launchCore = new XUserLauncher.Core.XUserLauncher(Path.Combine(VersionInfo.VersionPath, "config",
+                "BedrockBoot2", "config.json"));
+            XboxPreauth auth = null;
+
+            if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || 
+                !GlobalModel.Config.Data.IsUseMultipleUsers)
             {
-                GameFolder = VersionInfo.VersionPath,
-                GameType = VersionInfo.Info.VersionType,
-                MinecraftBuildType = VersionInfo.Info.BuildType,
-                RegisterProgress = new Progress<DeploymentProgress>(progress =>
+                MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
                 {
-                    Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
-
-                    // 使用回调更新进度，而不是直接操作 UI
-                    UpdateProgress?.Invoke($"步骤：{progress.state}", progress.percentage);
-                }),
-                Progress = new Progress<LaunchState>(state =>
-                {
-                    Console.WriteLine(state);
-                    UpdateProgressText?.Invoke($"状态：{state}");
-                    
-                    // 当游戏启动状态变化时，更新进度文本
-                    if (state == LaunchState.Launched)
+                    GameFolder = VersionInfo.VersionPath,
+                    GameType = VersionInfo.Info.VersionType,
+                    MinecraftBuildType = VersionInfo.Info.BuildType,
+                    RegisterProgress = new Progress<DeploymentProgress>(progress =>
                     {
-                        UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
+                        Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
+
+                        // 使用回调更新进度，而不是直接操作 UI
+                        UpdateProgress?.Invoke($"步骤：{progress.state}", progress.percentage);
+                    }),
+                    Progress = new Progress<LaunchState>(state =>
+                    {
+                        Console.WriteLine(state);
+                        UpdateProgressText?.Invoke($"状态：{state}");
+                    
+                        // 当游戏启动状态变化时，更新进度文本
+                        if (state == LaunchState.Launched)
+                        {
+                            UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
+                        }
+                    }),
+                    LaunchArgs = string.IsNullOrEmpty(args) ? null : args
+                });
+            }
+            else
+            {
+                try
+                {
+                    var account = CoreInit.GetMsAccountConfig.Invoke();
+
+                    if (account == null)
+                    {
+                        LaunchCompleted?.Invoke();
+                        return;
                     }
-                }),
-                LaunchArgs = string.IsNullOrEmpty(args) ? null : args
-            });
+            
+                    var accountInfo = await CoreInit.OnRefreshAccount?.Invoke(account!)!;
+                    launchCore.LoadDll();
+                    auth = await launchCore.AuthenticateAsync(JsonSerializer.Serialize(accountInfo.AuthResult));
+                    
+                    var process = launchCore.LaunchAndInjectAsync(
+                        Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile),
+                        null,
+                        VersionInfo.VersionPath,
+                        auth,
+                        TimeSpan.FromSeconds(60)).Result;
+                    MinecraftProcess = Process.GetProcessById((int)process.ProcessId);
+                    auth.Dispose();
+                }catch{ }
+
+                UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
+            }
 
             if (MinecraftProcess != null)
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
 
-                
+                if (auth != null)
+                {
+                    try
+                    {
+                        launchCore.LoadInject(MinecraftProcess.Id, Process.GetCurrentProcess().Id, auth);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                }
 
                 LaunchingCount--;
                 if (LaunchingCount == 0) LaunchedBehavior?.Invoke();
@@ -279,7 +328,7 @@ public class EasyLauncher
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"启动游戏时发生错误: {ex}");
+            Console.WriteLine($@"启动游戏时发生错误: {ex.StackTrace}");
             
             // 确保计时器停止
             if (_gameplayStopwatch.IsRunning)

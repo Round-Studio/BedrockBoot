@@ -88,14 +88,15 @@ public partial class NeoMainPage : UserControl
                 Page = typeof(MainAccountPage)
             });
 #endif
-#if WINDOWS && DEBUG
-        RegisterTopItem(new TopBarItemInfo
-        {
-            ItemGlyph = "\uE716",
-            ItemText = "账户管理",
-            Tag = "AccountManager",
-            Page = typeof(MainAccountPage)
-        });
+#if WINDOWS
+        if (GlobalModel.Config.Data.IsUseMultipleUsers)
+            RegisterTopItem(new TopBarItemInfo
+            {
+                ItemGlyph = "\uE716",
+                ItemText = "账户管理",
+                Tag = "AccountManager",
+                Page = typeof(MainAccountPage)
+            });
 #endif
         RegisterTopItem(new TopBarItemInfo
         {

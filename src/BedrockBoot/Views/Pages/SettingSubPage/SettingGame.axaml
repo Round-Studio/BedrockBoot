@@ -105,6 +105,15 @@
                        Text="{DynamicResource Settings.Game.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"
+                                          Name="IsUseMultipleUsersCard"
+                                          Header="使用多账户"
+                                          Description="在 Windows 下使用全新的多账户模式进行游戏"
+                                          Glyph="&#xE716;">
+                <ToggleSwitch Name="IsUseMultipleUsers" 
+                              IsCheckedChanged="IsUseMultipleUsers_OnIsCheckedChanged"></ToggleSwitch>
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="{DynamicResource Settings.Game.LaunchCommand.Title}"
                                           Description="{DynamicResource Settings.Game.LaunchCommand.Desc}"
                                           Name="LaunchCommandBtn"

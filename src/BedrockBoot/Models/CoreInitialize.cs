@@ -8,6 +8,7 @@ using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Account.Microsoft;
+using BedrockBoot.Models.Account.Microsoft.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Options;
@@ -145,11 +146,9 @@ public class CoreInitialize
     {
         try
         {
-            await CoreInit.Init();
-
-            CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
 #if LINUX
             CoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
+#endif
             CoreInit.GetMsAccountConfig = () =>
             {
                 if (Core.Global.GlobalModel.Config.Data.IsChooseAccountBeforeLaunch)
@@ -217,7 +216,8 @@ public class CoreInitialize
                 
                 return null;
             };
-#endif
+            await CoreInit.Init();
+            CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
         }
         catch (Exception ex)
         {

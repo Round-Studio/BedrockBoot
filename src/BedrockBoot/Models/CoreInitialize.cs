@@ -216,8 +216,8 @@ public class CoreInitialize
                 
                 return null;
             };
-            await CoreInit.Init();
             CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
+            await CoreInit.Init();
         }
         catch (Exception ex)
         {

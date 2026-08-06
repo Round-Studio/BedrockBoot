@@ -1,5 +1,6 @@
 ﻿using BedrockBoot.Base.Entry.Account.Microsoft;
 using BedrockBoot.Core.Global;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Services;
@@ -12,13 +13,26 @@ public class CoreInit
 {
     public static async Task Init()
     {
+        Round.SDK.Plugin.BedrockBoot.Register.RegisterService.RegisterLaunchingEvent((s =>
+        {
+            var gameInfo = GameInfoHelper.GetVersionConfig(s);
+            var bodyFile = Path.Combine(gameInfo.VersionPath!, gameInfo.BodyFile!);
+            var isAdmin = FileCompatibilityChecker.IsRunAsAdminChecked(bodyFile);
+            Console.WriteLine($@"当前游戏文件是否需要管理员运行：{isAdmin}");
+            if (isAdmin)
+            {
+                FileCompatibilityChecker.RemoveRunAsAdmin(bodyFile);
+                Console.WriteLine(@"已取消文件的管理员权限");
+            }
+        }));
+        
         CoreGlobal.BedrockCore = new BedrockCore
         {
             Options = new CoreOptions
             {
-                IsAutoCompleteVC = true,
+                IsAutoCompleteVC = false,
                 IsAutoOpenDevelopment = false,
-                IsAutoCompleteGameInput = true,
+                IsAutoCompleteGameInput = false,
                 IsCheckMD5 = true
             }
         };

@@ -160,7 +160,7 @@ public class EasyLauncher
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
 
-        RegisterService.API.LaunchingEvent.ForEach(action => new Thread(() =>
+        RegisterService.API.LaunchingEvent.ForEach(action =>
         {
             try
             {
@@ -170,7 +170,7 @@ public class EasyLauncher
             {
                 Console.WriteLine($@"执行启动前方法失败：{ex}");
             }
-        }).Start());
+        });
 
         // 执行用户自定义的启动前命令
         var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;

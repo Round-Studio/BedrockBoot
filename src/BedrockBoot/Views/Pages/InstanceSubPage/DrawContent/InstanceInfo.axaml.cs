@@ -19,6 +19,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 
@@ -35,6 +36,7 @@ public partial class InstanceInfo : UserControl
 #if LINUX
         IsolationCard.IsVisible = false;
         HighLevel.IsVisible = false;
+        IsRunAdminCard.IsVisible = false;
 #endif
 
 #if RELEASE
@@ -65,6 +67,9 @@ public partial class InstanceInfo : UserControl
         CustomizationBox.IsEnabled = VersionInfo.Info.GameIconType == GameIconType.Customization;
         IconPathInput.Text = VersionInfo.Info.GameIconPath;
         InstanceIsolationPanel.IsVisible = InstanceIsolationPanel.IsEnabled = VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK;
+#if WINDOWS
+        IsRunAdminCard.IsVisible = (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK) && GlobalModel.Config.Data.IsUseMultipleUsers;
+#endif
         
         if ((int)VersionInfo.Info.GameIconType >= 2025)
         {
@@ -96,6 +101,7 @@ public partial class InstanceInfo : UserControl
                 InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
                 InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
                 GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
+                IsRunAdmin.IsChecked = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun;
                 CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
             });
 
@@ -228,6 +234,7 @@ public partial class InstanceInfo : UserControl
             VersionInfo.Config.IsModes = (bool)InstanceMod.IsChecked!;
             VersionInfo.Config.IsDetailedLog = (bool)InstanceDetailedLogs.IsChecked!;
             VersionInfo.Config.IsSyncPublicOptions = (bool)GameConfigSwitch.IsChecked!;
+            VersionInfo.Config.SysWindowsConfig.IsUseAdminRun = (bool)IsRunAdmin.IsChecked!;
 
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }

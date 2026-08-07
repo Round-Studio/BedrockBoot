@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.8" />
+        <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.9" />
         <PackageReference Include="Dubya.WindowsMediaController" Version="2.5.6" />
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
         <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />

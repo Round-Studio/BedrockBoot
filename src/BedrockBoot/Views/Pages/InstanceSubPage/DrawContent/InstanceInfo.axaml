@@ -189,6 +189,15 @@
                     <ToggleSwitch Name="InstanceDetailedLogs"
                                   IsCheckedChanged="BoolTypeConfig_OnChanged" />
                 </onePointControls:SettingCard>
+                    
+                <onePointControls:SettingCard Glyph="&#xE7EF;"
+                                              Name="IsRunAdminCard"
+                                              Header="以管理员身份运行游戏"
+                                              Description="启动游戏使用系统管理员权限运行游戏，效果与右键以管理员运行一致">
+                    <ToggleSwitch IsChecked="False"
+                                  Name="IsRunAdmin"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
                 
                 <TextBlock FontWeight="Bold"
                            Name="HighLevel"

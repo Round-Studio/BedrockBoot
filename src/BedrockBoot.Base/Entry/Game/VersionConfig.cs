@@ -17,6 +17,11 @@ public class VersionConfig
     [JsonIgnore] public string? VersionPath { get; set; } = string.Empty;
     [JsonIgnore] public string? VersionsRootPath { get; set; } = string.Empty;
     [JsonIgnore] public string? BodyFile { get; set; } = string.Empty;
+    
+    public class SysWindowsConfig
+    {
+        [JsonPropertyName("isUseAdminRun")] public bool IsUseAdminRun { get; set; } = false;
+    }
 
     public class VersionInfo
     {
@@ -44,7 +49,9 @@ public class VersionConfig
         [JsonPropertyName("isSyncPubOptions")] public bool IsSyncPublicOptions { get; set; } = true;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
         [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
-        [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);    }
+        [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
+        [JsonPropertyName("sysWindowsConfig")] public SysWindowsConfig SysWindowsConfig { get; set; } = new();
+    }
     
     public class PlayerDataEntry
     {

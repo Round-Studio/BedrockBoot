@@ -222,7 +222,7 @@
                     <info:NoticePanel HorizontalAlignment="Right"
                                       VerticalAlignment="Bottom"
                                       Name="NoticePanel"
-                                      Margin="0,0,0,58" />
+                                      Margin="0,0,0,68" />
 
                     <dialog:DialogHost Name="DialogHost" />
                 </Grid>

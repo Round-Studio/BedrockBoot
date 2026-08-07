@@ -228,7 +228,7 @@ public class EasyLauncher
                     GameFolder = VersionInfo.VersionPath,
                     GameType = VersionInfo.Info.VersionType,
                     MinecraftBuildType = VersionInfo.Info.BuildType,
-                    RunAsAdministrator = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun && GlobalModel.Config.Data.IsUseMultipleUsers,
+                    RunAsAdministrator = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun && !GlobalModel.Config.Data.IsUseMultipleUsers,
                     RegisterProgress = new Progress<DeploymentProgress>(progress =>
                     {
                         Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");

@@ -68,7 +68,7 @@ public partial class InstanceInfo : UserControl
         IconPathInput.Text = VersionInfo.Info.GameIconPath;
         InstanceIsolationPanel.IsVisible = InstanceIsolationPanel.IsEnabled = VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK;
 #if WINDOWS
-        IsRunAdminCard.IsVisible = (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK) && GlobalModel.Config.Data.IsUseMultipleUsers;
+        IsRunAdminCard.IsVisible = (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK) && !GlobalModel.Config.Data.IsUseMultipleUsers;
 #endif
         
         if ((int)VersionInfo.Info.GameIconType >= 2025)

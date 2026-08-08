@@ -28,6 +28,7 @@ namespace BedrockBoot.Models.Pack.Theme
             Directory.CreateDirectory(Path.Combine(tmpFolder, "music"));
 
             endConf.BackgroundImageBlur = GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
+            endConf.BackgroundAnimation = GlobalModel.Config.Data.StyleConfig.BackgroundAnimation;
             endConf.BackgroundImageOpacity = GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity;
             endConf.BackgroundUse3D = GlobalModel.Config.Data.StyleConfig.Background3D;
 

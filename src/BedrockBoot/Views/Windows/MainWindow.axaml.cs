@@ -490,8 +490,10 @@ public partial class MainWindow : Window
                         Background3D = packConfig.BackgroundUse3D,
                         BackgroundImage = packConfig.BackgroundImageFileName,
                         BackgroundImageOpacity = packConfig.BackgroundImageOpacity,
-                        BackgroundImageBlur = packConfig.BackgroundImageBlur
+                        BackgroundImageBlur = packConfig.BackgroundImageBlur,
+                        BackgroundAnimation = packConfig.BackgroundAnimation
                     });
+                    BackgroundView.IsVisible = true;
 
                     App.LoadColor(packConfig.ThemeColor,
                         packConfig.ThemeType);

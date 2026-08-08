@@ -42,30 +42,54 @@
                                               IsClickable="True"
                                               Name="RestoreDefaultBackgroundBtn"
                                               Click="RestoreDefaultBackgroundBtn_OnClick"/>
-
+                
                 <onePointControls:SettingCard
-                    Header="{DynamicResource Settings.Background.Image.Parallax.Title}"
-                    Description="{DynamicResource Settings.Background.Image.Parallax.Desc}"
-                    Glyph="&#xF158;"
+                    Header="动效背景"
+                    Description="使用类似 AppleMusic 播放器类似的背景样式"
+                    Glyph="&#xF159;"
                     IsClickable="False">
-                    <ToggleSwitch Name="Image3D"
-                                  IsCheckedChanged="Image3D_OnIsCheckedChanged" />
+                    <ToggleSwitch Name="AnimationToggle"
+                                  IsCheckedChanged="AnimationToggle_OnIsCheckedChanged" />
                 </onePointControls:SettingCard>
 
-                <onePointControls:SettingCard
-                    Header="背景图片质量"
-                    Description="选择渲染质量 (越高越清晰，但所占用的内存就越大)"
-                    Glyph="&#xEF20;"
-                    IsClickable="False">
-                    <ComboBox Width="200"
-                              SelectedIndex="1"
-                              Name="ImageQuality"
-                              SelectionChanged="ImageQuality_OnSelectionChanged">
-                        <ComboBoxItem Content="低"></ComboBoxItem>
-                        <ComboBoxItem Content="中"></ComboBoxItem>
-                        <ComboBoxItem Content="高 (原始质量)"></ComboBoxItem>
-                    </ComboBox>
-                </onePointControls:SettingCard>
+                <StackPanel Name="DefImageSetting"
+                            Spacing="8">
+                    <onePointControls:SettingCard
+                        Header="{DynamicResource Settings.Background.Image.Parallax.Title}"
+                        Description="{DynamicResource Settings.Background.Image.Parallax.Desc}"
+                        Glyph="&#xF158;"
+                        IsClickable="False">
+                        <ToggleSwitch Name="Image3D"
+                                      IsCheckedChanged="Image3D_OnIsCheckedChanged" />
+                    </onePointControls:SettingCard>
+
+                    <onePointControls:SettingCard
+                        Header="背景图片质量"
+                        Description="选择渲染质量 (越高越清晰，但所占用的内存就越大)"
+                        Glyph="&#xEF20;"
+                        IsClickable="False">
+                        <ComboBox Width="200"
+                                  SelectedIndex="1"
+                                  Name="ImageQuality"
+                                  SelectionChanged="ImageQuality_OnSelectionChanged">
+                            <ComboBoxItem Content="低"></ComboBoxItem>
+                            <ComboBoxItem Content="中"></ComboBoxItem>
+                            <ComboBoxItem Content="高 (原始质量)"></ComboBoxItem>
+                        </ComboBox>
+                    </onePointControls:SettingCard>
+
+                    <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Image.Blur.Title}"
+                                                  Description="{DynamicResource Settings.Background.Image.Blur.Desc}"
+                                                  Glyph="&#xF5EF;"
+                                                  IsClickable="False">
+                        <Slider Width="200"
+                                Minimum="0"
+                                Maximum="100"
+                                Classes="Number"
+                                Name="BlurBar"
+                                ValueChanged="OptBar_OnValueChanged" />
+                    </onePointControls:SettingCard>
+                </StackPanel>
 
                 <onePointControls:SettingCard
                     Header="{DynamicResource Settings.Background.Image.Opacity.Title}"
@@ -77,18 +101,6 @@
                             Maximum="100"
                             Classes="Number"
                             Name="OptBar"
-                            ValueChanged="OptBar_OnValueChanged" />
-                </onePointControls:SettingCard>
-
-                <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Image.Blur.Title}"
-                                              Description="{DynamicResource Settings.Background.Image.Blur.Desc}"
-                                              Glyph="&#xF5EF;"
-                                              IsClickable="False">
-                    <Slider Width="200"
-                            Minimum="0"
-                            Maximum="100"
-                            Classes="Number"
-                            Name="BlurBar"
                             ValueChanged="OptBar_OnValueChanged" />
                 </onePointControls:SettingCard>
             </StackPanel>

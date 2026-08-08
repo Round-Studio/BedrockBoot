@@ -77,15 +77,14 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             BackgroundImageBox.IsVisible = false;
             LiveOptCard.IsVisible = false;
 
-            if (GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image)
-            {
-                BackgroundImageBox.IsVisible = true;
-            }
+            BackgroundImageBox.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image;
+            DefImageSetting.IsVisible = !GlobalModel.Config.Data.StyleConfig.BackgroundAnimation;
 
             LiveOptCard.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel;
             LiveBlurCard.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel;
             LiveOptBar.Value = GlobalModel.Config.Data.StyleConfig.LiveOpacity;
             LiveBlurSwitch.IsChecked = GlobalModel.Config.Data.StyleConfig.LiveBlur;
+            AnimationToggle.IsChecked = GlobalModel.Config.Data.StyleConfig.BackgroundAnimation;
 
             IsEdit = true;
         }
@@ -142,8 +141,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
 
                 GlobalModel.Config.Save();
-                Models.Global.GlobalModel.MainWindow.SetBackgroundBlur(GlobalModel.Config.Data.StyleConfig
-                    .BackgroundImageBlur);
+                Models.Global.GlobalModel.MainWindow.BackgroundView.ApplyImageBackground(GlobalModel.Config.Data.StyleConfig);
             }
         }
 
@@ -193,6 +191,17 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             {
                 GlobalModel.Config.Data.StyleConfig.ImageQuality = (ImageQuality)ImageQuality.SelectedIndex;
                 GlobalModel.Config.Save();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
+            }
+        }
+
+        private void AnimationToggle_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+        {
+            if (IsEdit)
+            {
+                GlobalModel.Config.Data.StyleConfig.BackgroundAnimation = (bool)AnimationToggle.IsChecked!;
+                GlobalModel.Config.Save();
+                UpdateUI();
                 Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }
         }

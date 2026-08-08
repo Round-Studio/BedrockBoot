@@ -75,7 +75,7 @@
                        Text="{DynamicResource Settings.Download.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="Beta UI"
+                                          Header="Beta 测试项"
                                           Description="启用或关闭 BedrockBoot 的 Beta 测试项"
                                           IsClickable="True"
                                           IsShowActionIcon="False"

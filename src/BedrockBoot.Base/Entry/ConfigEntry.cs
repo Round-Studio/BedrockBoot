@@ -76,6 +76,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("backgroundImage")] public string BackgroundImage { get; set; } = string.Empty;
         [JsonPropertyName("backgroundImageOpacity")] public int BackgroundImageOpacity { get; set; } = 100;
         [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 1;
+        [JsonPropertyName("backgroundAnimation")] public bool BackgroundAnimation { get; set; } = false;
         [JsonPropertyName("background3d")] public bool Background3D { get; set; } = false;
         [JsonPropertyName("liveOpacity")] public int LiveOpacity { get; set; } = 40;
         [JsonPropertyName("liveBlur")] public bool LiveBlur { get; set; } = false;

@@ -11,6 +11,7 @@
         xmlns:dialog="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;assembly=OnePointUI.Avalonia"
         xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
         xmlns:global1="clr-namespace:BedrockBoot.Models.Global;assembly=BedrockBoot.Core"
+        xmlns:imageView="clr-namespace:BedrockBoot.Views.Control.Widgets.ImageView"
         mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
         x:Class="BedrockBoot.Views.Windows.MainWindow"
         Width="1100" Height="620"
@@ -31,7 +32,7 @@
               Name="BackgroundCover"
               Opacity="0.58" />
 
-        <Border>
+        <Border ClipToBounds="False">
             <Grid>
                 <Grid Name="BackgroundGroupBox">
                     <Grid.Transitions>
@@ -51,18 +52,11 @@
                           Background="{DynamicResource AccentBackgroundBrush}"
                           IsVisible="False" />
 
-                    <Grid Name="BackgroundBox"
-                          Margin="0"
-                          IsVisible="False">
-                        <Grid.Effect>
-                            <BlurEffect Radius="0" />
-                        </Grid.Effect>
-                        <Grid Name="BackgroundImage" />
-                        <classes:ParallaxImage3D Name="BackgroundImage3D" />
-                        <Grid Name="BackgroundImageOpacity"
-                              Opacity="0"
-                              Background="{DynamicResource BackgroundBrush}" />
-                    </Grid>
+                    <imageView:BackgroundView Name="BackgroundView"
+                                              ClipToBounds="False"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch"/>
+                    
                     <Grid Name="LiveOpacity"
                           Opacity="0"
                           Background="{DynamicResource BackgroundBrush}" />

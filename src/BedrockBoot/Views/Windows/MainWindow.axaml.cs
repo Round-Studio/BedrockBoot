@@ -406,7 +406,8 @@ public partial class MainWindow : Window
                 TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
                 break;
             case StyleType.Image:
-                ApplyImageBackground(style);
+                BackgroundView.ApplyImageBackground(style);
+                BackgroundView.IsVisible = true;
                 break;
             case StyleType.AccentColor:
                 AccentBackgroundBox.IsVisible = true;
@@ -436,100 +437,13 @@ public partial class MainWindow : Window
         LiveOpacity.Opacity =
             (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.LiveOpacity) * 0.01;
     }
-	public Bitmap LoadScaledByFactorOptimized(string filePath, double scale,BitmapInterpolationMode quality = BitmapInterpolationMode.LowQuality)
-	{
-		using var stream = File.OpenRead(filePath);
-		// 用 ImageSharp 只读取尺寸（不解码像素）
-		var imageInfo = SixLabors.ImageSharp.Image.Identify(stream);
-		int originalWidth = imageInfo.Width;
-		int originalHeight = imageInfo.Height;
-		int targetWidth = (int)(originalWidth * scale);
-		if (targetWidth < 1) targetWidth = 1;
-
-		stream.Seek(0, SeekOrigin.Begin);
-		return Bitmap.DecodeToWidth(stream, targetWidth,BitmapInterpolationMode.LowQuality);
-	}
-	private async void ApplyImageBackground(StyleConfig style)
-    {
-        var imgPath = style.BackgroundImage;
-        if (!File.Exists(imgPath)) return;
-
-        try
-        {
-            BackgroundBox.IsVisible = true;
-            BackgroundImage.IsVisible = false;
-            BackgroundImage3D.IsVisible = false;
-
-            SetBackgroundBlur(style.BackgroundImageBlur);
-
-
-            var bitmap = await Task.Run<Bitmap>((() =>
-            {
-                return LoadScaledByFactorOptimized(imgPath,
-                    Core.Global.GlobalModel.Config.Data.StyleConfig.ImageQuality switch
-                    {
-                        ImageQuality.High => 1,
-                        ImageQuality.Medium => 0.3,
-                        ImageQuality.Lower => 0.1
-                    }, Core.Global.GlobalModel.Config.Data.StyleConfig.ImageQuality switch
-                    {
-                        ImageQuality.High => BitmapInterpolationMode.HighQuality,
-                        ImageQuality.Medium => BitmapInterpolationMode.LowQuality,
-                        ImageQuality.Lower => BitmapInterpolationMode.LowQuality
-                    });
-            }));
-            if (style.Background3D)
-            {
-                BackgroundImage3D.IsVisible = true;
-                BackgroundImage3D.Source = bitmap;
-                BackgroundImage3D.Stretch = Stretch.UniformToFill;
-            }
-            else
-            {
-                BackgroundImage.IsVisible = true;
-                BackgroundImage.Background = new ImageBrush
-                {
-                    Stretch = Stretch.UniformToFill,
-                    Source = bitmap
-                };
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"Background image render error: {ex.Message}");
-        }
-    }
-
-    public void SetBackgroundBlur(int radius)
-    {
-        if (radius > 0)
-        {
-            // 复用同一个 BlurEffect 实例，避免每次都 new 一份离屏渲染目标
-            if (BackgroundBox.Effect is not BlurEffect blur)
-            {
-                blur = new BlurEffect();
-                BackgroundBox.Effect = blur;
-            }
-
-            blur.Radius = radius;
-            BackgroundBox.Margin = new Thickness(-radius);
-        }
-        else
-        {
-            BackgroundBox.Effect = null;
-            BackgroundBox.Margin = new Thickness(0);
-        }
-
-        // 透明度应用
-        BackgroundImageOpacity.Opacity =
-            (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
-    }
+	
 
     public void ReSetBackground()
     {
         // 状态重置
         TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
-        BackgroundBox.IsVisible = false;
+        BackgroundView.IsVisible = false;
         AccentBackgroundBox.IsVisible = false;
         AnimationBackground.IsVisible = false;
         LiveOpacity.IsVisible = false;
@@ -571,7 +485,7 @@ public partial class MainWindow : Window
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     ReSetBackground();
-                    ApplyImageBackground(new StyleConfig
+                    BackgroundView.ApplyImageBackground(new StyleConfig
                     {
                         Background3D = packConfig.BackgroundUse3D,
                         BackgroundImage = packConfig.BackgroundImageFileName,

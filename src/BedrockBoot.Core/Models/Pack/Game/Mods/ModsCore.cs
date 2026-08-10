@@ -39,7 +39,7 @@ public class ModsCore
         var rawBody = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row", VersionInfo.BodyFile);
         var body = Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile);
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");
-        var fullPath = Path.Combine(VersionInfo.VersionPath, "PreloadCpp.dll");
+        var fullPath = Path.Combine(VersionInfo.VersionPath, "PreLoad.NET.dll");
 
         if (!Directory.Exists(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row")))
             Directory.CreateDirectory(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row"));
@@ -50,11 +50,11 @@ public class ModsCore
         {
             if(File.Exists(fullPath)) File.Delete(fullPath);
             File.WriteAllBytes(fullPath,
-                Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreloadCpp.dll"));
+                Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreLoad.NET.dll"));
 
-            Console.WriteLine(@"PreLoadCpp.DLL 释放完毕");
+            Console.WriteLine(@"PreLoad.NET.dll 释放完毕");
         }
-        catch(Exception exception) {Console.WriteLine($@"PreloadCpp.dll 释放失败 {exception}"); }
+        catch(Exception exception) {Console.WriteLine($@"PreLoad.NET.dll 释放失败 {exception}"); }
 
         // 如果raw文件不存在，直接从body复制创建
         if (!File.Exists(rawBody))
@@ -147,14 +147,17 @@ public class ModsCore
                 using (var fs = new FileStream(body, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
                 using (var peFile = new PeFile(fs))
                 {
-                    peFile.AddImport("PreloadCpp.dll", "Load");
-                    /*if (peFile.ImageNtHeaders != null)
+                    peFile.AddImport("PreLoad.NET.dll", "DllMain");
+                    if (VersionInfo.Config.IsConsole && GlobalModel.Config.Data.IsUseBeta)
                     {
-                        peFile.ImageNtHeaders.OptionalHeader.Subsystem = SubsystemType.WindowsCui;
-                        System.Console.WriteLine("转换完成！Subsystem 已修改为 WindowsCui (3)");
-                    }*/
+                        if (peFile.ImageNtHeaders != null)
+                        {
+                            peFile.ImageNtHeaders.OptionalHeader.Subsystem = SubsystemType.WindowsCui;
+                            System.Console.WriteLine("转换完成！Subsystem 已修改为 WindowsCui (3)");
+                        }
+                    }
                     peFile.Flush();
-                    Console.WriteLine(@"Main EXE 文件修改完毕，已导入 PreLoadCpp.DLL");
+                    Console.WriteLine(@"Main EXE 文件修改完毕，已导入 PreLoad.NET.dll");
                 }
             }
             else

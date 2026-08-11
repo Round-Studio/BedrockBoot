@@ -20,6 +20,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
       <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Downloader\BedrockBoot.Downloader.csproj" />
     </ItemGroup>
 
 </Project>

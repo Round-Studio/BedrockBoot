@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Progress;
 
-namespace BedrockBoot.Core.Models.Download;
+namespace BedrockBoot.Downloader.File;
 
 public class MultiThreadDownloader : IDisposable
 {
@@ -26,19 +26,23 @@ public class MultiThreadDownloader : IDisposable
     private readonly int _maxConcurrency;
     private Dictionary<string, string>? _additionalHeaders;
 
+    public static int MaxConcurrency { get; set; } = 4;
+    public static int BufferSize { get; set; } = 81920;
+    public static int DefaultTimeoutSeconds { get; set; } = 20;
+
     /// <summary>
     ///     初始化
     /// </summary>
     /// <param name="maxConcurrency">最大并发下载线程数</param>
     /// <param name="bufferSize">每次读写操作的缓冲区大小</param>
     /// <param name="defaultTimeoutSeconds">默认的单个 HTTP 请求超时时间（秒）默认为 20 秒</param>
-    public MultiThreadDownloader(int maxConcurrency = 4, int bufferSize = 81920, int defaultTimeoutSeconds = 20)
+    public MultiThreadDownloader()
     {
         _handler = new SocketsHttpHandler
         {
             PooledConnectionLifetime = TimeSpan.FromMinutes(2),
             PooledConnectionIdleTimeout = TimeSpan.FromMinutes(1),
-            MaxConnectionsPerServer = maxConcurrency * 2,
+            MaxConnectionsPerServer = MaxConcurrency * 2,
             AutomaticDecompression = DecompressionMethods.All,
             UseProxy = false,
             AllowAutoRedirect = true,
@@ -46,15 +50,15 @@ public class MultiThreadDownloader : IDisposable
         };
 
         _httpClient = new HttpClient(_handler);
-        _defaultTimeout = TimeSpan.FromSeconds(defaultTimeoutSeconds);
+        _defaultTimeout = TimeSpan.FromSeconds(DefaultTimeoutSeconds);
         // HttpClient.Timeout 覆盖整个响应体读取，大文件慢速网络必然超时。
         // 这里设为无限，短请求（如获取文件信息）单独用 CancellationTokenSource 控制超时。
         _httpClient.Timeout = Timeout.InfiniteTimeSpan;
 
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (compatible; ImprovedMultiThreadDownloader/1.0)");
-        _maxConcurrency = maxConcurrency;
-        _bufferSize = bufferSize;
+        _maxConcurrency = MaxConcurrency;
+        _bufferSize = BufferSize;
     }
 
     public Dictionary<string, string>? AdditionalHeaders
@@ -333,10 +337,10 @@ public class MultiThreadDownloader : IDisposable
                 await Task.Delay(1000 * (int)Math.Pow(2, retry), cancellationToken);
 
                 // 删除可能损坏的临时文件
-                if (File.Exists(tempFilePath))
+                if (System.IO.File.Exists(tempFilePath))
                     try
                     {
-                        File.Delete(tempFilePath);
+                        System.IO.File.Delete(tempFilePath);
                     }
                     catch
                     {
@@ -506,10 +510,10 @@ public class MultiThreadDownloader : IDisposable
                 await Task.Delay(1000 * (int)Math.Pow(2, retry), cancellationToken);
 
                 // 删除可能损坏的临时文件
-                if (File.Exists(tempFilePath))
+                if (System.IO.File.Exists(tempFilePath))
                     try
                     {
-                        File.Delete(tempFilePath);
+                        System.IO.File.Delete(tempFilePath);
                     }
                     catch
                     {
@@ -692,7 +696,7 @@ public class MultiThreadDownloader : IDisposable
         await Task.Delay(1000, cancellationToken);
 
         // 缺失任何分段都会产出损坏文件，必须显式报错而不是静默跳过
-        var missingFiles = tempFiles.Where(f => !File.Exists(f)).ToArray();
+        var missingFiles = tempFiles.Where(f => !System.IO.File.Exists(f)).ToArray();
         if (missingFiles.Length > 0)
             throw new FileNotFoundException(
                 $"合并临时文件失败: 缺失 {missingFiles.Length} 个分段文件: {string.Join(", ", missingFiles)}");
@@ -736,10 +740,10 @@ public class MultiThreadDownloader : IDisposable
     private void CleanupTempFiles(string[] tempFiles)
     {
         foreach (var tempFile in tempFiles)
-            if (!string.IsNullOrEmpty(tempFile) && File.Exists(tempFile))
+            if (!string.IsNullOrEmpty(tempFile) && System.IO.File.Exists(tempFile))
                 try
                 {
-                    File.Delete(tempFile);
+                    System.IO.File.Delete(tempFile);
                 }
                 catch (Exception ex)
                 {

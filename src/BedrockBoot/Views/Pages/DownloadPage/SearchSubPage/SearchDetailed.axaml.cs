@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BedrockBoot.Downloader.Game;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
@@ -298,7 +299,7 @@ public partial class SearchDetailed : ISetting
     {
         return Task.Run(() =>
         {
-            var allVersions = VersionHelper.GetVersions()
+            var allVersions = McAppxVersionHelper.GetVersions()
                 .Where(x => x.Type == (MinecraftGameTypeVersion)GameType.SelectedIndex)
 #if LINUX
                 .Where(x => x.BuildType == MinecraftBuildTypeVersion.GDK)

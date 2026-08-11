@@ -1,7 +1,7 @@
 ﻿using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Downloader.File;
 using BedrockBoot.LeviLamina.Base.Entry.Manifest;
 using BedrockBoot.LeviLamina.Base.Entry.Porgress;
 using BedrockBoot.LeviLamina.Base.Enum;
@@ -11,6 +11,7 @@ using Octokit;
 using Round.SDK.Entity;
 using Round.SDK.Helper;
 using System.Collections.Concurrent;
+using BedrockBoot.Downloader.File;
 using Round.SDK.Enum;
 using Round.SDK.Helper.IO;
 

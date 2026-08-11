@@ -6,6 +6,9 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Downloader;
+using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.Game;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Models.Account.Microsoft.Helper;
@@ -32,6 +35,7 @@ public class CoreInitialize
     private static I18nManager I18n => I18nManager.Instance;
     public static async Task Init()
     {
+        GameDownloader.UserAgent = $"BedrockBoot/{GlobalModel.BodyVersion}";
         DesktopWorkspace.WidgetRegister(new()
         {
             Name = "时钟",
@@ -78,6 +82,14 @@ public class CoreInitialize
         {
             _ = GetDevelopMode();
             CheckUwpDependence();
+        });
+        
+        Core.Global.GlobalModel.Config.AddBeforeSaveCallback((conf) =>
+        {
+            var config = conf.Data;
+            MultiThreadDownloader.MaxConcurrency = config.DownloadChunkCount;
+            
+            Console.WriteLine(@"下载分片数量已同步");
         });
 
         RegisterService.API.LaunchingEvent.Add(path =>

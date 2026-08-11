@@ -8,6 +8,7 @@ using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
+using BedrockBoot.Downloader.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
@@ -35,7 +36,7 @@ public class IntegrationPackager
             Message = "获取版本详细信息"
         });
 
-        var gameVersions = VersionHelper.GetVersions()
+        var gameVersions = McAppxVersionHelper.GetVersions()
             .Find(x => x.ID.Replace(".", "") ==
                        GameInfoHelper.GetVersionConfig(VersionConfig.VersionPath).Info.Version.Replace(".", ""));
 

@@ -8,6 +8,7 @@ using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Enum.Type.Progress.Steps;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Downloader.Game;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Services;
 using BedrockLauncher.Core.CoreOption;
@@ -29,7 +30,7 @@ public class InstanceUpdater
     public List<BuildInfo> GetUpdateableVersions()
     {
         var currentVersion = Version.Parse(_versionConfig.Info.Version);
-        var allVersions = VersionHelper.GetVersions();
+        var allVersions = McAppxVersionHelper.GetVersions();
 
         return allVersions
             .Where(buildInfo => Version.Parse(buildInfo.ID) > currentVersion)

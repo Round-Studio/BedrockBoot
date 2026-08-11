@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
@@ -18,20 +17,8 @@
         <TargetFramework>net10.0</TargetFramework>
         <DefineConstants>LINUX</DefineConstants>
     </PropertyGroup>
-
+    
     <ItemGroup>
-      <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
-      <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="System.Management" Version="11.0.0-preview.1.26104.118" />
-      <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.3" />
-      <PackageReference Include="Octokit" Version="14.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\Download\" />
-    </ItemGroup>
-
 </Project>

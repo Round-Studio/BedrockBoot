@@ -1,10 +1,10 @@
 ﻿using Octokit;
 using System.Text.Json;
 using BedrockBoot.Lip.Manifest;
-using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Base.Entry.Progress;
 using Octokit.Internal;
 using System.IO.Compression;
+using BedrockBoot.Downloader.File;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Lip.Global;
 
@@ -243,7 +243,7 @@ public class LipCore
                     continue;
                 }
 
-                var downloader = new GithubFilesDownloader(maxConcurrency: 4);
+                var downloader = new GithubFilesDownloader();
 
                 var task = downloader.DownloadAsync(
                     url,

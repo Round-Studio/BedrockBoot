@@ -9,7 +9,8 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Entry.Task;
-using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.File;
 using BedrockBoot.Models.Global;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
@@ -82,9 +83,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
         Task.Run(async () =>
         {
-            var download = new GithubFilesDownloader(
-                GlobalModel.Config.Data.DownloadChunkCount,
-                1024);
+            var download = new GithubFilesDownloader();
 
             await download.DownloadAsync(
                 downloadUrl,

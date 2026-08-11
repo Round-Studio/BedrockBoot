@@ -5,7 +5,7 @@ using BedrockBoot.Chunker.Base.Entry.Info;
 using BedrockBoot.Chunker.Base.Manifest;
 using BedrockBoot.Chunker.Base.Enum;
 using BedrockBoot.Chunker.Event;
-using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Downloader.File;
 using Octokit;
 using Round.SDK.Entity;
 

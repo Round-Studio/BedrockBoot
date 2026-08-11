@@ -6,6 +6,7 @@
   <Folder Name="/Dependence/">
     <Project Path="src/BedrockBoot.Chunker/BedrockBoot.Chunker.csproj" />
     <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />
+    <Project Path="src/BedrockBoot.Downloader/BedrockBoot.Downloader.csproj" />
     <Project Path="src/BedrockBoot.GravityCone/BedrockBoot.GravityCone.csproj" />
     <Project Path="src/BedrockBoot.Inject/BedrockBoot.Inject.csproj" />
     <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />

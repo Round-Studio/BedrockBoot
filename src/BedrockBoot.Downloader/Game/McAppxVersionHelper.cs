@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Global;
-using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Downloader.Game;
 
-public class VersionHelper
+partial class McAppxVersionHelper
 {
     private static readonly HttpClient _httpClient = new HttpClient();
     private static List<BuildInfo> _versions = null;
-    private static readonly string CacheFilePath = Path.Combine(PathsList.TempPath, "version_cache.json");
+    private static readonly string CacheFilePath = Path.Combine(PathsList.TempPath, "mcappx_version_cache.json");
     private static readonly TimeSpan CacheMaxAge = TimeSpan.FromHours(24); // 缓存24小时有效期
     private static readonly int MaxRetryCount = 3; // 最大重试次数
     
-    static VersionHelper()
+    static McAppxVersionHelper()
     {
         _httpClient.DefaultRequestHeaders.Add("User-Agent", "mcappx_developer");
         
@@ -27,7 +21,7 @@ public class VersionHelper
         Console.WriteLine($@"OS Version: {osVersion}");
     
         _httpClient.DefaultRequestHeaders.Add("User-Agent", 
-            $"BedrockBoot/{Global.GlobalModel.BodyVersion} ({osVersion})");
+            $"{GameDownloader.UserAgent} ({osVersion})");
     }
     
     // 缓存数据结构
@@ -61,9 +55,9 @@ public class VersionHelper
     {
         try
         {
-            if (File.Exists(CacheFilePath))
+            if (System.IO.File.Exists(CacheFilePath))
             {
-                File.Delete(CacheFilePath);
+                System.IO.File.Delete(CacheFilePath);
                 Console.WriteLine($@"缓存文件已删除: {CacheFilePath}");
             }
         }
@@ -80,9 +74,9 @@ public class VersionHelper
     {
         try
         {
-            if (File.Exists(CacheFilePath))
+            if (System.IO.File.Exists(CacheFilePath))
             {
-                var cacheTime = File.GetLastWriteTime(CacheFilePath);
+                var cacheTime = System.IO.File.GetLastWriteTime(CacheFilePath);
                 return DateTime.Now - cacheTime;
             }
         }
@@ -303,13 +297,13 @@ public class VersionHelper
         
         try
         {
-            if (!File.Exists(CacheFilePath))
+            if (!System.IO.File.Exists(CacheFilePath))
             {
                 Console.WriteLine(@"缓存文件不存在");
                 return false;
             }
             
-            var jsonString = File.ReadAllText(CacheFilePath);
+            var jsonString = System.IO.File.ReadAllText(CacheFilePath);
             var cache = JsonSerializer.Deserialize<VersionCache>(jsonString);
             
             if (cache == null || cache.Versions == null || cache.Versions.Count == 0)
@@ -379,7 +373,7 @@ public class VersionHelper
             };
             
             var jsonString = JsonSerializer.Serialize(cache, options);
-            File.WriteAllText(CacheFilePath, jsonString);
+            System.IO.File.WriteAllText(CacheFilePath, jsonString);
             
             Console.WriteLine($@"版本列表已缓存到文件: {CacheFilePath}");
         }

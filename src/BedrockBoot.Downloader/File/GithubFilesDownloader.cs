@@ -2,15 +2,15 @@
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Models.Global;
 
-namespace BedrockBoot.Core.Models.Download;
+namespace BedrockBoot.Downloader.File;
 
 public class GithubFilesDownloader
 {
     private readonly MultiThreadDownloader _downloader;
 
-    public GithubFilesDownloader(int maxConcurrency = 4, int bufferSize = 81920, int defaultTimeoutSeconds = 20)
+    public GithubFilesDownloader()
     {
-        _downloader = new MultiThreadDownloader(maxConcurrency, bufferSize, defaultTimeoutSeconds);
+        _downloader = new MultiThreadDownloader();
     }
 
     private async Task<(string SourceName, string Url)> TestDownloadSourcesAsync(

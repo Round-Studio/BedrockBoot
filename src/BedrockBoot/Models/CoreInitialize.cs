@@ -187,10 +187,10 @@ public class CoreInitialize
                         MsAccountManager.Accounts.Accounts.Find(x =>
                             x.BUID == MsAccountManager.Accounts.SelectUserBUID);
                 };
-                Console.WriteLine("正在刷新账户凭证...");
+                Console.WriteLine(@"正在刷新账户凭证...");
                 var client = new MsaDeviceCodeClient();
                 var tokenData = await client.RefreshTokenAsync(account.AuthResult.RefreshToken);
-                Console.WriteLine("刷新完毕。");
+                Console.WriteLine(@"刷新完毕。");
 
                 if (tokenData != null)
                 {
@@ -209,7 +209,7 @@ public class CoreInitialize
 
                     var accountResult = MsAccountManager.AccountConfigEntity.Data.Accounts[index];
                     MsAccountManager.AccountConfigEntity.Save();
-                    Console.WriteLine("新用户数据已保存");
+                    Console.WriteLine(@"新用户数据已保存");
 
                     return accountResult;
                 }

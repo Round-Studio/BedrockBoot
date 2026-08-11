@@ -28,19 +28,19 @@ public class XboxAuthClient
             };
 
             var jsonRequest = JsonSerializer.Serialize(request);
-            Console.WriteLine($"Xbox User Auth 请求: {jsonRequest}");
+            Console.WriteLine($@"Xbox User Auth 请求: {jsonRequest}");
             
             var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(Constants.XboxUserAuthEndpoint, content);
             var responseBody = await response.Content.ReadAsStringAsync();
             
-            Console.WriteLine($"Xbox User Auth 响应状态: {response.StatusCode}");
-            Console.WriteLine($"Xbox User Auth 响应内容: {responseBody}");
+            Console.WriteLine($@"Xbox User Auth 响应状态: {response.StatusCode}");
+            Console.WriteLine($@"Xbox User Auth 响应内容: {responseBody}");
 
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"Xbox User Auth 失败: {response.StatusCode}");
+                Console.WriteLine($@"Xbox User Auth 失败: {response.StatusCode}");
                 return null;
             }
 
@@ -65,15 +65,15 @@ public class XboxAuthClient
             };
 
             var jsonRequest = JsonSerializer.Serialize(request);
-            Console.WriteLine($"XSTS 请求: {jsonRequest}");
+            Console.WriteLine($@"XSTS 请求: {jsonRequest}");
             
             var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(Constants.XstsAuthEndpoint, content);
             var responseBody = await response.Content.ReadAsStringAsync();
             
-            Console.WriteLine($"XSTS 响应状态: {response.StatusCode}");
-            Console.WriteLine($"XSTS 响应内容: {responseBody}");
+            Console.WriteLine($@"XSTS 响应状态: {response.StatusCode}");
+            Console.WriteLine($@"XSTS 响应内容: {responseBody}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -97,7 +97,7 @@ public class XboxAuthClient
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"解析 XSTS 错误响应失败: {ex.Message}");
+                        Console.WriteLine($@"解析 XSTS 错误响应失败: {ex.Message}");
                     }
                 }
 

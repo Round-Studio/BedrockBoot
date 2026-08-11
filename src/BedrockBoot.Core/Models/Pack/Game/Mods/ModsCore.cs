@@ -153,7 +153,7 @@ public class ModsCore
                         if (peFile.ImageNtHeaders != null)
                         {
                             peFile.ImageNtHeaders.OptionalHeader.Subsystem = SubsystemType.WindowsCui;
-                            System.Console.WriteLine("转换完成！Subsystem 已修改为 WindowsCui (3)");
+                            System.Console.WriteLine(@"转换完成！Subsystem 已修改为 WindowsCui (3)");
                         }
                     }
                     peFile.Flush();

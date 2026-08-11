@@ -84,7 +84,7 @@ public partial class MainAccountPage : BedrockBootPage
         }
         catch(Exception exception)
         {
-            Console.WriteLine($"登录发生错误 {exception}");
+            Console.WriteLine($@"登录发生错误 {exception}");
             _ = DialogHost.Close();
             DialogHost.Show(new()
             {

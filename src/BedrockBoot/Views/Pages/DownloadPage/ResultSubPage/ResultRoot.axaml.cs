@@ -164,7 +164,7 @@ public partial class ResultRoot : UserControl
 
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = i18n["Common.Clipboard.Title"],
+            Title = "剪切板",
             Message = i18n["Download.Result.Share.Success"]
         });
     }

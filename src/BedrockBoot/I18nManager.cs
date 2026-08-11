@@ -36,6 +36,8 @@ public class I18nManager : INotifyPropertyChanged
     {
         if (Application.Current!.Resources.TryGetResource(key, null, out var value) && value is string s)
             return s;
+        
+        Console.WriteLine($@"未翻译键值 {key}");
         return $"{key}";
     }
 

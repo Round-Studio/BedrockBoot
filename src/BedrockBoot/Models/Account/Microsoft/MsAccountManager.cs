@@ -64,7 +64,7 @@ public static class MsAccountManager
         {
             var client = new MsaDeviceCodeClient();
             
-            Console.WriteLine("开始设备代码登录流程...");
+            Console.WriteLine(@"开始设备代码登录流程...");
 
             client.OnLoginCallback = (s, s1) =>
                 dialog.SetCopyCode(s1, s);
@@ -85,7 +85,7 @@ public static class MsAccountManager
                 throw new Exception("登录失败或用户取消");
             }
 
-            Console.WriteLine("开始获取 Xbox 用户凭证");
+            Console.WriteLine(@"开始获取 Xbox 用户凭证");
             var xboxClient = new XboxAuthClient();
             var xboxUserToken = await xboxClient.GetXboxUserTokenAsync(tokenData.AccessToken);
             
@@ -96,7 +96,7 @@ public static class MsAccountManager
                 throw new NullReferenceException("获取 Xbox 用户凭证失败");
             }
 
-            Console.WriteLine("开始获取 Xbox 用户登录凭证 (XstsToken)");
+            Console.WriteLine(@"开始获取 Xbox 用户登录凭证 (XstsToken)");
             var xstsToken = await xboxClient.GetXstsTokenAsync(xboxUserToken);
             
             if (string.IsNullOrEmpty(xstsToken.xstsToken) ||
@@ -108,7 +108,7 @@ public static class MsAccountManager
                 throw new NullReferenceException("获取 XSTS Token 失败");
             }
 
-            Console.WriteLine("开始获取 Xbox 用户档案");
+            Console.WriteLine(@"开始获取 Xbox 用户档案");
             var peopleClient = new PeopleHubClient();
             string authHeader = $"XBL3.0 x={xstsToken.userHash};{xstsToken.xstsToken}";
             var userProfile = await peopleClient.GetProfileAsync(authHeader, xstsToken.xuid);
@@ -144,7 +144,7 @@ public static class MsAccountManager
             
             AccountConfigEntity?.Save();
 
-            Console.WriteLine($"登录成功！用户: {gamertag}");
+            Console.WriteLine($@"登录成功！用户: {gamertag}");
 
             IsLogging = false;
             await DialogHost.Close();
@@ -153,7 +153,7 @@ public static class MsAccountManager
         {
             IsLogging = false;
             await DialogHost.Close();
-            Console.WriteLine($"登录失败: {ex.Message}");
+            Console.WriteLine($@"登录失败: {ex.Message}");
             throw;
         }
     }

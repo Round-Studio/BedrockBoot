@@ -90,7 +90,7 @@ public partial class CurseForgeModBuildFileItem : UserControl
         {
             Content = dialog,
             Title = i18n["Download.CurseForge.InstallTo.Title"],
-            CloseButtonText = i18n["MainWindow.Common.Download"],
+            CloseButtonText = "下载",
             SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {

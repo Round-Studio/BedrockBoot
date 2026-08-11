@@ -103,7 +103,7 @@ public class MsaDeviceCodeClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"RequestDeviceCode failed: {ex.Message}");
+            Console.WriteLine($@"RequestDeviceCode failed: {ex.Message}");
             return null;
         }
     }
@@ -131,7 +131,7 @@ public class MsaDeviceCodeClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"PollDeviceCode failed: {ex.Message}");
+            Console.WriteLine($@"PollDeviceCode failed: {ex.Message}");
             return null;
         }
     }
@@ -141,12 +141,12 @@ public class MsaDeviceCodeClient
         var dc = RequestDeviceCode();
         if (dc == null)
         {
-            Console.WriteLine("Failed to get device code");
+            Console.WriteLine(@"Failed to get device code");
             return false;
         }
 
-        Console.WriteLine($"Microsoft sign-in -> {dc.VerificationUri}");
-        Console.WriteLine($"Code: {dc.UserCode}");
+        Console.WriteLine($@"Microsoft sign-in -> {dc.VerificationUri}");
+        Console.WriteLine($@"Code: {dc.UserCode}");
 
         var deadline = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + dc.ExpiresIn;
         var interval = Math.Max(dc.Interval, 1);
@@ -160,16 +160,16 @@ public class MsaDeviceCodeClient
             if (tr.Error == "slow_down") { interval += 5; continue; }
             if (tr.Error != null)
             {
-                Console.WriteLine($"Sign-in failed: {tr.ErrorDescription ?? tr.Error}");
+                Console.WriteLine($@"Sign-in failed: {tr.ErrorDescription ?? tr.Error}");
                 return false;
             }
             if (tr.RefreshToken != null)
             {
-                Console.WriteLine("Microsoft account linked");
+                Console.WriteLine(@"Microsoft account linked");
                 return true;
             }
         }
-        Console.WriteLine("Sign-in timed out");
+        Console.WriteLine(@"Sign-in timed out");
         return false;
     }
 

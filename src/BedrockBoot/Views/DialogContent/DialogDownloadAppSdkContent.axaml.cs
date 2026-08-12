@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Downloader.File;
 using BedrockBoot.Models.Global;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;

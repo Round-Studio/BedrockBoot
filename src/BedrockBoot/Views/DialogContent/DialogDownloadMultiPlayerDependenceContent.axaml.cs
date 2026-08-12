@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Downloader.File;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.GravityConePage;
 using BedrockBoot.Views.Pages.MainSubPage;

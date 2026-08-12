@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Progress;
 
-namespace BedrockBoot.Core.Models.Download;
+namespace BedrockBoot.Downloader.File;
 
 public class SingleThreadDownloader : IDisposable
 {
@@ -160,7 +160,7 @@ public class SingleThreadDownloader : IDisposable
         foreach (var tempFile in temporaryFiles)
             try
             {
-                File.Delete(tempFile);
+                System.IO.File.Delete(tempFile);
             }
             catch
             {

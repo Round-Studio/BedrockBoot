@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Downloader.File;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
@@ -159,8 +158,7 @@ public class EasyDownload
             throw new Exception("没有可用的缓存包，且未提供下载地址");
 
         StatusText?.Invoke("正在下载游戏包...");
-        var downloadCount = BedrockBoot.Core.Global.GlobalModel.Config == null ? 4 : BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount;
-        var downloader = new MultiThreadDownloader(downloadCount, 1024);
+        var downloader = new MultiThreadDownloader();
         var speedCalculator = new DownloadSpeedCalculator();
 
         await downloader.DownloadAsync(url, packagePath, new Progress<DownloadProgress>(progress =>

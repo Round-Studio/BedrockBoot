@@ -9,6 +9,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum.Search;
+using BedrockBoot.Downloader.Game;
 using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -133,7 +134,7 @@ public partial class SearchDefault : UserControl
     {
         try
         {
-            var versions = await Task.Run(() => VersionHelper.GetVersions());
+            var versions = await Task.Run(() => McAppxVersionHelper.GetVersions());
             var release = versions.Find(x => x.Type == MinecraftGameTypeVersion.Release);
             var preview = versions.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
 
@@ -277,7 +278,7 @@ public partial class SearchDefault : UserControl
 
     private void OpenDownloadDraw(MinecraftGameTypeVersion type)
     {
-        var version = VersionHelper.GetVersions().Find(x => x.Type == type);
+        var version = McAppxVersionHelper.GetVersions().Find(x => x.Type == type);
         if (version != null)
             GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version),
                 $"{i18n["Download.Action.DownloadGame"]} {version.Key}");

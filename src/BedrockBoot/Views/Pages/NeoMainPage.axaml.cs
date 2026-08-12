@@ -272,6 +272,7 @@ public partial class NeoMainPage : UserControl
             _isUpdatingGameList = true;
             GameListChoose.IsVisible = !isNull;
             GameControls.IsEnabled = !isNull;
+            NullBox.IsVisible = isNull;
             GameInfoItem.IsVisible = !isNull;
             GameSettingBtn.IsVisible = !isNull;
             _isUpdatingGameList = false;

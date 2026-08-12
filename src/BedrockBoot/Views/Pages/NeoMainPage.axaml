@@ -152,6 +152,27 @@
                         Margin="1,1,0,0"
                         BoxShadow="0 0 120 0 Gray"
                         Name="BackgroundBorder"></Border>
+                    
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Name="NullBox"
+                            IsVisible="False"
+                            Height="58"
+                            Spacing="12">
+                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                               Glyph="&#xE946;"
+                                               FontSize="18"></onePointControls:FontIcon>
+                        
+                    <StackPanel VerticalAlignment="Center"
+                                Margin="0,-2,0,2">
+                        <TextBlock Text="未安装游戏"
+                                   HorizontalAlignment="Left"
+                                   FontSize="18"></TextBlock>
+                        <TextBlock Text="请前往下载页面安装游戏实例"
+                                   HorizontalAlignment="Left"
+                                   FontSize="9"></TextBlock>
+                    </StackPanel>
+                </StackPanel>
             
                 <Grid RowDefinitions="*,Auto">
                     <ListBox Grid.Row="0"
@@ -168,6 +189,7 @@
                           ColumnDefinitions="*,Auto"
                           ColumnSpacing="8"
                           Margin="10,0,0,8">
+                        
                         <items1:MainChooseGameItem Grid.Column="0"
                                                    Name="GameInfoItem"
                                                    IsVisible="False"/>

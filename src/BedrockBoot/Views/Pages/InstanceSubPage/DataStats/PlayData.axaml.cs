@@ -18,10 +18,32 @@ public partial class PlayData : UserControl
     private readonly VersionConfig _versionInfo;
     private Dictionary<DateTime, long> _dailyTotals;
 
-    private static readonly SolidColorBrush ChartLineColor = new(Color.Parse("#4CAF50"));
-    private static readonly SolidColorBrush ChartFillColor = new(Color.FromArgb(40, 76, 175, 80));
-    private static readonly SolidColorBrush GridLineColor = new(Color.FromArgb(30, 128, 128, 128));
-    private static readonly SolidColorBrush LabelColor = new(Color.FromArgb(153, 128, 128, 128));
+    private IBrush ChartLineColor => GetResourceBrush("AccentBackgroundBrush", new SolidColorBrush(Color.Parse("#4CAF50")));
+    
+    private IBrush ChartFillColor
+    {
+        get
+        {
+            if (this.TryFindResource("AccentBackgroundBrush", out var res) && res is ISolidColorBrush solidBrush)
+            {
+                var color = solidBrush.Color;
+                return new SolidColorBrush(Color.FromArgb(40, color.R, color.G, color.B));
+            }
+            return GetResourceBrush("AccentSubtleBrush", new SolidColorBrush(Color.FromArgb(40, 76, 175, 80)));
+        }
+    }
+
+    private IBrush GridLineColor => GetResourceBrush("PrimaryBorderBrush", new SolidColorBrush(Color.FromArgb(30, 128, 128, 128)));
+    private IBrush LabelColor => GetResourceBrush("PrimaryForegroundSecondaryBrush", new SolidColorBrush(Color.FromArgb(153, 128, 128, 128)));
+
+    private IBrush GetResourceBrush(string resourceKey, IBrush fallback)
+    {
+        if (this.TryFindResource(resourceKey, out var res) && res is IBrush brush)
+        {
+            return brush;
+        }
+        return fallback;
+    }
 
     public PlayData()
     {
@@ -54,7 +76,6 @@ public partial class PlayData : UserControl
             var allConfigs = GameInfoHelper.GetVersionConfigs(gameFolder);
             if (allConfigs.Count == 0) return;
 
-            // ========== 修正：按 TotalSessions 排序 ==========
             var sessionRank = allConfigs
                 .Where(c => c?.PlayerData != null)
                 .OrderByDescending(c => c.PlayerData.TotalPlayTime)
@@ -63,9 +84,7 @@ public partial class PlayData : UserControl
             var currentSessionIdx = sessionRank.FindIndex(c => c.VersionPath == currentDir);
             if (currentSessionIdx >= 0)
                 TotalPlayRankingLabel.Text = $"#{currentSessionIdx + 1}";
-            // ================================================
 
-            // 每周统计数据（用于图表展示，保留）
             var allWeeklyStats = new List<(string versionPath, int sessions, int activeDays, double totalHours)>();
 
             foreach (var config in allConfigs)
@@ -80,7 +99,6 @@ public partial class PlayData : UserControl
                 }
             }
 
-            // 周数据用于展示当前版本的周统计
             var (sessions, activeDays, totalHours) = SessionStoreHelper.GetWeeklyStats(_versionInfo.VersionPath);
             SessionsText.Text = sessions.ToString();
             ActiveDaysText.Text = activeDays.ToString();
@@ -117,6 +135,12 @@ public partial class PlayData : UserControl
         if (width <= 0 || height <= 0 || _dailyTotals == null || _dailyTotals.Count == 0)
             return;
 
+        // 在绘制时读取最新的 Resource 颜色
+        var lineColor = ChartLineColor;
+        var fillColor = ChartFillColor;
+        var gridColor = GridLineColor;
+        var labelColor = LabelColor;
+
         const double leftPadding = 50;
         const double rightPadding = 20;
         const double topPadding = 15;
@@ -139,7 +163,7 @@ public partial class PlayData : UserControl
             {
                 StartPoint = new Point(leftPadding, y),
                 EndPoint = new Point(leftPadding + chartWidth, y),
-                Stroke = GridLineColor,
+                Stroke = gridColor,
                 StrokeThickness = 1
             };
             canvas.Children.Add(gridLine);
@@ -151,7 +175,7 @@ public partial class PlayData : UserControl
             {
                 Text = yLabel,
                 FontSize = 10,
-                Foreground = LabelColor,
+                Foreground = labelColor,
                 HorizontalAlignment = HorizontalAlignment.Right
             };
             Canvas.SetLeft(yText, 2);
@@ -177,7 +201,7 @@ public partial class PlayData : UserControl
 
             var fillPolygon = new Polygon
             {
-                Fill = ChartFillColor,
+                Fill = fillColor,
                 Stroke = Brushes.Transparent
             };
             foreach (var pt in linePoints)
@@ -186,7 +210,7 @@ public partial class PlayData : UserControl
 
             var polyline = new Polyline
             {
-                Stroke = ChartLineColor,
+                Stroke = lineColor,
                 StrokeThickness = 2.5,
                 StrokeLineCap = PenLineCap.Round,
                 StrokeJoin = PenLineJoin.Round
@@ -202,7 +226,7 @@ public partial class PlayData : UserControl
             {
                 Width = 8,
                 Height = 8,
-                Fill = ChartLineColor
+                Fill = lineColor
             };
             Canvas.SetLeft(dot, pt.X - 4);
             Canvas.SetTop(dot, pt.Y - 4);
@@ -218,7 +242,7 @@ public partial class PlayData : UserControl
             {
                 Text = FormatDuration(value),
                 FontSize = 10,
-                Foreground = ChartLineColor,
+                Foreground = lineColor,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             Canvas.SetLeft(valText, dataPoints[i].X - 12);
@@ -234,7 +258,7 @@ public partial class PlayData : UserControl
             {
                 Text = days[i].ToString("MM/dd"),
                 FontSize = 10,
-                Foreground = LabelColor,
+                Foreground = labelColor,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             Canvas.SetLeft(dayText, x - 16);

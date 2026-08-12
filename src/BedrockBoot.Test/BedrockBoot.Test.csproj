@@ -21,14 +21,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BedrockBoot.GravityCone\BedrockBoot.GravityCone.csproj" />
-      <ProjectReference Include="..\BedrockBoot.Lip\BedrockBoot.Lip.csproj" />
-      <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj" />
-      <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="websocket-sharp.net" Version="1.0.3.3" />
+      <ProjectReference Include="..\BedrockBoot.Downloader\BedrockBoot.Downloader.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace BedrockBoot.Downloader.Enum.Game;
+﻿namespace BedrockBoot.Base.Enum.Game;
 
 public enum GameInstallType
 {

@@ -1,4 +1,4 @@
-﻿using BedrockBoot.Downloader.Enum.Game;
+﻿using BedrockBoot.Base.Enum.Game;
 
 namespace BedrockBoot.Downloader.Info.Game;
 

@@ -3,23 +3,22 @@ using System.Text.Json;
 using BedrockBoot.Downloader.Global;
 using BedrockBoot.Downloader.Manifest.Game;
 
-namespace BedrockBoot.Downloader.Game
+namespace BedrockBoot.Downloader.Game;
+
+partial class ModernVersionHelper
 {
-    public static class ModernVersionHelper
+    private static readonly HttpClient httpClient = new HttpClient();
+    public static string BaseUrl => $"{SourceList.BaseUrl}/versions";
+
+    static ModernVersionHelper()
     {
-        private static readonly HttpClient httpClient = new HttpClient();
-        public static string BaseUrl => $"{SourceList.BaseUrl}/versions";
+        httpClient.DefaultRequestHeaders.Add("User-Agent", GameDownloader.UserAgent);
+    }
 
-        static ModernVersionHelper()
-        {
-            httpClient.DefaultRequestHeaders.Add("User-Agent", GameDownloader.UserAgent);
-        }
-
-        public static ModernManifest GetManifest()
-        {
-            var response = httpClient.GetStringAsync($"{BaseUrl}/manifest.json").Result;
-            var manifest = JsonSerializer.Deserialize<ModernManifest>(response);
-            return manifest;
-        }
+    public static ModernManifest GetManifest()
+    {
+        var response = httpClient.GetStringAsync($"{BaseUrl}").Result;
+        var manifest = JsonSerializer.Deserialize<ModernManifest>(response);
+        return manifest;
     }
 }

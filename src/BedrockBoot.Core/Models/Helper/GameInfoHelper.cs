@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Enum.Game;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockLauncher.Core;
@@ -119,8 +120,8 @@ public static class GameInfoHelper
                 Version = manifest.Version,
                 VersionName = Path.GetFileName(gamePath),
                 BuildType = File.Exists(Path.Combine(gamePath, "MicrosoftGame.Config"))
-                    ? MinecraftBuildTypeVersion.GDK
-                    : MinecraftBuildTypeVersion.UWP,
+                    ? BuildType.Gdk
+                    : BuildType.Uwp,
                 VersionType = GetVersionTypeWithPackName(manifest.Name)
             };
             configEntity.Save();
@@ -190,18 +191,18 @@ public static class GameInfoHelper
         }
     }
 
-    public static MinecraftGameTypeVersion GetVersionTypeWithPackName(string packName)
+    public static GameType GetVersionTypeWithPackName(string packName)
     {
-        if (string.IsNullOrEmpty(packName)) return MinecraftGameTypeVersion.Release;
+        if (string.IsNullOrEmpty(packName)) return GameType.Release;
 
         // 使用 Contains 的 StringComparison 忽略大小写，效率更高
         if (packName.Contains("preview", StringComparison.OrdinalIgnoreCase) ||
             packName.Contains("beta", StringComparison.OrdinalIgnoreCase))
         {
-            return MinecraftGameTypeVersion.Preview;
+            return GameType.Preview;
         }
 
-        return MinecraftGameTypeVersion.Release;
+        return GameType.Release;
     }
 
     public static void SaveVersionConfig(VersionConfig config)

@@ -9,6 +9,7 @@ using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Enum.Type.Progress.Steps;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Downloader.Game;
+using BedrockBoot.Downloader.Info.Game;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Services;
 using BedrockLauncher.Core.CoreOption;
@@ -27,21 +28,21 @@ public class InstanceUpdater
         _versionConfig = versionConfig;
     }
 
-    public List<BuildInfo> GetUpdateableVersions()
+    public List<VersionBuildInfo> GetUpdateableVersions()
     {
         var currentVersion = Version.Parse(_versionConfig.Info.Version);
-        var allVersions = McAppxVersionHelper.GetVersions();
+        var allVersions = VersionHelper.GetVersionBuildInfoList();
 
         return allVersions
-            .Where(buildInfo => Version.Parse(buildInfo.ID) > currentVersion)
-            .Where(info => info.BuildType == _versionConfig.Info.BuildType)
-            .OrderBy(info => Version.Parse(info.ID))
+            .Where(buildInfo => Version.Parse(buildInfo.Id) > currentVersion)
+            .Where(info => info.GameBuildType == _versionConfig.Info.BuildType)
+            .OrderBy(info => Version.Parse(info.Id))
             .ToList();
     }
 
-    public async Task UpdateAsync(BuildInfo buildInfo)
+    public async Task UpdateAsync(VersionBuildInfo buildInfo)
     {
-        Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.ID}");
+        Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.Id}");
         
         var downloader = new EasyDownload(buildInfo, true, _versionConfig.VersionsRootPath,
             _versionConfig.Info.VersionName, true);
@@ -96,7 +97,7 @@ public class InstanceUpdater
                             Message = $"正在删除文件 ({deletedCount}/{totalCount})",
                             Progress = progressPercent,
                             Step = InstanceUpdateStep.DeleteOld
-                        });
+                        });S
                     }
                 }
             }

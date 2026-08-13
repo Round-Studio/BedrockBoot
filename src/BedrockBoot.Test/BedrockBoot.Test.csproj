@@ -21,9 +21,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BedrockBoot.GravityCone\BedrockBoot.GravityCone.csproj" />
-      <ProjectReference Include="..\BedrockBoot.Lip\BedrockBoot.Lip.csproj" />
-      <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj" />
       <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
     </ItemGroup>
 

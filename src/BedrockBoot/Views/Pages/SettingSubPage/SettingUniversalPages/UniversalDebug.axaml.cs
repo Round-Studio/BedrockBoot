@@ -30,9 +30,11 @@ public partial class UniversalDebug : ISettingPage
 
 #if LINUX
         IsConsoleCard.IsEnabled = false;   
+        IsPluginDevelopModeCard.IsEnabled = false;
 #endif
 
         IsConsoleModel.IsChecked = GlobalModel.Config.Data.IsConsole;
+        IsPluginDevelopMode.IsChecked = GlobalModel.Config.Data.IsPluginDevelopMode;
         IsEdit = true;
     }
 
@@ -41,6 +43,7 @@ public partial class UniversalDebug : ISettingPage
         if (IsEdit)
         {
             GlobalModel.Config.Data.IsConsole = IsConsoleModel.IsChecked ?? false;
+            GlobalModel.Config.Data.IsPluginDevelopMode = IsPluginDevelopMode.IsChecked ?? false;
             Models.Global.GlobalModel.MainWindow.SetReboot();
 
             GlobalModel.Config.Save();

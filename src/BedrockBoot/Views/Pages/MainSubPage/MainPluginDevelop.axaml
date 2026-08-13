@@ -1,0 +1,42 @@
+﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:entry="clr-namespace:BedrockBoot.Base.Entry;assembly=BedrockBoot.Base"
+                 xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+                 xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="BedrockBoot.Views.Pages.MainSubPage.MainPluginDevelop">
+    <entry:BedrockBootPage.HeaderView>
+        <onePointControls:LineTextBlock Grid.Row="0"
+                                        Margin="0"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        FontSize="28"
+                                        FontWeight="Bold"
+                                        Name="LineTextBlock"
+                                        Text="插件开发" />
+    </entry:BedrockBootPage.HeaderView>
+    
+    <Grid>
+        <Grid ColumnDefinitions="3*,7*"
+              Margin="0,15,0,0">
+            <StackPanel Grid.Column="0"
+                        Margin="20,0,0,0"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14">
+                    简述
+                </TextBlock>
+
+                <TextBlock Text="此页面为便于插件开发者进行插件开发的页面，提供了插件开发所需项目模版和调试工具。"
+                           TextWrapping="Wrap"
+                           Opacity="0.8" />
+            </StackPanel>
+
+            <navigation:NavigationFrame Margin="10,0,0,0"
+                                        Grid.Column="1"
+                                        Name="MainFrame" />
+        </Grid>
+    </Grid>
+</entry:BedrockBootPage>

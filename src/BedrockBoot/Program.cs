@@ -286,6 +286,12 @@ internal sealed class Program
                     Console.OutputEncoding = Encoding.UTF8;
                     Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
                     break;
+                
+                case "-debug":
+	                Console.OutputEncoding = Encoding.UTF8;
+					Console.WriteLine(@"调试插件模式");
+					BedrockBoot.Models.Global.GlobalModel.DebugPluginPath = args[args.FindIndex(x => x == "-debug") + 1];
+					break;
 #endif
 
                 case "-jump":
@@ -295,7 +301,6 @@ internal sealed class Program
                     Models.Global.GlobalModel.AppRunType = AppRunType.LaunchGame;
 
                     return false;
-
                 case "-bedrockboot":
                     var protoIndex = args.FindIndex(x => x == "-bedrockboot");
                     if (protoIndex + 1 >= args.Count)

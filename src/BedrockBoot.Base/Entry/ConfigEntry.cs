@@ -20,6 +20,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("isFirstRun")] public bool IsFirstRun { get; set; } = true;
         [JsonPropertyName("isAgreeTerms")] public bool IsAgreeTerms { get; set; } = false;
         [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
+        [JsonPropertyName("isPluginDevelopMode")] public bool IsPluginDevelopMode { get; set; } = false;
         [JsonPropertyName("isTaskBarJumpItem")] public bool IsTaskBarJumpItem { get; set; } = true;
         [JsonPropertyName("isUseHardwareDecode")] public bool IsUseHardwareDecode { get; set; } = true;
         [JsonPropertyName("isPlayBackgroundMusic")] public bool IsPlayBackgroundMusic { get; set; } = true;

@@ -22,6 +22,8 @@
                            Opacity="0.8" />
 
                 <Button Padding="8"
+                        Name="CreatProject"
+                        Click="CreatProject_OnClick"
                         Classes="Accent">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="12">

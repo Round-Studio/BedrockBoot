@@ -54,4 +54,9 @@ public partial class UniversalDebug : ISettingPage
     {
         MainSettingPage.NavigateTo(new UniversalException());
     }
+
+    private void PluginProjectManagerCard_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new UniversalProjectManager());
+    }
 }

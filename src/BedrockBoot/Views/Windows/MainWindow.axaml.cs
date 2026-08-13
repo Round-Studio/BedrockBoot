@@ -85,6 +85,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        DebugModeBar.IsVisible = !string.IsNullOrEmpty(GlobalModel.DebugPluginPath);
         DialogHost.SetHost(DialogHost);
         GlobalModel.MainWindow = this;
 
@@ -146,7 +147,18 @@ public partial class MainWindow : Window
             Task.Run(() =>
             {
                 if (!string.IsNullOrEmpty(GlobalModel.DebugPluginPath))
+                {
                     DevelopCore.DebugPluginProject(GlobalModel.DebugPluginPath);
+
+                    Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                    {
+                        Notice.AddNotice(new()
+                        {
+                            Title = "调试模式",
+                            Message = "目标调试插件已加载完毕"
+                        });
+                    });
+                }
             });
         };
             

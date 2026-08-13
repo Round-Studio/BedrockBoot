@@ -97,14 +97,6 @@ public partial class NeoMainPage : UserControl
                 Tag = "AccountManager",
                 Page = typeof(MainAccountPage)
             });
-        if (GlobalModel.Config.Data.IsPluginDevelopMode)
-            RegisterTopItem(new TopBarItemInfo
-            {
-                ItemGlyph = "\uEA86",
-                ItemText = "插件开发",
-                Tag = "PluginDevelop",
-                Page = typeof(MainPluginDevelop)
-            });
 #endif
         RegisterTopItem(new TopBarItemInfo
         {

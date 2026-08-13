@@ -1,0 +1,49 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalProjectManager">
+    <Grid>
+        <Grid ColumnDefinitions="3*,7*"
+              Margin="0,15,0,0">
+            <StackPanel Grid.Column="0"
+                        Margin="20,0,0,0"
+                        Spacing="8">
+                <TextBlock FontWeight="Bold"
+                           FontSize="14">
+                    简述
+                </TextBlock>
+
+                <TextBlock Text="此页面为便于插件开发者进行插件开发的页面，提供了插件开发所需项目模版和调试工具。"
+                           TextWrapping="Wrap"
+                           Opacity="0.8" />
+
+                <Button Padding="8"
+                        Classes="Accent">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12">
+                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                   Glyph="&#xE710;" />
+                        <TextBlock Text="创建插件项目" />
+                    </StackPanel>
+                </Button>
+
+                <Button Padding="8">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12">
+                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                   Glyph="&#xE8B7;" />
+                        <TextBlock Text="导入插件项目" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <navigation:NavigationFrame Margin="10,0,0,0"
+                                        Grid.Column="1"
+                                        Name="MainFrame" />
+        </Grid>
+    </Grid>
+</UserControl>

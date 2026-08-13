@@ -525,5 +525,33 @@
                 </Grid>
             </items:BorderCard>
         </Grid>
+        
+        <Border Height="8"
+                Name="DebugModeBar"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top">
+            <Border.Background>
+                <DrawingBrush TileMode="Tile" 
+                              SourceRect="0,0,20,8" 
+                              DestinationRect="0,0,20,8" 
+                              Stretch="None">
+                    <DrawingBrush.Drawing>
+                        <DrawingGroup>
+                            <GeometryDrawing Brush="Black">
+                                <GeometryDrawing.Geometry>
+                                    <RectangleGeometry Rect="0,0,20,20"/>
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                    
+                            <GeometryDrawing Brush="Yellow">
+                                <GeometryDrawing.Geometry>
+                                    <PathGeometry Figures="M 0,10 L 10,0 L 20,0 L 0,20 Z M 10,20 L 20,10 L 20,20 Z"/>
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Border.Background>
+        </Border>
     </Grid>
 </Window>

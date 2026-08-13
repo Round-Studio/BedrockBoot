@@ -245,99 +245,102 @@ internal sealed class Program
 
     private static bool ArgsAnalytical(List<string> args)
     {
-        foreach (var arg in args)
-            switch (arg)
-            {
-                case "-update":
-                    Console.WriteLine(@"触发更新，本次启动将不会拉起窗体。");
-                    AppUpdater.StartUpdateFromDownloadedFile(args[args.FindIndex(x => x == "-update") + 1]);
-                    return true;
+	    foreach (var arg in args)
+		    switch (arg)
+		    {
+			    case "-update":
+				    Console.WriteLine(@"触发更新，本次启动将不会拉起窗体。");
+				    AppUpdater.StartUpdateFromDownloadedFile(args[args.FindIndex(x => x == "-update") + 1]);
+				    return true;
 
-                case "-shell":
-                    var shellIndex = args.FindIndex(x => x == "-shell");
-                    if (shellIndex + 1 >= args.Count)
-                    {
-                        Console.WriteLine(@"错误：-shell 参数后需要指定命令");
-                        break;
-                    }
+			    case "-shell":
+				    var shellIndex = args.FindIndex(x => x == "-shell");
+				    if (shellIndex + 1 >= args.Count)
+				    {
+					    Console.WriteLine(@"错误：-shell 参数后需要指定命令");
+					    break;
+				    }
 
-                    var command = args[shellIndex + 1];
-                    Console.WriteLine($@"触发 bb 协议：{command}");
+				    var command = args[shellIndex + 1];
+				    Console.WriteLine($@"触发 bb 协议：{command}");
 
-                    try
-                    {
-                        Sent(command);
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($@"请求出错：{ex.Message}");
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(2000);
-                            Sent(command);
-                        });
-                        return true;
-                    }
+				    try
+				    {
+					    Sent(command);
+					    return true;
+				    }
+				    catch (Exception ex)
+				    {
+					    Console.WriteLine($@"请求出错：{ex.Message}");
+					    Task.Run(async () =>
+					    {
+						    await Task.Delay(2000);
+						    Sent(command);
+					    });
+					    return true;
+				    }
 
 #if WINDOWS
-                case "-console":
-                    AllocConsole();
-                    Console.OutputEncoding = Encoding.UTF8;
-                    Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
-                    break;
-                
-                case "-debug":
-	                Console.OutputEncoding = Encoding.UTF8;
-					Console.WriteLine(@"调试插件模式");
-					BedrockBoot.Models.Global.GlobalModel.DebugPluginPath = args[args.FindIndex(x => x == "-debug") + 1];
-					break;
+			    case "-console":
+				    AllocConsole();
+				    Console.OutputEncoding = Encoding.UTF8;
+				    Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
+				    break;
+
+			    case "-debug":
+				    if (!GlobalModel.Config.Data.IsPluginDevelopMode)
+					    break;
+				    Console.OutputEncoding = Encoding.UTF8;
+				    Console.WriteLine(@"调试插件模式");
+				    BedrockBoot.Models.Global.GlobalModel.DebugPluginPath =
+					    args[args.FindIndex(x => x == "-debug") + 1];
+				    break;
 #endif
 
-                case "-jump":
-                    Console.WriteLine(@"快捷启动");
-                    args.ForEach(Console.WriteLine);
+			    case "-jump":
+				    Console.WriteLine(@"快捷启动");
+				    args.ForEach(Console.WriteLine);
 
-                    Models.Global.GlobalModel.AppRunType = AppRunType.LaunchGame;
+				    Models.Global.GlobalModel.AppRunType = AppRunType.LaunchGame;
 
-                    return false;
-                case "-bedrockboot":
-                    var protoIndex = args.FindIndex(x => x == "-bedrockboot");
-                    if (protoIndex + 1 >= args.Count)
-                    {
-                        Console.WriteLine(@"错误：-bedrockboot 参数后需要指定协议 URL");
-                        break;
-                    }
+				    return false;
+			    case "-bedrockboot":
+				    var protoIndex = args.FindIndex(x => x == "-bedrockboot");
+				    if (protoIndex + 1 >= args.Count)
+				    {
+					    Console.WriteLine(@"错误：-bedrockboot 参数后需要指定协议 URL");
+					    break;
+				    }
 
-                    var protocolUrl = args[protoIndex + 1];
-                    Console.WriteLine($@"收到 BedrockBoot 协议请求: {protocolUrl}");
+				    var protocolUrl = args[protoIndex + 1];
+				    Console.WriteLine($@"收到 BedrockBoot 协议请求: {protocolUrl}");
 
-                    var parsedCommand = BedrockbootProtocolHandler.ParseProtocolUrl(protocolUrl);
-                    if (parsedCommand == null)
-                    {
-                        Console.WriteLine($@"无法解析协议 URL: {protocolUrl}");
-                        break;
-                    }
+				    var parsedCommand = BedrockbootProtocolHandler.ParseProtocolUrl(protocolUrl);
+				    if (parsedCommand == null)
+				    {
+					    Console.WriteLine($@"无法解析协议 URL: {protocolUrl}");
+					    break;
+				    }
 
-                    Console.WriteLine(@"未检测到运行中的主窗口，将在当前进程启动");
-                    BedrockbootProtocolHandler.PendingCommand = parsedCommand;
-                    return false;
+				    Console.WriteLine(@"未检测到运行中的主窗口，将在当前进程启动");
+				    BedrockbootProtocolHandler.PendingCommand = parsedCommand;
+				    return false;
 
-                case "-open":
-                    Console.WriteLine(@"导入资源");
-                    args.ForEach(Console.WriteLine);
+			    case "-open":
+				    Console.WriteLine(@"导入资源");
+				    args.ForEach(Console.WriteLine);
 
-                    // Application.Run(new ImportResourcePack(args.ToList()));
-                    Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+				    // Application.Run(new ImportResourcePack(args.ToList()));
+				    Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
 
-                    if (Args.Contains("--resource")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
-                    if (Args.Contains("--world")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenWorldPack;
-                    if (Args.Contains("--template")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenTemplatePack;
+				    if (Args.Contains("--resource")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+				    if (Args.Contains("--world")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenWorldPack;
+				    if (Args.Contains("--template")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenTemplatePack;
 
-                    return false;
-            }
+				    return false;
+		    }
 
-        return false;
+	    return false;
     }
 
     private static void Sent(string command)

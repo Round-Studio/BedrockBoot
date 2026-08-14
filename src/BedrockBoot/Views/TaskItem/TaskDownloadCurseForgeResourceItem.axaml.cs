@@ -9,7 +9,7 @@ using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Entry.Task;
-using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.Files;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;

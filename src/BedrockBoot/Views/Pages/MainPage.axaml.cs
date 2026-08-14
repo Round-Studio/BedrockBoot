@@ -9,7 +9,7 @@ using Avalonia.Threading;
 using Avalonia.Layout; 
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.Files;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Helper;

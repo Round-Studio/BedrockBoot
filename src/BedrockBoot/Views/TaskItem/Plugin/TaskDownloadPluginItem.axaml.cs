@@ -11,7 +11,7 @@ using BedrockBoot.Base.Entry.Pack.Market;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Entry.Task;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.Files;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Plugin;

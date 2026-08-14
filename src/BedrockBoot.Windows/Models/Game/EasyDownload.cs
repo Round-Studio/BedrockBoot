@@ -8,7 +8,7 @@ using Windows.Management.Deployment;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.Files;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;

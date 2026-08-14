@@ -7,7 +7,7 @@ using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Downloader;
-using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.Files;
 using BedrockBoot.Downloader.Game;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Account.Microsoft;
@@ -156,6 +156,7 @@ public class CoreInitialize
 
     private static async Task InitBedrockCoreAsync()
     {
+        DownloaderCore.InitCore();
         try
         {
 #if LINUX

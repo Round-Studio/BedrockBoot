@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.Files;
 using BedrockBoot.Models.Global;
 using Octokit;
 

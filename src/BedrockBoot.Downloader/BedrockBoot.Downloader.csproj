@@ -19,11 +19,17 @@
     </PropertyGroup>
     
     <ItemGroup>
-      <Folder Include="Enum\" />
-    </ItemGroup>
-    
-    <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
       <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BedrockLauncher.Core"
+                          Version="2.0.4.9"
+                          Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
+
+        <PackageReference Include="BedrockLauncher.Core.Linux"
+                          Version="1.0.0.4"
+                          Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ using BedrockBoot.Lip.Manifest;
 using BedrockBoot.Base.Entry.Progress;
 using Octokit.Internal;
 using System.IO.Compression;
-using BedrockBoot.Downloader.File;
+using BedrockBoot.Downloader.Files;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Lip.Global;
 

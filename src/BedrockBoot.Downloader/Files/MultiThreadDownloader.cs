@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Progress;
 
-namespace BedrockBoot.Downloader.File;
+namespace BedrockBoot.Downloader.Files;
 
 public class MultiThreadDownloader : IDisposable
 {

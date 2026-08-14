@@ -2,7 +2,7 @@
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Models.Global;
 
-namespace BedrockBoot.Downloader.File;
+namespace BedrockBoot.Downloader.Files;
 
 public class GithubFilesDownloader
 {

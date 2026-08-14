@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Interface;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.Pages.DevelopPage.Plugin;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -17,6 +18,8 @@ public partial class UniversalProjectManager : ISettingPage
     public UniversalProjectManager()
     {
         InitializeComponent();
+        
+        MainFrame.NavigateTo(new ProjectList());
 
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {

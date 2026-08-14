@@ -33,7 +33,8 @@
                     </StackPanel>
                 </Button>
 
-                <Button Padding="8">
+                <Button Padding="8"
+                        IsVisible="False">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="12">
                         <onePointControls:FontIcon VerticalAlignment="Center"
@@ -41,6 +42,10 @@
                         <TextBlock Text="导入插件项目" />
                     </StackPanel>
                 </Button>
+
+                <TextBlock Text="使用前请确保本地已安装 .NET 10 SDK 与 Git 工具。"
+                           TextWrapping="Wrap"
+                           Opacity="0.8" />
             </StackPanel>
 
             <navigation:NavigationFrame Margin="10,0,0,0"

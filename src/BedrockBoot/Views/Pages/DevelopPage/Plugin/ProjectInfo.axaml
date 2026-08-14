@@ -6,8 +6,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DevelopPage.Plugin.ProjectInfo">
     <Grid>
-        <ScrollViewer Margin="0,0,5,0">
-            <StackPanel Margin="0,0,15,0"
+        <ScrollViewer Margin="5,0">
+            <StackPanel Margin="15,0"
                         Spacing="8"
                         Name="ProjectStackPanel">
                 <DockPanel>

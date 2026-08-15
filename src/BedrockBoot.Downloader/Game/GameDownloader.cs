@@ -1,4 +1,6 @@
-﻿using BedrockBoot.Base.Entry.Game;
+﻿using System.Runtime.InteropServices;
+using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Base.Enum.Game;
 using BedrockBoot.Core.Global;
@@ -7,6 +9,7 @@ using BedrockBoot.Downloader.Enum;
 using BedrockBoot.Downloader.Event.Progress;
 using BedrockBoot.Downloader.Files;
 using BedrockBoot.Downloader.Info.Game;
+using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
@@ -16,43 +19,67 @@ namespace BedrockBoot.Downloader.Game;
 public class GameDownloader
 {
     private readonly GameInstallInfo _gameInstallInfo;
+    private string _url = string.Empty;
     public static string UserAgent { get; set; } = "BedrockBoot/GameDownloader";
     public IProgress<DownloadGameProgress> DownloadProgress { get; set; } = new Progress<DownloadGameProgress>();
-    public Func<List<string>,string> OnChooseDownloadUrl { get; set; } = urls => urls.FirstOrDefault() ?? throw new Exception("未选择下载地址");
+    public Func<List<GameDownloadUrlInfo>, GameDownloadUrlInfo> OnChooseDownloadUrl { get; set; } =
+        urls => urls.FirstOrDefault() ?? throw new Exception("未选择下载地址");
     public bool IsCanInstall { get; set; } = true;
     public GameDownloader(GameInstallInfo gameInstallInfo)
     {
         _gameInstallInfo = gameInstallInfo;
     }
 
-    public async Task Install(string url,bool receiveDownloadLock = false)
+    public async Task Install(bool receiveDownloadLock = false)
     {
+        if (string.IsNullOrEmpty(_gameInstallInfo.InstanceName))
+            _gameInstallInfo.InstanceName = _gameInstallInfo.VersionBuildInfo!.Id;
         PrepareDownloadDirectory();
         if (_gameInstallInfo.InstallType == GameInstallType.Tradition)
         {
-            DownloadProgress.Report(new(GameInstallStatus.GetUrl, "获取文件地址", 0));
-            var packagePath = Path.Combine(_gameInstallInfo.InstallFolder, "version_save", $"{_gameInstallInfo.VersionBuildInfo!.Version}.insPack");
-            // 没直接获取 URL，后面一定要重写这块的逻辑啊！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-
-            var downloader = new MultiThreadDownloader();
-            await downloader.DownloadAsync(url, packagePath, new Progress<DownloadProgress>(progress =>
-            {
-                DownloadProgress.Report(new(GameInstallStatus.DownloadFile, $"下载中: {progress.ProgressPercentage:F2}%", progress.ProgressPercentage));
-            }));
+            var packagePath = Path.Combine(_gameInstallInfo.InstallFolder, "version_save",
+                $"{_gameInstallInfo.VersionBuildInfo!.Version}.insPack");
+            var isUseCache = false;
             
-            var md5CheckResult = await CheckMD5(packagePath);
-            if(!md5CheckResult)
+            var locFile = GamePackageCacheIndex.Find(_gameInstallInfo.VersionBuildInfo.Version,
+                _gameInstallInfo.VersionBuildInfo.GameBuildType.ToString());
+            if (locFile != null)
             {
-                DownloadProgress.Report(new(GameInstallStatus.Error, $"MD5校验失败", 0));
+                packagePath = locFile.FilePath;
+                isUseCache = true;
+            }
+            
+            if (string.IsNullOrEmpty(_url) && !isUseCache)
+                DownloadProgress.Report(new(GameInstallStatus.Error, "未选择下载源", 0));
+
+            if (!isUseCache)
+            {
+                var downloader = new MultiThreadDownloader();
+                await downloader.DownloadAsync(_url, packagePath,
+                    new Progress<DownloadProgress>(progress =>
+                    {
+                        DownloadProgress.Report(new(GameInstallStatus.DownloadFile,
+                            $"下载中: {progress.ProgressPercentage:F2}%", progress.ProgressPercentage));
+                    }));
+
+                var md5CheckResult = await CheckMD5(packagePath);
+                if (!md5CheckResult)
+                {
+                    DownloadProgress.Report(new(GameInstallStatus.Error, $"MD5校验失败", 0));
+                }
+
+                if (!string.IsNullOrEmpty(LastComputedMd5))
+                    GamePackageCacheIndex.Register(_gameInstallInfo.VersionBuildInfo.Version,
+                        _gameInstallInfo.VersionBuildInfo.GameBuildType.ToString(),
+                        packagePath, LastComputedMd5);
+                else
+                    DownloadProgress.Report(new(GameInstallStatus.Error, $"MD5校验失败", 0));
+            }
+            else
+            {
+                DownloadProgress.Report(new(GameInstallStatus.DownloadFile, $"下载完毕", 100));
             }
 
-            if (!string.IsNullOrEmpty(LastComputedMd5))
-                GamePackageCacheIndex.Register(_gameInstallInfo.VersionBuildInfo.Version,
-                    _gameInstallInfo.VersionBuildInfo.GameBuildType.ToString(),
-                    packagePath, LastComputedMd5);
-            else
-                DownloadProgress.Report(new(GameInstallStatus.Error, $"MD5校验失败", 0));
-            
             if (receiveDownloadLock)
             {
                 while (!IsCanInstall)
@@ -63,6 +90,8 @@ public class GameDownloader
 
             var installDir = Path.Combine(_gameInstallInfo.InstallFolder,
                 GameInfoHelper.GetGameFolderRootName(_gameInstallInfo.InstallFolder), _gameInstallInfo.InstanceName);
+            
+            SaveVersionConfig(installDir);
 
             await DownloaderCore.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
             {
@@ -70,22 +99,67 @@ public class GameDownloader
                 GameName = _gameInstallInfo.InstanceName,
                 InstallDstFolder = installDir,
                 GameTypeVersion = _gameInstallInfo.VersionBuildInfo.GameType == GameType.Release
-                    ?
-                    MinecraftGameTypeVersion.Release
+                    ? MinecraftGameTypeVersion.Release
                     : _gameInstallInfo.VersionBuildInfo.GameType == GameType.Preview
                         ? MinecraftGameTypeVersion.Preview
                         : MinecraftGameTypeVersion.Beta,
-                Type = _gameInstallInfo.VersionBuildInfo.GameBuildType == BuildType.Gdk ? MinecraftBuildTypeVersion.GDK : MinecraftBuildTypeVersion.UWP,
+                Type = _gameInstallInfo.VersionBuildInfo.GameBuildType == BuildType.Gdk
+                    ? MinecraftBuildTypeVersion.GDK
+                    : MinecraftBuildTypeVersion.UWP,
                 UseHardwareDecode = GlobalModel.Config.Data.IsUseHardwareDecode,
                 ExtractionProgress = new Progress<DecompressProgress>(progress =>
                 {
-                    DownloadProgress.Report(new(GameInstallStatus.InstallGame, $"解压文件 ({progress.Percentage:F2}%)", progress.Percentage));
+                    DownloadProgress.Report(new(GameInstallStatus.InstallGame, $"解压文件 ({progress.Percentage:F2}%)",
+                        progress.Percentage));
                 }),
-                InstallStates = new Progress<InstallStates>(states =>
-                {
-                    HandleInstallState(states, installDir);
-                })
+                InstallStates = new Progress<InstallStates>(states => { HandleInstallState(states, installDir); })
             });
+        }
+    }
+
+    public async Task<bool> TraditionGetUrl()
+    {
+        try
+        {
+            var buildInfo = McAppxVersionHelper.GetVersions()
+                .Find(x => x.Key.Replace(".", "") == _gameInstallInfo.VersionBuildInfo.Id.Replace(".", ""));
+
+            var url = await DownloaderCore.BedrockCore.GetPackageUri(buildInfo, Architecture.X64);
+            Console.WriteLine($@"原始地址：{url}");
+
+            var res = new List<GameDownloadUrlInfo>();
+            var uri = new Uri(url);
+
+            if (buildInfo.BuildType == MinecraftBuildTypeVersion.GDK)
+            {
+                var router = uri.AbsolutePath;
+
+                SourceList.GameFileDownloadSource.ForEach(s =>
+                {
+                    res.Add(new GameDownloadUrlInfo
+                    {
+                        Host = s.Host,
+                        Url = s.Url.Replace("{router}", router)
+                    });
+                });
+            }
+            else
+            {
+                res.Add(new GameDownloadUrlInfo
+                {
+                    Host = uri.Host,
+                    Url = url
+                });
+            }
+
+            var info = OnChooseDownloadUrl.Invoke(res);
+            _url = info.Url;
+
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 
@@ -107,6 +181,7 @@ public class GameDownloader
 
         GameInfoHelper.SaveVersionConfig(conf);
     }
+
     private void HandleInstallState(InstallStates state, string installDir)
     {
         switch (state)
@@ -130,7 +205,9 @@ public class GameDownloader
                 break;
         }
     }
+
     private string? LastComputedMd5 { get; set; }
+
     private async Task<bool> CheckMD5(string file, CancellationToken token = default, bool showError = true)
     {
         try
@@ -141,7 +218,7 @@ public class GameDownloader
 
             LastComputedMd5 = fileMD5;
 
-            foreach (var variation in McAppxVersionHelper.Versions
+            foreach (var variation in McAppxVersionHelper.GetVersions()
                          .Find(x => x.Key.Replace(".", "") == _gameInstallInfo.VersionBuildInfo.Id.Replace(".", ""))
                          .Variations)
                 if (variation.MD5 == fileMD5)
@@ -162,6 +239,7 @@ public class GameDownloader
             return false;
         }
     }
+
     private void PrepareDownloadDirectory()
     {
         var versionSavePath = Path.Combine(_gameInstallInfo.InstallFolder, "version_save");

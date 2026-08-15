@@ -30,6 +30,8 @@ using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Media;
+using BedrockBoot.Models.Pack.Plugin;
+using BedrockBoot.Models.Pack.Plugin.Develop;
 using BedrockBoot.Models.Pack.System.DropFile;
 using BedrockBoot.Models.Pack.Theme;
 using BedrockBoot.Models.Style;
@@ -83,6 +85,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        DebugModeBar.IsVisible = !string.IsNullOrEmpty(GlobalModel.DebugPluginPath);
         DialogHost.SetHost(DialogHost);
         GlobalModel.MainWindow = this;
 
@@ -130,6 +133,35 @@ public partial class MainWindow : Window
         RefreshWindowChrome();
         BottomBorder.Margin = new Thickness(DrawMarginLR, 0, DrawMarginLR, 0);
 
+        Loaded += (_, _) =>
+        {
+            DevelopCore.OnPluginBuilt = (pluginFolder, dllName) =>
+            {
+                Task.Run(async () =>
+                {
+                    await PluginLoader.LoadDependenciesAsync(pluginFolder, $"../{dllName}");
+                    await PluginLoader.LoadPluginBodyAsync(pluginFolder, $"../{dllName}");
+                });
+            };
+
+            Task.Run(() =>
+            {
+                if (!string.IsNullOrEmpty(GlobalModel.DebugPluginPath))
+                {
+                    DevelopCore.DebugPluginProject(GlobalModel.DebugPluginPath);
+
+                    Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                    {
+                        Notice.AddNotice(new()
+                        {
+                            Title = "调试模式",
+                            Message = "目标调试插件已加载完毕"
+                        });
+                    });
+                }
+            });
+        };
+            
         Loaded += (_, _) =>
         {
             Title = GlobalModel.CustomManifest.Title.Replace("{{version}}", GlobalModel.BodyVersion);

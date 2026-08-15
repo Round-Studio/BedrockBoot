@@ -21,7 +21,7 @@ public class GameDownloader
 {
     private readonly GameInstallInfo _gameInstallInfo;
     private string _url = string.Empty;
-    public static int MaxFileCount { get; set; } = 256;
+    public static int MaxFileCount { get; set; } = 64;
     public static int MinFileSize { get; set; } = 20 * 1024 * 1024; // 20mb 以下的文件不进行多线程的下载...
     public static string UserAgent { get; set; } = "BedrockBoot/GameDownloader";
     public IProgress<DownloadGameProgress> DownloadProgress { get; set; } = new Progress<DownloadGameProgress>();
@@ -148,9 +148,10 @@ public class GameDownloader
 
             long totalDownloadBytes = downloadFiles.Sum(f => f.Size);
             long totalDownloadedBytes = 0;
-            object progressLock = new();
 
             using var semaphore = new SemaphoreSlim(MaxFileCount, MaxFileCount);
+            
+            Console.WriteLine($"共 {downloadFiles.Count} 个文件");
 
             var downloadTasks = downloadFiles.Select(async file =>
             {
@@ -167,19 +168,16 @@ public class GameDownloader
 
                     var fileProgress = new Progress<DownloadProgress>(p =>
                     {
-                        lock (progressLock)
-                        {
-                            long delta = p.DownloadedBytes - lastFileDownloadedBytes;
-                            lastFileDownloadedBytes = p.DownloadedBytes;
-                            totalDownloadedBytes += delta;
+                        long delta = p.DownloadedBytes - lastFileDownloadedBytes;
+                        lastFileDownloadedBytes = p.DownloadedBytes;
+                        totalDownloadedBytes += delta;
 
-                            double percentage = totalDownloadBytes > 0
-                                ? (double)totalDownloadedBytes / totalDownloadBytes * 100
-                                : 100;
+                        double percentage = totalDownloadBytes > 0
+                            ? (double)totalDownloadedBytes / totalDownloadBytes * 100
+                            : 100;
 
-                            DownloadProgress.Report(new(GameInstallStatus.DownloadFile,
-                                $"下载中: {percentage:F2}%", percentage));
-                        }
+                        DownloadProgress.Report(new(GameInstallStatus.DownloadFile,
+                            $"下载中: {percentage:F2}%", percentage));
                     });
 
                     if (file.Size >= MinFileSize)
@@ -193,7 +191,10 @@ public class GameDownloader
                     }
                     else
                     {
-                        var downloader = new SingleThreadDownloader();
+                        var downloader = new SingleThreadDownloader()
+                        {
+                            FetchFileInfo = false
+                        };
                         Console.WriteLine($"下载文件 {url}");
                         await downloader.DownloadAsync(url, savePath, fileProgress);
                         Console.WriteLine($"{url} Download OK");

@@ -18,6 +18,9 @@ public class SingleThreadDownloader : IDisposable
     private readonly int _chunkSize;
     private readonly HttpClient _httpClient;
     private readonly int _maxThreads;
+    
+    // 新增属性：是否获取文件信息
+    public bool FetchFileInfo { get; set; } = true;
 
     public SingleThreadDownloader(DownloadConfig config = null)
     {
@@ -67,15 +70,41 @@ public class SingleThreadDownloader : IDisposable
 
         try
         {
-            // Get file info
-            var fileInfo = await GetFileInfoAsync(url, cancellationToken);
+            FileInfoResult fileInfo = null;
+            
+            // 根据 FetchFileInfo 属性决定是否获取文件信息
+            if (FetchFileInfo)
+            {
+                // Get file info
+                fileInfo = await GetFileInfoAsync(url, cancellationToken);
+            }
+            else
+            {
+                // 不获取文件信息时，创建一个默认的 FileInfoResult
+                fileInfo = new FileInfoResult
+                {
+                    ContentLength = null,  // 未知大小
+                    AcceptRanges = false   // 不支持断点续传
+                };
+            }
 
             // Create directory if not exists
             var directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) Directory.CreateDirectory(directory);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) 
+                Directory.CreateDirectory(directory);
 
-            // Download in chunks
-            await DownloadInChunksAsync(url, filePath, fileInfo, progress, cancellationToken);
+            // 根据是否获取文件信息选择下载方式
+            if (FetchFileInfo && fileInfo.AcceptRanges && fileInfo.ContentLength.HasValue && 
+                fileInfo.ContentLength > _chunkSize)
+            {
+                // 分块下载（需要文件信息）
+                await DownloadInChunksAsync(url, filePath, fileInfo, progress, cancellationToken);
+            }
+            else
+            {
+                // 单线程下载（不需要文件信息）
+                await DownloadSingleThreadAsync(url, filePath, fileInfo, progress, cancellationToken);
+            }
 
             Console.WriteLine($@"Download completed: {filePath}");
             return true;
@@ -87,7 +116,7 @@ public class SingleThreadDownloader : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"Download failed: {ex.Message}");
+            Console.WriteLine($@"Download failed: {ex}");
             throw;
         }
     }
@@ -265,6 +294,7 @@ public class SingleThreadDownloader : IDisposable
         public int MaxRetries { get; set; } = 3;
         public TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(10);
         public string UserAgent { get; set; } = GameDownloader.UserAgent;
+        public bool FetchFileInfo { get; set; } = true; // 也可以在配置中添加
     }
 }
 

@@ -450,6 +450,7 @@ public class ProcessMouseLocker
     }
     private bool CheckIfUwpFrameMatches(IntPtr frameHwnd)
     {
+        bool isMatch = false;
 
         // 核心：检查 Frame 内部是否包含目标进程的子窗口
         EnumChildWindows(frameHwnd, (childHwnd, l) =>
@@ -457,12 +458,16 @@ public class ProcessMouseLocker
             GetWindowThreadProcessId(childHwnd, out uint childPid);
             if (childPid == _targetPid)
             {
+                isMatch = true;
                 return false;
             }
             return true;
         }, IntPtr.Zero);
 
-        return CheckStartTime(frameHwnd);
+        if (!isMatch) return CheckStartTime(frameHwnd);
+
+        return isMatch;
+
 
         /*
          * 说实话时间戳检测似乎不太好用

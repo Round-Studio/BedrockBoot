@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Downloader.Game;
 
 namespace BedrockBoot.Downloader.Files;
 
@@ -36,9 +37,9 @@ public class SingleThreadDownloader : IDisposable
             Timeout = config.Timeout
         };
 
-        _httpClient.DefaultRequestHeaders.Add("User-Agent", config.UserAgent);
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", GameDownloader.UserAgent);
+        _httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
         _httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-        _httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
 
         _maxThreads = config.MaxThreads;
         _chunkSize = config.ChunkSize;
@@ -263,7 +264,7 @@ public class SingleThreadDownloader : IDisposable
         public int ChunkSize { get; set; } = 1024 * 1024; // 1MB chunks
         public int MaxRetries { get; set; } = 3;
         public TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(10);
-        public string UserAgent { get; set; } = "Mozilla/5.0 (compatible; DownloadManager/1.0)";
+        public string UserAgent { get; set; } = GameDownloader.UserAgent;
     }
 }
 

@@ -8,6 +8,7 @@ using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Downloader.Enum;
 using BedrockBoot.Downloader.Event.Progress;
 using BedrockBoot.Downloader.Files;
+using BedrockBoot.Downloader.Game.Cache;
 using BedrockBoot.Downloader.Info.Game;
 using BedrockBoot.Models.Global;
 using BedrockLauncher.Core;
@@ -20,11 +21,16 @@ public class GameDownloader
 {
     private readonly GameInstallInfo _gameInstallInfo;
     private string _url = string.Empty;
+    public static int MaxFileCount { get; set; } = 256;
+    public static int MinFileSize { get; set; } = 20 * 1024 * 1024; // 20mb 以下的文件不进行多线程的下载...
     public static string UserAgent { get; set; } = "BedrockBoot/GameDownloader";
     public IProgress<DownloadGameProgress> DownloadProgress { get; set; } = new Progress<DownloadGameProgress>();
+
     public Func<List<GameDownloadUrlInfo>, GameDownloadUrlInfo> OnChooseDownloadUrl { get; set; } =
         urls => urls.FirstOrDefault() ?? throw new Exception("未选择下载地址");
+
     public bool IsCanInstall { get; set; } = true;
+
     public GameDownloader(GameInstallInfo gameInstallInfo)
     {
         _gameInstallInfo = gameInstallInfo;
@@ -35,12 +41,14 @@ public class GameDownloader
         if (string.IsNullOrEmpty(_gameInstallInfo.InstanceName))
             _gameInstallInfo.InstanceName = _gameInstallInfo.VersionBuildInfo!.Id;
         PrepareDownloadDirectory();
+        var installDir = Path.Combine(_gameInstallInfo.InstallFolder,
+            GameInfoHelper.GetGameFolderRootName(_gameInstallInfo.InstallFolder), _gameInstallInfo.InstanceName);
         if (_gameInstallInfo.InstallType == GameInstallType.Tradition)
         {
             var packagePath = Path.Combine(_gameInstallInfo.InstallFolder, "version_save",
                 $"{_gameInstallInfo.VersionBuildInfo!.Version}.insPack");
             var isUseCache = false;
-            
+
             var locFile = GamePackageCacheIndex.Find(_gameInstallInfo.VersionBuildInfo.Version,
                 _gameInstallInfo.VersionBuildInfo.GameBuildType.ToString());
             if (locFile != null)
@@ -48,12 +56,13 @@ public class GameDownloader
                 packagePath = locFile.FilePath;
                 isUseCache = true;
             }
-            
+
             if (string.IsNullOrEmpty(_url) && !isUseCache)
                 DownloadProgress.Report(new(GameInstallStatus.Error, "未选择下载源", 0));
 
             if (!isUseCache)
             {
+                DownloadProgress.Report(new(GameInstallStatus.GetUrl, $"<unknown>", 100));
                 var downloader = new MultiThreadDownloader();
                 await downloader.DownloadAsync(_url, packagePath,
                     new Progress<DownloadProgress>(progress =>
@@ -86,11 +95,8 @@ public class GameDownloader
                 {
                     await Task.Delay(100);
                 }
-            } // 外部控制是否开始安装
+            }
 
-            var installDir = Path.Combine(_gameInstallInfo.InstallFolder,
-                GameInfoHelper.GetGameFolderRootName(_gameInstallInfo.InstallFolder), _gameInstallInfo.InstanceName);
-            
             SaveVersionConfig(installDir);
 
             await DownloaderCore.BedrockCore.InstallPackageAsync(new LocalGamePackageOptions
@@ -114,6 +120,93 @@ public class GameDownloader
                 }),
                 InstallStates = new Progress<InstallStates>(states => { HandleInstallState(states, installDir); })
             });
+        }
+        else
+        {
+            DownloadProgress.Report(new(GameInstallStatus.GetUrl, "获取文件清单", 0));
+
+            var list = await ModernLocalCache.GetVersionFilesAsync(_gameInstallInfo.VersionBuildInfo!.Version);
+
+            var downloadFiles = list.Where(f => !f.IsLocalFile).ToList();
+            var localFiles = list.Where(f => f.IsLocalFile).ToList();
+
+            foreach (var file in localFiles)
+            {
+                var savePath = Path.Combine(installDir, file.Pathname);
+                var saveDir = Path.GetDirectoryName(savePath);
+                if (!string.IsNullOrEmpty(saveDir) && !Directory.Exists(saveDir))
+                    Directory.CreateDirectory(saveDir);
+
+                File.Copy(file.LocalFile, savePath, true);
+            }
+
+            if (downloadFiles.Count == 0)
+            {
+                DownloadProgress.Report(new(GameInstallStatus.Completed, "安装完成", 100));
+                return;
+            }
+
+            long totalDownloadBytes = downloadFiles.Sum(f => f.Size);
+            long totalDownloadedBytes = 0;
+            object progressLock = new();
+
+            using var semaphore = new SemaphoreSlim(MaxFileCount, MaxFileCount);
+
+            var downloadTasks = downloadFiles.Select(async file =>
+            {
+                var savePath = Path.Combine(installDir, file.Pathname);
+                var saveDir = Path.GetDirectoryName(savePath);
+                if (!string.IsNullOrEmpty(saveDir) && !Directory.Exists(saveDir))
+                    Directory.CreateDirectory(saveDir);
+
+                await semaphore.WaitAsync();
+                try
+                {
+                    var url = $"{Global.SourceList.BaseUrl}/download/{file.Hashes.Sha256}";
+                    long lastFileDownloadedBytes = 0;
+
+                    var fileProgress = new Progress<DownloadProgress>(p =>
+                    {
+                        lock (progressLock)
+                        {
+                            long delta = p.DownloadedBytes - lastFileDownloadedBytes;
+                            lastFileDownloadedBytes = p.DownloadedBytes;
+                            totalDownloadedBytes += delta;
+
+                            double percentage = totalDownloadBytes > 0
+                                ? (double)totalDownloadedBytes / totalDownloadBytes * 100
+                                : 100;
+
+                            DownloadProgress.Report(new(GameInstallStatus.DownloadFile,
+                                $"下载中: {percentage:F2}%", percentage));
+                        }
+                    });
+
+                    if (file.Size >= MinFileSize)
+                    {
+                        using var downloader = new MultiThreadDownloader();
+                        downloader.AdditionalHeaders ??= new Dictionary<string, string>();
+                        downloader.AdditionalHeaders["User-Agent"] = UserAgent;
+                        Console.WriteLine($"下载文件 {url}");
+                        await downloader.DownloadAsync(url, savePath, fileProgress);
+                        Console.WriteLine($"{url} Download OK");
+                    }
+                    else
+                    {
+                        var downloader = new SingleThreadDownloader();
+                        Console.WriteLine($"下载文件 {url}");
+                        await downloader.DownloadAsync(url, savePath, fileProgress);
+                        Console.WriteLine($"{url} Download OK");
+                    }
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            await Task.WhenAll(downloadTasks);
+            DownloadProgress.Report(new(GameInstallStatus.Completed, "安装完成", 100));
         }
     }
 

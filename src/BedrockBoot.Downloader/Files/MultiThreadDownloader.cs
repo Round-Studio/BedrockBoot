@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Downloader.Game;
 
 namespace BedrockBoot.Downloader.Files;
 
@@ -55,8 +56,11 @@ public class MultiThreadDownloader : IDisposable
         // 这里设为无限，短请求（如获取文件信息）单独用 CancellationTokenSource 控制超时。
         _httpClient.Timeout = Timeout.InfiniteTimeSpan;
 
+        _httpClient.DefaultRequestHeaders.Add("User-Agent", GameDownloader.UserAgent);
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (compatible; ImprovedMultiThreadDownloader/1.0)");
+        _httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
+        _httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
         _maxConcurrency = MaxConcurrency;
         _bufferSize = BufferSize;
     }

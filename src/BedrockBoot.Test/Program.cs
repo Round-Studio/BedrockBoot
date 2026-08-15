@@ -18,12 +18,13 @@ var downloader = new GameDownloader(new GameInstallInfo()
     InstallFolder = @"I:\ttttttest",
     VersionBuildInfo = new()
     {
-        Id = "26.44",
-        Version = "1.26.4403",
+        Id = "1.21.132",
+        Version = "1.21.13201",
         GameBuildType = BuildType.Gdk,
         GameType = GameType.Release
     },
-    InstallType = GameInstallType.Tradition
+    InstanceName = "test_1",
+    InstallType = GameInstallType.Modern
 });
 
 downloader.DownloadProgress = new Progress<DownloadGameProgress>(p =>

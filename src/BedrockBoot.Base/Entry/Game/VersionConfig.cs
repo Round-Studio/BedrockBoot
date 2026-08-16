@@ -32,6 +32,7 @@ public class VersionConfig
         [JsonPropertyName("coverImage")] public string? CoverImage { get; set; } = null;
         [JsonPropertyName("gameIconType")] public GameIconType GameIconType { get; set; } = GameIconType.Default;
         [JsonPropertyName("gameIconPath")] public string GameIconPath { get; set; } = string.Empty;
+        [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = false;
     }
 
     public class VersionStatusEntry

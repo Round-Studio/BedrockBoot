@@ -32,7 +32,6 @@ public class VersionConfig
         [JsonPropertyName("coverImage")] public string? CoverImage { get; set; } = null;
         [JsonPropertyName("gameIconType")] public GameIconType GameIconType { get; set; } = GameIconType.Default;
         [JsonPropertyName("gameIconPath")] public string GameIconPath { get; set; } = string.Empty;
-        [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = false;
     }
 
     public class VersionStatusEntry
@@ -46,6 +45,7 @@ public class VersionConfig
         [JsonPropertyName("isModes")] public bool IsModes { get; set; } = true;
         [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
         [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
+        [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = false;
         [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
         [JsonPropertyName("isSyncPubOptions")] public bool IsSyncPublicOptions { get; set; } = true;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";

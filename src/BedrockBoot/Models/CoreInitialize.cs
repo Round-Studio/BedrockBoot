@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
@@ -82,6 +84,10 @@ public class CoreInitialize
 
         RegisterService.API.LaunchingEvent.Add(path =>
         {
+            File.WriteAllText(Path.Combine(path, "config", "BedrockBoot2", ".bb.version"), GlobalModel.BodyVersion);
+
+            File.WriteAllText(Path.Combine(path, "config", ".launcher.info"),
+                Process.GetCurrentProcess().MainModule!.FileName);
             Console.WriteLine(@"开始同步游戏配置文件");
             var config = GameInfoHelper.GetVersionConfig(path);
             Console.WriteLine($@"当前实例配置：{config.Config.IsSyncPublicOptions}");

@@ -214,12 +214,6 @@ public class EasyLauncher
                 });
             }
 
-            File.WriteAllText(Path.Combine(VersionInfo.VersionPath!, "config", "BedrockBoot2", ".bb.version"),
-                VersionInfo.Info.Version);
-
-            File.WriteAllText(Path.Combine(VersionInfo.VersionPath!, "config", ".launcher.info"),
-                Process.GetCurrentProcess().MainModule!.FileName);
-
             var launchCore = new XUserLauncher.Core.XUserLauncher(Path.Combine(VersionInfo.VersionPath, "config",
                 "BedrockBoot2", "config.json"));
             XboxPreauth auth = null;

@@ -374,7 +374,7 @@
     <x:String x:Key="Download.Result.Group.Preview">预览</x:String>
     <x:String x:Key="Download.Result.Group.Details">详细介绍</x:String>
     <x:String x:Key="Download.Result.Error.LoadDescription">加载描述时出错</x:String>
-    <x:String x:Key="Download.Result.Share.Format">你的好友向你推荐了一个资源【{0}】&#x0a;资源主页：{1}&#x0a;前往「BedrockBoot」，Ctrl+V 即可获取该资源</x:String>
+    <x:String x:Key="Download.Result.Share.Format">你的好友向你推荐了一个资源【{0}】&#x0a;资源主页：{1}&#x0a;前往「BedrockBoot」或「BMCBL」，Ctrl+V 即可获取该资源</x:String>
     <x:String x:Key="Download.Result.Share.Success">分享内容已复制，在 BedrockBoot 内按下 Ctrl+V 即可查看该资源</x:String>
 
     <x:String x:Key="Download.CurseForge.Label.PackInfo">相关包信息</x:String>

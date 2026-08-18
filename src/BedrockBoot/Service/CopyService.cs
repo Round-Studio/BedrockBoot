@@ -29,8 +29,12 @@ public class CopyService
     public static async Task SetClipboard(string content, CopyType type, int Id)
     {
         var clipboard = GetClipboard();
+        var typeStr = type switch
+        {
+            CopyType.Resource => "RC"
+        };
         if (clipboard != null) 
-            await clipboard.SetTextAsync($"{content}\nID: {Id} Type: {type}");
+            await clipboard.SetTextAsync($"{content}\nID: {typeStr}-{Id}");
     }
 
     /// <summary>
@@ -170,16 +174,31 @@ public class CopyService
     {
         if (string.IsNullOrEmpty(text)) return (null, null);
 
-        var match = Regex.Match(text, @"ID:\s*(\d+).*?Type:\s*(\S+)", RegexOptions.Singleline);
-        if (match.Success && int.TryParse(match.Groups[1].Value, out var id))
+        // 尝试匹配新格式：RC-123456
+        var newMatch = Regex.Match(text, @"\b(RC|SC|DC?)-(\d+)\b", RegexOptions.IgnoreCase);
+        if (newMatch.Success && int.TryParse(newMatch.Groups[2].Value, out var id))
         {
-            var type = match.Groups[2].Value switch
+            var type = newMatch.Groups[1].Value.ToUpper() switch
             {
-                "Resource" => CopyType.Resource,
+                "RC" => CopyType.Resource,
+                // 可扩展其他类型
                 _ => (CopyType?)null
             };
             return (id, type);
         }
+
+        // 尝试匹配旧格式：ID: 123456 Type: Resource
+        var oldMatch = Regex.Match(text, @"ID:\s*(\d+).*?Type:\s*(\S+)", RegexOptions.Singleline);
+        if (oldMatch.Success && int.TryParse(oldMatch.Groups[1].Value, out var oldId))
+        {
+            var type = oldMatch.Groups[2].Value switch
+            {
+                "Resource" => CopyType.Resource,
+                _ => (CopyType?)null
+            };
+            return (oldId, type);
+        }
+
         return (null, null);
     }
 

@@ -56,8 +56,8 @@ internal sealed class Program
 
         AppUpdater.ProcessStartupArgs(args);
 
-        if (BedrockbootUrlProtocol.WakeUp(args))
-            return;
+        /*if (BedrockbootUrlProtocol.WakeUp(args))
+            return;*/
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
         EnvironmentLabel.ClientId = $"BedrockBoot {Models.Global.GlobalModel.BodyVersion}";

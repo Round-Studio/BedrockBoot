@@ -140,7 +140,7 @@ public class App : Application
 
             desktop.MainWindow = window;
 
-            BedrockbootUrlProtocol.ExecutePendingRequest();
+            // BedrockbootUrlProtocol.ExecutePendingRequest();
         }
 
         base.OnFrameworkInitializationCompleted();

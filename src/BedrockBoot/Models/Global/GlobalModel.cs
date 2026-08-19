@@ -13,7 +13,6 @@ using BedrockBoot.GravityCone;
 using BedrockBoot.GravityCone.Entry;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
-using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -37,7 +36,6 @@ public class GlobalModel
     
     public static Action? MainPageUpdateInstance { get; set; }
 
-    public static ProtocolService ProtocolService { get; set; } = new();
     public static PaperConnectCore PaperConnectCore { get; set; }
     public static List<string> ETPublicServer { get; set; }
     public static XboxUserInfo XboxUserInfo { get; set; }

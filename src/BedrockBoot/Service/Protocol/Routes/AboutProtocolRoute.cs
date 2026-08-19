@@ -15,6 +15,9 @@ public class AboutProtocolRoute : IProtocolRoute
     {
         Dispatcher.UIThread.Invoke(() =>
         {
+            if (MainPage.Instance == null)
+                return;
+
             MainPage.Instance.SelTag.SelectedIndex = 5;
             MainSettingPage.NavigateTo(new AboutPage());
         });

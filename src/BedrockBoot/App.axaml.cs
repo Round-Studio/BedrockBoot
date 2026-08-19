@@ -121,8 +121,6 @@ public class App : Application
             {
                 case AppRunType.Default:
                     window = new MainWindow();
-                    // StartProtocolServer();
-                    Console.WriteLine(@"暂时先不启用 IPC 服务器了...");
                     break;
                 case AppRunType.OpenResourcePack:
                     window = new ImportResourcePack();
@@ -141,39 +139,11 @@ public class App : Application
             if (window == null) throw new NullReferenceException();
 
             desktop.MainWindow = window;
+
+            BedrockbootUrlProtocol.ExecutePendingRequest();
         }
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private void StartProtocolServer()
-    {
-        try
-        {
-            var protoService = Models.Global.GlobalModel.ProtocolService;
-
-            protoService.Get("/shell", async (context, parameters) =>
-            {
-                var command = parameters.GetQuery("command");
-                if (!string.IsNullOrEmpty(command))
-                {
-                    Dispatcher.UIThread.Post(() => ProtocolCommand.OnCommand([command]));
-                    await ProtocolService.WriteTextResponseAsync(context, 200, "ok");
-                }
-                else
-                {
-                    await ProtocolService.WriteErrorResponseAsync(context, 400, "Bad Request",
-                        "Missing command parameter");
-                }
-            });
-
-            _ = protoService.StartAsync();
-            Console.WriteLine(@"BedrockBoot IPC 服务已启动");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"启动 BedrockBoot IPC 服务失败: {ex.Message}");
-        }
     }
 
     public static void LoadColor(string colorCode,ThemeModelEnum theme)

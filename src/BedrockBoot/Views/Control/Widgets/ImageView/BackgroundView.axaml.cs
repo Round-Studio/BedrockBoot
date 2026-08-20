@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -184,7 +185,9 @@ public partial class BackgroundView : UserControl
                 BackgroundImage.Children.Add(new Image()
                 {
                     Source = svgImage,
-                    Stretch = Stretch.UniformToFill
+                    Stretch = Stretch.UniformToFill,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch
                 });
                 BackgroundImage.IsVisible = true;
             }

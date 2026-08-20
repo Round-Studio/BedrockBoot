@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:classes="clr-namespace:OnePointUI.Avalonia.Classes;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             Background="{DynamicResource BackgroundBrush}"
              x:Class="BedrockBoot.Views.Control.Widgets.ImageView.BackgroundView">
     <Grid Name="BackgroundBox"
           Margin="0">
@@ -11,6 +12,8 @@
             <BlurEffect Radius="0" />
         </Grid.Effect>
         <Grid Name="BackgroundImage" 
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
               Margin="0"/>
         <classes:ParallaxImage3D Name="BackgroundImage3D" />
         <Grid Name="BackgroundImageOpacity"

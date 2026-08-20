@@ -64,6 +64,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
+p {
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 1;
+}
+
 .topbar {
   max-height: 64px;
   height: 64px;

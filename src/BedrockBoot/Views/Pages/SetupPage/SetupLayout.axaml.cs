@@ -12,17 +12,19 @@ public partial class SetupLayout : ISetting
     public SetupLayout()
     {
         InitializeComponent();
-        IsRightLaunchButton.SelectedIndex = GlobalModel.Config.Data.IsRightLaunchButton ? 1 : 0;
         
         IsEdit = true;
     }
-    private void IsRightLaunchButton_OnSelectionChanged(object? sender, RoutedEventArgs e)
+
+    private void KLeft_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
-        if (IsEdit)
-        {
-            GlobalModel.Config.Data.IsRightLaunchButton =
-                (IsRightLaunchButton.SelectedIndex == 1);
-            GlobalModel.Config.Save();
-        }
+        GlobalModel.Config.Data.IsRightLaunchButton = !(bool)KLeft.IsChecked!;
+        GlobalModel.Config.Save();
+    }
+
+    private void KRight_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        GlobalModel.Config.Data.IsRightLaunchButton = (bool)KRight.IsChecked!;
+        GlobalModel.Config.Save();
     }
 }

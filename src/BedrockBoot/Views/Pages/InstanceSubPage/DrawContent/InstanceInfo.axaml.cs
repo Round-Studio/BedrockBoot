@@ -102,6 +102,7 @@ public partial class InstanceInfo : UserControl
                 InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
                 GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
                 IsRunAdmin.IsChecked = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun;
+                IsNativeException.IsChecked = VersionInfo.Config.IsNativeException;
                 CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
             });
 
@@ -235,6 +236,7 @@ public partial class InstanceInfo : UserControl
             VersionInfo.Config.IsDetailedLog = (bool)InstanceDetailedLogs.IsChecked!;
             VersionInfo.Config.IsSyncPublicOptions = (bool)GameConfigSwitch.IsChecked!;
             VersionInfo.Config.SysWindowsConfig.IsUseAdminRun = (bool)IsRunAdmin.IsChecked!;
+            VersionInfo.Config.IsNativeException = (bool)IsNativeException.IsChecked!;
 
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }

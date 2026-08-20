@@ -190,6 +190,15 @@
                                   IsCheckedChanged="BoolTypeConfig_OnChanged" />
                 </onePointControls:SettingCard>
                     
+                <onePointControls:SettingCard Glyph="&#xEBE8;"
+                                              Name="IsNativeExceptionCard"
+                                              Header="Native 异常捕获"
+                                              Description="捕获 Native 异常">
+                    <ToggleSwitch IsChecked="False"
+                                  Name="IsNativeException"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
+                    
                 <onePointControls:SettingCard Glyph="&#xE7EF;"
                                               Name="IsRunAdminCard"
                                               Header="以管理员身份运行游戏"

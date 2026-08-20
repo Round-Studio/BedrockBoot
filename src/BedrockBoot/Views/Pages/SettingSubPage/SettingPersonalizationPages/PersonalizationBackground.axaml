@@ -25,6 +25,7 @@
                     <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Voronoi}" />
                     <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Bubble}" />
                     <ComboBoxItem Name="LiveModel">桌面实况</ComboBoxItem>
+                    <ComboBoxItem Name="Default">默认</ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>
 

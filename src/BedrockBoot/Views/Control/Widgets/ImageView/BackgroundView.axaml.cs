@@ -7,6 +7,8 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Avalonia.Svg.Skia;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Style.Background.AnimationImage;
@@ -89,11 +91,12 @@ public partial class BackgroundView : UserControl
         {
             BackgroundImage.IsVisible = false;
             BackgroundImage3D.IsVisible = false;
+            BackgroundImage.Children.Clear();
             _isAnimationMode = false;
             _currentRotation = 0;
             _isRotating = false;
 
-            if (!style.BackgroundAnimation)
+            if (!style.BackgroundAnimation && style.StyleType == StyleType.Image)
             {
                 var bitmap = LoadScaledByFactorOptimized(imgPath,
                     Core.Global.GlobalModel.Config.Data.StyleConfig.ImageQuality switch
@@ -124,7 +127,7 @@ public partial class BackgroundView : UserControl
                 }
                 SetBackgroundBlur(style.BackgroundImageBlur);
             }
-            else
+            else if(style.StyleType == StyleType.Image)
             {
                 _isAnimationMode = true;
                 var animHelper = new AnimationImageHelper(imgPath);
@@ -165,11 +168,50 @@ public partial class BackgroundView : UserControl
                 StartRotationAnimation();
                 StartAnimation();
             }
+            else if (style.StyleType == StyleType.Default)
+            {
+                using var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/Svg/Background.svg"));
+                using var reader = new StreamReader(stream);
+                string svgString = await reader.ReadToEndAsync();
+
+                svgString = svgString.Replace("rgb(53,191,255)", GetAccentBackgroundHtmlCode());
+
+                var svgImage = new SvgImage
+                {
+                    Source = SvgSource.LoadFromSvg(svgString)
+                };
+
+                BackgroundImage.Children.Add(new Image()
+                {
+                    Source = svgImage,
+                    Stretch = Stretch.UniformToFill
+                });
+                BackgroundImage.IsVisible = true;
+            }
         }
         catch(Exception ex)
         {
             Console.WriteLine(ex);
         }
+    }
+    
+    public string GetAccentBackgroundHtmlCode()
+    {
+        if (Application.Current != null && 
+            Application.Current.TryFindResource("AccentBackgroundBrush", Application.Current.ActualThemeVariant, out var resource))
+        {
+            if (resource is ISolidColorBrush solidBrush)
+            {
+                Color c = solidBrush.Color;
+                return $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+            }
+            else if (resource is Color color)
+            {
+                return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+            }
+        }
+
+        return "rgb(53,191,255)";
     }
     
     private void ResetAllProperties()

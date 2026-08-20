@@ -137,4 +137,9 @@ public partial class SettingGame : ISettingPage
             Models.Global.GlobalModel.MainWindow.SetReboot();
         }
     }
+
+    private void SaveBackupBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new GameBackup());
+    }
 }

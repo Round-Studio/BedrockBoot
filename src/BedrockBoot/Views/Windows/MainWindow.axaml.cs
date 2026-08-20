@@ -429,6 +429,10 @@ public partial class MainWindow : Window
                 LiveOpacity.IsVisible = true;
                 UpdateLiveOpacity();
                 break;
+            case StyleType.Default:
+                BackgroundView.ApplyImageBackground(style);
+                BackgroundView.IsVisible = true;
+                break;
         }
     }
 

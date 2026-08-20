@@ -89,7 +89,7 @@
             <TextBlock Margin="5,0"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="全局同步" />
+                       Text="全局" />
 
             <onePointControls:SettingCard Margin="5, 0"
                                           IsClickable="True"
@@ -98,6 +98,14 @@
                                           Click="PublicSyncBtn_OnClick"
                                           Header="全局配置"
                                           Description="全局实例的游戏设置 (options.txt) 文件来源的设置" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          IsClickable="True"
+                                          Glyph="&#xE74E;"
+                                          Name="SaveBackupBtn"
+                                          Click="SaveBackupBtn_OnClick"
+                                          Header="存档备份"
+                                          Description="所有实例的存档备份管理" />
             
             <TextBlock Margin="5,0"
                        FontWeight="Bold"

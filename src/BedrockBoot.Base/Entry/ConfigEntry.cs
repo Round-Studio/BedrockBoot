@@ -80,7 +80,7 @@ namespace BedrockBoot.Base.Entry
         [JsonPropertyName("background3d")] public bool Background3D { get; set; } = false;
         [JsonPropertyName("liveOpacity")] public int LiveOpacity { get; set; } = 40;
         [JsonPropertyName("liveBlur")] public bool LiveBlur { get; set; } = false;
-        [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Voronoi;
+        [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Default;
         [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
         [JsonPropertyName("mediaSource")] public MediaSourceEnum MediaSource { get; set; } = MediaSourceEnum.PriorityThemePack;
         [JsonPropertyName("mainFont")] public string MainFont { get; set; } = "DINPro";

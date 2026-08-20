@@ -8,7 +8,8 @@ public enum StyleType
     AccentColor,
     Voronoi,
     Bubble,
-    LiveModel
+    LiveModel,
+    Default
 }
 
 public enum HomeType

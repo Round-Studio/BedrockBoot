@@ -10,6 +10,10 @@
   --text-color: #fff;
 }
 
+a {
+  text-decoration: none;
+}
+
 body {
   transition: background-color 0.16s ease-in-out;
   margin: 0;

@@ -18,7 +18,7 @@ main {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  padding: 0 16%;
+  padding: 0 8%;
 }
 
 body {
@@ -64,6 +64,10 @@ button:active {
   background: color-mix(in srgb, var(--hover-color) 80%, transparent);
 }
 
+svg {
+  fill: var(--text-color);
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -81,4 +85,29 @@ button:active {
   display: block;
   height: auto;
   box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--background-color) 50%, transparent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--hover-color);
+  border-radius: 4px;
+  transition: all 0.16s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--hover-color) 80%, transparent);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hover-color) color-mix(in srgb, var(--background-color) 50%, transparent);
 }

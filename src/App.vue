@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import TopBar from "./components/bar/TopBar.vue";
+import FootBar from "./components/bar/FootBar.vue";
 </script>
 
 <template>
-  <top-bar class="fixed-topbar"></top-bar>
-  <main>
+  <top-bar />
+  <main class="main-content">
     <router-view />
   </main>
+  <foot-bar/>
 </template>
 
 <style>
-.fixed-topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+.main-content {
+  padding-top: 96px;
+  padding-bottom: 96px;
 }
 </style>

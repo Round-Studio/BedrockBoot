@@ -43,7 +43,7 @@ public class InstanceUpdater
         Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.ID}");
         
         var downloader = new EasyDownload(buildInfo, true, _versionConfig.VersionsRootPath,
-            _versionConfig.Info.VersionName, true);
+            Path.GetFileName(_versionConfig.VersionPath), true);
 
         string protectedPath = Path.GetFullPath(Path.Combine(_versionConfig.VersionPath, "config", "BedrockBoot2"));
 

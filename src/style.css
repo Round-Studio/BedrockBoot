@@ -44,8 +44,14 @@ body {
 
 p {
   margin: 18px 0;
-  opacity: 0.7;
-  font-weight: 900;
+  color: color-mix(in srgb, var(--text-color) 50%, transparent);;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.light-label {
+  color: var(--text-color);
+  font-weight: 700;
   font-size: 18px;
 }
 

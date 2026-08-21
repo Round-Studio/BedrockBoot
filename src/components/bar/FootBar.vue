@@ -52,7 +52,10 @@
 
         <div class="foot-bottom">
           <p>© 2026 Round Studio. All rights reserved.</p>
-          <p>Built with ❤️</p>
+          <div style="justify-items: end">
+            <p style="font-size: 9px">BedrockBoot 官网灵感来源于 BakaXL.com</p>
+            <p style="font-size: 9px">Build with ❤️</p>
+          </div>
         </div>
       </div>
     </div>
@@ -122,7 +125,6 @@
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
-  opacity: 0.6;
   color: var(--text-color);
 }
 

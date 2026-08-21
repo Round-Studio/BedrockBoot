@@ -25,20 +25,44 @@
   <img class="img-card" src="../../assets/screenshots/bb.main.page.png" alt="BedrockBoot 主窗口"/>
 
   <div class="header">
-    <h1>随心配</h1>
-    <p>主题自由，由你定义</p>
+    <h1>独门绝技</h1>
+    <p>与众不同，无所不能</p>
   </div>
 
-  <p>启动器内置丰富的个性化选项，你可以根据自己的使用习惯自由调整。</p>
-  <p>在 Windows 下，开启"实况背景"后，启动器背景将自动同步当前桌面壁纸。如果你正在使用 Wallpaper Engine 等动态壁纸软件，启动器背景也会随之动态变化，视觉体验更加沉浸。</p>
+  <p>BedrockBoot 从底层架构设计就与其他启动器不同，打破传统基岩版启动器管理逻辑，使用起来更加<span class="light-label">便捷</span>。</p>
+  <p>强大的<span class="light-label">个性化</span>设置，支持<span class="light-label">高达 13 种</span>个性化选项，还有<span class="light-label">3D 视差效果和实况背景</span>的加持，简直<span class="light-label">太棒了！</span></p>
+
+  <p>在 Windows 下，开启"<span class="light-label">实况背景</span>"后，启动器背景将自动同步当前桌面壁纸。如果你正在使用 <span class="light-label">Wallpaper Engine</span> 等动态壁纸软件，启动器背景也会随之动态变化，视觉体验更加沉浸。</p>
+
+  <p>得益于强大的开源社区，BedrockBoot 是<span class="light-label">首个</span>支持 <span class="light-label">Windows 与 Linux</span> 的跨平台基岩版启动器。</p>
+
+  <p>不光能够跨平台，BedrockBoot 还是<span class="light-label">首个</span>支持基岩版全版本与内置 <span class="light-label">CurseForge</span> 资源下载的启动器，一键安装，方便快捷。</p>
+  <p>还有 <span class="light-label">PaperConnect</span> 的加持，可直接抛弃游戏内的 XBOX 联机，使用更高效、更流畅、更易用的联机方式，随时随地的与好友进行联机。</p>
 
   <div class="header">
     <h1>跨平台</h1>
     <p>Windows & Linux</p>
   </div>
 
-  <p>基于 Avalonia 跨平台框架，BedrockBoot 目前已支持 Windows 与 Linux 双平台运行。</p>
+  <p>基于 <span class="light-label">Avalonia</span> 跨平台框架，BedrockBoot 目前已支持 Windows 与 Linux 双平台运行。</p>
   <p>在 Linux 系统中，我们通过 GDK-Proton 组件实现了对 GDK 类型 Minecraft 的兼容支持，包括登录功能在内，均可正常使用。</p>
+
+  <div class="header">
+    <h1>多实例，多账户</h1>
+    <p>多目录，多实例共存</p>
+  </div>
+
+  <p>使用目前市面上的 Java 启动器相同的实例管理、安装逻辑，初次使用也可以轻易上手。</p>
+  <p>不同实例甚至还能版本隔离！</p>
+  <p>在 Windows 与 Linux 中，我们均支持了多账户切换与管理。在启动器内即可登录游戏账户。</p>
+
+  <div class="header">
+    <h1>高兼容性</h1>
+    <p>直接兼容其他第三方基岩版启动器</p>
+  </div>
+
+  <p>BedrockBoot 官方支持其他第三方基岩版启动器，例如 BMCBL、LeviLauncher 等。</p>
+  <p>启动器内可直接导入上述启动器所管理的游戏目录。</p>
 </template>
 
 <style scoped>

@@ -2,62 +2,69 @@
 </script>
 
 <template>
-  <div class="foot-bar">
-    <div class="foot-content">
-      <div class="foot-lists">
-        <div class="foot-list">
-          <h3>关于我们</h3>
-          <a href="https://roundstudio.top">
-            <button>开发组织官网</button>
-          </a>
-          <a href="https://github.com/Round-Studio">
-            <button>Github 组织</button>
-          </a>
-          <a href="https://afdian.com/a/yjq666">
-            <button>在爱发电上支持我们</button>
-          </a>
+  <footer class="footbar-wrapper">
+    <div class="foot-bar">
+      <div class="foot-content">
+        <div class="foot-lists">
+          <div class="foot-list">
+            <h3>关于我们</h3>
+            <a href="https://roundstudio.top">
+              <button>开发组织官网</button>
+            </a>
+            <a href="https://github.com/Round-Studio">
+              <button>Github 组织</button>
+            </a>
+            <a href="https://afdian.com/a/yjq666">
+              <button>在爱发电上支持我们</button>
+            </a>
+          </div>
+
+          <div class="foot-list">
+            <h3>BedrockBoot 交流群</h3>
+            <a href="https://qm.qq.com/q/5oTOJkd5UQ">
+              <button>官方 1 群</button>
+            </a>
+            <a href="https://qm.qq.com/q/XejJ0Dp4OG">
+              <button>官方 2 群</button>
+            </a>
+          </div>
+
+          <div class="foot-list">
+            <h3>帮助</h3>
+            <a href="https://docs.roundstudio.top/docs/product/bb">
+              <button>官方文档</button>
+            </a>
+            <a href="https://docs.roundstudio.top/docs/product/bb/commonQuestion">
+              <button>常见问题</button>
+            </a>
+          </div>
+
+          <div class="foot-list">
+            <h3>相关链接</h3>
+            <a href="https://github.com/Round-Studio/BedrockBoot">
+              <button>Github 仓库</button>
+            </a>
+            <a href="https://github.com/Round-Studio/BedrockBoot/issues">
+              <button>Github Issues</button>
+            </a>
+          </div>
         </div>
 
-        <div class="foot-list">
-          <h3>BedrockBoot 交流群</h3>
-          <a href="https://qm.qq.com/q/5oTOJkd5UQ">
-            <button>官方 1 群</button>
-          </a>
-          <a href="https://qm.qq.com/q/XejJ0Dp4OG">
-            <button>官方 2 群</button>
-          </a>
+        <div class="foot-bottom">
+          <p>© 2026 Round Studio. All rights reserved.</p>
+          <p>Built with ❤️</p>
         </div>
-
-        <div class="foot-list">
-          <h3>帮助</h3>
-          <a href="https://docs.roundstudio.top/docs/product/bb">
-            <button>官方文档</button>
-          </a>
-          <a href="https://docs.roundstudio.top/docs/product/bb/commonQuestion">
-            <button>常见问题</button>
-          </a>
-        </div>
-
-        <div class="foot-list">
-          <h3>相关链接</h3>
-          <a href="https://github.com/Round-Studio/BedrockBoot">
-            <button>Github 仓库</button>
-          </a>
-          <a href="https://github.com/Round-Studio/BedrockBoot/issues">
-            <button>Github Issues</button>
-          </a>
-        </div>
-      </div>
-
-      <div class="foot-bottom">
-        <p>© 2026 Round Studio. All rights reserved.</p>
-        <p>Built with ❤️</p>
       </div>
     </div>
-  </div>
+  </footer>
 </template>
 
 <style scoped>
+.footbar-wrapper {
+  width: 100%;
+  flex-shrink: 0;
+}
+
 .foot-bar {
   border-radius: 16px 16px 0 0;
   backdrop-filter: blur(10px);

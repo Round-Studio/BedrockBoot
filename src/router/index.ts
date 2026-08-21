@@ -7,6 +7,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../components/views/Home.vue')
     },
     {
+        path: '/download',
+        name: 'Download',
+        component: () => import('../components/views/Download.vue')
+    },
+    {
         path: '/404',
         name: 'NotFound',
         component: () => import('../components/views/NotFound.vue')

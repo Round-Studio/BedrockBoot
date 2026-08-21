@@ -101,6 +101,7 @@
 
             <onePointControls:SettingCard Margin="5, 0"
                                           IsClickable="True"
+                                          IsVisible="False"
                                           Glyph="&#xE74E;"
                                           Name="SaveBackupBtn"
                                           Click="SaveBackupBtn_OnClick"

@@ -15,10 +15,17 @@ a {
 }
 
 main {
+  transition: padding 0.16s ease-in-out;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
   padding: 0 8%;
+}
+
+@media (min-width: 1400px) {
+  main {
+    padding: 0;
+  }
 }
 
 body {

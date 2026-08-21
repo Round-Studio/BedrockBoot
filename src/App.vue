@@ -14,18 +14,11 @@ import FootBar from "./components/bar/FootBar.vue";
 </template>
 
 <style>
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
 
 .page-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
 }
 
 .main-content {

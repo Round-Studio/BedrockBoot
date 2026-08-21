@@ -61,7 +61,7 @@ onMounted(() => {
       </div>
     </div>
     <div class="topbar-warring">
-      <p>网站正在建设中...</p>
+      <p>?</p>
     </div>
   </header>
 </template>
@@ -80,6 +80,7 @@ p {
   font-size: 16px;
   font-weight: 500;
   opacity: 1;
+  color: var(--text-color);
 }
 
 .topbar {
@@ -96,14 +97,19 @@ p {
   box-sizing: border-box;
 }
 
-.topbar-warring{
-  height: 32px;
+.topbar-warring {
+  height: 0px;
+  opacity: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(197 0 0 / 0.8);
+  background-color: rgb(0 99 197 / 0.8);
   color: white;
   font-size: 15px;
+}
+
+.topbar-warring p {
+  color: white;
 }
 
 .topbar-left {
@@ -129,7 +135,7 @@ p {
 
 .logo-btn p {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 900;
   white-space: nowrap;
 }

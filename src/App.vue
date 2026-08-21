@@ -12,10 +12,10 @@ import FootBar from "./components/bar/FootBar.vue";
     <foot-bar />
   </div>
 </template>
-
 <style>
 
 .page-container {
+  background-color: color-mix(in srgb, var(--background-color) 50%, transparent);
   display: flex;
   flex-direction: column;
   min-height: 100vh;

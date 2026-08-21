@@ -69,6 +69,10 @@ button {
   padding: 8px;
 }
 
+button p {
+  color: var(--text-color);
+}
+
 button:hover {
   background: var(--hover-color);
 }
@@ -128,12 +132,13 @@ svg {
 }
 
 ::-webkit-scrollbar-track {
-  background: color-mix(in srgb, var(--background-color) 50%, transparent);
-  border-radius: 4px;
+  width: 0;
+  height: 0;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--hover-color);
+  background: transparent;
   border-radius: 4px;
   transition: all 0.16s ease-in-out;
 }
@@ -144,5 +149,5 @@ svg {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--hover-color) color-mix(in srgb, var(--background-color) 50%, transparent);
+  scrollbar-color: var(--hover-color) transparent;
 }

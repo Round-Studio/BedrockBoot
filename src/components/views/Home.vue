@@ -3,7 +3,7 @@
 
 <template>
   <div class="hero">
-    <img src="../../assets/BedrockBoot.Icon.256x.png" alt="Logo" width="180" height="180" />
+    <img src="../../assets/BedrockBoot.Icon.256x.png" alt="Logo" width="180" height="180" style="box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);border-radius: 48px"/>
     <h1>BedrockBoot</h1>
     <p>为 Windows 与 Linux 开发的基岩版启动器</p>
 

@@ -2,8 +2,9 @@ name: 自动构建并推送 Release
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["2.0-main"]
+
+permissions:
+  contents: write
 
 jobs:
   version:
@@ -12,6 +13,8 @@ jobs:
       v: ${{ steps.version.outputs.value }}
       tag: ${{ steps.version.outputs.tag }}
       time: ${{ steps.time.outputs.value }}
+      build: ${{ steps.version.outputs.build }}
+      prefix: ${{ steps.version.outputs.prefix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -20,9 +23,22 @@ jobs:
       
       - name: Generate version
         id: version
+        shell: bash
         run: |
-          echo "value=2.1.10.${{ github.run_number }}" >> $GITHUB_OUTPUT
-          echo "tag=v2.1.10.${{ github.run_number }}" >> $GITHUB_OUTPUT
+          # 从 version 分支读取构建号与前缀
+          PREFIX="2.1.10"
+          BUILD="1"
+          if git ls-remote --heads origin version | grep -q 'refs/heads/version'; then
+            git fetch origin version --depth=1 2>/dev/null || true
+            [ -n "$(git show FETCH_HEAD:version 2>/dev/null)" ] && PREFIX=$(git show FETCH_HEAD:version | tr -d '[:space:]')
+            [ -n "$(git show FETCH_HEAD:build 2>/dev/null)" ] && BUILD=$(git show FETCH_HEAD:build | tr -d '[:space:]')
+          fi
+
+          VERSION="${PREFIX}.${BUILD}"
+          echo "value=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+          echo "build=$BUILD" >> $GITHUB_OUTPUT
+          echo "prefix=$PREFIX" >> $GITHUB_OUTPUT
       
       - name: Get current time
         id: time
@@ -170,5 +186,37 @@ jobs:
           files: |
             ./dist/*.exe
             ./dist/*.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 递增构建号并推送 version 分支
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git ls-remote --heads origin version | grep -q 'refs/heads/version'; then
+            git fetch origin version --depth=1 2>/dev/null || true
+            git checkout -B version FETCH_HEAD
+          else
+            # version 分支不存在：以孤儿分支初始化并创建版本文件
+            git checkout --orphan version
+            git rm -rf . 2>/dev/null || true
+          fi
+
+          BUILD=${{ needs.version.outputs.build }}
+          BUILD_NEW=$((BUILD + 1))
+          echo "$BUILD_NEW" > build
+
+          # 前缀文件：仅在分支不存在时由机器人初始化，之后永远不修改
+          if [ -f version ]; then
+            git add build
+          else
+            echo "${{ needs.version.outputs.prefix }}" > version
+            git add build version
+          fi
+
+          git commit -m "chore: 更新构建号到 $BUILD_NEW [skip ci]" || echo "无变更提交"
+          git push origin version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

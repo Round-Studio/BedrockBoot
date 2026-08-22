@@ -36,7 +36,7 @@
 
   <p>得益于强大的开源社区，BedrockBoot 是<span class="light-label">首个</span>支持 <span class="light-label">Windows 与 Linux</span> 的跨平台基岩版启动器。</p>
 
-  <p>不光能够跨平台，BedrockBoot 还是<span class="light-label">首个</span>支持基岩版全版本与内置 <span class="light-label">CurseForge</span> 资源下载的启动器，一键安装，方便快捷。</p>
+  <p>不光能够跨平台，BedrockBoot 还是<span class="light-label">首个</span>支持基岩版全版本与内置 <span class="light-label">CurseForge</span> 资源下载的基岩版启动器，一键安装，方便快捷。</p>
   <p>还有 <span class="light-label">PaperConnect</span> 的加持，可直接抛弃游戏内的 XBOX 联机，使用更高效、更流畅、更易用的联机方式，随时随地的与好友进行联机。</p>
 
   <div class="header">

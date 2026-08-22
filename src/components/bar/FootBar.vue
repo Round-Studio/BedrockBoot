@@ -47,6 +47,9 @@
             <a href="https://github.com/Round-Studio/BedrockBoot/issues">
               <button>Github Issues</button>
             </a>
+            <router-link to="/privacyPolicy">
+              <button>隐私策略</button>
+            </router-link>
           </div>
         </div>
 

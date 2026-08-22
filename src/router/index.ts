@@ -12,6 +12,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../components/views/Download.vue')
     },
     {
+        path: '/privacyPolicy',
+        name: 'PrivacyPolicy',
+        component: () => import('../components/views/PrivacyPolicy.vue')
+    },
+    {
         path: '/404',
         name: 'NotFound',
         component: () => import('../components/views/NotFound.vue')

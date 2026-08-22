@@ -30,31 +30,6 @@ import CodeBlock from "../controls/CodeBlock.vue";
 </template>
 
 <style scoped>
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 600px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-.header h1 {
-  margin: 0;
-}
-
-.header p {
-  margin: 0;
-  opacity: 0.7;
-  font-weight: 400;
-  font-size: 16px;
-}
 
 h2 {
   margin-top: 32px;

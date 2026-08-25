@@ -8,8 +8,7 @@
     <Application.Styles>
         <core:OnePointTheme AccentColor="#486860"
                             ThemeVariant="Dark" />
-        <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
-        <StyleInclude Source="avares://BedrockBoot/Style/Widgets/DesktopWidgetTemplated.axaml"/>
-        <StyleInclude Source="avares://BedrockBoot/Style/Controls/AccountButton.axaml"/>
+        <StyleInclude Source="avares://BedrockBoot/Style/Widgets/DesktopWidgetTemplated.axaml" />
+        <StyleInclude Source="avares://BedrockBoot/Style/Controls/AccountButton.axaml" />
     </Application.Styles>
 </Application>

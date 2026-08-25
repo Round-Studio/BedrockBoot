@@ -38,18 +38,13 @@
         <Content Include="Assets\Icon\BedrockBoot.Icon.512x.ico">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Include="Manifest\Function\FunctionOption.json"/>
         <None Remove="Assets\Web\LoginFinish.html" />
         <AvaloniaResource Include="Assets\Web\LoginFinish.html" />
         <None Remove="Manifest\DefaultCustomManifest.json" />
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
-    </ItemGroup>
-
-    <ItemGroup>
+        <Folder Include="Assets\Svg\"/>
         <AvaloniaXaml Include="I18n\**"/>
     </ItemGroup>
 
@@ -94,9 +89,5 @@
 
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Assets\Svg\" />
     </ItemGroup>
 </Project>

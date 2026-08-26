@@ -49,7 +49,7 @@
                                 Text="Resource" />
 
                             <HyperlinkButton
-                                Content="{DynamicResource Download.Result.Action.ViewOnCurseForge}"
+                                Content="在其官方页面中查看"
                                 FontSize="9"
                                 Margin="0,4,0,0"
                                 Name="HyperlinkButton" />
@@ -274,7 +274,7 @@
                         <HyperlinkButton Grid.Row="1"
                                          HorizontalAlignment="Right"
                                          Name="HyperlinkButton2"
-                                         Content="在 CurseForge 中查看" />
+                                         Content="在其官方页面中查看" />
                     </Grid>
                 </Grid>
             </Grid>

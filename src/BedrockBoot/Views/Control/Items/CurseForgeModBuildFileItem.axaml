@@ -7,7 +7,6 @@
              x:Class="BedrockBoot.Views.Control.Items.CurseForgeModBuildFileItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
-                                  Margin="5,0"
                                   Glyph="&#xE7C3;"
                                   IsShowActionIcon="False"
                                   Header="Name">

@@ -221,8 +221,13 @@ public partial class SearchDetailed : ISetting
 
         var matrix = new int[sourceLength + 1, targetLength + 1];
 
-        for (var i = 0; i <= sourceLength; matrix[i, 0] = i++) { }
-        for (var j = 0; j <= targetLength; matrix[0, j] = j++) { }
+        for (var i = 0; i <= sourceLength; matrix[i, 0] = i++)
+        {
+        }
+
+        for (var j = 0; j <= targetLength; matrix[0, j] = j++)
+        {
+        }
 
         for (var i = 1; i <= sourceLength; i++)
         {
@@ -312,10 +317,12 @@ public partial class SearchDetailed : ISetting
             // 输入 1.21.2，1.21.2 应该优先于 1.21.20 这些
             // 输入 1.2，1.2.* 应该优先于 1.26 这些
             var inputParts = info.Key.Split('.');
-            if (inputParts.Length >= 2 && inputParts[0] == "1" && int.TryParse(inputParts[1], out int second) && second >= 26)
+            if (inputParts.Length >= 2 && inputParts[0] == "1" && int.TryParse(inputParts[1], out int second) &&
+                second >= 26)
             {
                 inputParts = inputParts.Skip(1).ToArray();
             }
+
             int MatchCount(string version)
             {
                 var parts = version.Split('.');
@@ -329,12 +336,13 @@ public partial class SearchDetailed : ISetting
                     else
                         break;
                 }
+
                 return count;
             }
+
             filteredVersions = filteredVersions
                 .OrderByDescending(x => MatchCount(x.Key))
                 .ToList();
-
 
 
             _totalPages = (int)Math.Ceiling((double)filteredVersions.Count / PageSize);
@@ -358,7 +366,8 @@ public partial class SearchDetailed : ISetting
                     {
                         GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),
                             $"{I18nManager.Instance["Download.Action.DownloadGame"]} {i.Key}");
-                    }
+                    },
+                    ResourceType = SearchResourceType.Minecraft
                 });
             });
 
@@ -396,12 +405,12 @@ public partial class SearchDetailed : ISetting
             // 1.26.33.01 -> 26.33
             // （这里只针对 1.x.x.x）
             // 例如 1.16.100.04 会被处理成 16.100，因为是 contain 所以没关系（）
-            
+
             if (parts[0] == "1")
             {
                 // 以及，1.21.2 可以出现 1.21.20 这些；但是 1.21.2.2 或者纯粹「1.21.2.」，就不应该出现 1.21.20 这些
                 // 不过以点结尾看起来似乎会被跳到资源包，那无所谓了（
-                return ("."+versionKey+".").Contains($".{parts[1]}.{parts[2]}.") && !versionKey.StartsWith("0."); 
+                return ("." + versionKey + ".").Contains($".{parts[1]}.{parts[2]}.") && !versionKey.StartsWith("0.");
             }
         }
         else if (parts.Length == 3)
@@ -412,16 +421,17 @@ public partial class SearchDetailed : ISetting
             if (parts[0] != "1")
             {
                 // 同理，假如给出 26.3，可以有 26.33；但是 26.3.1（尽管不规范）就不应该有 26.33 这些
-                return ("."+versionKey+".").Contains($".{parts[0]}.{parts[1]}.");
+                return ("." + versionKey + ".").Contains($".{parts[0]}.{parts[1]}.");
             }
         }
+
         return false;
 
         // 不模糊搜索了捏，打错字了活该（）
         /*
         var combinedText = $"{versionId} {buildType}".ToLower();
 
-        
+
         // 如果不启用模糊搜索，使用包含匹配
         if (!EnableFuzzySearch)
         {
@@ -442,7 +452,7 @@ public partial class SearchDetailed : ISetting
         {
             // 数字部分包含匹配
             if (versionNumbers.Contains(keywordNumbers)) return true;
-            
+
             // 数字部分模糊匹配
             if (IsFuzzyMatch(versionNumbers, keywordNumbers, 0.6)) return true;
         }
@@ -450,7 +460,6 @@ public partial class SearchDetailed : ISetting
         // 3. 整体文本模糊匹配
         return IsFuzzyMatch(combinedText, keywordLower, 0.7);
         */
-
     }
 
     #endregion
@@ -459,7 +468,8 @@ public partial class SearchDetailed : ISetting
 
     private async Task<List<SearchResultItemInfo>> SearchResourcePacksAsync(SearchInfo info)
     {
-        var result = await _apiClient.SearchModsAsync(info.Key, PageSize, classId: _selectedClassId, index: _currentIndex);
+        var result =
+            await _apiClient.SearchModsAsync(info.Key, PageSize, classId: _selectedClassId, index: _currentIndex);
         _totalPages = (int)Math.Ceiling((double)result.Pagination.TotalCount / PageSize);
 
         // 应用模糊搜索过滤
@@ -486,7 +496,8 @@ public partial class SearchDetailed : ISetting
                 Labels = categories,
                 Images = i.Screenshots.Select(a => a.Url).ToList(),
                 SourceWebsite = i.Links.WebsiteUrl,
-                JsonData = JsonSerializer.Serialize(i)
+                JsonData = JsonSerializer.Serialize(i),
+                ResourceType = SearchResourceType.ResourcePack
             };
             item.OnClick = s => { DownloadRoot.Instance.NavigateTo(new ResultRoot(item)); };
             items.Add(item);
@@ -574,13 +585,14 @@ public partial class SearchDetailed : ISetting
                 Labels = plugin.Labels,
                 Images = null,
                 SourceWebsite = plugin.RepositoryUrl,
-                JsonData = JsonSerializer.Serialize(plugin)
+                JsonData = JsonSerializer.Serialize(plugin),
+                ResourceType = SearchResourceType.PluginPack
             };
             item.OnClick = s =>
             {
                 Console.WriteLine($@"View Plugin: {s}");
-                GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin),
-                    $"插件详细信息：{plugin.PluginName}");
+                // GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin), $"插件详细信息：{plugin.PluginName}");
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
             };
             items.Add(item);
         });
@@ -686,16 +698,18 @@ public partial class SearchDetailed : ISetting
     #endregion
 
     #region 事件处理
+
     private void HelpBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         DialogHost.Show(new DialogInfo
         {
             Title = "找不到想要的版本？",
-            Content = "1. 请确保正式版、预览版、Beta 版选择正确。注意预览版和 Beta 版是两个不同的版本类型\n2. Windows 和 Android 的内部版本号格式不一致。\n   例如在 Android 上的 1.26.30.5 对应 Windows 上的 1.26.3005\n   请以游戏主屏幕右下角的版本号为准，例如上述版本的版本号为 26.30",
+            Content =
+                "1. 请确保正式版、预览版、Beta 版选择正确。注意预览版和 Beta 版是两个不同的版本类型\n2. Windows 和 Android 的内部版本号格式不一致。\n   例如在 Android 上的 1.26.30.5 对应 Windows 上的 1.26.3005\n   请以游戏主屏幕右下角的版本号为准，例如上述版本的版本号为 26.30",
             CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
-            
         });
     }
+
     private void GameType_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (!IsEdit) return;

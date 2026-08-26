@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Entry.Info;
 using BedrockBoot.Base.Enum;
+using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Helpers;
+using BedrockBoot.Interface.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Service;
-using BedrockBoot.Views.Control.Widgets;
-using BedrockBoot.Views.DrawContent;
+using BedrockBoot.Service.Download;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
@@ -24,11 +21,11 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 public partial class ResultRoot : UserControl
 {
-	private ImageLoader imageLoader = new ImageLoader();
+    private ImageLoader imageLoader = new ImageLoader();
+
     public ResultRoot()
     {
         InitializeComponent();
-       
     }
 
     public ResultRoot(SearchResultItemInfo info) : this()
@@ -40,20 +37,26 @@ public partial class ResultRoot : UserControl
 
     protected override void OnUnloaded(RoutedEventArgs e)
     {
-	    base.OnUnloaded(e);
-	    imageLoader.Dispose();
+        base.OnUnloaded(e);
+        imageLoader.Dispose();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
 
     public SearchResultItemInfo SearchResultItemInfo { get; set; } = null!;
+    private IDownloadResult _downloadService;
 
     /// <summary>
     ///     异步加载资源详情
     /// </summary>
     public async Task UpdateAsync()
     {
-        // 1. 基础文字信息
+        _downloadService = SearchResultItemInfo.ResourceType switch
+        {
+            SearchResourceType.ResourcePack => new CurseForgeDownloadResult(SearchResultItemInfo),
+            SearchResourceType.PluginPack => new PluginDownloadResult(SearchResultItemInfo)
+        };
+
         ResourceName.Text = SearchResultItemInfo.Name;
         AuthorText.Text = $"{i18n["Download.Result.Author.Prefix"]} {string.Join(", ", SearchResultItemInfo.Authors)}";
         ResourceName2.Text = SearchResultItemInfo.Name;
@@ -62,7 +65,6 @@ public partial class ResultRoot : UserControl
         DownloadCountText.Text = SearchResultItemInfo.DownloadCount.ToString("N0"); // 格式化数字
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
 
-        // 2. 外部链接
         var hasWebsite = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
         HyperlinkButton.IsVisible = hasWebsite;
         HyperlinkButton2.IsVisible = hasWebsite;
@@ -72,16 +74,6 @@ public partial class ResultRoot : UserControl
             HyperlinkButton.NavigateUri = uri;
         }
 
-        // 3. 预览图列表渲染
-        PreviewList.Children.Clear();
-        if (SearchResultItemInfo.Images is { Count: > 0 })
-        {
-            PreviewCard.IsVisible = true;
-            foreach (var image in SearchResultItemInfo.Images)
-                PreviewList.Children.Add(new LocalImageRenderWidget(image) { Width = 290 });
-        }
-
-        // 4. 标签渲染
         LabelsBox.Children.Clear();
         if (SearchResultItemInfo.Labels is { Count: > 0 })
         {
@@ -89,50 +81,14 @@ public partial class ResultRoot : UserControl
             foreach (var s in SearchResultItemInfo.Labels) LabelsBox.Children.Add(new LabelBox { Text = s });
         }
 
-        // 5. 异步图标加载
         var icon = await imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
-	
 
-		if (icon != null)
+        if (icon != null)
         {
-			IconBox.Source = icon;
+            IconBox.Source = icon;
             ResourceIcon.Source = icon;
             ResourceIconIcon.IsVisible = false;
             IconFont.IsVisible = false;
-        }
-
-        // 6. 获取 CurseForge 详细 HTML 描述
-        await LoadDetailedDescription();
-    }
-
-    private async Task LoadDetailedDescription()
-    {
-        try
-        {
-            var apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
-            var descriptionHtml = await apiClient.GetModDescriptionAsync(SearchResultItemInfo.Id);
-
-            if (!string.IsNullOrEmpty(descriptionHtml))
-            {
-                DescriptionCard.IsVisible = true;
-                DescriptionContent.Children.Clear();
-
-                // 转换 HTML 到 Avalonia 控件
-                var controls = HtmlToControlConverter.ConvertHtmlToControls(descriptionHtml);
-                foreach (var control in controls) DescriptionContent.Children.Add(control);
-            }
-        }
-        catch (Exception ex)
-        {
-            DescriptionCard.IsVisible = true;
-            DescriptionContent.Children.Clear();
-            DescriptionContent.Children.Add(new TextBlock
-            {
-                Text = $"{i18n["Download.Result.Error.LoadDescription"]}: {ex.Message}",
-                TextWrapping = TextWrapping.Wrap,
-                Foreground = Brushes.Red,
-                Margin = new Thickness(0, 10)
-            });
         }
     }
 
@@ -141,12 +97,14 @@ public partial class ResultRoot : UserControl
     /// </summary>
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var modData = JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData);
+        /*var modData = JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData);
         if (modData == null) return;
 
         GlobalModel.MainWindow.OpenDraw(
             new DrawDownloadCurseForgeResourceContent(modData),
-            $"{i18n["Download.Action.GetResource"]}: {SearchResultItemInfo.Name}");
+            $"{i18n["Download.Action.GetResource"]}: {SearchResultItemInfo.Name}");*/
+
+        PageSelect.SelectedItem = ItemFiles;
     }
 
     /// <summary>
@@ -174,7 +132,7 @@ public partial class ResultRoot : UserControl
         if (MainScrollViewer != null)
         {
             var value = MainScrollViewer.Offset.Y;
-            if (value >= 80)
+            if (value >= 120)
                 SmallBox.Margin = new Thickness(30, 25, 30, 0);
             else
                 SmallBox.Margin = new Thickness(30, -72, 30, 0);
@@ -184,5 +142,26 @@ public partial class ResultRoot : UserControl
     private void GoTopBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         MainScrollViewer.Offset = new Vector(MainScrollViewer.Offset.X, 0);
+    }
+
+    private void PageSelect_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (PageSelect == null) return;
+        if (PageSelect.SelectedItem == null) return;
+        var tag = (PageSelect.SelectedItem as ListBoxItem)!.Tag!.ToString();
+        UserControl page = tag switch
+        {
+            "Description" => new ResultDescription(_downloadService)
+            {
+                NotFountDescription = () =>
+                {
+                    ItemDescription.IsVisible = false;
+                    PageSelect.SelectedItem = ItemFiles;
+                }
+            },
+            "Files" => new ResultFiles(_downloadService)
+        };
+
+        NavigationFrame.NavigateTo(page);
     }
 }

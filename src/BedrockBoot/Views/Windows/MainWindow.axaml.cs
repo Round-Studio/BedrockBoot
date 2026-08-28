@@ -51,6 +51,7 @@ using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+
 namespace BedrockBoot.Views.Windows;
 
 public partial class MainWindow : Window
@@ -87,8 +88,9 @@ public partial class MainWindow : Window
         GlobalModel.MainWindow = this;
 
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun)
-            MainFrame.NavigateTo( new NeoMainPage());
-        else MainFrame.NavigateTo(new SetupRoot());
+            MainFrame.NavigateTo(new NeoMainPage());
+        else
+            this.Loaded += (_, _) => MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();
 
         // 绑定回调
@@ -380,13 +382,11 @@ public partial class MainWindow : Window
                 Directory.CreateDirectory(PathsList.TempPath);
         });
 
+        Dispatcher.UIThread.Invoke(() => { UpdateTheme(); });
+
         CoreInitialize.Init();
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            UpdateTheme();
-            LoadBox.IsVisible = false;
-        });
+        Dispatcher.UIThread.Invoke(() => { LoadBox.IsVisible = false; });
     }
 
     #endregion
@@ -441,7 +441,7 @@ public partial class MainWindow : Window
         LiveOpacity.Opacity =
             (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.LiveOpacity) * 0.01;
     }
-	
+
 
     public void ReSetBackground()
     {
@@ -965,7 +965,7 @@ public partial class MainWindow : Window
         }
         else
         {
-            PART_AccountChooseBorderCard.Margin = new(0,260,0,-260);
+            PART_AccountChooseBorderCard.Margin = new(0, 260, 0, -260);
             await Task.Delay(200);
             PART_AccountChooseBackground.Opacity = 0;
             await Task.Delay(820);
@@ -984,7 +984,7 @@ public partial class MainWindow : Window
     public async Task<MsUserConfig?> ChooseAccount()
     {
         _chooseAccountTcs = new TaskCompletionSource<MsUserConfig>();
-    
+
         Dispatcher.UIThread.Invoke(() =>
         {
             PART_AccountList.Children.Clear();
@@ -998,6 +998,7 @@ public partial class MainWindow : Window
                 _chooseAccountTcs?.TrySetResult(null);
                 return;
             }
+
             MsAccountManager.Accounts.Accounts.ForEach(user =>
             {
                 var btn = new AccountButton()
@@ -1014,7 +1015,7 @@ public partial class MainWindow : Window
             });
             AccountChoose_Show(true);
         });
-    
+
         return await _chooseAccountTcs.Task;
     }
 

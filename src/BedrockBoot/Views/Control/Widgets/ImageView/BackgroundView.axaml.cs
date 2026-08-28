@@ -28,7 +28,7 @@ public partial class BackgroundView : UserControl
     private bool _isRotating;
     private double _currentRotation;
     private Random _random = new Random();
-    
+
     public BackgroundView()
     {
         InitializeComponent();
@@ -36,14 +36,14 @@ public partial class BackgroundView : UserControl
         _rotationCts = new CancellationTokenSource();
         CreateAnimationThread();
     }
-    
+
     private void CreateAnimationThread()
     {
         var token = _cts.Token;
         AnimationThread = new Thread(() =>
         {
             var startTime = DateTime.Now;
-            
+
             while (!token.IsCancellationRequested)
             {
                 try
@@ -52,9 +52,9 @@ public partial class BackgroundView : UserControl
                     var angle = (elapsed / PeriodSeconds) * 2 * Math.PI;
                     var x = Radius * Math.Cos(angle);
                     var y = Radius * Math.Sin(angle);
-                    
+
                     if (token.IsCancellationRequested) break;
-                    
+
                     Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                     {
                         lock (_lock)
@@ -62,7 +62,7 @@ public partial class BackgroundView : UserControl
                             Margin = new Thickness(x, y, -x, -y);
                         }
                     });
-                    
+
                     Thread.Sleep(16);
                 }
                 catch
@@ -76,15 +76,17 @@ public partial class BackgroundView : UserControl
             Priority = ThreadPriority.BelowNormal
         };
     }
-    
+
     public async void ApplyImageBackground(StyleConfig style)
     {
         var imgPath = style.BackgroundImage;
-        if (!File.Exists(imgPath)) return;
-        
+        if (style.StyleType == StyleType.Image)
+            if (!File.Exists(imgPath))
+                return;
+
         StopRotationAnimation();
         ResetAllProperties();
-        
+
         SetBackgroundBlur(0);
         StopAnimation();
 
@@ -126,9 +128,10 @@ public partial class BackgroundView : UserControl
                         Source = bitmap
                     };
                 }
+
                 SetBackgroundBlur(style.BackgroundImageBlur);
             }
-            else if(style.StyleType == StyleType.Image)
+            else if (style.StyleType == StyleType.Image)
             {
                 _isAnimationMode = true;
                 var animHelper = new AnimationImageHelper(imgPath);
@@ -138,7 +141,7 @@ public partial class BackgroundView : UserControl
                     Stretch = Stretch.UniformToFill,
                     Source = await animHelper.GetImage()
                 };
-                
+
                 if (BackgroundBox.RenderTransform is not TransformGroup)
                 {
                     var transformGroup = new TransformGroup();
@@ -155,6 +158,7 @@ public partial class BackgroundView : UserControl
                         {
                             rotate.Angle = 0;
                         }
+
                         if (transform is ScaleTransform scale)
                         {
                             scale.ScaleX = 1;
@@ -162,10 +166,10 @@ public partial class BackgroundView : UserControl
                         }
                     }
                 }
-                
+
                 _rotationCts = new CancellationTokenSource();
                 ApplyAnimationBlur(200);
-                
+
                 StartRotationAnimation();
                 StartAnimation();
             }
@@ -192,16 +196,17 @@ public partial class BackgroundView : UserControl
                 BackgroundImage.IsVisible = true;
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex);
         }
     }
-    
+
     public string GetAccentBackgroundHtmlCode()
     {
-        if (Application.Current != null && 
-            Application.Current.TryFindResource("AccentBackgroundBrush", Application.Current.ActualThemeVariant, out var resource))
+        if (Application.Current != null &&
+            Application.Current.TryFindResource("AccentBackgroundBrush", Application.Current.ActualThemeVariant,
+                out var resource))
         {
             if (resource is ISolidColorBrush solidBrush)
             {
@@ -216,14 +221,14 @@ public partial class BackgroundView : UserControl
 
         return "rgb(53,191,255)";
     }
-    
+
     private void ResetAllProperties()
     {
         Margin = new Thickness(0);
         _currentRotation = 0;
         _isRotating = false;
         _isAnimationMode = false;
-        
+
         if (BackgroundBox.RenderTransform is TransformGroup transformGroup)
         {
             foreach (var transform in transformGroup.Children)
@@ -232,6 +237,7 @@ public partial class BackgroundView : UserControl
                 {
                     rotate.Angle = 0;
                 }
+
                 if (transform is ScaleTransform scale)
                 {
                     scale.ScaleX = 1;
@@ -239,28 +245,29 @@ public partial class BackgroundView : UserControl
                 }
             }
         }
-        
+
         BackgroundBox.Effect = null;
         BackgroundBox.Margin = new Thickness(0);
         BackgroundBox.ClipToBounds = true;
-        
+
         BackgroundImage.IsVisible = false;
         BackgroundImage3D.IsVisible = false;
         BackgroundImage.Background = null;
         BackgroundImage3D.Source = null;
-        
+
         BackgroundImageOpacity.Opacity = 1;
     }
-    
+
     private void StopRotationAnimation()
     {
         if (_rotationCts != null && !_rotationCts.IsCancellationRequested)
         {
             _rotationCts.Cancel();
         }
+
         _isRotating = false;
     }
-    
+
     private async void StartRotationAnimation()
     {
         var token = _rotationCts.Token;
@@ -271,7 +278,7 @@ public partial class BackgroundView : UserControl
         var startTime = DateTime.Now;
         var totalMilliseconds = duration * 1000;
         var isFirstRun = true;
-        
+
         while (_isAnimationMode && !token.IsCancellationRequested)
         {
             if (!_isRotating)
@@ -285,27 +292,28 @@ public partial class BackgroundView : UserControl
                     startTime = DateTime.Now;
                     totalMilliseconds = duration * 1000;
                 }
-                
+
                 _isRotating = true;
                 isFirstRun = false;
             }
-            
+
             if (token.IsCancellationRequested) break;
-            
+
             var elapsed = (DateTime.Now - startTime).TotalMilliseconds;
             var progress = Math.Min(elapsed / totalMilliseconds, 1);
-            
-            var easeProgress = progress < 0.5 
-                ? 2 * progress * progress 
+
+            var easeProgress = progress < 0.5
+                ? 2 * progress * progress
                 : 1 - Math.Pow(-2 * progress + 2, 2) / 2;
-            
+
             _currentRotation = startRotation + (targetRotation - startRotation) * easeProgress;
-            
+
             Avalonia.Threading.Dispatcher.UIThread.Post(() =>
             {
                 lock (_lock)
                 {
-                    if (!token.IsCancellationRequested && BackgroundBox.RenderTransform is TransformGroup transformGroup)
+                    if (!token.IsCancellationRequested &&
+                        BackgroundBox.RenderTransform is TransformGroup transformGroup)
                     {
                         foreach (var transform in transformGroup.Children)
                         {
@@ -317,17 +325,17 @@ public partial class BackgroundView : UserControl
                     }
                 }
             });
-            
+
             if (progress >= 1)
             {
                 _currentRotation = targetRotation;
                 _isRotating = false;
             }
-            
+
             await Task.Delay(16, token).ContinueWith(t => { });
         }
     }
-    
+
     private void ApplyAnimationBlur(int radius)
     {
         if (radius > 0)
@@ -339,7 +347,7 @@ public partial class BackgroundView : UserControl
             }
 
             blur.Radius = radius;
-            
+
             var scale = 1 + (radius / 150.0);
             if (BackgroundBox.RenderTransform is TransformGroup transformGroup)
             {
@@ -352,7 +360,7 @@ public partial class BackgroundView : UserControl
                     }
                 }
             }
-            
+
             BackgroundBox.Margin = new Thickness(-radius);
             BackgroundBox.ClipToBounds = false;
         }
@@ -370,14 +378,16 @@ public partial class BackgroundView : UserControl
                     }
                 }
             }
+
             BackgroundBox.Margin = new Thickness(0);
             BackgroundBox.ClipToBounds = true;
         }
-        
+
         BackgroundImageOpacity.Opacity =
             (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
+        BackgroundImageOpacity.IsVisible = true;
     }
-    
+
     private void StartAnimation()
     {
         if (AnimationThread == null || !AnimationThread.IsAlive)
@@ -388,6 +398,7 @@ public partial class BackgroundView : UserControl
                 _cts = new CancellationTokenSource();
                 CreateAnimationThread();
             }
+
             AnimationThread.Start();
         }
     }
@@ -396,19 +407,20 @@ public partial class BackgroundView : UserControl
     {
         _isAnimationMode = false;
         _isRotating = false;
-        
+
         if (_cts != null && !_cts.IsCancellationRequested)
         {
             _cts.Cancel();
         }
-        
+
         if (AnimationThread != null && AnimationThread.IsAlive)
         {
             AnimationThread.Join(500);
         }
     }
 
-    public Bitmap LoadScaledByFactorOptimized(string filePath, double scale, BitmapInterpolationMode quality = BitmapInterpolationMode.LowQuality)
+    public Bitmap LoadScaledByFactorOptimized(string filePath, double scale,
+        BitmapInterpolationMode quality = BitmapInterpolationMode.LowQuality)
     {
         using var stream = File.OpenRead(filePath);
         var imageInfo = SixLabors.ImageSharp.Image.Identify(stream);
@@ -420,7 +432,7 @@ public partial class BackgroundView : UserControl
         stream.Seek(0, SeekOrigin.Begin);
         return Bitmap.DecodeToWidth(stream, targetWidth, BitmapInterpolationMode.LowQuality);
     }
-    
+
     private void SetBackgroundBlur(int radius)
     {
         if (_isAnimationMode)
@@ -428,7 +440,7 @@ public partial class BackgroundView : UserControl
             ApplyAnimationBlur(radius);
             return;
         }
-        
+
         if (radius > 0)
         {
             if (BackgroundBox.Effect is not BlurEffect blur)
@@ -447,11 +459,11 @@ public partial class BackgroundView : UserControl
             BackgroundBox.Margin = new Thickness(0);
             BackgroundBox.ClipToBounds = true;
         }
-        
+
         BackgroundImageOpacity.Opacity =
             (100 - Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageOpacity) * 0.01;
     }
-    
+
     public void Dispose()
     {
         StopAnimation();

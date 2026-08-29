@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using Avalonia.Layout; 
+using Avalonia.Threading;
 using BedrockBoot.Base.Entry;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Helpers;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
@@ -26,6 +24,9 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;
 using Round.SDK.Entry.BedrockBoot;
 using Round.SDK.Plugin.BedrockBoot.Register;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BedrockBoot.Views.Pages;
 
@@ -181,7 +182,17 @@ public partial class MainPage : UserControl
         }
         catch (Exception ex)
         {
+            var error = GitHubHelper.HandleException(ex);
+
             Console.WriteLine($@"更新失败：{ex.Message}");
+
+
+            DialogHost.Show(new DialogInfo
+            {
+                Title = "网络错误",
+                Content = $"无法从 GitHub 获取信息，请检查网络后重试。\n{error.GetLocalizedMessage()}",
+                CloseButtonText = i18n["Shared.Action.Confirm"]
+            });
         }
     }
 

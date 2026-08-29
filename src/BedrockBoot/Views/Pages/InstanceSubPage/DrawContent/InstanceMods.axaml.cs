@@ -5,11 +5,14 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Loaders;
 using BedrockBoot.Views.Control.Items;
+using BedrockBoot.Views.Control.Items.Instance;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -28,45 +31,67 @@ public partial class InstanceMods : ISetting
     public InstanceMods(VersionConfig versionInfo) : this()
     {
         VersionInfo = versionInfo;
-        ModsManager = new ModsManager(VersionInfo)
-        {
-            RefreshCallBack = UpdateUI
-        };
 
+        UpdateModsLoader();
         UpdateUI();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
 
     public VersionConfig VersionInfo { get; set; }
-    public ModsManager ModsManager { get; set; }
     private string SearchKey => SearchBox.Text ?? string.Empty;
+    private List<IModsLoader> InstalledModsLoader = new();
 
-    /// <summary>
-    ///     更新模组列表 UI
-    /// </summary>
+    private void UpdateModsLoader()
+    {
+        IsEdit = false;
+        ModsLoaderSelect.Items.Clear();
+        InstalledModsLoader.Clear();
+        foreach (var loaderType in LoadersManager.ModsLoaders)
+        {
+            if (typeof(IModsLoader).IsAssignableFrom(loaderType))
+            {
+                var instance = (IModsLoader)Activator.CreateInstance(loaderType);
+                instance.OnUpdate = () => UpdateUI();
+                instance.InitLoader(VersionInfo);
+                if (instance.IsInstalled())
+                {
+                    InstalledModsLoader.Add(instance);
+                    ModsLoaderSelect.Items.Add(new ComboBoxItem()
+                    {
+                        Content = instance.LoaderName
+                    });
+                }
+            }
+        }
+
+        if (VersionInfo.Config.ModsLoaderSelectIndex > InstalledModsLoader.Count - 1)
+            VersionInfo.Config.ModsLoaderSelectIndex = 0;
+        ModsLoaderSelect.SelectedIndex = VersionInfo.Config.ModsLoaderSelectIndex;
+        IsEdit = true;
+    }
+
     private void UpdateUI()
     {
         IsEdit = false;
         NullBox.IsVisible = false;
         ResultBox.Children.Clear();
 
-        var mods = ModsManager.RefreshMods();
-        var resultMods = new List<ModInfo>();
+        var mods = InstalledModsLoader[ModsLoaderSelect.SelectedIndex].ModsManager.GetAllMods();
+        var resultMods = new List<ModItemInfo>();
 
         foreach (var info in mods)
-            // 使用不区分大小写的包含匹配
             if (string.IsNullOrEmpty(SearchKey) ||
-                info.File.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
+                info.ModPath.Contains(SearchKey, StringComparison.OrdinalIgnoreCase) ||
+                info.ModName.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
                 resultMods.Add(info);
 
         if (resultMods.Count <= 0)
             NullBox.IsVisible = true;
         else
             foreach (var info in resultMods)
-                ResultBox.Children.Add(new GameModItem(info, VersionInfo)
+                ResultBox.Children.Add(new GameModItem(info, InstalledModsLoader[ModsLoaderSelect.SelectedIndex])
                 {
-                    ModsManager = ModsManager,
                     UpdateCallBack = UpdateUI
                 });
 
@@ -79,69 +104,26 @@ public partial class InstanceMods : ISetting
             UpdateUI();
     }
 
-    /// <summary>
-    ///     打开模组所在的物理文件夹
-    /// </summary>
     private void FolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var modPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods");
+        var modPath = InstalledModsLoader[ModsLoaderSelect.SelectedIndex].ModsFolder;
         if (!Directory.Exists(modPath)) Directory.CreateDirectory(modPath);
         OpenFolderHelper.Open(modPath);
     }
 
-    /// <summary>
-    ///     导入模组文件
-    /// </summary>
     private void ImportModBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var dialog = new DialogImportModContent();
-        DialogHost.Show(new DialogInfo
+        InstalledModsLoader[ModsLoaderSelect.SelectedIndex].ModsManager.AddMod();
+        UpdateUI();
+    }
+
+    private void ModsLoaderSelect_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (IsEdit)
         {
-            Title = i18n["Instance.Mods.Import.Title"],
-            Content = dialog,
-            CloseButtonText = i18n["MainWindow.Common.Confirm"],
-            PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
-            CloseAction = () =>
-            {
-                if (string.IsNullOrEmpty(dialog.ModFile) || !File.Exists(dialog.ModFile))
-                {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
-                    {
-                        Title = i18n["MainWindow.Dialog.Error.Title"],
-                        Message = i18n["Instance.Mods.Import.Error.InvalidPath"]
-                    });
-                    return;
-                }
-
-                try
-                {
-                    var modFileName = Path.GetFileName(dialog.ModFile);
-                    var targetPath = Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "mods",
-                        modFileName);
-
-                    // 确保目标目录存在
-                    var targetDir = Path.GetDirectoryName(targetPath);
-                    if (targetDir != null && !Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
-
-                    File.Copy(dialog.ModFile, targetPath, true);
-
-                    ModsManager.AddMod(new ModInfo
-                    {
-                        File = targetPath,
-                        InjectDelay = dialog.ModDelay,
-                        IsPreLoad = dialog.IsPreLoad
-                    });
-                    UpdateUI();
-                }
-                catch (Exception ex)
-                {
-                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
-                    {
-                        Title = i18n["MainWindow.Dialog.Error.Title"],
-                        Message = $"{i18n["Instance.Mods.Import.Error.CopyFailed"]}\n{ex.Message}"
-                    });
-                }
-            }
-        });
+            VersionInfo.Config.ModsLoaderSelectIndex = ModsLoaderSelect.SelectedIndex;
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
+            UpdateUI();
+        }
     }
 }

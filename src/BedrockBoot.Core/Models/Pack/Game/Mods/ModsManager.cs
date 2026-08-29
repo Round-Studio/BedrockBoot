@@ -58,11 +58,11 @@ public class ModsManager
         ModsConfig.Save();
     }
 
-    public void InjectAll(int processId)
+    /*public void InjectAll(int processId)
     {
         Mods.ForEach(x =>
         {
             if (!x.IsPreLoad) Task.Run(() => x.Inject(processId));
         });
-    }
+    }*/
 }

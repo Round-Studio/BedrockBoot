@@ -6,11 +6,13 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Loaders.LeviLamina;
+using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Loader.LeviLamina;
 using OnePointUI.Avalonia.Base.Enum;
@@ -22,52 +24,59 @@ namespace BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 
 public class LeviLamina : IModsLoader
 {
-    private VersionConfig _instance;
+    public Action? OnUpdate { get; set; }
+    public IModsManager ModsManager { get; set; }
     public string LoaderName { get; } = "LeviLamina";
     public string LoaderDescription { get; } = "LeviMC 开发的基岩版模组加载器";
     public bool CanRemove { get; } = true;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/Other/LeviLauncher.png";
 
+    public string ModsFolder =>
+        Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "ll.mods");
+
+    public VersionConfig GameInstance { get; set; }
+
     public void InitLoader(VersionConfig instance)
     {
-        _instance = instance;
+        GameInstance = instance;
+        ModsManager = new LeviLaminaModsManager() { OnRefresh = OnUpdate };
+        ModsManager.Init(GameInstance);
     }
 
     public void PreLaunch()
     {
-        var llModsFolder = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2", "levilamina", "ll.mods");
-        var localModsFolder = Path.Combine(_instance.VersionPath!, "mods");
+        var localModsFolder = Path.Combine(GameInstance.VersionPath!, "mods");
 
         try
         {
             if (Directory.Exists(localModsFolder)) Directory.Delete(localModsFolder, true);
-            Directory.CreateSymbolicLink(localModsFolder, llModsFolder);
+            Directory.CreateSymbolicLink(localModsFolder, ModsFolder);
         }
         catch (Exception exception)
         {
             Console.WriteLine(exception);
         }
 
-        var preLoadFile = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2", "levilamina", "preloader",
+        var preLoadFile = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "preloader",
             "bin", "PreLoader.dll");
-        var bedrockRuntime = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2", "levilamina",
+        var bedrockRuntime = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina",
             "bedrock_runtime_data");
-        File.Copy(preLoadFile, Path.Combine(_instance.VersionPath!, "preload", "PreLoader.dll"), true);
-        File.Copy(bedrockRuntime, Path.Combine(_instance.VersionPath!, "bedrock_runtime_data"), true);
+        File.Copy(preLoadFile, Path.Combine(GameInstance.VersionPath!, "preload", "PreLoader.dll"), true);
+        File.Copy(bedrockRuntime, Path.Combine(GameInstance.VersionPath!, "bedrock_runtime_data"), true);
     }
 
     public async Task<bool> ApplicableInstance()
     {
         var versionDb = await LeviLaminaVersionDb.FetchAsync();
         var allVersions = versionDb.Versions.Keys.Select(x => x.Replace(".", "").Replace("0", ""));
-        var thisVersion = _instance.Info.Version.Replace(".", "").Replace("0", "");
+        var thisVersion = GameInstance.Info.Version.Replace(".", "").Replace("0", "");
 
         return allVersions.Contains(thisVersion);
     }
 
     public string GetInstalledVersion()
     {
-        var llModsManifest = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2", "levilamina", "ll.mods",
+        var llModsManifest = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "ll.mods",
             "LeviLamina", "manifest.json");
 
         var conf = new ConfigEntity<LocalManifest>(llModsManifest, false);
@@ -76,9 +85,9 @@ public class LeviLamina : IModsLoader
 
     public bool IsInstalled()
     {
-        var preLoadFile = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2", "levilamina", "preloader",
+        var preLoadFile = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "preloader",
             "bin", "PreLoader.dll");
-        var bedrockRuntime = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2", "levilamina",
+        var bedrockRuntime = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina",
             "bedrock_runtime_data");
 
         return File.Exists(preLoadFile) && File.Exists(bedrockRuntime);
@@ -89,7 +98,7 @@ public class LeviLamina : IModsLoader
         var versionDb = LeviLaminaVersionDb.Fetch();
         var dialog = new DialogChooseLeviLaminaInstallVersionContent(versionDb.Versions[
             versionDb.Versions.Keys.First(x =>
-                x.Replace(".", "").Replace("0", "") == _instance.Info.Version.Replace(".", "").Replace("0", ""))]);
+                x.Replace(".", "").Replace("0", "") == GameInstance.Info.Version.Replace(".", "").Replace("0", ""))]);
         DialogHost.Show(new()
         {
             Title = "选择安装的版本",
@@ -132,7 +141,7 @@ public class LeviLamina : IModsLoader
                                 $"levilamina-v{version}-client-release-windows-x64.zip"),
                             OnComplete = (path) =>
                             {
-                                var llModsFolder = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2",
+                                var llModsFolder = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2",
                                     "levilamina", "ll.mods");
                                 ZipHelper.ExtractZipFile(path, llModsFolder, true);
                             }
@@ -144,7 +153,7 @@ public class LeviLamina : IModsLoader
                             SavePath = Path.Combine(PathsList.TempPath, $"preloader-v{preLoad}-windows-x64.zip"),
                             OnComplete = (path) =>
                             {
-                                ZipHelper.ExtractZipFile(path, Path.Combine(_instance.VersionPath!, "config",
+                                ZipHelper.ExtractZipFile(path, Path.Combine(GameInstance.VersionPath!, "config",
                                     "BedrockBoot2",
                                     "levilamina",
                                     "preloader"), true);
@@ -158,7 +167,7 @@ public class LeviLamina : IModsLoader
                                 $"bedrock-runtime-data-v{bedrockRuntime}-windows-x64.zip"),
                             OnComplete = (path) =>
                             {
-                                ZipHelper.ExtractZipFile(path, Path.Combine(_instance.VersionPath!, "config",
+                                ZipHelper.ExtractZipFile(path, Path.Combine(GameInstance.VersionPath!, "config",
                                     "BedrockBoot2",
                                     "levilamina"), true);
                             }
@@ -181,7 +190,11 @@ public class LeviLamina : IModsLoader
                         (downloadedFiles) =>
                         {
                             Console.WriteLine("所有文件下载完成!");
-                            DialogHost.Close();
+                            Dispatcher.UIThread.Invoke(() =>
+                            {
+                                OnUpdate?.Invoke();
+                                DialogHost.Close();
+                            });
                         }
                     );
                 }
@@ -222,8 +235,8 @@ public class LeviLamina : IModsLoader
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
-                var llModsFolder = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2", "levilamina");
-                var localModsFolder = Path.Combine(_instance.VersionPath!, "mods");
+                var llModsFolder = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina");
+                var localModsFolder = Path.Combine(GameInstance.VersionPath!, "mods");
 
                 try
                 {
@@ -240,6 +253,8 @@ public class LeviLamina : IModsLoader
                 catch
                 {
                 }
+
+                OnUpdate?.Invoke();
             }
         });
     }
@@ -247,11 +262,6 @@ public class LeviLamina : IModsLoader
     public void ViewInfo()
     {
     }
-}
-
-public class LocalManifest
-{
-    [JsonPropertyName("version")] public string Version { get; set; }
 }
 
 public class ToothJson

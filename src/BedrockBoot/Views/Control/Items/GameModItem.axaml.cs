@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Entry.Game.Pack.Mods;
+using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
+using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
+using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -15,62 +20,74 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameModItem : UserControl
 {
+    private readonly IModsLoader _modsLoader;
+
     public GameModItem()
     {
         InitializeComponent();
     }
 
-    public GameModItem(ModInfo info, VersionConfig versionConfig) : this()
+    public GameModItem(ModItemInfo info, IModsLoader modsLoader) : this()
     {
         ModInfo = info;
-        VersionConfig = versionConfig;
-
+        _modsLoader = modsLoader;
         UpdateUI();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
 
-    public ModInfo ModInfo { get; set; }
-    public ModsManager ModsManager { get; set; } = null!;
-    public VersionConfig VersionConfig { get; set; } = null!;
+    public ModItemInfo ModInfo { get; private set; }
+    public VersionConfig VersionConfig => _modsLoader.GameInstance;
     public Action? UpdateCallBack { get; set; }
 
     public void UpdateUI()
     {
         if (ModInfo == null) return;
 
-        var fileName = Path.GetFileName(ModInfo.File);
-        FileName.Text = fileName;
+        if (_modsLoader.GetType() != typeof(PreLoaderNet)) SettingBtn.IsVisible = false;
+        FileName.Text = ModInfo.ModName;
 
-        var fileSize = File.Exists(ModInfo.File) ? new FileInfo(ModInfo.File).Length : 0;
+        var fileSize = File.Exists(ModInfo.ModPath) ? new FileInfo(ModInfo.ModPath).Length : 0;
         var formattedSize = SizeHelper.FormatBytes(fileSize);
 
-        if (!ModInfo.IsPreLoad)
-            Card.Description = $"{formattedSize}, {ModInfo.InjectDelay} ms";
-        else
-            Card.Description = formattedSize;
+        VersionBox.IsVisible = !string.IsNullOrEmpty(ModInfo.Version);
+        if (!string.IsNullOrEmpty(ModInfo.Version))
+            VersionBox.Text = ModInfo.Version;
 
-        PreLoadBox.IsVisible = ModInfo.IsPreLoad;
+        var descs = new List<string>();
+
+        if (ModInfo.ModInjectType == ModType.Inject)
+            descs.Add($"{ModInfo.InjectDelay} ms");
+        else
+        {
+            if (ModInfo.ModLoaderType == typeof(LeviLamina))
+            {
+                if (!string.IsNullOrEmpty(ModInfo.ModDescription))
+                    descs.Add(ModInfo.ModDescription);
+            }
+        }
+
+        descs.Add(formattedSize);
+        Card.Description = string.Join(", ", descs);
+
+        PreLoadBox.IsVisible =
+            (ModInfo.ModInjectType == ModType.Native && ModInfo.ModLoaderType == typeof(PreLoaderNet));
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var fileName = Path.GetFileName(ModInfo.File);
-
         DialogHost.Show(new DialogInfo
         {
             Title = i18n["Instance.Mod.Delete.Title"],
-            Content = $"{i18n["Instance.Mod.Delete.Content"]} {fileName}?\n{i18n["Common.Action.Irreversible"]}",
+            Content = $"{i18n["Instance.Mod.Delete.Content"]} {ModInfo.ModName}?\n{i18n["Common.Action.Irreversible"]}",
             CloseButtonText = i18n["MainWindow.Common.Confirm"],
             PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
                 try
                 {
-                    if (File.Exists(ModInfo.File))
-                        File.Delete(ModInfo.File);
+                    _modsLoader.ModsManager.Remove(ModInfo);
 
-                    ModsManager.RefreshMods(true);
                     UpdateCallBack?.Invoke();
                 }
                 catch (Exception ex)
@@ -78,7 +95,7 @@ public partial class GameModItem : UserControl
                     DialogHost.Show(new DialogInfo
                     {
                         Title = i18n["MainWindow.Dialog.Error.Title"],
-                        Content = $"{i18n["Instance.Mod.Delete.Error"]} {fileName}:\n{ex.Message}",
+                        Content = $"{i18n["Instance.Mod.Delete.Error"]} {ModInfo.ModName}:\n{ex.Message}",
                         CloseButtonText = i18n["MainWindow.Common.Confirm"]
                     });
                 }
@@ -90,9 +107,9 @@ public partial class GameModItem : UserControl
     {
         var dialog = new DialogImportModContent
         {
-            IsPreLoad = ModInfo.IsPreLoad,
+            IsPreLoad = ModInfo.ModInjectType == ModType.Native,
             ModDelay = ModInfo.InjectDelay,
-            ModFile = ModInfo.File
+            ModFile = ModInfo.ModPath
         };
 
         DialogHost.Show(new DialogInfo
@@ -121,25 +138,34 @@ public partial class GameModItem : UserControl
 
                 try
                 {
-                    if (ModInfo.File != targetPath)
+                    if (ModInfo.ModPath != targetPath)
                     {
-                        if (File.Exists(ModInfo.File)) File.Delete(ModInfo.File);
+                        if (File.Exists(ModInfo.ModPath)) File.Delete(ModInfo.ModPath);
                         File.Copy(dialog.ModFile, targetPath, true);
                     }
 
-                    var index = ModsManager.ModsConfig.Data.FindIndex(x => x.File == ModInfo.File);
+                    var index = _modsLoader.ModsManager.GetAllMods().FindIndex(x => x.ModPath == ModInfo.ModPath);
 
                     if (index != -1)
                     {
-                        ModsManager.ModsConfig.Data[index] = new ModInfo
+                        ((PreLoaderModsManager)_modsLoader.ModsManager).ModsManager.ModsConfig.Data[index] = new ModInfo
                         {
                             File = targetPath,
                             InjectDelay = dialog.ModDelay,
                             IsPreLoad = dialog.IsPreLoad
                         };
-                        ModsManager.ModsConfig.Save();
+                        ((PreLoaderModsManager)_modsLoader.ModsManager).ModsManager.ModsConfig.Save();
 
-                        ModInfo = ModsManager.ModsConfig.Data[index];
+                        var newModInfo =
+                            ((PreLoaderModsManager)_modsLoader.ModsManager).ModsManager.ModsConfig.Data[index];
+                        ModInfo = new()
+                        {
+                            InjectDelay = newModInfo.InjectDelay,
+                            ModInjectType = newModInfo.IsPreLoad ? ModType.Native : ModType.Inject,
+                            ModPath = newModInfo.File,
+                            ModName = Path.GetFileName(newModInfo.File),
+                            ModLoaderType = typeof(PreLoaderNet)
+                        };
                         UpdateUI();
                         UpdateCallBack?.Invoke();
                     }

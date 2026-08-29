@@ -52,6 +52,7 @@ public class EasyLauncher
     public Action<bool>? SetProgressIndeterminate { get; set; }
     public Process MinecraftProcess { get; private set; }
     public static Action? LaunchedBehavior { get; set; }
+
     private void UpdatePlayerPlayTime(TimeSpan playTime)
     {
         var playerData = VersionInfo.PlayerData;
@@ -218,14 +219,16 @@ public class EasyLauncher
                 "BedrockBoot2", "config.json"));
             XboxPreauth auth = null;
 
-            if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || !GlobalModel.Config.Data.IsUseMultipleUsers)
+            if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP ||
+                !GlobalModel.Config.Data.IsUseMultipleUsers)
             {
                 MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
                 {
                     GameFolder = VersionInfo.VersionPath,
                     GameType = VersionInfo.Info.VersionType,
                     MinecraftBuildType = VersionInfo.Info.BuildType,
-                    RunAsAdministrator = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun && !GlobalModel.Config.Data.IsUseMultipleUsers,
+                    RunAsAdministrator = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun &&
+                                         !GlobalModel.Config.Data.IsUseMultipleUsers,
                     RegisterProgress = new Progress<DeploymentProgress>(progress =>
                     {
                         Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
@@ -272,7 +275,9 @@ public class EasyLauncher
                     MinecraftProcess = Process.GetProcessById((int)process.ProcessId);
                     auth.Dispose();
                 }
-                catch { }
+                catch
+                {
+                }
 
                 UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
             }
@@ -307,7 +312,8 @@ public class EasyLauncher
                 if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
                 {
                     // 正常情况下 GDK 窗口是不需要锁的呜
-                    if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
+                    if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP ||
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
                     {
                         // 等待 FrameMonitor 完成，等待 10 秒
                         if (_frameMonitorTask != null)
@@ -333,7 +339,7 @@ public class EasyLauncher
                     }
                 }
 
-                if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
+                // if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
 
                 MinecraftProcess.EnableRaisingEvents = true;
 
@@ -378,12 +384,14 @@ public class EasyLauncher
             Console.WriteLine(@"游戏进程已退出（异步等待）");
             if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
             {
-                if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
+                if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP ||
+                    BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
                 {
                     _mouseLocker?.Stop();
                     _mouseLocker = null;
                 }
             }
+
             await RunPostExitCommandAsync();
             LaunchCompleted?.Invoke();
         }

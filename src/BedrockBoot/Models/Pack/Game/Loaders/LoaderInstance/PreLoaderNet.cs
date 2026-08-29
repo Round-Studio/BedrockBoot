@@ -3,22 +3,27 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 
 namespace BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 
 public class PreLoaderNet : IModsLoader
 {
-    private VersionConfig _instance;
+    public Action? OnUpdate { get; set; }
+    public IModsManager ModsManager { get; set; }
     public string LoaderName { get; } = "原版加载器";
     public string LoaderDescription { get; } = "BedrockBoot 原版加载器 (PreLoad.NET)";
     public bool CanRemove { get; } = false;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png";
+    public string ModsFolder => Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "mods");
+    public VersionConfig GameInstance { get; set; }
 
     public void InitLoader(VersionConfig instance)
     {
-        _instance = instance;
+        GameInstance = instance;
+        ModsManager = new PreLoaderModsManager() { OnRefresh = OnUpdate };
+        ModsManager.Init(GameInstance);
     }
 
     public void PreLaunch()
@@ -31,7 +36,7 @@ public class PreLoaderNet : IModsLoader
     {
         try
         {
-            File.WriteAllBytes(Path.Combine(_instance.VersionPath!, "PreLoad.NET.dll"),
+            File.WriteAllBytes(Path.Combine(GameInstance.VersionPath!, "PreLoad.NET.dll"),
                 Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreLoad.NET.dll"));
 
             Console.WriteLine(@"PreLoad.NET.dll 释放完毕");
@@ -63,7 +68,7 @@ public class PreLoaderNet : IModsLoader
     {
         try
         {
-            string dllPath = Path.Combine(_instance.VersionPath!, "PreLoad.NET.dll");
+            string dllPath = Path.Combine(GameInstance.VersionPath!, "PreLoad.NET.dll");
 
             if (!File.Exists(dllPath))
             {

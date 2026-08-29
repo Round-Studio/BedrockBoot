@@ -17,7 +17,7 @@ public class VersionConfig
     [JsonIgnore] public string? VersionPath { get; set; } = string.Empty;
     [JsonIgnore] public string? VersionsRootPath { get; set; } = string.Empty;
     [JsonIgnore] public string? BodyFile { get; set; } = string.Empty;
-    
+
     public class SysWindowsConfig
     {
         [JsonPropertyName("isUseAdminRun")] public bool IsUseAdminRun { get; set; } = false;
@@ -36,7 +36,8 @@ public class VersionConfig
 
     public class VersionStatusEntry
     {
-        [JsonPropertyName("gameInputInstalled")] public bool GameInputInstalled { get; set; } = false;
+        [JsonPropertyName("gameInputInstalled")]
+        public bool GameInputInstalled { get; set; } = false;
     }
 
     public class VersionConfigEntry
@@ -44,16 +45,30 @@ public class VersionConfig
         [JsonPropertyName("isEditModel")] public bool IsEditModel { get; set; } = false;
         [JsonPropertyName("isModes")] public bool IsModes { get; set; } = true;
         [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
-        [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
-        [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = false;
+
+        [JsonPropertyName("isVersionIsolated")]
+        public bool IsVersionIsolated { get; set; } = true;
+
+        [JsonPropertyName("isNativeException")]
+        public bool IsNativeException { get; set; } = false;
+
         [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
         [JsonPropertyName("isSyncPubOptions")] public bool IsSyncPublicOptions { get; set; } = true;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
-        [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
-        [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
+
+        [JsonPropertyName("folderPolicy")]
+        public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
+
+        [JsonPropertyName("folderPolicyString")]
+        public string FolderPolicyStr { get; set; } =
+            IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
+
         [JsonPropertyName("sysWindowsConfig")] public SysWindowsConfig SysWindowsConfig { get; set; } = new();
+
+        [JsonPropertyName("modsLoaderSelectIndex")]
+        public int ModsLoaderSelectIndex { get; set; } = 0;
     }
-    
+
     public class PlayerDataEntry
     {
         [JsonPropertyName("totalPlayTime")] public long TotalPlayTime { get; set; }

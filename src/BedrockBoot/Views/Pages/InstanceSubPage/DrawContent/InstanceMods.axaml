@@ -19,9 +19,9 @@
                                                FontSize="16"
                                                Margin="5,5,12,5" />
                     <ComboBox Width="200"
+                              Name="ModsLoaderSelect"
+                              SelectionChanged="ModsLoaderSelect_OnSelectionChanged"
                               SelectedIndex="0">
-                        <ComboBoxItem Content="原版加载器"></ComboBoxItem>
-                        <ComboBoxItem Content="LeviLamina"></ComboBoxItem>
                     </ComboBox>
                 </DockPanel>
             </items:BorderCard>

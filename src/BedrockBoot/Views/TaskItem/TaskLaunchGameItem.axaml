@@ -52,7 +52,7 @@
                     IsEnabled="False"
                     Click="CancelBtn_OnClick">
                 <onePointControls:FontIcon Glyph="&#xE711;"
-                                           Foreground="DarkRed"
+                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                                            FontSize="16" />
             </Button>
         </Grid>

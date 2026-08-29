@@ -82,7 +82,7 @@
                         Padding="15,10"
                         Click="CloseButton_OnClick"
                         Classes="NoBorder"
-                        Background="DarkRed"
+                        Background="{DynamicResource SystemFillColorCriticalBrush}"
                         Foreground="White" />
             </StackPanel>
 

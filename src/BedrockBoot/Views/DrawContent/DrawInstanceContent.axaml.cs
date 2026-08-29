@@ -34,7 +34,6 @@ public partial class DrawInstanceContent : UserControl
 
 #if LINUX
         Mods.IsVisible = false;
-        Plugin.IsVisible = false;
         Loaders.IsVisible = false;
 #endif
     }

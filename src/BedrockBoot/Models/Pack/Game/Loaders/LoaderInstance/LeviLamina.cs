@@ -13,6 +13,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Loaders.LeviLamina;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Loader.LeviLamina;
+using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
 using Round.SDK.Helper;
@@ -211,6 +212,36 @@ public class LeviLamina : IModsLoader
 
     public void Remove()
     {
+        DialogHost.Show(new()
+        {
+            Title = "删除 LeviLamina",
+            Content = "您确认要删除 LeviLamina 加载器吗？\n" +
+                      "删除后将会连同其 Mods 一同删除。",
+            CloseButtonText = "确定",
+            PrimaryButtonText = "取消",
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = () =>
+            {
+                var llModsFolder = Path.Combine(_instance.VersionPath!, "config", "BedrockBoot2", "levilamina");
+                var localModsFolder = Path.Combine(_instance.VersionPath!, "mods");
+
+                try
+                {
+                    if (Directory.Exists(localModsFolder)) Directory.Delete(localModsFolder, true);
+                }
+                catch
+                {
+                }
+
+                try
+                {
+                    if (Directory.Exists(llModsFolder)) Directory.Delete(llModsFolder, true);
+                }
+                catch
+                {
+                }
+            }
+        });
     }
 
     public void ViewInfo()

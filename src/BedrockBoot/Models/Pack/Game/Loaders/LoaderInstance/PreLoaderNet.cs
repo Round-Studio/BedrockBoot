@@ -47,7 +47,7 @@ public class PreLoaderNet : IModsLoader
 
     public void Install()
     {
-        throw new Exception("您无法卸载此加载器");
+        throw new Exception("您无法安装此加载器");
     }
 
     public void Remove()

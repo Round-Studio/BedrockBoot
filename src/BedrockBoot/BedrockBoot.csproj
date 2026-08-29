@@ -70,7 +70,6 @@
         <ProjectReference Include="..\BedrockBoot.GravityCone\BedrockBoot.GravityCone.csproj" />
         <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj"/>
         <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj"/>
-        <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
         <ProjectReference Include="..\BedrockBoot.WatchDog\BedrockBoot.WatchDog.csproj" />
         <ProjectReference Include="..\LiteSkinViewer\LiteSkinViewer.2D\LiteSkinViewer.2D.csproj" />

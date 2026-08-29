@@ -26,7 +26,10 @@ public class SourceList
     public static Dictionary<string, string> VersionDataSources { get; set; } = new()
     {
         { "McAppx 源", "https://data.mcappx.com/v2/bedrock.json" },
-        { "BedrockBoot 源 ①", "https://raw.giteeusercontent.com/minecraftyjq/bedrock-version-db/raw/main/data/bedrock.json" },
+        {
+            "BedrockBoot 源 ①",
+            "https://raw.giteeusercontent.com/minecraftyjq/bedrock-version-db/raw/main/data/bedrock.json"
+        },
         { "BMCBL 源 ①", "https://api.chlna6666.com/api/v1/bedrock/mcappx" }
     };
 
@@ -95,4 +98,7 @@ public class SourceList
     public static string VC20152022Url { get; } = "https://aka.ms/vc14/vc_redist.x64.exe";
     public static string MarketApiHost { get; } = "https://market-api.roundstudio.top";
     public static string PluginApi { get; } = $"{MarketApiHost}/api/plugins";
+
+    public static string LeviLaminaVersionDb =>
+        "https://fastly.jsdelivr.net/gh/LiteLDev/levilamina-client-version-db@main/v2/version-db.json";
 }

@@ -14,7 +14,6 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
-using LeviLaminaSourceList = BedrockBoot.LeviLamina.Global.SourceList;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingDownloadPages;
 
@@ -80,9 +79,6 @@ public partial class NetworkTest : ISettingPage
         // Plugin / Market
         _entries.Add(new NetworkTestEntry(plugin, "Round Studio Market API", SourceList.MarketApiHost));
         _entries.Add(new NetworkTestEntry(plugin, "Round Studio Plugin API", SourceList.PluginApi));
-
-        // LeviLamina
-        _entries.Add(new NetworkTestEntry(plugin, "LeviLamina Version DB", LeviLaminaSourceList.LeviLaminaVersion));
 
         // 其他
         _entries.Add(new NetworkTestEntry(other, "VC++ 2015-2022 Redist", SourceList.VC20152022Url));

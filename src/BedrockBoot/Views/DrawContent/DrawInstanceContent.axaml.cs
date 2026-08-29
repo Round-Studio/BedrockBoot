@@ -35,6 +35,7 @@ public partial class DrawInstanceContent : UserControl
 #if LINUX
         Mods.IsVisible = false;
         Plugin.IsVisible = false;
+        Loaders.IsVisible = false;
 #endif
     }
 
@@ -73,6 +74,9 @@ public partial class DrawInstanceContent : UserControl
                 case "Mods":
                     InstanceFrame.NavigateTo(new InstanceMods(VersionInfo));
                     break;
+                case "Loaders":
+                    InstanceFrame.NavigateTo(new InstanceLoaders(VersionInfo));
+                    break;
                 case "Pack":
                     InstanceFrame.NavigateTo(new InstancePack(VersionInfo));
                     break;
@@ -84,9 +88,6 @@ public partial class DrawInstanceContent : UserControl
                     break;
                 case "Server":
                     InstanceFrame.NavigateTo(new InstanceServer(VersionInfo));
-                    break;
-                case "Plugin":
-                    InstanceFrame.NavigateTo(new InstancePlugins(VersionInfo));
                     break;
                 case "Controls":
                     InstanceFrame.NavigateTo(new InstanceControls(VersionInfo));
@@ -131,16 +132,19 @@ public partial class DrawInstanceContent : UserControl
 
     private void MenuOpenSkinDevFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopSkinPackFolder));
+        OpenFolderHelper.Open(
+            IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopSkinPackFolder));
     }
 
     private void MenuOpenBehaviorDevFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopBehaviorPackFolder));
+        OpenFolderHelper.Open(
+            IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopBehaviorPackFolder));
     }
 
     private void MenuOpenResourceDevFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopResourcePackFolder));
+        OpenFolderHelper.Open(
+            IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopResourcePackFolder));
     }
 }

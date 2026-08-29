@@ -9,9 +9,24 @@
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceMods">
     <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto">
+              ColumnDefinitions="Auto,*,Auto">
             <items:BorderCard Grid.Column="0"
-                              Margin="20,0,12,10">
+                              Margin="20,0,0,10">
+                <DockPanel HorizontalAlignment="Stretch"
+                           LastChildFill="True">
+                    <onePointControls:FontIcon Glyph="&#xEA86;"
+                                               VerticalAlignment="Center"
+                                               FontSize="16"
+                                               Margin="5,5,12,5" />
+                    <ComboBox Width="200"
+                              SelectedIndex="0">
+                        <ComboBoxItem Content="原版加载器"></ComboBoxItem>
+                        <ComboBoxItem Content="LeviLamina"></ComboBoxItem>
+                    </ComboBox>
+                </DockPanel>
+            </items:BorderCard>
+            <items:BorderCard Grid.Column="1"
+                              Margin="12,0,12,10">
                 <Grid ColumnDefinitions="*">
                     <DockPanel HorizontalAlignment="Stretch"
                                LastChildFill="True">
@@ -27,7 +42,7 @@
                     </DockPanel>
                 </Grid>
             </items:BorderCard>
-            <items:BorderCard Grid.Column="1"
+            <items:BorderCard Grid.Column="2"
                               Margin="0,0,20,10">
                 <Grid>
                     <StackPanel Orientation="Horizontal"

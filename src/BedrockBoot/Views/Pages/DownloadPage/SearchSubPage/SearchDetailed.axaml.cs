@@ -24,6 +24,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BedrockBoot.Views.DialogContent.Loader.LeviLamina;
+using OnePointUI.Avalonia.Base.Enum;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
@@ -600,8 +602,35 @@ public partial class SearchDetailed : ISetting
 
             item.OnClick = s =>
             {
-                /*GlobalModel.MainWindow.OpenDraw(new DrawDownloadLeviLaminaModContent(pkg.Key, pkg.Value),
-                    $"模组详细信息：{packageInfo.Name ?? pkg.Key}");*/
+                var chooseVersionDialog =
+                    new DialogChooseLeviLaminaModVersionContent(pkg.Value.Variants["client"].Versions.Keys.ToList());
+                DialogHost.Show(new()
+                {
+                    Title = $"选择 {packageInfo.Name} 版本",
+                    Content = chooseVersionDialog,
+                    CloseButtonText = "确定",
+                    PrimaryButtonText = "取消",
+                    AccountButton = DialogButtons.CloseButton,
+                    CloseAction = () =>
+                    {
+                        var chooseModVersion = chooseVersionDialog.ChooseVersion;
+                        var chooseInstanceDialog = new DialogChooseLeviLaminaModInstallInstanceContent(pkg.Value,
+                            chooseModVersion, pkg.Value.Variants["client"].Versions[chooseModVersion]);
+                        DialogHost.Show(new()
+                        {
+                            Title = $"安装 {packageInfo.Name} {chooseVersionDialog.ChooseVersion}",
+                            Content = chooseInstanceDialog,
+                            CloseButtonText = "确定",
+                            PrimaryButtonText = "取消",
+                            AccountButton = DialogButtons.CloseButton,
+                            CloseAction = () =>
+                            {
+                                var installer = new LeviLaminaModsInstaller(pkg.Value, pkg.Key);
+                                installer.Install(chooseModVersion, chooseInstanceDialog.SavePath);
+                            }
+                        });
+                    }
+                });
             };
             items.Add(item);
         });

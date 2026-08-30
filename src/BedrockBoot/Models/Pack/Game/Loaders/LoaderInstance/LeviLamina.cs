@@ -189,7 +189,7 @@ public class LeviLamina : IModsLoader
                         },
                         (downloadedFiles) =>
                         {
-                            Console.WriteLine("所有文件下载完成!");
+                            Console.WriteLine(@"所有文件下载完成!");
                             Dispatcher.UIThread.Invoke(() =>
                             {
                                 OnUpdate?.Invoke();

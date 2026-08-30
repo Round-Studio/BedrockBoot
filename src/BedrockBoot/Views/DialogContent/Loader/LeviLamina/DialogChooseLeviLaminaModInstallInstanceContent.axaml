@@ -1,0 +1,64 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.Loader.LeviLamina.DialogChooseLeviLaminaModInstallInstanceContent">
+    <Grid Width="420"
+          ClipToBounds="True"
+          RowSpacing="8"
+          RowDefinitions="Auto,Auto">
+        <TabControl Grid.Row="0"
+                    Name="DownloadType"
+                    Margin="0,-6,0,0">
+            <TabItem Header="安装到实例">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="将 LeviLamina Mod 安装到本地实例中"
+                               TextWrapping="WrapWithOverflow"
+                               Opacity="0.6">
+                    </TextBlock>
+
+                    <ComboBox Name="ComboBox"
+                              HorizontalAlignment="Stretch">
+                    </ComboBox>
+
+                    <TextBlock Foreground="Red"
+                               Name="NotFound"
+                               IsVisible="False"
+                               Text="未在当前游戏目录中找到安装 LeviLamina 加载器的实例">
+                    </TextBlock>
+
+                    <TextBlock Text="选择需要安装到的实例，目标实例需要安装 LeviLamina 加载器。未安装加载器的实例将不会显示。"
+                               TextWrapping="WrapWithOverflow"
+                               Opacity="0.6">
+                    </TextBlock>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="下载到本地">
+                <items:BorderCard Height="120">
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="12">
+                        <onePointControls:FontIcon HorizontalAlignment="Center"
+                                                   FontSize="18"
+                                                   Glyph="&#xE74E;" />
+                        <Button Content="选择保存位置"
+                                Name="SelectFolder"
+                                Click="SelectFolder_OnClick"
+                                Padding="12,8">
+                        </Button>
+                    </StackPanel>
+                </items:BorderCard>
+            </TabItem>
+        </TabControl>
+        <StackPanel Grid.Row="1" Name="DepsList">
+            <TextBlock Text="Mod 依赖："
+                       Name="ModDeps"
+                       TextWrapping="WrapWithOverflow"
+                       Opacity="0.6">
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

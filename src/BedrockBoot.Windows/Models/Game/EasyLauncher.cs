@@ -324,11 +324,11 @@ public class EasyLauncher
 
                             if (completedTask == _frameMonitorTask)
                             {
-                                Console.WriteLine($"FrameMonitor 完成，HWND：{_frameHwnd}");
+                                Console.WriteLine($@"FrameMonitor 完成，HWND：{_frameHwnd}");
                             }
                             else
                             {
-                                Console.WriteLine("FrameMonitor 等待超过 10 秒，给个 IntPtr.Zero 进去闯荡闯荡");
+                                Console.WriteLine(@"FrameMonitor 等待超过 10 秒，给个 IntPtr.Zero 进去闯荡闯荡");
                                 _frameHwnd = IntPtr.Zero;
                             }
                         }

@@ -287,7 +287,7 @@ public partial class SetupRoot : UserControl
 
     private void CompleteSetup()
     {
-        Console.WriteLine("向导完成！");
+        Console.WriteLine(@"向导完成！");
     }
 
     private void OnNextBtnClick(object? sender, RoutedEventArgs e) => GoToNextStep();

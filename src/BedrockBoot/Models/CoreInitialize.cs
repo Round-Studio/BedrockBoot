@@ -122,21 +122,18 @@ public class CoreInitialize
             if (!conf.Config.IsModes) return;
             LoadersManager.ModsLoaders.ForEach(loader =>
             {
-                foreach (var loaderType in LoadersManager.ModsLoaders)
+                if (typeof(IModsLoader).IsAssignableFrom(loader))
                 {
-                    if (typeof(IModsLoader).IsAssignableFrom(loaderType))
+                    var instance = (IModsLoader)Activator.CreateInstance(loader);
+                    instance.InitLoader(conf);
+                    try
                     {
-                        var instance = (IModsLoader)Activator.CreateInstance(loaderType);
-                        instance.InitLoader(conf);
-                        try
-                        {
-                            instance.PreLaunch();
-                            Console.WriteLine($@"模组加载器 {instance.LoaderName} 准备完毕");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($@"准备模组加载器 {instance.LoaderName} 时出现错误：{ex}");
-                        }
+                        instance.PreLaunch();
+                        Console.WriteLine($@"模组加载器 {instance.LoaderName} 准备完毕");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($@"准备模组加载器 {instance.LoaderName} 时出现错误：{ex}");
                     }
                 }
             });

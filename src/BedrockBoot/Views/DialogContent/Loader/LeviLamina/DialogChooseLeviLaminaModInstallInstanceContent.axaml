@@ -36,7 +36,8 @@
                     </TextBlock>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="下载到本地">
+            <TabItem Header="下载到本地"
+                     IsEnabled="False">
                 <items:BorderCard Height="120">
                     <StackPanel HorizontalAlignment="Center"
                                 VerticalAlignment="Center"

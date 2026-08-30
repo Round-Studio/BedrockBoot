@@ -42,6 +42,7 @@ public partial class DialogInstallLeviLaminaModContent : UserControl
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
+                    InstallProgressBar.IsIndeterminate = false;
                     InstallProgressText.Text = $"{progress} %";
                     InstallProgressBar.Value = progress;
 

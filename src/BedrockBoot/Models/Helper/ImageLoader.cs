@@ -53,40 +53,41 @@ public class ImageLoader : IDisposable
         _urlLocks.Clear();
         GC.SuppressFinalize(this);
     }
-	public async Task<Bitmap?> LoadIconAsync(string iconUri)
-	{
+
+    public async Task<Bitmap?> LoadIconAsync(string iconUri)
+    {
         Console.WriteLine($@"获取图片：{iconUri}");
-		if (string.IsNullOrEmpty(iconUri))
-			return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+        if (string.IsNullOrEmpty(iconUri))
+            return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
 
-		if (iconUri.StartsWith("avares://")) return new Bitmap(AssetLoader.Open(new Uri(iconUri)));
+        if (iconUri.StartsWith("avares://")) return new Bitmap(AssetLoader.Open(new Uri(iconUri)));
 
-		if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-			iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-			return await LoadImageBrushAsync(iconUri);
+        if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            return await LoadImageBrushAsync(iconUri);
 
-		string decodedPath = Uri.UnescapeDataString(iconUri);
+        string decodedPath = Uri.UnescapeDataString(iconUri);
 
-		if (File.Exists(decodedPath))
-			return new Bitmap(decodedPath);
+        if (File.Exists(decodedPath))
+            return new Bitmap(decodedPath);
 
-		return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
-	}
+        return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+    }
 
-	public async Task<byte[]> BitmapTaskToByteArrayAsync(Task<Bitmap?> bitmapTask)
+    public async Task<byte[]> BitmapTaskToByteArrayAsync(Task<Bitmap?> bitmapTask)
     {
         // 等待 Task 完成并获取 Bitmap
         Bitmap? bitmap = await bitmapTask;
-    
+
         if (bitmap == null)
             return Array.Empty<byte>();
-    
+
         // 使用 MemoryStream 保存编码后的数据
         using var memoryStream = new MemoryStream();
-    
+
         // 编码为 PNG 格式
         bitmap.Save(memoryStream);
-    
+
         return memoryStream.ToArray();
     }
 
@@ -124,19 +125,32 @@ public class ImageLoader : IDisposable
                 imageData = await _httpClient.GetByteArrayAsync(imageUrl).ConfigureAwait(false);
                 if (useCache && imageData != null)
                 {
-                    try { _ = File.WriteAllBytesAsync(localPath, imageData); }
-                    catch { /* 忽略磁盘写入失败 */ }
+                    try
+                    {
+                        _ = File.WriteAllBytesAsync(localPath, imageData);
+                    }
+                    catch
+                    {
+                        /* 忽略磁盘写入失败 */
+                    }
                 }
             }
 
             if (imageData == null) return null;
 
-            var bitmap = await Dispatcher.UIThread.InvokeAsync(() =>
+            var bitmap = await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                using var ms = new MemoryStream(imageData);
-                return new Bitmap(ms);
+                try
+                {
+                    using var ms = new MemoryStream(imageData);
+                    return new Bitmap(ms);
+                }
+                catch
+                {
+                    return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+                    ;
+                }
             });
-
             if (useCache && bitmap != null) AddToCache(imageUrl, bitmap);
 
             return bitmap;
@@ -144,7 +158,8 @@ public class ImageLoader : IDisposable
         catch (Exception ex)
         {
             Console.WriteLine($@"加载图片失败: {imageUrl}, 错误: {ex.Message}");
-            return null;
+            return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+            ;
         }
         finally
         {
@@ -190,6 +205,7 @@ public class ImageLoader : IDisposable
                 return bitmap != null;
             }
         }
+
         bitmap = null;
         return false;
     }
@@ -260,7 +276,6 @@ public class ImageLoader : IDisposable
             Console.WriteLine($@"清理磁盘缓存失败: {ex.Message}");
         }
     }
-
 
 
     private sealed class CacheEntry

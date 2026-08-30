@@ -10,6 +10,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Models.Pack.Plugin.Market;
+using BedrockBoot.Models.Pack.LeviLamina;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
@@ -150,7 +151,6 @@ public partial class SearchDetailed : ISetting
         IsEdit = false;
         ResultPage.IsVisible = false;
 
-        // 根据搜索类型显示对应的筛选面板
         MinecraftTypePanel.IsVisible = info.Type == SearchResourceType.Minecraft;
         CurseForgeResTypePanel.IsVisible = info.Type == SearchResourceType.ResourcePack;
 
@@ -159,7 +159,6 @@ public partial class SearchDetailed : ISetting
         else
             info.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
 
-        // 非资源包搜索时重置 CurseForge 分类筛选
         if (info.Type != SearchResourceType.ResourcePack)
         {
             _selectedClassId = null;
@@ -197,6 +196,7 @@ public partial class SearchDetailed : ISetting
             SearchResourceType.Minecraft => SearchMinecraftAsync(info),
             SearchResourceType.ResourcePack => SearchResourcePacksAsync(info),
             SearchResourceType.PluginPack => SearchPluginPacksAsync(info),
+            SearchResourceType.LeviLaminaMods => SearchLeviLaminaModsAsync(info),
             _ => Task.FromResult(new List<SearchResultItemInfo>())
         };
     }
@@ -205,9 +205,6 @@ public partial class SearchDetailed : ISetting
 
     #region 模糊搜索工具方法
 
-    /// <summary>
-    /// 计算两个字符串的相似度（Levenshtein距离算法）
-    /// </summary>
     private static int CalculateLevenshteinDistance(string source, string target)
     {
         if (string.IsNullOrEmpty(source))
@@ -221,8 +218,13 @@ public partial class SearchDetailed : ISetting
 
         var matrix = new int[sourceLength + 1, targetLength + 1];
 
-        for (var i = 0; i <= sourceLength; matrix[i, 0] = i++) { }
-        for (var j = 0; j <= targetLength; matrix[0, j] = j++) { }
+        for (var i = 0; i <= sourceLength; matrix[i, 0] = i++)
+        {
+        }
+
+        for (var j = 0; j <= targetLength; matrix[0, j] = j++)
+        {
+        }
 
         for (var i = 1; i <= sourceLength; i++)
         {
@@ -238,9 +240,6 @@ public partial class SearchDetailed : ISetting
         return matrix[sourceLength, targetLength];
     }
 
-    /// <summary>
-    /// 判断是否匹配模糊搜索
-    /// </summary>
     private bool IsFuzzyMatch(string source, string keyword, double threshold = 0.7)
     {
         if (string.IsNullOrEmpty(keyword)) return true;
@@ -250,10 +249,8 @@ public partial class SearchDetailed : ISetting
         var sourceLower = source.ToLower();
         var keywordLower = keyword.ToLower();
 
-        // 如果包含关键词，直接匹配
         if (sourceLower.Contains(keywordLower)) return true;
 
-        // 计算相似度
         var distance = CalculateLevenshteinDistance(sourceLower, keywordLower);
         var maxLength = Math.Max(sourceLower.Length, keywordLower.Length);
         var similarity = 1.0 - (double)distance / maxLength;
@@ -261,31 +258,21 @@ public partial class SearchDetailed : ISetting
         return similarity >= threshold;
     }
 
-    /// <summary>
-    /// 提取字符串中的数字（用于Minecraft版本号模糊匹配）
-    /// </summary>
     private static string ExtractNumbers(string input)
     {
         if (string.IsNullOrEmpty(input)) return string.Empty;
         return new string(input.Where(char.IsDigit).ToArray());
     }
 
-    /// <summary>
-    /// 去除字符串中的所有'0'字符（用于Minecraft版本号模糊匹配）
-    /// </summary>
     private static string RemoveAllZeros(string input)
     {
         if (string.IsNullOrEmpty(input)) return string.Empty;
         return input.Replace("0", string.Empty);
     }
 
-    /// <summary>
-    /// 处理Minecraft版本号用于模糊匹配
-    /// </summary>
     private static string ProcessMinecraftVersionForFuzzy(string version)
     {
         if (string.IsNullOrEmpty(version)) return string.Empty;
-        // 只取数字，且去除所有字符0
         var numbers = ExtractNumbers(version);
         return RemoveAllZeros(numbers);
     }
@@ -304,18 +291,18 @@ public partial class SearchDetailed : ISetting
                 .Where(x => x.BuildType == MinecraftBuildTypeVersion.GDK)
 #endif
                 .ToList();
-            // 应用模糊搜索
+
             var filteredVersions = allVersions
                 .Where(version => IsMinecraftMatch(version, info.Key))
                 .ToList();
 
-            // 输入 1.21.2，1.21.2 应该优先于 1.21.20 这些
-            // 输入 1.2，1.2.* 应该优先于 1.26 这些
             var inputParts = info.Key.Split('.');
-            if (inputParts.Length >= 2 && inputParts[0] == "1" && int.TryParse(inputParts[1], out int second) && second >= 26)
+            if (inputParts.Length >= 2 && inputParts[0] == "1" && int.TryParse(inputParts[1], out int second) &&
+                second >= 26)
             {
                 inputParts = inputParts.Skip(1).ToArray();
             }
+
             int MatchCount(string version)
             {
                 var parts = version.Split('.');
@@ -329,13 +316,13 @@ public partial class SearchDetailed : ISetting
                     else
                         break;
                 }
+
                 return count;
             }
+
             filteredVersions = filteredVersions
                 .OrderByDescending(x => MatchCount(x.Key))
                 .ToList();
-
-
 
             _totalPages = (int)Math.Ceiling((double)filteredVersions.Count / PageSize);
 
@@ -366,7 +353,6 @@ public partial class SearchDetailed : ISetting
         });
     }
 
-
     private bool IsMinecraftMatch(dynamic version, string keyword)
     {
         if (string.IsNullOrEmpty(keyword)) return true;
@@ -377,11 +363,9 @@ public partial class SearchDetailed : ISetting
         var versionKey = version.Key ?? string.Empty;
         var buildType = version.BuildType?.ToString() ?? string.Empty;
 
-        // 啊，搜这些不是会被跳到资源包吗
         if (keyword.ToLower() == "uwp") return buildType == "UWP";
         else if (keyword.ToLower() == "gdk") return buildType == "GDK";
 
-        // 避免搜 1.1 出现 1.2[1.1]32 这种情况捏
         if (keyword.StartsWith("1."))
         {
             if (versionId.StartsWith(keyword) || versionKey.StartsWith(keyword)) return true;
@@ -391,66 +375,20 @@ public partial class SearchDetailed : ISetting
         var parts = keyword.Split('.');
         if (parts.Length == 4)
         {
-            // 例如：
-            // 1.26.33.1  -> 26.33
-            // 1.26.33.01 -> 26.33
-            // （这里只针对 1.x.x.x）
-            // 例如 1.16.100.04 会被处理成 16.100，因为是 contain 所以没关系（）
-            
             if (parts[0] == "1")
             {
-                // 以及，1.21.2 可以出现 1.21.20 这些；但是 1.21.2.2 或者纯粹「1.21.2.」，就不应该出现 1.21.20 这些
-                // 不过以点结尾看起来似乎会被跳到资源包，那无所谓了（
-                return ("."+versionKey+".").Contains($".{parts[1]}.{parts[2]}.") && !versionKey.StartsWith("0."); 
+                return ("." + versionKey + ".").Contains($".{parts[1]}.{parts[2]}.") && !versionKey.StartsWith("0.");
             }
         }
         else if (parts.Length == 3)
         {
-            // 第一位不是1
-            // 26.33.1  -> 26.33
-            // 26.33.01 -> 26.33
             if (parts[0] != "1")
             {
-                // 同理，假如给出 26.3，可以有 26.33；但是 26.3.1（尽管不规范）就不应该有 26.33 这些
-                return ("."+versionKey+".").Contains($".{parts[0]}.{parts[1]}.");
+                return ("." + versionKey + ".").Contains($".{parts[0]}.{parts[1]}.");
             }
         }
+
         return false;
-
-        // 不模糊搜索了捏，打错字了活该（）
-        /*
-        var combinedText = $"{versionId} {buildType}".ToLower();
-
-        
-        // 如果不启用模糊搜索，使用包含匹配
-        if (!EnableFuzzySearch)
-        {
-            return combinedText.Contains(keyword.ToLower());
-        }
-
-        // 启用模糊搜索
-        var keywordLower = keyword.ToLower();
-
-        // 1. 直接包含匹配
-        if (combinedText.Contains(keywordLower)) return true;
-
-        // 2. 版本号数字模糊匹配（只取数字，去除0）
-        var versionNumbers = ProcessMinecraftVersionForFuzzy(versionId);
-        var keywordNumbers = ProcessMinecraftVersionForFuzzy(keyword);
-
-        if (!string.IsNullOrEmpty(versionNumbers) && !string.IsNullOrEmpty(keywordNumbers))
-        {
-            // 数字部分包含匹配
-            if (versionNumbers.Contains(keywordNumbers)) return true;
-            
-            // 数字部分模糊匹配
-            if (IsFuzzyMatch(versionNumbers, keywordNumbers, 0.6)) return true;
-        }
-
-        // 3. 整体文本模糊匹配
-        return IsFuzzyMatch(combinedText, keywordLower, 0.7);
-        */
-
     }
 
     #endregion
@@ -459,10 +397,10 @@ public partial class SearchDetailed : ISetting
 
     private async Task<List<SearchResultItemInfo>> SearchResourcePacksAsync(SearchInfo info)
     {
-        var result = await _apiClient.SearchModsAsync(info.Key, PageSize, classId: _selectedClassId, index: _currentIndex);
+        var result =
+            await _apiClient.SearchModsAsync(info.Key, PageSize, classId: _selectedClassId, index: _currentIndex);
         _totalPages = (int)Math.Ceiling((double)result.Pagination.TotalCount / PageSize);
 
-        // 应用模糊搜索过滤
         var filteredData = result.Data
             .Where(mod => IsResourcePackMatch(mod, info.Key))
             .ToList();
@@ -503,25 +441,19 @@ public partial class SearchDetailed : ISetting
         var modSummary = mod.Summary ?? string.Empty;
         var combinedText = $"{modName} {modSummary}".ToLower();
 
-        // 如果不启用模糊搜索，使用包含匹配
         if (!EnableFuzzySearch)
         {
             return combinedText.Contains(keyword.ToLower());
         }
 
-        // 启用模糊搜索
         var keywordLower = keyword.ToLower();
 
-        // 1. 直接包含匹配
         if (combinedText.Contains(keywordLower)) return true;
 
-        // 2. 名称模糊匹配
         if (IsFuzzyMatch(modName.ToLower(), keywordLower, 0.7)) return true;
 
-        // 3. 摘要模糊匹配
         if (IsFuzzyMatch(modSummary.ToLower(), keywordLower, 0.6)) return true;
 
-        // 4. 作者名称匹配
         if (mod.Authors != null)
         {
             foreach (var author in mod.Authors)
@@ -532,7 +464,6 @@ public partial class SearchDetailed : ISetting
             }
         }
 
-        // 5. 分类匹配
         if (mod.Categories != null)
         {
             foreach (var category in mod.Categories)
@@ -598,31 +529,23 @@ public partial class SearchDetailed : ISetting
         var username = plugin.Username ?? string.Empty;
         var combinedText = $"{pluginName} {pluginDescription} {repositoryUrl} {username}".ToLower();
 
-        // 如果不启用模糊搜索，使用包含匹配
         if (!EnableFuzzySearch)
         {
             return combinedText.Contains(keyword.ToLower());
         }
 
-        // 启用模糊搜索
         var keywordLower = keyword.ToLower();
 
-        // 1. 直接包含匹配
         if (combinedText.Contains(keywordLower)) return true;
 
-        // 2. 插件名称模糊匹配
         if (IsFuzzyMatch(pluginName.ToLower(), keywordLower, 0.7)) return true;
 
-        // 3. 描述模糊匹配
         if (IsFuzzyMatch(pluginDescription.ToLower(), keywordLower, 0.6)) return true;
 
-        // 4. 仓库地址模糊匹配
         if (IsFuzzyMatch(repositoryUrl.ToLower(), keywordLower, 0.7)) return true;
 
-        // 5. 作者名称匹配
         if (IsFuzzyMatch(username.ToLower(), keywordLower, 0.7)) return true;
 
-        // 6. 标签匹配
         if (plugin.Labels != null)
         {
             foreach (var label in plugin.Labels)
@@ -630,6 +553,93 @@ public partial class SearchDetailed : ISetting
                 var labelName = label?.ToLower() ?? string.Empty;
                 if (IsFuzzyMatch(labelName, keywordLower, 0.7)) return true;
                 if (labelName.Contains(keywordLower)) return true;
+            }
+        }
+
+        return false;
+    }
+
+    #endregion
+
+    #region LeviLamina 模组搜索
+
+    private async Task<List<SearchResultItemInfo>> SearchLeviLaminaModsAsync(SearchInfo info)
+    {
+        var liprData = await LiprSource.GetDataAsync();
+
+        var filteredPackages = liprData.Packages
+            .Where(pkg => IsLeviLaminaModMatch(pkg.Key, pkg.Value, info.Key))
+            .ToList();
+
+        _totalPages = (int)Math.Ceiling((double)filteredPackages.Count / PageSize);
+
+        var currentPagePackages = filteredPackages
+            .Skip(_currentIndex)
+            .Take(PageSize)
+            .ToList();
+
+        var items = new List<SearchResultItemInfo>();
+        currentPagePackages.ForEach(pkg =>
+        {
+            var packageInfo = pkg.Value.Info;
+            var item = new SearchResultItemInfo
+            {
+                Name = packageInfo.Name ?? pkg.Key,
+                Id = 0,
+                Description = packageInfo.Description ?? string.Empty,
+                Authors = new List<string>(),
+                DownloadCount = 0,
+                IconUri = !string.IsNullOrEmpty(packageInfo.AvatarUrl)
+                    ? packageInfo.AvatarUrl
+                    : "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png",
+                Labels = packageInfo.Tags ?? new List<string>(),
+                Images = null,
+                SourceWebsite = $"https://github.com/{pkg.Key}",
+                JsonData = JsonSerializer.Serialize(pkg.Value)
+            };
+
+            item.OnClick = s =>
+            {
+                /*GlobalModel.MainWindow.OpenDraw(new DrawDownloadLeviLaminaModContent(pkg.Key, pkg.Value),
+                    $"模组详细信息：{packageInfo.Name ?? pkg.Key}");*/
+            };
+            items.Add(item);
+        });
+
+        return items;
+    }
+
+    private bool IsLeviLaminaModMatch(string packageKey, PackageInfo package, string keyword)
+    {
+        if (string.IsNullOrEmpty(keyword)) return true;
+
+        var packageName = package.Info?.Name ?? packageKey;
+        var packageDescription = package.Info?.Description ?? string.Empty;
+        var packageTags = package.Info?.Tags != null ? string.Join(" ", package.Info.Tags) : string.Empty;
+        var combinedText = $"{packageName} {packageDescription} {packageTags} {packageKey}".ToLower();
+
+        if (!EnableFuzzySearch)
+        {
+            return combinedText.Contains(keyword.ToLower());
+        }
+
+        var keywordLower = keyword.ToLower();
+
+        if (combinedText.Contains(keywordLower)) return true;
+
+        if (IsFuzzyMatch(packageName.ToLower(), keywordLower, 0.7)) return true;
+
+        if (IsFuzzyMatch(packageDescription.ToLower(), keywordLower, 0.6)) return true;
+
+        if (IsFuzzyMatch(packageKey.ToLower(), keywordLower, 0.7)) return true;
+
+        if (package.Info?.Tags != null)
+        {
+            foreach (var tag in package.Info.Tags)
+            {
+                var tagName = tag?.ToLower() ?? string.Empty;
+                if (IsFuzzyMatch(tagName, keywordLower, 0.7)) return true;
+                if (tagName.Contains(keywordLower)) return true;
             }
         }
 
@@ -686,16 +696,18 @@ public partial class SearchDetailed : ISetting
     #endregion
 
     #region 事件处理
+
     private void HelpBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         DialogHost.Show(new DialogInfo
         {
             Title = "找不到想要的版本？",
-            Content = "1. 请确保正式版、预览版、Beta 版选择正确。注意预览版和 Beta 版是两个不同的版本类型\n2. Windows 和 Android 的内部版本号格式不一致。\n   例如在 Android 上的 1.26.30.5 对应 Windows 上的 1.26.3005\n   请以游戏主屏幕右下角的版本号为准，例如上述版本的版本号为 26.30",
+            Content =
+                "1. 请确保正式版、预览版、Beta 版选择正确。注意预览版和 Beta 版是两个不同的版本类型\n2. Windows 和 Android 的内部版本号格式不一致。\n   例如在 Android 上的 1.26.30.5 对应 Windows 上的 1.26.3005\n   请以游戏主屏幕右下角的版本号为准，例如上述版本的版本号为 26.30",
             CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
-            
         });
     }
+
     private void GameType_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (!IsEdit) return;
@@ -715,11 +727,9 @@ public partial class SearchDetailed : ISetting
         SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
         _lastSearchType = SearchInfo.Type;
 
-        // 切换类型时更新筛选面板
         MinecraftTypePanel.IsVisible = SearchInfo.Type == SearchResourceType.Minecraft;
         CurseForgeResTypePanel.IsVisible = SearchInfo.Type == SearchResourceType.ResourcePack;
 
-        // 非资源包搜索时清除 CurseForge 分类筛选
         if (SearchInfo.Type != SearchResourceType.ResourcePack)
             _selectedClassId = null;
 

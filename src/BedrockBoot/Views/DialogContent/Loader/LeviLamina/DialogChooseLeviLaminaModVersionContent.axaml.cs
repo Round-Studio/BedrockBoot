@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Documents;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
 namespace BedrockBoot.Views.DialogContent.Loader.LeviLamina;
 

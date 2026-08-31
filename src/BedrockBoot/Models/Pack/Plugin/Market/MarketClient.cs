@@ -1,12 +1,15 @@
-﻿using System;
+﻿using BedrockBoot.Base.Entry.Pack.Market;
+using BedrockBoot.Helpers;
+using BedrockBoot.Models.Global;
+using Octokit;
+using Octokit.Internal;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Pack.Market;
-using BedrockBoot.Models.Global;
-using Octokit;
-using Octokit.Internal;
 
 namespace BedrockBoot.Models.Pack.Plugin.Market;
 
@@ -50,10 +53,25 @@ public class MarketClient
         // 并行获取数据以提高性能
         var repositoryTask = github.Repository.Get(owner, repo);
         var releasesTask = github.Repository.Release.GetAll(owner, repo);
-    
-        await Task.WhenAll(repositoryTask, releasesTask);
-    
-        return (await repositoryTask, await releasesTask);
+
+        try
+        {
+            await Task.WhenAll(repositoryTask, releasesTask);
+
+            return (await repositoryTask, await releasesTask);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"获取插件仓库信息失败：{ex}");
+            var error = GitHubHelper.HandleException(ex);
+            DialogHost.Show(new DialogInfo
+            {
+                Title = "网络错误",
+                Content = $"无法从 GitHub 获取信息，请检查网络后重试。\n{error.GetLocalizedMessage()}",
+                CloseButtonText = "确定"
+            });
+            throw;
+        }
     }
     
     public static async Task<string> GetReadmeHtml(string owner, string repo)

@@ -6,5 +6,6 @@ public enum SearchResourceType
     ResourcePack,
     PluginPack,
     LeviLaminaMods,
+    DllMods,
     Unknow
 }

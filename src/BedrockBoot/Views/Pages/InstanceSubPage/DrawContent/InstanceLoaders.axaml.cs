@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
+using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Pack.Game.Loaders;
 using BedrockBoot.Views.Control.Items.Instance;
 

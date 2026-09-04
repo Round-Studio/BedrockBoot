@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum.Type;
 
-namespace BedrockBoot.Interface;
+namespace BedrockBoot.Interface.ModLoader;
 
 public interface IModsManager
 {

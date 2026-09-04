@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Interface;
+using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Loaders.LeviLamina;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;

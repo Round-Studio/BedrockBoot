@@ -8,6 +8,7 @@ using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Interface;
+using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Loaders;

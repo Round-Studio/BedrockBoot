@@ -9,6 +9,7 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Interface;
+using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Global;
 using Round.SDK.Entity;
 using Round.SDK.Helper;

@@ -8,6 +8,7 @@ using BedrockBoot.Base.Entry.Game.Pack.Mods;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Interface;
+using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;

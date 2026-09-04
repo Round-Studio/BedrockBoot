@@ -33,7 +33,7 @@ public class GlobalModel
 
     public static string BodyVersion =>
         $"{Assembly.GetExecutingAssembly().GetName().Version!.ToString()}-{CheckUpdate.GetBodyUpdateType()}";
-    
+
     public static Action? MainPageUpdateInstance { get; set; }
 
     public static PaperConnectCore PaperConnectCore { get; set; }
@@ -42,6 +42,7 @@ public class GlobalModel
     public static AppRunType AppRunType { get; set; } = AppRunType.Default;
     public static bool IsNetworkAvailable { get; set; }
     public static ArchiveBackup ArchiveBackup { get; } = new();
+
     public static List<OtherLauncherInfo> OtherLauncher = new()
     {
         new OtherLauncherInfo() // BMCBL
@@ -140,6 +141,9 @@ public class GlobalModel
                     CloseButtonText = "确定"
                 });
             }
+        },
+        new OtherLauncherInfo() // Portal
+        {
         }
     };
 }

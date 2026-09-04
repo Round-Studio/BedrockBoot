@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
+using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 
 namespace BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;

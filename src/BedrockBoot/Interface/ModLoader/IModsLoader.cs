@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
 
-namespace BedrockBoot.Interface;
+namespace BedrockBoot.Interface.ModLoader;
 
 public interface IModsLoader
 {

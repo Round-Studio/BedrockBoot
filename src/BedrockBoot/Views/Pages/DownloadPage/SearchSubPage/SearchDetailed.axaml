@@ -30,8 +30,7 @@
                 <ComboBoxItem Content="{DynamicResource Download.Tab.Assets}" />
                 <ComboBoxItem Content="插件" />
                 <ComboBoxItem Content="LeviLamina 模组" />
-                <ComboBoxItem Content="Dll 模组"
-                              IsVisible="False" />
+                <!--<ComboBoxItem Content="Dll 模组" />-->
             </ComboBox>
 
             <StackPanel Orientation="Horizontal"

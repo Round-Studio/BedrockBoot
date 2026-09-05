@@ -143,38 +143,30 @@ namespace BedrockBoot.Models.Pack.Search
     public class DllIndexResponse
     {
         [JsonPropertyName("format_version")] public int FormatVersion { get; set; }
-
         [JsonPropertyName("total")] public int Total { get; set; }
-
         [JsonPropertyName("packages")] public List<DllPackage> Packages { get; set; }
     }
 
     public class DllPackage
     {
         [JsonPropertyName("id")] public string Id { get; set; }
-
         [JsonPropertyName("format_version")] public int FormatVersion { get; set; }
-
         [JsonPropertyName("header")] public DllHeader Header { get; set; }
-
-        [JsonPropertyName("files")] public Dictionary<string, DllFile> Files { get; set; }
+        [JsonPropertyName("files")] public Dictionary<string, ModFile> Files { get; set; }
     }
 
     public class DllHeader
     {
         [JsonPropertyName("name")] public string Name { get; set; }
-
         [JsonPropertyName("description")] public string Description { get; set; }
-
         [JsonPropertyName("reop")] public string Reop { get; set; }
-
         [JsonPropertyName("author")] public string Author { get; set; }
-
         [JsonPropertyName("tags")] public List<string> Tags { get; set; }
     }
 
-    public class DllFile
+    public class ModFile
     {
         [JsonPropertyName("url")] public string Url { get; set; }
+        [JsonPropertyName("type")] public string Type { get; set; }
     }
 }

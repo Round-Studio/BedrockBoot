@@ -1,7 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="BedrockBoot.App"
-             xmlns:local="using:BedrockBoot"
              xmlns:core="clr-namespace:OnePointUI.Avalonia.Style.Core;assembly=OnePointUI.Avalonia"
              RequestedThemeVariant="Dark">
 

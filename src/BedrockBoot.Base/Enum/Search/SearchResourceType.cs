@@ -5,5 +5,7 @@ public enum SearchResourceType
     Minecraft,
     ResourcePack,
     PluginPack,
+    LeviLaminaMods,
+    DllMods,
     Unknow
 }

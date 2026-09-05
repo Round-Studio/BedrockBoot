@@ -48,13 +48,16 @@ public class ModsCore
 
         try
         {
-            if(File.Exists(fullPath)) File.Delete(fullPath);
+            if (File.Exists(fullPath)) File.Delete(fullPath);
             File.WriteAllBytes(fullPath,
                 Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreLoad.NET.dll"));
 
             Console.WriteLine(@"PreLoad.NET.dll 释放完毕");
         }
-        catch(Exception exception) {Console.WriteLine($@"PreLoad.NET.dll 释放失败 {exception}"); }
+        catch (Exception exception)
+        {
+            Console.WriteLine($@"PreLoad.NET.dll 释放失败 {exception}");
+        }
 
         // 如果raw文件不存在，直接从body复制创建
         if (!File.Exists(rawBody))
@@ -137,7 +140,7 @@ public class ModsCore
             {
             }
         });
-        
+
         Console.WriteLine(@"预加载文件复制完毕");
 
         try
@@ -156,6 +159,7 @@ public class ModsCore
                             System.Console.WriteLine(@"转换完成！Subsystem 已修改为 WindowsCui (3)");
                         }
                     }
+
                     peFile.Flush();
                     Console.WriteLine(@"Main EXE 文件修改完毕，已导入 PreLoad.NET.dll");
                 }
@@ -172,11 +176,11 @@ public class ModsCore
         }
     }
 
-    public void LoadAll(int pid)
+    /*public void LoadAll(int pid)
     {
         Console.WriteLine($@"开始注入进程：{pid}");
         _manager.InjectAll(pid);
-    }
+    }*/
 
     private static bool AreFilesIdentical(string filePath1, string filePath2)
     {

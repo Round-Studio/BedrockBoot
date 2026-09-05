@@ -5,86 +5,70 @@
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:text="clr-namespace:AvaMotion.Controls.Text;assembly=AvaMotion"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SetupPage.SetupRoot">
-    <Grid RowDefinitions="Auto,*,Auto">
-        <items:BorderCard Grid.Row="0"
-                          Height="48"
-                          Margin="10"
-                          CornerRadius="8"
-                          HorizontalAlignment="Center"
-                          Padding="12,0">
-            <Grid>
-                <TabControl HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Name="TopProgressBar"
-                            Margin="0,2,0,0" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="76" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="78" />
+        </Grid.RowDefinitions>
 
-                <Border Background="#010000FE"
-                        Opacity="0.000001" />
-            </Grid>
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    Margin="22,0,0,0">
+            <text:AnimationTextBlock AnimationType="NumberRolling"
+                                     Text="初次使用向导"
+                                     Name="BigTitle"
+                                     VerticalAlignment="Center"
+                                     FontSize="28"
+                                     FontWeight="Bold" />
+        </StackPanel>
+
+        <items:BorderCard Grid.Row="1"
+                          Margin="20,0,20,0">
+            <navigation:NavigationFrame Name="SetupNavigationFrame" />
         </items:BorderCard>
 
-        <navigation:NavigationFrame Grid.Row="1"
-                                    Name="SetupFrame" />
+        <Grid Grid.Row="2"
+              Margin="22,12,20,20">
+            <StackPanel HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Spacing="2">
+                <text:AnimationTextBlock Text="欢迎使用 BedrockBoot"
+                                         Name="SmallTitle"
+                                         FontSize="16">
+                </text:AnimationTextBlock>
+                <text:AnimationTextBlock Text="单击 “下一步” 以继续"
+                                         Name="SmallMessage"
+                                         FontSize="11"
+                                         Opacity="0.6">
+                </text:AnimationTextBlock>
+            </StackPanel>
 
-        <Grid Row="2">
-            <Grid HorizontalAlignment="Left"
-                  VerticalAlignment="Stretch"
-                  Margin="15">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png"
-                           Width="42"
-                           Height="42"
-                           Margin="5" />
-
-                    <StackPanel>
-                        <TextBlock Margin="5"
-                                   FontSize="14"
-                                   FontWeight="Bold"
-                                   Text="BedrockBoot v2" />
-                        <TextBlock Margin="5,0,0,0"
-                                   FontSize="11"
-                                   Text="{DynamicResource Setup.Root.Slogan}" />
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
-
-            <DockPanel Margin="15"
-                       HorizontalAlignment="Right"
-                       LastChildFill="False">
-                <Button Padding="28,12"
-                        IsEnabled="False"
-                        Name="ButtonLast"
-                        Click="ButtonLast_OnClick"
-                        Margin="5"
-                        Classes="NoBorder">
-                    <StackPanel Orientation="Horizontal">
-                        <onePointControls:FontIcon Glyph="&#xE72B;"
-                                                   Margin="0,1,0,0"
-                                                   VerticalAlignment="Center" />
-                        <TextBlock VerticalAlignment="Center"
-                                   Margin="12,0,0,0"
-                                   Text="{DynamicResource Setup.Root.Action.Previous}" />
-                    </StackPanel>
+            <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <Button Content="上一步"
+                        Name="LastBtn"
+                        Classes="NoBorder"
+                        Margin="0,1"
+                        FontSize="16"
+                        Padding="48,0"
+                        Click="OnLastBtnClick"
+                        VerticalAlignment="Stretch">
                 </Button>
-
-                <Button Padding="28,12"
-                        IsEnabled="False"
-                        Name="ButtonNext"
-                        Click="ButtonNext_OnClick"
-                        Margin="5"
-                        Classes="NoBorder">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center"
-                                   Margin="0,0,12,0"
-                                   Text="{DynamicResource Setup.Root.Action.Next}" />
-                        <onePointControls:FontIcon Glyph="&#xE72A;"
-                                                   Margin="0,1,0,0"
-                                                   VerticalAlignment="Center" />
-                    </StackPanel>
+                <Button Content="下一步"
+                        Name="NextBtn"
+                        Background="{DynamicResource AccentBackgroundBrush}"
+                        Margin="0,1"
+                        Classes="NoBorder"
+                        FontSize="16"
+                        Padding="48,0"
+                        Click="OnNextBtnClick"
+                        VerticalAlignment="Stretch">
                 </Button>
-            </DockPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

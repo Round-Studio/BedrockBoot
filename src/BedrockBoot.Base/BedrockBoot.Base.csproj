@@ -32,7 +32,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="../BedrockBoot.Inject\BedrockBoot.Inject.csproj" />
       <ProjectReference Include="../BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj" />
       <ProjectReference Include="../Round.SDK\Round.SDK\Round.SDK.csproj" />
       <ProjectReference Include="../BedrockBoot.Dependence\BedrockBoot.Dependence.csproj" />

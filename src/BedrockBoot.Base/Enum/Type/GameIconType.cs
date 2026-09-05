@@ -9,5 +9,6 @@ public enum GameIconType
     Worktable = 4,
     Stone = 5,
     EndlandStone = 6,
+    Cs2 = 730,
     Falcons = 2026
 }

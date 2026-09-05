@@ -23,6 +23,7 @@ public class IconHelper
             GameIconType.Worktable => "avares://BedrockBoot/Assets/Icon/Logo/Worktable.png",
             GameIconType.Stone => "avares://BedrockBoot/Assets/Icon/Logo/Stone.png",
             GameIconType.EndlandStone => "avares://BedrockBoot/Assets/Icon/Logo/EndlandStone.png",
+            GameIconType.Cs2 => "avares://BedrockBoot/Assets/Icon/Logo/Cs2.png",
             GameIconType.Falcons => "avares://BedrockBoot/Assets/Icon/Logo/Falcons.png",
             _ => conf.Info.VersionType == MinecraftGameTypeVersion.Release
                 ? "avares://BedrockBoot/Assets/Icon/Logo/Grass.png"

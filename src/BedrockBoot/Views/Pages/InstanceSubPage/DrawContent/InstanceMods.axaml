@@ -9,9 +9,24 @@
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceMods">
     <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto">
+              ColumnDefinitions="Auto,*,Auto">
             <items:BorderCard Grid.Column="0"
-                              Margin="20,0,12,10">
+                              Margin="20,0,0,10">
+                <DockPanel HorizontalAlignment="Stretch"
+                           LastChildFill="True">
+                    <onePointControls:FontIcon Glyph="&#xEA86;"
+                                               VerticalAlignment="Center"
+                                               FontSize="16"
+                                               Margin="5,5,12,5" />
+                    <ComboBox Width="200"
+                              Name="ModsLoaderSelect"
+                              SelectionChanged="ModsLoaderSelect_OnSelectionChanged"
+                              SelectedIndex="0">
+                    </ComboBox>
+                </DockPanel>
+            </items:BorderCard>
+            <items:BorderCard Grid.Column="1"
+                              Margin="12,0,12,10">
                 <Grid ColumnDefinitions="*">
                     <DockPanel HorizontalAlignment="Stretch"
                                LastChildFill="True">
@@ -27,7 +42,7 @@
                     </DockPanel>
                 </Grid>
             </items:BorderCard>
-            <items:BorderCard Grid.Column="1"
+            <items:BorderCard Grid.Column="2"
                               Margin="0,0,20,10">
                 <Grid>
                     <StackPanel Orientation="Horizontal"
@@ -57,11 +72,24 @@
             </items:BorderCard>
         </Grid>
 
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Margin="15,0,15,15"
-                        HorizontalAlignment="Stretch"
-                        Name="ResultBox" />
-        </ScrollViewer>
+        <Grid Grid.Row="1"
+              RowDefinitions="*,Auto"
+              RowSpacing="8"
+              Margin="15,0,15,15">
+            <ScrollViewer Grid.Row="0">
+                <StackPanel HorizontalAlignment="Stretch"
+                            Name="ResultBox" />
+            </ScrollViewer>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="1"
+                        Spacing="8">
+                <TextBlock Text="当前模组加载器已被禁用，如需加载其 Mods 请将其启用。"
+                           IsVisible="False"
+                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                           Name="IsNotEnableText" />
+            </StackPanel>
+        </Grid>
 
         <notice:InfoCard Grid.Row="1"
                          HorizontalAlignment="Center"

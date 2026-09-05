@@ -15,6 +15,11 @@
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <TextBlock Name="FileName" />
+                <onePointControls:LabelBox Text="Version"
+                                           IsVisible="False"
+                                           Foreground="White"
+                                           Name="VersionBox"
+                                           VerticalAlignment="Center" />
                 <onePointControls:LabelBox Text="{DynamicResource Instance.Mods.Label.Preload}"
                                            Background="Orange"
                                            Foreground="White"

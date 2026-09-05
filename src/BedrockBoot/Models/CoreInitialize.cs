@@ -9,12 +9,16 @@ using BedrockBoot.Base.Entry.Manifest;
 using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Entity;
+using BedrockBoot.Interface;
+using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Models.Account.Microsoft.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Loaders;
 using BedrockBoot.Models.Pack.Game.Options;
 using BedrockBoot.Proton;
+using BedrockBoot.Views.Control.Items.Instance;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Linux;
@@ -32,6 +36,7 @@ namespace BedrockBoot.Models;
 public class CoreInitialize
 {
     private static I18nManager I18n => I18nManager.Instance;
+
     public static async Task Init()
     {
         DesktopWorkspace.WidgetRegister(new()
@@ -50,10 +55,10 @@ public class CoreInitialize
             WidgetTypeof = typeof(WidgetLaunchGame),
             DefaultSize = WidgetSize.Large
         });
-        
+
         CheckUserAgreement();
         if (!Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;
-        
+
         // 加载功能配置文件
         try
         {
@@ -68,7 +73,7 @@ public class CoreInitialize
         {
             Console.WriteLine($@"Failed to load FunctionOption: {ex}");
         }
-        
+
         // 核心引擎异步初始化
         _ = InitBedrockCoreAsync();
 
@@ -100,7 +105,7 @@ public class CoreInitialize
                     var sourceManager =
                         new GameOptionsManager(GameInfoHelper.GetVersionConfig(Core.Global.GlobalModel.Config.Data
                             .PublicOptionsConfig.PubOptionsInstancePath));
-                    
+
                     var aimManager = new GameOptionsManager(GameInfoHelper.GetVersionConfig(path));
                     aimManager.GetUsers().ForEach(user =>
                     {
@@ -110,6 +115,29 @@ public class CoreInitialize
                     });
                 }
             }
+        });
+
+        RegisterService.API.LaunchingEvent.Add(path =>
+        {
+            var conf = GameInfoHelper.GetVersionConfig(path);
+            if (!conf.Config.IsModes) return;
+            LoadersManager.ModsLoaders.ForEach(loader =>
+            {
+                if (typeof(IModsLoader).IsAssignableFrom(loader))
+                {
+                    var instance = (IModsLoader)Activator.CreateInstance(loader);
+                    instance.InitLoader(conf);
+                    try
+                    {
+                        instance.PreLaunch();
+                        Console.WriteLine($@"模组加载器 {instance.LoaderName} 准备完毕");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($@"准备模组加载器 {instance.LoaderName} 时出现错误：{ex}");
+                    }
+                }
+            });
         });
 
 #if LINUX
@@ -181,7 +209,7 @@ public class CoreInitialize
                         });
                     }
                 }
-                
+
                 return null;
             };
             CoreInit.OnRefreshAccount = async account =>
@@ -192,7 +220,9 @@ public class CoreInitialize
                     account =
                         MsAccountManager.Accounts.Accounts.Find(x =>
                             x.BUID == MsAccountManager.Accounts.SelectUserBUID);
-                };
+                }
+
+                ;
                 Console.WriteLine(@"正在刷新账户凭证...");
                 var client = new MsaDeviceCodeClient();
                 var tokenData = await client.RefreshTokenAsync(account.AuthResult.RefreshToken);
@@ -219,7 +249,7 @@ public class CoreInitialize
 
                     return accountResult;
                 }
-                
+
                 return null;
             };
             CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
@@ -295,7 +325,7 @@ public class CoreInitialize
                 CloseButtonText = "立即安装",
                 PrimaryButtonText = "放任不管",
                 AccountButton = DialogButtons.CloseButton,
-                
+
                 CloseAction = () =>
                 {
                     DialogHost.Show(new()

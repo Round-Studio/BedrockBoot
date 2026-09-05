@@ -62,7 +62,6 @@ public partial class ResultRoot : UserControl
         ResourceName2.Text = SearchResultItemInfo.Name;
         AuthorText2.Text = $"{string.Join(", ", SearchResultItemInfo.Authors)}";
         DescriptionText.Text = SearchResultItemInfo.Description;
-        DownloadCountText.Text = SearchResultItemInfo.DownloadCount.ToString("N0"); // 格式化数字
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
 
         var hasWebsite = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
@@ -80,6 +79,16 @@ public partial class ResultRoot : UserControl
             LabelsBox.IsVisible = true;
             foreach (var s in SearchResultItemInfo.Labels) LabelsBox.Children.Add(new LabelBox { Text = s });
         }
+
+        _ = Task.Run(async () =>
+        {
+            var count = await _downloadService.GetDownloadCount();
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            {
+                DownloadCountText.Text = count.ToString("N0");
+                DownloadCountPanel.IsVisible = true;
+            });
+        });
 
         var icon = await imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
 

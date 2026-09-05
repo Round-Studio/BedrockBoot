@@ -8,7 +8,9 @@ namespace BedrockBoot.Interface.Download;
 
 public interface IDownloadResult
 {
-    SearchResultItemInfo SearchInfo { get; set; }
-    Task<List<Control>?> DescriptionControls();
-    Task<uint> GetDownloadCount();
+    public SearchResultItemInfo SearchInfo { get; set; }
+    public bool IsHasManyFiles { get; }
+    public Task<List<Control>?> DescriptionControls();
+    public Task<uint> GetDownloadCount();
+    public Task<bool> IsInstalled();
 }

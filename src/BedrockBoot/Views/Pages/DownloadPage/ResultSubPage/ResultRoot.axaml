@@ -59,15 +59,20 @@
                                 Orientation="Horizontal"
                                 Spacing="8"
                                 VerticalAlignment="Center">
-                                <StackPanel Spacing="2">
-                                    <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" />
-                                    <TextBlock Name="DownloadCountText" Text="114514" />
-                                </StackPanel>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8"
+                                            Name="DownloadCountPanel"
+                                            IsVisible="False">
+                                    <StackPanel Spacing="2">
+                                        <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" />
+                                        <TextBlock Name="DownloadCountText" Text="114514" />
+                                    </StackPanel>
 
-                                <Border
-                                    Background="Gray"
-                                    Height="24"
-                                    Width="1" />
+                                    <Border
+                                        Background="Gray"
+                                        Height="24"
+                                        Width="1" />
+                                </StackPanel>
 
                                 <StackPanel Spacing="2">
                                     <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" />

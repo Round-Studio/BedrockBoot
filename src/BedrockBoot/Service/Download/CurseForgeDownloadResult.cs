@@ -18,6 +18,8 @@ public class CurseForgeDownloadResult : IDownloadResult
 
     public SearchResultItemInfo SearchInfo { get; set; }
 
+    public bool IsHasManyFiles { get; } = true;
+
     public async Task<List<Control>?> DescriptionControls()
     {
         var apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
@@ -36,4 +38,6 @@ public class CurseForgeDownloadResult : IDownloadResult
     {
         return SearchInfo.DownloadCount;
     }
+
+    public async Task<bool> IsInstalled() => false;
 }

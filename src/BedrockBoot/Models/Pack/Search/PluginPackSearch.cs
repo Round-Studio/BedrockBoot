@@ -12,6 +12,8 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin.Market;
 using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Views.DrawContent;
+using BedrockBoot.Views.Pages.DownloadPage;
+using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 namespace BedrockBoot.Models.Pack.Search
 {
@@ -63,6 +65,7 @@ namespace BedrockBoot.Models.Pack.Search
                     Id = 0,
                     Description = plugin.Description,
                     Authors = new List<string>() { plugin.Username },
+                    ResourceType = SearchResourceType.PluginPack,
                     DownloadCount = 0,
                     IconUri = plugin.IconUrl,
                     Labels = plugin.Labels,
@@ -73,8 +76,7 @@ namespace BedrockBoot.Models.Pack.Search
                 item.OnClick = s =>
                 {
                     Console.WriteLine($@"View Plugin: {s}");
-                    GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin),
-                        $"插件详细信息：{plugin.PluginName}");
+                    DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
                 };
                 items.Add(item);
             });

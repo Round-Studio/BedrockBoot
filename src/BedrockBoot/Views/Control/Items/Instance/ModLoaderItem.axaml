@@ -22,7 +22,8 @@
                 </onePointControls:LabelBox>
             </StackPanel>
         </onePointControls:SettingCard.Header>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="8">
             <onePointControls:LabelBox Text="不适用"
                                        FontSize="14"
                                        Background="DarkRed"
@@ -31,6 +32,11 @@
                                        VerticalAlignment="Center">
             </onePointControls:LabelBox>
             <onePointControls:ProgressRing Name="LoadingRing"></onePointControls:ProgressRing>
+            <ToggleSwitch VerticalAlignment="Center"
+                          Name="IsEnableToggle"
+                          IsCheckedChanged="IsEnableToggle_OnIsCheckedChanged"
+                          IsVisible="False">
+            </ToggleSwitch>
             <Button Classes="NoBorder"
                     Name="DeleteBtn"
                     IsVisible="False"

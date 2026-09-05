@@ -1,15 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Interface;
 using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Helper;
+using NotImplementedException = System.NotImplementedException;
 
 namespace BedrockBoot.Views.Control.Items.Instance;
 
-public partial class ModLoaderItem : UserControl
+public partial class ModLoaderItem : ISetting
 {
     private ImageLoader? _imageLoader = new ImageLoader();
     private readonly VersionConfig _instance;
@@ -29,6 +31,7 @@ public partial class ModLoaderItem : UserControl
 
     public async Task UpdateUi()
     {
+        IsEdit = false;
         _loader.InitLoader(_instance);
 
         LoaderName.Text = _loader.LoaderName;
@@ -53,9 +56,22 @@ public partial class ModLoaderItem : UserControl
         else
         {
             DeleteBtn.IsVisible = _loader.CanRemove;
+            IsEnableToggle.IsVisible = _loader.IsAllowDisabling;
+            IsEnableToggle.IsChecked = _loader.GetIsEnabled();
             LoadingRing.IsVisible = false;
             DeleteBtn.Click += (_, _) => _loader.Remove();
             LoaderCard.Click += (_, _) => _loader.ViewInfo();
+        }
+
+        IsEdit = true;
+    }
+
+    private void IsEnableToggle_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            var enable = (bool)IsEnableToggle.IsChecked!;
+            _loader.SetIsEnabled(enable);
         }
     }
 }

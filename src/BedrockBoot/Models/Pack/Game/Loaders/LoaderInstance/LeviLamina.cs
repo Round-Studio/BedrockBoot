@@ -25,12 +25,17 @@ namespace BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 
 public class LeviLamina : IModsLoader
 {
+    private ConfigEntity<LeviLaminaLoaderConfig> _configEntity;
     public Action? OnUpdate { get; set; }
     public IModsManager ModsManager { get; set; }
     public string LoaderName { get; } = "LeviLamina";
     public string LoaderDescription { get; } = "LeviMC 开发的基岩版模组加载器";
     public bool CanRemove { get; } = true;
+    public bool IsAllowDisabling { get; } = true;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/Other/LeviLauncher.png";
+
+    private string _configPath =>
+        Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "config.json");
 
     public string ModsFolder =>
         Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "ll.mods");
@@ -51,12 +56,14 @@ public class LeviLamina : IModsLoader
         try
         {
             if (Directory.Exists(localModsFolder)) Directory.Delete(localModsFolder, true);
-            Directory.CreateSymbolicLink(localModsFolder, ModsFolder);
+            if (GetIsEnabled()) Directory.CreateSymbolicLink(localModsFolder, ModsFolder);
         }
         catch (Exception exception)
         {
             Console.WriteLine(exception);
         }
+
+        if (!GetIsEnabled()) return;
 
         var preLoadFile = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "preloader",
             "bin", "PreLoader.dll");
@@ -263,70 +270,74 @@ public class LeviLamina : IModsLoader
     public void ViewInfo()
     {
     }
+
+    public bool GetIsEnabled()
+    {
+        if (_configEntity == null)
+            _configEntity = new(_configPath);
+
+        return _configEntity.Data.IsEnable;
+    }
+
+    public void SetIsEnabled(bool isEnabled)
+    {
+        if (_configEntity == null)
+            _configEntity = new(_configPath);
+
+        _configEntity.Data.IsEnable = isEnabled;
+        _configEntity.Save();
+    }
+}
+
+public class LeviLaminaLoaderConfig
+{
+    [JsonPropertyName("isEnable")] public bool IsEnable { get; set; } = true;
 }
 
 public class ToothJson
 {
     [JsonPropertyName("format_version")] public int FormatVersion { get; set; }
-
     [JsonPropertyName("format_uuid")] public string FormatUuid { get; set; }
-
     [JsonPropertyName("tooth")] public string Tooth { get; set; }
-
     [JsonPropertyName("version")] public string Version { get; set; }
-
     [JsonPropertyName("info")] public ToothInfo Info { get; set; }
-
     [JsonPropertyName("variants")] public ToothVariant[] Variants { get; set; }
 }
 
 public class ToothInfo
 {
     [JsonPropertyName("name")] public string Name { get; set; }
-
     [JsonPropertyName("description")] public string Description { get; set; }
-
     [JsonPropertyName("tags")] public string[] Tags { get; set; }
-
     [JsonPropertyName("avatar_url")] public string AvatarUrl { get; set; }
 }
 
 public class ToothVariant
 {
     [JsonPropertyName("label")] public string? Label { get; set; }
-
     [JsonPropertyName("platform")] public string Platform { get; set; }
-
     [JsonPropertyName("dependencies")] public Dictionary<string, string> Dependencies { get; set; }
-
     [JsonPropertyName("assets")] public ToothAsset[] Assets { get; set; }
-
     [JsonPropertyName("remove_files")] public string[] RemoveFiles { get; set; }
-
     [JsonPropertyName("scripts")] public ToothScripts Scripts { get; set; }
 }
 
 public class ToothAsset
 {
     [JsonPropertyName("type")] public string Type { get; set; }
-
     [JsonPropertyName("urls")] public string[] Urls { get; set; }
-
     [JsonPropertyName("placements")] public ToothPlacement[] Placements { get; set; }
 }
 
 public class ToothPlacement
 {
     [JsonPropertyName("type")] public string Type { get; set; }
-
     [JsonPropertyName("src")] public string Src { get; set; }
-
     [JsonPropertyName("dest")] public string Dest { get; set; }
 }
 
 public class ToothScripts
 {
     [JsonPropertyName("post_install")] public string[] PostInstall { get; set; }
-
     [JsonPropertyName("post_uninstall")] public string[] PostUninstall { get; set; }
 }

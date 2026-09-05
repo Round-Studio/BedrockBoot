@@ -81,6 +81,8 @@ public partial class InstanceMods : ISetting
         var mods = InstalledModsLoader[ModsLoaderSelect.SelectedIndex].ModsManager.GetAllMods();
         var resultMods = new List<ModItemInfo>();
 
+        IsNotEnableText.IsVisible = !InstalledModsLoader[ModsLoaderSelect.SelectedIndex].GetIsEnabled();
+
         foreach (var info in mods)
             if (string.IsNullOrEmpty(SearchKey) ||
                 info.ModPath.Contains(SearchKey, StringComparison.OrdinalIgnoreCase) ||

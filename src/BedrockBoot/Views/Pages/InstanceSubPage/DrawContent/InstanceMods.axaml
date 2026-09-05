@@ -72,11 +72,24 @@
             </items:BorderCard>
         </Grid>
 
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Margin="15,0,15,15"
-                        HorizontalAlignment="Stretch"
-                        Name="ResultBox" />
-        </ScrollViewer>
+        <Grid Grid.Row="1"
+              RowDefinitions="*,Auto"
+              RowSpacing="8"
+              Margin="15,0,15,15">
+            <ScrollViewer Grid.Row="0">
+                <StackPanel HorizontalAlignment="Stretch"
+                            Name="ResultBox" />
+            </ScrollViewer>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="1"
+                        Spacing="8">
+                <TextBlock Text="当前模组加载器已被禁用，如需加载其 Mods 请将其启用。"
+                           IsVisible="False"
+                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                           Name="IsNotEnableText" />
+            </StackPanel>
+        </Grid>
 
         <notice:InfoCard Grid.Row="1"
                          HorizontalAlignment="Center"

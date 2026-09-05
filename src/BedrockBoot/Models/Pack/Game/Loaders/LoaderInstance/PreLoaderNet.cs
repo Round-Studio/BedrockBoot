@@ -13,9 +13,16 @@ public class PreLoaderNet : IModsLoader
 {
     public Action? OnUpdate { get; set; }
     public IModsManager ModsManager { get; set; }
+    public bool GetIsEnabled() => true;
+
+    public void SetIsEnabled(bool isEnabled)
+    {
+    }
+
     public string LoaderName { get; } = "原版加载器";
     public string LoaderDescription { get; } = "BedrockBoot 原版加载器 (PreLoad.NET)";
     public bool CanRemove { get; } = false;
+    public bool IsAllowDisabling { get; } = false;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png";
     public string ModsFolder => Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "mods");
     public VersionConfig GameInstance { get; set; }

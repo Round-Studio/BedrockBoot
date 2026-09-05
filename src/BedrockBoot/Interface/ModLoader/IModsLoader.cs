@@ -9,6 +9,7 @@ public interface IModsLoader
     public string LoaderName { get; }
     public string LoaderDescription { get; }
     public bool CanRemove { get; }
+    public bool IsAllowDisabling { get; }
     public string? IconUri { get; }
     public string ModsFolder { get; }
     public VersionConfig GameInstance { get; set; }
@@ -22,4 +23,6 @@ public interface IModsLoader
     public void ViewInfo();
     public Action? OnUpdate { get; set; }
     public IModsManager ModsManager { get; set; }
+    public bool GetIsEnabled();
+    public void SetIsEnabled(bool isEnabled);
 }

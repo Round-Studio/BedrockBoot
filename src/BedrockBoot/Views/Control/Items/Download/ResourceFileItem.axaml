@@ -1,0 +1,39 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800"
+             x:Class="BedrockBoot.Views.Control.Items.Download.ResourceFileItem">
+    <onePointControls:SettingCard IsClickable="True"
+                                  Name="Card"
+                                  Glyph="&#xE7C3;"
+                                  IsShowActionIcon="False"
+                                  Header="Name">
+        <StackPanel Orientation="Horizontal"
+                    Height="32"
+                    Spacing="8">
+            <Button Classes="NoBorder"
+                    Name="SaveBtn"
+                    Width="32"
+                    Click="SaveBtn_OnClick"
+                    ToolTip.Tip="{DynamicResource Shared.Action.Save}"
+                    Padding="8">
+                <onePointControls:FontIcon Glyph="&#xE74E;"
+                                           FontSize="14" />
+            </Button>
+            <Button Classes="NoBorder"
+                    Padding="16,0"
+                    Name="DownloadBtn"
+                    Click="DownloadBtn_OnClick"
+                    Background="{DynamicResource AccentBackgroundBrush}">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <onePointControls:FontIcon Glyph="&#xE896;"
+                                               VerticalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource Shared.Action.Download}" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </onePointControls:SettingCard>
+</UserControl>

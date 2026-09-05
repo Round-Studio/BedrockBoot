@@ -8,6 +8,7 @@ using BedrockBoot.Interface.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.Control.Items;
+using BedrockBoot.Views.Control.Items.Download;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
@@ -23,17 +24,12 @@ public partial class ResultFiles : UserControl
     public ResultFiles(IDownloadResult service) : this()
     {
         _service = service;
-        UpdateUI();
+        _ = UpdateUi();
     }
 
-    private async Task UpdateUI()
+    private async Task UpdateUi()
     {
-        if (_service.SearchInfo.ResourceType == SearchResourceType.ResourcePack)
-        {
-            var files = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
-                .GetModFilesAsync(_service.SearchInfo.Id);
-
-            files.Data.ForEach(f => { FilesList.Children.Add(new CurseForgeModBuildFileItem(f)); });
-        }
+        var files = await _service.GetFiles();
+        files.ForEach(f => FilesList.Children.Add(new ResourceFileItem(f)));
     }
 }

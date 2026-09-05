@@ -5,12 +5,14 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Base.Entry.Info.Download;
 using BedrockBoot.Base.Entry.Pack.Market;
 using BedrockBoot.Interface.Download;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Models.Pack.Plugin.Market;
 using BedrockBoot.Plugin;
+using BedrockBoot.Views.TaskItem.Plugin;
 using Octokit;
 using Round.SDK.Entry;
 
@@ -94,5 +96,26 @@ public class PluginDownloadResult : IDownloadResult
         });
 
         return installStatus;
+    }
+
+    public async Task Install()
+    {
+        TaskDownloadPluginItem.Install((await GetReleases()).First(), await GetPluginInfo());
+    }
+
+    public async Task ReInstall()
+    {
+        Delete();
+        TaskDownloadPluginItem.Install((await GetReleases()).First(), await GetPluginInfo());
+    }
+
+    public void Delete()
+    {
+        PluginLoader.Delete(_packConfig);
+    }
+
+    public Task<List<ResourceFileInfo>> GetFiles()
+    {
+        throw new System.NotImplementedException();
     }
 }

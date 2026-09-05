@@ -54,7 +54,8 @@ public partial class ResultRoot : UserControl
         _downloadService = SearchResultItemInfo.ResourceType switch
         {
             SearchResourceType.ResourcePack => new CurseForgeDownloadResult(SearchResultItemInfo),
-            SearchResourceType.PluginPack => new PluginDownloadResult(SearchResultItemInfo)
+            SearchResourceType.PluginPack => new PluginDownloadResult(SearchResultItemInfo),
+            SearchResourceType.LeviLaminaMods => new LeviLaminaDownloadResult(SearchResultItemInfo)
         };
 
         ResourceName.Text = SearchResultItemInfo.Name;
@@ -63,6 +64,8 @@ public partial class ResultRoot : UserControl
         AuthorText2.Text = $"{string.Join(", ", SearchResultItemInfo.Authors)}";
         DescriptionText.Text = SearchResultItemInfo.Description;
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
+        InstalledBox.IsVisible = false;
+        ItemFiles.IsVisible = _downloadService.IsHasManyFiles;
 
         var hasWebsite = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
         HyperlinkButton.IsVisible = hasWebsite;
@@ -90,6 +93,16 @@ public partial class ResultRoot : UserControl
             });
         });
 
+        _ = Task.Run(async () =>
+        {
+            var installed = await _downloadService.IsInstalled();
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            {
+                InstalledBox.IsVisible = installed;
+                GetResourceBtn.IsVisible = !installed;
+            });
+        });
+
         var icon = await imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
 
         if (icon != null)
@@ -106,14 +119,10 @@ public partial class ResultRoot : UserControl
     /// </summary>
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        /*var modData = JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData);
-        if (modData == null) return;
-
-        GlobalModel.MainWindow.OpenDraw(
-            new DrawDownloadCurseForgeResourceContent(modData),
-            $"{i18n["Download.Action.GetResource"]}: {SearchResultItemInfo.Name}");*/
-
-        PageSelect.SelectedItem = ItemFiles;
+        if (_downloadService.IsHasManyFiles)
+            PageSelect.SelectedItem = ItemFiles;
+        else
+            _downloadService.Install();
     }
 
     /// <summary>
@@ -164,13 +173,31 @@ public partial class ResultRoot : UserControl
             {
                 NotFountDescription = () =>
                 {
-                    ItemDescription.IsVisible = false;
-                    PageSelect.SelectedItem = ItemFiles;
+                    if (_downloadService.IsHasManyFiles)
+                    {
+                        ItemDescription.IsVisible = false;
+                        PageSelect.SelectedItem = ItemFiles;
+                    }
+                    else
+                    {
+                        PagesSelBar.IsVisible = false;
+                        NavigationFrame.IsVisible = false;
+                    }
                 }
             },
             "Files" => new ResultFiles(_downloadService)
         };
 
         NavigationFrame.NavigateTo(page);
+    }
+
+    private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _downloadService.Delete();
+    }
+
+    private void ReInstallBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _downloadService.ReInstall();
     }
 }

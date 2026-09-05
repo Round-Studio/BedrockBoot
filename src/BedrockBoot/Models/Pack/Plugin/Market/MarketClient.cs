@@ -32,7 +32,7 @@ public class MarketClient
         try
         {
             var response = await _httpClient.GetFromJsonAsync<MarketResponse>(_apiUrl);
-            
+
             return response?.Plugins ?? new List<MarketResponse.PluginInfo>();
         }
         catch (Exception ex)
@@ -42,14 +42,14 @@ public class MarketClient
         }
     }
 
-    public static async Task<(Repository Repository, IReadOnlyList<Release> Releases)> 
-        GetPluginRepositoryFullInfo(MarketResponse.PluginInfo info)
+    public static async Task<(Repository Repository, IReadOnlyList<Release> Releases)> GetPluginRepositoryFullInfo(
+        MarketResponse.PluginInfo info)
     {
         Console.WriteLine($@"获取目标插件仓库信息：{info.PluginName}");
         var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
         var owner = info.RepositoryOwner;
         var repo = info.RepositoryName;
-    
+
         // 并行获取数据以提高性能
         var repositoryTask = github.Repository.Get(owner, repo);
         var releasesTask = github.Repository.Release.GetAll(owner, repo);
@@ -62,7 +62,7 @@ public class MarketClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取插件仓库信息失败：{ex}");
+            Console.WriteLine($@"获取插件仓库信息失败：{ex}");
             var error = GitHubHelper.HandleException(ex);
             DialogHost.Show(new DialogInfo
             {
@@ -73,7 +73,7 @@ public class MarketClient
             throw;
         }
     }
-    
+
     public static async Task<string> GetReadmeHtml(string owner, string repo)
     {
         Console.WriteLine($@"获取仓库 README: {owner}/{repo}");
@@ -81,15 +81,15 @@ public class MarketClient
         {
             httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.github.html");
             httpClient.DefaultRequestHeaders.Add("User-Agent", "BedrockBoot");
-        
+
             var url = $"https://api.github.com/repos/{owner}/{repo}/readme";
             var response = await httpClient.GetAsync(url);
-        
+
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadAsStringAsync();
             }
-        
+
             return null;
         }
     }

@@ -4,19 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800"
-             x:Class="BedrockBoot.Views.Control.Items.CurseForgeModBuildFileItem">
+             x:Class="BedrockBoot.Views.Control.Items.Download.ResourceFileItem">
     <onePointControls:SettingCard IsClickable="True"
                                   Name="Card"
                                   Glyph="&#xE7C3;"
                                   IsShowActionIcon="False"
                                   Header="Name">
         <StackPanel Orientation="Horizontal"
+                    Height="32"
                     Spacing="8">
             <Button Classes="NoBorder"
                     Name="SaveBtn"
+                    Width="32"
                     Click="SaveBtn_OnClick"
                     ToolTip.Tip="{DynamicResource Shared.Action.Save}"
-                    Padding="10">
+                    Padding="8">
                 <onePointControls:FontIcon Glyph="&#xE74E;"
                                            FontSize="14" />
             </Button>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BedrockBoot.Base.Enum.Search;
 
 namespace BedrockBoot.Base.Entry.Info;
 
@@ -12,11 +13,12 @@ public class SearchResultItemInfo
     public DateTime DateUpdated { get; set; }
     public DateTime DateCreated { get; set; }
     public uint DownloadCount { get; set; } = 0;
-    public int Id { get; set; } 
+    public int Id { get; set; }
     public List<string> Labels { get; set; } = new();
     public Type DataType { get; set; }
     public string JsonData { get; set; } = string.Empty;
     public Action<string>? OnClick { get; set; }
-    public List<string>?Images { get; set; }
+    public List<string>? Images { get; set; }
     public string SourceWebsite { get; set; }
+    public SearchResourceType ResourceType { get; set; }
 }

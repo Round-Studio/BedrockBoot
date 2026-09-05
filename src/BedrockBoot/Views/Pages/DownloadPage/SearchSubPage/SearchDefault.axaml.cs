@@ -32,6 +32,7 @@ public partial class SearchDefault : UserControl
 
     private bool _versionLoadSuccess;
     private ImageLoader _imageLoader = new ImageLoader();
+
     public SearchDefault()
     {
         InitializeComponent();
@@ -44,10 +45,11 @@ public partial class SearchDefault : UserControl
     }
 
     private static I18nManager i18n => I18nManager.Instance;
+
     protected override void OnUnloaded(RoutedEventArgs e)
     {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
+        base.OnUnloaded(e);
+        _imageLoader.Dispose();
     }
 
     private void LoadSearchHistory()
@@ -172,7 +174,7 @@ public partial class SearchDefault : UserControl
             CheckNetworkStatus();
         }
     }
-    
+
     // --- 插件加载 ---
     private async Task LoadPluginAsync()
     {
@@ -191,10 +193,41 @@ public partial class SearchDefault : UserControl
             PluginView2.PluginName = plugin2.PluginName;
             PluginView2.Description = plugin2.Description;
 
-            PluginView1.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin1),
-                $"插件详细信息：{plugin1.PluginName}");
-            PluginView2.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin2),
-                $"插件详细信息：{plugin2.PluginName}");
+            var item1 = new SearchResultItemInfo
+            {
+                Name = plugin1.PluginName,
+                Id = 0,
+                Description = plugin1.Description,
+                Authors = new List<string>() { plugin1.Username },
+                DownloadCount = 0,
+                IconUri = plugin1.IconUrl,
+                Labels = plugin1.Labels,
+                Images = null,
+                SourceWebsite = plugin1.RepositoryUrl,
+                JsonData = JsonSerializer.Serialize(plugin1),
+                ResourceType = SearchResourceType.PluginPack
+            };
+            var item2 = new SearchResultItemInfo
+            {
+                Name = plugin2.PluginName,
+                Id = 0,
+                Description = plugin2.Description,
+                Authors = new List<string>() { plugin2.Username },
+                DownloadCount = 0,
+                IconUri = plugin2.IconUrl,
+                Labels = plugin2.Labels,
+                Images = null,
+                SourceWebsite = plugin2.RepositoryUrl,
+                JsonData = JsonSerializer.Serialize(plugin2),
+                ResourceType = SearchResourceType.PluginPack
+            };
+
+            // PluginView1.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin1), $"插件详细信息：{plugin1.PluginName}");
+            // PluginView2.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin2), $"插件详细信息：{plugin2.PluginName}");
+            PluginView1.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(item1));
+            PluginView2.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(item2));
 
             PluginLoadRing.IsVisible = false;
             PluginItem.IsVisible = true;
@@ -244,7 +277,8 @@ public partial class SearchDefault : UserControl
             DateUpdated = mod.DateReleased, Authors = mod.Authors.Select(a => a.Name).ToList(),
             DownloadCount = (uint)mod.DownloadCount, IconUri = mod.Logo?.Url,
             Labels = mod.Categories.Select(c => c.Name).ToList(),
-            SourceWebsite = mod.Links?.WebsiteUrl, JsonData = JsonSerializer.Serialize(mod)
+            SourceWebsite = mod.Links?.WebsiteUrl, JsonData = JsonSerializer.Serialize(mod),
+            ResourceType = SearchResourceType.ResourcePack
         };
         DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
     }

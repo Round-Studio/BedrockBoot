@@ -1,0 +1,47 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.ResultDescription">
+    <StackPanel Spacing="10">
+        <items:BorderCard
+            IsVisible="False"
+            Name="PreviewCard"
+            Padding="12">
+            <Grid RowDefinitions="Auto,Auto,*">
+                <TextBlock
+                    FontSize="16"
+                    Grid.Row="0"
+                    Opacity="0.7"
+                    Text="{DynamicResource Download.Result.Group.Preview}" />
+
+                <Border
+                    Background="Gray"
+                    Grid.Row="1"
+                    Height="1"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,5,0,0" />
+
+                <Grid
+                    Grid.Row="2"
+                    Height="160"
+                    Margin="0,8,0,0">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <StackPanel
+                            Name="PreviewList"
+                            Orientation="Horizontal"
+                            Spacing="8" />
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </items:BorderCard>
+
+        <items:BorderCard Padding="12"
+                          Name="DescCard"
+                          IsVisible="False">
+            <StackPanel Name="DescControls"></StackPanel>
+        </items:BorderCard>
+    </StackPanel>
+</UserControl>

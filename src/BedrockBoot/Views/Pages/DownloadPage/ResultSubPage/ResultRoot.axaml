@@ -8,7 +8,8 @@
     xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia">
     <Grid>
         <ScrollViewer Margin="5,15"
                       Name="MainScrollViewer"
@@ -48,7 +49,7 @@
                                 Text="Resource" />
 
                             <HyperlinkButton
-                                Content="{DynamicResource Download.Result.Action.ViewOnCurseForge}"
+                                Content="在其官方页面中查看"
                                 FontSize="9"
                                 Margin="0,4,0,0"
                                 Name="HyperlinkButton" />
@@ -58,15 +59,20 @@
                                 Orientation="Horizontal"
                                 Spacing="8"
                                 VerticalAlignment="Center">
-                                <StackPanel Spacing="2">
-                                    <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" />
-                                    <TextBlock Name="DownloadCountText" Text="114514" />
-                                </StackPanel>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8"
+                                            Name="DownloadCountPanel"
+                                            IsVisible="False">
+                                    <StackPanel Spacing="2">
+                                        <onePointControls:FontIcon Glyph="&#xE896;" Opacity="0.5" />
+                                        <TextBlock Name="DownloadCountText" Text="114514" />
+                                    </StackPanel>
 
-                                <Border
-                                    Background="Gray"
-                                    Height="24"
-                                    Width="1" />
+                                    <Border
+                                        Background="Gray"
+                                        Height="24"
+                                        Width="1" />
+                                </StackPanel>
 
                                 <StackPanel Spacing="2">
                                     <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" />
@@ -104,6 +110,7 @@
                             Margin="0"
                             Spacing="8">
                             <Button
+                                HorizontalAlignment="Right"
                                 Background="{DynamicResource AccentBackgroundBrush}"
                                 Classes="NoBorder"
                                 Click="GetResourceBtn_OnClick"
@@ -115,8 +122,35 @@
                                     <TextBlock Text="{DynamicResource Download.Result.Action.Get}" />
                                 </StackPanel>
                             </Button>
+                            <DockPanel Width="170"
+                                       Name="InstalledBox"
+                                       HorizontalSpacing="8">
+                                <Button Padding="8"
+                                        Classes="NoBorder"
+                                        Click="DeleteBtn_OnClick"
+                                        Name="DeleteBtn"
+                                        Width="32">
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="6">
+                                        <onePointControls:FontIcon VerticalAlignment="Center"
+                                                                   Glyph="&#xE74D;" />
+                                    </StackPanel>
+                                </Button>
+                                <Button
+                                    Background="{DynamicResource AccentBackgroundBrush}"
+                                    Classes="NoBorder"
+                                    Click="ReInstallBtn_OnClick"
+                                    Height="32"
+                                    Name="ReInstallBtn">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <onePointControls:FontIcon Glyph="&#xE72C;" VerticalAlignment="Center" />
+                                        <TextBlock Text="重新安装" />
+                                    </StackPanel>
+                                </Button>
+                            </DockPanel>
 
                             <Button
+                                HorizontalAlignment="Right"
                                 Classes="NoBorder"
                                 Click="CopyName_OnClick"
                                 Height="32"
@@ -128,38 +162,6 @@
                                 </StackPanel>
                             </Button>
                         </StackPanel>
-                    </Grid>
-                </items:BorderCard>
-
-                <items:BorderCard
-                    IsVisible="False"
-                    Name="PreviewCard"
-                    Padding="12">
-                    <Grid RowDefinitions="Auto,Auto,*">
-                        <TextBlock
-                            FontSize="16"
-                            Grid.Row="0"
-                            Opacity="0.7"
-                            Text="{DynamicResource Download.Result.Group.Preview}" />
-
-                        <Border
-                            Background="Gray"
-                            Grid.Row="1"
-                            Height="1"
-                            HorizontalAlignment="Stretch"
-                            Margin="0,5,0,0" />
-
-                        <Grid
-                            Grid.Row="2"
-                            Height="160"
-                            Margin="0,8,0,0">
-                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                                <StackPanel
-                                    Name="PreviewList"
-                                    Orientation="Horizontal"
-                                    Spacing="8" />
-                            </ScrollViewer>
-                        </Grid>
                     </Grid>
                 </items:BorderCard>
 
@@ -188,6 +190,41 @@
                         </ScrollViewer>
                     </Grid>
                 </items:BorderCard>
+
+                <items:BorderCard Padding="8"
+                                  Name="PagesSelBar">
+                    <ListBox Classes="Segmented"
+                             Name="PageSelect"
+                             SelectionChanged="PageSelect_OnSelectionChanged"
+                             Height="32"
+                             Margin="0">
+                        <ListBoxItem Classes="Segmented"
+                                     Name="ItemDescription"
+                                     Tag="Description"
+                                     IsSelected="True">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="6">
+                                <onePointControls:FontIcon VerticalAlignment="Center"
+                                                           Glyph="&#xF22C;">
+                                </onePointControls:FontIcon>
+                                <TextBlock Text="描述"></TextBlock>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Classes="Segmented"
+                                     Name="ItemFiles"
+                                     Tag="Files">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="6">
+                                <onePointControls:FontIcon VerticalAlignment="Center"
+                                                           Glyph="&#xE7C3;">
+                                </onePointControls:FontIcon>
+                                <TextBlock Text="文件"></TextBlock>
+                            </StackPanel>
+                        </ListBoxItem>
+                    </ListBox>
+                </items:BorderCard>
+
+                <navigation:NavigationFrame Name="NavigationFrame" />
             </StackPanel>
         </ScrollViewer>
 
@@ -241,7 +278,7 @@
                                    Name="AuthorText2"
                                    Opacity="0.6" />
                     </StackPanel>
-                
+
                     <Button Grid.Column="2" Width="48" Height="48"
                             VerticalAlignment="Center"
                             Margin="0,0,4,0"
@@ -250,7 +287,8 @@
                             Classes="NoBorder"
                             CornerRadius="24">
                         <onePointControls:FontIcon Glyph="&#xE752;"
-                                                   FontSize="18"></onePointControls:FontIcon>
+                                                   FontSize="18">
+                        </onePointControls:FontIcon>
                     </Button>
 
                     <Grid Grid.Column="3"
@@ -270,7 +308,7 @@
                         <HyperlinkButton Grid.Row="1"
                                          HorizontalAlignment="Right"
                                          Name="HyperlinkButton2"
-                                         Content="在 CurseForge 中查看" />
+                                         Content="在其官方页面中查看" />
                     </Grid>
                 </Grid>
             </Grid>

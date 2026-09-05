@@ -10,6 +10,8 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.LeviLamina;
 using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Views.DialogContent.Loader.LeviLamina;
+using BedrockBoot.Views.Pages.DownloadPage;
+using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -61,7 +63,7 @@ namespace BedrockBoot.Models.Pack.Search
                     Name = packageInfo.Name ?? pkg.Key,
                     Id = 0,
                     Description = packageInfo.Description ?? string.Empty,
-                    Authors = new List<string>(),
+                    Authors = new List<string>() { pkg.Key.Split('/')[1] },
                     DownloadCount = 0,
                     IconUri = !string.IsNullOrEmpty(packageInfo.AvatarUrl)
                         ? packageInfo.AvatarUrl
@@ -69,11 +71,16 @@ namespace BedrockBoot.Models.Pack.Search
                     Labels = packageInfo.Tags ?? new List<string>(),
                     Images = null,
                     SourceWebsite = $"https://github.com/{pkg.Key}",
-                    JsonData = JsonSerializer.Serialize(pkg.Value)
+                    JsonData = JsonSerializer.Serialize(pkg),
+                    DateUpdated = pkg.Value.UpdatedAt,
+                    ResourceType = SearchResourceType.LeviLaminaMods
                 };
 
                 item.OnClick = s =>
                 {
+                    DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
+
+                    return;
                     var chooseVersionDialog =
                         new DialogChooseLeviLaminaModVersionContent(pkg.Value.Variants["client"].Versions.Keys
                             .ToList());

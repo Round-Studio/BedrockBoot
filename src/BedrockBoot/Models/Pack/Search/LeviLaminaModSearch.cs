@@ -70,7 +70,7 @@ namespace BedrockBoot.Models.Pack.Search
                         : "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png",
                     Labels = packageInfo.Tags ?? new List<string>(),
                     Images = null,
-                    SourceWebsite = $"https://github.com/{pkg.Key}",
+                    SourceWebsite = $"https://{pkg.Key}",
                     JsonData = JsonSerializer.Serialize(pkg),
                     DateUpdated = pkg.Value.UpdatedAt,
                     ResourceType = SearchResourceType.LeviLaminaMods

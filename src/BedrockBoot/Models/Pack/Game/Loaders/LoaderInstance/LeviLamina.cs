@@ -276,6 +276,9 @@ public class LeviLamina : IModsLoader
         if (_configEntity == null)
             _configEntity = new(_configPath);
 
+        if (!IsInstalled())
+            return false;
+
         return _configEntity.Data.IsEnable;
     }
 

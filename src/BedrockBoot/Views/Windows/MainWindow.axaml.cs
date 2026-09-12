@@ -30,6 +30,7 @@ using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Media;
+using BedrockBoot.Models.Native;
 using BedrockBoot.Models.Pack.System.DropFile;
 using BedrockBoot.Models.Pack.Theme;
 using BedrockBoot.Models.Style;
@@ -397,14 +398,26 @@ public partial class MainWindow : Window
     {
         var style = Core.Global.GlobalModel.Config.Data.StyleConfig;
 
+#if WINDOWS
+        var handle = TryGetPlatformHandle();
+        IntPtr hwnd = handle.Handle;
+#endif
+
+        TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
+
         switch (style.StyleType)
         {
+#if WINDOWS
             case StyleType.Mica:
-                TransparencyLevelHint = new[] { WindowTransparencyLevel.Mica };
+                var micaType = style.MicaType == MicaType.MicaAlt
+                    ? NativeDwmApi.DwmSystemBackdropType.MicaAlt
+                    : NativeDwmApi.DwmSystemBackdropType.MicaBase;
+                NativeDwmApi.SetBackdrop(hwnd, micaType);
                 break;
             case StyleType.Blur:
-                TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
+                NativeDwmApi.SetBackdrop(hwnd, NativeDwmApi.DwmSystemBackdropType.Acrylic);
                 break;
+#endif
             case StyleType.Image:
                 BackgroundView.ApplyImageBackground(style);
                 BackgroundView.IsVisible = true;

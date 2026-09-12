@@ -11,7 +11,7 @@
             <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="背景" />
-            
+
             <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Mode.Title}"
                                           Description="{DynamicResource Settings.Background.Mode.Desc}"
                                           Glyph="&#xEC26;">
@@ -36,14 +36,14 @@
                                               Glyph="&#xE8B0;"
                                               IsClickable="True"
                                               Click="ImportBackgroundBtn_OnClick" />
-            
+
                 <onePointControls:SettingCard Header="恢复默认背景图片"
                                               Description="将背景图片恢复为默认设置"
                                               Glyph="&#xE74D;"
                                               IsClickable="True"
                                               Name="RestoreDefaultBackgroundBtn"
-                                              Click="RestoreDefaultBackgroundBtn_OnClick"/>
-                
+                                              Click="RestoreDefaultBackgroundBtn_OnClick" />
+
                 <onePointControls:SettingCard
                     Header="动效背景"
                     Description="使用类似 AppleMusic 播放器类似的背景样式"
@@ -106,6 +106,20 @@
                 </onePointControls:SettingCard>
             </StackPanel>
 
+            <StackPanel Name="BackgroundMica"
+                        Spacing="8">
+                <onePointControls:SettingCard Header="Mica 样式"
+                                              Description="选择一个 Mica 样式"
+                                              Glyph="&#xF22C;">
+                    <ComboBox Width="200"
+                              Name="MicaTypeBox"
+                              SelectionChanged="MicaTypeBox_OnSelectionChanged">
+                        <ComboBoxItem>Mica Base</ComboBoxItem>
+                        <ComboBoxItem>Mica Alt</ComboBoxItem>
+                    </ComboBox>
+                </onePointControls:SettingCard>
+            </StackPanel>
+
             <onePointControls:SettingCard
                 Header="{DynamicResource Settings.Background.Image.Opacity.Title}"
                 Description="{DynamicResource Settings.Background.Image.Opacity.Desc}"
@@ -128,7 +142,8 @@
                 Name="LiveBlurCard"
                 IsClickable="False">
                 <ToggleSwitch Name="LiveBlurSwitch"
-                              Click="LiveBlurSwitch_OnClick"></ToggleSwitch>
+                              Click="LiveBlurSwitch_OnClick">
+                </ToggleSwitch>
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

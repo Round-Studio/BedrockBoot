@@ -26,8 +26,9 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             BlurBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
             Image3D.IsChecked = GlobalModel.Config.Data.StyleConfig.Background3D;
             ImageQuality.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.ImageQuality;
+            MicaTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.MicaType;
             UpdateUI();
-            
+
             MicaModel.IsEnabled = false;
             BlurModel.IsEnabled = false;
             LiveModel.IsEnabled = false;
@@ -79,6 +80,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 
             BackgroundImageBox.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image;
             DefImageSetting.IsVisible = !GlobalModel.Config.Data.StyleConfig.BackgroundAnimation;
+
+            BackgroundMica.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Mica;
 
             LiveOptCard.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel;
             LiveBlurCard.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel;
@@ -141,7 +144,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
 
                 GlobalModel.Config.Save();
-                Models.Global.GlobalModel.MainWindow.BackgroundView.ApplyImageBackground(GlobalModel.Config.Data.StyleConfig);
+                Models.Global.GlobalModel.MainWindow.BackgroundView.ApplyImageBackground(GlobalModel.Config.Data
+                    .StyleConfig);
             }
         }
 
@@ -200,6 +204,17 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             if (IsEdit)
             {
                 GlobalModel.Config.Data.StyleConfig.BackgroundAnimation = (bool)AnimationToggle.IsChecked!;
+                GlobalModel.Config.Save();
+                UpdateUI();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
+            }
+        }
+
+        private void MicaTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (IsEdit)
+            {
+                GlobalModel.Config.Data.StyleConfig.MicaType = (MicaType)MicaTypeBox.SelectedIndex;
                 GlobalModel.Config.Save();
                 UpdateUI();
                 Models.Global.GlobalModel.MainWindow.UpdateTheme();

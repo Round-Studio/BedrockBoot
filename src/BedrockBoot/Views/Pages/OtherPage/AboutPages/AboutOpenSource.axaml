@@ -46,7 +46,7 @@
                 BedrockLauncher.Core
             </TextBlock>
             <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/BedrockLauncher.Core)" />
-            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Gpl}" />
             <TextBlock Margin="5,0,5,0" FontSize="9"
                        Text="(https://github.com/Round-Studio/BedrockLauncher.Core/blob/2.0-main/LICENSE)" />
 
@@ -57,7 +57,7 @@
                 BedrockLauncher.Core.Linux
             </TextBlock>
             <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/BedrockLauncher.Core.Linux)" />
-            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
+            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Gpl}" />
             <TextBlock Margin="5,0,5,0" FontSize="9"
                        Text="(https://github.com/Round-Studio/BedrockLauncher.Core.Linux/blob/master/LICENSE)" />
 
@@ -105,7 +105,8 @@
             </TextBlock>
             <TextBlock Margin="5,0,5,0" Text="(https://github.com/Round-Studio/PreLoadCpp)" />
             <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Gpl}" />
-            <TextBlock Margin="5,0,5,0" FontSize="9" Text="(https://github.com/Round-Studio/PreLoadCpp/blob/main/LICENSE)" />
+            <TextBlock Margin="5,0,5,0" FontSize="9"
+                       Text="(https://github.com/Round-Studio/PreLoadCpp/blob/main/LICENSE)" />
 
 
             <TextBlock FontSize="22"

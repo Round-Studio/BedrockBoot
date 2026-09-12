@@ -74,15 +74,20 @@
                                         Width="1" />
                                 </StackPanel>
 
-                                <StackPanel Spacing="2">
-                                    <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" />
-                                    <TextBlock Name="UpdataDateText" Text="1 天前" />
-                                </StackPanel>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8"
+                                            Name="UpdateTimePanel"
+                                            IsVisible="False">
+                                    <StackPanel Spacing="2">
+                                        <onePointControls:FontIcon Glyph="&#xE823;" Opacity="0.5" />
+                                        <TextBlock Name="UpdataDateText" Text="1 天前" />
+                                    </StackPanel>
 
-                                <Border
-                                    Background="Gray"
-                                    Height="24"
-                                    Width="1" />
+                                    <Border
+                                        Background="Gray"
+                                        Height="24"
+                                        Width="1" />
+                                </StackPanel>
 
                                 <StackPanel Spacing="2">
                                     <onePointControls:FontIcon Glyph="&#xE716;" Opacity="0.5" />

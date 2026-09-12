@@ -458,6 +458,9 @@ namespace BedrockBoot.Models.Pack.LeviLamina
                     string srcPath = Path.Combine(tempExtractDir, placement.Src);
                     string destPath = Path.Combine(installDir, placement.Dest);
 
+                    destPath = destPath.Replace("mods",
+                        Path.Combine("config", "BedrockBoot2", "levilamina", "ll.mods"));
+
                     Console.WriteLine($@"处理: {placement.Src} -> {placement.Dest}");
 
                     if (placement.Type == "dir")

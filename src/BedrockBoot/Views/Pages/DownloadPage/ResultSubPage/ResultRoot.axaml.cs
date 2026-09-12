@@ -63,6 +63,9 @@ public partial class ResultRoot : UserControl
         UpdataDateText.Text = DateHelper.GetRelativeTime(SearchResultItemInfo.DateUpdated);
         InstalledBox.IsVisible = false;
         ItemFiles.IsVisible = _downloadService.IsHasManyFiles;
+        UpdateTimePanel.IsVisible =
+            SearchResultItemInfo.DateUpdated != default &&
+            SearchResultItemInfo.DateUpdated.Year > 1;
 
         var hasWebsite = !string.IsNullOrEmpty(SearchResultItemInfo.SourceWebsite);
         HyperlinkButton.IsVisible = hasWebsite;

@@ -30,7 +30,8 @@ public class DllModDownloadResult : IDownloadResult
 
     public async Task<List<Control>?> DescriptionControls()
     {
-        var html = await MarketClient.GetReadmeHtml(SearchInfo.Authors[0], SearchInfo.Name);
+        var html = await MarketClient.GetReadmeHtml(SearchInfo.SourceWebsite.Split("/")[^2],
+            SearchInfo.SourceWebsite.Split("/")[^1]);
         return HtmlToControlConverter.ConvertHtmlToControls(html);
     }
 
@@ -44,8 +45,8 @@ public class DllModDownloadResult : IDownloadResult
     private async Task<IReadOnlyList<Release>> GetReleases()
     {
         var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
-        var owner = SearchInfo.Authors[0];
-        var repo = SearchInfo.Name;
+        var owner = SearchInfo.SourceWebsite.Split("/")[^2];
+        var repo = SearchInfo.SourceWebsite.Split("/")[^1];
 
         var releasesTask = github.Repository.Release.GetAll(owner, repo);
 
@@ -82,7 +83,7 @@ public class DllModDownloadResult : IDownloadResult
         {
             release.Assets.ToList().ForEach(asset =>
             {
-                if (info.Files.Keys.Contains(asset.Name))
+                if ((bool)info?.Files.Keys.Contains(asset.Name))
                 {
                     result.Add(new()
                     {
@@ -102,13 +103,13 @@ public class DllModDownloadResult : IDownloadResult
                                 CloseAction = () =>
                                 {
                                     var conf = chooseInstanceDialog.VersionConfig;
+                                    var fileInfo = info?.Files[asset.Name];
+                                    var url = fileInfo.Url.Replace("{{tag}}", release.TagName);
                                 }
                             });
                         }
                     });
                 }
-
-                ;
             });
         });
 

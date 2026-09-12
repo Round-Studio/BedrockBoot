@@ -31,7 +31,6 @@ public partial class ResultRoot : UserControl
     public ResultRoot(SearchResultItemInfo info) : this()
     {
         SearchResultItemInfo = info;
-        // 触发异步更新，不阻塞 UI 线程
         _ = UpdateAsync();
     }
 
@@ -46,16 +45,14 @@ public partial class ResultRoot : UserControl
     public SearchResultItemInfo SearchResultItemInfo { get; set; } = null!;
     private IDownloadResult _downloadService;
 
-    /// <summary>
-    ///     异步加载资源详情
-    /// </summary>
     public async Task UpdateAsync()
     {
         _downloadService = SearchResultItemInfo.ResourceType switch
         {
             SearchResourceType.ResourcePack => new CurseForgeDownloadResult(SearchResultItemInfo),
             SearchResourceType.PluginPack => new PluginDownloadResult(SearchResultItemInfo),
-            SearchResourceType.LeviLaminaMods => new LeviLaminaDownloadResult(SearchResultItemInfo)
+            SearchResourceType.LeviLaminaMods => new LeviLaminaDownloadResult(SearchResultItemInfo),
+            SearchResourceType.DllMods => new DllModDownloadResult(SearchResultItemInfo)
         };
 
         ResourceName.Text = SearchResultItemInfo.Name;
@@ -114,9 +111,6 @@ public partial class ResultRoot : UserControl
         }
     }
 
-    /// <summary>
-    ///     打开下载抽屉
-    /// </summary>
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         if (_downloadService.IsHasManyFiles)
@@ -125,18 +119,12 @@ public partial class ResultRoot : UserControl
             _downloadService.Install();
     }
 
-    /// <summary>
-    ///     复制分享链接
-    /// </summary>
     private void CopyName_OnClick(object? sender, RoutedEventArgs e)
     {
-        var modData = JsonSerializer.Deserialize<CurseForgeResponse.ModData>(SearchResultItemInfo.JsonData);
-        if (modData == null) return;
-
         var shareContent = string.Format(i18n["Download.Result.Share.Format"],
             SearchResultItemInfo.Name, SearchResultItemInfo.SourceWebsite);
 
-        CopyService.SetClipboard(shareContent, CopyType.Resource, modData.Id);
+        CopyService.SetClipboard(shareContent, SearchResultItemInfo);
 
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {

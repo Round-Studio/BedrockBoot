@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Interface.Download;
@@ -27,9 +29,28 @@ public partial class ResultFiles : UserControl
         _ = UpdateUi();
     }
 
+    private List<string> _versions = new();
+
     private async Task UpdateUi()
     {
         var files = await _service.GetFiles();
-        files.ForEach(f => FilesList.Children.Add(new ResourceFileItem(f)));
+        files.ForEach(f =>
+        {
+            if (!string.IsNullOrEmpty(f.VersionGroup))
+            {
+                if (!_versions.Contains(f.VersionGroup))
+                {
+                    _versions.Add(f.VersionGroup);
+                    FilesList.Children.Add(new TextBlock()
+                    {
+                        Text = f.VersionGroup,
+                        FontSize = 14,
+                        FontWeight = FontWeight.Bold
+                    });
+                }
+            }
+
+            FilesList.Children.Add(new ResourceFileItem(f));
+        });
     }
 }

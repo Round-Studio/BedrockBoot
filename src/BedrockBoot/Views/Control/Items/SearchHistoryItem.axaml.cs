@@ -23,6 +23,8 @@ public partial class SearchHistoryItem : UserControl
             SearchResourceType.Minecraft => "Minecraft",
             SearchResourceType.ResourcePack => "资源包",
             SearchResourceType.PluginPack => "插件",
+            SearchResourceType.LeviLaminaMods => "LeviLamina 模组",
+            SearchResourceType.DllMods => "DllMods",
             _ => "未知"
         };
         SearchKey.Text = info.Key;

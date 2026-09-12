@@ -31,7 +31,7 @@ public class CurseForgeDownloadResult : IDownloadResult
     public async Task<List<Control>?> DescriptionControls()
     {
         var apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
-        var descriptionHtml = await apiClient.GetModDescriptionAsync(SearchInfo.Id);
+        var descriptionHtml = await apiClient.GetModDescriptionAsync(int.Parse(SearchInfo.Id));
 
         if (!string.IsNullOrEmpty(descriptionHtml))
         {
@@ -51,7 +51,7 @@ public class CurseForgeDownloadResult : IDownloadResult
     public async Task<List<ResourceFileInfo>> GetFiles()
     {
         var files = await new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey)
-            .GetModFilesAsync(SearchInfo.Id);
+            .GetModFilesAsync(int.Parse(SearchInfo.Id));
 
         return files.Data.Select(x => new ResourceFileInfo()
         {

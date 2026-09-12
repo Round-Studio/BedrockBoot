@@ -114,8 +114,5 @@ public class PluginDownloadResult : IDownloadResult
         PluginLoader.Delete(_packConfig);
     }
 
-    public Task<List<ResourceFileInfo>> GetFiles()
-    {
-        throw new System.NotImplementedException();
-    }
+    public Task<List<ResourceFileInfo>> GetFiles() => throw new System.NotImplementedException();
 }

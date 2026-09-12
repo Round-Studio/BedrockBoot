@@ -67,7 +67,7 @@ namespace BedrockBoot.Models.Pack.Search
                 var item = new SearchResultItemInfo
                 {
                     Name = i.Name,
-                    Id = i.Id,
+                    Id = i.Id.ToString(),
                     Description = i.Summary,
                     DateUpdated = i.DateReleased,
                     DateCreated = i.DateCreated,
@@ -77,7 +77,8 @@ namespace BedrockBoot.Models.Pack.Search
                     Labels = categories,
                     Images = i.Screenshots.Select(a => a.Url).ToList(),
                     SourceWebsite = i.Links.WebsiteUrl,
-                    JsonData = JsonSerializer.Serialize(i)
+                    JsonData = JsonSerializer.Serialize(i),
+                    ResourceType = SearchResourceType.ResourcePack
                 };
                 item.OnClick = s => { DownloadRoot.Instance.NavigateTo(new ResultRoot(item)); };
                 items.Add(item);

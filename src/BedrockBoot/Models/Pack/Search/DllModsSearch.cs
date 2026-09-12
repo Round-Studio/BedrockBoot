@@ -10,7 +10,8 @@ using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.Search;
+using BedrockBoot.Views.Pages.DownloadPage;
+using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
 namespace BedrockBoot.Models.Pack.Search
 {
@@ -62,7 +63,7 @@ namespace BedrockBoot.Models.Pack.Search
                 var item = new SearchResultItemInfo
                 {
                     Name = pkg.Header.Name,
-                    Id = 0,
+                    Id = pkg.Id,
                     Description = pkg.Header.Description ?? string.Empty,
                     Authors = new List<string>() { pkg.Header.Author },
                     DownloadCount = 0,
@@ -70,10 +71,15 @@ namespace BedrockBoot.Models.Pack.Search
                     Labels = pkg.Header.Tags ?? new List<string>(),
                     Images = null,
                     SourceWebsite = pkg.Header.Reop,
-                    JsonData = JsonSerializer.Serialize(pkg)
+                    JsonData = JsonSerializer.Serialize(pkg),
+                    ResourceType = SearchResourceType.DllMods
                 };
 
-                item.OnClick = s => { Console.WriteLine(s); };
+                item.OnClick = s =>
+                {
+                    Console.WriteLine(s);
+                    DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
+                };
                 items.Add(item);
             });
 

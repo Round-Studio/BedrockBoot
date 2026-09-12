@@ -61,7 +61,7 @@ namespace BedrockBoot.Models.Pack.Search
                 var item = new SearchResultItemInfo
                 {
                     Name = packageInfo.Name ?? pkg.Key,
-                    Id = 0,
+                    Id = $"{pkg.Key.Split('/')[1]}.{pkg.Key.Split('/')[2]}",
                     Description = packageInfo.Description ?? string.Empty,
                     Authors = new List<string>() { pkg.Key.Split('/')[1] },
                     DownloadCount = 0,

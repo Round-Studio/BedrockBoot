@@ -196,7 +196,7 @@ public partial class SearchDefault : UserControl
             var item1 = new SearchResultItemInfo
             {
                 Name = plugin1.PluginName,
-                Id = 0,
+                Id = $"{plugin1.RepositoryOwner}.{plugin1.RepositoryName}",
                 Description = plugin1.Description,
                 Authors = new List<string>() { plugin1.Username },
                 DownloadCount = 0,
@@ -210,7 +210,7 @@ public partial class SearchDefault : UserControl
             var item2 = new SearchResultItemInfo
             {
                 Name = plugin2.PluginName,
-                Id = 0,
+                Id = $"{plugin2.RepositoryOwner}.{plugin2.RepositoryName}",
                 Description = plugin2.Description,
                 Authors = new List<string>() { plugin2.Username },
                 DownloadCount = 0,
@@ -273,7 +273,7 @@ public partial class SearchDefault : UserControl
     {
         var item = new SearchResultItemInfo
         {
-            Name = mod.Name, Id = mod.Id, Description = mod.Summary,
+            Name = mod.Name, Id = mod.Id.ToString(), Description = mod.Summary,
             DateUpdated = mod.DateReleased, Authors = mod.Authors.Select(a => a.Name).ToList(),
             DownloadCount = (uint)mod.DownloadCount, IconUri = mod.Logo?.Url,
             Labels = mod.Categories.Select(c => c.Name).ToList(),

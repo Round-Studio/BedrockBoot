@@ -62,7 +62,7 @@ namespace BedrockBoot.Models.Pack.Search
                 var item = new SearchResultItemInfo
                 {
                     Name = plugin.PluginName,
-                    Id = 0,
+                    Id = $"{plugin.RepositoryOwner}.{plugin.RepositoryName}",
                     Description = plugin.Description,
                     Authors = new List<string>() { plugin.Username },
                     ResourceType = SearchResourceType.PluginPack,

@@ -9,19 +9,18 @@ using BedrockBoot.Base.Entry.Info.Download;
 using BedrockBoot.Helpers;
 using BedrockBoot.Interface.Download;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.LeviLamina;
 using BedrockBoot.Models.Pack.Plugin.Market;
-using BedrockBoot.Views.DialogContent.Loader.LeviLamina;
+using BedrockBoot.Models.Pack.Search;
+using BedrockBoot.Views.DialogContent;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
-using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Service.Download;
 
-public class LeviLaminaDownloadResult : IDownloadResult
+public class DllModDownloadResult : IDownloadResult
 {
-    public LeviLaminaDownloadResult(SearchResultItemInfo searchResultItemInfo)
+    public DllModDownloadResult(SearchResultItemInfo searchResultItemInfo)
     {
         SearchInfo = searchResultItemInfo;
     }
@@ -31,7 +30,7 @@ public class LeviLaminaDownloadResult : IDownloadResult
 
     public async Task<List<Control>?> DescriptionControls()
     {
-        var html = await MarketClient.GetReadmeHtml(SearchInfo.Authors[0], SearchInfo.SourceWebsite.Split('/')[^1]);
+        var html = await MarketClient.GetReadmeHtml(SearchInfo.Authors[0], SearchInfo.Name);
         return HtmlToControlConverter.ConvertHtmlToControls(html);
     }
 
@@ -45,8 +44,8 @@ public class LeviLaminaDownloadResult : IDownloadResult
     private async Task<IReadOnlyList<Release>> GetReleases()
     {
         var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
-        var owner = SearchInfo.SourceWebsite.Split('/')[^2];
-        var repo = SearchInfo.SourceWebsite.Split('/')[^1];
+        var owner = SearchInfo.Authors[0];
+        var repo = SearchInfo.Name;
 
         var releasesTask = github.Repository.Release.GetAll(owner, repo);
 
@@ -76,33 +75,43 @@ public class LeviLaminaDownloadResult : IDownloadResult
 
     public async Task<List<ResourceFileInfo>> GetFiles()
     {
-        var info = JsonSerializer.Deserialize<KeyValuePair<string, PackageInfo>>(SearchInfo.JsonData);
-        var versions = info.Value.Variants["client"].Versions
-            .Reverse()
-            .ToList();
-        return versions.Select(x => new ResourceFileInfo()
+        var result = new List<ResourceFileInfo>();
+        var info = JsonSerializer.Deserialize<DllPackage>(SearchInfo.JsonData);
+        var releases = await GetReleases();
+        releases.ToList().ForEach(release =>
         {
-            FileName = x.Key,
-            Description = $"{SearchInfo.Name} {x.Key}",
-            OnDownload = (s) =>
+            release.Assets.ToList().ForEach(asset =>
             {
-                var chooseModVersion = x.Key;
-                var chooseInstanceDialog = new DialogChooseLeviLaminaModInstallInstanceContent(info.Value,
-                    chooseModVersion, info.Value.Variants["client"].Versions[chooseModVersion]);
-                DialogHost.Show(new()
+                if (info.Files.Keys.Contains(asset.Name))
                 {
-                    Title = $"安装 {SearchInfo.Name} {chooseModVersion}",
-                    Content = chooseInstanceDialog,
-                    CloseButtonText = "确定",
-                    PrimaryButtonText = "取消",
-                    AccountButton = DialogButtons.CloseButton,
-                    CloseAction = () =>
+                    result.Add(new()
                     {
-                        var installer = new LeviLaminaModsInstaller(info.Value, info.Key);
-                        installer.Install(chooseModVersion, chooseInstanceDialog.SavePath);
-                    }
-                });
-            }
-        }).ToList();
+                        FileName = asset.Name,
+                        FileSize = (uint)asset.Size,
+                        Version = release.TagName,
+                        VersionGroup = release.TagName,
+                        OnDownload = (s) =>
+                        {
+                            var chooseInstanceDialog = new DialogChooseGameContent();
+                            DialogHost.Show(new()
+                            {
+                                Content = chooseInstanceDialog,
+                                Title = "选择安装实例",
+                                CloseButtonText = "下载",
+                                SecondaryButtonText = "取消",
+                                CloseAction = () =>
+                                {
+                                    var conf = chooseInstanceDialog.VersionConfig;
+                                }
+                            });
+                        }
+                    });
+                }
+
+                ;
+            });
+        });
+
+        return result;
     }
 }

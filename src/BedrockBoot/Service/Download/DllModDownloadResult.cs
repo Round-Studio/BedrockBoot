@@ -12,6 +12,7 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin.Market;
 using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.TaskItem;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -104,7 +105,9 @@ public class DllModDownloadResult : IDownloadResult
                                 {
                                     var conf = chooseInstanceDialog.VersionConfig;
                                     var fileInfo = info?.Files[asset.Name];
-                                    var url = fileInfo.Url.Replace("{{tag}}", release.TagName);
+                                    fileInfo?.Url = fileInfo.Url.Replace("{{tag}}", release.TagName);
+
+                                    TaskDownloadDllModItem.Install(conf, fileInfo!);
                                 }
                             });
                         }

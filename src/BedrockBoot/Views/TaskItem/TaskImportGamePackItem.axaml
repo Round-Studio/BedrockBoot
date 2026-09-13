@@ -8,11 +8,12 @@
              x:Class="BedrockBoot.Views.TaskItem.TaskImportGamePackItem">
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*,Auto">
-            <onePointControls:ProgressRing Grid.Column="0"
-                                           Width="36"
-                                           Height="36"
-                                           Margin="4,0,0,0"
-                                           Background="Transparent" />
+            <onePointControls:FontIcon Grid.Column="0"
+                                       Glyph="&#xE8B5;"
+                                       VerticalAlignment="Top"
+                                       Margin="4,4,0,0"
+                                       FontSize="28">
+            </onePointControls:FontIcon>
 
             <StackPanel Grid.Column="1" Margin="15,0,10,0"
                         HorizontalAlignment="Stretch">

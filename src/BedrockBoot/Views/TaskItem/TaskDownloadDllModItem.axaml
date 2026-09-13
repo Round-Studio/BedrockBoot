@@ -5,7 +5,7 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800"
-             x:Class="BedrockBoot.Views.TaskItem.Plugin.TaskDownloadPluginItem">
+             x:Class="BedrockBoot.Views.TaskItem.TaskDownloadDllModItem">
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*,Auto">
             <onePointControls:FontIcon Grid.Column="0"
@@ -19,7 +19,7 @@
                         HorizontalAlignment="Stretch">
                 <TextBlock FontSize="16"
                            Name="CardTitle"
-                           Text="下载插件包" />
+                           Text="下载 DllMod" />
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"
@@ -34,17 +34,6 @@
                     </DockPanel>
                 </StackPanel>
             </StackPanel>
-
-            <Button Grid.Column="2"
-                    Classes="NoBorder"
-                    Width="32" Height="32"
-                    IsVisible="False"
-                    Name="CancelBtn"
-                    Click="CancelButton_OnClick">
-                <onePointControls:FontIcon Glyph="&#xE711;"
-                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
-                                           FontSize="16" />
-            </Button>
         </Grid>
     </items:BorderCard>
 </UserControl>

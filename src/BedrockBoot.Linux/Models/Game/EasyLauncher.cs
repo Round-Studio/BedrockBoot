@@ -468,7 +468,7 @@ public class EasyLauncher
         }
 
         ProtonPatcher.Patch(ProtonNeoCore.ProtonRootPath);
-        GameInputInstaller.Install(PathsList.PreFixPath, VersionInfo.VersionPath);
+        GameInputInstaller.Install(PathsList.WinePrefixPath, VersionInfo.VersionPath);
 
         GdkFixups.PatchLhcXcurlGate(VersionInfo.VersionPath);
         GdkFixups.BumpStackReserve(Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile));
@@ -485,7 +485,7 @@ public class EasyLauncher
         var protonConfig = ProtonCore.GetVersionConfig(_linuxLaunchInfo!.ProtonPath);
 
         bool isInstalled = VersionInfo.VersionStatus.GameInputInstalled
-                           && Path.Exists(_linuxLaunchInfo.PrefixPath)
+                           && Path.Exists(PathsList.WinePrefixPath)
                            && protonConfig.IsGameInputInstalled;
 
         if (isInstalled) return;
@@ -501,7 +501,7 @@ public class EasyLauncher
         }
         else
         {
-            if (!InstallGameInputWithWine(PathsList.PreFixPath, msiPath)) return;
+            if (!InstallGameInputWithWine(PathsList.WinePrefixPath, msiPath)) return;
         }
 
         Console.WriteLine("GameInput 安装完毕");
@@ -562,7 +562,7 @@ public class EasyLauncher
         {
             var builtin = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "x86_64-windows",
                 "cryptbase.dll");
-            var dst = Path.Combine(PathsList.PreFixPath, "drive_c", "windows", "system32", "cryptbase.dll");
+            var dst = Path.Combine(PathsList.WinePrefixPath, "drive_c", "windows", "system32", "cryptbase.dll");
 
             if (File.Exists(builtin) && !File.Exists(dst))
             {

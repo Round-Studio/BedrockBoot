@@ -47,7 +47,7 @@ public static class WinePrefix
 
     public static bool Boot()
     {
-        var pfx = PathsList.PreFixPath;
+        var pfx = PathsList.WinePrefixPath;
         if (IsReady(pfx))
         {
             Console.WriteLine("Wine prefix ready");
@@ -64,6 +64,11 @@ public static class WinePrefix
             UseShellExecute = false,
         };
         psi.EnvironmentVariables["WINEPREFIX"] = pfx;
+        // proton 脚本要求 STEAM_COMPAT_DATA_PATH（前缀会被解析为 <它>/pfx），
+        // 以及 STEAM_COMPAT_CLIENT_INSTALL_PATH；缺任一个都会直接报错退出。
+        psi.EnvironmentVariables["STEAM_COMPAT_DATA_PATH"] = PathsList.PreFixPath;
+        psi.EnvironmentVariables["STEAM_COMPAT_CLIENT_INSTALL_PATH"] =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam");
         psi.EnvironmentVariables["WINEDEBUG"] = "-all";
         psi.EnvironmentVariables["SDL_VIDEODRIVER"] = "dummy";
 
@@ -136,22 +141,22 @@ public static class WinePrefix
             WineRegistry.RegSz("Environment", "MICROSOFT_WINDOWSAPPRUNTIME_DEPLOYMENT_INITIALIZE_ONERRORSHOWUI", "0"),
         };
 
-        WineRegistry.UpdatePrefix(PathsList.PreFixPath, machine.ToArray(), user.ToArray());
+        WineRegistry.UpdatePrefix(PathsList.WinePrefixPath, machine.ToArray(), user.ToArray());
         Console.WriteLine("WineGDK prereqs applied");
     }
 
     public static void SetRefreshToken(string token)
     {
-        WineRegistry.UpdatePrefix(PathsList.PreFixPath,
+        WineRegistry.UpdatePrefix(PathsList.WinePrefixPath,
             machine: new[] { WineRegistry.RegSz(PathsList.WinegdkReg, "RefreshToken", token) });
         Console.WriteLine("Refresh token written to Wine registry");
     }
 
     public static void RemoveRefreshToken()
     {
-        var systemReg = Path.Combine(PathsList.PreFixPath, "system.reg");
+        var systemReg = Path.Combine(PathsList.WinePrefixPath, "system.reg");
         if (!File.Exists(systemReg)) return;
-        WineRegistry.UpdatePrefix(PathsList.PreFixPath,
+        WineRegistry.UpdatePrefix(PathsList.WinePrefixPath,
             machine: new[] { WineRegistry.RegDelete(PathsList.WinegdkReg, "RefreshToken") });
     }
 }

@@ -193,7 +193,19 @@ public class MultiThreadDownloader : IDisposable
             if (fileSize > 0 && supportsRange)
             {
                 Console.WriteLine($@"服务器支持断点续传且文件大小已知 ({fileSize} bytes)，使用多线程下载...");
-                await DownloadMultiPartAsync(uri, filePath, fileSize, progress, cancellationToken);
+                try
+                {
+                    await DownloadMultiPartAsync(uri, filePath, fileSize, progress, cancellationToken);
+                }
+                catch (RangeNotHonoredException ex)
+                {
+                    // 有些镜像（例如 gh-proxy 系代理）会声称支持 Range，实际却忽略 Range
+                    // 直接返回整份文件，多线程合并结果必然损坏 —— 必须回退单线程，
+                    // 绝不能把拼错的坏文件留在目标路径上。
+                    Console.WriteLine($@"多线程下载不可用（{ex.Message}），回退单线程下载...");
+                    TryDelete(filePath);
+                    await DownloadSinglePartAsync(uri, filePath, fileSize, progress, cancellationToken);
+                }
             }
             else if (fileSize > 0 && !supportsRange)
             {
@@ -301,9 +313,10 @@ public class MultiThreadDownloader : IDisposable
                 /* 忽略取消异常 */
             }
 
-            // 合并临时文件
+            // 合并临时文件（同时校验分段长度与总长度）
             Console.WriteLine(@"开始合并临时文件...");
-            await MergeTempFilesAsync(tempFiles, filePath, cancellationToken);
+            await MergeTempFilesAsync(tempFiles, parts.Select(p => p.End - p.Start + 1).ToArray(), fileSize,
+                filePath, cancellationToken);
 
             // 报告最终进度
             progressManager.ReportFinalProgress();
@@ -335,6 +348,12 @@ public class MultiThreadDownloader : IDisposable
                 await DownloadPartAsync(uri, start, end, tempFilePath, partIndex,
                     downloadInfo, progressManager, cancellationToken);
                 return;
+            }
+            // 服务器不按 Range 返回属于协议级问题，重试没有意义：
+            // 直接向上抛，由 DownloadAsync 回退到单线程下载。
+            catch (RangeNotHonoredException)
+            {
+                throw;
             }
             catch (Exception ex) when (retry < maxRetries)
             {
@@ -375,7 +394,18 @@ public class MultiThreadDownloader : IDisposable
 
         using var response =
             await partHttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-        response.EnsureSuccessStatusCode();
+
+        // 分段必须由服务器以 206 Partial Content + 匹配的 Content-Range 回应。
+        // 若服务器忽略 Range 返回 200（整份文件），每个分段都会写入整份数据，
+        // 合并后一定是坏文件（历史 bug：862,210,941 字节的包被拼成 1,508,869,147 字节）。
+        if (response.StatusCode != HttpStatusCode.PartialContent)
+            throw new RangeNotHonoredException(
+                $"服务器未按 Range 返回分段 {partIndex}（HTTP {(int)response.StatusCode}）");
+
+        var contentRange = response.Content.Headers.ContentRange;
+        if (contentRange == null || contentRange.From != start || contentRange.To != end)
+            throw new RangeNotHonoredException(
+                $"分段 {partIndex} 的 Content-Range 不符（请求 {start}-{end}，返回 {contentRange?.ToString() ?? "空"}）");
 
         using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
         using var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None,
@@ -413,6 +443,11 @@ public class MultiThreadDownloader : IDisposable
                     Console.WriteLine($@"分段 {partIndex} 下载速度较慢: {speed:F2} B/s");
             }
         }
+
+        var expectedBytes = end - start + 1;
+        if (partDownloaded != expectedBytes)
+            throw new RangeNotHonoredException(
+                $"分段 {partIndex} 长度不符（收到 {partDownloaded}，应为 {expectedBytes}）");
 
         Console.WriteLine($@"分段 {partIndex} 下载完成: {partDownloaded} bytes, 耗时: {stopwatch.Elapsed.TotalSeconds:F2}s");
     }
@@ -512,6 +547,12 @@ public class MultiThreadDownloader : IDisposable
                     downloadInfo, totalDownloadedBytes, reportProgress, cancellationToken);
                 return;
             }
+            // 服务器不按 Range 返回属于协议级问题，重试没有意义：
+            // 直接向上抛，由 DownloadAsync 回退到单线程下载。
+            catch (RangeNotHonoredException)
+            {
+                throw;
+            }
             catch (Exception ex) when (retry < maxRetries)
             {
                 Console.WriteLine($@"分段 {partIndex} 下载失败，第 {retry + 1} 次重试: {ex.Message}");
@@ -549,7 +590,18 @@ public class MultiThreadDownloader : IDisposable
 
         using var response =
             await partHttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-        response.EnsureSuccessStatusCode();
+
+        // 分段必须由服务器以 206 Partial Content + 匹配的 Content-Range 回应。
+        // 若服务器忽略 Range 返回 200（整份文件），每个分段都会写入整份数据，
+        // 合并后一定是坏文件（历史 bug：862,210,941 字节的包被拼成 1,508,869,147 字节）。
+        if (response.StatusCode != HttpStatusCode.PartialContent)
+            throw new RangeNotHonoredException(
+                $"服务器未按 Range 返回分段 {partIndex}（HTTP {(int)response.StatusCode}）");
+
+        var contentRange = response.Content.Headers.ContentRange;
+        if (contentRange == null || contentRange.From != start || contentRange.To != end)
+            throw new RangeNotHonoredException(
+                $"分段 {partIndex} 的 Content-Range 不符（请求 {start}-{end}，返回 {contentRange?.ToString() ?? "空"}）");
 
         using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
         using var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None,
@@ -590,6 +642,11 @@ public class MultiThreadDownloader : IDisposable
             reportProgress(false);
         }
 
+        var expectedBytes = end - start + 1;
+        if (partDownloaded != expectedBytes)
+            throw new RangeNotHonoredException(
+                $"分段 {partIndex} 长度不符（收到 {partDownloaded}，应为 {expectedBytes}）");
+
         Console.WriteLine($@"分段 {partIndex} 下载完成: {partDownloaded} bytes, 耗时: {stopwatch.Elapsed.TotalSeconds:F2}s");
     }
 
@@ -624,9 +681,13 @@ public class MultiThreadDownloader : IDisposable
             await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         response.EnsureSuccessStatusCode();
 
+        // 同样先写 .part，长度校验通过后再原子替换，避免留下半个文件
+        var partPath = filePath + ".part";
+        TryDelete(partPath);
+
         using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
         using var fileStream =
-            new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, true);
+            new FileStream(partPath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, true);
 
         var buffer = new byte[_bufferSize];
         int bytesRead;
@@ -647,11 +708,29 @@ public class MultiThreadDownloader : IDisposable
             }
         }
 
-        while ((bytesRead = await responseStream.ReadAsync(buffer, cancellationToken)) > 0)
+        try
         {
-            await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
-            totalBytesRead += bytesRead;
-            ReportProgressIfNeeded();
+            while ((bytesRead = await responseStream.ReadAsync(buffer, cancellationToken)) > 0)
+            {
+                await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
+                totalBytesRead += bytesRead;
+                ReportProgressIfNeeded();
+            }
+
+            fileStream.Flush();
+
+            if (fileSize > 0 && totalBytesRead != fileSize)
+                throw new RangeNotHonoredException(
+                    $"下载长度不符（收到 {totalBytesRead}，应为 {fileSize}），已丢弃不完整文件");
+
+            fileStream.Close();
+            File.Move(partPath, filePath, true);
+        }
+        catch
+        {
+            fileStream.Close();
+            TryDelete(partPath);
+            throw;
         }
 
         progress?.Report(new DownloadProgress
@@ -668,9 +747,12 @@ public class MultiThreadDownloader : IDisposable
             await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         response.EnsureSuccessStatusCode();
 
+        var partPath = filePath + ".part";
+        TryDelete(partPath);
+
         using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
         using var fileStream =
-            new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, true);
+            new FileStream(partPath, FileMode.Create, FileAccess.Write, FileShare.None, _bufferSize, true);
 
         var buffer = new byte[_bufferSize];
         int bytesRead;
@@ -691,11 +773,24 @@ public class MultiThreadDownloader : IDisposable
             }
         }
 
-        while ((bytesRead = await responseStream.ReadAsync(buffer, cancellationToken)) > 0)
+        try
         {
-            await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
-            totalBytesRead += bytesRead;
-            ReportProgressIfNeeded();
+            while ((bytesRead = await responseStream.ReadAsync(buffer, cancellationToken)) > 0)
+            {
+                await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
+                totalBytesRead += bytesRead;
+                ReportProgressIfNeeded();
+            }
+
+            fileStream.Flush();
+            fileStream.Close();
+            File.Move(partPath, filePath, true);
+        }
+        catch
+        {
+            fileStream.Close();
+            TryDelete(partPath);
+            throw;
         }
 
         progress?.Report(new DownloadProgress
@@ -705,7 +800,8 @@ public class MultiThreadDownloader : IDisposable
         });
     }
 
-    private async Task MergeTempFilesAsync(string[] tempFiles, string outputPath, CancellationToken cancellationToken)
+    private async Task MergeTempFilesAsync(string[] tempFiles, long[] expectedPartSizes, long expectedFileSize,
+        string outputPath, CancellationToken cancellationToken)
     {
         await Task.Delay(1000, cancellationToken);
 
@@ -715,40 +811,94 @@ public class MultiThreadDownloader : IDisposable
             throw new FileNotFoundException(
                 $"合并临时文件失败: 缺失 {missingFiles.Length} 个分段文件: {string.Join(", ", missingFiles)}");
 
+        // 逐段核对长度：任一分段长度不对（例如服务器忽略了 Range），合并结果必坏
+        for (var i = 0; i < tempFiles.Length; i++)
+        {
+            var actual = new FileInfo(tempFiles[i]).Length;
+            var expected = i < expectedPartSizes.Length ? expectedPartSizes[i] : -1;
+            if (expected >= 0 && actual != expected)
+                throw new RangeNotHonoredException(
+                    $"分段 {i} 长度不符（{actual}，应为 {expected}），拒绝合并损坏文件");
+        }
+
+        // 先写到 .part，校验总长度后再原子替换目标文件 —— 保证目标路径上只会出现完整文件
+        var partPath = outputPath + ".part";
+        TryDelete(partPath);
+
         // 增加缓冲区大小
         const int largeBufferSize = 81920 * 4; // 320KB缓冲区
 
-        using var outputStream = new BufferedStream(
-            new FileStream(outputPath, FileMode.Create, FileAccess.Write,
-                FileShare.None, largeBufferSize, FileOptions.WriteThrough | FileOptions.Asynchronous),
-            largeBufferSize * 2);
-
-        // 按顺序处理文件
-        var sortedFiles = tempFiles
-            .Select(f => new FileInfo(f))
-            .ToArray();
-
-        foreach (var fileInfo in sortedFiles)
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            using (var outputStream = new BufferedStream(
+                       new FileStream(partPath, FileMode.Create, FileAccess.Write,
+                           FileShare.None, largeBufferSize, FileOptions.WriteThrough | FileOptions.Asynchronous),
+                       largeBufferSize * 2))
+            {
+                // 按顺序处理文件
+                var sortedFiles = tempFiles
+                    .Select(f => new FileInfo(f))
+                    .ToArray();
 
-            Console.WriteLine($@"正在合并文件: {fileInfo.FullName}, 大小: {fileInfo.Length} bytes");
+                foreach (var fileInfo in sortedFiles)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
 
-            using var inputStream = new BufferedStream(
-                new FileStream(fileInfo.FullName, FileMode.Open,
-                    FileAccess.Read, FileShare.Read, largeBufferSize,
-                    FileOptions.SequentialScan | FileOptions.Asynchronous),
-                largeBufferSize * 2);
+                    Console.WriteLine($@"正在合并文件: {fileInfo.FullName}, 大小: {fileInfo.Length} bytes");
 
-            var buffer = new byte[largeBufferSize];
-            int bytesRead;
+                    using var inputStream = new BufferedStream(
+                        new FileStream(fileInfo.FullName, FileMode.Open,
+                            FileAccess.Read, FileShare.Read, largeBufferSize,
+                            FileOptions.SequentialScan | FileOptions.Asynchronous),
+                        largeBufferSize * 2);
 
-            // 手动复制以支持进度报告
-            while ((bytesRead = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
-                await outputStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                    var buffer = new byte[largeBufferSize];
+                    int bytesRead;
+
+                    // 手动复制以支持进度报告
+                    while ((bytesRead = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+                        await outputStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                }
+
+                await outputStream.FlushAsync(cancellationToken);
+            }
+
+            var mergedSize = new FileInfo(partPath).Length;
+            if (expectedFileSize > 0 && mergedSize != expectedFileSize)
+                throw new RangeNotHonoredException(
+                    $"合并结果长度不符（{mergedSize}，应为 {expectedFileSize}），已丢弃损坏文件");
+
+            File.Move(partPath, outputPath, true);
         }
+        catch
+        {
+            TryDelete(partPath);
+            throw;
+        }
+    }
 
-        await outputStream.FlushAsync(cancellationToken);
+    /// <summary>删除文件并忽略错误（用于清理损坏/临时产物）。</summary>
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path)) File.Delete(path);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"删除文件失败 {path}: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    ///     服务器未按请求的 Range 返回数据（例如忽略 Range 直接返回整份文件）。
+    ///     出现该异常时必须回退单线程下载，否则合并结果必然损坏。
+    /// </summary>
+    private sealed class RangeNotHonoredException : Exception
+    {
+        public RangeNotHonoredException(string message) : base(message)
+        {
+        }
     }
 
     private void CleanupTempFiles(string[] tempFiles)

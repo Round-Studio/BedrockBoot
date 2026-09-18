@@ -15,13 +15,24 @@ public partial class DialogChooseGameContent : ISetting
     public string SelectUser => Users[InstanceUsers.SelectedIndex];
     public List<string> Users { get; set; }
 
-    public DialogChooseGameContent() 
+    public DialogChooseGameContent()
     {
         InitializeComponent();
         Update();
     }
+
     public DialogChooseGameContent(bool isEnableChooseUser = false) : this() => UserBox.IsVisible = isEnableChooseUser;
-    public VersionConfig VersionConfig => Versions?[GameInstance.SelectedIndex] ?? throw new InvalidOperationException("No version selected");
+
+    public VersionConfig? VersionConfig
+    {
+        get
+        {
+            var index = GameInstance.SelectedIndex;
+            if (Versions is null || index < 0 || index >= Versions.Count)
+                return null;
+            return Versions[index];
+        }
+    }
 
     public void Update()
     {
@@ -36,12 +47,12 @@ public partial class DialogChooseGameContent : ISetting
                     Content = $"{f.GameFolderName} - {f.GameFolderPath}"
                 });
             });
-            
+
             var folderIndex = GlobalModel.Config.Data.GameFolderSelIndex;
-            GameFolder.SelectedIndex = (folderIndex >= 0 && folderIndex < GameFolder.Items.Count) 
-                ? folderIndex 
+            GameFolder.SelectedIndex = (folderIndex >= 0 && folderIndex < GameFolder.Items.Count)
+                ? folderIndex
                 : (GameFolder.Items.Count > 0 ? 0 : -1);
-                
+
             UpdateList();
             UpdateUsers();
         }
@@ -54,7 +65,7 @@ public partial class DialogChooseGameContent : ISetting
     public void UpdateList()
     {
         GameInstance.Items.Clear();
-        
+
         var folderIndex = GameFolder.SelectedIndex;
         if (folderIndex < 0 || folderIndex >= GlobalModel.Config.Data.GameFolders.Count)
         {
@@ -62,10 +73,10 @@ public partial class DialogChooseGameContent : ISetting
             GameInstance.SelectedIndex = -1;
             return;
         }
-        
+
         var path = GlobalModel.Config.Data.GameFolders[folderIndex].GameFolderPath;
         Versions = GameInfoHelper.GetVersionConfigs(path) ?? new List<VersionConfig>();
-        
+
         foreach (var v in Versions)
         {
             GameInstance.Items.Add(new ComboBoxItem
@@ -74,10 +85,10 @@ public partial class DialogChooseGameContent : ISetting
                 Tag = v
             });
         }
-        
+
         var savedIndex = GlobalModel.Config.Data.GameFolders[folderIndex].GameSelIndex;
-        GameInstance.SelectedIndex = (savedIndex >= 0 && savedIndex < Versions.Count) 
-            ? savedIndex 
+        GameInstance.SelectedIndex = (savedIndex >= 0 && savedIndex < Versions.Count)
+            ? savedIndex
             : (Versions.Count > 0 ? 0 : -1);
     }
 
@@ -98,14 +109,14 @@ public partial class DialogChooseGameContent : ISetting
             InstanceUsers.ItemsSource = new List<string>();
             return;
         }
-        
+
         var selectedIndex = GameInstance?.SelectedIndex ?? -1;
         if (selectedIndex < 0 || selectedIndex >= Versions.Count)
         {
             InstanceUsers.ItemsSource = new List<string>();
             return;
         }
-        
+
         var instance = Versions[selectedIndex];
         Users = IsolationCore.GetInstanceUsers(instance) ?? new List<string>();
         InstanceUsers.ItemsSource = Users;

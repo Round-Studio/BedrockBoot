@@ -52,6 +52,14 @@ public class PathsList
     
     public static readonly string NeoProtonPath = Path.Combine(RootConfigPath, "BedrockBoot.Linux", "xuserProject");
     public static readonly string PreFixPath = Path.Combine(ProtonPath, "game_prefix");
+
+    /// <summary>
+    ///     真实 Wine 前缀目录。
+    ///     Proton/umu 以 STEAM_COMPAT_DATA_PATH/pfx 作为前缀（STEAM_COMPAT_DATA_PATH 即 PreFixPath），
+    ///     而 PreFixPath 自身只是 compat data 目录，里面没有 drive_c/system.reg。
+    ///     因此注册表改动、cryptbase、GameInput、wineboot 都必须作用于 WinePrefixPath。
+    /// </summary>
+    public static readonly string WinePrefixPath = Path.Combine(PreFixPath, "pfx");
     public static readonly string GamePatch = Path.Combine(NeoProtonPath, "GamePatch");
 
     public static readonly string EasyTierPath = Path.Combine(PaperConnectPath, "EasyTier");

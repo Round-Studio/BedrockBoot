@@ -17,7 +17,7 @@
 [![License](https://img.shields.io/badge/License-GPL%203.0-ff7a35?style=flat-square)](LICENSE)
 
 [![Afdian](https://img.shields.io/badge/Afdian-yjq666-946ce6?style=flat-square&logo=afdian)](https://afdian.com/a/yjq666)
-[![Bilibili](https://img.shields.io/badge/Bilibili-Minecraft%E4%B8%80%E8%A7%92%E9%92%B1-00A4DB?style=flat-square&logo=bilibili)](https://space.bilibili.com/1527364468)
+[![Bilibili](https://img.shields.io/badge/Bilibili-Dime12022-00A4DB?style=flat-square&logo=bilibili)](https://space.bilibili.com/1527364468)
 [![Group](https://img.shields.io/badge/Group-245839607_(一群)-00A4DB?style=flat-square&logo=tencent-qq)](https://qm.qq.com/q/ax057FTyl)
 [![Group](https://img.shields.io/badge/Group-686090554_(二群)-00A4DB?style=flat-square&logo=tencent-qq)](https://qm.qq.com/q/1VGh2ai5NS)
 

@@ -136,6 +136,10 @@ public static class WinePrefix
 
         var user = new List<RegChange>
         {
+            // Wine 内置的 amd_ags_x64 无法从自身 PE 读出 AGS 版本号（err 1812），
+            // 游戏（RenderDragon）会因此反复调用 agsInit 死循环：窗口白屏、主线程 100% CPU、无响应。
+            // 直接禁用该 DLL，游戏会走「没有 AGS」的普通分支（本地 AMD 机器不加载它也能正常运行）。
+            WineRegistry.RegSz(@"Software\Wine\DllOverrides", "amd_ags_x64", "disabled"),
             WineRegistry.RegSz("Environment", "MICROSOFT_WINDOWSAPPRUNTIME_BOOTSTRAP_INITIALIZE_SHOWUI", "0"),
             WineRegistry.RegSz("Environment", "MICROSOFT_WINDOWSAPPRUNTIME_BOOTSTRAP_INITIALIZE_FAILFAST", "0"),
             WineRegistry.RegSz("Environment", "MICROSOFT_WINDOWSAPPRUNTIME_DEPLOYMENT_INITIALIZE_ONERRORSHOWUI", "0"),

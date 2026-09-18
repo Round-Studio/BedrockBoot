@@ -79,7 +79,7 @@
                                           Description="启用或关闭 BedrockBoot 的 Beta 测试项"
                                           IsClickable="True"
                                           IsShowActionIcon="False"
-                                          Glyph="&#xF1AD;">
+                                          Glyph="&#xF196;">
                 <ToggleSwitch Name="UseBetaUI"
                               IsCheckedChanged="UseBetaUI_OnIsCheckedChanged" />
             </onePointControls:SettingCard>

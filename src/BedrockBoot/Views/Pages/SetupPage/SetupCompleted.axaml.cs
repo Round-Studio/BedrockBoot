@@ -34,7 +34,7 @@ public partial class SetupCompleted : UserControl
     private void Start_OnClick(object? sender, RoutedEventArgs e)
     {
         Console.WriteLine(@"跳转主页面.jpg");
-        Dispatcher.UIThread.Invoke(() => GlobalModel.MainWindow.MainFrame.NavigateTo(new NeoMainPage()));
+        Dispatcher.UIThread.Invoke(() => GlobalModel.MainWindow.MainFrame.NavigateTo(new MainPage()));
         Core.Global.GlobalModel.Config.Data.IsFirstRun = false;
         Core.Global.GlobalModel.Config.Save();
     }

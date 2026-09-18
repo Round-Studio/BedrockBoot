@@ -1,4 +1,4 @@
-/*
+﻿/*
  * BedrockBoot - A launcher for Minecraft Bedrock Edition.
  * Copyright (C) 2025-2026 Round-Studio
  *
@@ -62,7 +62,7 @@ public partial class GravityConeInit : UserControl
     }
 
     /// <summary>
-    /// 返回主页。MainPage.Instance 在使用 NeoMainPage（Beta UI）时为 null，
+    /// 返回主页。MainPage.Instance 在使用 MainPage（Beta UI）时为 null，
     /// 直接访问会在错误弹窗的回调里再抛一个 NullReferenceException。
     /// </summary>
     private static void BackToMain()
@@ -181,7 +181,13 @@ public partial class GravityConeInit : UserControl
             // 否则 MainGravityConePage 会把残留的半初始化客户端当作可用状态，
             // 之后所有请求都会失败且用户永远停在加载页。
             Console.WriteLine($@"GravityCone CLI 启动失败: {ex}");
-            try { client.Dispose(); } catch { }
+            try
+            {
+                client.Dispose();
+            }
+            catch
+            {
+            }
 
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
@@ -215,6 +221,7 @@ public partial class GravityConeInit : UserControl
                         CloseButtonText = "确定"
                     });
                 }
+
                 if (eventArgs.Event == "paperconnect.connection.port_busy")
                 {
                     GlobalModel.CurrentRoomState = null;
@@ -227,6 +234,7 @@ public partial class GravityConeInit : UserControl
                         CloseButtonText = "确定"
                     });
                 }
+
                 if (eventArgs.Event == "paperconnect.connection.disconnected" ||
                     eventArgs.Event == "paperconnect.connection.closed")
                 {
@@ -273,7 +281,6 @@ public partial class GravityConeInit : UserControl
                         }
                         catch
                         {
-
                         }
 
                         Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
@@ -292,6 +299,7 @@ public partial class GravityConeInit : UserControl
                         Console.WriteLine(e);
                     }
                 }
+
                 if (eventArgs.Error.Code == "INTERNAL_ERROR")
                 {
                     message = "未检测到本地 Minecraft 基岩版房间，请尝试重启游戏，并在 Minecraft 中开启局域网游戏。";
@@ -306,10 +314,10 @@ public partial class GravityConeInit : UserControl
                     Title = "出现错误",
                     Content = message,
                     CloseButtonText = "确定"
-                });   
+                });
             });
         };
-        
+
         GlobalModel.GravityConeClient.OnError += (sender, eventArgs) =>
         {
             // OnError 会因 CLI 的任意 stderr 输出行 / stdout 非 JSON 行而触发，

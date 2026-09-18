@@ -57,20 +57,17 @@ public partial class AboutPage : ISettingPage
     /// </summary>
     private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        // 1. 进入加载状态
         CheckUpdateBtn.IsEnabled = false;
         CheckUpdateBtn.Content = new ProgressRing
         {
             Width = 20,
             Height = 20,
-            Foreground = Brushes.White, // 假设背景深色，可根据实际主题调整
+            Foreground = Brushes.White,
             Background = Brushes.Transparent
         };
 
         try
         {
-            // 2. 调用全局更新逻辑
-            // 假设 MainPage.Update(true) 内部会处理弹窗提醒更新结果
             await MainPage.Update(true);
         }
         catch (Exception ex)

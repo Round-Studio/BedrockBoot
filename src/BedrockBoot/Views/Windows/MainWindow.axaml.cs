@@ -743,14 +743,6 @@ public partial class MainWindow : Window
             ExtendClientAreaTitleBarHeightHint = -1;
         }
 
-        /*if (OperatingSystem.IsWindows())
-        {
-            var newPadding = currentState == WindowState.Maximized && !useSystemWindow
-                ? new Thickness(8)
-                : new Thickness(0);
-            if (Padding != newPadding) Padding = newPadding;
-        }*/
-
         if (currentState != _lastWindowState)
         {
             _lastWindowState = currentState;
@@ -758,11 +750,7 @@ public partial class MainWindow : Window
             if (MaxBtnIcon.Glyph != newGlyph) MaxBtnIcon.Glyph = newGlyph;
         }
 
-        if (_lastIsBlurStyle != isBlurStyle)
-        {
-            _lastIsBlurStyle = isBlurStyle;
-            BackgroundCover.IsVisible = isBlurStyle;
-        }
+        _lastIsBlurStyle = isBlurStyle;
 
         if (_lastTitle != Title)
         {

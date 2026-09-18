@@ -27,10 +27,6 @@
         FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
         Title="BedrockBoot">
     <Grid>
-        <Grid Background="{DynamicResource BackgroundBrush}"
-              Name="BackgroundCover"
-              Opacity="0.58" />
-
         <Border ClipToBounds="False">
             <Grid>
                 <Grid Name="BackgroundGroupBox">
@@ -44,7 +40,7 @@
                                                  Duration="0:0:0.58" />
                         </Transitions>
                     </Grid.Transitions>
-                    <view:AnimationBackground Name="AnimationBackground" 
+                    <view:AnimationBackground Name="AnimationBackground"
                                               IsVisible="False" />
 
                     <Grid Name="AccentBackgroundBox"
@@ -54,8 +50,8 @@
                     <imageView:BackgroundView Name="BackgroundView"
                                               ClipToBounds="False"
                                               HorizontalAlignment="Stretch"
-                                              VerticalAlignment="Stretch"/>
-                    
+                                              VerticalAlignment="Stretch" />
+
                     <Grid Name="LiveOpacity"
                           Opacity="0"
                           Background="{DynamicResource BackgroundBrush}" />
@@ -454,7 +450,7 @@
                 </Grid>
             </Grid>
         </Border>
-        
+
         <Grid Name="PART_ChooseAccount"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
@@ -469,11 +465,12 @@
                     <Transitions>
                         <DoubleTransition Easing="ExponentialEaseOut"
                                           Duration="0:0:0.82"
-                                          Property="Opacity"></DoubleTransition>
+                                          Property="Opacity">
+                        </DoubleTransition>
                     </Transitions>
                 </Grid.Transitions>
             </Grid>
-            
+
             <items:BorderCard VerticalAlignment="Bottom"
                               HorizontalAlignment="Stretch"
                               Name="PART_AccountChooseBorderCard"
@@ -485,13 +482,15 @@
                     <Transitions>
                         <DoubleTransition Easing="ExponentialEaseOut"
                                           Duration="0:0:0.62"
-                                          Property="Opacity"></DoubleTransition>
+                                          Property="Opacity">
+                        </DoubleTransition>
                         <ThicknessTransition Easing="ExponentialEaseOut"
                                              Duration="0:0:0.62"
-                                             Property="Margin"></ThicknessTransition>
+                                             Property="Margin">
+                        </ThicknessTransition>
                     </Transitions>
                 </items:BorderCard.Transitions>
-                
+
                 <Grid RowDefinitions="Auto,*"
                       RowSpacing="12">
                     <StackPanel Grid.Row="0"
@@ -499,18 +498,20 @@
                         <TextBlock Text="选择一个账户"
                                    Foreground="{DynamicResource AccentBackgroundBrush}"
                                    FontWeight="Bold"
-                                   FontSize="18"></TextBlock>
+                                   FontSize="18">
+                        </TextBlock>
                     </StackPanel>
-                    
+
                     <StackPanel Grid.Row="0"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center">
                         <TextBlock Opacity="0.4"
                                    FontSize="14"
-                                   Text="点击上方空白处可取消启动"></TextBlock>
+                                   Text="点击上方空白处可取消启动">
+                        </TextBlock>
                     </StackPanel>
-                    
+
                     <ScrollViewer Grid.Row="1"
                                   HorizontalScrollBarVisibility="Auto"
                                   VerticalScrollBarVisibility="Disabled">

@@ -59,7 +59,7 @@ public class InstanceUpdater
     public async Task UpdateAsync(BuildInfo buildInfo)
     {
         Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.ID}");
-        
+
         var downloader = new EasyDownload(buildInfo, true, _versionConfig.VersionsRootPath,
             Path.GetFileName(_versionConfig.VersionPath), true);
 
@@ -228,10 +228,15 @@ public class InstanceUpdater
         _versionConfig.Info.VersionType = buildInfo.Type;
         GameInfoHelper.SaveVersionConfig(_versionConfig);
 
+        File.Copy(Path.Combine(_versionConfig.VersionPath, _versionConfig.BodyFile),
+            Path.Combine(_versionConfig.VersionPath, "config", "BedrockBoot2", "row",
+                Path.GetFileName(_versionConfig.BodyFile)), true);
+
         Console.WriteLine(@"更新完成");
     }
 
-    private void CollectFilesAndDirectoriesToDelete(DirectoryInfo directory, string protectedPath, List<string> filesToDelete, List<string> dirsToDelete)
+    private void CollectFilesAndDirectoriesToDelete(DirectoryInfo directory, string protectedPath,
+        List<string> filesToDelete, List<string> dirsToDelete)
     {
         try
         {
@@ -272,7 +277,7 @@ public class InstanceUpdater
             {
                 bool hasFiles = Directory.GetFiles(directory.FullName).Any();
                 bool hasSubDirs = Directory.GetDirectories(directory.FullName).Any();
-                
+
                 if (!hasFiles && !hasSubDirs)
                 {
                     dirsToDelete.Add(directory.FullName);
@@ -289,13 +294,13 @@ public class InstanceUpdater
                             break;
                         }
                     }
-                    
+
                     bool allFilesInSubDirs = true;
                     if (directory.GetFiles().Any())
                     {
                         allFilesInSubDirs = false;
                     }
-                    
+
                     if (allSubDirsAreProtected && allFilesInSubDirs)
                     {
                         dirsToDelete.Add(directory.FullName);

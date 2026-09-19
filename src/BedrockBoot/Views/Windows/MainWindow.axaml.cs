@@ -452,13 +452,15 @@ public partial class MainWindow : Window
                 AnimationBackground.BackgroundType = BackgroundType.Bubble;
                 break;
             case StyleType.LiveModel:
+#if WINDOWS
+                NativeDwmApi.SetBackdrop(hwnd, NativeDwmApi.DwmSystemBackdropType.None);
                 if (DesktopThumbnailWindow == null) DesktopThumbnailWindow = new DesktopThumbnailWindow();
-
-                if (style.LiveBlur) TransparencyLevelHint = new[] { WindowTransparencyLevel.AcrylicBlur };
+                if (style.LiveBlur) NativeDwmApi.SetBackdrop(hwnd, NativeDwmApi.DwmSystemBackdropType.Acrylic);
 
                 DesktopThumbnailWindow?.ShowBelow(this);
                 LiveOpacity.IsVisible = true;
                 UpdateLiveOpacity();
+#endif
                 break;
             case StyleType.Default:
                 BackgroundView.ApplyImageBackground(style);

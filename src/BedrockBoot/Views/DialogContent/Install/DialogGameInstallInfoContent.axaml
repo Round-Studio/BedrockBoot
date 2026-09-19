@@ -1,0 +1,53 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.Install.DialogGameInstallInfoContent">
+    <Grid MinWidth="700">
+        <StackPanel Spacing="8">
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="安装信息" />
+
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="实例名称" />
+
+            <TextBox Name="InstallName"></TextBox>
+
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="安装目录" />
+
+            <ComboBox Name="InstallFolder"
+                      HorizontalAlignment="Stretch"
+                      SelectionChanged="InstallFolder_OnSelectionChanged">
+            </ComboBox>
+
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="文件源" />
+
+            <CheckBox Name="IsUsePackIns"
+                      Content="使用本地缓存"
+                      IsVisible="False"
+                      IsCheckedChanged="IsUsePackIns_OnIsCheckedChanged"
+                      Margin="0">
+            </CheckBox>
+
+            <Grid Name="SourceGrid">
+                <view:ItemView Name="SourceSelBox"
+                               Margin="-8,0"
+                               HorizontalAlignment="Stretch" />
+
+                <onePointControls:ProgressRing HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Width="36" Height="36"
+                                               Name="LoadRing" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

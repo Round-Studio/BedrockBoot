@@ -29,6 +29,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.Game.Instance;
 using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.VersionJsons;
@@ -190,8 +191,11 @@ public partial class DownloadGamePage : UserControl, IDisposable
 
                     card.Click += (s, e) =>
                     {
-                        var title = $"{i18n["Download.Dialog.TitlePrefix"]}: {x.ID}";
-                        Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(x), title);
+                        // var title = $"{i18n["Download.Dialog.TitlePrefix"]}: {x.ID}";
+
+                        var installer = new InstanceInstaller(x);
+                        installer.Install();
+                        // Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(x), title);
                     };
 
                     _items.Add(card);

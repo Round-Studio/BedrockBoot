@@ -25,6 +25,7 @@ using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Instance;
 using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 
@@ -111,8 +112,10 @@ public class MinecraftSearch : ISearch
                         : "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png",
                     OnClick = s =>
                     {
-                        GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),
-                            $"{I18nManager.Instance["Download.Action.DownloadGame"]} {i.Key}");
+                        var installer = new InstanceInstaller(i);
+                        installer.Install();
+                        /*GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(i),
+                            $"{I18nManager.Instance["Download.Action.DownloadGame"]} {i.Key}");*/
                     }
                 });
             });

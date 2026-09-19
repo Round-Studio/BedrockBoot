@@ -30,6 +30,7 @@ using BedrockBoot.Base.Enum.Search;
 using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Instance;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Models.Pack.Plugin.Market;
 using BedrockBoot.Views.Control.Items;
@@ -331,8 +332,12 @@ public partial class SearchDefault : UserControl
     {
         var version = VersionHelper.GetVersions().Find(x => x.Type == type);
         if (version != null)
-            GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version),
-                $"{i18n["Download.Action.DownloadGame"]} {version.Key}");
+        {
+            var installer = new InstanceInstaller(version);
+            installer.Install();
+            /*GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version),
+                $"{i18n["Download.Action.DownloadGame"]} {version.Key}");*/
+        }
     }
 
     private void CleanBtn_OnClick(object? sender, RoutedEventArgs e)

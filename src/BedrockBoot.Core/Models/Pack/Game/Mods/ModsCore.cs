@@ -139,7 +139,7 @@ public class ModsCore
         PreLoadMods = new List<ModInfo>();
         _manager.Mods.ForEach(m =>
         {
-            if (m.IsPreLoad) PreLoadMods.Add(m);
+            if (m.IsPreLoad && m.IsEnabled) PreLoadMods.Add(m);
         });
 
         Directory.GetFiles(preLoadPath).ToList().ForEach(f =>

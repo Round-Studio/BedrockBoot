@@ -36,6 +36,7 @@ namespace BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 
 public class LeviLaminaModsManager : IModsManager
 {
+    public bool IsModCanEnable { get; set; } = false;
     private VersionConfig _versionConfig;
 
     public void Init(VersionConfig instance)
@@ -101,21 +102,18 @@ public class LeviLaminaModsManager : IModsManager
         Directory.Delete(folder!, true);
         OnRefresh?.Invoke();
     }
+
+    public void SetEnable(ModItemInfo info) =>
+        throw new NotImplementedException();
 }
 
 public class LocalManifest
 {
     [JsonPropertyName("name")] public string Name { get; set; } = string.Empty;
-
     [JsonPropertyName("entry")] public string Entry { get; set; } = string.Empty;
-
     [JsonPropertyName("version")] public string Version { get; set; } = string.Empty;
-
     [JsonPropertyName("type")] public string Type { get; set; } = string.Empty;
-
     [JsonPropertyName("platform")] public string Platform { get; set; } = string.Empty;
-
     [JsonPropertyName("description")] public string Description { get; set; } = string.Empty;
-
     [JsonPropertyName("author")] public string Author { get; set; } = string.Empty;
 }

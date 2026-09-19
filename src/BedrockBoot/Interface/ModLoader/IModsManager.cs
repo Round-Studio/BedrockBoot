@@ -28,9 +28,11 @@ public interface IModsManager
 {
     public void Init(VersionConfig instance);
     public Action? OnRefresh { get; set; }
+    public bool IsModCanEnable { get; set; }
     public List<ModItemInfo> GetAllMods();
     public Task AddMod();
     public void Remove(ModItemInfo info);
+    public void SetEnable(ModItemInfo info);
 }
 
 public class ModItemInfo
@@ -42,4 +44,5 @@ public class ModItemInfo
     public Type? ModLoaderType { get; set; }
     public ModType ModInjectType { get; set; }
     public int InjectDelay { get; set; } = 5000;
+    public bool IsEnabled { get; set; } = true;
 }

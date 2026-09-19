@@ -37,7 +37,7 @@ using Round.SDK.Helper;
 
 namespace BedrockBoot.Views.Control.Items;
 
-public partial class GameModItem : UserControl
+public partial class GameModItem : ISetting
 {
     private readonly IModsLoader _modsLoader;
 
@@ -62,6 +62,9 @@ public partial class GameModItem : UserControl
     public void UpdateUI()
     {
         if (ModInfo == null) return;
+
+        SettingModEnable.IsVisible = _modsLoader.ModsManager.IsModCanEnable;
+        SettingModEnable.IsChecked = ModInfo.IsEnabled;
 
         if (_modsLoader.GetType() != typeof(PreLoaderNet)) SettingBtn.IsVisible = false;
         FileName.Text = ModInfo.ModName;
@@ -91,6 +94,8 @@ public partial class GameModItem : UserControl
 
         PreLoadBox.IsVisible =
             (ModInfo.ModInjectType == ModType.Native && ModInfo.ModLoaderType == typeof(PreLoaderNet));
+
+        IsEdit = true;
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -200,5 +205,16 @@ public partial class GameModItem : UserControl
                 }
             }
         });
+    }
+
+    private void SettingModEnable_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            IsEdit = false;
+            ModInfo.IsEnabled = SettingModEnable.IsChecked ?? false;
+            _modsLoader.ModsManager.SetEnable(ModInfo);
+            IsEdit = true;
+        }
     }
 }

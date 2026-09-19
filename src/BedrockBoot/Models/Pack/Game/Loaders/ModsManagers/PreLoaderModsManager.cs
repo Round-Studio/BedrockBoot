@@ -37,6 +37,7 @@ namespace BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 
 public class PreLoaderModsManager : IModsManager
 {
+    public bool IsModCanEnable { get; set; } = true;
     public VersionConfig _instance;
     public ModsManager ModsManager;
     private static I18nManager i18n => I18nManager.Instance;
@@ -60,7 +61,8 @@ public class PreLoaderModsManager : IModsManager
                 ModLoaderType = typeof(PreLoaderNet),
                 ModInjectType = x.IsPreLoad ? ModType.Native : ModType.Inject,
                 InjectDelay = x.InjectDelay,
-                ModPath = x.File
+                ModPath = x.File,
+                IsEnabled = x.IsEnabled
             };
         }).ToList();
     }
@@ -131,5 +133,12 @@ public class PreLoaderModsManager : IModsManager
         if (File.Exists(info.ModPath))
             File.Delete(info.ModPath);
         OnRefresh?.Invoke();
+    }
+
+    public void SetEnable(ModItemInfo info)
+    {
+        var index = ModsManager.ModsConfig.Data.FindIndex(x => x.File == info.ModPath);
+        ModsManager.ModsConfig.Data[index].IsEnabled = info.IsEnabled;
+        ModsManager.ModsConfig.Save();
     }
 }

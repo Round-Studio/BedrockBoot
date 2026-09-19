@@ -29,4 +29,5 @@ public class ModInfo
     [JsonPropertyName("file")] public string File { get; set; }
     [JsonPropertyName("injectDelay")] public int InjectDelay { get; set; } = 0;
     [JsonPropertyName("isPreLoad")] public bool IsPreLoad { get; set; } = false;
+    [JsonPropertyName("isEnabled")] public bool IsEnabled { get; set; } = true;
 }

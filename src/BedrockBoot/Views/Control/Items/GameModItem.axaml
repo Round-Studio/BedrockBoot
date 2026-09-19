@@ -29,6 +29,10 @@
         </onePointControls:SettingCard.Header>
         <StackPanel Orientation="Horizontal"
                     Spacing="8">
+            <ToggleSwitch VerticalAlignment="Center"
+                          Name="SettingModEnable"
+                          IsCheckedChanged="SettingModEnable_OnIsCheckedChanged">
+            </ToggleSwitch>
             <Button Width="32" Height="32"
                     Classes="NoBorder"
                     Click="DeleteBtn_OnClick"

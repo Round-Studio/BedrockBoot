@@ -109,15 +109,7 @@ public class LeviLamina : IModsLoader
         return conf.Data.Version;
     }
 
-    public bool IsInstalled()
-    {
-        var preLoadFile = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "preloader",
-            "bin", "PreLoader.dll");
-        var bedrockRuntime = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina",
-            "bedrock_runtime_data");
-
-        return File.Exists(preLoadFile) && File.Exists(bedrockRuntime);
-    }
+    public bool IsInstalled() => IsInstallModLoader(GameInstance.VersionPath!);
 
     public void Install()
     {
@@ -307,6 +299,18 @@ public class LeviLamina : IModsLoader
 
         _configEntity.Data.IsEnable = isEnabled;
         _configEntity.Save();
+    }
+
+    public static bool IsInstallModLoader(string path)
+    {
+        var preLoadFile = Path.Combine(path, "config", "BedrockBoot2", "levilamina", "preloader",
+            "bin", "PreLoader.dll");
+        var bedrockRuntime = Path.Combine(path, "config", "BedrockBoot2", "levilamina",
+            "bedrock_runtime_data");
+        var levilaminaMainFile = Path.Combine(path, "config", "BedrockBoot2", "levilamina",
+            "ll.mods", "LeviLamina", "LeviLamina.dll");
+
+        return File.Exists(preLoadFile) && File.Exists(bedrockRuntime) && File.Exists(levilaminaMainFile);
     }
 }
 

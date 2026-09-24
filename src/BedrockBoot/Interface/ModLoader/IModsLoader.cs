@@ -24,6 +24,7 @@ namespace BedrockBoot.Interface.ModLoader;
 
 public interface IModsLoader
 {
+    public static virtual bool IsInstallModLoader(string path) => false;
     public string LoaderName { get; }
     public string LoaderDescription { get; }
     public bool CanRemove { get; }

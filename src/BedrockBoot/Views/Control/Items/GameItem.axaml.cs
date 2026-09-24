@@ -21,20 +21,24 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BedrockBoot.Base.Entry.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameItem : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+    private ImageLoader _imageLoader = new ImageLoader();
+
     public GameItem()
     {
         InitializeComponent();
@@ -42,8 +46,8 @@ public partial class GameItem : UserControl
 
     protected override void OnUnloaded(RoutedEventArgs e)
     {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
+        base.OnUnloaded(e);
+        _imageLoader.Dispose();
     }
 
     public GameItem(VersionConfig info) : this()
@@ -64,6 +68,12 @@ public partial class GameItem : UserControl
             EditModule.IsVisible = true;
 
         Card.ImageIcon = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
+        if (LeviLamina.IsInstallModLoader(VersionInfo.VersionPath!))
+            ModLoadersPanel.Children.Add(new LabelBox()
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                Text = "LeviLamina"
+            });
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)

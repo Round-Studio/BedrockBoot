@@ -37,6 +37,7 @@ public class PreLoaderNet : IModsLoader
     {
     }
 
+    public static bool IsInstallModLoader(string path) => true;
     public string LoaderName { get; } = "原版加载器";
     public string LoaderDescription { get; } = "BedrockBoot 原版加载器 (PreLoad.NET)";
     public bool CanRemove { get; } = false;

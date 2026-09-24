@@ -21,6 +21,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Base.Entry.Game;
@@ -179,33 +180,6 @@ public static class GameInfoHelper
         if (exeFile == null) return string.Empty;
 
         return Path.GetFileName(exeFile);
-    }
-
-    /// <summary>
-    /// 验证版本有效性
-    /// </summary>
-    public static bool IsInvalidVersion(VersionConfig config)
-    {
-        if (config == null || string.IsNullOrEmpty(config.VersionPath)) return false;
-
-        var indexJson = Path.Combine(config.VersionPath, ConfigSubPath, IndexFileName);
-
-        if (!File.Exists(indexJson)) return false;
-
-        try
-        {
-            // 简单的内容检查，避免加载大文件
-            var content = File.ReadAllText(indexJson);
-            if (string.IsNullOrWhiteSpace(content) || content == "[]") return false;
-
-            var body = new ConfigEntity<List<GameFileInfo>>(indexJson);
-            body.Load();
-            return body.Data != null && body.Data.Count > 0;
-        }
-        catch
-        {
-            return false;
-        }
     }
 
     public static MinecraftGameTypeVersion GetVersionTypeWithPackName(string packName)

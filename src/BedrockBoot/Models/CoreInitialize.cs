@@ -33,6 +33,7 @@ using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Models.Account.Microsoft.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Helper.GravityCone;
 using BedrockBoot.Models.Pack.Game.Loaders;
 using BedrockBoot.Models.Pack.Game.Options;
 using BedrockBoot.Proton;
@@ -111,8 +112,9 @@ public class CoreInitialize
 
             File.WriteAllText(Path.Combine(path, "config", ".launcher.info"),
                 Process.GetCurrentProcess().MainModule!.FileName);
-            Console.WriteLine(@"开始同步游戏配置文件");
             var config = GameInfoHelper.GetVersionConfig(path);
+            GamePortHelper.AddInstance(config);
+            Console.WriteLine(@"开始同步游戏配置文件");
             Console.WriteLine($@"当前实例配置：{config.Config.IsSyncPublicOptions}");
             if (config.Config.IsSyncPublicOptions)
             {

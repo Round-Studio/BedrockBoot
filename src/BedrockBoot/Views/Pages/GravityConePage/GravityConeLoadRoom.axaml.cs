@@ -27,6 +27,7 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.GravityCone;
 using BedrockBoot.GravityCone.Enum;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper.GravityCone;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -71,6 +72,7 @@ public partial class GravityConeLoadRoom : UserControl
                 if (client == null || !client.IsRunning)
                     throw new InvalidOperationException("联机组件未运行，请返回重新进入联机页面。");
 
+                GamePortHelper.UpdateAllInstancePortStatus(roomType);
                 if (roomType == RoomType.Host)
                 {
                     var room = await client.CreatePaperConnectRoomAsync(GlobalModel.XboxUserInfo.Gamertag);
@@ -78,7 +80,14 @@ public partial class GravityConeLoadRoom : UserControl
                     // 用户已点退出：房间已在 CLI 侧创建，需要关掉，且不再导航
                     if (_closed)
                     {
-                        try { await client.StopRoomAsync(); } catch { }
+                        try
+                        {
+                            await client.StopRoomAsync();
+                        }
+                        catch
+                        {
+                        }
+
                         return;
                     }
 
@@ -98,7 +107,14 @@ public partial class GravityConeLoadRoom : UserControl
 
                     if (_closed)
                     {
-                        try { await client.LeaveRoomAsync(); } catch { }
+                        try
+                        {
+                            await client.LeaveRoomAsync();
+                        }
+                        catch
+                        {
+                        }
+
                         return;
                     }
 

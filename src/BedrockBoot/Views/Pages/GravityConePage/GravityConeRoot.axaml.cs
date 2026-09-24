@@ -20,6 +20,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.GravityCone.Enum;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper.GravityCone;
 using BedrockBoot.Views.DialogContent.Multiplayer;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;

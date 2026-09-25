@@ -36,15 +36,35 @@ public class MinecraftSearch : ISearch
     private int _selectedGameTypeIndex;
 
     public SearchResourceType SearchType => SearchResourceType.Minecraft;
-    public bool SupportsPagination => true;
+
+    public async Task<List<SearchResultItemInfo>> GetRecommendAsync(int count = 2)
+    {
+        var versions = await Task.Run(() => VersionHelper.GetVersions());
+        var release = versions.Find(x => x.Type == MinecraftGameTypeVersion.Release);
+        var preview = versions.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
+        var list = new List<SearchResultItemInfo>()
+        {
+            new()
+            {
+                Id = release.ID,
+                Name = release.Key,
+                DateUpdated = Convert.ToDateTime(release.Date)
+            },
+            new()
+            {
+                Id = preview.ID,
+                Name = preview.Key,
+                DateUpdated = Convert.ToDateTime(preview.Date)
+            }
+        };
+        return list;
+    }
 
     public void SetExtraParameter(object parameter)
     {
         if (parameter is int index)
             _selectedGameTypeIndex = index;
     }
-
-    public object GetExtraParameter() => _selectedGameTypeIndex;
 
     public Task<List<SearchResultItemInfo>> SearchAsync(string keyword)
     {

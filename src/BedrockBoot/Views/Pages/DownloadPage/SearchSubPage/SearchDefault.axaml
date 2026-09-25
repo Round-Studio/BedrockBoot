@@ -9,7 +9,7 @@
              x:Class="BedrockBoot.Views.Pages.DownloadPage.SearchSubPage.SearchDefault">
     <Grid ColumnDefinitions="2.5*,7.5*"
           ColumnSpacing="0"
-          Margin="20,5,20,20">
+          Margin="20,5,5,20">
         <Grid Grid.Column="0"
               RowDefinitions="Auto,*"
               RowSpacing="8">
@@ -62,106 +62,178 @@
                              Message="{DynamicResource Download.Search.History.Empty.Message}" />
         </Grid>
 
-        <StackPanel Grid.Column="1" Spacing="10">
-            <items:BorderCard Name="VersionCard">
-                <Grid RowDefinitions="Auto,*">
-                    <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
-                        <Button DockPanel.Dock="Right" Classes="NoBorder" Click="GameListBtn_OnClick" Padding="6,4">
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE8FD;" />
-                                <TextBlock Text="{DynamicResource Download.Search.Action.VersionList}" />
-                            </StackPanel>
-                        </Button>
-                        <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.Group.Latest}"
-                                   VerticalAlignment="Center" />
-                    </DockPanel>
+        <ScrollViewer Grid.Column="1"
+                      Padding="0,0,15,0">
+            <StackPanel Spacing="10">
+                <items:BorderCard Name="VersionCard">
+                    <Grid RowDefinitions="Auto,*">
+                        <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Classes="NoBorder" Click="GameListBtn_OnClick" Padding="6,4">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE8FD;" />
+                                    <TextBlock Text="{DynamicResource Download.Search.Action.VersionList}" />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.Group.Latest}"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
 
-                    <Grid Grid.Row="1" IsVisible="False" Name="RecommendationPanel" ColumnDefinitions="*,*"
-                          ColumnSpacing="6">
-                        <widgets:SmallGameView Grid.Column="0" Name="ReleaseBtn" Click="ReleaseBtn_OnClick"
-                                               Icon="avares://BedrockBoot/Assets/Icon/Logo/Grass.png" />
-                        <widgets:SmallGameView Grid.Column="1" Name="PreviewBtn" Click="PreviewBtn_OnClick"
-                                               Icon="avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png" />
-                    </Grid>
-
-                    <Border Grid.Row="1" Height="44">
-                        <onePointControls:ProgressRing Name="LoadRing" HorizontalAlignment="Center" Height="36"
-                                                       Width="36" />
-                    </Border>
-                </Grid>
-            </items:BorderCard>
-
-            <items:BorderCard Name="ResourceCard">
-                <Grid RowDefinitions="Auto,*">
-                    <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
-                        <Button DockPanel.Dock="Right" Classes="NoBorder" Click="SearchRes_OnClick" Padding="6,4">
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
-                                <TextBlock Text="{DynamicResource Download.Search.Action.SearchResource}" />
-                            </StackPanel>
-                        </Button>
-                        <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.Group.PopularResources}" VerticalAlignment="Center" />
-                    </DockPanel>
-
-                    <Grid Grid.Row="1" Name="RecommendationGrid" IsVisible="False" ColumnDefinitions="*,*"
-                          ColumnSpacing="6">
-                        <widgets:BigResourceButton Grid.Column="0" Name="BigResourceBtn" />
-                        <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="6">
-                            <widgets:SmallResourceButton Grid.Row="0" Name="SmallResourceBtn1" />
-                            <widgets:SmallResourceButton Grid.Row="1" Name="SmallResourceBtn2" />
+                        <Grid Grid.Row="1" IsVisible="False" Name="RecommendationPanel" ColumnDefinitions="*,*"
+                              ColumnSpacing="6">
+                            <widgets:SmallGameView Grid.Column="0" Name="ReleaseBtn" Click="ReleaseBtn_OnClick"
+                                                   Icon="avares://BedrockBoot/Assets/Icon/Logo/Grass.png" />
+                            <widgets:SmallGameView Grid.Column="1" Name="PreviewBtn" Click="PreviewBtn_OnClick"
+                                                   Icon="avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png" />
                         </Grid>
+
+                        <Border Grid.Row="1" Height="44">
+                            <onePointControls:ProgressRing Name="LoadRing" HorizontalAlignment="Center" Height="36"
+                                                           Width="36" />
+                        </Border>
                     </Grid>
+                </items:BorderCard>
 
-                    <Border Grid.Row="1" Height="122">
-                        <onePointControls:ProgressRing Name="ResourceLoadRing" HorizontalAlignment="Center" Height="36"
-                                                       Width="36" />
-                    </Border>
-                </Grid>
-            </items:BorderCard>
-            
-            <items:BorderCard Name="PluginCard">
-                <Grid RowDefinitions="Auto,*">
-                    <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
-                        <Button DockPanel.Dock="Right" Classes="NoBorder" Name="SearchPlugin"
-                                Click="SearchPlugin_OnClick" Padding="6,4">
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
-                                <TextBlock Text="搜索插件" />
-                            </StackPanel>
-                        </Button>
-                        <TextBlock DockPanel.Dock="Left" Text="插件"
-                                   VerticalAlignment="Center" />
-                    </DockPanel>
+                <items:BorderCard Name="ResourceCard">
+                    <Grid RowDefinitions="Auto,*">
+                        <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Classes="NoBorder" Click="SearchRes_OnClick" Padding="6,4">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
+                                    <TextBlock Text="{DynamicResource Download.Search.Action.SearchResource}" />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock DockPanel.Dock="Left"
+                                       Text="{DynamicResource Download.Search.Group.PopularResources}"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
 
-                    <Grid Grid.Row="1" IsVisible="False" Name="PluginItem" ColumnDefinitions="*,*"
-                          ColumnSpacing="6">
-                        <widgets:SmallPluginView Grid.Column="0"
-                                                 Name="PluginView1"
-                                                 Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
-                        <widgets:SmallPluginView Grid.Column="1"
-                                                 Name="PluginView2"
-                                                 Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                        <Grid Grid.Row="1" Name="RecommendationGrid" IsVisible="False" ColumnDefinitions="*,*"
+                              ColumnSpacing="6">
+                            <widgets:BigResourceButton Grid.Column="0" Name="BigResourceBtn" />
+                            <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="6">
+                                <widgets:SmallResourceButton Grid.Row="0" Name="SmallResourceBtn1" />
+                                <widgets:SmallResourceButton Grid.Row="1" Name="SmallResourceBtn2" />
+                            </Grid>
+                        </Grid>
+
+                        <Border Grid.Row="1" Height="122">
+                            <onePointControls:ProgressRing Name="ResourceLoadRing" HorizontalAlignment="Center"
+                                                           Height="36"
+                                                           Width="36" />
+                        </Border>
                     </Grid>
+                </items:BorderCard>
 
-                    <Border Grid.Row="1" Height="44">
-                        <onePointControls:ProgressRing Name="PluginLoadRing" HorizontalAlignment="Center" Height="36"
-                                                       Width="36" />
-                    </Border>
-                </Grid>
-            </items:BorderCard>
+                <items:BorderCard Name="PluginCard">
+                    <Grid RowDefinitions="Auto,*">
+                        <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Classes="NoBorder" Name="SearchPlugin"
+                                    Click="SearchPlugin_OnClick" Padding="6,4">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
+                                    <TextBlock Text="搜索插件" />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock DockPanel.Dock="Left" Text="插件"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
 
-            <StackPanel HorizontalAlignment="Center"
-                        Opacity="0.8">
-                <TextBlock Text="{DynamicResource Download.Search.Tip.ManualSearch}"
-                           HorizontalAlignment="Center"
-                           FontSize="9" />
-                <TextBlock Text="{DynamicResource Download.Search.Tip.ChangeSource}"
-                           HorizontalAlignment="Center"
-                           FontSize="9" />
+                        <Grid Grid.Row="1" IsVisible="False" Name="PluginItem" ColumnDefinitions="*,*"
+                              ColumnSpacing="6">
+                            <widgets:SmallPluginView Grid.Column="0"
+                                                     Name="PluginView1"
+                                                     Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                            <widgets:SmallPluginView Grid.Column="1"
+                                                     Name="PluginView2"
+                                                     Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                        </Grid>
+
+                        <Border Grid.Row="1" Height="44">
+                            <onePointControls:ProgressRing Name="PluginLoadRing" HorizontalAlignment="Center"
+                                                           Height="36"
+                                                           Width="36" />
+                        </Border>
+                    </Grid>
+                </items:BorderCard>
+
+                <items:BorderCard Name="LeviLaminaModCard">
+                    <Grid RowDefinitions="Auto,*">
+                        <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Classes="NoBorder" Name="SearchLeviLaminaMod"
+                                    Click="SearchLeviLaminaMod_OnClick" Padding="6,4">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
+                                    <TextBlock Text="搜索模组" />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock DockPanel.Dock="Left" Text="LeviLamina 模组"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+
+                        <Grid Grid.Row="1" IsVisible="False" Name="LeviLaminaItem" ColumnDefinitions="*,*"
+                              ColumnSpacing="6">
+                            <widgets:SmallPluginView Grid.Column="0"
+                                                     Name="LLModView1"
+                                                     Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                            <widgets:SmallPluginView Grid.Column="1"
+                                                     Name="LLModView2"
+                                                     Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                        </Grid>
+
+                        <Border Grid.Row="1" Height="44">
+                            <onePointControls:ProgressRing Name="LLModLoadRing" HorizontalAlignment="Center"
+                                                           Height="36"
+                                                           Width="36" />
+                        </Border>
+                    </Grid>
+                </items:BorderCard>
+
+                <items:BorderCard Name="DllModCard">
+                    <Grid RowDefinitions="Auto,*">
+                        <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                            <Button DockPanel.Dock="Right" Classes="NoBorder" Name="SearchDllMod"
+                                    Click="SearchDllMod_OnClick" Padding="6,4">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
+                                    <TextBlock Text="搜索模组" />
+                                </StackPanel>
+                            </Button>
+                            <TextBlock DockPanel.Dock="Left" Text="Dll 模组"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+
+                        <Grid Grid.Row="1" IsVisible="False" Name="DllItem" ColumnDefinitions="*,*"
+                              ColumnSpacing="6">
+                            <widgets:SmallPluginView Grid.Column="0"
+                                                     Name="DllView1"
+                                                     Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                            <widgets:SmallPluginView Grid.Column="1"
+                                                     Name="DllView2"
+                                                     Icon="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                        </Grid>
+
+                        <Border Grid.Row="1" Height="44">
+                            <onePointControls:ProgressRing Name="DllRing" HorizontalAlignment="Center" Height="36"
+                                                           Width="36" />
+                        </Border>
+                    </Grid>
+                </items:BorderCard>
+
+                <StackPanel HorizontalAlignment="Center"
+                            Opacity="0.8">
+                    <TextBlock Text="{DynamicResource Download.Search.Tip.ManualSearch}"
+                               HorizontalAlignment="Center"
+                               FontSize="9" />
+                    <TextBlock Text="{DynamicResource Download.Search.Tip.ChangeSource}"
+                               HorizontalAlignment="Center"
+                               FontSize="9" />
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
+        </ScrollViewer>
 
-        <notice:InfoCard Grid.Column="1" Name="NetworkErrorNotice" IsVisible="False" BigTitle="{DynamicResource Download.Search.NetworkError.Title}" Message="{DynamicResource Download.Search.NetworkError.Message}"
+        <notice:InfoCard Grid.Column="1" Name="NetworkErrorNotice" IsVisible="False"
+                         BigTitle="{DynamicResource Download.Search.NetworkError.Title}"
+                         Message="{DynamicResource Download.Search.NetworkError.Message}"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center" />
     </Grid>

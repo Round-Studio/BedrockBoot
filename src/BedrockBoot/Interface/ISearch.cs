@@ -27,8 +27,7 @@ public interface ISearch
 {
     Task<List<SearchResultItemInfo>> SearchAsync(string keyword);
     Task<List<SearchResultItemInfo>> SearchAsync(string keyword, int page, int pageSize);
+    Task<List<SearchResultItemInfo>> GetRecommendAsync(int count = 2);
     SearchResourceType SearchType { get; }
-    bool SupportsPagination { get; }
     void SetExtraParameter(object parameter);
-    object GetExtraParameter();
 }

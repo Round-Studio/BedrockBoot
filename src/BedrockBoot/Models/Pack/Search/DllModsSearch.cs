@@ -42,8 +42,28 @@ namespace BedrockBoot.Models.Pack.Search
         private DateTime _cacheTime;
         private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(5);
 
+        public async Task<List<SearchResultItemInfo>> GetRecommendAsync(int count = 2)
+        {
+            var result = await SearchAsync("", 1, 100);
+
+            if (result == null || result.Count == 0 || count <= 0)
+                return new List<SearchResultItemInfo>();
+
+            count = Math.Min(count, result.Count);
+
+            var list = new List<SearchResultItemInfo>(result);
+            var random = Random.Shared;
+
+            for (int i = 0; i < count; i++)
+            {
+                int j = random.Next(i, list.Count);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+
+            return list.Take(count).ToList();
+        }
+
         public SearchResourceType SearchType => SearchResourceType.DllMods;
-        public bool SupportsPagination => true;
 
         public DllModsSearch()
         {
@@ -53,8 +73,6 @@ namespace BedrockBoot.Models.Pack.Search
         public void SetExtraParameter(object parameter)
         {
         }
-
-        public object GetExtraParameter() => null;
 
         public Task<List<SearchResultItemInfo>> SearchAsync(string keyword)
         {

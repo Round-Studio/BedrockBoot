@@ -33,6 +33,7 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Instance;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Models.Pack.Plugin.Market;
+using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
@@ -61,6 +62,8 @@ public partial class SearchDefault : UserControl
         _ = FetchLatestVersions();
         _ = LoadFeaturedResourcesAsync();
         _ = LoadPluginAsync();
+        _ = LoadLeviLaminaModsAsync();
+        _ = LoadDllModsAsync();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
@@ -154,9 +157,9 @@ public partial class SearchDefault : UserControl
     {
         try
         {
-            var versions = await Task.Run(() => VersionHelper.GetVersions());
-            var release = versions.Find(x => x.Type == MinecraftGameTypeVersion.Release);
-            var preview = versions.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
+            var versions = await (new MinecraftSearch()).GetRecommendAsync();
+            var release = versions[0];
+            var preview = versions[1];
 
             if (release == null && preview == null) throw new Exception("No versions found");
 
@@ -165,14 +168,14 @@ public partial class SearchDefault : UserControl
                 _versionLoadSuccess = true;
                 if (release != null)
                 {
-                    ReleaseBtn.Version = release.Key;
-                    ReleaseBtn.Description = $"{release.ID}, {release.Date}, {release.BuildType}";
+                    ReleaseBtn.Version = release.Name;
+                    ReleaseBtn.Description = $"{release.Id}, {release.DateUpdated}, Release";
                 }
 
                 if (preview != null)
                 {
-                    PreviewBtn.Version = preview.Key;
-                    PreviewBtn.Description = $"{preview.ID}, {preview.Date}, {preview.BuildType}";
+                    PreviewBtn.Version = preview.Name;
+                    PreviewBtn.Description = $"{preview.Id}, {preview.DateUpdated}, Preview";
                 }
 
                 RecommendationPanel.IsVisible = true;
@@ -194,67 +197,105 @@ public partial class SearchDefault : UserControl
         }
     }
 
-    // --- 插件加载 ---
+    private async Task LoadLeviLaminaModsAsync()
+    {
+        try
+        {
+            var client = await (new LeviLaminaModSearch()).GetRecommendAsync();
+            var plugin1 = client[0];
+            var plugin2 = client[1];
+
+            LLModView1.PluginName = plugin1.Name;
+            LLModView1.Description = plugin1.Description;
+            LLModView2.PluginName = plugin2.Name;
+            LLModView2.Description = plugin2.Description;
+
+            LLModView1.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin1));
+            LLModView2.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin2));
+
+            LLModLoadRing.IsVisible = false;
+            LeviLaminaItem.IsVisible = true;
+
+            var tasks = new[]
+            {
+                _imageLoader.LoadIconAsync(plugin1.IconUri),
+                _imageLoader.LoadIconAsync(plugin2.IconUri)
+            };
+
+            await Task.WhenAll(tasks);
+            LLModView1.Icon = await tasks[0];
+            LLModView2.Icon = await tasks[1];
+        }
+        catch
+        {
+            LeviLaminaModCard.IsVisible = false;
+        }
+    }
+
+    private async Task LoadDllModsAsync()
+    {
+        try
+        {
+            var client = await (new DllModsSearch()).GetRecommendAsync();
+            var plugin1 = client[0];
+            var plugin2 = client[1];
+
+            DllView1.PluginName = plugin1.Name;
+            DllView1.Description = plugin1.Description;
+            DllView2.PluginName = plugin2.Name;
+            DllView2.Description = plugin2.Description;
+
+            DllView1.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin1));
+            DllView2.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin2));
+
+            DllRing.IsVisible = false;
+            DllItem.IsVisible = true;
+
+            var tasks = new[]
+            {
+                _imageLoader.LoadIconAsync(plugin1.IconUri),
+                _imageLoader.LoadIconAsync(plugin2.IconUri)
+            };
+
+            await Task.WhenAll(tasks);
+            DllView1.Icon = await tasks[0];
+            DllView2.Icon = await tasks[1];
+        }
+        catch
+        {
+            DllModCard.IsVisible = false;
+        }
+    }
+
     private async Task LoadPluginAsync()
     {
         try
         {
-            var client = new MarketClient();
-            var pluginList = await client.GetPluginsAsync();
-            var plugin1 = pluginList[0];
-            var plugin2 = pluginList[1];
+            var client = await (new PluginPackSearch()).GetRecommendAsync();
+            var plugin1 = client[0];
+            var plugin2 = client[1];
 
-            plugin1.IconUrl = $"{SourceList.MarketApiHost}{plugin1.IconUrl}";
-            plugin2.IconUrl = $"{SourceList.MarketApiHost}{plugin2.IconUrl}";
-
-            PluginView1.PluginName = plugin1.PluginName;
+            PluginView1.PluginName = plugin1.Name;
             PluginView1.Description = plugin1.Description;
-            PluginView2.PluginName = plugin2.PluginName;
+            PluginView2.PluginName = plugin2.Name;
             PluginView2.Description = plugin2.Description;
 
-            var item1 = new SearchResultItemInfo
-            {
-                Name = plugin1.PluginName,
-                Id = $"{plugin1.RepositoryOwner}.{plugin1.RepositoryName}",
-                Description = plugin1.Description,
-                Authors = new List<string>() { plugin1.Username },
-                DownloadCount = 0,
-                IconUri = plugin1.IconUrl,
-                Labels = plugin1.Labels,
-                Images = null,
-                SourceWebsite = plugin1.RepositoryUrl,
-                JsonData = JsonSerializer.Serialize(plugin1),
-                ResourceType = SearchResourceType.PluginPack
-            };
-            var item2 = new SearchResultItemInfo
-            {
-                Name = plugin2.PluginName,
-                Id = $"{plugin2.RepositoryOwner}.{plugin2.RepositoryName}",
-                Description = plugin2.Description,
-                Authors = new List<string>() { plugin2.Username },
-                DownloadCount = 0,
-                IconUri = plugin2.IconUrl,
-                Labels = plugin2.Labels,
-                Images = null,
-                SourceWebsite = plugin2.RepositoryUrl,
-                JsonData = JsonSerializer.Serialize(plugin2),
-                ResourceType = SearchResourceType.PluginPack
-            };
-
-            // PluginView1.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin1), $"插件详细信息：{plugin1.PluginName}");
-            // PluginView2.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin2), $"插件详细信息：{plugin2.PluginName}");
             PluginView1.Click += (s, e) =>
-                DownloadRoot.Instance.NavigateTo(new ResultRoot(item1));
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin1));
             PluginView2.Click += (s, e) =>
-                DownloadRoot.Instance.NavigateTo(new ResultRoot(item2));
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin2));
 
             PluginLoadRing.IsVisible = false;
             PluginItem.IsVisible = true;
 
             var tasks = new[]
             {
-                _imageLoader.LoadIconAsync(plugin1.IconUrl),
-                _imageLoader.LoadIconAsync(plugin2.IconUrl)
+                _imageLoader.LoadIconAsync(plugin1.IconUri),
+                _imageLoader.LoadIconAsync(plugin2.IconUri)
             };
 
             await Task.WhenAll(tasks);
@@ -362,5 +403,15 @@ public partial class SearchDefault : UserControl
     private void SearchPlugin_OnClick(object? sender, RoutedEventArgs e)
     {
         NavigateSearch(SearchResourceType.PluginPack);
+    }
+
+    private void SearchLeviLaminaMod_OnClick(object? sender, RoutedEventArgs e)
+    {
+        NavigateSearch(SearchResourceType.LeviLaminaMods);
+    }
+
+    private void SearchDllMod_OnClick(object? sender, RoutedEventArgs e)
+    {
+        NavigateSearch(SearchResourceType.DllMods);
     }
 }

@@ -40,8 +40,38 @@ namespace BedrockBoot.Models.Pack.Search
         private bool _enableFuzzySearch;
         private static readonly int[] CurseForgeClassIds = [4984, 6913, 6929, 6940, 6925];
 
+        public async Task<List<SearchResultItemInfo>> GetRecommendAsync(int count = 3)
+        {
+            var result = await _apiClient.GetFeaturedModsAsync();
+            var items = new List<SearchResultItemInfo>();
+            result.Data.Featured.ForEach(i =>
+            {
+                var authorNames = i.Authors.Select(a => a.Name).ToList();
+                var categories = i.Categories.Select(a => a.Name).ToList();
+                var item = new SearchResultItemInfo
+                {
+                    Name = i.Name,
+                    Id = i.Id.ToString(),
+                    Description = i.Summary,
+                    DateUpdated = i.DateReleased,
+                    DateCreated = i.DateCreated,
+                    Authors = authorNames,
+                    DownloadCount = (uint)i.DownloadCount,
+                    IconUri = i.Logo.Url,
+                    Labels = categories,
+                    Images = i.Screenshots.Select(a => a.Url).ToList(),
+                    SourceWebsite = i.Links.WebsiteUrl,
+                    JsonData = JsonSerializer.Serialize(i),
+                    ResourceType = SearchResourceType.ResourcePack
+                };
+                item.OnClick = s => { DownloadRoot.Instance.NavigateTo(new ResultRoot(item)); };
+                items.Add(item);
+            });
+            
+            return items;
+        }
+
         public SearchResourceType SearchType => SearchResourceType.ResourcePack;
-        public bool SupportsPagination => true;
 
         public CurseForgeSearch()
         {
@@ -58,8 +88,6 @@ namespace BedrockBoot.Models.Pack.Search
                     : null;
             }
         }
-
-        public object GetExtraParameter() => _selectedClassId;
 
         public Task<List<SearchResultItemInfo>> SearchAsync(string keyword)
         {

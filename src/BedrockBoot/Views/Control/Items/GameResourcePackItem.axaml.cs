@@ -28,6 +28,7 @@ using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
 using BedrockBoot.Base.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Skin;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -47,11 +48,15 @@ public partial class GameResourcePackItem : UserControl
         ResourcePackManifest = maf;
         UpdateUI();
         ControlBox.IsVisible = !isImport;
+        Loaded += (sender, args) => 
+            SettingBtn.IsVisible = IsEnableEdit;
     }
 
     private static I18nManager i18n => I18nManager.Instance;
     public Action? RefreshCallBack { get; set; }
     public ResourcePackManifest ResourcePackManifest { get; set; } = null!;
+    public bool IsEnableEdit { get; set; } = false;
+
     protected override void OnUnloaded(RoutedEventArgs e)
     {
 	    base.OnUnloaded(e);
@@ -153,6 +158,19 @@ public partial class GameResourcePackItem : UserControl
             Title = "预览皮肤包",
             Content = new DialogSkinPackViewerContent(ResourcePackManifest.PackRootPath),
             CloseButtonText = "完成"
+        });
+    }
+
+    private void SettingBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new DialogSettingResourcePackContent(ResourcePackManifest);
+        DialogHost.Show(new()
+        {
+            Title = "编辑行为包",
+            Content = dialog,
+            CloseButtonText = "确定修改并保存",
+            PrimaryButtonText = "取消",
+            CloseAction = dialog.OnSave
         });
     }
 }

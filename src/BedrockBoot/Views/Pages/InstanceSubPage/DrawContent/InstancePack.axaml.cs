@@ -116,6 +116,7 @@ public partial class InstancePack : ISetting
         ScBox.IsVisible = true;
         ResultBox.Children.AddRange(packs.Select(pack => new GameResourcePackItem(pack)
         {
+            IsEnableEdit = true,
             RefreshCallBack = () => _ = RefreshPacksAsync()
         }));
     }

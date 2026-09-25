@@ -50,10 +50,10 @@ public partial class DrawInstanceContent : UserControl
         GameControls.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableGameInstanceControl;
 #endif
 
-#if LINUX
+/*#if LINUX
         Mods.IsVisible = false;
         Loaders.IsVisible = false;
-#endif
+#endif*/
     }
 
     public DrawInstanceContent(VersionConfig info) : this()

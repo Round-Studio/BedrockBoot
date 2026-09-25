@@ -528,7 +528,8 @@ public partial class MainWindow : Window
                         BackgroundImage = packConfig.BackgroundImageFileName,
                         BackgroundImageOpacity = packConfig.BackgroundImageOpacity,
                         BackgroundImageBlur = packConfig.BackgroundImageBlur,
-                        BackgroundAnimation = packConfig.BackgroundAnimation
+                        BackgroundAnimation = packConfig.BackgroundAnimation,
+                        StyleType = StyleType.Image
                     });
                     BackgroundView.IsVisible = true;
 

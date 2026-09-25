@@ -66,12 +66,7 @@ public class MinecraftSearch : ISearch
             _selectedGameTypeIndex = index;
     }
 
-    public Task<List<SearchResultItemInfo>> SearchAsync(string keyword)
-    {
-        return SearchAsync(keyword, 1, 50);
-    }
-
-    public Task<List<SearchResultItemInfo>> SearchAsync(string keyword, int page, int pageSize)
+    public Task<SearchResultPage> SearchPageAsync(string keyword, int page, int pageSize)
     {
         return Task.Run(() =>
         {
@@ -140,7 +135,11 @@ public class MinecraftSearch : ISearch
                 });
             });
 
-            return items;
+            return new SearchResultPage
+            {
+                Items = items,
+                TotalCount = filteredVersions.Count
+            };
         });
     }
 

@@ -25,8 +25,7 @@ namespace BedrockBoot.Interface;
 
 public interface ISearch
 {
-    Task<List<SearchResultItemInfo>> SearchAsync(string keyword);
-    Task<List<SearchResultItemInfo>> SearchAsync(string keyword, int page, int pageSize);
+    Task<SearchResultPage> SearchPageAsync(string keyword, int page, int pageSize);
     Task<List<SearchResultItemInfo>> GetRecommendAsync(int count = 2);
     SearchResourceType SearchType { get; }
     void SetExtraParameter(object parameter);

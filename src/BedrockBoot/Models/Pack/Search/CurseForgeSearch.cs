@@ -67,7 +67,7 @@ namespace BedrockBoot.Models.Pack.Search
                 item.OnClick = s => { DownloadRoot.Instance.NavigateTo(new ResultRoot(item)); };
                 items.Add(item);
             });
-            
+
             return items;
         }
 
@@ -89,12 +89,7 @@ namespace BedrockBoot.Models.Pack.Search
             }
         }
 
-        public Task<List<SearchResultItemInfo>> SearchAsync(string keyword)
-        {
-            return SearchAsync(keyword, 1, 50);
-        }
-
-        public async Task<List<SearchResultItemInfo>> SearchAsync(string keyword, int page, int pageSize)
+        public async Task<SearchResultPage> SearchPageAsync(string keyword, int page, int pageSize)
         {
             var currentIndex = (page - 1) * pageSize;
             var result =
@@ -130,7 +125,11 @@ namespace BedrockBoot.Models.Pack.Search
                 items.Add(item);
             });
 
-            return items;
+            return new SearchResultPage
+            {
+                Items = items,
+                TotalCount = result.Pagination?.TotalCount ?? items.Count
+            };
         }
 
         private bool IsResourcePackMatch(dynamic mod, string keyword)

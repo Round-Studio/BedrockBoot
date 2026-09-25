@@ -87,6 +87,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             SaveSearchType(info.Type);
             SaveSearchHistory(info);
             _currentPage = 1;
+            _totalPages = 1;
             ExecuteSearch(info);
         }
 
@@ -112,8 +113,12 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
         private void GoToPage(int pageNumber)
         {
-            if (_isSearching) return;
-            _currentPage = Math.Clamp(pageNumber, 1, _totalPages);
+            if (_isSearching || _totalPages <= 0) return;
+
+            var target = Math.Clamp(pageNumber, 1, _totalPages);
+            if (target == _currentPage) return;
+
+            _currentPage = target;
             ExecuteSearch(SearchInfo);
         }
 
@@ -169,37 +174,51 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
         private async Task PerformSearchAsync(SearchInfo info)
         {
+            SearchResultPage? result = null;
+            Exception? error = null;
+
             try
             {
-                var items = await _currentSearch.SearchAsync(info.Key, _currentPage, PageSize);
-                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => UpdateUIWithResults(items));
+                result = await _currentSearch.SearchPageAsync(info.Key, _currentPage, PageSize);
             }
             catch (Exception ex)
             {
-                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => UpdateUIWithError(ex));
+                error = ex;
             }
-            finally
+
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
             {
-                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    _isSearching = false;
-                    IsEdit = true;
-                });
-            }
+                _isSearching = false;
+                IsEdit = true;
+
+                if (error != null)
+                    UpdateUIWithError(error);
+                else if (result != null)
+                    UpdateUIWithResults(result);
+            });
         }
 
-        private void UpdateUIWithResults(List<SearchResultItemInfo> items)
+        private void UpdateUIWithResults(SearchResultPage result)
         {
             LoadingRing.IsVisible = false;
 
-            if (items.Count > 0)
+            _totalPages = result.GetTotalPages(PageSize);
+
+            if (_totalPages > 0 && _currentPage > _totalPages)
             {
-                ResultPage.Update(CreateResultsScrollViewer(items), _totalPages, _currentPage);
+                GoToPage(_totalPages);
+                return;
+            }
+
+            if (result.Items.Count > 0)
+            {
+                ResultPage.Update(CreateResultsScrollViewer(result.Items), _totalPages, _currentPage);
                 ResultPage.IsVisible = true;
                 NoneBox.IsVisible = false;
             }
             else
             {
+                _totalPages = 0;
                 ResultPage.IsVisible = false;
                 NoneBox.IsVisible = true;
             }
@@ -208,6 +227,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         private void UpdateUIWithError(Exception ex)
         {
             LoadingRing.IsVisible = false;
+            _totalPages = 0;
             NoneBox.IsVisible = true;
             ResultPage.IsVisible = false;
             Console.WriteLine($@"搜索失败: {ex}");

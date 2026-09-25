@@ -44,7 +44,7 @@ namespace BedrockBoot.Models.Pack.Search
 
         public async Task<List<SearchResultItemInfo>> GetRecommendAsync(int count = 2)
         {
-            var result = await SearchAsync("", 1, 100);
+            var result = (await SearchPageAsync("", 1, 100)).Items;
 
             if (result == null || result.Count == 0 || count <= 0)
                 return new List<SearchResultItemInfo>();
@@ -74,12 +74,7 @@ namespace BedrockBoot.Models.Pack.Search
         {
         }
 
-        public Task<List<SearchResultItemInfo>> SearchAsync(string keyword)
-        {
-            return SearchAsync(keyword, 1, 50);
-        }
-
-        public async Task<List<SearchResultItemInfo>> SearchAsync(string keyword, int page, int pageSize)
+        public async Task<SearchResultPage> SearchPageAsync(string keyword, int page, int pageSize)
         {
             var packages = await GetPackagesAsync();
 
@@ -119,7 +114,11 @@ namespace BedrockBoot.Models.Pack.Search
                 items.Add(item);
             });
 
-            return items;
+            return new SearchResultPage
+            {
+                Items = items,
+                TotalCount = filteredPackages.Count
+            };
         }
 
         private async Task<List<DllPackage>> GetPackagesAsync()

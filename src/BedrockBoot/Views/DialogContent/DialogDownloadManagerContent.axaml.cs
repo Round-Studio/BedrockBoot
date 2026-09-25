@@ -65,9 +65,10 @@ public partial class DialogDownloadManagerContent : UserControl
     {
         _mainPanel = new StackPanel();
 
-        var headerPanel = new StackPanel
+        var headerPanel = new Grid()
         {
-            Orientation = Orientation.Horizontal,
+            ColumnDefinitions = new ColumnDefinitions("Auto,*"),
+            ColumnSpacing = 0,
             Margin = new Thickness(0, 0, 0, 12)
         };
 
@@ -84,6 +85,9 @@ public partial class DialogDownloadManagerContent : UserControl
             VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
+
+        Grid.SetColumn(progressRing, 0);
+        Grid.SetColumn(textStack, 1);
 
         _mainProgressText = new TextBlock
         {

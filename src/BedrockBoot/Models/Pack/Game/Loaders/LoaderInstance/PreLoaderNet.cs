@@ -91,7 +91,7 @@ public class PreLoaderNet : IModsLoader
     {
     }
 
-    private string GetAllInstalledVersion()
+    private string? GetAllInstalledVersion()
     {
         try
         {
@@ -104,7 +104,7 @@ public class PreLoaderNet : IModsLoader
             }
 
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(dllPath);
-            string version = versionInfo.FileVersion ?? versionInfo.ProductVersion ?? "未知版本";
+            string version = versionInfo.FileVersion ?? versionInfo.ProductVersion ?? null;
 
             Console.WriteLine(@$"Version: {version}");
             return version;

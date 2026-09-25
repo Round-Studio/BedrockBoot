@@ -44,6 +44,10 @@ public partial class ModLoaderItem : ISetting
     {
         _instance = instance;
         _loader = loader;
+        _loader.OnUpdate = async () =>
+        {
+            await UpdateUi();
+        };
         _ = UpdateUi();
     }
 
@@ -54,7 +58,12 @@ public partial class ModLoaderItem : ISetting
 
         LoaderName.Text = _loader.LoaderName;
         LoaderCard.Description = _loader.LoaderDescription;
-        LoaderInstallStatus.Text = !_loader.IsInstalled() ? "未安装" : _loader.GetInstalledVersion();
+        if (_loader.IsInstalled())
+        {
+            var version = _loader.GetInstalledVersion();
+            LoaderInstallStatus.Text = !_loader.IsInstalled() ? "未安装" : version;
+            LoaderInstallStatus.IsVisible = !string.IsNullOrEmpty(version);
+        }
         if (!string.IsNullOrEmpty(_loader.IconUri))
         {
             LoaderCard.IsFontIcon = false;

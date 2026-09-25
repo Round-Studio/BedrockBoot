@@ -215,6 +215,7 @@ public class LeviLamina : IModsLoader
                             });
                         }
                     );
+                    OnUpdate?.Invoke();
                 }
             }
         });

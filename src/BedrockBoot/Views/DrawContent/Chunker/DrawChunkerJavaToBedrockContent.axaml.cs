@@ -108,7 +108,7 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
                 Content = new DialogChunkerConversionContent(
                     ChunkerType.JavaToBedrock,
                     SaveType.File,
-                    BedrockBoot.Chunker.Chunker.SupportJava[GameVersionChoose.SelectedIndex],
+                    BedrockBoot.Chunker.Chunker.SupportBedrock[GameVersionChoose.SelectedIndex],
                     WorldPath.Text!,
                     result)
             });

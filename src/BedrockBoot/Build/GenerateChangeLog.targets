@@ -1,0 +1,200 @@
+<Project>
+
+  <PropertyGroup>
+    <GenerateChangeLogEnabled Condition="'$(GenerateChangeLogEnabled)' == ''">true</GenerateChangeLogEnabled>
+    <GenerateChangeLogRepoRoot Condition="'$(GenerateChangeLogRepoRoot)' == ''">$(MSBuildProjectDirectory)/../..</GenerateChangeLogRepoRoot>
+    <GenerateChangeLogOutputDir Condition="'$(GenerateChangeLogOutputDir)' == ''">$(MSBuildProjectDirectory)/Assets/Text</GenerateChangeLogOutputDir>
+    <GenerateChangeLogOutput Condition="'$(GenerateChangeLogOutput)' == ''">$(GenerateChangeLogOutputDir)/ChangLog.txt</GenerateChangeLogOutput>
+    <GenerateChangeLogFirstBuildCount Condition="'$(GenerateChangeLogFirstBuildCount)' == ''">10</GenerateChangeLogFirstBuildCount>
+    <GenerateChangeLogCurrentTag Condition="'$(GenerateChangeLogCurrentTag)' == ''"></GenerateChangeLogCurrentTag>
+    <BuildType Condition="'$(BuildType)' == ''">Release</BuildType>
+  </PropertyGroup>
+
+  <UsingTask TaskName="GenerateChangeLogTask"
+             TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <RepoRoot ParameterType="System.String" Required="true" />
+      <OutputFile ParameterType="System.String" Required="true" />
+      <FirstBuildCount ParameterType="System.Int32" Required="false" />
+      <CurrentTag ParameterType="System.String" Required="false" />
+      <BuildType ParameterType="System.String" Required="false" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Collections.Generic" />
+      <Using Namespace="System.Diagnostics" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        if (FirstBuildCount <= 0) FirstBuildCount = 10;
+
+        var isPreview = string.Equals(BuildType, "Preview", StringComparison.OrdinalIgnoreCase);
+
+        var repoRoot = Path.GetFullPath(RepoRoot);
+        var outputFile = Path.GetFullPath(OutputFile);
+
+        string RunGit(string args)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "git",
+                Arguments = args,
+                WorkingDirectory = repoRoot,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8
+            };
+            using (var p = Process.Start(psi))
+            {
+                var stdout = p.StandardOutput.ReadToEnd();
+                var stderr = p.StandardError.ReadToEnd();
+                p.WaitForExit();
+                if (p.ExitCode != 0)
+                {
+                    Log.LogMessage(Microsoft.Build.Framework.MessageImportance.High,
+                        "git " + args + " exited " + p.ExitCode + ": " + stderr.Trim());
+                    return null;
+                }
+                return stdout;
+            }
+        }
+
+        string JsonEscape(string s)
+        {
+            if (s == null) return "";
+            var sb = new StringBuilder(s.Length + 8);
+            foreach (var c in s)
+            {
+                switch (c)
+                {
+                    case '\\': sb.Append("\\\\"); break;
+                    case '"':  sb.Append("\\\""); break;
+                    case '\n': sb.Append("\\n"); break;
+                    case '\r': sb.Append("\\r"); break;
+                    case '\t': sb.Append("\\t"); break;
+                    case '\b': sb.Append("\\b"); break;
+                    case '\f': sb.Append("\\f"); break;
+                    default:
+                        if (c < 0x20)
+                            sb.Append("\\u").Append(((int)c).ToString("x4"));
+                        else
+                            sb.Append(c);
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
+
+        RunGit("fetch --tags --quiet");
+
+        var tagsRaw = RunGit("tag --list --sort=-creatordate");
+
+        var tagShape = new Regex(@"^v(\d+)\.(\d+)\.(\d+)\.(\d+)$");
+
+        bool IsPreviewTag(string tag)
+        {
+            var m = tagShape.Match(tag);
+            if (!m.Success) return false;
+            return m.Groups[1].Value.Length == 4;
+        }
+
+        var prevTag = "";
+        if (!string.IsNullOrEmpty(tagsRaw))
+        {
+            foreach (var line in tagsRaw.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var t = line.Trim();
+                if (t.Length == 0) continue;
+                if (!string.IsNullOrEmpty(CurrentTag) && t == CurrentTag) continue;
+                if (!tagShape.IsMatch(t)) continue;
+
+                if (IsPreviewTag(t) == isPreview)
+                {
+                    prevTag = t;
+                    break;
+                }
+            }
+        }
+
+        string logArgs;
+        if (string.IsNullOrEmpty(prevTag))
+        {
+            logArgs = "log -" + FirstBuildCount + " --no-merges --pretty=format:\"%s%x1f%an%x1f%cI%x1f%H\"";
+        }
+        else
+        {
+            var prevTime = RunGit("log -1 --format=%cI " + prevTag);
+            if (prevTime == null) prevTime = "";
+            prevTime = prevTime.Trim();
+
+            logArgs = "log --since=\"" + prevTime + "\" --no-merges --pretty=format:\"%s%x1f%an%x1f%cI%x1f%H\"";
+        }
+
+        var logRaw = RunGit(logArgs);
+        var jsonLines = new List<string>();
+
+        if (!string.IsNullOrEmpty(logRaw))
+        {
+            foreach (var line in logRaw.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var parts = line.Split('\x1f');
+                if (parts.Length < 4) continue;
+
+                var message = parts[0];
+                var author  = parts[1];
+                var date    = parts[2];
+                var hash    = parts[3];
+
+                var json = "{\"message\":\"" + JsonEscape(message) + "\","
+                         + "\"author\":\"" + JsonEscape(author) + "\","
+                         + "\"date\":\"" + JsonEscape(date) + "\","
+                         + "\"hash\":\"" + JsonEscape(hash) + "\"}";
+
+                jsonLines.Add(json);
+            }
+        }
+
+        var dir = Path.GetDirectoryName(outputFile);
+        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+        File.WriteAllText(outputFile, string.Join("\n", jsonLines) + (jsonLines.Count > 0 ? "\n" : ""), new UTF8Encoding(false));
+
+        Log.LogMessage(Microsoft.Build.Framework.MessageImportance.High,
+            "ChangeLog written: " + outputFile + " (BuildType=" + (isPreview ? "Preview" : "Release") + ", prevTag=" + (prevTag.Length == 0 ? "<none>" : prevTag) + ", count=" + jsonLines.Count + ")");
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="GenerateChangeLog"
+          BeforeTargets="BeforeCompile"
+          Condition="'$(GenerateChangeLogEnabled)' == 'true'">
+
+    <Message Importance="high" Text="=== GenerateChangeLog ===" />
+    <Message Importance="high" Text="  BuildType: $(BuildType)" />
+    <Message Importance="high" Text="  Output   : $(GenerateChangeLogOutput)" />
+
+    <GenerateChangeLogTask
+            RepoRoot="$(GenerateChangeLogRepoRoot)"
+            OutputFile="$(GenerateChangeLogOutput)"
+            FirstBuildCount="$(GenerateChangeLogFirstBuildCount)"
+            CurrentTag="$(GenerateChangeLogCurrentTag)"
+            BuildType="$(BuildType)" />
+
+    <ItemGroup>
+      <Content Include="$(GenerateChangeLogOutput)" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <Message Importance="high" Text="=== GenerateChangeLog done ===" />
+  </Target>
+
+</Project>

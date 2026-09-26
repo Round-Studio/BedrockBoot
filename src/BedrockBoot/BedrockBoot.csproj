@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="Build/GenerateChangeLog.targets" />
+    
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <Nullable>enable</Nullable>
@@ -40,9 +42,8 @@
         </Content>
         <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Include="Manifest\Function\FunctionOption.json"/>
-        <None Remove="Assets\Web\LoginFinish.html" />
         <AvaloniaResource Include="Assets\Web\LoginFinish.html" />
-        <None Remove="Manifest\DefaultCustomManifest.json" />
+        <AvaloniaResource Include="Assets\Text\ChangLog.txt" />
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
         <Folder Include="Assets\Svg\"/>
         <AvaloniaXaml Include="I18n\**"/>

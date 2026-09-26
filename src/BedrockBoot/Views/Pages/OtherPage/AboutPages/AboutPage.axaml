@@ -185,6 +185,7 @@
                                           Glyph="&#xF4AA;"
                                           Name="VersionCard"
                                           Click="VersionCard_OnClick"
+                                          IsClickable="True" 
                                           Header="{DynamicResource About.Action.Version.Title}"
                                           Description="{x:Static global:GlobalModel.BodyVersion}">
             </onePointControls:SettingCard>

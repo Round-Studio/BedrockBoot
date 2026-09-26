@@ -87,6 +87,7 @@
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
-    
-    <Import Project="Build/GenerateChangeLog.targets" />
+
+    <Import Project="Build/GenerateChangeLog.targets"
+            Condition="'$(Configuration)' == 'Release'"/>
 </Project>

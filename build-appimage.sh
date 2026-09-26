@@ -2,8 +2,9 @@
 
 # ======================================================
 # 使用 DotnetPackaging.Tool 构建 .NET AppImage
-# 用法: ./build-appimage.sh <项目路径或发布目录> [应用名称] [图标路径] [-version <版本号>]
+# 用法: ./build-appimage.sh <项目路径或发布目录> [应用名称] [图标路径] [-version <版本号>] [/p:Key=Value ...]
 # 示例: ./build-appimage.sh ./src/MyApp.csproj "我的应用" ./icon.png -version 1.2.3
+#       ./build-appimage.sh ./src/MyApp.csproj "我的应用" ./icon.png -version 1.2.3 /p:BuildType=Preview
 #       ./build-appimage.sh ./publish/linux-x64 "我的应用" -version 2.0.0
 # ======================================================
 
@@ -27,6 +28,7 @@ CONFIGURATION="Release"
 OUTPUT_DIR="./artifacts"
 PUBLISH_DIR="./publish/${RUNTIME}/${CONFIGURATION}"
 VERSION=""
+EXTRA_MSBUILD_ARGS=""
 
 # 解析参数
 INPUT_PATH=""
@@ -38,6 +40,10 @@ while [[ $# -gt 0 ]]; do
         -version)
             VERSION="$2"
             shift 2
+            ;;
+        -p:*|/p:*)
+            EXTRA_MSBUILD_ARGS="${EXTRA_MSBUILD_ARGS} $1"
+            shift
             ;;
         *)
             if [ -z "${INPUT_PATH}" ]; then
@@ -56,10 +62,11 @@ done
 
 # 参数检查
 if [ -z "${INPUT_PATH}" ]; then
-    echo "用法: $0 <项目路径或发布目录> [应用名称] [图标路径] [-version <版本号>]"
+    echo "用法: $0 <项目路径或发布目录> [应用名称] [图标路径] [-version <版本号>] [/p:Key=Value ...]"
     echo "示例: $0 ./src/MyApp.csproj"
     echo "      $0 ./src/MyApp.csproj '我的应用' ./icon.png"
     echo "      $0 ./src/MyApp.csproj '我的应用' -version 1.2.3"
+    echo "      $0 ./src/MyApp.csproj '我的应用' ./icon.png -version 1.2.3 /p:BuildType=Preview"
     echo "      $0 ./publish/linux-x64 '我的应用' -version 2.0.0"
     exit 1
 fi
@@ -113,6 +120,12 @@ publish_if_needed() {
             print_info "设置版本号: ${VERSION}"
         fi
         
+        # 透传额外的 MSBuild 参数（如 /p:BuildType=Preview）
+        if [ -n "${EXTRA_MSBUILD_ARGS}" ]; then
+            PUBLISH_CMD="${PUBLISH_CMD} ${EXTRA_MSBUILD_ARGS}"
+            print_info "额外 MSBuild 参数:${EXTRA_MSBUILD_ARGS}"
+        fi
+        
         eval ${PUBLISH_CMD}
         
         PUBLISH_DIR_ABS=$(realpath "${PUBLISH_DIR}")
@@ -163,10 +176,6 @@ package_appimage() {
         print_info "使用自定义图标: ${ICON_PATH}"
     fi
     
-    # 可选：添加更多元数据（取消注释即可使用）
-    # CMD="${CMD} --comment \"应用详细描述\""
-    # CMD="${CMD} --homepage \"https://example.com\""
-    
     eval ${CMD}
     
     if [ $? -eq 0 ]; then
@@ -209,6 +218,10 @@ main() {
     
     if [ -n "${VERSION}" ]; then
         print_info "目标版本: ${VERSION}"
+    fi
+    
+    if [ -n "${EXTRA_MSBUILD_ARGS}" ]; then
+        print_info "额外参数:${EXTRA_MSBUILD_ARGS}"
     fi
     
     install_tool

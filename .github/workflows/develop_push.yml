@@ -77,7 +77,7 @@ jobs:
       - name: Build Windows
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../win-publish/" /p:Version=${{ needs.version.outputs.v }}
+          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../win-publish/" /p:Version=${{ needs.version.outputs.v }} /p:BuildType=Preview
 
       - name: Rename Windows Output
         shell: pwsh
@@ -108,7 +108,7 @@ jobs:
 
       - name: Build Linux
         run: |
-          ./build-appimage.sh ./src/BedrockBoot/BedrockBoot.csproj "BedrockBoot" ./assets/BedrockBoot.Icon.512x.png -version ${{ needs.version.outputs.v }}
+          ./build-appimage.sh ./src/BedrockBoot/BedrockBoot.csproj "BedrockBoot" ./assets/BedrockBoot.Icon.512x.png -version ${{ needs.version.outputs.v }} /p:BuildType=Preview
 
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4

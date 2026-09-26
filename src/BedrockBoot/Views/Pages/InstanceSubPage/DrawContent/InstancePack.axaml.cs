@@ -89,7 +89,7 @@ public partial class InstancePack : ISetting
                                  x.Header.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
             });
-            
+
             NullBox.IsVisible = filteredPacks.Count == 0;
 
             await Dispatcher.UIThread.InvokeAsync(() => UpdateUiWithPacks(filteredPacks));
@@ -116,7 +116,7 @@ public partial class InstancePack : ISetting
         ScBox.IsVisible = true;
         ResultBox.Children.AddRange(packs.Select(pack => new GameResourcePackItem(pack)
         {
-            IsEnableEdit = true,
+            IsEnableEdit = pack.PackType == ResourcePackType.Behavior,
             RefreshCallBack = () => _ = RefreshPacksAsync()
         }));
     }
@@ -143,7 +143,7 @@ public partial class InstancePack : ISetting
         {
             var filePaths = files.Select(f => f.Path.LocalPath).ToList();
             var body = new DialogImportResourcePackContent();
-            
+
             DialogHost.Show(new DialogInfo
             {
                 Title = i18n["Instance.Pack.Import.Dialog.Title"],
@@ -170,7 +170,7 @@ public partial class InstancePack : ISetting
                     }
                 }
             });
-            
+
             body.Import(filePaths);
         }
     }

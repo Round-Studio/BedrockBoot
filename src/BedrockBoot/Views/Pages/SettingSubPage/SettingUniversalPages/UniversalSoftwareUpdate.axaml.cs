@@ -24,6 +24,8 @@ using BedrockBoot.Base.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Pages.OtherPage;
+using BedrockBoot.Views.Pages.OtherPage.BuildRelease;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
@@ -87,6 +89,11 @@ public partial class UniversalSoftwareUpdate : ISettingPage
         }
     }
 
+    private void ReleaseNotesBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new AboutReleaseNotes());
+    }
+
     private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         CheckUpdateBtn.IsEnabled = false;
@@ -104,5 +111,10 @@ public partial class UniversalSoftwareUpdate : ISettingPage
         CheckUpdateBtn.IsEnabled = true;
         // 恢复按钮文本
         CheckUpdateBtn.Content = I18nManager.Instance["Setting.Universal.SoftwareUpdate.CheckUpdateAction"];
+    }
+
+    private void GitCommitsBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new ChangLogPage());
     }
 }

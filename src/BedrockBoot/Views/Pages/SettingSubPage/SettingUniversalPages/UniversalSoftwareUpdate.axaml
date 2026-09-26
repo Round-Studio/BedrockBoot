@@ -42,6 +42,20 @@
                             Click="CheckUpdateBtn_OnClick" />
                 </onePointControls:SettingCard>
 
+                <onePointControls:SettingCard Glyph="&#xE73A;"
+                                              Header="发行说明"
+                                              Description="关于当前版本的发行说明"
+                                              Name="ReleaseNotesBtn"
+                                              Click="ReleaseNotesBtn_OnClick"
+                                              IsClickable="True" />
+
+                <onePointControls:SettingCard Glyph="&#xF571;"
+                                              Header="修改日志"
+                                              Description="当前版本与上个版本直接的修改日志"
+                                              Name="GitCommitsBtn"
+                                              Click="GitCommitsBtn_OnClick"
+                                              IsClickable="True" />
+
                 <!-- 联机依赖组件更新入口（仅 Windows，Linux 下由代码隐藏） -->
                 <onePointControls:SettingCard Name="DependencyUpdateBtn"
                                               Header="依赖更新"

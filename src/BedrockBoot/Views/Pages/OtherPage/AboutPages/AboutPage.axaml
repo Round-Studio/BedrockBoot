@@ -182,23 +182,11 @@
                                           IsClickable="True" />
 
             <onePointControls:SettingCard Margin="5"
-                                          Glyph="&#xE73A;"
-                                          Header="发行说明"
-                                          Description="关于当前版本的发行说明"
-                                          Name="ReleaseNotesBtn"
-                                          Click="VersionCard_OnClick"
-                                          IsClickable="True" />
-
-            <onePointControls:SettingCard Margin="5"
                                           Glyph="&#xF4AA;"
                                           Name="VersionCard"
+                                          Click="VersionCard_OnClick"
                                           Header="{DynamicResource About.Action.Version.Title}"
                                           Description="{x:Static global:GlobalModel.BodyVersion}">
-                <Button Padding="8"
-                        Height="36" Width="100"
-                        Name="CheckUpdateBtn"
-                        Click="CheckUpdateBtn_OnClick"
-                        Content="{DynamicResource About.Action.CheckUpdate}" />
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

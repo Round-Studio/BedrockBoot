@@ -25,6 +25,7 @@ using Avalonia.Media;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
@@ -53,36 +54,6 @@ public partial class AboutPage : ISettingPage
     private static I18nManager i18n => I18nManager.Instance;
 
     /// <summary>
-    ///     处理检查更新按钮点击事件
-    /// </summary>
-    private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        CheckUpdateBtn.IsEnabled = false;
-        CheckUpdateBtn.Content = new ProgressRing
-        {
-            Width = 20,
-            Height = 20,
-            Foreground = Brushes.White,
-            Background = Brushes.Transparent
-        };
-
-        try
-        {
-            await MainPage.Update(true);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"Update check failed: {ex.Message}");
-        }
-        finally
-        {
-            // 3. 恢复按钮状态
-            CheckUpdateBtn.IsEnabled = true;
-            CheckUpdateBtn.Content = i18n["AboutPage.Update.Action"];
-        }
-    }
-
-    /// <summary>
     ///     导航至开源组件页面
     /// </summary>
     private void OpenSourceBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -100,6 +71,6 @@ public partial class AboutPage : ISettingPage
 
     private void VersionCard_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigateTo(new AboutReleaseNotes());
+        MainSettingPage.NavigateTo(new UniversalSoftwareUpdate());
     }
 }

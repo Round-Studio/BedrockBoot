@@ -1,6 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="Build/GenerateChangeLog.targets" />
-    
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <Nullable>enable</Nullable>
@@ -89,4 +87,6 @@
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
+    
+    <Import Project="Build/GenerateChangeLog.targets" />
 </Project>

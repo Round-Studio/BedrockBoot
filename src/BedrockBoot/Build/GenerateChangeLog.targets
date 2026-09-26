@@ -176,7 +176,7 @@
   </UsingTask>
 
   <Target Name="GenerateChangeLog"
-          BeforeTargets="BeforeCompile"
+          BeforeTargets="PrepareForBuild"
           Condition="'$(GenerateChangeLogEnabled)' == 'true'">
 
     <Message Importance="high" Text="=== GenerateChangeLog ===" />

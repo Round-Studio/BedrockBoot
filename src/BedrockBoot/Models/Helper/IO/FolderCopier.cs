@@ -150,7 +150,7 @@ public class FolderCopier
         const int bufferSize = 81920;
 
         using (var sourceStream =
-               new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true))
+               new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, bufferSize, true))
         using (var destStream =
                new FileStream(destPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, true))
         {

@@ -86,6 +86,8 @@ public class EasyLauncher
     public static bool IsUseNeoLaunch { get; set; } = false;
     public static int LaunchingCount { get; private set; } = 0;
     public static Action? LaunchedBehavior { get; set; }
+    public static Action<VersionConfig>? OnGameLaunched { get; set; }
+    public static Action<VersionConfig>? OnGameExited { get; set; }
 
     public VersionConfig VersionInfo { get; }
     public Process? MinecraftProcess { get; private set; }
@@ -210,6 +212,7 @@ public class EasyLauncher
                     Console.WriteLine($@"游戏计时开始：{_gameStartTime:yyyy-MM-dd HH:mm:ss}");
 
                     Launched?.Invoke(MinecraftProcess);
+                    OnGameLaunched?.Invoke(VersionInfo);
                     UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                     SetProgressIndeterminate?.Invoke(true);
 
@@ -688,6 +691,7 @@ public class EasyLauncher
         }
         finally
         {
+            OnGameExited?.Invoke(VersionInfo);
             LaunchCompleted?.Invoke();
         }
     }

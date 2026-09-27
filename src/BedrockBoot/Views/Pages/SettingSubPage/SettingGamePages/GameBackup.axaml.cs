@@ -17,14 +17,15 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using Avalonia;
+using System.IO;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
+using CoreGlobal = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 
@@ -34,7 +35,7 @@ public partial class GameBackup : ISettingPage
     {
         InitializeComponent();
 
-        BreadcrumbItem = new()
+        BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
             new()
             {
@@ -46,18 +47,84 @@ public partial class GameBackup : ISettingPage
                 ItemName = "存档备份"
             }
         };
-        
+
         UpdateUI();
     }
 
     public void UpdateUI()
     {
         IsEdit = false;
-        this.ListBox.Children.Clear();
-        var backups =
-            GlobalModel.ArchiveBackup.IndexConfig.Data.Index.Select(x =>
-                GlobalModel.ArchiveBackup.GetArchiveBackupsWhitUuid(x)).ToList();
+
+        var config = CoreGlobal.Config.Data;
+        AutoBackupSwitch.IsChecked = config.IsAutoBackupArchive;
+        OnLaunchSwitch.IsChecked = config.IsAutoBackupOnLaunch;
+        OnExitSwitch.IsChecked = config.IsAutoBackupOnExit;
+        NoticeSwitch.IsChecked = config.IsAutoBackupNotice;
+        BackupOptionsPanel.IsEnabled = config.IsAutoBackupArchive;
+
+        MaxCountBox.SelectedIndex = config.AutoBackupMaxCount switch
+        {
+            3 => 0,
+            5 => 1,
+            10 => 2,
+            20 => 3,
+            <= 0 => 4,
+            _ => 1
+        };
 
         IsEdit = true;
+    }
+
+    private void AutoBackupSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (!IsEdit) return;
+        var isChecked = AutoBackupSwitch.IsChecked ?? false;
+        CoreGlobal.Config.Data.IsAutoBackupArchive = isChecked;
+        BackupOptionsPanel.IsEnabled = isChecked;
+        CoreGlobal.Config.Save();
+    }
+
+    private void OnLaunchSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (!IsEdit) return;
+        CoreGlobal.Config.Data.IsAutoBackupOnLaunch = OnLaunchSwitch.IsChecked ?? false;
+        CoreGlobal.Config.Save();
+    }
+
+    private void OnExitSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (!IsEdit) return;
+        CoreGlobal.Config.Data.IsAutoBackupOnExit = OnExitSwitch.IsChecked ?? false;
+        CoreGlobal.Config.Save();
+    }
+
+    private void MaxCountBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (!IsEdit) return;
+        CoreGlobal.Config.Data.AutoBackupMaxCount = MaxCountBox.SelectedIndex switch
+        {
+            0 => 3,
+            1 => 5,
+            2 => 10,
+            3 => 20,
+            4 => 0, // 0 表示不限制
+            _ => 5
+        };
+        CoreGlobal.Config.Save();
+    }
+
+    private void NoticeSwitch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (!IsEdit) return;
+        CoreGlobal.Config.Data.IsAutoBackupNotice = NoticeSwitch.IsChecked ?? false;
+        CoreGlobal.Config.Save();
+    }
+
+    private void OpenBackupFolderBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (!Directory.Exists(PathsList.ArchiveBackup))
+            Directory.CreateDirectory(PathsList.ArchiveBackup);
+
+        OpenFolderHelper.Open(PathsList.ArchiveBackup);
     }
 }

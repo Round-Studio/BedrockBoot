@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <x:String x:Key="LanguageName">English - BedrockBoot Official</x:String>
 
@@ -623,6 +623,23 @@
     <x:String x:Key="Settings.Game.Proton.Empty.Combo">Please install Proton first</x:String>
     <x:String x:Key="Settings.Game.Proton.Dialog.Branch.Title">Select GDKProton Branch</x:String>
     <x:String x:Key="Settings.Game.Proton.Dialog.Version.Title">Select GDKProton Version</x:String>
+
+    <x:String x:Key="Settings.Game.Backup.Title">World Backup</x:String>
+    <x:String x:Key="Settings.Game.Backup.Desc">Auto-backup modified saves and manage historical backups</x:String>
+    <x:String x:Key="Settings.Game.Backup.Group.Auto">Auto-Backup</x:String>
+    <x:String x:Key="Settings.Game.Backup.Group.Storage">Storage Management</x:String>
+    <x:String x:Key="Settings.Game.Backup.Auto.Title">Auto-Backup Worlds</x:String>
+    <x:String x:Key="Settings.Game.Backup.Auto.Desc">Automatically detect and back up modified world saves when game starts or exits</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnLaunch.Title">Auto-Backup on Launch</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnLaunch.Desc">Automatically check and back up modified saves in the background after game launched</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnExit.Title">Auto-Backup on Exit</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnExit.Desc">Automatically check and back up modified saves after game exits</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Title">Auto-Backup Retention Count</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Desc">Max number of auto-backups to keep per world. Oldest auto-backups will be cleaned automatically (manual backups unaffected)</x:String>
+    <x:String x:Key="Settings.Game.Backup.Notice.Title">Backup Notification</x:String>
+    <x:String x:Key="Settings.Game.Backup.Notice.Desc">Display a notification when auto-backup successfully completes</x:String>
+    <x:String x:Key="Settings.Game.Backup.OpenFolder.Title">Open Backup Folder</x:String>
+    <x:String x:Key="Settings.Game.Backup.OpenFolder.Desc">Open the backup folder in system file manager</x:String>
 
     <x:String x:Key="Setting.Game.Title">Game</x:String>
     <x:String x:Key="Setting.Game.Breadcrumb.Root">Game</x:String>

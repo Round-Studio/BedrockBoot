@@ -1,7 +1,8 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages.GameBackup">
     <ScrollViewer>
@@ -10,7 +11,74 @@
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="存档备份" />
+                       Text="{DynamicResource Settings.Game.Backup.Group.Auto}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="AutoBackupCard"
+                                          Header="{DynamicResource Settings.Game.Backup.Auto.Title}"
+                                          Description="{DynamicResource Settings.Game.Backup.Auto.Desc}"
+                                          Glyph="&#xE74E;">
+                <ToggleSwitch Name="AutoBackupSwitch"
+                              IsCheckedChanged="AutoBackupSwitch_OnIsCheckedChanged" />
+            </onePointControls:SettingCard>
+
+            <StackPanel Name="BackupOptionsPanel"
+                        Spacing="8">
+                <onePointControls:SettingCard Margin="5, 0"
+                                              Name="OnLaunchCard"
+                                              Header="{DynamicResource Settings.Game.Backup.OnLaunch.Title}"
+                                              Description="{DynamicResource Settings.Game.Backup.OnLaunch.Desc}"
+                                              Glyph="&#xE768;">
+                    <ToggleSwitch Name="OnLaunchSwitch"
+                                  IsCheckedChanged="OnLaunchSwitch_OnIsCheckedChanged" />
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard Margin="5, 0"
+                                              Name="OnExitCard"
+                                              Header="{DynamicResource Settings.Game.Backup.OnExit.Title}"
+                                              Description="{DynamicResource Settings.Game.Backup.OnExit.Desc}"
+                                              Glyph="&#xE71A;">
+                    <ToggleSwitch Name="OnExitSwitch"
+                                  IsCheckedChanged="OnExitSwitch_OnIsCheckedChanged" />
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard Margin="5, 0"
+                                              Name="MaxCountCard"
+                                              Header="{DynamicResource Settings.Game.Backup.MaxCount.Title}"
+                                              Description="{DynamicResource Settings.Game.Backup.MaxCount.Desc}"
+                                              Glyph="&#xE8B7;">
+                    <ComboBox Width="200"
+                              Name="MaxCountBox"
+                              SelectionChanged="MaxCountBox_OnSelectionChanged">
+                        <ComboBoxItem Content="3 份" />
+                        <ComboBoxItem Content="5 份" />
+                        <ComboBoxItem Content="10 份" />
+                        <ComboBoxItem Content="20 份" />
+                        <ComboBoxItem Content="不限制" />
+                    </ComboBox>
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard Margin="5, 0"
+                                              Name="NoticeCard"
+                                              Header="{DynamicResource Settings.Game.Backup.Notice.Title}"
+                                              Description="{DynamicResource Settings.Game.Backup.Notice.Desc}"
+                                              Glyph="&#xEA8F;">
+                    <ToggleSwitch Name="NoticeSwitch"
+                                  IsCheckedChanged="NoticeSwitch_OnIsCheckedChanged" />
+                </onePointControls:SettingCard>
+            </StackPanel>
+
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Game.Backup.Group.Storage}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          IsClickable="True"
+                                          Click="OpenBackupFolderBtn_OnClick"
+                                          Header="{DynamicResource Settings.Game.Backup.OpenFolder.Title}"
+                                          Description="{DynamicResource Settings.Game.Backup.OpenFolder.Desc}"
+                                          Glyph="&#xE8DA;" />
 
             <StackPanel Spacing="8"
                         Margin="5, 0"

@@ -36,6 +36,8 @@ using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using BedrockBoot.Views.Windows.SystemMethod;
 using BedrockBoot.WatchDog.Entity;
+using BedrockBoot.Models.Game;
+using BedrockBoot.Models.Pack.Game.Archive;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 using Application = Avalonia.Application;
@@ -69,6 +71,16 @@ public class App : Application
 
         var watchDog = new WatchDog.WatchDog(new WatchConfig());
         watchDog.Start();
+
+        // 注册游戏启动与退出时的自动存档备份逻辑
+        EasyLauncher.OnGameLaunched = version =>
+        {
+            _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, "启动"));
+        };
+        EasyLauncher.OnGameExited = version =>
+        {
+            _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, "退出"));
+        };
     }
 
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

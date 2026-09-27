@@ -70,6 +70,8 @@ public class EasyLauncher
     public Action<bool>? SetProgressIndeterminate { get; set; }
     public Process MinecraftProcess { get; private set; }
     public static Action? LaunchedBehavior { get; set; }
+    public static Action<VersionConfig>? OnGameLaunched { get; set; }
+    public static Action<VersionConfig>? OnGameExited { get; set; }
 
     private void UpdatePlayerPlayTime(TimeSpan playTime)
     {
@@ -324,6 +326,7 @@ public class EasyLauncher
                 Console.WriteLine($@"游戏计时开始：{_gameStartTime:yyyy-MM-dd HH:mm:ss}");
 
                 Launched?.Invoke(MinecraftProcess);
+                OnGameLaunched?.Invoke(VersionInfo);
                 UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                 SetProgressIndeterminate?.Invoke(true);
 
@@ -411,6 +414,7 @@ public class EasyLauncher
             }
 
             await RunPostExitCommandAsync();
+            OnGameExited?.Invoke(VersionInfo);
             LaunchCompleted?.Invoke();
         }
         catch (Exception ex)

@@ -61,9 +61,13 @@ public class InstanceUpdater
         Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.ID}");
 
         var downloader = new EasyDownload(buildInfo, true, _versionConfig.VersionsRootPath,
-            Path.GetFileName(_versionConfig.VersionPath), true);
+            Path.GetFileName(_versionConfig.VersionPath)!, true);
 
-        string protectedPath = Path.GetFullPath(Path.Combine(_versionConfig.VersionPath, "config", "BedrockBoot2"));
+        var protectedPaths = new List<string>
+        {
+            Path.GetFullPath(Path.Combine(_versionConfig.VersionPath!, "config", "BedrockBoot2")),
+            Path.GetFullPath(Path.Combine(_versionConfig.VersionPath!, "mods"))
+        };
 
         var deleteTask = Task.Run(() =>
         {
@@ -81,7 +85,7 @@ public class InstanceUpdater
             var filesToDelete = new List<string>();
             var dirsToDelete = new List<string>();
 
-            CollectFilesAndDirectoriesToDelete(rootDirInfo, protectedPath, filesToDelete, dirsToDelete);
+            CollectFilesAndDirectoriesToDelete(rootDirInfo, protectedPaths, filesToDelete, dirsToDelete);
 
             int totalCount = filesToDelete.Count + dirsToDelete.Count;
             int deletedCount = 0;
@@ -235,15 +239,15 @@ public class InstanceUpdater
         Console.WriteLine(@"更新完成");
     }
 
-    private void CollectFilesAndDirectoriesToDelete(DirectoryInfo directory, string protectedPath,
+    private void CollectFilesAndDirectoriesToDelete(DirectoryInfo directory, List<string> protectedPaths,
         List<string> filesToDelete, List<string> dirsToDelete)
     {
         try
         {
             string currentDirPath = NormalizePath(directory.FullName);
-            string formattedProtectedPath = NormalizePath(protectedPath);
+            var formattedProtectedPaths = protectedPaths.Select(NormalizePath).ToList();
 
-            if (IsSameOrSubPath(currentDirPath, formattedProtectedPath))
+            if (formattedProtectedPaths.Any(p => IsSameOrSubPath(currentDirPath, p)))
             {
                 return;
             }
@@ -252,7 +256,7 @@ public class InstanceUpdater
             foreach (var subDir in directory.GetDirectories())
             {
                 string subDirPath = NormalizePath(subDir.FullName);
-                if (IsSameOrSubPath(subDirPath, formattedProtectedPath))
+                if (formattedProtectedPaths.Any(p => IsSameOrSubPath(subDirPath, p)))
                 {
                     containsProtectedChild = true;
                     break;
@@ -262,7 +266,7 @@ public class InstanceUpdater
             foreach (var file in directory.GetFiles())
             {
                 string filePath = NormalizePath(file.FullName);
-                if (!IsSameOrSubPath(filePath, formattedProtectedPath))
+                if (!formattedProtectedPaths.Any(p => IsSameOrSubPath(filePath, p)))
                 {
                     filesToDelete.Add(file.FullName);
                 }
@@ -270,10 +274,10 @@ public class InstanceUpdater
 
             foreach (var subDir in directory.GetDirectories())
             {
-                CollectFilesAndDirectoriesToDelete(subDir, protectedPath, filesToDelete, dirsToDelete);
+                CollectFilesAndDirectoriesToDelete(subDir, protectedPaths, filesToDelete, dirsToDelete);
             }
 
-            if (!containsProtectedChild && !IsSameOrSubPath(currentDirPath, formattedProtectedPath))
+            if (!containsProtectedChild && !formattedProtectedPaths.Any(p => IsSameOrSubPath(currentDirPath, p)))
             {
                 bool hasFiles = Directory.GetFiles(directory.FullName).Any();
                 bool hasSubDirs = Directory.GetDirectories(directory.FullName).Any();
@@ -288,7 +292,7 @@ public class InstanceUpdater
                     foreach (var subDir in directory.GetDirectories())
                     {
                         string subDirPath = NormalizePath(subDir.FullName);
-                        if (!IsSameOrSubPath(subDirPath, formattedProtectedPath))
+                        if (!formattedProtectedPaths.Any(p => IsSameOrSubPath(subDirPath, p)))
                         {
                             allSubDirsAreProtected = false;
                             break;

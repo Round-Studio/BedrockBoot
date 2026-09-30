@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -101,12 +101,11 @@
 
             <onePointControls:SettingCard Margin="5, 0"
                                           IsClickable="True"
-                                          IsVisible="False"
                                           Glyph="&#xE74E;"
                                           Name="SaveBackupBtn"
                                           Click="SaveBackupBtn_OnClick"
-                                          Header="存档备份"
-                                          Description="所有实例的存档备份管理" />
+                                          Header="{DynamicResource Settings.Game.Backup.Title}"
+                                          Description="{DynamicResource Settings.Game.Backup.Desc}" />
             
             <TextBlock Margin="5,0"
                        FontWeight="Bold"

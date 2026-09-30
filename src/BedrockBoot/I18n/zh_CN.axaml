@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <x:String x:Key="LanguageName">简体中文 - BedrockBoot 官方</x:String>
 
@@ -645,6 +645,23 @@
     <x:String x:Key="Settings.Game.Proton.Empty.Combo">请先安装 Proton</x:String>
     <x:String x:Key="Settings.Game.Proton.Dialog.Branch.Title">选择 GDKProton 分支</x:String>
     <x:String x:Key="Settings.Game.Proton.Dialog.Version.Title">选择 GDKProton 版本</x:String>
+
+    <x:String x:Key="Settings.Game.Backup.Title">存档备份</x:String>
+    <x:String x:Key="Settings.Game.Backup.Desc">自动备份已修改存档与历史备份管理</x:String>
+    <x:String x:Key="Settings.Game.Backup.Group.Auto">自动备份</x:String>
+    <x:String x:Key="Settings.Game.Backup.Group.Storage">存储管理</x:String>
+    <x:String x:Key="Settings.Game.Backup.Auto.Title">自动备份存档</x:String>
+    <x:String x:Key="Settings.Game.Backup.Auto.Desc">在游戏启动或退出后，自动检测并备份已修改过的世界存档</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnLaunch.Title">游戏启动后自动备份</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnLaunch.Desc">在游戏成功启动后，在后台自动检查并备份已发生修改的世界存档</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnExit.Title">游戏退出后自动备份</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnExit.Desc">在游戏退出后，自动检查本次游玩修改过的世界存档并生成备份</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Title">自动备份保留数量</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Desc">每个世界存档最多保留的自动备份数量，超出时自动清理最旧的自动备份（不影响手动备份）</x:String>
+    <x:String x:Key="Settings.Game.Backup.Notice.Title">自动备份提示通知</x:String>
+    <x:String x:Key="Settings.Game.Backup.Notice.Desc">自动备份成功完成后，在启动器内弹出提示通知</x:String>
+    <x:String x:Key="Settings.Game.Backup.OpenFolder.Title">打开备份文件夹</x:String>
+    <x:String x:Key="Settings.Game.Backup.OpenFolder.Desc">在系统文件管理器中浏览所有已备份的数据</x:String>
 
     <x:String x:Key="Setting.Game.Title">游戏</x:String>
     <x:String x:Key="Setting.Game.Breadcrumb.Root">游戏</x:String>

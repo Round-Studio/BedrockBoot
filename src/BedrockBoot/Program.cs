@@ -62,6 +62,8 @@ internal sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        RegisterAssemblyResolve();
+
         Args = args.ToList();
         Models.Global.GlobalModel.IsProgressRunning = true;
 
@@ -312,5 +314,55 @@ internal sealed class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
+    }
+
+    private static void RegisterAssemblyResolve()
+    {
+        System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, assemblyName) =>
+        {
+            if (string.IsNullOrEmpty(assemblyName.Name)) return null;
+
+            var loaded = AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(a => a.GetName().Name == assemblyName.Name);
+            if (loaded != null) return loaded;
+
+            var candidatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{assemblyName.Name}.dll");
+            if (File.Exists(candidatePath))
+            {
+                try
+                {
+                    return context.LoadFromAssemblyPath(candidatePath);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+            return null;
+        };
+
+        AppDomain.CurrentDomain.AssemblyResolve += (sender, eventArgs) =>
+        {
+            var requestedName = new System.Reflection.AssemblyName(eventArgs.Name);
+            if (string.IsNullOrEmpty(requestedName.Name)) return null;
+
+            var loaded = AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(a => a.GetName().Name == requestedName.Name);
+            if (loaded != null) return loaded;
+
+            var candidatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{requestedName.Name}.dll");
+            if (File.Exists(candidatePath))
+            {
+                try
+                {
+                    return System.Reflection.Assembly.LoadFrom(candidatePath);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+            return null;
+        };
     }
 }

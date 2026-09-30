@@ -120,6 +120,21 @@ namespace BedrockBoot.Base.Entry
         public LaunchCommandConfig LaunchCommandConfig { get; set; } = new();
 
         [JsonPropertyName("isUseNeoLaunch")] public bool IsUseNeoLaunch { get; set; } = true;
+
+        [JsonPropertyName("isAutoBackupArchive")]
+        public bool IsAutoBackupArchive { get; set; } = true;
+
+        [JsonPropertyName("autoBackupMaxCount")]
+        public int AutoBackupMaxCount { get; set; } = 5;
+
+        [JsonPropertyName("isAutoBackupNotice")]
+        public bool IsAutoBackupNotice { get; set; } = true;
+
+        [JsonPropertyName("isAutoBackupOnLaunch")]
+        public bool IsAutoBackupOnLaunch { get; set; } = true;
+
+        [JsonPropertyName("isAutoBackupOnExit")]
+        public bool IsAutoBackupOnExit { get; set; } = true;
     }
 
     public class LaunchCommandConfig

@@ -24,6 +24,8 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Account.Microsoft;
 using BedrockBoot.Models.Account.Microsoft;
+using BedrockBoot.Models.Global;
+using BedrockBoot.Views.DrawContent;
 
 namespace BedrockBoot.Views.Control.Items;
 
@@ -31,6 +33,7 @@ public partial class XboxUserItem : UserControl
 {
     private readonly MsUserConfig _user;
     public Action<string>? OnDelete { get; set; }
+
     public XboxUserItem()
     {
         InitializeComponent();
@@ -57,5 +60,10 @@ public partial class XboxUserItem : UserControl
     private void DelBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         OnDelete?.Invoke(_user.BUID);
+    }
+
+    private void SettingBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GlobalModel.MainWindow.OpenDraw(new DrawXboxLiveContent(_user), $"Xbox Live 账户: {_user.UserName}");
     }
 }

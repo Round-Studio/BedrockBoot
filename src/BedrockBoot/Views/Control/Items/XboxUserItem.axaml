@@ -17,39 +17,47 @@
             <Setter Property="Opacity" Value="0.5" />
             <Setter Property="Transitions">
                 <Transitions>
-                    <DoubleTransition Property="Opacity" 
+                    <DoubleTransition Property="Opacity"
                                       Duration="0:0:0.28"
-                                      Easing="ExponentialEaseInOut"/>
+                                      Easing="ExponentialEaseInOut" />
                 </Transitions>
             </Setter>
         </Style>
     </UserControl.Styles>
 
     <Grid Background="Transparent">
-        <items:BorderCard Opacity="0.8"/>
-        
+        <items:BorderCard Opacity="0.8" />
+
         <Grid ColumnDefinitions="Auto,*,Auto"
               Margin="8"
               ColumnSpacing="8">
             <widgets:LocalImageRenderWidget Grid.Column="0"
                                             Name="UserIcon"
-                                            Width="56" Height="56"/>
-        
+                                            Width="56" Height="56" />
+
             <StackPanel Grid.Column="1"
                         VerticalAlignment="Center">
                 <TextBlock FontSize="18"
                            Text="UserName"
-                           Name="UserName"/>
+                           Name="UserName" />
                 <TextBlock FontSize="12"
                            Opacity="0.6"
                            Text="Login Time"
-                           Name="UserLoginTime"/>
+                           Name="UserLoginTime" />
             </StackPanel>
-        
+
             <StackPanel Grid.Column="2"
                         Name="PART_ControlPanel"
                         Opacity="0"
+                        Spacing="4"
+                        Orientation="Horizontal"
                         VerticalAlignment="Top">
+                <Button Classes="NoBorder"
+                        Name="SettingBtn"
+                        Click="SettingBtn_OnClick"
+                        Padding="10">
+                    <onePointControls:FontIcon Glyph="&#xE77B;" />
+                </Button>
                 <Button Classes="NoBorder"
                         Name="DelBtn"
                         Click="DelBtn_OnClick"

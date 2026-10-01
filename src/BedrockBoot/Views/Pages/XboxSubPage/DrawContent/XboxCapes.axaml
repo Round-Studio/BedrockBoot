@@ -1,0 +1,38 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.XboxSubPage.DrawContent.XboxCapes">
+    <Grid Margin="0,0,0,10"
+          RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0"
+                    Margin="20,0"
+                    Spacing="8"
+                    Orientation="Horizontal">
+            <TextBlock Text="拥有的披风"
+                       VerticalAlignment="Center"
+                       FontSize="16" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                      Margin="20,10,5,0"
+                      Name="MainContent">
+            <WrapPanel Margin="0,0,15,0"
+                       ItemSpacing="8"
+                       LineSpacing="8"
+                       Name="ListPanel">
+            </WrapPanel>
+        </ScrollViewer>
+
+        <notice:LoadCard Grid.Row="1"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Name="LoadingCard"
+                         BigTitle="加载中"
+                         Message="正在获取账户披风数据" />
+    </Grid>
+</UserControl>

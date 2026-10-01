@@ -1,0 +1,130 @@
+﻿using System;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
+using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Models.Account.Microsoft;
+using BedrockBoot.Models.Pack.Xbox.Cape;
+using BedrockBoot.Views.Pages.XboxSubPage.DrawContent;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.LeftSelectBar;
+
+namespace BedrockBoot.Views.DrawContent;
+
+public partial class DrawXboxLiveContent : UserControl
+{
+    private MsUserConfig _xbl;
+    private string _authHeader = string.Empty;
+
+    public DrawXboxLiveContent()
+    {
+        InitializeComponent();
+    }
+
+    public DrawXboxLiveContent(MsUserConfig xbl) : this()
+    {
+        _xbl = xbl;
+        _ = InitializeAsync();
+    }
+
+    private async Task InitializeAsync()
+    {
+        try
+        {
+            Console.WriteLine(@"正在刷新账户凭证...");
+            var client = new MsaDeviceCodeClient();
+            var tokenData = await client.RefreshTokenAsync(_xbl.AuthResult.RefreshToken);
+            Console.WriteLine(@"刷新完毕。");
+
+            if (tokenData != null)
+            {
+                var index = MsAccountManager.Accounts.Accounts.FindIndex(x => x.BUID == _xbl.BUID);
+                MsAccountManager.AccountConfigEntity.Data.Accounts[index].AuthResult = new()
+                {
+                    Code = tokenData?.Code,
+                    AccessToken = tokenData?.AccessToken,
+                    ClientId = tokenData?.ClientId,
+                    CodeVerifier = tokenData?.CodeVerifier,
+                    ExpiresIn = (int)tokenData.ExpiresIn,
+                    RedirectUri = tokenData?.RedirectUri,
+                    RefreshToken = tokenData.RefreshToken,
+                    SavedAt = DateTime.Now
+                };
+
+                MsAccountManager.AccountConfigEntity.Save();
+                Console.WriteLine(@"新用户数据已保存");
+
+                _xbl = MsAccountManager.AccountConfigEntity.Data.Accounts[index];
+            }
+
+            Console.WriteLine(@"开始获取 Xbox 用户凭证");
+
+            var authClient = new XboxMcAuthClient();
+
+            string? xblToken = await authClient.GetXboxUserTokenAsync(_xbl.AuthResult.AccessToken);
+            if (xblToken == null)
+            {
+                Console.WriteLine(@"获取 XBL Token 失败，流程终止");
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    LoadCard.IsVisible = false;
+                    MainContent.IsVisible = false;
+                });
+                return;
+            }
+
+            var (xstsToken, userHash, xuid) = await authClient.GetXstsTokenAsync(
+                xblToken,
+                XboxMcAuthClient.PlayFabRelyingParty);
+
+            if (xstsToken == null || userHash == null)
+            {
+                Console.WriteLine(@"获取 XSTS Token 失败，流程终止");
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    LoadCard.IsVisible = false;
+                    MainContent.IsVisible = false;
+                });
+                return;
+            }
+
+            _authHeader = $"XBL3.0 x={userHash};{xstsToken}";
+            Console.WriteLine(@"XBL3.0 Token 获取成功");
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                XboxFrame.NavigateTo(new XboxCapes(_authHeader));
+                LoadCard.IsVisible = false;
+                MainContent.IsVisible = true;
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"初始化异常: {ex.GetType().Name}: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                LoadCard.IsVisible = false;
+                MainContent.IsVisible = false;
+            });
+        }
+    }
+
+    public bool IsEditMode { get; set; }
+
+    private void TabControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (!IsEditMode) return;
+
+        var tag = ((LeftSelectBarItem)TabControl.SelectedItem!).Tag!.ToString();
+
+        switch (tag)
+        {
+            case "Info":
+                XboxFrame.NavigateTo(new XboxCapes(_authHeader));
+                break;
+        }
+    }
+}

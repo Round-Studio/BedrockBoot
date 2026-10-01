@@ -50,6 +50,6 @@ public class GamePortHelper
             var file = Path.Combine(path, "config", "BedrockBoot2", ".bb.gcstatus");
             File.WriteAllText(file, type == RoomType.Guest ? "guest" : "host");
         });
-        Console.WriteLine("已更新所有实例的端口状态");
+        Console.WriteLine(@"已更新所有实例的端口状态");
     }
 }

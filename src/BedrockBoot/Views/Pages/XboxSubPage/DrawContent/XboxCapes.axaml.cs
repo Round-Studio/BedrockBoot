@@ -43,6 +43,7 @@ public partial class XboxCapes : UserControl
             var capes = await CapeApiClient.GetPlayerCapesAsync(_xbl);
             Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
             {
+                PageTitle.Text = $"拥有的披风（{capes.TotalCapes}）";
                 LoadingCard.IsVisible = false;
                 MainContent.IsVisible = true;
 

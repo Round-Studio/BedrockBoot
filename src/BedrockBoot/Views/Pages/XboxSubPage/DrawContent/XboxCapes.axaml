@@ -14,6 +14,7 @@
                     Spacing="8"
                     Orientation="Horizontal">
             <TextBlock Text="拥有的披风"
+                       Name="PageTitle"
                        VerticalAlignment="Center"
                        FontSize="16" />
         </StackPanel>

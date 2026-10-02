@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Standard\BedrockBoot.Standard.csproj" />
       <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
       <ProjectReference Include="..\OnePointUI.Avalonia\src\OnePointUI.Avalonia\OnePointUI.Avalonia.csproj" />
     </ItemGroup>

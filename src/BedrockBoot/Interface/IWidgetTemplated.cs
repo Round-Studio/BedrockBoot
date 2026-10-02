@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 using Avalonia.Controls;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Enum.Type;
 
 namespace BedrockBoot.Interface;
 

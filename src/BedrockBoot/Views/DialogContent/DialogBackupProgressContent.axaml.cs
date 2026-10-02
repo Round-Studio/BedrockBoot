@@ -20,7 +20,7 @@ using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 

@@ -17,7 +17,7 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 
 namespace BedrockBoot.Models.Helper;
 

@@ -21,7 +21,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 

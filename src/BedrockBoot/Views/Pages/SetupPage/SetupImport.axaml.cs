@@ -19,7 +19,7 @@
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;

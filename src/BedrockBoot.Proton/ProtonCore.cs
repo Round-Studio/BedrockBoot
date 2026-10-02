@@ -17,7 +17,7 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Proton.Entry.Config;

@@ -1,0 +1,86 @@
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using System.Text.Json.Serialization;
+using BedrockBoot.Standard.Enum;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Enum.Type;
+using BedrockBoot.Standard.Helper;
+using BedrockLauncher.Core;
+
+namespace BedrockBoot.Standard.Entity.Game;
+
+public class VersionConfig
+{
+    [JsonPropertyName("info")] public VersionInfo Info { get; set; }
+    [JsonPropertyName("config")] public VersionConfigEntry Config { get; set; } = new();
+    [JsonPropertyName("playerData")] public PlayerDataEntry PlayerData { get; set; } = new();
+    [JsonPropertyName("gameStatus")] public VersionStatusEntry VersionStatus { get; set; } = new();
+
+    [JsonIgnore] public string? VersionPath { get; set; } = string.Empty;
+    [JsonIgnore] public string? VersionsRootPath { get; set; } = string.Empty;
+    [JsonIgnore] public string? BodyFile { get; set; } = string.Empty;
+
+    public class SysWindowsConfig
+    {
+        [JsonPropertyName("isUseAdminRun")] public bool IsUseAdminRun { get; set; } = false;
+    }
+
+    public class VersionInfo
+    {
+        [JsonPropertyName("version")] public string Version { get; set; }
+        [JsonPropertyName("buildType")] public MinecraftBuildTypeVersion BuildType { get; set; }
+        [JsonPropertyName("versionName")] public string VersionName { get; set; }
+        [JsonPropertyName("versionType")] public MinecraftGameTypeVersion VersionType { get; set; }
+        [JsonPropertyName("coverImage")] public string? CoverImage { get; set; } = null;
+        [JsonPropertyName("gameIconType")] public GameIconType GameIconType { get; set; } = GameIconType.Default;
+        [JsonPropertyName("gameIconPath")] public string GameIconPath { get; set; } = string.Empty;
+    }
+
+    public class VersionStatusEntry
+    {
+        [JsonPropertyName("gameInputInstalled")]
+        public bool GameInputInstalled { get; set; } = false;
+    }
+
+    public class VersionConfigEntry
+    {
+        [JsonPropertyName("isEditModel")] public bool IsEditModel { get; set; } = false;
+        [JsonPropertyName("isModes")] public bool IsModes { get; set; } = true;
+        [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
+        [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
+        [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = false;
+        [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
+        [JsonPropertyName("isSyncPubOptions")] public bool IsSyncPublicOptions { get; set; } = true;
+        [JsonPropertyName("isEnableHttpHook")] public bool IsEnableHttpHook { get; set; } = false;
+        [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
+        [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
+        [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
+        [JsonPropertyName("sysWindowsConfig")] public SysWindowsConfig SysWindowsConfig { get; set; } = new();
+        [JsonPropertyName("modsLoaderSelectIndex")] public int ModsLoaderSelectIndex { get; set; } = 0;
+    }
+
+    public class PlayerDataEntry
+    {
+        [JsonPropertyName("totalPlayTime")] public long TotalPlayTime { get; set; }
+        [JsonPropertyName("lastPlayTime")] public DateTime? LastPlayTime { get; set; }
+        [JsonPropertyName("totalSessions")] public int TotalSessions { get; set; }
+        [JsonPropertyName("firstPlayTime")] public DateTime? FirstPlayTime { get; set; }
+    }
+}

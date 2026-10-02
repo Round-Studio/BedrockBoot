@@ -23,7 +23,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.DownloadSubPage.CurseForge;

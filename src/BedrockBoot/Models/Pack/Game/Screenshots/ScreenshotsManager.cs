@@ -19,9 +19,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Screenshots;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.Screenshots;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;

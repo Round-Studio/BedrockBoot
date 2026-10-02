@@ -18,7 +18,7 @@
 
 using System;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 
 namespace BedrockBoot.Interface.ModLoader;
 

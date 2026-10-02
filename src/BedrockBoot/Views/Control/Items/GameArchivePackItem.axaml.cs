@@ -24,8 +24,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.Control.Items;

@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using AvaMotion.Controls.Text;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Interface;
 
 namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets;

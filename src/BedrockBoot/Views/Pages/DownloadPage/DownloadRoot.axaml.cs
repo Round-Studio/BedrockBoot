@@ -17,7 +17,7 @@
  */
 
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 
 namespace BedrockBoot.Views.Pages.DownloadPage;
 

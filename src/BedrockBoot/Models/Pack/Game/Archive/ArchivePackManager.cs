@@ -20,10 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Base.Entry.Game.Pack.Archive.Export;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive.Export;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using Round.SDK.Entity;
 

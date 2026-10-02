@@ -19,10 +19,11 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Interface;
 using BedrockBoot.Models;
+using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 using OnePointUI.Avalonia.Base.Entry;

@@ -19,8 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum.Type;
 
 namespace BedrockBoot.Interface.ModLoader;
 

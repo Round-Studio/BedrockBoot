@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Base.Entry.Pack.Market;
+using BedrockBoot.Standard.Entity.Pack.Market;
 using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using Octokit;

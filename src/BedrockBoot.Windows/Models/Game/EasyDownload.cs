@@ -23,8 +23,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Management.Deployment;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
@@ -33,7 +33,7 @@ using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
 using Round.SDK.Helper;
-using DownloadProgress = BedrockBoot.Base.Entry.Progress.DownloadProgress;
+using DownloadProgress = BedrockBoot.Standard.Entity.Progress.DownloadProgress;
 
 namespace BedrockBoot.Services;
 

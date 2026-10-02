@@ -23,7 +23,7 @@ using Windows.Management.Deployment;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Task;
+using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Services;
 using BedrockLauncher.Core;

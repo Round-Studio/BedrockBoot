@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 using BedrockBoot.Interface;
 using BedrockBoot.Views.Pages.SettingSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;

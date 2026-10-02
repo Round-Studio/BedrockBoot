@@ -22,7 +22,7 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Chunker.Base.Enum;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Chunker;

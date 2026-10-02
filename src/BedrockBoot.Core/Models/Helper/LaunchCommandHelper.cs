@@ -23,8 +23,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Entity.Game;
 
 namespace BedrockBoot.Core.Models.Helper;
 

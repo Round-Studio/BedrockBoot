@@ -19,7 +19,7 @@
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Screenshots;

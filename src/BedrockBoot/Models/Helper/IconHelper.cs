@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockLauncher.Core;
 
 namespace BedrockBoot.Models.Helper;

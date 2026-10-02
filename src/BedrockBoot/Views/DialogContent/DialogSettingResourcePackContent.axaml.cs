@@ -19,7 +19,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
 
 namespace BedrockBoot.Views.DialogContent;
 

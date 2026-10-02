@@ -17,7 +17,7 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Models.Global;
 using Octokit;
 

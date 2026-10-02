@@ -18,8 +18,8 @@
 
 using System.Collections.Generic;
 using System.IO;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
 
 namespace BedrockBoot.Models.Pack.Game.Options;

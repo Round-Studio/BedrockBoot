@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             xmlns:enums="clr-namespace:BedrockBoot.Base.Enum;assembly=BedrockBoot.Base"
+             xmlns:enums="clr-namespace:BedrockBoot.Standard.Enum;assembly=BedrockBoot.Standard"
+             xmlns:config="clr-namespace:BedrockBoot.Standard.Enum.Config;assembly=BedrockBoot.Standard"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingAccessibility">
     <ScrollViewer>
@@ -21,12 +22,12 @@
                 <ComboBox Width="200"
                           Name="UIZoom"
                           SelectionChanged="UIZoom_OnSelectionChanged">
-                    <ComboBoxItem Content="75%" Tag="{x:Static enums:UIZoom.Percent75}" />
-                    <ComboBoxItem Content="100%" Tag="{x:Static enums:UIZoom.Percent100}" />
-                    <ComboBoxItem Content="125%" Tag="{x:Static enums:UIZoom.Percent125}" />
-                    <ComboBoxItem Content="150%" Tag="{x:Static enums:UIZoom.Percent150}" />
-                    <ComboBoxItem Content="200%" Tag="{x:Static enums:UIZoom.Percent200}" />
-                    <ComboBoxItem Content="500%" Tag="{x:Static enums:UIZoom.Percent500}" />
+                    <ComboBoxItem Content="75%" Tag="{x:Static config:UIZoom.Percent75}" />
+                    <ComboBoxItem Content="100%" Tag="{x:Static config:UIZoom.Percent100}" />
+                    <ComboBoxItem Content="125%" Tag="{x:Static config:UIZoom.Percent125}" />
+                    <ComboBoxItem Content="150%" Tag="{x:Static config:UIZoom.Percent150}" />
+                    <ComboBoxItem Content="200%" Tag="{x:Static config:UIZoom.Percent200}" />
+                    <ComboBoxItem Content="500%" Tag="{x:Static config:UIZoom.Percent500}" />
                 </ComboBox>
             </onePointControls:SettingCard>
 

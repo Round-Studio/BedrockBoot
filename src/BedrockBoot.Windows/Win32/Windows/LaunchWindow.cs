@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Helper;

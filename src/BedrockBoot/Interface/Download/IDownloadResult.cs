@@ -19,8 +19,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Base.Entry.Info.Download;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Entity.Info.Download;
 
 namespace BedrockBoot.Interface.Download;
 

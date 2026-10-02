@@ -17,7 +17,7 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Chunker.Base.Entry;
 using BedrockBoot.Chunker.Base.Entry.Info;
 using BedrockBoot.Chunker.Base.Manifest;

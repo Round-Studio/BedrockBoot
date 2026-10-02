@@ -8,7 +8,7 @@
     <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />
     <Project Path="src/BedrockBoot.GravityCone/BedrockBoot.GravityCone.csproj" />
     <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
-      <Project Path="src/BedrockBoot.MSAL/BedrockBoot.MSAL.csproj"/>
+      <Project Path="src/BedrockBoot.MSAL/BedrockBoot.MSAL.csproj" />
     <Project Path="src/BedrockBoot.Netease/BedrockBoot.Netease.csproj" />
     <Project Path="src/BedrockBoot.WatchDog/BedrockBoot.WatchDog.csproj" />
     <Project Path="src/PreLoadCpp/src/PreloadCpp.vcxproj" Id="bfdc1f1a-af77-47c7-897e-673ead85364d">
@@ -66,7 +66,7 @@
   <Folder Name="/Test/">
     <Project Path="src/BedrockBoot.Test/BedrockBoot.Test.csproj" />
   </Folder>
-  <Project Path="src/BedrockBoot.Base/BedrockBoot.Base.csproj" />
+  <Project Path="src/BedrockBoot.Standard/BedrockBoot.Standard.csproj" />
   <Project Path="src/BedrockBoot.Core/BedrockBoot.Core.csproj" />
   <Project Path="src/BedrockBoot/BedrockBoot.csproj" />
 </Solution>

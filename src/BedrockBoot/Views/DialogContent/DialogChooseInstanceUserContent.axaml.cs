@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Pack.Game.Isolation;
 
 namespace BedrockBoot.Views.DialogContent;

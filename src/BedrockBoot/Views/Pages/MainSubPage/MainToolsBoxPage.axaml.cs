@@ -25,7 +25,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 using BedrockBoot.Chunker.Jvm;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Global;

@@ -25,7 +25,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Interface;
 using BedrockBoot.Interface.ModLoader;

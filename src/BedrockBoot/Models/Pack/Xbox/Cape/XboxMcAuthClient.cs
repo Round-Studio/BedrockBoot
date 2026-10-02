@@ -23,7 +23,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Standard.Entity.Account.Microsoft;
 using XUserLauncher.Core;
 
 namespace BedrockBoot.Models.Pack.Xbox.Cape;

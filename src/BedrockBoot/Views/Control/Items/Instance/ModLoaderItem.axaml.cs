@@ -21,7 +21,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Interface;
 using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Helper;

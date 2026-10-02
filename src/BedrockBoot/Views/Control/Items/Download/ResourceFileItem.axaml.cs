@@ -21,7 +21,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Info.Download;
+using BedrockBoot.Standard.Entity.Info.Download;
 using NotImplementedException = System.NotImplementedException;
 
 namespace BedrockBoot.Views.Control.Items.Download;

@@ -22,8 +22,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Task;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.DllMods;
@@ -52,7 +52,7 @@ public partial class TaskDownloadDllModItem : UserControl, ITaskItem
     public void Install(Action? onCompleted = null)
     {
         var installer = new DllModsInstaller(_instance, _modFile);
-        installer.Progress = new Progress<BedrockBoot.Base.Entry.Progress.DownloadProgress>(progress =>
+        installer.Progress = new Progress<BedrockBoot.Standard.Entity.Progress.DownloadProgress>(progress =>
         {
             Dispatcher.UIThread.Post(() =>
             {

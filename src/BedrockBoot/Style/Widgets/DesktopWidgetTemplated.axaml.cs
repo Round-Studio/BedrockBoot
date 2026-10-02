@@ -25,8 +25,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls.Primitives;
-using BedrockBoot.Base.Entry.Config;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity.Config;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Interface;
 
 namespace BedrockBoot.Style.Widgets

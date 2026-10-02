@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 using BedrockBoot.GravityCone;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;

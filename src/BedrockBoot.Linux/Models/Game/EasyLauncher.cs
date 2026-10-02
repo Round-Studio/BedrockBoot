@@ -17,8 +17,8 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Helper;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Helper;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Account.Xbox;

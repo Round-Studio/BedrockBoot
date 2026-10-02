@@ -19,7 +19,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Desktop;
 using BedrockBoot.Models.Game;

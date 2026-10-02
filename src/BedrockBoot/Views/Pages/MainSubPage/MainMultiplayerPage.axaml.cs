@@ -23,7 +23,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 using BedrockBoot.Core.Models.Xbox;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Pages.MultiplayerPage;

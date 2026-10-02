@@ -18,8 +18,8 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Base.Enum.Search;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Enum.Search;
 
 namespace BedrockBoot.Interface;
 

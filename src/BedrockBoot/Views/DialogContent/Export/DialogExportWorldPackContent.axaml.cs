@@ -19,8 +19,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Base.Enum.Type.Export;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
+using BedrockBoot.Standard.Enum.Type.Export;
 
 namespace BedrockBoot.Views.DialogContent.Export;
 

@@ -145,20 +145,18 @@ public static class MsAccountManager
                 }).ConfigureAwait(false);
 
                 Console.WriteLine($@"登录成功！用户: {gamertag}");
+
+                await OnUI(() =>
+                {
+                    IsLogging = false;
+                    _ = DialogHost.Close();
+                }).ConfigureAwait(false);
             }).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"登录失败: {ex.Message}");
             throw;
-        }
-        finally
-        {
-            await OnUI(() =>
-            {
-                IsLogging = false;
-                _ = DialogHost.Close();
-            }).ConfigureAwait(false);
         }
     }
 

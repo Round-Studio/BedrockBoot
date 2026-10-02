@@ -37,7 +37,7 @@ public partial class MainAccountPage : BedrockBootPage
     public MainAccountPage()
     {
         InitializeComponent();
-        
+
         UpdateUi();
     }
 
@@ -49,11 +49,11 @@ public partial class MainAccountPage : BedrockBootPage
         UsersList.IsVisible = false;
         UsersList.Items.Clear();
         NoneCard.IsVisible = true;
-        
+
         if (users != null)
         {
             NoneCard.IsVisible = users.Count == 0;
-            if(users.Count == 0) return;
+            if (users.Count == 0) return;
             users.ForEach(user =>
             {
                 UsersList.Items.Add(new ItemViewItem()
@@ -86,6 +86,7 @@ public partial class MainAccountPage : BedrockBootPage
                 MsAccountManager.AccountConfigEntity?.Data.SelectUserBUID = users[0].BUID;
                 MsAccountManager.AccountConfigEntity?.Save();
             }
+
             var selIndex = users.FindLastIndex(user => user.BUID == MsAccountManager.Accounts?.SelectUserBUID);
             UsersList.SelectedIndex = selIndex;
             UsersList.IsVisible = true;
@@ -100,10 +101,10 @@ public partial class MainAccountPage : BedrockBootPage
         {
             await MsAccountManager.LoginAccount();
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
-            Console.WriteLine($@"登录发生错误 {exception}");
             _ = DialogHost.Close();
+            Console.WriteLine($@"登录发生错误 {exception}");
             DialogHost.Show(new()
             {
                 Title = "发生错误",
@@ -111,6 +112,7 @@ public partial class MainAccountPage : BedrockBootPage
                 CloseButtonText = "确定"
             });
         }
+
         UpdateUi();
     }
 

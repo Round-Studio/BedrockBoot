@@ -27,6 +27,19 @@ public class MsUserConfig
     [JsonPropertyName("userName")] public string? UserName { get; set; }
     [JsonPropertyName("userIconUrl")] public string? UserIconUrl { get; set; }
     [JsonPropertyName("isDefault")] public bool IsDefault { get; set; } = false;
+
+    /// <summary>
+    /// 是否通过 Windows WAM (MSAL) 登录。为 true 时令牌刷新必须走 MSAL，
+    /// 而不是设备代码流（该账户没有 refresh_token）。
+    /// </summary>
+    [JsonPropertyName("isMsal")]
+    public bool IsMsal { get; set; } = false;
+
+    /// <summary>
+    /// MSAL 账户标识 (HomeAccountId)，用于在本地 MSAL 缓存的多个账户中定位当前账户。
+    /// </summary>
+    [JsonPropertyName("msalHomeAccountId")]
+    public string? MsalHomeAccountId { get; set; }
 }
 
 public class MsUserConfigRoot

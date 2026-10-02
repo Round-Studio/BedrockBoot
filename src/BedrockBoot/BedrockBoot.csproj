@@ -68,6 +68,7 @@
         <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj"/>
         <ProjectReference Include="..\BedrockBoot.GravityCone\BedrockBoot.GravityCone.csproj" />
         <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.MSAL\BedrockBoot.MSAL.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
         <ProjectReference Include="..\BedrockBoot.WatchDog\BedrockBoot.WatchDog.csproj" />
         <ProjectReference Include="..\LiteSkinViewer\LiteSkinViewer.2D\LiteSkinViewer.2D.csproj" />
@@ -82,6 +83,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj"
+                          Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
+
+        <ProjectReference Include="..\BedrockBoot.MSAL\BedrockBoot.MSAL.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
 
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"

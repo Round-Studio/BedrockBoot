@@ -25,7 +25,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Core.Global;
+using BedrockBoot.MSAL;
+using Microsoft.Identity.Client;
+using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 
 namespace BedrockBoot.Models.Account.Microsoft;
 
@@ -43,6 +47,8 @@ public class MsaDeviceCodeClient
         public string? RefreshToken { get; set; }
         public int? ExpiresIn { get; set; }
         public string? SavedAt { get; set; }
+        public bool IsMsal { get; set; }
+        public string? MsalHomeAccountId { get; set; }
     }
 
     public record DeviceCodeResponse(
@@ -66,8 +72,8 @@ public class MsaDeviceCodeClient
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
         WriteIndented = true,
     };
-    
-    public Action<string,string>? OnLoginCallback { get; set; }
+
+    public Action<string, string>? OnLoginCallback { get; set; }
 
     public TokenData? Refresh(string refreshToken)
     {
@@ -94,7 +100,10 @@ public class MsaDeviceCodeClient
                 };
             }
         }
-        catch { }
+        catch
+        {
+        }
+
         return null;
     }
 
@@ -175,25 +184,33 @@ public class MsaDeviceCodeClient
             var tr = PollDeviceCode(dc.DeviceCode);
             if (tr == null) continue;
             if (tr.Error == "authorization_pending") continue;
-            if (tr.Error == "slow_down") { interval += 5; continue; }
+            if (tr.Error == "slow_down")
+            {
+                interval += 5;
+                continue;
+            }
+
             if (tr.Error != null)
             {
                 Console.WriteLine($@"Sign-in failed: {tr.ErrorDescription ?? tr.Error}");
                 return false;
             }
+
             if (tr.RefreshToken != null)
             {
                 Console.WriteLine(@"Microsoft account linked");
                 return true;
             }
         }
+
         Console.WriteLine(@"Sign-in timed out");
         return false;
     }
 
-    public async Task<(bool success, TokenData? tokenData, string? userCode, string? verificationUri)> RunDeviceCodeFlowAsync(
-        IProgress<string>? progress = null,
-        CancellationToken cancellationToken = default)
+    public async Task<(bool success, TokenData? tokenData, string? userCode, string? verificationUri)>
+        RunDeviceCodeFlowAsync(
+            IProgress<string>? progress = null,
+            CancellationToken cancellationToken = default)
     {
         progress?.Report("正在请求设备代码...");
         var dc = RequestDeviceCode();
@@ -219,20 +236,24 @@ public class MsaDeviceCodeClient
             if (tr == null) continue;
             if (tr.Error == "authorization_pending")
             {
-                progress?.Report($"等待用户授权... (剩余 {Math.Max(0, deadline - DateTimeOffset.UtcNow.ToUnixTimeSeconds())} 秒)");
+                progress?.Report(
+                    $"等待用户授权... (剩余 {Math.Max(0, deadline - DateTimeOffset.UtcNow.ToUnixTimeSeconds())} 秒)");
                 continue;
             }
+
             if (tr.Error == "slow_down")
             {
                 interval += 5;
                 progress?.Report("请求过于频繁，减慢轮询速度");
                 continue;
             }
+
             if (tr.Error != null)
             {
                 progress?.Report($"登录失败: {tr.ErrorDescription ?? tr.Error}");
                 return (false, null, dc.UserCode, dc.VerificationUri);
             }
+
             if (tr.RefreshToken != null)
             {
                 var tokenData = new TokenData
@@ -250,9 +271,56 @@ public class MsaDeviceCodeClient
         progress?.Report("登录超时");
         return (false, null, dc.UserCode, dc.VerificationUri);
     }
-    
-    public async Task<TokenData?> RefreshTokenAsync(string refreshToken)
+
+    public async Task<TokenData?> RefreshTokenAsync(MsUserConfig account)
     {
+        var refreshToken = account.AuthResult?.RefreshToken;
+
+        // MSAL (WAM) 账户没有 refresh_token，必须通过 MSAL 静默获取令牌。
+        // 兼容改动前创建的账户：Windows 下 refresh_token 为空即视为 MSAL 账户。
+        var useMsal = OperatingSystem.IsWindows() &&
+                      (account.IsMsal || string.IsNullOrEmpty(refreshToken));
+
+        if (useMsal)
+        {
+            try
+            {
+                var msal = new MSALCore(GlobalModel.MainWindow.TryGetPlatformHandle()!.Handle);
+                var result = await msal.AcquireTokenSilentAsync(account.MsalHomeAccountId)
+                    .ConfigureAwait(false);
+
+                if (result != null)
+                {
+                    return new TokenData
+                    {
+                        RefreshToken = refreshToken ?? "",
+                        AccessToken = result.AccessToken,
+                        ExpiresIn = Math.Max(60, (int)(result.ExpiresOn - DateTimeOffset.UtcNow).TotalSeconds),
+                        SavedAt = DateTimeOffset.UtcNow.ToString("o"),
+                        IsMsal = true,
+                        MsalHomeAccountId = result.Account?.HomeAccountId?.Identifier ?? account.MsalHomeAccountId,
+                    };
+                }
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                Console.WriteLine($@"MSAL 刷新需要用户交互: [{ex.ErrorCode}] {ex.Message}");
+            }
+            catch (MsalException ex)
+            {
+                Console.WriteLine($@"MSAL 刷新异常: [{ex.ErrorCode}] {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"MSAL 刷新失败: {ex.Message}");
+            }
+
+            return null;
+        }
+
+        // 设备代码流账户：使用 refresh_token 换取新令牌
+        if (string.IsNullOrEmpty(refreshToken)) return null;
+
         var fields = new Dictionary<string, string>
         {
             ["client_id"] = Constants.MsaClientId,
@@ -273,10 +341,14 @@ public class MsaDeviceCodeClient
                     AccessToken = at.GetString()!,
                     ExpiresIn = json.TryGetValue("expires_in", out var ei) ? ei.GetInt32() : null,
                     SavedAt = DateTimeOffset.UtcNow.ToString("o"),
+                    IsMsal = false,
                 };
             }
         }
-        catch { }
+        catch
+        {
+        }
+
         return null;
     }
 }

@@ -5,15 +5,16 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.DialogContent.DialogLoginMsAccountContent">
-    <Grid>
+    <Grid MinWidth="320">
         <StackPanel Spacing="8">
             <onePointControls:FontIcon Glyph="&#xf164;"
                                        HorizontalAlignment="Center"
-                                       FontSize="32"/>
+                                       FontSize="32" />
             <TextBlock Text="登录微软账户"
                        HorizontalAlignment="Center"
-                       FontSize="16"></TextBlock>
-            
+                       FontSize="16">
+            </TextBlock>
+
             <Button Classes="NoBorder"
                     Padding="12,4"
                     HorizontalAlignment="Center"
@@ -23,23 +24,28 @@
                     Name="CodeCopyBtn"
                     Content="加载中">
             </Button>
-            
-            <TextBlock Text="点击上方按钮以复制，黏贴至浏览器中完成登录流程"
-                       FontSize="11"
-                       Opacity="0.6"
-                       HorizontalAlignment="Center"></TextBlock>
-            
-            <DockPanel HorizontalAlignment="Center"
-                       Name="LinkBox"
-                       IsVisible="False">
-                <TextBlock Text="网页未自动打开？"
+
+            <StackPanel Name="LinkBox"
+                        Spacing="8"
+                        IsVisible="False">
+                <TextBlock Text="点击上方按钮以复制，黏贴至浏览器中完成登录流程"
                            FontSize="11"
                            Opacity="0.6"
-                           HorizontalAlignment="Center"></TextBlock>
-                <HyperlinkButton Content="点击手动打开网页"
-                                 Name="LinkBtn"
-                                 FontSize="11"></HyperlinkButton>
-            </DockPanel>
+                           HorizontalAlignment="Center">
+                </TextBlock>
+
+                <DockPanel HorizontalAlignment="Center">
+                    <TextBlock Text="网页未自动打开？"
+                               FontSize="11"
+                               Opacity="0.6"
+                               HorizontalAlignment="Center">
+                    </TextBlock>
+                    <HyperlinkButton Content="点击手动打开网页"
+                                     Name="LinkBtn"
+                                     FontSize="11">
+                    </HyperlinkButton>
+                </DockPanel>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

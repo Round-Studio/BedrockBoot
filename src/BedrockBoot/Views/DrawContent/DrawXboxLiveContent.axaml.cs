@@ -51,30 +51,8 @@ public partial class DrawXboxLiveContent : UserControl
         try
         {
             Console.WriteLine(@"正在刷新账户凭证...");
-            var client = new MsaDeviceCodeClient();
-            var tokenData = await client.RefreshTokenAsync(_xbl.AuthResult.RefreshToken);
+            _xbl = await MsAccountManager.RefreshAccountAsync(_xbl) ?? _xbl;
             Console.WriteLine(@"刷新完毕。");
-
-            if (tokenData != null)
-            {
-                var index = MsAccountManager.Accounts.Accounts.FindIndex(x => x.BUID == _xbl.BUID);
-                MsAccountManager.AccountConfigEntity.Data.Accounts[index].AuthResult = new()
-                {
-                    Code = tokenData?.Code,
-                    AccessToken = tokenData?.AccessToken,
-                    ClientId = tokenData?.ClientId,
-                    CodeVerifier = tokenData?.CodeVerifier,
-                    ExpiresIn = (int)tokenData.ExpiresIn,
-                    RedirectUri = tokenData?.RedirectUri,
-                    RefreshToken = tokenData.RefreshToken,
-                    SavedAt = DateTime.Now
-                };
-
-                MsAccountManager.AccountConfigEntity.Save();
-                Console.WriteLine(@"新用户数据已保存");
-
-                _xbl = MsAccountManager.AccountConfigEntity.Data.Accounts[index];
-            }
 
             Console.WriteLine(@"开始获取 Xbox 用户凭证");
 

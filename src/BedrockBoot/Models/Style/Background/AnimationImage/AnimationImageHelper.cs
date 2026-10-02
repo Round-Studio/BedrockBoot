@@ -36,7 +36,8 @@ public class AnimationImageHelper : IDisposable
     
     public async Task<Bitmap?> GetImage(int height = 128)
     {
-        var bitmap = await _imageLoader.LoadIconAsync(_imagePath);
+        // 输出只要 height 高，按高度 4 倍宽度解码即可，避免把原图（可能 4K）整张解码
+        var bitmap = await _imageLoader.LoadIconAsync(_imagePath, Math.Max(64, height * 4));
         if (bitmap == null)
             return null;
     

@@ -56,6 +56,11 @@ public partial class ResultRoot : UserControl
     {
         base.OnUnloaded(e);
         imageLoader.Dispose();
+
+#if WINDOWS
+        // 详情页关闭后整理一次工作集，把内存还给系统
+        ProcessMemoryTrimmer.TrimProcess();
+#endif
     }
 
     private static I18nManager i18n => I18nManager.Instance;
@@ -121,7 +126,8 @@ public partial class ResultRoot : UserControl
             });
         });
 
-        var icon = await imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
+        // 详情页主图标显示 90x90，按 180 宽解码（兼容 2x）
+        var icon = await imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri, true, 180);
 
         if (icon != null)
         {

@@ -90,8 +90,8 @@ public partial class CurseForgeModItem : UserControl
 
         try
         {
-            // 修正：使用 await 替代 .Result，防止阻塞 UI 线程或造成死锁
-            var image = await _imageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl);
+            // 修正：使用 await 替代 .Result，防止阻塞 UI 线程或造成死锁；图标只显示 32x32，按 64 宽解码
+            var image = await _imageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl, true, 64);
 
             if (image != null)
                 await Dispatcher.UIThread.InvokeAsync(() =>

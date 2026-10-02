@@ -101,32 +101,25 @@ public partial class InstanceInfo : UserControl
         
         StartPlayTimeRefresh();
 
-        Task.Run(() =>
-        {
-            IsEdit = false;
+        IsEdit = false;
 
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                InstanceName.Text = VersionInfo.Info.VersionName;
+        InstanceName.Text = VersionInfo.Info.VersionName;
 
-                if (VersionInfo.Config == null)
-                    VersionInfo.Config = new VersionConfig.VersionConfigEntry();
+        if (VersionInfo.Config == null)
+            VersionInfo.Config = new VersionConfig.VersionConfigEntry();
 
-                InstanceArgs.Text = VersionInfo.Config.OtherCommand;
-                InstanceConsole.IsChecked = VersionInfo.Config.IsConsole;
-                InstanceEdit.IsChecked = VersionInfo.Config.IsEditModel;
-                InstanceMod.IsChecked = VersionInfo.Config.IsModes;
-                InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
-                InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
-                GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
-                IsRunAdmin.IsChecked = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun;
-                IsNativeException.IsChecked = VersionInfo.Config.IsNativeException;
-                CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
-            });
+        InstanceArgs.Text = VersionInfo.Config.OtherCommand;
+        InstanceConsole.IsChecked = VersionInfo.Config.IsConsole;
+        InstanceEdit.IsChecked = VersionInfo.Config.IsEditModel;
+        InstanceMod.IsChecked = VersionInfo.Config.IsModes;
+        InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
+        InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
+        GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
+        IsRunAdmin.IsChecked = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun;
+        IsNativeException.IsChecked = VersionInfo.Config.IsNativeException;
+        CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
 
-            Thread.Sleep(500);
-            IsEdit = true;
-        });
+        IsEdit = true;
     }
     
 
@@ -140,7 +133,8 @@ public partial class InstanceInfo : UserControl
 
         IconBox.Update(image);
         
-        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
+        // 图标显示 74x74，按 160 宽解码（兼容 2x）
+        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo), 160);
     }
 
     private void TextTypeConfig_OnChanged(object? sender, TextChangedEventArgs e)
@@ -168,10 +162,15 @@ public partial class InstanceInfo : UserControl
             Interval = TimeSpan.FromSeconds(1)
         };
 
-        _refreshTimer.Tick += async (sender, e) => await RefreshPlayTimeAsync();
+        _refreshTimer.Tick += OnRefreshTimerTick;
         _refreshTimer.Start();
 
         Dispatcher.UIThread.Post(async () => await RefreshPlayTimeAsync());
+    }
+
+    private async void OnRefreshTimerTick(object? sender, EventArgs e)
+    {
+        await RefreshPlayTimeAsync();
     }
 
     private void StopPlayTimeRefresh()
@@ -179,7 +178,7 @@ public partial class InstanceInfo : UserControl
         if (_refreshTimer != null)
         {
             _refreshTimer.Stop();
-            _refreshTimer.Tick -= async (sender, e) => await RefreshPlayTimeAsync();
+            _refreshTimer.Tick -= OnRefreshTimerTick;
             _refreshTimer = null;
         }
 

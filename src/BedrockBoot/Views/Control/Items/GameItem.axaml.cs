@@ -67,7 +67,8 @@ public partial class GameItem : UserControl
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
 
-        Card.ImageIcon = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
+        // 图标只显示 32x32，按 64 宽解码
+        Card.ImageIcon = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo), 64);
         if (LeviLamina.IsInstallModLoader(VersionInfo.VersionPath!))
             ModLoadersPanel.Children.Add(new LabelBox()
             {

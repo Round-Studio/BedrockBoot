@@ -16,10 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Base.Entry.Game.Pack.Screenshots;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Screenshots;
@@ -49,16 +51,20 @@ public partial class InstanceScreenshots : ISetting
         var users = new ScreenshotsManager(VersionInfo).GetScreenshots();
         users.Keys.ToList().ForEach(u => UserChooseBox.Items.Add(u));
         UserChooseBox.SelectedIndex = 0;
-        UpdateScreenshots();
+        UpdateScreenshots(users);
 
         IsEdit = true;
     }
 
     public void UpdateScreenshots()
     {
+        UpdateScreenshots(new ScreenshotsManager(VersionInfo).GetScreenshots());
+    }
+
+    private void UpdateScreenshots(Dictionary<string, List<ScreenshotsInfo>> users)
+    {
         if (UserChooseBox.SelectedIndex <= -1)
             return;
-        var users = new ScreenshotsManager(VersionInfo).GetScreenshots();
         var screenshots = users.Values.ToList()[UserChooseBox.SelectedIndex];
         ScreenshotsBox.Children.Clear();
         screenshots.ForEach(ph => ScreenshotsBox.Children.Add(new ScreenshotsItem(ph)));

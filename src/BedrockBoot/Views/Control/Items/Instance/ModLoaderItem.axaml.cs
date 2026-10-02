@@ -31,9 +31,10 @@ namespace BedrockBoot.Views.Control.Items.Instance;
 
 public partial class ModLoaderItem : ISetting
 {
-    private ImageLoader? _imageLoader = new ImageLoader();
+    private readonly ImageLoader _imageLoader = ImageLoader.Shared;
     private readonly VersionConfig _instance;
     private readonly IModsLoader _loader;
+    private bool _canInstall;
 
     public ModLoaderItem()
     {
@@ -48,6 +49,8 @@ public partial class ModLoaderItem : ISetting
         {
             await UpdateUi();
         };
+        LoaderCard.Click += LoaderCard_OnClick;
+        DeleteBtn.Click += DeleteBtn_OnClick;
         _ = UpdateUi();
     }
 
@@ -67,30 +70,39 @@ public partial class ModLoaderItem : ISetting
         if (!string.IsNullOrEmpty(_loader.IconUri))
         {
             LoaderCard.IsFontIcon = false;
-            LoaderCard.ImageIcon = await _imageLoader!.LoadIconAsync(_loader.IconUri);
+            LoaderCard.ImageIcon = await _imageLoader.LoadIconAsync(_loader.IconUri, 64);
         }
 
         if (!_loader.IsInstalled())
         {
-            var isActInstance = await _loader.ApplicableInstance();
+            _canInstall = await _loader.ApplicableInstance();
             LoadingRing.IsVisible = false;
-            NotApplicableLabel.IsVisible = !isActInstance;
-            if (isActInstance)
-            {
-                LoaderCard.Click += (_, _) => _loader.Install();
-            }
+            NotApplicableLabel.IsVisible = !_canInstall;
         }
         else
         {
+            _canInstall = false;
             DeleteBtn.IsVisible = _loader.CanRemove;
             IsEnableToggle.IsVisible = _loader.IsAllowDisabling;
             IsEnableToggle.IsChecked = _loader.GetIsEnabled();
             LoadingRing.IsVisible = false;
-            DeleteBtn.Click += (_, _) => _loader.Remove();
-            LoaderCard.Click += (_, _) => _loader.ViewInfo();
         }
 
         IsEdit = true;
+    }
+
+    private void LoaderCard_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_loader.IsInstalled())
+            _loader.ViewInfo();
+        else if (_canInstall)
+            _loader.Install();
+    }
+
+    private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_loader.IsInstalled() && _loader.CanRemove)
+            _loader.Remove();
     }
 
     private void IsEnableToggle_OnIsCheckedChanged(object? sender, RoutedEventArgs e)

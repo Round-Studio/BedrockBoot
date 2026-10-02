@@ -34,6 +34,10 @@ namespace BedrockBoot.Models.Helper;
 
 public class ImageLoader : IDisposable
 {
+    private static ImageLoader? _shared;
+
+    public static ImageLoader Shared => _shared ??= new ImageLoader();
+
     private readonly HttpClient _httpClient;
 
     // LRU 内存缓存（按访问顺序，最近访问的排到队首）
@@ -67,12 +71,13 @@ public class ImageLoader : IDisposable
         _disposed = true;
         _httpClient.Dispose();
         ClearMemoryCache();
-        foreach (var sem in _urlLocks.Values) sem.Dispose();
+        // 不释放 _urlLocks 里的信号量：可能还有正在进行的加载持有它们，
+        // 释放后再 Release/WaitAsync 会抛 ObjectDisposedException
         _urlLocks.Clear();
         GC.SuppressFinalize(this);
     }
 
-    public async Task<Bitmap?> LoadIconAsync(string iconUri)
+    public async Task<Bitmap?> LoadIconAsync(string iconUri, int? decodeWidth = null)
     {
         Console.WriteLine($@"获取图片：{iconUri}");
         if (string.IsNullOrEmpty(iconUri))
@@ -82,7 +87,7 @@ public class ImageLoader : IDisposable
 
         if (iconUri.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
             iconUri.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-            return await LoadImageBrushAsync(iconUri);
+            return await LoadImageBrushAsync(iconUri, true, decodeWidth);
 
         string decodedPath = Uri.UnescapeDataString(iconUri);
 
@@ -112,18 +117,28 @@ public class ImageLoader : IDisposable
     /// <summary>
     ///     从 URL 加载图片（内存 -> 磁盘 -> 网络）。同一 URL 并发只会下载一次。
     /// </summary>
-    public async Task<Bitmap?> LoadImageBrushAsync(string imageUrl, bool useCache = true)
+    /// <param name="imageUrl">图片地址</param>
+    /// <param name="useCache">是否使用缓存</param>
+    /// <param name="decodeWidth">按指定宽度解码（用于列表小图标，避免按原图全尺寸解码占用大量内存）</param>
+    public async Task<Bitmap?> LoadImageBrushAsync(string imageUrl, bool useCache = true, int? decodeWidth = null)
     {
         if (imageUrl.StartsWith("avares://")) return await LoadIconAsync(imageUrl);
+
+        // 部分在线资源返回的地址会带上多余的逗号/空白，先清理掉
+        imageUrl = imageUrl.Trim().TrimEnd(',');
+
         if (string.IsNullOrWhiteSpace(imageUrl)) return null;
+        if (_disposed) return null;
 
-        if (useCache && TryGetFromCache(imageUrl, out var cached)) return cached;
+        var cacheKey = decodeWidth is > 0 ? $"{imageUrl}#w{decodeWidth.Value}" : imageUrl;
 
-        var urlLock = _urlLocks.GetOrAdd(imageUrl, _ => new SemaphoreSlim(1, 1));
+        if (useCache && TryGetFromCache(cacheKey, out var cached)) return cached;
+
+        var urlLock = _urlLocks.GetOrAdd(cacheKey, _ => new SemaphoreSlim(1, 1));
         await urlLock.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (useCache && TryGetFromCache(imageUrl, out cached)) return cached;
+            if (useCache && TryGetFromCache(cacheKey, out cached)) return cached;
 
             byte[]? imageData = null;
             var localPath = GetLocalFilePath(imageUrl);
@@ -156,22 +171,33 @@ public class ImageLoader : IDisposable
 
             if (imageData == null) return null;
 
-            var bitmap = await Dispatcher.UIThread.InvokeAsync(async () =>
+            // 在后台线程解码：解码是 CPU 密集操作，放在 UI 线程会阻塞渲染，导致加载圈动画卡顿
+            var bitmap = await Task.Run(() =>
             {
                 try
                 {
                     using var ms = new MemoryStream(imageData);
-                    return new Bitmap(ms);
+                    return decodeWidth is > 0
+                        ? Bitmap.DecodeToWidth(ms, decodeWidth.Value)
+                        : new Bitmap(ms);
                 }
                 catch
                 {
-                    return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
-                    ;
+                    return null;
                 }
             });
-            if (useCache && bitmap != null) AddToCache(imageUrl, bitmap);
+
+            if (bitmap == null)
+                return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
+
+            if (useCache) AddToCache(cacheKey, bitmap);
 
             return bitmap;
+        }
+        catch (Exception ex) when (ex is OperationCanceledException || _disposed)
+        {
+            // 控件卸载 / 加载器释放导致的取消属于正常情况，静默返回，不打印也不回退占位图
+            return null;
         }
         catch (Exception ex)
         {
@@ -181,7 +207,14 @@ public class ImageLoader : IDisposable
         }
         finally
         {
-            urlLock.Release();
+            // 加载过程中控件可能已卸载并 Dispose，此时信号量可能已被释放，忽略即可
+            try
+            {
+                urlLock.Release();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
     }
 

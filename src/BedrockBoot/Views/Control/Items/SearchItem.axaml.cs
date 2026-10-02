@@ -59,7 +59,8 @@ public partial class SearchItem : UserControl
 
     private async Task Update()
     {
-        var icon = await _imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
+        // 列表图标只显示 32x32，按 64 宽解码即可（兼容 2x 缩放），避免按原图全尺寸解码导致内存暴涨
+        var icon = await _imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri, true, 64);
         if (icon != null)
         {
             Card.IsFontIcon = false;

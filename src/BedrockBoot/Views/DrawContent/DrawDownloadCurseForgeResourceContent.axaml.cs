@@ -73,7 +73,8 @@ public partial class DrawDownloadCurseForgeResourceContent : UserControl
 
         Task.Run(() =>
         {
-            var image =_imageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl).Result;
+            // 预览图显示 80x80，按 160 宽解码（兼容 2x）
+            var image =_imageLoader.LoadImageBrushAsync(ModData.Logo.ThumbnailUrl, true, 160).Result;
             Dispatcher.UIThread.Invoke(() =>
             {
                 NullImage.IsVisible = false;

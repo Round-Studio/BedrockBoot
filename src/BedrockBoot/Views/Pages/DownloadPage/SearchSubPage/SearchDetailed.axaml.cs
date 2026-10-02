@@ -22,6 +22,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
@@ -244,8 +245,8 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             // 避免一页几十个条目（含图片缓存）同时常驻内存
             var list = new ListBox
             {
-                Margin = new Thickness(20, 10, 20, 20),
-                Padding = new Thickness(0),
+                Margin = new Thickness(20, 10, 5, 20),
+                Padding = new Thickness(0,0,15,0),
                 Background = Brushes.Transparent,
                 BorderThickness = new Thickness(0),
                 ItemsSource = items,
@@ -261,10 +262,33 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
                 Setters =
                 {
                     new Setter(TemplatedControl.PaddingProperty, new Thickness(0)),
-                    new Setter(TemplatedControl.MinHeightProperty, 0d),
-                    new Setter(TemplatedControl.MinWidthProperty, 0d),
-                    new Setter(TemplatedControl.CornerRadiusProperty, new CornerRadius(0)),
-                    new Setter(Layoutable.MarginProperty, new Thickness(0, 0, 0, 8))
+                    new Setter(Layoutable.MinHeightProperty, 0d),
+                    new Setter(Layoutable.MinWidthProperty, 0d),
+                    new Setter(Layoutable.MarginProperty, new Thickness(0, 0, 0, 8)),
+
+                    new Setter(
+                        TemplatedControl.TemplateProperty,
+                        new FuncControlTemplate<ListBoxItem>((item, ns) =>
+                        {
+                            var presenter = new ContentPresenter
+                            {
+                                Name = "PART_ContentPresenter",
+                                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                                VerticalContentAlignment = VerticalAlignment.Center,
+                            };
+
+                            // 绑定到 ListBoxItem 的属性
+                            presenter.Bind(ContentPresenter.ContentProperty,
+                                item.GetObservable(ContentControl.ContentProperty));
+                            presenter.Bind(ContentPresenter.ContentTemplateProperty,
+                                item.GetObservable(ContentControl.ContentTemplateProperty));
+                            presenter.Bind(ContentPresenter.PaddingProperty,
+                                item.GetObservable(TemplatedControl.PaddingProperty));
+                            presenter.Bind(ContentPresenter.BackgroundProperty,
+                                item.GetObservable(TemplatedControl.BackgroundProperty));
+
+                            return presenter;
+                        }))
                 }
             });
             list.SelectionChanged += (_, _) =>

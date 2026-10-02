@@ -93,7 +93,8 @@
         </StackPanel>
 
         <navigation:LotsPageFrame Grid.Row="1"
-                                  Name="ResultPage" />
+                                  Name="ResultPage">
+        </navigation:LotsPageFrame>
 
         <notice:LoadCard Grid.Row="1"
                          HorizontalAlignment="Center"

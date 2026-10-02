@@ -30,7 +30,8 @@ public partial class SettingNavigation : UserControl
         InitializeComponent();
 
 #if RELEASE
-        SetPersonalization.IsEnabled = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingPersonalization;
+        SetPersonalization.IsEnabled =
+ BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingPersonalization;
 #endif
     }
 
@@ -62,5 +63,10 @@ public partial class SettingNavigation : UserControl
     private void Plugin_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new SettingPlugin());
+    }
+
+    private void Accessibility_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new SettingAccessibility());
     }
 }

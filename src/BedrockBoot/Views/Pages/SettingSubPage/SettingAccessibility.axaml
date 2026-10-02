@@ -1,0 +1,56 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:enums="clr-namespace:BedrockBoot.Base.Enum;assembly=BedrockBoot.Base"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingAccessibility">
+    <ScrollViewer>
+        <StackPanel Margin="15"
+                    Spacing="8">
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="界面" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Header="界面缩放"
+                                          Description="启动器主窗口的界面缩放设置"
+                                          Glyph="&#xF158;">
+                <ComboBox Width="200"
+                          Name="UIZoom"
+                          SelectionChanged="UIZoom_OnSelectionChanged">
+                    <ComboBoxItem Content="75%" Tag="{x:Static enums:UIZoom.Percent75}" />
+                    <ComboBoxItem Content="100%" Tag="{x:Static enums:UIZoom.Percent100}" />
+                    <ComboBoxItem Content="125%" Tag="{x:Static enums:UIZoom.Percent125}" />
+                    <ComboBoxItem Content="150%" Tag="{x:Static enums:UIZoom.Percent150}" />
+                    <ComboBoxItem Content="200%" Tag="{x:Static enums:UIZoom.Percent200}" />
+                    <ComboBoxItem Content="500%" Tag="{x:Static enums:UIZoom.Percent500}" />
+                </ComboBox>
+            </onePointControls:SettingCard>
+
+            <TextBlock Margin="5, 0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="游戏" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          IsClickable="True"
+                                          Glyph="&#xE74E;"
+                                          Name="SaveBackupBtn"
+                                          Click="SaveBackupBtn_OnClick"
+                                          Header="{DynamicResource Settings.Game.Backup.Title}"
+                                          Description="{DynamicResource Settings.Game.Backup.Desc}" />
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="MouseLockBtn"
+                                          Click="MouseLockBtn_OnClick"
+                                          IsClickable="True"
+                                          Header="{DynamicResource Settings.Game.MouseLock.Title}"
+                                          Description="{DynamicResource Settings.Game.MouseLock.Desc}"
+                                          Glyph="&#xE72E;">
+            </onePointControls:SettingCard>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -43,6 +43,14 @@
                                               Glyph="&#xE71D;" />
 
                 <onePointControls:SettingCard Margin="5, 0"
+                                              Header="辅助功能"
+                                              Description="启动器辅助功能设置"
+                                              Name="Accessibility"
+                                              Click="Accessibility_OnClick"
+                                              IsClickable="True"
+                                              Glyph="&#xE805;" />
+
+                <onePointControls:SettingCard Margin="5, 0"
                                               Header="{DynamicResource Settings.Nav.Plugin.Title}"
                                               Description="{DynamicResource Settings.Nav.Plugin.Desc}"
                                               Name="Plugin"

@@ -24,15 +24,17 @@ using BedrockBoot.Windows.Models.Helper;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 
-namespace BedrockBoot.Windows.Models;
+namespace BedrockBoot.Windows;
 
 public class WindowsCoreInit : ICoreInit
 {
     public void UpdateUseHardwareDecode(bool isUse)
     {
         Console.WriteLine($@"使用硬件解码：{isUse}");
-        EasyDownload.UseHardwareDecode = isUse;
+        IsUseHardwareDecode = isUse;
     }
+
+    public bool IsUseHardwareDecode { get; set; }
 
     public async Task InitializeAsync()
     {

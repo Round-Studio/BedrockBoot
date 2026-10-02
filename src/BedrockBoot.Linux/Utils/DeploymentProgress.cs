@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#if !WINDOWS
+
 namespace Windows.Management.Deployment;
 
 public struct DeploymentProgress
@@ -36,3 +38,5 @@ public struct DeploymentProgress
     /// </returns>
     public string stateText { get; }
 }
+
+#endif

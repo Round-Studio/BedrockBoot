@@ -27,6 +27,7 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.GDK;
 using BedrockBoot.Models.Pack.Wine;
 using BedrockBoot.Proton;
+using BedrockBoot.Standard.Core;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 using Round.SDK.Plugin.BedrockBoot.Register;
@@ -424,13 +425,13 @@ public class EasyLauncher
 
     private bool PrepareNeoLaunchEnvironment()
     {
-        var accountOld = CoreInit.GetMsAccountConfig?.Invoke();
+        var accountOld = PlatformCore.GetMsAccountConfig?.Invoke();
         if (accountOld == null)
         {
             return false;
         }
 
-        var account = CoreInit.OnRefreshAccount?.Invoke(accountOld).Result;
+        var account = PlatformCore.OnRefreshAccount?.Invoke(accountOld).Result;
 
         UpdateProgressText?.Invoke("正在登录账户");
         var xbl = new XblAuth();

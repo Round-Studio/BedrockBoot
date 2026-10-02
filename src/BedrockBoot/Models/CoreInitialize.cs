@@ -26,31 +26,29 @@ using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Manifest;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Entity;
 using BedrockBoot.Models.Account.Microsoft;
-using BedrockBoot.Models.Account.Microsoft.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Helper.GravityCone;
 using BedrockBoot.Models.Pack.Game.Loaders;
 using BedrockBoot.Models.Pack.Game.Options;
-using BedrockBoot.Proton;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Interface.ModLoader;
-using BedrockBoot.Views.Control.Items.Instance;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
-using BedrockBoot.Views.DialogContent.Linux;
-using BedrockBoot.Windows.Models;
-using BedrockBoot.Windows.Models.Helper;
-using BedrockBoot.Windows.Models.Helper.Gdk;
-using BedrockBoot.Windows.Models.Helper.Uwp;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Plugin.BedrockBoot.Register;
 #if WINDOWS
+using BedrockBoot.Windows;
+using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Windows.Models.Helper.Gdk;
+using BedrockBoot.Windows.Models.Helper.Uwp;
+#endif
+#if LINUX
+using BedrockBoot.Linux;
 #endif
 
 namespace BedrockBoot.Models;
@@ -254,6 +252,8 @@ public class CoreInitialize
             var coreInitUnit =
 #if WINDOWS
                 new WindowsCoreInit();     
+#elif LINUX
+                new LinuxCoreInit();
 #endif
             await PlatformCore.InstallAsync(coreInitUnit);
             PlatformCore.CoreInit?.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);

@@ -60,7 +60,7 @@
                                           Click="GameFolderBtn_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE8B7;" />
-            
+
             <StackPanel Name="HelperPanel"
                         Spacing="8">
                 <TextBlock Margin="5,0"
@@ -73,7 +73,8 @@
                                               Description="在游戏窗口内按下 Shift+Tab 以打开游戏叠层"
                                               Glyph="&#xF156;">
                     <ToggleSwitch Name="IsOpenGameLayering"
-                                  IsCheckedChanged="IsOpenGameLayering_OnIsCheckedChanged"></ToggleSwitch>
+                                  IsCheckedChanged="IsOpenGameLayering_OnIsCheckedChanged">
+                    </ToggleSwitch>
                 </onePointControls:SettingCard>
 
                 <onePointControls:SettingCard Margin="5, 0"
@@ -85,7 +86,7 @@
                                               Glyph="&#xE72E;">
                 </onePointControls:SettingCard>
             </StackPanel>
-            
+
             <TextBlock Margin="5,0"
                        FontWeight="Bold"
                        FontSize="14"
@@ -106,20 +107,36 @@
                                           Click="SaveBackupBtn_OnClick"
                                           Header="{DynamicResource Settings.Game.Backup.Title}"
                                           Description="{DynamicResource Settings.Game.Backup.Desc}" />
-            
+
             <TextBlock Margin="5,0"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="{DynamicResource Settings.Game.Group.Advanced}" />
+                       Text="账户" />
 
             <onePointControls:SettingCard Margin="5, 0"
                                           Name="IsUseMultipleUsersCard"
                                           Header="使用多账户"
                                           Description="在 Windows 下使用全新的多账户模式进行游戏"
                                           Glyph="&#xE716;">
-                <ToggleSwitch Name="IsUseMultipleUsers" 
-                              IsCheckedChanged="IsUseMultipleUsers_OnIsCheckedChanged"></ToggleSwitch>
+                <ToggleSwitch Name="IsUseMultipleUsers"
+                              IsCheckedChanged="IsUseMultipleUsers_OnIsCheckedChanged">
+                </ToggleSwitch>
             </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="IsUseMSALAccountCard"
+                                          Header="MSAL 验证"
+                                          Description="在 Windows 下使用 MSAL 验证流程进行账户验证"
+                                          Glyph="&#xF32A;">
+                <ToggleSwitch Name="IsUseMSALAccount"
+                              IsCheckedChanged="IsUseMSALAccount_OnIsCheckedChanged">
+                </ToggleSwitch>
+            </onePointControls:SettingCard>
+
+            <TextBlock Margin="5,0"
+                       FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Game.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"
                                           Header="{DynamicResource Settings.Game.LaunchCommand.Title}"
@@ -136,9 +153,10 @@
                                           Glyph="&#xEBD2;">
                 <ToggleSwitch Name="IsUseNeoLaunchToggleSwitch"
                               IsEnabled="False"
-                              IsCheckedChanged="IsUseNeoLaunchToggleSwitch_OnIsCheckedChanged"></ToggleSwitch>
+                              IsCheckedChanged="IsUseNeoLaunchToggleSwitch_OnIsCheckedChanged">
+                </ToggleSwitch>
             </onePointControls:SettingCard>
-            
+
             <onePointControls:SettingCard Margin="5, 0"
                                           Header="Proton"
                                           Description="{DynamicResource Settings.Game.Proton.Desc}"

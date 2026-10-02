@@ -94,7 +94,7 @@ public static class MsAccountManager
                 bool isMsal = false;
                 string? msalHomeAccountId = null;
 
-                if (OperatingSystem.IsWindows() && Core.Global.GlobalModel.Config.Data.IsUseBeta)
+                if (OperatingSystem.IsWindows() && Core.Global.GlobalModel.Config.Data.IsUseMSALAccount)
                 {
 #if WINDOWS
                     Console.WriteLine(@"开始 WAM 交互式登录...");

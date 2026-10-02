@@ -135,6 +135,8 @@ namespace BedrockBoot.Base.Entry
 
         [JsonPropertyName("isAutoBackupOnExit")]
         public bool IsAutoBackupOnExit { get; set; } = true;
+
+        [JsonPropertyName("isUseMSALAccount")] public bool IsUseMSALAccount { get; set; } = false;
     }
 
     public class LaunchCommandConfig

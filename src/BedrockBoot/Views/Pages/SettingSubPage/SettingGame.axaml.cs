@@ -50,6 +50,7 @@ public partial class SettingGame : ISettingPage
         CatalogStrategy.SelectedIndex = ((int)GlobalModel.Config.Data.CatalogStrategy) - 1;
         IsOpenGameLayering.IsChecked = GlobalModel.Config.Data.IsOpenGameLayering;
         IsUseMultipleUsers.IsChecked = GlobalModel.Config.Data.IsUseMultipleUsers;
+        IsUseMSALAccount.IsChecked = GlobalModel.Config.Data.IsUseMSALAccount;
         IsUseNeoLaunchBox.IsVisible = false;
         ProtonBtn.IsVisible = false;
 
@@ -57,6 +58,7 @@ public partial class SettingGame : ISettingPage
         IsolationCard.IsVisible = false;
         IsUseMultipleUsersCard.IsVisible = false;
         HelperPanel.IsVisible = false;
+        IsUseMSALAccountCard.IsVisible = false;
         MouseLockBtn.IsVisible = false;
         ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
         IsUseNeoLaunchBox.IsVisible = true;
@@ -82,7 +84,7 @@ public partial class SettingGame : ISettingPage
         MainSettingPage.NavigateTo(new GameFolders());
     }
 
-     private void MouseLockBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void MouseLockBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new MouseLock());
     }
@@ -126,7 +128,7 @@ public partial class SettingGame : ISettingPage
         {
             GlobalModel.Config.Data.IsUseNeoLaunch = (bool)IsUseNeoLaunchToggleSwitch.IsChecked!;
             GlobalModel.Config.Save();
-            
+
             Models.Global.GlobalModel.MainWindow.SetReboot();
 
 #if LINUX
@@ -151,7 +153,7 @@ public partial class SettingGame : ISettingPage
         {
             GlobalModel.Config.Data.IsUseMultipleUsers = (bool)IsUseMultipleUsers.IsChecked!;
             GlobalModel.Config.Save();
-            
+
             Models.Global.GlobalModel.MainWindow.SetReboot();
         }
     }
@@ -159,5 +161,14 @@ public partial class SettingGame : ISettingPage
     private void SaveBackupBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new GameBackup());
+    }
+
+    private void IsUseMSALAccount_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsUseMSALAccount = (bool)IsUseMSALAccount.IsChecked!;
+            GlobalModel.Config.Save();
+        }
     }
 }

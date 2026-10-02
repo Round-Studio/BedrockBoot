@@ -59,7 +59,7 @@ public partial class SettingPlugin : ISettingPage
                 Glyph = it.IconSource,
                 IsClickable = true,
                 IsFontIcon = it.IsUseFontIcon,
-                ImageIcon = !it.IsUseFontIcon ? null : _imageLoader.LoadIconAsync(it.IconSource).Result
+                ImageIcon = !it.IsUseFontIcon ? null : _imageLoader.LoadIconAsync(it.IconSource, 64).Result
             };
             item.Click += (sender, args) => MainSettingPage.NavigateTo((it.Page as ISettingPage)!);
             PluginSetting.Children.Add(item);

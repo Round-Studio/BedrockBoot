@@ -29,16 +29,10 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class InstancePluginItem : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+	private readonly ImageLoader _imageLoader = ImageLoader.Shared;
     public InstancePluginItem()
     {
         InitializeComponent();
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
     }
 
     public InstancePluginItem(IInstancePlugin plugin) : this()
@@ -72,7 +66,8 @@ public partial class InstancePluginItem : UserControl
         if (!string.IsNullOrEmpty(InstancePlugin.Icon))
             try
             {
-                var icon = await _imageLoader.LoadIconAsync(InstancePlugin.Icon);
+                // 图标只显示 32x32，按 64 宽解码
+                var icon = await _imageLoader.LoadIconAsync(InstancePlugin.Icon, 64);
                 if (icon != null)
                 {
                     Card.IsFontIcon = false;

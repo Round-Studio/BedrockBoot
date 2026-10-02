@@ -92,7 +92,7 @@ public partial class SearchDefault : UserControl
         searchHis.Data.Reverse();
         searchHis.Data.ForEach(his => HistoryList.Items.Add(new SearchHistoryItem(his)
         {
-            SearchAction = info => { DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(info)); }
+            SearchAction = info => { DownloadSearch.NavigateInnerFrame(new SearchDetailed(info)); }
         }));
         HistoryList.IsVisible = true;
         HistoryListScrollViewer.IsVisible = true;
@@ -220,8 +220,8 @@ public partial class SearchDefault : UserControl
 
             var tasks = new[]
             {
-                _imageLoader.LoadIconAsync(plugin1.IconUri),
-                _imageLoader.LoadIconAsync(plugin2.IconUri)
+                _imageLoader.LoadIconAsync(plugin1.IconUri, 64),
+                _imageLoader.LoadIconAsync(plugin2.IconUri, 64)
             };
 
             await Task.WhenAll(tasks);
@@ -257,8 +257,8 @@ public partial class SearchDefault : UserControl
 
             var tasks = new[]
             {
-                _imageLoader.LoadIconAsync(plugin1.IconUri),
-                _imageLoader.LoadIconAsync(plugin2.IconUri)
+                _imageLoader.LoadIconAsync(plugin1.IconUri, 64),
+                _imageLoader.LoadIconAsync(plugin2.IconUri, 64)
             };
 
             await Task.WhenAll(tasks);
@@ -294,8 +294,8 @@ public partial class SearchDefault : UserControl
 
             var tasks = new[]
             {
-                _imageLoader.LoadIconAsync(plugin1.IconUri),
-                _imageLoader.LoadIconAsync(plugin2.IconUri)
+                _imageLoader.LoadIconAsync(plugin1.IconUri, 64),
+                _imageLoader.LoadIconAsync(plugin2.IconUri, 64)
             };
 
             await Task.WhenAll(tasks);
@@ -356,7 +356,7 @@ public partial class SearchDefault : UserControl
 
     private void NavigateSearch(SearchResourceType type)
     {
-        DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(new SearchInfo { Type = type }));
+        DownloadSearch.NavigateInnerFrame(new SearchDetailed(new SearchInfo { Type = type }));
     }
 
     private void ReleaseBtn_OnClick(object? sender, RoutedEventArgs e)

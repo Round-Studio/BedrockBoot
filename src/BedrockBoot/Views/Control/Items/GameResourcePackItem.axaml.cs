@@ -37,7 +37,7 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameResourcePackItem : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+	private readonly ImageLoader _imageLoader = ImageLoader.Shared;
     public GameResourcePackItem()
     {
         InitializeComponent();
@@ -57,12 +57,6 @@ public partial class GameResourcePackItem : UserControl
     public ResourcePackManifest ResourcePackManifest { get; set; } = null!;
     public bool IsEnableEdit { get; set; } = false;
 
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
-    }
-
     public async Task UpdateUI()
     {
         if (ResourcePackManifest == null) return;
@@ -74,13 +68,14 @@ public partial class GameResourcePackItem : UserControl
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
                 using var ms = new MemoryStream(ResourcePackManifest.PackIconBytes);
-                Card.ImageIcon = new Bitmap(ms);
+                // 图标只显示 32x32，按 64 宽解码，避免原图整张解码占内存
+                Card.ImageIcon = Bitmap.DecodeToWidth(ms, 64);
             }
             else if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon))
             {
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
-                Card.ImageIcon = await _imageLoader.LoadIconAsync(ResourcePackManifest.PackIcon);
+                Card.ImageIcon = await _imageLoader.LoadIconAsync(ResourcePackManifest.PackIcon, 64);
             }
         }
         catch (Exception ex)

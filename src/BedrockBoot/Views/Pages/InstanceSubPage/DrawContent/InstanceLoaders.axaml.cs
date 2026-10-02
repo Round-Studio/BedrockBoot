@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -32,6 +33,7 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 public partial class InstanceLoaders : UserControl
 {
     private readonly VersionConfig _versionInfo;
+    private readonly Dictionary<Type, IModsLoader> _loaderCache = new();
 
     public InstanceLoaders()
     {
@@ -53,7 +55,12 @@ public partial class InstanceLoaders : UserControl
             {
                 if (typeof(IModsLoader).IsAssignableFrom(loaderType))
                 {
-                    var instance = (IModsLoader)Activator.CreateInstance(loaderType);
+                    if (!_loaderCache.TryGetValue(loaderType, out var instance))
+                    {
+                        instance = (IModsLoader)Activator.CreateInstance(loaderType);
+                        _loaderCache[loaderType] = instance;
+                    }
+
                     instance.OnUpdate = () => UpdateUi();
                     LoadersList.Children.Add(new ModLoaderItem(_versionInfo, instance));
                 }

@@ -74,6 +74,17 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = true;
     }
 
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+
+        ImageLoader.Shared.ClearMemoryCache();
+
+#if WINDOWS
+        ProcessMemoryTrimmer.TrimProcess();
+#endif
+    }
+
     private void InstanceTabControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (IsEditMode)

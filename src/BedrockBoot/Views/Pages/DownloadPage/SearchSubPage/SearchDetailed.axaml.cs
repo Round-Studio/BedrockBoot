@@ -22,9 +22,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Enum.Search;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Styling;
 using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Search;
@@ -212,7 +218,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
             if (result.Items.Count > 0)
             {
-                ResultPage.Update(CreateResultsScrollViewer(result.Items), _totalPages, _currentPage);
+                ResultPage.Update(CreateResultsView(result.Items), _totalPages, _currentPage);
                 ResultPage.IsVisible = true;
                 NoneBox.IsVisible = false;
             }
@@ -233,22 +239,64 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             Console.WriteLine($@"搜索失败: {ex}");
         }
 
-        private static ScrollViewer CreateResultsScrollViewer(List<SearchResultItemInfo> items)
+        private static ListBox CreateResultsView(List<SearchResultItemInfo> items)
         {
-            var stackPanel = new StackPanel
+            // 用 ListBox + 数据模板承载结果，容器由 VirtualizingStackPanel 按需实例化，
+            // 避免一页几十个条目（含图片缓存）同时常驻内存
+            var list = new ListBox
             {
-                Margin = new Thickness(20, 0, 20, 20),
-                Spacing = 8
+                Margin = new Thickness(20, 10, 5, 20),
+                Padding = new Thickness(0,0,15,0),
+                Background = Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                ItemsSource = items,
+                // 容器回收时 Content 会被清空，Avalonia 会以 null 调用模板，这里直接返回空控件
+                ItemTemplate = new FuncDataTemplate<SearchResultItemInfo>((info, _) =>
+                    info == null ? null : new SearchItem(info)),
+                ItemsPanel = new FuncTemplate<Panel>(() => new VirtualizingStackPanel())
             };
 
-            var resItems = items.Select(x => new SearchItem(x));
-            stackPanel.Children.AddRange(resItems);
-
-            return new ScrollViewer
+            // 去掉 OnePointUI 主题给 ListBoxItem 的内边距/最小高度/圆角，并让选中高亮立即取消
+            list.Styles.Add(new Avalonia.Styling.Style(x => x.OfType<ListBoxItem>())
             {
-                Content = stackPanel,
-                Margin = new Thickness(0, 10, 0, 0)
+                Setters =
+                {
+                    new Setter(TemplatedControl.PaddingProperty, new Thickness(0)),
+                    new Setter(Layoutable.MinHeightProperty, 0d),
+                    new Setter(Layoutable.MinWidthProperty, 0d),
+                    new Setter(Layoutable.MarginProperty, new Thickness(0, 0, 0, 8)),
+
+                    new Setter(
+                        TemplatedControl.TemplateProperty,
+                        new FuncControlTemplate<ListBoxItem>((item, ns) =>
+                        {
+                            var presenter = new ContentPresenter
+                            {
+                                Name = "PART_ContentPresenter",
+                                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                                VerticalContentAlignment = VerticalAlignment.Center,
+                            };
+
+                            // 绑定到 ListBoxItem 的属性
+                            presenter.Bind(ContentPresenter.ContentProperty,
+                                item.GetObservable(ContentControl.ContentProperty));
+                            presenter.Bind(ContentPresenter.ContentTemplateProperty,
+                                item.GetObservable(ContentControl.ContentTemplateProperty));
+                            presenter.Bind(ContentPresenter.PaddingProperty,
+                                item.GetObservable(TemplatedControl.PaddingProperty));
+                            presenter.Bind(ContentPresenter.BackgroundProperty,
+                                item.GetObservable(TemplatedControl.BackgroundProperty));
+
+                            return presenter;
+                        }))
+                }
+            });
+            list.SelectionChanged += (_, _) =>
+            {
+                if (list.SelectedIndex != -1) list.SelectedIndex = -1;
             };
+
+            return list;
         }
 
         private void HelpBtn_OnClick(object? sender, RoutedEventArgs e)

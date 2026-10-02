@@ -56,6 +56,7 @@ public partial class MainChooseGameItem : UserControl
         GameInfo.Text = $"{versionConfig.Info.VersionType} {versionConfig.Info.Version}";
         GameName.Text = versionConfig.Info.VersionName;
         GameBuildType.Text = versionConfig.Info.BuildType.ToString();
-        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(versionConfig));
+        // 图标显示 38x38，按 96 宽解码
+        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(versionConfig), 96);
     }
 }

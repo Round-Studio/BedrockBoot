@@ -75,7 +75,9 @@ public partial class LocalImageRenderWidget : UserControl
     {
         try
         {
-            var image = await _imageLoader.LoadIconAsync(uri);
+            // 显示宽度有限，按控件宽度的 2x 解码即可，避免 README 大图按原图全尺寸解码导致内存暴涨
+            var decodeWidth = double.IsNaN(Width) || Width <= 0 ? 800 : (int)Math.Ceiling(Width * 2);
+            var image = await _imageLoader.LoadIconAsync(uri, decodeWidth);
 
             // 确保在 UI 线程更新界面
             Dispatcher.UIThread.Post(() =>

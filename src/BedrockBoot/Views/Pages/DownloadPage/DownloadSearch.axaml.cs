@@ -35,6 +35,12 @@ public partial class DownloadSearch : UserControl
     public static SearchDetailed? SearchDetailed;
     public static DownloadSearch? DownloadSearchView;
 
+    /// <summary>下载页内部页面切换通知（供 DownloadRoot 更新返回按钮）</summary>
+    public static Action? InnerPageChanged;
+
+    // 从详情页返回时要恢复的搜索条件（一次性）
+    private static SearchInfo? _pendingRestoreInfo;
+
     // 保存搜索状态
     private static string _lastSearchKey = string.Empty;
     private static SearchResourceType _lastSearchType = SearchResourceType.Unknow;
@@ -52,19 +58,19 @@ public partial class DownloadSearch : UserControl
         // 延迟导航，确保UI已加载完成
         Dispatcher.UIThread.Post(() =>
         {
-            NavigationFrame.NavigateTo(new SearchDefault());
+            NavigateInnerFrame(new SearchDefault());
 
-            // 如果有保存的搜索记录，自动导航到详细搜索页面
-            if (!string.IsNullOrEmpty(_lastSearchKey))
-            {
-                if (!EnsureSearchDetailed()) return;
+            // 恢复上次搜索：优先用详情页返回时带过来的条件，其次用保存的关键词
+            var restore = _pendingRestoreInfo ??
+                          (string.IsNullOrEmpty(_lastSearchKey)
+                              ? null
+                              : new SearchInfo { Key = _lastSearchKey, Type = _lastSearchType });
+            _pendingRestoreInfo = null;
 
-                SearchDetailed!.OnSearch(new SearchInfo
-                {
-                    Key = _lastSearchKey,
-                    Type = _lastSearchType
-                });
-            }
+            if (restore == null) return;
+            if (!EnsureSearchDetailed()) return;
+
+            SearchDetailed!.OnSearch(restore);
         });
 
         KeyBox.KeyDown += (sender, e) =>
@@ -74,6 +80,36 @@ public partial class DownloadSearch : UserControl
     }
 
     public string SearchKey => KeyBox.Text;
+
+    /// <summary>
+    ///     释放静态引用，供下载页卸载时调用，避免搜索结果等控件树常驻内存。
+    ///     只在静态引用仍属于该实例时清空，防止清掉刚创建的新下载页。
+    /// </summary>
+    public static void Reset(DownloadSearch owner)
+    {
+        if (!ReferenceEquals(DownloadSearchView, owner)) return;
+
+        SearchDetailed = null;
+        DownloadSearchView = null;
+        SearchFrame = null;
+        InnerPageChanged = null;
+    }
+
+    /// <summary>下载页内部当前是否显示搜索结果页（而非下载首页）</summary>
+    public static bool IsShowingDetailed => SearchFrame?.GetCurrentPage() is SearchDetailed;
+
+    /// <summary>下载页内部切回下载首页</summary>
+    public static void ShowSearchDefault() => NavigateInnerFrame(new SearchDefault());
+
+    /// <summary>统一切换下载页内部页面，并通知外部更新返回按钮</summary>
+    public static void NavigateInnerFrame(object page)
+    {
+        SearchFrame?.NavigateTo(page);
+        InnerPageChanged?.Invoke();
+    }
+
+    /// <summary>设置从详情页返回时要恢复的搜索条件</summary>
+    public static void SetPendingRestore(SearchInfo? info) => _pendingRestoreInfo = info;
 
     private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -95,10 +131,10 @@ public partial class DownloadSearch : UserControl
 
     private bool EnsureSearchDetailed()
     {
-        if (SearchDetailed != null) return true;
+        if (IsShowingDetailed) return true;
 
-        NavigationFrame.NavigateTo(new SearchDetailed());
-        return SearchDetailed != null;
+        NavigateInnerFrame(new SearchDetailed());
+        return IsShowingDetailed;
     }
 
     public SearchResourceType Classify(string text)

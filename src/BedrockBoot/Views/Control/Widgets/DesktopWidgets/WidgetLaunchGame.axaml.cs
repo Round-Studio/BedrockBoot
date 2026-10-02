@@ -140,7 +140,8 @@ public partial class WidgetLaunchGame : IWidgetTemplated
 
         GameNameText.Text = version.Info.VersionName;
         GameVersionText.Text = version.Info.Version;
-        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(version));
+        // 图标显示 48x48，按 96 宽解码
+        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(version), 96);
         LaunchButton.IsEnabled = true;
         _hasValidGame = true;
     }

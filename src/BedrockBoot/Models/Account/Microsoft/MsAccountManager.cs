@@ -1,26 +1,9 @@
-/*
- * BedrockBoot - A launcher for Minecraft Bedrock Edition.
- * Copyright (C) 2025-2026 Round-Studio
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using BedrockBoot.Base.Entry.Account.Microsoft;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
@@ -33,12 +16,15 @@ public static class MsAccountManager
 {
     public static ConfigEntity<MsUserConfigRoot>? AccountConfigEntity;
 
-    public static MsUserConfigRoot? Accounts
-    {
-        get => AccountConfigEntity?.Data;
-    }
+    public static MsUserConfigRoot? Accounts => AccountConfigEntity?.Data;
 
     public static bool IsLogging { get; private set; } = false;
+
+    private static Task OnUI(Action action) =>
+        Dispatcher.UIThread.InvokeAsync(action).GetTask();
+
+    private static Task<T> OnUI<T>(Func<T> func) =>
+        Dispatcher.UIThread.InvokeAsync(func).GetTask();
 
     static MsAccountManager()
     {
@@ -67,112 +53,112 @@ public static class MsAccountManager
 
         var dialog = new DialogLoginMsAccountContent();
 
-        DialogHost.Show(new()
+        await OnUI(() =>
         {
-            Content = dialog,
-            Title = "关联 XBOX 账户",
-            CloseButtonText = "取消",
-            CloseAction = () =>
+            DialogHost.Show(new()
             {
-                IsLogging = false;
-            }
+                Content = dialog,
+                Title = "关联 XBOX 账户",
+                CloseButtonText = "取消",
+                CloseAction = () => { IsLogging = false; }
+            });
         });
 
         try
         {
-            var client = new MsaDeviceCodeClient();
-            
-            Console.WriteLine(@"开始设备代码登录流程...");
-
-            client.OnLoginCallback = (s, s1) =>
-                dialog.SetCopyCode(s1, s);
-            var progress = new Progress<string>(msg => 
+            await Task.Run(async () =>
             {
-                Console.WriteLine(msg);
-            });
+                var client = new MsaDeviceCodeClient();
 
-            var cancellationToken = new CancellationTokenSource();
-            
-            var (success, tokenData, userCode, verificationUri) = 
-                await client.RunDeviceCodeFlowAsync(progress, cancellationToken.Token);
+                Console.WriteLine(@"开始设备代码登录流程...");
 
-            if (!success || tokenData == null || string.IsNullOrEmpty(tokenData.AccessToken))
-            {
-                IsLogging = false;
-                await DialogHost.Close();
-                throw new Exception("登录失败或用户取消");
-            }
-
-            Console.WriteLine(@"开始获取 Xbox 用户凭证");
-            var xboxClient = new XboxAuthClient();
-            var xboxUserToken = await xboxClient.GetXboxUserTokenAsync(tokenData.AccessToken);
-            
-            if (string.IsNullOrEmpty(xboxUserToken))
-            {
-                IsLogging = false;
-                await DialogHost.Close();
-                throw new NullReferenceException("获取 Xbox 用户凭证失败");
-            }
-
-            Console.WriteLine(@"开始获取 Xbox 用户登录凭证 (XstsToken)");
-            var xstsToken = await xboxClient.GetXstsTokenAsync(xboxUserToken);
-            
-            if (string.IsNullOrEmpty(xstsToken.xstsToken) ||
-                string.IsNullOrEmpty(xstsToken.xuid) ||
-                string.IsNullOrEmpty(xstsToken.userHash))
-            {
-                IsLogging = false;
-                await DialogHost.Close();
-                throw new NullReferenceException("获取 XSTS Token 失败");
-            }
-
-            Console.WriteLine(@"开始获取 Xbox 用户档案");
-            var peopleClient = new PeopleHubClient();
-            string authHeader = $"XBL3.0 x={xstsToken.userHash};{xstsToken.xstsToken}";
-            var userProfile = await peopleClient.GetProfileAsync(authHeader, xstsToken.xuid);
-            
-            if (userProfile == null || userProfile.ProfileUsers == null || userProfile.ProfileUsers.Length == 0)
-            {
-                IsLogging = false;
-                await DialogHost.Close();
-                throw new NullReferenceException("获取用户档案失败");
-            }
-
-            var userInfo = userProfile.ProfileUsers[0];
-            var gamertag = userInfo.Settings?.FirstOrDefault(s => s.Id == "Gamertag")?.Value;
-            var avatarUrl = userInfo.Settings?.FirstOrDefault(s => s.Id == "GameDisplayPicRaw")?.Value;
-
-            var config = new MsUserConfig
-            {
-                AuthResult = new XboxAuthEntry.AuthResult
+                client.OnLoginCallback = (userCode, verificationUri) =>
                 {
-                    AccessToken = tokenData.AccessToken,
-                    RefreshToken = tokenData.RefreshToken ?? "",
-                    ExpiresIn = tokenData.ExpiresIn ?? 3600,
-                    SavedAt = DateTime.Now,
-                },
-                UserName = gamertag,
-                UserIconUrl = avatarUrl
-            };
+                    _ = OnUI(() => dialog.SetCopyCode(verificationUri, userCode));
+                };
 
-            AccountConfigEntity?.Data.Accounts.Add(config);
-            
-            if (string.IsNullOrEmpty(AccountConfigEntity?.Data.SelectUserBUID))
-                AccountConfigEntity!.Data.SelectUserBUID = config.BUID;
-            
-            AccountConfigEntity?.Save();
+                var progress = new Progress<string>(msg => { _ = OnUI(() => Console.WriteLine(msg)); });
 
-            Console.WriteLine($@"登录成功！用户: {gamertag}");
+                using var cts = new CancellationTokenSource();
 
-            IsLogging = false;
-            await DialogHost.Close();
+                var (success, tokenData, userCode, verificationUri) =
+                    await client.RunDeviceCodeFlowAsync(progress, cts.Token)
+                        .ConfigureAwait(false);
+
+                if (!success || tokenData == null || string.IsNullOrEmpty(tokenData.AccessToken))
+                    throw new Exception("登录失败或用户取消");
+
+                Console.WriteLine(@"开始获取 Xbox 用户凭证");
+                var xboxClient = new XboxAuthClient();
+                var xboxUserToken = await xboxClient
+                    .GetXboxUserTokenAsync(tokenData.AccessToken)
+                    .ConfigureAwait(false);
+
+                if (string.IsNullOrEmpty(xboxUserToken))
+                    throw new NullReferenceException("获取 Xbox 用户凭证失败");
+
+                Console.WriteLine(@"开始获取 Xbox 用户登录凭证 (XstsToken)");
+                var xstsToken = await xboxClient
+                    .GetXstsTokenAsync(xboxUserToken)
+                    .ConfigureAwait(false);
+
+                if (string.IsNullOrEmpty(xstsToken.xstsToken) ||
+                    string.IsNullOrEmpty(xstsToken.xuid) ||
+                    string.IsNullOrEmpty(xstsToken.userHash))
+                    throw new NullReferenceException("获取 XSTS Token 失败");
+
+                Console.WriteLine(@"开始获取 Xbox 用户档案");
+                var peopleClient = new PeopleHubClient();
+                string authHeader = $"XBL3.0 x={xstsToken.userHash};{xstsToken.xstsToken}";
+                var userProfile = await peopleClient
+                    .GetProfileAsync(authHeader, xstsToken.xuid)
+                    .ConfigureAwait(false);
+
+                if (userProfile?.ProfileUsers == null || userProfile.ProfileUsers.Length == 0)
+                    throw new NullReferenceException("获取用户档案失败");
+
+                var userInfo = userProfile.ProfileUsers[0];
+                var gamertag = userInfo.Settings?.FirstOrDefault(s => s.Id == "Gamertag")?.Value;
+                var avatarUrl = userInfo.Settings?.FirstOrDefault(s => s.Id == "GameDisplayPicRaw")?.Value;
+
+                var config = new MsUserConfig
+                {
+                    AuthResult = new XboxAuthEntry.AuthResult
+                    {
+                        AccessToken = tokenData.AccessToken,
+                        RefreshToken = tokenData.RefreshToken ?? "",
+                        ExpiresIn = tokenData.ExpiresIn ?? 3600,
+                        SavedAt = DateTime.Now,
+                    },
+                    UserName = gamertag,
+                    UserIconUrl = avatarUrl
+                };
+
+                await OnUI(() =>
+                {
+                    AccountConfigEntity?.Data.Accounts.Add(config);
+
+                    if (string.IsNullOrEmpty(AccountConfigEntity?.Data.SelectUserBUID))
+                        AccountConfigEntity!.Data.SelectUserBUID = config.BUID;
+
+                    AccountConfigEntity?.Save();
+                }).ConfigureAwait(false);
+
+                Console.WriteLine($@"登录成功！用户: {gamertag}");
+            }).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            IsLogging = false;
-            await DialogHost.Close();
             Console.WriteLine($@"登录失败: {ex.Message}");
             throw;
+        }
+        finally
+        {
+            await OnUI(() =>
+            {
+                IsLogging = false;
+                _ = DialogHost.Close();
+            }).ConfigureAwait(false);
         }
     }
 
@@ -180,28 +166,34 @@ public static class MsAccountManager
     {
         if (AccountConfigEntity?.Data?.Accounts == null) return false;
 
-        var client = new MsaDeviceCodeClient();
-        bool anyRefreshed = false;
-
-        foreach (var account in AccountConfigEntity.Data.Accounts)
+        return await Task.Run(async () =>
         {
-            if (string.IsNullOrEmpty(account.AuthResult?.RefreshToken)) continue;
+            var client = new MsaDeviceCodeClient();
+            bool anyRefreshed = false;
 
-            var newToken = await client.RefreshTokenAsync(account.AuthResult.RefreshToken);
-            if (newToken != null)
+            foreach (var account in AccountConfigEntity.Data.Accounts)
             {
-                account.AuthResult.AccessToken = newToken.AccessToken;
-                account.AuthResult.RefreshToken = newToken.RefreshToken;
-                account.AuthResult.ExpiresIn = newToken.ExpiresIn ?? 3600;
-                account.AuthResult.SavedAt = DateTime.Now;
-                anyRefreshed = true;
+                if (string.IsNullOrEmpty(account.AuthResult?.RefreshToken)) continue;
+
+                var newToken = await client.RefreshTokenAsync(account.AuthResult.RefreshToken)
+                    .ConfigureAwait(false);
+                if (newToken != null)
+                {
+                    account.AuthResult.AccessToken = newToken.AccessToken;
+                    account.AuthResult.RefreshToken = newToken.RefreshToken;
+                    account.AuthResult.ExpiresIn = newToken.ExpiresIn ?? 3600;
+                    account.AuthResult.SavedAt = DateTime.Now;
+                    anyRefreshed = true;
+                }
             }
-        }
 
-        if (anyRefreshed)
-            AccountConfigEntity?.Save();
+            if (anyRefreshed)
+            {
+                await OnUI(() => AccountConfigEntity?.Save()).ConfigureAwait(false);
+            }
 
-        return anyRefreshed;
+            return anyRefreshed;
+        }).ConfigureAwait(false);
     }
 
     public static async Task<string?> GetValidAccessToken(string buid)
@@ -211,19 +203,25 @@ public static class MsAccountManager
 
         if (account.AuthResult.SavedAt.AddSeconds(account.AuthResult.ExpiresIn - 300) < DateTime.Now)
         {
-            var client = new MsaDeviceCodeClient();
-            var newToken = await client.RefreshTokenAsync(account.AuthResult.RefreshToken);
-            
-            if (newToken != null)
+            return await Task.Run(async () =>
             {
-                account.AuthResult.AccessToken = newToken.AccessToken;
-                account.AuthResult.RefreshToken = newToken.RefreshToken;
-                account.AuthResult.ExpiresIn = newToken.ExpiresIn ?? 3600;
-                account.AuthResult.SavedAt = DateTime.Now;
-                AccountConfigEntity?.Save();
-                return newToken.AccessToken;
-            }
-            return null;
+                var client = new MsaDeviceCodeClient();
+                var newToken = await client.RefreshTokenAsync(account.AuthResult.RefreshToken)
+                    .ConfigureAwait(false);
+
+                if (newToken != null)
+                {
+                    account.AuthResult.AccessToken = newToken.AccessToken;
+                    account.AuthResult.RefreshToken = newToken.RefreshToken;
+                    account.AuthResult.ExpiresIn = newToken.ExpiresIn ?? 3600;
+                    account.AuthResult.SavedAt = DateTime.Now;
+
+                    await OnUI(() => AccountConfigEntity?.Save()).ConfigureAwait(false);
+                    return newToken.AccessToken;
+                }
+
+                return null;
+            }).ConfigureAwait(false);
         }
 
         return account.AuthResult.AccessToken;

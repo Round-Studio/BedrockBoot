@@ -21,7 +21,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 
-namespace BedrockBoot.Models.Style;
+namespace BedrockBoot.Models.Style.ColorCode;
 
 // MinecraftColorCode.cs
 public class MinecraftColorCode

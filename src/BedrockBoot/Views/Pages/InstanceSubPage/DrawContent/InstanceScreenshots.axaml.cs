@@ -26,6 +26,7 @@ using BedrockBoot.Models.Pack.Game.Screenshots;
 using BedrockBoot.Standard.Entity.Game.Pack.Screenshots;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
+using BedrockBoot.Windows.Models.Helper;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 

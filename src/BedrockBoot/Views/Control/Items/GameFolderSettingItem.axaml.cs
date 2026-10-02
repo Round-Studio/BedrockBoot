@@ -25,6 +25,7 @@ using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;

@@ -27,7 +27,6 @@ using Avalonia.Platform;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Helpers;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
@@ -44,6 +43,7 @@ using Round.SDK.Plugin.BedrockBoot.Register;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BedrockBoot.Windows.Models;
 
 namespace BedrockBoot.Views.Pages;
 

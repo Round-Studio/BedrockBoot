@@ -16,20 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Standard.Entity.Account.Microsoft;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
-using BedrockBoot.Services;
+using BedrockBoot.Standard.Interface.Platform;
+using BedrockBoot.Windows.Models.Game;
+using BedrockBoot.Windows.Models.Global;
+using BedrockBoot.Windows.Models.Helper;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 
-namespace BedrockBoot.Models;
+namespace BedrockBoot.Windows.Models;
 
-public class CoreInit
+public class WindowsCoreInit : ICoreInit
 {
-    public static async Task Init()
+    public void UpdateUseHardwareDecode(bool isUse)
+    {
+        Console.WriteLine($@"使用硬件解码：{isUse}");
+        EasyDownload.UseHardwareDecode = isUse;
+    }
+
+    public async Task InitializeAsync()
     {
         Round.SDK.Plugin.BedrockBoot.Register.RegisterService.RegisterLaunchingEvent((s =>
         {
@@ -55,14 +60,5 @@ public class CoreInit
             }
         };
         await CoreGlobal.BedrockCore.InitAsync();
-    }
-    
-    public static Func<MsUserConfig?> GetMsAccountConfig;
-    public static Func<MsUserConfig, Task<MsUserConfig>>? OnRefreshAccount { get; set; }
-
-    public static void UpdateUseHardwareDecode(bool isUse)
-    {
-        Console.WriteLine($@"使用硬件解码：{isUse}");
-        EasyDownload.UseHardwareDecode = isUse;
     }
 }

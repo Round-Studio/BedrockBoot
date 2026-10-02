@@ -35,6 +35,7 @@ using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
+using BedrockBoot.Windows.Models;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;

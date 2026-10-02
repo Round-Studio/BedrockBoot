@@ -20,7 +20,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
 
-namespace BedrockBoot.Win32.Controls;
+namespace BedrockBoot.Windows.Win32.Controls;
 
 public partial class PackItem : UserControl
 {

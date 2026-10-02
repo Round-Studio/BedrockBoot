@@ -19,7 +19,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace BedrockBoot.Models.Helper.Uwp;
+namespace BedrockBoot.Windows.Models.Helper.Uwp;
 
 public class UwpDependencyChecker
 {

@@ -16,17 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Game;
-using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Windows.Models.Game;
 
-namespace BedrockBoot.Win32;
+namespace BedrockBoot.Windows.Win32.Windows;
 
 public partial class LaunchWindow : Form
 {

@@ -133,7 +133,7 @@ public partial class SettingGame : ISettingPage
             Models.Global.GlobalModel.MainWindow.SetReboot();
 
 #if LINUX
-            CoreInit.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
+            WindowsCoreInit.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
             ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
 #endif
         }

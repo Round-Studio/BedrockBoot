@@ -25,7 +25,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Services;
+using BedrockBoot.Windows.Models.Game;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;

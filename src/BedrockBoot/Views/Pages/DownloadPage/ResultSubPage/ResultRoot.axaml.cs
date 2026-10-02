@@ -26,7 +26,6 @@ using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Search;
-using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Service;

@@ -33,6 +33,7 @@ using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Items.Instance;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Path = System.IO.Path;

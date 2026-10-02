@@ -17,10 +17,8 @@
  */
 
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
-namespace BedrockBoot.Win32;
+namespace BedrockBoot.Windows.Win32.Windows;
 
 partial class DownloadVCWindow
 {

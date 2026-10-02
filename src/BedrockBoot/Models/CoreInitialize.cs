@@ -35,19 +35,22 @@ using BedrockBoot.Models.Helper.GravityCone;
 using BedrockBoot.Models.Pack.Game.Loaders;
 using BedrockBoot.Models.Pack.Game.Options;
 using BedrockBoot.Proton;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Items.Instance;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Linux;
+using BedrockBoot.Windows.Models;
+using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Windows.Models.Helper.Gdk;
+using BedrockBoot.Windows.Models.Helper.Uwp;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Plugin.BedrockBoot.Register;
 #if WINDOWS
-using BedrockBoot.Models.Helper.Gdk;
-using BedrockBoot.Models.Helper.Uwp;
 #endif
 
 namespace BedrockBoot.Models;
@@ -201,9 +204,9 @@ public class CoreInitialize
         try
         {
 #if LINUX
-            CoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
+            WindowsCoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
 #endif
-            CoreInit.GetMsAccountConfig = () =>
+            PlatformCore.GetMsAccountConfig = () =>
             {
                 if (Core.Global.GlobalModel.Config.Data.IsChooseAccountBeforeLaunch)
                 {
@@ -232,7 +235,7 @@ public class CoreInitialize
 
                 return null;
             };
-            CoreInit.OnRefreshAccount = async account =>
+            PlatformCore.OnRefreshAccount = async account =>
             {
                 if (account == null)
                 {
@@ -247,8 +250,13 @@ public class CoreInitialize
 
                 return refreshed;
             };
-            CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
-            await CoreInit.Init();
+
+            var coreInitUnit =
+#if WINDOWS
+                new WindowsCoreInit();     
+#endif
+            await PlatformCore.InstallAsync(coreInitUnit);
+            PlatformCore.CoreInit?.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
         }
         catch (Exception ex)
         {

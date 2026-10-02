@@ -17,14 +17,11 @@
  */
 
 using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 
-namespace BedrockBoot.Views.Pages.OtherPage;
+namespace BedrockBoot.Views.Pages.OtherPage.AboutPages;
 
 public partial class AboutReleaseNotes : ISettingPage
 {

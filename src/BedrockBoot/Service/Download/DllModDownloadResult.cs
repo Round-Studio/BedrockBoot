@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Entity.Info.Download;
-using BedrockBoot.Helpers;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin.Market;
 using BedrockBoot.Models.Pack.Search;

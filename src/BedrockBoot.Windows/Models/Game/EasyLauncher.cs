@@ -16,29 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Text.Json;
-using System.IO;
-using System.Threading;
 using Windows.Management.Deployment;
-using BedrockBoot.Standard.Entity.Game;
-using BedrockBoot.Standard.Helper;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Helper;
+using BedrockBoot.Windows.Models.Global;
+using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Windows.Models.Helper.Uwp;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
-using PeNet;
-using PeNet.Header.Pe;
 using Round.SDK.Plugin.BedrockBoot.Register;
-using BedrockBoot.Models.Helper.Uwp;
 using XUserLauncher.Core;
 
-namespace BedrockBoot.Models.Game;
+namespace BedrockBoot.Windows.Models.Game;
 
 public class EasyLauncher
 {
@@ -274,7 +269,7 @@ public class EasyLauncher
             {
                 try
                 {
-                    var account = CoreInit.GetMsAccountConfig.Invoke();
+                    var account = PlatformCore.GetMsAccountConfig.Invoke();
 
                     if (account == null)
                     {
@@ -282,7 +277,7 @@ public class EasyLauncher
                         return;
                     }
 
-                    var accountInfo = await CoreInit.OnRefreshAccount?.Invoke(account!)!;
+                    var accountInfo = await PlatformCore.OnRefreshAccount?.Invoke(account!)!;
                     launchCore.LoadDll();
                     auth = await launchCore.AuthenticateAsync(JsonSerializer.Serialize(accountInfo.AuthResult));
 

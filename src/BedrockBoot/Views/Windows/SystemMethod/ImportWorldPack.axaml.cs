@@ -28,7 +28,6 @@ using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Desktop;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Views.Control.Items;

@@ -16,13 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using WindowsMediaController;
 using Windows.Media.Control;
+using WindowsMediaController;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Windows.Models.Helper;
 
 public static class SMTCHelper
 {

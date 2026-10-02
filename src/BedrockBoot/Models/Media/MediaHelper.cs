@@ -18,6 +18,7 @@
 
 using System;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Windows.Models.Helper;
 
 namespace BedrockBoot.Models.Media;
 

@@ -17,7 +17,6 @@
  */
 
 using BedrockBoot.Standard.Entity.Pack.Market;
-using BedrockBoot.Helpers;
 using BedrockBoot.Models.Global;
 using Octokit;
 using Octokit.Internal;
@@ -28,6 +27,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Models.Pack.Plugin.Market;
 

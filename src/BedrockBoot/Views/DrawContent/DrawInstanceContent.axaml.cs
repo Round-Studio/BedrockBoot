@@ -33,6 +33,7 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
+using BedrockBoot.Windows.Models.Helper;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.LeftSelectBar;
 

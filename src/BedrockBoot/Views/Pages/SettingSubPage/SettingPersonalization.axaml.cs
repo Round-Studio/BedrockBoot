@@ -24,7 +24,6 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Models.Helper.Notice;
 using BedrockBoot.Models.Pack.Theme;
 using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Interface;

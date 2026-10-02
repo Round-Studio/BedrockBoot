@@ -23,10 +23,12 @@ using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Language;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Models;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
+using BedrockBoot.Windows.Models;
 using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
@@ -126,7 +128,7 @@ public partial class SettingUniversal : ISettingPage
         {
             GlobalModel.Config.Data.IsUseHardwareDecode = (bool)UseHardwareDecode.IsChecked!;
             GlobalModel.Config.Save();
-            CoreInit.UpdateUseHardwareDecode(GlobalModel.Config.Data.IsUseHardwareDecode);
+            PlatformCore.CoreInit?.UpdateUseHardwareDecode(GlobalModel.Config.Data.IsUseHardwareDecode);
         }
     }
 

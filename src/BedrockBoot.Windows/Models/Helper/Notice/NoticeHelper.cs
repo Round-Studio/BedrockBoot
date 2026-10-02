@@ -18,7 +18,7 @@
 
 using Microsoft.Toolkit.Uwp.Notifications;
 
-namespace BedrockBoot.Models.Helper.Notice;
+namespace BedrockBoot.Windows.Models.Helper.Notice;
 
 public class NoticeHelper
 {

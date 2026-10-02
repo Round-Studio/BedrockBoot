@@ -26,6 +26,8 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Standard.Enum.Language;
 
+namespace BedrockBoot;
+
 public class I18nManager : INotifyPropertyChanged
 {
     private ResourceDictionary? _currentLanguageDict;

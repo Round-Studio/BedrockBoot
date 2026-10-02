@@ -18,7 +18,7 @@
 
 using BedrockLauncher.Core;
 
-namespace BedrockBoot.Models.Global;
+namespace BedrockBoot.Windows.Models.Global;
 
 public class CoreGlobal
 {

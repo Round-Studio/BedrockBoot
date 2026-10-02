@@ -27,7 +27,7 @@ using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Enum.Type.Progress.Steps;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Services;
+using BedrockBoot.Windows.Models.Game;
 using BedrockLauncher.Core.CoreOption;
 
 namespace BedrockBoot.Models.Pack.Game.Instance;

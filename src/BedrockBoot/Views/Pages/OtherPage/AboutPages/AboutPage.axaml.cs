@@ -16,20 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 using OnePointUI.Avalonia.Base.Entry;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
-namespace BedrockBoot.Views.Pages.OtherPage;
+namespace BedrockBoot.Views.Pages.OtherPage.AboutPages;
 
 public partial class AboutPage : ISettingPage
 {

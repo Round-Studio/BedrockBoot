@@ -27,9 +27,9 @@ using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Windows.Models.Helper.Uwp;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 #if WINDOWS
-using BedrockBoot.Models.Helper.Uwp;
 #endif
 
 namespace BedrockBoot.Views.DialogContent;

@@ -18,7 +18,7 @@
 
 using System.ComponentModel;
 
-namespace BedrockBoot.Win32;
+namespace BedrockBoot.Windows.Win32.Windows;
 
 partial class LaunchWindow
 {

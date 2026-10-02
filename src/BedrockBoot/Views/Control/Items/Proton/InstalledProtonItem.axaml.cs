@@ -23,6 +23,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Proton.Entry.Info;
+using BedrockBoot.Windows.Models.Helper;
 
 namespace BedrockBoot.Views.Control.Items.Proton;
 

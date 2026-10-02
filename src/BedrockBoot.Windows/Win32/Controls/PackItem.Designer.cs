@@ -19,7 +19,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace BedrockBoot.Win32.Controls;
+namespace BedrockBoot.Windows.Win32.Controls;
 
 partial class PackItem
 {

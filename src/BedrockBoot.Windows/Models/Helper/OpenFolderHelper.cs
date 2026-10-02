@@ -17,9 +17,8 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Standard.Entity;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Windows.Models.Helper;
 
 public class OpenFolderHelper
 {

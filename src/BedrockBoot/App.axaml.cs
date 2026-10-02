@@ -36,12 +36,13 @@ using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using BedrockBoot.Views.Windows.SystemMethod;
 using BedrockBoot.WatchDog.Entity;
-using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Windows.Models.Game;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 using Application = Avalonia.Application;
+using ExceptionWindow = BedrockBoot.Views.Windows.SubWindows.ExceptionWindow;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 using Window = Avalonia.Controls.Window;
 

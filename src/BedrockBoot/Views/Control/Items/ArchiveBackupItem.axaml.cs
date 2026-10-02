@@ -29,6 +29,7 @@ using BedrockBoot.Standard.Entity.Game.Pack.Archive.Backup;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
+using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;

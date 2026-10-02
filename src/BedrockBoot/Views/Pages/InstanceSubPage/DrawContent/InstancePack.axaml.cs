@@ -33,6 +33,7 @@ using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 

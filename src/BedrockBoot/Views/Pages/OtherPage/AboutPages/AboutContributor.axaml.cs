@@ -16,21 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia.Threading;
-using BedrockBoot.Helpers;
+using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using BedrockBoot.Standard.Interface;
 
-namespace BedrockBoot.Views.Pages.OtherPage;
+namespace BedrockBoot.Views.Pages.OtherPage.AboutPages;
 
 public partial class AboutContributor : ISettingPage
 {
@@ -60,7 +58,7 @@ public partial class AboutContributor : ISettingPage
 
     private void FetchContributors()
     {
-        Task.Run(async () =>
+        Task.Run((Func<Task?>)(async () =>
         {
             try
             {
@@ -96,6 +94,6 @@ public partial class AboutContributor : ISettingPage
                     });
                 });
             }
-        });
+        }));
     }
 }

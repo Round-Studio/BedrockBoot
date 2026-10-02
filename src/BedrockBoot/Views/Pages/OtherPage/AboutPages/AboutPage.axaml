@@ -7,7 +7,7 @@
              xmlns:interopServices="clr-namespace:System.Runtime.InteropServices;assembly=System.Runtime"
              xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Pages.OtherPage.AboutPage">
+             x:Class="BedrockBoot.Views.Pages.OtherPage.AboutPages.AboutPage">
     <ScrollViewer>
         <StackPanel Margin="15">
             <Grid>

@@ -21,13 +21,12 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Desktop;
-using BedrockBoot.Models.Game;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using System.Diagnostics;
+using BedrockBoot.Windows.Models.Game;
 
 namespace BedrockBoot.Views.Windows.SystemMethod;
 

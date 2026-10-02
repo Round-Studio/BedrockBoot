@@ -104,12 +104,13 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DialogHost.SetHost(DialogHost);
+        UpdateZoom();
         GlobalModel.MainWindow = this;
 
         if (!Core.Global.GlobalModel.Config.Data.IsFirstRun)
             MainFrame.NavigateTo(new MainPage());
         else
-            this.Loaded += (_, _) => MainFrame.NavigateTo(new SetupRoot());
+            Loaded += (_, _) => MainFrame.NavigateTo(new SetupRoot());
         InitializeWindowBounds();
 
         // 绑定回调
@@ -161,10 +162,10 @@ public partial class MainWindow : Window
                 HelpBtn.Flyout = flyout;
                 GlobalModel.CustomManifest.HelpLinks.ForEach(link =>
                 {
-                    var item = new MenuItem()
+                    var item = new MenuItem
                     {
                         Header = link.Name,
-                        Icon = new FontIcon()
+                        Icon = new FontIcon
                         {
                             Glyph = link.Icon,
                             VerticalAlignment = VerticalAlignment.Center
@@ -418,7 +419,7 @@ public partial class MainWindow : Window
 
 #if WINDOWS
         var handle = TryGetPlatformHandle();
-        IntPtr hwnd = handle.Handle;
+        var hwnd = handle.Handle;
 #endif
 
         TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
@@ -983,11 +984,11 @@ public partial class MainWindow : Window
             PART_ChooseAccount.IsVisible = true;
             PART_AccountChooseBackground.Opacity = 0.7;
             await Task.Delay(200);
-            PART_AccountChooseBorderCard.Margin = new(0);
+            PART_AccountChooseBorderCard.Margin = new Thickness(0);
         }
         else
         {
-            PART_AccountChooseBorderCard.Margin = new(0, 260, 0, -260);
+            PART_AccountChooseBorderCard.Margin = new Thickness(0, 260, 0, -260);
             await Task.Delay(200);
             PART_AccountChooseBackground.Opacity = 0;
             await Task.Delay(820);
@@ -1012,7 +1013,7 @@ public partial class MainWindow : Window
             PART_AccountList.Children.Clear();
             if (MsAccountManager.Accounts.Accounts.Count <= 0)
             {
-                Notice.AddNotice(new()
+                Notice.AddNotice(new NoticeInfo
                 {
                     Title = "无账户",
                     Message = "未登录任何账户"
@@ -1023,7 +1024,7 @@ public partial class MainWindow : Window
 
             MsAccountManager.Accounts.Accounts.ForEach(user =>
             {
-                var btn = new AccountButton()
+                var btn = new AccountButton
                 {
                     HeaderImageUrl = user.UserIconUrl,
                     AccountName = user.UserName
@@ -1042,4 +1043,10 @@ public partial class MainWindow : Window
     }
 
     #endregion
+
+    public void UpdateZoom(bool isSetting = false)
+    {
+        var zoom = UIZoomExtensions.ToScale(Core.Global.GlobalModel.Config.Data.UIZoom);
+        MainLayoutTransformControl.LayoutTransform = new ScaleTransform(zoom, zoom);
+    }
 }

@@ -137,6 +137,8 @@ namespace BedrockBoot.Base.Entry
         public bool IsAutoBackupOnExit { get; set; } = true;
 
         [JsonPropertyName("isUseMSALAccount")] public bool IsUseMSALAccount { get; set; } = false;
+
+        [JsonPropertyName("uiZoom")] public UIZoom UIZoom { get; set; } = UIZoom.Percent100;
     }
 
     public class LaunchCommandConfig

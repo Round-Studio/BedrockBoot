@@ -24,7 +24,9 @@ using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Enum.Language;
+using BedrockBoot.Standard.Enum.Language;
+
+namespace BedrockBoot;
 
 public class I18nManager : INotifyPropertyChanged
 {

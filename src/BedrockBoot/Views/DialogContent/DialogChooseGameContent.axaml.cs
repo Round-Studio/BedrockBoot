@@ -19,11 +19,11 @@
 using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Pack.Game.Isolation;
+using BedrockBoot.Standard.Interface;
 
 namespace BedrockBoot.Views.DialogContent;
 

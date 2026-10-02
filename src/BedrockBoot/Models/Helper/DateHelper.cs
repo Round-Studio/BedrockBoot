@@ -18,7 +18,7 @@
 
 using System;
 
-namespace BedrockBoot.Helpers;
+namespace BedrockBoot.Models.Helper;
 
 public static class DateHelper
 {

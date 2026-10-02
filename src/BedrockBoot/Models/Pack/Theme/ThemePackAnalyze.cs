@@ -21,7 +21,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text.Json;
-using BedrockBoot.Base.Entry.Pack.Theme;
+using BedrockBoot.Standard.Entity.Pack.Theme;
 using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Models.Pack.Theme

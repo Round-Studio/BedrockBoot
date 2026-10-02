@@ -16,17 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Core.Global;
-using BedrockBoot.Models.Helper.Notice;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using BedrockBoot.Core.Global;
+using BedrockBoot.Standard.Interface.Platform;
+using BedrockBoot.Windows.Models.Helper.Notice;
 
+namespace BedrockBoot.Windows.Models.Helper;
 
-
-namespace BedrockBoot.Models.Helper;
-
-public class ProcessMouseLocker
+public class ProcessMouseLocker : IMouseLocker
 {
     // --- Win32 API 导入 ---
     [DllImport("user32.dll")]

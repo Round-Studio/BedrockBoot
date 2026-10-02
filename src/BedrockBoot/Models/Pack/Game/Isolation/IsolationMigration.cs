@@ -21,10 +21,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Isolation;
-using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.Isolation;
+using BedrockBoot.Standard.Entity.Progress;
+using BedrockBoot.Standard.Enum;
 
 namespace BedrockBoot.Models.Pack.Game.Isolation;
 

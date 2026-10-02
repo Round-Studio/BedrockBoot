@@ -21,8 +21,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
+using BedrockBoot.Standard.Enum.Config;
 using Octokit;
 
 namespace BedrockBoot.Models;

@@ -22,10 +22,9 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Interface;
-using BedrockBoot.Interface.ModLoader;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Pack.Game.Loaders;
+using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Items.Instance;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <Nullable>enable</Nullable>
@@ -15,6 +15,7 @@
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
         <DefineConstants>WINDOWS</DefineConstants>
+        <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
@@ -45,6 +46,7 @@
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
         <Folder Include="Assets\Svg\"/>
         <AvaloniaXaml Include="I18n\**"/>
+        <Folder Include="Entity\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -63,7 +65,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AvaMotion\src\AvaMotion\AvaMotion.csproj" />
-        <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.Standard\BedrockBoot.Standard.csproj" />
         <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj"/>
         <ProjectReference Include="..\BedrockBoot.GravityCone\BedrockBoot.GravityCone.csproj" />

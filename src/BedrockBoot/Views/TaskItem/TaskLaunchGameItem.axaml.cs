@@ -23,12 +23,11 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Task;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper.Notice;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Linux;
 using BedrockBoot.Views.Windows.SubWindows;
@@ -102,7 +101,7 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                     CancelBtn.IsEnabled = true;
                 });
 
-                var lc = new EasyLauncher(VersionInfo);
+                var lc = PlatformCore.CreateLauncher(VersionInfo);
 
 #if WINDOWS
                 // 设置迁移回调 - 这里的对话框内容已全部国际化
@@ -191,7 +190,7 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                     {
                         LaunchCompleted?.Invoke();
                         if (!GlobalModel.MainWindow.IsWindowActive)
-                            NoticeHelper.SentNotice("游戏退出", $"游戏 {VersionInfo.Info.VersionName} 已退出。");
+                            PlatformCore.Notice!.SentNotice("游戏退出", $"游戏 {VersionInfo.Info.VersionName} 已退出。");
                     });
                 };
 
@@ -204,7 +203,7 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
 #endif
                 };
 
-                await lc.Launch();
+                await lc.LaunchGame();
             }
             catch (TaskCanceledException)
             {

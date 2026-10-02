@@ -17,9 +17,9 @@
  */
 
 using System.Text.RegularExpressions;
-using BedrockBoot.Models.Helper;
+using BedrockBoot.Linux.Models.Helper;
 
-namespace BedrockBoot.Models.Pack.Wine;
+namespace BedrockBoot.Linux.Models.Pack.Wine;
 
 public enum RegKind { String, Dword, Delete }
 

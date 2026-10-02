@@ -16,12 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.IO;
 using System.Security.Cryptography;
 using BedrockBoot.Models.Global;
 
-namespace BedrockBoot.Models.Account.Xbox;
+namespace BedrockBoot.Linux.Models.Pack.Xbox;
 
 public static class DeviceIdentity
 {

@@ -21,8 +21,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Views.Control.Items;
 

@@ -26,15 +26,16 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
+using BedrockBoot.Standard.Core;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -333,7 +334,7 @@ public partial class MainManager : BedrockBootPage
             GlobalModel.Config.Save();
             InitializeConfigWatcher();
             UpdateGameList();
-            JumpListManager.ConfigureJumpList();
+            PlatformCore.JumpList!.ConfigureJumpList();
         }
     }
 

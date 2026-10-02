@@ -16,14 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Diagnostics;
-using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Interface.Platform;
 
-public class JumpListManager
+namespace BedrockBoot.Linux.Models;
+
+public class JumpListManager : IJumpListService
 {
     public static void ConfigureJumpList()
     {
         Console.WriteLine("Linux 中尚不支持 Jump List");
     }
+
+    void IJumpListService.ConfigureJumpList() => ConfigureJumpList();
 }

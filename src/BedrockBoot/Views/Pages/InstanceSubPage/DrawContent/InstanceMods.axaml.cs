@@ -21,15 +21,16 @@ using System.Collections.Generic;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Mods;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.Mods;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
-using BedrockBoot.Interface;
-using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Loaders;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface;
+using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Items.Instance;
 using BedrockBoot.Views.DialogContent;
@@ -129,7 +130,7 @@ public partial class InstanceMods : ISetting
     {
         var modPath = InstalledModsLoader[ModsLoaderSelect.SelectedIndex].ModsFolder;
         if (!Directory.Exists(modPath)) Directory.CreateDirectory(modPath);
-        OpenFolderHelper.Open(modPath);
+        PlatformCore.OpenFolder!.Open(modPath);
     }
 
     private void ImportModBtn_OnClick(object? sender, RoutedEventArgs e)

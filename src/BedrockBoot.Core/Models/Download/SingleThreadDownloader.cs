@@ -25,7 +25,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Progress;
 
 namespace BedrockBoot.Core.Models.Download;
 

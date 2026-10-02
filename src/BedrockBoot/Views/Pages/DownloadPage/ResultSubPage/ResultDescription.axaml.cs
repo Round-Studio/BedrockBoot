@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Interface.Download;
+using BedrockBoot.Standard.Interface.Download;
 using BedrockBoot.Views.Control.Widgets;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;

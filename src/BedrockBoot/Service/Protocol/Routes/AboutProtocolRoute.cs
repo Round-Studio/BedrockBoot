@@ -22,6 +22,7 @@ using Avalonia.Threading;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.OtherPage;
+using AboutPage = BedrockBoot.Views.Pages.OtherPage.AboutPages.AboutPage;
 
 namespace BedrockBoot.Service.Protocol.Routes;
 

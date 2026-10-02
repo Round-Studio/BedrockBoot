@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Views.Pages.MainSubPage;

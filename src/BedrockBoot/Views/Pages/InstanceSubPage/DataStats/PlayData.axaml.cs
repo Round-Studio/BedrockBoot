@@ -26,7 +26,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Helper;
 using Path = System.IO.Path;
 

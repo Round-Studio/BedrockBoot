@@ -19,7 +19,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Pack.Market;
+using BedrockBoot.Standard.Entity.Pack.Market;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.PluginMarket;
 
 namespace BedrockBoot.Views.DrawContent;

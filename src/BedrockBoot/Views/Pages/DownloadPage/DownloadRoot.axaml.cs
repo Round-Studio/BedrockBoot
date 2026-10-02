@@ -17,8 +17,8 @@
  */
 
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Views.Pages.DownloadPage.SearchSubPage;
 
 namespace BedrockBoot.Views.Pages.DownloadPage;

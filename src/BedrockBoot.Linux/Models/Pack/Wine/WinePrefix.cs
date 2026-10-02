@@ -18,9 +18,8 @@
 
 using System.Diagnostics;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Proton;
 
-namespace BedrockBoot.Models.Pack.Wine;
+namespace BedrockBoot.Linux.Models.Pack.Wine;
 
 public static class WinePrefix
 {

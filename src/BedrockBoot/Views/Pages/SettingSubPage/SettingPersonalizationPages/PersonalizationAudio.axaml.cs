@@ -24,10 +24,11 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Media;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 

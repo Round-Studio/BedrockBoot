@@ -18,7 +18,7 @@
 
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;

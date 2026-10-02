@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 using System.IO;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity.Info;
 
 namespace BedrockBoot.Models.Global;
 

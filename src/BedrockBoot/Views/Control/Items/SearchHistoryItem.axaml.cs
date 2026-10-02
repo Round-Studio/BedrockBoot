@@ -19,8 +19,8 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Base.Enum.Search;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Enum.Search;
 
 namespace BedrockBoot.Views.Control.Items;
 

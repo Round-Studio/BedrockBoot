@@ -1,4 +1,4 @@
-﻿/*
+/*
  * BedrockBoot - A launcher for Minecraft Bedrock Edition.
  * Copyright (C) 2025-2026 Round-Studio
  *
@@ -24,10 +24,9 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Helpers;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
@@ -44,6 +43,7 @@ using Round.SDK.Plugin.BedrockBoot.Register;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BedrockBoot.Standard.Core;
 
 namespace BedrockBoot.Views.Pages;
 
@@ -149,7 +149,7 @@ public partial class MainPage : UserControl
 
             try
             {
-                JumpListManager.ConfigureJumpList();
+                PlatformCore.JumpList!.ConfigureJumpList();
             }
             catch (Exception exception)
             {

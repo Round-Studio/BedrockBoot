@@ -19,9 +19,9 @@
 using System.Collections.Generic;
 using System.IO;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;

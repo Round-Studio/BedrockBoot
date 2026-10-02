@@ -17,23 +17,25 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Helper;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
-using BedrockBoot.Models.Account.Xbox;
+using BedrockBoot.Linux.Models.Helper;
+using BedrockBoot.Linux.Models.Pack.GDK;
+using BedrockBoot.Linux.Models.Pack.Wine;
+using BedrockBoot.Linux.Models.Pack.Xbox;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.GDK;
-using BedrockBoot.Models.Pack.Wine;
 using BedrockBoot.Proton;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Helper;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 using Round.SDK.Plugin.BedrockBoot.Register;
 
-namespace BedrockBoot.Models.Game;
+namespace BedrockBoot.Linux.Models.Game;
 
-public class EasyLauncher
+public class EasyLauncher : ILauncher
 {
     private ModsCore _core;
     private readonly Stopwatch _gameplayStopwatch = new();
@@ -63,9 +65,8 @@ public class EasyLauncher
         }
     }
 
-    public EasyLauncher(VersionConfig versionConfig)
+    public EasyLauncher(VersionConfig versionConfig) : base(versionConfig ?? throw new ArgumentNullException(nameof(versionConfig)))
     {
-        VersionInfo = versionConfig ?? throw new ArgumentNullException(nameof(versionConfig));
         _playerDataFilePath = Path.Combine(versionConfig.VersionPath, "playerdata.json");
 
         _linuxLaunchInfo = new ProtonInfo
@@ -84,27 +85,12 @@ public class EasyLauncher
     #region Properties & Events
 
     public static bool IsUseNeoLaunch { get; set; } = false;
-    public static int LaunchingCount { get; private set; } = 0;
-    public static Action? LaunchedBehavior { get; set; }
-    public static Action<VersionConfig>? OnGameLaunched { get; set; }
-    public static Action<VersionConfig>? OnGameExited { get; set; }
-
-    public VersionConfig VersionInfo { get; }
-    public Process? MinecraftProcess { get; private set; }
-
-    // 启动生命周期回调
-    public Action? NoRunTool { get; set; }
-    public Action<Process>? Launched { get; set; }
-    public Action? LaunchCompleted { get; set; }
-    public Action<string, double>? UpdateProgress { get; set; }
-    public Action<string>? UpdateProgressText { get; set; }
-    public Action<bool>? SetProgressIndeterminate { get; set; }
 
     #endregion
 
     #region Public Methods
 
-    public async Task Launch()
+    public override async Task LaunchGame()
     {
         MakeAllFilesExecutableByChmod(PathsList.NeoProtonPath);
 
@@ -424,13 +410,13 @@ public class EasyLauncher
 
     private bool PrepareNeoLaunchEnvironment()
     {
-        var accountOld = CoreInit.GetMsAccountConfig?.Invoke();
+        var accountOld = PlatformCore.GetMsAccountConfig?.Invoke();
         if (accountOld == null)
         {
             return false;
         }
 
-        var account = CoreInit.OnRefreshAccount?.Invoke(accountOld).Result;
+        var account = PlatformCore.OnRefreshAccount?.Invoke(accountOld).Result;
 
         UpdateProgressText?.Invoke("正在登录账户");
         var xbl = new XblAuth();

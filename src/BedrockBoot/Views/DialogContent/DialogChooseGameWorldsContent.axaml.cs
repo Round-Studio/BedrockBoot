@@ -20,8 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Models.Pack.Game.Archive;
 
 namespace BedrockBoot.Views.DialogContent;

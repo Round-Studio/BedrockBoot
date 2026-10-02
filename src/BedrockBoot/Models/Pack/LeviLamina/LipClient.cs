@@ -430,7 +430,7 @@ namespace BedrockBoot.Models.Pack.LeviLamina
             try
             {
                 // 使用 GithubFilesDownloader 下载
-                var progress = new Progress<BedrockBoot.Base.Entry.Progress.DownloadProgress>();
+                var progress = new Progress<BedrockBoot.Standard.Entity.Progress.DownloadProgress>();
                 progress.ProgressChanged += (s, p) =>
                 {
                     int progressPercent = (int)(p.ProgressPercentage);

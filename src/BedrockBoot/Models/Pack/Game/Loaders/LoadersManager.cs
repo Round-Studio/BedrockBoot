@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 
 namespace BedrockBoot.Models.Pack.Game.Loaders;

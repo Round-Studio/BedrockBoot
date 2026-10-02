@@ -20,10 +20,10 @@ using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Base.Entry.Task;
-using BedrockBoot.Base.Enum.Type.Progress.Steps;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Progress;
+using BedrockBoot.Standard.Entity.Task;
+using BedrockBoot.Standard.Enum.Type.Progress.Steps;
 using BedrockBoot.Models.Pack.Game.Instance;
 using BedrockLauncher.Core;
 

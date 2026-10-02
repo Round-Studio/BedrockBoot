@@ -17,7 +17,7 @@
  */
 
 using Avalonia.Controls;
-using BedrockBoot.Base.Entry.Game.Pack.Isolation;
+using BedrockBoot.Standard.Entity.Game.Pack.Isolation;
 
 namespace BedrockBoot.Views.DialogContent;
 

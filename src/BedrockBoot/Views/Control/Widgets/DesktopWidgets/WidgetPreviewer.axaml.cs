@@ -20,7 +20,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets;

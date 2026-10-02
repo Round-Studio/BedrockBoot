@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Models.Pack.Pe;
+using BedrockBoot.Linux.Models.Pack.Pe;
 
-namespace BedrockBoot.Models.Pack.Wine;
+namespace BedrockBoot.Linux.Models.Pack.Wine;
 
 public static class ProtonPatcher
 {

@@ -35,16 +35,15 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Entry.Account.Microsoft;
-using BedrockBoot.Base.Entry.Manifest;
-using BedrockBoot.Base.Enum;
-using BedrockBoot.Base.Enum.Type;
-using BedrockBoot.Base.Helper;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Entity.Account.Microsoft;
+using BedrockBoot.Standard.Entity.Manifest;
+using BedrockBoot.Standard.Enum;
+using BedrockBoot.Standard.Enum.Type;
+using BedrockBoot.Standard.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Account.Microsoft;
-using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Media;
@@ -55,6 +54,8 @@ using BedrockBoot.Models.Style;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Service.Protocol.Routes;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockBoot.Style.Controls;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
@@ -70,6 +71,7 @@ using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using ILauncher = BedrockBoot.Standard.Interface.Platform.Game.ILauncher;
 
 namespace BedrockBoot.Views.Windows;
 
@@ -115,7 +117,7 @@ public partial class MainWindow : Window
 
         // 绑定回调
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
-        EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Invoke(RunBehavior);
+        ILauncher.LaunchedBehavior = () => Dispatcher.UIThread.Invoke(RunBehavior);
 
         SetupDynamicHotkey();
         _ = InitializeAsync();

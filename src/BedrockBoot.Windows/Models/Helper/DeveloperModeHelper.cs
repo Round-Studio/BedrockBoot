@@ -22,7 +22,7 @@ using Avalonia.Threading;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Windows.Models.Helper;
 
 public class DeveloperModeHelper
 {

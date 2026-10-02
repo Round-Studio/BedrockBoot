@@ -20,11 +20,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Screenshots;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Screenshots;
+using BedrockBoot.Standard.Entity.Game.Pack.Screenshots;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
@@ -84,6 +85,6 @@ public partial class InstanceScreenshots : ISetting
         var paths = new ScreenshotsManager(VersionInfo).GetInstanceScreenshotsPath();
         var path = paths.Values.ToList()[UserChooseBox.SelectedIndex];
 
-        OpenFolderHelper.Open(path);
+        PlatformCore.OpenFolder!.Open(path);
     }
 }

@@ -16,16 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using BedrockBoot.Base.Entry.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Entity.Progress;
 
-namespace BedrockBoot.Win32;
+namespace BedrockBoot.Windows.Win32.Windows;
 
 public partial class DownloadVCWindow : Form
 {

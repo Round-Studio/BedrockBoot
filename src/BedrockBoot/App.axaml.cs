@@ -25,10 +25,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Enum;
-using BedrockBoot.Base.Enum.Type;
-using BedrockBoot.Base.Helper;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Enum;
+using BedrockBoot.Standard.Enum.Type;
+using BedrockBoot.Standard.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
@@ -36,11 +36,13 @@ using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using BedrockBoot.Views.Windows.SystemMethod;
 using BedrockBoot.WatchDog.Entity;
-using BedrockBoot.Models.Game;
 using BedrockBoot.Models.Pack.Game.Archive;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 using Application = Avalonia.Application;
+using ExceptionWindow = BedrockBoot.Views.Windows.SubWindows.ExceptionWindow;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 using Window = Avalonia.Controls.Window;
 
@@ -73,11 +75,11 @@ public class App : Application
         watchDog.Start();
 
         // 注册游戏启动与退出时的自动存档备份逻辑
-        EasyLauncher.OnGameLaunched = version =>
+        ILauncher.OnGameLaunched = version =>
         {
             _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, "启动"));
         };
-        EasyLauncher.OnGameExited = version =>
+        ILauncher.OnGameExited = version =>
         {
             _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, "退出"));
         };

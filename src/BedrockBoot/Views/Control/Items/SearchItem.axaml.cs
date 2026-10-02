@@ -20,7 +20,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Models.Helper;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 

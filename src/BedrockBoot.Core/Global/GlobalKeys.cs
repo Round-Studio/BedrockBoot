@@ -18,7 +18,7 @@
 
 using System;
 using System.Collections.Generic;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Enum.Type;
 
 namespace BedrockBoot.Models.Global;
 

@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Pack.WebServer;
+using BedrockBoot.Standard.Entity.Pack.WebServer;
 
 namespace BedrockBoot.Service.WebServer;
 

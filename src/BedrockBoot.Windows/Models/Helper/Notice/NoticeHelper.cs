@@ -16,11 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using BedrockBoot.Standard.Interface.Platform;
 using Microsoft.Toolkit.Uwp.Notifications;
 
-namespace BedrockBoot.Models.Helper.Notice;
+namespace BedrockBoot.Windows.Models.Helper.Notice;
 
-public class NoticeHelper
+public class NoticeHelper : INoticeService
 {
     public static void SentNotice(string title, string message)
     {
@@ -29,4 +30,6 @@ public class NoticeHelper
             .AddText(message)
             .Show();
     }
+
+    void INoticeService.SentNotice(string title, string message) => SentNotice(title, message);
 }

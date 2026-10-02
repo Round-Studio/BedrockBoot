@@ -29,11 +29,12 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
@@ -169,44 +170,44 @@ public partial class DrawInstanceContent : UserControl
 
     private void MenuOpenFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(VersionInfo.VersionPath);
+        PlatformCore.OpenFolder!.Open(VersionInfo.VersionPath);
     }
 
     private void MenuOpenConfigFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(Path.Combine(VersionInfo.VersionPath, "config"));
+        PlatformCore.OpenFolder!.Open(Path.Combine(VersionInfo.VersionPath, "config"));
     }
 
     private void MenuOpenSkinFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.SkinPackFolder));
+        PlatformCore.OpenFolder!.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.SkinPackFolder));
     }
 
     private void MenuOpenBehaviorFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.BehaviorPackFolder));
+        PlatformCore.OpenFolder!.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.BehaviorPackFolder));
     }
 
     private void MenuOpenResourceFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.ResourcePackFolder));
+        PlatformCore.OpenFolder!.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.ResourcePackFolder));
     }
 
     private void MenuOpenSkinDevFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(
+        PlatformCore.OpenFolder!.Open(
             IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopSkinPackFolder));
     }
 
     private void MenuOpenBehaviorDevFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(
+        PlatformCore.OpenFolder!.Open(
             IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopBehaviorPackFolder));
     }
 
     private void MenuOpenResourceDevFolder_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(
+        PlatformCore.OpenFolder!.Open(
             IsolationCore.GetInstanceFolderPath(VersionInfo, InstanceFolderType.DevelopResourcePackFolder));
     }
 }

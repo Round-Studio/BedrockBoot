@@ -24,7 +24,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Models.Pack.System.DropFile;
 using PeNet;
 

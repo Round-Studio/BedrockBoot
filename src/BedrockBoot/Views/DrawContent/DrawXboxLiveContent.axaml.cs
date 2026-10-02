@@ -22,7 +22,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Standard.Entity.Account.Microsoft;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Models.Pack.Xbox.Cape;
 using BedrockBoot.Views.Pages.XboxSubPage.DrawContent;

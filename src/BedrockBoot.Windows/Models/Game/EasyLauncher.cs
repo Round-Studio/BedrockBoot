@@ -293,6 +293,7 @@ public class EasyLauncher
                         auth,
                         TimeSpan.FromSeconds(60)).Result;
                     MinecraftProcess = Process.GetProcessById((int)process.ProcessId);
+                    // 注入已由 LaunchAndInjectAsync 完成，不能再调用 LoadInject，否则会重复开启会话管道并超时
                     auth.Dispose();
                 }
                 catch
@@ -305,18 +306,6 @@ public class EasyLauncher
             if (MinecraftProcess != null)
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
-
-                if (auth != null)
-                {
-                    try
-                    {
-                        launchCore.LoadInject(MinecraftProcess.Id, Process.GetCurrentProcess().Id, auth);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                    }
-                }
 
                 LaunchingCount--;
                 if (LaunchingCount == 0) LaunchedBehavior?.Invoke();

@@ -46,7 +46,7 @@ public class LeviLaminaModsInstaller
 
             DialogHost.Show(new DialogInfo
             {
-                Title = $"正在安装 LeviLamina v{versionId}",
+                Title = $"正在安装 {_pkg?.Info?.Name ?? _key} v{versionId}",
                 Content = dialogContent
             });
         }

@@ -448,7 +448,11 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
                 Console.WriteLine($@"下载完成");
 
-                await ExtractAndPlaceFilesAsync(filePath, variant);
+                // 优先使用包内自带的 tooth.json，其放置规则与压缩包实际结构一致；
+                // 仓库 tag 里的 tooth.json 可能与发布包不同步，导致放置源目录找不到。
+                var effectiveVariant = await TryLoadEmbeddedVariantAsync(filePath) ?? variant;
+
+                await ExtractAndPlaceFilesAsync(filePath, effectiveVariant);
 
                 File.Delete(filePath);
                 Console.WriteLine(@"清理临时文件");
@@ -456,6 +460,37 @@ namespace BedrockBoot.Models.Pack.LeviLamina
             catch (Exception ex)
             {
                 throw new Exception($"下载或解压失败: {ex.Message}");
+            }
+        }
+
+        // 读取发布包根目录下的 tooth.json（如果存在），用于获取与压缩包结构一致的变体与放置规则
+        private async Task<Variant> TryLoadEmbeddedVariantAsync(string zipPath)
+        {
+            try
+            {
+                using var archive = ZipFile.OpenRead(zipPath);
+                var entry = archive.Entries.FirstOrDefault(e =>
+                    string.Equals(e.FullName.TrimStart('.', '/'), "tooth.json", StringComparison.OrdinalIgnoreCase));
+                if (entry == null) return null;
+
+                using var stream = entry.Open();
+                using var reader = new StreamReader(stream);
+                var json = await reader.ReadToEndAsync();
+
+                var embedded = JsonSerializer.Deserialize<LeviConfig>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                if (embedded?.Variants == null || embedded.Variants.Count == 0) return null;
+
+                Console.WriteLine(@"使用包内 tooth.json 的放置规则");
+                return SelectVariant(embedded);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"读取包内 tooth.json 失败，将使用仓库配置: {ex.Message}");
+                return null;
             }
         }
 
@@ -483,10 +518,11 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
                     if (placement.Type == "dir")
                     {
-                        if (Directory.Exists(srcPath))
+                        var resolvedSrc = ResolveDirSource(tempExtractDir, placement.Src);
+                        if (resolvedSrc != null)
                         {
                             Directory.CreateDirectory(destPath);
-                            CopyDirectory(srcPath, destPath);
+                            CopyDirectory(resolvedSrc, destPath);
                             Console.WriteLine($@"已复制目录: {destPath}");
                         }
                         else
@@ -542,6 +578,36 @@ namespace BedrockBoot.Models.Pack.LeviLamina
                     }
                 }
             }
+        }
+
+        // 兼容部分发布包结构与 tooth.json 的 placements.src 不一致的情况：
+        // 1. 直接匹配；2. 去掉结尾的 "/*" 再匹配；3. 退到 manifest.json 所在目录（模组根目录）；4. 退到压缩包根目录
+        private string ResolveDirSource(string extractRoot, string placementSrc)
+        {
+            var direct = Path.Combine(extractRoot, placementSrc);
+            if (Directory.Exists(direct)) return direct;
+
+            var trimmed = placementSrc.TrimEnd('*').TrimEnd('/');
+            if (!string.IsNullOrEmpty(trimmed))
+            {
+                var trimmedPath = Path.Combine(extractRoot, trimmed);
+                if (Directory.Exists(trimmedPath))
+                {
+                    Console.WriteLine($@"{placementSrc} 未匹配到目录，改用 {trimmed}/");
+                    return trimmedPath;
+                }
+            }
+
+            var manifest = Directory.GetFiles(extractRoot, "manifest.json", SearchOption.AllDirectories)
+                .FirstOrDefault();
+            if (manifest != null)
+            {
+                Console.WriteLine(@"警告: 放置源目录不存在，改用 manifest.json 所在目录");
+                return Path.GetDirectoryName(manifest);
+            }
+
+            Console.WriteLine(@"警告: 放置源目录不存在，改用压缩包根目录");
+            return extractRoot;
         }
 
         private void CopyDirectory(string sourceDir, string destDir)

@@ -20,7 +20,7 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Interface;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 

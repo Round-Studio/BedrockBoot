@@ -16,19 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using Avalonia.Controls;
-using BedrockBoot.Standard.Enum.Type;
+using System;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Avalonia.Platform;
 
-namespace BedrockBoot.Interface;
+namespace BedrockBoot.Standard.Entity;
 
-public class IWidgetTemplated : UserControl
+public class JsonResourceEntity
 {
-    public List<WidgetSize> SupportWidgetSize { get; set; } = new()
+    public async Task<string> ReadTextResourceAsync(string uri)
     {
-        WidgetSize.ExtraLarge,
-        WidgetSize.Large,
-        WidgetSize.Medium,
-        WidgetSize.Small
-    };
+        using var stream = AssetLoader.Open(new Uri(uri));
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        return await reader.ReadToEndAsync();
+    }
+
+    public async Task<T> LoadJsonResourceAsync<T>(string uri)
+    {
+        using var stream = AssetLoader.Open(new Uri(uri));
+        return await JsonSerializer.DeserializeAsync<T>(stream);
+    }
 }

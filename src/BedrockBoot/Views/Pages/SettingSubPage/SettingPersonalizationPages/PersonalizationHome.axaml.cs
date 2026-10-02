@@ -20,8 +20,8 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
 using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 

@@ -23,11 +23,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Enum.Search;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Models.Pack.Search;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 

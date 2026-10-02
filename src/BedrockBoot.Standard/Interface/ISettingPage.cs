@@ -16,21 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Threading.Tasks;
+using OnePointUI.Avalonia.Base.Entry;
 
-namespace BedrockBoot.Interface;
+namespace BedrockBoot.Standard.Interface;
 
-/// <summary>
-///     翻译服务接口
-/// </summary>
-public interface ITranslationService
+public class ISettingPage : ISetting
 {
-    /// <summary>
-    ///     翻译单个文本
-    /// </summary>
-    /// <param name="text">待翻译文本</param>
-    /// <param name="sourceLanguage">源语言代码</param>
-    /// <param name="targetLanguage">目标语言代码</param>
-    /// <returns>翻译结果</returns>
-    Task<string> TranslateAsync(string text, string sourceLanguage, string targetLanguage);
+    public List<BreadcrumbItemInfo> BreadcrumbItem { get; set; } = new();
+    public bool IsEdit { get; set; } = false;
 }

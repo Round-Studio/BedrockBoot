@@ -16,11 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Avalonia.Controls;
+namespace BedrockBoot.Standard.Interface;
 
-namespace BedrockBoot.Interface;
-
-public class ISetting : UserControl
+/// <summary>
+///     翻译服务接口
+/// </summary>
+public interface ITranslationService
 {
-    public bool IsEdit { get; set; } = false;
+    /// <summary>
+    ///     翻译单个文本
+    /// </summary>
+    /// <param name="text">待翻译文本</param>
+    /// <param name="sourceLanguage">源语言代码</param>
+    /// <param name="targetLanguage">目标语言代码</param>
+    /// <returns>翻译结果</returns>
+    Task<string> TranslateAsync(string text, string sourceLanguage, string targetLanguage);
 }

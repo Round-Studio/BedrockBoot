@@ -16,14 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using OnePointUI.Avalonia.Base.Entry;
+using Avalonia.Controls;
 
-namespace BedrockBoot.Interface;
+namespace BedrockBoot.Standard.Interface;
 
-public class ISettingPage : ISetting
+public class ISetting : UserControl
 {
-    public List<BreadcrumbItemInfo> BreadcrumbItem { get; set; } = new();
     public bool IsEdit { get; set; } = false;
-    public static I18nManager i18n => I18nManager.Instance;
 }

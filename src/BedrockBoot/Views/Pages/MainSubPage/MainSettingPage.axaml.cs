@@ -17,7 +17,7 @@
  */
 
 using BedrockBoot.Standard.Entity;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.SettingSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.Breadcrumb;

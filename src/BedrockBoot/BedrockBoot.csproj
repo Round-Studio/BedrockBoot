@@ -45,6 +45,7 @@
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
         <Folder Include="Assets\Svg\"/>
         <AvaloniaXaml Include="I18n\**"/>
+        <Folder Include="Entity\" />
     </ItemGroup>
 
     <ItemGroup>

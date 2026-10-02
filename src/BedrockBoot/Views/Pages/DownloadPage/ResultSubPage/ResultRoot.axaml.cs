@@ -27,11 +27,11 @@ using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Search;
 using BedrockBoot.Helpers;
-using BedrockBoot.Interface.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Download;
+using BedrockBoot.Standard.Interface.Download;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 

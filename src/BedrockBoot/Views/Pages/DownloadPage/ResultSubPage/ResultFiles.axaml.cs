@@ -24,9 +24,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Enum.Search;
-using BedrockBoot.Interface.Download;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
+using BedrockBoot.Standard.Interface.Download;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Items.Download;
 

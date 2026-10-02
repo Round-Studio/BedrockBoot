@@ -16,11 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Threading.Tasks;
 using BedrockBoot.Standard.Entity.Game;
 
-namespace BedrockBoot.Interface.ModLoader;
+namespace BedrockBoot.Standard.Interface.ModLoader;
 
 public interface IModsLoader
 {

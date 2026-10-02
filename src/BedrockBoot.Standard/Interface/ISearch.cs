@@ -16,23 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Avalonia.Controls;
 using BedrockBoot.Standard.Entity.Info;
-using BedrockBoot.Standard.Entity.Info.Download;
+using BedrockBoot.Standard.Enum.Search;
 
-namespace BedrockBoot.Interface.Download;
+namespace BedrockBoot.Standard.Interface;
 
-public interface IDownloadResult
+public interface ISearch
 {
-    public SearchResultItemInfo SearchInfo { get; set; }
-    public bool IsHasManyFiles { get; }
-    public Task<List<Control>?> DescriptionControls();
-    public Task<uint> GetDownloadCount();
-    public Task<bool> IsInstalled();
-    public Task Install();
-    public Task ReInstall();
-    public void Delete();
-    public Task<List<ResourceFileInfo>> GetFiles();
+    Task<SearchResultPage> SearchPageAsync(string keyword, int page, int pageSize);
+    Task<List<SearchResultItemInfo>> GetRecommendAsync(int count = 2);
+    SearchResourceType SearchType { get; }
+    void SetExtraParameter(object parameter);
 }

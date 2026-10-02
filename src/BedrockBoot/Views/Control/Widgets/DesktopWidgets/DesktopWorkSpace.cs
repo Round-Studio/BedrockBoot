@@ -30,7 +30,7 @@ using Avalonia.Media;
 using BedrockBoot.Standard.Entity.Config;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Enum.Type;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Style.Widgets;
 using Octokit;
 

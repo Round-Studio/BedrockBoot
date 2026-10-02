@@ -18,7 +18,6 @@
 
 using Avalonia.Threading;
 using BedrockBoot.Helpers;
-using BedrockBoot.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
 using Octokit;
@@ -29,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using BedrockBoot.Standard.Interface;
 
 namespace BedrockBoot.Views.Pages.OtherPage;
 

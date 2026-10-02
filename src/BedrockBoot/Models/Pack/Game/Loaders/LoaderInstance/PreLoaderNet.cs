@@ -21,9 +21,8 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using BedrockBoot.Standard.Entity.Game;
-using BedrockBoot.Interface;
-using BedrockBoot.Interface.ModLoader;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
+using BedrockBoot.Standard.Interface.ModLoader;
 
 namespace BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 

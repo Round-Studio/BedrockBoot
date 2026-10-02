@@ -18,13 +18,12 @@
 
 using Avalonia.Interactivity;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using System.Collections.Generic;
-
+using BedrockBoot.Standard.Interface;
 
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;

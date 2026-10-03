@@ -46,6 +46,7 @@ public partial class BackgroundView : UserControl
     private bool _isRotating;
     private double _currentRotation;
     private Random _random = new Random();
+    private Bitmap? _backgroundBitmap;
 
     public BackgroundView()
     {
@@ -119,18 +120,20 @@ public partial class BackgroundView : UserControl
 
             if (!style.BackgroundAnimation && style.StyleType == StyleType.Image)
             {
-                var bitmap = LoadScaledByFactorOptimized(imgPath,
-                    Core.Global.GlobalModel.Config.Data.StyleConfig.ImageQuality switch
-                    {
-                        ImageQuality.High => 1,
-                        ImageQuality.Medium => 0.3,
-                        ImageQuality.Lower => 0.1
-                    }, Core.Global.GlobalModel.Config.Data.StyleConfig.ImageQuality switch
-                    {
-                        ImageQuality.High => BitmapInterpolationMode.HighQuality,
-                        ImageQuality.Medium => BitmapInterpolationMode.LowQuality,
-                        ImageQuality.Lower => BitmapInterpolationMode.LowQuality
-                    });
+                var quality = Core.Global.GlobalModel.Config.Data.StyleConfig.ImageQuality;
+                var scale = quality switch
+                {
+                    ImageQuality.High => 2.0,
+                    ImageQuality.Medium => 1.0,
+                    _ => 0.5
+                };
+                var interpolation = quality == ImageQuality.High
+                    ? BitmapInterpolationMode.HighQuality
+                    : BitmapInterpolationMode.LowQuality;
+
+                var bitmap = await Task.Run(() => LoadScaledByFactorOptimized(imgPath, scale, interpolation));
+                _backgroundBitmap = bitmap;
+
                 if (style.Background3D)
                 {
                     BackgroundImage3D.IsVisible = true;
@@ -152,12 +155,14 @@ public partial class BackgroundView : UserControl
             else if (style.StyleType == StyleType.Image)
             {
                 _isAnimationMode = true;
-                var animHelper = new AnimationImageHelper(imgPath);
+                using var animHelper = new AnimationImageHelper(imgPath);
+                var animBitmap = await animHelper.GetImage();
+                _backgroundBitmap = animBitmap;
                 BackgroundImage.IsVisible = true;
                 BackgroundImage.Background = new ImageBrush
                 {
                     Stretch = Stretch.UniformToFill,
-                    Source = await animHelper.GetImage()
+                    Source = animBitmap
                 };
 
                 if (BackgroundBox.RenderTransform is not TransformGroup)
@@ -272,6 +277,9 @@ public partial class BackgroundView : UserControl
         BackgroundImage3D.IsVisible = false;
         BackgroundImage.Background = null;
         BackgroundImage3D.Source = null;
+
+        _backgroundBitmap?.Dispose();
+        _backgroundBitmap = null;
 
         BackgroundImageOpacity.Opacity = 1;
     }
@@ -443,12 +451,17 @@ public partial class BackgroundView : UserControl
         using var stream = File.OpenRead(filePath);
         var imageInfo = SixLabors.ImageSharp.Image.Identify(stream);
         int originalWidth = imageInfo.Width;
-        int originalHeight = imageInfo.Height;
-        int targetWidth = (int)(originalWidth * scale);
+
+        var displayWidth = Bounds.Width;
+        if (displayWidth <= 0)
+            displayWidth = TopLevel.GetTopLevel(this)?.ClientSize.Width ?? 0;
+
+        int targetWidth = displayWidth > 0 ? (int)Math.Ceiling(displayWidth * scale) : 2560;
+        targetWidth = Math.Min(targetWidth, originalWidth);
         if (targetWidth < 1) targetWidth = 1;
 
         stream.Seek(0, SeekOrigin.Begin);
-        return Bitmap.DecodeToWidth(stream, targetWidth, BitmapInterpolationMode.LowQuality);
+        return Bitmap.DecodeToWidth(stream, targetWidth, quality);
     }
 
     private void SetBackgroundBlur(int radius)
@@ -489,5 +502,8 @@ public partial class BackgroundView : UserControl
         _cts?.Dispose();
         _rotationCts?.Dispose();
         AnimationThread?.Join(1000);
+
+        _backgroundBitmap?.Dispose();
+        _backgroundBitmap = null;
     }
 }

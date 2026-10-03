@@ -298,7 +298,7 @@ public class PluginLoader
                         catch (Exception loadEx)
                         {
                             Console.WriteLine($@"插件初始化错误: {loadEx}");
-                            throw;
+                            throw loadEx;
                         }
                 }
 
@@ -307,7 +307,7 @@ public class PluginLoader
             catch (Exception ex)
             {
                 Console.WriteLine($@"加载并初始化插件主体失败 {bodyFilePath}: {ex}");
-                throw;
+                return null;
             }
         });
     }

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
@@ -30,6 +31,7 @@ using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.Archive.RTX;
 using BedrockBoot.Views.DialogContent.Export;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Entity;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 
@@ -50,7 +52,9 @@ public partial class LevelSettingsControls : UserControl
         Manager = new(_info);
         Manager.Refresh();
 
-        if (Manager.ActivatedPacks!.Exists(x => x.Header.Uuid == RTXPack.RTXPackManifest.Header.Uuid))
+        var resConf =
+            new ConfigEntity<List<PackItem>>(Path.Combine(_info.Path, "world_resource_packs.json"), false);
+        if (resConf.Data.Exists(x => x.PackId == RTXPack.RTXPackManifest.Header.Uuid))
         {
             RTXPack.ExportPack(_info.VersionInfo);
             IsUseRTX.IsChecked = true;

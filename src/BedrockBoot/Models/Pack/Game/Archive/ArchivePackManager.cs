@@ -114,6 +114,23 @@ public class ArchivePackManager
         
         Refresh();
     }
+    private static List<int> ParseVersion(string? version)
+    {
+        if (string.IsNullOrWhiteSpace(version))
+            return new List<int>();
+
+        var parts = version.Split(new[] { '.', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+        var result = new List<int>(parts.Length);
+        foreach (var p in parts)
+        {
+            var trimmed = p.Trim();
+            if (int.TryParse(trimmed, out var n))
+                result.Add(n);
+        }
+
+        return result;
+    }
 
     public void InstallPack(ResourcePackManifest packManifest)
     {
@@ -125,8 +142,7 @@ public class ArchivePackManager
         conf.Data.Add(new()
         {
             PackId = uuid,
-            Version = InstalledPacks!.Find(x => x.Header.Uuid == uuid)!.Header.Version.Split('.').Select(int.Parse)
-                .ToList()
+            Version = ParseVersion(packManifest.Header.Version)
         });
         conf.Save();
         

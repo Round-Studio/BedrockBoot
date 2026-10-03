@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.Json;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
@@ -18,8 +21,8 @@ public class RTXPack
             Description = "BedrockBoot RTX Tools",
             Name = "BedrockBoot RTX Tools",
             Uuid = "39130818-56a5-42d5-8388-47d232f3ef14",
-            VersionElement = JsonDocument.Parse("\"1, 0, 0\"").RootElement,
-            MinEngineVersionElement = JsonDocument.Parse("\"1, 13, 0\"").RootElement,
+            VersionElement = JsonDocument.Parse("\"1.0.0\"").RootElement,
+            MinEngineVersionElement = JsonDocument.Parse("\"1.13.0\"").RootElement,
         },
         Modules = new()
         {
@@ -28,7 +31,7 @@ public class RTXPack
                 Description = "BedrockBoot RTX",
                 Type = "resources",
                 Uuid = "c6d25803-71be-4363-88de-3b1f8a22812a",
-                VersionElement = JsonDocument.Parse("\"1, 0, 0\"").RootElement,
+                VersionElement = JsonDocument.Parse("\"1.0.0\"").RootElement,
             }
         },
         Capabilities = new()
@@ -51,6 +54,9 @@ public class RTXPack
         var rtxManifest = RTXPackManifest;
         rtxManifest.PackRootPath = exportPath;
         rtxManifest.SaveConfig();
+        
+        var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png")));
+        bitmap.Save(Path.Combine(exportPath, "pack_icon.png"));
     }
 
     public static void InstallPack(ArchiveInfo info)

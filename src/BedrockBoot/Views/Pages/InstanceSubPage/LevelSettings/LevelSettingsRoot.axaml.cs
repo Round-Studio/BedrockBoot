@@ -21,6 +21,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Interface;
+using BedrockBoot.Models.Pack.Game.Archive;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 
@@ -44,6 +45,7 @@ public partial class LevelSettingsRoot : ISetting
 
     private void UpdateUI()
     {
+        ArchiveCheck.EnsureLevelData(_info);
         NavigationFrame.NavigateTo(new LevelSettingsEditor(_info));
         LevelNameLabel.Text = _info.LevelWorldData.LevelName;
     }

@@ -51,37 +51,29 @@ public partial class SavesView : UserControl
 
     private static I18nManager i18n => I18nManager.Instance;
     public VersionConfig VersionInfo { get; set; }
-    public ArchiveManifest? ArchiveManifest { get; private set; }
     public bool IsEdit { get; set; }
     public Action<ArchiveInfo>? EditAction { get; set; }
 
     private string SearchKey => SearchBox.Text ?? string.Empty;
-    private int SelIndex => UserChooseBox.SelectedIndex;
     private string CurrentUser => (UserChooseBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
 
     private void UpdateUI()
     {
         IsEdit = false;
 
-        var checker = new ArchiveCheck(VersionInfo);
-        ArchiveManifest = checker.Check();
+        var users = new ArchiveCheck(VersionInfo).GetInstanceWorldPackPath();
 
         UserChooseBox.Items.Clear();
-
-        if (ArchiveManifest?.Manifest != null)
-        {
-            foreach (var user in ArchiveManifest.Manifest)
-                UserChooseBox.Items.Add(new ComboBoxItem
-                {
-                    Content = user.Key,
-                    Tag = user.Value
-                });
-
-            if (ArchiveManifest.Manifest.Count > 0)
+        foreach (var user in users.Keys)
+            UserChooseBox.Items.Add(new ComboBoxItem
             {
-                UserChooseBox.SelectedIndex = 0;
-                UpdateContent();
-            }
+                Content = user
+            });
+
+        if (users.Count > 0)
+        {
+            UserChooseBox.SelectedIndex = 0;
+            UpdateContent();
         }
         else
         {
@@ -121,34 +113,20 @@ public partial class SavesView : UserControl
     {
         if (TypeSel.SelectedIndex == 0)
         {
-            if (ArchiveManifest?.Manifest == null || ArchiveManifest.Manifest.Count == 0)
+            if (string.IsNullOrEmpty(CurrentUser))
             {
                 UpdateSaves(new List<ArchiveInfo>());
                 return;
             }
 
-            List<ArchiveInfo> currentSaves;
-            if (SelIndex >= 0 && SelIndex < UserChooseBox.Items.Count)
-            {
-                var selectedItem = UserChooseBox.Items[SelIndex] as ComboBoxItem;
-                currentSaves = selectedItem?.Tag as List<ArchiveInfo> ?? new List<ArchiveInfo>();
-            }
-            else
-            {
-                currentSaves = ArchiveManifest.Manifest.Values.FirstOrDefault() ?? new List<ArchiveInfo>();
-            }
+            var currentSaves = new ArchiveCheck(VersionInfo).CheckUser(CurrentUser);
 
             if (!string.IsNullOrEmpty(SearchKey))
-            {
-                var filtered = currentSaves
+                currentSaves = currentSaves
                     .Where(s => s.Name.Contains(SearchKey, StringComparison.OrdinalIgnoreCase))
                     .ToList();
-                UpdateSaves(filtered);
-            }
-            else
-            {
-                UpdateSaves(currentSaves);
-            }
+
+            UpdateSaves(currentSaves);
         }
         else if (TypeSel.SelectedIndex == 1)
         {

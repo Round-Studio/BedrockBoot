@@ -92,7 +92,20 @@ public class ImageLoader : IDisposable
         string decodedPath = Uri.UnescapeDataString(iconUri);
 
         if (File.Exists(decodedPath))
-            return new Bitmap(decodedPath);
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using var stream = File.OpenRead(decodedPath);
+                    return decodeWidth is > 0
+                        ? Bitmap.DecodeToWidth(stream, decodeWidth.Value)
+                        : new Bitmap(stream);
+                }
+                catch
+                {
+                    return null;
+                }
+            });
 
         return await LoadIconAsync("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png");
     }

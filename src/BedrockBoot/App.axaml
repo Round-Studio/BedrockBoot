@@ -9,5 +9,24 @@
                             ThemeVariant="Dark" />
         <StyleInclude Source="avares://BedrockBoot/Style/Widgets/DesktopWidgetTemplated.axaml" />
         <StyleInclude Source="avares://BedrockBoot/Style/Controls/AccountButton.axaml" />
+
+        <Style Selector="MenuFlyoutPresenter">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="4" />
+            <Style.Animations>
+                <Animation Duration="0:0:0.18" Easing="CubicEaseOut">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="Opacity" Value="0" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="Opacity" Value="1" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+
+        <Style Selector="MenuFlyoutPresenter MenuItem">
+            <Setter Property="CornerRadius" Value="6" />
+        </Style>
     </Application.Styles>
 </Application>

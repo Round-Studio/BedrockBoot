@@ -66,9 +66,35 @@ public class ArchiveCheck
             Path = Path.Combine(save),
             IconPath = File.Exists(icon) ? icon : "",
             IsProject = isProject,
-            LevelWorldData = new ArchiveSerializer(save).Parser(),
             VersionInfo = (gameFolder != null ? GameInfoHelper.GetVersionConfig(gameFolder) : null)!
         };
+    }
+
+    public static void EnsureLevelData(ArchiveInfo info)
+    {
+        if (info == null || string.IsNullOrEmpty(info.Path) || info.LevelWorldData != null) return;
+        info.LevelWorldData = new ArchiveSerializer(info.Path).Parser();
+    }
+
+    public List<ArchiveInfo> CheckUser(string user)
+    {
+        var result = new List<ArchiveInfo>();
+        if (VersionConfig == null) throw new NullReferenceException("实例配置为空");
+
+        var paths = GetInstanceWorldPackPath();
+        if (!paths.TryGetValue(user, out var folder) || !Directory.Exists(folder)) return result;
+
+        Directory.GetDirectories(folder).ToList().ForEach(save =>
+        {
+            var info = GetInfo(save, VersionConfig.VersionPath);
+            if (info != null)
+            {
+                var uuidUpdate = info.Uuid;
+                result.Add(info);
+            }
+        });
+
+        return result;
     }
 
     public ArchiveManifest Check()
@@ -141,7 +167,7 @@ public class ArchiveCheck
         }
     }
 
-    private Dictionary<string, string> GetInstanceWorldPackPath()
+    public Dictionary<string, string> GetInstanceWorldPackPath()
     {
         var result = new Dictionary<string, string>();
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)

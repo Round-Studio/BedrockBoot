@@ -41,6 +41,7 @@ public class ArchiveBackup
         CancellationToken cancellationToken = default)
     {
         Console.WriteLine($@"开始备份存档 {info.Path}");
+        ArchiveCheck.EnsureLevelData(info);
         if (!IndexConfig.Data.Index.Contains(info.Uuid)) IndexConfig.Data.Index.Add(info.Uuid);
 
         IndexConfig.Data.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();

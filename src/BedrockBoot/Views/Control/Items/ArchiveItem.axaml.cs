@@ -27,6 +27,7 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Base.Entry.Game.Pack.Archive;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Archive;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
@@ -35,6 +36,8 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class ArchiveItem : UserControl
 {
+    private Bitmap? _worldIconBitmap;
+
     public ArchiveItem()
     {
         InitializeComponent();
@@ -60,6 +63,8 @@ public partial class ArchiveItem : UserControl
     {
         if (ArchiveInfo == null) return;
 
+        ArchiveCheck.EnsureLevelData(ArchiveInfo);
+
         WorldName.Text = ArchiveInfo.LevelWorldData.LevelName;
 
         // 时间转换与格式化
@@ -79,8 +84,12 @@ public partial class ArchiveItem : UserControl
 
         try
         {
+            _worldIconBitmap?.Dispose();
+            _worldIconBitmap = null;
+
             using var stream = File.OpenRead(path);
-            var bitmap = new Bitmap(stream);
+            var bitmap = Bitmap.DecodeToWidth(stream, 256);
+            _worldIconBitmap = bitmap;
             ImageBox.Background = new ImageBrush
             {
                 Stretch = Stretch.UniformToFill,
@@ -91,6 +100,14 @@ public partial class ArchiveItem : UserControl
         {
             Console.WriteLine($@"Failed to load world icon: {ex.Message}");
         }
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+
+        _worldIconBitmap?.Dispose();
+        _worldIconBitmap = null;
     }
 
     /// <summary>

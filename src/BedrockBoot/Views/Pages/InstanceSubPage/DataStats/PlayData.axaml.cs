@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
@@ -71,6 +72,7 @@ public partial class PlayData : UserControl
     public PlayData(VersionConfig versionInfo) : this()
     {
         _versionInfo = versionInfo;
+        WeeklyChart.SizeChanged += OnChartSizeChanged;
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -79,7 +81,7 @@ public partial class PlayData : UserControl
         LoadData();
     }
 
-    private void LoadData()
+    private async void LoadData()
     {
         try
         {
@@ -91,40 +93,29 @@ public partial class PlayData : UserControl
             var gameFolder = Path.GetDirectoryName(bedrockVersionsDir);
             if (string.IsNullOrEmpty(gameFolder)) return;
 
-            var allConfigs = GameInfoHelper.GetVersionConfigs(gameFolder);
-            if (allConfigs.Count == 0) return;
-
-            var sessionRank = allConfigs
-                .Where(c => c?.PlayerData != null)
-                .OrderByDescending(c => c.PlayerData.TotalPlayTime)
-                .ToList();
-
-            var currentSessionIdx = sessionRank.FindIndex(c => c.VersionPath == currentDir);
-            if (currentSessionIdx >= 0)
-                TotalPlayRankingLabel.Text = $"#{currentSessionIdx + 1}";
-
-            var allWeeklyStats = new List<(string versionPath, int sessions, int activeDays, double totalHours)>();
-
-            foreach (var config in allConfigs)
+            var result = await Task.Run(() =>
             {
-                try
-                {
-                    var stats = SessionStoreHelper.GetWeeklyStats(config.VersionPath);
-                    allWeeklyStats.Add((config.VersionPath, stats.Sessions, stats.ActiveDays, stats.TotalHours));
-                }
-                catch
-                {
-                }
-            }
+                var allConfigs = GameInfoHelper.GetVersionConfigs(gameFolder);
+                var sessionRank = allConfigs
+                    .Where(c => c?.PlayerData != null)
+                    .OrderByDescending(c => c.PlayerData.TotalPlayTime)
+                    .ToList();
 
-            var (sessions, activeDays, totalHours) = SessionStoreHelper.GetWeeklyStats(_versionInfo.VersionPath);
-            SessionsText.Text = sessions.ToString();
-            ActiveDaysText.Text = activeDays.ToString();
-            TotalHoursText.Text = $"{(playerData.TotalPlayTime / 3600.00).ToString("F2")}";
+                var rankIndex = sessionRank.FindIndex(c => c.VersionPath == currentDir);
+                var stats = SessionStoreHelper.GetWeeklyStats(currentDir);
+                var dailyTotals = SessionStoreHelper.GetDailyTotals(currentDir, 7);
 
-            _dailyTotals = SessionStoreHelper.GetDailyTotals(_versionInfo.VersionPath, 7);
+                return new PlayStatsResult(rankIndex, stats.Sessions, stats.ActiveDays, dailyTotals);
+            });
 
-            WeeklyChart.SizeChanged += OnChartSizeChanged;
+            if (result.RankIndex >= 0)
+                TotalPlayRankingLabel.Text = $"#{result.RankIndex + 1}";
+
+            SessionsText.Text = result.Sessions.ToString();
+            ActiveDaysText.Text = result.ActiveDays.ToString();
+            TotalHoursText.Text = $"{((playerData?.TotalPlayTime ?? 0) / 3600.00).ToString("F2")}";
+
+            _dailyTotals = result.DailyTotals;
 
             if (WeeklyChart.Bounds.Width > 0)
                 DrawChart();
@@ -134,6 +125,9 @@ public partial class PlayData : UserControl
             Console.WriteLine($@"加载游玩数据失败: {ex.Message}");
         }
     }
+
+    private sealed record PlayStatsResult(int RankIndex, int Sessions, int ActiveDays,
+        Dictionary<DateTime, long> DailyTotals);
 
     private void OnChartSizeChanged(object? sender, SizeChangedEventArgs e)
     {

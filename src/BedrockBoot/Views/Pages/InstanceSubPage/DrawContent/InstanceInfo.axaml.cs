@@ -194,19 +194,20 @@ public partial class InstanceInfo : UserControl
     {
         try
         {
-            VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
-            if (VersionInfo == null ||
-                VersionInfo?.PlayerData == null)
+            var versionPath = VersionInfo.VersionPath;
+            var config = await Task.Run(() => GameInfoHelper.GetVersionConfig(versionPath));
+
+            if (config?.PlayerData == null)
                 return;
+
+            VersionInfo = config;
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 if (TotalDuration != null)
                 {
-                    var playerData = VersionInfo.PlayerData;
-
                     // 获取总游玩时间（秒）并转换为 TimeSpan
-                    var totalTime = TimeSpan.FromSeconds(playerData.TotalPlayTime);
+                    var totalTime = TimeSpan.FromSeconds(VersionInfo.PlayerData.TotalPlayTime);
 
                     TotalDuration.Text =
                         string.Format(I18nManager.Instance["Draw.Instance.TotalTime"],

@@ -386,6 +386,24 @@
                                 <Button Classes="NoBorder"
                                         Height="32"
                                         IsVisible="False"
+                                        Click="ErrorBtn_OnClick"
+                                        Padding="10,0"
+                                        Name="ErrorBtn">
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="8">
+                                        <onePointControls:FontIcon Glyph="&#xEA39;"
+                                                                   FontSize="14"
+                                                                   Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center" />
+                                        <TextBlock Text="内部错误" 
+                                                   Name="ErrorBtnText"
+                                                   Foreground="{DynamicResource SystemFillColorCriticalBrush}"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="NoBorder"
+                                        Height="32"
+                                        IsVisible="False"
                                         Padding="10,0"
                                         Click="RebootBtn_OnClick"
                                         Name="RebootBtn">
@@ -416,6 +434,7 @@
                                 </Button>
                                 <Button Classes="NoBorder"
                                         Height="32"
+                                        IsVisible="False"
                                         Padding="10,0"
                                         Name="HelpBtn">
                                     <onePointControls:FontIcon Glyph="&#xE897;"

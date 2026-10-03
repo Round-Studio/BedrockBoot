@@ -34,19 +34,20 @@ namespace BedrockBoot.Models.Pack.Plugin;
 
 public class PluginLoader
 {
-    // 使用线程安全的集合
     public static readonly ConcurrentBag<Assembly> _loadedAssemblies = new();
     
-    // 用于同步的锁对象
     private static readonly SemaphoreSlim _loadSemaphore = new(1, 1);
     private static readonly object _pluginListLock = new();
     private static readonly ReaderWriterLockSlim _assemblyLock = new();
     
-    // 已加载的程序集名称缓存（线程安全）
     private static readonly ConcurrentDictionary<string, byte> _loadedAssemblyNames = new(StringComparer.OrdinalIgnoreCase);
     
     public static List<PackConfig> Plugins { get; set; } = new();
     public static Type PluginType { get; } = typeof(IPluginBedrockBoot);
+    
+    public static Action<int> OnPluginLoadException { get; set; } = _ => { };
+    public static List<string> PluginLoadExceptions { get; } = new();
+    // private static int _loadExceptionCount = 0;
 
     public static async Task LoadAll()
     {
@@ -93,7 +94,7 @@ public class PluginLoader
                 await LoadDependenciesAsync(conf.PackFolder, conf.BodyFile);
                 
                 // 加载插件主体
-                await LoadPluginBodyAsync(conf.PackFolder, conf.BodyFile);
+                await LoadPluginBodyAsync(conf, conf.PackFolder, conf.BodyFile);
                 
                 conf.IsEnable = true;
             }
@@ -118,6 +119,9 @@ public class PluginLoader
             var conf = PluginHelper.ReadPackConfig(file);
             conf.PackFile = file;
             conf.IsEnable = false;
+            
+            PluginLoadExceptions.Add($"{conf.PackName} 加载错误: {ex.Message}");
+            OnPluginLoadException.Invoke(PluginLoadExceptions.Count);
             
             lock (_pluginListLock)
             {
@@ -264,7 +268,7 @@ public class PluginLoader
         }
     }
 
-    public static async Task<object> LoadPluginBodyAsync(string extractDir, string bodyFile)
+    public static async Task<object?> LoadPluginBodyAsync(PackConfig conf, string extractDir, string bodyFile)
     {
         return await Task.Run(() =>
         {
@@ -298,14 +302,21 @@ public class PluginLoader
                         catch (Exception loadEx)
                         {
                             Console.WriteLine($@"插件初始化错误: {loadEx}");
-                            throw loadEx;
+            
+                            PluginLoadExceptions.Add($"{conf.PackName} 加载错误: {loadEx.Message}");
+                            OnPluginLoadException.Invoke(PluginLoadExceptions.Count);
+                            return null;
                         }
                 }
 
-                throw new InvalidOperationException($"在主体文件中未找到实现 IPluginBedrockBoot 的类: {bodyFile}");
+                PluginLoadExceptions.Add($"{conf.PackName} 未找到实现 IPluginBedrockBoot 的类。");
+                OnPluginLoadException.Invoke(PluginLoadExceptions.Count);
+                return null;
             }
             catch (Exception ex)
             {
+                PluginLoadExceptions.Add($"{conf.PackName} 加载错误: {ex.Message}");
+                OnPluginLoadException.Invoke(PluginLoadExceptions.Count);
                 Console.WriteLine($@"加载并初始化插件主体失败 {bodyFilePath}: {ex}");
                 return null;
             }

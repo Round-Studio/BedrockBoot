@@ -24,10 +24,12 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -48,6 +50,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Media;
 using BedrockBoot.Models.Native;
+using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Models.Pack.System.DropFile;
 using BedrockBoot.Models.Pack.Theme;
 using BedrockBoot.Models.Style;
@@ -185,6 +188,14 @@ public partial class MainWindow : Window
                     flyout.Items.Add(item);
                 });
             }
+        };
+        PluginLoader.OnPluginLoadException = i =>
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                ErrorBtn.IsVisible = true;
+                ErrorBtnText.Text = $"{i} 个内部错误";
+            });
         };
     }
 
@@ -1051,5 +1062,53 @@ public partial class MainWindow : Window
     {
         var zoom = UIZoomExtensions.ToScale(Core.Global.GlobalModel.Config.Data.UIZoom);
         MainLayoutTransformControl.LayoutTransform = new ScaleTransform(zoom, zoom);
+    }
+
+    private void ErrorBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var sb = new StringBuilder();
+        foreach (var ex in PluginLoader.PluginLoadExceptions)
+        {
+            sb.AppendLine($"{ex}");
+            sb.AppendLine();
+        }
+
+        var panel = new StackPanel();
+
+        panel.Children.Add(new TextBlock
+        {
+            Text = $"加载插件发生了错误，共发生 {PluginLoader.PluginLoadExceptions.Count} 个错误：",
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 0, 0, 8)
+        });
+
+        panel.Children.Add(new TextBox
+        {
+            Text = sb.ToString().TrimEnd(),
+            IsReadOnly = true,
+            TextWrapping = TextWrapping.Wrap,
+            AcceptsReturn = true,
+            MaxHeight = 300,
+            Margin = new Thickness(0, 0, 0, 8)
+        });
+
+        panel.Children.Add(new TextBlock
+        {
+            Text = "通常您需要检查插件是否与当前启动器版本兼容，或者尝试更新插件。",
+            TextWrapping = TextWrapping.Wrap
+        });
+
+        panel.Children.Add(new TextBlock
+        {
+            Text = "如还是无效，请尝试联系插件开发者或启动器开发者。",
+            TextWrapping = TextWrapping.Wrap
+        });
+
+        DialogHost.Show(new()
+        {
+            Title = $"{PluginLoader.PluginLoadExceptions.Count} 个内部错误",
+            Content = panel,
+            CloseButtonText = "确定"
+        });
     }
 }

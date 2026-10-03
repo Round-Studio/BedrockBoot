@@ -21,7 +21,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Standard.Entity.Account.Microsoft;
 
 namespace BedrockBoot.Models.Account.Microsoft;
 

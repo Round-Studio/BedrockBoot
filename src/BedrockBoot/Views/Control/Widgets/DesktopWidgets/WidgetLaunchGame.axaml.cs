@@ -25,13 +25,13 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Interface;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.TaskItem;
 
 namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets;

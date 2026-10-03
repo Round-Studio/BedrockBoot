@@ -17,7 +17,7 @@
  */
 
 using Avalonia.Controls;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ContentView;
 using BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 

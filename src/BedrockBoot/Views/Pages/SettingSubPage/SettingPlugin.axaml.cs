@@ -18,8 +18,8 @@
 
 using System.Collections.Generic;
 using Avalonia.Interactivity;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingPluginPages;
 using OnePointUI.Avalonia.Base.Entry;

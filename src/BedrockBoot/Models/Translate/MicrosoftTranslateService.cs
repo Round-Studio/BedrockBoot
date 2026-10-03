@@ -22,8 +22,8 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Interface;
 
 namespace BedrockBoot.Models.Translate;
 

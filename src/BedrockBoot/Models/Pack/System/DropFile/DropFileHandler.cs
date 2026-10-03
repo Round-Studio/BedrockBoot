@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;

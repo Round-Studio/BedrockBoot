@@ -28,9 +28,10 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Svg.Skia;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Style.Background.AnimationImage;
+using BedrockBoot.Standard.Enum.Config;
 
 namespace BedrockBoot.Views.Control.Widgets.ImageView;
 

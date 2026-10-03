@@ -21,7 +21,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using BedrockBoot.Base.Entry.Info.News;
+using BedrockBoot.Standard.Entity.Info.News;
 
 namespace BedrockBoot.Views.Control.Items;
 

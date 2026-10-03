@@ -21,7 +21,7 @@ using System.Net;
 using System.Net.Http;
 using Octokit;
 
-namespace BedrockBoot.Helpers;
+namespace BedrockBoot.Models.Helper;
 
 public static class GitHubHelper
 {

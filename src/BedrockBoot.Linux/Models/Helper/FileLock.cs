@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Linux.Models.Helper;
 
 public static class FileLock
 {

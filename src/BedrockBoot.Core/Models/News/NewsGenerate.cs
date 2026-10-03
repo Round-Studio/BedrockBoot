@@ -18,8 +18,8 @@
 
 using System.Text;
 using System.Text.Json;
-using BedrockBoot.Base.Entry.Info.News;
-using BedrockBoot.Base.Enum.News;
+using BedrockBoot.Standard.Entity.Info.News;
+using BedrockBoot.Standard.Enum.News;
 
 namespace BedrockBoot.Core.Models.News;
 

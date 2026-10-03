@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace BedrockBoot.Models.Pack.Pe;
+namespace BedrockBoot.Linux.Models.Pack.Pe;
 
 public class PeFile
 {

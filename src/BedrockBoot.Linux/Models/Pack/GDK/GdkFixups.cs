@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace BedrockBoot.Models.Pack.GDK;
+namespace BedrockBoot.Linux.Models.Pack.GDK;
 
 public static class GdkFixups
 {

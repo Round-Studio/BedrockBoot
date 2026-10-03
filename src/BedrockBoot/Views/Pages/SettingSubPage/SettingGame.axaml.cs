@@ -19,10 +19,12 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
 using BedrockBoot.Models;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -132,7 +134,7 @@ public partial class SettingGame : ISettingPage
             Models.Global.GlobalModel.MainWindow.SetReboot();
 
 #if LINUX
-            CoreInit.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
+            PlatformCore.CoreInit?.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
             ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
 #endif
         }

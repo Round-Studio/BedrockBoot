@@ -23,7 +23,7 @@ using Avalonia.Controls.Documents;
 using Avalonia.Media;
 using Avalonia.Threading;
 
-namespace BedrockBoot.Models.Style;
+namespace BedrockBoot.Models.Style.ColorCode;
 
 public class MinecraftTextParser
 {

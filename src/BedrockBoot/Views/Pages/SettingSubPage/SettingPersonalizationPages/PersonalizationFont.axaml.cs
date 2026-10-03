@@ -22,7 +22,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Windows;
 using OnePointUI.Avalonia.Base.Entry;

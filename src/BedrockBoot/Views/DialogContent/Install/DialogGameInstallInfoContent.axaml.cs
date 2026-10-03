@@ -25,10 +25,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Services;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
@@ -88,7 +88,7 @@ public partial class DialogGameInstallInfoContent : UserControl
         {
             try
             {
-                Sources = await EasyDownload.GetPackageUrls(BuildInfo);
+                Sources = await PlatformCore.GetPackageUrls(BuildInfo);
 
                 if (Sources == null || Sources.Count == 0)
                 {

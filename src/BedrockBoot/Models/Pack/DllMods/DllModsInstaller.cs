@@ -19,8 +19,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Global;

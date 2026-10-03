@@ -20,14 +20,16 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.OtherPage;
 using BedrockBoot.Views.Pages.OtherPage.BuildRelease;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
+using AboutReleaseNotes = BedrockBoot.Views.Pages.OtherPage.AboutPages.AboutReleaseNotes;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 

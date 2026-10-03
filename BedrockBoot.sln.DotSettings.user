@@ -1,6 +1,7 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAvaloniaObject_002Ecs_002Fl_003AC_0021_003FUsers_003Fahadd_003FAppData_003FRoaming_003FJetBrains_003FRider2026_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F936ed591523a4402b2b99e8f8d5602d223b000_003F8c_003F024f54ec_003FAvaloniaObject_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ABedrockBoot_002EViews_002EPages_002EMainPage_002Eg_002Ecs_002Fl_003AC_0021_003FUsers_003Fahadd_003FAppData_003FLocal_003FTemp_003FSourceGeneratedDocuments_003F819BEB8DD14F67A1C5F29905_003FAvalonia_002EGenerators_003FAvalonia_002EGenerators_002ENameGenerator_002EAvaloniaNameIncrementalGenerator_003FBedrockBoot_002EViews_002EPages_002EMainPage_002Eg_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ABedrockCore_002Ecs_002Fl_003AC_0021_003FUsers_003Fahadd_003FAppData_003FRoaming_003FJetBrains_003FRider2026_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F3d3b3fd65b784b3c8f24ff2bdbd7a79a21e00_003F2d_003F272d8561_003FBedrockCore_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ABoolean_002Ecs_002Fl_003AC_0021_003FUsers_003Fahadd_003FAppData_003FRoaming_003FJetBrains_003FRider2026_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F6f2a68df033f46e38d3a5043489dbfb7f4a728_003F0c_003F2e9302ca_003FBoolean_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AConnectHelper_002Ecs_002Fl_003AC_0021_003FUsers_003Fahadd_003FAppData_003FRoaming_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Ff5a8da72b954423b870960f872215be51aa750_003F02_003Fd9477246_003FConnectHelper_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AConnection_002Ecs_002Fl_003AC_0021_003FUsers_003Fahadd_003FAppData_003FRoaming_003FJetBrains_003FRider2026_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fcb46c5c37ffb69dfd384413d6fc1d80e13e6bb88b7b5473e41dc075dd19a621_003FConnection_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
@@ -29,4 +30,74 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AXUserLauncher_002Ecs_002Fl_003AC_0021_003FUsers_003Fahadd_003FAppData_003FRoaming_003FJetBrains_003FRider2026_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fc92a78504365402685e57a6aa3eaf95210200_003Fd7_003F24920ea0_003FXUserLauncher_002Ecs_002Fz_003A2_002D1/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AXUserLauncher_002Ecs_002Fl_003AC_0021_003FUsers_003Fahadd_003FAppData_003FRoaming_003FJetBrains_003FRider2026_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fe01ab21306714a7d89fee0c43d67f7d410200_003Fd0_003F51051461_003FXUserLauncher_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AZipFile_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002Econfig_003FJetBrains_003FRider2026_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F4835dcb62a684bf0b1ad12319f25c93615a00_003Fb2_003F4d8edf73_003FZipFile_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	</wpf:ResourceDictionary>

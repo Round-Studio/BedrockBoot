@@ -19,8 +19,8 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
+using BedrockBoot.Standard.Interface;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 

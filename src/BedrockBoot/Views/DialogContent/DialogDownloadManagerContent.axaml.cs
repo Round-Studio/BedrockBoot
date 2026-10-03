@@ -26,7 +26,7 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Progress;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 

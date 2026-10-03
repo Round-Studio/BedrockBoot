@@ -19,11 +19,13 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Enum;
-using BedrockBoot.Base.Enum.Language;
+using BedrockBoot.Standard.Enum;
+using BedrockBoot.Standard.Enum.Language;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
 using BedrockBoot.Models;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -79,7 +81,7 @@ public partial class SettingUniversal : ISettingPage
             GlobalModel.Config.Data.IsTaskBarJumpItem = TaskBarJumpItem.IsChecked ?? false;
             GlobalModel.Config.Save();
 
-            JumpListManager.ConfigureJumpList();
+            PlatformCore.JumpList!.ConfigureJumpList();
         }
     }
 
@@ -125,7 +127,7 @@ public partial class SettingUniversal : ISettingPage
         {
             GlobalModel.Config.Data.IsUseHardwareDecode = (bool)UseHardwareDecode.IsChecked!;
             GlobalModel.Config.Save();
-            CoreInit.UpdateUseHardwareDecode(GlobalModel.Config.Data.IsUseHardwareDecode);
+            PlatformCore.CoreInit?.UpdateUseHardwareDecode(GlobalModel.Config.Data.IsUseHardwareDecode);
         }
     }
 

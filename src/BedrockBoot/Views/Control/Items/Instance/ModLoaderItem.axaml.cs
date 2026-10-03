@@ -21,10 +21,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Interface;
-using BedrockBoot.Interface.ModLoader;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Interface;
+using BedrockBoot.Standard.Interface.ModLoader;
 using NotImplementedException = System.NotImplementedException;
 
 namespace BedrockBoot.Views.Control.Items.Instance;

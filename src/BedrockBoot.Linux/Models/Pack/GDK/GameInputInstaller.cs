@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Models.Pack.Wine;
+using BedrockBoot.Linux.Models.Pack.Wine;
 
-namespace BedrockBoot.Models.Pack.GDK;
+namespace BedrockBoot.Linux.Models.Pack.GDK;
 
 public static class GameInputInstaller
 {

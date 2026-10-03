@@ -18,7 +18,7 @@
 
 using Microsoft.Win32;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Windows.Models.Helper;
 
 public static class FileCompatibilityChecker
 {

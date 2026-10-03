@@ -23,7 +23,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Views.Control.Items;
 using BedrockLauncher.Core;
 

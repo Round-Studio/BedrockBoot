@@ -30,7 +30,7 @@ using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
 using static System.Reflection.BindingFlags;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;

@@ -20,9 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Pack.Game.Isolation;
 
 namespace BedrockBoot.Models.Pack.Game.ResourcePack;

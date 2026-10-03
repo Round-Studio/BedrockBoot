@@ -20,10 +20,11 @@ using System;
 using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -64,7 +65,7 @@ public partial class GameFolderItem : UserControl
 
         try
         {
-            OpenFolderHelper.Open(GameFolderInfo.GameFolderPath);
+            PlatformCore.OpenFolder!.Open(GameFolderInfo.GameFolderPath);
         }
         catch (Exception ex)
         {

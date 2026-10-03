@@ -1,0 +1,45 @@
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using BedrockBoot.Linux.Models.Game;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface.Platform;
+using BedrockLauncher.Core;
+
+namespace BedrockBoot.Linux;
+
+public class LinuxCoreInit : ICoreInit
+{
+    public async Task InitializeAsync()
+    {
+        CoreGlobal.BedrockCore = new BedrockCore {};
+    }
+
+    public void UpdateUseHardwareDecode(bool isUse)
+    {
+        Console.WriteLine($@"使用硬件解码：{isUse}");
+        IsUseHardwareDecode = isUse;
+    }
+
+    public bool IsUseHardwareDecode { get; set; }
+
+    public void UpdateUseNeoLaunch(bool isUse)
+    {
+        EasyLauncher.IsUseNeoLaunch = isUse;
+    }
+}

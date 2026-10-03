@@ -16,63 +16,43 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Text.Json;
-using System.IO;
-using System.Threading;
 using Windows.Management.Deployment;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Helper;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Helper;
+using BedrockBoot.Standard.Interface.Platform.Game;
+using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Windows.Models.Helper.Uwp;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
-using PeNet;
-using PeNet.Header.Pe;
 using Round.SDK.Plugin.BedrockBoot.Register;
-using BedrockBoot.Models.Helper.Uwp;
 using XUserLauncher.Core;
 
-namespace BedrockBoot.Models.Game;
+namespace BedrockBoot.Windows.Models.Game;
 
-public class EasyLauncher
+public class EasyLauncher : ILauncher
 {
-    private ModsCore _core;
-    private Stopwatch _gameplayStopwatch; // 计时器
+    private ModsCore? _core;
+    private Stopwatch? _gameplayStopwatch; // 计时器
     private DateTime _gameStartTime; // 游戏开始时间
-    private string _playerDataFilePath; // 玩家数据文件路径
+    private string? _playerDataFilePath; // 玩家数据文件路径
     private ProcessMouseLocker? _mouseLocker;
     private FrameMonitor? _frameMonitor;
     private Task? _frameMonitorTask;
     IntPtr _frameHwnd = IntPtr.Zero;
 
-
-    private static int LaunchingCount { get; set; } = 0;
-
-    public EasyLauncher(VersionConfig versionConfig)
+    public EasyLauncher(VersionConfig versionConfig) : base(versionConfig)
     {
         VersionInfo = versionConfig;
-        _gameplayStopwatch = new Stopwatch(); // 初始化计时器
+        _gameplayStopwatch = new Stopwatch();
         _playerDataFilePath = Path.Combine(versionConfig.VersionPath, "playerdata.json"); // 玩家数据文件路径
     }
-
-    public VersionConfig VersionInfo { get; }
-    public Action? OnMigration { get; set; }
-    public Action<Process>? Launched { get; set; }
-    public Action? LaunchCompleted { get; set; }
-    public Action<string, double>? UpdateProgress { get; set; }
-    public Action<string>? UpdateProgressText { get; set; }
-    public Action<bool>? SetProgressIndeterminate { get; set; }
-    public Process MinecraftProcess { get; private set; }
-    public static Action? LaunchedBehavior { get; set; }
-    public static Action<VersionConfig>? OnGameLaunched { get; set; }
-    public static Action<VersionConfig>? OnGameExited { get; set; }
-
+    
     private void UpdatePlayerPlayTime(TimeSpan playTime)
     {
         var playerData = VersionInfo.PlayerData;
@@ -85,8 +65,7 @@ public class EasyLauncher
         VersionInfo.PlayerData = playerData;
         GameInfoHelper.SaveVersionConfig(VersionInfo);
     }
-
-    public async Task Launch()
+    private async Task Launch()
     {
         LaunchingCount++;
         if (CoreGlobal.BedrockCore == null)
@@ -274,7 +253,7 @@ public class EasyLauncher
             {
                 try
                 {
-                    var account = CoreInit.GetMsAccountConfig.Invoke();
+                    var account = PlatformCore.GetMsAccountConfig.Invoke();
 
                     if (account == null)
                     {
@@ -282,7 +261,7 @@ public class EasyLauncher
                         return;
                     }
 
-                    var accountInfo = await CoreInit.OnRefreshAccount?.Invoke(account!)!;
+                    var accountInfo = await PlatformCore.OnRefreshAccount?.Invoke(account!)!;
                     launchCore.LoadDll();
                     auth = await launchCore.AuthenticateAsync(JsonSerializer.Serialize(accountInfo.AuthResult));
 
@@ -371,7 +350,6 @@ public class EasyLauncher
             LaunchCompleted?.Invoke();
         }
     }
-
     private async Task WaitForProcessExitAsync(Process process)
     {
         try
@@ -417,7 +395,6 @@ public class EasyLauncher
             LaunchCompleted?.Invoke();
         }
     }
-
     /// <summary>执行用户自定义的启动后（游戏退出后）命令</summary>
     private async Task RunPostExitCommandAsync()
     {
@@ -431,7 +408,6 @@ public class EasyLauncher
             config.PreLaunchTimeout,
             "启动后命令");
     }
-
     public static bool IsGamingServicesInstalled()
     {
         try
@@ -457,5 +433,10 @@ public class EasyLauncher
             Console.WriteLine($@"检测失败: {ex.StackTrace}");
             return false;
         }
+    }
+
+    public override async Task LaunchGame()
+    {
+        await Launch();
     }
 }

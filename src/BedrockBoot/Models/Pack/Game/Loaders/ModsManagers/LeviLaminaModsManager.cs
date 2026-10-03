@@ -24,11 +24,10 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum.Type;
-using BedrockBoot.Interface;
-using BedrockBoot.Interface.ModLoader;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Interface.ModLoader;
 using Round.SDK.Entity;
 using Round.SDK.Helper;
 

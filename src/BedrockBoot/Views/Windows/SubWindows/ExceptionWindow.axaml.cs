@@ -31,7 +31,7 @@ using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;
 
-namespace BedrockBoot.Views.Windows;
+namespace BedrockBoot.Views.Windows.SubWindows;
 
 public partial class ExceptionWindow : OnePointWindow
 {

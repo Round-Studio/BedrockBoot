@@ -20,8 +20,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
-using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Base.Entry.Info.Xbox;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Entity.Info.Xbox;
 using Microsoft.Win32;
 
 namespace BedrockBoot.Core.Models.Xbox;

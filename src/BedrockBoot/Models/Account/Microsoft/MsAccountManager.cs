@@ -22,7 +22,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Account.Microsoft;
+using BedrockBoot.Standard.Entity.Account.Microsoft;
 using BedrockBoot.Models.Global;
 using BedrockBoot.MSAL;
 using BedrockBoot.Views.DialogContent;

@@ -19,13 +19,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Management.Deployment;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Task;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Progress;
+using BedrockBoot.Standard.Entity.Task;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Services;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
@@ -36,7 +37,7 @@ namespace BedrockBoot.Views.TaskItem;
 
 public partial class TaskDownloadGameItem : UserControl, ITaskItem
 {
-    private EasyDownload _downloader;
+    private IDownload _downloader;
     private CancellationTokenSource _cancellationTokenSource;
     private string _taskStage = "";
     private double _taskProgress;
@@ -87,33 +88,31 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
 
     private void InitializeDownloader()
     {
-        _downloader = new EasyDownload(BuildInfo, IsUsePack, InstallFolder, GameName)
-        {
-            DownloadProgress = (text, progressInfo) =>
-                Dispatcher.UIThread.Invoke(() => UpdateDownloadProgress(text, progressInfo)),
+        _downloader = PlatformCore.CreateDownloader(BuildInfo, IsUsePack, InstallFolder, GameName);
+        _downloader.DownloadProgress = (text, progressInfo) =>
+            Dispatcher.UIThread.Invoke(() => UpdateDownloadProgress(text, progressInfo));
 
-            MergeProgress = (text, percentage) =>
-                Dispatcher.UIThread.Invoke(() => UpdateMergeProgress(text, percentage)),
+        _downloader.MergeProgress = (text, percentage) =>
+            Dispatcher.UIThread.Invoke(() => UpdateMergeProgress(text, percentage));
 
-            ExtractionProgress = (text, percentage) =>
-                Dispatcher.UIThread.Invoke(() => UpdateExtractionProgress(text, percentage)),
+        _downloader.ExtractionProgress = (text, percentage) =>
+            Dispatcher.UIThread.Invoke(() => UpdateExtractionProgress(text, percentage));
 
-            DeploymentProgress = (text, progress) =>
-                Dispatcher.UIThread.Invoke(() => UpdateDeploymentProgress(text, progress)),
+        _downloader.DeploymentProgress = (text, progress) =>
+            Dispatcher.UIThread.Invoke(() => UpdateDeploymentProgress(text, progress));
 
-            StatusText = text =>
-                Dispatcher.UIThread.Invoke(() => MainText.Text = text),
+        _downloader.StatusText = text =>
+            Dispatcher.UIThread.Invoke(() => MainText.Text = text);
 
-            InstallStateChanged = states =>
-                Dispatcher.UIThread.Invoke(() => HandleInstallState(states)),
+        _downloader.InstallStateChanged = states =>
+            Dispatcher.UIThread.Invoke(() => HandleInstallState(states));
 
-            ErrorOccurred = (title, message, ex) =>
-                Dispatcher.UIThread.Invoke(() => ShowErrorDialog(title, message, ex)),
+        _downloader.ErrorOccurred = (title, message, ex) =>
+            Dispatcher.UIThread.Invoke(() => ShowErrorDialog(title, message, ex));
 
-            Completed = c =>
-                Dispatcher.UIThread.Invoke(() =>
-                    MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.Completed"])
-        };
+        _downloader.Completed = c =>
+            Dispatcher.UIThread.Invoke(() =>
+                MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.Completed"]);
     }
 
     private void UpdateMergeProgress(string text, double percentage)
@@ -173,11 +172,11 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
         ReportProgress(50 + percentage * 0.25, text);
     }
 
-    private void UpdateDeploymentProgress(string text, DeploymentProgress progress)
+    private void UpdateDeploymentProgress(string text, DeploymentProgressInfo progress)
     {
-        InsInstallGameBar.Value = progress.percentage;
+        InsInstallGameBar.Value = progress.Percentage;
         MainText.Text = text;
-        ReportProgress(75 + progress.percentage * 0.25, text);
+        ReportProgress(75 + progress.Percentage * 0.25, text);
     }
 
     private void HandleInstallState(InstallStates states)

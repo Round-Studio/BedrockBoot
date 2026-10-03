@@ -16,16 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using BedrockBoot.Models.Global;
 
-namespace BedrockBoot.Models.Account.Xbox;
+namespace BedrockBoot.Linux.Models.Pack.Xbox;
 
 public class XblAuth
 {

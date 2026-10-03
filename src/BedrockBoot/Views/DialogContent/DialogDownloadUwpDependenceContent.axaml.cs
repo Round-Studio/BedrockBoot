@@ -24,12 +24,12 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 #if WINDOWS
-using BedrockBoot.Models.Helper.Uwp;
+using BedrockBoot.Windows.Models.Helper.Uwp;
 #endif
 
 namespace BedrockBoot.Views.DialogContent;

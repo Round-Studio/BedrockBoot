@@ -18,7 +18,7 @@
 
 using System.Text.RegularExpressions;
 
-namespace BedrockBoot.Models.Helper.Uwp;
+namespace BedrockBoot.Windows.Models.Helper.Uwp;
 
 /// <summary>
 /// 来自 BMCBL 的技术支持

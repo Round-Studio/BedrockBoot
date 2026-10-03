@@ -20,12 +20,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Base.Enum.Search;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Enum.Search;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Instance;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 

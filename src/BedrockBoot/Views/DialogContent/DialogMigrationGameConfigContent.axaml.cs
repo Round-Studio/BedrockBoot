@@ -21,8 +21,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game.Pack.Isolation;
-using BedrockBoot.Base.Entry.Progress;
+using BedrockBoot.Standard.Entity.Game.Pack.Isolation;
+using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 

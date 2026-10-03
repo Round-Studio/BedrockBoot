@@ -22,7 +22,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;

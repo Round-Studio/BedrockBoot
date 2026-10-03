@@ -25,11 +25,11 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Instance;
-using BedrockBoot.Services;
 using BedrockBoot.Views.Pages.InstanceSubPage.UpdateContent;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
@@ -121,7 +121,7 @@ public partial class DrawUpdateInstanceContent : UserControl
 
             try
             {
-                _sources = await Task.Run(() => EasyDownload.GetPackageUrls(_selectedBuildInfo));
+                _sources = await Task.Run(() => PlatformCore.GetPackageUrls(_selectedBuildInfo));
             }
             catch (Exception ex)
             {

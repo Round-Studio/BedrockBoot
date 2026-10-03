@@ -18,9 +18,10 @@
 
 using Avalonia.Controls;
 using Avalonia.Styling;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface;
 using OnePointUI.Avalonia.Style.Core;
 
 namespace BedrockBoot.Views.Pages.SetupPage;

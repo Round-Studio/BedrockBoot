@@ -22,7 +22,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Entry.Pack.Theme;
+using BedrockBoot.Standard.Entity.Pack.Theme;
 
 namespace BedrockBoot.Views.DialogContent;
 

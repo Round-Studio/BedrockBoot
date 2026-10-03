@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Base.Entry;
+using BedrockBoot.Standard.Entity;
 
 namespace BedrockBoot.Models.Global;
 

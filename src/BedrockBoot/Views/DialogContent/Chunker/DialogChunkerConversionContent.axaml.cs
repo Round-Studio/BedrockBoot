@@ -20,7 +20,7 @@ using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Chunker.Base.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Chunker;

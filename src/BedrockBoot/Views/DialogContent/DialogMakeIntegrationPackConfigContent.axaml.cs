@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 using Avalonia.Controls;
-using BedrockBoot.Base.Entry.Game.Pack.Integration;
+using BedrockBoot.Standard.Entity.Game.Pack.Integration;
 
 namespace BedrockBoot.Views.DialogContent;
 

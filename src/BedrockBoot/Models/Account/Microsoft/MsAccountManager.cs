@@ -40,6 +40,19 @@ public static class MsAccountManager
 
     public static bool IsLogging { get; private set; } = false;
 
+    private static CancellationTokenSource? _loginCts;
+
+    public static void CancelLogin()
+    {
+        try
+        {
+            _loginCts?.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
     private static Task OnUI(Action action) =>
         Dispatcher.UIThread.InvokeAsync(action).GetTask();
 
@@ -71,6 +84,10 @@ public static class MsAccountManager
         if (IsLogging) throw new Exception("已有登录任务进行中");
         IsLogging = true;
 
+        _loginCts?.Dispose();
+        var loginCts = new CancellationTokenSource();
+        _loginCts = loginCts;
+
         var dialog = new DialogLoginMsAccountContent();
 
         await OnUI(() =>
@@ -80,7 +97,11 @@ public static class MsAccountManager
                 Content = dialog,
                 Title = "关联 XBOX 账户",
                 CloseButtonText = "取消",
-                CloseAction = () => { IsLogging = false; }
+                CloseAction = () =>
+                {
+                    IsLogging = false;
+                    CancelLogin();
+                }
             });
         });
 
@@ -130,10 +151,8 @@ public static class MsAccountManager
 
                     var progress = new Progress<string>(msg => { _ = OnUI(() => Console.WriteLine(msg)); });
 
-                    using var cts = new CancellationTokenSource();
-
                     var (success, tokenData, userCode, verificationUri) =
-                        await client.RunDeviceCodeFlowAsync(progress, cts.Token)
+                        await client.RunDeviceCodeFlowAsync(progress, loginCts.Token)
                             .ConfigureAwait(false);
 
                     if (!success || tokenData == null || string.IsNullOrEmpty(tokenData.AccessToken))
@@ -205,6 +224,10 @@ public static class MsAccountManager
                 Console.WriteLine($@"登录成功！用户: {gamertag}");
             }).ConfigureAwait(false);
         }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine(@"登录已取消");
+        }
         catch (Exception ex)
         {
             Console.WriteLine($@"登录失败: {ex.Message}");
@@ -217,6 +240,9 @@ public static class MsAccountManager
                 IsLogging = false;
                 _ = DialogHost.Close();
             }).ConfigureAwait(false);
+
+            if (ReferenceEquals(_loginCts, loginCts)) _loginCts = null;
+            loginCts.Dispose();
         }
     }
 

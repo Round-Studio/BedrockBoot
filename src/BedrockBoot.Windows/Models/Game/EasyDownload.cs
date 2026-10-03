@@ -17,13 +17,14 @@
  */
 
 using System.Runtime.InteropServices;
-using Windows.Management.Deployment;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Info;
-using BedrockBoot.Windows.Models.Global;
+using BedrockBoot.Standard.Entity.Progress;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
@@ -32,24 +33,7 @@ using DownloadProgress = BedrockBoot.Standard.Entity.Progress.DownloadProgress;
 
 namespace BedrockBoot.Windows.Models.Game;
 
-// 定义一个新的进度信息类，包含下载速度和进度
-public class DownloadProgressInfo
-{
-    public DownloadProgressInfo(double percentage, string speed, long downloadedBytes, long totalBytes)
-    {
-        Percentage = percentage;
-        Speed = speed;
-        DownloadedBytes = downloadedBytes;
-        TotalBytes = totalBytes;
-    }
-
-    public double Percentage { get; set; }
-    public string Speed { get; set; }
-    public long DownloadedBytes { get; set; }
-    public long TotalBytes { get; set; }
-}
-
-public class EasyDownload
+public class EasyDownload : IDownload
 {
     private readonly bool _isUpdate;
 
@@ -71,7 +55,7 @@ public class EasyDownload
     public Action<string, DownloadProgressInfo> DownloadProgress { get; set; } // 修改：整合下载进度和速度
     public Action<string, double> MergeProgress { get; set; }
     public Action<string, double> ExtractionProgress { get; set; }
-    public Action<string, DeploymentProgress> DeploymentProgress { get; set; }
+    public Action<string, DeploymentProgressInfo> DeploymentProgress { get; set; }
     public Action<string> StatusText { get; set; }
     public Action<InstallStates> InstallStateChanged { get; set; }
     public Action<string, string, Exception> ErrorOccurred { get; set; }

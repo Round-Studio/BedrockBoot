@@ -22,9 +22,9 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
-using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using CoreGlobal = BedrockBoot.Core.Global.GlobalModel;
 
@@ -126,6 +126,6 @@ public partial class GameBackup : ISettingPage
         if (!Directory.Exists(PathsList.ArchiveBackup))
             Directory.CreateDirectory(PathsList.ArchiveBackup);
 
-        OpenFolderHelper.Open(PathsList.ArchiveBackup);
+        PlatformCore.OpenFolder!.Open(PathsList.ArchiveBackup);
     }
 }

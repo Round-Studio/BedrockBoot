@@ -16,7 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Game;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface.Platform;
 using BedrockLauncher.Core;
 
@@ -36,4 +37,9 @@ public class LinuxCoreInit : ICoreInit
     }
 
     public bool IsUseHardwareDecode { get; set; }
+
+    public void UpdateUseNeoLaunch(bool isUse)
+    {
+        EasyLauncher.IsUseNeoLaunch = isUse;
+    }
 }

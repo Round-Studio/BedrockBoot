@@ -34,8 +34,8 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
-using BedrockBoot.Windows.Models.Game;
-using BedrockBoot.Windows.Models.Global;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using Round.SDK.Entity;
@@ -77,82 +77,87 @@ public class IntegrationInstaller
 
         var unZip = 0.00;
         var isComp = false;
-        var downloader = new EasyDownload(gameVersions, true, installFolder, installName)
+        var downloader = PlatformCore.CreateDownloader(gameVersions, true, installFolder, installName);
+
+        downloader.DownloadProgress = (s, p) =>
         {
-            DownloadProgress = (s, p) =>
+            IntegrationProgress?.Report(new InstallIntegrationProgress
             {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = p.Percentage,
-                    Message = $"{s} ({p.Speed} / s)",
-                    Status = InstallIntegrationProgressType.DownloadingFile
-                });
-            },
-            MergeProgress = (s, p) =>
+                Progress = p.Percentage,
+                Message = $"{s} ({p.Speed} / s)",
+                Status = InstallIntegrationProgressType.DownloadingFile
+            });
+        };
+
+        downloader.MergeProgress = (s, p) =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
             {
+                Progress = p,
+                Message = "合并文件",
+                Status = InstallIntegrationProgressType.DownloadedFile
+            });
+        };
+
+        downloader.ExtractionProgress = (s, p) =>
+        {
+            if (Math.Abs(p - unZip) > 0.01)
+            {
+                unZip = p;
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = p,
-                    Message = "合并文件",
-                    Status = InstallIntegrationProgressType.DownloadedFile
-                });
-            },
-            ExtractionProgress = (s, p) =>
-            {
-                if (Math.Abs(p - unZip) > 0.01)
-                {
-                    unZip = p;
-                    IntegrationProgress?.Report(new InstallIntegrationProgress
-                    {
-                        Progress = p,
-                        Message = "解压文件",
-                        Status = InstallIntegrationProgressType.Installing
-                    });
-                }
-            },
-#if WINDOWS
-            DeploymentProgress = (s, p) =>
-            {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = p.percentage,
-                    Message = $"安装游戏 {p.state}",
+                    Message = "解压文件",
                     Status = InstallIntegrationProgressType.Installing
                 });
-            },
-#endif
-            StatusText = text =>
-            {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = -1,
-                    Message = text,
-                    Status = InstallIntegrationProgressType.Installing
-                });
-            },
-            ErrorOccurred = (title, message, ex) =>
-            {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = 0,
-                    Message = $"{title}: {message} {ex}",
-                    Status = InstallIntegrationProgressType.Failed
-                });
-            },
-            Completed = gameConfig =>
-            {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = 100,
-                    Message = "实例安装完成",
-                    Status = InstallIntegrationProgressType.Installed
-                });
+            }
+        };
 
-                if (!isComp)
-                {
-                    isComp = true;
-                    InstallPack(path, gameConfig);
-                }
+#if WINDOWS
+        downloader.DeploymentProgress = (s, p) =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = p.Percentage,
+                Message = $"安装游戏 {p.State}",
+                Status = InstallIntegrationProgressType.Installing
+            });
+        };
+#endif
+
+        downloader.StatusText = text =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = -1,
+                Message = text,
+                Status = InstallIntegrationProgressType.Installing
+            });
+        };
+
+        downloader.ErrorOccurred = (title, message, ex) =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = 0,
+                Message = $"{title}: {message} {ex}",
+                Status = InstallIntegrationProgressType.Failed
+            });
+        };
+
+        downloader.Completed = gameConfig =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = 100,
+                Message = "实例安装完成",
+                Status = InstallIntegrationProgressType.Installed
+            });
+
+            if (!isComp)
+            {
+                isComp = true;
+                InstallPack(path, gameConfig);
             }
         };
 

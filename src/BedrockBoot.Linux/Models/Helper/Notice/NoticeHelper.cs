@@ -16,12 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using BedrockBoot.Standard.Interface.Platform;
+
 namespace BedrockBoot.Models.Helper.Notice;
 
-public class NoticeHelper
+public class NoticeHelper : INoticeService
 {
     public static void SentNotice(string title, string message)
     {
         Console.WriteLine("在 Linux 中尚不支持使用系统消息模块");
     }
+
+    void INoticeService.SentNotice(string title, string message) => SentNotice(title, message);
 }

@@ -30,14 +30,19 @@ public abstract class ILauncher
 
     public abstract Task LaunchGame();
 
-    protected VersionConfig VersionInfo { get; set; }
+    public VersionConfig VersionInfo { get; protected set; }
+
     public Action? OnMigration { get; set; }
+    public Action? NoRunTool { get; set; }
     public Action<Process>? Launched { get; set; }
     public Action? LaunchCompleted { get; set; }
     public Action<string, double>? UpdateProgress { get; set; }
     public Action<string>? UpdateProgressText { get; set; }
     public Action<bool>? SetProgressIndeterminate { get; set; }
-    public Process MinecraftProcess { get; set; }
+    public Process? MinecraftProcess { get; protected set; }
+
+    protected static int LaunchingCount { get; set; }
+
     public static Action? LaunchedBehavior { get; set; }
     public static Action<VersionConfig>? OnGameLaunched { get; set; }
     public static Action<VersionConfig>? OnGameExited { get; set; }

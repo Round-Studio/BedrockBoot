@@ -22,10 +22,11 @@ using System.Text;
 using System.Threading;
 using System.Diagnostics;
 using BedrockBoot.Models.Helper.Notice;
+using BedrockBoot.Standard.Interface.Platform;
 
 namespace BedrockBoot.Models.Helper;
 
-public class ProcessMouseLocker
+public class ProcessMouseLocker : IMouseLocker
 {
     public ProcessMouseLocker(int processId)
     {

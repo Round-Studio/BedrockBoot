@@ -16,11 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockLauncher.Core;
+namespace BedrockBoot.Standard.Interface.Platform;
 
-namespace BedrockBoot.Windows.Models.Global;
-
-public class CoreGlobal
+public interface IJumpListService
 {
-    public static BedrockCore BedrockCore { get; set; }
+    void ConfigureJumpList();
 }

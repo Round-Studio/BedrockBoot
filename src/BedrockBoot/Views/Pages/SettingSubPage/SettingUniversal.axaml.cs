@@ -28,7 +28,6 @@ using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
-using BedrockBoot.Windows.Models;
 using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
@@ -82,7 +81,7 @@ public partial class SettingUniversal : ISettingPage
             GlobalModel.Config.Data.IsTaskBarJumpItem = TaskBarJumpItem.IsChecked ?? false;
             GlobalModel.Config.Save();
 
-            JumpListManager.ConfigureJumpList();
+            PlatformCore.JumpList!.ConfigureJumpList();
         }
     }
 

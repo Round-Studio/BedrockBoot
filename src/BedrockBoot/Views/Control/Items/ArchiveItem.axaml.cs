@@ -27,7 +27,7 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Standard.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
@@ -101,7 +101,7 @@ public partial class ArchiveItem : UserControl
     {
         if (ArchiveInfo == null || !Directory.Exists(ArchiveInfo.Path)) return;
 
-        OpenFolderHelper.Open(ArchiveInfo.Path);
+        PlatformCore.OpenFolder!.Open(ArchiveInfo.Path);
     }
 
     /// <summary>

@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using System.Diagnostics;
 using BedrockBoot.Standard.Core;
-using BedrockBoot.Windows.Models.Game;
+using BedrockBoot.Standard.Interface.Platform.Game;
 
 namespace BedrockBoot.Views.Windows.SystemMethod;
 

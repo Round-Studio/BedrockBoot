@@ -31,8 +31,6 @@ using BedrockBoot.Standard.Core;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Linux;
 using BedrockBoot.Views.Windows.SubWindows;
-using BedrockBoot.Windows.Models.Game;
-using BedrockBoot.Windows.Models.Helper.Notice;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -192,7 +190,7 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                     {
                         LaunchCompleted?.Invoke();
                         if (!GlobalModel.MainWindow.IsWindowActive)
-                            NoticeHelper.SentNotice("游戏退出", $"游戏 {VersionInfo.Info.VersionName} 已退出。");
+                            PlatformCore.Notice!.SentNotice("游戏退出", $"游戏 {VersionInfo.Info.VersionName} 已退出。");
                     });
                 };
 

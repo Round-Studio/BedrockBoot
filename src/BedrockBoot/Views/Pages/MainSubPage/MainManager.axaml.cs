@@ -35,7 +35,7 @@ using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
-using BedrockBoot.Windows.Models;
+using BedrockBoot.Standard.Core;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -334,7 +334,7 @@ public partial class MainManager : BedrockBootPage
             GlobalModel.Config.Save();
             InitializeConfigWatcher();
             UpdateGameList();
-            JumpListManager.ConfigureJumpList();
+            PlatformCore.JumpList!.ConfigureJumpList();
         }
     }
 

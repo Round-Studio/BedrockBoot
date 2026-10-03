@@ -38,7 +38,7 @@ using BedrockBoot.Views.Windows.SystemMethod;
 using BedrockBoot.WatchDog.Entity;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Standard.Enum.Config;
-using BedrockBoot.Windows.Models.Game;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 using Application = Avalonia.Application;
@@ -75,11 +75,11 @@ public class App : Application
         watchDog.Start();
 
         // 注册游戏启动与退出时的自动存档备份逻辑
-        EasyLauncher.OnGameLaunched = version =>
+        ILauncher.OnGameLaunched = version =>
         {
             _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, "启动"));
         };
-        EasyLauncher.OnGameExited = version =>
+        ILauncher.OnGameExited = version =>
         {
             _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, "退出"));
         };

@@ -23,4 +23,5 @@ public interface ICoreInit
     Task InitializeAsync();
     void UpdateUseHardwareDecode(bool isUse);
     bool IsUseHardwareDecode { get; set; }
+    void UpdateUseNeoLaunch(bool isUse);
 }

@@ -17,10 +17,11 @@
  */
 
 using System.Diagnostics;
+using BedrockBoot.Standard.Interface.Platform;
 
 namespace BedrockBoot.Windows.Models.Helper;
 
-public class OpenFolderHelper
+public class OpenFolderHelper : IOpenFolderService
 {
     public static void Open(string folder)
     {
@@ -30,4 +31,6 @@ public class OpenFolderHelper
             UseShellExecute = true // 使用外壳程序打开文件夹
         });
     }
+
+    void IOpenFolderService.Open(string folder) => Open(folder);
 }

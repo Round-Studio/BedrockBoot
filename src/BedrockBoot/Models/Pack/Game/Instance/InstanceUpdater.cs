@@ -27,7 +27,8 @@ using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Enum.Type.Progress.Steps;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Windows.Models.Game;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core.CoreOption;
 
 namespace BedrockBoot.Models.Pack.Game.Instance;
@@ -60,7 +61,7 @@ public class InstanceUpdater
     {
         Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.ID}");
 
-        var downloader = new EasyDownload(buildInfo, true, _versionConfig.VersionsRootPath,
+        var downloader = PlatformCore.CreateDownloader(buildInfo, true, _versionConfig.VersionsRootPath,
             Path.GetFileName(_versionConfig.VersionPath)!, true);
 
         var protectedPaths = new List<string>
@@ -192,7 +193,7 @@ public class InstanceUpdater
                 Progress?.Report(new()
                 {
                     Step = InstanceUpdateStep.UWPRegistering,
-                    Progress = progress.percentage,
+                    Progress = progress.Percentage,
                     Message = message,
                     Detailed = "注册应用中..."
                 });
@@ -220,7 +221,7 @@ public class InstanceUpdater
                 });
             };
 
-            var urls = await EasyDownload.GetPackageUrls(buildInfo);
+            var urls = await PlatformCore.GetPackageUrls(buildInfo);
             var url = ChooseDownloadUrl.Invoke(urls);
             await downloader.InstallAsync(url, default, true);
         });

@@ -17,9 +17,9 @@
  */
 
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface.Platform;
 using BedrockBoot.Windows.Models.Game;
-using BedrockBoot.Windows.Models.Global;
 using BedrockBoot.Windows.Models.Helper;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
@@ -35,6 +35,10 @@ public class WindowsCoreInit : ICoreInit
     }
 
     public bool IsUseHardwareDecode { get; set; }
+
+    public void UpdateUseNeoLaunch(bool isUse)
+    {
+    }
 
     public async Task InitializeAsync()
     {

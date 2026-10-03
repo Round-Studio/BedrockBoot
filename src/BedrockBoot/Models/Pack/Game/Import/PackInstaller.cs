@@ -28,7 +28,7 @@ using BedrockBoot.Standard.Entity.Game.Pack.Import;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper.PEFile;
-using BedrockBoot.Windows.Models.Global;
+using BedrockBoot.Standard.Core;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;

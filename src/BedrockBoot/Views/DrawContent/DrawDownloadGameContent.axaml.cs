@@ -26,11 +26,11 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.TaskItem;
-using BedrockBoot.Windows.Models.Game;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -84,7 +84,7 @@ public partial class DrawDownloadGameContent : UserControl
         {
             try
             {
-                Sources = await EasyDownload.GetPackageUrls(BuildInfo);
+                Sources = await PlatformCore.GetPackageUrls(BuildInfo);
 
                 if (Sources == null || Sources.Count == 0)
                 {

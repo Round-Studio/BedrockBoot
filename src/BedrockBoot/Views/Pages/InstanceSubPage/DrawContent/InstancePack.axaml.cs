@@ -30,10 +30,10 @@ using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
-using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -207,6 +207,6 @@ public partial class InstancePack : ISetting
             _ => InstanceFolderType.UserFolder
         };
 
-        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, folderType));
+        PlatformCore.OpenFolder!.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, folderType));
     }
 }

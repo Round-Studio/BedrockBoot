@@ -28,12 +28,12 @@ using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Loaders;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Items.Instance;
 using BedrockBoot.Views.DialogContent;
-using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Path = System.IO.Path;
@@ -130,7 +130,7 @@ public partial class InstanceMods : ISetting
     {
         var modPath = InstalledModsLoader[ModsLoaderSelect.SelectedIndex].ModsFolder;
         if (!Directory.Exists(modPath)) Directory.CreateDirectory(modPath);
-        OpenFolderHelper.Open(modPath);
+        PlatformCore.OpenFolder!.Open(modPath);
     }
 
     private void ImportModBtn_OnClick(object? sender, RoutedEventArgs e)

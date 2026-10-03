@@ -16,27 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if !WINDOWS
+namespace BedrockBoot.Standard.Entity.Progress;
 
-namespace Windows.Management.Deployment;
-
-public struct DeploymentProgress
+public class DownloadProgressInfo
 {
-    /// <summary>
-    /// 获取整个部署操作过程完成的百分比。
-    /// </summary>
-    /// <returns>
-    /// 一个 0 到 100 之间的值，表示完成的百分比。
-    /// </returns>
-    public uint percentage { get; }
-        
-    /// <summary>
-    /// 获取部署状态的当前可读状态消息。
-    /// </summary>
-    /// <returns>
-    /// 一个字符串，包含部署操作的当前状态消息。
-    /// </returns>
-    public string stateText { get; }
-}
+    public DownloadProgressInfo(double percentage, string speed, long downloadedBytes, long totalBytes)
+    {
+        Percentage = percentage;
+        Speed = speed;
+        DownloadedBytes = downloadedBytes;
+        TotalBytes = totalBytes;
+    }
 
-#endif
+    public double Percentage { get; set; }
+    public string Speed { get; set; }
+    public long DownloadedBytes { get; set; }
+    public long TotalBytes { get; set; }
+}

@@ -19,12 +19,13 @@
 using System.Diagnostics;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Interface.Platform;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace BedrockBoot.Windows.Models;
 
-public class JumpListManager
+public class JumpListManager : IJumpListService
 {
     public static void ConfigureJumpList()
     {
@@ -57,4 +58,6 @@ public class JumpListManager
         {
         }
     }
+
+    void IJumpListService.ConfigureJumpList() => ConfigureJumpList();
 }

@@ -16,22 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Diagnostics;
-using BedrockBoot.Standard.Entity;
-using BedrockBoot.Standard.Interface.Platform;
+using BedrockLauncher.Core;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Standard.Core;
 
-public class OpenFolderHelper : IOpenFolderService
+public class CoreGlobal
 {
-    public static void Open(string folder)
-    {
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = folder,
-            UseShellExecute = true // 使用外壳程序打开文件夹
-        });
-    }
-
-    void IOpenFolderService.Open(string folder) => Open(folder);
+    public static BedrockCore BedrockCore { get; set; }
 }

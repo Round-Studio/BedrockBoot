@@ -28,13 +28,14 @@ using BedrockBoot.Models.Pack.GDK;
 using BedrockBoot.Models.Pack.Wine;
 using BedrockBoot.Proton;
 using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 using Round.SDK.Plugin.BedrockBoot.Register;
 
 namespace BedrockBoot.Models.Game;
 
-public class EasyLauncher
+public class EasyLauncher : ILauncher
 {
     private ModsCore _core;
     private readonly Stopwatch _gameplayStopwatch = new();
@@ -64,9 +65,8 @@ public class EasyLauncher
         }
     }
 
-    public EasyLauncher(VersionConfig versionConfig)
+    public EasyLauncher(VersionConfig versionConfig) : base(versionConfig ?? throw new ArgumentNullException(nameof(versionConfig)))
     {
-        VersionInfo = versionConfig ?? throw new ArgumentNullException(nameof(versionConfig));
         _playerDataFilePath = Path.Combine(versionConfig.VersionPath, "playerdata.json");
 
         _linuxLaunchInfo = new ProtonInfo
@@ -85,27 +85,12 @@ public class EasyLauncher
     #region Properties & Events
 
     public static bool IsUseNeoLaunch { get; set; } = false;
-    public static int LaunchingCount { get; private set; } = 0;
-    public static Action? LaunchedBehavior { get; set; }
-    public static Action<VersionConfig>? OnGameLaunched { get; set; }
-    public static Action<VersionConfig>? OnGameExited { get; set; }
-
-    public VersionConfig VersionInfo { get; }
-    public Process? MinecraftProcess { get; private set; }
-
-    // 启动生命周期回调
-    public Action? NoRunTool { get; set; }
-    public Action<Process>? Launched { get; set; }
-    public Action? LaunchCompleted { get; set; }
-    public Action<string, double>? UpdateProgress { get; set; }
-    public Action<string>? UpdateProgressText { get; set; }
-    public Action<bool>? SetProgressIndeterminate { get; set; }
 
     #endregion
 
     #region Public Methods
 
-    public async Task Launch()
+    public override async Task LaunchGame()
     {
         MakeAllFilesExecutableByChmod(PathsList.NeoProtonPath);
 

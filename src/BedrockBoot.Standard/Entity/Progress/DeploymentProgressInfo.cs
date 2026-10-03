@@ -16,22 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Diagnostics;
-using BedrockBoot.Standard.Entity;
-using BedrockBoot.Standard.Interface.Platform;
+namespace BedrockBoot.Standard.Entity.Progress;
 
-namespace BedrockBoot.Models.Helper;
-
-public class OpenFolderHelper : IOpenFolderService
+public readonly struct DeploymentProgressInfo
 {
-    public static void Open(string folder)
+    public DeploymentProgressInfo(double percentage, string state)
     {
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = folder,
-            UseShellExecute = true // 使用外壳程序打开文件夹
-        });
+        Percentage = percentage;
+        State = state;
     }
 
-    void IOpenFolderService.Open(string folder) => Open(folder);
+    public double Percentage { get; }
+    public string State { get; }
 }

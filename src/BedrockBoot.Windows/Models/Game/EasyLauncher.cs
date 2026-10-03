@@ -26,7 +26,6 @@ using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Helper;
 using BedrockBoot.Standard.Interface.Platform.Game;
-using BedrockBoot.Windows.Models.Global;
 using BedrockBoot.Windows.Models.Helper;
 using BedrockBoot.Windows.Models.Helper.Uwp;
 using BedrockLauncher.Core;
@@ -46,9 +45,6 @@ public class EasyLauncher : ILauncher
     private FrameMonitor? _frameMonitor;
     private Task? _frameMonitorTask;
     IntPtr _frameHwnd = IntPtr.Zero;
-
-
-    private static int LaunchingCount { get; set; } = 0;
 
     public EasyLauncher(VersionConfig versionConfig) : base(versionConfig)
     {

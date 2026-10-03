@@ -17,12 +17,14 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Entity.Manifest;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Models.Helper;
@@ -37,13 +39,13 @@ using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
+using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Plugin.BedrockBoot.Register;
 #if WINDOWS
 using BedrockBoot.Windows;
-using BedrockBoot.Windows.Models.Game;
 using BedrockBoot.Windows.Models.Helper;
 using BedrockBoot.Windows.Models.Helper.Gdk;
 using BedrockBoot.Windows.Models.Helper.Uwp;
@@ -202,9 +204,6 @@ public class CoreInitialize
     {
         try
         {
-#if LINUX
-            WindowsCoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
-#endif
             PlatformCore.GetMsAccountConfig = () =>
             {
                 if (Core.Global.GlobalModel.Config.Data.IsChooseAccountBeforeLaunch)
@@ -253,16 +252,38 @@ public class CoreInitialize
             
 #if WINDOWS
             var coreInitUnit = new WindowsCoreInit();
-            var iLauncher = typeof(EasyLauncher);
+            var launcherType = typeof(BedrockBoot.Windows.Models.Game.EasyLauncher);
+            var downloaderType = typeof(BedrockBoot.Windows.Models.Game.EasyDownload);
+            var noticeType = typeof(BedrockBoot.Windows.Models.Helper.Notice.NoticeHelper);
+            var openFolderType = typeof(BedrockBoot.Windows.Models.Helper.OpenFolderHelper);
+            var jumpListType = typeof(BedrockBoot.Windows.Models.JumpListManager);
+            var mouseLockerType = typeof(BedrockBoot.Windows.Models.Helper.ProcessMouseLocker);
+            Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
+                BedrockBoot.Windows.Models.Game.EasyDownload.GetPackageUrls;
 #elif LINUX
             var coreInitUnit =  new LinuxCoreInit();
+            var launcherType = typeof(BedrockBoot.Models.Game.EasyLauncher);
+            var downloaderType = typeof(BedrockBoot.Services.EasyDownload);
+            var noticeType = typeof(BedrockBoot.Models.Helper.Notice.NoticeHelper);
+            var openFolderType = typeof(BedrockBoot.Models.Helper.OpenFolderHelper);
+            var jumpListType = typeof(JumpListManager);
+            var mouseLockerType = typeof(BedrockBoot.Models.Helper.ProcessMouseLocker);
+            Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
+                BedrockBoot.Services.EasyDownload.GetPackageUrls;
 #endif
             await PlatformCore.InstallAsync(new PlatformInitFrame()
             {
                 CoreInit = coreInitUnit,
-                LauncherType = iLauncher
+                LauncherType = launcherType,
+                DownloaderType = downloaderType,
+                NoticeServiceType = noticeType,
+                OpenFolderServiceType = openFolderType,
+                JumpListServiceType = jumpListType,
+                MouseLockerType = mouseLockerType,
+                PackageUrlsProvider = packageUrlsProvider
             });
             PlatformCore.CoreInit?.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
+            PlatformCore.CoreInit?.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
         }
         catch (Exception ex)
         {

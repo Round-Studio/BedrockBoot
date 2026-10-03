@@ -55,13 +55,13 @@ using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Service.Protocol.Routes;
 using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockBoot.Style.Controls;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.SetupPage;
 using BedrockBoot.Views.Windows.SubWindows;
-using BedrockBoot.Windows.Models.Game;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -71,6 +71,7 @@ using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using ILauncher = BedrockBoot.Standard.Interface.Platform.Game.ILauncher;
 
 namespace BedrockBoot.Views.Windows;
 
@@ -116,7 +117,7 @@ public partial class MainWindow : Window
 
         // 绑定回调
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
-        EasyLauncher.LaunchedBehavior = () => Dispatcher.UIThread.Invoke(RunBehavior);
+        ILauncher.LaunchedBehavior = () => Dispatcher.UIThread.Invoke(RunBehavior);
 
         SetupDynamicHotkey();
         _ = InitializeAsync();

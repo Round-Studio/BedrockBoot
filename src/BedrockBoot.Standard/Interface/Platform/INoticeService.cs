@@ -16,11 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockLauncher.Core;
+namespace BedrockBoot.Standard.Interface.Platform;
 
-namespace BedrockBoot.Models.Global;
-
-public class CoreGlobal
+public interface INoticeService
 {
-    public static BedrockCore BedrockCore { get; set; }
+    void SentNotice(string title, string message);
 }

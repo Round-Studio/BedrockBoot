@@ -24,8 +24,9 @@ using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using System.Collections.Generic;
 using BedrockBoot.Standard.Interface;
+#if WINDOWS
 using BedrockBoot.Windows.Models.Helper;
-
+#endif
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 

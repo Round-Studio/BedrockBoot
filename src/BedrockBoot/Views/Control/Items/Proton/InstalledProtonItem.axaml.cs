@@ -23,7 +23,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Proton.Entry.Info;
-using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Standard.Core;
 
 namespace BedrockBoot.Views.Control.Items.Proton;
 
@@ -54,6 +54,6 @@ public partial class InstalledProtonItem : UserControl
 
     private void OpenFolderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        OpenFolderHelper.Open(_info.InstallPath);
+        PlatformCore.OpenFolder!.Open(_info.InstallPath);
     }
 }

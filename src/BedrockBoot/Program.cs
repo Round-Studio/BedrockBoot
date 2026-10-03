@@ -34,8 +34,10 @@ using BedrockBoot.Service.Protocol;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Enum.Type;
+#if WINDOWS
 using BedrockBoot.Windows.Models.Helper.Uwp;
 using BedrockBoot.Windows.Win32.Windows;
+#endif
 using PaperConnect.Core.Module.Global;
 using Round.SDK.Entity;
 using Round.SDK.Enum;

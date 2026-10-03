@@ -24,8 +24,8 @@ using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Views.DialogContent;
-using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -68,7 +68,7 @@ public partial class GameFolderSettingItem : UserControl
 
         try
         {
-            OpenFolderHelper.Open(GameFolderInfo.GameFolderPath);
+            PlatformCore.OpenFolder!.Open(GameFolderInfo.GameFolderPath);
         }
         catch (Exception ex)
         {

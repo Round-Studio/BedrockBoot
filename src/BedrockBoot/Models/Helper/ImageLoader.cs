@@ -48,8 +48,8 @@ public class ImageLoader : IDisposable
     // 每个 URL 一个信号量，保证同一张图不会并发下载，但不同图可并行
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _urlLocks = new(StringComparer.Ordinal);
 
-    // 缓存总像素上限（默认 1.5 亿像素 ≈ 100 张 1280x720），超出后按 LRU 淘汰
-    private const long MaxCachePixels = 150_000_000L;
+    // 缓存总像素上限（2000 万像素 ≈ 80MB RGBA），超出后按 LRU 淘汰引用
+    private const long MaxCachePixels = 20_000_000L;
     private long _currentPixels;
 
     private readonly string _localCacheFolder;
@@ -67,6 +67,7 @@ public class ImageLoader : IDisposable
 
     public void Dispose()
     {
+        if (ReferenceEquals(this, Shared)) return;
         if (_disposed) return;
         _disposed = true;
         _httpClient.Dispose();
@@ -190,9 +191,22 @@ public class ImageLoader : IDisposable
                 try
                 {
                     using var ms = new MemoryStream(imageData);
-                    return decodeWidth is > 0
-                        ? Bitmap.DecodeToWidth(ms, decodeWidth.Value)
-                        : new Bitmap(ms);
+                    if (decodeWidth is not > 0) return new Bitmap(ms);
+
+                    var targetWidth = decodeWidth.Value;
+                    try
+                    {
+                        var imageInfo = SixLabors.ImageSharp.Image.Identify(ms);
+                        if (imageInfo is { Width: > 0 } && imageInfo.Width < targetWidth)
+                            targetWidth = imageInfo.Width;
+                    }
+                    catch
+                    {
+                        /* 探测失败时按请求宽度解码 */
+                    }
+
+                    ms.Seek(0, SeekOrigin.Begin);
+                    return Bitmap.DecodeToWidth(ms, targetWidth);
                 }
                 catch
                 {
@@ -284,7 +298,6 @@ public class ImageLoader : IDisposable
             if (_lruIndex.TryGetValue(key, out var existing))
             {
                 _currentPixels -= existing.Value.PixelCount;
-                existing.Value.Dispose();
                 _lruList.Remove(existing);
                 _lruIndex.Remove(key);
             }
@@ -302,7 +315,6 @@ public class ImageLoader : IDisposable
                 if (last == null) break;
                 _currentPixels -= last.Value.PixelCount;
                 _lruIndex.Remove(last.Value.Key);
-                last.Value.Dispose();
                 _lruList.RemoveLast();
             }
         }
@@ -315,7 +327,6 @@ public class ImageLoader : IDisposable
     {
         lock (_lruLock)
         {
-            foreach (var entry in _lruList) entry.Dispose();
             _lruList.Clear();
             _lruIndex.Clear();
             _currentPixels = 0;
@@ -354,7 +365,5 @@ public class ImageLoader : IDisposable
         public string Key { get; }
         public Bitmap Bitmap { get; }
         public long PixelCount { get; }
-
-        public void Dispose() => Bitmap.Dispose();
     }
 }

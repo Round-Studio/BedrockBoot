@@ -27,7 +27,11 @@
         <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
         <Win32Resource>Manifest.res</Win32Resource>
     </PropertyGroup>
-
+    <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.GC.ConserveMemory" Value="5"/>
+    <RuntimeHostConfigurationOption Include="System.GC.RetainVM" Value="false"/>
+    <RuntimeHostConfigurationOption Include="System.GC.Server" Value="false"/>
+    </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
             <_Parameter1>BuildTimestamp</_Parameter1>

@@ -59,19 +59,6 @@ public partial class MainHomePage : BedrockBootPage
     public void UpdateHome()
     {
         MainGrid.Children.Clear();
-        DesktopWorkspace = new DesktopWorkspace();
-        if (File.Exists(PathsList.WidgetsConfigPath))
-            DesktopWorkspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
-        DesktopWorkspace.AddWidgetCallOn += (sender, args) =>
-        {
-            // DesktopWorkspace.AddWidget(WidgetType.Timer);
-            Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawAddWidgetContent(), "添加小组件");
-        };
-        DesktopWorkspace.LayoutChanged += (sender, args) =>
-        {
-            var json = DesktopWorkspace.ExportLayout();
-            File.WriteAllText(PathsList.WidgetsConfigPath, json);
-        };
 
         switch (GlobalModel.Config.Data.HomeConfig.HomeType)
         {
@@ -81,6 +68,18 @@ public partial class MainHomePage : BedrockBootPage
                 MainGrid.Children.Add(new GameUpdateNewsWidget());
                 break;
             case HomeType.Widgets:
+                DesktopWorkspace = new DesktopWorkspace();
+                if (File.Exists(PathsList.WidgetsConfigPath))
+                    DesktopWorkspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
+                DesktopWorkspace.AddWidgetCallOn += (sender, args) =>
+                {
+                    Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawAddWidgetContent(), "添加小组件");
+                };
+                DesktopWorkspace.LayoutChanged += (sender, args) =>
+                {
+                    var json = DesktopWorkspace.ExportLayout();
+                    File.WriteAllText(PathsList.WidgetsConfigPath, json);
+                };
                 MainGrid.Children.Add(DesktopWorkspace);
                 break;
         }

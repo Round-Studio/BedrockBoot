@@ -30,7 +30,7 @@ namespace BedrockBoot.Views.Control.Widgets;
 
 public partial class LocalImageRenderWidget : UserControl
 {
-    private ImageLoader _imageLoader = new ImageLoader();
+    private readonly ImageLoader _imageLoader = ImageLoader.Shared;
     
     public static readonly StyledProperty<string?> ImageUrlProperty =
         AvaloniaProperty.Register<LocalImageRenderWidget, string?>(nameof(ImageUrl));
@@ -44,12 +44,6 @@ public partial class LocalImageRenderWidget : UserControl
     public LocalImageRenderWidget()
     {
         InitializeComponent();
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
     }
 
     public LocalImageRenderWidget(string uri) : this()

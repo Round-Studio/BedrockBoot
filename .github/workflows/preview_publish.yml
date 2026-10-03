@@ -1,4 +1,4 @@
-name: 构建并推送 Pre Release
+name: 手动构建并推送 PreRelease
 
 on:
   workflow_dispatch:
@@ -141,7 +141,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
-          name: "BedrockBoot Build ${{ needs.version.outputs.tag }}"
+          name: "${{ needs.version.outputs.tag }}"
           body: |
             ## BedrockBoot ${{ needs.version.outputs.v }} 测试版推送
             

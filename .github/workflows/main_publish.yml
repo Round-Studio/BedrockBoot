@@ -1,4 +1,4 @@
-name: 自动构建并推送 Release
+name: 手动构建并推送 Release
 
 on:
   workflow_dispatch:
@@ -171,7 +171,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
-          name: "BedrockBoot Build ${{ needs.version.outputs.tag }}"
+          name: "${{ needs.version.outputs.tag }}"
           body: |
             ## BedrockBoot ${{ needs.version.outputs.v }} 正式版推送
             

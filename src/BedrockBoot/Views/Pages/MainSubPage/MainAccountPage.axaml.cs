@@ -41,6 +41,12 @@ public partial class MainAccountPage : BedrockBootPage
         UpdateUi();
     }
 
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        MsAccountManager.CancelLogin();
+    }
+
     public void UpdateUi()
     {
         IsEdit = false;

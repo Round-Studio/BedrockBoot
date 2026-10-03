@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.Models.Game;
+using BedrockBoot.Linux.Models.Game;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface.Platform;
 using BedrockLauncher.Core;
 
-namespace BedrockBoot;
+namespace BedrockBoot.Linux;
 
 public class LinuxCoreInit : ICoreInit
 {

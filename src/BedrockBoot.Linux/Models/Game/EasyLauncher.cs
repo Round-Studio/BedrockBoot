@@ -17,23 +17,23 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Standard.Entity.Game;
-using BedrockBoot.Standard.Helper;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
-using BedrockBoot.Models.Account.Xbox;
+using BedrockBoot.Linux.Models.Helper;
+using BedrockBoot.Linux.Models.Pack.GDK;
+using BedrockBoot.Linux.Models.Pack.Wine;
+using BedrockBoot.Linux.Models.Pack.Xbox;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.GDK;
-using BedrockBoot.Models.Pack.Wine;
 using BedrockBoot.Proton;
 using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Helper;
 using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 using Round.SDK.Plugin.BedrockBoot.Register;
 
-namespace BedrockBoot.Models.Game;
+namespace BedrockBoot.Linux.Models.Game;
 
 public class EasyLauncher : ILauncher
 {

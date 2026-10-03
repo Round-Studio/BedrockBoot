@@ -16,28 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
+using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Interface.Platform.Game;
-using BedrockBoot.Core.Models.Download;
-using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
 using Round.SDK.Helper;
 using DownloadProgress = BedrockBoot.Standard.Entity.Progress.DownloadProgress;
 
-namespace BedrockBoot.Services;
+namespace BedrockBoot.Linux.Models.Game;
 
 public class EasyDownload : IDownload
 {

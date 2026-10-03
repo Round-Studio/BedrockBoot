@@ -262,14 +262,14 @@ public class CoreInitialize
                 BedrockBoot.Windows.Models.Game.EasyDownload.GetPackageUrls;
 #elif LINUX
             var coreInitUnit =  new LinuxCoreInit();
-            var launcherType = typeof(BedrockBoot.Models.Game.EasyLauncher);
-            var downloaderType = typeof(BedrockBoot.Services.EasyDownload);
-            var noticeType = typeof(BedrockBoot.Models.Helper.Notice.NoticeHelper);
-            var openFolderType = typeof(BedrockBoot.Models.Helper.OpenFolderHelper);
-            var jumpListType = typeof(JumpListManager);
-            var mouseLockerType = typeof(BedrockBoot.Models.Helper.ProcessMouseLocker);
+            var launcherType = typeof(BedrockBoot.Linux.Models.Game.EasyLauncher);
+            var downloaderType = typeof(BedrockBoot.Linux.Services.EasyDownload);
+            var noticeType = typeof(BedrockBoot.Linux.Models.Helper.Notice.NoticeHelper);
+            var openFolderType = typeof(BedrockBoot.Linux.Models.Helper.OpenFolderHelper);
+            var jumpListType = typeof(BedrockBoot.Linux.Models.JumpListManager);
+            var mouseLockerType = typeof(BedrockBoot.Linux.Models.Helper.ProcessMouseLocker);
             Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
-                BedrockBoot.Services.EasyDownload.GetPackageUrls;
+                BedrockBoot.Linux.Services.EasyDownload.GetPackageUrls;
 #endif
             await PlatformCore.InstallAsync(new PlatformInitFrame()
             {

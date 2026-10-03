@@ -18,7 +18,7 @@
 
 using BedrockBoot.Standard.Interface.Platform;
 
-namespace BedrockBoot.Models.Helper.Notice;
+namespace BedrockBoot.Linux.Models.Helper.Notice;
 
 public class NoticeHelper : INoticeService
 {

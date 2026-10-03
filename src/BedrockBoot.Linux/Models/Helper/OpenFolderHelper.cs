@@ -17,10 +17,9 @@
  */
 
 using System.Diagnostics;
-using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Interface.Platform;
 
-namespace BedrockBoot.Models.Helper;
+namespace BedrockBoot.Linux.Models.Helper;
 
 public class OpenFolderHelper : IOpenFolderService
 {

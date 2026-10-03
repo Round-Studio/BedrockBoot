@@ -23,6 +23,7 @@ using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Models;
 using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
@@ -133,7 +134,7 @@ public partial class SettingGame : ISettingPage
             Models.Global.GlobalModel.MainWindow.SetReboot();
 
 #if LINUX
-            WindowsCoreInit.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
+            PlatformCore.CoreInit?.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
             ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
 #endif
         }

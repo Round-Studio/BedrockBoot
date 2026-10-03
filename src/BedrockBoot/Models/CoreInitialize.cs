@@ -52,6 +52,8 @@ using BedrockBoot.Windows.Models.Helper.Uwp;
 #endif
 #if LINUX
 using BedrockBoot.Linux;
+using BedrockBoot.Proton;
+using BedrockBoot.Views.DialogContent.Linux;
 #endif
 
 namespace BedrockBoot.Models;
@@ -263,13 +265,13 @@ public class CoreInitialize
 #elif LINUX
             var coreInitUnit =  new LinuxCoreInit();
             var launcherType = typeof(BedrockBoot.Linux.Models.Game.EasyLauncher);
-            var downloaderType = typeof(BedrockBoot.Linux.Services.EasyDownload);
+            var downloaderType = typeof(BedrockBoot.Linux.Models.Game.EasyDownload);
             var noticeType = typeof(BedrockBoot.Linux.Models.Helper.Notice.NoticeHelper);
             var openFolderType = typeof(BedrockBoot.Linux.Models.Helper.OpenFolderHelper);
             var jumpListType = typeof(BedrockBoot.Linux.Models.JumpListManager);
             var mouseLockerType = typeof(BedrockBoot.Linux.Models.Helper.ProcessMouseLocker);
             Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
-                BedrockBoot.Linux.Services.EasyDownload.GetPackageUrls;
+                BedrockBoot.Linux.Models.Game.EasyDownload.GetPackageUrls;
 #endif
             await PlatformCore.InstallAsync(new PlatformInitFrame()
             {

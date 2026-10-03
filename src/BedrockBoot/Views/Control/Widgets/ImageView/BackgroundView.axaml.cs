@@ -245,6 +245,16 @@ public partial class BackgroundView : UserControl
         return "rgb(53,191,255)";
     }
 
+    public void ReleaseBackground()
+    {
+        ResetAllProperties();
+    }
+
+    public void UpdateImageOpacityAndBlur()
+    {
+        SetBackgroundBlur(Core.Global.GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur);
+    }
+
     private void ResetAllProperties()
     {
         Margin = new Thickness(0);
@@ -452,11 +462,15 @@ public partial class BackgroundView : UserControl
         var imageInfo = SixLabors.ImageSharp.Image.Identify(stream);
         int originalWidth = imageInfo.Width;
 
+        var topLevel = TopLevel.GetTopLevel(this);
         var displayWidth = Bounds.Width;
         if (displayWidth <= 0)
-            displayWidth = TopLevel.GetTopLevel(this)?.ClientSize.Width ?? 0;
+            displayWidth = topLevel?.ClientSize.Width ?? 0;
+        var renderScaling = topLevel?.RenderScaling ?? 1.0;
 
-        int targetWidth = displayWidth > 0 ? (int)Math.Ceiling(displayWidth * scale) : 2560;
+        int targetWidth = displayWidth > 0
+            ? (int)Math.Ceiling(displayWidth * renderScaling * scale)
+            : 2560;
         targetWidth = Math.Min(targetWidth, originalWidth);
         if (targetWidth < 1) targetWidth = 1;
 

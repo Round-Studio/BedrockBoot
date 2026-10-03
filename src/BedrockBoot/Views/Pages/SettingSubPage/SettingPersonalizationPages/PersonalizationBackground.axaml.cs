@@ -162,8 +162,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
 
                 GlobalModel.Config.Save();
-                Models.Global.GlobalModel.MainWindow.BackgroundView.ApplyImageBackground(GlobalModel.Config.Data
-                    .StyleConfig);
+                Models.Global.GlobalModel.MainWindow.BackgroundView.UpdateImageOpacityAndBlur();
             }
         }
 

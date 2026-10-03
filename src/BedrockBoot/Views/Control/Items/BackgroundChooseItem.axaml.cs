@@ -37,23 +37,16 @@ public partial class BackgroundChooseItem : UserControl
     {
         FilePath.Text = ImagePath;
         FileName.Text = Path.GetFileNameWithoutExtension(ImagePath);
-        // 方法1：使用 CreateScaledBitmap 并手动计算宽度
-        using (var originalBitmap = new Bitmap(ImagePath))
-        {
-            // 计算等比例缩放后的宽度
-            var aspectRatio = originalBitmap.Size.Width / originalBitmap.Size.Height;
-            var newWidth = (int)(48 * aspectRatio);
 
-            var resizedBitmap = originalBitmap.CreateScaledBitmap(
-                new PixelSize(newWidth, 48)
-            );
-
-            ImageBox.Background = new ImageBrush
+        if (File.Exists(ImagePath))
+            using (var stream = File.OpenRead(ImagePath))
             {
-                Stretch = Stretch.UniformToFill,
-                Source = resizedBitmap
-            };
-        }
+                ImageBox.Background = new ImageBrush
+                {
+                    Stretch = Stretch.UniformToFill,
+                    Source = Bitmap.DecodeToWidth(stream, 96)
+                };
+            }
 
         ImageBox.Child = null;
     }

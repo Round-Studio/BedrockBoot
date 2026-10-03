@@ -481,6 +481,7 @@ public partial class MainWindow : Window
     {
         // 状态重置
         TransparencyLevelHint = new[] { WindowTransparencyLevel.Transparent };
+        BackgroundView.ReleaseBackground();
         BackgroundView.IsVisible = false;
         AccentBackgroundBox.IsVisible = false;
         AnimationBackground.IsVisible = false;

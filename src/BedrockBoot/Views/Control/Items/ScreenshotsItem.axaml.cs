@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -56,6 +57,8 @@ public partial class ScreenshotsItem : UserControl
             try
             {
                 // 使用 using 确保流在使用后关闭，DecodeToWidth 优化内存占用
+                if (ImageBox.Background is ImageBrush { Source: IDisposable previous }) previous.Dispose();
+
                 using var stream = File.OpenRead(ScreenshotsInfo.FilePath);
                 ImageBox.Background = new ImageBrush
                 {
@@ -108,8 +111,12 @@ public partial class ScreenshotsItem : UserControl
                 }
                 else
                 {
-                    using var bitmap = new Bitmap(ScreenshotsInfo.FilePath);
-                    bitmap.Save(stream);
+                    var path = ScreenshotsInfo.FilePath;
+                    await Task.Run(() =>
+                    {
+                        using var bitmap = new Bitmap(path);
+                        bitmap.Save(stream);
+                    });
                 }
             }
             catch (Exception ex)

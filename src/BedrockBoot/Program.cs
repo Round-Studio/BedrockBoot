@@ -25,7 +25,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Avalonia;
 using BedrockBoot.Core;
 using BedrockBoot.Core.Models;
@@ -34,10 +33,6 @@ using BedrockBoot.Service.Protocol;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Enum.Type;
-#if WINDOWS
-using BedrockBoot.Windows.Models.Helper.Uwp;
-using BedrockBoot.Windows.Win32.Windows;
-#endif
 using PaperConnect.Core.Module.Global;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
@@ -45,6 +40,9 @@ using Round.SDK.Global;
 using Round.SDK.Logger;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 #if WINDOWS
+using BedrockBoot.Windows.Models.Helper.Uwp;
+using BedrockBoot.Windows.Win32.Windows;
+using System.Windows.Forms;
 using Application = System.Windows.Forms.Application;
 #endif
 

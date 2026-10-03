@@ -27,6 +27,7 @@ using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive.Export;
 using BedrockBoot.Standard.Enum.Type.Export;
 using BedrockBoot.Models.Pack.Game.Archive;
+using BedrockBoot.Models.Pack.Game.Archive.RTX;
 using BedrockBoot.Views.DialogContent.Export;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -34,7 +35,9 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 
 public partial class LevelSettingsControls : UserControl
 {
+    public ArchivePackManager Manager { get; private set; }
     private readonly ArchiveInfo _info;
+    private bool _isEdit = false;
 
     public LevelSettingsControls()
     {
@@ -44,6 +47,16 @@ public partial class LevelSettingsControls : UserControl
     public LevelSettingsControls(ArchiveInfo info) : this()
     {
         _info = info;
+        Manager = new(_info);
+        Manager.Refresh();
+
+        if (Manager.ActivatedPacks!.Exists(x => x.Header.Uuid == RTXPack.RTXPackManifest.Header.Uuid))
+        {
+            RTXPack.ExportPack(_info.VersionInfo);
+            IsUseRTX.IsChecked = true;
+        }
+
+        _isEdit = true;
     }
 
     private void ExportBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -112,5 +125,23 @@ public partial class LevelSettingsControls : UserControl
                 }
             }
         });
+    }
+
+    private void IsUseRTX_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (_isEdit)
+        {
+            if(IsUseRTX.IsChecked == true)
+            {
+                RTXPack.ExportPack(_info.VersionInfo);
+                Manager.InstallPack(RTXPack.RTXPackManifest);
+                RTXPack.InstallPack(_info);
+            }
+            else
+            {
+                Manager.UninstallPack(RTXPack.RTXPackManifest);
+                RTXPack.RemovePack(_info);
+            }
+        }
     }
 }

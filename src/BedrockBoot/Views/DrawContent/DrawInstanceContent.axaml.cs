@@ -48,12 +48,6 @@ public partial class DrawInstanceContent : UserControl
     {
         InitializeComponent();
 
-        if (BrowseDirBtn.Flyout is { } browseDirFlyout)
-        {
-            browseDirFlyout.Opened += BrowseDirFlyout_OnOpened;
-            browseDirFlyout.Closed += BrowseDirFlyout_OnClosed;
-        }
-
         IsEditMode = true;
 
 #if RELEASE
@@ -82,31 +76,6 @@ public partial class DrawInstanceContent : UserControl
         InstanceFrame.NavigateTo(new InstanceInfo(VersionInfo));
 
         IsEditMode = true;
-    }
-
-    private MenuFlyout? _browseDirFlyout;
-
-    private void BrowseDirFlyout_OnOpened(object? sender, EventArgs e)
-    {
-        _browseDirFlyout = sender as MenuFlyout;
-        TopLevel.GetTopLevel(this)?.AddHandler(InputElement.PointerPressedEvent, BrowseDirFlyout_OnPointerPressed,
-            RoutingStrategies.Tunnel);
-    }
-
-    private void BrowseDirFlyout_OnClosed(object? sender, EventArgs e)
-    {
-        TopLevel.GetTopLevel(this)?.RemoveHandler(InputElement.PointerPressedEvent, BrowseDirFlyout_OnPointerPressed);
-    }
-
-    private void BrowseDirFlyout_OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        for (var visual = e.Source as Visual; visual != null; visual = visual.GetVisualParent())
-        {
-            if (visual is MenuFlyoutPresenter) return;
-            if (visual is Button { Flyout: not null }) return;
-        }
-
-        if (_browseDirFlyout?.IsOpen == true) _browseDirFlyout.Hide();
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)

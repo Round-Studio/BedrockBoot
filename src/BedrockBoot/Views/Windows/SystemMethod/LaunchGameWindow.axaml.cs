@@ -26,6 +26,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using System.Diagnostics;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Windows.Models.Game;
 
 namespace BedrockBoot.Views.Windows.SystemMethod;
@@ -33,7 +34,6 @@ namespace BedrockBoot.Views.Windows.SystemMethod;
 public partial class LaunchGameWindow : Window
 {
     private readonly VersionConfig? _versionInfo;
-    private EasyLauncher? _launcher;
     private bool _isClosing;
     private DateTime _lastUpdateTime;
     private readonly TimeSpan _updateThrottle = TimeSpan.FromMilliseconds(100);
@@ -180,7 +180,7 @@ public partial class LaunchGameWindow : Window
 
         try
         {
-            _launcher = new EasyLauncher(_versionInfo);
+            var _launcher = PlatformCore.CreateLauncher(_versionInfo);
 
             // 设置进度更新回调
             _launcher.UpdateProgress = (status, percentage) =>
@@ -251,7 +251,7 @@ public partial class LaunchGameWindow : Window
             };
 
             // 启动游戏
-            await _launcher.Launch();
+            await _launcher.LaunchGame();
         }
         catch (Exception ex)
         {

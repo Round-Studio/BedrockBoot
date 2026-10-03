@@ -43,6 +43,7 @@ using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Plugin.BedrockBoot.Register;
 #if WINDOWS
 using BedrockBoot.Windows;
+using BedrockBoot.Windows.Models.Game;
 using BedrockBoot.Windows.Models.Helper;
 using BedrockBoot.Windows.Models.Helper.Gdk;
 using BedrockBoot.Windows.Models.Helper.Uwp;
@@ -249,13 +250,18 @@ public class CoreInitialize
                 return refreshed;
             };
 
-            var coreInitUnit =
+            
 #if WINDOWS
-                new WindowsCoreInit();     
+            var coreInitUnit = new WindowsCoreInit();
+            var iLauncher = typeof(EasyLauncher);
 #elif LINUX
-                new LinuxCoreInit();
+            var coreInitUnit =  new LinuxCoreInit();
 #endif
-            await PlatformCore.InstallAsync(coreInitUnit);
+            await PlatformCore.InstallAsync(new PlatformInitFrame()
+            {
+                CoreInit = coreInitUnit,
+                LauncherType = iLauncher
+            });
             PlatformCore.CoreInit?.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
         }
         catch (Exception ex)

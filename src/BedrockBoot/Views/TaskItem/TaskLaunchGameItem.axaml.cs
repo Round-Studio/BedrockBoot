@@ -27,6 +27,7 @@ using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Linux;
 using BedrockBoot.Views.Windows.SubWindows;
@@ -102,7 +103,7 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                     CancelBtn.IsEnabled = true;
                 });
 
-                var lc = new EasyLauncher(VersionInfo);
+                var lc = PlatformCore.CreateLauncher(VersionInfo);
 
 #if WINDOWS
                 // 设置迁移回调 - 这里的对话框内容已全部国际化
@@ -204,7 +205,7 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
 #endif
                 };
 
-                await lc.Launch();
+                await lc.LaunchGame();
             }
             catch (TaskCanceledException)
             {

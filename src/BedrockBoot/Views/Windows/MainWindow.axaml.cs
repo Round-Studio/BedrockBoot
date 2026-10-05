@@ -769,12 +769,6 @@ public partial class MainWindow : Window
         }
 
         _lastIsBlurStyle = isBlurStyle;
-
-        if (_lastTitle != Title)
-        {
-            _lastTitle = Title;
-            if (TitleBlock.Text != Title) TitleBlock.Text = Title ?? "";
-        }
     }
 
     /// <summary>

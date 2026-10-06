@@ -129,6 +129,8 @@ public partial class MainAccountPage : BedrockBootPage
             MsAccountManager.AccountConfigEntity?.Data.SelectUserBUID =
                 MsAccountManager.Accounts?.Accounts[UsersList.SelectedIndex].BUID;
             MsAccountManager.AccountConfigEntity?.Save();
+
+            Models.Global.GlobalModel.MainWindow.UpdateAccount();
         }
     }
 

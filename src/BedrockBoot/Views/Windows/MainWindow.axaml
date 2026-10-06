@@ -12,6 +12,7 @@
         xmlns:global1="clr-namespace:BedrockBoot.Models.Global;assembly=BedrockBoot.Core"
         xmlns:imageView="clr-namespace:BedrockBoot.Views.Control.Widgets.ImageView"
         xmlns:converters="clr-namespace:BedrockBoot.Converters"
+        xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
         mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
         x:Class="BedrockBoot.Views.Windows.MainWindow"
         Width="1152" Height="648"
@@ -28,7 +29,8 @@
         FontFamily="resm:OnePointUI.Avalonia.Assets.Fonts.DinPro.ttf?assembly=OnePointUI.Avalonia#DINPro"
         Title="BedrockBoot">
     <Window.Resources>
-        <converters:TaskPanelWidthToMarginConverter x:Key="TaskPanelWidthToMarginConverter"/>
+        <converters:TaskPanelWidthToMarginConverter x:Key="TaskPanelWidthToMarginConverter" />
+        <converters:WidthToRightTopOriginConverter x:Key="WidthToRightTopOriginConverter" />
     </Window.Resources>
     <LayoutTransformControl HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
@@ -152,62 +154,127 @@
                                                         VerticalAlignment="Stretch"
                                                         Margin="0" />
                         </Panel>
-                        
+
                         <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Spacing="8">
-                                <StackPanel.Margin>
-                                    <MultiBinding Converter="{StaticResource TaskPanelWidthToMarginConverter}">
-                                        <Binding Path="Bounds.Width" ElementName="RightControlPanel"/>
-                                    </MultiBinding>
-                                </StackPanel.Margin>
-                                <onePointControls:ProgressRing Name="LoadBox"
-                                                               Width="24" Height="24" />
-                                <Button Classes="NoBorder"
-                                        Height="32"
-                                        IsVisible="False"
-                                        Click="ErrorBtn_OnClick"
-                                        Padding="10,0"
-                                        Name="ErrorBtn">
-                                    <StackPanel Orientation="Horizontal"
-                                                Spacing="8">
-                                        <onePointControls:FontIcon Glyph="&#xEA39;"
-                                                                   FontSize="14"
-                                                                   Foreground="{DynamicResource SystemFillColorCriticalBrush}"
-                                                                   HorizontalAlignment="Center"
-                                                                   VerticalAlignment="Center" />
-                                        <TextBlock Text="内部错误" 
-                                                   Name="ErrorBtnText"
-                                                   Foreground="{DynamicResource SystemFillColorCriticalBrush}"/>
-                                    </StackPanel>
-                                </Button>
-                                <Button Classes="NoBorder"
-                                        Height="32"
-                                        IsVisible="False"
-                                        Padding="10,0"
-                                        Click="RebootBtn_OnClick"
-                                        Name="RebootBtn">
-                                    <StackPanel Orientation="Horizontal"
-                                                Spacing="8">
-                                        <onePointControls:FontIcon Glyph="&#xE72C;"
-                                                                   FontSize="12"
-                                                                   HorizontalAlignment="Center"
-                                                                   VerticalAlignment="Center" />
-                                        <TextBlock Text="需要重启" />
-                                    </StackPanel>
-                                </Button>
-                                <Button Classes="NoBorder"
-                                        Height="32"
-                                        IsVisible="False"
-                                        Padding="10,0"
-                                        Name="HelpBtn">
-                                    <onePointControls:FontIcon Glyph="&#xE897;"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Spacing="8">
+                            <StackPanel.Transitions>
+                                <Transitions>
+                                    <ThicknessTransition Property="Margin"
+                                                         Duration="0:0:0.22"
+                                                         Easing="ExponentialEaseOut" />
+                                </Transitions>
+                            </StackPanel.Transitions>
+                            <StackPanel.Margin>
+                                <MultiBinding Converter="{StaticResource TaskPanelWidthToMarginConverter}">
+                                    <Binding Path="Bounds.Width" ElementName="RightControlPanel" />
+                                </MultiBinding>
+                            </StackPanel.Margin>
+                            <onePointControls:ProgressRing Name="LoadBox"
+                                                           Width="24" Height="24" />
+                            <Button Classes="NoBorder"
+                                    Height="32"
+                                    IsVisible="False"
+                                    Click="ErrorBtn_OnClick"
+                                    Padding="10,0"
+                                    Name="ErrorBtn">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xEA39;"
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center" />
+                                    <TextBlock Text="内部错误"
+                                               Name="ErrorBtnText"
+                                               Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="NoBorder"
+                                    Height="32"
+                                    IsVisible="False"
+                                    Padding="10,0"
+                                    Click="RebootBtn_OnClick"
+                                    Name="RebootBtn">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <onePointControls:FontIcon Glyph="&#xE72C;"
                                                                FontSize="12"
                                                                HorizontalAlignment="Center"
                                                                VerticalAlignment="Center" />
-                                </Button>
-                            </StackPanel>
+                                    <TextBlock Text="需要重启" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="NoBorder"
+                                    Height="32"
+                                    IsVisible="False"
+                                    Padding="10,0"
+                                    Name="HelpBtn">
+                                <onePointControls:FontIcon Glyph="&#xE897;"
+                                                           FontSize="12"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center" />
+                            </Button>
+                            <Button Classes="NoBorder"
+                                    Height="32"
+                                    Click="AccountBtn_OnClick"
+                                    Padding="4,0,10,0"
+                                    Name="AccountBtn">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8">
+                                    <Panel>
+                                        <onePointControls:FontIcon Glyph="&#xE716;"
+                                                                   FontSize="12"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center" />
+
+                                        <Border Width="24" Height="24"
+                                                Name="AccountHeaderImage"
+                                                CornerRadius="3" />
+                                    </Panel>
+                                    <TextBlock Text="档案"
+                                               VerticalAlignment="Center"
+                                               Name="AccountName" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <Border Background="{DynamicResource PrimaryBorderBrush}"
+                                CornerRadius="6"
+                                Padding="8"
+                                BoxShadow="0 0 120 0 Gray"
+                                MinWidth="220" MaxHeight="320"
+                                MaxWidth="236"
+                                Name="AccountPanel"
+                                IsVisible="False"
+                                Opacity="0"
+                                RenderTransformOrigin="{Binding $self.Width, Converter={StaticResource WidthToRightTopOriginConverter}}"
+                                PointerEntered="AccountPanel_OnPointerEntered"
+                                PointerExited="AccountPanel_OnPointerExited"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                            <Border.Margin>
+                                <MultiBinding Converter="{StaticResource TaskPanelWidthToMarginConverter}">
+                                    <Binding Path="Bounds.Width" ElementName="RightControlPanel" />
+                                </MultiBinding>
+                            </Border.Margin>
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="0" ScaleY="0" />
+                            </Border.RenderTransform>
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity"
+                                                      Duration="0:0:0.22"
+                                                      Easing="ExponentialEaseOut" />
+                                    <TransformOperationsTransition Property="RenderTransform"
+                                                                   Duration="0:0:0.22"
+                                                                   Easing="ExponentialEaseOut" />
+                                </Transitions>
+                            </Border.Transitions>
+
+                            <widgets:AccountPanel Name="AccountPanelControl" />
+                        </Border>
 
                         <Grid Name="BorderGrid"
                               IsVisible="False">
@@ -451,10 +518,11 @@
                                                    IsVisible="False"
                                                    Name="TaskInfoText" />
                                     </StackPanel>
-                                </Button><Button Classes="NoBorder"
-                                                 Width="32" Height="32"
-                                                 Name="MinBtn"
-                                                 Click="MinBtn_OnClick">
+                                </Button>
+                                <Button Classes="NoBorder"
+                                        Width="32" Height="32"
+                                        Name="MinBtn"
+                                        Click="MinBtn_OnClick">
                                     <onePointControls:FontIcon Glyph="&#xE921;"
                                                                FontSize="10"
                                                                HorizontalAlignment="Center"

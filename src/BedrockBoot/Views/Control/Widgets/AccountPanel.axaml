@@ -1,0 +1,108 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="220"
+             x:Class="BedrockBoot.Views.Control.Widgets.AccountPanel">
+    <UserControl.Styles>
+        <Style Selector="view|ItemViewItem">
+            <Setter Property="CornerRadius"
+                    Value="6" />
+            <Setter Property="Margin"
+                    Value="5" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid>
+                        <Border CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{DynamicResource PrimaryBackgroundOverBrush}"
+                                Name="PART_Background"
+                                Opacity="0">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity"
+                                                      Duration="0:0:0.1" />
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
+
+                        <Grid>
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Background="{TemplateBinding Background}"
+                                              BorderBrush="{TemplateBinding BorderBrush}"
+                                              BorderThickness="{TemplateBinding BorderThickness}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              Padding="{TemplateBinding Padding}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              CornerRadius="{TemplateBinding CornerRadius}" />
+                        </Grid>
+
+                        <onePointControls:FontIcon Glyph="&#xE73E;"
+                                                   FontSize="14"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{TemplateBinding IsSelected}"
+                                                   Name="PART_CheckIcon"
+                                                   Margin="0,0,8,0"
+                                                   Foreground="{DynamicResource AccentBackgroundBrush}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ Border#PART_Background">
+                    <Setter Property="Opacity" Value="0.6" />
+                </Style>
+            </Style>
+        </Style>
+    </UserControl.Styles>
+    <Grid RowDefinitions="Auto,1,*,1,Auto"
+          RowSpacing="6">
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    Margin="6,4"
+                    Spacing="4">
+            <onePointControls:FontIcon Glyph="&#xE716;"
+                                       VerticalAlignment="Center" />
+            <TextBlock Text="选择档案" />
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Background="{DynamicResource PrimaryForegroundBrush}"
+                Opacity="0.4"
+                Height="1"
+                HorizontalAlignment="Stretch" />
+
+        <ScrollViewer Grid.Row="2">
+            <view:ItemView Background="#01000000"
+                           SelectionChanged="AccountList_OnSelectionChanged"
+                           Name="AccountList"
+                           Margin="6,0" />
+
+        </ScrollViewer>
+
+        <Border Grid.Row="3"
+                Background="{DynamicResource PrimaryForegroundBrush}"
+                Opacity="0.4"
+                Height="1"
+                HorizontalAlignment="Stretch" />
+
+        <Button Grid.Row="4"
+                Classes="NoBorder"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Name="GoToAccountPage"
+                Click="GoToAccountPage_OnClick"
+                Padding="6">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="4">
+                <onePointControls:FontIcon Glyph="&#xE8A7;"
+                                           VerticalAlignment="Center" />
+                <TextBlock Text="账户与档案" />
+            </StackPanel>
+        </Button>
+    </Grid>
+</UserControl>

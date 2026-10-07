@@ -33,6 +33,8 @@ public partial class SettingNavigation : UserControl
 #if RELEASE
         SetPersonalization.IsEnabled =
  BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingPersonalization;
+
+        Account.IsVisible = false;
 #endif
     }
 
@@ -69,5 +71,10 @@ public partial class SettingNavigation : UserControl
     private void Accessibility_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new SettingAccessibility());
+    }
+
+    private void Account_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new SettingAccount());
     }
 }

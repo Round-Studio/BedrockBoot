@@ -35,6 +35,14 @@
                                               Glyph="&#xE7FC;" />
 
                 <onePointControls:SettingCard Margin="5, 0"
+                                              Header="账户与档案"
+                                              Description="XBOX 账户与设置"
+                                              Name="Account"
+                                              Click="Account_OnClick"
+                                              IsClickable="True"
+                                              Glyph="&#xE716;" />
+
+                <onePointControls:SettingCard Margin="5, 0"
                                               Header="{DynamicResource Settings.Nav.Universal.Title}"
                                               Description="{DynamicResource Settings.Nav.Universal.Desc}"
                                               Name="Universal"

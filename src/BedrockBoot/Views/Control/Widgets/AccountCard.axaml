@@ -1,0 +1,61 @@
+﻿<Button xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+        xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+        mc:Ignorable="d" ClipToBounds="False"
+        x:Class="BedrockBoot.Views.Control.Widgets.AccountCard">
+    <Button.Styles>
+        <Style Selector="widgets|AccountCard">
+            <Setter Property="RenderTransform" Value="scale(1)"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="widgets|AccountCard:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.8)"/>
+        </Style>
+    </Button.Styles>
+    <items:SteamCard Background="Transparent"
+                     HoverScale="1.1"
+                     ParallaxDepth="1.8">
+        <items:BorderCard Padding="0">
+            <Grid>
+                <Border Grid.Column="0"
+                        CornerRadius="6"
+                        HorizontalAlignment="Right"
+                        ClipToBounds="True">
+                    <widgets:LocalImageRenderWidget Name="AccountHeader1"
+                                                    Width="128" Height="128">
+                        <widgets:LocalImageRenderWidget.OpacityMask>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                <GradientStop Color="#00FFFFFF" Offset="0"/>
+                                <GradientStop Color="#FFFFFFFF" Offset="1"/>
+                            </LinearGradientBrush>
+                        </widgets:LocalImageRenderWidget.OpacityMask>
+                    </widgets:LocalImageRenderWidget>
+                </Border>
+                <Grid ColumnDefinitions="Auto,*"
+                      VerticalAlignment="Top"
+                      ColumnSpacing="8"
+                      Margin="8">
+                    <widgets:LocalImageRenderWidget Grid.Column="0"
+                                                    Name="AccountHeader2"
+                                                    Width="48" Height="48"/>
+                    
+                    <StackPanel Grid.Column="1"
+                                Width="220"
+                                Spacing="6">
+                        <TextBlock Name="AccountName"
+                                   Text="AccountName"
+                                   FontSize="16"></TextBlock>
+                        <TextBlock Text="XBOX Live"></TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </items:BorderCard>
+    </items:SteamCard>
+</Button>

@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingAccount">
+    <ScrollViewer>
+        <StackPanel Margin="20,15"
+                    Spacing="8">
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="XBOX 账户" />
+
+            <onePointControls:SettingCard Header="关联 XBOX 账户"
+                                          Description="关联一个新的 XBOX 账户以使用启动器的账户功能"
+                                          Name="AddAccountBtn"
+                                          IsClickable="True"
+                                          Glyph="&#xE8FA;" />
+            
+            <WrapPanel Name="AccountPanel"
+                       LineSpacing="8"
+                       ItemSpacing="8"></WrapPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

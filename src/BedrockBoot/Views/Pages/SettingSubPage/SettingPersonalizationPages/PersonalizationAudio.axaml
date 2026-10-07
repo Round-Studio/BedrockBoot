@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,11 +10,11 @@
                     Spacing="8">
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="音频" />
+                       Text="{DynamicResource Settings.Personalization.Audio.Title}" />
             
             <onePointControls:SettingCard
-                Header="音量"
-                Description="背景音量设置。"
+                Header="{DynamicResource Settings.Personalization.Audio.Volume.Title}"
+                Description="{DynamicResource Settings.Personalization.Audio.Volume.Desc}"
                 Glyph="&#xE767;"
                 IsClickable="False">
                 <Slider Width="400"
@@ -27,24 +27,24 @@
 
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
-                       Text="在任意页面中，按下 Ctrl + 滚动鼠标滚轮 就可以快速调整音量" />
+                       Text="{DynamicResource Settings.Personalization.Audio.Volume.Tip}" />
             
-            <onePointControls:SettingCard Header="选择背景音频"
-                                          Description="选择 BedrockBoot 主页面所播放的音频文件"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Audio.Choose.Title}"
+                                          Description="{DynamicResource Settings.Personalization.Audio.Choose.Desc}"
                                           Glyph="&#xE8B0;"
                                           IsClickable="True"
                                           Name="ChooseAudioFileBtn"
                                           Click="ChooseAudioFileBtn_OnClick"/>
             
-            <onePointControls:SettingCard Header="恢复默认背景音频"
-                                          Description="将背景音频恢复为默认设置"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Audio.Restore.Title}"
+                                          Description="{DynamicResource Settings.Personalization.Audio.Restore.Desc}"
                                           Glyph="&#xE74D;"
                                           IsClickable="True"
                                           Name="RestoreDefaultAudioBtn"
                                           Click="RestoreDefaultAudioBtn_OnClick"/>
             
-            <onePointControls:SettingCard Header="播放 BedrockBoot 背景音乐"
-                                          Description="设置是否播放背景音乐"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Audio.Play.Title}"
+                                          Description="{DynamicResource Settings.Personalization.Audio.Play.Desc}"
                                           Glyph="&#xE769;">
                 <ToggleSwitch Name="IsPlayBackgroundMusic"
                               IsCheckedChanged="IsPlayBackgroundMusic_OnIsCheckedChanged"></ToggleSwitch>
@@ -52,18 +52,18 @@
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="行为" />
+                       Text="{DynamicResource Settings.Universal.Group.Behavior}" />
             
-            <onePointControls:SettingCard Header="音频来源"
-                                          Description="BedrockBoot 背景音乐的来源"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Audio.Source.Title}"
+                                          Description="{DynamicResource Settings.Personalization.Audio.Source.Desc}"
                                           Glyph="&#xEBD2;">
                 <ComboBox Width="200"
                           SelectedIndex="0"
                           Name="MediaSource"
                           SelectionChanged="MediaSource_OnSelectionChanged">
-                    <ComboBoxItem Content="优先使用主题包"></ComboBoxItem>
-                    <ComboBoxItem Content="仅选择音频"></ComboBoxItem>
-                    <ComboBoxItem Content="仅主题包音频"></ComboBoxItem>
+                    <ComboBoxItem Content="{DynamicResource Settings.Personalization.Audio.Source.PreferThemePack}"></ComboBoxItem>
+                    <ComboBoxItem Content="{DynamicResource Settings.Personalization.Audio.Source.CustomOnly}"></ComboBoxItem>
+                    <ComboBoxItem Content="{DynamicResource Settings.Personalization.Audio.Source.ThemePackOnly}"></ComboBoxItem>
                 </ComboBox>
             </onePointControls:SettingCard>
         </StackPanel>

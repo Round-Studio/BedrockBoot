@@ -45,7 +45,13 @@
     <x:String x:Key="MainPage.Nav.Download">Download</x:String>
     <x:String x:Key="MainPage.Nav.Tools">Tools</x:String>
     <x:String x:Key="MainPage.Nav.Multiplayer">Multiplayer</x:String>
+    <x:String x:Key="MainPage.Nav.AccountManager">Accounts</x:String>
     <x:String x:Key="MainPage.Nav.Setting">Settings</x:String>
+
+    <x:String x:Key="Account.Action.LinkXbox">Link Xbox Account</x:String>
+    <x:String x:Key="Account.Empty.Title">No Accounts Linked</x:String>
+    <x:String x:Key="Account.Empty.Message">No Xbox account currently linked.&#10;Please click Link Account at the top left to link an Xbox account</x:String>
+    <x:String x:Key="Account.Option.AskBeforeLaunch">Ask to select account before launching game</x:String>
 
     <x:String x:Key="MainPage.Status.NoInstance">No instances available</x:String>
     <x:String x:Key="MainPage.Status.NoFolder">Please add a game folder first</x:String>
@@ -571,17 +577,102 @@
     <x:String x:Key="Settings.Personalization.Group.Window">Window</x:String>
     <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">Use System Title Bar</x:String>
     <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">Use the system title bar and hide the control buttons</x:String>
+    <x:String x:Key="Settings.Personalization.Group.ThemePack">Theme Pack</x:String>
+    <x:String x:Key="Settings.Personalization.UseThemePack.Title">Use Theme Pack</x:String>
+    <x:String x:Key="Settings.Personalization.UseThemePack.Desc">Whether to use BedrockBoot theme packs</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Title">Export Theme Pack</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Desc">Export current theme as a BedrockBoot theme pack</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Tip">Exporting theme pack is only available when background type is set to image.</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePackManager.Title">Theme Pack Manager</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePackManager.Desc">Manage and configure all installed BedrockBoot theme packs</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Title">Audio</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Desc">BedrockBoot background music</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Title">Font</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Desc">BedrockBoot UI display font</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Title">Launch Button Position</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Desc">Configure placement of launch button and version selector</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Left">Launch button on left</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Right">Launch button on right</x:String>
+
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Title">Volume</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Desc">Background music volume settings.</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Tip">On any page, press Ctrl + scroll mouse wheel to quickly adjust volume</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Choose.Title">Select Background Audio</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Choose.Desc">Select the audio file played on BedrockBoot home page</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Restore.Title">Restore Default Audio</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Restore.Desc">Restore background audio to default settings</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Play.Title">Play BedrockBoot Background Music</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Play.Desc">Set whether to play background music</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.Title">Audio Source</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.Desc">Source of BedrockBoot background music</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.PreferThemePack">Prefer Theme Pack</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.CustomOnly">Custom Audio Only</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.ThemePackOnly">Theme Pack Audio Only</x:String>
+
+    <x:String x:Key="Settings.Personalization.Font.Group.Font">UI Fonts</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Main.Title">Primary Font</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Main.Desc">Select primary font displayed in launcher</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Fallback.Title">Fallback Font</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Fallback.Desc">Automatically fall back to this font when characters are missing from primary font</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Group.Preview">Preview</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Size">Preview Font Size</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Text">Preview Text</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Watermark">Enter preview text...</x:String>
+
+    <x:String x:Key="Settings.Personalization.Background.Mode.Live">Live Desktop</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mode.Default">Default</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Restore.Title">Restore Default Background Image</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Restore.Desc">Restore background image to default settings</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Animation.Title">Animated Background</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Animation.Desc">Use background style similar to Apple Music player</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Title">Background Image Quality</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Desc">Select render quality (higher quality is clearer but uses more memory)</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Low">Low</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Medium">Medium</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.High">High (Original)</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mica.Title">Mica Style</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mica.Desc">Select a Mica style</x:String>
+    <x:String x:Key="Settings.Personalization.Background.LiveBlur.Title">Blur</x:String>
+    <x:String x:Key="Settings.Personalization.Background.LiveBlur.Desc">Enable to blur live background</x:String>
+
+    <x:String x:Key="Settings.Personalization.ThemePack.Desc1">Import theme packs shared by others to customize BedrockBoot</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Desc2">You can also create your own BedrockBoot theme pack</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Action.Import">Import Theme Pack</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Empty.Title">No Themes Installed</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Empty.Message">You have not installed any theme packs yet</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Loading.Message">Searching high and low</x:String>
 
     <x:String x:Key="Setting.Personalization.Home.Title">Home</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.Header">Home Content Type</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.None">Empty (None)</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.News">News</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.Widgets">Widgets</x:String>
 
     <x:String x:Key="Settings.Game.Group.Base">Basic Settings</x:String>
     <x:String x:Key="Settings.Game.Isolation.Title">Version Isolation</x:String>
     <x:String x:Key="Settings.Game.Isolation.Desc">Technology type used for version isolation</x:String>
     <x:String x:Key="Settings.Game.Isolation.SymbolicLink">Single Mode (Symbolic Link)</x:String>
     <x:String x:Key="Settings.Game.Isolation.HookSymbolicLink">Hybrid Mode (Hook + Symbolic Link)</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Title">Isolation Priority</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Desc">Set version isolation policy for different launchers</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Standard">Standard</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Priority">Priority</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Title">Isolation Directory</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Desc">Select different directory isolation policies</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Dedicated">Isolated Directory (Dedicated)</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Shared">Shared with Other Launchers</x:String>
+    <x:String x:Key="Settings.Game.Group.Accessibility">Accessibility</x:String>
+    <x:String x:Key="Settings.Game.Overlay.Title">Game Overlay</x:String>
+    <x:String x:Key="Settings.Game.Overlay.Desc">Press Shift+Tab in game window to open overlay</x:String>
+    <x:String x:Key="Settings.Game.Group.Global">Global</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Title">Global Options</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Desc">Configure options.txt synchronization source across instances</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Reset.Title">Reset Sync Source</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Reset.Desc">Reset currently configured sync source instance</x:String>
+    <x:String x:Key="Settings.Game.MultipleUsers.Title">Use Multiple Accounts</x:String>
+    <x:String x:Key="Settings.Game.MultipleUsers.Desc">Play game with multiple account isolation on Windows</x:String>
+    <x:String x:Key="Settings.Game.NeoLaunch.Title">New Launch Method</x:String>
+    <x:String x:Key="Settings.Game.NeoLaunch.Desc">Use new launch method with XBOX account login on Linux</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Title">Mouse Lock</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Desc">Prevents the mouse from crossing the game window boundary to avoid accidental clicks elsewhere</x:String>
     <x:String x:Key="Settings.Game.Group.Advanced">Advanced</x:String>
@@ -640,6 +731,16 @@
     <x:String x:Key="Settings.Game.Backup.Notice.Desc">Display a notification when auto-backup successfully completes</x:String>
     <x:String x:Key="Settings.Game.Backup.OpenFolder.Title">Open Backup Folder</x:String>
     <x:String x:Key="Settings.Game.Backup.OpenFolder.Desc">Open the backup folder in system file manager</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.3">3 backups</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.5">5 backups (Recommended)</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.10">10 backups</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.20">20 backups</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Unlimited">Unlimited</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Notice.Title">World Auto-Backup</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Notice.Message">Successfully backed up {0} modified world save(s).</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Prefix">Auto-Backup</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Timing.Launch">Launch</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Timing.Exit">Exit</x:String>
 
     <x:String x:Key="Setting.Game.Title">Game</x:String>
     <x:String x:Key="Setting.Game.Breadcrumb.Root">Game</x:String>
@@ -660,6 +761,8 @@
     <x:String x:Key="Settings.Download.Group.Advanced">Advanced</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Title">Software Updates</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Desc">Update settings for BedrockBoot</x:String>
+    <x:String x:Key="Settings.Download.FuzzySearch.Title">Fuzzy Matching</x:String>
+    <x:String x:Key="Settings.Download.FuzzySearch.Desc">Configure fuzzy matching behavior when searching resources. When enabled, more results are returned, but irrelevant results may appear. This does not affect Minecraft search.</x:String>
     <x:String x:Key="Settings.Download.NetworkTest.Title">Network Test</x:String>
     <x:String x:Key="Settings.Download.NetworkTest.Desc">Test the network latency of all APIs used by BedrockBoot</x:String>
     <x:String x:Key="Settings.Download.NetworkTest.Action.Title">Run Test</x:String>
@@ -719,6 +822,24 @@
     <x:String x:Key="Settings.Universal.LaunchBehavior.None">None</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Minimize">Minimize launcher after launch</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Exit">Exit launcher after launch</x:String>
+    <x:String x:Key="Settings.Universal.HardwareDecode.Title">Hardware Decoding</x:String>
+    <x:String x:Key="Settings.Universal.HardwareDecode.Desc">Set whether to enable hardware decoding when installing game (GDK). Enabling it improves installation speed. Some CPU models do not support this feature.</x:String>
+    <x:String x:Key="Settings.Universal.BetaUI.Title">Beta Features</x:String>
+    <x:String x:Key="Settings.Universal.BetaUI.Desc">Enable or disable BedrockBoot Beta features</x:String>
+    <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Title">Release Notes</x:String>
+    <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Desc">Release notes for the current version</x:String>
+    <x:String x:Key="Settings.Universal.Update.Changelog.Title">Changelog</x:String>
+    <x:String x:Key="Settings.Universal.Update.Changelog.Desc">Changelog between current and previous versions</x:String>
+    <x:String x:Key="Settings.Universal.Update.Dependency.Title">Dependency Updates</x:String>
+    <x:String x:Key="Settings.Universal.Update.Dependency.Desc">Check and update multiplayer components (EasyTier / GravityCone)</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Multiplayer Dependencies</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">Reading version info...</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Title">Check Updates</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Desc">Fetch latest version of multiplayer components from GitHub and compare with local</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Action">Check Updates</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Title">Update Dependencies</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Desc">Download and install latest multiplayer components (multiplayer disabled during update)</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Action">Update Now</x:String>
 
     <x:String x:Key="Settings.Plugin.Manager.Title">Plugin Manager</x:String>
     <x:String x:Key="Settings.Plugin.Manager.Desc">Manage installed plugins</x:String>
@@ -770,6 +891,15 @@
     <x:String x:Key="Tools.RecoverFiles.Description">Used to recover lost files like saves/resource packs caused by version isolation</x:String>
     <x:String x:Key="Tools.UninstallMc.Title">Uninstall Locally Installed Minecraft</x:String>
     <x:String x:Key="Tools.UninstallMc.Description">Used to uninstall errors caused by a locally installed Minecraft version</x:String>
+    <x:String x:Key="Tools.CheckSdk.Title">Check SDK 1.8 Installation</x:String>
+    <x:String x:Key="Tools.CheckSdk.Description">Check whether SDK 1.8, one of the game runtimes, is installed on the system</x:String>
+    <x:String x:Key="Tools.Group.Tools">Tools</x:String>
+    <x:String x:Key="Tools.WorldShift.Title">World Converter</x:String>
+    <x:String x:Key="Tools.WorldShift.Description">Convert between Java worlds and Bedrock worlds (based on Chunker, requires JVM runner)</x:String>
+    <x:String x:Key="Tools.ResourcePackShift.Title">Resource Pack Converter</x:String>
+    <x:String x:Key="Tools.ResourcePackShift.Description">Convert Java Edition resource packs to Bedrock Edition resource packs</x:String>
+    <x:String x:Key="Tools.TranslateResourcePack.Title">Translate Resource Pack</x:String>
+    <x:String x:Key="Tools.TranslateResourcePack.Description">Import a resource pack and translate it to Chinese</x:String>
     <x:String x:Key="Tools.Empty.Title">Well...</x:String>
     <x:String x:Key="Tools.Empty.Message">No tools in the toolbox awa&#x0A;You can urge the developer to add them ASAP.jpg</x:String>
 
@@ -930,6 +1060,7 @@
     <x:String x:Key="ExceptionWindow.FatalError.Header">Application Encountered a Fatal Error</x:String>
     <x:String x:Key="ExceptionWindow.FatalError.Message">BedrockBoot has encountered a fatal error and needs your feedback.</x:String>
     <x:String x:Key="ExceptionWindow.Button.Export">Export Error Report</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Upload">Upload Logs</x:String>
     <x:String x:Key="ExceptionWindow.Button.Copy">Copy Error Info</x:String>
     <x:String x:Key="ExceptionWindow.Button.Return">Return to Launcher</x:String>
     <x:String x:Key="ExceptionWindow.Link.FAQ">BedrockBoot FAQ</x:String>
@@ -945,7 +1076,63 @@
     <x:String x:Key="Settings.Game.MouseLock.Reserve.Title">Legacy Logic</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Reserve.Desc">You should not enable this switch unless the new mouse lock logic does not work as expected</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">The legacy mouse lock logic is more aggressive. Aside from unnecessary CPU overhead, it may also cause issues with the built-in mouse locking of other applications or games,&#10;and may cause the unlock hotkey to malfunction.&#10;You really should not enable this switch unless the new mouse lock logic fails to work as expected!&#10;&#10;Are you sure you want to enable it?</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.WindowTrimming.Title">Border Trimming Pixels</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.WindowTrimming.Desc">Trim a small number of pixels around window edges to prevent misclicks on the taskbar in fullscreen or maximized mode with hidden taskbar</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Title">UWP Window Capture Priority</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Desc">Configure the UWP frame window capture strategy.</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Default">Monitor frame on launch</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Legacy">Get frame from game</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Hotkey.Title">Hotkey Binding</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Hotkey.Desc">Bind a hotkey to temporarily release the mouse lock</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Hotkey.Capturing">Capturing... Press Esc to cancel</x:String>
+
+    <!-- Multiplayer -->
+    <x:String x:Key="Multiplayer.Intro.Title">Overview</x:String>
+    <x:String x:Key="Multiplayer.Intro.GravityConeDesc">GravityCone is third-party open-source software. If you encounter any problems, please submit feedback through related channels.</x:String>
+    <x:String x:Key="Multiplayer.Intro.P2PDesc">This multiplayer service is based on the PaperConnect v2 protocol and uses P2P technology. Once connected, users in the room connect directly to each other without third-party relay servers. The multiplayer experience depends on network conditions.</x:String>
+    <x:String x:Key="Multiplayer.Intro.ComplianceDesc">During multiplayer gameplay, please strictly comply with all laws and regulations in your country or region.</x:String>
+    <x:String x:Key="Multiplayer.Intro.PaperConnectDesc">This multiplayer service is based on PaperConnect with relay powered by EasyTier.</x:String>
+    <x:String x:Key="Multiplayer.Intro.PaperConnectP2PDesc">Uses P2P technology for multiplayer. After connection, room members connect directly to each other without third-party relay servers. The multiplayer experience depends on network conditions.</x:String>
+    <x:String x:Key="Multiplayer.Intro.LinksTitle">Related Links</x:String>
+    <x:String x:Key="Multiplayer.Intro.DocsTitle">Related Documentation</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.Protocol">PaperConnect Protocol</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.GravityConeRepo">GravityCone Repository</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.PaperConnectRepo">PaperConnect Repository</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.EasyTierWebsite">EasyTier Official Website</x:String>
+
+    <x:String x:Key="Multiplayer.Dep.Notice">Dependencies required for PaperConnect are not yet installed. Click below to start downloading.</x:String>
+    <x:String x:Key="Multiplayer.Dep.StartDownload.Title">Start Download</x:String>
+    <x:String x:Key="Multiplayer.Dep.StartDownload.Desc">Automatically download dependencies required for PaperConnect, including EasyTier</x:String>
+    <x:String x:Key="Multiplayer.Dep.Dialog.Title">Download Multiplayer Dependencies</x:String>
+    <x:String x:Key="Multiplayer.Dep.Download.EasyTier">Download EasyTier Multiplayer Dependency</x:String>
+    <x:String x:Key="Multiplayer.Dep.Download.GravityCone">Download GravityCone Multiplayer Dependency</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Ready">Preparing download...</x:String>
+
+    <x:String x:Key="Multiplayer.Lobby.Title">Multiplayer Lobby</x:String>
+    <x:String x:Key="Multiplayer.Lobby.TitleReady">Multiplayer Lobby (Core Initialized)</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CreateRoom.Title">Create Room</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CreateRoom.Desc">Create your own room and invite friends to join</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinRoom.Title">Join Room</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinRoom.Desc">Join a friend's room and enter the game</x:String>
+    <x:String x:Key="Multiplayer.Lobby.RoomCode">Room Code</x:String>
+    <x:String x:Key="Multiplayer.Lobby.RoomCodeClickCopy">Room Code (Click below to copy)</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CopyRoomCode.Title">Copy Room Code</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CopyRoomCode.Desc">Copy this room's code and invite friends to join</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CloseRoom.Title">Close Room</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CloseRoom.Desc">Close this room and disconnect all connected players</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ExitRoom.Title">Leave Room</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ExitRoom.Desc">Leave this room</x:String>
+    <x:String x:Key="Multiplayer.Lobby.Exit.Title">Exit</x:String>
+    <x:String x:Key="Multiplayer.Lobby.Exit.Desc">Stop creating/joining room and exit</x:String>
+    <x:String x:Key="Multiplayer.Lobby.HostCreatedTip">Room created! You can now invite friends to join.</x:String>
+    <x:String x:Key="Multiplayer.Lobby.GuestJoinedTip">You have joined the room. Launch Minecraft to join the game.</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ConnectedPlayers">Connected Players</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinedPlayers">Joined Players</x:String>
+    <x:String x:Key="Multiplayer.Lobby.HostBadge">Host</x:String>
+    <x:String x:Key="Multiplayer.Lobby.SearchingLanGame">Searching LAN Game</x:String>
+
+    <x:String x:Key="Multiplayer.Init.Title">Initializing Environment...</x:String>
+    <x:String x:Key="Multiplayer.Init.GetPeers">Fetching Peer Servers</x:String>
+    <x:String x:Key="Multiplayer.Init.GetXboxUser">Fetching Local Account</x:String>
+    <x:String x:Key="Multiplayer.Init.InitCore">Initializing Multiplayer Core</x:String>
 </ResourceDictionary>

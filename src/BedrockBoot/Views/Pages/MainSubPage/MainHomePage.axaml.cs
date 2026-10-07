@@ -46,12 +46,23 @@ public partial class MainHomePage : BedrockBootPage
         {
             if (Models.Global.GlobalModel.CustomManifest?.PageTitles != null)
             {
-                if (!string.IsNullOrEmpty(LineTextBlock.Text =
-                        Models.Global.GlobalModel.CustomManifest.PageTitles.PageHome))
-                    LineTextBlock.Text = Models.Global.GlobalModel.CustomManifest.PageTitles.PageHome.Replace(
-                        "{{random}}",
-                        Models.Global.GlobalModel.CustomManifest.RandomStr[
-                            (new Random()).Next(0, Models.Global.GlobalModel.CustomManifest.RandomStr.Count)]);
+                var pageHome = Models.Global.GlobalModel.CustomManifest.PageTitles.PageHome;
+                if (!string.IsNullOrEmpty(pageHome))
+                {
+                    if (pageHome.Contains("{{random}}") && Models.Global.GlobalModel.CustomManifest.RandomStr?.Count > 0)
+                    {
+                        var randStr = Models.Global.GlobalModel.CustomManifest.RandomStr[
+                            (new Random()).Next(0, Models.Global.GlobalModel.CustomManifest.RandomStr.Count)];
+                        if (randStr != "您好，欢迎回来")
+                        {
+                            LineTextBlock.Text = pageHome.Replace("{{random}}", randStr);
+                        }
+                    }
+                    else if (pageHome != "{{random}}" && pageHome != "您好，欢迎回来")
+                    {
+                        LineTextBlock.Text = pageHome;
+                    }
+                }
             }
         };
     }

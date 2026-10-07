@@ -1,4 +1,4 @@
-﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,7 +14,7 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
-                                        Text="多人联机" />
+                                        Text="{DynamicResource MainPage.Nav.Multiplayer}" />
     </entry:BedrockBootPage.HeaderView>
     <Grid>
         <Grid ColumnDefinitions="3*,7*"
@@ -23,31 +23,29 @@
                         Margin="20,0,0,0"
                         Spacing="8">
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    简述
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Multiplayer.Intro.Title}" />
 
-                <TextBlock Text="本联机基于协议 PaperConnect，转发基于 EasyTier"
+                <TextBlock Text="{DynamicResource Multiplayer.Intro.PaperConnectDesc}"
                            TextWrapping="Wrap"
                            Opacity="0.8" />
 
-                <TextBlock Text="使用 P2P 技术进行联机，连接成功后房间内用户将会互相连接，将不会使用第三方服务器转发流量。最终联机体验由网络环境决定"
+                <TextBlock Text="{DynamicResource Multiplayer.Intro.PaperConnectP2PDesc}"
                            TextWrapping="Wrap"
                            Opacity="0.8" />
 
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    相关文档
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Multiplayer.Intro.DocsTitle}" />
 
                 <StackPanel>
-                    <HyperlinkButton Content="PaperConnect 联机协议"
+                    <HyperlinkButton Content="{DynamicResource Multiplayer.Intro.Link.Protocol}"
                                      NavigateUri="https://docs.roundstudio.top/docs/standard/paperconnect" />
 
-                    <HyperlinkButton Content="PaperConnect 开源仓库"
+                    <HyperlinkButton Content="{DynamicResource Multiplayer.Intro.Link.PaperConnectRepo}"
                                      NavigateUri="https://github.com/Round-Studio/PaperConnect" />
 
-                    <HyperlinkButton Content="EasyTier 官方网站"
+                    <HyperlinkButton Content="{DynamicResource Multiplayer.Intro.Link.EasyTierWebsite}"
                                      NavigateUri="https://easytier.cn" />
                 </StackPanel>
             </StackPanel>

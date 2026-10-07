@@ -43,7 +43,7 @@ public partial class GamePublicSync : ISettingPage
             },
             new()
             {
-                ItemName = "全局配置"
+                ItemName = I18nManager.Instance["Settings.Game.PublicSync.Title"]
             }
         };
     }

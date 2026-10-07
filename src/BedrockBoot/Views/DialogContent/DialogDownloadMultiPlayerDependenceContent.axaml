@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -12,9 +12,8 @@
             <StackPanel Margin="12,0,0,0"
                         VerticalAlignment="Center">
                 <TextBlock FontSize="14"
-                           Name="EasyTierProgressText">
-                    下载 EasyTier 联机依赖
-                </TextBlock>
+                           Name="EasyTierProgressText"
+                           Text="{DynamicResource Multiplayer.Dep.Download.EasyTier}" />
                 <ProgressBar IsIndeterminate="True"
                              Name="EasyTierProgressBar"
                              Margin="0,8,0,0"
@@ -28,9 +27,8 @@
             <StackPanel Margin="12,0,0,0"
                         VerticalAlignment="Center">
                 <TextBlock FontSize="14"
-                           Name="GravityConeProgressText">
-                    下载 GravityCone 联机依赖
-                </TextBlock>
+                           Name="GravityConeProgressText"
+                           Text="{DynamicResource Multiplayer.Dep.Download.GravityCone}" />
                 <ProgressBar IsIndeterminate="True"
                              Name="GravityConeProgressBar"
                              Margin="0,8,0,0"
@@ -41,8 +39,7 @@
         <TextBlock FontSize="12"
                    Name="StatusText"
                    Foreground="Gray"
-                   HorizontalAlignment="Left">
-            准备开始下载...
-        </TextBlock>
+                   HorizontalAlignment="Left"
+                   Text="{DynamicResource Multiplayer.Dep.Status.Ready}" />
     </StackPanel>
 </UserControl>

@@ -28,28 +28,28 @@
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="版本隔离优先级"
-                                          Description="设置对于不同启动器的版本隔离策略。"
+                                          Header="{DynamicResource Settings.Game.IsolationPriority.Title}"
+                                          Description="{DynamicResource Settings.Game.IsolationPriority.Desc}"
                                           Glyph="&#xE964;">
                 <ComboBox Width="200"
                           SelectedIndex="1"
                           Name="IsolationPriority"
                           SelectionChanged="IsolationPriority_OnSelectionChanged">
-                    <ComboBoxItem Content="标准" />
-                    <ComboBoxItem Content="优先" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Game.IsolationPriority.Standard}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Game.IsolationPriority.Priority}" />
                 </ComboBox>
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="隔离目录"
-                                          Description="选择不同的目录隔离策略"
+                                          Header="{DynamicResource Settings.Game.CatalogStrategy.Title}"
+                                          Description="{DynamicResource Settings.Game.CatalogStrategy.Desc}"
                                           Glyph="&#xEC25;">
                 <ComboBox Width="200"
                           Name="CatalogStrategy"
                           SelectionChanged="CatalogStrategy_OnSelectionChanged"
                           SelectedIndex="1">
-                    <ComboBoxItem Content="独立目录 (专属目录)" />
-                    <ComboBoxItem Content="与其他启动器共享" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Game.CatalogStrategy.Dedicated}" />
+                    <ComboBoxItem Content="{DynamicResource Settings.Game.CatalogStrategy.Shared}" />
                 </ComboBox>
             </onePointControls:SettingCard>
 
@@ -66,11 +66,11 @@
                 <TextBlock Margin="5,0"
                            FontWeight="Bold"
                            FontSize="14"
-                           Text="辅助功能" />
+                           Text="{DynamicResource Settings.Game.Group.Accessibility}" />
 
                 <onePointControls:SettingCard Margin="5, 0"
-                                              Header="游戏叠层"
-                                              Description="在游戏窗口内按下 Shift+Tab 以打开游戏叠层"
+                                              Header="{DynamicResource Settings.Game.Overlay.Title}"
+                                              Description="{DynamicResource Settings.Game.Overlay.Desc}"
                                               Glyph="&#xF156;">
                     <ToggleSwitch Name="IsOpenGameLayering"
                                   IsCheckedChanged="IsOpenGameLayering_OnIsCheckedChanged">
@@ -90,15 +90,15 @@
             <TextBlock Margin="5,0"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="全局" />
+                       Text="{DynamicResource Settings.Game.Group.Global}" />
 
             <onePointControls:SettingCard Margin="5, 0"
                                           IsClickable="True"
                                           Glyph="&#xECAF;"
                                           Name="PublicSyncBtn"
                                           Click="PublicSyncBtn_OnClick"
-                                          Header="全局配置"
-                                          Description="全局实例的游戏设置 (options.txt) 文件来源的设置" />
+                                          Header="{DynamicResource Settings.Game.PublicSync.Title}"
+                                          Description="{DynamicResource Settings.Game.PublicSync.Desc}" />
 
             <onePointControls:SettingCard Margin="5, 0"
                                           IsClickable="True"
@@ -115,8 +115,8 @@
 
             <onePointControls:SettingCard Margin="5, 0"
                                           Name="IsUseMultipleUsersCard"
-                                          Header="使用多账户"
-                                          Description="在 Windows 下使用全新的多账户模式进行游戏"
+                                          Header="{DynamicResource Settings.Game.MultipleUsers.Title}"
+                                          Description="{DynamicResource Settings.Game.MultipleUsers.Desc}"
                                           Glyph="&#xE716;">
                 <ToggleSwitch Name="IsUseMultipleUsers"
                               IsCheckedChanged="IsUseMultipleUsers_OnIsCheckedChanged">
@@ -148,8 +148,8 @@
 
             <onePointControls:SettingCard Margin="5, 0"
                                           Name="IsUseNeoLaunchBox"
-                                          Header="新启动方式"
-                                          Description="在 Linux 中使用新的启动方式，包含 XBOX 账户登录"
+                                          Header="{DynamicResource Settings.Game.NeoLaunch.Title}"
+                                          Description="{DynamicResource Settings.Game.NeoLaunch.Desc}"
                                           Glyph="&#xEBD2;">
                 <ToggleSwitch Name="IsUseNeoLaunchToggleSwitch"
                               IsEnabled="False"

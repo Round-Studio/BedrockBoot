@@ -45,7 +45,7 @@ public partial class GameBackup : ISettingPage
             },
             new()
             {
-                ItemName = "存档备份"
+                ItemName = I18nManager.Instance["Settings.Game.Backup.Title"]
             }
         };
 

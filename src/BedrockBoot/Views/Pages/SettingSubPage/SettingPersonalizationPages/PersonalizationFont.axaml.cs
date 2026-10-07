@@ -47,7 +47,7 @@ public partial class PersonalizationFont : ISettingPage
             },
             new()
             {
-                ItemName = "字体"
+                ItemName = I18nManager.Instance["Settings.Personalization.Font.Title"]
             }
         };
 

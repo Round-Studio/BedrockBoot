@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,7 +10,7 @@
                     Spacing="8">
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="背景" />
+                       Text="{DynamicResource Settings.Personalization.Background.Title}" />
 
             <onePointControls:SettingCard Header="{DynamicResource Settings.Background.Mode.Title}"
                                           Description="{DynamicResource Settings.Background.Mode.Desc}"
@@ -24,8 +24,8 @@
                     <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Accent}" />
                     <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Voronoi}" />
                     <ComboBoxItem Content="{DynamicResource Settings.Background.Mode.Bubble}" />
-                    <ComboBoxItem Name="LiveModel">桌面实况</ComboBoxItem>
-                    <ComboBoxItem Name="Default">默认</ComboBoxItem>
+                    <ComboBoxItem Name="LiveModel" Content="{DynamicResource Settings.Personalization.Background.Mode.Live}" />
+                    <ComboBoxItem Name="Default" Content="{DynamicResource Settings.Personalization.Background.Mode.Default}" />
                 </ComboBox>
             </onePointControls:SettingCard>
 
@@ -37,16 +37,16 @@
                                               IsClickable="True"
                                               Click="ImportBackgroundBtn_OnClick" />
 
-                <onePointControls:SettingCard Header="恢复默认背景图片"
-                                              Description="将背景图片恢复为默认设置"
+                <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Background.Restore.Title}"
+                                              Description="{DynamicResource Settings.Personalization.Background.Restore.Desc}"
                                               Glyph="&#xE74D;"
                                               IsClickable="True"
                                               Name="RestoreDefaultBackgroundBtn"
                                               Click="RestoreDefaultBackgroundBtn_OnClick" />
 
                 <onePointControls:SettingCard
-                    Header="动效背景"
-                    Description="使用类似 AppleMusic 播放器类似的背景样式"
+                    Header="{DynamicResource Settings.Personalization.Background.Animation.Title}"
+                    Description="{DynamicResource Settings.Personalization.Background.Animation.Desc}"
                     Glyph="&#xF159;"
                     IsClickable="False">
                     <ToggleSwitch Name="AnimationToggle"
@@ -65,17 +65,17 @@
                     </onePointControls:SettingCard>
 
                     <onePointControls:SettingCard
-                        Header="背景图片质量"
-                        Description="选择渲染质量 (越高越清晰，但所占用的内存就越大)"
+                        Header="{DynamicResource Settings.Personalization.Background.Quality.Title}"
+                        Description="{DynamicResource Settings.Personalization.Background.Quality.Desc}"
                         Glyph="&#xEF20;"
                         IsClickable="False">
                         <ComboBox Width="200"
                                   SelectedIndex="1"
                                   Name="ImageQuality"
                                   SelectionChanged="ImageQuality_OnSelectionChanged">
-                            <ComboBoxItem Content="低"></ComboBoxItem>
-                            <ComboBoxItem Content="中"></ComboBoxItem>
-                            <ComboBoxItem Content="高 (原始质量)"></ComboBoxItem>
+                            <ComboBoxItem Content="{DynamicResource Settings.Personalization.Background.Quality.Low}"></ComboBoxItem>
+                            <ComboBoxItem Content="{DynamicResource Settings.Personalization.Background.Quality.Medium}"></ComboBoxItem>
+                            <ComboBoxItem Content="{DynamicResource Settings.Personalization.Background.Quality.High}"></ComboBoxItem>
                         </ComboBox>
                     </onePointControls:SettingCard>
 
@@ -108,8 +108,8 @@
 
             <StackPanel Name="BackgroundMica"
                         Spacing="8">
-                <onePointControls:SettingCard Header="Mica 样式"
-                                              Description="选择一个 Mica 样式"
+                <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Background.Mica.Title}"
+                                              Description="{DynamicResource Settings.Personalization.Background.Mica.Desc}"
                                               Glyph="&#xF22C;">
                     <ComboBox Width="200"
                               Name="MicaTypeBox"
@@ -136,8 +136,8 @@
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard
-                Header="模糊化"
-                Description="启用此选项可以使实况背景模糊化"
+                Header="{DynamicResource Settings.Personalization.Background.LiveBlur.Title}"
+                Description="{DynamicResource Settings.Personalization.Background.LiveBlur.Desc}"
                 Glyph="&#xF5EF;"
                 Name="LiveBlurCard"
                 IsClickable="False">

@@ -56,7 +56,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 },
                 new()
                 {
-                    ItemName = "音频"
+                    ItemName = I18nManager.Instance["Settings.Personalization.Audio.Title"]
                 }
             };
 

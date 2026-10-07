@@ -57,7 +57,7 @@ public partial class UniversalDependencyUpdate : ISettingPage
             },
             new()
             {
-                ItemName = "依赖更新"
+                ItemName = I18nManager.Instance["Settings.Universal.Update.Dependency.Title"]
             }
         };
 

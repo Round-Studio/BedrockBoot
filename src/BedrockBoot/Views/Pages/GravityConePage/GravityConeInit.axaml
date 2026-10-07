@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,12 +8,11 @@
     <StackPanel Spacing="8"
                 Margin="0,0,20,0">
         <TextBlock FontWeight="Bold"
-                   FontSize="14">
-            初始化环境中...
-        </TextBlock>
+                   FontSize="14"
+                   Text="{DynamicResource Multiplayer.Init.Title}" />
         
         <DockPanel HorizontalSpacing="8">
-            <TextBlock Text="获取节点服务器"></TextBlock>
+            <TextBlock Text="{DynamicResource Multiplayer.Init.GetPeers}" />
             
             <ProgressBar HorizontalAlignment="Stretch"
                          VerticalAlignment="Center"
@@ -22,7 +21,7 @@
         </DockPanel>
         
         <DockPanel HorizontalSpacing="8">
-            <TextBlock Text="获取本机账户名"></TextBlock>
+            <TextBlock Text="{DynamicResource Multiplayer.Init.GetXboxUser}" />
         
             <ProgressBar HorizontalAlignment="Stretch"
                          VerticalAlignment="Center"
@@ -31,7 +30,7 @@
         </DockPanel>
         
         <DockPanel HorizontalSpacing="8">
-            <TextBlock Text="初始化联机核心"></TextBlock>
+            <TextBlock Text="{DynamicResource Multiplayer.Init.InitCore}" />
         
             <ProgressBar HorizontalAlignment="Stretch"
                          VerticalAlignment="Center"

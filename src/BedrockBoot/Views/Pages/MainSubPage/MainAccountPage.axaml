@@ -19,7 +19,7 @@
                                                 FontSize="28"
                                                 Margin="0"
                                                 FontWeight="Bold"
-                                                Text="账户管理" />
+                                                Text="{DynamicResource MainPage.Nav.AccountManager}" />
 
                 <Button Padding="12,8"
                         Height="32"
@@ -29,7 +29,7 @@
                         <onePointControls:FontIcon Glyph="&#xE8fa;"
                                                    VerticalAlignment="Center" />
                         <TextBlock Margin="4,0,0,0"
-                                   Text="关联 XBOX 账户" />
+                                   Text="{DynamicResource Account.Action.LinkXbox}" />
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -46,8 +46,8 @@
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="NoneCard"
-                         BigTitle="未关联任何账户"
-                         Message="当前未关联任何 XBOX 账户。&#10;请点击左上角关联账户以关联 XBOX 账户" />
+                         BigTitle="{DynamicResource Account.Empty.Title}"
+                         Message="{DynamicResource Account.Empty.Message}" />
         
         <StackPanel Grid.Row="1"
                     Margin="20,0,0,10"
@@ -55,7 +55,7 @@
                     Spacing="8">
             <ToggleSwitch Name="IsChooseAccountBeforeLaunch"
                           IsCheckedChanged="IsChooseAccountBeforeLaunch_OnIsCheckedChanged"></ToggleSwitch>
-            <TextBlock Text="在启动游戏前询问我以选择账户"
+            <TextBlock Text="{DynamicResource Account.Option.AskBeforeLaunch}"
                        VerticalAlignment="Center"></TextBlock>
         </StackPanel>
     </Grid>

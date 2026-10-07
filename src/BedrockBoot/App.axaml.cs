@@ -77,11 +77,11 @@ public class App : Application
         // 注册游戏启动与退出时的自动存档备份逻辑
         ILauncher.OnGameLaunched = version =>
         {
-            _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, "启动"));
+            _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, AutoBackupTriggerTiming.Launch));
         };
         ILauncher.OnGameExited = version =>
         {
-            _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, "退出"));
+            _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, AutoBackupTriggerTiming.Exit));
         };
     }
 

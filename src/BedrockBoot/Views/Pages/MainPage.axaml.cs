@@ -102,7 +102,7 @@ public partial class MainPage : UserControl
             RegisterTopItem(new TopBarItemInfo
             {
                 ItemGlyph = "\uE716",
-                ItemText = "账户管理",
+                ItemText = i18n["MainPage.Nav.AccountManager"],
                 Tag = "AccountManager",
                 Page = typeof(MainAccountPage)
             });
@@ -112,7 +112,7 @@ public partial class MainPage : UserControl
             RegisterTopItem(new TopBarItemInfo
             {
                 ItemGlyph = "\uE716",
-                ItemText = "账户管理",
+                ItemText = i18n["MainPage.Nav.AccountManager"],
                 Tag = "AccountManager",
                 Page = typeof(MainAccountPage)
             });

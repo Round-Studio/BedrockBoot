@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:view="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="220"
              x:Class="BedrockBoot.Views.Control.Widgets.AccountPanel">
     <UserControl.Styles>
@@ -83,6 +84,14 @@
                            Margin="6,0" />
 
         </ScrollViewer>
+                
+        <notice:InfoCard Grid.Row="2"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="NullCard"
+                         Margin="0,40"
+                         Message="还没登录账户"
+                         BigTitle="空"/>
 
         <Border Grid.Row="3"
                 Background="{DynamicResource PrimaryForegroundBrush}"

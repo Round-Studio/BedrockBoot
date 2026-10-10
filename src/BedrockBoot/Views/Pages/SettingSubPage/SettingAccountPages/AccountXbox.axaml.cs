@@ -91,6 +91,7 @@ public partial class AccountXbox : ISettingPage
                     MsAccountManager.Accounts!.Accounts.FindIndex(x => x.BUID == _msUserConfig.BUID));
                 MsAccountManager.AccountConfigEntity!.Save();
                 MainSettingPage.NavigateTo(new SettingAccount());
+                Models.Global.GlobalModel.MainWindow.UpdateAccount();
             },
             AccountButton = DialogButtons.CloseButton
         });

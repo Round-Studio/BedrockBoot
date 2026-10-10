@@ -45,6 +45,7 @@ public partial class AccountPanel : UserControl
         if (Core.Global.GlobalModel.Config.Data.IsUseMultipleUsers)
         {
             var users = MsAccountManager.Accounts?.Accounts;
+            NullCard.IsVisible = users.Count == 0;
             var selIndex = users.FindLastIndex(user => user.BUID == MsAccountManager.Accounts?.SelectUserBUID);
 
             AccountList.Items.Clear();

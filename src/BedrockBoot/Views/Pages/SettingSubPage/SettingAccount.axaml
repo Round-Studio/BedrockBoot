@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingAccount">
     <ScrollViewer>
@@ -19,9 +20,18 @@
                                           IsClickable="True"
                                           Glyph="&#xE8FA;" />
 
-            <WrapPanel Name="AccountPanel"
-                       HorizontalAlignment="Center"
-                       LineSpacing="8" ItemSpacing="8" />
+            <Grid>
+                <WrapPanel Name="AccountPanel"
+                           HorizontalAlignment="Center"
+                           LineSpacing="8" ItemSpacing="8" />
+                
+                <notice:InfoCard HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 Name="NullCard"
+                                 Margin="0,60"
+                                 Message="还没登录账户"
+                                 BigTitle="空"/>
+            </Grid>
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"

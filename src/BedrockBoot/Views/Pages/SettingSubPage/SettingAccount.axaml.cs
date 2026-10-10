@@ -56,6 +56,7 @@ public partial class SettingAccount : ISettingPage
         IsEdit = false;
         AccountPanel.Children.Clear();
         var users = MsAccountManager.Accounts.Accounts;
+        NullCard.IsVisible = users.Count == 0;
         users.ForEach(user =>
         {
             var item = new AccountCard(user);
@@ -119,5 +120,6 @@ public partial class SettingAccount : ISettingPage
             });
         }
         UpdateUi();
+        Models.Global.GlobalModel.MainWindow.UpdateAccount();
     }
 }

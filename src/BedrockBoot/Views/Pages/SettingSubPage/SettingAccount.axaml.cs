@@ -43,6 +43,11 @@ public partial class SettingAccount : ISettingPage
             }
         };
 
+#if LINUX
+        IsUseMSALAccountCard.IsVisible = false;
+        IsUseMultipleUsersCard.IsVisible = false;
+#endif
+
         UpdateUi();
     }
 

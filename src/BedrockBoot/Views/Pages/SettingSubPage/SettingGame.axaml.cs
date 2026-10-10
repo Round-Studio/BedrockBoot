@@ -56,9 +56,7 @@ public partial class SettingGame : ISettingPage
 
 #if LINUX
         IsolationCard.IsVisible = false;
-        IsUseMultipleUsersCard.IsVisible = false;
         HelperPanel.IsVisible = false;
-        IsUseMSALAccountCard.IsVisible = false;
         MouseLockBtn.IsVisible = false;
         ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
         IsUseNeoLaunchBox.IsVisible = true;

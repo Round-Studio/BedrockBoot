@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="https://github.com/avaloniaui"
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <x:String x:Key="LanguageName">日本語 - BedrockBoot 公式</x:String>
 
@@ -818,9 +818,6 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本体のデバッグモード</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">言語</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot の表示言語</x:String>
-    <x:String x:Key="Settings.Universal.Language.Chinese">中国語（簡体字）</x:String>
-    <x:String x:Key="Settings.Universal.Language.English">英語（米国）</x:String>
-    <x:String x:Key="Settings.Universal.Language.Japanese">日本語</x:String>
     <x:String x:Key="Settings.Universal.Group.Behavior">動作</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Title">ランチャー動作</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">ゲーム起動後のランチャーの動作</x:String>

@@ -835,9 +835,6 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本体调试模式</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">语言</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot 所显示的语言</x:String>
-    <x:String x:Key="Settings.Universal.Language.Chinese">中文（简体中文）</x:String>
-    <x:String x:Key="Settings.Universal.Language.English">英语（美国）</x:String>
-    <x:String x:Key="Settings.Universal.Language.Japanese">日语</x:String>
     <x:String x:Key="Settings.Universal.Group.Behavior">行为</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Title">启动器行为</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">启动器在游戏启动后的行为</x:String>

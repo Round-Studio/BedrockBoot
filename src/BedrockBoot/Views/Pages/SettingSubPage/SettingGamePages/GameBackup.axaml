@@ -50,11 +50,11 @@
                     <ComboBox Width="200"
                               Name="MaxCountBox"
                               SelectionChanged="MaxCountBox_OnSelectionChanged">
-                        <ComboBoxItem Content="3 份" />
-                        <ComboBoxItem Content="5 份" />
-                        <ComboBoxItem Content="10 份" />
-                        <ComboBoxItem Content="20 份" />
-                        <ComboBoxItem Content="不限制" />
+                        <ComboBoxItem Content="{DynamicResource Settings.Game.Backup.MaxCount.3}" />
+                        <ComboBoxItem Content="{DynamicResource Settings.Game.Backup.MaxCount.5}" />
+                        <ComboBoxItem Content="{DynamicResource Settings.Game.Backup.MaxCount.10}" />
+                        <ComboBoxItem Content="{DynamicResource Settings.Game.Backup.MaxCount.20}" />
+                        <ComboBoxItem Content="{DynamicResource Settings.Game.Backup.MaxCount.Unlimited}" />
                     </ComboBox>
                 </onePointControls:SettingCard>
 

@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -11,10 +11,10 @@
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="配置同步" />
+                       Text="{DynamicResource Settings.Game.PublicSync.Title}" />
             
-            <onePointControls:SettingCard Header="重置同步源"
-                                          Description="将当前设置的同步源实例设置为"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Game.PublicSync.Reset.Title}"
+                                          Description="{DynamicResource Settings.Game.PublicSync.Reset.Desc}"
                                           Glyph="&#xE72C;"
                                           IsClickable="True"
                                           Name="ResetBtn"

@@ -1,4 +1,4 @@
-﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,7 +14,7 @@
                                         HorizontalAlignment="Left"
                                         FontSize="28"
                                         FontWeight="Bold"
-                                        Text="多人联机" />
+                                        Text="{DynamicResource MainPage.Nav.Multiplayer}" />
     </entry:BedrockBootPage.HeaderView>
     <Grid>
         <Grid ColumnDefinitions="3*,7*"
@@ -23,35 +23,33 @@
                         Margin="20,0,0,0"
                         Spacing="8">
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    简述
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Multiplayer.Intro.Title}" />
 
-                <TextBlock Text="GravityCone 属于第三方开源软件，在使用过程中遇到问题请通过相关渠道进行反馈。"
+                <TextBlock Text="{DynamicResource Multiplayer.Intro.GravityConeDesc}"
                            TextWrapping="Wrap"
                            Opacity="0.8" />
 
-                <TextBlock Text="本联机基于协议 PaperConnect v2，使用 P2P 技术进行联机，连接成功后房间内用户将会互相连接，将不会使用第三方服务器转发流量。最终联机体验由网络环境决定"
+                <TextBlock Text="{DynamicResource Multiplayer.Intro.P2PDesc}"
                            TextWrapping="Wrap"
                            Opacity="0.8" />
 
-                <TextBlock Text="多人联机过程中，您务必遵循所在的国家与地区的全部法律法规。"
+                <TextBlock Text="{DynamicResource Multiplayer.Intro.ComplianceDesc}"
                            TextWrapping="Wrap"
                            Opacity="0.8" />
 
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    相关链接
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Multiplayer.Intro.LinksTitle}" />
 
                 <StackPanel>
-                    <HyperlinkButton Content="PaperConnect 联机协议"
+                    <HyperlinkButton Content="{DynamicResource Multiplayer.Intro.Link.Protocol}"
                                      NavigateUri="https://docs.roundstudio.top/docs/standard/paperconnect" />
 
-                    <HyperlinkButton Content="GravityCone 开源仓库"
+                    <HyperlinkButton Content="{DynamicResource Multiplayer.Intro.Link.GravityConeRepo}"
                                      NavigateUri="https://github.com/Tianpao/GravityCone" />
 
-                    <HyperlinkButton Content="EasyTier 官方网站"
+                    <HyperlinkButton Content="{DynamicResource Multiplayer.Intro.Link.EasyTierWebsite}"
                                      NavigateUri="https://easytier.cn" />
                 </StackPanel>
             </StackPanel>

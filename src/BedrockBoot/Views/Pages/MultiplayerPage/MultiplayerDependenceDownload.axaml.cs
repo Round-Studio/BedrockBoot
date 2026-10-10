@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Views.DialogContent;
@@ -34,9 +35,13 @@ public partial class MultiplayerDependenceDownload : UserControl
     private void DownloadBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogDownloadMultiPlayerDependenceContent();
+        var title = (Application.Current?.TryFindResource("Multiplayer.Dep.Dialog.Title", out var res) == true && res is string str)
+            ? str
+            : "下载联机依赖文件";
+
         DialogHost.Show(new DialogInfo
         {
-            Title = "下载联机依赖文件",
+            Title = title,
             Content = dialog
         });
     }

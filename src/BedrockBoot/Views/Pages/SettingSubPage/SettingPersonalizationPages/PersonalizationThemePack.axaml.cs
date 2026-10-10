@@ -53,7 +53,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 },
                 new()
                 {
-                    ItemName = "主题包"
+                    ItemName = I18nManager.Instance["Settings.Personalization.ThemePackManager.Title"]
                 }
             };
 

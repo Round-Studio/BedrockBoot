@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,11 +8,10 @@
     <StackPanel Spacing="8"
                 Margin="0,0,20,0">
         <TextBlock FontWeight="Bold"
-                   FontSize="14">
-            尚未安装 PaperConnect 需要的运行依赖，点击下方开始下载依赖
-        </TextBlock>
-        <onePointControls:SettingCard Header="开始下载"
-                                      Description="自动下载 PaperConnect 需要的依赖文件，包含 EasyTier"
+                   FontSize="14"
+                   Text="{DynamicResource Multiplayer.Dep.Notice}" />
+        <onePointControls:SettingCard Header="{DynamicResource Multiplayer.Dep.StartDownload.Title}"
+                                      Description="{DynamicResource Multiplayer.Dep.StartDownload.Desc}"
                                       Glyph="&#xE896;"
                                       IsClickable="True"
                                       Name="DownloadBtn"

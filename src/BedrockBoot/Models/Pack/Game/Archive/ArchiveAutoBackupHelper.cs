@@ -29,6 +29,12 @@ using OnePointUI.Avalonia.Base.Enum;
 
 namespace BedrockBoot.Models.Pack.Game.Archive;
 
+public enum AutoBackupTriggerTiming
+{
+    Launch,
+    Exit
+}
+
 public static class ArchiveAutoBackupHelper
 {
     private static readonly object LockObj = new();
@@ -37,16 +43,22 @@ public static class ArchiveAutoBackupHelper
     /// 检查指定实例中所有已修改的世界存档，并在后台执行自动备份
     /// </summary>
     /// <param name="versionConfig">当前实例配置</param>
-    /// <param name="triggerTiming">触发时机（例如 "启动" 或 "退出"）</param>
-    public static async Task AutoBackupModifiedArchivesAsync(VersionConfig versionConfig, string triggerTiming = "启动")
+    /// <param name="timing">触发时机（Launch 或 Exit）</param>
+    public static async Task AutoBackupModifiedArchivesAsync(VersionConfig versionConfig, AutoBackupTriggerTiming timing = AutoBackupTriggerTiming.Launch)
     {
         if (versionConfig == null) return;
 
         var config = BedrockBoot.Core.Global.GlobalModel.Config?.Data;
         if (config == null || !config.IsAutoBackupArchive) return;
 
-        if (triggerTiming == "启动" && !config.IsAutoBackupOnLaunch) return;
-        if (triggerTiming == "退出" && !config.IsAutoBackupOnExit) return;
+        if (timing == AutoBackupTriggerTiming.Launch && !config.IsAutoBackupOnLaunch) return;
+        if (timing == AutoBackupTriggerTiming.Exit && !config.IsAutoBackupOnExit) return;
+
+        var timingKey = timing == AutoBackupTriggerTiming.Launch
+            ? "Task.Archive.AutoBackup.Timing.Launch"
+            : "Task.Archive.AutoBackup.Timing.Exit";
+        var timingDefault = timing == AutoBackupTriggerTiming.Launch ? "启动" : "退出";
+        var triggerTiming = I18nManager.Instance[timingKey] ?? timingDefault;
 
         try
         {
@@ -68,7 +80,8 @@ public static class ArchiveAutoBackupHelper
                 if (!IsArchiveModified(info))
                     continue;
 
-                var backupName = $"自动备份 ({triggerTiming}) {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+                var prefix = I18nManager.Instance["Task.Archive.AutoBackup.Prefix"] ?? "自动备份";
+                var backupName = $"{prefix} ({triggerTiming}) {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
                 Console.WriteLine($@"[自动备份] 检测到存档已修改，正在自动备份: {info.Name} (UUID: {info.Uuid})");
 
                 try
@@ -86,14 +99,17 @@ public static class ArchiveAutoBackupHelper
 
             if (backedUpCount > 0 && config.IsAutoBackupNotice)
             {
-                var msg = $"已自动备份 {backedUpCount} 个已修改的世界存档。";
+                var title = I18nManager.Instance["Task.Archive.AutoBackup.Notice.Title"] ?? "自动存档备份";
+                var format = I18nManager.Instance["Task.Archive.AutoBackup.Notice.Message"] ?? "已自动备份 {0} 个已修改的世界存档。";
+                var msg = string.Format(format, backedUpCount);
+
                 Dispatcher.UIThread.Post(() =>
                 {
                     try
                     {
                         GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
                         {
-                            Title = "自动存档备份",
+                            Title = title,
                             Message = msg,
                             NoticeType = NoticeType.Info
                         });
@@ -176,8 +192,13 @@ public static class ArchiveAutoBackupHelper
                 var manifest = GlobalModel.ArchiveBackup.GetArchiveBackupsWhitUuid(archiveUuid);
                 if (manifest == null || manifest.Backups.Count == 0) return;
 
+                var currentPrefix = I18nManager.Instance["Task.Archive.AutoBackup.Prefix"] ?? "自动备份";
                 var autoBackups = manifest.Backups
-                    .Where(b => !string.IsNullOrEmpty(b.BackupName) && b.BackupName.StartsWith("自动备份"))
+                    .Where(b => !string.IsNullOrEmpty(b.BackupName) && (
+                        b.BackupName.StartsWith("自动备份") ||
+                        b.BackupName.StartsWith("Auto-Backup") ||
+                        b.BackupName.StartsWith("自動バックアップ") ||
+                        b.BackupName.StartsWith(currentPrefix)))
                     .OrderBy(b => b.BackupTime)
                     .ToList();
 

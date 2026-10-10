@@ -1,4 +1,4 @@
-﻿<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
+<entry:BedrockBootPage xmlns="https://github.com/avaloniaui"
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -42,8 +42,8 @@
                                               Name="FoundLoseFilesBtn"
                                               Click="FoundLoseFilesBtn_OnClick" />
 
-                <onePointControls:SettingCard Header="检测 SDK1.8 安装"
-                                              Description="检查系统是否安装游戏运行时之一 SDK1.8"
+                <onePointControls:SettingCard Header="{DynamicResource Tools.CheckSdk.Title}"
+                                              Description="{DynamicResource Tools.CheckSdk.Description}"
                                               Glyph="&#xE930;"
                                               IsClickable="True"
                                               Name="CheckSDK"
@@ -58,16 +58,16 @@
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
-                           Text="工具" />
+                           Text="{DynamicResource Tools.Group.Tools}" />
 
-                <onePointControls:SettingCard Header="存档转换"
-                                              Description="Java 存档与 Bedrock 存档互相转换（基于 Chunker，需要 Jvm 运行器）"
+                <onePointControls:SettingCard Header="{DynamicResource Tools.WorldShift.Title}"
+                                              Description="{DynamicResource Tools.WorldShift.Description}"
                                               Glyph="&#xEBD2;"
                                               Name="WorldShift"
                                               Click="WorldShift_OnClick"
                                               IsClickable="True" />
 
-                <onePointControls:SettingCard Description="将 Java 版的资源包转换为基岩版支持的资源包"
+                <onePointControls:SettingCard Description="{DynamicResource Tools.ResourcePackShift.Description}"
                                               Glyph="&#xE895;"
                                               Name="ResourcePackShift"
                                               Click="ResourcePackShift_OnClick"
@@ -75,15 +75,15 @@
                     <onePointControls:SettingCard.Header>
                         <StackPanel Orientation="Horizontal"
                                     Spacing="8">
-                            <TextBlock Text="资源包转换"></TextBlock>
+                            <TextBlock Text="{DynamicResource Tools.ResourcePackShift.Title}"></TextBlock>
                             <onePointControls:LabelBox Text="Beta"
                                                        VerticalAlignment="Center"></onePointControls:LabelBox>
                         </StackPanel>
                     </onePointControls:SettingCard.Header>
                 </onePointControls:SettingCard>
 
-                <onePointControls:SettingCard Header="翻译资源包"
-                                              Description="导入一个资源包，并翻译成中文"
+                <onePointControls:SettingCard Header="{DynamicResource Tools.TranslateResourcePack.Title}"
+                                              Description="{DynamicResource Tools.TranslateResourcePack.Description}"
                                               Glyph="&#xF2B7;"
                                               Name="TranslateResourcePack"
                                               Click="TranslateResourcePack_OnClick"

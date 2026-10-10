@@ -45,7 +45,13 @@
     <x:String x:Key="MainPage.Nav.Download">下载</x:String>
     <x:String x:Key="MainPage.Nav.Tools">工具</x:String>
     <x:String x:Key="MainPage.Nav.Multiplayer">多人联机</x:String>
+    <x:String x:Key="MainPage.Nav.AccountManager">账户管理</x:String>
     <x:String x:Key="MainPage.Nav.Setting">设置</x:String>
+
+    <x:String x:Key="Account.Action.LinkXbox">关联 XBOX 账户</x:String>
+    <x:String x:Key="Account.Empty.Title">未关联任何账户</x:String>
+    <x:String x:Key="Account.Empty.Message">当前未关联任何 XBOX 账户。&#10;请点击左上角关联账户以关联 XBOX 账户</x:String>
+    <x:String x:Key="Account.Option.AskBeforeLaunch">在启动游戏前询问我以选择账户</x:String>
 
     <x:String x:Key="MainPage.Status.NoInstance">无可用实例</x:String>
     <x:String x:Key="MainPage.Status.NoFolder">请先添加游戏文件夹</x:String>
@@ -576,17 +582,102 @@
     <x:String x:Key="Settings.Personalization.Group.Window">窗口</x:String>
     <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">使用系统标题栏</x:String>
     <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">使用系统自带的标题栏，并隐藏控制按钮</x:String>
+    <x:String x:Key="Settings.Personalization.Group.ThemePack">主题包</x:String>
+    <x:String x:Key="Settings.Personalization.UseThemePack.Title">使用主题包</x:String>
+    <x:String x:Key="Settings.Personalization.UseThemePack.Desc">是否使用 BedrockBoot 拓展主题包</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Title">导出主题包</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Desc">将当前主题导出为 BedrockBoot 主题包</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Tip">导出主题包仅可在背景类型为图片背景时使用。</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePackManager.Title">主题包管理</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePackManager.Desc">管理，设置所有已安装的 BedrockBoot 主题包</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Title">音频</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Desc">BedrockBoot 背景音乐</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Title">字体</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Desc">BedrockBoot 界面显示字体</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Title">启动按钮位置</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Desc">配置启动按钮和版本选择的位置</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Left">启动按钮在左侧</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Right">启动按钮在右侧</x:String>
+
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Title">音量</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Desc">背景音量设置。</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Tip">在任意页面中，按下 Ctrl + 滚动鼠标滚轮 就可以快速调整音量</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Choose.Title">选择背景音频</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Choose.Desc">选择 BedrockBoot 主页面所播放的音频文件</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Restore.Title">恢复默认背景音频</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Restore.Desc">将背景音频恢复为默认设置</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Play.Title">播放 BedrockBoot 背景音乐</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Play.Desc">设置是否播放背景音乐</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.Title">音频来源</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.Desc">BedrockBoot 背景音乐的来源</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.PreferThemePack">优先使用主题包</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.CustomOnly">仅选择音频</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.ThemePackOnly">仅主题包音频</x:String>
+
+    <x:String x:Key="Settings.Personalization.Font.Group.Font">界面字体</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Main.Title">首选字体</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Main.Desc">选择启动器显示的主要字体</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Fallback.Title">备选字体</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Fallback.Desc">当首选字体缺失字符时自动回退到此字体</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Group.Preview">预览</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Size">预览字号</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Text">预览文本</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Watermark">请输入预览文本...</x:String>
+
+    <x:String x:Key="Settings.Personalization.Background.Mode.Live">桌面实况</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mode.Default">默认</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Restore.Title">恢复默认背景图片</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Restore.Desc">将背景图片恢复为默认设置</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Animation.Title">动效背景</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Animation.Desc">使用类似 AppleMusic 播放器类似的背景样式</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Title">背景图片质量</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Desc">选择渲染质量 (越高越清晰，但所占用的内存就越大)</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Low">低</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Medium">中</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.High">高 (原始质量)</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mica.Title">Mica 样式</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mica.Desc">选择一个 Mica 样式</x:String>
+    <x:String x:Key="Settings.Personalization.Background.LiveBlur.Title">模糊化</x:String>
+    <x:String x:Key="Settings.Personalization.Background.LiveBlur.Desc">启用此选项可以使实况背景模糊化</x:String>
+
+    <x:String x:Key="Settings.Personalization.ThemePack.Desc1">导入他人分享给你的主题包以个性化 BedrockBoot</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Desc2">您也可以自己制作 BedrockBoot 主题包</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Action.Import">导入主题包</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Empty.Title">未安装任何主题</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Empty.Message">您还没安装任何主题包啊啊啊</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Loading.Message">翻箱倒柜</x:String>
 
     <x:String x:Key="Setting.Personalization.Home.Title">主页</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.Header">主页内容类型</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.None">空白 (None)</x:String>
     <x:String x:Key="Setting.Personalization.Home.Type.News">新闻 (News)</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.Widgets">小组件 (Widgets)</x:String>
 
     <x:String x:Key="Settings.Game.Group.Base">基础设置</x:String>
     <x:String x:Key="Settings.Game.Isolation.Title">版本隔离</x:String>
     <x:String x:Key="Settings.Game.Isolation.Desc">版本隔离使用的技术类型</x:String>
     <x:String x:Key="Settings.Game.Isolation.SymbolicLink">单一模式（Symbolic Link）</x:String>
     <x:String x:Key="Settings.Game.Isolation.HookSymbolicLink">混合模式（Hook + Symbolic Link）</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Title">版本隔离优先级</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Desc">设置对于不同启动器的版本隔离策略。</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Standard">标准</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Priority">优先</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Title">隔离目录</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Desc">选择不同的目录隔离策略</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Dedicated">独立目录 (专属目录)</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Shared">与其他启动器共享</x:String>
+    <x:String x:Key="Settings.Game.Group.Accessibility">辅助功能</x:String>
+    <x:String x:Key="Settings.Game.Overlay.Title">游戏叠层</x:String>
+    <x:String x:Key="Settings.Game.Overlay.Desc">在游戏窗口内按下 Shift+Tab 以打开游戏叠层</x:String>
+    <x:String x:Key="Settings.Game.Group.Global">全局</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Title">全局配置</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Desc">全局实例的游戏设置 (options.txt) 文件来源的设置</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Reset.Title">重置同步源</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Reset.Desc">重置当前设置的同步源实例</x:String>
+    <x:String x:Key="Settings.Game.MultipleUsers.Title">使用多账户</x:String>
+    <x:String x:Key="Settings.Game.MultipleUsers.Desc">在 Windows 下使用全新的多账户模式进行游戏</x:String>
+    <x:String x:Key="Settings.Game.NeoLaunch.Title">新启动方式</x:String>
+    <x:String x:Key="Settings.Game.NeoLaunch.Desc">在 Linux 中使用新的启动方式，包含 XBOX 账户登录</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Title">鼠标锁</x:String>
     <x:String x:Key="Settings.Game.MouseLock.Desc">防止鼠标越过游戏窗口边界，避免误触其他内容</x:String>
 	<x:String x:Key="Settings.Game.MouseLock.Main.Title">总开关</x:String>
@@ -662,6 +753,16 @@
     <x:String x:Key="Settings.Game.Backup.Notice.Desc">自动备份成功完成后，在启动器内弹出提示通知</x:String>
     <x:String x:Key="Settings.Game.Backup.OpenFolder.Title">打开备份文件夹</x:String>
     <x:String x:Key="Settings.Game.Backup.OpenFolder.Desc">在系统文件管理器中浏览所有已备份的数据</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.3">3 份</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.5">5 份 (推荐)</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.10">10 份</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.20">20 份</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Unlimited">不限制</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Notice.Title">自动存档备份</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Notice.Message">已自动备份 {0} 个已修改的世界存档。</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Prefix">自动备份</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Timing.Launch">启动</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Timing.Exit">退出</x:String>
 
     <x:String x:Key="Setting.Game.Title">游戏</x:String>
     <x:String x:Key="Setting.Game.Breadcrumb.Root">游戏</x:String>
@@ -682,6 +783,8 @@
     <x:String x:Key="Settings.Download.Group.Advanced">高级</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Title">软件更新</x:String>
     <x:String x:Key="Settings.Download.SoftwareUpdate.Desc">BedrockBoot 的更新设置</x:String>
+    <x:String x:Key="Settings.Download.FuzzySearch.Title">模糊匹配</x:String>
+    <x:String x:Key="Settings.Download.FuzzySearch.Desc">对搜索资源时的模糊匹配行为进行配置，启用后搜索结果会更丰富，但也会出现不相关的结果。该选项不影响搜索 Minecraft 的行为。</x:String>
     <x:String x:Key="Settings.Download.NetworkTest.Title">网络测试</x:String>
     <x:String x:Key="Settings.Download.NetworkTest.Desc">测试 BedrockBoot 所使用的全部 API 网络通讯延迟</x:String>
     <x:String x:Key="Settings.Download.NetworkTest.Action.Title">开始测试</x:String>
@@ -732,15 +835,30 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本体调试模式</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">语言</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot 所显示的语言</x:String>
-    <x:String x:Key="Settings.Universal.Language.Chinese">中文（简体中文）</x:String>
-    <x:String x:Key="Settings.Universal.Language.English">英语（美国）</x:String>
-    <x:String x:Key="Settings.Universal.Language.Japanese">日语</x:String>
     <x:String x:Key="Settings.Universal.Group.Behavior">行为</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Title">启动器行为</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">启动器在游戏启动后的行为</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.None">无</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Minimize">启动后最小化启动器</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Exit">启动后退出启动器</x:String>
+    <x:String x:Key="Settings.Universal.HardwareDecode.Title">硬件解码</x:String>
+    <x:String x:Key="Settings.Universal.HardwareDecode.Desc">设置安装游戏 (GDK) 时是否启用硬件解码，启用后可以提升安装速度，部分型号的 CPU 不支持此功能</x:String>
+    <x:String x:Key="Settings.Universal.BetaUI.Title">Beta 测试项</x:String>
+    <x:String x:Key="Settings.Universal.BetaUI.Desc">启用或关闭 BedrockBoot 的 Beta 测试项</x:String>
+    <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Title">发行说明</x:String>
+    <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Desc">关于当前版本的发行说明</x:String>
+    <x:String x:Key="Settings.Universal.Update.Changelog.Title">修改日志</x:String>
+    <x:String x:Key="Settings.Universal.Update.Changelog.Desc">当前版本与上个版本直接的修改日志</x:String>
+    <x:String x:Key="Settings.Universal.Update.Dependency.Title">依赖更新</x:String>
+    <x:String x:Key="Settings.Universal.Update.Dependency.Desc">检查并更新联机组件（EasyTier / GravityCone）</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">联机依赖组件</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">正在读取版本信息...</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Title">检查更新</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Desc">从 GitHub 获取联机组件的最新版本并与本地版本比对</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Action">检查更新</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Title">更新依赖</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Desc">下载并安装最新版本的联机组件（更新期间联机功能将被关闭）</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Action">立即更新</x:String>
 
     <x:String x:Key="Settings.Plugin.Manager.Title">插件管理</x:String>
     <x:String x:Key="Settings.Plugin.Manager.Desc">管理已安装的插件</x:String>
@@ -792,6 +910,15 @@
     <x:String x:Key="Tools.RecoverFiles.Description">用于找回因版本隔离导致的 存档 / 资源包 等文件丢失</x:String>
     <x:String x:Key="Tools.UninstallMc.Title">卸载本机已安装的 Minecraft</x:String>
     <x:String x:Key="Tools.UninstallMc.Description">用于卸载由本机已安装的 Minecraft 导致的错误</x:String>
+    <x:String x:Key="Tools.CheckSdk.Title">检测 SDK1.8 安装</x:String>
+    <x:String x:Key="Tools.CheckSdk.Description">检查系统是否安装游戏运行时之一 SDK1.8</x:String>
+    <x:String x:Key="Tools.Group.Tools">工具</x:String>
+    <x:String x:Key="Tools.WorldShift.Title">存档转换</x:String>
+    <x:String x:Key="Tools.WorldShift.Description">Java 存档与 Bedrock 存档互相转换（基于 Chunker，需要 Jvm 运行器）</x:String>
+    <x:String x:Key="Tools.ResourcePackShift.Title">资源包转换</x:String>
+    <x:String x:Key="Tools.ResourcePackShift.Description">将 Java 版的资源包转换为基岩版支持的资源包</x:String>
+    <x:String x:Key="Tools.TranslateResourcePack.Title">翻译资源包</x:String>
+    <x:String x:Key="Tools.TranslateResourcePack.Description">导入一个资源包，并翻译成中文</x:String>
     <x:String x:Key="Tools.Empty.Title">某野喔</x:String>
     <x:String x:Key="Tools.Empty.Message">工具箱内没有工具 awa&#x0A;可以催促开发者火速添加.jpg</x:String>
 
@@ -951,11 +1078,62 @@
     <x:String x:Key="ExceptionWindow.FatalError.Header">应用程序遇到了致命错误</x:String>
     <x:String x:Key="ExceptionWindow.FatalError.Message">BedrockBoot 遇到了一个致命错误，需要进行反馈。</x:String>
     <x:String x:Key="ExceptionWindow.Button.Export">导出错误报告</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Upload">上传日志</x:String>
     <x:String x:Key="ExceptionWindow.Button.Copy">复制错误信息</x:String>
     <x:String x:Key="ExceptionWindow.Button.Return">返回本体</x:String>
     <x:String x:Key="ExceptionWindow.Link.FAQ">BedrockBoot 常见问题</x:String>
     <x:String x:Key="ExceptionWindow.Link.Issues">Github Issues</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.Title">保存错误报告</x:String>
     <x:String x:Key="ExceptionWindow.SaveDialog.FileType">BedrockBoot 崩溃报告</x:String>
+
+    <!-- Multiplayer -->
+    <x:String x:Key="Multiplayer.Intro.Title">简述</x:String>
+    <x:String x:Key="Multiplayer.Intro.GravityConeDesc">GravityCone 属于第三方开源软件，在使用过程中遇到问题请通过相关渠道进行反馈。</x:String>
+    <x:String x:Key="Multiplayer.Intro.P2PDesc">本联机基于协议 PaperConnect v2，使用 P2P 技术进行联机，连接成功后房间内用户将会互相连接，将不会使用第三方服务器转发流量。最终联机体验由网络环境决定</x:String>
+    <x:String x:Key="Multiplayer.Intro.ComplianceDesc">多人联机过程中，您务必遵循所在国家与地区的全部法律法规。</x:String>
+    <x:String x:Key="Multiplayer.Intro.PaperConnectDesc">本联机基于协议 PaperConnect，转发基于 EasyTier</x:String>
+    <x:String x:Key="Multiplayer.Intro.PaperConnectP2PDesc">使用 P2P 技术进行联机，连接成功后房间内用户将会互相连接，将不会使用第三方服务器转发流量。最终联机体验由网络环境决定</x:String>
+    <x:String x:Key="Multiplayer.Intro.LinksTitle">相关链接</x:String>
+    <x:String x:Key="Multiplayer.Intro.DocsTitle">相关文档</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.Protocol">PaperConnect 联机协议</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.GravityConeRepo">GravityCone 开源仓库</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.PaperConnectRepo">PaperConnect 开源仓库</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.EasyTierWebsite">EasyTier 官方网站</x:String>
+
+    <x:String x:Key="Multiplayer.Dep.Notice">尚未安装 PaperConnect 需要的运行依赖，点击下方开始下载依赖</x:String>
+    <x:String x:Key="Multiplayer.Dep.StartDownload.Title">开始下载</x:String>
+    <x:String x:Key="Multiplayer.Dep.StartDownload.Desc">自动下载 PaperConnect 需要的依赖文件，包含 EasyTier</x:String>
+    <x:String x:Key="Multiplayer.Dep.Dialog.Title">下载联机依赖文件</x:String>
+    <x:String x:Key="Multiplayer.Dep.Download.EasyTier">下载 EasyTier 联机依赖</x:String>
+    <x:String x:Key="Multiplayer.Dep.Download.GravityCone">下载 GravityCone 联机依赖</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Ready">准备开始下载...</x:String>
+
+    <x:String x:Key="Multiplayer.Lobby.Title">联机大厅</x:String>
+    <x:String x:Key="Multiplayer.Lobby.TitleReady">联机大厅 (联机核心已初始化完毕)</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CreateRoom.Title">创建房间</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CreateRoom.Desc">创建一个你自己的房间，并邀请你的好友加入</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinRoom.Title">加入房间</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinRoom.Desc">加入你好友的房间，加入游戏</x:String>
+    <x:String x:Key="Multiplayer.Lobby.RoomCode">联机码</x:String>
+    <x:String x:Key="Multiplayer.Lobby.RoomCodeClickCopy">联机码 (点击下方复制)</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CopyRoomCode.Title">复制联机码</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CopyRoomCode.Desc">复制该房间的联机码，并邀请你的好友加入</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CloseRoom.Title">关闭房间</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CloseRoom.Desc">关闭该房间，并移除所有已连接的玩家</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ExitRoom.Title">退出房间</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ExitRoom.Desc">退出该房间</x:String>
+    <x:String x:Key="Multiplayer.Lobby.Exit.Title">退出</x:String>
+    <x:String x:Key="Multiplayer.Lobby.Exit.Desc">停止创建/加入房间并退出</x:String>
+    <x:String x:Key="Multiplayer.Lobby.HostCreatedTip">你已创建房间，现可邀请你的好友来加入。</x:String>
+    <x:String x:Key="Multiplayer.Lobby.GuestJoinedTip">你已加入房间，可启动游戏后加入</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ConnectedPlayers">已连接的玩家</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinedPlayers">已加入的玩家</x:String>
+    <x:String x:Key="Multiplayer.Lobby.HostBadge">房主</x:String>
+    <x:String x:Key="Multiplayer.Lobby.SearchingLanGame">搜索局域网游戏</x:String>
+
+    <x:String x:Key="Multiplayer.Init.Title">初始化环境中...</x:String>
+    <x:String x:Key="Multiplayer.Init.GetPeers">获取节点服务器</x:String>
+    <x:String x:Key="Multiplayer.Init.GetXboxUser">获取本机账户名</x:String>
+    <x:String x:Key="Multiplayer.Init.InitCore">初始化联机核心</x:String>
 
 </ResourceDictionary>

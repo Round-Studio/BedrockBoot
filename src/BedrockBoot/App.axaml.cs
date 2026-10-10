@@ -174,6 +174,12 @@ public class App : Application
 
             // BedrockbootUrlProtocol.ExecutePendingRequest();
         }
+#if ANDROID
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+        {
+            singleView.MainView = new MainWindowHost();
+        }
+#endif
 
         base.OnFrameworkInitializationCompleted();
     }

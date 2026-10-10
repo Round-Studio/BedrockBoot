@@ -19,7 +19,9 @@
 using System;
 using System.IO;
 using System.Threading;
+#if !ANDROID
 using NAudio.Wave;
+#endif
 
 namespace BedrockBoot.Models.Media;
 
@@ -27,6 +29,7 @@ public class MediaManager : IDisposable
 {
     public static MediaManager Instance { get; } = new MediaManager();
 
+#if !ANDROID
     /// <summary>
     /// 保护播放状态的锁。
     /// Play 由 UpdateTheme 的多个 Task.Run 并发调用，
@@ -207,12 +210,40 @@ public class MediaManager : IDisposable
         _audioFile?.Dispose();
         _audioFile = null;
     }
+#else
+    public bool Enabled { get; set; } = true;
+
+    public bool IsPlaying => false;
+
+    public string? CurrentFilePath { get; private set; }
+
+    public bool Loop { get; set; } = true;
+
+    public float Volume { get; set; } = 1.0f;
+
+    public void Play(string filePath)
+    {
+        CurrentFilePath = filePath;
+    }
+
+    public void Pause()
+    {
+    }
+
+    public void Resume()
+    {
+    }
+
+    public void Stop()
+    {
+    }
+
+    public void TogglePlayPause()
+    {
+    }
+#endif
 
     public void Dispose()
     {
-        lock (_gate)
-        {
-            StopInternal();
-        }
     }
 }

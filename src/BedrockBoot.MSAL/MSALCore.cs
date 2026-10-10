@@ -17,7 +17,9 @@
  */
 
 using Microsoft.Identity.Client;
+#if !ANDROID
 using Microsoft.Identity.Client.Broker;
+#endif
 
 namespace BedrockBoot.MSAL;
 
@@ -39,9 +41,14 @@ public class MSALCore
             .Create(ClientId)
             .WithAuthority(AzureCloudInstance.AzurePublic, "consumers")
             .WithRedirectUri(RedirectUri)
+#if ANDROID
+            .WithLogging((level, msg, containsPii) => { Console.WriteLine($"[MSAL][{level}] {msg}"); },
+                LogLevel.Verbose, enablePiiLogging: false)
+#else
             .WithBroker(new BrokerOptions(BrokerOptions.OperatingSystems.Windows))
             .WithLogging((level, msg, containsPii) => { Console.WriteLine($"[MSAL][{level}] {msg}"); },
                 LogLevel.Verbose, enablePiiLogging: false)
+#endif
             .Build();
 
     public MSALCore(nint hwnd = 0)

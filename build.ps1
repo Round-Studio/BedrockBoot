@@ -38,6 +38,7 @@ Write-Host " [*] Running dotnet publish, please wait..." -ForegroundColor Green
 try {
     dotnet publish $ProjectPath `
         -c $Configuration `
+        -f net10.0-windows10.0.19041.0 `
         -r $Runtime `
         -o $OutputPath `
         /p:PublishSingleFile=true `

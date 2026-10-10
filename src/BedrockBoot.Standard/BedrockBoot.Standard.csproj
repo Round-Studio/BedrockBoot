@@ -1,33 +1,37 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <TargetFrameworks>net10.0-windows10.0.19041.0;net10.0-android</TargetFrameworks>
+    </PropertyGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <TargetFrameworks>net10.0;net10.0-android</TargetFrameworks>
+    </PropertyGroup>
 
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-    </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+        <RuntimeIdentifier>android-x64</RuntimeIdentifier>
 
-    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
-        <DefineConstants>WINDOWS</DefineConstants>
     </PropertyGroup>
-
-    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-        <TargetFramework>net10.0</TargetFramework>
-        <DefineConstants>LINUX</DefineConstants>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-windows10.0.19041.0'">
+        <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0' AND $([MSBuild]::IsOSPlatform('Linux'))">
+        <DefineConstants>$(DefineConstants);LINUX</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Avalonia" Version="12.1.3" />
     </ItemGroup>
     
-    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows10.0.19041.0'">
         <PackageReference Include="BedrockLauncher.Core" Version="2.0.4.9" />
     </ItemGroup>
     
-    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android' OR ($([MSBuild]::IsOSPlatform('Linux')) AND '$(TargetFramework)' == 'net10.0')">
         <PackageReference Include="BedrockLauncher.Core.Linux" Version="1.0.0.4" />
     </ItemGroup>
 

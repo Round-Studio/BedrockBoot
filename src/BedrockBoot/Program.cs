@@ -239,8 +239,10 @@ internal sealed class Program
 		primemthrd.Name = "PriMemeWorkingSetMonitor";
 		primemthrd.Start();
 #endif
+#if !ANDROID
 		var appArgs = BedrockbootUrlProtocol.FilterStartupArgs(args).ToArray();
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(appArgs);
+#endif
     }
 
     private static void RebootWithRunas()
@@ -311,7 +313,9 @@ internal sealed class Program
     public static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<App>()
+#if !ANDROID
             .UsePlatformDetect()
+#endif
             .WithInterFont()
             .LogToTrace();
     }

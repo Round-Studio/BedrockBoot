@@ -204,6 +204,10 @@ public class CoreInitialize
 
     private static async Task InitBedrockCoreAsync()
     {
+#if ANDROID
+        Console.WriteLine(@"Android 平台无桌面游戏引擎，跳过核心初始化");
+        return;
+#endif
         try
         {
             PlatformCore.GetMsAccountConfig = () =>
@@ -273,6 +277,7 @@ public class CoreInitialize
             Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
                 BedrockBoot.Linux.Models.Game.EasyDownload.GetPackageUrls;
 #endif
+#if !ANDROID
             await PlatformCore.InstallAsync(new PlatformInitFrame()
             {
                 CoreInit = coreInitUnit,
@@ -284,6 +289,7 @@ public class CoreInitialize
                 MouseLockerType = mouseLockerType,
                 PackageUrlsProvider = packageUrlsProvider
             });
+#endif
             PlatformCore.CoreInit?.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
             PlatformCore.CoreInit?.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
         }
@@ -324,6 +330,7 @@ public class CoreInitialize
         });
     }
 
+    #if WINDOWS
     private static void HandleFileAssociations()
     {
 #if RELEASE
@@ -333,6 +340,7 @@ public class CoreInitialize
         OpenAgreement.RegisterAssociation();
 #endif
     }
+#endif
 
     private static async Task GetDevelopMode()
     {

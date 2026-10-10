@@ -17,6 +17,7 @@
  */
 
 using System;
+#if !ANDROID
 using BedrockBoot.Models.Global;
 using Microsoft.Win32;
 
@@ -94,3 +95,4 @@ public class OpenAgreement
         }
     }
 }
+#endif

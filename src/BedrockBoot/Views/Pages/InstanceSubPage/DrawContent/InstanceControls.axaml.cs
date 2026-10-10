@@ -29,7 +29,9 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
+#if !ANDROID
 using IWshRuntimeLibrary;
+#endif
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -167,6 +169,9 @@ public partial class InstanceControls : ISetting
 
     private bool CreateShortcutInSTAThread(string shortcutPath, string targetPath, string arguments)
     {
+#if ANDROID
+        return false;
+#else
         var success = false;
         Exception? threadException = null;
 
@@ -198,6 +203,7 @@ public partial class InstanceControls : ISetting
 
         if (threadException != null) throw threadException;
         return success;
+#endif
     }
 
     /// <summary>

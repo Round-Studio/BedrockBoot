@@ -65,6 +65,9 @@
   <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
   <Project Path="src/BedrockBoot.MSAL/BedrockBoot.MSAL.csproj" />
   <Project Path="src/BedrockBoot.Standard/BedrockBoot.Standard.csproj" />
+  <Project Path="src/Ava.Android/Ava.Android.csproj">
+    <Deploy />
+  </Project>
   <Project Path="src/BedrockBoot.Chunker/BedrockBoot.Chunker.csproj" />
   <Project Path="src/BedrockBoot.Core/BedrockBoot.Core.csproj" />
   <Project Path="src/BedrockBoot.WatchDog/BedrockBoot.WatchDog.csproj" />

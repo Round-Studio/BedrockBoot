@@ -27,7 +27,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+#if !ANDROID
 using Avalonia.Svg.Skia;
+#endif
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Style.Background.AnimationImage;
@@ -199,6 +201,7 @@ public partial class BackgroundView : UserControl
             }
             else if (style.StyleType == StyleType.Default)
             {
+#if !ANDROID
                 using var stream = AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/Svg/Background.svg"));
                 using var reader = new StreamReader(stream);
                 string svgString = await reader.ReadToEndAsync();
@@ -218,6 +221,7 @@ public partial class BackgroundView : UserControl
                     VerticalAlignment = VerticalAlignment.Stretch
                 });
                 BackgroundImage.IsVisible = true;
+#endif
             }
         }
         catch (Exception ex)

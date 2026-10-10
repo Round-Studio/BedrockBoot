@@ -10,16 +10,26 @@
         <StackPanel Margin="20,15"
                     Spacing="8">
             <StackPanel Orientation="Horizontal"
-                        Spacing="16">
+                        Spacing="10">
                 <widgets:LocalImageRenderWidget Width="108"
                                                 Height="108"
                                                 Name="AccountImage"/>
                 
-                <StackPanel VerticalAlignment="Bottom">
+                <StackPanel VerticalAlignment="Center">
+                    <Button HorizontalAlignment="Left"
+                            Name="UserBtn"
+                            Click="UserBtn_OnClick"
+                            Classes="NoBorder"
+                            Padding="8">
+                        <onePointControls:FontIcon Glyph="&#xE77B;"
+                                                   FontSize="28"></onePointControls:FontIcon>
+                    </Button>
                     <TextBlock Name="AccountName"
                                Text="AccountName"
+                               Margin="6,0"
                                FontSize="28"></TextBlock>
-                    <TextBlock Text="Xbox 账户"></TextBlock>
+                    <TextBlock Text="Xbox 账户"
+                               Margin="6,0"></TextBlock>
                 </StackPanel>
             </StackPanel>
             

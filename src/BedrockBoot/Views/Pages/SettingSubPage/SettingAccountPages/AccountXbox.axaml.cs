@@ -22,8 +22,10 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Account.Microsoft;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Entity.Account.Microsoft;
 using BedrockBoot.Standard.Interface;
+using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -92,5 +94,10 @@ public partial class AccountXbox : ISettingPage
             },
             AccountButton = DialogButtons.CloseButton
         });
+    }
+
+    private void UserBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        GlobalModel.MainWindow.OpenDraw(new DrawXboxLiveContent(_msUserConfig), $"Xbox Live 账户: {_msUserConfig.UserName}");
     }
 }

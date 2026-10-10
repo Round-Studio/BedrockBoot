@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
         xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
         mc:Ignorable="d" ClipToBounds="False"
         x:Class="BedrockBoot.Views.Control.Widgets.AccountCard">
     <Button.Styles>
@@ -12,50 +13,84 @@
             <Setter Property="Transitions">
                 <Transitions>
                     <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                    <ThicknessTransition Property="Margin" Duration="0:0:0.15" Easing="CubicEaseOut"/>
                 </Transitions>
             </Setter>
         </Style>
         <Style Selector="widgets|AccountCard:pressed">
-            <Setter Property="RenderTransform" Value="scale(0.8)"/>
+            <Setter Property="RenderTransform" Value="scale(0.92)"/>
         </Style>
     </Button.Styles>
-    <items:SteamCard Background="Transparent"
-                     HoverScale="1.1"
-                     ParallaxDepth="1.8">
-        <items:BorderCard Padding="0">
-            <Grid>
-                <Border Grid.Column="0"
-                        CornerRadius="6"
-                        HorizontalAlignment="Right"
-                        ClipToBounds="True">
-                    <widgets:LocalImageRenderWidget Name="AccountHeader1"
-                                                    Width="128" Height="128">
-                        <widgets:LocalImageRenderWidget.OpacityMask>
-                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                <GradientStop Color="#00FFFFFF" Offset="0"/>
-                                <GradientStop Color="#FFFFFFFF" Offset="1"/>
-                            </LinearGradientBrush>
-                        </widgets:LocalImageRenderWidget.OpacityMask>
-                    </widgets:LocalImageRenderWidget>
-                </Border>
-                <Grid ColumnDefinitions="Auto,*"
-                      VerticalAlignment="Top"
-                      ColumnSpacing="8"
-                      Margin="8">
-                    <widgets:LocalImageRenderWidget Grid.Column="0"
-                                                    Name="AccountHeader2"
-                                                    Width="48" Height="48"/>
+    <Grid>
+        <items:SteamCard Background="Transparent"
+                         HoverScale="0.95"
+                         ParallaxDepth="1.8">
+            <items:BorderCard Padding="0"
+                              BorderOpacity="1">
+                <Grid>
+                    <Border Grid.Column="0"
+                            CornerRadius="6"
+                            HorizontalAlignment="Right"
+                            Width="180" Height="180"
+                            ClipToBounds="True">
+                        <Grid>
+                            <widgets:LocalImageRenderWidget Name="AccountHeader1">
+                                <widgets:LocalImageRenderWidget.OpacityMask>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                        <GradientStop Color="#00FFFFFF" Offset="0"/>
+                                        <GradientStop Color="#FFFFFFFF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </widgets:LocalImageRenderWidget.OpacityMask>
+                            </widgets:LocalImageRenderWidget>
+                            
+                            <Panel Margin="0,0,12,0">
+                                <Border Padding="8,12"
+                                        Background="Black"
+                                        Opacity="0.8"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        CornerRadius="50"
+                                        Margin="0,0,14,0">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="10"/>
+                                    </Border.Effect>
+                                </Border>
+                            
+                                <onePointControls:FontIcon Glyph="&#xE76C;" 
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="White"
+                                                           Margin="0,0,16,0"/>
+                            </Panel>
+                        </Grid>
+                    </Border>
+                    <Grid ColumnDefinitions="Auto,*"
+                          VerticalAlignment="Top"
+                          ColumnSpacing="8"
+                          Margin="16">
+                        <widgets:LocalImageRenderWidget Grid.Column="0"
+                                                        Name="AccountHeader2"
+                                                        Width="48" Height="48"/>
+                        
+                        <StackPanel Grid.Column="1"
+                                    Width="280"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="Xbox Live"></TextBlock>
+                            <TextBlock Name="AccountName"
+                                       Text="AccountName"
+                                       FontSize="18"></TextBlock>
+                        </StackPanel>
+                    </Grid>
                     
-                    <StackPanel Grid.Column="1"
-                                Width="220"
-                                Spacing="6">
-                        <TextBlock Name="AccountName"
-                                   Text="AccountName"
-                                   FontSize="16"></TextBlock>
-                        <TextBlock Text="XBOX Live"></TextBlock>
+                    <StackPanel HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Margin="16">
+                        <TextBlock Text="XUID"
+                                   IsVisible="False"
+                                   Opacity="0.6"></TextBlock>
                     </StackPanel>
                 </Grid>
-            </Grid>
-        </items:BorderCard>
-    </items:SteamCard>
+            </items:BorderCard>
+        </items:SteamCard>
+    </Grid>
 </Button>

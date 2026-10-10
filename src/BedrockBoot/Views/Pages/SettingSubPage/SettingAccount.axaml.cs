@@ -16,14 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
+using BedrockBoot.Core.Global;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Widgets;
+using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Pages.SettingSubPage.SettingAccountPages;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 
@@ -40,7 +43,76 @@ public partial class SettingAccount : ISettingPage
             }
         };
 
+        UpdateUi();
+    }
+
+    private void UpdateUi()
+    {
+        IsEdit = false;
+        AccountPanel.Children.Clear();
         var users = MsAccountManager.Accounts.Accounts;
-        users.ForEach(user => AccountPanel.Children.Add(new AccountCard(user)));
+        users.ForEach(user =>
+        {
+            var item = new AccountCard(user);
+            item.Click += (s, e) =>
+            {
+                MainSettingPage.NavigateTo(new AccountXbox(user));
+            };
+            AccountPanel.Children.Add(item);
+        });
+        IsUseMultipleUsers.IsChecked = GlobalModel.Config.Data.IsUseMultipleUsers;
+        IsUseMSALAccount.IsChecked = GlobalModel.Config.Data.IsUseMSALAccount;
+        IsAskMeBeforeLaunch.IsChecked = GlobalModel.Config.Data.IsChooseAccountBeforeLaunch;
+
+        IsEdit = true;
+    }
+
+    private void IsUseMultipleUsers_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsUseMultipleUsers = (bool)IsUseMultipleUsers.IsChecked!;
+            GlobalModel.Config.Save();
+
+            Models.Global.GlobalModel.MainWindow.SetReboot();
+        }
+    }
+
+    private void IsUseMSALAccount_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsUseMSALAccount = (bool)IsUseMSALAccount.IsChecked!;
+            GlobalModel.Config.Save();
+        }
+    }
+
+    private void IsAskMeBeforeLaunch_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsChooseAccountBeforeLaunch = (bool)IsAskMeBeforeLaunch.IsChecked!;
+            GlobalModel.Config.Save();
+        }
+    }
+
+    private async void AddAccountBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await MsAccountManager.LoginAccount();
+        }
+        catch (Exception exception)
+        {
+            _ = DialogHost.Close();
+            Console.WriteLine($@"登录发生错误 {exception}");
+            DialogHost.Show(new()
+            {
+                Title = "发生错误",
+                Content = "登录过程中发生错误，请检查网络连接并重试。",
+                CloseButtonText = "确定"
+            });
+        }
+        UpdateUi();
     }
 }

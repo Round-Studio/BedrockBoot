@@ -15,12 +15,44 @@
             <onePointControls:SettingCard Header="关联 XBOX 账户"
                                           Description="关联一个新的 XBOX 账户以使用启动器的账户功能"
                                           Name="AddAccountBtn"
+                                          Click="AddAccountBtn_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE8FA;" />
-            
+
             <WrapPanel Name="AccountPanel"
-                       LineSpacing="8"
-                       ItemSpacing="8"></WrapPanel>
+                       HorizontalAlignment="Center"
+                       LineSpacing="8" ItemSpacing="8" />
+            
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="高级设置" />
+
+            <onePointControls:SettingCard Name="IsAskMeBeforeLaunchCard"
+                                          Header="在启动游戏前选择账户"
+                                          Description="在启动器启动游戏前询问我以选择需要使用的账户"
+                                          Glyph="&#xE8B0;">
+                <ToggleSwitch Name="IsAskMeBeforeLaunch"
+                              IsCheckedChanged="IsAskMeBeforeLaunch_OnIsCheckedChanged">
+                </ToggleSwitch>
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Name="IsUseMultipleUsersCard"
+                                          Header="{DynamicResource Settings.Game.MultipleUsers.Title}"
+                                          Description="{DynamicResource Settings.Game.MultipleUsers.Desc}"
+                                          Glyph="&#xE716;">
+                <ToggleSwitch Name="IsUseMultipleUsers"
+                              IsCheckedChanged="IsUseMultipleUsers_OnIsCheckedChanged">
+                </ToggleSwitch>
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Name="IsUseMSALAccountCard"
+                                          Header="MSAL 验证"
+                                          Description="在 Windows 下使用 MSAL 验证流程进行账户验证"
+                                          Glyph="&#xF32A;">
+                <ToggleSwitch Name="IsUseMSALAccount"
+                              IsCheckedChanged="IsUseMSALAccount_OnIsCheckedChanged">
+                </ToggleSwitch>
+            </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

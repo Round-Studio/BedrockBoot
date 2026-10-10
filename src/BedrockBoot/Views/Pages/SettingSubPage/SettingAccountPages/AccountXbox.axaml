@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingAccountPages.AccountXbox">
+    <ScrollViewer>
+        <StackPanel Margin="20,15"
+                    Spacing="8">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="16">
+                <widgets:LocalImageRenderWidget Width="108"
+                                                Height="108"
+                                                Name="AccountImage"/>
+                
+                <StackPanel VerticalAlignment="Bottom">
+                    <TextBlock Name="AccountName"
+                               Text="AccountName"
+                               FontSize="28"></TextBlock>
+                    <TextBlock Text="Xbox 账户"></TextBlock>
+                </StackPanel>
+            </StackPanel>
+            
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="基本" />
+
+            <onePointControls:SettingCard Header="删除此档案"
+                                          Description="在启动器中删除此账户档案"
+                                          Name="DeleteAccountBtn"
+                                          Click="DeleteAccountBtn_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xE74D;" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -14,6 +14,6 @@
     </entry:BedrockBootPage.HeaderView>
     <Grid>
         <navigation:NavigationFrame Name="SettingFrame" 
-                                    Margin="0,0,0,15"/>
+                                    Margin="0,0,0,0"/>
     </Grid>
 </entry:BedrockBootPage>

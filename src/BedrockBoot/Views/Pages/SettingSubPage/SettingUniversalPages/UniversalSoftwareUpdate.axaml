@@ -28,6 +28,7 @@
                               SelectionChanged="UpdateTypeBox_OnSelectionChanged">
                         <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Release}" />
                         <ComboBoxItem Content="{DynamicResource Settings.Universal.Update.Channel.Preview}" />
+                        <ComboBoxItem Content="Commit (每次提交的版本，需登录)" />
                     </ComboBox>
                 </onePointControls:SettingCard>
 

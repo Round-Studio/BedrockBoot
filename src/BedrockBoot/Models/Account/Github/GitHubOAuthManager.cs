@@ -20,13 +20,17 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Entity;
+using Octokit;
 using OnePointUI.Avalonia.Style.Core;
+using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Account.Github;
 
@@ -39,7 +43,7 @@ public class GitHubOAuthManager
     private const string CallbackPath = "/auth/github/callback";
     private string RedirectUri => $"http://127.0.0.1:{CallbackPort}{CallbackPath}";
 
-    public async Task<string> LoginAsync()
+    public async Task<GithubAccountInfo> LoginAsync()
     {
         using var listener = new HttpListener();
         listener.Prefixes.Add($"http://127.0.0.1:{CallbackPort}/");
@@ -63,7 +67,6 @@ public class GitHubOAuthManager
         var responseHtml = await new JsonResourceEntity()
             .ReadTextResourceAsync("avares://BedrockBoot/Assets/Web/LoginFinish.html");
 
-        // 获取颜色值
         var colors = await GetColorsOnUIThreadAsync();
 
         responseHtml = responseHtml
@@ -88,7 +91,21 @@ public class GitHubOAuthManager
         if (string.IsNullOrEmpty(code) || returnedState != state)
             throw new InvalidOperationException("Invalid callback.");
 
-        return await ExchangeCodeForTokenAsync(code);
+        var token = await ExchangeCodeForTokenAsync(code);
+        var client = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+        client.Credentials = new Credentials(token);
+
+        var user = await client.User.Current();
+        var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
+        conf.Data = new GithubAccountInfo()
+        {
+            UserImage = user.AvatarUrl,
+            UserName = user.Name,
+            UserToken = token
+        };
+        conf.Save();
+
+        return conf.Data;
     }
 
     private async Task<string> ExchangeCodeForTokenAsync(string code)
@@ -205,4 +222,11 @@ internal class ColorValues
     public string AccentBorderBrush { get; set; } = "#000000";
     public string AccentBackgroundBrush { get; set; } = "#000000";
     public string AccentBackgroundOverBrush { get; set; } = "#000000";
+}
+
+public class GithubAccountInfo
+{
+    [JsonPropertyName("userToken")] public string UserToken { get; set; }
+    [JsonPropertyName("userName")] public string UserName { get; set; }
+    [JsonPropertyName("userImage")] public string UserImage { get; set; }
 }

@@ -22,5 +22,6 @@ public enum UpdateType
 {
     Release,
     Preview,
+    Commit,
     Debug,
 }

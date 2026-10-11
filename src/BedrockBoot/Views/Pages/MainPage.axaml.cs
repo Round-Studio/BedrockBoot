@@ -169,13 +169,18 @@ public partial class MainPage : UserControl
     {
         try
         {
-            var result = await CheckUpdate.Update();
+            var result = await CheckUpdate.CheckAsync();
             if (result != null)
             {
                 var panel = new StackPanel();
-                var controls =
-                    HtmlToControlConverter.ConvertHtmlToControls(result.Body);
+
+                var body = result.Source == UpdateSource.Release
+                    ? result.Release?.Body
+                    : result.WorkflowRun?.HeadCommit?.Message;
+
+                var controls = HtmlToControlConverter.ConvertHtmlToControls(body);
                 foreach (var control in controls) panel.Children.Add(control);
+
                 DialogHost.Show(new DialogInfo
                 {
                     Content = new ScrollViewer()
@@ -184,7 +189,7 @@ public partial class MainPage : UserControl
                         Padding = new Thickness(10, 0),
                         HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden
                     },
-                    Title = string.Format(i18n["MainPage.Update.NewVersion"], result.TagName),
+                    Title = string.Format(i18n["MainPage.Update.NewVersion"], result.DisplayName),
                     CloseButtonText = i18n["MainPage.Update.Action.Now"],
                     PrimaryButtonText = i18n["Shared.Action.Cancel"],
                     CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }

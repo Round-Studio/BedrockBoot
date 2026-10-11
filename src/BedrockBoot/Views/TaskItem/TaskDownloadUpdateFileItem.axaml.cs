@@ -28,9 +28,12 @@ using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Download;
+using BedrockBoot.Models;
+using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
+using Round.SDK.Entity;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 using Path = System.IO.Path;
 
@@ -70,36 +73,56 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         InitializeComponent();
     }
 
-    public TaskDownloadUpdateFileItem(Release release) : this()
+    public TaskDownloadUpdateFileItem(UpdateCheckResult result) : this()
     {
-        Release = release;
-        _taskTitle = string.Format(I18nManager.Instance["Task.Update.Title.Format"], release.TagName);
+        Result = result;
+        _taskTitle = string.Format(I18nManager.Instance["Task.Update.Title.Format"], result.DisplayName);
     }
 
-    public Release Release { get; set; } = null!;
+    public UpdateCheckResult Result { get; set; } = null!;
 
     public void Update(Action cancelCallBack)
     {
         _cancelCallBack = cancelCallBack;
         CardTitle.Text = _taskTitle;
 
-        var asset = SelectPreferredAsset();
-        if (asset == null)
-        {
-            Console.WriteLine(@"未找到适用于当前平台的更新资源");
-            return;
-        }
-
-        Directory.CreateDirectory(PathsList.UpdatePath);
-
-        var downloadUrl = asset.BrowserDownloadUrl;
-        var downloadPath = Path.Combine(PathsList.UpdatePath, asset.Name);
-
         _cts = new CancellationTokenSource();
         var token = _cts.Token;
 
         Task.Run(async () =>
         {
+            string downloadUrl;
+            string assetName;
+
+            if (Result.Source == UpdateSource.Release)
+            {
+                var asset = SelectPreferredAsset();
+                if (asset == null)
+                {
+                    Console.WriteLine(@"未找到适用于当前平台的更新资源");
+                    return;
+                }
+
+                downloadUrl = asset.BrowserDownloadUrl;
+                assetName = asset.Name;
+            }
+            else
+            {
+                var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
+                var artifact = await SelectPreferredArtifactAsync(conf.Data.UserToken);
+                if (artifact == null)
+                {
+                    Console.WriteLine(@"未找到适用于当前平台的 Action 产物");
+                    return;
+                }
+
+                downloadUrl = artifact.ArchiveDownloadUrl;
+                assetName = $"{artifact.Name}.zip";
+            }
+
+            Directory.CreateDirectory(PathsList.UpdatePath);
+            var downloadPath = Path.Combine(PathsList.UpdatePath, assetName);
+
             var download = new GithubFilesDownloader(
                 GlobalModel.Config.Data.DownloadChunkCount,
                 1024);
@@ -129,16 +152,35 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
             if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))
                 throw new FileNotFoundException("无法定位当前程序，不能启动更新引导流程", _currentExecutablePath);
 
+            if (Result.Source == UpdateSource.Action)
+            {
+                var extractDir = Path.Combine(PathsList.UpdatePath, "extracted");
+                if (Directory.Exists(extractDir))
+                    Directory.Delete(extractDir, true);
+                Directory.CreateDirectory(extractDir);
+                System.IO.Compression.ZipFile.ExtractToDirectory(downloadPath, extractDir);
+
+                var exe = Directory.GetFiles(extractDir, "*", SearchOption.AllDirectories)
+                    .FirstOrDefault(f =>
+                        OperatingSystem.IsWindows()
+                            ? f.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                            : f.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase));
+
+                if (exe == null)
+                    throw new FileNotFoundException("解压后未找到可执行文件", extractDir);
+
+                downloadPath = exe;
+            }
+
             AppUpdater.EnsureExecutableForCurrentPlatform(downloadPath);
 
-            // 下载完成后，启动新版本时使用 -updatev2 参数
             var startInfo = new ProcessStartInfo
             {
                 FileName = _currentExecutablePath,
                 UseShellExecute = false
             };
             startInfo.ArgumentList.Add("-updatev2");
-            startInfo.ArgumentList.Add(downloadPath);  // 参数是新文件路径
+            startInfo.ArgumentList.Add(downloadPath);
 
             Process.Start(startInfo);
 
@@ -147,7 +189,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         }, token);
     }
 
-    public static void Update(Release release)
+    public static void Update(UpdateCheckResult result)
     {
         Models.Global.GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
@@ -156,7 +198,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
             NoticeType = NoticeType.Info
         });
 
-        var body = new TaskDownloadUpdateFileItem(release);
+        var body = new TaskDownloadUpdateFileItem(result);
         var taskId = Models.Global.GlobalModel.TaskManager.AddTask(body);
 
         body.Update(() => Models.Global.GlobalModel.TaskManager.RemoveTask(taskId));
@@ -168,13 +210,9 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         _cancelCallBack.Invoke();
     }
 
-    /// <summary>
-    ///     根据当前平台选择可直接替换的发行资源。
-    ///     Windows 选择单文件 .exe，Linux 选择可直接启动的 .AppImage。
-    /// </summary>
     private ReleaseAsset? SelectPreferredAsset()
     {
-        var assets = Release.Assets.ToList();
+        var assets = Result.Release?.Assets.ToList() ?? new();
         if (assets.Count == 0)
             return null;
 
@@ -193,6 +231,39 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                        asset.Name.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase));
 
         return null;
+    }
+
+    private async Task<Artifact?> SelectPreferredArtifactAsync(string? userToken = null)
+    {
+        var run = Result.WorkflowRun;
+        if (run == null)
+            return null;
+
+        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+
+        if (!string.IsNullOrEmpty(userToken))
+            github.Credentials = new Credentials(userToken);
+
+        var artifacts = await github.Actions.Artifacts.ListWorkflowArtifacts(
+            "Round-Studio", "BedrockBoot", run.Id);
+
+        var list = artifacts.Artifacts.ToList();
+        if (list.Count == 0)
+            return null;
+
+        if (OperatingSystem.IsWindows())
+            return list.FirstOrDefault(a =>
+                       a.Name.Contains("win", StringComparison.OrdinalIgnoreCase))
+                   ?? list.FirstOrDefault(a =>
+                       a.Name.Contains("windows", StringComparison.OrdinalIgnoreCase))
+                   ?? list.FirstOrDefault();
+
+        if (OperatingSystem.IsLinux())
+            return list.FirstOrDefault(a =>
+                       a.Name.Contains("linux", StringComparison.OrdinalIgnoreCase))
+                   ?? list.FirstOrDefault();
+
+        return list.FirstOrDefault();
     }
 
     private static string GetCurrentLauncherPath()

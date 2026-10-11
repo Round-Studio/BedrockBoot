@@ -18,15 +18,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia.Interactivity;
-using BedrockBoot.Core.Global;
+using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Account.Microsoft;
+using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingAccountPages;
+using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Entity;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 
@@ -51,7 +57,7 @@ public partial class SettingAccount : ISettingPage
         UpdateUi();
     }
 
-    private void UpdateUi()
+    private async Task UpdateUi()
     {
         IsEdit = false;
         AccountPanel.Children.Clear();
@@ -69,6 +75,30 @@ public partial class SettingAccount : ISettingPage
         IsUseMultipleUsers.IsChecked = GlobalModel.Config.Data.IsUseMultipleUsers;
         IsUseMSALAccount.IsChecked = GlobalModel.Config.Data.IsUseMSALAccount;
         IsAskMeBeforeLaunch.IsChecked = GlobalModel.Config.Data.IsChooseAccountBeforeLaunch;
+        
+        var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
+        if (conf.Data != null)
+        {
+            if (string.IsNullOrEmpty(conf.Data.UserToken))
+            {
+                LoginInGithub.IsVisible = true;
+                GithubAccount.IsVisible = false;
+            }
+            else
+            {
+                LoginInGithub.IsVisible = false;
+                GithubAccount.IsVisible = true;
+
+                GithubAccount.Header = conf.Data.UserName;
+                GithubAccount.ImageIcon = await (new ImageLoader()).LoadIconAsync(conf.Data.UserImage);
+                GithubAccount.IsFontIcon = false;
+            }
+        }
+        else
+        {
+            LoginInGithub.IsVisible = true;
+            GithubAccount.IsVisible = false;
+        }
 
         IsEdit = true;
     }
@@ -121,5 +151,13 @@ public partial class SettingAccount : ISettingPage
         }
         UpdateUi();
         Models.Global.GlobalModel.MainWindow.UpdateAccount();
+    }
+
+    private async void LoginInGithub_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var githubClient = new GitHubOAuthManager();
+        await githubClient.LoginAsync();
+        
+        UpdateUi();
     }
 }

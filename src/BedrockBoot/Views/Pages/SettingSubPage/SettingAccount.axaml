@@ -35,6 +35,23 @@
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
+                       Text="Github 账户" />
+            
+            <onePointControls:SettingCard Header="登录 Github"
+                                          Description="登录到 Github 以使用更多功能"
+                                          Name="LoginInGithub"
+                                          Click="LoginInGithub_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xE8FA;" />
+            
+            <onePointControls:SettingCard Header="Github Account"
+                                          Description="您的 Github 账户"
+                                          Name="GithubAccount"
+                                          IsClickable="True"
+                                          Glyph="&#xE77B;" />
+            
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
                        Text="高级设置" />
 
             <onePointControls:SettingCard Name="IsAskMeBeforeLaunchCard"

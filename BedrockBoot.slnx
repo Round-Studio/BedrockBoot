@@ -17,9 +17,6 @@
     <Project Path="src/CrashStackAnalyzer/CrashStackAnalyzer.Console/CrashStackAnalyzer.Console.csproj" />
     <Project Path="src/CrashStackAnalyzer/CrashStackAnalyzer/CrashStackAnalyzer.csproj" />
   </Folder>
-  <Folder Name="/Dependence/Linux/">
-    <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
-  </Folder>
   <Folder Name="/Dependence/LiteSkinViewer/">
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.2D.Simple/LiteSkinViewer.2D.Simple.csproj" />
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.2D/LiteSkinViewer.2D.csproj" />
@@ -51,6 +48,9 @@
     <Project Path="src/Wallpaper/Wallpaper.vcxproj" Id="2329001c-fb5d-4916-a8e9-776aed7354e4">
       <Platform Project="Win32" />
     </Project>
+  </Folder>
+  <Folder Name="/Linux/">
+    <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
   </Folder>
   <Folder Name="/Platform.Core/">
     <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />

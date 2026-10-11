@@ -24,6 +24,8 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Views.Control.Items.Xbox;
 using BedrockBoot.Views.Pages;
+using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Pages.SettingSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;
 
 namespace BedrockBoot.Views.Control.Widgets;
@@ -43,6 +45,7 @@ public partial class AccountPanel : UserControl
         if (Core.Global.GlobalModel.Config.Data.IsUseMultipleUsers)
         {
             var users = MsAccountManager.Accounts?.Accounts;
+            NullCard.IsVisible = users.Count == 0;
             var selIndex = users.FindLastIndex(user => user.BUID == MsAccountManager.Accounts?.SelectUserBUID);
 
             AccountList.Items.Clear();
@@ -74,6 +77,7 @@ public partial class AccountPanel : UserControl
 
     private void GoToAccountPage_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainPage.Instance.SelTag.SelectedIndex = 5;
+        MainPage.Instance.SelectTagPage("main:setting");
+        MainSettingPage.NavigateTo(new SettingAccount());
     }
 }

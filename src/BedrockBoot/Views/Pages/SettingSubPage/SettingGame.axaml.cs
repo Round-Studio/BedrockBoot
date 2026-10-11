@@ -51,16 +51,12 @@ public partial class SettingGame : ISettingPage
         IsolationPriority.SelectedIndex = (int)GlobalModel.Config.Data.IsolationPriority;
         CatalogStrategy.SelectedIndex = ((int)GlobalModel.Config.Data.CatalogStrategy) - 1;
         IsOpenGameLayering.IsChecked = GlobalModel.Config.Data.IsOpenGameLayering;
-        IsUseMultipleUsers.IsChecked = GlobalModel.Config.Data.IsUseMultipleUsers;
-        IsUseMSALAccount.IsChecked = GlobalModel.Config.Data.IsUseMSALAccount;
         IsUseNeoLaunchBox.IsVisible = false;
         ProtonBtn.IsVisible = false;
 
 #if LINUX
         IsolationCard.IsVisible = false;
-        IsUseMultipleUsersCard.IsVisible = false;
         HelperPanel.IsVisible = false;
-        IsUseMSALAccountCard.IsVisible = false;
         MouseLockBtn.IsVisible = false;
         ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
         IsUseNeoLaunchBox.IsVisible = true;
@@ -149,28 +145,8 @@ public partial class SettingGame : ISettingPage
         }
     }
 
-    private void IsUseMultipleUsers_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
-    {
-        if (IsEdit)
-        {
-            GlobalModel.Config.Data.IsUseMultipleUsers = (bool)IsUseMultipleUsers.IsChecked!;
-            GlobalModel.Config.Save();
-
-            Models.Global.GlobalModel.MainWindow.SetReboot();
-        }
-    }
-
     private void SaveBackupBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new GameBackup());
-    }
-
-    private void IsUseMSALAccount_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
-    {
-        if (IsEdit)
-        {
-            GlobalModel.Config.Data.IsUseMSALAccount = (bool)IsUseMSALAccount.IsChecked!;
-            GlobalModel.Config.Save();
-        }
     }
 }

@@ -33,8 +33,6 @@ public partial class SettingNavigation : UserControl
 #if RELEASE
         SetPersonalization.IsEnabled =
  BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableSettingPersonalization;
-
-        Account.IsVisible = false;
 #endif
     }
 

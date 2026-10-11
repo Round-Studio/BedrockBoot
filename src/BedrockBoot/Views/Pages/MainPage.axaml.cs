@@ -42,6 +42,7 @@ using Round.SDK.Entry.BedrockBoot;
 using Round.SDK.Plugin.BedrockBoot.Register;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BedrockBoot.Standard.Core;
 
@@ -64,21 +65,21 @@ public partial class MainPage : UserControl
         {
             ItemGlyph = "",
             ItemText = i18n["MainPage.Nav.Home"],
-            Tag = "Home",
+            Tag = "main:home",
             Page = typeof(MainHomePage)
         });
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = i18n["MainPage.Nav.Manager"],
-            Tag = "Manager",
+            Tag = "main:manager",
             Page = typeof(MainManager)
         });
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = i18n["MainPage.Nav.Download"],
-            Tag = "Download",
+            Tag = "main:download",
             Page = typeof(DownloadRoot)
         });
 #if WINDOWS
@@ -86,7 +87,7 @@ public partial class MainPage : UserControl
         {
             ItemGlyph = "",
             ItemText = i18n["MainPage.Nav.Tools"],
-            Tag = "ToolsBox",
+            Tag = "main:toolsBox",
             Page = typeof(MainToolsBoxPage)
         });
 #endif
@@ -94,34 +95,14 @@ public partial class MainPage : UserControl
         {
             ItemGlyph = "\uF0B9",
             ItemText = i18n["MainPage.Nav.Multiplayer"],
-            Tag = "Multiplayer",
+            Tag = "main:multiplayer",
             Page = typeof(MainGravityConePage)
         });
-#if LINUX
-        if (GlobalModel.Config.Data.IsUseNeoLaunch)
-            RegisterTopItem(new TopBarItemInfo
-            {
-                ItemGlyph = "\uE716",
-                ItemText = i18n["MainPage.Nav.AccountManager"],
-                Tag = "AccountManager",
-                Page = typeof(MainAccountPage)
-            });
-#endif
-#if WINDOWS
-        if (GlobalModel.Config.Data.IsUseMultipleUsers)
-            RegisterTopItem(new TopBarItemInfo
-            {
-                ItemGlyph = "\uE716",
-                ItemText = i18n["MainPage.Nav.AccountManager"],
-                Tag = "AccountManager",
-                Page = typeof(MainAccountPage)
-            });
-#endif
         RegisterTopItem(new TopBarItemInfo
         {
             ItemGlyph = "",
             ItemText = i18n["MainPage.Nav.Setting"],
-            Tag = "Setting",
+            Tag = "main:setting",
             Page = typeof(MainSettingPage)
         });
 
@@ -250,6 +231,12 @@ public partial class MainPage : UserControl
         });
 
         IsEditMode = true;
+    }
+
+    public void SelectTagPage(string tag)
+    {
+        var index = TopBarItem.ToList().FindIndex(x => x.Key.Contains(tag));
+        SelTag.SelectedIndex = index;
     }
 
     private void SelTag_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

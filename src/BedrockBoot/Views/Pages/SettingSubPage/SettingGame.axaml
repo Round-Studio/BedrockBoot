@@ -111,31 +111,6 @@
             <TextBlock Margin="5,0"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="账户" />
-
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Name="IsUseMultipleUsersCard"
-                                          Header="{DynamicResource Settings.Game.MultipleUsers.Title}"
-                                          Description="{DynamicResource Settings.Game.MultipleUsers.Desc}"
-                                          Glyph="&#xE716;">
-                <ToggleSwitch Name="IsUseMultipleUsers"
-                              IsCheckedChanged="IsUseMultipleUsers_OnIsCheckedChanged">
-                </ToggleSwitch>
-            </onePointControls:SettingCard>
-
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Name="IsUseMSALAccountCard"
-                                          Header="MSAL 验证"
-                                          Description="在 Windows 下使用 MSAL 验证流程进行账户验证"
-                                          Glyph="&#xF32A;">
-                <ToggleSwitch Name="IsUseMSALAccount"
-                              IsCheckedChanged="IsUseMSALAccount_OnIsCheckedChanged">
-                </ToggleSwitch>
-            </onePointControls:SettingCard>
-
-            <TextBlock Margin="5,0"
-                       FontWeight="Bold"
-                       FontSize="14"
                        Text="{DynamicResource Settings.Game.Group.Advanced}" />
 
             <onePointControls:SettingCard Margin="5, 0"

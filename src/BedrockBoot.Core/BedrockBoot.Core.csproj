@@ -30,5 +30,12 @@
       <PackageReference Include="Octokit" Version="14.0.0" />
       <PackageReference Include="XUserLauncher.Core" Version="1.0.0.5"/>
     </ItemGroup>
+    
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+        <Exec Command="dotnet fsi BuildChain/BuilderBefore.fsx" />
+    </Target>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="dotnet fsi BuildChain/BuilderAfter.fsx" />
+    </Target>
 </Project>

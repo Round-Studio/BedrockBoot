@@ -813,9 +813,6 @@
     <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot's own debug mode</x:String>
     <x:String x:Key="Settings.Universal.Language.Title">Language</x:String>
     <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot show language</x:String>
-    <x:String x:Key="Settings.Universal.Language.Chinese">Chinese (Simplified)</x:String>
-    <x:String x:Key="Settings.Universal.Language.English">English (US)</x:String>
-    <x:String x:Key="Settings.Universal.Language.Japanese">Japanese</x:String>
     <x:String x:Key="Settings.Universal.Group.Behavior">Behavior</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Title">Launcher Behavior</x:String>
     <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">What the launcher does after the game starts</x:String>

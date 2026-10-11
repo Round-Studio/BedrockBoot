@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using BedrockBoot.Core;
 using BedrockBoot.Standard.Enum.Type;
 
 namespace BedrockBoot.Models.Global;
@@ -26,8 +27,7 @@ public class GlobalKeys
 {
     public const string MsClientId = "0000000048183522";
 
-    public static string CurseForgeApiKey { get; } =
-        "$2a$10$Awb53b9gSOIJJkdV3Zrgp.CyFP.dI13QKbWn/4UZI4G4ff18WneB6";
+    public static string CurseForgeApiKey { get; } = Keys.CurseForgeApiKey;
 
     public static Dictionary<string, (SupportedFileType Type, bool AllowMany, string Name)> DropOverTypesOfSupport { get; } = new()
     {

@@ -25,7 +25,8 @@ using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Standard.Enum.Type.Progress.Steps;
 using BedrockBoot.Models.Pack.Game.Instance;
-using BedrockLauncher.Core;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.TaskItem;
 
@@ -107,6 +108,13 @@ public partial class TaskUpdateInstanceItem : UserControl, ITaskItem
                 {
                     MainText.Text = $"更新失败: {ex.Message}";
                 });
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = "更新失败",
+                    Content = ex,
+                    CloseButtonText = "确定"
+                });
+                completed?.Invoke();
             }
         });
     }

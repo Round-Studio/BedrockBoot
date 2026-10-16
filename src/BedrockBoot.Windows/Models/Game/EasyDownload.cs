@@ -17,6 +17,7 @@
  */
 
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
@@ -287,22 +288,34 @@ public class EasyDownload : IDownload
         try
         {
             token.ThrowIfCancellationRequested();
-            var fileMD5 = await ComputeFileMD5.ComputeFileMD5Async(file);
-            token.ThrowIfCancellationRequested();
 
+            string fileMD5;
+            await using (var stream = new FileStream(
+                             file,
+                             FileMode.Open,
+                             FileAccess.Read,
+                             FileShare.Read,
+                             131072,
+                             FileOptions.SequentialScan | FileOptions.Asynchronous))
+            {
+                byte[] hash = await MD5.HashDataAsync(stream, token);
+                fileMD5 = Convert.ToHexString(hash).ToLowerInvariant();
+            }
+
+            token.ThrowIfCancellationRequested();
             LastComputedMd5 = fileMD5;
 
             foreach (var variation in BuildInfo.Variations)
-                if (variation.MD5 == fileMD5)
+                if (string.Equals(variation.MD5, fileMD5, StringComparison.OrdinalIgnoreCase))
                     return true;
 
-            if (showError) ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
+            if (showError)
+                ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
 
             return false;
         }
         catch (OperationCanceledException)
         {
-            // 取消操作不应被当作校验失败上报
             throw;
         }
         catch (Exception ex)

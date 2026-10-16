@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface.Platform;
-using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace BedrockBoot.Windows.Models.Helper.Notice;
 
@@ -25,10 +25,7 @@ public class NoticeHelper : INoticeService
 {
     public static void SentNotice(string title, string message)
     {
-        new ToastContentBuilder()
-            .AddText(title)
-            .AddText(message)
-            .Show();
+        PlatformCore.Tray?.ShowNotification(title, message);
     }
 
     void INoticeService.SentNotice(string title, string message) => SentNotice(title, message);

@@ -33,6 +33,7 @@ public class PlatformCore
     public static INoticeService? Notice { get; private set; }
     public static IOpenFolderService? OpenFolder { get; private set; }
     public static IJumpListService? JumpList { get; private set; }
+    public static ITrayService? Tray { get; private set; }
 
     private static PlatformInitFrame? _platformInitFrame;
 
@@ -43,6 +44,7 @@ public class PlatformCore
         Notice = (INoticeService)Activator.CreateInstance(platformInitFrame.NoticeServiceType)!;
         OpenFolder = (IOpenFolderService)Activator.CreateInstance(platformInitFrame.OpenFolderServiceType)!;
         JumpList = (IJumpListService)Activator.CreateInstance(platformInitFrame.JumpListServiceType)!;
+        Tray = (ITrayService)Activator.CreateInstance(platformInitFrame.TrayServiceType)!;
 
         await CoreInit.InitializeAsync();
     }
@@ -123,6 +125,7 @@ public class PlatformInitFrame
     public required Type NoticeServiceType { get; set; }
     public required Type OpenFolderServiceType { get; set; }
     public required Type JumpListServiceType { get; set; }
+    public required Type TrayServiceType { get; set; }
     public required Type MouseLockerType { get; set; }
     public Func<BuildInfo, Task<List<GameDownloadUrlInfo>>>? PackageUrlsProvider { get; set; }
 }

@@ -41,7 +41,6 @@
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <TrimmerRootAssembly Include="BedrockBoot.Windows" />
         <TrimmerRootAssembly Include="System.Windows.Forms" />
-        <TrimmerRootAssembly Include="Microsoft.WindowsAPICodePack.Shell" />
     </ItemGroup>
 
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">

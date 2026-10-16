@@ -24,6 +24,31 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>full</TrimMode>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+        <_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <TrimmerRootAssembly Include="BedrockBoot" />
+        <TrimmerRootAssembly Include="BedrockBoot.Standard" />
+        <TrimmerRootAssembly Include="BedrockBoot.Core" />
+        <TrimmerRootAssembly Include="Round.SDK" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <TrimmerRootAssembly Include="BedrockBoot.Windows" />
+        <TrimmerRootAssembly Include="System.Windows.Forms" />
+        <TrimmerRootAssembly Include="Microsoft.WindowsAPICodePack.Shell" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <TrimmerRootAssembly Include="BedrockBoot.Linux" />
+    </ItemGroup>
+
+    <PropertyGroup>
         <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
         <Win32Resource>Manifest.res</Win32Resource>
     </PropertyGroup>
@@ -97,6 +122,12 @@
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
+
+    <Target Name="ExcludePdbFromPublish" AfterTargets="ComputeFilesToPublish">
+        <ItemGroup>
+            <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.pdb'"/>
+        </ItemGroup>
+    </Target>
 
     <Import Project="Build/GenerateChangeLog.targets"
             Condition="'$(Configuration)' == 'Release'"/>

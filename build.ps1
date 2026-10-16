@@ -42,7 +42,6 @@ try {
         -o $OutputPath `
         /p:PublishSingleFile=true `
         /p:IncludeNativeLibrariesForSelfExtract=true `
-        /p:SelfContained=false `
         /p:Version=$Version
 
     if ($LASTEXITCODE -ne 0) {

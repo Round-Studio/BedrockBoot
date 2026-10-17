@@ -221,7 +221,7 @@ internal sealed class Program
 							if (IsStartMemClean == false && mb >= 95)
 							{
 								IsStartMemClean = true;
-								ProcessMemoryTrimmer.TrimProcess();
+								BedrockBoot.Windows.Models.ProcessMemoryTrimmer.TrimProcess();
 								Console.WriteLine(@"Memory Cleaned");
 							}
 							

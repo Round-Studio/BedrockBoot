@@ -85,7 +85,7 @@ public partial class DrawInstanceContent : UserControl
         ImageLoader.Shared.ClearMemoryCache();
 
 #if WINDOWS
-        ProcessMemoryTrimmer.TrimProcess();
+        BedrockBoot.Windows.Models.ProcessMemoryTrimmer.TrimProcess();
 #endif
     }
 

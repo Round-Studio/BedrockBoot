@@ -56,7 +56,7 @@ public partial class DownloadRoot : BedrockBootPage
 
 #if WINDOWS
         // 离开下载页后整理一次工作集，把内存还给系统
-        ProcessMemoryTrimmer.TrimProcess();
+        BedrockBoot.Windows.Models.ProcessMemoryTrimmer.TrimProcess();
 #endif
     }
 

@@ -165,7 +165,28 @@ public static class GameInfoHelper
             SaveVersionConfig(data);
         }
 
+        data.GameTags = new()
+        {
+            $"Minecraft {data.Info.Version}",
+            $"Win{data.Info.BuildType}",
+            $"{data.Info.VersionType} Version"
+        };
+        if (IsInstallModLoader(gamePath))
+            data.GameTags.Add("LeviLamina");
+
         return data;
+    }
+
+    private static bool IsInstallModLoader(string path)
+    {
+        var preLoadFile = Path.Combine(path, "config", "BedrockBoot2", "levilamina", "preloader",
+            "bin", "PreLoader.dll");
+        var bedrockRuntime = Path.Combine(path, "config", "BedrockBoot2", "levilamina",
+            "bedrock_runtime_data");
+        var levilaminaMainFile = Path.Combine(path, "config", "BedrockBoot2", "levilamina",
+            "ll.mods", "LeviLamina", "LeviLamina.dll");
+
+        return File.Exists(preLoadFile) && File.Exists(bedrockRuntime) && File.Exists(levilaminaMainFile);
     }
 
     /// <summary>

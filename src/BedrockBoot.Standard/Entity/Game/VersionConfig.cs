@@ -36,6 +36,7 @@ public class VersionConfig
     [JsonIgnore] public string? VersionPath { get; set; } = string.Empty;
     [JsonIgnore] public string? VersionsRootPath { get; set; } = string.Empty;
     [JsonIgnore] public string? BodyFile { get; set; } = string.Empty;
+    [JsonIgnore] public List<string> GameTags { get; set; } = new();
 
     public class SysWindowsConfig
     {

@@ -404,9 +404,13 @@ public partial class MainWindow : Window
         MaxBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
         MinBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
         CloseBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+#if WINDOWS
+        WindowDecorations = WindowDecorations.Full;
+#else
         WindowDecorations = Core.Global.GlobalModel.Config.Data.IsUseSystemWindow
             ? WindowDecorations.Full
             : WindowDecorations.BorderOnly;
+#endif
         ExtendClientAreaToDecorationsHint = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
         ExtendClientAreaTitleBarHeightHint = -1;
     }

@@ -69,12 +69,18 @@ public class VersionConfig
         [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = false;
         [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
         [JsonPropertyName("isSyncPubOptions")] public bool IsSyncPublicOptions { get; set; } = true;
-        [JsonPropertyName("isEnableHttpHook")] public bool IsEnableHttpHook { get; set; } = false;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
         [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
         [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
         [JsonPropertyName("sysWindowsConfig")] public SysWindowsConfig SysWindowsConfig { get; set; } = new();
         [JsonPropertyName("modsLoaderSelectIndex")] public int ModsLoaderSelectIndex { get; set; } = 0;
+        [JsonPropertyName("isEnableHttpPatch")] public bool IsEnableHttpPatch { get; set; } = true;
+        [JsonPropertyName("httpPatchConfig")] public HttpPatchEntry HttpPatchConfig { get; set; } = new();
+    }
+    
+    public class HttpPatchEntry
+    {
+        [JsonPropertyName("isEnableServerDiscoveryBlock")] public bool IsEnableServerDiscoveryBlock { get; set; } = false;
     }
 
     public class PlayerDataEntry

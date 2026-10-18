@@ -32,6 +32,16 @@ public partial class InstanceSetting : UserControl
     {
         IsEdit = false;
 
+#if LINUX
+        IsolationCard.IsVisible = false;
+        HighLevel.IsVisible = false;
+        IsRunAdminCard.IsVisible = false;
+#endif
+
+#if RELEASE
+        InstanceMod.IsVisible = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableGameInstanceMods;
+#endif
+
         InstanceIsolationPanel.IsVisible = InstanceIsolationPanel.IsEnabled =
             VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK;
 #if WINDOWS

@@ -51,16 +51,6 @@ public partial class InstanceInfo : UserControl
         IsEdit = false;
        
         InitializeComponent();
-
-#if LINUX
-        IsolationCard.IsVisible = false;
-        HighLevel.IsVisible = false;
-        IsRunAdminCard.IsVisible = false;
-#endif
-
-#if RELEASE
-        InstanceMod.IsVisible = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableGameInstanceMods;
-#endif
     }
 
     public InstanceInfo(VersionConfig versionInfo) : this()

@@ -1,3 +1,21 @@
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System;
 using System.IO;
 using System.Net;
@@ -7,10 +25,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Enum;
-using BedrockBoot.Base.Enum.Type;
-using BedrockBoot.Base.Helper;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Enum;
+using BedrockBoot.Standard.Enum.Type;
+using BedrockBoot.Standard.Helper;
 using BedrockBoot.Entity;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
@@ -18,9 +36,13 @@ using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using BedrockBoot.Views.Windows.SystemMethod;
 using BedrockBoot.WatchDog.Entity;
+using BedrockBoot.Models.Pack.Game.Archive;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using OnePointUI.Avalonia.Style.Core;
 using Round.SDK.Entity;
 using Application = Avalonia.Application;
+using ExceptionWindow = BedrockBoot.Views.Windows.SubWindows.ExceptionWindow;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 using Window = Avalonia.Controls.Window;
 
@@ -51,6 +73,16 @@ public class App : Application
 
         var watchDog = new WatchDog.WatchDog(new WatchConfig());
         watchDog.Start();
+
+        // 注册游戏启动与退出时的自动存档备份逻辑
+        ILauncher.OnGameLaunched = version =>
+        {
+            _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, AutoBackupTriggerTiming.Launch));
+        };
+        ILauncher.OnGameExited = version =>
+        {
+            _ = Task.Run(() => ArchiveAutoBackupHelper.AutoBackupModifiedArchivesAsync(version, AutoBackupTriggerTiming.Exit));
+        };
     }
 
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -121,8 +153,6 @@ public class App : Application
             {
                 case AppRunType.Default:
                     window = new MainWindow();
-                    // StartProtocolServer();
-                    Console.WriteLine(@"暂时先不启用 IPC 服务器了...");
                     break;
                 case AppRunType.OpenResourcePack:
                     window = new ImportResourcePack();
@@ -141,39 +171,11 @@ public class App : Application
             if (window == null) throw new NullReferenceException();
 
             desktop.MainWindow = window;
+
+            // BedrockbootUrlProtocol.ExecutePendingRequest();
         }
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private void StartProtocolServer()
-    {
-        try
-        {
-            var protoService = Models.Global.GlobalModel.ProtocolService;
-
-            protoService.Get("/shell", async (context, parameters) =>
-            {
-                var command = parameters.GetQuery("command");
-                if (!string.IsNullOrEmpty(command))
-                {
-                    Dispatcher.UIThread.Post(() => ProtocolCommand.OnCommand([command]));
-                    await ProtocolService.WriteTextResponseAsync(context, 200, "ok");
-                }
-                else
-                {
-                    await ProtocolService.WriteErrorResponseAsync(context, 400, "Bad Request",
-                        "Missing command parameter");
-                }
-            });
-
-            _ = protoService.StartAsync();
-            Console.WriteLine(@"BedrockBoot IPC 服务已启动");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"启动 BedrockBoot IPC 服务失败: {ex.Message}");
-        }
     }
 
     public static void LoadColor(string colorCode,ThemeModelEnum theme)

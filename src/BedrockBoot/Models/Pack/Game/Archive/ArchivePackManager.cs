@@ -1,11 +1,29 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Base.Entry.Game.Pack.Archive.Export;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive.Export;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using Round.SDK.Entity;
 
@@ -96,6 +114,23 @@ public class ArchivePackManager
         
         Refresh();
     }
+    private static List<int> ParseVersion(string? version)
+    {
+        if (string.IsNullOrWhiteSpace(version))
+            return new List<int>();
+
+        var parts = version.Split(new[] { '.', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+        var result = new List<int>(parts.Length);
+        foreach (var p in parts)
+        {
+            var trimmed = p.Trim();
+            if (int.TryParse(trimmed, out var n))
+                result.Add(n);
+        }
+
+        return result;
+    }
 
     public void InstallPack(ResourcePackManifest packManifest)
     {
@@ -107,8 +142,7 @@ public class ArchivePackManager
         conf.Data.Add(new()
         {
             PackId = uuid,
-            Version = InstalledPacks!.Find(x => x.Header.Uuid == uuid)!.Header.Version.Split('.').Select(int.Parse)
-                .ToList()
+            Version = ParseVersion(packManifest.Header.Version)
         });
         conf.Save();
         

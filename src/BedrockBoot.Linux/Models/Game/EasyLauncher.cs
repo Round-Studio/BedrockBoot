@@ -1,32 +1,52 @@
-﻿using System.Diagnostics;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Helper;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System.Diagnostics;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
-using BedrockBoot.Models.Account.Xbox;
+using BedrockBoot.Linux.Models.Helper;
+using BedrockBoot.Linux.Models.Pack.GDK;
+using BedrockBoot.Linux.Models.Pack.Wine;
+using BedrockBoot.Linux.Models.Pack.Xbox;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
-using BedrockBoot.Models.Pack.GDK;
-using BedrockBoot.Models.Pack.Wine;
 using BedrockBoot.Proton;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Helper;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
 using Round.SDK.Plugin.BedrockBoot.Register;
 
-namespace BedrockBoot.Models.Game;
+namespace BedrockBoot.Linux.Models.Game;
 
-public class EasyLauncher
+public class EasyLauncher : ILauncher
 {
     private ModsCore _core;
     private readonly Stopwatch _gameplayStopwatch = new();
     private DateTime _gameStartTime;
     private readonly string _playerDataFilePath;
     private readonly ProtonInfo? _linuxLaunchInfo;
-    
+
     public static void MakeAllFilesExecutableByChmod(string directoryPath)
     {
         string arguments = $"-R 755 \"{directoryPath}\"";
-    
+
         var processInfo = new ProcessStartInfo("chmod", arguments)
         {
             RedirectStandardOutput = true,
@@ -45,11 +65,10 @@ public class EasyLauncher
         }
     }
 
-    public EasyLauncher(VersionConfig versionConfig)
+    public EasyLauncher(VersionConfig versionConfig) : base(versionConfig ?? throw new ArgumentNullException(nameof(versionConfig)))
     {
-        VersionInfo = versionConfig ?? throw new ArgumentNullException(nameof(versionConfig));
         _playerDataFilePath = Path.Combine(versionConfig.VersionPath, "playerdata.json");
-        
+
         _linuxLaunchInfo = new ProtonInfo
         {
             PrefixPath = PathsList.PreFixPath,
@@ -66,31 +85,18 @@ public class EasyLauncher
     #region Properties & Events
 
     public static bool IsUseNeoLaunch { get; set; } = false;
-    public static int LaunchingCount { get; private set; } = 0;
-    public static Action? LaunchedBehavior { get; set; }
-
-    public VersionConfig VersionInfo { get; }
-    public Process? MinecraftProcess { get; private set; }
-
-    // 启动生命周期回调
-    public Action? NoRunTool { get; set; }
-    public Action<Process>? Launched { get; set; }
-    public Action? LaunchCompleted { get; set; }
-    public Action<string, double>? UpdateProgress { get; set; }
-    public Action<string>? UpdateProgressText { get; set; }
-    public Action<bool>? SetProgressIndeterminate { get; set; }
 
     #endregion
 
     #region Public Methods
 
-    public async Task Launch()
+    public override async Task LaunchGame()
     {
         MakeAllFilesExecutableByChmod(PathsList.NeoProtonPath);
-        
+
         // 校验 Linux Proton 环境
-        if (string.IsNullOrEmpty(_linuxLaunchInfo?.ProtonPath) || 
-            ProtonCore.GetInstalledVersions()?.Count <= 0 || 
+        if (string.IsNullOrEmpty(_linuxLaunchInfo?.ProtonPath) ||
+            ProtonCore.GetInstalledVersions()?.Count <= 0 ||
             (ProtonNeoCore.IsInstalledKits() && IsUseNeoLaunch))
         {
             if (!IsUseNeoLaunch)
@@ -120,7 +126,8 @@ public class EasyLauncher
             CoreGlobal.BedrockCore ??= new BedrockCore();
 
             // 更新策略配置
-            VersionInfo.Config.FolderPolicyStr = IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
+            VersionInfo.Config.FolderPolicyStr =
+                IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
             GameInfoHelper.SaveVersionConfig(VersionInfo);
             Console.WriteLine(@"已同步策略状态");
 
@@ -191,6 +198,7 @@ public class EasyLauncher
                     Console.WriteLine($@"游戏计时开始：{_gameStartTime:yyyy-MM-dd HH:mm:ss}");
 
                     Launched?.Invoke(MinecraftProcess);
+                    OnGameLaunched?.Invoke(VersionInfo);
                     UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                     SetProgressIndeterminate?.Invoke(true);
 
@@ -202,10 +210,10 @@ public class EasyLauncher
                     }
 
                     // Mod 载入
-                    if (VersionInfo.Config.IsModes)
+                    /*if (VersionInfo.Config.IsModes)
                     {
                         _core.LoadAll(MinecraftProcess.Id);
-                    }
+                    }*/
 
                     MinecraftProcess.EnableRaisingEvents = true;
 
@@ -241,8 +249,8 @@ public class EasyLauncher
     {
         if (_linuxLaunchInfo == null) return null;
 
-        return IsUseNeoLaunch 
-            ? LaunchWithNeoProton(filePath, allowWrapper) 
+        return IsUseNeoLaunch
+            ? LaunchWithNeoProton(filePath, allowWrapper)
             : LaunchWithStandardProton(filePath, allowWrapper);
     }
 
@@ -276,9 +284,10 @@ public class EasyLauncher
         startInfo.EnvironmentVariables["STEAM_COMPAT_CLIENT_INSTALL_PATH"] =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local/share/Steam");
 
-        string libPath = $"{Path.Combine(_linuxLaunchInfo.ProtonPath, "files/lib64")}:{Path.Combine(_linuxLaunchInfo.ProtonPath, "files/lib")}";
+        string libPath =
+            $"{Path.Combine(_linuxLaunchInfo.ProtonPath, "files/lib64")}:{Path.Combine(_linuxLaunchInfo.ProtonPath, "files/lib")}";
         string currentLdPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH") ?? "";
-        
+
         startInfo.EnvironmentVariables["LD_LIBRARY_PATH"] = $"{libPath}:{currentLdPath}";
         startInfo.EnvironmentVariables["WINEDLLOVERRIDES"] = "dxgi,d3d11,d3d10core,d3d9=b";
 
@@ -296,8 +305,14 @@ public class EasyLauncher
         {
             var process = new Process { StartInfo = startInfo };
 
-            process.OutputDataReceived += (_, e) => { if (e.Data != null) Console.WriteLine(e.Data); };
-            process.ErrorDataReceived += (_, e) => { if (e.Data != null) Console.WriteLine(e.Data); };
+            process.OutputDataReceived += (_, e) =>
+            {
+                if (e.Data != null) Console.WriteLine(e.Data);
+            };
+            process.ErrorDataReceived += (_, e) =>
+            {
+                if (e.Data != null) Console.WriteLine(e.Data);
+            };
 
             process.Start();
             process.BeginOutputReadLine();
@@ -324,10 +339,13 @@ public class EasyLauncher
         if (!File.GetUnixFileMode(umu).HasFlag(UnixFileMode.UserExecute))
         {
             Console.WriteLine($"umu-run at {umu} is not executable, setting execute permission");
-            File.SetUnixFileMode(umu, File.GetUnixFileMode(umu) | UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
+            File.SetUnixFileMode(umu,
+                File.GetUnixFileMode(umu) | UnixFileMode.UserExecute | UnixFileMode.GroupExecute |
+                UnixFileMode.OtherExecute);
         }
 
-        var steamCompat = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam");
+        var steamCompat = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam",
+            "steam");
         Directory.CreateDirectory(steamCompat);
 
         var prioPath = Path.Combine(PathsList.NeoProtonPath, "etc", "gnutls-no-tls13.cfg");
@@ -358,12 +376,14 @@ public class EasyLauncher
         {
             psi.EnvironmentVariables[k] = v;
         }
-        string libPath = $"{Path.Combine(ProtonNeoCore.ProtonRootPath, "files/lib64")}:{Path.Combine(ProtonNeoCore.ProtonRootPath, "files/lib")}";
+
+        string libPath =
+            $"{Path.Combine(ProtonNeoCore.ProtonRootPath, "files/lib64")}:{Path.Combine(ProtonNeoCore.ProtonRootPath, "files/lib")}";
         string currentLdPath = Environment.GetEnvironmentVariable("LD_LIBRARY_PATH") ?? "";
-        
+
         psi.EnvironmentVariables["LD_LIBRARY_PATH"] = $"{libPath}:{currentLdPath}";
         psi.EnvironmentVariables["WINEDLLOVERRIDES"] = "dxgi,d3d11,d3d10core,d3d9=b";
-        
+
         if (allowWrapper)
         {
             var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
@@ -390,13 +410,14 @@ public class EasyLauncher
 
     private bool PrepareNeoLaunchEnvironment()
     {
-        var accountOld = CoreInit.GetMsAccountConfig?.Invoke();
+        var accountOld = PlatformCore.GetMsAccountConfig?.Invoke();
         if (accountOld == null)
         {
             return false;
         }
-        var account = CoreInit.OnRefreshAccount?.Invoke(accountOld).Result;
-        
+
+        var account = PlatformCore.OnRefreshAccount?.Invoke(accountOld).Result;
+
         UpdateProgressText?.Invoke("正在登录账户");
         var xbl = new XblAuth();
         if (!xbl.RunPreauth(account.AuthResult.AccessToken))
@@ -414,17 +435,29 @@ public class EasyLauncher
             Console.WriteLine($"WinePrefix.Boot failed: {ex.Message}");
         }
 
-        try { WinePrefix.ApplyWinegdkPrereqs(); }
-        catch (Exception ex) { Console.WriteLine($"ApplyWinegdkPrereqs failed: {ex.Message}"); }
+        try
+        {
+            WinePrefix.ApplyWinegdkPrereqs();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ApplyWinegdkPrereqs failed: {ex.Message}");
+        }
 
         InstallCryptbase();
         // InstallD3d8();
 
-        try { WinePrefix.SetRefreshToken(account.AuthResult.RefreshToken); }
-        catch (Exception ex) { Console.WriteLine($"SetRefreshToken failed: {ex.Message}"); }
+        try
+        {
+            WinePrefix.SetRefreshToken(account.AuthResult.RefreshToken);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SetRefreshToken failed: {ex.Message}");
+        }
 
         ProtonPatcher.Patch(ProtonNeoCore.ProtonRootPath);
-        GameInputInstaller.Install(PathsList.PreFixPath, VersionInfo.VersionPath);
+        GameInputInstaller.Install(PathsList.WinePrefixPath, VersionInfo.VersionPath);
 
         GdkFixups.PatchLhcXcurlGate(VersionInfo.VersionPath);
         GdkFixups.BumpStackReserve(Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile));
@@ -439,10 +472,10 @@ public class EasyLauncher
     private void EnsureGameInputInstalled()
     {
         var protonConfig = ProtonCore.GetVersionConfig(_linuxLaunchInfo!.ProtonPath);
-        
-        bool isInstalled = VersionInfo.VersionStatus.GameInputInstalled 
-            && Path.Exists(_linuxLaunchInfo.PrefixPath) 
-            && protonConfig.IsGameInputInstalled;
+
+        bool isInstalled = VersionInfo.VersionStatus.GameInputInstalled
+                           && Path.Exists(PathsList.WinePrefixPath)
+                           && protonConfig.IsGameInputInstalled;
 
         if (isInstalled) return;
 
@@ -457,13 +490,14 @@ public class EasyLauncher
         }
         else
         {
-            if (!InstallGameInputWithWine(PathsList.PreFixPath, msiPath)) return;
+            if (!InstallGameInputWithWine(PathsList.WinePrefixPath, msiPath)) return;
         }
+
         Console.WriteLine("GameInput 安装完毕");
 
         VersionInfo.VersionStatus.GameInputInstalled = true;
         protonConfig.IsGameInputInstalled = true;
-        
+
         GameInfoHelper.SaveVersionConfig(VersionInfo);
         ProtonCore.SaveVersionConfig(protonConfig);
     }
@@ -492,7 +526,8 @@ public class EasyLauncher
         psi.EnvironmentVariables["WINEPREFIX"] = prefix;
         psi.EnvironmentVariables["WINEDEBUG"] = "-all";
         psi.EnvironmentVariables["WINEDLLOVERRIDES"] = "advapi32=n,b";
-        psi.EnvironmentVariables["LD_LIBRARY_PATH"] = $"{Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib64")}:{Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib")}:{Environment.GetEnvironmentVariable("LD_LIBRARY_PATH") ?? ""}";
+        psi.EnvironmentVariables["LD_LIBRARY_PATH"] =
+            $"{Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib64")}:{Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib")}:{Environment.GetEnvironmentVariable("LD_LIBRARY_PATH") ?? ""}";
 
         try
         {
@@ -514,14 +549,15 @@ public class EasyLauncher
     {
         try
         {
-            var builtin = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "x86_64-windows", "cryptbase.dll");
-            var dst = Path.Combine(PathsList.PreFixPath, "drive_c", "windows", "system32", "cryptbase.dll");
+            var builtin = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "x86_64-windows",
+                "cryptbase.dll");
+            var dst = Path.Combine(PathsList.WinePrefixPath, "drive_c", "windows", "system32", "cryptbase.dll");
 
             if (File.Exists(builtin) && !File.Exists(dst))
             {
                 var directoryName = Path.GetDirectoryName(dst);
                 if (directoryName != null) Directory.CreateDirectory(directoryName);
-                
+
                 File.Copy(builtin, dst);
                 Console.WriteLine("cryptbase installed in prefix");
             }
@@ -540,7 +576,8 @@ public class EasyLauncher
             var sys32 = Path.Combine(defaultPfx, "drive_c", "windows", "system32");
             var syswow64 = Path.Combine(defaultPfx, "drive_c", "windows", "syswow64");
 
-            var src64 = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "x86_64-windows", "d3d8.dll");
+            var src64 = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "x86_64-windows",
+                "d3d8.dll");
             var src32 = Path.Combine(ProtonNeoCore.ProtonRootPath, "files", "lib", "wine", "i386-windows", "d3d8.dll");
 
             if (File.Exists(src64))
@@ -603,7 +640,7 @@ public class EasyLauncher
             {
                 try
                 {
-                    if (VersionInfo.VersionPath != null) 
+                    if (VersionInfo.VersionPath != null)
                         action.Invoke(VersionInfo.VersionPath);
                 }
                 catch (Exception ex)
@@ -640,6 +677,7 @@ public class EasyLauncher
         }
         finally
         {
+            OnGameExited?.Invoke(VersionInfo);
             LaunchCompleted?.Invoke();
         }
     }
@@ -674,7 +712,7 @@ public class EasyLauncher
         if (_gameplayStopwatch.IsRunning)
             _gameplayStopwatch.Stop();
     }
-    
+
     private static void CopyDirectory(string sourceDir, string destDir, bool overwrite = true)
     {
         // 1. 创建目标根目录

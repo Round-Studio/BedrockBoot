@@ -2,93 +2,284 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:selectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;assembly=OnePointUI.Avalonia"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             xmlns:selectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:items1="clr-namespace:BedrockBoot.Views.Control.Items"
+             xmlns:converters="clr-namespace:BedrockBoot.Converters"
+             xmlns:text="clr-namespace:AvaMotion.Controls.Text;assembly=AvaMotion"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
              x:Class="BedrockBoot.Views.Pages.MainPage">
-    <Grid RowDefinitions="Auto,*,Auto">
-        <navigation:NavigationFrame Grid.Row="0"
-                                    Name="HeaderContent"
-                                    Margin="20,12,0,0"
-                                    Height="48"
-                                    NavigationFrameDirection="Right"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Stretch" />
+    <UserControl.Resources>
+        <converters:WidthConverter x:Key="WidthConverter" />
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="Border#VersionChooseCard">
+            <Setter Property="Width" Value="220" />
+            <Setter Property="Height" Value="58" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Duration="0:0:0.22"
+                                      Easing="ExponentialEaseOut"
+                                      Property="Width">
+                    </DoubleTransition>
+                    <DoubleTransition Duration="0:0:0.42"
+                                      Easing="ExponentialEaseOut"
+                                      Property="Height">
+                    </DoubleTransition>
+                    <ThicknessTransition Property="Margin"
+                                         Easing="QuinticEaseOut"
+                                         Duration="0:0:0.18">
+                    </ThicknessTransition>
+                </Transitions>
+            </Setter>
 
-        <navigation:NavigationFrame Grid.Row="1"
-                                    Name="MainFrame" />
+            <Style Selector="^:pointerover">
+                <Setter Property="Width" Value="300" />
+                <Setter Property="Height" Value="360" />
 
-        <items:BorderCard Grid.Row="2"
-                          Height="48"
-                          Padding="0"
-                          CornerRadius="0"
-                          HorizontalAlignment="Stretch">
-            <Grid Height="48">
-                <StackPanel HorizontalAlignment="Left"
-                            VerticalAlignment="Stretch"
-                            Spacing="6"
-                            Orientation="Horizontal"
-                            Margin="6"
-                            Name="GameControls">
-                    <Button Padding="22,0"
-                            Classes="NoBorder"
-                            Background="{DynamicResource AccentBackgroundBrush}"
-                            Name="GameLaunchBtn"
-                            Click="GameLaunchBtn_OnClick">
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="8">
-                            <onePointControls:FontIcon VerticalAlignment="Center"
-                                                       FontSize="17"
-                                                       Foreground="White"
-                                                       Glyph="&#xE768;" />
+                <Style Selector="^ Button#GameSettingBtn">
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="Margin" Value="0,0,8,0" />
+                </Style>
 
-                            <TextBlock Text="{DynamicResource Main.Action.Launch}"
-                                       Foreground="White"
-                                       FontSize="15" />
+                <Style Selector="^ Border#BackgroundBorder">
+                    <Setter Property="Opacity" Value="1" />
+                </Style>
+
+                <Style Selector="^ items|BorderCard#BackgroundBackBorder">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="Button#GameSettingBtn">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <ThicknessTransition Duration="0:0:0.22"
+                                         Easing="ExponentialEaseOut"
+                                         Property="Margin">
+                    </ThicknessTransition>
+                    <DoubleTransition Duration="0:0:0.38"
+                                      Easing="ExponentialEaseOut"
+                                      Property="Opacity">
+                    </DoubleTransition>
+                </Transitions>
+            </Setter>
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="Margin" Value="0,0,-48,0" />
+        </Style>
+
+        <Style Selector="Border#BackgroundBorder">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Duration="0:0:0.38"
+                                      Easing="ExponentialEaseOut"
+                                      Property="Opacity">
+                    </DoubleTransition>
+                </Transitions>
+            </Setter>
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+    </UserControl.Styles>
+    <Grid>
+        <Grid RowDefinitions="Auto,*,Auto">
+            <navigation:NavigationFrame Grid.Row="0"
+                                        Name="HeaderContent"
+                                        Margin="20,12,0,0"
+                                        Height="48"
+                                        NavigationFrameDirection="Right"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Stretch" />
+
+            <navigation:NavigationFrame Grid.Row="1"
+                                        Name="MainFrame" />
+
+            <Border Grid.Row="2"
+                    Height="58"
+                    Name="BottomCard">
+                <Border.Transitions>
+                    <Transitions>
+                        <ThicknessTransition Property="Margin"
+                                             Easing="QuinticEaseOut"
+                                             Duration="0:0:0.18">
+                        </ThicknessTransition>
+                    </Transitions>
+                </Border.Transitions>
+                <Panel>
+                    <items:BorderCard CornerRadius="8"
+                                      Name="BottomBarCenter"
+                                      Height="58">
+                        <items:BorderCard.Width>
+                            <MultiBinding Converter="{StaticResource WidthConverter}">
+                                <Binding Path="Bounds.Width" ElementName="SelTag" />
+                            </MultiBinding>
+                        </items:BorderCard.Width>
+                    </items:BorderCard>
+                    <items:BorderCard CornerRadius="8,8,0,0"
+                                      Name="BottomBarFull"
+                                      Opacity="1"
+                                      Height="58">
+                        <items:BorderCard.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity"
+                                                  Easing="QuinticEaseOut"
+                                                  Duration="0:0:0.18">
+                                </DoubleTransition>
+                            </Transitions>
+                        </items:BorderCard.Transitions>
+                    </items:BorderCard>
+                    <selectBar:SelectBar SelectedIndex="0"
+                                         Margin="-1,0,-1,-1"
+                                         SelectionChanged="SelTag_OnSelectionChanged"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Stretch"
+                                         Name="SelTag" />
+                </Panel>
+            </Border>
+            
+            <Button Grid.Row="2"
+                    Padding="14,0,8,0"
+                    Margin="9,2,9,9"
+                    Height="41"
+                    Width="180"
+                    HorizontalContentAlignment="Stretch"
+                    CornerRadius="6"
+                    Classes="NoBorder"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Click="GameLaunchBtn_OnClick"
+                    Background="{DynamicResource AccentBackgroundBrush}"
+                    Name="GameLaunchBtn">
+                <Button.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Height"
+                                          Easing="QuinticEaseOut"
+                                          Duration="0:0:0.18">
+                        </DoubleTransition>
+                        <DoubleTransition Property="Width"
+                                          Easing="QuinticEaseOut"
+                                          Duration="0:0:0.18">
+                        </DoubleTransition>
+                        <ThicknessTransition Property="Padding"
+                                             Easing="QuinticEaseOut"
+                                             Duration="0:0:0.18">
+                        </ThicknessTransition>
+                    </Transitions>
+                </Button.Transitions>
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="32">
+                    <StackPanel Grid.Column="0"
+                                Spacing="12"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <Image Width="26"
+                               Height="26"
+                               VerticalAlignment="Center"
+                               Name="InstanceIconImage" />
+                        
+                        <StackPanel VerticalAlignment="Center">
+                            <text:AnimationTextBlock Name="InstanceName"
+                                                     AnimationType="NeonGlow"
+                                                     Text="Instance"
+                                                     FontSize="16"></text:AnimationTextBlock>
+                            <text:AnimationTextBlock Name="InstanceDesc"
+                                                     FontSize="11"
+                                                     AnimationType="NeonGlow"
+                                                     Text="Instance"></text:AnimationTextBlock>
                         </StackPanel>
-                    </Button>
+                    </StackPanel>
+                    
+                    <onePointControls:FontIcon Grid.Column="1"
+                                               VerticalAlignment="Center"
+                                               Glyph="&#xE76C;"></onePointControls:FontIcon>
+                </Grid>
+            </Button>
+        </Grid>
 
-                    <Button Padding="8,0"
-                            Classes="NoBorder"
-                            Name="GameSettingBtn"
-                            Click="GameSettingBtn_OnClick">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="GameName" Name="GameName" />
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="4">
-                                <onePointControls:LabelBox Name="GameBuildType"
-                                                           FontSize="8"
-                                                           Background="Chocolate"
-                                                           Foreground="White" />
-                                <TextBlock Text="GameInfo" Name="GameInfo"
-                                           VerticalAlignment="Center"
-                                           Opacity="0.8"
-                                           FontSize="9" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Button>
+        <Border HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                CornerRadius="12,0,0,0"
+                MinHeight="58"
+                Padding="0"
+                ClipToBounds="False"
+                Margin="0,0,-1,-1"
+                Name="VersionChooseCard">
+            <Grid>
+                <items:BorderCard CornerRadius="12,0,0,0"
+                                  Name="BackgroundBackBorder"
+                                  IsVisible="False">
+                </items:BorderCard>
+
+                <Border Background="{DynamicResource PrimaryBorderBrush}"
+                        CornerRadius="8,0,0,0"
+                        Margin="1,1,0,0"
+                        BoxShadow="0 0 120 0 Gray"
+                        Name="BackgroundBorder">
+                </Border>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Name="NullBox"
+                            IsVisible="False"
+                            Height="58"
+                            Spacing="12">
+                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                               Glyph="&#xE946;"
+                                               FontSize="18">
+                    </onePointControls:FontIcon>
+
+                    <StackPanel VerticalAlignment="Center"
+                                Margin="0,-2,0,2">
+                        <TextBlock Text="未安装游戏"
+                                   HorizontalAlignment="Left"
+                                   FontSize="18">
+                        </TextBlock>
+                        <TextBlock Text="请前往下载页面安装游戏实例"
+                                   HorizontalAlignment="Left"
+                                   FontSize="9">
+                        </TextBlock>
+                    </StackPanel>
                 </StackPanel>
 
-                <selectBar:SelectBar SelectedIndex="0"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Stretch"
-                                     Margin="0"
-                                     SelectionChanged="SelTag_OnSelectionChanged"
-                                     Name="SelTag" />
+                <Grid RowDefinitions="*,Auto">
+                    <ListBox Grid.Row="0"
+                             Name="GameListChoose"
+                             SelectionChanged="GameListChoose_OnSelectionChanged"
+                             Background="#01FFFFFF"
+                             Margin="8,4,0,8"
+                             Padding="0,0,18,0">
+                    </ListBox>
 
-                <ComboBox Height="32"
-                          Width="260"
-                          SelectedIndex="0"
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Right"
-                          Margin="6"
-                          SelectionChanged="GameListChoose_OnSelectionChanged"
-                          Name="GameListChoose">
-                    <ComboBoxItem Content="{DynamicResource Main.GameList.Empty}" />
-                </ComboBox>
+                    <Grid Grid.Row="1"
+                          Name="GameInstanceShowBox"
+                          VerticalAlignment="Bottom"
+                          ColumnDefinitions="*,Auto"
+                          ColumnSpacing="8"
+                          Margin="10,0,0,8">
+
+                        <items1:MainChooseGameItem Grid.Column="0"
+                                                   Name="GameInfoItem"
+                                                   IsVisible="False" />
+
+                        <Button Grid.Column="1"
+                                Name="GameSettingBtn"
+                                Click="GameSettingBtn_OnClick"
+                                Classes="NoBorder"
+                                Padding="0"
+                                Width="42" Height="42">
+                            <onePointControls:FontIcon Glyph="&#xE713;"
+                                                       FontSize="20"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center">
+                            </onePointControls:FontIcon>
+                        </Button>
+                    </Grid>
+                </Grid>
             </Grid>
-        </items:BorderCard>
+        </Border>
     </Grid>
 </UserControl>

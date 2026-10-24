@@ -1,10 +1,28 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Isolation;
@@ -48,9 +66,35 @@ public class ArchiveCheck
             Path = Path.Combine(save),
             IconPath = File.Exists(icon) ? icon : "",
             IsProject = isProject,
-            LevelWorldData = new ArchiveSerializer(save).Parser(),
             VersionInfo = (gameFolder != null ? GameInfoHelper.GetVersionConfig(gameFolder) : null)!
         };
+    }
+
+    public static void EnsureLevelData(ArchiveInfo info)
+    {
+        if (info == null || string.IsNullOrEmpty(info.Path) || info.LevelWorldData != null) return;
+        info.LevelWorldData = new ArchiveSerializer(info.Path).Parser();
+    }
+
+    public List<ArchiveInfo> CheckUser(string user)
+    {
+        var result = new List<ArchiveInfo>();
+        if (VersionConfig == null) throw new NullReferenceException("实例配置为空");
+
+        var paths = GetInstanceWorldPackPath();
+        if (!paths.TryGetValue(user, out var folder) || !Directory.Exists(folder)) return result;
+
+        Directory.GetDirectories(folder).ToList().ForEach(save =>
+        {
+            var info = GetInfo(save, VersionConfig.VersionPath);
+            if (info != null)
+            {
+                var uuidUpdate = info.Uuid;
+                result.Add(info);
+            }
+        });
+
+        return result;
     }
 
     public ArchiveManifest Check()
@@ -123,7 +167,7 @@ public class ArchiveCheck
         }
     }
 
-    private Dictionary<string, string> GetInstanceWorldPackPath()
+    public Dictionary<string, string> GetInstanceWorldPackPath()
     {
         var result = new Dictionary<string, string>();
         if (VersionConfig.Info.BuildType == MinecraftBuildTypeVersion.UWP)

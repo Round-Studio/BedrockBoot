@@ -1,0 +1,22 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.Control.Items.Xbox.Capes.CapeItem">
+    <items:BorderCard Padding="8">
+        <Grid RowDefinitions="*,Auto"
+              RowSpacing="8">
+            <widgets:LocalImageRenderWidget Grid.Row="0"
+                                            Name="CapeImage"
+                                            Width="120" Height="120" />
+
+            <TextBlock Grid.Row="1"
+                       Name="CapeName"
+                       FontSize="14"
+                       TextAlignment="Center" />
+        </Grid>
+    </items:BorderCard>
+</UserControl>

@@ -30,6 +30,15 @@
                                               Description="导出基岩版存档包文件及其拓展" 
                                               Name="ExportBtn"
                                               Click="ExportBtn_OnClick"/>
+                
+                <onePointControls:SettingCard Glyph="&#xED39;"
+                                              IsClickable="True"
+                                              IsShowActionIcon="False"
+                                              Header="启用 RTX"
+                                              Description="为存档启用原版 RTX 光线追踪功能">
+                    <ToggleSwitch Name="IsUseRTX"
+                                  IsCheckedChanged="IsUseRTX_OnIsCheckedChanged"></ToggleSwitch>
+                </onePointControls:SettingCard>
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -1,8 +1,26 @@
-﻿using System.Net.Http;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Models.Helper;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
@@ -41,7 +59,8 @@ public partial class SearchItem : UserControl
 
     private async Task Update()
     {
-        var icon = await _imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri);
+        // 列表图标只显示 32x32，按 64 宽解码即可（兼容 2x 缩放），避免按原图全尺寸解码导致内存暴涨
+        var icon = await _imageLoader.LoadImageBrushAsync(SearchResultItemInfo.IconUri, true, 64);
         if (icon != null)
         {
             Card.IsFontIcon = false;

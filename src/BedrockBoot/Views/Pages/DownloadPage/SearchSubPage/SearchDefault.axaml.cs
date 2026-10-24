@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -6,14 +24,15 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack.CurseForge;
-using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Base.Enum.Search;
-using BedrockBoot.Helpers;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Enum.Search;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Instance;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Models.Pack.Plugin.Market;
+using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DrawContent;
@@ -32,6 +51,7 @@ public partial class SearchDefault : UserControl
 
     private bool _versionLoadSuccess;
     private ImageLoader _imageLoader = new ImageLoader();
+
     public SearchDefault()
     {
         InitializeComponent();
@@ -41,13 +61,16 @@ public partial class SearchDefault : UserControl
         _ = FetchLatestVersions();
         _ = LoadFeaturedResourcesAsync();
         _ = LoadPluginAsync();
+        _ = LoadLeviLaminaModsAsync();
+        _ = LoadDllModsAsync();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
+
     protected override void OnUnloaded(RoutedEventArgs e)
     {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
+        base.OnUnloaded(e);
+        _imageLoader.Dispose();
     }
 
     private void LoadSearchHistory()
@@ -68,7 +91,7 @@ public partial class SearchDefault : UserControl
         searchHis.Data.Reverse();
         searchHis.Data.ForEach(his => HistoryList.Items.Add(new SearchHistoryItem(his)
         {
-            SearchAction = info => { DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(info)); }
+            SearchAction = info => { DownloadSearch.NavigateInnerFrame(new SearchDetailed(info)); }
         }));
         HistoryList.IsVisible = true;
         HistoryListScrollViewer.IsVisible = true;
@@ -133,9 +156,9 @@ public partial class SearchDefault : UserControl
     {
         try
         {
-            var versions = await Task.Run(() => VersionHelper.GetVersions());
-            var release = versions.Find(x => x.Type == MinecraftGameTypeVersion.Release);
-            var preview = versions.Find(x => x.Type == MinecraftGameTypeVersion.Preview);
+            var versions = await (new MinecraftSearch()).GetRecommendAsync();
+            var release = versions[0];
+            var preview = versions[1];
 
             if (release == null && preview == null) throw new Exception("No versions found");
 
@@ -144,14 +167,14 @@ public partial class SearchDefault : UserControl
                 _versionLoadSuccess = true;
                 if (release != null)
                 {
-                    ReleaseBtn.Version = release.Key;
-                    ReleaseBtn.Description = $"{release.ID}, {release.Date}, {release.BuildType}";
+                    ReleaseBtn.Version = release.Name;
+                    ReleaseBtn.Description = $"{release.Id}, {release.DateUpdated}, Release";
                 }
 
                 if (preview != null)
                 {
-                    PreviewBtn.Version = preview.Key;
-                    PreviewBtn.Description = $"{preview.ID}, {preview.Date}, {preview.BuildType}";
+                    PreviewBtn.Version = preview.Name;
+                    PreviewBtn.Description = $"{preview.Id}, {preview.DateUpdated}, Preview";
                 }
 
                 RecommendationPanel.IsVisible = true;
@@ -172,37 +195,106 @@ public partial class SearchDefault : UserControl
             CheckNetworkStatus();
         }
     }
-    
-    // --- 插件加载 ---
+
+    private async Task LoadLeviLaminaModsAsync()
+    {
+        try
+        {
+            var client = await (new LeviLaminaModSearch()).GetRecommendAsync();
+            var plugin1 = client[0];
+            var plugin2 = client[1];
+
+            LLModView1.PluginName = plugin1.Name;
+            LLModView1.Description = plugin1.Description;
+            LLModView2.PluginName = plugin2.Name;
+            LLModView2.Description = plugin2.Description;
+
+            LLModView1.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin1));
+            LLModView2.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin2));
+
+            LLModLoadRing.IsVisible = false;
+            LeviLaminaItem.IsVisible = true;
+
+            var tasks = new[]
+            {
+                _imageLoader.LoadIconAsync(plugin1.IconUri, 64),
+                _imageLoader.LoadIconAsync(plugin2.IconUri, 64)
+            };
+
+            await Task.WhenAll(tasks);
+            LLModView1.Icon = await tasks[0];
+            LLModView2.Icon = await tasks[1];
+        }
+        catch
+        {
+            LeviLaminaModCard.IsVisible = false;
+        }
+    }
+
+    private async Task LoadDllModsAsync()
+    {
+        try
+        {
+            var client = await (new DllModsSearch()).GetRecommendAsync();
+            var plugin1 = client[0];
+            var plugin2 = client[1];
+
+            DllView1.PluginName = plugin1.Name;
+            DllView1.Description = plugin1.Description;
+            DllView2.PluginName = plugin2.Name;
+            DllView2.Description = plugin2.Description;
+
+            DllView1.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin1));
+            DllView2.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin2));
+
+            DllRing.IsVisible = false;
+            DllItem.IsVisible = true;
+
+            var tasks = new[]
+            {
+                _imageLoader.LoadIconAsync(plugin1.IconUri, 64),
+                _imageLoader.LoadIconAsync(plugin2.IconUri, 64)
+            };
+
+            await Task.WhenAll(tasks);
+            DllView1.Icon = await tasks[0];
+            DllView2.Icon = await tasks[1];
+        }
+        catch
+        {
+            DllModCard.IsVisible = false;
+        }
+    }
+
     private async Task LoadPluginAsync()
     {
         try
         {
-            var client = new MarketClient();
-            var pluginList = await client.GetPluginsAsync();
-            var plugin1 = pluginList[0];
-            var plugin2 = pluginList[1];
+            var client = await (new PluginPackSearch()).GetRecommendAsync();
+            var plugin1 = client[0];
+            var plugin2 = client[1];
 
-            plugin1.IconUrl = $"{SourceList.MarketApiHost}{plugin1.IconUrl}";
-            plugin2.IconUrl = $"{SourceList.MarketApiHost}{plugin2.IconUrl}";
-
-            PluginView1.PluginName = plugin1.PluginName;
+            PluginView1.PluginName = plugin1.Name;
             PluginView1.Description = plugin1.Description;
-            PluginView2.PluginName = plugin2.PluginName;
+            PluginView2.PluginName = plugin2.Name;
             PluginView2.Description = plugin2.Description;
 
-            PluginView1.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin1),
-                $"插件详细信息：{plugin1.PluginName}");
-            PluginView2.Click += (s, e) => GlobalModel.MainWindow.OpenDraw(new DrawDownloadPluginContent(plugin2),
-                $"插件详细信息：{plugin2.PluginName}");
+            PluginView1.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin1));
+            PluginView2.Click += (s, e) =>
+                DownloadRoot.Instance.NavigateTo(new ResultRoot(plugin2));
 
             PluginLoadRing.IsVisible = false;
             PluginItem.IsVisible = true;
 
             var tasks = new[]
             {
-                _imageLoader.LoadIconAsync(plugin1.IconUrl),
-                _imageLoader.LoadIconAsync(plugin2.IconUrl)
+                _imageLoader.LoadIconAsync(plugin1.IconUri, 64),
+                _imageLoader.LoadIconAsync(plugin2.IconUri, 64)
             };
 
             await Task.WhenAll(tasks);
@@ -240,11 +332,12 @@ public partial class SearchDefault : UserControl
     {
         var item = new SearchResultItemInfo
         {
-            Name = mod.Name, Id = mod.Id, Description = mod.Summary,
+            Name = mod.Name, Id = mod.Id.ToString(), Description = mod.Summary,
             DateUpdated = mod.DateReleased, Authors = mod.Authors.Select(a => a.Name).ToList(),
             DownloadCount = (uint)mod.DownloadCount, IconUri = mod.Logo?.Url,
             Labels = mod.Categories.Select(c => c.Name).ToList(),
-            SourceWebsite = mod.Links?.WebsiteUrl, JsonData = JsonSerializer.Serialize(mod)
+            SourceWebsite = mod.Links?.WebsiteUrl, JsonData = JsonSerializer.Serialize(mod),
+            ResourceType = SearchResourceType.ResourcePack
         };
         DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
     }
@@ -262,7 +355,7 @@ public partial class SearchDefault : UserControl
 
     private void NavigateSearch(SearchResourceType type)
     {
-        DownloadSearch.SearchFrame.NavigateTo(new SearchDetailed(new SearchInfo { Type = type }));
+        DownloadSearch.NavigateInnerFrame(new SearchDetailed(new SearchInfo { Type = type }));
     }
 
     private void ReleaseBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -279,8 +372,12 @@ public partial class SearchDefault : UserControl
     {
         var version = VersionHelper.GetVersions().Find(x => x.Type == type);
         if (version != null)
-            GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version),
-                $"{i18n["Download.Action.DownloadGame"]} {version.Key}");
+        {
+            var installer = new InstanceInstaller(version);
+            installer.Install();
+            /*GlobalModel.MainWindow.OpenDraw(new DrawDownloadGameContent(version),
+                $"{i18n["Download.Action.DownloadGame"]} {version.Key}");*/
+        }
     }
 
     private void CleanBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -305,5 +402,15 @@ public partial class SearchDefault : UserControl
     private void SearchPlugin_OnClick(object? sender, RoutedEventArgs e)
     {
         NavigateSearch(SearchResourceType.PluginPack);
+    }
+
+    private void SearchLeviLaminaMod_OnClick(object? sender, RoutedEventArgs e)
+    {
+        NavigateSearch(SearchResourceType.LeviLaminaMods);
+    }
+
+    private void SearchDllMod_OnClick(object? sender, RoutedEventArgs e)
+    {
+        NavigateSearch(SearchResourceType.DllMods);
     }
 }

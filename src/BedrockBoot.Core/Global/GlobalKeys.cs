@@ -1,6 +1,25 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Core;
+using BedrockBoot.Standard.Enum.Type;
 
 namespace BedrockBoot.Models.Global;
 
@@ -8,8 +27,7 @@ public class GlobalKeys
 {
     public const string MsClientId = "0000000048183522";
 
-    public static string CurseForgeApiKey { get; } =
-        "$2a$10$Awb53b9gSOIJJkdV3Zrgp.CyFP.dI13QKbWn/4UZI4G4ff18WneB6";
+    public static string CurseForgeApiKey { get; } = Keys.CurseForgeApiKey;
 
     public static Dictionary<string, (SupportedFileType Type, bool AllowMany, string Name)> DropOverTypesOfSupport { get; } = new()
     {

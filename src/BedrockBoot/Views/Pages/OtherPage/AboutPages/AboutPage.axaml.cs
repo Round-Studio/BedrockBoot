@@ -1,16 +1,31 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System.Collections.Generic;
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 using OnePointUI.Avalonia.Base.Entry;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
-namespace BedrockBoot.Views.Pages.OtherPage;
+namespace BedrockBoot.Views.Pages.OtherPage.AboutPages;
 
 public partial class AboutPage : ISettingPage
 {
@@ -35,39 +50,6 @@ public partial class AboutPage : ISettingPage
     private static I18nManager i18n => I18nManager.Instance;
 
     /// <summary>
-    ///     处理检查更新按钮点击事件
-    /// </summary>
-    private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        // 1. 进入加载状态
-        CheckUpdateBtn.IsEnabled = false;
-        CheckUpdateBtn.Content = new ProgressRing
-        {
-            Width = 20,
-            Height = 20,
-            Foreground = Brushes.White, // 假设背景深色，可根据实际主题调整
-            Background = Brushes.Transparent
-        };
-
-        try
-        {
-            // 2. 调用全局更新逻辑
-            // 假设 MainPage.Update(true) 内部会处理弹窗提醒更新结果
-            await MainPage.Update(true);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"Update check failed: {ex.Message}");
-        }
-        finally
-        {
-            // 3. 恢复按钮状态
-            CheckUpdateBtn.IsEnabled = true;
-            CheckUpdateBtn.Content = i18n["AboutPage.Update.Action"];
-        }
-    }
-
-    /// <summary>
     ///     导航至开源组件页面
     /// </summary>
     private void OpenSourceBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -85,6 +67,6 @@ public partial class AboutPage : ISettingPage
 
     private void VersionCard_OnClick(object? sender, RoutedEventArgs e)
     {
-        MainSettingPage.NavigateTo(new AboutReleaseNotes());
+        MainSettingPage.NavigateTo(new UniversalSoftwareUpdate());
     }
 }

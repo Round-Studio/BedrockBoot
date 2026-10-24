@@ -1,21 +1,38 @@
-﻿using System;
+﻿/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Enum;
-using BedrockBoot.Base.Enum.Type;
 using BedrockBoot.Core;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Service.Protocol;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Enum.Type;
 using PaperConnect.Core.Module.Global;
 using Round.SDK.Entity;
 using Round.SDK.Enum;
@@ -23,13 +40,13 @@ using Round.SDK.Global;
 using Round.SDK.Logger;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 #if WINDOWS
+using BedrockBoot.Windows.Models.Helper.Uwp;
+using BedrockBoot.Windows.Win32.Windows;
 using System.Windows.Forms;
-using BedrockBoot.Models.Helper.Uwp;
-using BedrockBoot.Win32;
 using Application = System.Windows.Forms.Application;
 #endif
 
-namespace BedrockBoot.Desktop;
+namespace BedrockBoot;
 
 internal sealed class Program
 {
@@ -45,6 +62,8 @@ internal sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        RegisterAssemblyResolve();
+
         Args = args.ToList();
         Models.Global.GlobalModel.IsProgressRunning = true;
 
@@ -56,6 +75,9 @@ internal sealed class Program
             GlobalModel.Config.Data.MediaVolume /= 100;
 
         AppUpdater.ProcessStartupArgs(args);
+
+        /*if (BedrockbootUrlProtocol.WakeUp(args))
+            return;*/
 
         PluginEnvironment.RunningProduct = ProductEnum.BedrockBoot;
         EnvironmentLabel.ClientId = $"BedrockBoot {Models.Global.GlobalModel.BodyVersion}";
@@ -199,7 +221,7 @@ internal sealed class Program
 							if (IsStartMemClean == false && mb >= 95)
 							{
 								IsStartMemClean = true;
-								ProcessMemoryTrimmer.TrimProcess();
+								BedrockBoot.Windows.Models.ProcessMemoryTrimmer.TrimProcess();
 								Console.WriteLine(@"Memory Cleaned");
 							}
 							
@@ -217,7 +239,7 @@ internal sealed class Program
 		primemthrd.Name = "PriMemeWorkingSetMonitor";
 		primemthrd.Start();
 #endif
-		var appArgs = args.Where(a => a != "-bedrockboot" && !a.StartsWith("bedrockboot:", StringComparison.OrdinalIgnoreCase)).ToArray();
+		var appArgs = BedrockbootUrlProtocol.FilterStartupArgs(args).ToArray();
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(appArgs);
     }
 
@@ -253,32 +275,7 @@ internal sealed class Program
 				    AppUpdater.StartUpdateFromDownloadedFile(args[args.FindIndex(x => x == "-update") + 1]);
 				    return true;
 
-			    case "-shell":
-				    var shellIndex = args.FindIndex(x => x == "-shell");
-				    if (shellIndex + 1 >= args.Count)
-				    {
-					    Console.WriteLine(@"错误：-shell 参数后需要指定命令");
-					    break;
-				    }
-
-				    var command = args[shellIndex + 1];
-				    Console.WriteLine($@"触发 bb 协议：{command}");
-
-				    try
-				    {
-					    Sent(command);
-					    return true;
-				    }
-				    catch (Exception ex)
-				    {
-					    Console.WriteLine($@"请求出错：{ex.Message}");
-					    Task.Run(async () =>
-					    {
-						    await Task.Delay(2000);
-						    Sent(command);
-					    });
-					    return true;
-				    }
+			    
 
 #if WINDOWS
 			    case "-console":
@@ -303,27 +300,7 @@ internal sealed class Program
 
 				    Models.Global.GlobalModel.AppRunType = AppRunType.LaunchGame;
 
-				    return false;
-			    case "-bedrockboot":
-				    var protoIndex = args.FindIndex(x => x == "-bedrockboot");
-				    if (protoIndex + 1 >= args.Count)
-				    {
-					    Console.WriteLine(@"错误：-bedrockboot 参数后需要指定协议 URL");
-					    break;
-				    }
-
-				    var protocolUrl = args[protoIndex + 1];
-				    Console.WriteLine($@"收到 BedrockBoot 协议请求: {protocolUrl}");
-
-				    var parsedCommand = BedrockbootProtocolHandler.ParseProtocolUrl(protocolUrl);
-				    if (parsedCommand == null)
-				    {
-					    Console.WriteLine($@"无法解析协议 URL: {protocolUrl}");
-					    break;
-				    }
-
-				    Console.WriteLine(@"未检测到运行中的主窗口，将在当前进程启动");
-				    BedrockbootProtocolHandler.PendingCommand = parsedCommand;
+				    
 				    return false;
 
 			    case "-open":
@@ -343,34 +320,61 @@ internal sealed class Program
 	    return false;
     }
 
-    private static void Sent(string command)
-    {
-        using var handler = new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-        };
-
-        using var httpClient = new HttpClient(handler);
-
-        var url = $"http://127.0.0.1:43956/shell?command={Uri.EscapeDataString(command)}";
-        var response = httpClient.GetAsync(url).Result;
-
-        if (response.IsSuccessStatusCode)
-        {
-            var responseContent = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine($@"服务器响应：{responseContent}");
-        }
-        else
-        {
-            Console.WriteLine($@"请求失败，状态码：{response.StatusCode}");
-        }
-    }
-
     public static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
+    }
+
+    private static void RegisterAssemblyResolve()
+    {
+        System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, assemblyName) =>
+        {
+            if (string.IsNullOrEmpty(assemblyName.Name)) return null;
+
+            var loaded = AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(a => a.GetName().Name == assemblyName.Name);
+            if (loaded != null) return loaded;
+
+            var candidatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{assemblyName.Name}.dll");
+            if (File.Exists(candidatePath))
+            {
+                try
+                {
+                    return context.LoadFromAssemblyPath(candidatePath);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+            return null;
+        };
+
+        AppDomain.CurrentDomain.AssemblyResolve += (sender, eventArgs) =>
+        {
+            var requestedName = new System.Reflection.AssemblyName(eventArgs.Name);
+            if (string.IsNullOrEmpty(requestedName.Name)) return null;
+
+            var loaded = AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(a => a.GetName().Name == requestedName.Name);
+            if (loaded != null) return loaded;
+
+            var candidatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{requestedName.Name}.dll");
+            if (File.Exists(candidatePath))
+            {
+                try
+                {
+                    return System.Reflection.Assembly.LoadFrom(candidatePath);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+            return null;
+        };
     }
 }

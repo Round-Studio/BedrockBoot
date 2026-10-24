@@ -1,42 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.Management.Deployment;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Info;
+using System.Security.Cryptography;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Entity.Progress;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using BedrockLauncher.Core.Utils;
 using Round.SDK.Helper;
-using DownloadProgress = BedrockBoot.Base.Entry.Progress.DownloadProgress;
+using DownloadProgress = BedrockBoot.Standard.Entity.Progress.DownloadProgress;
 
-namespace BedrockBoot.Services;
+namespace BedrockBoot.Linux.Models.Game;
 
-// 定义一个新的进度信息类，包含下载速度和进度
-public class DownloadProgressInfo
-{
-    public DownloadProgressInfo(double percentage, string speed, long downloadedBytes, long totalBytes)
-    {
-        Percentage = percentage;
-        Speed = speed;
-        DownloadedBytes = downloadedBytes;
-        TotalBytes = totalBytes;
-    }
-
-    public double Percentage { get; set; }
-    public string Speed { get; set; }
-    public long DownloadedBytes { get; set; }
-    public long TotalBytes { get; set; }
-}
-
-public class EasyDownload
+public class EasyDownload : IDownload
 {
     private readonly bool _isUpdate;
     public EasyDownload(BuildInfo info, bool isUsePack, string dir, string gameName, bool isUpdate = false)
@@ -57,14 +55,11 @@ public class EasyDownload
     public Action<string, DownloadProgressInfo> DownloadProgress { get; set; } // 修改：整合下载进度和速度
     public Action<string, double> MergeProgress { get; set; }
     public Action<string, double> ExtractionProgress { get; set; }
-    public Action<string, DeploymentProgress> DeploymentProgress { get; set; }
+    public Action<string, DeploymentProgressInfo> DeploymentProgress { get; set; }
     public Action<string> StatusText { get; set; }
     public Action<InstallStates> InstallStateChanged { get; set; }
     public Action<string, string, Exception> ErrorOccurred { get; set; }
     public Action<VersionConfig> Completed { get; set; }
-    
-    
-    public static bool UseHardwareDecode { get; set; }
     
     // 安装锁定
     public bool IsCanInstall { get; set; } = false;
@@ -102,7 +97,8 @@ public class EasyDownload
             {
                 while (!IsCanInstall)
                 {
-                    Task.Delay(100).Wait();
+                    token.ThrowIfCancellationRequested();
+                    await Task.Delay(100, token);
                 }
             } // 外部控制是否开始安装
 
@@ -111,6 +107,10 @@ public class EasyDownload
             token.ThrowIfCancellationRequested();
 
             Completed?.Invoke(GameConfig);
+        }
+        catch (OperationCanceledException)
+        {
+            // 取消操作，不显示错误
         }
         catch (Exception ex)
         {
@@ -132,7 +132,7 @@ public class EasyDownload
         {
             // 1) 优先使用当前安装目录下的缓存包
             if (File.Exists(packagePath) &&
-                await CheckMD5(packagePath, false))
+                await CheckMD5(packagePath, token, false))
             {
                 ReportCacheUsed();
                 return packagePath;
@@ -141,7 +141,7 @@ public class EasyDownload
             // 2) 自动检测全局缓存索引：其他安装目录可能已缓存同版本的包
             var cached = GamePackageCacheIndex.Find(BuildInfo.ID, BuildInfo.BuildType.ToString());
             if (cached != null &&
-                await CheckMD5(cached.FilePath, false))
+                await CheckMD5(cached.FilePath, token, false))
             {
                 Console.WriteLine($@"命中全局缓存索引：{cached.FilePath}");
                 ReportCacheUsed();
@@ -194,7 +194,7 @@ public class EasyDownload
     {
         StatusText?.Invoke("正在验证包完整性...");
 
-        if (!await CheckMD5(packagePath))
+        if (!await CheckMD5(packagePath, token))
         {
             ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
             return false;
@@ -221,7 +221,7 @@ public class EasyDownload
             InstallDstFolder = installDir,
             GameTypeVersion = BuildInfo.Type,
             Type = BuildInfo.BuildType,
-            UseHardwareDecode = UseHardwareDecode,
+            UseHardwareDecode = PlatformCore.CoreInit!.IsUseHardwareDecode,
             ExtractionProgress = new Progress<DecompressProgress>(progress =>
             {
                 ExtractionProgress?.Invoke($"解压文件 ({progress.Percentage:F2}%)",
@@ -273,21 +273,40 @@ public class EasyDownload
     /// <summary>最近一次 CheckMD5 计算出的文件哈希，用于登记缓存索引时避免二次哈希</summary>
     public string? LastComputedMd5 { get; private set; }
 
-    public async Task<bool> CheckMD5(string file, bool showError = true)
+    public async Task<bool> CheckMD5(string file, CancellationToken token = default, bool showError = true)
     {
         try
         {
-            var fileMD5 = await ComputeFileMD5.ComputeFileMD5Async(file);
+            token.ThrowIfCancellationRequested();
 
+            string fileMD5;
+            await using (var stream = new FileStream(
+                             file,
+                             FileMode.Open,
+                             FileAccess.Read,
+                             FileShare.Read,
+                             131072,
+                             FileOptions.SequentialScan | FileOptions.Asynchronous))
+            {
+                byte[] hash = await MD5.HashDataAsync(stream, token);
+                fileMD5 = Convert.ToHexString(hash).ToLowerInvariant();
+            }
+
+            token.ThrowIfCancellationRequested();
             LastComputedMd5 = fileMD5;
 
             foreach (var variation in BuildInfo.Variations)
-                if (variation.MD5 == fileMD5)
+                if (string.Equals(variation.MD5, fileMD5, StringComparison.OrdinalIgnoreCase))
                     return true;
 
-            if (showError) ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
+            if (showError)
+                ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
 
             return false;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

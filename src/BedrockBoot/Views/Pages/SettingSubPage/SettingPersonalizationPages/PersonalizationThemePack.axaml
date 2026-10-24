@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,11 +15,11 @@
                            FontSize="14"
                            Text="{DynamicResource Settings.Universal.Exception.Summary.Title}" />
 
-                <TextBlock Text="导入他人分享给你的主题包以个性化 BedrockBoot"
+                <TextBlock Text="{DynamicResource Settings.Personalization.ThemePack.Desc1}"
                            TextWrapping="Wrap"
                            Opacity="0.8" />
 
-                <TextBlock Text="您也可以自己制作 BedrockBoot 主题包"
+                <TextBlock Text="{DynamicResource Settings.Personalization.ThemePack.Desc2}"
                            TextWrapping="Wrap"
                            Opacity="0.8" />
 
@@ -30,7 +30,7 @@
                                 Spacing="12">
                         <onePointControls:FontIcon VerticalAlignment="Center"
                                                    Glyph="&#xE710;" />
-                        <TextBlock Text="导入主题包" />
+                        <TextBlock Text="{DynamicResource Settings.Personalization.ThemePack.Action.Import}" />
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -46,15 +46,15 @@
                              Name="InfoCard"
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center"
-                             BigTitle="未安装任何主题"
-                             Message="您还没安装任何主题包啊啊啊" />
+                             BigTitle="{DynamicResource Settings.Personalization.ThemePack.Empty.Title}"
+                             Message="{DynamicResource Settings.Personalization.ThemePack.Empty.Message}" />
 
             <notice:LoadCard Grid.Column="1"
                              Name="LoadingCard"
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center"
                              BigTitle="{DynamicResource Shared.Status.Wait}"
-                             Message="翻箱倒柜" />
+                             Message="{DynamicResource Settings.Personalization.ThemePack.Loading.Message}" />
         </Grid>
     </Grid>
 </UserControl>

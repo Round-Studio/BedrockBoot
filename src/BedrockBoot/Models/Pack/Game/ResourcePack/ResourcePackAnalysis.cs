@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -8,8 +26,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using Round.SDK.Entity;
@@ -133,18 +151,20 @@ public class ResourcePackAnalysis
             {
                 var manifest = ReadManifestFromZipEntry(archive, entry, TempPath);
                 if (manifest == null) continue;
-                
+
                 manifest?.PackIconBytes = ReadIconBytesFromZipAsync(archive).Result;
-                if(manifest.PackIconBytes == null) manifest?.PackIconBytes = ReadIconBytesFromZipEntryDir(archive, entry);
+                if (manifest.PackIconBytes == null)
+                    manifest?.PackIconBytes = ReadIconBytesFromZipEntryDir(archive, entry);
                 result.Add(manifest);
             }
 
             // 读取嵌套的 .mcpack 内的 manifest (mcaddon 内含 mcpack)
-            var nestedMcpackEntries = archive.Entries
-                .Where(e => e.Name.EndsWith(".mcpack", StringComparison.OrdinalIgnoreCase))
+            var nestedPackEntries = archive.Entries
+                .Where(e => e.Name.EndsWith(".mcpack", StringComparison.OrdinalIgnoreCase) ||
+                            e.Name.EndsWith(".mcaddon", StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            foreach (var entry in nestedMcpackEntries)
+            foreach (var entry in nestedPackEntries)
             {
                 try
                 {
@@ -187,7 +207,7 @@ public class ResourcePackAnalysis
             ? "pack_icon.png"
             : $"{dir}/pack_icon.png";
         var iconEntry = archive.GetEntry(iconName)
-                       ?? archive.GetEntry(string.IsNullOrEmpty(dir) ? "pack.png" : $"{dir}/pack.png");
+                        ?? archive.GetEntry(string.IsNullOrEmpty(dir) ? "pack.png" : $"{dir}/pack.png");
         if (iconEntry == null) return null;
         try
         {
@@ -227,6 +247,7 @@ public class ResourcePackAnalysis
             {
                 Console.WriteLine($@"加载默认图标失败: {ex}");
             }
+
             return null;
         }
 
@@ -250,7 +271,8 @@ public class ResourcePackAnalysis
         return ms.ToArray();
     }
 
-    private static ResourcePackManifest? ReadManifestFromZipEntry(ZipArchive archive, ZipArchiveEntry entry, string tempPath)
+    private static ResourcePackManifest? ReadManifestFromZipEntry(ZipArchive archive, ZipArchiveEntry entry,
+        string tempPath)
     {
         var entryDir = Path.GetDirectoryName(entry.FullName)?.Replace('\\', '/') ?? "";
         var packRoot = string.IsNullOrEmpty(entryDir)
@@ -300,7 +322,11 @@ public class ResourcePackAnalysis
 
     private void ExtractSubPacks(string targetPath)
     {
-        var subPacks = Directory.GetFiles(targetPath, "*.mcpack", SearchOption.AllDirectories);
+        var extensions = new[] { ".mcpack", ".mcaddon" };
+
+        var subPacks = Directory.EnumerateFiles(targetPath, "*.*", SearchOption.AllDirectories)
+            .Where(f => extensions.Contains(Path.GetExtension(f), StringComparer.OrdinalIgnoreCase))
+            .ToArray();
         foreach (var subPack in subPacks)
         {
             var subExtractPath =

@@ -1,9 +1,7 @@
-name: 构建并推送 Pre Release
+name: 手动构建并推送 PreRelease
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["2.0-preview"]
 
 permissions:
   contents: write
@@ -48,7 +46,7 @@ jobs:
       - name: Build Windows
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../win-publish/" /p:Version=${{ needs.version.outputs.v }}
+          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o "./../../win-publish/" /p:Version=${{ needs.version.outputs.v }} /p:BuildType=Preview
       
       - name: Rename Windows Output
         shell: pwsh
@@ -80,7 +78,7 @@ jobs:
       
       - name: Build Linux
         run: |
-          ./build-appimage.sh ./src/BedrockBoot/BedrockBoot.csproj "BedrockBoot" ./assets/BedrockBoot.Icon.512x.png -version ${{ needs.version.outputs.v }}
+          ./build-appimage.sh ./src/BedrockBoot/BedrockBoot.csproj "BedrockBoot" ./assets/BedrockBoot.Icon.512x.png -version ${{ needs.version.outputs.v }} /p:BuildType=Preview
       
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
@@ -143,7 +141,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
-          name: "BedrockBoot Build ${{ needs.version.outputs.tag }}"
+          name: "${{ needs.version.outputs.tag }}"
           body: |
             ## BedrockBoot ${{ needs.version.outputs.v }} 测试版推送
             

@@ -1,5 +1,24 @@
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,6 +41,24 @@ public class HtmlToControlConverter
         .UseAdvancedExtensions()
         .UseSoftlineBreakAsHardlineBreak()
         .Build();
+
+    // 常见图片后缀；描述里出现 .mcaddon / .mcworld 等下载链接时不当图片处理
+    private static readonly HashSet<string> ImageExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".png", ".jpg", ".jpeg", ".jfif", ".gif", ".webp", ".bmp", ".avif", ".svg", ".ico"
+    };
+
+    /// <summary>
+    ///     判断链接是否真的是图片。无后缀的地址（常见于 CDN）仍按图片处理。
+    /// </summary>
+    private static bool IsImageUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return false;
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return true;
+
+        var extension = Path.GetExtension(uri.AbsolutePath);
+        return string.IsNullOrEmpty(extension) || ImageExtensions.Contains(extension);
+    }
 
     public static List<Control> ConvertHtmlToControls(string content)
     {
@@ -237,7 +274,7 @@ public class HtmlToControlConverter
                     var linkText = ExtractInlineText(link);
                     var url = link.Url;
                     
-                    if (link.IsImage)
+                    if (link.IsImage && IsImageUrl(url))
                     {
                         // 处理图片
                         panel.Children.Add(new LocalImageRenderWidget(url)
@@ -955,6 +992,23 @@ public class HtmlToControlConverter
 
         if (string.IsNullOrEmpty(src))
             return new Border { Height = 0 };
+
+        // 描述里常把下载链接（.mcaddon/.mcworld/.mcpack 等）写成图片语法，这类不当图片加载
+        if (!IsImageUrl(src))
+        {
+            var link = new HyperlinkButton
+            {
+                Content = string.IsNullOrWhiteSpace(alt) ? src : alt,
+                Padding = new Thickness(0),
+                Margin = new Thickness(0, 2),
+                Background = new SolidColorBrush(Colors.Transparent)
+            };
+
+            if (Uri.TryCreate(src, UriKind.Absolute, out var uri))
+                link.NavigateUri = uri;
+
+            return link;
+        }
 
         var imageWidget = new LocalImageRenderWidget(src)
         {

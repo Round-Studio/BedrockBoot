@@ -19,14 +19,12 @@
 
         <Grid RowDefinitions="Auto,*">
             <TextBlock Grid.Row="0"
-                       Margin="15,0,0,8"
+                       Margin="0,0,0,8"
                        Text="{DynamicResource Dialog.ImportPack.Label.ConfirmList}" />
 
-            <ScrollViewer Grid.Row="1">
-                <StackPanel Margin="15,8,15,5"
-                            Name="PacksList" 
-                            Spacing="8"/>
-            </ScrollViewer>
+            <StackPanel Grid.Row="1" Margin="0,8,0,5"
+                        Name="PacksList"
+                        Spacing="8" />
         </Grid>
     </Grid>
 </UserControl>

@@ -1,3 +1,21 @@
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,12 +27,11 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
-using BedrockBoot.Interface;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
-using LeviLaminaSourceList = BedrockBoot.LeviLamina.Global.SourceList;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingDownloadPages;
 
@@ -80,9 +97,6 @@ public partial class NetworkTest : ISettingPage
         // Plugin / Market
         _entries.Add(new NetworkTestEntry(plugin, "Round Studio Market API", SourceList.MarketApiHost));
         _entries.Add(new NetworkTestEntry(plugin, "Round Studio Plugin API", SourceList.PluginApi));
-
-        // LeviLamina
-        _entries.Add(new NetworkTestEntry(plugin, "LeviLamina Version DB", LeviLaminaSourceList.LeviLaminaVersion));
 
         // 其他
         _entries.Add(new NetworkTestEntry(other, "VC++ 2015-2022 Redist", SourceList.VC20152022Url));

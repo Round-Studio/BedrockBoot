@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <Nullable>enable</Nullable>
@@ -15,6 +15,7 @@
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
         <DefineConstants>WINDOWS</DefineConstants>
+        <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
@@ -23,10 +24,38 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>full</TrimMode>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+        <_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <TrimmerRootAssembly Include="BedrockBoot" />
+        <TrimmerRootAssembly Include="BedrockBoot.Standard" />
+        <TrimmerRootAssembly Include="BedrockBoot.Core" />
+        <TrimmerRootAssembly Include="Round.SDK" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <TrimmerRootAssembly Include="BedrockBoot.Windows" />
+        <TrimmerRootAssembly Include="System.Windows.Forms" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <TrimmerRootAssembly Include="BedrockBoot.Linux" />
+    </ItemGroup>
+
+    <PropertyGroup>
         <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
         <Win32Resource>Manifest.res</Win32Resource>
     </PropertyGroup>
-
+    <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.GC.ConserveMemory" Value="5"/>
+    <RuntimeHostConfigurationOption Include="System.GC.RetainVM" Value="false"/>
+    <RuntimeHostConfigurationOption Include="System.GC.Server" Value="false"/>
+    </ItemGroup>
     <ItemGroup>
         <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
             <_Parameter1>BuildTimestamp</_Parameter1>
@@ -38,45 +67,38 @@
         <Content Include="Assets\Icon\BedrockBoot.Icon.512x.ico">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
         <AvaloniaResource Include="Manifest\Function\FunctionOption.json"/>
-        <None Remove="Assets\Web\LoginFinish.html" />
         <AvaloniaResource Include="Assets\Web\LoginFinish.html" />
-        <None Remove="Manifest\DefaultCustomManifest.json" />
+        <AvaloniaResource Include="Assets\Text\ChangLog.txt" />
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
-    </ItemGroup>
-
-    <ItemGroup>
+        <Folder Include="Assets\Svg\"/>
         <AvaloniaXaml Include="I18n\**"/>
+        <Folder Include="Entity\" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.1.0"/>
-        <PackageReference Include="Avalonia.Desktop" Version="12.1.0"/>
-        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.0"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0"/>
-        <PackageReference Include="Avalonia.HarfBuzz" Version="12.1.0"/>
-        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.8.0"/>
+        <PackageReference Include="Avalonia" Version="12.1.3"/>
+        <PackageReference Include="Avalonia.Desktop" Version="12.1.3"/>
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.3"/>
+        <PackageReference Include="Avalonia.HarfBuzz" Version="12.1.3"/>
         <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.71"/>
         <PackageReference Include="Markdig" Version="1.2.0" />
         <PackageReference Include="NAudio" Version="2.2.1" />
         <PackageReference Include="Octokit" Version="14.0.0"/>
+        <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.15" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\AvaMotion\src\AvaMotion\AvaMotion.csproj" />
-        <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.Standard\BedrockBoot.Standard.csproj" />
         <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj"/>
         <ProjectReference Include="..\BedrockBoot.GravityCone\BedrockBoot.GravityCone.csproj" />
-        <ProjectReference Include="..\BedrockBoot.Inject\BedrockBoot.Inject.csproj"/>
         <ProjectReference Include="..\BedrockBoot.LevelNbt\BedrockBoot.LevelNbt.csproj"/>
-        <ProjectReference Include="..\BedrockBoot.LeviLamina\BedrockBoot.LeviLamina.csproj"/>
+        <ProjectReference Include="..\BedrockBoot.MSAL\BedrockBoot.MSAL.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
         <ProjectReference Include="..\BedrockBoot.WatchDog\BedrockBoot.WatchDog.csproj" />
         <ProjectReference Include="..\LiteSkinViewer\LiteSkinViewer.2D\LiteSkinViewer.2D.csproj" />
@@ -93,7 +115,19 @@
         <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
 
+        <ProjectReference Include="..\BedrockBoot.MSAL\BedrockBoot.MSAL.csproj"
+                          Condition="$([MSBuild]::IsOSPlatform('Windows'))"/>
+
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
+
+    <Target Name="ExcludePdbFromPublish" AfterTargets="ComputeFilesToPublish">
+        <ItemGroup>
+            <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.pdb'"/>
+        </ItemGroup>
+    </Target>
+
+    <Import Project="Build/GenerateChangeLog.targets"
+            Condition="'$(Configuration)' == 'Release'"/>
 </Project>

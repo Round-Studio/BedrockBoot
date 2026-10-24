@@ -3,35 +3,43 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:controls="clr-namespace:AvaMotion.Controls;assembly=AvaMotion"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SetupPage.SetupCompleted">
-    <StackPanel VerticalAlignment="Center"
-                Margin="45">
-        <StackPanel HorizontalAlignment="Center"
-                    VerticalAlignment="Top">
-            <onePointControls:FontIcon Margin="5"
-                                       FontSize="28"
-                                       HorizontalAlignment="Center"
-                                       Glyph="&#xE73E;"
-                                       Foreground="{DynamicResource PrimaryForegroundBrush}" />
-            <TextBlock FontSize="22"
-                       HorizontalAlignment="Center"
-                       Margin="0,10,0,0"
-                       Text="{DynamicResource Setup.Completed.Title}" />
-            <TextBlock HorizontalAlignment="Center"
-                       Margin="5"
-                       Text="{DynamicResource Setup.Completed.Description}" />
-        </StackPanel>
-
-        <Grid Margin="0,10,0,0">
-            <Button Width="110"
-                    Height="36"
-                    HorizontalAlignment="Center"
-                    Margin="5"
-                    Classes="Accent"
-                    Name="Start"
-                    Click="Start_OnClick"
-                    Content="{DynamicResource Setup.Completed.Action.Start}" />
+    <Grid>
+        <Grid ColumnDefinitions="*,*">
+            <controls:PartyPopperControl Grid.Column="0"></controls:PartyPopperControl>
+            <controls:PartyPopperControl Grid.Column="1"></controls:PartyPopperControl>
         </Grid>
-    </StackPanel>
+        
+        <StackPanel VerticalAlignment="Center"
+                    Margin="45">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Top">
+                <onePointControls:FontIcon Margin="5"
+                                           FontSize="28"
+                                           HorizontalAlignment="Center"
+                                           Glyph="&#xE73E;"
+                                           Foreground="{DynamicResource PrimaryForegroundBrush}" />
+                <TextBlock FontSize="22"
+                           HorizontalAlignment="Center"
+                           Margin="0,10,0,0"
+                           Text="{DynamicResource Setup.Completed.Title}" />
+                <TextBlock HorizontalAlignment="Center"
+                           Margin="5"
+                           Text="{DynamicResource Setup.Completed.Description}" />
+            </StackPanel>
+
+            <Grid Margin="0,10,0,0">
+                <Button Width="110"
+                        Height="36"
+                        HorizontalAlignment="Center"
+                        Margin="5"
+                        Classes="Accent"
+                        Name="Start"
+                        Click="Start_OnClick"
+                        Content="{DynamicResource Setup.Completed.Action.Start}" />
+            </Grid>
+        </StackPanel>
+    </Grid>
 </UserControl>

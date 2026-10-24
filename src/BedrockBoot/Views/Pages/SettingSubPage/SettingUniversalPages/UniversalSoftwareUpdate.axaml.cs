@@ -1,13 +1,35 @@
-﻿using System.Collections.Generic;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Pages.OtherPage;
+using BedrockBoot.Views.Pages.OtherPage.BuildRelease;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
+using AboutReleaseNotes = BedrockBoot.Views.Pages.OtherPage.AboutPages.AboutReleaseNotes;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
 
@@ -69,6 +91,11 @@ public partial class UniversalSoftwareUpdate : ISettingPage
         }
     }
 
+    private void ReleaseNotesBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new AboutReleaseNotes());
+    }
+
     private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         CheckUpdateBtn.IsEnabled = false;
@@ -86,5 +113,10 @@ public partial class UniversalSoftwareUpdate : ISettingPage
         CheckUpdateBtn.IsEnabled = true;
         // 恢复按钮文本
         CheckUpdateBtn.Content = I18nManager.Instance["Setting.Universal.SoftwareUpdate.CheckUpdateAction"];
+    }
+
+    private void GitCommitsBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new ChangLogPage());
     }
 }

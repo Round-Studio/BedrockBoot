@@ -3,8 +3,87 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SetupPage.SetupLayout">
+    <UserControl.Styles>
+    <Style Selector="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryForegroundBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <Border HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Background="#01FFFFFF"
+                            Opacity="0.0001" />
+                    <Panel>
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="0,0,0,10"
+                                          FontSize="{TemplateBinding FontSize}"
+                                          Foreground="{TemplateBinding Foreground}" />
+                        
+                        <Border Name="Path_OuterRing"
+                                CornerRadius="100"
+                                BorderThickness="1"
+                                BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                                ClipToBounds="True"
+                                VerticalAlignment="Bottom"
+                                Width="22" Height="22"
+                                Margin="-30,0,30,8">
+                            <Panel>
+                                <Border Name="Path_HoverRing"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        CornerRadius="100"
+                                        Background="{DynamicResource AccentSubtleBrush}"
+                                        Opacity="0" />
+                                <Ellipse Name="Path_Check"
+                                         Width="10" Height="10"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Fill="{DynamicResource BackgroundBrush}"
+                                         IsVisible="False" />
+                            </Panel>
+                        </Border>
+                    </Panel>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover Border#Path_HoverRing">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:pointerover Border#Path_OuterRing">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBorderHoverBrush}" />
+        </Style>
+
+        <Style Selector="^:checked Border#Path_OuterRing">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBackgroundBrush}" />
+            <Setter Property="BorderThickness" Value="5" />
+        </Style>
+        <Style Selector="^:checked Ellipse#Path_Check">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:checked Border#Path_HoverRing">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+
+        <Style Selector="^:pressed Border#Path_HoverRing">
+            <Setter Property="Background" Value="{DynamicResource AccentSubtlePressedBrush}" />
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+    </Style>
+    </UserControl.Styles>
     <StackPanel VerticalAlignment="Center"
                 Margin="45">
         <StackPanel HorizontalAlignment="Center"
@@ -26,15 +105,68 @@
         <Grid Margin="0,10,0,0"
               HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
-                <ComboBox Margin="5"
-                          Width="320"
-                          Height="36"
-                          Name="IsRightLaunchButton"
-                          SelectionChanged="IsRightLaunchButton_OnSelectionChanged"
-                          SelectedIndex="0">
-                    <ComboBoxItem Content="启动按钮靠左" />
-                    <ComboBoxItem Content="启动按钮靠右" />
-                </ComboBox>
+                <RadioButton IsChecked="True"
+                             IsCheckedChanged="KLeft_OnIsCheckedChanged"
+                             Name="KLeft">
+                    <StackPanel Spacing="8">
+                        <items:BorderCard Height="58"
+                                          IsEnabled="False"
+                                          CornerRadius="11,0,0,11"
+                                          Padding="8,8,36,8">
+                            <Border Padding="28,0"
+                                    CornerRadius="6"
+                                    Background="{DynamicResource AccentBackgroundBrush}">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            Spacing="12">
+                                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                                               FontSize="18"
+                                                               Foreground="White"
+                                                               Glyph="&#xE768;" />
+
+                                    <TextBlock Text="{DynamicResource Main.Action.Launch}"
+                                               VerticalAlignment="Center"
+                                               Foreground="White"
+                                               FontSize="16" />
+                                </StackPanel>
+                            </Border>
+                        </items:BorderCard>
+                        
+                        <TextBlock Text="靠左"
+                                   HorizontalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </RadioButton>
+                
+                <RadioButton Name="KRight"
+                             IsCheckedChanged="KRight_OnIsCheckedChanged">
+                    <StackPanel Spacing="8">
+                        <items:BorderCard Height="58"
+                                          IsEnabled="False"
+                                          CornerRadius="0,11,11,0"
+                                          Padding="36,8,8,8">
+                            <Border Padding="28,0"
+                                    CornerRadius="6"
+                                    Background="{DynamicResource AccentBackgroundBrush}">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            Spacing="12">
+                                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                                               FontSize="18"
+                                                               Foreground="White"
+                                                               Glyph="&#xE768;" />
+
+                                    <TextBlock Text="{DynamicResource Main.Action.Launch}"
+                                               VerticalAlignment="Center"
+                                               Foreground="White"
+                                               FontSize="16" />
+                                </StackPanel>
+                            </Border>
+                        </items:BorderCard>
+                        
+                        <TextBlock Text="靠右"
+                                   HorizontalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </RadioButton>
             </StackPanel>
         </Grid>
     </StackPanel>

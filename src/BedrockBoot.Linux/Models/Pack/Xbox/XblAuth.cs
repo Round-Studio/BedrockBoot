@@ -1,13 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using BedrockBoot.Models.Global;
 
-namespace BedrockBoot.Models.Account.Xbox;
+namespace BedrockBoot.Linux.Models.Pack.Xbox;
+
 public class XblAuth
 {
     readonly HttpClient _http = new();
@@ -21,6 +36,7 @@ public class XblAuth
             int lenBytes = derSig[1] & 0x7F;
             offset = 2 + lenBytes;
         }
+
         if (offset >= derSig.Length || derSig[offset] != 0x02)
         {
             // Try IEEE P1363 raw format (64 bytes: r||s)
@@ -28,8 +44,11 @@ public class XblAuth
             {
                 return derSig;
             }
-            throw new InvalidOperationException($"Expected 0x02 tag at offset {offset}, DER: {Convert.ToHexString(derSig)}");
+
+            throw new InvalidOperationException(
+                $"Expected 0x02 tag at offset {offset}, DER: {Convert.ToHexString(derSig)}");
         }
+
         int rLen = derSig[offset + 1];
         int rStart = offset + 2;
         int rSkip = rLen > 32 ? rLen - 32 : 0;
@@ -48,15 +67,22 @@ public class XblAuth
     string SignHeader(ECDsa key, string method, string path, byte[] bodyBytes)
     {
         var nowFt = (long)((DateTimeOffset.UtcNow.ToUnixTimeSeconds() + 11644473600) * 1e7);
-        var ver = BitConverter.GetBytes(1); Array.Reverse(ver);
-        var ts = BitConverter.GetBytes(nowFt); Array.Reverse(ts);
+        var ver = BitConverter.GetBytes(1);
+        Array.Reverse(ver);
+        var ts = BitConverter.GetBytes(nowFt);
+        Array.Reverse(ts);
         using var ms = new MemoryStream();
-        ms.Write(ver); ms.WriteByte(0);
-        ms.Write(ts); ms.WriteByte(0);
-        ms.Write(Encoding.UTF8.GetBytes(method)); ms.WriteByte(0);
-        ms.Write(Encoding.UTF8.GetBytes(path)); ms.WriteByte(0);
+        ms.Write(ver);
+        ms.WriteByte(0);
+        ms.Write(ts);
+        ms.WriteByte(0);
+        ms.Write(Encoding.UTF8.GetBytes(method));
+        ms.WriteByte(0);
+        ms.Write(Encoding.UTF8.GetBytes(path));
+        ms.WriteByte(0);
         ms.WriteByte(0); // empty auth
-        ms.Write(bodyBytes); ms.WriteByte(0);
+        ms.Write(bodyBytes);
+        ms.WriteByte(0);
         var hashInput = ms.ToArray();
         var derSig = key.SignData(hashInput, HashAlgorithmName.SHA256);
         var rawSig = DerToRaw(derSig);
@@ -104,8 +130,16 @@ public class XblAuth
             Console.WriteLine($"  Response body: {bodyStr}");
             return null;
         }
-        try { return JsonDocument.Parse(bodyStr); }
-        catch (Exception e) { Console.WriteLine($"  JSON parse failed: {e.Message}"); return null; }
+
+        try
+        {
+            return JsonDocument.Parse(bodyStr);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"  JSON parse failed: {e.Message}");
+            return null;
+        }
     }
 
     public bool RunPreauth(string msaAccessToken, string expectedAccountEpoch = "legacy")
@@ -113,7 +147,13 @@ public class XblAuth
         Console.WriteLine("Starting Xbox Live pre-auth...");
         var cache = PathsList.PreauthDir;
         Directory.CreateDirectory(cache);
-        try { File.SetUnixFileMode(cache, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute); } catch { }
+        try
+        {
+            File.SetUnixFileMode(cache, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        }
+        catch
+        {
+        }
 
         var deviceId = DeviceIdentity.LoadOrCreateDeviceId();
         using var key = DeviceIdentity.LoadOrCreateKey();
@@ -128,9 +168,18 @@ public class XblAuth
         var da = PostJson("https://device.auth.xboxlive.com/device/authenticate", new
         {
             RelyingParty = rpAuth, TokenType = "JWT",
-            Properties = new { AuthMethod = "ProofOfPossession", Id = deviceId, DeviceType = "Win32", Version = "10.0.22631", ProofKey = proofKey }
+            Properties = new
+            {
+                AuthMethod = "ProofOfPossession", Id = deviceId, DeviceType = "Win32", Version = "10.0.22631",
+                ProofKey = proofKey
+            }
         }, key);
-        if (da == null) { Console.WriteLine("Device auth failed"); return false; }
+        if (da == null)
+        {
+            Console.WriteLine("Device auth failed");
+            return false;
+        }
+
         var deviceToken = da.RootElement.GetProperty("Token").GetString()!;
         var deviceTokenExpiry = da.RootElement.TryGetProperty("NotAfter", out var dte) ? dte.GetString() ?? "" : "";
         Console.WriteLine("Device auth OK");
@@ -142,7 +191,8 @@ public class XblAuth
             var ua = PostJson("https://user.auth.xboxlive.com/user/authenticate", new
             {
                 RelyingParty = rpAuth, TokenType = "JWT",
-                Properties = new { AuthMethod = "RPS", SiteName = "user.auth.xboxlive.com", RpsTicket = "d=" + msaAccessToken }
+                Properties = new
+                    { AuthMethod = "RPS", SiteName = "user.auth.xboxlive.com", RpsTicket = "t=" + msaAccessToken }
             }, key);
             if (ua != null)
             {
@@ -164,8 +214,17 @@ public class XblAuth
             if (xsts != null)
             {
                 achievementsToken = xsts.RootElement.GetProperty("Token").GetString()!;
-                achievementsExpiry = xsts.RootElement.TryGetProperty("NotAfter", out var ae) ? ae.GetString() ?? "" : "";
-                try { achievementsUhs = xsts.RootElement.GetProperty("DisplayClaims").GetProperty("xui")[0].GetProperty("uhs").GetString(); } catch { }
+                achievementsExpiry =
+                    xsts.RootElement.TryGetProperty("NotAfter", out var ae) ? ae.GetString() ?? "" : "";
+                try
+                {
+                    achievementsUhs = xsts.RootElement.GetProperty("DisplayClaims").GetProperty("xui")[0]
+                        .GetProperty("uhs").GetString();
+                }
+                catch
+                {
+                }
+
                 Console.WriteLine("XSTS achievements OK");
             }
         }
@@ -180,7 +239,12 @@ public class XblAuth
                 SiteName = "user.auth.xboxlive.com", RelyingParty = rp,
                 OfferTermsAcceptance = true, AcceptOffers = true, ProofKey = proofKey
             }, key);
-            if (r == null) { Console.WriteLine($"SISU {label} failed"); return (null, null, null, null); }
+            if (r == null)
+            {
+                Console.WriteLine($"SISU {label} failed");
+                return (null, null, null, null);
+            }
+
             Console.WriteLine($"SISU {label} OK");
             try
             {
@@ -188,10 +252,20 @@ public class XblAuth
                 var token = auth.GetProperty("Token").GetString()!;
                 var expiry = auth.TryGetProperty("NotAfter", out var ne) ? ne.GetString() ?? "" : "";
                 var uhs = "";
-                try { uhs = auth.GetProperty("DisplayClaims").GetProperty("xui")[0].GetProperty("uhs").GetString() ?? ""; } catch { }
+                try
+                {
+                    uhs = auth.GetProperty("DisplayClaims").GetProperty("xui")[0].GetProperty("uhs").GetString() ?? "";
+                }
+                catch
+                {
+                }
+
                 return (token, expiry, uhs, rp);
             }
-            catch { return (null, null, null, null); }
+            catch
+            {
+                return (null, null, null, null);
+            }
         }
 
         // SISU Profile
@@ -224,7 +298,9 @@ public class XblAuth
                     xblAgeGroup = xui.TryGetProperty("agg", out var agg) ? agg.GetString() : null;
                     xblUhs = xui.TryGetProperty("uhs", out var uhs) ? uhs.GetString() : null;
                 }
-                catch { }
+                catch
+                {
+                }
             }
         }
 
@@ -249,7 +325,8 @@ public class XblAuth
             ["xbl_uhs"] = xblUhs,
             ["sisu_token"] = sisuToken, ["sisu_rp"] = sisuRp, ["sisu_uhs"] = sisuUhs, ["sisu_expiry"] = sisuExpiry,
             ["mp_token"] = mpToken, ["mp_rp"] = mpRp, ["mp_uhs"] = mpUhs, ["mp_expiry"] = mpExpiry,
-            ["realms_token"] = realmsToken, ["realms_rp"] = realmsRp, ["realms_uhs"] = realmsUhs, ["realms_expiry"] = realmsExpiry,
+            ["realms_token"] = realmsToken, ["realms_rp"] = realmsRp, ["realms_uhs"] = realmsUhs,
+            ["realms_expiry"] = realmsExpiry,
             ["lic_token"] = licToken, ["lic_rp"] = licRp, ["lic_uhs"] = licUhs, ["lic_expiry"] = licExpiry,
             ["achievements_token"] = achievementsToken,
             ["achievements_uhs"] = achievementsUhs,
@@ -259,7 +336,14 @@ public class XblAuth
 
         var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(PathsList.DeviceJsonPath, json);
-        try { File.SetUnixFileMode(PathsList.DeviceJsonPath, UnixFileMode.UserRead | UnixFileMode.UserWrite); } catch { }
+        try
+        {
+            File.SetUnixFileMode(PathsList.DeviceJsonPath, UnixFileMode.UserRead | UnixFileMode.UserWrite);
+        }
+        catch
+        {
+        }
+
         Console.WriteLine("Xbox Live pre-auth complete");
         return true;
     }

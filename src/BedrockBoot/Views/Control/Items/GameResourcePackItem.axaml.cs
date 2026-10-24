@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -6,10 +24,11 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Skin;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -18,7 +37,7 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameResourcePackItem : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+	private readonly ImageLoader _imageLoader = ImageLoader.Shared;
     public GameResourcePackItem()
     {
         InitializeComponent();
@@ -29,16 +48,14 @@ public partial class GameResourcePackItem : UserControl
         ResourcePackManifest = maf;
         UpdateUI();
         ControlBox.IsVisible = !isImport;
+        Loaded += (sender, args) => 
+            SettingBtn.IsVisible = IsEnableEdit;
     }
 
     private static I18nManager i18n => I18nManager.Instance;
     public Action? RefreshCallBack { get; set; }
     public ResourcePackManifest ResourcePackManifest { get; set; } = null!;
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
-    }
+    public bool IsEnableEdit { get; set; } = false;
 
     public async Task UpdateUI()
     {
@@ -51,13 +68,14 @@ public partial class GameResourcePackItem : UserControl
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
                 using var ms = new MemoryStream(ResourcePackManifest.PackIconBytes);
-                Card.ImageIcon = new Bitmap(ms);
+                // 图标只显示 32x32，按 64 宽解码，避免原图整张解码占内存
+                Card.ImageIcon = Bitmap.DecodeToWidth(ms, 64);
             }
             else if (!string.IsNullOrEmpty(ResourcePackManifest.PackIcon))
             {
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
-                Card.ImageIcon = await _imageLoader.LoadIconAsync(ResourcePackManifest.PackIcon);
+                Card.ImageIcon = await _imageLoader.LoadIconAsync(ResourcePackManifest.PackIcon, 64);
             }
         }
         catch (Exception ex)
@@ -135,6 +153,19 @@ public partial class GameResourcePackItem : UserControl
             Title = "预览皮肤包",
             Content = new DialogSkinPackViewerContent(ResourcePackManifest.PackRootPath),
             CloseButtonText = "完成"
+        });
+    }
+
+    private void SettingBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new DialogSettingResourcePackContent(ResourcePackManifest);
+        DialogHost.Show(new()
+        {
+            Title = "编辑行为包",
+            Content = dialog,
+            CloseButtonText = "确定修改并保存",
+            PrimaryButtonText = "取消",
+            CloseAction = dialog.OnSave
         });
     }
 }

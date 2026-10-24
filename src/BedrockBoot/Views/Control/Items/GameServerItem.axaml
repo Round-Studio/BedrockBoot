@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:style="clr-namespace:BedrockBoot.Models.Style"
+             xmlns:colorCode="clr-namespace:BedrockBoot.Models.Style.ColorCode"
              mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.GameServerItem">
     <onePointControls:SettingCard IsClickable="True"
@@ -34,7 +35,7 @@
                 <TextBlock Name="ServerDescription"
                            Text="ServerDescription" />
 
-                <style:MinecraftTextBlock Name="ServerMotd"
+                <colorCode:MinecraftTextBlock Name="ServerMotd"
                                           IsVisible="False"
                                           Margin="0"
                                           HorizontalAlignment="Left"

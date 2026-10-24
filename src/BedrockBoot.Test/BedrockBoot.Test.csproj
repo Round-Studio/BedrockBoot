@@ -21,10 +21,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BedrockBoot.GravityCone\BedrockBoot.GravityCone.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Windows\BedrockBoot.Windows.csproj" />
       <ProjectReference Include="..\BedrockBoot\BedrockBoot.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Identity.Client" Version="4.90.1"/>
+        <PackageReference Include="Microsoft.Identity.Client.Broker" Version="4.90.1"/>
       <PackageReference Include="websocket-sharp.net" Version="1.0.3.3" />
     </ItemGroup>
 

@@ -1,22 +1,39 @@
-﻿using Avalonia;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Desktop;
-using BedrockBoot.Models.Game;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using System.Diagnostics;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface.Platform.Game;
 
 namespace BedrockBoot.Views.Windows.SystemMethod;
 
 public partial class LaunchGameWindow : Window
 {
     private readonly VersionConfig? _versionInfo;
-    private EasyLauncher? _launcher;
     private bool _isClosing;
     private DateTime _lastUpdateTime;
     private readonly TimeSpan _updateThrottle = TimeSpan.FromMilliseconds(100);
@@ -163,7 +180,7 @@ public partial class LaunchGameWindow : Window
 
         try
         {
-            _launcher = new EasyLauncher(_versionInfo);
+            var _launcher = PlatformCore.CreateLauncher(_versionInfo);
 
             // 设置进度更新回调
             _launcher.UpdateProgress = (status, percentage) =>
@@ -234,7 +251,7 @@ public partial class LaunchGameWindow : Window
             };
 
             // 启动游戏
-            await _launcher.Launch();
+            await _launcher.LaunchGame();
         }
         catch (Exception ex)
         {

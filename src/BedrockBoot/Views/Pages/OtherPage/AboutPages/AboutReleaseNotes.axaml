@@ -6,7 +6,7 @@
              xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Pages.OtherPage.AboutReleaseNotes">
+             x:Class="BedrockBoot.Views.Pages.OtherPage.AboutPages.AboutReleaseNotes">
     <UserControl.Styles>
         <Styles>
             <Style Selector="TextBlock">

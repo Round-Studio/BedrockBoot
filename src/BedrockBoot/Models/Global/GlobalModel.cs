@@ -1,19 +1,36 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Entry;
-using BedrockBoot.Base.Entry.Config;
-using BedrockBoot.Base.Entry.Info.Xbox;
-using BedrockBoot.Base.Entry.Manifest;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Entity.Config;
+using BedrockBoot.Standard.Entity.Info.Xbox;
+using BedrockBoot.Standard.Entity.Manifest;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.GravityCone;
 using BedrockBoot.GravityCone.Entry;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
-using BedrockBoot.Service.Protocol;
 using BedrockBoot.Views.Windows;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -35,16 +52,16 @@ public class GlobalModel
 
     public static string BodyVersion =>
         $"{Assembly.GetExecutingAssembly().GetName().Version!.ToString()}-{CheckUpdate.GetBodyUpdateType()}";
-    
+
     public static Action? MainPageUpdateInstance { get; set; }
 
-    public static ProtocolService ProtocolService { get; set; } = new();
     public static PaperConnectCore PaperConnectCore { get; set; }
     public static List<string> ETPublicServer { get; set; }
     public static XboxUserInfo XboxUserInfo { get; set; }
     public static AppRunType AppRunType { get; set; } = AppRunType.Default;
     public static bool IsNetworkAvailable { get; set; }
     public static ArchiveBackup ArchiveBackup { get; } = new();
+
     public static List<OtherLauncherInfo> OtherLauncher = new()
     {
         new OtherLauncherInfo() // BMCBL
@@ -143,6 +160,9 @@ public class GlobalModel
                     CloseButtonText = "确定"
                 });
             }
+        },
+        new OtherLauncherInfo() // Portal
+        {
         }
     };
 }

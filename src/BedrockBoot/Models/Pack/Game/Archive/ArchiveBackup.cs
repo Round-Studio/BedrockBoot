@@ -1,9 +1,27 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Base.Entry.Game.Pack.Archive.Backup;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive.Backup;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper.IO;
 using Round.SDK.Entity;
@@ -23,6 +41,7 @@ public class ArchiveBackup
         CancellationToken cancellationToken = default)
     {
         Console.WriteLine($@"开始备份存档 {info.Path}");
+        ArchiveCheck.EnsureLevelData(info);
         if (!IndexConfig.Data.Index.Contains(info.Uuid)) IndexConfig.Data.Index.Add(info.Uuid);
 
         IndexConfig.Data.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();

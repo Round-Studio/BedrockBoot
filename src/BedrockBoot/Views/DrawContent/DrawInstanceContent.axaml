@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,57 +16,61 @@
                                          Name="InstanceTabControl"
                                          SelectedIndex="0"
                                          SelectionChanged="InstanceTabControl_OnSelectionChanged">
-                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Detail}" 
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Detail}"
                                                  Glyph="&#xE946;"
                                                  Tag="Info"
                                                  Name="Info" />
-                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Mods}" 
+                <leftSelectBar:LeftSelectBarItem ItemText="实例设置"
+                                                 Glyph="&#xE713;"
+                                                 Tag="Setting"
+                                                 Name="Setting" />
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Mods}"
                                                  Glyph="&#xE74C;"
-                                                 Tag="Mods" 
+                                                 Tag="Mods"
                                                  Name="Mods" />
-                <leftSelectBar:LeftSelectBarItem ItemText="包管理" 
+                <leftSelectBar:LeftSelectBarItem ItemText="加载器"
+                                                 Glyph="&#xEA86;"
+                                                 Tag="Loaders"
+                                                 Name="Loaders" />
+                <leftSelectBar:LeftSelectBarItem ItemText="包管理"
                                                  Glyph="&#xE7B8;"
                                                  Tag="Pack"
                                                  Name="Pack" />
-                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Archive}" 
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Archive}"
                                                  Glyph="&#xE74E;"
                                                  Tag="Save"
                                                  Name="Save" />
                 <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Screenshots}"
                                                  Glyph="&#xF406;"
-                                                 Tag="Screenshots" 
+                                                 Tag="Screenshots"
                                                  Name="Screenshots" />
-                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Servers}" 
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Servers}"
                                                  Glyph="&#xEDA2;"
                                                  Tag="Server"
                                                  Name="Server" />
-                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Plugins}" 
-                                                 Glyph="&#xEA86;"
-                                                 Tag="Plugin"
-                                                 Name="Plugin"
-                                                 IsVisible="False" />
-                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Controls}" 
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Controls}"
                                                  Glyph="&#xE805;"
                                                  Tag="Controls"
                                                  Name="GameControls" />
-                <leftSelectBar:LeftSelectBarItem ItemText="统计数据" 
+                <leftSelectBar:LeftSelectBarItem ItemText="统计数据"
                                                  Glyph="&#xE9D2;"
                                                  Tag="Information"
                                                  Name="Information" />
             </leftSelectBar:LeftSelectBar>
-            
+
             <StackPanel Grid.Row="1"
                         Spacing="8"
                         Margin="5">
                 <Button Padding="8,10"
+                        Name="BrowseDirBtn"
                         Classes="NoBorder">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="12">
                         <onePointControls:FontIcon FontSize="16"
-                                                   Glyph="&#xE8B7;"/>
+                                                   Glyph="&#xE8B7;" />
                         <TextBlock Text="浏览目录"></TextBlock>
                     </StackPanel>
-                    
+
                     <Button.Flyout>
                         <MenuFlyout>
                             <MenuItem Header="皮肤包目录（开发）"
@@ -74,7 +78,8 @@
                                       Click="MenuOpenSkinDevFolder_OnClick">
                                 <MenuItem.Icon>
                                     <onePointControls:FontIcon Glyph="&#xE943;"
-                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                               VerticalAlignment="Center">
+                                    </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="行为包目录（开发）"
@@ -82,7 +87,8 @@
                                       Click="MenuOpenBehaviorDevFolder_OnClick">
                                 <MenuItem.Icon>
                                     <onePointControls:FontIcon Glyph="&#xE943;"
-                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                               VerticalAlignment="Center">
+                                    </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="资源包目录（开发）"
@@ -90,7 +96,8 @@
                                       Click="MenuOpenResourceDevFolder_OnClick">
                                 <MenuItem.Icon>
                                     <onePointControls:FontIcon Glyph="&#xE943;"
-                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                               VerticalAlignment="Center">
+                                    </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="皮肤包目录"
@@ -98,7 +105,8 @@
                                       Click="MenuOpenSkinFolder_OnClick">
                                 <MenuItem.Icon>
                                     <onePointControls:FontIcon Glyph="&#xE805;"
-                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                               VerticalAlignment="Center">
+                                    </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="行为包目录"
@@ -106,7 +114,8 @@
                                       Click="MenuOpenBehaviorFolder_OnClick">
                                 <MenuItem.Icon>
                                     <onePointControls:FontIcon Glyph="&#xF156;"
-                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                               VerticalAlignment="Center">
+                                    </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="资源包目录"
@@ -114,7 +123,8 @@
                                       Click="MenuOpenResourceFolder_OnClick">
                                 <MenuItem.Icon>
                                     <onePointControls:FontIcon Glyph="&#xF133;"
-                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                               VerticalAlignment="Center">
+                                    </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="运行文件夹"
@@ -122,7 +132,8 @@
                                       Click="MenuOpenFolder_OnClick">
                                 <MenuItem.Icon>
                                     <onePointControls:FontIcon Glyph="&#xE7FC;"
-                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                               VerticalAlignment="Center">
+                                    </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="配置文件夹"
@@ -130,13 +141,14 @@
                                       Click="MenuOpenConfigFolder_OnClick">
                                 <MenuItem.Icon>
                                     <onePointControls:FontIcon Glyph="&#xE713;"
-                                                               VerticalAlignment="Center"></onePointControls:FontIcon>
+                                                               VerticalAlignment="Center">
+                                    </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuFlyout>
                     </Button.Flyout>
                 </Button>
-                
+
                 <Button Classes="NoBorder"
                         Name="LaunchBtn"
                         IsVisible="False"
@@ -146,7 +158,7 @@
                     <StackPanel Orientation="Horizontal"
                                 Spacing="12">
                         <onePointControls:FontIcon FontSize="16"
-                                                   Glyph="&#xE768;"/>
+                                                   Glyph="&#xE768;" />
                         <TextBlock Text="启动该实例"></TextBlock>
                     </StackPanel>
                 </Button>

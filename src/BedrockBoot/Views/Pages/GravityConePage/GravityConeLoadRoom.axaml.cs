@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +27,7 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.GravityCone;
 using BedrockBoot.GravityCone.Enum;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper.GravityCone;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
@@ -53,6 +72,7 @@ public partial class GravityConeLoadRoom : UserControl
                 if (client == null || !client.IsRunning)
                     throw new InvalidOperationException("联机组件未运行，请返回重新进入联机页面。");
 
+                GamePortHelper.UpdateAllInstancePortStatus(roomType);
                 if (roomType == RoomType.Host)
                 {
                     var room = await client.CreatePaperConnectRoomAsync(GlobalModel.XboxUserInfo.Gamertag);
@@ -60,7 +80,14 @@ public partial class GravityConeLoadRoom : UserControl
                     // 用户已点退出：房间已在 CLI 侧创建，需要关掉，且不再导航
                     if (_closed)
                     {
-                        try { await client.StopRoomAsync(); } catch { }
+                        try
+                        {
+                            await client.StopRoomAsync();
+                        }
+                        catch
+                        {
+                        }
+
                         return;
                     }
 
@@ -80,7 +107,14 @@ public partial class GravityConeLoadRoom : UserControl
 
                     if (_closed)
                     {
-                        try { await client.LeaveRoomAsync(); } catch { }
+                        try
+                        {
+                            await client.LeaveRoomAsync();
+                        }
+                        catch
+                        {
+                        }
+
                         return;
                     }
 

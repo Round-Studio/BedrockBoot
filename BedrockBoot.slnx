@@ -4,15 +4,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Dependence/">
-    <Project Path="src/BedrockBoot.Chunker/BedrockBoot.Chunker.csproj" />
-    <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />
-    <Project Path="src/BedrockBoot.GravityCone/BedrockBoot.GravityCone.csproj" />
-    <Project Path="src/BedrockBoot.Inject/BedrockBoot.Inject.csproj" />
-    <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
-    <Project Path="src/BedrockBoot.LeviLamina/BedrockBoot.LeviLamina.csproj" />
-    <Project Path="src/BedrockBoot.Lip/BedrockBoot.Lip.csproj" />
     <Project Path="src/BedrockBoot.Netease/BedrockBoot.Netease.csproj" />
-    <Project Path="src/BedrockBoot.WatchDog/BedrockBoot.WatchDog.csproj" />
     <Project Path="src/PreLoadCpp/src/PreloadCpp.vcxproj" Id="bfdc1f1a-af77-47c7-897e-673ead85364d">
       <Platform Project="Win32" />
     </Project>
@@ -21,16 +13,9 @@
     <Project Path="src/AvaMotion/example/AvaMotion.Demo/AvaMotion.Demo.csproj" />
     <Project Path="src/AvaMotion/src/AvaMotion/AvaMotion.csproj" />
   </Folder>
-  <Folder Name="/Dependence/Core/">
-    <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
-    <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />
-  </Folder>
   <Folder Name="/Dependence/CrashStackAnalyzer/">
     <Project Path="src/CrashStackAnalyzer/CrashStackAnalyzer.Console/CrashStackAnalyzer.Console.csproj" />
     <Project Path="src/CrashStackAnalyzer/CrashStackAnalyzer/CrashStackAnalyzer.csproj" />
-  </Folder>
-  <Folder Name="/Dependence/Linux/">
-    <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
   </Folder>
   <Folder Name="/Dependence/LiteSkinViewer/">
     <Project Path="src/LiteSkinViewer/LiteSkinViewer.2D.Simple/LiteSkinViewer.2D.Simple.csproj" />
@@ -64,11 +49,24 @@
       <Platform Project="Win32" />
     </Project>
   </Folder>
+  <Folder Name="/Linux/">
+    <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
+  </Folder>
+  <Folder Name="/Platform.Core/">
+    <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
+    <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />
+  </Folder>
   <Folder Name="/Plugin/" />
   <Folder Name="/Test/">
     <Project Path="src/BedrockBoot.Test/BedrockBoot.Test.csproj" />
   </Folder>
-  <Project Path="src/BedrockBoot.Base/BedrockBoot.Base.csproj" />
+  <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />
+  <Project Path="src/BedrockBoot.GravityCone/BedrockBoot.GravityCone.csproj" />
+  <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
+  <Project Path="src/BedrockBoot.MSAL/BedrockBoot.MSAL.csproj" />
+  <Project Path="src/BedrockBoot.Standard/BedrockBoot.Standard.csproj" />
+  <Project Path="src/BedrockBoot.Chunker/BedrockBoot.Chunker.csproj" />
   <Project Path="src/BedrockBoot.Core/BedrockBoot.Core.csproj" />
+  <Project Path="src/BedrockBoot.WatchDog/BedrockBoot.WatchDog.csproj" />
   <Project Path="src/BedrockBoot/BedrockBoot.csproj" />
 </Solution>

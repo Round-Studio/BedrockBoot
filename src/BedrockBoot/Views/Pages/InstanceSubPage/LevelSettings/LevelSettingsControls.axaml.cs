@@ -1,22 +1,45 @@
-﻿using System.IO;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
-using BedrockBoot.Base.Entry.Game.Pack.Archive.Export;
-using BedrockBoot.Base.Enum.Type.Export;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive.Export;
+using BedrockBoot.Standard.Enum.Type.Export;
 using BedrockBoot.Models.Pack.Game.Archive;
+using BedrockBoot.Models.Pack.Game.Archive.RTX;
 using BedrockBoot.Views.DialogContent.Export;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using Round.SDK.Entity;
 
 namespace BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings;
 
 public partial class LevelSettingsControls : UserControl
 {
+    public ArchivePackManager Manager { get; private set; }
     private readonly ArchiveInfo _info;
+    private bool _isEdit = false;
 
     public LevelSettingsControls()
     {
@@ -26,6 +49,18 @@ public partial class LevelSettingsControls : UserControl
     public LevelSettingsControls(ArchiveInfo info) : this()
     {
         _info = info;
+        Manager = new(_info);
+        Manager.Refresh();
+
+        var resConf =
+            new ConfigEntity<List<PackItem>>(Path.Combine(_info.Path, "world_resource_packs.json"), false);
+        if (resConf.Data.Exists(x => x.PackId == RTXPack.RTXPackManifest.Header.Uuid))
+        {
+            RTXPack.ExportPack(_info.VersionInfo);
+            IsUseRTX.IsChecked = true;
+        }
+
+        _isEdit = true;
     }
 
     private void ExportBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -94,5 +129,23 @@ public partial class LevelSettingsControls : UserControl
                 }
             }
         });
+    }
+
+    private void IsUseRTX_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (_isEdit)
+        {
+            if(IsUseRTX.IsChecked == true)
+            {
+                RTXPack.ExportPack(_info.VersionInfo);
+                Manager.InstallPack(RTXPack.RTXPackManifest);
+                RTXPack.InstallPack(_info);
+            }
+            else
+            {
+                Manager.UninstallPack(RTXPack.RTXPackManifest);
+                RTXPack.RemovePack(_info);
+            }
+        }
     }
 }

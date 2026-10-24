@@ -4,15 +4,24 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>BedrockBoot</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <DefineConstants>WINDOWS</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <TargetFramework>net10.0</TargetFramework>
+        <DefineConstants>LINUX</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
       <PackageReference Include="BedrockLauncher.Core.Linux" Version="1.0.0.4" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BedrockBoot.Base\BedrockBoot.Base.csproj" />
+      <ProjectReference Include="..\BedrockBoot.Standard\BedrockBoot.Standard.csproj" />
       <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj" />
       <ProjectReference Include="..\BedrockBoot.Proton\BedrockBoot.Proton.csproj" />
       <ProjectReference Include="..\Round.SDK\Round.SDK\Round.SDK.csproj" />

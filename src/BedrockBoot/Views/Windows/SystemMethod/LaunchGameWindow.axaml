@@ -25,7 +25,7 @@
             <Button Name="KillButton"
                     Content="结束游戏进程"
                     Padding="8"
-                    Background="DarkRed"
+                    Background="{DynamicResource SystemFillColorCriticalBrush}"
                     Classes="NoBorder"
                     IsEnabled="False"
                     Click="OnKillButtonClick"/>

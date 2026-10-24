@@ -1,10 +1,28 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Mods;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.Mods;
 using Round.SDK.Entity;
 
 namespace BedrockBoot.Core.Models.Pack.Game.Mods;
@@ -58,11 +76,11 @@ public class ModsManager
         ModsConfig.Save();
     }
 
-    public void InjectAll(int processId)
+    /*public void InjectAll(int processId)
     {
         Mods.ForEach(x =>
         {
             if (!x.IsPreLoad) Task.Run(() => x.Inject(processId));
         });
-    }
+    }*/
 }

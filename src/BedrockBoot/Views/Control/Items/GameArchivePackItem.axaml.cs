@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
@@ -6,8 +24,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Views.Control.Items;
@@ -16,7 +34,7 @@ public partial class GameArchivePackItem : UserControl
 {
     private readonly ResourcePackManifest _info;
     private readonly bool _isAct;
-    private ImageLoader _imageLoader = new ImageLoader();
+    private readonly ImageLoader _imageLoader = ImageLoader.Shared;
     public Action<ResourcePackManifest>? ActiveAction { get; set; }
 
     public GameArchivePackItem()
@@ -28,12 +46,6 @@ public partial class GameArchivePackItem : UserControl
         _info = info;
         _isAct = isAct;
         _ = UpdateUi();
-    }
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
     }
 
     public async Task UpdateUi()
@@ -52,13 +64,14 @@ public partial class GameArchivePackItem : UserControl
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
                 using var ms = new MemoryStream(info.PackIconBytes);
-                Card.ImageIcon = new Bitmap(ms);
+                // 图标只显示 32x32，按 64 宽解码，避免原图整张解码占内存
+                Card.ImageIcon = Bitmap.DecodeToWidth(ms, 64);
             }
             else if (!string.IsNullOrEmpty(info.PackIcon))
             {
                 if (Card.ImageIcon is IDisposable disposable) disposable.Dispose();
 
-                Card.ImageIcon = await _imageLoader.LoadIconAsync(info.PackIcon);
+                Card.ImageIcon = await _imageLoader.LoadIconAsync(info.PackIcon, 64);
             }
         }
         catch (Exception ex)

@@ -1,0 +1,29 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.DialogSettingResourcePackContent">
+    <UserControl.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="MinWidth" Value="220"></Setter>
+        </Style>
+    </UserControl.Styles>
+    <StackPanel Spacing="8">
+        <DockPanel LastChildFill="True">
+            <TextBlock Text="行为包名称"></TextBlock>
+            <TextBox Name="PackName" TextWrapping="Wrap"></TextBox>
+        </DockPanel>
+        <DockPanel LastChildFill="True">
+            <TextBlock Text="行为包简介" VerticalAlignment="Center"></TextBlock>
+            <TextBox Name="PackDescription"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"></TextBox>
+        </DockPanel>
+        <DockPanel LastChildFill="True">
+            <TextBlock Text="允许成就（成就友好）"></TextBlock>
+            <ToggleSwitch Name="AllowAchievement"></ToggleSwitch>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

@@ -1,15 +1,34 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Info;
-using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Base.Enum.Type.Progress.Steps;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Entity.Progress;
+using BedrockBoot.Standard.Enum.Type.Progress.Steps;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Helper;
-using BedrockBoot.Services;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core.CoreOption;
 
 namespace BedrockBoot.Models.Pack.Game.Instance;
@@ -41,11 +60,15 @@ public class InstanceUpdater
     public async Task UpdateAsync(BuildInfo buildInfo)
     {
         Console.WriteLine($@"开始升级实例：{_versionConfig.VersionPath} 版本：{_versionConfig.Info.Version} -> {buildInfo.ID}");
-        
-        var downloader = new EasyDownload(buildInfo, true, _versionConfig.VersionsRootPath,
-            _versionConfig.Info.VersionName, true);
 
-        string protectedPath = Path.GetFullPath(Path.Combine(_versionConfig.VersionPath, "config", "BedrockBoot2"));
+        var downloader = PlatformCore.CreateDownloader(buildInfo, true, _versionConfig.VersionsRootPath,
+            Path.GetFileName(_versionConfig.VersionPath)!, true);
+
+        var protectedPaths = new List<string>
+        {
+            Path.GetFullPath(Path.Combine(_versionConfig.VersionPath!, "config", "BedrockBoot2")),
+            Path.GetFullPath(Path.Combine(_versionConfig.VersionPath!, "mods"))
+        };
 
         var deleteTask = Task.Run(() =>
         {
@@ -59,44 +82,64 @@ public class InstanceUpdater
             });
 
             var runDirectory = _versionConfig.VersionPath;
-            var itemsToDelete = new List<FileSystemInfo>();
             var rootDirInfo = new DirectoryInfo(runDirectory);
+            var filesToDelete = new List<string>();
+            var dirsToDelete = new List<string>();
 
-            CollectItemsToDelete(rootDirInfo, protectedPath, itemsToDelete);
+            CollectFilesAndDirectoriesToDelete(rootDirInfo, protectedPaths, filesToDelete, dirsToDelete);
 
-            if (itemsToDelete.Count > 0)
+            int totalCount = filesToDelete.Count + dirsToDelete.Count;
+            int deletedCount = 0;
+
+            foreach (var filePath in filesToDelete)
             {
-                int deletedCount = 0;
-                int totalCount = itemsToDelete.Count;
-
-                foreach (var item in itemsToDelete)
+                try
                 {
-                    try
+                    if (File.Exists(filePath))
                     {
-                        if (item is DirectoryInfo subDir)
-                        {
-                            if (subDir.Exists) subDir.Delete(true);
-                        }
-                        else if (item is FileInfo file)
-                        {
-                            if (file.Exists) file.Delete();
-                        }
+                        File.Delete(filePath);
                     }
-                    catch (Exception ex)
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"删除文件失败: {filePath}, 错误: {ex.Message}");
+                }
+                finally
+                {
+                    deletedCount++;
+                    int progressPercent = totalCount > 0 ? (int)((double)deletedCount / totalCount * 100) : 100;
+                    Progress?.Report(new()
                     {
-                        Console.WriteLine($@"删除失败: {item.FullName}, 错误: {ex.Message}");
-                    }
-                    finally
+                        Message = $"正在删除文件 ({deletedCount}/{totalCount})",
+                        Progress = progressPercent,
+                        Step = InstanceUpdateStep.DeleteOld
+                    });
+                }
+            }
+
+            foreach (var dirPath in dirsToDelete.OrderByDescending(d => d.Length))
+            {
+                try
+                {
+                    if (Directory.Exists(dirPath))
                     {
-                        deletedCount++;
-                        int progressPercent = (int)((double)deletedCount / totalCount * 100);
-                        Progress?.Report(new()
-                        {
-                            Message = $"正在删除文件 ({deletedCount}/{totalCount})",
-                            Progress = progressPercent,
-                            Step = InstanceUpdateStep.DeleteOld
-                        });
+                        Directory.Delete(dirPath, false);
                     }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"删除目录失败: {dirPath}, 错误: {ex.Message}");
+                }
+                finally
+                {
+                    deletedCount++;
+                    int progressPercent = totalCount > 0 ? (int)((double)deletedCount / totalCount * 100) : 100;
+                    Progress?.Report(new()
+                    {
+                        Message = $"正在删除目录 ({deletedCount}/{totalCount})",
+                        Progress = progressPercent,
+                        Step = InstanceUpdateStep.DeleteOld
+                    });
                 }
             }
 
@@ -150,7 +193,7 @@ public class InstanceUpdater
                 Progress?.Report(new()
                 {
                     Step = InstanceUpdateStep.UWPRegistering,
-                    Progress = progress.percentage,
+                    Progress = progress.Percentage,
                     Message = message,
                     Detailed = "注册应用中..."
                 });
@@ -178,7 +221,7 @@ public class InstanceUpdater
                 });
             };
 
-            var urls = await EasyDownload.GetPackageUrls(buildInfo);
+            var urls = await PlatformCore.GetPackageUrls(buildInfo);
             var url = ChooseDownloadUrl.Invoke(urls);
             await downloader.InstallAsync(url, default, true);
         });
@@ -190,46 +233,83 @@ public class InstanceUpdater
         _versionConfig.Info.VersionType = buildInfo.Type;
         GameInfoHelper.SaveVersionConfig(_versionConfig);
 
+        File.Copy(Path.Combine(_versionConfig.VersionPath, _versionConfig.BodyFile),
+            Path.Combine(_versionConfig.VersionPath, "config", "BedrockBoot2", "row",
+                Path.GetFileName(_versionConfig.BodyFile)), true);
+
         Console.WriteLine(@"更新完成");
     }
 
-    private void CollectItemsToDelete(DirectoryInfo directory, string protectedPath, List<FileSystemInfo> itemsToDelete)
+    private void CollectFilesAndDirectoriesToDelete(DirectoryInfo directory, List<string> protectedPaths,
+        List<string> filesToDelete, List<string> dirsToDelete)
     {
         try
         {
             string currentDirPath = NormalizePath(directory.FullName);
-            string formattedProtectedPath = NormalizePath(protectedPath);
+            var formattedProtectedPaths = protectedPaths.Select(NormalizePath).ToList();
 
-            if (IsSameOrSubPath(currentDirPath, formattedProtectedPath))
+            if (formattedProtectedPaths.Any(p => IsSameOrSubPath(currentDirPath, p)))
             {
                 return;
             }
 
-            bool isParentOfProtected = IsAncestorPath(currentDirPath, formattedProtectedPath);
+            bool containsProtectedChild = false;
+            foreach (var subDir in directory.GetDirectories())
+            {
+                string subDirPath = NormalizePath(subDir.FullName);
+                if (formattedProtectedPaths.Any(p => IsSameOrSubPath(subDirPath, p)))
+                {
+                    containsProtectedChild = true;
+                    break;
+                }
+            }
 
             foreach (var file in directory.GetFiles())
             {
                 string filePath = NormalizePath(file.FullName);
-                if (!IsSameOrSubPath(filePath, formattedProtectedPath))
+                if (!formattedProtectedPaths.Any(p => IsSameOrSubPath(filePath, p)))
                 {
-                    itemsToDelete.Add(file);
+                    filesToDelete.Add(file.FullName);
                 }
             }
 
             foreach (var subDir in directory.GetDirectories())
             {
-                string subDirPath = NormalizePath(subDir.FullName);
+                CollectFilesAndDirectoriesToDelete(subDir, protectedPaths, filesToDelete, dirsToDelete);
+            }
 
-                if (IsSameOrSubPath(subDirPath, formattedProtectedPath))
+            if (!containsProtectedChild && !formattedProtectedPaths.Any(p => IsSameOrSubPath(currentDirPath, p)))
+            {
+                bool hasFiles = Directory.GetFiles(directory.FullName).Any();
+                bool hasSubDirs = Directory.GetDirectories(directory.FullName).Any();
+
+                if (!hasFiles && !hasSubDirs)
                 {
-                    continue;
+                    dirsToDelete.Add(directory.FullName);
                 }
-
-                CollectItemsToDelete(subDir, protectedPath, itemsToDelete);
-
-                if (!IsAncestorPath(subDirPath, formattedProtectedPath))
+                else
                 {
-                    itemsToDelete.Add(subDir);
+                    bool allSubDirsAreProtected = true;
+                    foreach (var subDir in directory.GetDirectories())
+                    {
+                        string subDirPath = NormalizePath(subDir.FullName);
+                        if (!formattedProtectedPaths.Any(p => IsSameOrSubPath(subDirPath, p)))
+                        {
+                            allSubDirsAreProtected = false;
+                            break;
+                        }
+                    }
+
+                    bool allFilesInSubDirs = true;
+                    if (directory.GetFiles().Any())
+                    {
+                        allFilesInSubDirs = false;
+                    }
+
+                    if (allSubDirsAreProtected && allFilesInSubDirs)
+                    {
+                        dirsToDelete.Add(directory.FullName);
+                    }
                 }
             }
         }
@@ -252,10 +332,5 @@ public class InstanceUpdater
     {
         return path.Equals(protectedPath, StringComparison.OrdinalIgnoreCase) ||
                path.StartsWith(protectedPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private bool IsAncestorPath(string parentPath, string childPath)
-    {
-        return childPath.StartsWith(parentPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
     }
 }

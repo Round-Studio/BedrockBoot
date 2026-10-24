@@ -1,0 +1,40 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             xmlns:leftSelectBar="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.LeftSelectBar;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DrawContent.DrawXboxLiveContent">
+    <Grid>
+        <Grid ColumnDefinitions="Auto,*"
+              Name="MainContent"
+              IsVisible="False">
+            <Grid Grid.Column="0"
+                  MinWidth="120"
+                  RowDefinitions="*,Auto"
+                  Margin="10,0,0,10">
+                <leftSelectBar:LeftSelectBar Grid.Row="0"
+                                             Name="TabControl"
+                                             SelectionChanged="TabControl_OnSelectionChanged"
+                                             SelectedIndex="0">
+                    <leftSelectBar:LeftSelectBarItem ItemText="已获取披风"
+                                                     Glyph="&#xE724;"
+                                                     Tag="Capes"
+                                                     Name="Capes" />
+                </leftSelectBar:LeftSelectBar>
+            </Grid>
+
+            <navigation:NavigationFrame Grid.Column="1"
+                                        Margin="0,0,10,0"
+                                        Name="XboxFrame" />
+        </Grid>
+
+        <notice:LoadCard HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="LoadCard"
+                         BigTitle="登录中"
+                         Message="正在刷新登录令牌" />
+    </Grid>
+</UserControl>

@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,8 +26,10 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Enum;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Enum;
+using BedrockBoot.Standard.Enum.Search;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Views.DrawContent;
@@ -20,23 +40,30 @@ namespace BedrockBoot.Service;
 
 public class CopyService
 {
-    // 用于内部传递探测结果的记录类型
     private record ClipboardResult(ClipboardContentType ContentType, object? Data = null);
 
-    /// <summary>
-    /// 设置剪切板文本（供外部调用，如复制 ID 到剪切板）
-    /// </summary>
-    public static async Task SetClipboard(string content, CopyType type, int Id)
+    private static readonly Dictionary<string, SearchResourceType> PrefixToType = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["RC"] = SearchResourceType.ResourcePack,
+        ["DM"] = SearchResourceType.DllMods,
+        ["LI"] = SearchResourceType.LeviLaminaMods,
+        ["PL"] = SearchResourceType.PluginPack,
+    };
+
+    private static readonly Dictionary<SearchResourceType, string> TypeToPrefix =
+        PrefixToType.ToDictionary(kv => kv.Value, kv => kv.Key);
+
+    public static async Task SetClipboard(string shareContent, SearchResultItemInfo searchResultItemInfo)
     {
         var clipboard = GetClipboard();
-        if (clipboard != null) 
-            await clipboard.SetTextAsync($"{content}\nID: {Id} Type: {type}");
+        if (clipboard == null) return;
+
+        if (!TypeToPrefix.TryGetValue(searchResultItemInfo.ResourceType, out var typeStr))
+            return;
+
+        await clipboard.SetTextAsync($"{shareContent}\nID: {typeStr}-{searchResultItemInfo.Id}");
     }
 
-    /// <summary>
-    /// 【统一调度入口】
-    /// 识别剪切板类型并执行相应操作
-    /// </summary>
     public static async Task HandleCopyAction()
     {
         var clipboard = GetClipboard();
@@ -45,7 +72,7 @@ public class CopyService
         try
         {
             var result = await GetClipboardContentType(clipboard);
-            
+
             Console.WriteLine($@"读取剪切板：{result.ContentType}");
 
             switch (result.ContentType)
@@ -55,7 +82,7 @@ public class CopyService
                     break;
 
                 case ClipboardContentType.CustomText:
-                    var (id, type) = ((int, CopyType))result.Data!;
+                    var (id, type) = ((string, SearchResourceType))result.Data!;
                     await HandleCustomTextAction(id, type);
                     break;
 
@@ -70,15 +97,10 @@ public class CopyService
         }
     }
 
-    /// <summary>
-    /// 【类型探测类】
-    /// 检查剪切板并返回对应的业务类型及预解析的数据
-    /// </summary>
     private static async Task<ClipboardResult> GetClipboardContentType(IClipboard clipboard)
     {
         var formats = await clipboard.GetDataFormatsAsync();
 
-        // 检查是否包含文件 (从资源管理器复制的文件)
         if (formats.Contains(DataFormat.File))
         {
             var files = await GetClipboardFiles(clipboard);
@@ -88,14 +110,13 @@ public class CopyService
             }
         }
 
-        // 检查是否包含符合自定义正则的文本
         if (formats.Contains(DataFormat.Text))
         {
             var text = await clipboard.TryGetTextAsync();
             var (id, type) = ParseIdAndType(text);
-            if (id.HasValue && type != null)
+            if (id != null && type.HasValue)
             {
-                return new ClipboardResult(ClipboardContentType.CustomText, (id.Value, type.Value));
+                return new ClipboardResult(ClipboardContentType.CustomText, (id, type.Value));
             }
         }
 
@@ -104,9 +125,6 @@ public class CopyService
 
     #region 具体的业务操作逻辑 (Action Handlers)
 
-    /// <summary>
-    /// 处理物理文件路径的逻辑
-    /// </summary>
     private static async Task HandleFilesAction(IEnumerable<string> files)
     {
         var fileList = files.ToList();
@@ -117,14 +135,11 @@ public class CopyService
             Title = "剪切板",
             Message = $"成功读取 {fileList.Count} 个文件，准备导入..."
         });
-        
+
         await Task.CompletedTask;
     }
 
-    /// <summary>
-    /// 处理自定义 ID 文本的逻辑
-    /// </summary>
-    private static async Task HandleCustomTextAction(int id, CopyType type)
+    private static async Task HandleCustomTextAction(string id, SearchResourceType type)
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
@@ -132,9 +147,28 @@ public class CopyService
             Message = $"识别到 {type} 资源 ID: {id}"
         });
 
-        if (type == CopyType.Resource)
+        switch (type)
         {
-            await FetchCurseForgeInfo(id);
+            case SearchResourceType.ResourcePack:
+                if (int.TryParse(id, out var numericId))
+                {
+                    await FetchCurseForgeInfo(numericId);
+                }
+                else
+                {
+                    GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+                    {
+                        Title = "剪切板",
+                        Message = $"无法解析 CurseForge 数字 ID: {id}"
+                    });
+                }
+
+                break;
+
+            case SearchResourceType.DllMods:
+            case SearchResourceType.LeviLaminaMods:
+            case SearchResourceType.PluginPack:
+                break;
         }
     }
 
@@ -142,9 +176,6 @@ public class CopyService
 
     #region 辅助底层工具 (Helper Methods)
 
-    /// <summary>
-    /// 获取物理剪切板中的文件路径列表
-    /// </summary>
     private static async Task<IEnumerable<string>?> GetClipboardFiles(IClipboard clipboard)
     {
         var data = await clipboard.TryGetDataAsync();
@@ -160,32 +191,32 @@ public class CopyService
                     paths.Add(storageFile.Path.LocalPath);
             }
         }
+
         return paths.Count > 0 ? paths : null;
     }
 
-    /// <summary>
-    /// 正则解析 ID 和 Type
-    /// </summary>
-    private static (int? Id, CopyType? Type) ParseIdAndType(string? text)
+    private static (string? Id, SearchResourceType? Type) ParseIdAndType(string? text)
     {
         if (string.IsNullOrEmpty(text)) return (null, null);
 
-        var match = Regex.Match(text, @"ID:\s*(\d+).*?Type:\s*(\S+)", RegexOptions.Singleline);
-        if (match.Success && int.TryParse(match.Groups[1].Value, out var id))
-        {
-            var type = match.Groups[2].Value switch
-            {
-                "Resource" => CopyType.Resource,
-                _ => (CopyType?)null
-            };
-            return (id, type);
-        }
-        return (null, null);
+        var match = Regex.Match(
+            text,
+            @"^\s*ID:\s*(RC|DM|LI|PL)-(\S+)\s*$",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+        if (!match.Success)
+            return (null, null);
+
+        var id = match.Groups[2].Value;
+        if (string.IsNullOrEmpty(id))
+            return (null, null);
+
+        if (!PrefixToType.TryGetValue(match.Groups[1].Value, out var type))
+            return (null, null);
+
+        return (id, type);
     }
 
-    /// <summary>
-    /// 获取 CurseForge 详细信息并打开下载界面
-    /// </summary>
     private static async Task FetchCurseForgeInfo(int id)
     {
         DialogHost.Show(new DialogInfo { Content = "正在等待 CurseForge 响应...", Title = "获取模组信息" });
@@ -205,9 +236,6 @@ public class CopyService
         }
     }
 
-    /// <summary>
-    /// 获取当前窗口的剪切板实例
-    /// </summary>
     private static IClipboard? GetClipboard() => TopLevel.GetTopLevel(GlobalModel.MainWindow)?.Clipboard;
 
     #endregion

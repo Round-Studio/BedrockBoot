@@ -1,22 +1,44 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using BedrockBoot.Base.Entry.Game;
+using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Control.Items;
 
 public partial class GameItem : UserControl
 {
-	private ImageLoader _imageLoader = new ImageLoader();
+    private ImageLoader _imageLoader = new ImageLoader();
+
     public GameItem()
     {
         InitializeComponent();
@@ -24,8 +46,8 @@ public partial class GameItem : UserControl
 
     protected override void OnUnloaded(RoutedEventArgs e)
     {
-	    base.OnUnloaded(e);
-	    _imageLoader.Dispose();
+        base.OnUnloaded(e);
+        _imageLoader.Dispose();
     }
 
     public GameItem(VersionConfig info) : this()
@@ -45,7 +67,14 @@ public partial class GameItem : UserControl
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
 
-        Card.ImageIcon = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
+        // 图标只显示 32x32，按 64 宽解码
+        Card.ImageIcon = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo), 64);
+        if (LeviLamina.IsInstallModLoader(VersionInfo.VersionPath!))
+            ModLoadersPanel.Children.Add(new LabelBox()
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                Text = "LeviLamina"
+            });
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)

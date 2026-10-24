@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,7 +8,7 @@
     <StackPanel>
         <TextBlock Margin="0,5,0,5"
                    HorizontalAlignment="Left"
-                   Text="联机码" />
+                   Text="{DynamicResource Multiplayer.Lobby.RoomCode}" />
 
         <TextBox Margin="0,5,0,5" MinWidth="320"
                  HorizontalAlignment="Stretch"

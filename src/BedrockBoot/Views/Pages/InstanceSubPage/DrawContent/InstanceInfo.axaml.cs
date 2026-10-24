@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -10,13 +28,14 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum;
-using BedrockBoot.Base.Enum.Type;
-using BedrockBoot.Base.Helper;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum;
+using BedrockBoot.Standard.Enum.Type;
+using BedrockBoot.Standard.Helper;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
@@ -32,16 +51,6 @@ public partial class InstanceInfo : UserControl
         IsEdit = false;
        
         InitializeComponent();
-
-#if LINUX
-        IsolationCard.IsVisible = false;
-        HighLevel.IsVisible = false;
-        IsRunAdminCard.IsVisible = false;
-#endif
-
-#if RELEASE
-        InstanceMod.IsVisible = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableGameInstanceMods;
-#endif
     }
 
     public InstanceInfo(VersionConfig versionInfo) : this()
@@ -66,10 +75,6 @@ public partial class InstanceInfo : UserControl
             $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
         CustomizationBox.IsEnabled = VersionInfo.Info.GameIconType == GameIconType.Customization;
         IconPathInput.Text = VersionInfo.Info.GameIconPath;
-        InstanceIsolationPanel.IsVisible = InstanceIsolationPanel.IsEnabled = VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK;
-#if WINDOWS
-        IsRunAdminCard.IsVisible = (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK) && !GlobalModel.Config.Data.IsUseMultipleUsers;
-#endif
         
         if ((int)VersionInfo.Info.GameIconType >= 2025)
         {
@@ -83,31 +88,14 @@ public partial class InstanceInfo : UserControl
         
         StartPlayTimeRefresh();
 
-        Task.Run(() =>
-        {
-            IsEdit = false;
+        IsEdit = false;
 
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                InstanceName.Text = VersionInfo.Info.VersionName;
+        InstanceName.Text = VersionInfo.Info.VersionName;
 
-                if (VersionInfo.Config == null)
-                    VersionInfo.Config = new VersionConfig.VersionConfigEntry();
+        if (VersionInfo.Config == null)
+            VersionInfo.Config = new VersionConfig.VersionConfigEntry();
 
-                InstanceArgs.Text = VersionInfo.Config.OtherCommand;
-                InstanceConsole.IsChecked = VersionInfo.Config.IsConsole;
-                InstanceEdit.IsChecked = VersionInfo.Config.IsEditModel;
-                InstanceMod.IsChecked = VersionInfo.Config.IsModes;
-                InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
-                InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
-                GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
-                IsRunAdmin.IsChecked = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun;
-                CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
-            });
-
-            Thread.Sleep(500);
-            IsEdit = true;
-        });
+        IsEdit = true;
     }
     
 
@@ -121,7 +109,8 @@ public partial class InstanceInfo : UserControl
 
         IconBox.Update(image);
         
-        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo));
+        // 图标显示 74x74，按 160 宽解码（兼容 2x）
+        GameIcon.Source = await _imageLoader.LoadIconAsync(IconHelper.GetGameIconUrl(VersionInfo), 160);
     }
 
     private void TextTypeConfig_OnChanged(object? sender, TextChangedEventArgs e)
@@ -132,7 +121,6 @@ public partial class InstanceInfo : UserControl
                 VersionInfo.Info.VersionName = Path.GetFileName(VersionInfo.VersionPath);
             else VersionInfo.Info.VersionName = InstanceName.Text;
 
-            VersionInfo.Config.OtherCommand = InstanceArgs.Text;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
             VersionName.Text = VersionInfo.Info.VersionName;
         }
@@ -149,10 +137,15 @@ public partial class InstanceInfo : UserControl
             Interval = TimeSpan.FromSeconds(1)
         };
 
-        _refreshTimer.Tick += async (sender, e) => await RefreshPlayTimeAsync();
+        _refreshTimer.Tick += OnRefreshTimerTick;
         _refreshTimer.Start();
 
         Dispatcher.UIThread.Post(async () => await RefreshPlayTimeAsync());
+    }
+
+    private async void OnRefreshTimerTick(object? sender, EventArgs e)
+    {
+        await RefreshPlayTimeAsync();
     }
 
     private void StopPlayTimeRefresh()
@@ -160,7 +153,7 @@ public partial class InstanceInfo : UserControl
         if (_refreshTimer != null)
         {
             _refreshTimer.Stop();
-            _refreshTimer.Tick -= async (sender, e) => await RefreshPlayTimeAsync();
+            _refreshTimer.Tick -= OnRefreshTimerTick;
             _refreshTimer = null;
         }
 
@@ -176,19 +169,20 @@ public partial class InstanceInfo : UserControl
     {
         try
         {
-            VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
-            if (VersionInfo == null ||
-                VersionInfo?.PlayerData == null)
+            var versionPath = VersionInfo.VersionPath;
+            var config = await Task.Run(() => GameInfoHelper.GetVersionConfig(versionPath));
+
+            if (config?.PlayerData == null)
                 return;
+
+            VersionInfo = config;
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 if (TotalDuration != null)
                 {
-                    var playerData = VersionInfo.PlayerData;
-
                     // 获取总游玩时间（秒）并转换为 TimeSpan
-                    var totalTime = TimeSpan.FromSeconds(playerData.TotalPlayTime);
+                    var totalTime = TimeSpan.FromSeconds(VersionInfo.PlayerData.TotalPlayTime);
 
                     TotalDuration.Text =
                         string.Format(I18nManager.Instance["Draw.Instance.TotalTime"],
@@ -222,22 +216,6 @@ public partial class InstanceInfo : UserControl
         StopPlayTimeRefresh();
         base.OnUnloaded(e);
         _imageLoader.Dispose();
-    }
-
-    private void BoolTypeConfig_OnChanged(object? sender, RoutedEventArgs e)
-    {
-        if (IsEdit)
-        {
-            VersionInfo.Config.IsConsole = (bool)InstanceConsole.IsChecked!;
-            VersionInfo.Config.IsEditModel = (bool)InstanceEdit.IsChecked!;
-            VersionInfo.Config.IsVersionIsolated = (bool)InstanceIsolated.IsChecked!;
-            VersionInfo.Config.IsModes = (bool)InstanceMod.IsChecked!;
-            VersionInfo.Config.IsDetailedLog = (bool)InstanceDetailedLogs.IsChecked!;
-            VersionInfo.Config.IsSyncPublicOptions = (bool)GameConfigSwitch.IsChecked!;
-            VersionInfo.Config.SysWindowsConfig.IsUseAdminRun = (bool)IsRunAdmin.IsChecked!;
-
-            GameInfoHelper.SaveVersionConfig(VersionInfo);
-        }
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -278,18 +256,6 @@ public partial class InstanceInfo : UserControl
             VersionInfo.Info.CoverImage = filePath;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
             UpdateImage();
-        }
-    }
-
-    private void CatalogStrategy_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (IsEdit)
-        {
-            VersionInfo.Config.IsolationFolderPolicy = (CatalogStrategyEnum)CatalogStrategy.SelectedIndex;
-            VersionInfo.Config.FolderPolicyStr =
-                IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
-            
-            GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
     }
 

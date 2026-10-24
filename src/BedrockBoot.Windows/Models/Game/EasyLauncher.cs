@@ -1,56 +1,58 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Text.Json;
-using System.IO;
-using System.Threading;
 using Windows.Management.Deployment;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Helper;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
-using BedrockBoot.Models.Global;
-using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Helper;
+using BedrockBoot.Standard.Interface.Platform.Game;
+using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Windows.Models.Helper.Uwp;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
-using PeNet;
-using PeNet.Header.Pe;
 using Round.SDK.Plugin.BedrockBoot.Register;
-using BedrockBoot.Models.Helper.Uwp;
 using XUserLauncher.Core;
 
-namespace BedrockBoot.Models.Game;
+namespace BedrockBoot.Windows.Models.Game;
 
-public class EasyLauncher
+public class EasyLauncher : ILauncher
 {
-    private ModsCore _core;
-    private Stopwatch _gameplayStopwatch; // 计时器
+    private ModsCore? _core;
+    private Stopwatch? _gameplayStopwatch; // 计时器
     private DateTime _gameStartTime; // 游戏开始时间
-    private string _playerDataFilePath; // 玩家数据文件路径
-	private ProcessMouseLocker? _mouseLocker;
+    private string? _playerDataFilePath; // 玩家数据文件路径
+    private ProcessMouseLocker? _mouseLocker;
     private FrameMonitor? _frameMonitor;
-    IntPtr _frameHwnd  = IntPtr.Zero ;
+    private Task? _frameMonitorTask;
+    IntPtr _frameHwnd = IntPtr.Zero;
 
-
-    private static int LaunchingCount { get; set; } = 0;
-
-    public EasyLauncher(VersionConfig versionConfig)
+    public EasyLauncher(VersionConfig versionConfig) : base(versionConfig)
     {
         VersionInfo = versionConfig;
-        _gameplayStopwatch = new Stopwatch(); // 初始化计时器
+        _gameplayStopwatch = new Stopwatch();
         _playerDataFilePath = Path.Combine(versionConfig.VersionPath, "playerdata.json"); // 玩家数据文件路径
     }
-
-    public VersionConfig VersionInfo { get; }
-    public Action? OnMigration { get; set; }
-    public Action<Process>? Launched { get; set; }
-    public Action? LaunchCompleted { get; set; }
-    public Action<string, double>? UpdateProgress { get; set; }
-    public Action<string>? UpdateProgressText { get; set; }
-    public Action<bool>? SetProgressIndeterminate { get; set; }
-    public Process MinecraftProcess { get; private set; }
-    public static Action? LaunchedBehavior { get; set; }
+    
     private void UpdatePlayerPlayTime(TimeSpan playTime)
     {
         var playerData = VersionInfo.PlayerData;
@@ -58,13 +60,12 @@ public class EasyLauncher
         playerData.LastPlayTime = DateTime.Now;
         if (playerData.FirstPlayTime == null)
             playerData.FirstPlayTime = _gameStartTime;
-        
+
         playerData.TotalSessions++;
         VersionInfo.PlayerData = playerData;
         GameInfoHelper.SaveVersionConfig(VersionInfo);
     }
-
-    public async Task Launch()
+    private async Task Launch()
     {
         LaunchingCount++;
         if (CoreGlobal.BedrockCore == null)
@@ -80,7 +81,7 @@ public class EasyLauncher
             };
             await CoreGlobal.BedrockCore.InitAsync();
         }
-        
+
         VersionInfo.Config.FolderPolicyStr =
             IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
 
@@ -89,11 +90,11 @@ public class EasyLauncher
             VersionInfo.Config.IsVersionIsolated = false;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
-            
+
         GameInfoHelper.SaveVersionConfig(VersionInfo);
-        
+
         Console.WriteLine(@"已同步策略状态");
-        
+
         Console.WriteLine(@"开始检测 GameService 安装状态");
 
         var gameServiceInstallStatue = IsGamingServicesInstalled();
@@ -110,7 +111,7 @@ public class EasyLauncher
         {
             Console.WriteLine(@"当前实例为 UWP 构建类型，需要检测开发者模式。");
             var devMod = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
-            
+
             Console.WriteLine(@"开发者模式启用状态: " + devMod);
             if (!devMod)
             {
@@ -133,7 +134,7 @@ public class EasyLauncher
             VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK)
         {
             Console.WriteLine(@"正在运行 GameInput 安装，请等待安装完成...");
-    
+
             var startInfo = new ProcessStartInfo
             {
                 FileName = "msiexec.exe",
@@ -142,7 +143,7 @@ public class EasyLauncher
                 UseShellExecute = true,
                 Verb = "runas"
             };
-    
+
             using (var process = Process.Start(startInfo))
             {
                 process?.WaitForExit();
@@ -207,20 +208,17 @@ public class EasyLauncher
                 _frameMonitor = new FrameMonitor();
                 _frameMonitor.GameName = VersionInfo.Info.VersionName;
 
-                _ = Task.Run(async () =>
+                _frameMonitorTask = Task.Run(async () =>
                 {
                     _frameHwnd = await _frameMonitor.StartFrameMonitorAsync();
                 });
             }
 
-            File.WriteAllText(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", ".bb.version"),
-                VersionInfo.Info.Version);
-
             var launchCore = new XUserLauncher.Core.XUserLauncher(Path.Combine(VersionInfo.VersionPath, "config",
                 "BedrockBoot2", "config.json"));
             XboxPreauth auth = null;
 
-            if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || 
+            if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP ||
                 !GlobalModel.Config.Data.IsUseMultipleUsers)
             {
                 MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
@@ -228,7 +226,8 @@ public class EasyLauncher
                     GameFolder = VersionInfo.VersionPath,
                     GameType = VersionInfo.Info.VersionType,
                     MinecraftBuildType = VersionInfo.Info.BuildType,
-                    RunAsAdministrator = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun && !GlobalModel.Config.Data.IsUseMultipleUsers,
+                    RunAsAdministrator = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun &&
+                                         !GlobalModel.Config.Data.IsUseMultipleUsers,
                     RegisterProgress = new Progress<DeploymentProgress>(progress =>
                     {
                         Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
@@ -240,7 +239,7 @@ public class EasyLauncher
                     {
                         Console.WriteLine(state);
                         UpdateProgressText?.Invoke($"状态：{state}");
-                    
+
                         // 当游戏启动状态变化时，更新进度文本
                         if (state == LaunchState.Launched)
                         {
@@ -254,18 +253,18 @@ public class EasyLauncher
             {
                 try
                 {
-                    var account = CoreInit.GetMsAccountConfig.Invoke();
+                    var account = PlatformCore.GetMsAccountConfig.Invoke();
 
                     if (account == null)
                     {
                         LaunchCompleted?.Invoke();
                         return;
                     }
-            
-                    var accountInfo = await CoreInit.OnRefreshAccount?.Invoke(account!)!;
+
+                    var accountInfo = await PlatformCore.OnRefreshAccount?.Invoke(account!)!;
                     launchCore.LoadDll();
                     auth = await launchCore.AuthenticateAsync(JsonSerializer.Serialize(accountInfo.AuthResult));
-                    
+
                     var process = launchCore.LaunchAndInjectAsync(
                         Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile),
                         null,
@@ -273,8 +272,12 @@ public class EasyLauncher
                         auth,
                         TimeSpan.FromSeconds(60)).Result;
                     MinecraftProcess = Process.GetProcessById((int)process.ProcessId);
+                    // 注入已由 LaunchAndInjectAsync 完成，不能再调用 LoadInject，否则会重复开启会话管道并超时
                     auth.Dispose();
-                }catch{ }
+                }
+                catch
+                {
+                }
 
                 UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
             }
@@ -283,40 +286,49 @@ public class EasyLauncher
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
 
-                if (auth != null)
-                {
-                    try
-                    {
-                        launchCore.LoadInject(MinecraftProcess.Id, Process.GetCurrentProcess().Id, auth);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                    }
-                }
-
                 LaunchingCount--;
                 if (LaunchingCount == 0) LaunchedBehavior?.Invoke();
-                
+
                 // 开始计时
                 _gameplayStopwatch.Start();
                 Console.WriteLine($@"游戏计时开始：{_gameStartTime:yyyy-MM-dd HH:mm:ss}");
-                
+
                 Launched?.Invoke(MinecraftProcess);
+                OnGameLaunched?.Invoke(VersionInfo);
                 UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
                 SetProgressIndeterminate?.Invoke(true);
-                
+
                 if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
                 {
                     // 正常情况下 GDK 窗口是不需要锁的呜
-                    if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
+                    if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP ||
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
                     {
+                        // 等待 FrameMonitor 完成，等待 10 秒
+                        if (_frameMonitorTask != null)
+                        {
+                            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10));
+
+                            var completedTask = await Task.WhenAny(_frameMonitorTask, timeoutTask);
+
+                            if (completedTask == _frameMonitorTask)
+                            {
+                                Console.WriteLine($@"FrameMonitor 完成，HWND：{_frameHwnd}");
+                            }
+                            else
+                            {
+                                Console.WriteLine(@"FrameMonitor 等待超过 10 秒，给个 IntPtr.Zero 进去闯荡闯荡");
+                                _frameHwnd = IntPtr.Zero;
+                            }
+                        }
+
                         _mouseLocker = new ProcessMouseLocker(MinecraftProcess.Id, _frameHwnd);
+
                         _mouseLocker.Start();
                     }
                 }
 
-                if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
+                // if (VersionInfo.Config.IsModes) _core.LoadAll(MinecraftProcess.Id);
 
                 MinecraftProcess.EnableRaisingEvents = true;
 
@@ -330,58 +342,59 @@ public class EasyLauncher
         catch (Exception ex)
         {
             Console.WriteLine($@"启动游戏时发生错误: {ex.StackTrace}");
-            
+
             // 确保计时器停止
             if (_gameplayStopwatch.IsRunning)
                 _gameplayStopwatch.Stop();
-                
+
             LaunchCompleted?.Invoke();
         }
     }
-
     private async Task WaitForProcessExitAsync(Process process)
     {
         try
         {
             await Task.Run(() => process.WaitForExit());
-            
+
             // 停止计时并记录数据
             if (_gameplayStopwatch.IsRunning)
             {
                 _gameplayStopwatch.Stop();
                 TimeSpan playTime = _gameplayStopwatch.Elapsed;
-                
+
                 // 更新玩家数据
                 UpdatePlayerPlayTime(playTime);
-                
+
                 // 记录本次会话到独立文件
                 SessionStoreHelper.AddSession(VersionInfo.VersionPath, _gameStartTime, (long)playTime.TotalSeconds);
             }
-            
+
             Console.WriteLine(@"游戏进程已退出（异步等待）");
-			if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
-			{
-    			if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP || BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
-			    {
-			        _mouseLocker?.Stop();
-			        _mouseLocker = null;
-			    }
-			}
+            if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)
+            {
+                if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP ||
+                    BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockForGdk)
+                {
+                    _mouseLocker?.Stop();
+                    _mouseLocker = null;
+                }
+            }
+
             await RunPostExitCommandAsync();
+            OnGameExited?.Invoke(VersionInfo);
             LaunchCompleted?.Invoke();
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"等待进程退出时发生错误: {ex.Message}");
-            
+
             // 确保计时器停止
             if (_gameplayStopwatch.IsRunning)
                 _gameplayStopwatch.Stop();
-                
+
             LaunchCompleted?.Invoke();
         }
     }
-
     /// <summary>执行用户自定义的启动后（游戏退出后）命令</summary>
     private async Task RunPostExitCommandAsync()
     {
@@ -395,7 +408,6 @@ public class EasyLauncher
             config.PreLaunchTimeout,
             "启动后命令");
     }
-    
     public static bool IsGamingServicesInstalled()
     {
         try
@@ -403,12 +415,12 @@ public class EasyLauncher
             using (var process = new Process())
             {
                 process.StartInfo.FileName = "powershell.exe";
-                
+
                 process.StartInfo.Arguments = "-NoProfile -Command \"Get-AppxPackage Microsoft.GamingServices\"";
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
-            
+
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
@@ -421,5 +433,10 @@ public class EasyLauncher
             Console.WriteLine($@"检测失败: {ex.StackTrace}");
             return false;
         }
+    }
+
+    public override async Task LaunchGame()
+    {
+        await Launch();
     }
 }

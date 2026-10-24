@@ -1,8 +1,25 @@
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System.Diagnostics;
 using BedrockBoot.Models.Global;
-using BedrockBoot.Proton;
 
-namespace BedrockBoot.Models.Pack.Wine;
+namespace BedrockBoot.Linux.Models.Pack.Wine;
 
 public static class WinePrefix
 {
@@ -29,7 +46,7 @@ public static class WinePrefix
 
     public static bool Boot()
     {
-        var pfx = PathsList.PreFixPath;
+        var pfx = PathsList.WinePrefixPath;
         if (IsReady(pfx))
         {
             Console.WriteLine("Wine prefix ready");
@@ -46,6 +63,11 @@ public static class WinePrefix
             UseShellExecute = false,
         };
         psi.EnvironmentVariables["WINEPREFIX"] = pfx;
+        // proton 脚本要求 STEAM_COMPAT_DATA_PATH（前缀会被解析为 <它>/pfx），
+        // 以及 STEAM_COMPAT_CLIENT_INSTALL_PATH；缺任一个都会直接报错退出。
+        psi.EnvironmentVariables["STEAM_COMPAT_DATA_PATH"] = PathsList.PreFixPath;
+        psi.EnvironmentVariables["STEAM_COMPAT_CLIENT_INSTALL_PATH"] =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".steam", "steam");
         psi.EnvironmentVariables["WINEDEBUG"] = "-all";
         psi.EnvironmentVariables["SDL_VIDEODRIVER"] = "dummy";
 
@@ -113,27 +135,31 @@ public static class WinePrefix
 
         var user = new List<RegChange>
         {
+            // Wine 内置的 amd_ags_x64 无法从自身 PE 读出 AGS 版本号（err 1812），
+            // 游戏（RenderDragon）会因此反复调用 agsInit 死循环：窗口白屏、主线程 100% CPU、无响应。
+            // 直接禁用该 DLL，游戏会走「没有 AGS」的普通分支（本地 AMD 机器不加载它也能正常运行）。
+            WineRegistry.RegSz(@"Software\Wine\DllOverrides", "amd_ags_x64", "disabled"),
             WineRegistry.RegSz("Environment", "MICROSOFT_WINDOWSAPPRUNTIME_BOOTSTRAP_INITIALIZE_SHOWUI", "0"),
             WineRegistry.RegSz("Environment", "MICROSOFT_WINDOWSAPPRUNTIME_BOOTSTRAP_INITIALIZE_FAILFAST", "0"),
             WineRegistry.RegSz("Environment", "MICROSOFT_WINDOWSAPPRUNTIME_DEPLOYMENT_INITIALIZE_ONERRORSHOWUI", "0"),
         };
 
-        WineRegistry.UpdatePrefix(PathsList.PreFixPath, machine.ToArray(), user.ToArray());
+        WineRegistry.UpdatePrefix(PathsList.WinePrefixPath, machine.ToArray(), user.ToArray());
         Console.WriteLine("WineGDK prereqs applied");
     }
 
     public static void SetRefreshToken(string token)
     {
-        WineRegistry.UpdatePrefix(PathsList.PreFixPath,
+        WineRegistry.UpdatePrefix(PathsList.WinePrefixPath,
             machine: new[] { WineRegistry.RegSz(PathsList.WinegdkReg, "RefreshToken", token) });
         Console.WriteLine("Refresh token written to Wine registry");
     }
 
     public static void RemoveRefreshToken()
     {
-        var systemReg = Path.Combine(PathsList.PreFixPath, "system.reg");
+        var systemReg = Path.Combine(PathsList.WinePrefixPath, "system.reg");
         if (!File.Exists(systemReg)) return;
-        WineRegistry.UpdatePrefix(PathsList.PreFixPath,
+        WineRegistry.UpdatePrefix(PathsList.WinePrefixPath,
             machine: new[] { WineRegistry.RegDelete(PathsList.WinegdkReg, "RefreshToken") });
     }
 }

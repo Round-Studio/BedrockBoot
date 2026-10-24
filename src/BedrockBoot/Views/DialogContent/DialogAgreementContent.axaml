@@ -9,8 +9,8 @@
         <StackPanel Orientation="Horizontal"
                     Spacing="4">
             <TextBlock Text="其他：" />
-            <HyperlinkButton Content="隐私策略"
-                             NavigateUri="https://docs.roundstudio.top/docs/product/bb/privacyPolicy" />
+            <HyperlinkButton Content="隐私策略与详细的使用条款"
+                             NavigateUri="https://bb.roundstudio.top/privacyPolicy" />
         </StackPanel>
     </StackPanel>
 </UserControl>

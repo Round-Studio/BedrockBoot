@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,21 +10,19 @@
                     Margin="0,0,20,0"
                     Grid.Row="0">
             <TextBlock FontWeight="Bold"
-                       FontSize="14">
-                你已加入房间，可启动游戏后加入
-            </TextBlock>
+                       FontSize="14"
+                       Text="{DynamicResource Multiplayer.Lobby.GuestJoinedTip}" />
 
-            <onePointControls:SettingCard Header="退出房间"
-                                          Description="退出该房间"
+            <onePointControls:SettingCard Header="{DynamicResource Multiplayer.Lobby.ExitRoom.Title}"
+                                          Description="{DynamicResource Multiplayer.Lobby.ExitRoom.Desc}"
                                           IsClickable="True"
                                           Name="CloseBtn"
                                           Click="CloseBtn_OnClick"
                                           Glyph="&#xE711;" />
 
             <TextBlock FontWeight="Bold"
-                       FontSize="14">
-                已连接的玩家
-            </TextBlock>
+                       FontSize="14"
+                       Text="{DynamicResource Multiplayer.Lobby.ConnectedPlayers}" />
         </StackPanel>
 
         <ScrollViewer Grid.Row="1"

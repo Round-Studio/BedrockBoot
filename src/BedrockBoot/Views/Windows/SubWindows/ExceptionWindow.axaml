@@ -1,11 +1,11 @@
-﻿<windowFrame:OnePointWindow xmlns="https://github.com/avaloniaui"
+<windowFrame:OnePointWindow xmlns="https://github.com/avaloniaui"
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                             xmlns:windowFrame="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;assembly=OnePointUI.Avalonia"
                             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
                             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-                            x:Class="BedrockBoot.Views.Windows.ExceptionWindow"
+                            x:Class="BedrockBoot.Views.Windows.SubWindows.ExceptionWindow"
                             IsMaxBtn="False"
                             IsMinBtn="False"
                             WindowStartupLocation="CenterOwner"
@@ -68,7 +68,7 @@
                         Click="SaveBtnButton_OnClick"
                         Classes="NoBorder" />
                 <Button Name="UploadBtn"
-                        Content="上传日志"
+                        Content="{DynamicResource ExceptionWindow.Button.Upload}"
                         Padding="15,10"
                         Click="UploadBtn_OnClick"
                         Classes="NoBorder" />
@@ -82,7 +82,7 @@
                         Padding="15,10"
                         Click="CloseButton_OnClick"
                         Classes="NoBorder"
-                        Background="DarkRed"
+                        Background="{DynamicResource SystemFillColorCriticalBrush}"
                         Foreground="White" />
             </StackPanel>
 

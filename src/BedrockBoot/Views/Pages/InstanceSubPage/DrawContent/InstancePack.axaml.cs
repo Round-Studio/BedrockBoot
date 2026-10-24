@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,13 +24,14 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.ResourcePack;
-using BedrockBoot.Base.Enum;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using OnePointUI.Avalonia.Base.Entry;
@@ -71,7 +90,7 @@ public partial class InstancePack : ISetting
                                  x.Header.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
             });
-            
+
             NullBox.IsVisible = filteredPacks.Count == 0;
 
             await Dispatcher.UIThread.InvokeAsync(() => UpdateUiWithPacks(filteredPacks));
@@ -98,6 +117,7 @@ public partial class InstancePack : ISetting
         ScBox.IsVisible = true;
         ResultBox.Children.AddRange(packs.Select(pack => new GameResourcePackItem(pack)
         {
+            IsEnableEdit = pack.PackType == ResourcePackType.Behavior,
             RefreshCallBack = () => _ = RefreshPacksAsync()
         }));
     }
@@ -124,7 +144,7 @@ public partial class InstancePack : ISetting
         {
             var filePaths = files.Select(f => f.Path.LocalPath).ToList();
             var body = new DialogImportResourcePackContent();
-            
+
             DialogHost.Show(new DialogInfo
             {
                 Title = i18n["Instance.Pack.Import.Dialog.Title"],
@@ -151,7 +171,7 @@ public partial class InstancePack : ISetting
                     }
                 }
             });
-            
+
             body.Import(filePaths);
         }
     }
@@ -187,6 +207,6 @@ public partial class InstancePack : ISetting
             _ => InstanceFolderType.UserFolder
         };
 
-        OpenFolderHelper.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, folderType));
+        PlatformCore.OpenFolder!.Open(IsolationCore.GetInstanceFolderPath(VersionInfo, folderType));
     }
 }

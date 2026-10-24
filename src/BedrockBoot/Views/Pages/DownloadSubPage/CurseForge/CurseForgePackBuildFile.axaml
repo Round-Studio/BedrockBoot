@@ -7,7 +7,7 @@
              x:Class="BedrockBoot.Views.Pages.DownloadSubPage.CurseForge.CurseForgePackBuildFile">
     <Grid>
         <ScrollViewer>
-            <StackPanel Margin="15,0,15,15"
+            <StackPanel Margin="20,0,20,15"
                         Spacing="8"
                         Name="List" />
         </ScrollViewer>

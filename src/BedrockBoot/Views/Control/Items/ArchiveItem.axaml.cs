@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
@@ -6,9 +24,11 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Entry.Game.Pack.Archive;
+using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Game.Archive;
+using BedrockBoot.Standard.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Helper;
@@ -17,6 +37,8 @@ namespace BedrockBoot.Views.Control.Items;
 
 public partial class ArchiveItem : UserControl
 {
+    private Bitmap? _worldIconBitmap;
+
     public ArchiveItem()
     {
         InitializeComponent();
@@ -42,6 +64,8 @@ public partial class ArchiveItem : UserControl
     {
         if (ArchiveInfo == null) return;
 
+        ArchiveCheck.EnsureLevelData(ArchiveInfo);
+
         WorldName.Text = ArchiveInfo.LevelWorldData.LevelName;
 
         // 时间转换与格式化
@@ -61,8 +85,12 @@ public partial class ArchiveItem : UserControl
 
         try
         {
+            _worldIconBitmap?.Dispose();
+            _worldIconBitmap = null;
+
             using var stream = File.OpenRead(path);
-            var bitmap = new Bitmap(stream);
+            var bitmap = Bitmap.DecodeToWidth(stream, 256);
+            _worldIconBitmap = bitmap;
             ImageBox.Background = new ImageBrush
             {
                 Stretch = Stretch.UniformToFill,
@@ -75,6 +103,14 @@ public partial class ArchiveItem : UserControl
         }
     }
 
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+
+        _worldIconBitmap?.Dispose();
+        _worldIconBitmap = null;
+    }
+
     /// <summary>
     ///     在资源管理器中打开存档目录
     /// </summary>
@@ -82,7 +118,7 @@ public partial class ArchiveItem : UserControl
     {
         if (ArchiveInfo == null || !Directory.Exists(ArchiveInfo.Path)) return;
 
-        OpenFolderHelper.Open(ArchiveInfo.Path);
+        PlatformCore.OpenFolder!.Open(ArchiveInfo.Path);
     }
 
     /// <summary>

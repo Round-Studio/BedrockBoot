@@ -1,12 +1,31 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
@@ -26,8 +45,9 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             BlurBar.Value = GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur;
             Image3D.IsChecked = GlobalModel.Config.Data.StyleConfig.Background3D;
             ImageQuality.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.ImageQuality;
+            MicaTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.StyleConfig.MicaType;
             UpdateUI();
-            
+
             MicaModel.IsEnabled = false;
             BlurModel.IsEnabled = false;
             LiveModel.IsEnabled = false;
@@ -79,6 +99,8 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 
             BackgroundImageBox.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image;
             DefImageSetting.IsVisible = !GlobalModel.Config.Data.StyleConfig.BackgroundAnimation;
+
+            BackgroundMica.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Mica;
 
             LiveOptCard.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel;
             LiveBlurCard.IsVisible = GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.LiveModel;
@@ -141,7 +163,7 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
                 GlobalModel.Config.Data.StyleConfig.BackgroundImageBlur = (int)BlurBar.Value;
 
                 GlobalModel.Config.Save();
-                Models.Global.GlobalModel.MainWindow.BackgroundView.ApplyImageBackground(GlobalModel.Config.Data.StyleConfig);
+                Models.Global.GlobalModel.MainWindow.BackgroundView.UpdateImageOpacityAndBlur();
             }
         }
 
@@ -200,6 +222,17 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             if (IsEdit)
             {
                 GlobalModel.Config.Data.StyleConfig.BackgroundAnimation = (bool)AnimationToggle.IsChecked!;
+                GlobalModel.Config.Save();
+                UpdateUI();
+                Models.Global.GlobalModel.MainWindow.UpdateTheme();
+            }
+        }
+
+        private void MicaTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (IsEdit)
+            {
+                GlobalModel.Config.Data.StyleConfig.MicaType = (MicaType)MicaTypeBox.SelectedIndex;
                 GlobalModel.Config.Save();
                 UpdateUI();
                 Models.Global.GlobalModel.MainWindow.UpdateTheme();

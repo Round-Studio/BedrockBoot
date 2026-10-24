@@ -12,11 +12,11 @@
                     Spacing="8">
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="联机依赖组件" />
+                       Text="{DynamicResource Settings.Universal.Dependency.Group.Dependencies}" />
 
             <onePointControls:SettingCard Name="EasyTierCard"
                                           Header="EasyTier"
-                                          Description="正在读取版本信息..."
+                                          Description="{DynamicResource Settings.Universal.Dependency.ReadingVersion}"
                                           IsShowActionIcon="False"
                                           Glyph="&#xE968;">
                 <TextBlock Name="EasyTierLatestText"
@@ -27,7 +27,7 @@
 
             <onePointControls:SettingCard Name="GravityConeCard"
                                           Header="GravityCone"
-                                          Description="正在读取版本信息..."
+                                          Description="{DynamicResource Settings.Universal.Dependency.ReadingVersion}"
                                           IsShowActionIcon="False"
                                           Glyph="&#xE774;">
                 <TextBlock Name="GravityConeLatestText"
@@ -38,32 +38,32 @@
 
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="操作" />
+                       Text="{DynamicResource Settings.Universal.Group.Behavior}" />
 
             <onePointControls:SettingCard Name="CheckCard"
-                                          Header="检查更新"
-                                          Description="从 GitHub 获取联机组件的最新版本并与本地版本比对"
+                                          Header="{DynamicResource Settings.Universal.Dependency.Check.Title}"
+                                          Description="{DynamicResource Settings.Universal.Dependency.Check.Desc}"
                                           IsShowActionIcon="False"
                                           Glyph="&#xE895;">
                 <Button Padding="8"
                         Height="36"
                         MinWidth="100"
                         Name="CheckUpdateBtn"
-                        Content="检查更新"
+                        Content="{DynamicResource Settings.Universal.Dependency.Check.Action}"
                         Click="CheckUpdateBtn_OnClick" />
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Name="UpdateCard"
                                           IsVisible="False"
-                                          Header="更新依赖"
-                                          Description="下载并安装最新版本的联机组件（更新期间联机功能将被关闭）"
+                                          Header="{DynamicResource Settings.Universal.Dependency.Update.Title}"
+                                          Description="{DynamicResource Settings.Universal.Dependency.Update.Desc}"
                                           IsShowActionIcon="False"
                                           Glyph="&#xE896;">
                 <Button Padding="8"
                         Height="36"
                         MinWidth="100"
                         Name="UpdateBtn"
-                        Content="立即更新"
+                        Content="{DynamicResource Settings.Universal.Dependency.Update.Action}"
                         Click="UpdateBtn_OnClick" />
             </onePointControls:SettingCard>
         </StackPanel>

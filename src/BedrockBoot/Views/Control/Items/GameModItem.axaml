@@ -15,6 +15,11 @@
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <TextBlock Name="FileName" />
+                <onePointControls:LabelBox Text="Version"
+                                           IsVisible="False"
+                                           Foreground="White"
+                                           Name="VersionBox"
+                                           VerticalAlignment="Center" />
                 <onePointControls:LabelBox Text="{DynamicResource Instance.Mods.Label.Preload}"
                                            Background="Orange"
                                            Foreground="White"
@@ -24,6 +29,10 @@
         </onePointControls:SettingCard.Header>
         <StackPanel Orientation="Horizontal"
                     Spacing="8">
+            <ToggleSwitch VerticalAlignment="Center"
+                          Name="SettingModEnable"
+                          IsCheckedChanged="SettingModEnable_OnIsCheckedChanged">
+            </ToggleSwitch>
             <Button Width="32" Height="32"
                     Classes="NoBorder"
                     Click="DeleteBtn_OnClick"

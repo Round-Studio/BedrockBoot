@@ -1,14 +1,31 @@
-﻿using BedrockBoot.Core.Global;
-using BedrockBoot.Models.Helper.Notice;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using BedrockBoot.Core.Global;
+using BedrockBoot.Standard.Interface.Platform;
+using BedrockBoot.Windows.Models.Helper.Notice;
 
+namespace BedrockBoot.Windows.Models.Helper;
 
-
-namespace BedrockBoot.Models.Helper;
-
-public class ProcessMouseLocker
+public class ProcessMouseLocker : IMouseLocker
 {
     // --- Win32 API 导入 ---
     [DllImport("user32.dll")]
@@ -450,6 +467,7 @@ public class ProcessMouseLocker
     }
     private bool CheckIfUwpFrameMatches(IntPtr frameHwnd)
     {
+        bool isMatch = false;
 
         // 核心：检查 Frame 内部是否包含目标进程的子窗口
         EnumChildWindows(frameHwnd, (childHwnd, l) =>
@@ -457,12 +475,16 @@ public class ProcessMouseLocker
             GetWindowThreadProcessId(childHwnd, out uint childPid);
             if (childPid == _targetPid)
             {
+                isMatch = true;
                 return false;
             }
             return true;
         }, IntPtr.Zero);
 
-        return CheckStartTime(frameHwnd);
+        if (!isMatch) return CheckStartTime(frameHwnd);
+
+        return isMatch;
+
 
         /*
          * 说实话时间戳检测似乎不太好用

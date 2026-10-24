@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -16,19 +34,20 @@ namespace BedrockBoot.Models.Pack.Plugin;
 
 public class PluginLoader
 {
-    // 使用线程安全的集合
     public static readonly ConcurrentBag<Assembly> _loadedAssemblies = new();
     
-    // 用于同步的锁对象
     private static readonly SemaphoreSlim _loadSemaphore = new(1, 1);
     private static readonly object _pluginListLock = new();
     private static readonly ReaderWriterLockSlim _assemblyLock = new();
     
-    // 已加载的程序集名称缓存（线程安全）
     private static readonly ConcurrentDictionary<string, byte> _loadedAssemblyNames = new(StringComparer.OrdinalIgnoreCase);
     
     public static List<PackConfig> Plugins { get; set; } = new();
     public static Type PluginType { get; } = typeof(IPluginBedrockBoot);
+    
+    public static Action<int> OnPluginLoadException { get; set; } = _ => { };
+    public static List<string> PluginLoadExceptions { get; } = new();
+    // private static int _loadExceptionCount = 0;
 
     public static async Task LoadAll()
     {
@@ -75,7 +94,7 @@ public class PluginLoader
                 await LoadDependenciesAsync(conf.PackFolder, conf.BodyFile);
                 
                 // 加载插件主体
-                await LoadPluginBodyAsync(conf.PackFolder, conf.BodyFile);
+                await LoadPluginBodyAsync(conf, conf.PackFolder, conf.BodyFile);
                 
                 conf.IsEnable = true;
             }
@@ -100,6 +119,9 @@ public class PluginLoader
             var conf = PluginHelper.ReadPackConfig(file);
             conf.PackFile = file;
             conf.IsEnable = false;
+            
+            PluginLoadExceptions.Add($"{conf.PackName} 加载错误: {ex.Message}");
+            OnPluginLoadException.Invoke(PluginLoadExceptions.Count);
             
             lock (_pluginListLock)
             {
@@ -246,7 +268,7 @@ public class PluginLoader
         }
     }
 
-    public static async Task<object> LoadPluginBodyAsync(string extractDir, string bodyFile)
+    public static async Task<object?> LoadPluginBodyAsync(PackConfig conf, string extractDir, string bodyFile)
     {
         return await Task.Run(() =>
         {
@@ -280,16 +302,23 @@ public class PluginLoader
                         catch (Exception loadEx)
                         {
                             Console.WriteLine($@"插件初始化错误: {loadEx}");
-                            throw;
+            
+                            PluginLoadExceptions.Add($"{conf.PackName} 加载错误: {loadEx.Message}");
+                            OnPluginLoadException.Invoke(PluginLoadExceptions.Count);
+                            return null;
                         }
                 }
 
-                throw new InvalidOperationException($"在主体文件中未找到实现 IPluginBedrockBoot 的类: {bodyFile}");
+                PluginLoadExceptions.Add($"{conf.PackName} 未找到实现 IPluginBedrockBoot 的类。");
+                OnPluginLoadException.Invoke(PluginLoadExceptions.Count);
+                return null;
             }
             catch (Exception ex)
             {
+                PluginLoadExceptions.Add($"{conf.PackName} 加载错误: {ex.Message}");
+                OnPluginLoadException.Invoke(PluginLoadExceptions.Count);
                 Console.WriteLine($@"加载并初始化插件主体失败 {bodyFilePath}: {ex}");
-                throw;
+                return null;
             }
         });
     }

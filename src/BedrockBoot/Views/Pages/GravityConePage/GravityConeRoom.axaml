@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,9 +10,8 @@
         <StackPanel Spacing="8"
                     Margin="0,0,20,0">
             <TextBlock FontWeight="Bold"
-                       FontSize="14">
-                联机大厅
-            </TextBlock>
+                       FontSize="14"
+                       Text="{DynamicResource Multiplayer.Lobby.Title}" />
         
             <items:BorderCard Name="RoomCodeCard"
                               Padding="0,24">
@@ -21,7 +20,7 @@
                                                Margin="8,4,8,12"
                                                HorizontalAlignment="Center"
                                                FontSize="36"></onePointControls:FontIcon>
-                    <TextBlock Text="联机码 (点击下方复制)"
+                    <TextBlock Text="{DynamicResource Multiplayer.Lobby.RoomCodeClickCopy}"
                                HorizontalAlignment="Center"
                                Opacity="0.6"></TextBlock>
                     <Button Content="RoomCode"
@@ -35,8 +34,8 @@
                 </StackPanel>
             </items:BorderCard>
 
-            <onePointControls:SettingCard Header="退出"
-                                          Description="退出房间"
+            <onePointControls:SettingCard Header="{DynamicResource Multiplayer.Lobby.ExitRoom.Title}"
+                                          Description="{DynamicResource Multiplayer.Lobby.ExitRoom.Desc}"
                                           IsClickable="True"
                                           Click="CloseBtn_OnClick"
                                           Name="CloseBtn"
@@ -45,9 +44,8 @@
             <StackPanel Spacing="8"
                         Name="PlayersBox">
                 <TextBlock FontWeight="Bold"
-                           FontSize="14">
-                    已加入的玩家
-                </TextBlock>
+                           FontSize="14"
+                           Text="{DynamicResource Multiplayer.Lobby.JoinedPlayers}" />
                 <StackPanel Spacing="8"
                             Name="PlayersList">
                 </StackPanel>

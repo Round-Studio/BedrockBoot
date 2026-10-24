@@ -1,6 +1,24 @@
-﻿using System.Collections.Generic;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System.Collections.Generic;
 using System.IO;
-using BedrockBoot.Base.Entry.Info;
+using BedrockBoot.Standard.Entity.Info;
 
 namespace BedrockBoot.Models.Global;
 
@@ -26,9 +44,11 @@ public class SourceList
     public static Dictionary<string, string> VersionDataSources { get; set; } = new()
     {
         { "McAppx 源", "https://data.mcappx.com/v2/bedrock.json" },
-        { "BedrockBoot 源 ①", "https://raw.giteeusercontent.com/minecraftyjq/bedrock-version-db/raw/main/data/bedrock.json" },
-        { "BMCBL 源 ①", "https://mcappx.chlna6666.com" },
-        { "BMCBL 源 ②", "https://api.chlna6666.com/api/v1/bedrock/mcappx" }
+        {
+            "BedrockBoot 源 ①",
+            "https://raw.giteeusercontent.com/minecraftyjq/bedrock-version-db/raw/main/data/bedrock.json"
+        },
+        { "BMCBL 源 ①", "https://api.chlna6666.com/api/v1/bedrock/mcappx" }
     };
 
     public static Dictionary<string, string> CurseForgeSource { get; set; } = new()
@@ -96,4 +116,8 @@ public class SourceList
     public static string VC20152022Url { get; } = "https://aka.ms/vc14/vc_redist.x64.exe";
     public static string MarketApiHost { get; } = "https://market-api.roundstudio.top";
     public static string PluginApi { get; } = $"{MarketApiHost}/api/plugins";
+    public static string DllModsApi { get; } = "https://pkg.roundstudio.top/index.json";
+
+    public static string LeviLaminaVersionDb =>
+        "https://fastly.jsdelivr.net/gh/LiteLDev/levilamina-client-version-db@main/v2/version-db.json";
 }

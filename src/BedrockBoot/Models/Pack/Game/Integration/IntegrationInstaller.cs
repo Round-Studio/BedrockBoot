@@ -1,4 +1,22 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,17 +24,18 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Entry.Game.Pack.Integration;
-using BedrockBoot.Base.Entry.Game.Pack.Mods;
-using BedrockBoot.Base.Entry.Progress;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.Integration;
+using BedrockBoot.Standard.Entity.Game.Pack.Mods;
+using BedrockBoot.Standard.Entity.Progress;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
-using BedrockBoot.Services;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using Round.SDK.Entity;
@@ -58,82 +77,87 @@ public class IntegrationInstaller
 
         var unZip = 0.00;
         var isComp = false;
-        var downloader = new EasyDownload(gameVersions, true, installFolder, installName)
+        var downloader = PlatformCore.CreateDownloader(gameVersions, true, installFolder, installName);
+
+        downloader.DownloadProgress = (s, p) =>
         {
-            DownloadProgress = (s, p) =>
+            IntegrationProgress?.Report(new InstallIntegrationProgress
             {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = p.Percentage,
-                    Message = $"{s} ({p.Speed} / s)",
-                    Status = InstallIntegrationProgressType.DownloadingFile
-                });
-            },
-            MergeProgress = (s, p) =>
+                Progress = p.Percentage,
+                Message = $"{s} ({p.Speed} / s)",
+                Status = InstallIntegrationProgressType.DownloadingFile
+            });
+        };
+
+        downloader.MergeProgress = (s, p) =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
             {
+                Progress = p,
+                Message = "合并文件",
+                Status = InstallIntegrationProgressType.DownloadedFile
+            });
+        };
+
+        downloader.ExtractionProgress = (s, p) =>
+        {
+            if (Math.Abs(p - unZip) > 0.01)
+            {
+                unZip = p;
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = p,
-                    Message = "合并文件",
-                    Status = InstallIntegrationProgressType.DownloadedFile
-                });
-            },
-            ExtractionProgress = (s, p) =>
-            {
-                if (Math.Abs(p - unZip) > 0.01)
-                {
-                    unZip = p;
-                    IntegrationProgress?.Report(new InstallIntegrationProgress
-                    {
-                        Progress = p,
-                        Message = "解压文件",
-                        Status = InstallIntegrationProgressType.Installing
-                    });
-                }
-            },
-#if WINDOWS
-            DeploymentProgress = (s, p) =>
-            {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = p.percentage,
-                    Message = $"安装游戏 {p.state}",
+                    Message = "解压文件",
                     Status = InstallIntegrationProgressType.Installing
                 });
-            },
-#endif
-            StatusText = text =>
-            {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = -1,
-                    Message = text,
-                    Status = InstallIntegrationProgressType.Installing
-                });
-            },
-            ErrorOccurred = (title, message, ex) =>
-            {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = 0,
-                    Message = $"{title}: {message} {ex}",
-                    Status = InstallIntegrationProgressType.Failed
-                });
-            },
-            Completed = gameConfig =>
-            {
-                IntegrationProgress?.Report(new InstallIntegrationProgress
-                {
-                    Progress = 100,
-                    Message = "实例安装完成",
-                    Status = InstallIntegrationProgressType.Installed
-                });
+            }
+        };
 
-                if (!isComp)
-                {
-                    isComp = true;
-                    InstallPack(path, gameConfig);
-                }
+#if WINDOWS
+        downloader.DeploymentProgress = (s, p) =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = p.Percentage,
+                Message = $"安装游戏 {p.State}",
+                Status = InstallIntegrationProgressType.Installing
+            });
+        };
+#endif
+
+        downloader.StatusText = text =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = -1,
+                Message = text,
+                Status = InstallIntegrationProgressType.Installing
+            });
+        };
+
+        downloader.ErrorOccurred = (title, message, ex) =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = 0,
+                Message = $"{title}: {message} {ex}",
+                Status = InstallIntegrationProgressType.Failed
+            });
+        };
+
+        downloader.Completed = gameConfig =>
+        {
+            IntegrationProgress?.Report(new InstallIntegrationProgress
+            {
+                Progress = 100,
+                Message = "实例安装完成",
+                Status = InstallIntegrationProgressType.Installed
+            });
+
+            if (!isComp)
+            {
+                isComp = true;
+                InstallPack(path, gameConfig);
             }
         };
 

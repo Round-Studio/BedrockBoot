@@ -7,7 +7,7 @@
              xmlns:interopServices="clr-namespace:System.Runtime.InteropServices;assembly=System.Runtime"
              xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BedrockBoot.Views.Pages.OtherPage.AboutPage">
+             x:Class="BedrockBoot.Views.Pages.OtherPage.AboutPages.AboutPage">
     <ScrollViewer>
         <StackPanel Margin="15">
             <Grid>
@@ -88,10 +88,10 @@
                                  NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues" />
             </StackPanel>
             <TextBlock Margin="20,1" Text="{DynamicResource About.OpenSource.Invitation}" />
-            
+
             <TextBlock Margin="5,20,0,8"
                        FontSize="16"
-                       Text="赞助" />
+                       Text="相关链接" />
 
             <StackPanel Orientation="Horizontal"
                         Margin="20,1">
@@ -99,6 +99,20 @@
                 <HyperlinkButton Content="爱发电"
                                  NavigateUri="https://ifdian.net/a/yjq666" />
                 <TextBlock Text=" 上支持我们" />
+            </StackPanel>
+
+            <StackPanel Margin="20,1">
+                <HyperlinkButton Content="BedrockBoot 官方网站"
+                                 NavigateUri="https://bb.roundstudio.top" />
+
+                <HyperlinkButton Content="BedrockBoot 文档站"
+                                 NavigateUri="https://docs.roundstudio.top/docs/product/bb" />
+
+                <HyperlinkButton Content="BedrockBoot 隐私策略与使用条款"
+                                 NavigateUri="https://bb.roundstudio.top/privacyPolicy" />
+
+                <HyperlinkButton Content="Round-Studio 官方网站"
+                                 NavigateUri="https://roundstudio.top" />
             </StackPanel>
 
             <TextBlock Margin="5,20,0,8"
@@ -168,23 +182,12 @@
                                           IsClickable="True" />
 
             <onePointControls:SettingCard Margin="5"
-                                          Glyph="&#xE73A;"
-                                          Header="发行说明"
-                                          Description="关于当前版本的发行说明"
-                                          Name="ReleaseNotesBtn"
-                                          Click="VersionCard_OnClick"
-                                          IsClickable="True" />
-
-            <onePointControls:SettingCard Margin="5"
                                           Glyph="&#xF4AA;"
                                           Name="VersionCard"
+                                          Click="VersionCard_OnClick"
+                                          IsClickable="True" 
                                           Header="{DynamicResource About.Action.Version.Title}"
                                           Description="{x:Static global:GlobalModel.BodyVersion}">
-                <Button Padding="8"
-                        Height="36" Width="100"
-                        Name="CheckUpdateBtn"
-                        Click="CheckUpdateBtn_OnClick"
-                        Content="{DynamicResource About.Action.CheckUpdate}" />
             </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>

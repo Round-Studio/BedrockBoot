@@ -1,0 +1,96 @@
+﻿<Button xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+        xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+        xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+        mc:Ignorable="d" ClipToBounds="False"
+        x:Class="BedrockBoot.Views.Control.Widgets.AccountCard">
+    <Button.Styles>
+        <Style Selector="widgets|AccountCard">
+            <Setter Property="RenderTransform" Value="scale(1)"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                    <ThicknessTransition Property="Margin" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="widgets|AccountCard:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.92)"/>
+        </Style>
+    </Button.Styles>
+    <Grid>
+        <items:SteamCard Background="Transparent"
+                         HoverScale="0.95"
+                         ParallaxDepth="1.8">
+            <items:BorderCard Padding="0"
+                              BorderOpacity="1">
+                <Grid>
+                    <Border Grid.Column="0"
+                            CornerRadius="6"
+                            HorizontalAlignment="Right"
+                            Width="180" Height="180"
+                            ClipToBounds="True">
+                        <Grid>
+                            <widgets:LocalImageRenderWidget Name="AccountHeader1">
+                                <widgets:LocalImageRenderWidget.OpacityMask>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                        <GradientStop Color="#00FFFFFF" Offset="0"/>
+                                        <GradientStop Color="#FFFFFFFF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </widgets:LocalImageRenderWidget.OpacityMask>
+                            </widgets:LocalImageRenderWidget>
+                            
+                            <Panel Margin="0,0,12,0">
+                                <Border Padding="8,12"
+                                        Background="Black"
+                                        Opacity="0.8"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        CornerRadius="50"
+                                        Margin="0,0,14,0">
+                                    <Border.Effect>
+                                        <BlurEffect Radius="10"/>
+                                    </Border.Effect>
+                                </Border>
+                            
+                                <onePointControls:FontIcon Glyph="&#xE76C;" 
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="White"
+                                                           Margin="0,0,16,0"/>
+                            </Panel>
+                        </Grid>
+                    </Border>
+                    <Grid ColumnDefinitions="Auto,*"
+                          VerticalAlignment="Top"
+                          ColumnSpacing="8"
+                          Margin="16">
+                        <widgets:LocalImageRenderWidget Grid.Column="0"
+                                                        Name="AccountHeader2"
+                                                        Width="48" Height="48"/>
+                        
+                        <StackPanel Grid.Column="1"
+                                    Width="280"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="Xbox Live"></TextBlock>
+                            <TextBlock Name="AccountName"
+                                       Text="AccountName"
+                                       FontSize="18"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <StackPanel HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Margin="16">
+                        <TextBlock Text="XUID"
+                                   IsVisible="False"
+                                   Opacity="0.6"></TextBlock>
+                    </StackPanel>
+                </Grid>
+            </items:BorderCard>
+        </items:SteamCard>
+    </Grid>
+</Button>

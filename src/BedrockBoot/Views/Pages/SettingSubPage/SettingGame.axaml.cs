@@ -1,10 +1,30 @@
-﻿using System.Collections.Generic;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.Base.Enum;
+using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.Interface;
 using BedrockBoot.Models;
+using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingGamePages;
 using OnePointUI.Avalonia.Base.Entry;
@@ -31,13 +51,11 @@ public partial class SettingGame : ISettingPage
         IsolationPriority.SelectedIndex = (int)GlobalModel.Config.Data.IsolationPriority;
         CatalogStrategy.SelectedIndex = ((int)GlobalModel.Config.Data.CatalogStrategy) - 1;
         IsOpenGameLayering.IsChecked = GlobalModel.Config.Data.IsOpenGameLayering;
-        IsUseMultipleUsers.IsChecked = GlobalModel.Config.Data.IsUseMultipleUsers;
         IsUseNeoLaunchBox.IsVisible = false;
         ProtonBtn.IsVisible = false;
 
 #if LINUX
         IsolationCard.IsVisible = false;
-        IsUseMultipleUsersCard.IsVisible = false;
         HelperPanel.IsVisible = false;
         MouseLockBtn.IsVisible = false;
         ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
@@ -64,7 +82,7 @@ public partial class SettingGame : ISettingPage
         MainSettingPage.NavigateTo(new GameFolders());
     }
 
-     private void MouseLockBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void MouseLockBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new MouseLock());
     }
@@ -108,11 +126,11 @@ public partial class SettingGame : ISettingPage
         {
             GlobalModel.Config.Data.IsUseNeoLaunch = (bool)IsUseNeoLaunchToggleSwitch.IsChecked!;
             GlobalModel.Config.Save();
-            
+
             Models.Global.GlobalModel.MainWindow.SetReboot();
 
 #if LINUX
-            CoreInit.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
+            PlatformCore.CoreInit?.UpdateUseNeoLaunch(GlobalModel.Config.Data.IsUseNeoLaunch);
             ProtonBtn.IsVisible = !GlobalModel.Config.Data.IsUseNeoLaunch;
 #endif
         }
@@ -127,14 +145,8 @@ public partial class SettingGame : ISettingPage
         }
     }
 
-    private void IsUseMultipleUsers_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    private void SaveBackupBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (IsEdit)
-        {
-            GlobalModel.Config.Data.IsUseMultipleUsers = (bool)IsUseMultipleUsers.IsChecked!;
-            GlobalModel.Config.Save();
-            
-            Models.Global.GlobalModel.MainWindow.SetReboot();
-        }
+        MainSettingPage.NavigateTo(new GameBackup());
     }
 }

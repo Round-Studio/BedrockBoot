@@ -1,28 +1,59 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using BedrockBoot.Base.Entry.Manifest;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Entity.Manifest;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.Entity;
 using BedrockBoot.Models.Account.Microsoft;
-using BedrockBoot.Models.Account.Microsoft.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Helper.GravityCone;
+using BedrockBoot.Models.Pack.Game.Loaders;
 using BedrockBoot.Models.Pack.Game.Options;
-using BedrockBoot.Proton;
+using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Entity;
+using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
-using BedrockBoot.Views.DialogContent.Linux;
+using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Plugin.BedrockBoot.Register;
 #if WINDOWS
-using BedrockBoot.Models.Helper.Gdk;
-using BedrockBoot.Models.Helper.Uwp;
+using BedrockBoot.Windows;
+using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Windows.Models.Helper.Gdk;
+using BedrockBoot.Windows.Models.Helper.Uwp;
+#endif
+#if LINUX
+using BedrockBoot.Linux;
+using BedrockBoot.Proton;
+using BedrockBoot.Views.DialogContent.Linux;
 #endif
 
 namespace BedrockBoot.Models;
@@ -30,6 +61,7 @@ namespace BedrockBoot.Models;
 public class CoreInitialize
 {
     private static I18nManager I18n => I18nManager.Instance;
+
     public static async Task Init()
     {
         DesktopWorkspace.WidgetRegister(new()
@@ -48,10 +80,10 @@ public class CoreInitialize
             WidgetTypeof = typeof(WidgetLaunchGame),
             DefaultSize = WidgetSize.Large
         });
-        
+
         CheckUserAgreement();
         if (!Core.Global.GlobalModel.Config.Data.IsAgreeTerms) return;
-        
+
         // 加载功能配置文件
         try
         {
@@ -66,7 +98,7 @@ public class CoreInitialize
         {
             Console.WriteLine($@"Failed to load FunctionOption: {ex}");
         }
-        
+
         // 核心引擎异步初始化
         _ = InitBedrockCoreAsync();
 
@@ -82,8 +114,13 @@ public class CoreInitialize
 
         RegisterService.API.LaunchingEvent.Add(path =>
         {
-            Console.WriteLine(@"开始同步游戏配置文件");
+            File.WriteAllText(Path.Combine(path, "config", "BedrockBoot2", ".bb.version"), GlobalModel.BodyVersion);
+
+            File.WriteAllText(Path.Combine(path, "config", ".launcher.info"),
+                Process.GetCurrentProcess().MainModule!.FileName);
             var config = GameInfoHelper.GetVersionConfig(path);
+            GamePortHelper.AddInstance(config);
+            Console.WriteLine(@"开始同步游戏配置文件");
             Console.WriteLine($@"当前实例配置：{config.Config.IsSyncPublicOptions}");
             if (config.Config.IsSyncPublicOptions)
             {
@@ -94,7 +131,7 @@ public class CoreInitialize
                     var sourceManager =
                         new GameOptionsManager(GameInfoHelper.GetVersionConfig(Core.Global.GlobalModel.Config.Data
                             .PublicOptionsConfig.PubOptionsInstancePath));
-                    
+
                     var aimManager = new GameOptionsManager(GameInfoHelper.GetVersionConfig(path));
                     aimManager.GetUsers().ForEach(user =>
                     {
@@ -104,6 +141,29 @@ public class CoreInitialize
                     });
                 }
             }
+        });
+
+        RegisterService.API.LaunchingEvent.Add(path =>
+        {
+            var conf = GameInfoHelper.GetVersionConfig(path);
+            if (!conf.Config.IsModes) return;
+            LoadersManager.ModsLoaders.ForEach(loader =>
+            {
+                if (typeof(IModsLoader).IsAssignableFrom(loader))
+                {
+                    var instance = (IModsLoader)Activator.CreateInstance(loader);
+                    instance.InitLoader(conf);
+                    try
+                    {
+                        instance.PreLaunch();
+                        Console.WriteLine($@"模组加载器 {instance.LoaderName} 准备完毕");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($@"准备模组加载器 {instance.LoaderName} 时出现错误：{ex}");
+                    }
+                }
+            });
         });
 
 #if LINUX
@@ -146,10 +206,7 @@ public class CoreInitialize
     {
         try
         {
-#if LINUX
-            CoreInit.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
-#endif
-            CoreInit.GetMsAccountConfig = () =>
+            PlatformCore.GetMsAccountConfig = () =>
             {
                 if (Core.Global.GlobalModel.Config.Data.IsChooseAccountBeforeLaunch)
                 {
@@ -175,49 +232,64 @@ public class CoreInitialize
                         });
                     }
                 }
-                
+
                 return null;
             };
-            CoreInit.OnRefreshAccount = async account =>
+            PlatformCore.OnRefreshAccount = async account =>
             {
                 if (account == null)
                 {
-                    var accounts = MsAccountManager.Accounts;
                     account =
                         MsAccountManager.Accounts.Accounts.Find(x =>
                             x.BUID == MsAccountManager.Accounts.SelectUserBUID);
-                };
+                }
+
                 Console.WriteLine(@"正在刷新账户凭证...");
-                var client = new MsaDeviceCodeClient();
-                var tokenData = await client.RefreshTokenAsync(account.AuthResult.RefreshToken);
+                var refreshed = await MsAccountManager.RefreshAccountAsync(account);
                 Console.WriteLine(@"刷新完毕。");
 
-                if (tokenData != null)
-                {
-                    var index = MsAccountManager.Accounts.Accounts.FindIndex(x => x.BUID == account.BUID);
-                    MsAccountManager.AccountConfigEntity.Data.Accounts[index].AuthResult = new()
-                    {
-                        Code = tokenData?.Code,
-                        AccessToken = tokenData?.AccessToken,
-                        ClientId = tokenData?.ClientId,
-                        CodeVerifier = tokenData?.CodeVerifier,
-                        ExpiresIn = (int)tokenData.ExpiresIn,
-                        RedirectUri = tokenData?.RedirectUri,
-                        RefreshToken = tokenData.RefreshToken,
-                        SavedAt = DateTime.Now
-                    };
-
-                    var accountResult = MsAccountManager.AccountConfigEntity.Data.Accounts[index];
-                    MsAccountManager.AccountConfigEntity.Save();
-                    Console.WriteLine(@"新用户数据已保存");
-
-                    return accountResult;
-                }
-                
-                return null;
+                return refreshed;
             };
-            CoreInit.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
-            await CoreInit.Init();
+
+            
+#if WINDOWS
+            var coreInitUnit = new WindowsCoreInit();
+            var launcherType = typeof(BedrockBoot.Windows.Models.Game.EasyLauncher);
+            var downloaderType = typeof(BedrockBoot.Windows.Models.Game.EasyDownload);
+            var noticeType = typeof(BedrockBoot.Windows.Models.Helper.Notice.NoticeHelper);
+            var openFolderType = typeof(BedrockBoot.Windows.Models.Helper.OpenFolderHelper);
+            var jumpListType = typeof(BedrockBoot.Windows.Models.JumpListManager);
+            var trayType = typeof(BedrockBoot.Windows.Models.Helper.Tray.TrayHelper);
+            var mouseLockerType = typeof(BedrockBoot.Windows.Models.Helper.ProcessMouseLocker);
+            Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
+                BedrockBoot.Windows.Models.Game.EasyDownload.GetPackageUrls;
+#elif LINUX
+            var coreInitUnit =  new LinuxCoreInit();
+            var launcherType = typeof(BedrockBoot.Linux.Models.Game.EasyLauncher);
+            var downloaderType = typeof(BedrockBoot.Linux.Models.Game.EasyDownload);
+            var noticeType = typeof(BedrockBoot.Linux.Models.Helper.Notice.NoticeHelper);
+            var openFolderType = typeof(BedrockBoot.Linux.Models.Helper.OpenFolderHelper);
+            var jumpListType = typeof(BedrockBoot.Linux.Models.JumpListManager);
+            var trayType = typeof(BedrockBoot.Linux.Models.Helper.Tray.TrayHelper);
+            var mouseLockerType = typeof(BedrockBoot.Linux.Models.Helper.ProcessMouseLocker);
+            Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
+                BedrockBoot.Linux.Models.Game.EasyDownload.GetPackageUrls;
+#endif
+            await PlatformCore.InstallAsync(new PlatformInitFrame()
+            {
+                CoreInit = coreInitUnit,
+                LauncherType = launcherType,
+                DownloaderType = downloaderType,
+                NoticeServiceType = noticeType,
+                OpenFolderServiceType = openFolderType,
+                JumpListServiceType = jumpListType,
+                TrayServiceType = trayType,
+                MouseLockerType = mouseLockerType,
+                PackageUrlsProvider = packageUrlsProvider
+            });
+            PlatformCore.Tray?.Initialize();
+            PlatformCore.CoreInit?.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
+            PlatformCore.CoreInit?.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
         }
         catch (Exception ex)
         {
@@ -289,7 +361,7 @@ public class CoreInitialize
                 CloseButtonText = "立即安装",
                 PrimaryButtonText = "放任不管",
                 AccountButton = DialogButtons.CloseButton,
-                
+
                 CloseAction = () =>
                 {
                     DialogHost.Show(new()

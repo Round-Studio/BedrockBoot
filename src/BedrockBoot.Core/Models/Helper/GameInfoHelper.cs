@@ -1,12 +1,31 @@
-﻿using System;
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BedrockBoot.Base.Entry.Game;
-using BedrockBoot.Base.Enum.Type;
+using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockLauncher.Core;
 using Round.SDK.Entity;
@@ -146,7 +165,28 @@ public static class GameInfoHelper
             SaveVersionConfig(data);
         }
 
+        data.GameTags = new()
+        {
+            $"Minecraft {data.Info.Version}",
+            $"Win{data.Info.BuildType}",
+            $"{data.Info.VersionType} Version"
+        };
+        if (IsInstallModLoader(gamePath))
+            data.GameTags.Add("LeviLamina");
+
         return data;
+    }
+
+    private static bool IsInstallModLoader(string path)
+    {
+        var preLoadFile = Path.Combine(path, "config", "BedrockBoot2", "levilamina", "preloader",
+            "bin", "PreLoader.dll");
+        var bedrockRuntime = Path.Combine(path, "config", "BedrockBoot2", "levilamina",
+            "bedrock_runtime_data");
+        var levilaminaMainFile = Path.Combine(path, "config", "BedrockBoot2", "levilamina",
+            "ll.mods", "LeviLamina", "LeviLamina.dll");
+
+        return File.Exists(preLoadFile) && File.Exists(bedrockRuntime) && File.Exists(levilaminaMainFile);
     }
 
     /// <summary>
@@ -161,33 +201,6 @@ public static class GameInfoHelper
         if (exeFile == null) return string.Empty;
 
         return Path.GetFileName(exeFile);
-    }
-
-    /// <summary>
-    /// 验证版本有效性
-    /// </summary>
-    public static bool IsInvalidVersion(VersionConfig config)
-    {
-        if (config == null || string.IsNullOrEmpty(config.VersionPath)) return false;
-
-        var indexJson = Path.Combine(config.VersionPath, ConfigSubPath, IndexFileName);
-
-        if (!File.Exists(indexJson)) return false;
-
-        try
-        {
-            // 简单的内容检查，避免加载大文件
-            var content = File.ReadAllText(indexJson);
-            if (string.IsNullOrWhiteSpace(content) || content == "[]") return false;
-
-            var body = new ConfigEntity<List<GameFileInfo>>(indexJson);
-            body.Load();
-            return body.Data != null && body.Data.Count > 0;
-        }
-        catch
-        {
-            return false;
-        }
     }
 
     public static MinecraftGameTypeVersion GetVersionTypeWithPackName(string packName)

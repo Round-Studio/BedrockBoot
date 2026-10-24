@@ -5,24 +5,154 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SetupPage.SetupWelcome">
-    <StackPanel VerticalAlignment="Center"
-                Margin="45">
-        <StackPanel HorizontalAlignment="Center"
-                    VerticalAlignment="Top">
-            <onePointControls:FontIcon Margin="5"
-                                       FontSize="28"
-                                       HorizontalAlignment="Center"
-                                       Glyph="&#xE909;"
-                                       Foreground="{DynamicResource PrimaryForegroundBrush}" />
-            <TextBlock FontSize="22"
-                       HorizontalAlignment="Center"
-                       Margin="0,10,0,0"
-                       Text="{DynamicResource Setup.Welcome.Title}" />
-            <TextBlock HorizontalAlignment="Center"
-                       Margin="5"
-                       Text="{DynamicResource Setup.Welcome.Description}" />
-        </StackPanel>
+    <Panel Width="320"
+           Margin="0,10,0,-10"
+           VerticalAlignment="Center">
+        <Panel.Styles>
+            <Style Selector="Border">
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
 
-        <Grid Margin="0,10,0,0" />
-    </StackPanel>
+            <Style Selector="Panel#EnterLogo">
+                <Setter Property="Margin" Value="0,40,0,-40" />
+                <Style.Animations>
+                    <Animation Duration="0:0:4.8"
+                               Easing="QuinticEaseOut">
+                        <KeyFrame Cue="0%">
+                            <Setter Property="Margin" Value="0" />
+                        </KeyFrame>
+                        <KeyFrame Cue="99%">
+                            <Setter Property="Margin" Value="0" />
+                        </KeyFrame>
+                    </Animation>
+                </Style.Animations>
+            </Style>
+
+            <Style Selector="Image#Logo">
+                <Setter Property="Margin" Value="0,-30,0,30" />
+                <Style.Animations>
+                    <Animation Duration="0:0:4.8"
+                               Easing="QuinticEaseOut">
+                        <KeyFrame Cue="0%">
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Opacity" Value="0" />
+                        </KeyFrame>
+                        <KeyFrame Cue="99%">
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Opacity" Value="0" />
+                        </KeyFrame>
+                    </Animation>
+                </Style.Animations>
+            </Style>
+        </Panel.Styles>
+
+        <Image Source="avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png"
+               Width="72"
+               Name="Logo" />
+
+        <Panel Name="EnterLogo">
+            <TextBlock Text="BedrockBoot"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       LetterSpacing="2"
+                       FontSize="24">
+                <TextBlock.Styles>
+                    <Style Selector="TextBlock">
+                        <Style.Animations>
+                            <Animation Duration="0:0:1.6"
+                                       FillMode="None">
+                                <KeyFrame Cue="0%">
+                                    <Setter Property="Opacity" Value="0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="99%">
+                                    <Setter Property="Opacity" Value="0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="100%">
+                                    <Setter Property="Opacity" Value="1" />
+                                </KeyFrame>
+                            </Animation>
+                            <Animation Duration="0:0:1.7"
+                                       Delay="0:0:1.6"
+                                       Easing="QuinticEaseOut">
+                                <KeyFrame Cue="0%">
+                                    <Setter Property="LetterSpacing" Value="18" />
+                                </KeyFrame>
+                                <KeyFrame Cue="100%">
+                                    <Setter Property="LetterSpacing" Value="2" />
+                                </KeyFrame>
+                            </Animation>
+                        </Style.Animations>
+                    </Style>
+                </TextBlock.Styles>
+            </TextBlock>
+
+            <Border Name="AnimationBorder1"
+                    Opacity="0.2"
+                    Background="{DynamicResource AccentBackgroundBrush}">
+                <Border.Styles>
+                    <Style Selector="Border#AnimationBorder1">
+                        <Style.Animations>
+                            <Animation Easing="QuinticEaseOut"
+                                       Duration="0:0:1.6">
+                                <KeyFrame Cue="0%">
+                                    <Setter Property="Width" Value="0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="100%">
+                                    <Setter Property="Width" Value="320" />
+                                </KeyFrame>
+                            </Animation>
+                        </Style.Animations>
+                    </Style>
+                </Border.Styles>
+            </Border>
+            <Border Name="AnimationBorder2"
+                    Opacity="0.6"
+                    Background="{DynamicResource AccentBackgroundBrush}">
+                <Border.Styles>
+                    <Style Selector="Border#AnimationBorder2">
+                        <Style.Animations>
+                            <Animation Easing="QuinticEaseOut"
+                                       Delay="0:0:0.4"
+                                       Duration="0:0:1.2">
+                                <KeyFrame Cue="0%">
+                                    <Setter Property="Width" Value="0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="100%">
+                                    <Setter Property="Width" Value="320" />
+                                </KeyFrame>
+                            </Animation>
+                        </Style.Animations>
+                    </Style>
+                </Border.Styles>
+            </Border>
+            <Border Name="AnimationBorder3"
+                    Background="{DynamicResource AccentBackgroundBrush}">
+                <Border.Styles>
+                    <Style Selector="Border#AnimationBorder3">
+                        <Style.Animations>
+                            <Animation Easing="ExponentialEaseOut"
+                                       Delay="0:0:0.8"
+                                       Duration="0:0:2.8"
+                                       FillMode="Forward">
+                                <KeyFrame Cue="0%">
+                                    <Setter Property="Width" Value="0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="70%">
+                                    <Setter Property="Width" Value="320" />
+                                </KeyFrame>
+                                <KeyFrame Cue="85%">
+                                    <Setter Property="Opacity" Value="1" />
+                                </KeyFrame>
+                                <KeyFrame Cue="100%">
+                                    <Setter Property="Opacity" Value="0" />
+                                </KeyFrame>
+                            </Animation>
+                        </Style.Animations>
+                    </Style>
+                </Border.Styles>
+            </Border>
+        </Panel>
+    </Panel>
 </UserControl>

@@ -1,0 +1,65 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DialogContent.DialogCreatePluginProjectContent">
+    <StackPanel Spacing="10"
+                Margin="5,0">
+        <TextBlock
+            HorizontalAlignment="Left"
+            Text="项目名称" />
+        <TextBox Width="320"
+                 Watermark="MyPlugin"
+                 Name="PluginName" />
+        
+        <TextBlock
+            HorizontalAlignment="Left"
+            Text="项目简述" />
+        <TextBox Width="320"
+                 Watermark="这是一个插件"
+                 Name="PluginDesc" />
+        
+        <TextBlock
+            HorizontalAlignment="Left"
+            Text="项目路径" />
+
+        <DockPanel>
+            <Button DockPanel.Dock="Right"
+                    Margin="5,5,0,5"
+                    Padding="12,0"
+                    Classes="NoBorder"
+                    Name="OpenChooseFolderBtn"
+                    Click="OpenChooseFolderBtn_OnClick"
+                    Content="{DynamicResource Shared.Action.Browse}" />
+
+            <TextBox Margin="0,5,5,5"
+                     Name="PluginPathInputBox" />
+        </DockPanel>
+        
+        <TextBlock
+            HorizontalAlignment="Left"
+            Text="插件作者" />
+        
+        <TextBox Width="320"
+                 Name="PluginAuthor" />
+        
+        <TextBlock
+            IsVisible="False"
+            HorizontalAlignment="Left"
+            Text="插件图标" />
+
+        <DockPanel
+            IsVisible="False">
+            <Button DockPanel.Dock="Right"
+                    Margin="5,5,0,5"
+                    Padding="12,0"
+                    Classes="NoBorder"
+                    Name="OpenFileBtn"
+                    Content="{DynamicResource Shared.Action.Browse}" />
+
+            <TextBox Margin="0,5,5,5"
+                     Name="PluginLogoBox" />
+        </DockPanel>
+    </StackPanel>
+</UserControl>

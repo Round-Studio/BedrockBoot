@@ -206,10 +206,18 @@ public class PluginLoader
 
     public static async Task LoadDependenciesAsync(string extractDir, string bodyFile)
     {
-        var filesDir = Path.Combine(extractDir, "files");
-        if (!Directory.Exists(filesDir)) return;
+        // 打包插件的依赖位于 {extractDir}/files 下
+        await LoadDependenciesFromDirectoryAsync(Path.Combine(extractDir, "files"), bodyFile);
+    }
 
-        var dllFiles = Directory.GetFiles(filesDir, "*.dll")
+    /// <summary>
+    /// 从扁平目录（如调试构建输出目录）加载依赖 DLL，主体 DLL 除外。
+    /// </summary>
+    public static async Task LoadDependenciesFromDirectoryAsync(string directory, string bodyFile)
+    {
+        if (!Directory.Exists(directory)) return;
+
+        var dllFiles = Directory.GetFiles(directory, "*.dll")
             .Where(file => !Path.GetFileName(file).Equals(bodyFile, StringComparison.OrdinalIgnoreCase))
             .ToList();
 
@@ -219,7 +227,7 @@ public class PluginLoader
         foreach (var dllPath in dllFiles)
         {
             await semaphore.WaitAsync();
-            
+
             loadTasks.Add(Task.Run(async () =>
             {
                 try
@@ -270,10 +278,18 @@ public class PluginLoader
 
     public static async Task<object?> LoadPluginBodyAsync(PackConfig conf, string extractDir, string bodyFile)
     {
+        // 打包插件的主体位于 {extractDir}/files 下
+        return await LoadPluginBodyFromFileAsync(conf, Path.Combine(extractDir, "files", bodyFile));
+    }
+
+    /// <summary>
+    /// 从完整文件路径加载插件主体（如调试构建输出目录中的 DLL）。
+    /// </summary>
+    public static async Task<object?> LoadPluginBodyFromFileAsync(PackConfig conf, string bodyFilePath)
+    {
         return await Task.Run(() =>
         {
-            var bodyFilePath = Path.Combine(extractDir, "files", bodyFile);
-            if (!File.Exists(bodyFilePath)) 
+            if (!File.Exists(bodyFilePath))
                 throw new FileNotFoundException($"插件主体文件不存在: {bodyFilePath}");
 
             try

@@ -140,6 +140,8 @@ namespace BedrockBoot.Standard.Entity
         [JsonPropertyName("isUseMSALAccount")] public bool IsUseMSALAccount { get; set; } = false;
 
         [JsonPropertyName("uiZoom")] public UIZoom UIZoom { get; set; } = UIZoom.Percent100;
+        
+        [JsonPropertyName("isPluginDevelopMode")] public bool IsPluginDevelopMode { get; set; }
     }
 
     public class LaunchCommandConfig

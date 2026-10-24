@@ -23,6 +23,26 @@
 
             <TextBlock FontWeight="Bold"
                        FontSize="14"
+                       Text="插件" />
+
+            <onePointControls:SettingCard Header="插件调试"
+                                          Description="是否允许通过启动参数来调试插件项目"
+                                          Name="IsPluginDevelopModeCard"
+                                          Glyph="&#xEA86;">
+                <ToggleSwitch IsChecked="False"
+                              Name="IsPluginDevelopMode"
+                              IsCheckedChanged="CheckBox_Change" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Header="项目管理"
+                                          Description="管理，打包本地的插件项目"
+                                          Name="PluginProjectManagerCard"
+                                          Click="PluginProjectManagerCard_OnClick"
+                                          IsClickable="True"
+                                          Glyph="&#xEBD2;" />
+
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
                        Text="{DynamicResource Settings.Universal.Debug.Group.Other}" />
 
             <onePointControls:SettingCard Header="{DynamicResource Settings.Universal.Debug.Exception.Title}"

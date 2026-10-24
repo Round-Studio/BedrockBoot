@@ -1,4 +1,4 @@
-/*
+﻿/*
  * BedrockBoot - A launcher for Minecraft Bedrock Edition.
  * Copyright (C) 2025-2026 Round-Studio
  *
@@ -267,45 +267,74 @@ internal sealed class Program
 
     private static bool ArgsAnalytical(List<string> args)
     {
-        foreach (var arg in args)
-            switch (arg)
-            {
-                case "-update":
-                    Console.WriteLine(@"触发更新，本次启动将不会拉起窗体。");
-                    AppUpdater.StartUpdateFromDownloadedFile(args[args.FindIndex(x => x == "-update") + 1]);
-                    return true;
+	    foreach (var arg in args)
+		    switch (arg)
+		    {
+			    case "-update":
+				    Console.WriteLine(@"触发更新，本次启动将不会拉起窗体。");
+				    AppUpdater.StartUpdateFromDownloadedFile(args[args.FindIndex(x => x == "-update") + 1]);
+				    return true;
+
+			    
 
 #if WINDOWS
-                case "-console":
-                    AllocConsole();
-                    Console.OutputEncoding = Encoding.UTF8;
-                    Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
-                    break;
+			    case "-console":
+				    AllocConsole();
+				    Console.OutputEncoding = Encoding.UTF8;
+				    Console.WriteLine(@"已开启 Release 中的 Debug 模式，此模式不会生成日志！");
+				    break;
+
+			    case "-debug":
+				    if (!GlobalModel.Config.Data.IsPluginDevelopMode)
+					    break;
+				    Console.OutputEncoding = Encoding.UTF8;
+				    Console.WriteLine(@"调试插件模式");
+				    var debugIndex = args.FindIndex(x => x == "-debug");
+				    if (debugIndex < 0 || debugIndex + 1 >= args.Count)
+				    {
+					    Console.WriteLine(@"-debug 缺少项目路径参数，用法: -debug <项目目录>");
+					    break;
+				    }
+
+				    // 兼容终端/快捷方式转发时残留的引号与空白（如 "path"" ）
+				    var debugPath = args[debugIndex + 1].Trim().Trim('"').Trim();
+				    if (debugPath.Length == 0)
+				    {
+					    Console.WriteLine(@"-debug 的项目路径为空，已忽略。");
+					    break;
+				    }
+
+				    if (!Directory.Exists(debugPath))
+					    Console.WriteLine($@"警告: 调试项目目录不存在: {debugPath}");
+
+				    BedrockBoot.Models.Global.GlobalModel.DebugPluginPath = debugPath;
+				    break;
 #endif
 
-                case "-jump":
-                    Console.WriteLine(@"快捷启动");
-                    args.ForEach(Console.WriteLine);
+			    case "-jump":
+				    Console.WriteLine(@"快捷启动");
+				    args.ForEach(Console.WriteLine);
 
-                    Models.Global.GlobalModel.AppRunType = AppRunType.LaunchGame;
+				    Models.Global.GlobalModel.AppRunType = AppRunType.LaunchGame;
 
-                    return false;
+				    
+				    return false;
 
-                case "-open":
-                    Console.WriteLine(@"导入资源");
-                    args.ForEach(Console.WriteLine);
+			    case "-open":
+				    Console.WriteLine(@"导入资源");
+				    args.ForEach(Console.WriteLine);
 
-                    // Application.Run(new ImportResourcePack(args.ToList()));
-                    Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+				    // Application.Run(new ImportResourcePack(args.ToList()));
+				    Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
 
-                    if (Args.Contains("--resource")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
-                    if (Args.Contains("--world")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenWorldPack;
-                    if (Args.Contains("--template")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenTemplatePack;
+				    if (Args.Contains("--resource")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenResourcePack;
+				    if (Args.Contains("--world")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenWorldPack;
+				    if (Args.Contains("--template")) Models.Global.GlobalModel.AppRunType = AppRunType.OpenTemplatePack;
 
-                    return false;
-            }
+				    return false;
+		    }
 
-        return false;
+	    return false;
     }
 
     public static AppBuilder BuildAvaloniaApp()

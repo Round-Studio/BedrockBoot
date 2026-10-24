@@ -38,4 +38,8 @@
       <ProjectReference Include="../OnePointUI.Avalonia/src/OnePointUI.Avalonia/OnePointUI.Avalonia.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Enum\Language\" />
+    </ItemGroup>
+
 </Project>

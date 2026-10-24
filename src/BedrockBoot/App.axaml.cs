@@ -62,6 +62,7 @@ public class App : Application
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
 
+        I18nManager.AddLanguage();
         I18nManager.Instance.SystemLanguage(GlobalModel.Config.Data.Language);
 
         // 订阅所有全局异常处理器

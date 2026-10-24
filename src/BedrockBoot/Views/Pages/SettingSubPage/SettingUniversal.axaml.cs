@@ -1,4 +1,4 @@
-/*
+﻿/*
  * BedrockBoot - A launcher for Minecraft Bedrock Edition.
  * Copyright (C) 2025-2026 Round-Studio
  *
@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Standard.Enum;
-using BedrockBoot.Standard.Enum.Language;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Models;
 using BedrockBoot.Standard.Core;
@@ -51,7 +50,7 @@ public partial class SettingUniversal : ISettingPage
         // 初始化 UI 状态
         TaskBarJumpItem.IsChecked = GlobalModel.Config.Data.IsTaskBarJumpItem;
         GatInfo.IsChecked = GlobalModel.Config.Data.GatherInfo;
-        LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
+        // LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
         LaunchBehaviorChoose.SelectedIndex = (int)GlobalModel.Config.Data.LaunchBehavior;
         UseHardwareDecode.IsChecked = GlobalModel.Config.Data.IsUseHardwareDecode;
         UseBetaUI.IsChecked = GlobalModel.Config.Data.IsUseBeta;
@@ -85,7 +84,7 @@ public partial class SettingUniversal : ISettingPage
         }
     }
 
-    private void LanguageChoose_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    /*private void LanguageChoose_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (IsEdit)
         {
@@ -101,7 +100,7 @@ public partial class SettingUniversal : ISettingPage
             // 如果需要立即更新面包屑文字，可以在此处重新赋值：
             BreadcrumbItem[0].ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"];
         }
-    }
+    }*/
 
     private void GatInfo_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
@@ -140,5 +139,10 @@ public partial class SettingUniversal : ISettingPage
             
             Models.Global.GlobalModel.MainWindow.SetReboot();
         }
+    }
+
+    private void Language_OnClick(object? sender, RoutedEventArgs e)
+    {
+        MainSettingPage.NavigateTo(new UniversalLanguage());
     }
 }

@@ -13,6 +13,13 @@ public partial class ProjectInfo : UserControl
         InitializeComponent();
 
         var conf = DevelopProjectManager.GetProjectInfo(s);
-        CopyTextBox.Text = $"{Process.GetCurrentProcess().MainModule.FileName} -debug \"{conf.ProjectPath}\"";
+
+        ProjectNameText.Text = string.IsNullOrEmpty(conf.ProjectName) ? conf.ProjectPath : conf.ProjectName;
+        ProjectPathText.Text = conf.ProjectPath;
+
+        var exePath = Process.GetCurrentProcess().MainModule?.FileName;
+        CopyTextBox.Text = string.IsNullOrEmpty(exePath)
+            ? $"BedrockBoot -debug \"{conf.ProjectPath}\""
+            : $"\"{exePath}\" -debug \"{conf.ProjectPath}\"";
     }
 }

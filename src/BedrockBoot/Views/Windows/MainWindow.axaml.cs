@@ -73,6 +73,8 @@ using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;
+using Round.SDK.Entity;
+using Round.SDK.Entry;
 using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
 using SixLabors.ImageSharp;
@@ -146,6 +148,8 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DebugModeBar.IsVisible = !string.IsNullOrEmpty(GlobalModel.DebugPluginPath);
+        if (DebugModeBar.IsVisible)
+            ToolTip.SetTip(DebugModeBar, $"调试模式：{GlobalModel.DebugPluginPath}");
         DialogHost.SetHost(DialogHost);
         UpdateZoom();
         GlobalModel.MainWindow = this;
@@ -197,27 +201,58 @@ public partial class MainWindow : Window
 
         Loaded += (_, _) =>
         {
-            DevelopCore.OnPluginBuilt = (pluginFolder, dllName) =>
+            DevelopCore.OnPluginBuilt = (pluginFolder, dllName, conf) =>
             {
-                Task.Run(async () =>
+                _ = Task.Run(async () =>
                 {
-                    await PluginLoader.LoadDependenciesAsync(pluginFolder, $"../{dllName}");
-                    // await PluginLoader.LoadPluginBodyAsync(pluginFolder, $"../{dllName}");
-                });
-            };
+                    string resultMessage;
+                    try
+                    {
+                        // 构建输出是扁平目录，依赖与主体 DLL 同层
+                        await PluginLoader.LoadDependenciesFromDirectoryAsync(pluginFolder, dllName);
+                        var plugin =
+                            await PluginLoader.LoadPluginBodyFromFileAsync(conf, Path.Combine(pluginFolder, dllName));
+                        resultMessage = plugin != null
+                            ? "目标调试插件已加载完毕"
+                            : "目标调试插件加载失败，详情请查看内部错误";
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($@"[DebugPlugin] 调试插件加载失败: {ex}");
+                        PluginLoader.PluginLoadExceptions.Add($"{conf.PackName} 调试加载错误: {ex.Message}");
+                        PluginLoader.OnPluginLoadException.Invoke(PluginLoader.PluginLoadExceptions.Count);
+                        resultMessage = "目标调试插件加载失败，详情请查看内部错误";
+                    }
 
-            Task.Run(() =>
-            {
-                if (!string.IsNullOrEmpty(GlobalModel.DebugPluginPath))
-                {
-                    DevelopCore.DebugPluginProject(GlobalModel.DebugPluginPath);
-
-                    Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                    Dispatcher.UIThread.Invoke(() =>
                     {
                         Notice.AddNotice(new()
                         {
                             Title = "调试模式",
-                            Message = "目标调试插件已加载完毕"
+                            Message = resultMessage
+                        });
+                    });
+                });
+            };
+
+            _ = Task.Run(() =>
+            {
+                if (string.IsNullOrEmpty(GlobalModel.DebugPluginPath))
+                    return;
+
+                try
+                {
+                    DevelopCore.DebugPluginProject(GlobalModel.DebugPluginPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"[DebugPlugin] 调试插件构建失败: {ex}");
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        Notice.AddNotice(new()
+                        {
+                            Title = "调试模式",
+                            Message = $"调试插件构建失败：{ex.Message}"
                         });
                     });
                 }

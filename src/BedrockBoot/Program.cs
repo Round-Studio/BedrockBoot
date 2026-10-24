@@ -289,8 +289,25 @@ internal sealed class Program
 					    break;
 				    Console.OutputEncoding = Encoding.UTF8;
 				    Console.WriteLine(@"调试插件模式");
-				    BedrockBoot.Models.Global.GlobalModel.DebugPluginPath =
-					    args[args.FindIndex(x => x == "-debug") + 1];
+				    var debugIndex = args.FindIndex(x => x == "-debug");
+				    if (debugIndex < 0 || debugIndex + 1 >= args.Count)
+				    {
+					    Console.WriteLine(@"-debug 缺少项目路径参数，用法: -debug <项目目录>");
+					    break;
+				    }
+
+				    // 兼容终端/快捷方式转发时残留的引号与空白（如 "path"" ）
+				    var debugPath = args[debugIndex + 1].Trim().Trim('"').Trim();
+				    if (debugPath.Length == 0)
+				    {
+					    Console.WriteLine(@"-debug 的项目路径为空，已忽略。");
+					    break;
+				    }
+
+				    if (!Directory.Exists(debugPath))
+					    Console.WriteLine($@"警告: 调试项目目录不存在: {debugPath}");
+
+				    BedrockBoot.Models.Global.GlobalModel.DebugPluginPath = debugPath;
 				    break;
 #endif
 

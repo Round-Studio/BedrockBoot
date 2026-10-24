@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BedrockBoot.Models.Global;
@@ -24,7 +25,13 @@ public class DevelopProjectManager
         conf.Save();
 
         var projects = conf.Data;
-        Projects = projects.Select(x => { return GetProjectInfo(x); }).ToList();
+        // 跳过已被删除/移动的项目目录，避免列表里出现无效条目
+        Projects = projects
+            .Where(path => !string.IsNullOrWhiteSpace(path) && Directory.Exists(path))
+            .DistinctBy(path => path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                StringComparer.OrdinalIgnoreCase)
+            .Select(GetProjectInfo)
+            .ToList();
     }
 
     public static void AddProject(string path, PackConfig config)

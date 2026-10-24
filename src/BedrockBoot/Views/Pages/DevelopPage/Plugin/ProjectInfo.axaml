@@ -11,6 +11,25 @@
                         Spacing="8"
                         Name="ProjectStackPanel">
                 <DockPanel>
+                    <TextBlock Text="项目名称"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Left"/>
+                    <TextBlock Name="ProjectNameText"
+                               HorizontalAlignment="Right"
+                               TextAlignment="Right"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock Text="项目路径"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Left"/>
+                    <TextBlock Name="ProjectPathText"
+                               HorizontalAlignment="Right"
+                               TextAlignment="Right"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+                <DockPanel>
                     <widgets:CopyTextBox Width="400"
                                          IsReadOnly="True"
                                          Name="CopyTextBox"

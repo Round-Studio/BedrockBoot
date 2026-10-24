@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
@@ -11,7 +12,7 @@ namespace BedrockBoot.Models.Pack.Plugin.Develop;
 
 public static class DevelopCore
 {
-    public static Action<string, string>? OnPluginBuilt { get; set; }
+    public static Action<string, string, PackConfig>? OnPluginBuilt { get; set; }
 
     public static void CreatePluginProject(PackConfig conf, Action<int, string>? progressCallback = null)
     {
@@ -58,8 +59,23 @@ public static class DevelopCore
 
     public static void DebugPluginProject(string projectDirectory)
     {
+        // 兼容外部传入时残留的引号与空白，并规整末尾分隔符以保证 GetDirectoryName/GetFileName 正确
+        projectDirectory = Path.TrimEndingDirectorySeparator(projectDirectory.Trim().Trim('"').Trim());
+
+        if (!Directory.Exists(projectDirectory))
+            throw new DirectoryNotFoundException($"调试项目目录不存在: {projectDirectory}");
+
+        var pluginJsonPath = Path.Combine(projectDirectory, "plugin.json");
+        if (!File.Exists(pluginJsonPath))
+            throw new FileNotFoundException($"调试项目缺少 plugin.json: {pluginJsonPath}");
+
+        // 只读加载，避免调试模式下误创建/覆写项目配置
+        var confent = new ConfigEntity<PackConfig>(pluginJsonPath, false);
         var basePath = Path.GetDirectoryName(projectDirectory);
         var projectName = Path.GetFileName(projectDirectory);
+
+        if (string.IsNullOrEmpty(basePath))
+            throw new ArgumentException($"无法解析项目的父目录: {projectDirectory}", nameof(projectDirectory));
 
         Console.WriteLine($@"[DebugPluginProject] Building plugin project: {projectDirectory}");
         Console.WriteLine($@"[DebugPluginProject] Project name: {projectName}");
@@ -69,18 +85,24 @@ public static class DevelopCore
 
         BuildProject(projectDirectory, outputDirectory);
 
-        string dllPath = Path.Combine(outputDirectory, $"{projectName}.dll");
+        // 主体 DLL 名优先取 plugin.json 的 BodyFile，项目结构变更时不至于找不到产物
+        var dllName = !string.IsNullOrWhiteSpace(confent.Data.BodyFile) &&
+                      confent.Data.BodyFile.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+            ? confent.Data.BodyFile
+            : $"{projectName}.dll";
+
+        string dllPath = Path.Combine(outputDirectory, dllName);
         Console.WriteLine($@"[DebugPluginProject] Looking for DLL at: {dllPath}");
 
         if (File.Exists(dllPath))
         {
             Console.WriteLine($@"[DebugPluginProject] DLL found: {dllPath}");
-            OnPluginBuilt?.Invoke(outputDirectory, $"{projectName}.dll");
+            OnPluginBuilt?.Invoke(outputDirectory, dllName, confent.Data);
         }
         else
         {
             Console.WriteLine($@"[DebugPluginProject] DLL not found at: {dllPath}");
-            throw new FileNotFoundException($"Could not find built DLL at: {dllPath}");
+            throw new FileNotFoundException($"构建完成但未找到插件主体 DLL: {dllPath}");
         }
     }
 
@@ -96,23 +118,30 @@ public static class DevelopCore
         startInfo.RedirectStandardOutput = true;
         startInfo.RedirectStandardError = true;
 
+        // 保留最近的输出，失败时随异常抛出，方便定位构建错误
+        const int maxRecentLines = 40;
+        var recentLines = new Queue<string>();
+        var recentLock = new object();
+
+        void HandleOutputLine(string? line, bool isError)
+        {
+            if (string.IsNullOrEmpty(line)) return;
+            Console.WriteLine($@"[Process {(isError ? "Error" : "Output")}] {line}");
+            lock (recentLock)
+            {
+                recentLines.Enqueue(line);
+                while (recentLines.Count > maxRecentLines)
+                    recentLines.Dequeue();
+            }
+
+            int percentage = parseProgressFunc?.Invoke(line) ?? 50;
+            progressCallback?.Invoke(percentage, line);
+        }
+
         using Process process = new Process { StartInfo = startInfo };
 
-        process.OutputDataReceived += (sender, e) =>
-        {
-            if (string.IsNullOrEmpty(e.Data)) return;
-            Console.WriteLine($@"[Process Output] {e.Data}");
-            int percentage = parseProgressFunc?.Invoke(e.Data) ?? 50;
-            progressCallback?.Invoke(percentage, e.Data);
-        };
-
-        process.ErrorDataReceived += (sender, e) =>
-        {
-            if (string.IsNullOrEmpty(e.Data)) return;
-            Console.WriteLine($@"[Process Error] {e.Data}");
-            int percentage = parseProgressFunc?.Invoke(e.Data) ?? 50;
-            progressCallback?.Invoke(percentage, e.Data);
-        };
+        process.OutputDataReceived += (_, e) => HandleOutputLine(e.Data, false);
+        process.ErrorDataReceived += (_, e) => HandleOutputLine(e.Data, true);
 
         process.Start();
         process.BeginOutputReadLine();
@@ -121,7 +150,15 @@ public static class DevelopCore
 
         if (process.ExitCode != 0)
         {
-            throw new Exception($"Process '{startInfo.FileName}' failed with exit code {process.ExitCode}");
+            string recentOutput;
+            lock (recentLock)
+                recentOutput = string.Join(Environment.NewLine, recentLines);
+
+            throw new Exception(
+                $"Process '{startInfo.FileName}' failed with exit code {process.ExitCode}" +
+                (recentOutput.Length > 0
+                    ? $"{Environment.NewLine}最近输出:{Environment.NewLine}{recentOutput}"
+                    : string.Empty));
         }
     }
 
@@ -157,12 +194,19 @@ public static class DevelopCore
         if (File.Exists(csprojPath))
             throw new InvalidOperationException($"Project file already exists: {csprojPath}");
 
-        ProcessStartInfo startInfo = new ProcessStartInfo
+        ProcessStartInfo startInfo = new ProcessStartInfo("dotnet")
         {
-            FileName = "dotnet",
-            Arguments = $"new classlib -n \"{projectName}\" -f net10.0 --no-restore -o \"{projectName}\"",
             WorkingDirectory = basePath
         };
+        startInfo.ArgumentList.Add("new");
+        startInfo.ArgumentList.Add("classlib");
+        startInfo.ArgumentList.Add("-n");
+        startInfo.ArgumentList.Add(projectName);
+        startInfo.ArgumentList.Add("-f");
+        startInfo.ArgumentList.Add("net10.0");
+        startInfo.ArgumentList.Add("--no-restore");
+        startInfo.ArgumentList.Add("-o");
+        startInfo.ArgumentList.Add(projectName);
 
         RunProcessWithProgress(startInfo, progressCallback);
     }
@@ -285,28 +329,30 @@ public static class DevelopCore
         };
         RunProcessWithProgress(addStartInfo, (p, msg) => progressCallback?.Invoke((int)(p * 0.5), msg));
 
-        ProcessStartInfo commitStartInfo = new ProcessStartInfo
+        ProcessStartInfo commitStartInfo = new ProcessStartInfo("git")
         {
-            FileName = "git",
-            Arguments = $"commit -m \"Initial commit for {projectName}\"",
             WorkingDirectory = basePath
         };
+        commitStartInfo.ArgumentList.Add("commit");
+        commitStartInfo.ArgumentList.Add("-m");
+        commitStartInfo.ArgumentList.Add($"Initial commit for {projectName}");
         RunProcessWithProgress(commitStartInfo, (p, msg) => progressCallback?.Invoke(50 + (int)(p * 0.5), msg));
     }
 
     private static void BuildProject(string projectDirectory, string outputDirectory)
     {
-        if (!Directory.Exists(outputDirectory))
-        {
-            Directory.CreateDirectory(outputDirectory);
-        }
+        Directory.CreateDirectory(outputDirectory);
 
-        ProcessStartInfo startInfo = new ProcessStartInfo
+        ProcessStartInfo startInfo = new ProcessStartInfo("dotnet")
         {
-            FileName = "dotnet",
-            Arguments = $"build -c Debug -o \"{outputDirectory}\"",
             WorkingDirectory = projectDirectory
         };
+        startInfo.ArgumentList.Add("build");
+        startInfo.ArgumentList.Add("-c");
+        startInfo.ArgumentList.Add("Debug");
+        startInfo.ArgumentList.Add("--nologo");
+        startInfo.ArgumentList.Add("-o");
+        startInfo.ArgumentList.Add(outputDirectory);
 
         RunProcessWithProgress(startInfo, null);
     }

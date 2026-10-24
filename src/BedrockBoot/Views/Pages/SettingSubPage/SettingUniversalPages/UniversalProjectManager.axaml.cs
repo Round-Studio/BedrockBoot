@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Interface;
+using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.DevelopPage.Plugin;
 using BedrockBoot.Views.Pages.MainSubPage;

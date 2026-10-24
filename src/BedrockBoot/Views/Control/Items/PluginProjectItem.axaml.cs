@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.Base.Entry.Info.Develop;
+using BedrockBoot.Standard.Entity.Info.Develop;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using NotImplementedException = System.NotImplementedException;
 

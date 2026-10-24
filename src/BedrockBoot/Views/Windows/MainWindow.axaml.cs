@@ -52,7 +52,6 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Media;
 using BedrockBoot.Models.Native;
 using BedrockBoot.Models.Pack.Plugin;
-using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Models.Pack.Plugin.Develop;
 using BedrockBoot.Models.Pack.System.DropFile;
 using BedrockBoot.Models.Pack.Theme;
@@ -203,7 +202,7 @@ public partial class MainWindow : Window
                 Task.Run(async () =>
                 {
                     await PluginLoader.LoadDependenciesAsync(pluginFolder, $"../{dllName}");
-                    await PluginLoader.LoadPluginBodyAsync(pluginFolder, $"../{dllName}");
+                    // await PluginLoader.LoadPluginBodyAsync(pluginFolder, $"../{dllName}");
                 });
             };
 

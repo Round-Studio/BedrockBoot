@@ -1,5 +1,5 @@
-﻿using BedrockBoot.Base.Entry.Info.Develop;
-using BedrockBoot.Models.Pack.Plugin.Develop;
+﻿using BedrockBoot.Models.Pack.Plugin.Develop;
+using BedrockBoot.Standard.Entity.Info.Develop;
 
 var core = new DevelopCore(new ProjectInfo()
 {

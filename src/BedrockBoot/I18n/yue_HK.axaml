@@ -1,0 +1,1139 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <x:String x:Key="LanguageName">粵語（中國廣東） - BedrockBoot 官方</x:String>
+
+    <x:String x:Key="Shared.Action.Apply">套用</x:String>
+    <x:String x:Key="Shared.Action.Back">返回</x:String>
+    <x:String x:Key="Shared.Action.Browse">瀏覽</x:String>
+    <x:String x:Key="Shared.Action.Cancel">取消</x:String>
+    <x:String x:Key="Shared.Action.Close">關閉</x:String>
+    <x:String x:Key="Shared.Action.Confirm">確定</x:String>
+    <x:String x:Key="Shared.Action.Delete">刪除</x:String>
+    <x:String x:Key="Shared.Action.Download">下載</x:String>
+    <x:String x:Key="Shared.Action.Launch">啟動</x:String>
+    <x:String x:Key="Shared.Action.OpenFolder">開啟資料夾</x:String>
+    <x:String x:Key="Shared.Action.Save">儲存</x:String>
+    <x:String x:Key="Shared.Action.Search">搜尋</x:String>
+    <x:String x:Key="Shared.Action.Settings">設定</x:String>
+
+    <x:String x:Key="Shared.Label.Information">資訊</x:String>
+    <x:String x:Key="Shared.Label.Notice">注意</x:String>
+    <x:String x:Key="Shared.Label.Project">專案</x:String>
+    <x:String x:Key="Shared.Label.Ranking">排行</x:String>
+
+    <x:String x:Key="Shared.Group.BasicSettings">基礎設定</x:String>
+
+    <x:String x:Key="Shared.Status.Wait">請稍等</x:String>
+    <x:String x:Key="Shared.Status.Searching">搜尋緊...</x:String>
+    <x:String x:Key="Shared.Status.Progress.Title">進度：</x:String>
+    <x:String x:Key="Shared.Status.Error.Title">發生咗錯誤</x:String>
+    <x:String x:Key="Shared.Status.Error.Network.Desc">呢個有可能係你嘅網絡不穩定導致嘅請求錯誤</x:String>
+
+    <x:String x:Key="Common.Action.Irreversible">呢個操作將永遠冇得復原。</x:String>
+    <x:String x:Key="Common.Unit.Speed">{0}/s</x:String>
+
+    <x:String x:Key="MainWindow.Common.Confirm">確定</x:String>
+    <x:String x:Key="MainWindow.Common.Cancel">取消</x:String>
+    <x:String x:Key="MainWindow.Common.Delete">刪除</x:String>
+    <x:String x:Key="MainWindow.Common.Save">儲存設定</x:String>
+    <x:String x:Key="MainWindow.Common.Add">新增</x:String>
+
+    <x:String x:Key="Home.Title">你好，歡迎返嚟</x:String>
+
+    <x:String x:Key="MainPage.Nav.Home">主頁</x:String>
+    <x:String x:Key="MainPage.Nav.Manager">實例</x:String>
+    <x:String x:Key="MainPage.Nav.Download">下載</x:String>
+    <x:String x:Key="MainPage.Nav.Tools">工具</x:String>
+    <x:String x:Key="MainPage.Nav.Multiplayer">多人連線</x:String>
+    <x:String x:Key="MainPage.Nav.AccountManager">帳戶管理</x:String>
+    <x:String x:Key="MainPage.Nav.Setting">設定</x:String>
+
+    <x:String x:Key="Account.Action.LinkXbox">連結 XBOX 帳戶</x:String>
+    <x:String x:Key="Account.Empty.Title">未連結任何帳戶</x:String>
+    <x:String x:Key="Account.Empty.Message">目前未連結任何 XBOX 帳戶。&#10;請撳左上角連結帳戶嚟連結 XBOX 帳戶</x:String>
+    <x:String x:Key="Account.Option.AskBeforeLaunch">喺啟動遊戲之前問我揀邊個帳戶</x:String>
+
+    <x:String x:Key="MainPage.Status.NoInstance">冇可用實例</x:String>
+    <x:String x:Key="MainPage.Status.NoFolder">請先新增遊戲資料夾</x:String>
+    <x:String x:Key="MainPage.Status.LoadFailed">載入失敗</x:String>
+
+    <x:String x:Key="MainPage.Error.InvalidPage.Title">頁面無效</x:String>
+    <x:String x:Key="MainPage.Error.InvalidPage.Content">頁面 {0} 無效</x:String>
+
+    <x:String x:Key="MainWindow.TaskView.Title">任務中心</x:String>
+    <x:String x:Key="MainWindow.TaskView.NoneTitle">太正喇！</x:String>
+    <x:String x:Key="MainWindow.TaskView.NoneMessage">任務清單入面冇任何一項任務</x:String>
+    <x:String x:Key="MainWindow.Task.CountInfo">而家有 {0} 項任務</x:String>
+
+    <x:String x:Key="Manager.Title">實例管理</x:String>
+    <x:String x:Key="Manager.IncludeGame">匯入遊戲</x:String>
+    <x:String x:Key="Manager.IncludePack">匯入整合包</x:String>
+
+    <x:String x:Key="Manager.GameType.AllType">所有類型</x:String>
+    <x:String x:Key="Manager.GameType.Release">正式版</x:String>
+    <x:String x:Key="Manager.GameType.Preview">測試版</x:String>
+
+    <x:String x:Key="Manager.Filter.PlayTimeAsc">遊玩時長短至長</x:String>
+    <x:String x:Key="Manager.Filter.PlayTimeDesc">遊玩時長長至短</x:String>
+
+    <x:String x:Key="Manager.GameItem.Launch">啟動</x:String>
+    <x:String x:Key="Manager.GameItem.EditModel">編輯模式</x:String>
+
+    <x:String x:Key="Manager.Folder.Empty.Title">空</x:String>
+    <x:String x:Key="Manager.Folder.Empty.Message">撳下面嘅 新增目錄&#x0A;嚟新增目錄</x:String>
+
+    <x:String x:Key="Manager.Games.Empty.Title">冇實例</x:String>
+    <x:String x:Key="Manager.Games.Empty.Message">關鍵字無效 或者 未下載實例</x:String>
+    <x:String x:Key="Manager.Games.Loading.Title">排隊緊</x:String>
+    <x:String x:Key="Manager.Games.Loading.Message">載入緊版本...</x:String>
+    <x:String x:Key="Manager.Search.Placeholder">搜尋實例...</x:String>
+
+    <x:String x:Key="Main.Action.Launch">啟動</x:String>
+    <x:String x:Key="Main.GameList.Empty">冇實例</x:String>
+
+    <x:String x:Key="MainPage.Manager.Import.Title">匯入遊戲安裝包</x:String>
+    <x:String x:Key="MainPage.Manager.Import.Action">開始匯入</x:String>
+    <x:String x:Key="MainPage.Manager.Import.Error.Pack">遊戲包 {0} 無效</x:String>
+    <x:String x:Key="MainPage.Manager.Import.Error.Folder">資料夾 {0} 無效</x:String>
+    <x:String x:Key="MainPage.Manager.Import.Error.Name">請輸入有效嘅實例名稱</x:String>
+
+    <x:String x:Key="MainPage.Manager.Integration.Picker.Title">請揀整合包檔案</x:String>
+    <x:String x:Key="MainPage.Manager.Integration.Picker.Type">基岩版整合包 (*.mcpint)</x:String>
+    <x:String x:Key="MainPage.Manager.Integration.Dialog.Title">揀安裝目錄</x:String>
+    <x:String x:Key="MainPage.Manager.Integration.Dialog.Action">安裝</x:String>
+
+    <x:String x:Key="Instance.Title">實例</x:String>
+
+    <x:String x:Key="Draw.Instance.Tab.Detail">實例詳情</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Mods">模組管理</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Packs">資源 / 行為包</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Archive">存檔</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Screenshots">截圖</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Servers">伺服器</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Plugins">插件</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Controls">操作</x:String>
+    <x:String x:Key="Draw.Instance.TotalTime">{0} 小時</x:String>
+    <x:String x:Key="Draw.Instance.Information.Sessions">工作階段數</x:String>
+    <x:String x:Key="Draw.Instance.Information.ActiveDays">活躍日</x:String>
+    <x:String x:Key="Draw.Instance.Information.TotalHours">總小時</x:String>
+    <x:String x:Key="Draw.Instance.Information.Rank">排行</x:String>
+    <x:String x:Key="Draw.Instance.Information.WeeklyChart">本週每日遊玩時長</x:String>
+    <x:String x:Key="Draw.Instance.Information.WeeklyStats">本週統計</x:String>
+
+    <x:String x:Key="Instance.Info.Name.Title">實例名稱</x:String>
+    <x:String x:Key="Instance.Info.Name.Desc">實例喺啟動器入面顯示嘅名稱</x:String>
+    <x:String x:Key="Instance.Info.Icon.Title">圖示</x:String>
+    <x:String x:Key="Instance.Info.Icon.Desc">實例喺啟動器入面顯示嘅圖示</x:String>
+    <x:String x:Key="Instance.Info.Icon.Grass">草方塊</x:String>
+    <x:String x:Key="Instance.Info.Icon.Path">泥徑</x:String>
+    <x:String x:Key="Instance.Info.Icon.EndStone">終界石</x:String>
+    <x:String x:Key="Instance.Info.Icon.Crafting">工作台</x:String>
+
+    <x:String x:Key="Instance.Info.Group.Launch">啟動設定</x:String>
+    <x:String x:Key="Instance.Info.Launch.Title">啟動設定</x:String>
+    <x:String x:Key="Instance.Info.Launch.Desc">實例嘅啟動相關設定</x:String>
+    <x:String x:Key="Instance.Info.Launch.Args.Title">參數</x:String>
+    <x:String x:Key="Instance.Info.Launch.Args.Desc">啟動遊戲時嘅額外命令列參數</x:String>
+    <x:String x:Key="Instance.Info.Launch.EditMode.Title">編輯模式</x:String>
+    <x:String x:Key="Instance.Info.Launch.EditMode.Desc">以基岩版嘅創作者編輯模式啟動</x:String>
+    <x:String x:Key="Instance.Info.Launch.Mods.Title">啟用 Mods</x:String>
+    <x:String x:Key="Instance.Info.Launch.Mods.Desc">係咪喺出現遊戲程序之後自動注入 Mods</x:String>
+    <x:String x:Key="Instance.Info.Launch.Console.Desc">啟動嗰陣順便開啟遊戲主控台</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Title">詳細日誌</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Desc">輸出詳細嘅日誌，包括遊戲底層嘅檔案操作（開咗之後會有啲卡）</x:String>
+    <x:String x:Key="Instance.Info.Isolation.Desc">啟用版本隔離（只隔離存檔、資源包等。模組檔案唔使隔離）</x:String>
+
+    <x:String x:Key="Instance.Controls.Group.Accessibility">協助工具</x:String>
+    <x:String x:Key="Instance.Controls.MouseLock.Title">滑鼠鎖</x:String>
+    <x:String x:Key="Instance.Controls.MouseLock.Desc">針對 UWP 版本嘅 Bedrock 做嘅滑鼠優化</x:String>
+    <x:String x:Key="Instance.Controls.MouseLock.Range.Title">裁切範圍</x:String>
+    <x:String x:Key="Instance.Controls.MouseLock.Range.Desc">滑鼠鎖對遊戲嘅限制範圍</x:String>
+
+    <x:String x:Key="Instance.Controls.Shortcut.Title">捷徑</x:String>
+    <x:String x:Key="Instance.Controls.Shortcut.Desc">儲存一個用嚟快速啟動呢個實例嘅捷徑</x:String>
+    <x:String x:Key="Instance.Controls.ImportConfig.Title">匯入設定</x:String>
+    <x:String x:Key="Instance.Controls.ImportConfig.Desc">匯入其他實例嘅設定</x:String>
+    <x:String x:Key="Instance.Controls.ExportPack.Title">匯出整合包</x:String>
+    <x:String x:Key="Instance.Controls.ExportPack.Desc">匯出做 Minecraft Bedrock 整合包</x:String>
+
+    <x:String x:Key="Instance.Controls.Group.DangerZone">危險操作</x:String>
+    <x:String x:Key="Instance.Controls.Group.Expansion">擴充</x:String>
+    <x:String x:Key="Instance.Controls.Delete.Title">刪除實例</x:String>
+    <x:String x:Key="Instance.Controls.Delete.Desc">徹底刪除呢個遊戲版本</x:String>
+
+    <x:String x:Key="Instance.Control.Shortcut.Save.Title">儲存快速啟動</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Prefix">快速啟動</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.FileType">Windows 捷徑 (.lnk)</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Success.Title">建立成功</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Success.Content">捷徑已成功建立！&#x0a;&#x0a;名稱：{0}&#x0a;位置：{1}</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Action.OpenFolder">開啟所在資料夾</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Failed.Title">建立失敗</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Failed.Content">無法建立捷徑：</x:String>
+
+    <x:String x:Key="Instance.Control.Delete.Confirm.Title">確認刪除</x:String>
+    <x:String x:Key="Instance.Control.Delete.Confirm.Content">你真係要刪除 {0} ({1}) 咩？&#x0a;呢個操作會永久刪除資料，冇得復原。</x:String>
+    <x:String x:Key="Instance.Control.Delete.Process.Title">刪除緊 {0}</x:String>
+
+    <x:String x:Key="Instance.Control.Import.Choose.Title">揀需要匯入嘅實例</x:String>
+    <x:String x:Key="Instance.Control.Import.Content.Title">揀匯入內容</x:String>
+    <x:String x:Key="Instance.Control.Import.Action.Start">開始匯入</x:String>
+    <x:String x:Key="Instance.Control.Import.Progress.Title">遷移緊資源...</x:String>
+    <x:String x:Key="Instance.Isolation.Migration">匯入資源</x:String>
+    <x:String x:Key="Instance.Isolation.Migrating">遷移</x:String>
+
+    <x:String x:Key="Instance.Control.Pack.Dialog.Title">填寫整合包資訊</x:String>
+    <x:String x:Key="Instance.Control.Pack.Save.Title">匯出 Minecraft 基岩版整合包</x:String>
+    <x:String x:Key="Instance.Control.Pack.FileType">基岩版整合包 (*.mcpint)</x:String>
+    <x:String x:Key="Instance.Control.Pack.Progress.Title">打包整合包</x:String>
+    <x:String x:Key="Instance.Pack.Export.Success">整合包匯出完畢</x:String>
+
+    <x:String x:Key="Instance.Mods.Action.Import">匯入模組</x:String>
+    <x:String x:Key="Instance.Mods.Empty.Title">空空如也</x:String>
+    <x:String x:Key="Instance.Mods.Empty.Message">輸入嘅關鍵字無效 或者 呢個實例冇模組</x:String>
+    <x:String x:Key="Instance.Mods.Label.Preload">預載入</x:String>
+    <x:String x:Key="Instance.Mods.Import.Title">新增 Mod 檔案</x:String>
+    <x:String x:Key="Instance.Mods.Import.Error.InvalidPath">無效路徑，加唔到模組</x:String>
+    <x:String x:Key="Instance.Mods.Import.Error.CopyFailed">模組檔案複製失敗</x:String>
+    <x:String x:Key="Instance.Mod.Delete.Title">刪除模組</x:String>
+    <x:String x:Key="Instance.Mod.Delete.Content">你真係要刪除呢個模組</x:String>
+    <x:String x:Key="Instance.Mod.Delete.Error">刪除模組嗰陣發生錯誤</x:String>
+    <x:String x:Key="Instance.Mod.Setting.Title">設定 Mod 檔案</x:String>
+    <x:String x:Key="Instance.Mod.Import.InvalidPath">無效路徑，加唔到模組</x:String>
+
+    <x:String x:Key="Instance.Packs.Tab.Resource">資源包</x:String>
+    <x:String x:Key="Instance.Packs.Tab.Behavior">行為包</x:String>
+    <x:String x:Key="Instance.Packs.Action.Import">匯入包</x:String>
+    <x:String x:Key="Instance.Packs.Empty.Title">空空如也</x:String>
+    <x:String x:Key="Instance.Packs.Empty.Message">輸入嘅關鍵字無效 或者 呢個實例冇包</x:String>
+    <x:String x:Key="Instance.Packs.Status.Loading">載入緊包...</x:String>
+    <x:String x:Key="Instance.Packs.Status.Total">共</x:String>
+    <x:String x:Key="Instance.Packs.Status.Items">項</x:String>
+    <x:String x:Key="Instance.Pack.Count.Format">共 {0} 項</x:String>
+    <x:String x:Key="Instance.Pack.Import.Picker.Title">匯入 Minecraft 基岩版包</x:String>
+    <x:String x:Key="Instance.Pack.Import.Picker.Type">Minecraft 支援包</x:String>
+    <x:String x:Key="Instance.Pack.Import.Dialog.Title">匯入包</x:String>
+    <x:String x:Key="Instance.Pack.Import.Dialog.Action">匯入</x:String>
+    <x:String x:Key="Instance.Pack.Import.Progress.Title">匯入緊...</x:String>
+    <x:String x:Key="Instance.Pack.Import.Progress.Content">匯入緊資源包，請稍等...</x:String>
+    <x:String x:Key="Instance.Resource.Delete.Title">刪除資源</x:String>
+    <x:String x:Key="Instance.Resource.Delete.Content">你真係要刪除呢個資源包咩？</x:String>
+    <x:String x:Key="Instance.Resource.Delete.Processing">刪除緊資源...</x:String>
+    <x:String x:Key="Instance.Resource.Delete.Error">刪除資源失敗</x:String>
+
+    <x:String x:Key="Instance.Saves.Action.Import">匯入存檔</x:String>
+    <x:String x:Key="Instance.Saves.Empty.Title">空空如也</x:String>
+    <x:String x:Key="Instance.Saves.Empty.Message">輸入嘅關鍵字無效 或者 呢個用户冇存檔</x:String>
+    <x:String x:Key="Instance.Save.Import.Picker.Title">匯入 Minecraft 存檔包</x:String>
+    <x:String x:Key="Instance.Save.Import.Picker.Type">Minecraft 存檔 (*.mcworld)</x:String>
+    <x:String x:Key="Archive.Export.Title">匯出 Minecraft 存檔包</x:String>
+    <x:String x:Key="Archive.Export.FileType">Minecraft 存檔 (*.mcworld)</x:String>
+    <x:String x:Key="Archive.Export.Success">存檔已成功匯出！</x:String>
+
+    <x:String x:Key="LevelSettings.Root.Title">存檔設定</x:String>
+    <x:String x:Key="LevelSettings.Root.Action.BackToSaves">返回存檔管理</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Backup">備份</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.General">一般設定</x:String>
+    <x:String x:Key="LevelSettings.Backup.Title">存檔備份</x:String>
+    <x:String x:Key="LevelSettings.Backup.Action.Create">建立備份</x:String>
+    <x:String x:Key="LevelSettings.Backup.Empty.Message">仲未有任何一個備份</x:String>
+    <x:String x:Key="LevelSettings.Backup.Loading.Message">載入緊備份</x:String>
+    <x:String x:Key="LevelSettings.Editor.Title">存檔編輯器</x:String>
+    <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">儲存變更</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">存檔資訊</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Core">核心</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Interface">介面</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.MobsEnvironment">生物與環境</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Player">玩家</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.SpawnPoint">重生點</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Permissions">權限</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Movement">移動</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WorldName">世界名稱</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Seed">種子</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.GameMode">遊戲模式</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Difficulty">遊戲難度</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WalkSpeed">行走速度 (walkSpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.FlySpeed">飛行速度 (flySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.VerticalFlySpeed">垂直飛行速度 (verticalFlySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Survival">生存</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Creative">創造</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Adventure">冒險</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Spectator">旁觀</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Peaceful">和平</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Easy">簡單</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Normal">普通</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Hard">困難</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Cheats">作弊</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Hardcore">極限模式</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlocks">指令方塊</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlockOutput">指令方塊輸出</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AdminCommands">管理員指令</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandFeedback">指令回饋</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.BonusChest">獎勵箱</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.StartingMap">初始地圖</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ImmediateRespawn">即時重生</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RecipeUnlocking">配方解鎖</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.LimitedCrafting">限制合成</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RequireResourcePacks">要求資源包</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowCoordinates">顯示座標</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDaysPlayed">顯示遊戲日數</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDeathMessages">顯示死亡訊息</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowRecipeHints">顯示配方提示</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowTags">顯示標籤</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowBorderEffect">顯示邊界效果</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DaylightCycle">晝夜循環</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WeatherCycle">天氣循環</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobSpawning">生物生成</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.PhantomSpawning">夜魅生成</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobGriefing">生物破壞</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobLoot">生物掉落</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.EntityDrops">實體掉落</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TileDrops">方塊掉落</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireSpreads">火焰蔓延</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TntExplodes">TNT 爆炸</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RespawnBlocksExplode">重生方塊爆炸</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.KeepInventory">保留物品欄</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NaturalRegeneration">自然回復</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FallDamage">跌落傷害</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireDamage">火焰傷害</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DrowningDamage">溺水傷害</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FreezingDamage">凍結傷害</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Mine">挖掘</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Build">建造</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackMobs">攻擊生物</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackPlayers">攻擊玩家</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DoorsAndSwitches">門與開關</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.OpenContainers">開啟容器</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Operator">管理員</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Teleport">傳送</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Flying">飛行</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AllowFlying">允許飛行</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.InstantBuild">即時建造</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Invulnerable">無敵</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NoClip">穿牆</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WorldBuilder">世界建造者</x:String>
+
+    <x:String x:Key="Instance.Screenshots.Empty.Title">空空如也</x:String>
+    <x:String x:Key="Instance.Screenshots.Empty.Message">仲未有任何一張截圖.jpg</x:String>
+    <x:String x:Key="Archive.Screenshot.Save.Title">儲存截圖</x:String>
+    <x:String x:Key="Archive.Screenshot.Save.FileType">JPEG 圖片</x:String>
+
+    <x:String x:Key="Instance.Server.Action.Add">新增伺服器</x:String>
+    <x:String x:Key="Instance.Server.Empty.Title">冇任何一個第三方伺服器 wa...</x:String>
+    <x:String x:Key="Instance.Server.Empty.Message">輸入嘅關鍵字無效 或者 呢個用户冇伺服器</x:String>
+    <x:String x:Key="Instance.Server.Add.Title">新增第三方伺服器</x:String>
+    <x:String x:Key="Instance.Server.Add.Action">新增</x:String>
+    <x:String x:Key="Instance.Server.Delete.Title">刪除伺服器</x:String>
+    <x:String x:Key="Instance.Server.Delete.Content">你真係要刪除呢個伺服器收藏咩？</x:String>
+    <x:String x:Key="Instance.Server.Status.Offline">連唔上伺服器</x:String>
+
+    <x:String x:Key="Instance.Plugins.Status.NotInstalled">未安裝</x:String>
+    <x:String x:Key="Instance.Plugins.Status.Installed">已安裝</x:String>
+    <x:String x:Key="Instance.Plugin.Status.Installed">已安裝</x:String>
+    <x:String x:Key="Plugin.LeviLamina.LoadingVersions">載入緊版本清單...</x:String>
+    <x:String x:Key="Plugin.LeviLamina.ChooseVersion">揀 LeviLamina 版本</x:String>
+    <x:String x:Key="Plugin.LeviLamina.NotSupport">呢個實例版本太低或者唔相容，裝唔到 LeviLamina。</x:String>
+
+    <x:String x:Key="Download.Title">下載</x:String>
+    <x:String x:Key="Download.Tab.Assets">資源包</x:String>
+    <x:String x:Key="Download.List.Empty">搵唔到符合條件嘅版本</x:String>
+
+    <x:String x:Key="Download.Action.GetResource">下載資源</x:String>
+    <x:String x:Key="Download.Action.DownloadGame">下載遊戲</x:String>
+
+    <x:String x:Key="Download.Game.Type.Release">正式版</x:String>
+    <x:String x:Key="Download.Game.Type.Preview">預覽版</x:String>
+    <x:String x:Key="Download.Game.Type.Beta">Beta 版</x:String>
+
+    <x:String x:Key="Download.Assets.Status.Loading.Title">收集緊電子...</x:String>
+    <x:String x:Key="Download.Assets.Status.Loading.Message">全體電子，排隊！</x:String>
+    <x:String x:Key="Download.Assets.Status.Empty.Title">請...誒？</x:String>
+    <x:String x:Key="Download.Assets.Status.Empty.Message">你輸入嘅關鍵字無效喎</x:String>
+
+    <x:String x:Key="Download.Search.Watermark">輸入關鍵字嚟搜尋...</x:String>
+    <x:String x:Key="Download.Search.History.Title">歷史記錄</x:String>
+    <x:String x:Key="Download.Search.History.Empty.Message">冇歷史搜尋記錄</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Title">清除確認</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Content">你真係要清空你嘅搜尋記錄咩？</x:String>
+    <x:String x:Key="Download.Search.Action.VersionList">版本清單</x:String>
+    <x:String x:Key="Download.Search.Action.SearchResource">搜尋資源</x:String>
+    <x:String x:Key="Download.Search.Group.Latest">最新版本</x:String>
+    <x:String x:Key="Download.Search.Group.PopularResources">熱門資源</x:String>
+    <x:String x:Key="Download.Search.Label.ResourceType">資源類型</x:String>
+    <x:String x:Key="Download.Search.Label.PublishType">發布類型</x:String>
+    <x:String x:Key="Download.Search.Label.Category">資源分類</x:String>
+    <x:String x:Key="Download.Search.Category.All">綜合資源</x:String>
+    <x:String x:Key="Download.Search.Category.Texture">材質包</x:String>
+    <x:String x:Key="Download.Search.Category.Behavior">行為包</x:String>
+    <x:String x:Key="Download.Search.Category.Map">地圖包</x:String>
+
+    <x:String x:Key="Download.Search.Status.NoResult.Title">搵唔到結果</x:String>
+    <x:String x:Key="Download.Search.Status.NoResult.Message">試下其他關鍵字</x:String>
+    <x:String x:Key="Download.Search.Tip.ManualSearch">如果某一項資源載入唔到，可以手動輸入關鍵字嚟搜尋</x:String>
+    <x:String x:Key="Download.Search.Tip.ChangeSource">如果仲係搜尋唔到，請去 設定&gt;下載 切換清單來源</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Title">無效嘅網絡連線</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Message">連唔上目標伺服器</x:String>
+
+    <x:String x:Key="Download.Result.Author.Prefix">作者</x:String>
+    <x:String x:Key="Download.Result.Action.ViewOnCurseForge">喺 CurseForge 上查看呢個資源</x:String>
+    <x:String x:Key="Download.Result.Action.Get">取得資源</x:String>
+    <x:String x:Key="Download.Result.Action.Share">分享資源</x:String>
+    <x:String x:Key="Download.Result.Group.Preview">預覽</x:String>
+    <x:String x:Key="Download.Result.Group.Details">詳細介紹</x:String>
+    <x:String x:Key="Download.Result.Error.LoadDescription">載入描述嗰陣出錯</x:String>
+    <x:String x:Key="Download.Result.Share.Format">你嘅好友推介咗一個資源畀你【{0}】&#x0a;資源主頁：{1}&#x0a;前往「BedrockBoot」或「BMCBL」，Ctrl+V 就可以攞到呢個資源</x:String>
+    <x:String x:Key="Download.Result.Share.Success">分享內容已複製，喺 BedrockBoot 入面撳 Ctrl+V 就可以查看呢個資源</x:String>
+
+    <x:String x:Key="Download.CurseForge.Label.PackInfo">相關包資訊</x:String>
+    <x:String x:Key="Download.CurseForge.Tab.BuildFiles">建置檔案</x:String>
+    <x:String x:Key="Download.CurseForge.SaveAs.Title">另存資源包</x:String>
+    <x:String x:Key="Download.CurseForge.InstallTo.Title">安裝資源到實例...</x:String>
+    <x:String x:Key="Download.CurseForge.FileType.Bedrock">基岩版資源檔案</x:String>
+    <x:String x:Key="Download.CurseForge.Downloads">下載量</x:String>
+
+    <x:String x:Key="Download.Source.Testing">測試緊...</x:String>
+    <x:String x:Key="Download.Source.Failed">連線失敗</x:String>
+
+    <x:String x:Key="Download.Dialog.TitlePrefix">下載遊戲</x:String>
+    <x:String x:Key="Download.Draw.Error.NoUrl">呢個版本攞唔到對應嘅下載網址，請試下換個下載來源。</x:String>
+    <x:String x:Key="Download.Draw.AddFolder.Title">新增遊戲安裝根目錄</x:String>
+
+    <x:String x:Key="Draw.DownloadGame.Label.InstanceName">實例名稱</x:String>
+    <x:String x:Key="Draw.DownloadGame.Description.InstanceName">實例喺啟動器入面顯示嘅名稱</x:String>
+    <x:String x:Key="Draw.DownloadGame.Description.InstallPath">實例安裝嘅位置</x:String>
+    <x:String x:Key="Draw.DownloadGame.Group.SelectSource">揀來源</x:String>
+    <x:String x:Key="Draw.DownloadGame.Option.UseCache">用安裝包快取</x:String>
+    <x:String x:Key="Draw.DownloadGame.Action.StartInstall">開始安裝</x:String>
+
+    <x:String x:Key="Task.LeviLamina.Title">安裝緊 LeviLamina...</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Manifest">下載清單</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Core">下載本體</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Logger">下載日誌記錄器</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Loader">下載載入器</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Runtime">下載執行階段</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Preparing">步驟：下載準備中... ({0}%)</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Downloading">下載緊 {0}... ({1}%)</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Installing">安裝緊 {0}...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Completed">安裝已完成！</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Title">安裝 LeviLamina</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Added">已經將安裝任務加入任務清單。</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Success">LeviLamina 安裝完成</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Failed">LeviLamina 安裝失敗</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadSource">下載緊資源清單...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadLLM">下載緊 LeviLamina 本體...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadLogger">下載緊錯誤日誌器...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadRuntime">下載緊執行階段...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.DownloadLoader">下載緊預載入器...</x:String>
+
+    <x:String x:Key="Task.CurseForge.Title">下載資源</x:String>
+    <x:String x:Key="Task.CurseForge.Step.File">下載檔案</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Preparing">步驟：下載準備中... ({0}%)</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Downloading">下載緊 {0}... ({1}%)</x:String>
+    <x:String x:Key="Task.CurseForge.Notice.Title">下載資源</x:String>
+    <x:String x:Key="Task.CurseForge.Notice.Added">資源 {0} 已經將下載任務加入任務清單。</x:String>
+    <x:String x:Key="Task.CurseForge.Title.Format">下載資源：{0}</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Progress">進度：{0:F2} %</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Importing">進度：匯入緊檔案... (0 %)</x:String>
+
+    <x:String x:Key="Task.Game.Title">安裝緊遊戲...</x:String>
+    <x:String x:Key="Task.Game.Step.GetUrl">攞網址</x:String>
+    <x:String x:Key="Task.Game.Step.Download">下載遊戲</x:String>
+    <x:String x:Key="Task.Game.Step.Merge">合併檔案</x:String>
+    <x:String x:Key="Task.Game.Step.Unzip">解壓縮檔案</x:String>
+    <x:String x:Key="Task.Game.Step.Deploy">部署遊戲</x:String>
+    <x:String x:Key="Task.Game.Status.Preparing">步驟：下載準備中... ({0}%)</x:String>
+    <x:String x:Key="Task.Game.Notice.Title">安裝遊戲</x:String>
+    <x:String x:Key="Task.Game.Notice.Added">遊戲版本 {0} 已加入下載隊列。</x:String>
+    <x:String x:Key="Task.Game.Notice.Success">遊戲 {0} 安裝成功！</x:String>
+    <x:String x:Key="Task.Game.Notice.Failed">遊戲 {0} 安裝失敗</x:String>
+    <x:String x:Key="Task.Game.Title.Format">下載遊戲 {0} [{1}]</x:String>
+    <x:String x:Key="Task.Game.Status.Completed">下載完成</x:String>
+    <x:String x:Key="Task.Game.Status.LocalInstalling">本機安裝緊...</x:String>
+    <x:String x:Key="Task.Game.Error.Detail">錯誤詳情：{0}</x:String>
+
+    <x:String x:Key="Task.Update.Title">下載更新檔案</x:String>
+    <x:String x:Key="Task.Update.Notice.Title">下載更新</x:String>
+    <x:String x:Key="Task.Update.Notice.Added">更新檔案已加入下載隊列。</x:String>
+    <x:String x:Key="Task.Update.Title.Format">下載更新檔案：{0}</x:String>
+    <x:String x:Key="Task.Update.Notice.Message">下載緊更新檔案...</x:String>
+    <x:String x:Key="Task.Update.Source.Prefix">下載來源：{0}</x:String>
+
+    <x:String x:Key="Task.ImportPack.Title">匯入遊戲包...</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Preparing">步驟：準備匯入中...</x:String>
+    <x:String x:Key="Task.ImportPack.Notice.Title">匯入資源</x:String>
+    <x:String x:Key="Task.ImportPack.Notice.Added">已經將資源匯入任務加入任務清單。</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Importing">匯入緊：{0}</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Completed">匯入完成</x:String>
+    <x:String x:Key="Task.ImportPack.Error.Title">唔好意思，裝唔到 {0}</x:String>
+    <x:String x:Key="Task.ImportPack.Error.Content">你個包可能有問題，係唔支援嘅格式。</x:String>
+
+    <x:String x:Key="Task.IntegrationPack.Title">安裝緊整合包...</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.GetUrl">攞網址</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Download">下載遊戲</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Merge">合併檔案</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Unzip">解壓縮檔案</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.InstallResource">安裝資源</x:String>
+    <x:String x:Key="Task.IntegrationPack.Status.Preparing">步驟：下載準備中... ({0}%)</x:String>
+    <x:String x:Key="Task.IntegrationPack.Notice.Title">匯入整合包</x:String>
+    <x:String x:Key="Task.IntegrationPack.Notice.Added">整合包已經喺背景開始安裝</x:String>
+    <x:String x:Key="Task.IntegrationPack.Status.Format">({0:F2} %) {1}</x:String>
+
+    <x:String x:Key="Task.Launch.Title">啟動緊遊戲...</x:String>
+    <x:String x:Key="Task.Launch.Tag.Edit">編輯</x:String>
+    <x:String x:Key="Task.Launch.Status.Preparing">步驟：準備部署中...</x:String>
+    <x:String x:Key="Task.Launch.Notice.Title">啟動遊戲</x:String>
+    <x:String x:Key="Task.Launch.Notice.Started">遊戲 {0} 啟動程序已經開始行。</x:String>
+    <x:String x:Key="Task.Launch.Notice.InTask">處理緊啟動任務...</x:String>
+    <x:String x:Key="Task.Launch.Title.Format">啟動遊戲 {0}</x:String>
+    <x:String x:Key="Task.Launch.Notice.Added">遊戲 {0} 已經將啟動任務加入任務清單。</x:String>
+    <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
+    <x:String x:Key="Task.Launch.Migration.Title">遷移通知</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">呢個版本需要遷移\n請問係咪即刻開始遷移？</x:String>
+    <x:String x:Key="Task.Launch.Migration.Action.Start">開始遷移</x:String>
+    <x:String x:Key="Task.Launch.Migration.Action.Later">唔使喇</x:String>
+    <x:String x:Key="Task.Launch.Migration.View.Title">遷移版本</x:String>
+
+    <x:String x:Key="Settings.Title">設定</x:String>
+
+    <x:String x:Key="Settings.Nav.Personalization.Title">個人化</x:String>
+    <x:String x:Key="Settings.Nav.Personalization.Desc">啟動器嘅個人化設定</x:String>
+    <x:String x:Key="Settings.Nav.Download.Title">下載</x:String>
+    <x:String x:Key="Settings.Nav.Download.Desc">BedrockBoot 嘅下載行為</x:String>
+    <x:String x:Key="Settings.Nav.Game.Title">遊戲</x:String>
+    <x:String x:Key="Settings.Nav.Game.Desc">操作遊戲嘅基本設定</x:String>
+    <x:String x:Key="Settings.Nav.Universal.Title">一般</x:String>
+    <x:String x:Key="Settings.Nav.Universal.Desc">啟動器本體一般設定</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Title">插件</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Desc">設定、管理已安裝嘅插件以及插件行為</x:String>
+    <x:String x:Key="Settings.Nav.About.Title">關於</x:String>
+    <x:String x:Key="Settings.Nav.About.Desc">關於 BedrockBoot</x:String>
+
+    <x:String x:Key="Settings.Nav.Group.Download">下載</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Env">設定符合你網絡環境嘅下載設定，令啟動器連網體驗更加流暢。</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Source">喺部分網絡環境下，MCAPPX 源會用唔到，需要用其他嘅清單來源。</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Thread">下載線程方面，我哋建議用預設 4 線程下載，如果下載線程太多，下載速度可能會變慢。</x:String>
+    <x:String x:Key="Settings.Nav.Group.Game">遊戲</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Game.Path">請留意遊戲目錄入面有冇中文或者符號等字元，如果有呢啲字元，遊戲好有可能會啟動唔到。</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Game.Isolation">版本隔離方面，我哋建議用 混合模式 玩遊戲，如果用 單一模式，可能會令其他第三方基岩版啟動器無法正常安裝同啟動遊戲。</x:String>
+    <x:String x:Key="Settings.Nav.Action.FAQ">啟動器常見問題</x:String>
+
+    <x:String x:Key="Settings.Folders.Action.Add">新增目錄</x:String>
+    <x:String x:Key="Settings.Folders.Action.Add.Desc">新增新嘅遊戲目錄</x:String>
+    <x:String x:Key="Settings.Folders.Group.List">目錄設定</x:String>
+    <x:String x:Key="Setting.Game.Folders.Title">實例目錄</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.Title">新增遊戲根目錄</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.Action">新增</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.ImportOther">匯入其他啟動器設定</x:String>
+    <x:String x:Key="Setting.Game.Folders.Draw.Import.Title">匯入其他啟動器目錄</x:String>
+    <x:String x:Key="Setting.Folder.Delete.Title">刪除目錄</x:String>
+    <x:String x:Key="Setting.Folder.Delete.Content">請注意，今次刪除只會移除啟動器入面嘅索引，唔會刪除本機磁碟入面嘅實際檔案。&#x0a;你確定要移除咩？</x:String>
+    <x:String x:Key="Setting.Folder.Edit.Title">設定目錄</x:String>
+
+    <x:String x:Key="Settings.Background.Mode.Title">背景模式</x:String>
+    <x:String x:Key="Settings.Background.Mode.Desc">視窗嘅背景模式</x:String>
+    <x:String x:Key="Settings.Background.Mode.Image">圖片</x:String>
+    <x:String x:Key="Settings.Background.Mode.Accent">強調色</x:String>
+    <x:String x:Key="Settings.Background.Mode.Voronoi">泰森多邊形 (Voronoi)</x:String>
+    <x:String x:Key="Settings.Background.Mode.Bubble">氣泡</x:String>
+    <x:String x:Key="Settings.Background.Image.Group.Title">圖片背景</x:String>
+    <x:String x:Key="Settings.Background.Image.Group.Desc">啟動器圖片背景相關設定</x:String>
+    <x:String x:Key="Settings.Background.Image.Select.Title">揀桌布</x:String>
+    <x:String x:Key="Settings.Background.Image.Select.Desc">揀你需要嘅桌布</x:String>
+    <x:String x:Key="Settings.Background.Image.Parallax.Title">圖片視差</x:String>
+    <x:String x:Key="Settings.Background.Image.Parallax.Desc">3D 圖片視差效果</x:String>
+    <x:String x:Key="Settings.Background.Image.Opacity.Title">桌布透明度</x:String>
+    <x:String x:Key="Settings.Background.Image.Opacity.Desc">桌布嘅透明度設定</x:String>
+    <x:String x:Key="Settings.Background.Image.Blur.Title">桌布模糊</x:String>
+    <x:String x:Key="Settings.Background.Image.Blur.Desc">桌布嘅模糊效果</x:String>
+
+    <x:String x:Key="Setting.Personalization.Background.Title">背景</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Dialog.Import.Title">揀圖片檔案</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.None">無</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Color">純色</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Image">圖片</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Mica">雲母 (Mica)</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Acrylic">壓克力 (Acrylic)</x:String>
+
+    <x:String x:Key="Settings.Color.Theme.Title">主題模式</x:String>
+    <x:String x:Key="Settings.Color.Theme.Desc">淺色 or 深色</x:String>
+    <x:String x:Key="Settings.Color.Theme.Dark">深色</x:String>
+    <x:String x:Key="Settings.Color.Theme.Light">淺色</x:String>
+
+    <x:String x:Key="Setting.Personalization.Title">個人化</x:String>
+    <x:String x:Key="Setting.Personalization.Breadcrumb.Root">個人化</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Title">顏色</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Header">應用模式</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Accent.Header">強調色</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Light">淺色 (Light)</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Dark">深色 (Dark)</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Auto">跟隨系統 (Auto)</x:String>
+
+    <x:String x:Key="Settings.Personalization.Group.Base">基本主題</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Title">背景</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Desc">詳細背景設定</x:String>
+    <x:String x:Key="Settings.Personalization.Color.Title">顏色</x:String>
+    <x:String x:Key="Settings.Personalization.Color.Desc">啟動器主題顏色設定</x:String>
+    <x:String x:Key="Settings.Personalization.Group.Home">主頁</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Title">主頁</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Desc">啟動器主頁顯示嘅內容</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Type.Title">主頁類型</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Type.Desc">啟動器主頁顯示嘅類型</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Type.None">無</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Type.News">新聞主頁</x:String>
+    <x:String x:Key="Settings.Personalization.Group.Window">視窗</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">用系統標題列</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">用系統自帶嘅標題列，並且隱藏控制按鈕</x:String>
+    <x:String x:Key="Settings.Personalization.Group.ThemePack">主題包</x:String>
+    <x:String x:Key="Settings.Personalization.UseThemePack.Title">用主題包</x:String>
+    <x:String x:Key="Settings.Personalization.UseThemePack.Desc">係咪用 BedrockBoot 擴充主題包</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Title">匯出主題包</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Desc">將目前主題匯出做 BedrockBoot 主題包</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Tip">匯出主題包只可以喺背景類型係圖片背景嘅時候用。</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePackManager.Title">主題包管理</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePackManager.Desc">管理、設定所有已安裝嘅 BedrockBoot 主題包</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Title">音效</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Desc">BedrockBoot 背景音樂</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Title">字型</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Desc">BedrockBoot 介面顯示字型</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Title">啟動按鈕位置</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Desc">設定啟動按鈕同版本選擇嘅位置</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Left">啟動按鈕喺左邊</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Right">啟動按鈕喺右邊</x:String>
+
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Title">音量</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Desc">背景音量設定。</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Tip">喺任何一頁，撳住 Ctrl + 滾動滑鼠滾軸 就可以快速調校音量</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Choose.Title">揀背景音效</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Choose.Desc">揀 BedrockBoot 主頁面播放嘅音效檔案</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Restore.Title">還原預設背景音效</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Restore.Desc">將背景音效還原做預設設定</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Play.Title">播放 BedrockBoot 背景音樂</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Play.Desc">設定係咪播放背景音樂</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.Title">音效來源</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.Desc">BedrockBoot 背景音樂嘅來源</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.PreferThemePack">優先用主題包</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.CustomOnly">只用揀選嘅音效</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.ThemePackOnly">只用主題包音效</x:String>
+
+    <x:String x:Key="Settings.Personalization.Font.Group.Font">介面字型</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Main.Title">首選字型</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Main.Desc">揀啟動器顯示嘅主要字型</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Fallback.Title">備選字型</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Fallback.Desc">當首選字型缺少字元嗰陣，會自動用返呢個字型</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Group.Preview">預覽</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Size">預覽字型大小</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Text">預覽文字</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Watermark">請輸入預覽文字...</x:String>
+
+    <x:String x:Key="Settings.Personalization.Background.Mode.Live">動態桌布</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mode.Default">預設</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Restore.Title">還原預設背景圖片</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Restore.Desc">將背景圖片還原做預設設定</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Animation.Title">動效背景</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Animation.Desc">用類似 AppleMusic 播放器咁嘅背景樣式</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Title">背景圖片質素</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Desc">揀渲染質素 (越高越清晰，但係佔用嘅記憶體就越多)</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Low">低</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Medium">中</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.High">高 (原始質素)</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mica.Title">Mica 樣式</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mica.Desc">揀一個 Mica 樣式</x:String>
+    <x:String x:Key="Settings.Personalization.Background.LiveBlur.Title">模糊化</x:String>
+    <x:String x:Key="Settings.Personalization.Background.LiveBlur.Desc">開呢個選項可以令動態桌布模糊化</x:String>
+
+    <x:String x:Key="Settings.Personalization.ThemePack.Desc1">匯入其他人分享畀你嘅主題包嚟個人化 BedrockBoot</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Desc2">你都可以自己整 BedrockBoot 主題包</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Action.Import">匯入主題包</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Empty.Title">未安裝任何主題</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Empty.Message">你仲未安裝任何主題包啊啊啊</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Loading.Message">翻箱倒櫃</x:String>
+
+    <x:String x:Key="Setting.Personalization.Home.Title">主頁</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.Header">主頁內容類型</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.None">空白 (None)</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.News">新聞 (News)</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.Widgets">小工具 (Widgets)</x:String>
+
+    <x:String x:Key="Settings.Game.Group.Base">基礎設定</x:String>
+    <x:String x:Key="Settings.Game.Isolation.Title">版本隔離</x:String>
+    <x:String x:Key="Settings.Game.Isolation.Desc">版本隔離用嘅技術類型</x:String>
+    <x:String x:Key="Settings.Game.Isolation.SymbolicLink">單一模式（Symbolic Link）</x:String>
+    <x:String x:Key="Settings.Game.Isolation.HookSymbolicLink">混合模式（Hook + Symbolic Link）</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Title">版本隔離優先次序</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Desc">設定對於唔同啟動器嘅版本隔離策略。</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Standard">標準</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Priority">優先</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Title">隔離目錄</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Desc">揀唔同嘅目錄隔離策略</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Dedicated">獨立目錄 (專屬目錄)</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Shared">與其他啟動器共用</x:String>
+    <x:String x:Key="Settings.Game.Group.Accessibility">協助工具</x:String>
+    <x:String x:Key="Settings.Game.Overlay.Title">遊戲疊層</x:String>
+    <x:String x:Key="Settings.Game.Overlay.Desc">喺遊戲視窗入面撳 Shift+Tab 就可以開啟遊戲疊層</x:String>
+    <x:String x:Key="Settings.Game.Group.Global">全域</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Title">全域設定</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Desc">全域實例嘅遊戲設定 (options.txt) 檔案來源嘅設定</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Reset.Title">重設同步來源</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Reset.Desc">重設目前設定嘅同步來源實例</x:String>
+    <x:String x:Key="Settings.Game.MultipleUsers.Title">用多帳戶</x:String>
+    <x:String x:Key="Settings.Game.MultipleUsers.Desc">喺 Windows 用全新嘅多帳戶模式玩遊戲</x:String>
+    <x:String x:Key="Settings.Game.NeoLaunch.Title">新啟動方式</x:String>
+    <x:String x:Key="Settings.Game.NeoLaunch.Desc">喺 Linux 用新嘅啟動方式，包含 XBOX 帳戶登入</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Title">滑鼠鎖</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Desc">防止滑鼠越過遊戲視窗邊界，避免誤觸其他內容</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Main.Title">總開關</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Main.Desc">只有總開關開咗，功能先會生效</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Advance">進階</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.ForGdk.Title">對 GDK 版本生效</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.ForGdk.Desc">正常情況下，只有 UWP 版本先至需要滑鼠鎖</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Title">舊版邏輯</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Desc">除非新版滑鼠鎖邏輯唔能夠如常運作，否則你唔應該開呢個掣</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">舊版滑鼠鎖邏輯比較粗暴，除咗不必要嘅 CPU 消耗之外，仲會令其他應用或者遊戲自帶嘅滑鼠鎖定邏輯出現異常，&#10;而且會令解除鎖定嘅熱鍵運作異常。&#10;除非新版滑鼠鎖邏輯唔能夠如常運作，否則你真係唔應該開呢個掣！&#10;&#10;確定仲要開？</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.WindowTrimming.Title">四邊減去嘅像素數量</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.WindowTrimming.Desc">喺視窗四邊減少量像素，防止遊戲全螢幕或者隱藏工作列而且遊戲最大化嗰陣，滑鼠誤觸工作列</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Title">UWP 視窗擷取優先設定</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Desc">設定 UWP 框架視窗擷取策略。</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Default">啟動時監視框架</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Legacy">喺遊戲度攞框架</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Title">熱鍵綁定</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Desc">綁定臨時解除滑鼠鎖定嘅熱鍵</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Capturing">擷取緊，撳 Esc 取消</x:String>
+    <x:String x:Key="Settings.Game.Group.Advanced">進階</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Title">自訂命令</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Desc">設定啟動前命令、啟動後命令同執行包裝器</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Main.Title">總開關</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Main.Desc">只有總開關開咗，下面嘅自訂命令先會生效</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Group.Hooks">命令</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Pre.Title">啟動前命令</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Pre.Desc">喺遊戲程序啟動之前執行嘅命令</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Pre.Watermark">例如：taskkill /IM SomeApp.exe</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Post.Title">啟動後命令</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Post.Desc">喺遊戲程序結束之後執行嘅命令</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Post.Watermark">例如：shutdown /s /t 60</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Group.Wrapper">執行包裝器</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Title">包裝器命令</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Desc">用 %command% 代表原本嘅遊戲啟動命令，留空就唔用包裝器</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Watermark">例如：gamemoderun %command%</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Unsupported.Title">包裝器喺 Windows 用唔到</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Unsupported.Desc">Windows 嘅遊戲透過 UWP/GDK 包啟動，冇得包裝嘅程序命令列。啟動前同啟動後命令仍然可以用。</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Group.Behavior">執行行為</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wait.Title">等啟動前命令完成</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wait.Desc">關閉嗰陣啟動前命令會喺背景執行，遊戲即刻啟動</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Timeout.Title">等待逾時時間（秒）</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Timeout.Desc">超過呢個時間之後會終止命令並繼續啟動遊戲，0 代表無限等待</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Abort.Title">命令失敗嗰陣中止啟動</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Abort.Desc">啟動前命令回傳非零結束代碼嗰陣，取消今次遊戲啟動</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Group.Placeholder">可用預留位置</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Placeholder.Title">實例預留位置</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Placeholder.Desc">{instance_path} 實例目錄，{instance_name} 實例名稱，{game_version} 遊戲版本，{build_type} 建置類型，{body_file} 主體檔案名稱，{game_exe} 遊戲執行檔完整路徑</x:String>
+    <x:String x:Key="Settings.Game.Proton.Desc">管理同設定 Proton 執行器</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Title">安裝新 Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Desc">由提供嘅預設儲存庫拉取 Proton 嘅唔同版本</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Title">揀全域 Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Desc">喺已安裝嘅 Proton 入面揀一個做全域 Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Installed.Title">已安裝嘅 GDKProton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Title">暫時未安裝</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Message">目前冇任何一個可用嘅 Proton 執行器</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Combo">請先安裝 Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Branch.Title">揀 GDKProton 分支</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Version.Title">揀 GDKProton 版本</x:String>
+
+    <x:String x:Key="Settings.Game.Backup.Title">存檔備份</x:String>
+    <x:String x:Key="Settings.Game.Backup.Desc">自動備份已修改存檔同歷史備份管理</x:String>
+    <x:String x:Key="Settings.Game.Backup.Group.Auto">自動備份</x:String>
+    <x:String x:Key="Settings.Game.Backup.Group.Storage">儲存空間管理</x:String>
+    <x:String x:Key="Settings.Game.Backup.Auto.Title">自動備份存檔</x:String>
+    <x:String x:Key="Settings.Game.Backup.Auto.Desc">喺遊戲啟動或者結束之後，自動偵測並備份已修改過嘅世界存檔</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnLaunch.Title">遊戲啟動後自動備份</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnLaunch.Desc">遊戲成功啟動之後，喺背景自動檢查並備份已修改嘅世界存檔</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnExit.Title">遊戲結束後自動備份</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnExit.Desc">遊戲結束之後，自動檢查今次遊玩修改過嘅世界存檔並產生備份</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Title">自動備份保留數量</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Desc">每個世界存檔最多保留幾多個自動備份，超過就會自動清理最舊嘅自動備份（唔影響手動備份）</x:String>
+    <x:String x:Key="Settings.Game.Backup.Notice.Title">自動備份提示通知</x:String>
+    <x:String x:Key="Settings.Game.Backup.Notice.Desc">自動備份成功完成之後，喺啟動器入面彈出提示通知</x:String>
+    <x:String x:Key="Settings.Game.Backup.OpenFolder.Title">開啟備份資料夾</x:String>
+    <x:String x:Key="Settings.Game.Backup.OpenFolder.Desc">喺系統檔案管理員瀏覽所有已備份嘅資料</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.3">3 個</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.5">5 個 (建議)</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.10">10 個</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.20">20 個</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Unlimited">唔限制</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Notice.Title">自動存檔備份</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Notice.Message">已自動備份咗 {0} 個已修改嘅世界存檔。</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Prefix">自動備份</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Timing.Launch">啟動</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Timing.Exit">結束</x:String>
+
+    <x:String x:Key="Setting.Game.Title">遊戲</x:String>
+    <x:String x:Key="Setting.Game.Breadcrumb.Root">遊戲</x:String>
+    <x:String x:Key="Setting.Game.Isolation.None">不隔離 (None)</x:String>
+    <x:String x:Key="Setting.Game.Isolation.Version">按版本隔離 (Version)</x:String>
+
+    <x:String x:Key="Settings.Download.Group.Base">基礎下載</x:String>
+    <x:String x:Key="Settings.Download.Chunks.Title">下載分片</x:String>
+    <x:String x:Key="Settings.Download.Chunks.Desc">BedrockBoot 嘅下載分片數量</x:String>
+    <x:String x:Key="Settings.Download.Group.Instance">實例下載</x:String>
+    <x:String x:Key="Settings.Download.InstancePath.Title">實例目錄</x:String>
+    <x:String x:Key="Settings.Download.InstancePath.Desc">遊戲存放嘅根目錄</x:String>
+    <x:String x:Key="Settings.Download.Group.Source">來源</x:String>
+    <x:String x:Key="Settings.Download.Source.Version.Title">版本清單來源</x:String>
+    <x:String x:Key="Settings.Download.Source.Version.Desc">BedrockBoot 用嘅版本清單來源</x:String>
+    <x:String x:Key="Settings.Download.Source.CurseForge.Title">CurseForge 來源</x:String>
+    <x:String x:Key="Settings.Download.Source.CurseForge.Desc">BedrockBoot 用嘅 CurseForge 來源</x:String>
+    <x:String x:Key="Settings.Download.Group.Advanced">進階</x:String>
+    <x:String x:Key="Settings.Download.SoftwareUpdate.Title">軟件更新</x:String>
+    <x:String x:Key="Settings.Download.SoftwareUpdate.Desc">BedrockBoot 嘅更新設定</x:String>
+    <x:String x:Key="Settings.Download.FuzzySearch.Title">模糊比對</x:String>
+    <x:String x:Key="Settings.Download.FuzzySearch.Desc">設定搜尋資源時嘅模糊比對行為，開咗之後搜尋結果會更豐富，但係都會出現唔相關嘅結果。呢個選項唔影響搜尋 Minecraft 嘅行為。</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Title">網絡測試</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Desc">測試 BedrockBoot 用嘅全部 API 網絡通訊延遲</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Title">開始測試</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Desc">撳下面嘅按鈕，會並行測試所有 API 嘅網絡延遲</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Test">測試全部</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Testing">測試緊...</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Failed">連線失敗</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Timeout">連線逾時</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Mojang">Mojang 官方</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Version">版本清單來源</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.CurseForge">CurseForge 來源</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Update">軟件更新來源</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.GameFile">遊戲檔案下載來源</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Plugin">插件 / 第三方</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Other">其他</x:String>
+
+    <x:String x:Key="Setting.Download.Title">下載設定</x:String>
+    <x:String x:Key="Setting.Download.Breadcrumb.Root">下載</x:String>
+    <x:String x:Key="Setting.Download.ChunkCount">下載並行分片數</x:String>
+    <x:String x:Key="Setting.Download.Source.Version">版本中繼資料來源</x:String>
+    <x:String x:Key="Setting.Download.Source.CurseForge">CurseForge API 代理來源</x:String>
+    <x:String x:Key="Setting.Download.Navigation.Folders">管理遊戲目錄</x:String>
+    <x:String x:Key="Setting.Download.Navigation.Update">檢查軟件更新</x:String>
+
+    <x:String x:Key="Settings.Universal.Debug.Group.Base">基礎設定</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Console.Title">主控台</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Console.Desc">BedrockBoot 本體嘅主控台（需要重新啟動）</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Group.Other">其他頁面</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Exception.Title">崩潰記錄</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Exception.Desc">BedrockBoot 本體記錄嘅每一次崩潰</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Summary.Title">簡述</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Summary.Intro">呢一頁記錄嘅所有內容都係嚟自使用期間出現嘅崩潰</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Summary.Guide">遇到崩潰、需要回報畀開發者嗰陣，可以去呢一頁搵返之前出現過嘅異常崩潰，匯出之後畀開發者修復</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Empty.Title">冇任何報告</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Empty.Message">冇任何錯誤報告產生</x:String>
+    <x:String x:Key="Settings.Universal.Update.Auto.Title">自動更新</x:String>
+    <x:String x:Key="Settings.Universal.Update.Auto.Desc">每次啟動都會偵測更新</x:String>
+    <x:String x:Key="Settings.Universal.Update.Channel.Title">更新頻道</x:String>
+    <x:String x:Key="Settings.Universal.Update.Channel.Desc">啟動器更新頻道</x:String>
+    <x:String x:Key="Settings.Universal.Update.Channel.Release">正式版 (穩定，更新速度慢)</x:String>
+    <x:String x:Key="Settings.Universal.Update.Channel.Preview">預覽版 (唔穩定，更新速度快)</x:String>
+    <x:String x:Key="Settings.Universal.Update.Status.Latest.Title">目前已經係最新版本</x:String>
+    <x:String x:Key="Settings.Universal.Update.Status.Latest.Message">盡情享用啦~</x:String>
+    <x:String x:Key="Settings.Universal.Group.Accessibility">協助工具</x:String>
+    <x:String x:Key="Settings.Universal.JumpList.Title">跳轉清單捷徑選單</x:String>
+    <x:String x:Key="Settings.Universal.JumpList.Desc">當程式釘選喺工作列或者開始功能表嗰陣，右鍵佢個釘選項目就會顯示快速啟動</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Title">偵錯模式</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Desc">BedrockBoot 本體偵錯模式</x:String>
+    <x:String x:Key="Settings.Universal.Language.Title">語言</x:String>
+    <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot 所顯示嘅語言</x:String>
+    <x:String x:Key="Settings.Universal.Group.Behavior">行為</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Title">啟動器行為</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">啟動器喺遊戲啟動之後嘅行為</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.None">無</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Minimize">啟動後將啟動器最小化</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Exit">啟動後結束啟動器</x:String>
+    <x:String x:Key="Settings.Universal.HardwareDecode.Title">硬件解碼</x:String>
+    <x:String x:Key="Settings.Universal.HardwareDecode.Desc">設定安裝遊戲 (GDK) 嗰陣係咪啟用硬件解碼，開咗之後可以提升安裝速度，部分型號嘅 CPU 唔支援呢個功能</x:String>
+    <x:String x:Key="Settings.Universal.BetaUI.Title">Beta 測試項</x:String>
+    <x:String x:Key="Settings.Universal.BetaUI.Desc">啟用或者關閉 BedrockBoot 嘅 Beta 測試項</x:String>
+    <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Title">版本資訊</x:String>
+    <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Desc">關於目前版本嘅版本資訊</x:String>
+    <x:String x:Key="Settings.Universal.Update.Changelog.Title">變更記錄</x:String>
+    <x:String x:Key="Settings.Universal.Update.Changelog.Desc">目前版本同上一個版本之間嘅變更記錄</x:String>
+    <x:String x:Key="Settings.Universal.Update.Dependency.Title">相依性更新</x:String>
+    <x:String x:Key="Settings.Universal.Update.Dependency.Desc">檢查並更新連線元件（EasyTier / GravityCone）</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">連線相依元件</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">讀取緊版本資訊...</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Title">檢查更新</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Desc">由 GitHub 攞連線元件嘅最新版本，同本機版本比對</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Action">檢查更新</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Title">更新相依性</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Desc">下載並安裝最新版本嘅連線元件（更新期間連線功能將會關閉）</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Action">立即更新</x:String>
+
+    <x:String x:Key="Settings.Plugin.Manager.Title">插件管理</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Desc">管理已安裝嘅插件</x:String>
+    <x:String x:Key="Settings.Plugin.Settings.Title">插件設定</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Breadcrumb">管理</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Intro">透過匯入第三方插件，BedrockBoot 可以行第三方擴充內容。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.ImportGuide">撳「匯入」按鈕，開始匯入插件包。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Action.Import">匯入插件</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.SecurityNotice">請匯入你信任嘅插件包。注意：載入來源不明嘅插件可能存在安全風險。</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Title">未安裝插件</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Message">仲未安裝任何第三方插件</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Loading.Message">載入緊插件</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.Title">揀插件包</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.FileType">BedrockBoot 插件包</x:String>
+
+    <x:String x:Key="Setting.Universal.Title">一般</x:String>
+    <x:String x:Key="Setting.Universal.Breadcrumb.Root">一般</x:String>
+    <x:String x:Key="Setting.Universal.Language.Auto">跟隨系統 (Auto)</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Title">偵錯模式</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Console.Header">主控台模式</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Console.Desc">開咗之後會跟住遊戲啟動顯示主控台視窗</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Exception.Header">例外查看</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Exception.Desc">查看擷取到嘅程式例外日誌</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Title">崩潰記錄</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Item.Desc">{0} 發生嘅崩潰</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Title">儲存錯誤報告</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Prefix">錯誤報告</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.FileType">BedrockBoot 崩潰報告</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Title">軟件更新</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.CheckUpdateAction">檢查更新</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Stable">穩定版 (Stable)</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Beta">測試版 (Beta)</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Dev">開發版 (Dev)</x:String>
+    <x:String x:Key="Setting.Universal.GatherInfo.Title">收集用户資訊</x:String>
+    <x:String x:Key="Setting.Universal.GatherInfo.Desc">用嚟收集用户使用嘅資訊，只用嚟分析用户群體，絕對唔會向第三方出售資料</x:String>
+
+    <x:String x:Key="MainPage.Update.Title">檢查更新</x:String>
+    <x:String x:Key="MainPage.Update.NewVersion">更新 {0}</x:String>
+    <x:String x:Key="MainPage.Update.Content">我哋有新嘅更新：\n\n{0}</x:String>
+    <x:String x:Key="MainPage.Update.Action.Now">而家更新</x:String>
+    <x:String x:Key="MainPage.Update.Action.Latest">目前已經係最新版本</x:String>
+
+    <x:String x:Key="Tools.Title">工具箱</x:String>
+    <x:String x:Key="Tools.Group.Help">說明</x:String>
+    <x:String x:Key="Tools.McFramework.Title">下載遊戲框架</x:String>
+    <x:String x:Key="Tools.McFramework.Description">前往 MCAPPX 網站下載 Minecraft 遊戲執行框架</x:String>
+    <x:String x:Key="Tools.McFramework.Action">開啟網頁</x:String>
+    <x:String x:Key="Tools.RecoverFiles.Title">搵返檔案</x:String>
+    <x:String x:Key="Tools.RecoverFiles.Description">用嚟搵返因為版本隔離而唔見咗嘅 存檔 / 資源包 等檔案</x:String>
+    <x:String x:Key="Tools.UninstallMc.Title">解除安裝本機已安裝嘅 Minecraft</x:String>
+    <x:String x:Key="Tools.UninstallMc.Description">用嚟解除安裝由本機已安裝嘅 Minecraft 導致嘅錯誤</x:String>
+    <x:String x:Key="Tools.CheckSdk.Title">偵測 SDK1.8 安裝</x:String>
+    <x:String x:Key="Tools.CheckSdk.Description">檢查系統有冇安裝遊戲執行階段之一 SDK1.8</x:String>
+    <x:String x:Key="Tools.Group.Tools">工具</x:String>
+    <x:String x:Key="Tools.WorldShift.Title">存檔轉換</x:String>
+    <x:String x:Key="Tools.WorldShift.Description">Java 存檔同 Bedrock 存檔互相轉換（基於 Chunker，需要 Jvm 執行器）</x:String>
+    <x:String x:Key="Tools.ResourcePackShift.Title">資源包轉換</x:String>
+    <x:String x:Key="Tools.ResourcePackShift.Description">將 Java 版嘅資源包轉換做基岩版支援嘅資源包</x:String>
+    <x:String x:Key="Tools.TranslateResourcePack.Title">翻譯資源包</x:String>
+    <x:String x:Key="Tools.TranslateResourcePack.Description">匯入一個資源包，並且翻譯做中文</x:String>
+    <x:String x:Key="Tools.Empty.Title">乜都冇喎</x:String>
+    <x:String x:Key="Tools.Empty.Message">工具箱入面冇工具 awa&#x0A;可以催開發者快啲加.jpg</x:String>
+
+    <x:String x:Key="MainPage.Tools.Uninstall.Dialog.Title">解除安裝緊遊戲...</x:String>
+    <x:String x:Key="MainPage.Tools.Uninstall.Dialog.Content">解除安裝完之後，呢個對話框會自動關閉。</x:String>
+
+    <x:String x:Key="About.Section.OpenSource">開源網址</x:String>
+    <x:String x:Key="About.OpenSource.License.Mit">MIT 授權條款 (MIT)</x:String>
+    <x:String x:Key="About.OpenSource.License.Gpl">GNU 通用公共授權條款 (GPL)</x:String>
+    <x:String x:Key="About.OpenSource.License.Apache">Apache 授權條款</x:String>
+    <x:String x:Key="About.OpenSource.License.Custom">自訂授權條款</x:String>
+    <x:String x:Key="About.OpenSource.Repo">GitHub 儲存庫：</x:String>
+    <x:String x:Key="About.OpenSource.Org">GitHub 組織：</x:String>
+    <x:String x:Key="About.OpenSource.RepoName">BedrockBoot 開源儲存庫</x:String>
+    <x:String x:Key="About.OpenSource.OrgName">Round Studio</x:String>
+    <x:String x:Key="About.OpenSource.Issues">BedrockBoot 問題回報 (Issues)</x:String>
+    <x:String x:Key="About.OpenSource.Invitation">歡迎幫我哋嘅專案提交 PR，一齊完善 BedrockBoot</x:String>
+
+    <x:String x:Key="About.Section.Developers">開發者</x:String>
+    <x:String x:Key="About.Developers.Core">BedrockBoot 本體：Dime，YoumiHa</x:String>
+    <x:String x:Key="About.Developers.Kernel">BedrockBoot 啟動核心：YoumiHa</x:String>
+    <x:String x:Key="About.Developers.UI">BedrockBoot 用户互動體驗：DrMing</x:String>
+
+    <x:String x:Key="About.Section.Credits">鳴謝</x:String>
+    <x:String x:Key="About.Credits.MCAPPX">BedrockBoot 用嘅版本清單來源嚟自 MCAPPX 網站</x:String>
+    <x:String x:Key="About.Credits.Akams">BedrockBoot 下載更新嘅部分公益來源嚟自 github.akams.cn</x:String>
+    <x:String x:Key="About.Credits.CurseForge">BedrockBoot 用嘅遊戲資源下載嚟自 CurseForge</x:String>
+    <x:String x:Key="About.Credits.BMCBL">多謝 BMCBL 提供嘅 MCAPPX 清單來源加速站點</x:String>
+
+    <x:String x:Key="About.Section.Inspiration">靈感來源</x:String>
+    <x:String x:Key="About.Inspiration.LauncherX">BedrockBoot 內部分動畫參考自 LauncherX</x:String>
+    <x:String x:Key="About.Inspiration.Polymerium">BedrockBoot 內部分設計參考自 Polymerium</x:String>
+    <x:String x:Key="About.Inspiration.WonderLab">BedrockBoot 內部分設計參考自 WonderLab</x:String>
+
+    <x:String x:Key="About.Section.Components">元件庫</x:String>
+    <x:String x:Key="About.Components.OnePointUI">BedrockBoot 用咗 OnePointUI 嚟做用户互動風格</x:String>
+    <x:String x:Key="About.Components.Core">BedrockBoot 用咗 BedrockLauncher.Core 遊戲啟動核心</x:String>
+
+    <x:String x:Key="About.Action.OpenSourceLib.Title">第三方元件庫</x:String>
+    <x:String x:Key="About.Action.OpenSourceLib.Desc">BedrockBoot 用嘅第三方開源函式庫</x:String>
+    <x:String x:Key="About.Action.Contributors.Title">貢獻者</x:String>
+    <x:String x:Key="About.Action.Contributors.Desc">BedrockBoot 嘅所有貢獻者</x:String>
+    <x:String x:Key="About.Action.Version.Title">內部版本號</x:String>
+    <x:String x:Key="About.Action.CheckUpdate">檢查更新</x:String>
+
+    <x:String x:Key="About.Contributor.Title">貢獻者</x:String>
+    <x:String x:Key="About.Contributor.Description">呢度展示嘅係對 BedrockBoot 有貢獻嘅創作者！</x:String>
+    <x:String x:Key="About.Contributor.Count.Prefix">成功貢獻過 </x:String>
+    <x:String x:Key="About.Contributor.Count.Suffix"> 次</x:String>
+
+    <x:String x:Key="AboutPage.Title">關於我們</x:String>
+    <x:String x:Key="AboutPage.Contributor.Title">貢獻者</x:String>
+    <x:String x:Key="AboutPage.Contributor.LoadFailed">攞唔到貢獻者清單，請檢查網絡連線。</x:String>
+    <x:String x:Key="AboutPage.OpenSource.Title">第三方元件庫</x:String>
+    <x:String x:Key="AboutPage.OpenSource.VersionPrefix">版本</x:String>
+    <x:String x:Key="AboutPage.Update.Action">檢查更新</x:String>
+    <x:String x:Key="AboutPage.Update.Checking">檢查緊...</x:String>
+
+    <x:String x:Key="Setup.Root.Slogan">新一代 Minecraft 基岩版啟動器</x:String>
+    <x:String x:Key="Setup.Root.Action.Previous">上一步</x:String>
+    <x:String x:Key="Setup.Root.Action.Next">下一步</x:String>
+
+    <x:String x:Key="Setup.Step.Welcome">歡迎</x:String>
+    <x:String x:Key="Setup.Step.Import">匯入</x:String>
+    <x:String x:Key="Setup.Step.Completed">完成</x:String>
+    <x:String x:Key="Setup.Step.Style">個人化</x:String>
+
+    <x:String x:Key="Setup.Welcome.Title">歡迎</x:String>
+    <x:String x:Key="Setup.Welcome.Description">歡迎用 BedrockBoot v2，呢個係初次使用精靈</x:String>
+
+    <x:String x:Key="Setup.Import.Title">匯入</x:String>
+    <x:String x:Key="Setup.Import.Description">初次用 BedrockBoot 嗰陣，需要你做啲操作。</x:String>
+    <x:String x:Key="Setup.Import.Folder.Header">匯入實例目錄</x:String>
+    <x:String x:Key="Setup.Import.Folder.Description">匯入一個新嘅實例目錄</x:String>
+    <x:String x:Key="Setup.Import.Other.Header">匯入其他啟動器設定</x:String>
+    <x:String x:Key="Setup.Import.Other.Description">匯入其他第三方啟動器嘅設定檔，例如 LeviLauncher</x:String>
+    <x:String x:Key="Setup.Import.Dialog.AddFolder.Title">新增遊戲根目錄</x:String>
+    <x:String x:Key="Setup.Import.Dialog.AddFolder.Action">新增</x:String>
+    <x:String x:Key="Setup.Import.Draw.ImportOther.Title">匯入第三方啟動器設定</x:String>
+
+    <x:String x:Key="Setup.Style.Title">個人化</x:String>
+    <x:String x:Key="Setup.Style.Description">啟動器嘅個人化設定</x:String>
+    <x:String x:Key="Setup.Style.Theme.Dark">深色 (Dark)</x:String>
+    <x:String x:Key="Setup.Style.Theme.Light">淺色 (Light)</x:String>
+
+    <x:String x:Key="Setup.Completed.Title">完成</x:String>
+    <x:String x:Key="Setup.Completed.Description">基礎設定已完成！而家可以盡情享用啦~</x:String>
+    <x:String x:Key="Setup.Completed.Action.Start">開始使用</x:String>
+
+    <x:String x:Key="Import.Launcher.Description.Format">由 {0} 啟動器匯入資料...</x:String>
+    <x:String x:Key="Draw.ImportLauncher.Status.None.Title">冇可用設定</x:String>
+    <x:String x:Key="Draw.ImportLauncher.Status.None.Message">目前系統入面冇可用嘅第三方基岩版啟動器設定檔</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.Error.Title">錯誤</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Title">目前系統唔支援</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Content">根據我哋嘅最低支援標準，系統版本號需要大過或者等於 19041&#x0a;請嘗試升級系統之後再試</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Close">結束</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Title">Emm...</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Content">咦，你好似冇連網絡.jpg&#x0a;請嘗試重新連線網絡或者換個網絡環境再試。</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Close">確定</x:String>
+    <x:String x:Key="MainWindow.Dialog.DevMode.Title">開發者模式</x:String>
+    <x:String x:Key="MainWindow.Dialog.DevMode.Content">我哋好似幫你開唔到開發者模式，請你自己去設定度開啟。</x:String>
+    <x:String x:Key="MainWindow.Protocol.Description">BedrockBoot 協議</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.Agreement.Title">BedrockBoot 用户使用協議</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Content">歡迎用 BedrockBoot，&#x0a;開始用即代表你同意呢啲條款：&#x0a;&#x0a;1. 呢個係非官方 Minecraft 啟動器&#x0a;2. 你要有合法授權嘅 Minecraft 副本，否則會自動入試玩版&#x0a;3. 我哋唔會 輔助 / 協助 任何破解正版 Minecraft 嘅行為&#x0a;4. 禁止任何形式嘅盜版或者作弊行為&#x0a;5. 模組 / 資源包 使用風險自負&#x0a;6. 與 Mojang / Microsoft 無關&#x0a;7. 呢個軟件會修改登錄檔相關設定&#x0a;8. 呢個軟件係開源軟件，使用同分發佢嘅副本源碼請跟開源協議 (GPL-v3)&#x0a;&#x0a;繼續用即係接受條款</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Agree">我同意</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Decline">我不同意，結束</x:String>
+
+    <x:String x:Key="Dialog.AddGameFolder.Label.Name">目錄名（自訂）：</x:String>
+    <x:String x:Key="Dialog.AddGameFolder.Label.Path">目錄路徑：</x:String>
+    <x:String x:Key="Dialog.AddFolder.Picker.Title">請揀遊戲實例存放資料夾</x:String>
+    <x:String x:Key="Dialog.AddFolder.Error.InvalidPath">你揀嘅路徑無效或者存取唔到。&#x0a;請確保呢個路徑唔係受系統保護嘅根目錄。</x:String>
+
+    <x:String x:Key="Dialog.AddInstance.Label.GameFolder">遊戲目錄</x:String>
+    <x:String x:Key="Dialog.AddInstance.Label.InstanceName">實例名（自訂）：</x:String>
+
+    <x:String x:Key="Dialog.AddServer.Label.Name">伺服器名稱（自訂）：</x:String>
+    <x:String x:Key="Dialog.AddServer.Watermark.Name">第三方伺服器</x:String>
+    <x:String x:Key="Dialog.AddServer.Label.Address">伺服器位址：</x:String>
+    <x:String x:Key="Dialog.AddServer.Label.Port">伺服器連接埠：</x:String>
+    <x:String x:Key="Dialog.AddServer.DefaultName">第三方伺服器</x:String>
+
+    <x:String x:Key="Dialog.ChooseGame.Label.Instance">實例：</x:String>
+
+    <x:String x:Key="Dialog.Import.Label.PackagePath">安裝包路徑：</x:String>
+    <x:String x:Key="Dialog.Import.Label.InstallFolder">安裝目錄：</x:String>
+    <x:String x:Key="Dialog.Import.Label.InstallName">安裝名稱（自訂）：</x:String>
+    <x:String x:Key="Dialog.Import.Label.GDKTypeTip">實際版本類型（GDK 一定要揀呢項，填錯會啟動唔到）：</x:String>
+    <x:String x:Key="Dialog.Import.Action.DontKnowType">我根本唔知道呢個版本類型，上面嗰啲選項是但揀嘅</x:String>
+
+    <x:String x:Key="Dialog.ImportConfig.Label.Title">揀需要匯入嘅內容</x:String>
+    <x:String x:Key="Dialog.ImportConfig.Option.Settings">實例設定</x:String>
+    <x:String x:Key="Dialog.ImportConfig.Option.Archive">存檔</x:String>
+
+    <x:String x:Key="Dialog.ImportMod.Label.FilePath">檔案路徑：</x:String>
+    <x:String x:Key="Dialog.ImportMod.Label.InjectionDelay">Mod 延遲（ms）：</x:String>
+    <x:String x:Key="Dialog.ImportMod.Option.Preload">啟用預載入 *</x:String>
+    <x:String x:Key="Dialog.ImportMod.Tip.Preload">如果你唔知道咩係預載入，請唔好剔呢個</x:String>
+
+    <x:String x:Key="Dialog.ImportPack.Label.ConfirmList">你將會匯入以下嘅包：</x:String>
+
+    <x:String x:Key="Dialog.MakePack.Notice.Legal">請注意，整合包入面嘅資源包要得到開發者允許先可以分發，否則可能係非法分發</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.GuidePrefix">如果你都想整同我哋啟動器相容嘅整合包檔案，請參閱：</x:String>
+    <x:String x:Key="Dialog.MakePack.Action.ViewGuide">基岩版整合包規範</x:String>
+    <x:String x:Key="Dialog.MakePack.Group.PackInfo">整合包資訊</x:String>
+    <x:String x:Key="Dialog.MakePack.Group.AuthorInfo">整合包作者資訊</x:String>
+    <x:String x:Key="Dialog.MakePack.Group.Contents">整合包包含內容</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.PackName">整合包名：</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.PackDescription">整合包簡介：</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.PackVersion">整合包版本：</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.AuthorName">整合包作者名：</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.AuthorLink">整合包作者網址：</x:String>
+    <x:String x:Key="Dialog.MakePack.Option.DllMods">Mod 檔案</x:String>
+
+    <x:String x:Key="ExceptionWindow.TitleBar">例外處理</x:String>
+    <x:String x:Key="ExceptionWindow.FatalError.Header">應用程式遇到嚴重錯誤</x:String>
+    <x:String x:Key="ExceptionWindow.FatalError.Message">BedrockBoot 發生咗一個嚴重錯誤，需要回報。</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Export">匯出錯誤報告</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Upload">上載日誌</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Copy">複製錯誤訊息</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Return">返回主程式</x:String>
+    <x:String x:Key="ExceptionWindow.Link.FAQ">BedrockBoot 常見問題</x:String>
+    <x:String x:Key="ExceptionWindow.Link.Issues">Github Issues</x:String>
+    <x:String x:Key="ExceptionWindow.SaveDialog.Title">儲存錯誤報告</x:String>
+    <x:String x:Key="ExceptionWindow.SaveDialog.FileType">BedrockBoot 崩潰報告</x:String>
+
+    <!-- Multiplayer -->
+    <x:String x:Key="Multiplayer.Intro.Title">簡述</x:String>
+    <x:String x:Key="Multiplayer.Intro.GravityConeDesc">GravityCone 屬於第三方開源軟件，用嘅時候遇到問題，請透過相關管道回報。</x:String>
+    <x:String x:Key="Multiplayer.Intro.P2PDesc">呢個連線功能基於協定 PaperConnect v2，用 P2P 技術連線，連線成功之後房間入面嘅用户會互相連接，唔會用第三方伺服器轉發流量。最終連線體驗由網絡環境決定</x:String>
+    <x:String x:Key="Multiplayer.Intro.ComplianceDesc">多人連線期間，你務必遵守所在國家同地區嘅全部法律法規。</x:String>
+    <x:String x:Key="Multiplayer.Intro.PaperConnectDesc">呢個連線功能基於協定 PaperConnect，轉發基於 EasyTier</x:String>
+    <x:String x:Key="Multiplayer.Intro.PaperConnectP2PDesc">用 P2P 技術連線，連線成功之後房間入面嘅用户會互相連接，唔會用第三方伺服器轉發流量。最終連線體驗由網絡環境決定</x:String>
+    <x:String x:Key="Multiplayer.Intro.LinksTitle">相關連結</x:String>
+    <x:String x:Key="Multiplayer.Intro.DocsTitle">相關文件</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.Protocol">PaperConnect 連線協定</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.GravityConeRepo">GravityCone 開源儲存庫</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.PaperConnectRepo">PaperConnect 開源儲存庫</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.EasyTierWebsite">EasyTier 官方網站</x:String>
+
+    <x:String x:Key="Multiplayer.Dep.Notice">仲未安裝 PaperConnect 需要嘅執行相依性，撳下面開始下載相依性</x:String>
+    <x:String x:Key="Multiplayer.Dep.StartDownload.Title">開始下載</x:String>
+    <x:String x:Key="Multiplayer.Dep.StartDownload.Desc">自動下載 PaperConnect 需要嘅相依檔案，包含 EasyTier</x:String>
+    <x:String x:Key="Multiplayer.Dep.Dialog.Title">下載連線相依檔案</x:String>
+    <x:String x:Key="Multiplayer.Dep.Download.EasyTier">下載 EasyTier 連線相依性</x:String>
+    <x:String x:Key="Multiplayer.Dep.Download.GravityCone">下載 GravityCone 連線相依性</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Ready">準備開始下載...</x:String>
+
+    <x:String x:Key="Multiplayer.Lobby.Title">連線大廳</x:String>
+    <x:String x:Key="Multiplayer.Lobby.TitleReady">連線大廳 (連線核心已初始化完畢)</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CreateRoom.Title">建立房間</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CreateRoom.Desc">建立一個屬於你嘅房間，並且邀請你嘅好友加入</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinRoom.Title">加入房間</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinRoom.Desc">加入你好友嘅房間，加入遊戲</x:String>
+    <x:String x:Key="Multiplayer.Lobby.RoomCode">連線碼</x:String>
+    <x:String x:Key="Multiplayer.Lobby.RoomCodeClickCopy">連線碼 (撳下面複製)</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CopyRoomCode.Title">複製連線碼</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CopyRoomCode.Desc">複製呢個房間嘅連線碼，並且邀請你嘅好友加入</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CloseRoom.Title">關閉房間</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CloseRoom.Desc">關閉呢個房間，並且移除所有已連線嘅玩家</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ExitRoom.Title">離開房間</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ExitRoom.Desc">離開呢個房間</x:String>
+    <x:String x:Key="Multiplayer.Lobby.Exit.Title">離開</x:String>
+    <x:String x:Key="Multiplayer.Lobby.Exit.Desc">停止建立/加入房間並且離開</x:String>
+    <x:String x:Key="Multiplayer.Lobby.HostCreatedTip">你已經建立咗房間，而家可以邀請你嘅好友加入。</x:String>
+    <x:String x:Key="Multiplayer.Lobby.GuestJoinedTip">你已經加入咗房間，可以啟動遊戲之後加入</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ConnectedPlayers">已連線嘅玩家</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinedPlayers">已加入嘅玩家</x:String>
+    <x:String x:Key="Multiplayer.Lobby.HostBadge">房主</x:String>
+    <x:String x:Key="Multiplayer.Lobby.SearchingLanGame">搜尋區域網絡遊戲</x:String>
+
+    <x:String x:Key="Multiplayer.Init.Title">初始化環境緊...</x:String>
+    <x:String x:Key="Multiplayer.Init.GetPeers">攞節點伺服器</x:String>
+    <x:String x:Key="Multiplayer.Init.GetXboxUser">攞本機帳戶名</x:String>
+    <x:String x:Key="Multiplayer.Init.InitCore">初始化連線核心</x:String>
+
+</ResourceDictionary>

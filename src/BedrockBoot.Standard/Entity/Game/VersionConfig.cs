@@ -76,6 +76,19 @@ public class VersionConfig
         [JsonPropertyName("modsLoaderSelectIndex")] public int ModsLoaderSelectIndex { get; set; } = 0;
         [JsonPropertyName("isEnableHttpPatch")] public bool IsEnableHttpPatch { get; set; } = true;
         [JsonPropertyName("httpPatchConfig")] public HttpPatchEntry HttpPatchConfig { get; set; } = new();
+        [JsonPropertyName("visualConfig")] public VisualEntry VisualConfig { get; set; } = new();
+    }
+
+    public class VisualEntry
+    {
+        [JsonPropertyName("isEnableMotionBlur")] public bool IsEnableMotionBlur { get; set; } = false;
+        [JsonPropertyName("motionBlurStrength")] public int MotionBlurStrength { get; set; } = 60;
+        [JsonPropertyName("isEnableHighContrast")] public bool IsEnableHighContrast { get; set; } = false;
+        [JsonPropertyName("highContrastStrength")] public int HighContrastStrength { get; set; } = 150;
+        [JsonPropertyName("isEnableRetroTv")] public bool IsEnableRetroTv { get; set; } = false;
+        [JsonPropertyName("retroTvStrength")] public int RetroTvStrength { get; set; } = 60;
+        [JsonPropertyName("isEnableDistortion")] public bool IsEnableDistortion { get; set; } = false;
+        [JsonPropertyName("distortionStrength")] public int DistortionStrength { get; set; } = 40;
     }
     
     public class HttpPatchEntry

@@ -18,6 +18,7 @@
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Core.Global;
@@ -78,6 +79,8 @@ public partial class InstanceSetting : UserControl
         CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
         HttpPatchEnable.IsChecked = VersionInfo.Config.IsEnableHttpPatch;
         PatchServerDiscoveryBlock.IsChecked = VersionInfo.Config.HttpPatchConfig.IsEnableServerDiscoveryBlock;
+        PatchVisualBlur.IsChecked = VersionInfo.Config.VisualConfig.IsEnableMotionBlur;
+        MotionValue.Value = VersionInfo.Config.VisualConfig.MotionBlurStrength;
 
         IsEdit = true;
     }
@@ -96,6 +99,7 @@ public partial class InstanceSetting : UserControl
             VersionInfo.Config.IsNativeException = (bool)IsNativeException.IsChecked!;
             VersionInfo.Config.IsEnableHttpPatch = (bool)HttpPatchEnable.IsChecked!;
             VersionInfo.Config.HttpPatchConfig.IsEnableServerDiscoveryBlock = (bool)PatchServerDiscoveryBlock.IsChecked!;
+            VersionInfo.Config.VisualConfig.IsEnableMotionBlur = (bool)PatchVisualBlur.IsChecked!;
 
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
@@ -119,6 +123,15 @@ public partial class InstanceSetting : UserControl
         if (IsEdit)
         {
             VersionInfo.Config.OtherCommand = InstanceArgs.Text;
+            GameInfoHelper.SaveVersionConfig(VersionInfo);
+        }
+    }
+
+    private void MotionValue_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            VersionInfo.Config.VisualConfig.MotionBlurStrength = (int)MotionValue.Value;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
     }

@@ -139,6 +139,27 @@
                 <ToggleSwitch Name="PatchServerDiscoveryBlock"
                               IsCheckedChanged="BoolTypeConfig_OnChanged" />
             </onePointControls:SettingCard>
+
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="视觉效果" />
+
+            <onePointControls:SettingCard Header="动态模糊"
+                                          Description="游戏内的动态模糊效果"
+                                          Glyph="&#xEB44;">
+                <StackPanel Spacing="8"
+                            Orientation="Horizontal"
+                            Margin="0,8">
+                    <Slider Width="200"
+                            Name="MotionValue"
+                            Maximum="95"
+                            ValueChanged="MotionValue_OnValueChanged"
+                            Classes="Number"></Slider>
+                    <ToggleSwitch Name="PatchVisualBlur"
+                                  HorizontalAlignment="Right"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </StackPanel>
+            </onePointControls:SettingCard>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

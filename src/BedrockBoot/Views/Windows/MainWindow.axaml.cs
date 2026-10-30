@@ -785,6 +785,13 @@ public partial class MainWindow : Window
 
     private async void OnPreviewKeyDown(object? sender, KeyEventArgs e)
     {
+        if (e.Key == Key.K && e.KeyModifiers == KeyModifiers.Control)
+        {
+            ToggleSearchOverlay();
+            e.Handled = true;
+            return;
+        }
+
         if (e.Key == Key.V && e.KeyModifiers == KeyModifiers.Control)
             if (e.Source is not (TextBox or TextBlock))
             {
@@ -792,6 +799,20 @@ public partial class MainWindow : Window
                 e.Handled = true;
             }
     }
+
+    private void SearchBtn_OnClick(object? sender, RoutedEventArgs e) => ToggleSearchOverlay();
+
+    /// <summary>打开/关闭全局搜索浮层（Ctrl+K 或右上角搜索按钮）</summary>
+    public void ToggleSearchOverlay()
+    {
+        if (SearchOverlay.IsVisible)
+            SearchOverlay.Close();
+        else
+            SearchOverlay.Open();
+    }
+
+    /// <summary>打开全局搜索浮层，可携带预填关键词</summary>
+    public void OpenSearchOverlay(string? prefill = null) => SearchOverlay.Open(prefill);
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {

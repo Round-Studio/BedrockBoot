@@ -47,28 +47,31 @@
                        FontSize="14"
                        Text="日志" />
 
-            <onePointControls:SettingCard Glyph="&#xE756;"
-                                          Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
-                                          Description="{DynamicResource Instance.Info.Launch.Console.Desc}">
-                <ToggleSwitch Name="InstanceConsole"
-                              IsCheckedChanged="BoolTypeConfig_OnChanged" />
-            </onePointControls:SettingCard>
+            <onePointControls:SettingExpander Glyph="&#xE756;"
+                                              Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
+                                              Description="{DynamicResource Instance.Info.Launch.Console.Desc}">
+                <onePointControls:SettingExpander.RightContent>
+                    <ToggleSwitch Name="InstanceConsole"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingExpander.RightContent>
+                <StackPanel>
+                    <onePointControls:SettingCard Glyph=""
+                                                  Header="{DynamicResource Instance.Info.Launch.DetailedLogs.Title}"
+                                                  Description="{DynamicResource Instance.Info.Launch.DetailedLogs.Desc}">
+                        <ToggleSwitch Name="InstanceDetailedLogs"
+                                      IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                    </onePointControls:SettingCard>
 
-            <onePointControls:SettingCard Glyph="&#xE8A1;"
-                                          Header="{DynamicResource Instance.Info.Launch.DetailedLogs.Title}"
-                                          Description="{DynamicResource Instance.Info.Launch.DetailedLogs.Desc}">
-                <ToggleSwitch Name="InstanceDetailedLogs"
-                              IsCheckedChanged="BoolTypeConfig_OnChanged" />
-            </onePointControls:SettingCard>
-
-            <onePointControls:SettingCard Glyph="&#xEBE8;"
-                                          Name="IsNativeExceptionCard"
-                                          Header="Native 异常捕获"
-                                          Description="捕获 Native 异常">
-                <ToggleSwitch IsChecked="False"
-                              Name="IsNativeException"
-                              IsCheckedChanged="BoolTypeConfig_OnChanged" />
-            </onePointControls:SettingCard>
+                    <onePointControls:SettingCard Glyph=""
+                                                  Name="IsNativeExceptionCard"
+                                                  Header="Native 异常捕获"
+                                                  Description="捕获 Native 异常">
+                        <ToggleSwitch IsChecked="False"
+                                      Name="IsNativeException"
+                                      IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                    </onePointControls:SettingCard>
+                </StackPanel>
+            </onePointControls:SettingExpander>
 
             <TextBlock FontWeight="Bold"
                        Name="HighLevel"

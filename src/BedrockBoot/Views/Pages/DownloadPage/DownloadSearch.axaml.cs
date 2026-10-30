@@ -111,6 +111,28 @@ public partial class DownloadSearch : UserControl
     /// <summary>设置从详情页返回时要恢复的搜索条件</summary>
     public static void SetPendingRestore(SearchInfo? info) => _pendingRestoreInfo = info;
 
+    /// <summary>
+    ///     全局搜索（Ctrl+K）入口：切到下载页并按默认分类规则发起聚合搜索。
+    /// </summary>
+    public static void SearchFromGlobal(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return;
+        key = key.Trim();
+
+        MainPage.Instance?.SelectTagPage("main:download");
+
+        var type = DownloadSearchView != null
+            ? DownloadSearchView.Classify(key)
+            : SearchResourceType.ResourcePack;
+
+        _lastSearchKey = key;
+        _lastSearchType = type;
+
+        if (DownloadSearchView != null) DownloadSearchView.KeyBox.Text = key;
+
+        NavigateInnerFrame(new SearchDetailed(new SearchInfo { Key = key, Type = type }));
+    }
+
     private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         if (!EnsureSearchDetailed()) return;

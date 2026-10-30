@@ -47,6 +47,19 @@
     <x:String x:Key="MainPage.Nav.Multiplayer">多人連線</x:String>
     <x:String x:Key="MainPage.Nav.AccountManager">帳戶管理</x:String>
     <x:String x:Key="MainPage.Nav.Setting">設定</x:String>
+    <x:String x:Key="Search.Placeholder">搜尋設定、實例同內容…</x:String>
+    <x:String x:Key="Search.Empty.HintTitle">你想搵乜？</x:String>
+    <x:String x:Key="Search.Empty.HintMessage">輸入關鍵字，搜尋設定、實例或進行聚合搜尋</x:String>
+    <x:String x:Key="Search.Empty.Title">搵唔到相關內容</x:String>
+    <x:String x:Key="Search.Empty.Message">試下第二個關鍵字，或者㩒 Enter 進行聚合搜尋</x:String>
+    <x:String x:Key="Search.Category.Page">頁面</x:String>
+    <x:String x:Key="Search.Category.Setting">設定</x:String>
+    <x:String x:Key="Search.Category.Instance">實例</x:String>
+    <x:String x:Key="Search.Category.Aggregate">聚合搜尋</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Title">聚合搜尋 “{0}”</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Desc">喺下載中心搜尋版本、資源包、插件同模組</x:String>
+    <x:String x:Key="Search.Hint.Select">↑↓ 揀 · Enter 打開 · Esc 閂</x:String>
+
 
     <x:String x:Key="Account.Action.LinkXbox">連結 XBOX 帳戶</x:String>
     <x:String x:Key="Account.Empty.Title">未連結任何帳戶</x:String>

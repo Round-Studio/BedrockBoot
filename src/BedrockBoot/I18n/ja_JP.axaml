@@ -47,6 +47,19 @@
     <x:String x:Key="MainPage.Nav.Multiplayer">マルチプレイ</x:String>
     <x:String x:Key="MainPage.Nav.AccountManager">アカウント管理</x:String>
     <x:String x:Key="MainPage.Nav.Setting">設定</x:String>
+    <x:String x:Key="Search.Placeholder">設定・インスタンス・コンテンツを検索…</x:String>
+    <x:String x:Key="Search.Empty.HintTitle">何をお探しですか？</x:String>
+    <x:String x:Key="Search.Empty.HintMessage">キーワードを入力して設定・インスタンスを検索、または統合検索を実行</x:String>
+    <x:String x:Key="Search.Empty.Title">関連する結果が見つかりませんでした</x:String>
+    <x:String x:Key="Search.Empty.Message">別のキーワードを試すか、Enter で統合検索を実行してください</x:String>
+    <x:String x:Key="Search.Category.Page">ページ</x:String>
+    <x:String x:Key="Search.Category.Setting">設定</x:String>
+    <x:String x:Key="Search.Category.Instance">インスタンス</x:String>
+    <x:String x:Key="Search.Category.Aggregate">統合検索</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Title">統合検索 “{0}”</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Desc">ダウンロードセンターでバージョン・リソースパック・プラグイン・MOD を検索</x:String>
+    <x:String x:Key="Search.Hint.Select">↑↓ 選択 · Enter で開く · Esc で閉じる</x:String>
+
 
     <x:String x:Key="Account.Action.LinkXbox">Xbox アカウントをリンク</x:String>
     <x:String x:Key="Account.Empty.Title">アカウントがリンクされていません</x:String>

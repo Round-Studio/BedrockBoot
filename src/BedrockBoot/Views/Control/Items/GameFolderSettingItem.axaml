@@ -5,16 +5,13 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.GameFolderSettingItem">
-    <onePointControls:SettingCard Description="FolderPath"
-                                  Name="Card"
-                                  IsFontIcon="True"
-                                  IsShowActionIcon="False"
-                                  IsClickable="True"
-                                  Glyph="&#xE8B7;">
-        <onePointControls:SettingCard.Header>
+    <onePointControls:SettingExpander Description="FolderPath"
+                                      Name="Card"
+                                      IsFontIcon="True"
+                                      Glyph="&#xE8B7;">
+        <onePointControls:SettingExpander.Header>
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
-                        Margin="0,4,0,0"
                         Spacing="4">
                 <onePointControls:LabelBox VerticalAlignment="Center"
                                            IsVisible="True"
@@ -27,28 +24,23 @@
                     Folder Name
                 </TextBlock>
             </StackPanel>
-        </onePointControls:SettingCard.Header>
-        <StackPanel Orientation="Horizontal"
-                    Spacing="5">
-            <Button Width="24" Height="24"
-                    Name="OpenFolderBtn"
-                    Click="OpenFolderBtn_OnClick"
-                    Classes="NoBorder">
-                <onePointControls:FontIcon Glyph="&#xE8B7;" />
-            </Button>
-            <Button Width="24" Height="24"
-                    Name="SettingBtn"
-                    Click="SettingBtn_OnClick"
-                    Classes="NoBorder">
-                <onePointControls:FontIcon Glyph="&#xE713;" />
-            </Button>
-            <Button Width="24" Height="24"
-                    Name="DeleteFolderBtn"
-                    Click="DeleteFolderBtn_OnClick"
-                    Classes="NoBorder">
-                <onePointControls:FontIcon Glyph="&#xE74D;"
-                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
-            </Button>
+        </onePointControls:SettingExpander.Header>
+        <StackPanel>
+            <onePointControls:SettingCard Header="打开目录"
+                                          Glyph="&#xE8B7;"
+                                          Name="OpenFolderBtn"
+                                          IsClickable="True"
+                                          Click="OpenFolderBtn_OnClick"></onePointControls:SettingCard>
+            <onePointControls:SettingCard Header="设置目录"
+                                          Glyph="&#xE713;"
+                                          IsClickable="True"
+                                          Name="SettingBtn"
+                                          Click="SettingBtn_OnClick"></onePointControls:SettingCard>
+            <onePointControls:SettingCard Header="删除目录"
+                                          Glyph="&#xE74D;"
+                                          IsClickable="True"
+                                          Name="DeleteFolderBtn"
+                                          Click="DeleteFolderBtn_OnClick"></onePointControls:SettingCard>
         </StackPanel>
-    </onePointControls:SettingCard>
+    </onePointControls:SettingExpander>
 </UserControl>

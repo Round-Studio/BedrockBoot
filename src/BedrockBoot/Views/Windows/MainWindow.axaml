@@ -239,6 +239,15 @@
                                                Name="AccountName" />
                                 </StackPanel>
                             </Button>
+                            <Button Classes="NoBorder"
+                                    Width="32" Height="32"
+                                    Name="SearchBtn"
+                                    Click="SearchBtn_OnClick">
+                                <onePointControls:FontIcon Glyph="&#xE721;"
+                                                           FontSize="12"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center" />
+                            </Button>
                         </StackPanel>
 
                         <Border Background="{DynamicResource PrimaryBorderBrush}"
@@ -507,15 +516,6 @@
                                     Spacing="8">
                             <StackPanel Orientation="Horizontal"
                                     Spacing="8">
-                                <Button Classes="NoBorder"
-                                        Width="32" Height="32"
-                                        Name="SearchBtn"
-                                        Click="SearchBtn_OnClick">
-                                    <onePointControls:FontIcon Glyph="&#xE721;"
-                                                               FontSize="12"
-                                                               HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center" />
-                                </Button>
                                 <Button Classes="NoBorder"
                                         Height="32"
                                         Padding="10,0"

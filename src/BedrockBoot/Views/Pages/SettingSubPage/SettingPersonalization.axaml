@@ -35,6 +35,11 @@
                        Margin="5,0"
                        TextWrapping="WrapWithOverflow"
                        Text="{DynamicResource Settings.Personalization.ExportThemePack.Tip}" />
+
+            <TextBlock Opacity="0.8"
+                       Margin="5,0"
+                       TextWrapping="WrapWithOverflow"
+                       Text="BedrockBoot 允许您在启用主题包后将当前主题保存，分享给您的好友，甚至安装来自您好友的主题包。" />
             
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
@@ -85,6 +90,11 @@
                        FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Settings.Personalization.Group.Window}" />
+
+            <TextBlock Opacity="0.8"
+                       Margin="5,0"
+                       TextWrapping="WrapWithOverflow"
+                       Text="BedrockBoot 窗体的外观行为与主页面布局" />
 
             <onePointControls:SettingCard Margin="5, 0"
                                           Header="{DynamicResource Settings.Personalization.SystemTitleBar.Title}"

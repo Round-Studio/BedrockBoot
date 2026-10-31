@@ -1,0 +1,1180 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <x:String x:Key="LanguageName">Русский - Hydrooxygen</x:String>
+
+    <x:String x:Key="Shared.Action.Apply">Применить</x:String>
+    <x:String x:Key="Shared.Action.Back">Назад</x:String>
+    <x:String x:Key="Shared.Action.Browse">Обзор</x:String>
+    <x:String x:Key="Shared.Action.Cancel">Отмена</x:String>
+    <x:String x:Key="Shared.Action.Close">Закрыть</x:String>
+    <x:String x:Key="Shared.Action.Confirm">ОК</x:String>
+    <x:String x:Key="Shared.Action.Delete">Удалить</x:String>
+    <x:String x:Key="Shared.Action.Download">Скачать</x:String>
+    <x:String x:Key="Shared.Action.Launch">Запустить</x:String>
+    <x:String x:Key="Shared.Action.OpenFolder">Открыть папку</x:String>
+    <x:String x:Key="Shared.Action.Save">Сохранить</x:String>
+    <x:String x:Key="Shared.Action.Search">Поиск</x:String>
+    <x:String x:Key="Shared.Action.Settings">Настройки</x:String>
+
+    <x:String x:Key="Shared.Label.Information">Информация</x:String>
+    <x:String x:Key="Shared.Label.Notice">Примечание</x:String>
+    <x:String x:Key="Shared.Label.Project">Проект</x:String>
+    <x:String x:Key="Shared.Label.Ranking">Рейтинг</x:String>
+
+    <x:String x:Key="Shared.Group.BasicSettings">Основные настройки</x:String>
+
+    <x:String x:Key="Shared.Status.Wait">Пожалуйста, подождите</x:String>
+    <x:String x:Key="Shared.Status.Searching">Поиск...</x:String>
+    <x:String x:Key="Shared.Status.Progress.Title">Прогресс:</x:String>
+    <x:String x:Key="Shared.Status.Error.Title">Произошла ошибка</x:String>
+    <x:String x:Key="Shared.Status.Error.Network.Desc">Возможно, произошла сетевая ошибка из-за нестабильного соединения</x:String>
+
+    <x:String x:Key="Common.Action.Irreversible">Это действие необратимо.</x:String>
+    <x:String x:Key="Common.Unit.Speed">{0}/с</x:String>
+
+    <x:String x:Key="MainWindow.Common.Confirm">Подтвердить</x:String>
+    <x:String x:Key="MainWindow.Common.Cancel">Отмена</x:String>
+    <x:String x:Key="MainWindow.Common.Delete">Удалить</x:String>
+    <x:String x:Key="MainWindow.Common.Save">Сохранить настройки</x:String>
+    <x:String x:Key="MainWindow.Common.Add">Добавить</x:String>
+
+    <x:String x:Key="Home.Title">Привет, добро пожаловать</x:String>
+
+    <x:String x:Key="MainPage.Nav.Home">Главная</x:String>
+    <x:String x:Key="MainPage.Nav.Manager">Экземпляры</x:String>
+    <x:String x:Key="MainPage.Nav.Download">Загрузки</x:String>
+    <x:String x:Key="MainPage.Nav.Tools">Инструменты</x:String>
+    <x:String x:Key="MainPage.Nav.Multiplayer">Сетевая игра</x:String>
+    <x:String x:Key="MainPage.Nav.AccountManager">Аккаунты</x:String>
+    <x:String x:Key="MainPage.Nav.Setting">Настройки</x:String>
+    <x:String x:Key="Search.Placeholder">Поиск настроек, экземпляров и контента…</x:String>
+    <x:String x:Key="Search.Empty.HintTitle">Что вы ищете?</x:String>
+    <x:String x:Key="Search.Empty.HintMessage">Введите ключевые слова для поиска по настройкам, экземплярам или агрегированного поиска</x:String>
+    <x:String x:Key="Search.Empty.Title">Ничего не найдено</x:String>
+    <x:String x:Key="Search.Empty.Message">Попробуйте другие ключевые слова или нажмите Enter для глобального поиска</x:String>
+    <x:String x:Key="Search.Category.Page">Страницы</x:String>
+    <x:String x:Key="Search.Category.Setting">Настройки</x:String>
+    <x:String x:Key="Search.Category.Instance">Экземпляры</x:String>
+    <x:String x:Key="Search.Category.Aggregate">Агрегированный поиск</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Title">Искать «{0}»</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Desc">Поиск версий, пакетов ресурсов, плагинов и модов в центре загрузок</x:String>
+    <x:String x:Key="Search.Hint.Select">↑↓ навигация · Enter открыть · Esc закрыть</x:String>
+
+
+    <x:String x:Key="Account.Action.LinkXbox">Привязать учетную запись Xbox</x:String>
+    <x:String x:Key="Account.Empty.Title">Нет связанных аккаунтов</x:String>
+    <x:String x:Key="Account.Empty.Message">В настоящее время ни одна учетная запись Xbox не связана.
+Нажмите «Привязать учетную запись» в левом верхнем углу, чтобы привязать учетную запись Xbox.</x:String>
+    <x:String x:Key="Account.Option.AskBeforeLaunch">Попросить выбрать учетную запись перед запуском игры</x:String>
+
+    <x:String x:Key="MainPage.Status.NoInstance">Нет доступных экземпляров</x:String>
+    <x:String x:Key="MainPage.Status.NoFolder">Пожалуйста, сначала добавьте папку с игрой</x:String>
+    <x:String x:Key="MainPage.Status.LoadFailed">Загрузка не удалась</x:String>
+
+    <x:String x:Key="MainPage.Error.InvalidPage.Title">Неверная страница</x:String>
+    <x:String x:Key="MainPage.Error.InvalidPage.Content">Страница {0} недействительна.</x:String>
+
+    <x:String x:Key="MainWindow.TaskView.Title">Центр задач</x:String>
+    <x:String x:Key="MainWindow.TaskView.NoneTitle">Потрясающий!</x:String>
+    <x:String x:Key="MainWindow.TaskView.NoneMessage">В списке задач нет задач</x:String>
+    <x:String x:Key="MainWindow.Task.CountInfo">{0} Задачи</x:String>
+
+    <x:String x:Key="Manager.Title">Менеджер экземпляров</x:String>
+    <x:String x:Key="Manager.IncludeGame">Импортировать игру</x:String>
+    <x:String x:Key="Manager.IncludePack">Импортировать пакет интеграции</x:String>
+
+    <x:String x:Key="Manager.GameType.AllType">Все типы</x:String>
+    <x:String x:Key="Manager.GameType.Release">Выпускать</x:String>
+    <x:String x:Key="Manager.GameType.Preview">Предварительный просмотр</x:String>
+
+    <x:String x:Key="Manager.Filter.PlayTimeAsc">Время игры ▲</x:String>
+    <x:String x:Key="Manager.Filter.PlayTimeDesc">Время игры降序</x:String>
+
+    <x:String x:Key="Manager.GameItem.Launch">Запуск</x:String>
+    <x:String x:Key="Manager.GameItem.EditModel">Режим редактирования</x:String>
+
+    <x:String x:Key="Manager.Folder.Empty.Title">Пустой</x:String>
+    <x:String x:Key="Manager.Folder.Empty.Message">Нажмите ниже, чтобы добавить каталог
+добавить один</x:String>
+
+    <x:String x:Key="Manager.Games.Empty.Title">Нет экземпляров</x:String>
+    <x:String x:Key="Manager.Games.Empty.Message">Недопустимое ключевое слово или экземпляры не загружены.</x:String>
+    <x:String x:Key="Manager.Games.Loading.Title">В очереди</x:String>
+    <x:String x:Key="Manager.Games.Loading.Message">Загрузка версий...</x:String>
+    <x:String x:Key="Manager.Search.Placeholder">Поиск экземпляров...</x:String>
+
+    <x:String x:Key="Main.Action.Launch">Запуск</x:String>
+    <x:String x:Key="Main.GameList.Empty">Нет экземпляров</x:String>
+
+    <x:String x:Key="MainPage.Manager.Import.Title">Импортировать игровой пакет</x:String>
+    <x:String x:Key="MainPage.Manager.Import.Action">Начать импорт</x:String>
+    <x:String x:Key="MainPage.Manager.Import.Error.Pack">Неверный пакет игры: {0}</x:String>
+    <x:String x:Key="MainPage.Manager.Import.Error.Folder">Неверная папка: {0}</x:String>
+    <x:String x:Key="MainPage.Manager.Import.Error.Name">Введите допустимое имя экземпляра</x:String>
+
+    <x:String x:Key="MainPage.Manager.Integration.Picker.Title">Пожалуйста, выберите файл пакета интеграции</x:String>
+    <x:String x:Key="MainPage.Manager.Integration.Picker.Type">Пакет интеграции Bedrock (*.mcpint)</x:String>
+    <x:String x:Key="MainPage.Manager.Integration.Dialog.Title">Выберите каталог установки</x:String>
+    <x:String x:Key="MainPage.Manager.Integration.Dialog.Action">Установить</x:String>
+
+    <x:String x:Key="Instance.Title">Экземпляр</x:String>
+
+    <x:String x:Key="Draw.Instance.Tab.Detail">Подробности об экземпляре</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Mods">Моды</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Packs">Пакеты ресурсов/поведений</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Archive">Сохранения</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Screenshots">Скриншоты</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Servers">Серверы</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Plugins">Плагины</x:String>
+    <x:String x:Key="Draw.Instance.Tab.Controls">Действия</x:String>
+    <x:String x:Key="Draw.Instance.TotalTime">{0} часов</x:String>
+    <x:String x:Key="Draw.Instance.Information.Sessions">Сессии</x:String>
+    <x:String x:Key="Draw.Instance.Information.ActiveDays">Активные дни</x:String>
+    <x:String x:Key="Draw.Instance.Information.TotalHours">Всего часов</x:String>
+    <x:String x:Key="Draw.Instance.Information.Rank">Ранг</x:String>
+    <x:String x:Key="Draw.Instance.Information.WeeklyChart">Ежедневное игровое время (на этой неделе)</x:String>
+    <x:String x:Key="Draw.Instance.Information.WeeklyStats">На этой неделе</x:String>
+
+    <x:String x:Key="Instance.Info.Name.Title">Имя экземпляра</x:String>
+    <x:String x:Key="Instance.Info.Name.Desc">Имя, отображаемое для экземпляра в панели запуска.</x:String>
+    <x:String x:Key="Instance.Info.Icon.Title">Значок</x:String>
+    <x:String x:Key="Instance.Info.Icon.Desc">Значок, отображаемый для экземпляра в панели запуска</x:String>
+    <x:String x:Key="Instance.Info.Icon.Grass">Травяной блок</x:String>
+    <x:String x:Key="Instance.Info.Icon.Path">Грязный путь</x:String>
+    <x:String x:Key="Instance.Info.Icon.EndStone">Конечный камень</x:String>
+    <x:String x:Key="Instance.Info.Icon.Crafting">Верстак</x:String>
+
+    <x:String x:Key="Instance.Info.Group.Launch">Настройки запуска</x:String>
+    <x:String x:Key="Instance.Info.Launch.Title">Настройки запуска</x:String>
+    <x:String x:Key="Instance.Info.Launch.Desc">Запустите соответствующие настройки для экземпляра</x:String>
+    <x:String x:Key="Instance.Info.Launch.Args.Title">Аргументы</x:String>
+    <x:String x:Key="Instance.Info.Launch.Args.Desc">Дополнительные аргументы командной строки при запуске игры</x:String>
+    <x:String x:Key="Instance.Info.Launch.EditMode.Title">Режим автора</x:String>
+    <x:String x:Key="Instance.Info.Launch.EditMode.Desc">Запустите Bedrock в режиме создателя</x:String>
+    <x:String x:Key="Instance.Info.Launch.Mods.Title">Включить моды</x:String>
+    <x:String x:Key="Instance.Info.Launch.Mods.Desc">Нужно ли автоматически внедрять моды после запуска игрового процесса</x:String>
+    <x:String x:Key="Instance.Info.Launch.Console.Desc">Показывать игровую консоль при запуске</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Title">Подробные журналы</x:String>
+    <x:String x:Key="Instance.Info.Launch.DetailedLogs.Desc">Вывод подробных журналов, включая низкоуровневые операции с игровыми файлами (при включении может возникнуть задержка)</x:String>
+    <x:String x:Key="Instance.Info.Isolation.Desc">Включить изоляцию версий (изолирует только сохранения, пакеты ресурсов и т. д. Файлы модов не нуждаются в изоляции)</x:String>
+
+    <x:String x:Key="Instance.Controls.Group.Accessibility">Доступность</x:String>
+    <x:String x:Key="Instance.Controls.MouseLock.Title">Блокировка мыши</x:String>
+    <x:String x:Key="Instance.Controls.MouseLock.Desc">Оптимизация мыши для UWP-версии Bedrock</x:String>
+    <x:String x:Key="Instance.Controls.MouseLock.Range.Title">Диапазон клипа</x:String>
+    <x:String x:Key="Instance.Controls.MouseLock.Range.Desc">Ограничение диапазона блокировки мыши в игре</x:String>
+
+    <x:String x:Key="Instance.Controls.Shortcut.Title">Ярлык</x:String>
+    <x:String x:Key="Instance.Controls.Shortcut.Desc">Сохраните ярлык для быстрого запуска этого экземпляра.</x:String>
+    <x:String x:Key="Instance.Controls.ImportConfig.Title">Импортировать конфигурацию</x:String>
+    <x:String x:Key="Instance.Controls.ImportConfig.Desc">Импортировать конфигурацию из другого экземпляра</x:String>
+    <x:String x:Key="Instance.Controls.ExportPack.Title">Экспортировать модпак</x:String>
+    <x:String x:Key="Instance.Controls.ExportPack.Desc">Экспортировать как модпак Minecraft Bedrock</x:String>
+
+    <x:String x:Key="Instance.Controls.Group.DangerZone">Опасная зона</x:String>
+    <x:String x:Key="Instance.Controls.Group.Expansion">Расширения</x:String>
+    <x:String x:Key="Instance.Controls.Delete.Title">Удалить экземпляр</x:String>
+    <x:String x:Key="Instance.Controls.Delete.Desc">Полностью удалить эту версию игры</x:String>
+
+    <x:String x:Key="Instance.Control.Shortcut.Save.Title">Сохранить ярлык</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Prefix">Ярлык</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.FileType">Ярлык Windows (.lnk)</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Success.Title">Создано успешно</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Success.Content">Ярлык успешно создан!
+
+Имя: {0}
+Местоположение: {1}</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Action.OpenFolder">Открыть папку</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Failed.Title">Не удалось создать</x:String>
+    <x:String x:Key="Instance.Control.Shortcut.Failed.Content">Невозможно создать ярлык:</x:String>
+
+    <x:String x:Key="Instance.Control.Delete.Confirm.Title">Подтвердить удаление</x:String>
+    <x:String x:Key="Instance.Control.Delete.Confirm.Content">Вы уверены, что хотите удалить {0} ({1})?
+Это приведет к безвозвратному удалению данных, и их невозможно будет восстановить.</x:String>
+    <x:String x:Key="Instance.Control.Delete.Process.Title">Удаление {0}...</x:String>
+
+    <x:String x:Key="Instance.Control.Import.Choose.Title">Выберите экземпляр для импорта</x:String>
+    <x:String x:Key="Instance.Control.Import.Content.Title">Выберите контент для импорта</x:String>
+    <x:String x:Key="Instance.Control.Import.Action.Start">Начать импорт</x:String>
+    <x:String x:Key="Instance.Control.Import.Progress.Title">Миграция ресурсов...</x:String>
+    <x:String x:Key="Instance.Isolation.Migration">Миграция</x:String>
+    <x:String x:Key="Instance.Isolation.Migrating">Миграция</x:String>
+
+    <x:String x:Key="Instance.Control.Pack.Dialog.Title">Информация о пакете интеграции</x:String>
+    <x:String x:Key="Instance.Control.Pack.Save.Title">Пакет интеграции экспорта Bedrock</x:String>
+    <x:String x:Key="Instance.Control.Pack.FileType">Пакет интеграции Bedrock (*.mcpint)</x:String>
+    <x:String x:Key="Instance.Control.Pack.Progress.Title">Пакет интеграции упаковки</x:String>
+    <x:String x:Key="Instance.Pack.Export.Success">Пакет интеграции успешно экспортирован.</x:String>
+
+    <x:String x:Key="Instance.Mods.Action.Import">Импортировать мод</x:String>
+    <x:String x:Key="Instance.Mods.Empty.Title">Пустой</x:String>
+    <x:String x:Key="Instance.Mods.Empty.Message">Неверное ключевое слово или у этого экземпляра нет модов.</x:String>
+    <x:String x:Key="Instance.Mods.Label.Preload">Предварительная загрузка</x:String>
+    <x:String x:Key="Instance.Mods.Import.Title">Добавить файл мода</x:String>
+    <x:String x:Key="Instance.Mods.Import.Error.InvalidPath">Неверный путь, невозможно добавить мод</x:String>
+    <x:String x:Key="Instance.Mods.Import.Error.CopyFailed">Не удалось скопировать файл мода.</x:String>
+    <x:String x:Key="Instance.Mod.Delete.Title">Удалить мод</x:String>
+    <x:String x:Key="Instance.Mod.Delete.Content">Вы уверены, что хотите удалить мод?</x:String>
+    <x:String x:Key="Instance.Mod.Delete.Error">Произошла ошибка при удалении мода.</x:String>
+    <x:String x:Key="Instance.Mod.Setting.Title">Настройки файла мода</x:String>
+    <x:String x:Key="Instance.Mod.Import.InvalidPath">Неверный путь, невозможно добавить мод</x:String>
+
+    <x:String x:Key="Instance.Packs.Tab.Resource">Ресурс</x:String>
+    <x:String x:Key="Instance.Packs.Tab.Behavior">Поведение</x:String>
+    <x:String x:Key="Instance.Packs.Action.Import">Импортный пакет</x:String>
+    <x:String x:Key="Instance.Packs.Empty.Title">Пустой</x:String>
+    <x:String x:Key="Instance.Packs.Empty.Message">Недопустимое ключевое слово или в этом экземпляре нет пакетов.</x:String>
+    <x:String x:Key="Instance.Packs.Status.Loading">Загрузка пакетов...</x:String>
+    <x:String x:Key="Instance.Packs.Status.Total">Итого</x:String>
+    <x:String x:Key="Instance.Packs.Status.Items">предметы</x:String>
+    <x:String x:Key="Instance.Pack.Count.Format">Всего {0} элементов</x:String>
+    <x:String x:Key="Instance.Pack.Import.Picker.Title">Импортировать пакет Minecraft Bedrock</x:String>
+    <x:String x:Key="Instance.Pack.Import.Picker.Type">Пакеты поддержки Minecraft</x:String>
+    <x:String x:Key="Instance.Pack.Import.Dialog.Title">Импортный пакет</x:String>
+    <x:String x:Key="Instance.Pack.Import.Dialog.Action">Импорт</x:String>
+    <x:String x:Key="Instance.Pack.Import.Progress.Title">Импорт...</x:String>
+    <x:String x:Key="Instance.Pack.Import.Progress.Content">Импорт пакетов ресурсов, пожалуйста, подождите...</x:String>
+    <x:String x:Key="Instance.Resource.Delete.Title">Удалить ресурс</x:String>
+    <x:String x:Key="Instance.Resource.Delete.Content">Вы уверены, что хотите удалить этот пакет ресурсов?</x:String>
+    <x:String x:Key="Instance.Resource.Delete.Processing">Удаление ресурса...</x:String>
+    <x:String x:Key="Instance.Resource.Delete.Error">Не удалось удалить ресурс</x:String>
+
+    <x:String x:Key="Instance.Saves.Action.Import">Импортировать сохранить</x:String>
+    <x:String x:Key="Instance.Saves.Empty.Title">Пустой</x:String>
+    <x:String x:Key="Instance.Saves.Empty.Message">Неверное ключевое слово или у этого пользователя нет сохранений.</x:String>
+    <x:String x:Key="Instance.Save.Import.Picker.Title">Импортировать пакет Minecraft World Pack</x:String>
+    <x:String x:Key="Instance.Save.Import.Picker.Type">Файл мира Minecraft (*.mcworld)</x:String>
+    <x:String x:Key="Archive.Export.Title">Экспортировать пакет Minecraft World Pack</x:String>
+    <x:String x:Key="Archive.Export.FileType">Файл мира Minecraft (*.mcworld)</x:String>
+    <x:String x:Key="Archive.Export.Success">Мир успешно экспортирован!</x:String>
+
+    <x:String x:Key="LevelSettings.Root.Title">Настройки мира</x:String>
+    <x:String x:Key="LevelSettings.Root.Action.BackToSaves">Вернуться к мировому управлению</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Backup">Резервное копирование</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.General">Общие настройки</x:String>
+    <x:String x:Key="LevelSettings.Backup.Title">Мировые резервные копии</x:String>
+    <x:String x:Key="LevelSettings.Backup.Action.Create">Создать резервную копию</x:String>
+    <x:String x:Key="LevelSettings.Backup.Empty.Message">Резервных копий пока нет</x:String>
+    <x:String x:Key="LevelSettings.Backup.Loading.Message">Загрузка резервных копий</x:String>
+    <x:String x:Key="LevelSettings.Editor.Title">Мировой редактор</x:String>
+    <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">Сохранить изменения</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">Всемирная информация</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Core">Ядро</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Interface">Интерфейс</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.MobsEnvironment">Мобы и окружающая среда</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Player">Игрок</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.SpawnPoint">Точка появления</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Permissions">Разрешения</x:String>
+    <x:String x:Key="LevelSettings.Editor.Section.Movement">Движение</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WorldName">Мировое имя</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Seed">Семена</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.GameMode">Игровой режим</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.Difficulty">Сложность</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.WalkSpeed">Скорость ходьбы (walkSpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.FlySpeed">Скорость полета (flySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.Field.VerticalFlySpeed">Вертикальная скорость полета (verticalFlySpeed)</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Survival">Выживание</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Creative">Креатив</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Adventure">Приключение</x:String>
+    <x:String x:Key="LevelSettings.Editor.GameMode.Spectator">Зритель</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Peaceful">Мирный</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Easy">Легко</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Normal">Нормальный</x:String>
+    <x:String x:Key="LevelSettings.Editor.Difficulty.Hard">Жесткий</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Cheats">Коды</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Hardcore">Хардкорный режим</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlocks">Командные блоки</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandBlockOutput">Вывод командного блока</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AdminCommands">Команды администратора</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.CommandFeedback">Обратная связь по командам</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.BonusChest">Бонусный сундук</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.StartingMap">Стартовая карта</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ImmediateRespawn">Немедленное возрождение</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RecipeUnlocking">Разблокировка рецептов</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.LimitedCrafting">Ограниченное создание</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RequireResourcePacks">Требовать пакеты ресурсов</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowCoordinates">Показать координаты</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDaysPlayed">Показать сыгранные дни</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowDeathMessages">Показать сообщения о смерти</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowRecipeHints">Показать подсказки к рецептам</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowTags">Показать теги</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.ShowBorderEffect">Показать эффект границы</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DaylightCycle">Цикл дневного света</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WeatherCycle">Погодный цикл</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobSpawning">Появление мобов</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.PhantomSpawning">Фантомное нерест</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobGriefing">Моб Грифинг</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.MobLoot">Моб Лут</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.EntityDrops">Выпадение сущностей</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TileDrops">Блокировать сбросы</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireSpreads">Огонь распространяется</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.TntExplodes">ТНТ взрывается</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.RespawnBlocksExplode">Блоки возрождения взрываются</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.KeepInventory">Держите инвентарь</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NaturalRegeneration">Естественная регенерация</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FallDamage">Урон от падения</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FireDamage">Урон от огня</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DrowningDamage">Утопление Урон</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.FreezingDamage">Урон от замораживания</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Mine">Мой</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Build">Построить</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackMobs">Атакующие мобы</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AttackPlayers">Атаковать игроков</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.DoorsAndSwitches">Двери и выключатели</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.OpenContainers">Открытые контейнеры</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Operator">Оператор</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Teleport">Телепортироваться</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Flying">Летающий</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.AllowFlying">Разрешить полет</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.InstantBuild">Мгновенная сборка</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.Invulnerable">Неуязвимый</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.NoClip">Нет клипа</x:String>
+    <x:String x:Key="LevelSettings.Editor.Option.WorldBuilder">Мировой Строитель</x:String>
+
+    <x:String x:Key="Instance.Screenshots.Empty.Title">Пустой</x:String>
+    <x:String x:Key="Instance.Screenshots.Empty.Message">Скриншотов пока нет.jpg</x:String>
+    <x:String x:Key="Archive.Screenshot.Save.Title">Сохранить скриншот</x:String>
+    <x:String x:Key="Archive.Screenshot.Save.FileType">Изображение в формате JPEG</x:String>
+
+    <x:String x:Key="Instance.Server.Action.Add">Добавить сервер</x:String>
+    <x:String x:Key="Instance.Server.Empty.Title">Никаких сторонних серверов не было...</x:String>
+    <x:String x:Key="Instance.Server.Empty.Message">Неверное ключевое слово или у этого пользователя нет серверов.</x:String>
+    <x:String x:Key="Instance.Server.Add.Title">Добавить сторонний сервер</x:String>
+    <x:String x:Key="Instance.Server.Add.Action">Добавить</x:String>
+    <x:String x:Key="Instance.Server.Delete.Title">Удалить сервер</x:String>
+    <x:String x:Key="Instance.Server.Delete.Content">Вы уверены, что хотите удалить закладку этого сервера?</x:String>
+    <x:String x:Key="Instance.Server.Status.Offline">Невозможно подключиться к серверу</x:String>
+
+    <x:String x:Key="Instance.Plugins.Status.NotInstalled">Не установлено</x:String>
+    <x:String x:Key="Instance.Plugins.Status.Installed">Установлено</x:String>
+    <x:String x:Key="Instance.Plugin.Status.Installed">Установлено</x:String>
+    <x:String x:Key="Plugin.LeviLamina.LoadingVersions">Загрузка версий...</x:String>
+    <x:String x:Key="Plugin.LeviLamina.ChooseVersion">Выберите версию LeviLamina</x:String>
+    <x:String x:Key="Plugin.LeviLamina.NotSupport">Эта версия экземпляра несовместима с LeviLamina.</x:String>
+
+    <x:String x:Key="Download.Title">Скачать</x:String>
+    <x:String x:Key="Download.Tab.Assets">Ресурс</x:String>
+    <x:String x:Key="Download.List.Empty">Не найдено версий, соответствующих критериям</x:String>
+
+    <x:String x:Key="Download.Action.GetResource">Получить ресурс</x:String>
+    <x:String x:Key="Download.Action.DownloadGame">Скачать игру</x:String>
+
+    <x:String x:Key="Download.Game.Type.Release">Релиз</x:String>
+    <x:String x:Key="Download.Game.Type.Preview">Предварительный просмотр</x:String>
+    <x:String x:Key="Download.Game.Type.Beta">Бета</x:String>
+
+    <x:String x:Key="Download.Assets.Status.Loading.Title">Сбор активов...</x:String>
+    <x:String x:Key="Download.Assets.Status.Loading.Message">Все активы, вливайтесь!</x:String>
+    <x:String x:Key="Download.Assets.Status.Empty.Title">Хм...?</x:String>
+    <x:String x:Key="Download.Assets.Status.Empty.Message">Введенное вами ключевое слово неверно</x:String>
+
+    <x:String x:Key="Download.Search.Watermark">Введите ключевые слова для поиска...</x:String>
+    <x:String x:Key="Download.Search.History.Title">История</x:String>
+    <x:String x:Key="Download.Search.History.Empty.Message">Нет истории поиска</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Title">Очистить подтверждение</x:String>
+    <x:String x:Key="Download.Search.History.Clear.Confirm.Content">Вы уверены, что хотите очистить историю поиска?</x:String>
+    <x:String x:Key="Download.Search.Action.VersionList">Список версий</x:String>
+    <x:String x:Key="Download.Search.Action.SearchResource">Поисковые ресурсы</x:String>
+    <x:String x:Key="Download.Search.Group.Latest">Последние версии</x:String>
+    <x:String x:Key="Download.Search.Group.PopularResources">Популярные ресурсы</x:String>
+    <x:String x:Key="Download.Search.Label.ResourceType">Тип ресурса</x:String>
+    <x:String x:Key="Download.Search.Label.PublishType">Тип выпуска</x:String>
+    <x:String x:Key="Download.Search.Label.Category">Категория</x:String>
+    <x:String x:Key="Download.Search.Category.All">Все ресурсы</x:String>
+    <x:String x:Key="Download.Search.Category.Texture">Пакеты текстур</x:String>
+    <x:String x:Key="Download.Search.Category.Behavior">Пакеты поведения</x:String>
+    <x:String x:Key="Download.Search.Category.Map">Карты</x:String>
+
+    <x:String x:Key="Download.Search.Status.NoResult.Title">Результаты не найдены</x:String>
+    <x:String x:Key="Download.Search.Status.NoResult.Message">Пожалуйста, попробуйте другие ключевые слова</x:String>
+    <x:String x:Key="Download.Search.Tip.ManualSearch">Если ресурс не загружается, попробуйте выполнить поиск, введя ключевые слова вручную.</x:String>
+    <x:String x:Key="Download.Search.Tip.ChangeSource">Если поиск по-прежнему не удался, перейдите в «Настройки» > «Загрузить», чтобы переключить источник списка.</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Title">Неверное сетевое соединение</x:String>
+    <x:String x:Key="Download.Search.NetworkError.Message">Невозможно подключиться к целевому серверу</x:String>
+
+    <x:String x:Key="Download.Result.Author.Prefix">Автор</x:String>
+    <x:String x:Key="Download.Result.Action.ViewOnCurseForge">Посмотреть на CurseForge</x:String>
+    <x:String x:Key="Download.Result.Action.Get">Получить ресурс</x:String>
+    <x:String x:Key="Download.Result.Action.Share">Поделиться ресурсом</x:String>
+    <x:String x:Key="Download.Result.Group.Preview">Предварительный просмотр</x:String>
+    <x:String x:Key="Download.Result.Group.Details">Подробности</x:String>
+    <x:String x:Key="Download.Result.Error.LoadDescription">Ошибка загрузки описания</x:String>
+    <x:String x:Key="Download.Result.Share.Format">Ваш друг порекомендовал ресурс: 【{0}】
+Ссылка: {1}
+Перейдите в [BedrockBoot] и нажмите Ctrl+V, чтобы просмотреть его.</x:String>
+    <x:String x:Key="Download.Result.Share.Success">Поделиться контентом, скопированным. Нажмите Ctrl+V в BedrockBoot, чтобы просмотреть ресурс.</x:String>
+
+    <x:String x:Key="Download.CurseForge.Label.PackInfo">Информация о пакете</x:String>
+    <x:String x:Key="Download.CurseForge.Tab.BuildFiles">Файлы сборки</x:String>
+    <x:String x:Key="Download.CurseForge.SaveAs.Title">Сохранить пакет ресурсов как</x:String>
+    <x:String x:Key="Download.CurseForge.InstallTo.Title">Установить ресурс в экземпляр...</x:String>
+    <x:String x:Key="Download.CurseForge.FileType.Bedrock">Файл ресурсов Bedrock</x:String>
+    <x:String x:Key="Download.CurseForge.Downloads">Загрузки</x:String>
+
+    <x:String x:Key="Download.Source.Testing">Тестирование...</x:String>
+    <x:String x:Key="Download.Source.Failed">Соединение не удалось</x:String>
+
+    <x:String x:Key="Download.Dialog.TitlePrefix">Скачать игру</x:String>
+    <x:String x:Key="Download.Draw.Error.NoUrl">Не удалось получить URL-адрес для загрузки этой версии. Пожалуйста, попробуйте другой источник загрузки.</x:String>
+    <x:String x:Key="Download.Draw.AddFolder.Title">Добавить корень установки игры</x:String>
+
+    <x:String x:Key="Draw.DownloadGame.Label.InstanceName">Имя экземпляра</x:String>
+    <x:String x:Key="Draw.DownloadGame.Description.InstanceName">Имя, отображаемое для экземпляра в панели запуска.</x:String>
+    <x:String x:Key="Draw.DownloadGame.Description.InstallPath">Место установки экземпляра</x:String>
+    <x:String x:Key="Draw.DownloadGame.Group.SelectSource">Выберите источник</x:String>
+    <x:String x:Key="Draw.DownloadGame.Option.UseCache">Использовать установочный кэш</x:String>
+    <x:String x:Key="Draw.DownloadGame.Action.StartInstall">Начать установку</x:String>
+
+    <x:String x:Key="Task.LeviLamina.Title">Установка ЛевиЛамины...</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Manifest">Загрузка манифеста</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Core">Загрузка ядра</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Logger">Загрузка регистратора</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Loader">Скачивание загрузчика</x:String>
+    <x:String x:Key="Task.LeviLamina.Step.Runtime">Загрузка среды выполнения</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Preparing">Шаг: подготовка загрузки... ({0}%)</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Downloading">Загрузка {0}... ({1}%)</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Installing">Установка {0}...</x:String>
+    <x:String x:Key="Task.LeviLamina.Status.Completed">Установка завершена!</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Title">Установка ЛевиЛамины</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Added">Задача установки добавлена в список.</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Success">ЛевиЛамина успешно установлена</x:String>
+    <x:String x:Key="Task.LeviLamina.Notice.Failed">Установка LeviLamina не удалась.</x:String>
+
+    <x:String x:Key="Task.CurseForge.Title">Скачать ресурсы</x:String>
+    <x:String x:Key="Task.CurseForge.Step.File">Загрузка файла</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Preparing">Шаг: подготовка загрузки... ({0}%)</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Downloading">Загрузка {0}... ({1}%)</x:String>
+    <x:String x:Key="Task.CurseForge.Notice.Title">Скачать ресурсы</x:String>
+    <x:String x:Key="Task.CurseForge.Notice.Added">Задача загрузки ресурса {0} добавлена в список.</x:String>
+    <x:String x:Key="Task.CurseForge.Title.Format">Загрузка ресурса: {0}</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Progress">Прогресс: {0:F2} %</x:String>
+    <x:String x:Key="Task.CurseForge.Status.Importing">Прогресс: Импорт файлов... (0 %)</x:String>
+
+    <x:String x:Key="Task.Game.Title">Установка игры...</x:String>
+    <x:String x:Key="Task.Game.Step.GetUrl">Получение URL</x:String>
+    <x:String x:Key="Task.Game.Step.Download">Загрузка игры</x:String>
+    <x:String x:Key="Task.Game.Step.Merge">Объединение файлов</x:String>
+    <x:String x:Key="Task.Game.Step.Unzip">Извлечение файлов</x:String>
+    <x:String x:Key="Task.Game.Step.Deploy">Развертывание игры</x:String>
+    <x:String x:Key="Task.Game.Status.Preparing">Шаг: подготовка загрузки... ({0}%)</x:String>
+    <x:String x:Key="Task.Game.Notice.Title">Установить игру</x:String>
+    <x:String x:Key="Task.Game.Notice.Added">Версия игры {0} добавлена в очередь загрузки.</x:String>
+    <x:String x:Key="Task.Game.Notice.Success">Игра {0} успешно установлена!</x:String>
+    <x:String x:Key="Task.Game.Notice.Failed">Не удалось установить игру {0}.</x:String>
+    <x:String x:Key="Task.Game.Title.Format">Загрузка игры</x:String>
+    <x:String x:Key="Task.Game.Status.Completed">Загрузка завершена</x:String>
+    <x:String x:Key="Task.Game.Status.LocalInstalling">Выполняется локальная установка...</x:String>
+    <x:String x:Key="Task.Game.Error.Detail">Подробности ошибки: {0}</x:String>
+
+    <x:String x:Key="Task.Update.Title">Загрузить файл обновления</x:String>
+    <x:String x:Key="Task.Update.Notice.Title">Обновление программного обеспечения</x:String>
+    <x:String x:Key="Task.Update.Notice.Added">Файл обновления добавлен в очередь загрузки.</x:String>
+    <x:String x:Key="Task.Update.Title.Format">Загрузка обновления: {0}</x:String>
+    <x:String x:Key="Task.Update.Notice.Message">Загрузка файла обновления...</x:String>
+    <x:String x:Key="Task.Update.Source.Prefix">Источник: {0}</x:String>
+
+    <x:String x:Key="Task.ImportPack.Title">Импорт пакета...</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Preparing">Шаг: Подготовка импорта...</x:String>
+    <x:String x:Key="Task.ImportPack.Notice.Title">Импортировать ресурсы</x:String>
+    <x:String x:Key="Task.ImportPack.Notice.Added">В список добавлена ​​задача импорта ресурсов.</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Importing">Импорт: {0}</x:String>
+    <x:String x:Key="Task.ImportPack.Status.Completed">Импорт завершен</x:String>
+    <x:String x:Key="Task.ImportPack.Error.Title">К сожалению, не удалось установить {0}</x:String>
+    <x:String x:Key="Task.ImportPack.Error.Content">Возможно, проблема с вашим пакетом; формат не поддерживается.</x:String>
+
+    <x:String x:Key="Task.IntegrationPack.Title">Установка пакета интеграции...</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.GetUrl">Получение URL</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Download">Загрузка игры</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Merge">Объединение файлов</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.Unzip">Извлечение файлов</x:String>
+    <x:String x:Key="Task.IntegrationPack.Step.InstallResource">Установка ресурсов</x:String>
+    <x:String x:Key="Task.IntegrationPack.Status.Preparing">Шаг: подготовка загрузки... ({0}%)</x:String>
+    <x:String x:Key="Task.IntegrationPack.Notice.Title">Импортировать пакет интеграции</x:String>
+    <x:String x:Key="Task.IntegrationPack.Notice.Added">Установка пакета интеграции началась в фоновом режиме.</x:String>
+    <x:String x:Key="Task.IntegrationPack.Status.Format">({0:F2} %) {1}</x:String>
+
+    <x:String x:Key="Task.Launch.Title">Запуск игры...</x:String>
+    <x:String x:Key="Task.Launch.Tag.Edit">Редактировать</x:String>
+    <x:String x:Key="Task.Launch.Status.Preparing">Шаг: Подготовка развертывания...</x:String>
+    <x:String x:Key="Task.Launch.Notice.Title">Запустить игру</x:String>
+    <x:String x:Key="Task.Launch.Notice.Started">Программа запуска игры {0} запущена.</x:String>
+    <x:String x:Key="Task.Launch.Notice.InTask">Обработка задачи запуска...</x:String>
+    <x:String x:Key="Task.Launch.Title.Format">Запуск игры {0}</x:String>
+    <x:String x:Key="Task.Launch.Notice.Added">В список добавлена ​​задача запуска игры {0}.</x:String>
+    <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
+    <x:String x:Key="Task.Launch.Migration.Title">Уведомление о миграции</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">Эта версия требует миграции.
+Хотите начать миграцию сейчас?</x:String>
+    <x:String x:Key="Task.Launch.Migration.Action.Start">Начать миграцию</x:String>
+    <x:String x:Key="Task.Launch.Migration.Action.Later">Не сейчас</x:String>
+    <x:String x:Key="Task.Launch.Migration.View.Title">Перенести версию</x:String>
+
+    <x:String x:Key="Settings.Title">Настройки</x:String>
+
+    <x:String x:Key="Settings.Nav.Personalization.Title">Персонализация</x:String>
+    <x:String x:Key="Settings.Nav.Personalization.Desc">Настройки персонализации лаунчера</x:String>
+    <x:String x:Key="Settings.Nav.Download.Title">Скачать</x:String>
+    <x:String x:Key="Settings.Nav.Download.Desc">Поведение загрузки BedrockBoot</x:String>
+    <x:String x:Key="Settings.Nav.Game.Title">Игра</x:String>
+    <x:String x:Key="Settings.Nav.Game.Desc">Основные настройки для работы игры</x:String>
+    <x:String x:Key="Settings.Nav.Universal.Title">Универсальный</x:String>
+    <x:String x:Key="Settings.Nav.Universal.Desc">Общие настройки самого лаунчера</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Title">Плагины</x:String>
+    <x:String x:Key="Settings.Nav.Plugin.Desc">Настраивайте и управляйте установленными плагинами и поведением плагинов.</x:String>
+    <x:String x:Key="Settings.Nav.About.Title">О</x:String>
+    <x:String x:Key="Settings.Nav.About.Desc">О BedrockBoot</x:String>
+
+    <x:String x:Key="Settings.Nav.Group.Download">Скачать</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Env">Настройте параметры загрузки в соответствии с вашей сетевой средой, чтобы сделать работу онлайн-программы запуска более плавной.</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Source">В некоторых сетевых средах источник MCAPPX может быть недоступен.</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Download.Thread">Для потоков загрузки мы рекомендуем использовать 4 потока по умолчанию. Если используется слишком много потоков, скорость загрузки может снизиться.</x:String>
+    <x:String x:Key="Settings.Nav.Group.Game">Игра</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Game.Path">Убедитесь, что путь к каталогу игры не содержит китайских иероглифов или символов. Если такие персонажи появятся, игра может не запуститься.</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Game.Isolation">Для изоляции версий мы рекомендуем использовать гибридный режим. Использование одиночного режима может помешать другим сторонним программам запуска Bedrock установить и запустить игру должным образом.</x:String>
+    <x:String x:Key="Settings.Nav.Action.FAQ">Часто задаваемые вопросы по лаунчеру</x:String>
+
+    <x:String x:Key="Settings.Folders.Action.Add">Добавить каталог</x:String>
+    <x:String x:Key="Settings.Folders.Action.Add.Desc">Добавить новый каталог игры</x:String>
+    <x:String x:Key="Settings.Folders.Group.List">Настройки каталога</x:String>
+    <x:String x:Key="Setting.Game.Folders.Title">Каталоги экземпляров</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.Title">Добавить корневой каталог игры</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.Action">Добавить</x:String>
+    <x:String x:Key="Setting.Game.Folders.Dialog.Add.ImportOther">Импортировать другую конфигурацию программы запуска</x:String>
+    <x:String x:Key="Setting.Game.Folders.Draw.Import.Title">Импортировать внешние каталоги экземпляров</x:String>
+    <x:String x:Key="Setting.Folder.Delete.Title">Удалить каталог</x:String>
+    <x:String x:Key="Setting.Folder.Delete.Content">Это удалит только индекс из лаунчера и не удалит файлы с диска.
+Вы уверены, что хотите удалить его?</x:String>
+    <x:String x:Key="Setting.Folder.Edit.Title">Настройки каталога</x:String>
+
+    <x:String x:Key="Settings.Background.Mode.Title">Фоновый режим</x:String>
+    <x:String x:Key="Settings.Background.Mode.Desc">Фоновый режим окна</x:String>
+    <x:String x:Key="Settings.Background.Mode.Image">Изображение</x:String>
+    <x:String x:Key="Settings.Background.Mode.Accent">Акцентный цвет</x:String>
+    <x:String x:Key="Settings.Background.Mode.Voronoi">Вороной</x:String>
+    <x:String x:Key="Settings.Background.Mode.Bubble">Пузырь</x:String>
+    <x:String x:Key="Settings.Background.Image.Group.Title">Фоновое изображение</x:String>
+    <x:String x:Key="Settings.Background.Image.Group.Desc">Настройки, связанные с фоновым изображением панели запуска</x:String>
+    <x:String x:Key="Settings.Background.Image.Select.Title">Выбрать обои</x:String>
+    <x:String x:Key="Settings.Background.Image.Select.Desc">Выберите нужные обои</x:String>
+    <x:String x:Key="Settings.Background.Image.Parallax.Title">Параллакс изображения</x:String>
+    <x:String x:Key="Settings.Background.Image.Parallax.Desc">Эффект параллакса 3D-изображения</x:String>
+    <x:String x:Key="Settings.Background.Image.Opacity.Title">Непрозрачность обоев</x:String>
+    <x:String x:Key="Settings.Background.Image.Opacity.Desc">Настройка непрозрачности обоев</x:String>
+    <x:String x:Key="Settings.Background.Image.Blur.Title">Размытие обоев</x:String>
+    <x:String x:Key="Settings.Background.Image.Blur.Desc">Эффект размытия обоев</x:String>
+
+    <x:String x:Key="Setting.Personalization.Background.Title">Фон</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Dialog.Import.Title">Выберите файл изображения</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.None">Никто</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Color">Сплошной цвет</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Image">Изображение</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Mica">Слюда</x:String>
+    <x:String x:Key="Setting.Personalization.Background.Type.Acrylic">Акрил</x:String>
+
+    <x:String x:Key="Settings.Color.Theme.Title">Тематический режим</x:String>
+    <x:String x:Key="Settings.Color.Theme.Desc">Светлый или Темный</x:String>
+    <x:String x:Key="Settings.Color.Theme.Dark">Темный</x:String>
+    <x:String x:Key="Settings.Color.Theme.Light">Свет</x:String>
+
+    <x:String x:Key="Setting.Personalization.Title">Персонализация</x:String>
+    <x:String x:Key="Setting.Personalization.Breadcrumb.Root">Персонализация</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Title">Цвет</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Header">Режим приложения</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Accent.Header">Акцентный цвет</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Light">Свет</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Dark">Темный</x:String>
+    <x:String x:Key="Setting.Personalization.Color.Theme.Auto">Синхронизация системы (авто)</x:String>
+
+    <x:String x:Key="Settings.Personalization.Group.Base">Основная тема</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Title">Фон</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Desc">Подробные настройки фона</x:String>
+    <x:String x:Key="Settings.Personalization.Color.Title">Цвет</x:String>
+    <x:String x:Key="Settings.Personalization.Color.Desc">Настройки цвета темы запуска</x:String>
+    <x:String x:Key="Settings.Personalization.Group.Home">Домашняя страница</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Title">Домашняя страница</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Desc">Содержимое, отображаемое на главной странице программы запуска</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Type.Title">Тип домашней страницы</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Type.Desc">Тип, отображаемый на главной странице программы запуска</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Type.None">Нет</x:String>
+    <x:String x:Key="Settings.Personalization.Home.Type.News">Домашняя страница новостей</x:String>
+    <x:String x:Key="Settings.Personalization.Group.Window">Окно</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">Использовать строку заголовка системы</x:String>
+    <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">Используйте строку заголовка системы и скройте кнопки управления.</x:String>
+    <x:String x:Key="Settings.Personalization.Group.ThemePack">Тематический пакет</x:String>
+    <x:String x:Key="Settings.Personalization.UseThemePack.Title">Использовать пакет тем</x:String>
+    <x:String x:Key="Settings.Personalization.UseThemePack.Desc">Использовать ли пакеты тем BedrockBoot</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Title">Экспорт пакета тем</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Desc">Экспортировать текущую тему как пакет тем BedrockBoot.</x:String>
+    <x:String x:Key="Settings.Personalization.ExportThemePack.Tip">Экспорт пакета тем доступен только в том случае, если в качестве типа фона установлено изображение.</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePackManager.Title">Менеджер пакетов тем</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePackManager.Desc">Управление и настройка всех установленных пакетов тем BedrockBoot.</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Title">Аудио</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Desc">Фоновая музыка BedrockBoot</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Title">Шрифт</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Desc">Шрифт дисплея пользовательского интерфейса BedrockBoot</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Title">Положение кнопки запуска</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Desc">Настройте размещение кнопки запуска и выбора версии</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Left">Кнопка запуска слева</x:String>
+    <x:String x:Key="Settings.Personalization.LaunchBtnPosition.Right">Кнопка запуска справа</x:String>
+
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Title">Объем</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Desc">Настройки громкости фоновой музыки.</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Volume.Tip">На любой странице нажмите Ctrl + прокрутите колесо мыши, чтобы быстро отрегулировать громкость.</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Choose.Title">Выберите фоновый звук</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Choose.Desc">Выберите аудиофайл, воспроизводимый на домашней странице BedrockBoot.</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Restore.Title">Восстановить звук по умолчанию</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Restore.Desc">Восстановить фоновый звук до настроек по умолчанию</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Play.Title">Воспроизвести фоновую музыку BedrockBoot</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Play.Desc">Установите, воспроизводить ли фоновую музыку</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.Title">Источник звука</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.Desc">Источник фоновой музыки BedrockBoot.</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.PreferThemePack">Предпочитаю пакет тем</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.CustomOnly">Только пользовательское аудио</x:String>
+    <x:String x:Key="Settings.Personalization.Audio.Source.ThemePackOnly">Пакет тем только со звуком</x:String>
+
+    <x:String x:Key="Settings.Personalization.Font.Group.Font">Шрифты пользовательского интерфейса</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Main.Title">Основной шрифт</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Main.Desc">Выберите основной шрифт, отображаемый в панели запуска</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Fallback.Title">Резервный шрифт</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Fallback.Desc">Автоматически возвращаться к этому шрифту, если в основном шрифте отсутствуют символы.</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Group.Preview">Предварительный просмотр</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Size">Размер шрифта предварительного просмотра</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Text">Предварительный просмотр текста</x:String>
+    <x:String x:Key="Settings.Personalization.Font.Preview.Watermark">Введите текст предварительного просмотра...</x:String>
+
+    <x:String x:Key="Settings.Personalization.Background.Mode.Live">Живой рабочий стол</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mode.Default">По умолчанию</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Restore.Title">Восстановить фоновое изображение по умолчанию</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Restore.Desc">Восстановить фоновое изображение до настроек по умолчанию</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Animation.Title">Анимированный фон</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Animation.Desc">Используйте стиль фона, аналогичный плееру Apple Music.</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Title">Качество фонового изображения</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Desc">Выберите качество рендеринга (более высокое качество обеспечивает более четкое изображение, но требует больше памяти)</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Low">Низкий</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.Medium">Средний</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Quality.High">Высокий (Оригинал)</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mica.Title">Стиль слюды</x:String>
+    <x:String x:Key="Settings.Personalization.Background.Mica.Desc">Выберите стиль слюды</x:String>
+    <x:String x:Key="Settings.Personalization.Background.LiveBlur.Title">Размытие</x:String>
+    <x:String x:Key="Settings.Personalization.Background.LiveBlur.Desc">Включить размытие живого фона</x:String>
+
+    <x:String x:Key="Settings.Personalization.ThemePack.Desc1">Импортируйте пакеты тем, которыми поделились другие, чтобы настроить BedrockBoot.</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Desc2">Вы также можете создать свой собственный пакет тем BedrockBoot.</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Action.Import">Импортировать пакет тем</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Empty.Title">Темы не установлены</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Empty.Message">Вы еще не установили ни одного пакета тем</x:String>
+    <x:String x:Key="Settings.Personalization.ThemePack.Loading.Message">Поиск высоко и низко</x:String>
+
+    <x:String x:Key="Setting.Personalization.Home.Title">Главная</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.Header">Тип домашнего контента</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.None">Пусто (Нет)</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.News">Новости</x:String>
+    <x:String x:Key="Setting.Personalization.Home.Type.Widgets">Виджеты</x:String>
+
+    <x:String x:Key="Settings.Game.Group.Base">Основные настройки</x:String>
+    <x:String x:Key="Settings.Game.Isolation.Title">Изоляция версий</x:String>
+    <x:String x:Key="Settings.Game.Isolation.Desc">Тип технологии, используемый для изоляции версий</x:String>
+    <x:String x:Key="Settings.Game.Isolation.SymbolicLink">Одиночный режим (символическая ссылка)</x:String>
+    <x:String x:Key="Settings.Game.Isolation.HookSymbolicLink">Гибридный режим (Hook + символическая ссылка)</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Title">Приоритет изоляции</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Desc">Установите политику изоляции версий для разных лаунчеров</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Standard">Стандартный</x:String>
+    <x:String x:Key="Settings.Game.IsolationPriority.Priority">Приоритет</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Title">Каталог изоляции</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Desc">Выберите другую политику изоляции каталогов</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Dedicated">Изолированный каталог (выделенный)</x:String>
+    <x:String x:Key="Settings.Game.CatalogStrategy.Shared">Совместно с другими программами запуска</x:String>
+    <x:String x:Key="Settings.Game.Group.Accessibility">Доступность</x:String>
+    <x:String x:Key="Settings.Game.Overlay.Title">Наложение игры</x:String>
+    <x:String x:Key="Settings.Game.Overlay.Desc">Нажмите Shift+Tab в окне игры, чтобы открыть оверлей.</x:String>
+    <x:String x:Key="Settings.Game.Group.Global">Глобальный</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Title">Глобальные параметры</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Desc">Настройка источника синхронизации options.txt между экземплярами</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Reset.Title">Сбросить источник синхронизации</x:String>
+    <x:String x:Key="Settings.Game.PublicSync.Reset.Desc">Сбросить текущий настроенный экземпляр источника синхронизации</x:String>
+    <x:String x:Key="Settings.Game.MultipleUsers.Title">Используйте несколько учетных записей</x:String>
+    <x:String x:Key="Settings.Game.MultipleUsers.Desc">Играйте в игру с изоляцией нескольких учетных записей в Windows</x:String>
+    <x:String x:Key="Settings.Game.NeoLaunch.Title">Новый метод запуска</x:String>
+    <x:String x:Key="Settings.Game.NeoLaunch.Desc">Используйте новый метод запуска с входом в учетную запись XBOX в Linux.</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Title">Блокировка мыши</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Desc">Предотвращает пересечение мышью границы окна игры, чтобы избежать случайных щелчков в другом месте.</x:String>
+    <x:String x:Key="Settings.Game.Group.Advanced">Расширенный</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Title">Пользовательские команды</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Desc">Настройте команды перед запуском, команды после выхода и оболочку запуска.</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Main.Title">Главный переключатель</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Main.Desc">Пользовательские команды ниже вступают в силу только в том случае, если они включены.</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Group.Hooks">Команды</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Pre.Title">Предстартовая команда</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Pre.Desc">Команда выполняется до начала игрового процесса</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Pre.Watermark">например Taskkill /IM SomeApp.exe</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Post.Title">Команда после выхода</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Post.Desc">Команда выполняется после выхода из игрового процесса</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Post.Watermark">например выключение /с /т 60</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Group.Wrapper">Запустить оболочку</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Title">Команда оболочки</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Desc">Используйте %command% для обозначения исходной команды запуска игры. Оставьте пустым, чтобы отключить.</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Watermark">например gamemoderun %команда%</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Unsupported.Title">Обертка недоступна в Windows</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wrapper.Unsupported.Desc">В Windows игра запускается посредством активации пакета UWP/GDK, поэтому командную строку процесса для переноса не требуется. Команды перед запуском и после выхода по-прежнему работают.</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Group.Behavior">Поведение выполнения</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wait.Title">Дождитесь команды перед запуском</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Wait.Desc">Если этот параметр отключен, команда предварительного запуска выполняется в фоновом режиме, и игра запускается немедленно.</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Timeout.Title">Таймаут ожидания (секунды)</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Timeout.Desc">Команда завершается, и игра продолжает запускаться по истечении этого времени. 0 означает ждать бесконечно.</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Abort.Title">Прервать запуск в случае сбоя</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Abort.Desc">Отменить запуск, если команда предварительного запуска возвращает ненулевой код выхода.</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Group.Placeholder">Доступные заполнители</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Placeholder.Title">Заполнители экземпляров</x:String>
+    <x:String x:Key="Settings.Game.LaunchCommand.Placeholder.Desc">папка экземпляра {instance_path}, имя экземпляра {instance_name}, версия игры {game_version}, тип сборки {build_type}, имя файла тела {body_file}, полный путь {game_exe} к исполняемому файлу игры</x:String>
+    <x:String x:Key="Settings.Game.Proton.Desc">Управление и настройка бегунов Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Title">Установить новый протон</x:String>
+    <x:String x:Key="Settings.Game.Proton.Install.Desc">Загрузите различные версии Proton из предоставленных предустановленных репозиториев.</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Title">Выберите глобальный протон</x:String>
+    <x:String x:Key="Settings.Game.Proton.Global.Desc">Выберите установленный Протон в качестве глобального Протона.</x:String>
+    <x:String x:Key="Settings.Game.Proton.Installed.Title">Установлен ГДКПротон</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Title">Ничего не установлено</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Message">Нет доступных бегунов Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Empty.Combo">Пожалуйста, сначала установите Proton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Branch.Title">Выберите ветку GDKProton</x:String>
+    <x:String x:Key="Settings.Game.Proton.Dialog.Version.Title">Выберите версию GDKProton</x:String>
+
+    <x:String x:Key="Settings.Game.Backup.Title">Мировое резервное копирование</x:String>
+    <x:String x:Key="Settings.Game.Backup.Desc">Автоматическое резервное копирование измененных сохранений и управление историческими резервными копиями.</x:String>
+    <x:String x:Key="Settings.Game.Backup.Group.Auto">Автоматическое резервное копирование</x:String>
+    <x:String x:Key="Settings.Game.Backup.Group.Storage">Управление хранилищем</x:String>
+    <x:String x:Key="Settings.Game.Backup.Auto.Title">Автоматическое резервное копирование миров</x:String>
+    <x:String x:Key="Settings.Game.Backup.Auto.Desc">Автоматически обнаруживать и создавать резервные копии измененных сохранений мира при запуске или выходе игры.</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnLaunch.Title">Автоматическое резервное копирование при запуске</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnLaunch.Desc">Автоматически проверять и создавать резервные копии измененных сохранений в фоновом режиме после запуска игры.</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnExit.Title">Автоматическое резервное копирование при выходе</x:String>
+    <x:String x:Key="Settings.Game.Backup.OnExit.Desc">Автоматически проверять и создавать резервные копии измененных сохранений после выхода из игры.</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Title">Счетчик хранения автоматического резервного копирования</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Desc">Максимальное количество автоматических резервных копий для каждого мира. Самые старые автоматические резервные копии будут автоматически очищены (резервные копии, созданные вручную, не затрагиваются).</x:String>
+    <x:String x:Key="Settings.Game.Backup.Notice.Title">Уведомление о резервном копировании</x:String>
+    <x:String x:Key="Settings.Game.Backup.Notice.Desc">Отображение уведомления об успешном завершении автоматического резервного копирования.</x:String>
+    <x:String x:Key="Settings.Game.Backup.OpenFolder.Title">Открыть папку резервного копирования</x:String>
+    <x:String x:Key="Settings.Game.Backup.OpenFolder.Desc">Откройте папку резервной копии в системном файловом менеджере.</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.3">3 резервные копии</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.5">5 резервных копий (рекомендуется)</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.10">10 резервных копий</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.20">20 резервных копий</x:String>
+    <x:String x:Key="Settings.Game.Backup.MaxCount.Unlimited">Безлимитный</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Notice.Title">Всемирное автоматическое резервное копирование</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Notice.Message">Успешно сохранено резервное копирование измененных сохранений мира ({0}).</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Prefix">Автоматическое резервное копирование</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Timing.Launch">Запуск</x:String>
+    <x:String x:Key="Task.Archive.AutoBackup.Timing.Exit">Выход</x:String>
+
+    <x:String x:Key="Setting.Game.Title">Игра</x:String>
+    <x:String x:Key="Setting.Game.Breadcrumb.Root">Игра</x:String>
+    <x:String x:Key="Setting.Game.Isolation.None">Нет изоляции (нет)</x:String>
+    <x:String x:Key="Setting.Game.Isolation.Version">По версии (Версия)</x:String>
+
+    <x:String x:Key="Settings.Download.Group.Base">Базовая загрузка</x:String>
+    <x:String x:Key="Settings.Download.Chunks.Title">Скачать чанки</x:String>
+    <x:String x:Key="Settings.Download.Chunks.Desc">Количество фрагментов загрузки для BedrockBoot</x:String>
+    <x:String x:Key="Settings.Download.Group.Instance">Загрузка экземпляра</x:String>
+    <x:String x:Key="Settings.Download.InstancePath.Title">Каталог экземпляров</x:String>
+    <x:String x:Key="Settings.Download.InstancePath.Desc">Корневой каталог для хранения игр</x:String>
+    <x:String x:Key="Settings.Download.Group.Source">Источник</x:String>
+    <x:String x:Key="Settings.Download.Source.Version.Title">Источник списка версий</x:String>
+    <x:String x:Key="Settings.Download.Source.Version.Desc">Источник списка версий, используемый BedrockBoot</x:String>
+    <x:String x:Key="Settings.Download.Source.CurseForge.Title">Источник CurseForge</x:String>
+    <x:String x:Key="Settings.Download.Source.CurseForge.Desc">Исходный код CurseForge, используемый BedrockBoot</x:String>
+    <x:String x:Key="Settings.Download.Group.Advanced">Расширенный</x:String>
+    <x:String x:Key="Settings.Download.SoftwareUpdate.Title">Обновления программного обеспечения</x:String>
+    <x:String x:Key="Settings.Download.SoftwareUpdate.Desc">Обновить настройки BedrockBoot</x:String>
+    <x:String x:Key="Settings.Download.FuzzySearch.Title">Нечеткое сопоставление</x:String>
+    <x:String x:Key="Settings.Download.FuzzySearch.Desc">Настройте поведение нечеткого сопоставления при поиске ресурсов. Если этот параметр включен, возвращается больше результатов, но могут появиться нерелевантные результаты. Это не влияет на поиск Minecraft.</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Title">Сетевой тест</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Desc">Проверьте задержку сети всех API, используемых BedrockBoot.</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Title">Запустить тест</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Desc">Нажмите кнопку ниже, чтобы проверить задержку всех API одновременно.</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Action.Test">Проверить все</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Testing">Тестирование...</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Failed">Не удалось</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Status.Timeout">Тайм-аут</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Mojang">Официальный сайт Mojang</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Version">Источник списка версий</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.CurseForge">Источник CurseForge</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Update">Источник обновления программного обеспечения</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.GameFile">Источник файла игры</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Plugin">Плагин/Стороннее лицо</x:String>
+    <x:String x:Key="Settings.Download.NetworkTest.Group.Other">Другое</x:String>
+
+    <x:String x:Key="Setting.Download.Title">Загрузить настройки</x:String>
+    <x:String x:Key="Setting.Download.Breadcrumb.Root">Скачать</x:String>
+    <x:String x:Key="Setting.Download.ChunkCount">Параллельная загрузка фрагментов</x:String>
+    <x:String x:Key="Setting.Download.Source.Version">Источник метаданных версии</x:String>
+    <x:String x:Key="Setting.Download.Source.CurseForge">API-прокси CurseForge</x:String>
+    <x:String x:Key="Setting.Download.Navigation.Folders">Управление каталогами игр</x:String>
+    <x:String x:Key="Setting.Download.Navigation.Update">Проверьте наличие обновлений программного обеспечения</x:String>
+
+    <x:String x:Key="Settings.Universal.Debug.Group.Base">Основные настройки</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Console.Title">Консоль</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Console.Desc">Собственная консоль BedrockBoot (требуется перезагрузка)</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Group.Other">Другие страницы</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Exception.Title">Журналы сбоев</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Exception.Desc">Каждый сбой, зафиксированный BedrockBoot</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Summary.Title">Резюме</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Summary.Intro">Весь контент, записанный на этой странице, возник в результате сбоев во время использования.</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Summary.Guide">Если вы столкнулись с сбоем и вам необходимо сообщить об этом разработчику, вы можете перейти на эту страницу, чтобы найти предыдущее исключение, экспортировать его и предоставить разработчику для исправления.</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Empty.Title">Нет отчетов</x:String>
+    <x:String x:Key="Settings.Universal.Exception.Empty.Message">Отчеты об ошибках не создаются</x:String>
+    <x:String x:Key="Settings.Universal.Update.Auto.Title">Автоматические обновления</x:String>
+    <x:String x:Key="Settings.Universal.Update.Auto.Desc">Проверяйте обновления при каждом запуске</x:String>
+    <x:String x:Key="Settings.Universal.Update.Channel.Title">Обновить канал</x:String>
+    <x:String x:Key="Settings.Universal.Update.Channel.Desc">Канал обновления лаунчера</x:String>
+    <x:String x:Key="Settings.Universal.Update.Channel.Release">Релиз (стабильный, медленные обновления)</x:String>
+    <x:String x:Key="Settings.Universal.Update.Channel.Preview">Предварительный просмотр (нестабильный, быстрые обновления)</x:String>
+    <x:String x:Key="Settings.Universal.Update.Status.Latest.Title">Уже актуально</x:String>
+    <x:String x:Key="Settings.Universal.Update.Status.Latest.Message">Наслаждайтесь~</x:String>
+    <x:String x:Key="Settings.Universal.Group.Accessibility">Доступность</x:String>
+    <x:String x:Key="Settings.Universal.JumpList.Title">Список переходов на панели задач</x:String>
+    <x:String x:Key="Settings.Universal.JumpList.Desc">Показывать последние запуски при щелчке правой кнопкой мыши закрепленной программы на панели задач.</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Title">Режим отладки</x:String>
+    <x:String x:Key="Settings.Universal.Debug.Desc">Собственный режим отладки BedrockBoot</x:String>
+    <x:String x:Key="Settings.Universal.Language.Title">Язык</x:String>
+    <x:String x:Key="Settings.Universal.Language.Desc">BedrockBoot показать язык</x:String>
+    <x:String x:Key="Settings.Universal.Group.Behavior">Поведение</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Title">Поведение программы запуска</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Desc">Что делает лаунчер после запуска игры</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.None">Нет</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Minimize">Свернуть лаунчер после запуска</x:String>
+    <x:String x:Key="Settings.Universal.LaunchBehavior.Exit">Выход из лаунчера после запуска</x:String>
+    <x:String x:Key="Settings.Universal.HardwareDecode.Title">Аппаратное декодирование</x:String>
+    <x:String x:Key="Settings.Universal.HardwareDecode.Desc">Установите, включать ли аппаратное декодирование при установке игры (GDK). Включение этой опции увеличивает скорость установки. Некоторые модели ЦП не поддерживают эту функцию.</x:String>
+    <x:String x:Key="Settings.Universal.BetaUI.Title">Бета-функции</x:String>
+    <x:String x:Key="Settings.Universal.BetaUI.Desc">Включить или отключить функции бета-версии BedrockBoot</x:String>
+    <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Title">Примечания к выпуску</x:String>
+    <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Desc">Примечания к выпуску текущей версии</x:String>
+    <x:String x:Key="Settings.Universal.Update.Changelog.Title">Журнал изменений</x:String>
+    <x:String x:Key="Settings.Universal.Update.Changelog.Desc">Журнал изменений между текущей и предыдущей версиями</x:String>
+    <x:String x:Key="Settings.Universal.Update.Dependency.Title">Обновления зависимостей</x:String>
+    <x:String x:Key="Settings.Universal.Update.Dependency.Desc">Проверьте и обновите компоненты многопользовательской игры (EasyTier/GravityCone)</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Многопользовательские зависимости</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">Чтение информации о версии...</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Title">Проверить обновления</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Desc">Загрузите последнюю версию многопользовательских компонентов с GitHub и сравните с локальной версией.</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Check.Action">Проверить обновления</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Title">Обновить зависимости</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Desc">Загрузите и установите последние компоненты многопользовательской игры (мультиплеер отключен во время обновления)</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.Action">Обновить сейчас</x:String>
+
+    <x:String x:Key="Settings.Plugin.Manager.Title">Менеджер плагинов</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Desc">Управление установленными плагинами</x:String>
+    <x:String x:Key="Settings.Plugin.Settings.Title">Настройки плагина</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Breadcrumb">Менеджер</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Intro">Импортируя сторонние плагины, BedrockBoot может запускать контент сторонних расширений.</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.ImportGuide">Нажмите кнопку «Импортировать», чтобы импортировать пакет плагина.</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Action.Import">Импортировать плагин</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.SecurityNotice">Импортируйте только те пакеты плагинов, которым вы доверяете. Загрузка плагинов из неизвестных источников может представлять угрозу безопасности.</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Title">Плагины не установлены</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Empty.Message">Сторонние плагины пока не установлены</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Loading.Message">Загрузка плагинов</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.Title">Выберите пакет плагинов</x:String>
+    <x:String x:Key="Settings.Plugin.Manager.Picker.FileType">Пакет плагинов BedrockBoot</x:String>
+
+    <x:String x:Key="Setting.Universal.Title">Универсальный</x:String>
+    <x:String x:Key="Setting.Universal.Breadcrumb.Root">Универсальный</x:String>
+    <x:String x:Key="Setting.Universal.Language.Auto">Системный язык (авто)</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Title">Режим отладки</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Console.Header">Консольный режим</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Console.Desc">Показывать окно консоли при запуске игры</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Exception.Header">Просмотр исключений</x:String>
+    <x:String x:Key="Setting.Universal.Debug.Exception.Desc">Просмотр записанных журналов исключений программы</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Title">Аварийные записи</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Item.Desc">Сбой произошел в {0}</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Title">Сохранить отчет об ошибке</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.Prefix">Отчет_ошибки</x:String>
+    <x:String x:Key="Setting.Universal.Exception.Dialog.Save.FileType">Отчет о сбое BedrockBoot</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Title">Обновление программного обеспечения</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.CheckUpdateAction">Проверить обновления</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Stable">Стабильный</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Beta">Бета</x:String>
+    <x:String x:Key="Setting.Universal.SoftwareUpdate.Type.Dev">Дев</x:String>
+    <x:String x:Key="Setting.Universal.GatherInfo.Title">Сбор информации о пользователях</x:String>
+    <x:String x:Key="Setting.Universal.GatherInfo.Desc">Используется для сбора информации о пользователях только в целях анализа. Мы никогда не будем продавать ваши данные третьим лицам.</x:String>
+
+    <x:String x:Key="MainPage.Update.Title">Проверить обновления</x:String>
+    <x:String x:Key="MainPage.Update.NewVersion">Обновить {0}</x:String>
+    <x:String x:Key="MainPage.Update.Content">Доступно новое обновление:
+
+{0}</x:String>
+    <x:String x:Key="MainPage.Update.Action.Now">Обновить сейчас</x:String>
+    <x:String x:Key="MainPage.Update.Action.Latest">Уже в последней версии</x:String>
+
+    <x:String x:Key="Tools.Title">Ящик для инструментов</x:String>
+    <x:String x:Key="Tools.Group.Help">Помощь</x:String>
+    <x:String x:Key="Tools.McFramework.Title">Скачать игровой фреймворк</x:String>
+    <x:String x:Key="Tools.McFramework.Description">Перейдите на веб-сайт MCAPPX, чтобы загрузить среду выполнения игр Minecraft.</x:String>
+    <x:String x:Key="Tools.McFramework.Action">Открыть веб-страницу</x:String>
+    <x:String x:Key="Tools.RecoverFiles.Title">Восстановить файлы</x:String>
+    <x:String x:Key="Tools.RecoverFiles.Description">Используется для восстановления потерянных файлов, таких как сохранения/пакеты ресурсов, вызванных изоляцией версий.</x:String>
+    <x:String x:Key="Tools.UninstallMc.Title">Удалить локально установленный Minecraft</x:String>
+    <x:String x:Key="Tools.UninstallMc.Description">Используется для удаления ошибок, вызванных локально установленной версией Minecraft.</x:String>
+    <x:String x:Key="Tools.CheckSdk.Title">Проверьте установку SDK 1.8</x:String>
+    <x:String x:Key="Tools.CheckSdk.Description">Проверьте, установлен ли в системе SDK 1.8, одна из сред выполнения игры.</x:String>
+    <x:String x:Key="Tools.Group.Tools">Инструменты</x:String>
+    <x:String x:Key="Tools.WorldShift.Title">Мировой конвертер</x:String>
+    <x:String x:Key="Tools.WorldShift.Description">Преобразование между мирами Java и мирами Bedrock (на основе Chunker, требуется запуск JVM)</x:String>
+    <x:String x:Key="Tools.ResourcePackShift.Title">Конвертер пакетов ресурсов</x:String>
+    <x:String x:Key="Tools.ResourcePackShift.Description">Преобразование пакетов ресурсов Java Edition в пакеты ресурсов Bedrock Edition</x:String>
+    <x:String x:Key="Tools.TranslateResourcePack.Title">Перевести пакет ресурсов</x:String>
+    <x:String x:Key="Tools.TranslateResourcePack.Description">Импортируйте пакет ресурсов и переведите его на китайский язык.</x:String>
+    <x:String x:Key="Tools.Empty.Title">Хорошо...</x:String>
+    <x:String x:Key="Tools.Empty.Message">В ящике для инструментов нет инструментов, ава
+Вы можете попросить разработчика добавить их как можно скорее.jpg</x:String>
+
+    <x:String x:Key="MainPage.Tools.Uninstall.Dialog.Title">Удаление игры...</x:String>
+    <x:String x:Key="MainPage.Tools.Uninstall.Dialog.Content">Это диалоговое окно закроется автоматически после завершения удаления.</x:String>
+
+    <x:String x:Key="About.Header.PowerBy">Техническая поддержка</x:String>
+    <x:String x:Key="About.Section.OpenSource">Открытый исходный код</x:String>
+    <x:String x:Key="About.OpenSource.License.Mit">Лицензия MIT</x:String>
+    <x:String x:Key="About.OpenSource.License.Gpl">Стандартная общественная лицензия GNU (GPL)</x:String>
+    <x:String x:Key="About.OpenSource.License.Apache">Лицензия Апач</x:String>
+    <x:String x:Key="About.OpenSource.License.Custom">Пользовательская лицензия</x:String>
+    <x:String x:Key="About.OpenSource.Repo">Репозиторий на Гитхабе:</x:String>
+    <x:String x:Key="About.OpenSource.Org">Организация на Гитхабе:</x:String>
+    <x:String x:Key="About.OpenSource.RepoName">Репозиторий BedrockBoot</x:String>
+    <x:String x:Key="About.OpenSource.OrgName">Круглая студия</x:String>
+    <x:String x:Key="About.OpenSource.Issues">Отзыв о BedrockBoot (проблемы)</x:String>
+    <x:String x:Key="About.OpenSource.Invitation">Добро пожаловать, чтобы подавать заявки на участие в нашем проекте, давайте вместе улучшим BedrockBoot.</x:String>
+
+    <x:String x:Key="About.Section.Developers">Разработчики</x:String>
+    <x:String x:Key="About.Developers.Core">BedrockBoot Launcher: Дайм, ЮмиХа</x:String>
+    <x:String x:Key="About.Developers.Kernel">BedrockBoot Core: YoumiHa</x:String>
+    <x:String x:Key="About.Developers.UI">Опыт пользователя BedrockBoot: DrMing</x:String>
+
+    <x:String x:Key="About.Section.Credits">Кредиты</x:String>
+    <x:String x:Key="About.Credits.MCAPPX">Источник списка версий, используемый BedrockBoot, взят с веб-сайта MCAPPX.</x:String>
+    <x:String x:Key="About.Credits.Akams">Часть общественного источника обновлений BedrockBoot взята с сайта github.akams.cn.</x:String>
+    <x:String x:Key="About.Credits.CurseForge">Загрузки игровых ресурсов, используемые BedrockBoot, взяты из CurseForge.</x:String>
+    <x:String x:Key="About.Credits.BMCBL">Спасибо BMCBL за предоставление ускоренного сайта для источника списка MCAPPX.</x:String>
+
+    <x:String x:Key="About.Section.Inspiration">Вдохновение</x:String>
+    <x:String x:Key="About.Inspiration.LauncherX">Некоторые анимации в BedrockBoot вдохновлены LauncherX.</x:String>
+    <x:String x:Key="About.Inspiration.Polymerium">Некоторые дизайны в BedrockBoot вдохновлены полимером.</x:String>
+    <x:String x:Key="About.Inspiration.WonderLab">Некоторые дизайны в BedrockBoot вдохновлены WonderLab.</x:String>
+
+    <x:String x:Key="About.Section.Components">Компоненты</x:String>
+    <x:String x:Key="About.Components.OnePointUI">BedrockBoot использует OnePointUI в качестве стиля взаимодействия с пользователем.</x:String>
+    <x:String x:Key="About.Components.Core">BedrockBoot использует ядро запуска игр BedrockLauncher.Core.</x:String>
+
+    <x:String x:Key="About.Action.OpenSourceLib.Title">Сторонние библиотеки</x:String>
+    <x:String x:Key="About.Action.OpenSourceLib.Desc">Сторонние библиотеки с открытым исходным кодом, используемые BedrockBoot.</x:String>
+    <x:String x:Key="About.Action.Contributors.Title">Авторы</x:String>
+    <x:String x:Key="About.Action.Contributors.Desc">Все участники BedrockBoot</x:String>
+    <x:String x:Key="About.Action.Version.Title">Внутренняя версия</x:String>
+    <x:String x:Key="About.Action.CheckUpdate">Проверить обновления</x:String>
+
+    <x:String x:Key="About.Contributor.Title">Авторы</x:String>
+    <x:String x:Key="About.Contributor.Description">Вот создатели, внесшие свой вклад в BedrockBoot!</x:String>
+    <x:String x:Key="About.Contributor.Count.Prefix">Внесено </x:String>
+    <x:String x:Key="About.Contributor.Count.Suffix"> раз</x:String>
+
+    <x:String x:Key="AboutPage.Title">О нас</x:String>
+    <x:String x:Key="AboutPage.Contributor.Title">Авторы</x:String>
+    <x:String x:Key="AboutPage.Contributor.LoadFailed">Не удалось загрузить список участников. Проверьте подключение.</x:String>
+    <x:String x:Key="AboutPage.OpenSource.Title">Сторонние библиотеки</x:String>
+    <x:String x:Key="AboutPage.OpenSource.VersionPrefix">Версия</x:String>
+    <x:String x:Key="AboutPage.Update.Action">Проверить обновления</x:String>
+    <x:String x:Key="AboutPage.Update.Checking">Проверка...</x:String>
+
+    <x:String x:Key="Setup.Root.Slogan">Лаунчер Minecraft Bedrock Edition следующего поколения.</x:String>
+    <x:String x:Key="Setup.Root.Action.Previous">Предыдущий</x:String>
+    <x:String x:Key="Setup.Root.Action.Next">Далее</x:String>
+
+    <x:String x:Key="Setup.Step.Welcome">Добро пожаловать</x:String>
+    <x:String x:Key="Setup.Step.Import">Импорт</x:String>
+    <x:String x:Key="Setup.Step.Completed">Закончено</x:String>
+    <x:String x:Key="Setup.Step.Style">Персонализация</x:String>
+
+    <x:String x:Key="Setup.Welcome.Title">Добро пожаловать</x:String>
+    <x:String x:Key="Setup.Welcome.Description">Добро пожаловать в BedrockBoot v2; это руководство по первоначальной настройке.</x:String>
+
+    <x:String x:Key="Setup.Import.Title">Импорт</x:String>
+    <x:String x:Key="Setup.Import.Description">Поскольку вы впервые используете BedrockBoot, нам необходимо выполнить некоторую настройку.</x:String>
+    <x:String x:Key="Setup.Import.Folder.Header">Импортировать каталог экземпляров</x:String>
+    <x:String x:Key="Setup.Import.Folder.Description">Импортируйте новый каталог экземпляра</x:String>
+    <x:String x:Key="Setup.Import.Other.Header">Импортировать другие конфигурации лаунчера</x:String>
+    <x:String x:Key="Setup.Import.Other.Description">Импортируйте конфигурации из других сторонних программ запуска, таких как LeviLauncher.</x:String>
+    <x:String x:Key="Setup.Import.Dialog.AddFolder.Title">Добавить корневой каталог игры</x:String>
+    <x:String x:Key="Setup.Import.Dialog.AddFolder.Action">Добавлять</x:String>
+    <x:String x:Key="Setup.Import.Draw.ImportOther.Title">Импорт сторонних конфигураций</x:String>
+
+    <x:String x:Key="Setup.Style.Title">Персонализация</x:String>
+    <x:String x:Key="Setup.Style.Description">Настройки персонализации лаунчера</x:String>
+    <x:String x:Key="Setup.Style.Theme.Dark">Темная тема</x:String>
+    <x:String x:Key="Setup.Style.Theme.Light">Светлая тема</x:String>
+
+    <x:String x:Key="Setup.Completed.Title">Законченный</x:String>
+    <x:String x:Key="Setup.Completed.Description">Базовая настройка завершена! Вы готовы идти.</x:String>
+    <x:String x:Key="Setup.Completed.Action.Start">Начать</x:String>
+
+    <x:String x:Key="Import.Launcher.Description.Format">Импорт данных из программы запуска {0}...</x:String>
+    <x:String x:Key="Draw.ImportLauncher.Status.None.Title">Нет полезной конфигурации</x:String>
+    <x:String x:Key="Draw.ImportLauncher.Status.None.Message">В системе не обнаружено файлов конфигурации сторонних лаунчеров Bedrock.</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.Error.Title">Ошибка</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Title">Система не поддерживается</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Content">Согласно нашим минимальным стандартам поддержки, версия вашей системы должна быть 19041 или выше.
+Пожалуйста, повторите попытку после обновления вашей системы.</x:String>
+    <x:String x:Key="MainWindow.Dialog.UnsupportedSys.Close">Выход</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Title">Эмм...</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Content">Упс, похоже, вы не подключены к Интернету.
+Пожалуйста, попробуйте переподключиться или переключить сетевое окружение и повторите попытку.</x:String>
+    <x:String x:Key="MainWindow.Dialog.NoNetwork.Close">ХОРОШО</x:String>
+    <x:String x:Key="MainWindow.Dialog.DevMode.Title">Режим разработчика</x:String>
+    <x:String x:Key="MainWindow.Dialog.DevMode.Content">Мы не можем включить для вас режим разработчика. Пожалуйста, включите его вручную в настройках вашей системы.</x:String>
+    <x:String x:Key="MainWindow.Protocol.Description">Протокол загрузки Bedrock</x:String>
+
+    <x:String x:Key="MainWindow.Dialog.Agreement.Title">Пользовательское соглашение BedrockBoot</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Content">Добро пожаловать в BedrockBoot.
+Используя это программное обеспечение, вы соглашаетесь со следующими условиями:
+
+1. Это неофициальный лаунчер Minecraft.
+2. У вас должна быть легально лицензированная копия Minecraft; в противном случае по умолчанию будет установлен пробный режим.
+3. Мы не поддерживаем и не помогаем в обходе официального лицензирования Minecraft.
+4.Любая форма пиратства или мошенничества строго запрещена.
+5. Используйте моды/пакеты ресурсов на свой страх и риск.
+6. Не связано с Mojang/Microsoft.
+7. Это программное обеспечение будет изменять конфигурации, связанные с реестром.
+8. Это программное обеспечение с открытым исходным кодом; использование и распространение должны осуществляться в соответствии с лицензией GPL-v3.
+
+Продолжение использования программного обеспечения означает принятие этих условий.</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Agree">Я согласен</x:String>
+    <x:String x:Key="MainWindow.Dialog.Agreement.Decline">Я отказываюсь, выход</x:String>
+
+    <x:String x:Key="Dialog.AddGameFolder.Label.Name">Имя каталога (настраиваемое):</x:String>
+    <x:String x:Key="Dialog.AddGameFolder.Label.Path">Путь к каталогу:</x:String>
+    <x:String x:Key="Dialog.AddFolder.Picker.Title">Выберите папку экземпляра игры</x:String>
+    <x:String x:Key="Dialog.AddFolder.Error.InvalidPath">Выбранный путь недействителен или недоступен.
+Убедитесь, что путь не является корневым каталогом, защищенным системой.</x:String>
+
+    <x:String x:Key="Dialog.AddInstance.Label.GameFolder">Каталог игр</x:String>
+    <x:String x:Key="Dialog.AddInstance.Label.InstanceName">Имя экземпляра (настраиваемое):</x:String>
+
+    <x:String x:Key="Dialog.AddServer.Label.Name">Имя сервера (настраиваемое):</x:String>
+    <x:String x:Key="Dialog.AddServer.Watermark.Name">Сторонний сервер</x:String>
+    <x:String x:Key="Dialog.AddServer.Label.Address">Адрес сервера:</x:String>
+    <x:String x:Key="Dialog.AddServer.Label.Port">Порт сервера:</x:String>
+    <x:String x:Key="Dialog.AddServer.DefaultName">Сторонний сервер</x:String>
+
+    <x:String x:Key="Dialog.ChooseGame.Label.Instance">Пример:</x:String>
+
+    <x:String x:Key="Dialog.Import.Label.PackagePath">Путь к пакету:</x:String>
+    <x:String x:Key="Dialog.Import.Label.InstallFolder">Каталог установки:</x:String>
+    <x:String x:Key="Dialog.Import.Label.InstallName">Имя установки (настраиваемое):</x:String>
+    <x:String x:Key="Dialog.Import.Label.GDKTypeTip">Фактический тип версии (необходимо выбрать это для GDK, неправильный выбор может помешать запуску):</x:String>
+    <x:String x:Key="Dialog.Import.Action.DontKnowType">Я не знаю тип версии, выбор выше был случайным.</x:String>
+
+    <x:String x:Key="Dialog.ImportConfig.Label.Title">Выберите контент для импорта</x:String>
+    <x:String x:Key="Dialog.ImportConfig.Option.Settings">Настройки экземпляра</x:String>
+    <x:String x:Key="Dialog.ImportConfig.Option.Archive">Архив экземпляров</x:String>
+
+    <x:String x:Key="Dialog.ImportMod.Label.FilePath">Путь к файлу:</x:String>
+    <x:String x:Key="Dialog.ImportMod.Label.InjectionDelay">Задержка мода (мс):</x:String>
+    <x:String x:Key="Dialog.ImportMod.Option.Preload">Включить предварительную загрузку *</x:String>
+    <x:String x:Key="Dialog.ImportMod.Tip.Preload">* Если вы не знаете, что такое предварительная загрузка, пожалуйста, не проверяйте это.</x:String>
+
+    <x:String x:Key="Dialog.ImportPack.Label.ConfirmList">Вы собираетесь импортировать следующие пакеты:</x:String>
+
+    <x:String x:Key="Dialog.MakePack.Notice.Legal">Обратите внимание, что для распространения пакетов ресурсов внутри модпака требуется разрешение их разработчиков, в противном случае это может быть незаконным распространением.</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.GuidePrefix">Если вы хотите создать файлы модпаков, совместимые с нашим лаунчером, см.:</x:String>
+    <x:String x:Key="Dialog.MakePack.Action.ViewGuide">Спецификация модпака Bedrock</x:String>
+    <x:String x:Key="Dialog.MakePack.Group.PackInfo">Информация о модпаке</x:String>
+    <x:String x:Key="Dialog.MakePack.Group.AuthorInfo">Информация об авторе</x:String>
+    <x:String x:Key="Dialog.MakePack.Group.Contents">Содержимое упаковки</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.PackName">Название модпака:</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.PackDescription">Описание модпака:</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.PackVersion">Версия модпака:</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.AuthorName">Имя автора:</x:String>
+    <x:String x:Key="Dialog.MakePack.Label.AuthorLink">Ссылка автора:</x:String>
+    <x:String x:Key="Dialog.MakePack.Option.DllMods">Файлы модов (.dll)</x:String>
+
+    <x:String x:Key="ExceptionWindow.TitleBar">Обработка исключений</x:String>
+    <x:String x:Key="ExceptionWindow.FatalError.Header">Приложение обнаружило фатальную ошибку</x:String>
+    <x:String x:Key="ExceptionWindow.FatalError.Message">BedrockBoot обнаружил фатальную ошибку и нуждается в вашем отзыве.</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Export">Экспорт отчета об ошибках</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Upload">Загрузить журналы</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Copy">Копировать информацию об ошибке</x:String>
+    <x:String x:Key="ExceptionWindow.Button.Return">Вернуться в лаунчер</x:String>
+    <x:String x:Key="ExceptionWindow.Link.FAQ">Часто задаваемые вопросы по BedrockBoot</x:String>
+    <x:String x:Key="ExceptionWindow.Link.Issues">Проблемы с GitHub</x:String>
+    <x:String x:Key="ExceptionWindow.SaveDialog.Title">Сохранить отчет об ошибке</x:String>
+    <x:String x:Key="ExceptionWindow.SaveDialog.FileType">Отчет о сбое BedrockBoot</x:String>
+    
+    <x:String x:Key="Settings.Game.MouseLock.Main.Title">Главный переключатель</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Main.Desc">Эта функция вступит в силу только при включении главного выключателя.</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Advance">Передовой</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.ForGdk.Title">Включить для версии GDK</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.ForGdk.Desc">Обычно только версия UWP требует блокировки мыши.</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Title">Устаревшая логика</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Desc">Не следует включать этот переключатель, если новая логика блокировки мыши не работает должным образом.</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Reserve.Warn">Устаревшая логика блокировки мыши более агрессивна. Помимо ненужной нагрузки на процессор, это также может вызвать проблемы со встроенной блокировкой мыши других приложений или игр.
+и может привести к неисправности горячей клавиши разблокировки.
+Вам действительно не следует включать этот переключатель, если новая логика блокировки мыши не работает должным образом!
+
+Вы уверены, что хотите включить его?</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.WindowTrimming.Title">Обрезка границ пикселей</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.WindowTrimming.Desc">Обрежьте небольшое количество пикселей по краям окна, чтобы предотвратить ошибочные щелчки по панели задач в полноэкранном или развернутом режиме со скрытой панелью задач.</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Title">Приоритет захвата окон UWP</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Desc">Настройте стратегию захвата окна фрейма UWP.</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Default">Кадр монитора при запуске</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.GetFrame.Legacy">Получить кадр из игры</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Title">Привязка горячих клавиш</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Desc">Привяжите горячую клавишу, чтобы временно снять блокировку мыши.</x:String>
+    <x:String x:Key="Settings.Game.MouseLock.Hotkey.Capturing">Захват... Нажмите Esc, чтобы отменить</x:String>
+
+    <!-- Multiplayer -->
+    <x:String x:Key="Multiplayer.Intro.Title">Обзор</x:String>
+    <x:String x:Key="Multiplayer.Intro.GravityConeDesc">GravityCone — стороннее программное обеспечение с открытым исходным кодом. Если у вас возникнут какие-либо проблемы, отправьте отзыв по соответствующим каналам.</x:String>
+    <x:String x:Key="Multiplayer.Intro.P2PDesc">Этот многопользовательский сервис основан на протоколе PaperConnect v2 и использует технологию P2P. После подключения пользователи в комнате подключаются напрямую друг к другу без сторонних серверов ретрансляции. Многопользовательский режим зависит от условий сети.</x:String>
+    <x:String x:Key="Multiplayer.Intro.ComplianceDesc">Во время многопользовательской игры строго соблюдайте все законы и правила вашей страны или региона.</x:String>
+    <x:String x:Key="Multiplayer.Intro.PaperConnectDesc">Эта многопользовательская служба основана на PaperConnect с реле на базе EasyTier.</x:String>
+    <x:String x:Key="Multiplayer.Intro.PaperConnectP2PDesc">Использует технологию P2P для многопользовательской игры. После подключения участники комнаты подключаются напрямую друг к другу без сторонних серверов ретрансляции. Многопользовательский режим зависит от условий сети.</x:String>
+    <x:String x:Key="Multiplayer.Intro.LinksTitle">Ссылки по теме</x:String>
+    <x:String x:Key="Multiplayer.Intro.DocsTitle">Сопутствующая документация</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.Protocol">Протокол PaperConnect</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.GravityConeRepo">Репозиторий GravityCone</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.PaperConnectRepo">Репозиторий PaperConnect</x:String>
+    <x:String x:Key="Multiplayer.Intro.Link.EasyTierWebsite">Официальный сайт EasyTier</x:String>
+
+    <x:String x:Key="Multiplayer.Dep.Notice">Зависимости, необходимые для PaperConnect, еще не установлены. Нажмите ниже, чтобы начать загрузку.</x:String>
+    <x:String x:Key="Multiplayer.Dep.StartDownload.Title">Начать загрузку</x:String>
+    <x:String x:Key="Multiplayer.Dep.StartDownload.Desc">Автоматически загружать зависимости, необходимые для PaperConnect, включая EasyTier.</x:String>
+    <x:String x:Key="Multiplayer.Dep.Dialog.Title">Загрузить многопользовательские зависимости</x:String>
+    <x:String x:Key="Multiplayer.Dep.Download.EasyTier">Загрузить многопользовательскую зависимость EasyTier</x:String>
+    <x:String x:Key="Multiplayer.Dep.Download.GravityCone">Скачать многопользовательскую зависимость GravityCone</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Ready">Подготовка загрузки...</x:String>
+
+    <x:String x:Key="Multiplayer.Lobby.Title">Многопользовательское лобби</x:String>
+    <x:String x:Key="Multiplayer.Lobby.TitleReady">Многопользовательское лобби (ядро инициализировано)</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CreateRoom.Title">Создать комнату</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CreateRoom.Desc">Создайте свою комнату и пригласите друзей присоединиться.</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinRoom.Title">Присоединиться к комнате</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinRoom.Desc">Присоединяйтесь к комнате друга и войдите в игру</x:String>
+    <x:String x:Key="Multiplayer.Lobby.RoomCode">Код номера</x:String>
+    <x:String x:Key="Multiplayer.Lobby.RoomCodeClickCopy">Код номера (нажмите ниже, чтобы скопировать)</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CopyRoomCode.Title">Скопировать код номера</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CopyRoomCode.Desc">Скопируйте код этой комнаты и пригласите друзей присоединиться.</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CloseRoom.Title">Закрыть комнату</x:String>
+    <x:String x:Key="Multiplayer.Lobby.CloseRoom.Desc">Закройте эту комнату и отключите всех подключенных игроков.</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ExitRoom.Title">Покинуть комнату</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ExitRoom.Desc">Покиньте эту комнату</x:String>
+    <x:String x:Key="Multiplayer.Lobby.Exit.Title">Выход</x:String>
+    <x:String x:Key="Multiplayer.Lobby.Exit.Desc">Прекратить создание/присоединение к комнате и выйти</x:String>
+    <x:String x:Key="Multiplayer.Lobby.HostCreatedTip">Комната создана! Теперь вы можете пригласить друзей присоединиться.</x:String>
+    <x:String x:Key="Multiplayer.Lobby.GuestJoinedTip">Вы вошли в комнату. Запустите Minecraft, чтобы присоединиться к игре.</x:String>
+    <x:String x:Key="Multiplayer.Lobby.ConnectedPlayers">Подключенные игроки</x:String>
+    <x:String x:Key="Multiplayer.Lobby.JoinedPlayers">Присоединившиеся игроки</x:String>
+    <x:String x:Key="Multiplayer.Lobby.HostBadge">Хост</x:String>
+    <x:String x:Key="Multiplayer.Lobby.SearchingLanGame">Поиск игры по локальной сети</x:String>
+
+    <x:String x:Key="Multiplayer.Init.Title">Инициализация среды...</x:String>
+    <x:String x:Key="Multiplayer.Init.GetPeers">Получение одноранговых серверов</x:String>
+    <x:String x:Key="Multiplayer.Init.GetXboxUser">Получение локальной учетной записи</x:String>
+    <x:String x:Key="Multiplayer.Init.InitCore">Инициализация многопользовательского ядра</x:String>
+</ResourceDictionary>

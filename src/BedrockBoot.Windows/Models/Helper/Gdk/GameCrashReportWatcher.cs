@@ -18,7 +18,7 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using BedrockBoot.Windows.Entity;
+using BedrockBoot.Standard.Entity.Game;
 
 namespace BedrockBoot.Windows.Models.Helper.Gdk;
 

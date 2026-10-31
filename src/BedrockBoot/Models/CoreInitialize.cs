@@ -102,6 +102,8 @@ public class CoreInitialize
 
         // 核心引擎异步初始化
         _ = InitBedrockCoreAsync();
+#if WINDOWS
+        // GDK 实例的原生崩溃捕获（PreLoad.NET 进程内报告），仅 Windows 有该流程
         GameCrashReportWatcher.CrashReportGenerated += args =>
         {
             Dispatcher.UIThread.Invoke(() =>
@@ -127,6 +129,7 @@ public class CoreInitialize
                 }
             });
         };
+#endif
 
 #if WINDOWS
         // 注册文件关联

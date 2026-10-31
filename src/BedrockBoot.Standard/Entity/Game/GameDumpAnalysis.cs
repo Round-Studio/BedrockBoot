@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace BedrockBoot.Windows.Entity;
+namespace BedrockBoot.Standard.Entity.Game;
 
 public class GameDumpAnalysis
 {

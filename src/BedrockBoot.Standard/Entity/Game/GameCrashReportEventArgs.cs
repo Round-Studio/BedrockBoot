@@ -16,26 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace BedrockBoot.Windows.Entity;
+namespace BedrockBoot.Standard.Entity.Game;
 
-public class GameDumpStackFrame
+public class GameCrashReportEventArgs : EventArgs
 {
-    public int Index { get; set; }
-
-    public ulong Address { get; set; }
-
-    public string? ModulePath { get; set; }
-
-    public string? ModuleName =>
-        string.IsNullOrEmpty(ModulePath) ? null : Path.GetFileName(ModulePath);
-
-    public string? SymbolName { get; set; }
-
-    public ulong? SymbolDisplacement { get; set; }
-
-    public string Display =>
-        SymbolName != null
-            ? SymbolDisplacement.HasValue ? $"{SymbolName}+0x{SymbolDisplacement.Value:X}" : SymbolName
-            : ModuleName != null ? $"0x{Address:X} [{ModuleName}]"
-            : $"0x{Address:X}";
+    public string LaunchId { get; set; } = string.Empty;
+    public string InstanceFolder { get; set; } = string.Empty;
+    public string GameName { get; set; } = string.Empty;
+    public uint ExitCode { get; set; }
+    public string? DumpFilePath { get; set; }
+    public GameDumpAnalysis? Report { get; set; }
 }

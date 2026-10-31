@@ -31,7 +31,6 @@ using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Entity.Game;
-using BedrockBoot.Windows.Entity;
 using OnePointUI.Avalonia.Base.Entry;
 
 namespace BedrockBoot.Views.DrawContent;
@@ -89,7 +88,7 @@ public partial class DrawGameCrashContent : UserControl
         SourceFile.Text = FirstNonEmpty(report?.ExceptionModulePath, report?.Owner, "未知");
         ExceptionAddress.Text = report is { ExceptionAddress: > 0 } ? $"0x{report.ExceptionAddress:X}" : "-";
         ExitCode.Text = $"0x{_args.ExitCode:X8} ({_args.ExitCode})";
-        PreLoadVersion.Text = FileVersionInfo.GetVersionInfo(Path.Combine(_args.InstanceFolder, "PreLoad.NET.dll")).FileVersion;
+        PreLoadVersion.Text = GetFileVersion(Path.Combine(_args.InstanceFolder, "PreLoad.NET.dll"));
         Phase.Text = report?.Phase switch
         {
             "veh" => "VEH 向量异常捕获",
@@ -118,6 +117,19 @@ public partial class DrawGameCrashContent : UserControl
         if (string.IsNullOrEmpty(x.SymbolName)) return $"{head} {x.ModulePath}";
         var disp = x.SymbolDisplacement.HasValue ? $" +0x{x.SymbolDisplacement.Value:X}" : "";
         return $"{head} {x.ModulePath} | {x.SymbolName}{disp}";
+    }
+
+    private static string GetFileVersion(string path)
+    {
+        try
+        {
+            return File.Exists(path) ? FileVersionInfo.GetVersionInfo(path).FileVersion ?? "-" : "未知";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"读取文件版本信息失败：{ex.Message}");
+            return "未知";
+        }
     }
 
     private static string FirstNonEmpty(params string?[] values)

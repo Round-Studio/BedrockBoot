@@ -19,7 +19,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using BedrockBoot.Windows.Entity;
+using BedrockBoot.Standard.Entity.Game;
 
 namespace BedrockBoot.Windows.Models.Helper.Gdk;
 

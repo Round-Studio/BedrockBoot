@@ -22,7 +22,6 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Interface;
 
 namespace BedrockBoot.Models.Translate;
@@ -30,8 +29,10 @@ namespace BedrockBoot.Models.Translate;
 public class MicrosoftTranslateService : ITranslationService
 {
     private static readonly HttpClient _httpClient = new();
-    private static string _token;
-    private static DateTime _tokenExpiryTime = DateTime.MinValue;
+
+    // 2026-09 起 edge.microsoft.com/translate/auth 令牌接口已下线（404），
+    // 现走 Edge 浏览器翻译的新端点，免鉴权，响应结构与原认知服务 API 相同
+    private const string TranslateApiUrl = "https://edge.microsoft.com/translate/translatetext";
 
     private static readonly Dictionary<string, string> _languageCodeMap = new()
     {
@@ -43,6 +44,7 @@ public class MicrosoftTranslateService : ITranslationService
         { "zh-hk", "zh-Hant" },
         { "zh_sg", "zh-Hans" },
         { "zh", "zh-Hans" },
+        { "yue_hk", "yue" },
 
         { "en_us", "en" },
         { "en_gb", "en" },
@@ -81,8 +83,6 @@ public class MicrosoftTranslateService : ITranslationService
 
         try
         {
-            await EnsureValidTokenAsync();
-
             var requestBody = BuildRequestBody(new List<string> { text });
             var jsonResponse = await CallTranslationApiAsync(requestBody, sourceLanguage, targetLanguage);
 
@@ -103,21 +103,61 @@ public class MicrosoftTranslateService : ITranslationService
         }
     }
 
-    private async Task EnsureValidTokenAsync()
+    /// <summary>
+    /// 翻译 HTML 片段，标签结构原样保留（接口 textType=html）。
+    /// 单段超长时按标签边界分块请求，失败时原样返回。
+    /// </summary>
+    public async Task<string> TranslateHtmlAsync(string html, string sourceLanguage, string targetLanguage)
     {
-        if (string.IsNullOrEmpty(_token) || DateTime.UtcNow >= _tokenExpiryTime.AddMinutes(-5))
+        if (string.IsNullOrEmpty(html))
+            return string.Empty;
+
+        try
         {
-            _token = await GetAPITokenAsync();
-            if (!string.IsNullOrEmpty(_token))
+            var builder = new StringBuilder();
+            foreach (var chunk in SplitHtml(html, 12000))
             {
-                _tokenExpiryTime = DateTime.UtcNow.AddMinutes(9);
-                Console.WriteLine(@"Token刷新成功");
+                var requestBody = BuildRequestBody(new List<string> { chunk });
+                var jsonResponse =
+                    await CallTranslationApiAsync(requestBody, sourceLanguage, targetLanguage, "html");
+
+                builder.Append(GetTextFromJson(jsonResponse) ?? chunk);
             }
-            else
-            {
-                Console.WriteLine(@"警告: 获取Token失败");
-            }
+
+            return builder.ToString();
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"HTML 翻译失败: {ex.Message}");
+            return html;
+        }
+    }
+
+    private static List<string> SplitHtml(string html, int maxLength)
+    {
+        var chunks = new List<string>();
+        if (html.Length <= maxLength)
+        {
+            chunks.Add(html);
+            return chunks;
+        }
+
+        var start = 0;
+        while (start < html.Length)
+        {
+            var end = Math.Min(start + maxLength, html.Length);
+            if (end < html.Length)
+            {
+                // 优先在相邻标签的 "><" 处切分，避免截断标签内部
+                var boundary = html.LastIndexOf("><", end - 1, end - start, StringComparison.Ordinal);
+                if (boundary > start) end = boundary + 1;
+            }
+
+            chunks.Add(html[start..end]);
+            start = end;
+        }
+
+        return chunks;
     }
 
     private string ConvertLanguageCode(string languageCode)
@@ -141,32 +181,26 @@ public class MicrosoftTranslateService : ITranslationService
         return languageCode;
     }
 
-    private async Task<string> CallTranslationApiAsync(string requestBody, string sourceLanguage, string targetLanguage)
+    private async Task<string> CallTranslationApiAsync(string requestBody, string sourceLanguage,
+        string targetLanguage, string textType = "plain")
     {
-        await EnsureValidTokenAsync();
-
         var convertedTargetLanguage = ConvertLanguageCode(targetLanguage);
         string convertedSourceLanguage = null;
 
         if (!string.IsNullOrEmpty(sourceLanguage) && !sourceLanguage.Equals("auto", StringComparison.OrdinalIgnoreCase))
             convertedSourceLanguage = ConvertLanguageCode(sourceLanguage);
 
+        var from = convertedSourceLanguage ?? "";
         var url =
-            $"https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to={convertedTargetLanguage}&textType=plain";
-
-        if (!string.IsNullOrEmpty(convertedSourceLanguage)) url += $"&from={convertedSourceLanguage}";
+            $"{TranslateApiUrl}?from={from}&to={convertedTargetLanguage}&textType={textType}&isEnterpriseClient=false";
 
         using var request = new HttpRequestMessage(HttpMethod.Post, url);
         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
         request.Headers.Clear();
-
-        request.Headers.UserAgent.ParseAdd("RoundSmartTerminals/ver2 (https://round-studio.github.io)");
-        request.Headers.Add("Authorization", "Bearer " + _token);
+        request.Headers.UserAgent.ParseAdd(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
         request.Headers.Add("Accept", "*/*");
-        request.Headers.Add("Cache-Control", "no-cache");
-        request.Headers.Add("Host", "api.cognitive.microsofttranslator.com");
-        request.Headers.Add("Connection", "keep-alive");
 
         try
         {
@@ -177,22 +211,7 @@ public class MicrosoftTranslateService : ITranslationService
                 var errorContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($@"翻译API错误 - 状态码: {response.StatusCode}");
                 Console.WriteLine($@"请求URL: {url}");
-                Console.WriteLine($@"请求体: {requestBody}");
                 Console.WriteLine($@"错误响应: {errorContent}");
-
-                try
-                {
-                    using var errorDoc = JsonDocument.Parse(errorContent);
-                    if (errorDoc.RootElement.TryGetProperty("error", out var error))
-                    {
-                        if (error.TryGetProperty("message", out var message))
-                            Console.WriteLine($@"错误消息: {message.GetString()}");
-                        if (error.TryGetProperty("code", out var code)) Console.WriteLine($@"错误代码: {code.GetString()}");
-                    }
-                }
-                catch
-                {
-                }
 
                 response.EnsureSuccessStatusCode();
             }
@@ -208,37 +227,12 @@ public class MicrosoftTranslateService : ITranslationService
 
     private string BuildRequestBody(List<string> texts)
     {
+        // translatetext 端点接收纯字符串数组，而非旧 API 的 [{"Text":...}] 对象数组
         var entries = new List<string>();
         foreach (var text in texts)
-        {
-            var escapedText = JsonSerializer.Serialize(text);
-            entries.Add($"{{\"Text\":{escapedText}}}");
-        }
+            entries.Add(JsonSerializer.Serialize(text));
 
         return "[" + string.Join(",", entries) + "]";
-    }
-
-    private static async Task<string> GetAPITokenAsync()
-    {
-        using var client = new HttpClient();
-        try
-        {
-            client.DefaultRequestHeaders.Accept.ParseAdd("*/*");
-            client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
-            client.DefaultRequestHeaders.ConnectionClose = false;
-            client.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalModel.BodyVersion);
-
-            var response = await client.GetAsync("https://edge.microsoft.com/translate/auth");
-            response.EnsureSuccessStatusCode();
-
-            var token = await response.Content.ReadAsStringAsync();
-            return token;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"获取API令牌失败: {ex.Message}");
-            return null;
-        }
     }
 
     private static string GetTextFromJson(string json)

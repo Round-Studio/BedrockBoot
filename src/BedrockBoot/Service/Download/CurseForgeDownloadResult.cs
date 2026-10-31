@@ -46,10 +46,15 @@ public class CurseForgeDownloadResult : IDownloadResult
     private static I18nManager i18n => I18nManager.Instance;
     public bool IsHasManyFiles { get; } = true;
 
-    public async Task<List<Control>?> DescriptionControls()
+    public async Task<string?> GetDescriptionHtml()
     {
         var apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
-        var descriptionHtml = await apiClient.GetModDescriptionAsync(int.Parse(SearchInfo.Id));
+        return await apiClient.GetModDescriptionAsync(int.Parse(SearchInfo.Id));
+    }
+
+    public async Task<List<Control>?> DescriptionControls()
+    {
+        var descriptionHtml = await GetDescriptionHtml();
 
         if (!string.IsNullOrEmpty(descriptionHtml))
         {

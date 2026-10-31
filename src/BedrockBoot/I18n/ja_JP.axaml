@@ -392,6 +392,10 @@
     <x:String x:Key="Download.Result.Action.Share">リソースを共有</x:String>
     <x:String x:Key="Download.Result.Group.Preview">プレビュー</x:String>
     <x:String x:Key="Download.Result.Group.Details">詳細紹介</x:String>
+    <x:String x:Key="Download.Result.Translate.Tip">説明と詳細ページを現在の表示言語に翻訳します</x:String>
+    <x:String x:Key="Download.Result.Translate.Action">翻訳</x:String>
+    <x:String x:Key="Download.Result.Translate.Processing">翻訳中...</x:String>
+    <x:String x:Key="Download.Result.Translate.Restore">原文を表示</x:String>
     <x:String x:Key="Download.Result.Error.LoadDescription">説明の読み込み中にエラーが発生しました</x:String>
     <x:String x:Key="Download.Result.Share.Format">友達からリソース【{0}】をおすすめされました&#x0a;アドレス：{1}&#x0a;「BedrockBoot」 で Ctrl+V を押すとこのリソースを取得できます</x:String>
     <x:String x:Key="Download.Result.Share.Success">共有内容をコピーしました。BedrockBoot 内で Ctrl+V を押すとこのリソースを表示できます</x:String>

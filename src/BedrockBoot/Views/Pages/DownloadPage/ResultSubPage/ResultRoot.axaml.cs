@@ -28,6 +28,7 @@ using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Search;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Translate;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Download;
 using BedrockBoot.Standard.Interface.Download;
@@ -66,6 +67,12 @@ public partial class ResultRoot : UserControl
 
     public SearchResultItemInfo SearchResultItemInfo { get; set; } = null!;
     private IDownloadResult _downloadService;
+    private ResultDescription? _descriptionPage;
+
+    private bool _isDescriptionTranslated;
+    private bool _isTranslating;
+    private string? _translatedDescriptionHtml;
+    private string? _originalDescriptionText;
 
     public async Task UpdateAsync()
     {
@@ -183,7 +190,8 @@ public partial class ResultRoot : UserControl
         var tag = (PageSelect.SelectedItem as ListBoxItem)!.Tag!.ToString();
         UserControl page = tag switch
         {
-            "Description" => new ResultDescription(_downloadService)
+            "Description" => new ResultDescription(_downloadService,
+                    _isDescriptionTranslated ? _translatedDescriptionHtml : null)
             {
                 NotFountDescription = () =>
                 {
@@ -202,7 +210,80 @@ public partial class ResultRoot : UserControl
             "Files" => new ResultFiles(_downloadService)
         };
 
+        _descriptionPage = page as ResultDescription;
         NavigationFrame.NavigateTo(page);
+    }
+
+    private async void TranslateBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_isTranslating || _downloadService == null || SearchResultItemInfo == null) return;
+
+        _isTranslating = true;
+        TranslateBtn.IsEnabled = false;
+        try
+        {
+            if (!_isDescriptionTranslated)
+            {
+                TranslateBtnText.Text = i18n["Download.Result.Translate.Processing"];
+
+                var target = BedrockBoot.Core.Global.GlobalModel.Config.Data.Language;
+                var translator = new MicrosoftTranslateService();
+
+                // 页面顶部的简介短文本
+                var brief = SearchResultItemInfo.Description;
+                var translatedBrief = string.IsNullOrEmpty(brief)
+                    ? null
+                    : await translator.TranslateAsync(brief, "auto", target);
+
+                // 描述页的 HTML 内容
+                var html = await _downloadService.GetDescriptionHtml();
+                var translatedHtml = string.IsNullOrEmpty(html)
+                    ? null
+                    : await translator.TranslateHtmlAsync(html, "auto", target);
+
+                // 服务失败时会原样返回原文，视为没有翻译成功
+                _translatedDescriptionHtml =
+                    string.Equals(translatedHtml, html, StringComparison.Ordinal) ? null : translatedHtml;
+
+                if (!string.IsNullOrEmpty(translatedBrief) &&
+                    !string.Equals(translatedBrief, brief, StringComparison.Ordinal))
+                {
+                    _originalDescriptionText = brief;
+                    DescriptionText.Text = translatedBrief;
+                }
+
+                if (_translatedDescriptionHtml != null)
+                {
+                    _isDescriptionTranslated = true;
+                    _descriptionPage?.ApplyTranslation(_translatedDescriptionHtml);
+                    TranslateBtnText.Text = i18n["Download.Result.Translate.Restore"];
+                }
+                else
+                {
+                    TranslateBtnText.Text = i18n["Download.Result.Translate.Action"];
+                }
+            }
+            else
+            {
+                _isDescriptionTranslated = false;
+                if (_originalDescriptionText != null)
+                    DescriptionText.Text = _originalDescriptionText;
+                _descriptionPage?.RestoreOriginal();
+                TranslateBtnText.Text = i18n["Download.Result.Translate.Action"];
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"Failed to translate resource description: {ex.Message}");
+            TranslateBtnText.Text = i18n[_isDescriptionTranslated
+                ? "Download.Result.Translate.Restore"
+                : "Download.Result.Translate.Action"];
+        }
+        finally
+        {
+            _isTranslating = false;
+            TranslateBtn.IsEnabled = true;
+        }
     }
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)

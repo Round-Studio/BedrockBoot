@@ -27,6 +27,11 @@ public interface IDownloadResult
     public SearchResultItemInfo SearchInfo { get; set; }
     public bool IsHasManyFiles { get; }
     public Task<List<Control>?> DescriptionControls();
+
+    /// <summary>
+    /// 资源详情页的原始描述 HTML，用于简介翻译。
+    /// </summary>
+    public Task<string?> GetDescriptionHtml();
     public Task<uint> GetDownloadCount();
     public Task<bool> IsInstalled();
     public Task Install();

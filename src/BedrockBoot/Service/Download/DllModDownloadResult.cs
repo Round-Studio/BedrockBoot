@@ -46,10 +46,15 @@ public class DllModDownloadResult : IDownloadResult
     public SearchResultItemInfo SearchInfo { get; set; }
     public bool IsHasManyFiles { get; } = true;
 
+    public async Task<string?> GetDescriptionHtml()
+    {
+        return await MarketClient.GetReadmeHtml(SearchInfo.SourceWebsite.Split("/")[^2],
+            SearchInfo.SourceWebsite.Split("/")[^1]);
+    }
+
     public async Task<List<Control>?> DescriptionControls()
     {
-        var html = await MarketClient.GetReadmeHtml(SearchInfo.SourceWebsite.Split("/")[^2],
-            SearchInfo.SourceWebsite.Split("/")[^1]);
+        var html = await GetDescriptionHtml();
         return HtmlToControlConverter.ConvertHtmlToControls(html);
     }
 

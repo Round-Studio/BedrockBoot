@@ -17,10 +17,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Interface.Download;
 using BedrockBoot.Views.Control.Widgets;
 
@@ -29,6 +31,8 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 public partial class ResultDescription : UserControl
 {
     private readonly IDownloadResult _service;
+    private string? _translatedHtml;
+    private List<Avalonia.Controls.Control>? _originalControls;
     public Action? NotFountDescription;
 
     public ResultDescription()
@@ -36,9 +40,10 @@ public partial class ResultDescription : UserControl
         InitializeComponent();
     }
 
-    public ResultDescription(IDownloadResult service) : this()
+    public ResultDescription(IDownloadResult service, string? translatedHtml = null) : this()
     {
         _service = service;
+        _translatedHtml = translatedHtml;
         UpdateUI();
     }
 
@@ -60,7 +65,31 @@ public partial class ResultDescription : UserControl
         }
 
         ;
-        DescControls.Children.AddRange(controls);
+        _originalControls = controls;
+        DescControls.Children.AddRange(_translatedHtml != null
+            ? HtmlToControlConverter.ConvertHtmlToControls(_translatedHtml)
+            : controls);
         DescCard.IsVisible = controls.Count > 0;
+    }
+
+    /// <summary>
+    /// 切换为译文渲染。若描述仍在加载中，则由加载完成后的渲染流程按此状态呈现。
+    /// </summary>
+    public void ApplyTranslation(string translatedHtml)
+    {
+        _translatedHtml = translatedHtml;
+        if (_originalControls == null) return;
+
+        DescControls.Children.Clear();
+        DescControls.Children.AddRange(HtmlToControlConverter.ConvertHtmlToControls(translatedHtml));
+    }
+
+    public void RestoreOriginal()
+    {
+        _translatedHtml = null;
+        if (_originalControls == null) return;
+
+        DescControls.Children.Clear();
+        DescControls.Children.AddRange(_originalControls);
     }
 }

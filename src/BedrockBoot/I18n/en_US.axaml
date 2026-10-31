@@ -392,6 +392,10 @@
     <x:String x:Key="Download.Result.Action.Share">Share Resource</x:String>
     <x:String x:Key="Download.Result.Group.Preview">Preview</x:String>
     <x:String x:Key="Download.Result.Group.Details">Details</x:String>
+    <x:String x:Key="Download.Result.Translate.Tip">Translate the description and details page into the interface language</x:String>
+    <x:String x:Key="Download.Result.Translate.Action">Translate</x:String>
+    <x:String x:Key="Download.Result.Translate.Processing">Translating...</x:String>
+    <x:String x:Key="Download.Result.Translate.Restore">Show original</x:String>
     <x:String x:Key="Download.Result.Error.LoadDescription">Error loading description</x:String>
     <x:String x:Key="Download.Result.Share.Format">Your friend recommended a resource: 【{0}】&#x0a;Link: {1}&#x0a;Go to [BedrockBoot] and press Ctrl+V to view it.</x:String>
     <x:String x:Key="Download.Result.Share.Success">Share content copied. Press Ctrl+V in BedrockBoot to view the resource.</x:String>

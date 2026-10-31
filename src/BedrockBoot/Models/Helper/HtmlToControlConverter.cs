@@ -20,27 +20,35 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Threading;
 using BedrockBoot.Views.Control.Widgets;
 using HtmlAgilityPack;
 using Markdig;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Models.Helper;
 
+/// <summary>
+///     把 Markdown / HTML 描述渲染成 Avalonia 控件。
+///     Markdown 统一先经 Markdig 转 HTML，再由 HtmlAgilityPack 解析为块级树渲染；
+///     段落内的内联内容（粗体、链接、行内代码、行内图片等）合并进同一个
+///     TextBlock 的 Inlines，保持正常的文本流与自动换行。
+///     所有颜色均引用主题资源，明暗主题自适应。
+/// </summary>
 public class HtmlToControlConverter
 {
     private static readonly MarkdownPipeline MarkdownPipeline = new MarkdownPipelineBuilder()
         .UseAdvancedExtensions()
         .UseSoftlineBreakAsHardlineBreak()
         .Build();
+
+    private static readonly FontFamily CodeFontFamily = new("Cascadia Mono, Consolas, Courier New");
 
     // 常见图片后缀；描述里出现 .mcaddon / .mcworld 等下载链接时不当图片处理
     private static readonly HashSet<string> ImageExtensions = new(StringComparer.OrdinalIgnoreCase)
@@ -62,1043 +70,734 @@ public class HtmlToControlConverter
 
     public static List<Control> ConvertHtmlToControls(string content)
     {
-        var controls = new List<Control>();
-
         if (string.IsNullOrWhiteSpace(content))
-            return controls;
+            return new List<Control>();
 
-        // 检测内容类型并分别处理
-        if (IsMarkdown(content))
-        {
-            // 如果是 Markdown，先转换为 HTML 再解析
-            var html = Markdown.ToHtml(content, MarkdownPipeline);
-            return ConvertHtmlOnly(html);
-        }
-        else
-        {
-            // 如果是纯 HTML
-            return ConvertHtmlOnly(content);
-        }
-    }
-
-    /// <summary>
-    /// 转换混合内容（HTML + Markdown）
-    /// </summary>
-    public static List<Control> ConvertMixedContent(string content)
-    {
-        var controls = new List<Control>();
-
-        if (string.IsNullOrWhiteSpace(content))
-            return controls;
-
-        // 先尝试将整个内容当作 Markdown 处理
-        // 如果包含 HTML 标签，Markdig 会自动处理混合内容
-        var html = Markdown.ToHtml(content, MarkdownPipeline);
+        // Markdown 统一转成 HTML 再走同一条渲染路径；
+        // 完整 HTML 文档则跳过 Markdig，避免任何改写风险
+        var html = IsFullHtmlDocument(content) ? content : Markdown.ToHtml(content, MarkdownPipeline);
         return ConvertHtmlOnly(html);
     }
 
-    /// <summary>
-    /// 检测内容是否为 Markdown 格式
-    /// </summary>
-    private static bool IsMarkdown(string content)
-    {
-        if (string.IsNullOrWhiteSpace(content))
-            return false;
-
-        // 检查是否包含 HTML 标签
-        if (Regex.IsMatch(content, @"<\s*[a-zA-Z][^>]*>"))
-            return false;
-
-        // 检查 Markdown 特征
-        var markdownPatterns = new[]
-        {
-            @"^#{1,6}\s",           // 标题
-            @"^\s*[-*+]\s",         // 无序列表
-            @"^\s*\d+\.\s",         // 有序列表
-            @"\*\*.*?\*\*",         // 粗体
-            @"\*.*?\*",             // 斜体
-            @"`.*?`",               // 行内代码
-            @"```[\s\S]*?```",      // 代码块
-            @"\[.*?\]\(.*?\)",      // 链接
-            @"!\[.*?\]\(.*?\)",     // 图片
-            @"^>\s",                // 引用
-            @"^---",                // 分隔线
-        };
-
-        return markdownPatterns.Any(pattern => Regex.IsMatch(content, pattern, RegexOptions.Multiline));
-    }
+    private static bool IsFullHtmlDocument(string content) =>
+        Regex.IsMatch(content, @"^\s*<!DOCTYPE|^\s*<html[\s>]", RegexOptions.IgnoreCase);
 
     private static List<Control> ConvertHtmlOnly(string html)
     {
-        var controls = new List<Control>();
-
-        if (string.IsNullOrWhiteSpace(html))
-            return controls;
-
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
-        // 找到 article 或 div 容器
-        var articleNode = doc.DocumentNode.SelectSingleNode("//article") ??
-                          doc.DocumentNode.SelectSingleNode("//div[@class='md']");
+        var root = doc.DocumentNode.SelectSingleNode("//article") ??
+                   doc.DocumentNode.SelectSingleNode("//div[contains(@class,'markdown-body')]") ??
+                   doc.DocumentNode.SelectSingleNode("//div[@class='md']");
 
-        if (articleNode != null)
-            ProcessNodes(articleNode.ChildNodes, controls);
-        else
-            ProcessNodes(doc.DocumentNode.ChildNodes, controls);
-
-        return controls;
+        return RenderBlocks((root ?? doc.DocumentNode).ChildNodes);
     }
 
-    private static Control ConvertMarkdownBlockToControl(MarkdownObject block)
+    #region 块级渲染
+
+    /// <summary>
+    ///     把一组节点渲染为块级控件列表。连续的内联节点会被合并成同一个段落 TextBlock，
+    ///     而不是像旧实现那样每个内联元素各占一行。
+    /// </summary>
+    private static List<Control> RenderBlocks(IEnumerable<HtmlNode> nodes, InlineStyle inlineStyle = default)
     {
-        switch (block)
+        var controls = new List<Control>();
+        var inlineGroup = new List<HtmlNode>();
+
+        void FlushInlineGroup()
         {
-            case HeadingBlock heading:
-                return CreateMarkdownHeading(heading);
-            
-            case ParagraphBlock paragraph:
-                return CreateMarkdownParagraph(paragraph);
-            
-            case ListBlock list:
-                return CreateMarkdownList(list);
-            
-            case CodeBlock codeBlock:
-                return CreateCodeBlock(codeBlock);
-            
-            case QuoteBlock quoteBlock:
-                return CreateQuoteBlock(quoteBlock);
-            
-            case ThematicBreakBlock:
-                return CreateDivider();
-            
-            default:
-                return null;
+            var paragraph = BuildParagraphControl(inlineGroup, inlineStyle);
+            if (paragraph != null) controls.Add(paragraph);
+            inlineGroup.Clear();
         }
-    }
-
-    private static Control CreateMarkdownHeading(HeadingBlock heading)
-    {
-        var text = ExtractInlineText(heading.Inline);
-        
-        var fontSize = heading.Level switch
-        {
-            1 => 28,
-            2 => 24,
-            3 => 20,
-            4 => 18,
-            5 => 16,
-            6 => 14,
-            _ => 20
-        };
-
-        var fontWeight = heading.Level <= 2 ? FontWeight.Bold : FontWeight.SemiBold;
-
-        return new TextBlock
-        {
-            Text = text,
-            FontSize = fontSize,
-            FontWeight = fontWeight,
-            Margin = new Thickness(0, 16, 0, 8),
-            TextWrapping = TextWrapping.Wrap
-        };
-    }
-
-    private static Control CreateMarkdownParagraph(ParagraphBlock paragraph)
-    {
-        if (paragraph.Inline == null)
-            return new Border { Height = 6 };
-
-        var panel = new StackPanel
-        {
-            Spacing = 4,
-            Margin = new Thickness(0, 6)
-        };
-
-        ProcessMarkdownInlines(paragraph.Inline, panel);
-
-        if (panel.Children.Count == 0)
-        {
-            var text = ExtractInlineText(paragraph.Inline);
-            if (!string.IsNullOrWhiteSpace(text))
-                panel.Children.Add(new TextBlock
-                {
-                    Text = text,
-                    TextWrapping = TextWrapping.Wrap
-                });
-        }
-
-        return panel;
-    }
-
-    private static void ProcessMarkdownInlines(ContainerInline container, StackPanel panel)
-    {
-        foreach (var inline in container)
-        {
-            switch (inline)
-            {
-                case LiteralInline literal:
-                    if (!string.IsNullOrWhiteSpace(literal.Content.ToString()))
-                    {
-                        panel.Children.Add(new TextBlock
-                        {
-                            Text = literal.Content.ToString(),
-                            TextWrapping = TextWrapping.Wrap
-                        });
-                    }
-                    break;
-
-                case EmphasisInline emphasis:
-                    var text = ExtractInlineText(emphasis);
-                    var fontWeight = emphasis.DelimiterCount == 2 ? FontWeight.Bold : FontWeight.Normal;
-                    var fontStyle = emphasis.DelimiterCount == 1 ? FontStyle.Italic : FontStyle.Normal;
-                    
-                    var textBlock = new TextBlock
-                    {
-                        Text = text,
-                        FontWeight = fontWeight,
-                        FontStyle = fontStyle,
-                        TextWrapping = TextWrapping.Wrap
-                    };
-
-                    // 处理删除线
-                    if (emphasis.DelimiterChar == '~' && emphasis.DelimiterCount == 2)
-                    {
-                        textBlock.TextDecorations = TextDecorations.Strikethrough;
-                    }
-
-                    panel.Children.Add(textBlock);
-                    break;
-
-                case LinkInline link:
-                    var linkText = ExtractInlineText(link);
-                    var url = link.Url;
-                    
-                    if (link.IsImage && IsImageUrl(url))
-                    {
-                        // 处理图片
-                        panel.Children.Add(new LocalImageRenderWidget(url)
-                        {
-                            Margin = new Thickness(0, 8),
-                            Width = 400,
-                            Height = 225
-                        });
-                    }
-                    else
-                    {
-                        var hyperlinkButton = new HyperlinkButton
-                        {
-                            Content = string.IsNullOrWhiteSpace(linkText) ? url : linkText,
-                            Padding = new Thickness(0),
-                            Margin = new Thickness(0, 2),
-                            Background = new SolidColorBrush(Colors.Transparent)
-                        };
-
-                        if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
-                            hyperlinkButton.NavigateUri = uri;
-
-                        panel.Children.Add(hyperlinkButton);
-                    }
-                    break;
-
-                case CodeInline codeInline:
-                    panel.Children.Add(new TextBlock
-                    {
-                        Text = codeInline.Content,
-                        FontFamily = new FontFamily("Consolas, Courier New, monospace"),
-                        Background = new SolidColorBrush(Color.Parse("#F5F5F5")),
-                        Padding = new Thickness(4, 2),
-                        TextWrapping = TextWrapping.Wrap
-                    });
-                    break;
-
-                case LineBreakInline:
-                    panel.Children.Add(new Border { Height = 8 });
-                    break;
-            }
-        }
-    }
-
-    private static Control CreateMarkdownList(ListBlock list)
-    {
-        var listPanel = new StackPanel
-        {
-            Spacing = 4,
-            Margin = new Thickness(20, 8, 0, 8)
-        };
-
-        var index = 1;
-        foreach (var item in list)
-        {
-            if (item is ListItemBlock listItem)
-            {
-                var itemPanel = new StackPanel
-                {
-                    Orientation = Orientation.Horizontal,
-                    Spacing = 8
-                };
-
-                var prefix = list.IsOrdered ? $"{index}. " : "• ";
-                
-                itemPanel.Children.Add(new TextBlock
-                {
-                    Text = prefix,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(0, 2, 0, 0)
-                });
-
-                // 处理列表项的段落内容
-                foreach (var block in listItem)
-                {
-                    if (block is ParagraphBlock paragraph)
-                    {
-                        var contentPanel = new StackPanel();
-                        ProcessMarkdownInlines(paragraph.Inline, contentPanel);
-                        
-                        if (contentPanel.Children.Count == 0)
-                        {
-                            var text = ExtractInlineText(paragraph.Inline);
-                            if (!string.IsNullOrWhiteSpace(text))
-                            {
-                                contentPanel.Children.Add(new TextBlock
-                                {
-                                    Text = text,
-                                    TextWrapping = TextWrapping.Wrap,
-                                    VerticalAlignment = VerticalAlignment.Top,
-                                    Margin = new Thickness(0, 2, 0, 0)
-                                });
-                            }
-                        }
-                        
-                        itemPanel.Children.Add(contentPanel);
-                    }
-                }
-
-                listPanel.Children.Add(itemPanel);
-                index++;
-            }
-        }
-
-        return listPanel;
-    }
-
-    private static Control CreateCodeBlock(CodeBlock codeBlock)
-    {
-        var codeText = codeBlock.Lines.ToString();
-        var language = (codeBlock is FencedCodeBlock fencedCode) ? fencedCode.Info : "";
-
-        var stackPanel = new StackPanel
-        {
-            Margin = new Thickness(0, 12),
-            Spacing = 4
-        };
-
-        // 语言标签（如果有）
-        if (!string.IsNullOrWhiteSpace(language))
-        {
-            stackPanel.Children.Add(new TextBlock
-            {
-                Text = language,
-                FontSize = 12,
-                Foreground = new SolidColorBrush(Color.Parse("#666666")),
-                Margin = new Thickness(4, 0)
-            });
-        }
-
-        // 代码内容
-        var codeBorder = new Border
-        {
-            Background = new SolidColorBrush(Color.Parse("#F5F5F5")),
-            CornerRadius = new CornerRadius(4),
-            Padding = new Thickness(12),
-            Child = new TextBlock
-            {
-                Text = codeText.TrimEnd(),
-                FontFamily = new FontFamily("Consolas, Courier New, monospace"),
-                FontSize = 13,
-                TextWrapping = TextWrapping.Wrap
-            }
-        };
-
-        stackPanel.Children.Add(codeBorder);
-        return stackPanel;
-    }
-
-    private static Control CreateQuoteBlock(QuoteBlock quoteBlock)
-    {
-        var panel = new StackPanel
-        {
-            Margin = new Thickness(0, 12),
-            Spacing = 6
-        };
-
-        foreach (var block in quoteBlock)
-        {
-            if (block is ParagraphBlock paragraph)
-            {
-                var text = ExtractInlineText(paragraph.Inline);
-                if (!string.IsNullOrWhiteSpace(text))
-                {
-                    var quoteBorder = new Border
-                    {
-                        BorderBrush = new SolidColorBrush(Color.Parse("#CCCCCC")),
-                        BorderThickness = new Thickness(4, 0, 0, 0),
-                        Padding = new Thickness(12, 4),
-                        Child = new TextBlock
-                        {
-                            Text = text,
-                            TextWrapping = TextWrapping.Wrap,
-                            Foreground = new SolidColorBrush(Color.Parse("#666666")),
-                            FontStyle = FontStyle.Italic
-                        }
-                    };
-                    panel.Children.Add(quoteBorder);
-                }
-            }
-        }
-
-        return panel;
-    }
-
-    private static string ExtractInlineText(ContainerInline container)
-    {
-        if (container == null)
-            return string.Empty;
-
-        var textBuilder = new StringBuilder();
-        foreach (var inline in container)
-        {
-            switch (inline)
-            {
-                case LiteralInline literal:
-                    textBuilder.Append(literal.Content.ToString());
-                    break;
-                case EmphasisInline emphasis:
-                    textBuilder.Append(ExtractInlineText(emphasis));
-                    break;
-                case LinkInline link:
-                    textBuilder.Append(ExtractInlineText(link));
-                    break;
-                case CodeInline codeInline:
-                    textBuilder.Append(codeInline.Content);
-                    break;
-            }
-        }
-
-        return textBuilder.ToString().Trim();
-    }
-
-    // 下面是原有的 HTML 处理方法...
-
-    // 修改 GetInnerTextWithoutAnchor 方法
-    private static string GetInnerTextWithoutAnchor(HtmlNode node)
-    {
-        if (node == null)
-            return string.Empty;
-
-        var clone = node.CloneNode(true);
-
-        var anchors = clone.SelectNodes(".//a[@href]");
-        if (anchors != null)
-        {
-            foreach (var anchor in anchors)
-            {
-                var href = anchor.GetAttributeValue("href", "");
-                if (href.StartsWith("#"))
-                {
-                    anchor.Remove();
-                }
-            }
-        }
-
-        return GetInnerText(clone);
-    }
-
-    private static string GetInnerText(HtmlNode node)
-    {
-        if (node == null)
-            return string.Empty;
-
-        if (node.Name == "svg" || node.Name == "path")
-            return string.Empty;
-
-        if (node.Name == "a")
-        {
-            var href = node.GetAttributeValue("href", "");
-            if (href.StartsWith("#"))
-                return string.Empty;
-        }
-
-        if (node.ChildNodes.All(n => n.NodeType == HtmlNodeType.Text || n.Name == "svg" || n.Name == "path"))
-        {
-            var text = HtmlEntity.DeEntitize(node.InnerText).Trim();
-            text = Regex.Replace(text, @"^#+\s*", "");
-            return Regex.Replace(text, @"\s+", " ").Trim();
-        }
-
-        var textBuilder = new StringBuilder();
-        foreach (var child in node.ChildNodes)
-        {
-            if (child.Name == "svg" || child.Name == "path")
-                continue;
-
-            if (child.Name == "a")
-            {
-                var href = child.GetAttributeValue("href", "");
-                if (href.StartsWith("#"))
-                    continue;
-            }
-
-            if (child.NodeType == HtmlNodeType.Text)
-            {
-                var text = HtmlEntity.DeEntitize(child.InnerText);
-                textBuilder.Append(text);
-            }
-            else if (child.NodeType == HtmlNodeType.Element)
-            {
-                var childText = GetInnerText(child);
-                if (!string.IsNullOrWhiteSpace(childText))
-                {
-                    textBuilder.Append(childText);
-                    textBuilder.Append(" ");
-                }
-            }
-        }
-
-        var result = Regex.Replace(textBuilder.ToString(), @"\s+", " ").Trim();
-        result = Regex.Replace(result, @"^#+\s*", "");
-        return result;
-    }
-
-    private static void ProcessNodes(HtmlNodeCollection nodes, List<Control> controls)
-    {
-        if (nodes == null || nodes.Count == 0)
-            return;
 
         foreach (var node in nodes)
         {
-            try
+            if (node.NodeType == HtmlNodeType.Comment) continue;
+
+            if (node.NodeType == HtmlNodeType.Text)
             {
-                if (node.Name == "svg" || node.Name == "path" ||
-                    node.GetAttributeValue("aria-hidden", "") == "true")
-                    continue;
-
-                if (node.Name == "a")
-                {
-                    var href = node.GetAttributeValue("href", "");
-                    if (href.StartsWith("#"))
-                        continue;
-                }
-
-                var nodeControls = ConvertNodeToControls(node);
-                if (nodeControls != null && nodeControls.Count > 0)
-                    controls.AddRange(nodeControls);
+                // 纯空白文本：只有夹在行内元素之间时才保留（充当分隔空格）
+                if (string.IsNullOrWhiteSpace(node.InnerText) && inlineGroup.Count == 0) continue;
+                inlineGroup.Add(node);
+                continue;
             }
-            catch
+
+            if (node.NodeType != HtmlNodeType.Element) continue;
+            if (IsIgnoredElement(node) || node.GetAttributeValue("aria-hidden", "") == "true") continue;
+
+            var name = node.Name.ToLowerInvariant();
+            if (name == "br" || IsInlineElement(name))
             {
-                // 忽略转换错误
+                inlineGroup.Add(node);
+                continue;
             }
-        }
-    }
 
-    private static List<Control> ConvertNodeToControls(HtmlNode node)
-    {
-        var controls = new List<Control>();
-
-        if (node == null)
-            return controls;
-
-        if (node.Name == "markdown-accessiblity-table")
-        {
-            var tableControl = CreateTable(node);
-            if (tableControl != null)
-                controls.Add(tableControl);
-            return controls;
+            FlushInlineGroup();
+            var block = RenderBlockElement(node, inlineStyle);
+            if (block != null) controls.Add(block);
         }
 
-        switch (node.NodeType)
-        {
-            case HtmlNodeType.Text:
-                var text = HtmlEntity.DeEntitize(node.InnerText).Trim();
-                if (!string.IsNullOrWhiteSpace(text) && text != "&nbsp;" && text != " ")
-                    controls.Add(new TextBlock
-                    {
-                        Text = text,
-                        TextWrapping = TextWrapping.Wrap,
-                        Margin = new Thickness(0, 2)
-                    });
-                break;
-
-            case HtmlNodeType.Element:
-                var control = node.Name.ToLower() switch
-                {
-                    "h1" => CreateHeading(node, 28, FontWeight.Bold),
-                    "h2" => CreateHeading(node, 24, FontWeight.Bold),
-                    "h3" => CreateHeading(node, 20, FontWeight.SemiBold),
-                    "h4" => CreateHeading(node, 18, FontWeight.SemiBold),
-                    "p" => CreateParagraph(node),
-                    "ul" => CreateList(node, false),
-                    "ol" => CreateList(node, true),
-                    "strong" or "b" => CreateStyledText(node, FontWeight.Bold),
-                    "em" or "i" => CreateStyledText(node, FontWeight.Normal, FontStyle.Italic),
-                    "u" => CreateUnderlinedText(node),
-                    "a" => CreateHyperlink(node),
-                    "img" => CreateImage(node),
-                    "br" => new Border { Height = 8 },
-                    "hr" => CreateDivider(),
-                    "iframe" => CreateVideoPlaceholder(node),
-                    "span" => CreateSpan(node),
-                    "div" => null,
-                    "table" => CreateTable(node),
-                    "thead" or "tbody" => null,
-                    "tr" => null,
-                    "th" or "td" => null,
-                    _ => null
-                };
-
-                if (control != null)
-                {
-                    controls.Add(control);
-                }
-                else if (node.Name.ToLower() == "div" && node.HasChildNodes)
-                {
-                    ProcessNodes(node.ChildNodes, controls);
-                }
-                else if (node.HasChildNodes && node.Name.ToLower() != "svg")
-                {
-                    ProcessNodes(node.ChildNodes, controls);
-                }
-
-                break;
-        }
-
+        FlushInlineGroup();
         return controls;
     }
 
-    private static Control CreateTable(HtmlNode node)
+    private static Control? RenderBlockElement(HtmlNode node, InlineStyle inlineStyle)
     {
-        var grid = new Grid();
-        var rows = new List<List<Control>>();
-        var columnCount = 0;
-
-        var tableNode = node.Name == "table" ? node : node.SelectSingleNode(".//table");
-        if (tableNode == null)
-            return null;
-
-        var rowsList = new List<HtmlNode>();
-
-        var thead = tableNode.SelectSingleNode(".//thead");
-        if (thead != null)
+        switch (node.Name.ToLowerInvariant())
         {
-            rowsList.AddRange(thead.SelectNodes(".//tr") ?? new HtmlNodeCollection(null));
+            case "p":
+                return BuildParagraphControl(node.ChildNodes, inlineStyle);
+
+            case "h1":
+            case "h2":
+            case "h3":
+            case "h4":
+            case "h5":
+            case "h6":
+                return CreateHeading(node, node.Name[1] - '0');
+
+            case "ul":
+            case "ol":
+                return CreateList(node, node.Name == "ol");
+
+            case "blockquote":
+                return CreateQuote(node, inlineStyle);
+
+            case "pre":
+                return CreateCodeBlock(node);
+
+            case "table":
+                return CreateTable(node, inlineStyle);
+
+            case "hr":
+                return CreateDivider();
+
+            case "img":
+                return BuildLinkedImage(node);
+
+            case "iframe":
+                return CreateVideoCard(node);
+
+            default:
+                // div / section / article / details / figure / li 碎片等一律递归内容
+                var panel = new StackPanel();
+                panel.Children.AddRange(RenderBlocks(node.ChildNodes, inlineStyle));
+                return panel.Children.Count > 0 ? panel : null;
         }
+    }
 
-        var tbody = tableNode.SelectSingleNode(".//tbody");
-        if (tbody != null)
+    private static Control? BuildParagraphControl(IEnumerable<HtmlNode> nodes, InlineStyle inlineStyle)
+    {
+        var nodeList = nodes.ToList();
+
+        // 段落里只有图片（或包在 <a> 里的图库）→ 渲染为独立的图片块
+        var elements = nodeList.Where(n => n.NodeType == HtmlNodeType.Element).ToList();
+        if (elements.Count > 0 && elements.All(IsImageishNode))
         {
-            rowsList.AddRange(tbody.SelectNodes(".//tr") ?? new HtmlNodeCollection(null));
-        }
-
-        if (rowsList.Count == 0)
-        {
-            rowsList.AddRange(tableNode.SelectNodes(".//tr") ?? new HtmlNodeCollection(null));
-        }
-
-        foreach (var row in rowsList)
-        {
-            var cells = new List<Control>();
-            var headers = row.SelectNodes("th");
-            var dataCells = row.SelectNodes("td");
-
-            if (headers != null)
+            var images = new StackPanel { Margin = new Thickness(0, 8), Spacing = 8 };
+            foreach (var element in elements)
             {
-                foreach (var header in headers)
-                {
-                    var text = GetInnerText(header);
-                    var textBlock = new TextBlock
-                    {
-                        Text = text,
-                        FontWeight = FontWeight.Bold,
-                        TextWrapping = TextWrapping.Wrap,
-                        Margin = new Thickness(8, 6),
-                        VerticalAlignment = VerticalAlignment.Center
-                    };
-                    cells.Add(textBlock);
-                }
+                var image = BuildLinkedImage(element);
+                if (image != null) images.Children.Add(image);
             }
 
-            if (dataCells != null)
-            {
-                foreach (var cell in dataCells)
-                {
-                    var text = GetInnerText(cell);
-                    var textBlock = new TextBlock
-                    {
-                        Text = text,
-                        TextWrapping = TextWrapping.Wrap,
-                        Margin = new Thickness(8, 6),
-                        VerticalAlignment = VerticalAlignment.Center
-                    };
-                    cells.Add(textBlock);
-                }
-            }
-
-            if (cells.Count > 0)
-            {
-                rows.Add(cells);
-                columnCount = Math.Max(columnCount, cells.Count);
-            }
+            return images.Children.Count > 0 ? images : null;
         }
 
-        if (rows.Count == 0)
-            return null;
-
-        for (int i = 0; i < columnCount; i++)
+        var textBlock = new TextBlock
         {
-            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-        }
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 6)
+        };
+        textBlock.Inlines ??= new InlineCollection();
+        BuildInlines(nodeList, textBlock.Inlines, inlineStyle);
+        TrimInlineEdges(textBlock.Inlines);
 
-        for (int i = 0; i < rows.Count; i++)
+        return HasVisibleInline(textBlock.Inlines) ? textBlock : null;
+    }
+
+    private static Control? CreateHeading(HtmlNode node, int level)
+    {
+        var textBlock = new TextBlock
         {
-            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            FontSize = level switch { 1 => 26, 2 => 22, 3 => 19, 4 => 17, 5 => 15, _ => 14 },
+            FontWeight = level <= 2 ? FontWeight.Bold : FontWeight.SemiBold,
+            Margin = new Thickness(0, level <= 2 ? 18 : 14, 0, level <= 2 ? 6 : 4),
+            TextWrapping = TextWrapping.Wrap
+        };
+        textBlock.Inlines ??= new InlineCollection();
+        BuildInlines(node.ChildNodes, textBlock.Inlines, default);
+        TrimInlineEdges(textBlock.Inlines);
 
-            for (int j = 0; j < rows[i].Count; j++)
+        return HasVisibleInline(textBlock.Inlines) ? textBlock : null;
+    }
+
+    private static Control? CreateList(HtmlNode listNode, bool isOrdered)
+    {
+        var depth = GetListDepth(listNode);
+        var start = int.TryParse(listNode.GetAttributeValue("start", ""), out var s) ? s : 1;
+
+        var panel = new StackPanel { Margin = new Thickness(0, 4) };
+
+        var index = start;
+        foreach (var li in listNode.ChildNodes.Where(n =>
+                     n.NodeType == HtmlNodeType.Element && n.Name.ToLowerInvariant() == "li"))
+        {
+            var content = new StackPanel();
+            content.Children.AddRange(RenderBlocks(li.ChildNodes));
+            if (content.Children.Count == 0) continue;
+
+            var marker = new TextBlock
             {
-                var cell = rows[i][j];
-                Grid.SetRow(cell, i);
-                Grid.SetColumn(cell, j);
-                grid.Children.Add(cell);
-            }
+                Text = isOrdered ? $"{index++}." : DepthMarker(depth),
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, 1, 0, 0)
+            };
+            BindResource(marker, TextBlock.ForegroundProperty, "PrimaryForegroundSecondaryBrush");
+
+            // 标记列 + 内容列：文本换行时悬挂缩进，而不是绕到标记下方
+            var item = new Grid
+            {
+                ColumnDefinitions = ColumnDefinitions.Parse("Auto,*"),
+                ColumnSpacing = 6
+            };
+            Grid.SetColumn(marker, 0);
+            Grid.SetColumn(content, 1);
+            item.Children.Add(marker);
+            item.Children.Add(content);
+
+            panel.Children.Add(item);
         }
+
+        return panel.Children.Count > 0 ? panel : null;
+    }
+
+    private static Control? CreateQuote(HtmlNode node, InlineStyle inlineStyle)
+    {
+        var panel = new StackPanel();
+        panel.Children.AddRange(RenderBlocks(node.ChildNodes, inlineStyle));
+        if (panel.Children.Count == 0) return null;
+
+        var quote = new Border
+        {
+            BorderThickness = new Thickness(3, 0, 0, 0),
+            Padding = new Thickness(12, 2, 0, 2),
+            Margin = new Thickness(0, 10),
+            Child = panel
+        };
+        BindResource(quote, Border.BorderBrushProperty, "AccentBackgroundBrush");
+        return quote;
+    }
+
+    private static Control? CreateCodeBlock(HtmlNode node)
+    {
+        var codeNode = node.ChildNodes.FirstOrDefault(n =>
+            n.NodeType == HtmlNodeType.Element && n.Name.ToLowerInvariant() == "code");
+        var text = HtmlEntity.DeEntitize((codeNode ?? node).InnerText).TrimEnd();
+        if (string.IsNullOrWhiteSpace(text)) return null;
 
         var border = new Border
         {
-            Child = grid,
-            BorderBrush = new SolidColorBrush(Color.Parse("#E0E0E0")),
-            BorderThickness = new Thickness(1),
-            Margin = new Thickness(0, 12, 0, 12),
-            CornerRadius = new CornerRadius(4)
+            CornerRadius = new CornerRadius(6),
+            Padding = new Thickness(12, 10),
+            Margin = new Thickness(0, 10),
+            Child = new TextBlock
+            {
+                Text = text,
+                FontFamily = CodeFontFamily,
+                FontSize = 12,
+                TextWrapping = TextWrapping.Wrap
+            }
         };
-
+        BindResource(border, Border.BackgroundProperty, "PrimarySubtleBackgroundBrush");
         return border;
+    }
+
+    private static Control? CreateTable(HtmlNode node, InlineStyle inlineStyle)
+    {
+        // 只取各层的直接子行，避免把嵌套表格的行也算进来
+        var rowNodes = new List<HtmlNode>();
+        foreach (var section in node.ChildNodes.Where(n =>
+                     n.NodeType == HtmlNodeType.Element &&
+                     n.Name.ToLowerInvariant() is "thead" or "tbody" or "tfoot"))
+            rowNodes.AddRange(section.ChildNodes.Where(n =>
+                n.NodeType == HtmlNodeType.Element && n.Name.ToLowerInvariant() == "tr"));
+
+        if (rowNodes.Count == 0)
+            rowNodes.AddRange(node.ChildNodes.Where(n =>
+                n.NodeType == HtmlNodeType.Element && n.Name.ToLowerInvariant() == "tr"));
+
+        if (rowNodes.Count == 0) return null;
+
+        var grid = new Grid();
+
+        var columnCount = 0;
+        for (var i = 0; i < rowNodes.Count; i++)
+        {
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+
+            var columnIndex = 0;
+            var cells = rowNodes[i].ChildNodes.Where(n =>
+                n.NodeType == HtmlNodeType.Element && n.Name.ToLowerInvariant() is "th" or "td");
+
+            foreach (var cell in cells)
+            {
+                var colspan = Math.Max(1, int.TryParse(cell.GetAttributeValue("colspan", ""), out var c) ? c : 1);
+
+                var cellBorder = new Border
+                {
+                    BorderThickness = new Thickness(0, 0, 1, 1),
+                    Padding = new Thickness(8, 6)
+                };
+                BindResource(cellBorder, Border.BorderBrushProperty, "PrimaryBorderBrush");
+
+                var content = new StackPanel();
+                content.Children.AddRange(RenderBlocks(cell.ChildNodes,
+                    cell.Name.ToLowerInvariant() == "th"
+                        ? inlineStyle with { Weight = FontWeight.SemiBold }
+                        : default));
+                cellBorder.Child = content;
+
+                if (cell.Name.ToLowerInvariant() == "th")
+                    BindResource(cellBorder, Border.BackgroundProperty, "PrimarySubtleBackgroundBrush");
+
+                Grid.SetRow(cellBorder, i);
+                Grid.SetColumn(cellBorder, columnIndex);
+                if (colspan > 1) Grid.SetColumnSpan(cellBorder, colspan);
+                grid.Children.Add(cellBorder);
+
+                columnIndex += colspan;
+            }
+
+            columnCount = Math.Max(columnCount, columnIndex);
+        }
+
+        if (columnCount == 0) return null;
+        for (var i = 0; i < columnCount; i++)
+            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+
+        // 外框画上/左两条边，单元格画右下两条边，拼成粗细一致的完整网格
+        var table = new Border
+        {
+            BorderThickness = new Thickness(1, 1, 0, 0),
+            CornerRadius = new CornerRadius(6),
+            ClipToBounds = true,
+            Margin = new Thickness(0, 10),
+            Child = new ScrollViewer
+            {
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                Content = grid
+            }
+        };
+        BindResource(table, Border.BorderBrushProperty, "PrimaryBorderBrush");
+        return table;
     }
 
     private static Control CreateDivider()
     {
-        return new Border
+        var divider = new Border
         {
             Height = 1,
-            Background = new SolidColorBrush(Color.Parse("#E0E0E0")),
             Margin = new Thickness(0, 12)
         };
+        BindResource(divider, Border.BackgroundProperty, "PrimaryBorderBrush");
+        return divider;
     }
 
-    private static Control CreateHeading(HtmlNode node, int fontSize, FontWeight fontWeight)
+    private static Control? CreateVideoCard(HtmlNode node)
     {
-        var text = GetInnerTextWithoutAnchor(node);
+        var src = node.GetAttributeValue("src", "");
+        if (string.IsNullOrWhiteSpace(src)) return null;
 
-        var textBlock = new TextBlock
+        Control link = Uri.TryCreate(src, UriKind.Absolute, out var uri)
+            ? new HyperlinkButton { Content = src, NavigateUri = uri, Padding = new Thickness(0) }
+            : new TextBlock { Text = src, VerticalAlignment = VerticalAlignment.Center, Opacity = 0.7 };
+
+        var card = new Border
         {
-            Text = text,
-            FontSize = fontSize,
-            FontWeight = fontWeight,
-            Margin = new Thickness(0, 16, 0, 8),
-            TextWrapping = TextWrapping.Wrap
-        };
-
-        ApplyColor(node, textBlock);
-        ApplyTextDecoration(node, textBlock);
-
-        return textBlock;
-    }
-
-    private static Control CreateParagraph(HtmlNode node)
-    {
-        if (node == null || !node.HasChildNodes)
-            return new Border { Height = 6 };
-
-        var hasComplexContent = node.ChildNodes.Any(n =>
-            n.NodeType == HtmlNodeType.Element &&
-            n.Name.ToLower() is "img" or "a" or "strong" or "em" or "span" or "b" or "i" or "u" or "iframe" or "code");
-
-        if (hasComplexContent)
-        {
-            var panel = new StackPanel
-            {
-                Spacing = 4,
-                Margin = new Thickness(0, 6)
-            };
-
-            var inlineControls = new List<Control>();
-            ProcessNodes(node.ChildNodes, inlineControls);
-
-            foreach (var control in inlineControls)
-            {
-                if (control != null)
-                    panel.Children.Add(control);
-            }
-
-            if (panel.Children.Count == 0)
-            {
-                var text = GetInnerText(node);
-                if (!string.IsNullOrWhiteSpace(text))
-                    panel.Children.Add(new TextBlock
-                    {
-                        Text = text,
-                        TextWrapping = TextWrapping.Wrap
-                    });
-            }
-
-            return panel;
-        }
-
-        var plainText = GetInnerText(node);
-        if (string.IsNullOrWhiteSpace(plainText))
-            return new Border { Height = 6 };
-
-        var textBlock = new TextBlock
-        {
-            Text = plainText,
-            TextWrapping = TextWrapping.Wrap,
-            Margin = new Thickness(0, 6)
-        };
-
-        ApplyColor(node, textBlock);
-        return textBlock;
-    }
-
-    private static Control CreateList(HtmlNode node, bool isOrdered)
-    {
-        var listPanel = new StackPanel
-        {
-            Spacing = 4,
-            Margin = new Thickness(20, 8, 0, 8)
-        };
-
-        var items = node.SelectNodes(".//li");
-        if (items == null)
-            return listPanel;
-
-        var index = 1;
-        foreach (var li in items)
-        {
-            var itemPanel = new StackPanel
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(6),
+            Padding = new Thickness(12, 10),
+            Margin = new Thickness(0, 10),
+            Child = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = 8
-            };
-
-            var prefix = isOrdered ? $"{index}. " : "• ";
-
-            var prefixBlock = new TextBlock
-            {
-                Text = prefix,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(0, 2, 0, 0)
-            };
-
-            itemPanel.Children.Add(prefixBlock);
-
-            var hasComplexContent = li.ChildNodes.Any(n =>
-                n.Name.ToLower() is "a" or "strong" or "em");
-
-            if (hasComplexContent)
-            {
-                var contentPanel = new StackPanel();
-                ProcessNodes(li.ChildNodes, new List<Control>());
-
-                var contentControls = new List<Control>();
-                ProcessNodes(li.ChildNodes, contentControls);
-
-                foreach (var control in contentControls)
+                Spacing = 10,
+                Children =
                 {
-                    contentPanel.Children.Add(control);
+                    new FontIcon { Glyph = "\uE768", VerticalAlignment = VerticalAlignment.Center },
+                    link
                 }
-
-                itemPanel.Children.Add(contentPanel);
             }
-            else
-            {
-                var text = GetInnerText(li);
-                itemPanel.Children.Add(new TextBlock
-                {
-                    Text = text,
-                    TextWrapping = TextWrapping.Wrap,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(0, 2, 0, 0)
-                });
-            }
+        };
+        BindResource(card, Border.BorderBrushProperty, "PrimaryBorderBrush");
+        if (link is HyperlinkButton hyperlink) hyperlink.VerticalAlignment = VerticalAlignment.Center;
+        return card;
+    }
 
-            listPanel.Children.Add(itemPanel);
-            index++;
+    #endregion
+
+    #region 图片与链接
+
+    /// <summary>
+    ///     渲染图片块；外层带 <c>&lt;a&gt;</c> 时整张图可点击跳转。
+    ///     伪装成图片的下载链接（.mcaddon 等）渲染为超链接。
+    /// </summary>
+    private static Control? BuildLinkedImage(HtmlNode node)
+    {
+        var img = node.Name.ToLowerInvariant() == "img"
+            ? node
+            : node.Descendants("img").FirstOrDefault();
+        if (img == null) return null;
+
+        var src = img.GetAttributeValue("src", "");
+        if (string.IsNullOrWhiteSpace(src)) return null;
+
+        if (!IsImageUrl(src))
+        {
+            var alt = img.GetAttributeValue("alt", "");
+            var href = node.Name.ToLowerInvariant() == "a"
+                ? node.GetAttributeValue("href", "")
+                : src;
+            if (string.IsNullOrWhiteSpace(href)) return null;
+            return CreateLinkButton(string.IsNullOrWhiteSpace(alt) ? href : alt, href);
         }
 
-        return listPanel;
+        var image = new FlowImage(src);
+        var link = node.Name.ToLowerInvariant() == "a"
+            ? node.GetAttributeValue("href", "")
+            : GetAncestorLink(node);
+        if (!string.IsNullOrWhiteSpace(link) && Uri.TryCreate(link, UriKind.Absolute, out var uri))
+            return new HyperlinkButton { Content = image, NavigateUri = uri, Padding = new Thickness(0) };
+
+        return image;
     }
 
-    private static Control CreateStyledText(HtmlNode node, FontWeight fontWeight,
-        FontStyle fontStyle = FontStyle.Normal)
+    private static string? GetAncestorLink(HtmlNode node)
     {
-        var text = GetInnerText(node);
-        var textBlock = new TextBlock
+        for (var parent = node.ParentNode; parent != null; parent = parent.ParentNode)
         {
-            Text = text,
-            FontWeight = fontWeight,
-            FontStyle = fontStyle,
-            TextWrapping = TextWrapping.Wrap
-        };
+            if (parent.Name.ToLowerInvariant() != "a") continue;
+            var href = parent.GetAttributeValue("href", "");
+            return string.IsNullOrWhiteSpace(href) ? null : href;
+        }
 
-        ApplyColor(node, textBlock);
-        return textBlock;
+        return null;
     }
 
-    private static Control CreateUnderlinedText(HtmlNode node)
+    private static Control? CreateLinkButton(string content, string href)
     {
-        var text = GetInnerText(node);
-        var textBlock = new TextBlock
+        if (!Uri.TryCreate(href, UriKind.Absolute, out var uri)) return null;
+        return new HyperlinkButton { Content = content, NavigateUri = uri, Padding = new Thickness(0) };
+    }
+
+    /// <summary>段落里是否只剩图片类节点（含包在链接里的图片）。</summary>
+    private static bool IsImageishNode(HtmlNode node)
+    {
+        if (node.NodeType == HtmlNodeType.Text) return string.IsNullOrWhiteSpace(node.InnerText);
+        if (node.NodeType != HtmlNodeType.Element) return false;
+
+        var name = node.Name.ToLowerInvariant();
+        if (name == "img") return true;
+        if (name == "a")
         {
-            Text = text,
-            TextWrapping = TextWrapping.Wrap,
-            TextDecorations = TextDecorations.Underline
-        };
+            var children = node.ChildNodes.Where(n =>
+                n.NodeType == HtmlNodeType.Element ||
+                (n.NodeType == HtmlNodeType.Text && !string.IsNullOrWhiteSpace(n.InnerText))).ToList();
+            return children.Count > 0 && children.All(IsImageishNode);
+        }
 
-        ApplyColor(node, textBlock);
-        return textBlock;
+        return false;
     }
 
-    private static Control CreateHyperlink(HtmlNode node)
+    #endregion
+
+    #region 内联渲染
+
+    /// <summary>
+    ///     内联样式沿递归向下合并（嵌套的粗体斜体、带颜色的加粗等都能正确叠加）。
+    /// </summary>
+    private readonly record struct InlineStyle(
+        FontWeight? Weight,
+        FontStyle? Slant,
+        TextDecorationCollection? Decorations,
+        IBrush? Foreground,
+        bool IsCode);
+
+    private static void BuildInlines(IEnumerable<HtmlNode> nodes, InlineCollection inlines, InlineStyle style)
     {
-        var text = GetInnerText(node);
+        foreach (var node in nodes)
+        {
+            switch (node.NodeType)
+            {
+                case HtmlNodeType.Text:
+                    AppendText(inlines, node.InnerText, style);
+                    break;
+
+                case HtmlNodeType.Element:
+                    if (IsIgnoredElement(node) || node.GetAttributeValue("aria-hidden", "") == "true") break;
+                    AppendElementInline(node, inlines, style);
+                    break;
+            }
+        }
+    }
+
+    private static void AppendElementInline(HtmlNode node, InlineCollection inlines, InlineStyle style)
+    {
+        switch (node.Name.ToLowerInvariant())
+        {
+            case "br":
+                inlines.Add(new LineBreak());
+                break;
+
+            case "strong" or "b":
+                BuildInlines(node.ChildNodes, inlines, style with { Weight = FontWeight.Bold });
+                break;
+
+            case "em" or "i" or "cite" or "var":
+                BuildInlines(node.ChildNodes, inlines, style with { Slant = FontStyle.Italic });
+                break;
+
+            case "del" or "s" or "strike":
+                BuildInlines(node.ChildNodes, inlines,
+                    style with { Decorations = TextDecorations.Strikethrough });
+                break;
+
+            case "u" or "ins":
+                BuildInlines(node.ChildNodes, inlines, style with { Decorations = TextDecorations.Underline });
+                break;
+
+            case "code" or "kbd" or "samp" or "tt":
+                AppendText(inlines, node.InnerText, style with { IsCode = true });
+                break;
+
+            case "a":
+                AppendLinkInline(node, inlines, style);
+                break;
+
+            case "img" or "picture" or "source":
+                if (node.Name.ToLowerInvariant() == "img") AppendImageInline(node, inlines);
+                else BuildInlines(node.ChildNodes, inlines, style);
+                break;
+
+            case "sub" or "sup" or "small" or "big" or "mark" or "abbr" or "time" or "bdi" or "bdo"
+                or "label" or "button" or "font" or "span":
+                BuildInlines(node.ChildNodes, inlines, ApplySpanColor(node, style));
+                break;
+
+            default:
+                // 未知标签一律透传内容，保证不丢文本
+                BuildInlines(node.ChildNodes, inlines, style);
+                break;
+        }
+    }
+
+    private static void AppendText(InlineCollection inlines, string raw, InlineStyle style)
+    {
+        // HTML 源码里的缩进换行折叠成单个空格
+        var text = Regex.Replace(HtmlEntity.DeEntitize(raw), @"\s+", " ");
+        if (text.Length == 0) return;
+
+        var run = new Run(text);
+        ApplyInlineStyle(run, style);
+        inlines.Add(run);
+    }
+
+    private static void ApplyInlineStyle(Run run, InlineStyle style)
+    {
+        if (style.Weight is { } weight) run.FontWeight = weight;
+        if (style.Slant is { } slant) run.FontStyle = slant;
+        if (style.Decorations is { } decorations) run.TextDecorations = decorations;
+        if (style.Foreground is { } foreground) run.Foreground = foreground;
+
+        if (!style.IsCode) return;
+
+        run.FontFamily = CodeFontFamily;
+        if (Application.Current?.Resources is { } resources)
+            run.Bind(Run.BackgroundProperty, resources.GetResourceObservable("PrimarySubtleBackgroundBrush"));
+    }
+
+    private static void AppendLinkInline(HtmlNode node, InlineCollection inlines, InlineStyle style)
+    {
         var href = node.GetAttributeValue("href", "");
+        // 页内锚点、空链接或无法解析的相对链接：只渲染文字不渲染可点击链接
+        if (string.IsNullOrWhiteSpace(href) || href.StartsWith("#") ||
+            !Uri.TryCreate(href, UriKind.Absolute, out var uri))
+        {
+            BuildInlines(node.ChildNodes, inlines, style);
+            return;
+        }
+
+        // 链接内容单独构建 Inlines，保留嵌套的粗体/颜色等格式
+        var content = new TextBlock { TextWrapping = TextWrapping.Wrap };
+        content.Inlines ??= new InlineCollection();
+        BuildInlines(node.ChildNodes, content.Inlines, style);
+        if (content.Inlines.Count == 0) content.Text = href;
 
         var button = new HyperlinkButton
         {
-            Content = string.IsNullOrWhiteSpace(text) ? href : text,
+            Content = content,
+            NavigateUri = uri,
             Padding = new Thickness(0),
-            Margin = new Thickness(0, 2),
-            Background = new SolidColorBrush(Colors.Transparent)
+            MinHeight = 0,
+            MinWidth = 0,
+            Background = Brushes.Transparent
         };
-
-        if (!string.IsNullOrEmpty(href) && Uri.TryCreate(href, UriKind.Absolute, out var uri))
-            button.NavigateUri = uri;
-
-        return button;
+        inlines.Add(new InlineUIContainer(button));
     }
 
-    private static Control CreateImage(HtmlNode node)
+    private static void AppendImageInline(HtmlNode node, InlineCollection inlines)
     {
         var src = node.GetAttributeValue("src", "");
-        var alt = node.GetAttributeValue("alt", "");
+        if (string.IsNullOrWhiteSpace(src)) return;
 
-        if (string.IsNullOrEmpty(src))
-            return new Border { Height = 0 };
-
-        // 描述里常把下载链接（.mcaddon/.mcworld/.mcpack 等）写成图片语法，这类不当图片加载
         if (!IsImageUrl(src))
         {
-            var link = new HyperlinkButton
-            {
-                Content = string.IsNullOrWhiteSpace(alt) ? src : alt,
-                Padding = new Thickness(0),
-                Margin = new Thickness(0, 2),
-                Background = new SolidColorBrush(Colors.Transparent)
-            };
-
-            if (Uri.TryCreate(src, UriKind.Absolute, out var uri))
-                link.NavigateUri = uri;
-
-            return link;
-        }
-
-        var imageWidget = new LocalImageRenderWidget(src)
-        {
-            Margin = new Thickness(0, 8),
-            Width = 400,
-            Height = 225
-        };
-
-        return imageWidget;
-    }
-
-    private static Control CreateVideoPlaceholder(HtmlNode node)
-    {
-        var src = node.GetAttributeValue("src", "");
-
-        var panel = new StackPanel
-        {
-            Spacing = 8,
-            Margin = new Thickness(0, 12)
-        };
-
-        panel.Children.Add(new TextBlock
-        {
-            Text = "📹 视频内容",
-            FontSize = 16,
-            FontWeight = FontWeight.SemiBold
-        });
-
-        if (!string.IsNullOrEmpty(src))
-        {
-            var button = new HyperlinkButton
-            {
-                Content = "在浏览器中观看",
-                Padding = new Thickness(0)
-            };
-
-            if (Uri.TryCreate(src, UriKind.Absolute, out var uri))
-                button.NavigateUri = uri;
-
-            panel.Children.Add(button);
-        }
-
-        return panel;
-    }
-
-    private static Control CreateSpan(HtmlNode node)
-    {
-        var text = GetInnerText(node);
-        if (string.IsNullOrWhiteSpace(text))
-            return null;
-
-        var textBlock = new TextBlock
-        {
-            Text = text,
-            TextWrapping = TextWrapping.Wrap
-        };
-
-        ApplyColor(node, textBlock);
-        ApplyTextDecoration(node, textBlock);
-
-        return textBlock;
-    }
-
-    private static void ApplyColor(HtmlNode node, TextBlock textBlock)
-    {
-        var style = node.GetAttributeValue("style", "");
-        if (string.IsNullOrEmpty(style))
+            var alt = node.GetAttributeValue("alt", "");
+            var link = CreateLinkButton(string.IsNullOrWhiteSpace(alt) ? src : alt, src);
+            if (link != null) inlines.Add(new InlineUIContainer(link));
             return;
+        }
 
-        if (style.Contains("color:"))
+        inlines.Add(new InlineUIContainer(new FlowImage(src) { MaxDisplayHeight = 220 }));
+    }
+
+    private static InlineStyle ApplySpanColor(HtmlNode node, InlineStyle style)
+    {
+        var styleAttr = node.GetAttributeValue("style", "");
+        var colorMatch = Regex.Match(styleAttr, @"(?:^|;)\s*color\s*:\s*(#[0-9a-fA-F]{3,8}|[a-zA-Z]+)");
+        if (colorMatch.Success && TryParseColor(colorMatch.Groups[1].Value, out var color))
+            return style with { Foreground = new SolidColorBrush(color) };
+
+        var colorAttr = node.Attributes["color"]?.Value;
+        if (!string.IsNullOrWhiteSpace(colorAttr) && TryParseColor(colorAttr, out var fontColor))
+            return style with { Foreground = new SolidColorBrush(fontColor) };
+
+        return style;
+    }
+
+    private static bool TryParseColor(string value, out Color color)
+    {
+        try
         {
-            var colorMatch = Regex.Match(style, @"color:\s*#([0-9a-fA-F]{6})");
-            if (colorMatch.Success)
-            {
-                try
-                {
-                    textBlock.Foreground = new SolidColorBrush(Color.Parse($"#{colorMatch.Groups[1].Value}"));
-                }
-                catch
-                {
-                    // 忽略颜色解析错误
-                }
-            }
+            color = Color.Parse(value.Trim());
+            return true;
+        }
+        catch
+        {
+            color = default;
+            return false;
         }
     }
 
-    private static void ApplyTextDecoration(HtmlNode node, TextBlock textBlock)
+    #endregion
+
+    #region 工具方法
+
+    /// <summary>让控件属性跟随主题资源变化（代码版的 DynamicResource）。</summary>
+    private static void BindResource(AvaloniaObject target, AvaloniaProperty property, string key)
     {
-        var style = node.GetAttributeValue("style", "");
-        if (!string.IsNullOrEmpty(style) && style.Contains("text-decoration") && style.Contains("underline"))
-            textBlock.TextDecorations = TextDecorations.Underline;
+        if (Application.Current?.Resources is { } resources)
+            target.Bind(property, resources.GetResourceObservable(key));
     }
+
+    private static bool HasVisibleInline(InlineCollection inlines)
+    {
+        return inlines.Any(inline =>
+            inline is InlineUIContainer ||
+            (inline is Run run && !string.IsNullOrWhiteSpace(run.Text)));
+    }
+
+    /// <summary>去掉段落首尾的空白 Run 与换行，让文本从边缘开始。</summary>
+    private static void TrimInlineEdges(InlineCollection inlines)
+    {
+        while (inlines.Count > 0)
+        {
+            switch (inlines[0])
+            {
+                case Run run:
+                    var trimmedStart = run.Text?.TrimStart();
+                    if (string.IsNullOrEmpty(trimmedStart))
+                    {
+                        inlines.RemoveAt(0);
+                        continue;
+                    }
+
+                    run.Text = trimmedStart;
+                    break;
+
+                case LineBreak:
+                    inlines.RemoveAt(0);
+                    continue;
+            }
+
+            break;
+        }
+
+        while (inlines.Count > 0)
+        {
+            var lastIndex = inlines.Count - 1;
+            switch (inlines[lastIndex])
+            {
+                case Run run:
+                    var trimmedEnd = run.Text?.TrimEnd();
+                    if (string.IsNullOrEmpty(trimmedEnd))
+                    {
+                        inlines.RemoveAt(lastIndex);
+                        continue;
+                    }
+
+                    run.Text = trimmedEnd;
+                    break;
+
+                case LineBreak:
+                    inlines.RemoveAt(lastIndex);
+                    continue;
+            }
+
+            break;
+        }
+    }
+
+    private static bool IsInlineElement(string name) => name switch
+    {
+        "a" or "span" or "font" or "strong" or "b" or "em" or "i" or "u" or "s" or "del"
+            or "strike" or "ins" or "code" or "kbd" or "samp" or "tt" or "small" or "big"
+            or "sub" or "sup" or "mark" or "abbr" or "cite" or "q" or "time" or "bdi"
+            or "bdo" or "label" or "picture" or "source" or "button" => true,
+        _ => false
+    };
+
+    private static bool IsIgnoredElement(HtmlNode node)
+    {
+        switch (node.Name.ToLowerInvariant())
+        {
+            case "svg" or "path" or "script" or "style" or "head" or "title" or "meta" or "link"
+                 or "noscript" or "input" or "select" or "option" or "textarea" or "col" or "colgroup":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static int GetListDepth(HtmlNode listNode)
+    {
+        var depth = 0;
+        for (var parent = listNode.ParentNode; parent != null; parent = parent.ParentNode)
+            if (parent.Name.ToLowerInvariant() is "ul" or "ol")
+                depth++;
+        return depth;
+    }
+
+    private static string DepthMarker(int depth) => depth switch
+    {
+        0 => "\u2022",  // •
+        1 => "\u25E6",  // ◦
+        _ => "\u25AA"   // ▪
+    };
+
+    #endregion
 }

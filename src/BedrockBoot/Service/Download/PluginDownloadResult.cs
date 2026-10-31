@@ -77,10 +77,15 @@ public class PluginDownloadResult : IDownloadResult
         return releases;
     }
 
-    public async Task<List<Control>?> DescriptionControls()
+    public async Task<string?> GetDescriptionHtml()
     {
         var info = await GetPluginInfo();
-        var html = await MarketClient.GetReadmeHtml(info.RepositoryOwner, info.RepositoryName);
+        return await MarketClient.GetReadmeHtml(info.RepositoryOwner, info.RepositoryName);
+    }
+
+    public async Task<List<Control>?> DescriptionControls()
+    {
+        var html = await GetDescriptionHtml();
         return HtmlToControlConverter.ConvertHtmlToControls(html);
     }
 

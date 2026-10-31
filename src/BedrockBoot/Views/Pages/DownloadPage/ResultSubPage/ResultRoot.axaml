@@ -198,35 +198,51 @@
 
                 <items:BorderCard Padding="8"
                                   Name="PagesSelBar">
-                    <ListBox Classes="Segmented"
-                             Name="PageSelect"
-                             SelectionChanged="PageSelect_OnSelectionChanged"
-                             Height="32"
-                             Margin="0">
-                        <ListBoxItem Classes="Segmented"
-                                     Name="ItemDescription"
-                                     Tag="Description"
-                                     IsSelected="True">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="6">
-                                <onePointControls:FontIcon VerticalAlignment="Center"
-                                                           Glyph="&#xF22C;">
-                                </onePointControls:FontIcon>
-                                <TextBlock Text="描述"></TextBlock>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <ListBox Grid.Column="0"
+                                 Classes="Segmented"
+                                 Name="PageSelect"
+                                 SelectionChanged="PageSelect_OnSelectionChanged"
+                                 Height="32"
+                                 Margin="0">
+                            <ListBoxItem Classes="Segmented"
+                                         Name="ItemDescription"
+                                         Tag="Description"
+                                         IsSelected="True">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="6">
+                                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                                               Glyph="&#xF22C;">
+                                    </onePointControls:FontIcon>
+                                    <TextBlock Text="描述"></TextBlock>
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem Classes="Segmented"
+                                         Name="ItemFiles"
+                                         Tag="Files">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="6">
+                                    <onePointControls:FontIcon VerticalAlignment="Center"
+                                                               Glyph="&#xE7C3;">
+                                    </onePointControls:FontIcon>
+                                    <TextBlock Text="文件"></TextBlock>
+                                </StackPanel>
+                            </ListBoxItem>
+                        </ListBox>
+
+                        <Button Grid.Column="1"
+                                Classes="NoBorder"
+                                ToolTip.Tip="{DynamicResource Download.Result.Translate.Tip}"
+                                Click="TranslateBtn_OnClick"
+                                Name="TranslateBtn"
+                                Height="32">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <onePointControls:FontIcon Glyph="&#xE8C1;" VerticalAlignment="Center" />
+                                <TextBlock Name="TranslateBtnText" VerticalAlignment="Center"
+                                           Text="{DynamicResource Download.Result.Translate.Action}" />
                             </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem Classes="Segmented"
-                                     Name="ItemFiles"
-                                     Tag="Files">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="6">
-                                <onePointControls:FontIcon VerticalAlignment="Center"
-                                                           Glyph="&#xE7C3;">
-                                </onePointControls:FontIcon>
-                                <TextBlock Text="文件"></TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                    </ListBox>
+                        </Button>
+                    </Grid>
                 </items:BorderCard>
 
                 <navigation:NavigationFrame Name="NavigationFrame" />

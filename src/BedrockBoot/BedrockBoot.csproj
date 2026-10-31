@@ -128,6 +128,10 @@
         </ItemGroup>
     </Target>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="dotnet fsi BuildChain/RestoreChangLog.fsx" />
+    </Target>
+
     <Import Project="Build/GenerateChangeLog.targets"
             Condition="'$(Configuration)' == 'Release'"/>
 </Project>

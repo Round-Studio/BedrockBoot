@@ -179,9 +179,14 @@
           BeforeTargets="PrepareForBuild"
           Condition="'$(GenerateChangeLogEnabled)' == 'true'">
 
+    <PropertyGroup>
+      <GenerateChangeLogSnapshot>$(IntermediateOutputPath)ChangLog.release.txt</GenerateChangeLogSnapshot>
+    </PropertyGroup>
+
     <Message Importance="high" Text="=== GenerateChangeLog ===" />
     <Message Importance="high" Text="  BuildType: $(BuildType)" />
     <Message Importance="high" Text="  Output   : $(GenerateChangeLogOutput)" />
+    <Message Importance="high" Text="  Snapshot : $(GenerateChangeLogSnapshot)" />
 
     <GenerateChangeLogTask
             RepoRoot="$(GenerateChangeLogRepoRoot)"
@@ -190,8 +195,13 @@
             CurrentTag="$(GenerateChangeLogCurrentTag)"
             BuildType="$(BuildType)" />
 
+    <Copy SourceFiles="$(GenerateChangeLogOutput)"
+          DestinationFiles="$(GenerateChangeLogSnapshot)" />
+
     <ItemGroup>
-      <Content Include="$(GenerateChangeLogOutput)" CopyToOutputDirectory="PreserveNewest" />
+      <Content Include="$(GenerateChangeLogSnapshot)"
+               Link="Assets\Text\ChangLog.txt"
+               CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <Message Importance="high" Text="=== GenerateChangeLog done ===" />

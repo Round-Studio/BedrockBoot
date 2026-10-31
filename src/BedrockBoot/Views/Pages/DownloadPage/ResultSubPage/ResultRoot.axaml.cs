@@ -235,15 +235,16 @@ public partial class ResultRoot : UserControl
                     ? null
                     : await translator.TranslateAsync(brief, "auto", target);
 
-                // 描述页的 HTML 内容
+                // 描述页内容：按条目逐段翻译，图片/代码等不参与翻译，避免被接口改坏
                 var html = await _downloadService.GetDescriptionHtml();
-                var translatedHtml = string.IsNullOrEmpty(html)
+                _translatedDescriptionHtml = string.IsNullOrEmpty(html)
                     ? null
-                    : await translator.TranslateHtmlAsync(html, "auto", target);
-
-                // 服务失败时会原样返回原文，视为没有翻译成功
-                _translatedDescriptionHtml =
-                    string.Equals(translatedHtml, html, StringComparison.Ordinal) ? null : translatedHtml;
+                    : await HtmlBlockTranslator.TranslateAsync(
+                        html,
+                        fragment => translator.TranslateHtmlAsync(fragment, "auto", target),
+                        (done, total) => Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                            TranslateBtnText.Text =
+                                string.Format(i18n["Download.Result.Translate.Progress"], done, total)));
 
                 if (!string.IsNullOrEmpty(translatedBrief) &&
                     !string.Equals(translatedBrief, brief, StringComparison.Ordinal))

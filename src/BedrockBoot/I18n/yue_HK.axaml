@@ -395,6 +395,7 @@
     <x:String x:Key="Download.Result.Translate.Tip">將簡介同詳情頁翻譯做目前介面語言</x:String>
     <x:String x:Key="Download.Result.Translate.Action">翻譯</x:String>
     <x:String x:Key="Download.Result.Translate.Processing">翻譯緊...</x:String>
+    <x:String x:Key="Download.Result.Translate.Progress">翻譯緊 {0}/{1}</x:String>
     <x:String x:Key="Download.Result.Translate.Restore">顯示返原文</x:String>
     <x:String x:Key="Download.Result.Error.LoadDescription">載入描述嗰陣出錯</x:String>
     <x:String x:Key="Download.Result.Share.Format">你嘅好友推介咗一個資源畀你【{0}】&#x0a;資源主頁：{1}&#x0a;前往「BedrockBoot」或「BMCBL」，Ctrl+V 就可以攞到呢個資源</x:String>

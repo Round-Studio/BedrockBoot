@@ -232,6 +232,7 @@
 
                         <Button Grid.Column="1"
                                 Classes="NoBorder"
+                                Padding="8"
                                 ToolTip.Tip="{DynamicResource Download.Result.Translate.Tip}"
                                 Click="TranslateBtn_OnClick"
                                 Name="TranslateBtn"

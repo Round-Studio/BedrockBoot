@@ -401,6 +401,7 @@
     <x:String x:Key="Download.Result.Translate.Tip">Перевести описание и страницу деталей на язык интерфейса</x:String>
     <x:String x:Key="Download.Result.Translate.Action">Перевести</x:String>
     <x:String x:Key="Download.Result.Translate.Processing">Перевод...</x:String>
+    <x:String x:Key="Download.Result.Translate.Progress">Перевод {0}/{1}</x:String>
     <x:String x:Key="Download.Result.Translate.Restore">Показать оригинал</x:String>
     <x:String x:Key="Download.Result.Error.LoadDescription">Ошибка загрузки описания</x:String>
     <x:String x:Key="Download.Result.Share.Format">Ваш друг порекомендовал ресурс: 【{0}】

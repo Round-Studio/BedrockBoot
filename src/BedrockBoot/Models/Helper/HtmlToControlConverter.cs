@@ -73,11 +73,15 @@ public class HtmlToControlConverter
         if (string.IsNullOrWhiteSpace(content))
             return new List<Control>();
 
-        // Markdown 统一转成 HTML 再走同一条渲染路径；
-        // 完整 HTML 文档则跳过 Markdig，避免任何改写风险
-        var html = IsFullHtmlDocument(content) ? content : Markdown.ToHtml(content, MarkdownPipeline);
-        return ConvertHtmlOnly(html);
+        return ConvertHtmlOnly(NormalizeToHtml(content));
     }
+
+    /// <summary>
+    ///     非完整 HTML 文档的内容（Markdown、HTML 片段）统一转成 HTML；
+    ///     完整 HTML 文档原样返回，避免 Markdig 改写。
+    /// </summary>
+    public static string NormalizeToHtml(string content) =>
+        IsFullHtmlDocument(content) ? content : Markdown.ToHtml(content, MarkdownPipeline);
 
     private static bool IsFullHtmlDocument(string content) =>
         Regex.IsMatch(content, @"^\s*<!DOCTYPE|^\s*<html[\s>]", RegexOptions.IgnoreCase);

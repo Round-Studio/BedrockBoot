@@ -106,7 +106,25 @@ public class CoreInitialize
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                GlobalModel.MainWindow.OpenDraw(new DrawGameCrashContent(args), "BedrockBoot 游戏错误追踪器", "\uE81F");
+                if (args.Report == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    GlobalModel.MainWindow.OpenDraw(new DrawGameCrashContent(args), "BedrockBoot 游戏错误追踪器", "\uE81F");
+                }
+                catch (Exception ex)
+                {
+                    // 追踪界面打不开时至少要让用户知道游戏异常退出了
+                    Console.WriteLine($@"游戏错误追踪器打开失败：{ex}");
+                    GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
+                    {
+                        Title = "游戏异常退出",
+                        Message = $"退出码 0x{args.ExitCode:X8}，错误追踪界面打开失败：{ex.Message}"
+                    });
+                }
             });
         };
 

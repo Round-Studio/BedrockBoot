@@ -34,7 +34,8 @@ public class GameDumpStackFrame
     public ulong? SymbolDisplacement { get; set; }
 
     public string Display =>
-        SymbolName != null ? $"{SymbolName}+0x{SymbolDisplacement:X}"
-        : ModuleName != null ? $"0x{Address:X} [{ModuleName}]"
-        : $"0x{Address:X}";
+        SymbolName != null
+            ? SymbolDisplacement.HasValue ? $"{SymbolName}+0x{SymbolDisplacement.Value:X}" : SymbolName
+            : ModuleName != null ? $"0x{Address:X} [{ModuleName}]"
+            : $"0x{Address:X}";
 }

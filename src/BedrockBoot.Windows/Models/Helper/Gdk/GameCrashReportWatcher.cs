@@ -65,7 +65,17 @@ public static class GameCrashReportWatcher
     private static void WatchLoopCore(Process gameProcess, string crashReportDirectory, string gameName,
         string launchId)
     {
-        var instanceFolder = Path.GetDirectoryName(gameProcess.MainModule.FileName);
+        // 提权运行或进程受限时 MainModule 访问会抛异常，这里只影响展示用的实例目录，不能让监视线程挂掉
+        string? instanceFolder = null;
+        try
+        {
+            instanceFolder = Path.GetDirectoryName(gameProcess.MainModule?.FileName);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"读取游戏主模块路径失败：{ex.Message}");
+        }
+
         var processId = gameProcess.Id;
         var processHandle = OpenProcess(SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)processId);
         if (processHandle == IntPtr.Zero)

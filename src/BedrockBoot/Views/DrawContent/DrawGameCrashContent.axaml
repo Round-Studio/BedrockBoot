@@ -6,128 +6,172 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.DrawContent.DrawGameCrashContent">
-    <Grid RowDefinitions="Auto,*">
-        <StackPanel Grid.Row="0">
-            <Grid Background="{DynamicResource AccentDarkestBrush}">
-                <StackPanel Orientation="Horizontal"
-                            Margin="12"
-                            Spacing="12">
-                    <widgets:TopBarLabel Background="CornflowerBlue"
-                                         Name="GameInstance"
-                                         MinWidth="80"
-                                         TitleText="实例核心"
-                                         Text="Minecraft"/>
-                    <widgets:TopBarLabel Background="DarkSeaGreen"
-                                         Name="GameVersion"
-                                         MinWidth="80"
-                                         TitleText="实例版本"
-                                         Text="1.114.514"/>
-                    <widgets:TopBarLabel Background="PaleVioletRed"
-                                         Name="SystemName"
-                                         MinWidth="80"
-                                         TitleText="操作系统"
-                                         Text="Win11"/>
-                    <widgets:TopBarLabel Background="Orange"
-                                         Name="SystemArch"
-                                         MinWidth="60"
-                                         TitleText="系统架构"
-                                         Text="x64"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Margin="12,0">
-                    <Button Classes="NoBorder"
-                            Padding="8">
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="6">
-                            <onePointControls:FontIcon Glyph="&#xE74E;"
-                                                       VerticalAlignment="Center"></onePointControls:FontIcon>
-                            <TextBlock Text="导出崩溃报告"></TextBlock>
+    <Grid RowDefinitions="*">
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Spacing="1">
+                <Grid Background="{DynamicResource AccentDarkestBrush}">
+                    <StackPanel Orientation="Horizontal"
+                                Margin="12"
+                                Spacing="12">
+                        <widgets:TopBarLabel Background="CornflowerBlue"
+                                             Name="GameInstance"
+                                             MinWidth="80"
+                                             TitleText="实例核心"
+                                             Text="Minecraft" />
+                        <widgets:TopBarLabel Background="DarkSeaGreen"
+                                             Name="GameVersion"
+                                             MinWidth="80"
+                                             TitleText="实例版本"
+                                             Text="1.114.514" />
+                        <widgets:TopBarLabel Background="MediumPurple"
+                                             Name="PreLoadVersion"
+                                             MinWidth="80"
+                                             TitleText="加载器版本"
+                                             Text="1.114.514" />
+                        <widgets:TopBarLabel Background="PaleVioletRed"
+                                             Name="SystemName"
+                                             MinWidth="80"
+                                             TitleText="操作系统"
+                                             Text="Win11" />
+                        <widgets:TopBarLabel Background="Orange"
+                                             Name="SystemArch"
+                                             MinWidth="60"
+                                             TitleText="系统架构"
+                                             Text="x64" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Margin="12,0">
+                        <Button Classes="NoBorder"
+                                Padding="8"
+                                Name="ExportBtn">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="6">
+                                <onePointControls:FontIcon Glyph="&#xE74E;"
+                                                           VerticalAlignment="Center" />
+                                <TextBlock Text="导出崩溃报告" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+                <Grid Background="{DynamicResource AccentDarkerBrush}">
+                    <StackPanel Orientation="Horizontal"
+                                Margin="12,8"
+                                Spacing="8">
+                        <onePointControls:FontIcon Glyph="&#xE7C3;"
+                                                   VerticalAlignment="Center" />
+                        <TextBlock Text="转储文件路径"
+                                   Name="DumpFilePath"
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+                <Grid Background="{DynamicResource AccentDarkBrush}">
+                    <StackPanel Orientation="Horizontal"
+                                Margin="12,8"
+                                Spacing="8">
+                        <onePointControls:FontIcon Glyph="&#xE7FC;"
+                                                   VerticalAlignment="Center" />
+                        <TextBlock Text="游戏进程路径"
+                                   Name="GameCorePath"
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+                <Border Padding="12,8"
+                        Background="{DynamicResource AccentBackgroundBrush}">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <onePointControls:FontIcon Glyph="&#xE90A;"
+                                                       VerticalAlignment="Center" />
+                            <TextBlock Text="异常类型"
+                                       VerticalAlignment="Center" />
                         </StackPanel>
-                    </Button>
-                </StackPanel>
-            </Grid>
-            <Grid Background="{DynamicResource AccentDarkerBrush}">
-                <StackPanel Orientation="Horizontal"
-                            Margin="12,8"
-                            Spacing="8">
-                    <onePointControls:FontIcon Glyph="&#xE7C3;"
-                                               VerticalAlignment="Center"/>
-                    <TextBlock Text="转储文件路径"
-                               Name="DumpFilePath"
-                               VerticalAlignment="Center"></TextBlock>
-                </StackPanel>
-            </Grid>
-            <Grid Background="{DynamicResource AccentDarkBrush}">
-                <StackPanel Orientation="Horizontal"
-                            Margin="12,8"
-                            Spacing="8">
-                    <onePointControls:FontIcon Glyph="&#xE7FC;"
-                                               VerticalAlignment="Center"/>
-                    <TextBlock Text="游戏进程路径"
-                               Name="GameCorePath"
-                               VerticalAlignment="Center"></TextBlock>
-                </StackPanel>
-            </Grid>
-            <Grid Background="{DynamicResource AccentBackgroundBrush}"
-                  RowDefinitions="Auto,*">
-                <StackPanel Grid.Row="0"
-                            Orientation="Horizontal"
-                            Margin="12,8,12,4"
-                            Spacing="8">
-                    <onePointControls:FontIcon Glyph="&#xE90A;"
-                                               VerticalAlignment="Center"/>
-                    <TextBlock Text="崩溃信息"
-                               VerticalAlignment="Center"></TextBlock>
-                </StackPanel>
-                
-                <StackPanel Grid.Row="1"
-                            Margin="32,0,0,8">
-                    <DockPanel>
-                        <TextBlock Text="崩溃源模块"
-                                   Width="200"
-                                   HorizontalAlignment="Left"></TextBlock>
-                        
-                        <TextBlock Text="DllName"
-                                   Name="SourceFile"></TextBlock>
-                    </DockPanel>
-                    <DockPanel>
-                        <TextBlock Text="退出代码"
-                                   Width="200"
-                                   HorizontalAlignment="Left"></TextBlock>
-                        
-                        <TextBlock Text="ExitCode"
-                                   Name="ExitCode"></TextBlock>
-                    </DockPanel>
-                    <DockPanel>
-                        <TextBlock Text="调用堆栈"
-                                   Width="200"
-                                   HorizontalAlignment="Left"></TextBlock>
-                        
-                        <TextBlock Text="Stack"
-                                   Name="Stack"></TextBlock>
-                    </DockPanel>
-                </StackPanel>
-            </Grid>
-            <Grid Background="{DynamicResource AccentBackgroundBrush}"
-                  RowDefinitions="Auto,*">
-                <StackPanel Grid.Row="0"
-                            Orientation="Horizontal"
-                            Margin="12,8,12,4"
-                            Spacing="8">
-                    <onePointControls:FontIcon Glyph="&#xE90A;"
-                                               VerticalAlignment="Center"/>
-                    <TextBlock Text="崩溃分析"
-                               VerticalAlignment="Center"></TextBlock>
-                </StackPanel>
-                
-                <StackPanel Grid.Row="1"
-                            Margin="32,0,0,8">
-                    <TextBlock Text="请优先尝试根据下方分析结果进行自修复"></TextBlock>
-                    <TextBlock Text="如无法自行解决，可尝试将错误分析打包并向他人求助"></TextBlock>
-                </StackPanel>
-            </Grid>
-        </StackPanel>
+                        <StackPanel Margin="20,0,0,0">
+                            <TextBlock Name="ExceptionName"
+                                       Text="-"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+                            <TextBlock Name="ExceptionDesc"
+                                       Text="-"
+                                       FontSize="12"
+                                       Opacity="0.85"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Name="NoReportTip"
+                                       IsVisible="False"
+                                       FontSize="12"
+                                       Opacity="0.8"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource SystemFillColorCautionBrush}"
+                                       Text="本次异常退出未能捕获到崩溃报告：可能未在实例设置中开启“原生异常捕获”，或崩溃类型不受支持。下方仅保留退出码等基础信息。" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{DynamicResource AccentBackgroundBrush}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="12,8,12,4"
+                                    Spacing="8">
+                            <onePointControls:FontIcon Glyph="&#xE945;"
+                                                       VerticalAlignment="Center" />
+                            <TextBlock Text="崩溃信息"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <StackPanel Margin="32,0,12,8"
+                                    Spacing="4">
+                            <DockPanel>
+                                <TextBlock Text="崩溃源模块" Width="160" Opacity="0.7" />
+                                <TextBlock Text="-" Name="SourceFile" TextWrapping="Wrap" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="异常地址" Width="160" Opacity="0.7" />
+                                <TextBlock Text="-" Name="ExceptionAddress" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="退出代码" Width="160" Opacity="0.7" />
+                                <TextBlock Text="-" Name="ExitCode" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="捕获阶段" Width="160" Opacity="0.7" />
+                                <TextBlock Text="-" Name="Phase" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="崩溃时间" Width="160" Opacity="0.7" />
+                                <TextBlock Text="-" Name="CaptureTime" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="调用堆栈" Width="160" Opacity="0.7"
+                                           VerticalAlignment="Top" />
+                                <TextBlock Text="-" Name="Stack"
+                                           FontFamily="Consolas"
+                                           TextWrapping="Wrap" />
+                            </DockPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{DynamicResource AccentBackgroundBrush}">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="12,8,12,4"
+                                    Spacing="8">
+                            <onePointControls:FontIcon Glyph="&#xE9D9;"
+                                                       VerticalAlignment="Center" />
+                            <TextBlock Text="崩溃分析"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <StackPanel Margin="32,0,12,8">
+                            <TextBlock Name="AnalysisText"
+                                       Text="-"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

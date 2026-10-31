@@ -1,3 +1,4 @@
+{"message":"fix: fix the builder","author":"Hydrooxzgen","date":"2026-10-31T16:37:12+08:00","hash":"7b0dfbb596ab949f3257985a281dc53bfee6e5ba"}
 {"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-31T07:12:48Z","hash":"e50ced2ef8c7c617385f459c0c35a9ce6c071692"}
 {"message":"feat: 对 PreLoad.NET 保存的崩溃日志进行分析","author":"Dime","date":"2026-10-31T15:12:12+08:00","hash":"fd7f9a59caee59bac47d88f0b562878827c5447c"}
 {"message":"feat: 修改存档列表所使用的控件外观","author":"Dime","date":"2026-10-31T10:46:45+08:00","hash":"1f1d9d93b73540fb39c2686cdae8041e69c1dce9"}

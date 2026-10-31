@@ -200,6 +200,7 @@ public class I18nManager : INotifyPropertyChanged
         LanguageRegister("粵語（中國廣東）", "yue_HK", "avares://BedrockBoot/I18n/yue_HK.axaml");
         LanguageRegister("English (US)", "en_US", "avares://BedrockBoot/I18n/en_US.axaml");
         LanguageRegister("Japanese", "ja_JP", "avares://BedrockBoot/I18n/ja_JP.axaml");
+        LanguageRegister("Русский", "ru_RU", "avares://BedrockBoot/I18n/ru_RU.axaml");
     }
 
     private string GetString(string key)

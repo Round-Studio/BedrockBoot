@@ -67,7 +67,7 @@ public class VersionConfig
         [JsonPropertyName("isModes")] public bool IsModes { get; set; } = true;
         [JsonPropertyName("isConsole")] public bool IsConsole { get; set; } = false;
         [JsonPropertyName("isVersionIsolated")] public bool IsVersionIsolated { get; set; } = true;
-        [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = false;
+        [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = true;
         [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
         [JsonPropertyName("isSyncPubOptions")] public bool IsSyncPublicOptions { get; set; } = true;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";

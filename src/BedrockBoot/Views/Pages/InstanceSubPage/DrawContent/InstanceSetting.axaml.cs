@@ -75,7 +75,6 @@ public partial class InstanceSetting : UserControl
         InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
         GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
         IsRunAdmin.IsChecked = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun;
-        IsNativeException.IsChecked = VersionInfo.Config.IsNativeException;
         CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
         HttpPatchEnable.IsChecked = VersionInfo.Config.IsEnableHttpPatch;
         PatchServerDiscoveryBlock.IsChecked = VersionInfo.Config.HttpPatchConfig.IsEnableServerDiscoveryBlock;
@@ -96,7 +95,7 @@ public partial class InstanceSetting : UserControl
             VersionInfo.Config.IsDetailedLog = (bool)InstanceDetailedLogs.IsChecked!;
             VersionInfo.Config.IsSyncPublicOptions = (bool)GameConfigSwitch.IsChecked!;
             VersionInfo.Config.SysWindowsConfig.IsUseAdminRun = (bool)IsRunAdmin.IsChecked!;
-            VersionInfo.Config.IsNativeException = (bool)IsNativeException.IsChecked!;
+            VersionInfo.Config.IsNativeException = true;
             VersionInfo.Config.IsEnableHttpPatch = (bool)HttpPatchEnable.IsChecked!;
             VersionInfo.Config.HttpPatchConfig.IsEnableServerDiscoveryBlock = (bool)PatchServerDiscoveryBlock.IsChecked!;
             VersionInfo.Config.VisualConfig.IsEnableMotionBlur = (bool)PatchVisualBlur.IsChecked!;

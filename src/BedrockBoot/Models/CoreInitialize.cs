@@ -172,6 +172,14 @@ public class CoreInitialize
         RegisterService.API.LaunchingEvent.Add(path =>
         {
             var conf = GameInfoHelper.GetVersionConfig(path);
+
+            conf.Config.IsNativeException = true;
+            GameInfoHelper.SaveVersionConfig(conf);
+        });
+
+        RegisterService.API.LaunchingEvent.Add(path =>
+        {
+            var conf = GameInfoHelper.GetVersionConfig(path);
             if (!conf.Config.IsModes) return;
             LoadersManager.ModsLoaders.ForEach(loader =>
             {

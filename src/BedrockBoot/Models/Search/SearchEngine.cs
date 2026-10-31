@@ -122,7 +122,7 @@ public class SearchEngine
                 Payload = config,
                 Score = score,
                 Execute = () => UiGlobal.MainWindow?.OpenDraw(new DrawInstanceContent(config),
-                    $"{config.Info.VersionName} - {config.Info.Version}")
+                    $"{config.Info.VersionName} - {config.Info.Version}", "\uE7FC")
             });
         }
 

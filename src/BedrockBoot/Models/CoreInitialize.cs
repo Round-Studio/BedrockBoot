@@ -39,6 +39,7 @@ using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -101,6 +102,13 @@ public class CoreInitialize
 
         // 核心引擎异步初始化
         _ = InitBedrockCoreAsync();
+        GameCrashReportWatcher.CrashReportGenerated += args =>
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                GlobalModel.MainWindow.OpenDraw(new DrawGameCrashContent(args), "BedrockBoot 游戏错误追踪器", "\uE81F");
+            });
+        };
 
 #if WINDOWS
         // 注册文件关联

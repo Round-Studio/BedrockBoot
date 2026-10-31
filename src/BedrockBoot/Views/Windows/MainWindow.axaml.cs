@@ -420,9 +420,15 @@ public partial class MainWindow : Window
         SetBorderState(false);
     }
 
-    public async void OpenDraw(object? page, string title)
+    public async void OpenDraw(object? page, string title, string iconGlyph = null)
     {
         BorderTitle.Text = title;
+        BorderIcon.IsVisible = false;
+        if (!string.IsNullOrEmpty(iconGlyph))
+        {
+            BorderIcon.IsVisible = true;
+            BorderIcon.Glyph = iconGlyph;
+        }
         await SetBorderState(true);
 
         Frame.NavigateTo(page);

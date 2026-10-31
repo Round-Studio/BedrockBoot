@@ -555,7 +555,7 @@ public partial class MainPage : UserControl
         var version = versions[gameFolder.GameSelIndex];
 
         Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(version),
-            $"{version.Info.VersionName} - {version.Info.Version}");
+            $"{version.Info.VersionName} - {version.Info.Version}", "\uE7FC");
     }
 
     private void GameLaunchBtn_OnClick(object? sender, RoutedEventArgs e)

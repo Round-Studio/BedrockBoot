@@ -1,0 +1,27 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:BedrockBoot.Style.Widgets">
+    <Design.PreviewWith>
+        <controls:TopBarLabel />
+    </Design.PreviewWith>
+
+    <Style Selector="controls|TopBarLabel">
+        <!-- Set Defaults -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel>
+                    <Border Height="6"
+                            HorizontalAlignment="Stretch"
+                            CornerRadius="3"
+                            Margin="0,0,0,4"
+                            Background="{TemplateBinding Background}"></Border>
+                    
+                    <TextBlock Text="{TemplateBinding TitleText}"
+                               HorizontalAlignment="Left"></TextBlock>
+                    <TextBlock Text="{TemplateBinding Text}"
+                               HorizontalAlignment="Left"></TextBlock>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

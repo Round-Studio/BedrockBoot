@@ -62,6 +62,7 @@
   </Folder>
   <Project Path="src/BedrockBoot.Dependence/BedrockBoot.Dependence.csproj" />
   <Project Path="src/BedrockBoot.GravityCone/BedrockBoot.GravityCone.csproj" />
+  <Project Path="src/BedrockBoot.LevelDb/BedrockBoot.LevelDb.csproj" />
   <Project Path="src/BedrockBoot.LevelNbt/BedrockBoot.LevelNbt.csproj" />
   <Project Path="src/BedrockBoot.MSAL/BedrockBoot.MSAL.csproj" />
   <Project Path="src/BedrockBoot.Standard/BedrockBoot.Standard.csproj" />

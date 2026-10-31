@@ -63,6 +63,16 @@
                     </StackPanel>
                 </ListBoxItem>
                 <ListBoxItem Classes="Segmented"
+                             Tag="Structure">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                        <onePointControls:FontIcon Glyph="&#xF158;"
+                                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Root.Tab.Structure}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Classes="Segmented"
                              Tag="Setting"
                              IsSelected="True">
                     <StackPanel Orientation="Horizontal"

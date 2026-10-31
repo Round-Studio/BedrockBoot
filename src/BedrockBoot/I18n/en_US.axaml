@@ -250,6 +250,14 @@
     <x:String x:Key="LevelSettings.Backup.Action.Create">Create Backup</x:String>
     <x:String x:Key="LevelSettings.Backup.Empty.Message">No backups yet</x:String>
     <x:String x:Key="LevelSettings.Backup.Loading.Message">Loading backups</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Structure">Structures</x:String>
+    <x:String x:Key="LevelSettings.Structure.Title">Structure Management</x:String>
+    <x:String x:Key="LevelSettings.Structure.Action.Import">Import Structures</x:String>
+    <x:String x:Key="LevelSettings.Structure.Empty.Message">No structures yet. Save structures with structure blocks in game, or import .mcstructure files here</x:String>
+    <x:String x:Key="LevelSettings.Structure.Loading.Message">Loading structures</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Title">Import Minecraft Structures</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Type">Minecraft Structure Files (*.mcstructure)</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Success">Successfully imported {0} structures!</x:String>
     <x:String x:Key="LevelSettings.Editor.Title">World Editor</x:String>
     <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">Save Changes</x:String>
     <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">World Information</x:String>

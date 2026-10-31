@@ -1,0 +1,78 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.LevelSettings.LevelSettingsStructure">
+    <Grid RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"
+              Margin="20,0"
+              Height="32">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Spacing="8">
+                <TextBlock Text="{DynamicResource LevelSettings.Structure.Title}"
+                           FontSize="16"
+                           VerticalAlignment="Center" />
+
+                <Button Classes="NoBorder"
+                        Padding="8"
+                        Name="RefreshBtn"
+                        Click="RefreshBtn_OnClick"
+                        Width="32" Height="32">
+                    <onePointControls:FontIcon Glyph="&#xE72C;" />
+                </Button>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+                <TextBox Width="200"
+                         Height="32"
+                         Name="SearchBox"
+                         TextChanged="SearchBox_OnTextChanged"
+                         Watermark="键入关键词以搜索..." />
+
+                <Button Classes="Accent"
+                        Name="ImportBtn"
+                        Click="ImportBtn_OnClick"
+                        Height="32" Padding="12,0">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <onePointControls:FontIcon Glyph="&#xE710;" VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource LevelSettings.Structure.Action.Import}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1"
+                      Name="StructureScrollViewer">
+            <StackPanel Margin="20,0"
+                        Name="StructuresBox"
+                        Spacing="8" />
+        </ScrollViewer>
+
+        <notice:InfoCard Grid.Row="1"
+                         Name="NullBox"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         IsVisible="False"
+                         BigTitle="{DynamicResource Manager.Folder.Empty.Title}"
+                         Message="{DynamicResource LevelSettings.Structure.Empty.Message}" />
+
+        <notice:LoadCard Grid.Row="1"
+                         Name="LoadingCard"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         IsVisible="False"
+                         BigTitle="{DynamicResource Shared.Status.Wait}"
+                         Message="{DynamicResource LevelSettings.Structure.Loading.Message}" />
+    </Grid>
+</UserControl>

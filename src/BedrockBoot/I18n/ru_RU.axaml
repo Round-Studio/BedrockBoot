@@ -256,6 +256,14 @@
     <x:String x:Key="LevelSettings.Backup.Action.Create">Создать резервную копию</x:String>
     <x:String x:Key="LevelSettings.Backup.Empty.Message">Резервных копий пока нет</x:String>
     <x:String x:Key="LevelSettings.Backup.Loading.Message">Загрузка резервных копий</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Structure">Структуры</x:String>
+    <x:String x:Key="LevelSettings.Structure.Title">Управление структурами</x:String>
+    <x:String x:Key="LevelSettings.Structure.Action.Import">Импортировать структуры</x:String>
+    <x:String x:Key="LevelSettings.Structure.Empty.Message">Структур пока нет. Сохраните структуры блоками структур в игре или импортируйте файлы .mcstructure здесь</x:String>
+    <x:String x:Key="LevelSettings.Structure.Loading.Message">Загрузка структур</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Title">Импорт структур Minecraft</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Type">Файлы структур Minecraft (*.mcstructure)</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Success">Успешно импортировано структур: {0}!</x:String>
     <x:String x:Key="LevelSettings.Editor.Title">Мировой редактор</x:String>
     <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">Сохранить изменения</x:String>
     <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">Всемирная информация</x:String>

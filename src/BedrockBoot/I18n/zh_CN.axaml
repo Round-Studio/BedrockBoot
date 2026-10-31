@@ -250,6 +250,14 @@
     <x:String x:Key="LevelSettings.Backup.Action.Create">新建备份</x:String>
     <x:String x:Key="LevelSettings.Backup.Empty.Message">还没有任何一个备份</x:String>
     <x:String x:Key="LevelSettings.Backup.Loading.Message">加载备份中</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Structure">结构管理</x:String>
+    <x:String x:Key="LevelSettings.Structure.Title">结构管理</x:String>
+    <x:String x:Key="LevelSettings.Structure.Action.Import">导入结构</x:String>
+    <x:String x:Key="LevelSettings.Structure.Empty.Message">还没有任何结构。在游戏中使用结构方块保存，或在此导入 .mcstructure 文件</x:String>
+    <x:String x:Key="LevelSettings.Structure.Loading.Message">加载结构中</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Title">导入 Minecraft 结构</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Type">Minecraft 结构文件 (*.mcstructure)</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Success">已成功导入 {0} 个结构！</x:String>
     <x:String x:Key="LevelSettings.Editor.Title">存档编辑器</x:String>
     <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">保存更改</x:String>
     <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">存档信息</x:String>

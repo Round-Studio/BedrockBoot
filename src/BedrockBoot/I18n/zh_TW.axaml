@@ -250,6 +250,14 @@
     <x:String x:Key="LevelSettings.Backup.Action.Create">新建備份</x:String>
     <x:String x:Key="LevelSettings.Backup.Empty.Message">還沒有任何一個備份</x:String>
     <x:String x:Key="LevelSettings.Backup.Loading.Message">加載備份中</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Structure">結構管理</x:String>
+    <x:String x:Key="LevelSettings.Structure.Title">結構管理</x:String>
+    <x:String x:Key="LevelSettings.Structure.Action.Import">匯入結構</x:String>
+    <x:String x:Key="LevelSettings.Structure.Empty.Message">尚未有任何結構。在遊戲中使用結構方塊儲存，或在此匯入 .mcstructure 檔案</x:String>
+    <x:String x:Key="LevelSettings.Structure.Loading.Message">加載結構中</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Title">匯入 Minecraft 結構</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Type">Minecraft 結構檔案 (*.mcstructure)</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Success">已成功匯入 {0} 個結構！</x:String>
     <x:String x:Key="LevelSettings.Editor.Title">存檔編輯器</x:String>
     <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">儲存更改</x:String>
     <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">存檔資訊</x:String>

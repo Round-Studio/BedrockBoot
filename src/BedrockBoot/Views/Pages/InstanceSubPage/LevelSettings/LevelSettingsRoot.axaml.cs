@@ -74,6 +74,9 @@ public partial class LevelSettingsRoot : ISetting
                 case "Addon":
                     page = new LevelSettingsPack(_info);
                     break;
+                case "Structure":
+                    page = new LevelSettingsStructure(_info);
+                    break;
             }
 
         if (page != null) NavigationFrame.NavigateTo(page);

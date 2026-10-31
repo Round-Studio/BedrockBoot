@@ -250,6 +250,14 @@
     <x:String x:Key="LevelSettings.Backup.Action.Create">バックアップを作成</x:String>
     <x:String x:Key="LevelSettings.Backup.Empty.Message">バックアップはまだありません</x:String>
     <x:String x:Key="LevelSettings.Backup.Loading.Message">バックアップを読み込んでいます</x:String>
+    <x:String x:Key="LevelSettings.Root.Tab.Structure">構造管理</x:String>
+    <x:String x:Key="LevelSettings.Structure.Title">構造管理</x:String>
+    <x:String x:Key="LevelSettings.Structure.Action.Import">構造をインポート</x:String>
+    <x:String x:Key="LevelSettings.Structure.Empty.Message">まだ構造がありません。ゲーム内で構造ブロックを使って保存するか、ここで .mcstructure ファイルをインポートしてください</x:String>
+    <x:String x:Key="LevelSettings.Structure.Loading.Message">構造を読み込んでいます</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Title">Minecraft 構造をインポート</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Picker.Type">Minecraft 構造ファイル (*.mcstructure)</x:String>
+    <x:String x:Key="LevelSettings.Structure.Import.Success">{0} 個の構造をインポートしました！</x:String>
     <x:String x:Key="LevelSettings.Editor.Title">ワールドエディター</x:String>
     <x:String x:Key="LevelSettings.Editor.Action.SaveChanges">変更を保存</x:String>
     <x:String x:Key="LevelSettings.Editor.Section.WorldInfo">ワールド情報</x:String>

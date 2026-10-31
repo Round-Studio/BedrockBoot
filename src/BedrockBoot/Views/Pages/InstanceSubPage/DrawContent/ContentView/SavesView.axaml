@@ -6,6 +6,7 @@
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             DragDrop.AllowDrop="True"
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ContentView.SavesView">
     <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0"

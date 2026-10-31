@@ -25,7 +25,6 @@ Write-Host " -------------------------------------------------------- " -Foregro
 
 # 1. 环境清理与输出目录检查
 if (Test-Path "$ProjectPath/bin") { Remove-Item -Recurse -Force "$ProjectPath/bin" }
-if (Test-Path "$ProjectPath/obj") { Remove-Item -Recurse -Force "$ProjectPath/obj" }
 
 if (-not (Test-Path $OutputPath)) {
     New-Item -ItemType Directory -Path $OutputPath -Force | Out-Null
@@ -40,6 +39,8 @@ try {
         -c $Configuration `
         -r $Runtime `
         -o $OutputPath `
+        --no-restore `
+        -m:1 `
         /p:PublishSingleFile=true `
         /p:IncludeNativeLibrariesForSelfExtract=true `
         /p:Version=$Version

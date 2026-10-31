@@ -21,12 +21,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;
 using BedrockBoot.Standard.Enum;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;
 using BedrockBoot.Views.Control.Items;
@@ -41,6 +43,8 @@ public partial class SavesView : UserControl
     {
         IsEdit = false;
         InitializeComponent();
+        AddHandler(DragDrop.DragOverEvent, SavesView_OnDragOver);
+        AddHandler(DragDrop.DropEvent, SavesView_OnDrop);
     }
 
     public SavesView(VersionConfig versionInfo) : this()
@@ -224,5 +228,94 @@ public partial class SavesView : UserControl
     {
         if (TypeSel == null) return;
         UpdateContent();
+    }
+
+    private void SavesView_OnDragOver(object? sender, DragEventArgs e)
+    {
+        if (e.DataTransfer.Contains(DataFormat.File))
+        {
+            var files = e.DataTransfer.TryGetFiles();
+            if (files != null && files.Any(f =>
+                f.Name.EndsWith(".mcworld", StringComparison.OrdinalIgnoreCase) ||
+                f.Name.EndsWith(".mctemplate", StringComparison.OrdinalIgnoreCase)))
+            {
+                e.DragEffects = DragDropEffects.Copy;
+                e.Handled = true;
+                return;
+            }
+        }
+
+        e.DragEffects = DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    private async void SavesView_OnDrop(object? sender, DragEventArgs e)
+    {
+        var storageFiles = new List<IStorageFile>();
+        foreach (var item in e.DataTransfer.Items)
+        {
+            if (item.TryGetFile() is IStorageFile file)
+            {
+                storageFiles.Add(file);
+            }
+        }
+
+        var validFiles = storageFiles
+            .Select(f => f.Path.LocalPath)
+            .Where(p => !string.IsNullOrEmpty(p) &&
+                (p.EndsWith(".mcworld", StringComparison.OrdinalIgnoreCase) ||
+                 p.EndsWith(".mctemplate", StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        if (validFiles.Count == 0) return;
+
+        e.Handled = true;
+
+        DialogHost.Show(new DialogInfo
+        {
+            Title = i18n["Instance.Pack.Import.Progress.Title"],
+            Content = i18n["Archive.DragDrop.Import.Progress"]
+        });
+
+        var curUser = CurrentUser;
+
+        await Task.Run(() =>
+        {
+            int importedCount = 0;
+            foreach (var path in validFiles)
+            {
+                try
+                {
+                    if (path.EndsWith(".mcworld", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var importer = new ArchiveCheck(VersionInfo);
+                        importer.ImportWorldPack(path, curUser);
+                        importedCount++;
+                    }
+                    else if (path.EndsWith(".mctemplate", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var importer = new ResourcePackManager(VersionInfo);
+                        importer.AddRangePacks(new List<string> { path }, curUser);
+                        importedCount++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"拖拽导入包失败: {ex.Message}");
+                }
+            }
+
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            {
+                DialogHost.Close();
+                UpdateUI();
+                GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+                {
+                    Title = i18n["Common.Success"],
+                    Message = string.Format(i18n["Archive.DragDrop.Import.Success"], importedCount),
+                    NoticeType = NoticeType.Info
+                });
+            });
+        });
     }
 }

@@ -1,1 +1,56 @@
-CuO~
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-31T07:12:48Z","hash":"e50ced2ef8c7c617385f459c0c35a9ce6c071692"}
+{"message":"feat: 对 PreLoad.NET 保存的崩溃日志进行分析","author":"Dime","date":"2026-10-31T15:12:12+08:00","hash":"fd7f9a59caee59bac47d88f0b562878827c5447c"}
+{"message":"feat: 修改存档列表所使用的控件外观","author":"Dime","date":"2026-10-31T10:46:45+08:00","hash":"1f1d9d93b73540fb39c2686cdae8041e69c1dce9"}
+{"message":"feat: 使用 SettingExpander 改写游戏目录设置与实例模组设置","author":"Dime","date":"2026-10-31T04:13:43+08:00","hash":"595cfd501927d2b65c2bc8361294b95de0df3fac"}
+{"message":"feat: 修改搜索按钮的层级位置","author":"Dime","date":"2026-10-31T03:44:32+08:00","hash":"b0b8fd4a17ecd9193ab47dae1e9a2086fbc3504f"}
+{"message":"feat: 启动器内全局搜索功能","author":"Dime","date":"2026-10-31T03:36:59+08:00","hash":"e4eb4fba5bf6ac07e3cee4432e66b8512c262da1"}
+{"message":"fix: 修复 Expander 的项间距 bug","author":"Dime","date":"2026-10-31T03:33:28+08:00","hash":"4dffcf4b4a0941269e6adb44f2eb0166b70e67f0"}
+{"message":"fix: 修复 SettingExpander 的动画 bug","author":"Dime","date":"2026-10-31T03:02:11+08:00","hash":"96153104cd4afa0652c3d4636e99fffe488290d1"}
+{"message":"feat: 修改 SettingExpander 的控件右边距","author":"Dime","date":"2026-10-31T02:54:02+08:00","hash":"eee1f25e8c6b3dd60c87a34f9e3b6ed27f9fb86e"}
+{"message":"feat: 可折叠的 SettingExpander","author":"Dime","date":"2026-10-31T02:49:12+08:00","hash":"5bdf7bc8f82c753031d1394745dff29628ce7ade"}
+{"message":"chore: 更新 Avalonia 版本为 12.1.4","author":"Dime","date":"2026-10-31T01:32:19+08:00","hash":"4116495a2a249193b358a7458ecbd77b79ed248c"}
+{"message":"chore: edit AboutPage.axaml","author":"ダイム","date":"2026-10-26T17:55:19+08:00","hash":"6dc69e68bd9c4c9e873996992334573e50b3f4a0"}
+{"message":"feat: 加入对动态模糊的设置，更新 PreLoad.NET.dll","author":"Dime","date":"2026-10-25T14:26:20+08:00","hash":"d2147113c369a71afec5418264e67c9259cb80d9"}
+{"message":"feat: 预支持 PreLoad.NET 中的新功能","author":"Dime","date":"2026-10-25T12:26:10+08:00","hash":"737bc489ab7340d4ea59a1ae5accf957d1b29c10"}
+{"message":"i18n: 添加粤语的语言选项","author":"Dime","date":"2026-10-24T12:51:30+08:00","hash":"54b2e96c9e8ac5540e77a2d72baae5e116d979ca"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-24T03:53:28Z","hash":"ec6ae5b79634d7e8182c0dda50286172b7a3047f"}
+{"message":"feat(i18n): 重构 i18n 架构，加入本地化调试工具","author":"Dime","date":"2026-10-24T11:53:08+08:00","hash":"f40889956c63f5b45bd6348188286ab4502c5290"}
+{"message":"chore: 更新 PreLoad.NET.dll","author":"Dime","date":"2026-10-24T03:12:16+08:00","hash":"581fc8788a4d3bfb8b192de69eb0ec2dada72846"}
+{"message":"fix: 修复 Linux 构建","author":"Dime","date":"2026-10-18T14:00:48+08:00","hash":"6bbe6404cbd8b4e178b10eeafe611e0d7386f7f6"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-18T05:54:56Z","hash":"b9b547243b108374805cdd9fbdb833e57a88f300"}
+{"message":"feat: 将实例设置迁移至新的选项卡，更新 PreLoad.NET 及其功能适配","author":"Dime","date":"2026-10-18T13:53:02+08:00","hash":"b92914db81b14203523a9691b16a1b957fa90db6"}
+{"message":"fix: 修复 Windows 中修改窗口边框导致无动画的 bug","author":"Dime","date":"2026-10-17T14:35:20+08:00","hash":"293cafe7f2f5177627b29ae055fc30cccb66bb94"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-17T06:18:34Z","hash":"3957fa4dae631dbb99102cbbab21e7a677467cba"}
+{"message":"feat: ModLoader 的属性对话框","author":"Dime","date":"2026-10-17T14:17:32+08:00","hash":"d2c2d615d43097603f87351325fe9fbdd65e2c1c"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-17T05:35:27Z","hash":"32fd8d0b96c67f6aa0db8e63f880c8e99e06edf3"}
+{"message":"feat: 将 Windows 的内存裁剪迁移到 Windows 项目","author":"Dime","date":"2026-10-17T13:33:59+08:00","hash":"697e751c80bac37e3dc58feacc88ac25a1ad31a7"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-17T03:26:20Z","hash":"e04ffd47d052c552e6beaa5e827b4217fa5e3459"}
+{"message":"feat: 新的主页底栏样式","author":"Dime","date":"2026-10-17T11:25:30+08:00","hash":"cb0cbdda8fe7efcea19d33cd36ca11a335cd4776"}
+{"message":"fix: 修复在 Windows 中弹出系统信息时崩溃的 bug","author":"Dime","date":"2026-10-17T02:31:31+08:00","hash":"64e51dd57bde1e5e48589098d4764714e2306aa1"}
+{"message":"feat: Windows 平台的进一步裁剪","author":"Dime","date":"2026-10-17T02:04:40+08:00","hash":"a9e400eaa0af22ebd6f2a6e071d0c72734e1002f"}
+{"message":"feat: 对程序集进行裁剪","author":"Dime","date":"2026-10-17T01:37:18+08:00","hash":"33c488ef1d6c2af782c63ecd8b90ca9fff9e91fa"}
+{"message":"chore: Delete BedrockBoot.sln.DotSettings.user","author":"ダイム","date":"2026-10-16T20:20:12+08:00","hash":"082b09b354a21f92d9edeb56e424a366b2adb191"}
+{"message":"fix: 修复对于超过 2GB 的游戏安装包文件无法正常计算 MD5 的 bug","author":"Dime","date":"2026-10-16T20:18:40+08:00","hash":"02f73753504ce3d11a67275a197d09ab23e5b30a"}
+{"message":"chore: 修改自动构建脚本，自动添加 LICENCE 头","author":"Dime","date":"2026-10-11T14:56:17+08:00","hash":"871bc03880274c9bd13f9b7b3986e4e1f0d48576"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-11T06:44:01Z","hash":"1e9cdcb68a1563497f7fa977d2891f7bc44c22ce"}
+{"message":"feat: 使用 Github 登录来更新 Commit 版本的文件","author":"Dime","date":"2026-10-11T14:43:05+08:00","hash":"9ae7a72fe1aa691b474e779c0d49ec3ac36143b1"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-11T05:10:46Z","hash":"7efa2e370c975137f9ea0909a9b7a09ebb73f0c6"}
+{"message":"feat: 基础的 Github 登录流程","author":"Dime","date":"2026-10-11T13:09:53+08:00","hash":"2dd348eed496a9ba414535e870221315d0c20a08"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-11T03:54:10Z","hash":"b02d3fdb8c3bdc2eddd88009005d776b06dd7d0f"}
+{"message":"feat: 将部分 APIKEY 移动到构建时写入","author":"Dime","date":"2026-10-11T11:53:45+08:00","hash":"d3ef3593199edc2c1cbed3c78d43ec83500c700e"}
+{"message":"chore: 更新 PreLoad.NET.dll","author":"Dime","date":"2026-10-11T10:28:23+08:00","hash":"b54570f739762ace61675bfca07d0a3e49f0928b"}
+{"message":"feat: 恢复在 Release 下的账户设置显示","author":"Dime","date":"2026-10-11T02:51:41+08:00","hash":"c270464cdae2c6437a3cff17817c89386e9f1b47"}
+{"message":"feat: 添加在无账户时显示的内容与处理逻辑","author":"Dime","date":"2026-10-11T02:44:32+08:00","hash":"5629f14c4a711a934672a4176f8474d3ba3279e9"}
+{"message":"fix: 修复 Linux 上的构建问题","author":"Dime","date":"2026-10-11T02:37:11+08:00","hash":"08bf89ab2121e82de1c68c134a842b8b8c30420f"}
+{"message":"feat: 优化底栏导航项注册逻辑，删除过时的账户管理代码","author":"Dime","date":"2026-10-11T02:35:58+08:00","hash":"0c7917f03a3e70321aad5f3c448d381716670fcd"}
+{"message":"feat: 为 BorderCard 添加更多属性","author":"Dime","date":"2026-10-11T02:19:29+08:00","hash":"8cefdad026be7a587268b8e86cada2eb3f68b768"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-10T18:16:57Z","hash":"241399b31175b56caef555d5c069991481817ad7"}
+{"message":"feat: 账户设置页面","author":"Dime","date":"2026-10-11T02:16:04+08:00","hash":"a1fa269ce0c7d18f2a3e24321afebf58ce3196ac"}
+{"message":"feat: 完善i18n (#111)","author":"Hydrooxygen","date":"2026-10-10T19:36:58+08:00","hash":"9d3e86673bd13d99b9a270e2dfee47d8fdd87af7"}
+{"message":"feat: 完善i18n","author":"Hydrooxzgen","date":"2026-10-07T16:19:39+08:00","hash":"aa7f5c872a7403dd5445d6dedf5096923d145dbc"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-07T04:44:58Z","hash":"cc1e6c46527bc3231cf4462ca7abfeb0d6a16bf5"}
+{"message":"feat: 全新的账户管理页面","author":"Dime","date":"2026-10-07T12:43:50+08:00","hash":"8417b0b067ebf126073a3dae7b603632c788c3e4"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-06T06:48:04Z","hash":"e836929171f84f7dd87607b8b953552a568ddee4"}
+{"message":"feat: 新增存在于标题栏的账户选择面板","author":"Dime","date":"2026-10-06T14:47:33+08:00","hash":"bbf68f8519c10461d15e892dd32e4fbe841debfa"}
+{"message":"chore: normalize license headers [skip ci]","author":"RoundStudio Bot","date":"2026-10-05T15:34:31Z","hash":"d8fcd5278c60ccaaffc329ad89abe7cc70751ca4"}
+{"message":"feat: 非主要控制区也跟随主元素进行模糊","author":"Dime","date":"2026-10-05T23:34:01+08:00","hash":"ffa8e5ca5c4e4a1dfc6b1e4fd6f494fd99468216"}

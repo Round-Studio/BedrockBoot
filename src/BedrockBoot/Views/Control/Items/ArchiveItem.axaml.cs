@@ -91,11 +91,7 @@ public partial class ArchiveItem : UserControl
             using var stream = File.OpenRead(path);
             var bitmap = Bitmap.DecodeToWidth(stream, 256);
             _worldIconBitmap = bitmap;
-            ImageBox.Background = new ImageBrush
-            {
-                Stretch = Stretch.UniformToFill,
-                Source = bitmap
-            };
+            SettingExpander.ImageIcon = bitmap;
         }
         catch (Exception ex)
         {

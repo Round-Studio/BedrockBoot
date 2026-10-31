@@ -85,6 +85,6 @@ public partial class GameItem : UserControl
     private void Card_OnClick(object? sender, RoutedEventArgs e)
     {
         GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(VersionInfo),
-            $"{VersionInfo.Info.VersionName} - {VersionInfo.Info.Version}");
+            $"{VersionInfo.Info.VersionName} - {VersionInfo.Info.Version}", "\uE7FC");
     }
 }

@@ -35,7 +35,9 @@ public class VersionConfig
 
     [JsonIgnore] public string? VersionPath { get; set; } = string.Empty;
     [JsonIgnore] public string? VersionsRootPath { get; set; } = string.Empty;
+    [JsonIgnore] public string? FolderName { get; set; } = string.Empty;
     [JsonIgnore] public string? BodyFile { get; set; } = string.Empty;
+    [JsonIgnore] public List<string> GameTags { get; set; } = new();
 
     public class SysWindowsConfig
     {
@@ -68,12 +70,31 @@ public class VersionConfig
         [JsonPropertyName("isNativeException")] public bool IsNativeException { get; set; } = false;
         [JsonPropertyName("isDetailedLog")] public bool IsDetailedLog { get; set; } = false;
         [JsonPropertyName("isSyncPubOptions")] public bool IsSyncPublicOptions { get; set; } = true;
-        [JsonPropertyName("isEnableHttpHook")] public bool IsEnableHttpHook { get; set; } = false;
         [JsonPropertyName("otherCommand")] public string OtherCommand { get; set; } = "";
         [JsonPropertyName("folderPolicy")] public CatalogStrategyEnum IsolationFolderPolicy { get; set; } = CatalogStrategyEnum.FollowTheBigPicture;
         [JsonPropertyName("folderPolicyString")] public string FolderPolicyStr { get; set; } = IsolationPolicyHelper.ParsePolicyConfig(CatalogStrategyEnum.Independence);
         [JsonPropertyName("sysWindowsConfig")] public SysWindowsConfig SysWindowsConfig { get; set; } = new();
         [JsonPropertyName("modsLoaderSelectIndex")] public int ModsLoaderSelectIndex { get; set; } = 0;
+        [JsonPropertyName("isEnableHttpPatch")] public bool IsEnableHttpPatch { get; set; } = true;
+        [JsonPropertyName("httpPatchConfig")] public HttpPatchEntry HttpPatchConfig { get; set; } = new();
+        [JsonPropertyName("visualConfig")] public VisualEntry VisualConfig { get; set; } = new();
+    }
+
+    public class VisualEntry
+    {
+        [JsonPropertyName("isEnableMotionBlur")] public bool IsEnableMotionBlur { get; set; } = false;
+        [JsonPropertyName("motionBlurStrength")] public int MotionBlurStrength { get; set; } = 60;
+        [JsonPropertyName("isEnableHighContrast")] public bool IsEnableHighContrast { get; set; } = false;
+        [JsonPropertyName("highContrastStrength")] public int HighContrastStrength { get; set; } = 150;
+        [JsonPropertyName("isEnableRetroTv")] public bool IsEnableRetroTv { get; set; } = false;
+        [JsonPropertyName("retroTvStrength")] public int RetroTvStrength { get; set; } = 60;
+        [JsonPropertyName("isEnableDistortion")] public bool IsEnableDistortion { get; set; } = false;
+        [JsonPropertyName("distortionStrength")] public int DistortionStrength { get; set; } = 40;
+    }
+    
+    public class HttpPatchEntry
+    {
+        [JsonPropertyName("isEnableServerDiscoveryBlock")] public bool IsEnableServerDiscoveryBlock { get; set; } = false;
     }
 
     public class PlayerDataEntry

@@ -30,16 +30,12 @@
                        Text="{DynamicResource Settings.Universal.Language.Title}" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Universal.Language.Title}"
+                                          Header="语言 / Language"
                                           Description="{DynamicResource Settings.Universal.Language.Desc}"
+                                          IsClickable="True"
+                                          Name="Language"
+                                          Click="Language_OnClick"
                                           Glyph="&#xE909;">
-                <ComboBox Width="200"
-                          Name="LanguageChoose"
-                          SelectionChanged="LanguageChoose_OnSelectionChanged">
-                    <ComboBoxItem Content="中文（简体中文）" />
-                    <ComboBoxItem Content="English (US)" />
-                    <ComboBoxItem Content="日本語" />
-                </ComboBox>
             </onePointControls:SettingCard>
 
             <TextBlock Margin="5, 0"

@@ -11,15 +11,16 @@ let tryGetEnv (envVarName: string) =
 let escape (s: string) = s.Replace("\\", "\\\\").Replace("\"", "\\\"")
 
 // 生成 C# 源码；占位符作为默认值传入
-let generateCSharpCode (curseForgeApiKey: string) (githubClientId: string) =
+let generateCSharpCode (curseForgeApiKey: string) (githubClientId: string) (githubSecret: string) =
     sprintf """namespace BedrockBoot.Core
 {
-    internal struct Keys
+    public class Keys
     {
 	    public static readonly string CurseForgeApiKey = "%s";
 	    public static readonly string GithubClientId = "%s";
+	    public static readonly string GithubSecret = "%s";
     }
-}""" (escape curseForgeApiKey) (escape githubClientId)
+}""" (escape curseForgeApiKey) (escape githubClientId) (escape githubSecret)
 
 try
     printfn "Starting to read environment variables and generate C# code..."
@@ -35,7 +36,12 @@ try
         | Some v -> printfn "API_GITHUB_CLIENT_ID found, using it."; v
         | None   -> printfn "API_GITHUB_CLIENT_ID not found, keeping placeholder."; "O.o"
 
-    let content = generateCSharpCode curseForgeApiKey githubClientId
+    let githubSecret =
+        match tryGetEnv "API_GITHUB_SECRET" with
+        | Some v -> printfn "API_GITHUB_SECRET found, using it."; v
+        | None   -> printfn "API_GITHUB_SECRET not found, keeping placeholder."; "O.o"
+
+    let content = generateCSharpCode curseForgeApiKey githubClientId githubSecret
 
     let filename = Path.Combine(Directory.GetCurrentDirectory(), "Keys.cs")
     File.WriteAllText(filename, content)

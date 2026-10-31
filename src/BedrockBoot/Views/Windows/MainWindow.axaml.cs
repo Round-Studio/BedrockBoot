@@ -404,9 +404,13 @@ public partial class MainWindow : Window
         MaxBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
         MinBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
         CloseBtn.IsVisible = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
+#if WINDOWS
+        WindowDecorations = WindowDecorations.Full;
+#else
         WindowDecorations = Core.Global.GlobalModel.Config.Data.IsUseSystemWindow
             ? WindowDecorations.Full
             : WindowDecorations.BorderOnly;
+#endif
         ExtendClientAreaToDecorationsHint = !Core.Global.GlobalModel.Config.Data.IsUseSystemWindow;
         ExtendClientAreaTitleBarHeightHint = -1;
     }
@@ -416,9 +420,15 @@ public partial class MainWindow : Window
         SetBorderState(false);
     }
 
-    public async void OpenDraw(object? page, string title)
+    public async void OpenDraw(object? page, string title, string iconGlyph = null)
     {
         BorderTitle.Text = title;
+        BorderIcon.IsVisible = false;
+        if (!string.IsNullOrEmpty(iconGlyph))
+        {
+            BorderIcon.IsVisible = true;
+            BorderIcon.Glyph = iconGlyph;
+        }
         await SetBorderState(true);
 
         Frame.NavigateTo(page);
@@ -781,6 +791,13 @@ public partial class MainWindow : Window
 
     private async void OnPreviewKeyDown(object? sender, KeyEventArgs e)
     {
+        if (e.Key == Key.K && e.KeyModifiers == KeyModifiers.Control)
+        {
+            ToggleSearchOverlay();
+            e.Handled = true;
+            return;
+        }
+
         if (e.Key == Key.V && e.KeyModifiers == KeyModifiers.Control)
             if (e.Source is not (TextBox or TextBlock))
             {
@@ -788,6 +805,20 @@ public partial class MainWindow : Window
                 e.Handled = true;
             }
     }
+
+    private void SearchBtn_OnClick(object? sender, RoutedEventArgs e) => ToggleSearchOverlay();
+
+    /// <summary>打开/关闭全局搜索浮层（Ctrl+K 或右上角搜索按钮）</summary>
+    public void ToggleSearchOverlay()
+    {
+        if (SearchOverlay.IsVisible)
+            SearchOverlay.Close();
+        else
+            SearchOverlay.Open();
+    }
+
+    /// <summary>打开全局搜索浮层，可携带预填关键词</summary>
+    public void OpenSearchOverlay(string? prefill = null) => SearchOverlay.Open(prefill);
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {

@@ -1,0 +1,175 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceSetting">
+    <ScrollViewer>
+        <StackPanel Margin="20,0,20,15"
+                    Spacing="8">
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Instance.Info.Group.Launch}" />
+
+            <onePointControls:SettingCard Glyph="&#xEC06;"
+                                          Header="{DynamicResource Instance.Info.Launch.Args.Title}"
+                                          Description="{DynamicResource Instance.Info.Launch.Args.Desc}">
+                <TextBox Width="200"
+                         Name="InstanceArgs"
+                         TextChanged="TextTypeConfig_OnChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Glyph="&#xE70F;"
+                                          Header="{DynamicResource Instance.Info.Launch.EditMode.Title}"
+                                          Description="{DynamicResource Instance.Info.Launch.EditMode.Desc}">
+                <ToggleSwitch Name="InstanceEdit"
+                              IsCheckedChanged="BoolTypeConfig_OnChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Glyph="&#xE822;"
+                                          Header="{DynamicResource Instance.Info.Launch.Mods.Title}"
+                                          Description="{DynamicResource Instance.Info.Launch.Mods.Desc}">
+                <ToggleSwitch Name="InstanceMod"
+                              IsCheckedChanged="BoolTypeConfig_OnChanged" />
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Glyph="&#xE7EF;"
+                                          Name="IsRunAdminCard"
+                                          Header="以管理员身份运行游戏"
+                                          Description="启动游戏使用系统管理员权限运行游戏，效果与右键以管理员运行一致">
+                <ToggleSwitch IsChecked="False"
+                              Name="IsRunAdmin"
+                              IsCheckedChanged="BoolTypeConfig_OnChanged" />
+            </onePointControls:SettingCard>
+
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="日志" />
+
+            <onePointControls:SettingExpander Glyph="&#xE756;"
+                                              Header="{DynamicResource Settings.Universal.Debug.Console.Title}"
+                                              Description="{DynamicResource Instance.Info.Launch.Console.Desc}">
+                <onePointControls:SettingExpander.RightContent>
+                    <ToggleSwitch Name="InstanceConsole"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingExpander.RightContent>
+                <StackPanel>
+                    <onePointControls:SettingCard Glyph=""
+                                                  Header="{DynamicResource Instance.Info.Launch.DetailedLogs.Title}"
+                                                  Description="{DynamicResource Instance.Info.Launch.DetailedLogs.Desc}">
+                        <ToggleSwitch Name="InstanceDetailedLogs"
+                                      IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                    </onePointControls:SettingCard>
+
+                    <onePointControls:SettingCard Glyph=""
+                                                  Name="IsNativeExceptionCard"
+                                                  Header="Native 异常捕获"
+                                                  Description="捕获 Native 异常">
+                        <ToggleSwitch IsChecked="False"
+                                      Name="IsNativeException"
+                                      IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                    </onePointControls:SettingCard>
+                </StackPanel>
+            </onePointControls:SettingExpander>
+
+            <TextBlock FontWeight="Bold"
+                       Name="HighLevel"
+                       FontSize="14"
+                       Text="数据" />
+
+            <StackPanel>
+                <TextBlock Text="当前版本的 BedrockBoot 尚不支持为 UWP 类型的游戏进行版本隔离。"
+                           Opacity="0.6" />
+
+                <DockPanel>
+
+                    <TextBlock Text="详情可参见："
+                               Opacity="0.6" />
+
+                    <HyperlinkButton NavigateUri="https://github.com/Round-Studio/BedrockBoot/issues/74"
+                                     Content="https://github.com/Round-Studio/BedrockBoot/issues/74" />
+                </DockPanel>
+            </StackPanel>
+
+            <onePointControls:SettingCard Glyph="&#xECAF;"
+                                          Header="同步配置"
+                                          Description="同步全局游戏设置 (options.txt)">
+                <ToggleSwitch IsChecked="True"
+                              Name="GameConfigSwitch"
+                              IsCheckedChanged="BoolTypeConfig_OnChanged" />
+            </onePointControls:SettingCard>
+
+            <StackPanel Spacing="8"
+                        Name="InstanceIsolationPanel">
+                <onePointControls:SettingCard Glyph="&#xE7B8;"
+                                              Name="IsolationCard"
+                                              Header="{DynamicResource Settings.Game.Isolation.Title}"
+                                              Description="{DynamicResource Instance.Info.Isolation.Desc}">
+                    <ToggleSwitch IsChecked="True"
+                                  Name="InstanceIsolated"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard Header="隔离目录"
+                                              Description="选择不同的目录隔离策略"
+                                              Glyph="&#xEC25;">
+                    <ComboBox Width="200"
+                              Name="CatalogStrategy"
+                              SelectionChanged="CatalogStrategy_OnSelectionChanged"
+                              SelectedIndex="2">
+                        <ComboBoxItem Content="跟随全局" />
+                        <ComboBoxItem Content="独立目录 (专属目录)" />
+                        <ComboBoxItem Content="与其他启动器共享" />
+                    </ComboBox>
+                </onePointControls:SettingCard>
+            </StackPanel>
+
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="{DynamicResource Settings.Download.Group.Advanced}" />
+
+            <onePointControls:SettingExpander Header="启用 Http 改包"
+                                              Description="启用后可以禁用游戏内部分不需要的云控功能"
+                                              Glyph="&#xE839;">
+                <onePointControls:SettingExpander.RightContent>
+                    <ToggleSwitch Name="HttpPatchEnable"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingExpander.RightContent>
+                <StackPanel>
+                    <onePointControls:SettingCard Header="屏蔽推荐服务器"
+                                                  Description="启用后将屏蔽游戏内的推荐服务器列表"
+                                                  Glyph="">
+                        <ToggleSwitch Name="PatchServerDiscoveryBlock"
+                                      IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                    </onePointControls:SettingCard>
+                </StackPanel>
+            </onePointControls:SettingExpander>
+
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="视觉效果" />
+            
+            <onePointControls:SettingExpander Header="动态模糊"
+                                              Description="游戏内的动态模糊效果"
+                                              Glyph="&#xEB44;">
+                <onePointControls:SettingExpander.RightContent>
+                    <ToggleSwitch Name="PatchVisualBlur"
+                                  HorizontalAlignment="Right"
+                                  IsCheckedChanged="BoolTypeConfig_OnChanged" />
+                </onePointControls:SettingExpander.RightContent>
+                <StackPanel>
+                    <onePointControls:SettingCard Header="数值"
+                                                  Description="动态模糊的数值大小"
+                                                  Glyph="">
+                        <Slider Width="200"
+                                Name="MotionValue"
+                                Maximum="95"
+                                ValueChanged="MotionValue_OnValueChanged"
+                                Classes="Number"></Slider>
+                    </onePointControls:SettingCard>
+                </StackPanel>
+            </onePointControls:SettingExpander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

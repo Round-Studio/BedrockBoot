@@ -70,7 +70,7 @@ jobs:
       - name: Build Windows
         run: |
           cd ./src/BedrockBoot
-          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:SelfContained=false -o "./../../win-publish/" /p:Version=${{ needs.version.outputs.v }} /p:BuildType=Release
+          dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o "./../../win-publish/" /p:Version=${{ needs.version.outputs.v }} /p:BuildType=Release
       
       - name: Rename Windows Output
         shell: pwsh

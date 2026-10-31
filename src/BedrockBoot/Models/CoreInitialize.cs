@@ -39,6 +39,7 @@ using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.Control.Widgets.DesktopWidgets;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.DrawContent;
 using BedrockLauncher.Core;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -101,6 +102,13 @@ public class CoreInitialize
 
         // 核心引擎异步初始化
         _ = InitBedrockCoreAsync();
+        GameCrashReportWatcher.CrashReportGenerated += args =>
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                GlobalModel.MainWindow.OpenDraw(new DrawGameCrashContent(args), "BedrockBoot 游戏错误追踪器", "\uE81F");
+            });
+        };
 
 #if WINDOWS
         // 注册文件关联
@@ -259,6 +267,7 @@ public class CoreInitialize
             var noticeType = typeof(BedrockBoot.Windows.Models.Helper.Notice.NoticeHelper);
             var openFolderType = typeof(BedrockBoot.Windows.Models.Helper.OpenFolderHelper);
             var jumpListType = typeof(BedrockBoot.Windows.Models.JumpListManager);
+            var trayType = typeof(BedrockBoot.Windows.Models.Helper.Tray.TrayHelper);
             var mouseLockerType = typeof(BedrockBoot.Windows.Models.Helper.ProcessMouseLocker);
             Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
                 BedrockBoot.Windows.Models.Game.EasyDownload.GetPackageUrls;
@@ -269,6 +278,7 @@ public class CoreInitialize
             var noticeType = typeof(BedrockBoot.Linux.Models.Helper.Notice.NoticeHelper);
             var openFolderType = typeof(BedrockBoot.Linux.Models.Helper.OpenFolderHelper);
             var jumpListType = typeof(BedrockBoot.Linux.Models.JumpListManager);
+            var trayType = typeof(BedrockBoot.Linux.Models.Helper.Tray.TrayHelper);
             var mouseLockerType = typeof(BedrockBoot.Linux.Models.Helper.ProcessMouseLocker);
             Func<BuildInfo, Task<List<GameDownloadUrlInfo>>> packageUrlsProvider =
                 BedrockBoot.Linux.Models.Game.EasyDownload.GetPackageUrls;
@@ -281,9 +291,11 @@ public class CoreInitialize
                 NoticeServiceType = noticeType,
                 OpenFolderServiceType = openFolderType,
                 JumpListServiceType = jumpListType,
+                TrayServiceType = trayType,
                 MouseLockerType = mouseLockerType,
                 PackageUrlsProvider = packageUrlsProvider
             });
+            PlatformCore.Tray?.Initialize();
             PlatformCore.CoreInit?.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
             PlatformCore.CoreInit?.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
         }

@@ -29,6 +29,9 @@ public class PathsList
 
     public static readonly string ConfigPath = Path.Combine(RootConfigPath, "BedrockBoot.Config", "Config.json");
 
+    public static readonly string GithubAccount =
+        Path.Combine(RootConfigPath, "BedrockBoot.Config", "account", "GithubAccount.json");
+
     public static readonly string ProtonConfigPath =
         Path.Combine(RootConfigPath, "BedrockBoot.Config", "ProtonConfig.json");
 

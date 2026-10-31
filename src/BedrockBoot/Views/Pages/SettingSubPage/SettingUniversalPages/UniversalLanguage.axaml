@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:bedrockBoot="clr-namespace:BedrockBoot"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalLanguage">
+    <ScrollViewer>
+        <StackPanel Margin="20,15"
+                    Spacing="8">
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="显示语言" />
+
+            <ComboBox HorizontalAlignment="Stretch"
+                      Name="LanguageSelectBox"
+                      SelectionChanged="LanguageSelectBox_OnSelectionChanged"
+                      ItemsSource="{x:Static bedrockBoot:I18nManager.LanguageDict}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{ReflectionBinding Value.DisplayName}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="BedrockBoot 支持多个地区/国家的语言。" />
+            
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="来源 / 翻译官" />
+            
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="{DynamicResource LanguageName}" />
+            
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="本地化工具" />
+            
+            <onePointControls:SettingCard Header="本地化调试工具"
+                                          Description="临时挂载本地化文件"
+                                          Glyph="&#xF196;"
+                                          Name="LocalFileBtn"
+                                          Click="LocalFileBtn_OnClick"
+                                          IsClickable="True"></onePointControls:SettingCard>
+            
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="在本次运行时使用本地的语言文件替换所选的语言。" />
+            
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="该调试工具支持语言文件热重载。" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

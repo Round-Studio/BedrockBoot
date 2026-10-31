@@ -13,6 +13,7 @@
         xmlns:imageView="clr-namespace:BedrockBoot.Views.Control.Widgets.ImageView"
         xmlns:converters="clr-namespace:BedrockBoot.Converters"
         xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+        xmlns:search="clr-namespace:BedrockBoot.Views.Control.Widgets.Search"
         mc:Ignorable="d" d:DesignWidth="1140" d:DesignHeight="630"
         x:Class="BedrockBoot.Views.Windows.MainWindow"
         Width="1152" Height="648"
@@ -238,6 +239,15 @@
                                                Name="AccountName" />
                                 </StackPanel>
                             </Button>
+                            <Button Classes="NoBorder"
+                                    Width="32" Height="32"
+                                    Name="SearchBtn"
+                                    Click="SearchBtn_OnClick">
+                                <onePointControls:FontIcon Glyph="&#xE721;"
+                                                           FontSize="12"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center" />
+                            </Button>
                         </StackPanel>
 
                         <Border Background="{DynamicResource PrimaryBorderBrush}"
@@ -324,22 +334,33 @@
                                         <onePointControls:FontIcon Glyph="&#xE8BB;"
                                                                    FontSize="12" />
                                     </Button>
-
-                                    <TextBlock Grid.Row="0"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Top"
-                                               Margin="18,18,12,12"
-                                               Foreground="{DynamicResource AccentBackgroundBrush}"
-                                               FontWeight="Bold"
-                                               FontSize="18"
-                                               Name="BorderTitle"
-                                               Text="Title" />
+                                    
+                                    <StackPanel Orientation="Horizontal"
+                                                Grid.Row="0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Top"
+                                                Spacing="12"
+                                                Margin="18,18,12,12">
+                                        <onePointControls:FontIcon Name="BorderIcon"
+                                                                   FontSize="20"
+                                                                   Foreground="{DynamicResource AccentBackgroundBrush}"
+                                                                   VerticalAlignment="Center">
+                                        </onePointControls:FontIcon>
+                                        <TextBlock Foreground="{DynamicResource AccentBackgroundBrush}"
+                                                   FontWeight="Bold"
+                                                   FontSize="18"
+                                                   Name="BorderTitle"
+                                                   Text="Title" />
+                                    </StackPanel>
 
                                     <navigation:NavigationFrame Grid.Row="1"
                                                                 Name="Frame" />
                                 </Grid>
                             </Border>
                         </Grid>
+
+                        <search:SearchOverlay Name="SearchOverlay"
+                                              IsVisible="False" />
 
                         <info:NoticePanel HorizontalAlignment="Right"
                                           VerticalAlignment="Bottom"
@@ -502,7 +523,7 @@
                                     Margin="0,0,22,0"
                                     Spacing="8">
                             <StackPanel Orientation="Horizontal"
-                                        Spacing="8">
+                                    Spacing="8">
                                 <Button Classes="NoBorder"
                                         Height="32"
                                         Padding="10,0"

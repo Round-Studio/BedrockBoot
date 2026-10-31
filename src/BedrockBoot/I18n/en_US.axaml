@@ -47,6 +47,19 @@
     <x:String x:Key="MainPage.Nav.Multiplayer">Multiplayer</x:String>
     <x:String x:Key="MainPage.Nav.AccountManager">Accounts</x:String>
     <x:String x:Key="MainPage.Nav.Setting">Settings</x:String>
+    <x:String x:Key="Search.Placeholder">Search settings, instances and content…</x:String>
+    <x:String x:Key="Search.Empty.HintTitle">What are you looking for?</x:String>
+    <x:String x:Key="Search.Empty.HintMessage">Type a keyword to search settings, instances, or run an aggregate search</x:String>
+    <x:String x:Key="Search.Empty.Title">No results found</x:String>
+    <x:String x:Key="Search.Empty.Message">Try another keyword, or press Enter for an aggregate search</x:String>
+    <x:String x:Key="Search.Category.Page">Page</x:String>
+    <x:String x:Key="Search.Category.Setting">Setting</x:String>
+    <x:String x:Key="Search.Category.Instance">Instance</x:String>
+    <x:String x:Key="Search.Category.Aggregate">Aggregate</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Title">Aggregate search “{0}”</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Desc">Search versions, resource packs, plugins and mods in Download Center</x:String>
+    <x:String x:Key="Search.Hint.Select">↑↓ navigate · Enter open · Esc close</x:String>
+
 
     <x:String x:Key="Account.Action.LinkXbox">Link Xbox Account</x:String>
     <x:String x:Key="Account.Empty.Title">No Accounts Linked</x:String>

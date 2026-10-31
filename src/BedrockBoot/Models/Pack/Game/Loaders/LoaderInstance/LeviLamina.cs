@@ -32,7 +32,9 @@ using BedrockBoot.Models.Pack.Game.Loaders.LeviLamina;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Views.DialogContent.Loader;
 using BedrockBoot.Views.DialogContent.Loader.LeviLamina;
+using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
@@ -279,6 +281,12 @@ public class LeviLamina : IModsLoader
 
     public void ViewInfo()
     {
+        /*DialogHost.Show(new ()
+        {
+            Title = "LeviLamina",
+            Content = new DialogLoaderViewContent(),
+            CloseButtonText = "确定"
+        });*/
     }
 
     public bool GetIsEnabled()

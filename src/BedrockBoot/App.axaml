@@ -8,6 +8,7 @@
         <core:OnePointTheme AccentColor="#486860"
                             ThemeVariant="Dark" />
         <StyleInclude Source="avares://BedrockBoot/Style/Widgets/DesktopWidgetTemplated.axaml" />
+        <StyleInclude Source="avares://BedrockBoot/Style/Widgets/TopBarLabel.axaml" />
         <StyleInclude Source="avares://BedrockBoot/Style/Controls/AccountButton.axaml" />
 
         <Style Selector="MenuFlyoutPresenter">

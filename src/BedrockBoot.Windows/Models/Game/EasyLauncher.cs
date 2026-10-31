@@ -27,6 +27,7 @@ using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Helper;
 using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockBoot.Windows.Models.Helper;
+using BedrockBoot.Windows.Models.Helper.Gdk;
 using BedrockBoot.Windows.Models.Helper.Uwp;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
@@ -285,6 +286,14 @@ public class EasyLauncher : ILauncher
             if (MinecraftProcess != null)
             {
                 Console.WriteLine($@"检测到游戏启动成功 PID：{MinecraftProcess.Id}");
+
+                // GDK 实例监视 PreLoad.NET 的崩溃报告（游戏进程内自行捕获，需实例开启 isNativeException）
+                if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK)
+                {
+                    GameCrashReportWatcher.BeginCapture(MinecraftProcess,
+                        Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "bb.crash"),
+                        VersionInfo.Info.VersionName);
+                }
 
                 LaunchingCount--;
                 if (LaunchingCount == 0) LaunchedBehavior?.Invoke();

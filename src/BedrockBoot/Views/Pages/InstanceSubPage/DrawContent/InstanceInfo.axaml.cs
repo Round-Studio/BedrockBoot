@@ -51,16 +51,6 @@ public partial class InstanceInfo : UserControl
         IsEdit = false;
        
         InitializeComponent();
-
-#if LINUX
-        IsolationCard.IsVisible = false;
-        HighLevel.IsVisible = false;
-        IsRunAdminCard.IsVisible = false;
-#endif
-
-#if RELEASE
-        InstanceMod.IsVisible = BedrockBoot.Models.Global.GlobalModel.FunctionOption.IsEnableGameInstanceMods;
-#endif
     }
 
     public InstanceInfo(VersionConfig versionInfo) : this()
@@ -85,10 +75,6 @@ public partial class InstanceInfo : UserControl
             $"{VersionInfo.Info.Version} · {VersionInfo.Info.VersionType} · {VersionInfo.Info.BuildType}";
         CustomizationBox.IsEnabled = VersionInfo.Info.GameIconType == GameIconType.Customization;
         IconPathInput.Text = VersionInfo.Info.GameIconPath;
-        InstanceIsolationPanel.IsVisible = InstanceIsolationPanel.IsEnabled = VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK;
-#if WINDOWS
-        IsRunAdminCard.IsVisible = (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.GDK) && !GlobalModel.Config.Data.IsUseMultipleUsers;
-#endif
         
         if ((int)VersionInfo.Info.GameIconType >= 2025)
         {
@@ -108,17 +94,6 @@ public partial class InstanceInfo : UserControl
 
         if (VersionInfo.Config == null)
             VersionInfo.Config = new VersionConfig.VersionConfigEntry();
-
-        InstanceArgs.Text = VersionInfo.Config.OtherCommand;
-        InstanceConsole.IsChecked = VersionInfo.Config.IsConsole;
-        InstanceEdit.IsChecked = VersionInfo.Config.IsEditModel;
-        InstanceMod.IsChecked = VersionInfo.Config.IsModes;
-        InstanceIsolated.IsChecked = VersionInfo.Config.IsVersionIsolated;
-        InstanceDetailedLogs.IsChecked = VersionInfo.Config.IsDetailedLog;
-        GameConfigSwitch.IsChecked = VersionInfo.Config.IsSyncPublicOptions;
-        IsRunAdmin.IsChecked = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun;
-        IsNativeException.IsChecked = VersionInfo.Config.IsNativeException;
-        CatalogStrategy.SelectedIndex = (int)VersionInfo.Config.IsolationFolderPolicy;
 
         IsEdit = true;
     }
@@ -146,7 +121,6 @@ public partial class InstanceInfo : UserControl
                 VersionInfo.Info.VersionName = Path.GetFileName(VersionInfo.VersionPath);
             else VersionInfo.Info.VersionName = InstanceName.Text;
 
-            VersionInfo.Config.OtherCommand = InstanceArgs.Text;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
             VersionName.Text = VersionInfo.Info.VersionName;
         }
@@ -244,23 +218,6 @@ public partial class InstanceInfo : UserControl
         _imageLoader.Dispose();
     }
 
-    private void BoolTypeConfig_OnChanged(object? sender, RoutedEventArgs e)
-    {
-        if (IsEdit)
-        {
-            VersionInfo.Config.IsConsole = (bool)InstanceConsole.IsChecked!;
-            VersionInfo.Config.IsEditModel = (bool)InstanceEdit.IsChecked!;
-            VersionInfo.Config.IsVersionIsolated = (bool)InstanceIsolated.IsChecked!;
-            VersionInfo.Config.IsModes = (bool)InstanceMod.IsChecked!;
-            VersionInfo.Config.IsDetailedLog = (bool)InstanceDetailedLogs.IsChecked!;
-            VersionInfo.Config.IsSyncPublicOptions = (bool)GameConfigSwitch.IsChecked!;
-            VersionInfo.Config.SysWindowsConfig.IsUseAdminRun = (bool)IsRunAdmin.IsChecked!;
-            VersionInfo.Config.IsNativeException = (bool)IsNativeException.IsChecked!;
-
-            GameInfoHelper.SaveVersionConfig(VersionInfo);
-        }
-    }
-
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         TaskLaunchGameItem.Launch(VersionInfo);
@@ -299,18 +256,6 @@ public partial class InstanceInfo : UserControl
             VersionInfo.Info.CoverImage = filePath;
             GameInfoHelper.SaveVersionConfig(VersionInfo);
             UpdateImage();
-        }
-    }
-
-    private void CatalogStrategy_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (IsEdit)
-        {
-            VersionInfo.Config.IsolationFolderPolicy = (CatalogStrategyEnum)CatalogStrategy.SelectedIndex;
-            VersionInfo.Config.FolderPolicyStr =
-                IsolationPolicyHelper.ParsePolicyConfig(VersionInfo.Config.IsolationFolderPolicy);
-            
-            GameInfoHelper.SaveVersionConfig(VersionInfo);
         }
     }
 

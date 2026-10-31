@@ -16,27 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace BedrockBoot.Standard.Enum.Language;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 
-[AttributeUsage(AttributeTargets.Field)]
-public class LanguageResourceAttribute : Attribute
+namespace BedrockBoot.Style.Widgets;
+
+public class TopBarLabel : TemplatedControl
 {
-    public string Uri { get; }
-    
-    public LanguageResourceAttribute(string uri)
+    public string TitleText
     {
-        Uri = uri;
+        get => GetValue(TitleTextProperty);
+        set => SetValue(TitleTextProperty, value);
     }
-}
+    public string Text
+    {
+        get => GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
 
-public enum LanguageEnum
-{
-    [LanguageResource("avares://BedrockBoot/I18n/zh_CN.axaml")]
-    Chinese,
-    
-    [LanguageResource("avares://BedrockBoot/I18n/en_US.axaml")]
-    English,
-    
-    [LanguageResource("avares://BedrockBoot/I18n/ja_JP.axaml")]
-    Japanese,
+    public static readonly StyledProperty<string> TitleTextProperty =
+        AvaloniaProperty.Register<TopBarLabel, string>(nameof(TitleText));
+
+    public static readonly StyledProperty<string> TextProperty =
+        AvaloniaProperty.Register<TopBarLabel, string>(nameof(Text));
 }

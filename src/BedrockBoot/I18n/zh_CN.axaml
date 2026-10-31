@@ -47,6 +47,19 @@
     <x:String x:Key="MainPage.Nav.Multiplayer">多人联机</x:String>
     <x:String x:Key="MainPage.Nav.AccountManager">账户管理</x:String>
     <x:String x:Key="MainPage.Nav.Setting">设置</x:String>
+    <x:String x:Key="Search.Placeholder">搜索设置、实例与内容…</x:String>
+    <x:String x:Key="Search.Empty.HintTitle">你想找什么？</x:String>
+    <x:String x:Key="Search.Empty.HintMessage">键入关键词，搜索设置、实例或进行聚合搜索</x:String>
+    <x:String x:Key="Search.Empty.Title">没有找到相关内容</x:String>
+    <x:String x:Key="Search.Empty.Message">换个关键词试试，或按 Enter 进行聚合搜索</x:String>
+    <x:String x:Key="Search.Category.Page">页面</x:String>
+    <x:String x:Key="Search.Category.Setting">设置</x:String>
+    <x:String x:Key="Search.Category.Instance">实例</x:String>
+    <x:String x:Key="Search.Category.Aggregate">聚合搜索</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Title">聚合搜索 “{0}”</x:String>
+    <x:String x:Key="Search.Action.Aggregate.Desc">在下载中心搜索版本、资源包、插件与模组</x:String>
+    <x:String x:Key="Search.Hint.Select">↑↓ 选择 · Enter 打开 · Esc 关闭</x:String>
+
 
     <x:String x:Key="Account.Action.LinkXbox">关联 XBOX 账户</x:String>
     <x:String x:Key="Account.Empty.Title">未关联任何账户</x:String>

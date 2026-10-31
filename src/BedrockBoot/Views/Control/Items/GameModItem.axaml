@@ -5,16 +5,15 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="400"
              x:Class="BedrockBoot.Views.Control.Items.GameModItem">
-    <onePointControls:SettingCard IsClickable="True"
-                                  Name="Card"
-                                  Margin="5,0,5,10"
-                                  Glyph="&#xE7C3;"
-                                  IsShowActionIcon="False"
-                                  Description="FileSize">
-        <onePointControls:SettingCard.Header>
+    <onePointControls:SettingExpander Name="Card"
+                                      Margin="5,0,5,10"
+                                      Glyph="&#xE7C3;"
+                                      Description="FileSize">
+        <onePointControls:SettingExpander.Header>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
-                <TextBlock Name="FileName" />
+                <TextBlock Name="FileName" 
+                           Text="FineName"/>
                 <onePointControls:LabelBox Text="Version"
                                            IsVisible="False"
                                            Foreground="White"
@@ -26,30 +25,30 @@
                                            Name="PreLoadBox"
                                            VerticalAlignment="Center" />
             </StackPanel>
-        </onePointControls:SettingCard.Header>
-        <StackPanel Orientation="Horizontal"
-                    Spacing="8">
+        </onePointControls:SettingExpander.Header>
+        <onePointControls:SettingExpander.RightContent>
             <ToggleSwitch VerticalAlignment="Center"
                           Name="SettingModEnable"
                           IsCheckedChanged="SettingModEnable_OnIsCheckedChanged">
             </ToggleSwitch>
-            <Button Width="32" Height="32"
-                    Classes="NoBorder"
-                    Click="DeleteBtn_OnClick"
-                    ToolTip.Tip="{DynamicResource Shared.Action.Delete}"
-                    Name="DeleteBtn">
-                <onePointControls:FontIcon Glyph="&#xE74D;"
-                                           FontSize="16"
-                                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
-            </Button>
-            <Button Width="32" Height="32"
-                    Classes="NoBorder"
-                    Click="SettingBtn_OnClick"
-                    ToolTip.Tip="{DynamicResource Shared.Action.Settings}"
-                    Name="SettingBtn">
-                <onePointControls:FontIcon Glyph="&#xE713;"
-                                           FontSize="16" />
-            </Button>
+        </onePointControls:SettingExpander.RightContent>
+        <StackPanel>
+            <onePointControls:SettingCard Classes="NoBorder"
+                                          Click="SettingBtn_OnClick"
+                                          Header="模组加载配置"
+                                          IsClickable="True"
+                                          ToolTip.Tip="{DynamicResource Shared.Action.Settings}"
+                                          Glyph="&#xE713;"
+                                          Name="SettingBtn">
+            </onePointControls:SettingCard>
+            <onePointControls:SettingCard Classes="NoBorder"
+                                          Click="DeleteBtn_OnClick"
+                                          Header="删除模组"
+                                          IsClickable="True"
+                                          ToolTip.Tip="{DynamicResource Shared.Action.Delete}"
+                                          Glyph="&#xE74D;"
+                                          Name="DeleteBtn">
+            </onePointControls:SettingCard>
         </StackPanel>
-    </onePointControls:SettingCard>
+    </onePointControls:SettingExpander>
 </UserControl>

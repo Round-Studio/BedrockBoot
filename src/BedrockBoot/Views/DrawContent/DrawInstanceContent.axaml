@@ -20,6 +20,10 @@
                                                  Glyph="&#xE946;"
                                                  Tag="Info"
                                                  Name="Info" />
+                <leftSelectBar:LeftSelectBarItem ItemText="实例设置"
+                                                 Glyph="&#xE713;"
+                                                 Tag="Setting"
+                                                 Name="Setting" />
                 <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Mods}"
                                                  Glyph="&#xE74C;"
                                                  Tag="Mods"

@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Config;
-using BedrockBoot.Standard.Enum.Language;
 
 namespace BedrockBoot.Standard.Entity
 {
@@ -73,7 +72,7 @@ namespace BedrockBoot.Standard.Entity
         [JsonPropertyName("catalogStrategy")]
         public CatalogStrategyEnum CatalogStrategy { get; set; } = CatalogStrategyEnum.Independence;
 
-        [JsonPropertyName("language")] public LanguageEnum Language { get; set; } = LanguageEnum.Chinese;
+        [JsonPropertyName("languageKey")] public string Language { get; set; } = "zh_CN";
         [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
 
         [JsonPropertyName("isShowConnectPage")]

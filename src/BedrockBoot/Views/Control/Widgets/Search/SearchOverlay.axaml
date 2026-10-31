@@ -1,0 +1,194 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:models="clr-namespace:BedrockBoot.Models.Search"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="420"
+             x:Class="BedrockBoot.Views.Control.Widgets.Search.SearchOverlay">
+    <Panel>
+        <Border Name="Backdrop"
+                Background="#66000000"
+                Opacity="0"
+                PointerPressed="Backdrop_OnPointerPressed">
+            <Border.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Opacity"
+                                      Duration="0:0:0.2"
+                                      Easing="ExponentialEaseOut" />
+                </Transitions>
+            </Border.Transitions>
+        </Border>
+
+        <Border Name="CardRoot"
+                Width="560"
+                MaxHeight="480"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="0,84,0,0"
+                CornerRadius="12"
+                Padding="1"
+                Background="{DynamicResource PrimaryBorderBrush}"
+                BoxShadow="0 16 48 0 #40000000">
+            <Border.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Opacity"
+                                      Duration="0:0:0.18"
+                                      Easing="ExponentialEaseOut" />
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="0:0:0.18"
+                                                   Easing="ExponentialEaseOut" />
+                </Transitions>
+            </Border.Transitions>
+
+            <Border Background="{DynamicResource PrimaryBackgroundBrush}"
+                    CornerRadius="11"
+                    ClipToBounds="True">
+                <Grid RowDefinitions="Auto,Auto,*,Auto">
+                    <Grid Grid.Row="0"
+                          ColumnDefinitions="Auto,*,Auto"
+                          ColumnSpacing="10"
+                          Margin="16,12,14,10">
+                        <onePointControls:FontIcon Grid.Column="0"
+                                                   Glyph="&#xE721;"
+                                                   FontSize="15"
+                                                   Opacity="0.7"
+                                                   VerticalAlignment="Center" />
+
+                        <TextBox Grid.Column="1"
+                                 Name="SearchBox"
+                                 x:FieldModifier="public"
+                                 FontSize="15"
+                                 Watermark="{DynamicResource Search.Placeholder}"
+                                 TextChanged="SearchBox_OnTextChanged" />
+
+                        <Border Grid.Column="2"
+                                CornerRadius="4"
+                                Padding="6,2"
+                                VerticalAlignment="Center"
+                                Background="{DynamicResource PrimarySubtleBackgroundBrush}">
+                            <TextBlock Text="ESC"
+                                       FontSize="10"
+                                       Opacity="0.6" />
+                        </Border>
+                    </Grid>
+
+                    <Border Grid.Row="1"
+                            Height="1"
+                            Margin="12,0"
+                            Background="{DynamicResource PrimaryBorderBrush}" />
+
+                    <Panel Grid.Row="2">
+                        <ListBox Grid.Row="2"
+                                 Name="ResultList"
+                                 x:FieldModifier="public"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Padding="6,6,6,8"
+                                 MaxHeight="372"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Tapped="ResultList_OnTapped">
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Margin" Value="0,1" />
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="MinHeight" Value="0" />
+                                    <Setter Property="Template">
+                                        <ControlTemplate>
+                                            <Border Name="ItemBorder"
+                                                    Background="Transparent"
+                                                    CornerRadius="8"
+                                                    Padding="4,2">
+                                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                                  ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter>
+
+                                    <Style Selector="^:pointerover /template/ Border#ItemBorder">
+                                        <Setter Property="Background"
+                                                Value="{DynamicResource PrimarySubtleBackgroundBrush}" />
+                                    </Style>
+
+                                    <Style Selector="^:selected /template/ Border#ItemBorder">
+                                        <Setter Property="Background"
+                                                Value="{DynamicResource PrimaryBackgroundOverBrush}" />
+                                    </Style>
+                                </Style>
+                            </ListBox.Styles>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:SearchResult">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="12"
+                                          Margin="6,6">
+                                        <Border Width="34"
+                                                Height="34"
+                                                CornerRadius="8"
+                                                VerticalAlignment="Center"
+                                                Background="{DynamicResource PrimarySubtleBackgroundBrush}">
+                                            <onePointControls:FontIcon Glyph="{Binding Glyph}"
+                                                                       FontSize="14"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       Foreground="{DynamicResource PrimaryForegroundSecondaryBrush}" />
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1"
+                                                    VerticalAlignment="Center"
+                                                    Spacing="2">
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="13"
+                                                       FontWeight="SemiBold"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="11"
+                                                       Opacity="0.65"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       IsVisible="{Binding HasDescription}" />
+                                        </StackPanel>
+
+                                        <Border Grid.Column="2"
+                                                VerticalAlignment="Center"
+                                                CornerRadius="4"
+                                                Padding="6,2"
+                                                Background="{DynamicResource PrimarySubtleBackgroundBrush}">
+                                            <TextBlock Text="{Binding Category}"
+                                                       FontSize="10"
+                                                       Foreground="{DynamicResource PrimaryForegroundSecondaryBrush}" />
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <StackPanel Name="EmptyBox"
+                                    IsVisible="True"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="6"
+                                    Margin="0,20">
+                            <onePointControls:FontIcon Glyph="&#xE721;"
+                                                       FontSize="26"
+                                                       Opacity="0.4"
+                                                       HorizontalAlignment="Center" />
+                            <TextBlock Name="EmptyTitle"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Name="EmptyMessage"
+                                       FontSize="11"
+                                       Opacity="0.6"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Panel>
+
+                    <TextBlock Grid.Row="3"
+                               Text="{DynamicResource Search.Hint.Select}"
+                               FontSize="10.5"
+                               Opacity="0.5"
+                               Margin="16,0,16,9" />
+                </Grid>
+            </Border>
+        </Border>
+    </Panel>
+</UserControl>

@@ -58,7 +58,7 @@ public partial class ResultRoot : UserControl
 
 #if WINDOWS
         // 详情页关闭后整理一次工作集，把内存还给系统
-        ProcessMemoryTrimmer.TrimProcess();
+        BedrockBoot.Windows.Models.ProcessMemoryTrimmer.TrimProcess();
 #endif
     }
 

@@ -24,6 +24,7 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
@@ -52,7 +53,12 @@ public partial class MainPage : UserControl
 {
     public static MainPage Instance;
     private bool _isUpdatingGameList;
+    private List<string> _gameTags;
     private static I18nManager i18n => I18nManager.Instance;
+
+    private DispatcherTimer? _tagTimer;
+    private readonly Random _random = new();
+    private string? _lastTag;
 
     public MainPage()
     {
@@ -136,7 +142,12 @@ public partial class MainPage : UserControl
             {
                 Console.WriteLine($@"创建 JumpList 出现错误：{exception}");
             }
+
+            StartTagTimer();
         };
+
+        DetachedFromVisualTree += (_, _) => StopTagTimer();
+
         _ = UpdateUIAsync();
 
         var sel = -1;
@@ -169,13 +180,18 @@ public partial class MainPage : UserControl
     {
         try
         {
-            var result = await CheckUpdate.Update();
+            var result = await CheckUpdate.CheckAsync();
             if (result != null)
             {
                 var panel = new StackPanel();
-                var controls =
-                    HtmlToControlConverter.ConvertHtmlToControls(result.Body);
+
+                var body = result.Source == UpdateSource.Release
+                    ? result.Release?.Body
+                    : result.WorkflowRun?.HeadCommit?.Message;
+
+                var controls = HtmlToControlConverter.ConvertHtmlToControls(body);
                 foreach (var control in controls) panel.Children.Add(control);
+
                 DialogHost.Show(new DialogInfo
                 {
                     Content = new ScrollViewer()
@@ -184,7 +200,7 @@ public partial class MainPage : UserControl
                         Padding = new Thickness(10, 0),
                         HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden
                     },
-                    Title = string.Format(i18n["MainPage.Update.NewVersion"], result.TagName),
+                    Title = string.Format(i18n["MainPage.Update.NewVersion"], result.DisplayName),
                     CloseButtonText = i18n["MainPage.Update.Action.Now"],
                     PrimaryButtonText = i18n["Shared.Action.Cancel"],
                     CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
@@ -220,7 +236,7 @@ public partial class MainPage : UserControl
     {
         IsEditMode = false;
 
-        var tag = $"{item.Tag}{Guid.NewGuid().ToString("N")}";
+        var tag = $"{item.Tag}:{Guid.NewGuid().ToString("N")}";
 
         TopBarItem.Add(tag, item);
 
@@ -244,13 +260,11 @@ public partial class MainPage : UserControl
         if (IsEditMode)
             try
             {
-                // 修复：检查 SelectedItem 是否为 null
                 if (SelTag.SelectedItem == null) return;
 
                 var item = (SelectBarItem)SelTag.SelectedItem;
                 var tag = item.Tag as string;
 
-                // 修复：检查 tag 是否存在于字典中
                 if (string.IsNullOrEmpty(tag) || !TopBarItem.ContainsKey(tag)) return;
 
                 BedrockBootPage? page = null;
@@ -270,14 +284,76 @@ public partial class MainPage : UserControl
                 if (page.HeaderView != null) HeaderContent.NavigateTo(page.HeaderView);
 
                 MainFrame.NavigateTo(page);
+                if (tag.Contains("main:home"))
+                {
+                    VersionChooseCard.Margin = new(8);
+                    BackgroundBorder.CornerRadius = new(8);
+                    BottomCard.Margin = new(8);
+                    BottomBarCenter.IsVisible = true;
+                    BottomBarFull.Opacity = 0;
+                    GameLaunchBtn.Height = 58;
+                    InstanceDesc.IsVisible = true;
+                    GameLaunchBtn.Padding = new(14, 0, 8, 0);
+                }
+                else
+                {
+                    VersionChooseCard.Margin = new(0, 0, -1, -1);
+                    BackgroundBorder.CornerRadius = new(8,0,0,0);
+                    BottomCard.Margin = new(0);
+                    BottomBarCenter.IsVisible = false;
+                    BottomBarFull.Opacity = 1;
+                    GameLaunchBtn.Height = 41;
+                    InstanceDesc.IsVisible = false;
+                    GameLaunchBtn.Padding = new(8, 0);
+                }
             }
-            catch
-            {
-                // 移除：不要在这里重置 IsEditMode，以免影响其他事件
-            }
+            catch { }
     }
 
     #endregion
+
+    private void StartTagTimer()
+    {
+        StopTagTimer();
+        _tagTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(3)
+        };
+        _tagTimer.Tick += TagTimer_Tick;
+        _tagTimer.Start();
+    }
+
+    private void StopTagTimer()
+    {
+        if (_tagTimer != null)
+        {
+            _tagTimer.Tick -= TagTimer_Tick;
+            _tagTimer.Stop();
+            _tagTimer = null;
+        }
+    }
+
+    private void TagTimer_Tick(object? sender, EventArgs e)
+    {
+        if (_gameTags == null || _gameTags.Count == 0) return;
+        if (!InstanceDesc.IsVisible) return;
+
+        if (_gameTags.Count == 1)
+        {
+            InstanceDesc.Text = _gameTags[0];
+            _lastTag = _gameTags[0];
+            return;
+        }
+
+        string next;
+        do
+        {
+            next = _gameTags[_random.Next(_gameTags.Count)];
+        } while (next == _lastTag);
+
+        _lastTag = next;
+        InstanceDesc.Text = next;
+    }
 
     public void SetNullInfo(bool isNull = true)
     {
@@ -287,7 +363,7 @@ public partial class MainPage : UserControl
                 GameListChoose.Items.Clear();
             _isUpdatingGameList = true;
             GameListChoose.IsVisible = !isNull;
-            GameControls.IsEnabled = !isNull;
+            GameLaunchBtn.IsEnabled = !isNull;
             NullBox.IsVisible = isNull;
             GameInfoItem.IsVisible = !isNull;
             GameSettingBtn.IsVisible = !isNull;
@@ -304,18 +380,16 @@ public partial class MainPage : UserControl
     {
         if (GlobalModel.Config.Data.IsRightLaunchButton)
         {
-            GameControls.HorizontalAlignment = HorizontalAlignment.Right;
+            GameLaunchBtn.HorizontalAlignment = HorizontalAlignment.Right;
             VersionChooseCard.HorizontalAlignment = HorizontalAlignment.Left;
-            BottomBorder.CornerRadius = new CornerRadius(12, 0, 0, 0);
             VersionChooseCard.CornerRadius = new CornerRadius(0, 12, 0, 0);
             BackgroundBackBorder.CornerRadius = new CornerRadius(0, 12, 0, 0);
             BackgroundBorder.CornerRadius = new CornerRadius(0, 8, 0, 0);
         }
         else
         {
-            GameControls.HorizontalAlignment = HorizontalAlignment.Left;
+            GameLaunchBtn.HorizontalAlignment = HorizontalAlignment.Left;
             VersionChooseCard.HorizontalAlignment = HorizontalAlignment.Right;
-            BottomBorder.CornerRadius = new CornerRadius(0, 12, 0, 0);
             VersionChooseCard.CornerRadius = new CornerRadius(12, 0, 0, 0);
             BackgroundBackBorder.CornerRadius = new CornerRadius(12, 0, 0, 0);
             BackgroundBorder.CornerRadius = new CornerRadius(8, 0, 0, 0);
@@ -330,7 +404,6 @@ public partial class MainPage : UserControl
             IsEditMode = false;
             _isUpdatingGameList = true;
 
-            // 确保控件已初始化
             if (GameListChoose == null)
             {
                 Console.WriteLine(@"GameListChoose 控件未初始化");
@@ -373,7 +446,6 @@ public partial class MainPage : UserControl
                 });
             });
 
-            // 修复：检查 GameSelIndex 是否有效，如果无效则设置为 0
             var gameFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex];
             if (gameFolder.GameSelIndex < 0 || gameFolder.GameSelIndex >= versions.Count) gameFolder.GameSelIndex = 0;
 
@@ -394,7 +466,7 @@ public partial class MainPage : UserControl
         }
     }
 
-    public void UpdateGameInfo()
+    public async Task UpdateGameInfo()
     {
         try
         {
@@ -420,11 +492,31 @@ public partial class MainPage : UserControl
             var version = versions[gameFolder.GameSelIndex];
 
             GameInfoItem.Update(version);
+            InstanceIconImage.Source = await ImageLoader.Shared.LoadIconAsync(IconHelper.GetGameIconUrl(version), 26);
+            InstanceName.Text = version.Info.VersionName;
+            _gameTags = version.GameTags;
             SetNullInfo(false);
+
+            if (_gameTags != null && _gameTags.Count > 0)
+            {
+                string next;
+                if (_gameTags.Count == 1)
+                {
+                    next = _gameTags[0];
+                }
+                else
+                {
+                    do
+                    {
+                        next = _gameTags[_random.Next(_gameTags.Count)];
+                    } while (next == _lastTag);
+                }
+                _lastTag = next;
+                InstanceDesc.Text = next;
+            }
         }
         catch (Exception ex)
         {
-            // 修复：添加异常处理
             Console.WriteLine($@"更新游戏信息失败：{ex.Message}");
             SetNullInfo();
         }
@@ -436,7 +528,6 @@ public partial class MainPage : UserControl
         {
             var selIndex = GameListChoose.SelectedIndex;
 
-            // 修复：检查索引是否有效
             if (selIndex >= 0 && GlobalModel.Config.Data.GameFolderSelIndex >= 0 &&
                 GlobalModel.Config.Data.GameFolderSelIndex < GlobalModel.Config.Data.GameFolders.Count)
             {
@@ -451,7 +542,6 @@ public partial class MainPage : UserControl
 
     private void GameSettingBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        // 修复：添加边界检查
         if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)
@@ -465,12 +555,11 @@ public partial class MainPage : UserControl
         var version = versions[gameFolder.GameSelIndex];
 
         Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawInstanceContent(version),
-            $"{version.Info.VersionName} - {version.Info.Version}");
+            $"{version.Info.VersionName} - {version.Info.Version}", "\uE7FC");
     }
 
     private void GameLaunchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        // 修复：添加边界检查
         if (GlobalModel.Config.Data.GameFolders.Count == 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex < 0 ||
             GlobalModel.Config.Data.GameFolderSelIndex >= GlobalModel.Config.Data.GameFolders.Count)

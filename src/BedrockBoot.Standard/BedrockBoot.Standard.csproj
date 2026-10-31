@@ -20,7 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avalonia" Version="12.1.3" />
+      <PackageReference Include="Avalonia" Version="12.1.4" />
     </ItemGroup>
     
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
@@ -36,6 +36,10 @@
       <ProjectReference Include="../Round.SDK\Round.SDK\Round.SDK.csproj" />
       <ProjectReference Include="../BedrockBoot.Dependence\BedrockBoot.Dependence.csproj" />
       <ProjectReference Include="../OnePointUI.Avalonia/src/OnePointUI.Avalonia/OnePointUI.Avalonia.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Enum\Language\" />
     </ItemGroup>
 
 </Project>

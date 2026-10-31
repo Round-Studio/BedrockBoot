@@ -24,6 +24,30 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>full</TrimMode>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+        <_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <TrimmerRootAssembly Include="BedrockBoot" />
+        <TrimmerRootAssembly Include="BedrockBoot.Standard" />
+        <TrimmerRootAssembly Include="BedrockBoot.Core" />
+        <TrimmerRootAssembly Include="Round.SDK" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <TrimmerRootAssembly Include="BedrockBoot.Windows" />
+        <TrimmerRootAssembly Include="System.Windows.Forms" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <TrimmerRootAssembly Include="BedrockBoot.Linux" />
+    </ItemGroup>
+
+    <PropertyGroup>
         <BuildTimestamp>$([System.DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss"))</BuildTimestamp>
         <Win32Resource>Manifest.res</Win32Resource>
     </PropertyGroup>
@@ -54,11 +78,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.1.3"/>
-        <PackageReference Include="Avalonia.Desktop" Version="12.1.3"/>
-        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.3"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.3"/>
-        <PackageReference Include="Avalonia.HarfBuzz" Version="12.1.3"/>
+        <PackageReference Include="Avalonia" Version="12.1.4"/>
+        <PackageReference Include="Avalonia.Desktop" Version="12.1.4"/>
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.4"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4"/>
+        <PackageReference Include="Avalonia.HarfBuzz" Version="12.1.4"/>
         <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.71"/>
         <PackageReference Include="Markdig" Version="1.2.0" />
@@ -97,6 +121,12 @@
         <ProjectReference Include="..\BedrockBoot.Linux\BedrockBoot.Linux.csproj"
                           Condition="$([MSBuild]::IsOSPlatform('Linux'))"/>
     </ItemGroup>
+
+    <Target Name="ExcludePdbFromPublish" AfterTargets="ComputeFilesToPublish">
+        <ItemGroup>
+            <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.pdb'"/>
+        </ItemGroup>
+    </Target>
 
     <Import Project="Build/GenerateChangeLog.targets"
             Condition="'$(Configuration)' == 'Release'"/>

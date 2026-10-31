@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -151,28 +151,6 @@
             <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
             <TextBlock Margin="5,0,5,0" FontSize="9"
                        Text="(https://github.com/octokit/octokit.net/blob/main/LICENSE.txt)" />
-
-
-            <TextBlock FontSize="22"
-                       FontWeight="Bold"
-                       Margin="5,20,5,8">
-                Windows.APICodePack
-            </TextBlock>
-            <TextBlock Margin="5,0,5,0" Text="(https://github.com/contre/Windows-API-Code-Pack-1.1)" />
-            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Custom}" />
-            <TextBlock Margin="5,0,5,0" FontSize="9"
-                       Text="(https://github.com/contre/Windows-API-Code-Pack-1.1/blob/main/LICENSE)" />
-
-
-            <TextBlock FontSize="22"
-                       FontWeight="Bold"
-                       Margin="5,20,5,8">
-                WindowsCommunityToolkit (Microsoft.Toolkit.Uwp.Notifications)
-            </TextBlock>
-            <TextBlock Margin="5,0,5,0" Text="(https://github.com/CommunityToolkit/WindowsCommunityToolkit)" />
-            <TextBlock Margin="5,0,5,0" FontSize="9" Text="{DynamicResource About.OpenSource.License.Mit}" />
-            <TextBlock Margin="5,0,5,0" FontSize="9"
-                       Text="(https://github.com/CommunityToolkit/WindowsCommunityToolkit/blob/main/License.md)" />
 
 
             <TextBlock FontSize="22"

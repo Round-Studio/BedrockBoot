@@ -22,23 +22,46 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BedrockBoot.Standard.Enum;
-using BedrockBoot.Core.Global;
+using BedrockBoot.Models.Account.Github;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Enum.Config;
 using Octokit;
+using Round.SDK.Entity;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Models;
 
+public enum UpdateSource
+{
+    Release,
+    Action
+}
+
+public class UpdateCheckResult
+{
+    public UpdateSource Source { get; init; }
+    public Release? Release { get; init; }
+    public WorkflowRun? WorkflowRun { get; init; }
+
+    public string DisplayName => Source == UpdateSource.Release
+        ? Release?.TagName ?? ""
+        : $"{WorkflowRun?.Name} #{WorkflowRun?.RunNumber}";
+
+    public string CommitSha => Source == UpdateSource.Release
+        ? Release?.TargetCommitish ?? ""
+        : WorkflowRun?.HeadSha ?? "";
+}
+
 public class CheckUpdate
 {
+    private const string Owner = "Round-Studio";
+    private const string Repo = "BedrockBoot";
+
     public static async Task<Release?> Update()
     {
-        // 创建客户端
         var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
 
-        // 获取指定仓库的所有发布
-        var owner = "Round-Studio";
-        var repo = "BedrockBoot";
-        var releases = await github.Repository.Release.GetAll(owner, repo);
+        var releases = await github.Repository.Release.GetAll(Owner, Repo);
 
         var latest =
             releases.FirstOrDefault(x => x.Prerelease == (GlobalModel.Config.Data.UpdateType == UpdateType.Preview));
@@ -61,6 +84,76 @@ public class CheckUpdate
         return null;
     }
 
+    public static async Task<WorkflowRun?> GetLatestActionRunAsync(string dataUserToken)
+    {
+        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+
+        if (!string.IsNullOrEmpty(dataUserToken))
+            github.Credentials = new Credentials(dataUserToken);
+
+        var runs = await github.Actions.Workflows.Runs.List(Owner, Repo);
+
+        var latest = runs.WorkflowRuns
+            .Where(r => r.Status == WorkflowRunStatus.Completed
+                        && r.Conclusion == WorkflowRunConclusion.Success)
+            .OrderByDescending(r => r.CreatedAt)
+            .FirstOrDefault();
+
+        if (latest == null)
+        {
+            Console.WriteLine(@"未找到成功的 Action 运行记录。");
+            return null;
+        }
+
+        Console.WriteLine($@"最新 Action: {latest.Name} #{latest.RunNumber}");
+        Console.WriteLine($@"提交: {latest.HeadSha}");
+        Console.WriteLine($@"时间: {latest.CreatedAt}");
+
+        return latest;
+    }
+
+    public static async Task<UpdateCheckResult?> CheckAsync()
+    {
+        if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
+        {
+            var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
+            if (conf.Data == null)
+                return null;
+            if (string.IsNullOrEmpty(conf.Data.UserToken))
+                return null;
+            
+            var run = await GetLatestActionRunAsync(conf.Data.UserToken);
+            if (run == null)
+                return null;
+
+            var currentSha = Assembly.GetExecutingAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion;
+
+            if (!string.IsNullOrEmpty(currentSha) && run.HeadSha.StartsWith(currentSha))
+            {
+                Console.WriteLine($@"当前已是最新提交 {run.HeadSha}，无需更新。");
+                return null;
+            }
+
+            return new UpdateCheckResult
+            {
+                Source = UpdateSource.Action,
+                WorkflowRun = run
+            };
+        }
+
+        var release = await Update();
+        if (release == null)
+            return null;
+
+        return new UpdateCheckResult
+        {
+            Source = UpdateSource.Release,
+            Release = release
+        };
+    }
+
     public static UpdateType GetBodyUpdateType()
     {
         var version = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
@@ -81,32 +174,28 @@ public class CheckUpdate
 
         version = version.TrimStart('v', 'V');
 
-        // 严格正则: yyyy.mm.dd.hhmm 格式
-        // 年: 2000-2099, 月: 01-12 或 1-12, 日: 01-31 或 1-31, 时间: 0000-2359 或 0-235959
         var pattern = @"^(20\d{2})\.(0?[1-9]|1[0-2])\.(0?[1-9]|[12]\d|3[01])\.(\d{1,6})$";
 
         if (!Regex.IsMatch(version, pattern))
             return false;
 
-        // 进一步验证时间部分
         var parts = version.Split('.');
         var timePart = parts[3];
 
         if (!int.TryParse(timePart, out var time))
             return false;
 
-        // 验证时间合理性
-        if (timePart.Length == 1 || timePart.Length == 2) // 小时
+        if (timePart.Length == 1 || timePart.Length == 2)
             return time <= 23;
 
-        if (timePart.Length == 3 || timePart.Length == 4) // 时分
+        if (timePart.Length == 3 || timePart.Length == 4)
         {
             var hour = time / 100;
             var minute = time % 100;
             return hour <= 23 && minute <= 59;
         }
 
-        if (timePart.Length >= 5) // 时分秒
+        if (timePart.Length >= 5)
         {
             var hour = time / 10000;
             var minute = time / 100 % 100;

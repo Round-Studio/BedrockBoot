@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:widgets="clr-namespace:BedrockBoot.Views.Control.Widgets"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.Loader.DialogLoaderViewContent">
+    <Grid Width="420" Height="280" RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0"
+                    Spacing="8"
+                    Orientation="Horizontal">
+            <widgets:LocalImageRenderWidget Width="96" Height="96" />
+            <StackPanel Spacing="4">
+                <TextBlock Name="LoaderName"
+                           Text="LLLLLLoaderName"
+                           FontSize="18"></TextBlock>
+                
+                <StackPanel Orientation="Horizontal"
+                            Spacing="4">
+                    <onePointControls:LabelBox Name="LoaderVersion"
+                                               Text="0.0.0"/>
+                    <HyperlinkButton Content="官方网站"></HyperlinkButton>
+                </StackPanel>
+                
+                <TextBlock Name="LoaderDescription"
+                           Text="Description"></TextBlock>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

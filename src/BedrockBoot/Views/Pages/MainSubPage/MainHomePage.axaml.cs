@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using Avalonia.Interactivity;
+using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Entity.Config;
 using BedrockBoot.Standard.Entity.Info;

@@ -49,7 +49,7 @@ public partial class ModLoaderItem : ISetting
         {
             await UpdateUi();
         };
-        LoaderCard.Click += LoaderCard_OnClick;
+        ViewDetailBtn.Click += LoaderCard_OnClick;
         DeleteBtn.Click += DeleteBtn_OnClick;
         _ = UpdateUi();
     }

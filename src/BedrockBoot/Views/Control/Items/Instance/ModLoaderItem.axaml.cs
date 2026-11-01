@@ -31,6 +31,8 @@ namespace BedrockBoot.Views.Control.Items.Instance;
 
 public partial class ModLoaderItem : ISetting
 {
+    private static I18nManager i18n => I18nManager.Instance;
+
     private readonly ImageLoader _imageLoader = ImageLoader.Shared;
     private readonly VersionConfig _instance;
     private readonly IModsLoader _loader;
@@ -78,6 +80,8 @@ public partial class ModLoaderItem : ISetting
             _canInstall = await _loader.ApplicableInstance();
             LoadingRing.IsVisible = false;
             NotApplicableLabel.IsVisible = !_canInstall;
+            InstallBtn.Content = i18n["Dialog.LoaderView.Action.Install"];
+            InstallBtn.IsVisible = _canInstall;
         }
         else
         {
@@ -86,6 +90,7 @@ public partial class ModLoaderItem : ISetting
             IsEnableToggle.IsVisible = _loader.IsAllowDisabling;
             IsEnableToggle.IsChecked = _loader.GetIsEnabled();
             LoadingRing.IsVisible = false;
+            InstallBtn.IsVisible = false;
         }
 
         IsEdit = true;
@@ -93,9 +98,12 @@ public partial class ModLoaderItem : ISetting
 
     private void LoaderCard_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (_loader.IsInstalled())
-            _loader.ViewInfo();
-        else if (_canInstall)
+        _loader.ViewInfo();
+    }
+
+    private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (!_loader.IsInstalled() && _canInstall)
             _loader.Install();
     }
 

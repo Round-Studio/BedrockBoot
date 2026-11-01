@@ -25,6 +25,8 @@ public interface IModsLoader
     public static virtual bool IsInstallModLoader(string path) => false;
     public string LoaderName { get; }
     public string LoaderDescription { get; }
+    public string? LoaderWebsite => null;
+    public string LoaderIntro => string.Empty;
     public bool CanRemove { get; }
     public bool IsAllowDisabling { get; }
     public string? IconUri { get; }

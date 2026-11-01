@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 using BedrockBoot.Standard.Interface.ModLoader;
+using BedrockBoot.Views.DialogContent.Loader;
 
 namespace BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 
@@ -39,6 +40,11 @@ public class PreLoaderNet : IModsLoader
     public static bool IsInstallModLoader(string path) => true;
     public string LoaderName { get; } = "原版加载器";
     public string LoaderDescription { get; } = "BedrockBoot 原版加载器 (PreLoad.NET)";
+    public string? LoaderWebsite { get; } = "https://github.com/Round-Studio/BedrockBoot";
+    public string LoaderIntro { get; } =
+        "BedrockBoot 内置的原版模组加载器（PreLoad.NET）。它在游戏进程启动前自动注入由 BedrockBoot " +
+        "托管的预加载模组与注入式模组，为实例提供基础的 Mod 加载能力。" +
+        "该加载器随实例内置，无需单独安装，也无法移除。";
     public bool CanRemove { get; } = false;
     public bool IsAllowDisabling { get; } = false;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png";
@@ -88,6 +94,7 @@ public class PreLoaderNet : IModsLoader
 
     public void ViewInfo()
     {
+        DialogLoaderViewContent.Show(this);
     }
 
     private string? GetAllInstalledVersion()

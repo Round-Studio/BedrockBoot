@@ -1075,6 +1075,15 @@
     <x:String x:Key="Dialog.AddServer.Label.Port">Порт сервера:</x:String>
     <x:String x:Key="Dialog.AddServer.DefaultName">Сторонний сервер</x:String>
 
+    <x:String x:Key="Dialog.LoaderView.Title">Сведения о загрузчике</x:String>
+    <x:String x:Key="Dialog.LoaderView.Website">Официальный сайт</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.Title">Статус установки</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.Installed">Установлен</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.NotInstalled">Не установлен</x:String>
+    <x:String x:Key="Dialog.LoaderView.Mods.Count">Моды</x:String>
+    <x:String x:Key="Dialog.LoaderView.Intro.Title">Описание</x:String>
+    <x:String x:Key="Dialog.LoaderView.Action.Install">Установить</x:String>
+
     <x:String x:Key="Dialog.ChooseGame.Label.Instance">Пример:</x:String>
 
     <x:String x:Key="Dialog.Import.Label.PackagePath">Путь к пакету:</x:String>

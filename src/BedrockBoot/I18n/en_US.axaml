@@ -1047,6 +1047,15 @@
     <x:String x:Key="Dialog.AddServer.Label.Port">Server Port:</x:String>
     <x:String x:Key="Dialog.AddServer.DefaultName">Third-party Server</x:String>
 
+    <x:String x:Key="Dialog.LoaderView.Title">Loader Details</x:String>
+    <x:String x:Key="Dialog.LoaderView.Website">Official Website</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.Title">Install Status</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.Installed">Installed</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.NotInstalled">Not Installed</x:String>
+    <x:String x:Key="Dialog.LoaderView.Mods.Count">Mod Count</x:String>
+    <x:String x:Key="Dialog.LoaderView.Intro.Title">Overview</x:String>
+    <x:String x:Key="Dialog.LoaderView.Action.Install">Install</x:String>
+
     <x:String x:Key="Dialog.ChooseGame.Label.Instance">Instance:</x:String>
 
     <x:String x:Key="Dialog.Import.Label.PackagePath">Package Path:</x:String>

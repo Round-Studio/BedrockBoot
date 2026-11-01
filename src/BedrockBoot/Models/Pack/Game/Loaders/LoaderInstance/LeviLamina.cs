@@ -49,6 +49,11 @@ public class LeviLamina : IModsLoader
     public IModsManager ModsManager { get; set; }
     public string LoaderName { get; } = "LeviLamina";
     public string LoaderDescription { get; } = "LeviMC 开发的基岩版模组加载器";
+    public string? LoaderWebsite { get; } = "https://levimc.org/";
+    public string LoaderIntro { get; } =
+        "由 LiteLDev 社区开发的基岩版原生模组加载器。它通过 PreLoader 在游戏进程启动前注入游戏，" +
+        "让您可以在基岩版客户端上安装和运行 Native 模组，" +
+        "BedrockBoot 会将该加载器的模组统一托管到实例的模组管理页面中。";
     public bool CanRemove { get; } = true;
     public bool IsAllowDisabling { get; } = true;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/Other/LeviLauncher.png";
@@ -281,12 +286,7 @@ public class LeviLamina : IModsLoader
 
     public void ViewInfo()
     {
-        /*DialogHost.Show(new ()
-        {
-            Title = "LeviLamina",
-            Content = new DialogLoaderViewContent(),
-            CloseButtonText = "确定"
-        });*/
+        DialogLoaderViewContent.Show(this);
     }
 
     public bool GetIsEnabled()

@@ -1051,6 +1051,15 @@
     <x:String x:Key="Dialog.AddServer.Label.Port">サーバーポート：</x:String>
     <x:String x:Key="Dialog.AddServer.DefaultName">サードパーティサーバー</x:String>
 
+    <x:String x:Key="Dialog.LoaderView.Title">ローダーの詳細</x:String>
+    <x:String x:Key="Dialog.LoaderView.Website">公式サイト</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.Title">インストール状態</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.Installed">インストール済み</x:String>
+    <x:String x:Key="Dialog.LoaderView.Status.NotInstalled">未インストール</x:String>
+    <x:String x:Key="Dialog.LoaderView.Mods.Count">Mod数</x:String>
+    <x:String x:Key="Dialog.LoaderView.Intro.Title">概要</x:String>
+    <x:String x:Key="Dialog.LoaderView.Action.Install">インストール</x:String>
+
     <x:String x:Key="Dialog.ChooseGame.Label.Instance">インスタンス：</x:String>
 
     <x:String x:Key="Dialog.Import.Label.PackagePath">インストールパッケージパス：</x:String>

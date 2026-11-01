@@ -6,26 +6,78 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.DialogContent.Loader.DialogLoaderViewContent">
-    <Grid Width="420" Height="280" RowDefinitions="Auto,*">
+    <Grid MinWidth="420" MaxWidth="480"
+          RowDefinitions="Auto,Auto,Auto"
+          Margin="4,0">
+
         <StackPanel Grid.Row="0"
-                    Spacing="8"
-                    Orientation="Horizontal">
-            <widgets:LocalImageRenderWidget Width="96" Height="96" />
-            <StackPanel Spacing="4">
-                <TextBlock Name="LoaderName"
-                           Text="LLLLLLoaderName"
-                           FontSize="18"></TextBlock>
-                
-                <StackPanel Orientation="Horizontal"
-                            Spacing="4">
-                    <onePointControls:LabelBox Name="LoaderVersion"
-                                               Text="0.0.0"/>
-                    <HyperlinkButton Content="官方网站"></HyperlinkButton>
-                </StackPanel>
-                
-                <TextBlock Name="LoaderDescription"
-                           Text="Description"></TextBlock>
+                    Orientation="Horizontal"
+                    Spacing="12">
+            <widgets:LocalImageRenderWidget Name="LoaderLogo"
+                                            Width="88" Height="88"
+                                            VerticalAlignment="Top" />
+            <StackPanel Spacing="6"
+                        VerticalAlignment="Center">
+                <TextBlock Name="LoaderNameText"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="300" />
+
+                <HyperlinkButton Name="WebsiteBtn"
+                                 Padding="0"
+                                 Click="WebsiteBtn_OnClick"
+                                 IsVisible="False" />
+
+                <TextBlock Name="LoaderDescriptionText"
+                           Opacity="0.8"
+                           TextWrapping="WrapWithOverflow"
+                           MaxWidth="300" />
             </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="1"
+              Margin="0,14,0,0"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="8">
+            <StackPanel Grid.Column="0"
+                        Spacing="6">
+                <TextBlock Name="StatusTitleText"
+                           Opacity="0.7"
+                           FontSize="12" />
+                <onePointControls:LabelBox Name="InstallStatusLabel"
+                                           HorizontalAlignment="Left"
+                                           FontSize="12"
+                                           Padding="8,4" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1"
+                        Spacing="6">
+                <TextBlock Name="ModsCountTitleText"
+                           Opacity="0.7"
+                           FontSize="12" />
+                <Panel Height="22"
+                       HorizontalAlignment="Left">
+                    <onePointControls:ProgressRing Name="ModsCountRing"
+                                                   Width="18" Height="18" />
+                    <TextBlock Name="ModsCountText"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               IsVisible="False" />
+                </Panel>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="2"
+                    Margin="0,14,0,0"
+                    Spacing="6">
+            <TextBlock Name="IntroTitleText"
+                       FontWeight="Bold"
+                       FontSize="14" />
+            <TextBlock Name="IntroText"
+                       Opacity="0.9"
+                       TextWrapping="WrapWithOverflow" />
         </StackPanel>
     </Grid>
 </UserControl>

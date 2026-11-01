@@ -31,6 +31,15 @@
                                            IsVisible="False"
                                            VerticalAlignment="Center">
                 </onePointControls:LabelBox>
+                <Button Name="InstallBtn"
+                        VerticalAlignment="Center"
+                        Height="32"
+                        Padding="18,2"
+                        IsVisible="False"
+                        Background="{DynamicResource AccentBackgroundBrush}"
+                        Foreground="{DynamicResource PrimaryForegroundBrush}"
+                        Click="InstallBtn_OnClick">
+                </Button>
                 <onePointControls:ProgressRing Name="LoadingRing"></onePointControls:ProgressRing>
                 <ToggleSwitch VerticalAlignment="Center"
                               Name="IsEnableToggle"

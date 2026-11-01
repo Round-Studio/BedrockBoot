@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <x:String x:Key="LanguageName">粵語（中國廣東） - BedrockBoot 官方</x:String>
+    <x:String x:Key="LanguageName">粵語（中國廣東） - Dime12022</x:String>
 
     <x:String x:Key="Shared.Action.Apply">套用</x:String>
     <x:String x:Key="Shared.Action.Back">返回</x:String>

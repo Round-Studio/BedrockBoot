@@ -15,7 +15,8 @@
             </StackPanel>
         </onePointControls:SettingExpander.Header>
         <onePointControls:SettingExpander.Description>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="6">
                 <TextBlock Name="StructureInfo"
                            Text="-"
                            TextTrimming="CharacterEllipsis" />

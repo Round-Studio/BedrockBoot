@@ -6,65 +6,39 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.LevelStructureItem">
-    <items:BorderCard>
-        <Grid ColumnDefinitions="Auto,*,Auto">
-            <Border Grid.Column="0"
-                    Width="64"
-                    Height="64"
-                    CornerRadius="6">
-                <Border.Background>
-                    <ImageBrush Stretch="UniformToFill"
-                                Source="avares://BedrockBoot/Assets/Image/world-preview-flat-fixed-pixels.png" />
-                </Border.Background>
-                <Panel>
-                    <Border Background="#90000000"
-                            CornerRadius="6" />
-                    <onePointControls:FontIcon Glyph="&#xF158;"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              Foreground="White" />
-                </Panel>
-            </Border>
-
-            <StackPanel Grid.Column="1"
-                        Margin="12,0"
-                        VerticalAlignment="Center"
-                        Spacing="4">
-                <TextBlock FontSize="15"
-                           Name="StructureName"
-                           TextTrimming="CharacterEllipsis" />
-                <TextBlock FontSize="11"
-                           Opacity="0.8"
-                           Name="StructureInfo"
-                           TextTrimming="CharacterEllipsis" />
-                <TextBlock FontSize="11"
-                           Opacity="0.6"
-                           Name="StructurePath"
+    <onePointControls:SettingExpander Glyph="&#xF158;">
+        <onePointControls:SettingExpander.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="StructureName"
+                           Text="-"
                            TextTrimming="CharacterEllipsis" />
             </StackPanel>
-
-            <StackPanel Grid.Column="2"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center"
-                        Margin="12,0"
-                        Spacing="6">
-                <Button Width="24" Height="24"
-                        Name="ExportBtn"
-                        Click="ExportBtn_OnClick"
-                        ToolTip.Tip="{DynamicResource Shared.Action.Save}"
-                        Classes="NoBorder">
-                    <onePointControls:FontIcon Glyph="&#xE74E;" />
-                </Button>
-
-                <Button Width="24" Height="24"
-                        Name="DeleteBtn"
-                        Click="DeleteBtn_OnClick"
-                        ToolTip.Tip="{DynamicResource Shared.Action.Delete}"
-                        Classes="NoBorder">
-                    <onePointControls:FontIcon Glyph="&#xE74D;"
-                                               Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
-                </Button>
+        </onePointControls:SettingExpander.Header>
+        <onePointControls:SettingExpander.Description>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="StructureInfo"
+                           Text="-"
+                           TextTrimming="CharacterEllipsis" />
+                
+                <TextBlock Name="StructurePath"
+                           Text="-"
+                           TextTrimming="CharacterEllipsis" />
             </StackPanel>
-        </Grid>
-    </items:BorderCard>
+        </onePointControls:SettingExpander.Description>
+        
+        <StackPanel>
+            <onePointControls:SettingCard Name="ExportBtn"
+                                          Glyph="&#xE74E;"
+                                          IsClickable="True"
+                                          Header="导出结构"
+                                          Click="ExportBtn_OnClick">
+            </onePointControls:SettingCard>
+            <onePointControls:SettingCard Name="DeleteBtn"
+                                          IsClickable="True"
+                                          Click="DeleteBtn_OnClick" 
+                                          Glyph="&#xE74D;"
+                                          Header="删除结构">
+            </onePointControls:SettingCard>
+        </StackPanel>
+    </onePointControls:SettingExpander>
 </UserControl>

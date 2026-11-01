@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -91,46 +92,40 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
         Task.Run(async () =>
         {
-            string downloadUrl;
-            string assetName;
-
-            if (Result.Source == UpdateSource.Release)
+            try
             {
-                var asset = SelectPreferredAsset();
-                if (asset == null)
+                string downloadUrl;
+                string assetName;
+                string? userToken = null;
+
+                if (Result.Source == UpdateSource.Release)
                 {
-                    Console.WriteLine(@"未找到适用于当前平台的更新资源");
-                    return;
+                    var asset = SelectPreferredAsset();
+                    if (asset == null)
+                        throw new InvalidOperationException("未找到适用于当前平台的更新资源");
+
+                    downloadUrl = asset.BrowserDownloadUrl;
+                    assetName = asset.Name;
+                }
+                else
+                {
+                    var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
+                    userToken = conf.Data?.UserToken;
+                    if (string.IsNullOrEmpty(userToken))
+                        throw new InvalidOperationException("Github 未登录，无法下载提交版更新");
+
+                    var artifact = await SelectPreferredArtifactAsync(userToken);
+                    if (artifact == null)
+                        throw new InvalidOperationException("未找到适用于当前平台的 Action 产物");
+
+                    downloadUrl = artifact.ArchiveDownloadUrl;
+                    assetName = $"{artifact.Name}.zip";
                 }
 
-                downloadUrl = asset.BrowserDownloadUrl;
-                assetName = asset.Name;
-            }
-            else
-            {
-                var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
-                var artifact = await SelectPreferredArtifactAsync(conf.Data.UserToken);
-                if (artifact == null)
-                {
-                    Console.WriteLine(@"未找到适用于当前平台的 Action 产物");
-                    return;
-                }
+                Directory.CreateDirectory(PathsList.UpdatePath);
+                var downloadPath = Path.Combine(PathsList.UpdatePath, assetName);
 
-                downloadUrl = artifact.ArchiveDownloadUrl;
-                assetName = $"{artifact.Name}.zip";
-            }
-
-            Directory.CreateDirectory(PathsList.UpdatePath);
-            var downloadPath = Path.Combine(PathsList.UpdatePath, assetName);
-
-            var download = new GithubFilesDownloader(
-                GlobalModel.Config.Data.DownloadChunkCount,
-                1024);
-
-            await download.DownloadAsync(
-                downloadUrl,
-                downloadPath,
-                new Progress<DownloadProgress>(progress =>
+                var progressHandler = new Progress<DownloadProgress>(progress =>
                 {
                     ReportProgress(progress.ProgressPercentage, $"{progress.ProgressPercentage:F2} %");
                     Dispatcher.UIThread.Invoke(() =>
@@ -144,48 +139,86 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                         ProgressBar.Value = (int)progress.ProgressPercentage;
                         ProgressText.Text = $"{progress.ProgressPercentage:F2} %";
                     });
-                }),
-                token);
+                });
 
-            await Task.Delay(100, token);
+                // Action 产物位于 api.github.com 且必须携带授权头，加速代理不覆盖该接口，
+                // 也不能走无鉴权的 GithubFilesDownloader，只能带 Token 直连下载
+                if (Result.Source == UpdateSource.Action)
+                {
+                    using var downloader =
+                        new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                    downloader.AdditionalHeaders = new Dictionary<string, string>
+                    {
+                        { "Authorization", $"Bearer {userToken}" },
+                        { "Accept", "application/vnd.github+json" }
+                    };
 
-            if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))
-                throw new FileNotFoundException("无法定位当前程序，不能启动更新引导流程", _currentExecutablePath);
+                    await downloader.DownloadAsync(downloadUrl, downloadPath, progressHandler, token);
+                }
+                else
+                {
+                    var download = new GithubFilesDownloader(
+                        GlobalModel.Config.Data.DownloadChunkCount,
+                        1024);
 
-            if (Result.Source == UpdateSource.Action)
-            {
-                var extractDir = Path.Combine(PathsList.UpdatePath, "extracted");
-                if (Directory.Exists(extractDir))
-                    Directory.Delete(extractDir, true);
-                Directory.CreateDirectory(extractDir);
-                System.IO.Compression.ZipFile.ExtractToDirectory(downloadPath, extractDir);
+                    await download.DownloadAsync(downloadUrl, downloadPath, progressHandler, token);
+                }
 
-                var exe = Directory.GetFiles(extractDir, "*", SearchOption.AllDirectories)
-                    .FirstOrDefault(f =>
-                        OperatingSystem.IsWindows()
-                            ? f.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
-                            : f.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase));
+                await Task.Delay(100, token);
 
-                if (exe == null)
-                    throw new FileNotFoundException("解压后未找到可执行文件", extractDir);
+                if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))
+                    throw new FileNotFoundException("无法定位当前程序，不能启动更新引导流程", _currentExecutablePath);
 
-                downloadPath = exe;
+                if (Result.Source == UpdateSource.Action)
+                {
+                    var extractDir = Path.Combine(PathsList.UpdatePath, "extracted");
+                    if (Directory.Exists(extractDir))
+                        Directory.Delete(extractDir, true);
+                    Directory.CreateDirectory(extractDir);
+                    System.IO.Compression.ZipFile.ExtractToDirectory(downloadPath, extractDir);
+
+                    var exe = Directory.GetFiles(extractDir, "*", SearchOption.AllDirectories)
+                        .FirstOrDefault(f =>
+                            OperatingSystem.IsWindows()
+                                ? f.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                                : f.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase));
+
+                    if (exe == null)
+                        throw new FileNotFoundException("解压后未找到可执行文件", extractDir);
+
+                    downloadPath = exe;
+                }
+
+                AppUpdater.EnsureExecutableForCurrentPlatform(downloadPath);
+
+                // 记录已应用的提交 SHA：InformationalVersion 是日期版本号无法和 HeadSha 比较，
+                // 不记录会导致更新完成后同一提交依然反复提示更新
+                if (Result.Source == UpdateSource.Action && !string.IsNullOrEmpty(Result.WorkflowRun?.HeadSha))
+                    CheckUpdate.RecordAppliedCommitSha(Result.WorkflowRun.HeadSha);
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = _currentExecutablePath,
+                    UseShellExecute = false
+                };
+                startInfo.ArgumentList.Add("-updatev2");
+                startInfo.ArgumentList.Add(downloadPath);
+
+                Process.Start(startInfo);
+
+                await Task.Delay(100, token);
+                Environment.Exit(0);
             }
-
-            AppUpdater.EnsureExecutableForCurrentPlatform(downloadPath);
-
-            var startInfo = new ProcessStartInfo
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
             {
-                FileName = _currentExecutablePath,
-                UseShellExecute = false
-            };
-            startInfo.ArgumentList.Add("-updatev2");
-            startInfo.ArgumentList.Add(downloadPath);
-
-            Process.Start(startInfo);
-
-            await Task.Delay(100, token);
-            Environment.Exit(0);
+                Console.WriteLine(@"更新任务已取消");
+            }
+            catch (Exception ex)
+            {
+                // 任务异常若不上报会永远停留在列表里无任何提示
+                Console.WriteLine($@"更新任务失败: {ex}");
+                Dispatcher.UIThread.Post(() => ReportProgress(100, $@"失败: {ex.Message}"));
+            }
         }, token);
     }
 

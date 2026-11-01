@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -39,30 +40,43 @@ public class GitHubOAuthManager
     private string _clientId => BedrockBoot.Core.Keys.GithubClientId;
     private string _clientSecret => BedrockBoot.Core.Keys.GithubSecret;
 
-    private static int CallbackPort = (new Random()).Next(10000, 49152);
     private const string CallbackPath = "/auth/github/callback";
-    private string RedirectUri => $"http://127.0.0.1:{CallbackPort}{CallbackPath}";
+    private static readonly Random _portRandom = new();
 
     public async Task<GithubAccountInfo> LoginAsync()
     {
         using var listener = new HttpListener();
-        listener.Prefixes.Add($"http://127.0.0.1:{CallbackPort}/");
-        listener.Start();
 
+        // 随机端口可能被其他程序占用，逐个候选重试，直到监听成功
+        var port = 0;
+        for (var attempt = 0; attempt < 8; attempt++)
+        {
+            port = _portRandom.Next(10000, 49152);
+            listener.Prefixes.Clear();
+            listener.Prefixes.Add($"http://127.0.0.1:{port}/");
+            try
+            {
+                listener.Start();
+                break;
+            }
+            catch (HttpListenerException ex) when (attempt < 7)
+            {
+                Console.WriteLine($@"OAuth 回调端口 {port} 被占用，换端口重试: {ex.Message}");
+            }
+        }
+
+        if (!listener.IsListening)
+            throw new InvalidOperationException("无法启动本地 OAuth 回调监听，所有候选端口均被占用。");
+
+        var redirectUri = $"http://127.0.0.1:{port}{CallbackPath}";
         var state = Guid.NewGuid().ToString("N");
         var authUrl = $"https://github.com/login/oauth/authorize" +
                       $"?client_id={_clientId}" +
-                      $"&redirect_uri={Uri.EscapeDataString(RedirectUri)}" +
+                      $"&redirect_uri={Uri.EscapeDataString(redirectUri)}" +
                       $"&scope={Uri.EscapeDataString("user:email")}" +
                       $"&state={state}";
 
         Process.Start(new ProcessStartInfo(authUrl) { UseShellExecute = true });
-
-        var context = await listener.GetContextAsync();
-        var query = context.Request.QueryString;
-
-        var code = query["code"];
-        var returnedState = query["state"];
 
         var responseHtml = await new JsonResourceEntity()
             .ReadTextResourceAsync("avares://BedrockBoot/Assets/Web/LoginFinish.html");
@@ -79,19 +93,20 @@ public class GitHubOAuthManager
             .Replace("{AccentBackgroundBrush}", colors.AccentBackgroundBrush)
             .Replace("{AccentBackgroundOverBrush}", colors.AccentBackgroundOverBrush);
 
-        var html = responseHtml;
-        var buffer = Encoding.UTF8.GetBytes(html);
-        context.Response.ContentType = "text/html; charset=utf-8";
-        context.Response.ContentLength64 = buffer.Length;
-        await context.Response.OutputStream.WriteAsync(buffer);
-        context.Response.Close();
+        string code;
+        try
+        {
+            // 等待浏览器回调（最多 5 分钟）。state 校验通过前不回复成功页面，
+            // 避免旧版“先回页后校验”在无效回调时泄漏监听器
+            using var timeoutCts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            code = await WaitForCallbackAsync(listener, state, responseHtml, timeoutCts.Token);
+        }
+        finally
+        {
+            listener.Stop();
+        }
 
-        listener.Stop();
-
-        if (string.IsNullOrEmpty(code) || returnedState != state)
-            throw new InvalidOperationException("Invalid callback.");
-
-        var token = await ExchangeCodeForTokenAsync(code);
+        var token = await ExchangeCodeForTokenAsync(code, redirectUri);
         var client = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
         client.Credentials = new Credentials(token);
 
@@ -100,7 +115,8 @@ public class GitHubOAuthManager
         conf.Data = new GithubAccountInfo()
         {
             UserImage = user.AvatarUrl,
-            UserName = user.Name,
+            // GitHub 允许用户不设置公开昵称，Name 可能为 null，此时回退到登录名
+            UserName = string.IsNullOrWhiteSpace(user.Name) ? user.Login : user.Name,
             UserToken = token
         };
         conf.Save();
@@ -108,7 +124,48 @@ public class GitHubOAuthManager
         return conf.Data;
     }
 
-    private async Task<string> ExchangeCodeForTokenAsync(string code)
+    private static async Task<string> WaitForCallbackAsync(
+        HttpListener listener, string state, string successHtml, CancellationToken cancellationToken)
+    {
+        var buffer = Encoding.UTF8.GetBytes(successHtml);
+
+        while (true)
+        {
+            var context = await listener.GetContextAsync().WaitAsync(cancellationToken);
+
+            // 浏览器可能发出 favicon 等无关请求，直接忽略
+            if (context.Request.Url?.AbsolutePath != CallbackPath)
+            {
+                context.Response.StatusCode = 404;
+                context.Response.Close();
+                continue;
+            }
+
+            var query = context.Request.QueryString;
+            if (query["state"] != state)
+            {
+                context.Response.StatusCode = 400;
+                context.Response.Close();
+                continue;
+            }
+
+            var code = query["code"];
+            if (string.IsNullOrEmpty(code))
+            {
+                context.Response.StatusCode = 400;
+                context.Response.Close();
+                continue;
+            }
+
+            context.Response.ContentType = "text/html; charset=utf-8";
+            context.Response.ContentLength64 = buffer.Length;
+            await context.Response.OutputStream.WriteAsync(buffer);
+            context.Response.Close();
+            return code;
+        }
+    }
+
+    private async Task<string> ExchangeCodeForTokenAsync(string code, string redirectUri)
     {
         using var http = new System.Net.Http.HttpClient();
         var body = new System.Net.Http.FormUrlEncodedContent(new[]
@@ -116,7 +173,7 @@ public class GitHubOAuthManager
             new System.Collections.Generic.KeyValuePair<string, string>("client_id", _clientId),
             new System.Collections.Generic.KeyValuePair<string, string>("client_secret", _clientSecret),
             new System.Collections.Generic.KeyValuePair<string, string>("code", code),
-            new System.Collections.Generic.KeyValuePair<string, string>("redirect_uri", RedirectUri),
+            new System.Collections.Generic.KeyValuePair<string, string>("redirect_uri", redirectUri),
         });
 
         http.DefaultRequestHeaders.Add("Accept", "application/json");

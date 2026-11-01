@@ -923,6 +923,7 @@
 
     <x:String x:Key="MainPage.Update.Title">檢查更新</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">更新 {0}</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedLogin">而家更新頻道係 Commit（提交版），需要先登入 Github 帳戶。&#x0a;請去 設定 → 帳戶與檔案 嗰度登入 Github。</x:String>
     <x:String x:Key="MainPage.Update.Content">我哋有新嘅更新：\n\n{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">而家更新</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">目前已經係最新版本</x:String>

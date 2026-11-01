@@ -21,9 +21,8 @@
                                           Glyph="&#xE8FA;" />
 
             <Grid>
-                <WrapPanel Name="AccountPanel"
-                           HorizontalAlignment="Center"
-                           LineSpacing="8" ItemSpacing="8" />
+                <StackPanel Name="AccountPanel"
+                            Spacing="8" />
                 
                 <notice:InfoCard HorizontalAlignment="Center"
                                  VerticalAlignment="Center"
@@ -36,19 +35,30 @@
             <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="Github 账户" />
-            
-            <onePointControls:SettingCard Header="登录 Github"
-                                          Description="登录到 Github 以使用更多功能"
-                                          Name="LoginInGithub"
-                                          Click="LoginInGithub_OnClick"
-                                          IsClickable="True"
-                                          Glyph="&#xE8FA;" />
-            
-            <onePointControls:SettingCard Header="Github Account"
-                                          Description="您的 Github 账户"
-                                          Name="GithubAccount"
-                                          IsClickable="True"
-                                          Glyph="&#xE77B;" />
+
+            <onePointControls:SettingExpander Name="GithubExpander"
+                                              Glyph="&#xE77B;"
+                                              Description="登录 Github 以使用 Commit 更新通道等功能">
+                <onePointControls:SettingExpander.Header>
+                    <TextBlock Name="GithubHeaderText"
+                               Text="Github 账户" />
+                </onePointControls:SettingExpander.Header>
+                <StackPanel>
+                    <onePointControls:SettingCard Header="登录 Github"
+                                                  Description="通过浏览器授权登录 Github 账户"
+                                                  Name="LoginInGithub"
+                                                  Click="LoginInGithub_OnClick"
+                                                  IsClickable="True"
+                                                  Glyph="&#xE8FA;" />
+                    <onePointControls:SettingCard Header="退出登录"
+                                                  Description="移除本地保存的 Github 授权信息"
+                                                  Name="GithubLogoutBtn"
+                                                  Click="GithubLogoutBtn_OnClick"
+                                                  IsClickable="True"
+                                                  IsVisible="False"
+                                                  Glyph="&#xE74D;" />
+                </StackPanel>
+            </onePointControls:SettingExpander>
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"

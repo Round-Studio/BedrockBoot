@@ -906,6 +906,7 @@
 
     <x:String x:Key="MainPage.Update.Title">アップデートを確認</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">{0} にアップデート</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedLogin">更新チャンネルが Commit（提出版）に設定されています。先に GitHub アカウントにログインしてください。&#x0a;設定 → アカウント からログインできます。</x:String>
     <x:String x:Key="MainPage.Update.Content">新しいアップデートがあります：\n\n{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">今すぐアップデート</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">現在最新バージョンです</x:String>

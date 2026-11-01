@@ -26,11 +26,12 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using BedrockBoot.Standard.Entity;
-using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models;
+using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
+using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage;
@@ -45,7 +46,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Core;
+using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Views.Pages;
 
@@ -180,6 +183,22 @@ public partial class MainPage : UserControl
     {
         try
         {
+            // Commit 通道依赖 Github 登录，未登录时明确提示，而不是被 CheckAsync 判空后误报“已是最新”
+            if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
+            {
+                var githubConf = new Round.SDK.Entity.ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
+                if (string.IsNullOrEmpty(githubConf.Data?.UserToken))
+                {
+                    DialogHost.Show(new DialogInfo
+                    {
+                        Title = i18n["MainPage.Update.Title"],
+                        Content = i18n["MainPage.Update.CommitNeedLogin"],
+                        CloseButtonText = i18n["Shared.Action.Confirm"]
+                    });
+                    return;
+                }
+            }
+
             var result = await CheckUpdate.CheckAsync();
             if (result != null)
             {

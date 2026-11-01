@@ -18,18 +18,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Interactivity;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Widgets;
-using BedrockBoot.Views.Pages.MainSubPage;
-using BedrockBoot.Views.Pages.SettingSubPage.SettingAccountPages;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
@@ -63,41 +64,31 @@ public partial class SettingAccount : ISettingPage
         AccountPanel.Children.Clear();
         var users = MsAccountManager.Accounts.Accounts;
         NullCard.IsVisible = users.Count == 0;
-        users.ForEach(user =>
-        {
-            var item = new AccountCard(user);
-            item.Click += (s, e) =>
-            {
-                MainSettingPage.NavigateTo(new AccountXbox(user));
-            };
-            AccountPanel.Children.Add(item);
-        });
+        users.ForEach(user => AccountPanel.Children.Add(new AccountCard(user)));
         IsUseMultipleUsers.IsChecked = GlobalModel.Config.Data.IsUseMultipleUsers;
         IsUseMSALAccount.IsChecked = GlobalModel.Config.Data.IsUseMSALAccount;
         IsAskMeBeforeLaunch.IsChecked = GlobalModel.Config.Data.IsChooseAccountBeforeLaunch;
         
-        var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
-        if (conf.Data != null)
-        {
-            if (string.IsNullOrEmpty(conf.Data.UserToken))
-            {
-                LoginInGithub.IsVisible = true;
-                GithubAccount.IsVisible = false;
-            }
-            else
-            {
-                LoginInGithub.IsVisible = false;
-                GithubAccount.IsVisible = true;
+        var githubConf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
+        var githubToken = githubConf.Data?.UserToken;
+        var githubLoggedIn = !string.IsNullOrEmpty(githubToken);
 
-                GithubAccount.Header = conf.Data.UserName;
-                GithubAccount.ImageIcon = await (new ImageLoader()).LoadIconAsync(conf.Data.UserImage);
-                GithubAccount.IsFontIcon = false;
-            }
+        LoginInGithub.IsVisible = !githubLoggedIn;
+        GithubLogoutBtn.IsVisible = githubLoggedIn;
+
+        if (githubLoggedIn)
+        {
+            GithubHeaderText.Text = string.IsNullOrEmpty(githubConf.Data.UserName)
+                ? "Github 账户"
+                : githubConf.Data.UserName;
+
+            GithubExpander.IsFontIcon = false;
+            GithubExpander.ImageIcon = await (new ImageLoader()).LoadIconAsync(githubConf.Data.UserImage);
         }
         else
         {
-            LoginInGithub.IsVisible = true;
-            GithubAccount.IsVisible = false;
+            GithubHeaderText.Text = "Github 账户";
+            GithubExpander.IsFontIcon = true;
         }
 
         IsEdit = true;
@@ -155,9 +146,55 @@ public partial class SettingAccount : ISettingPage
 
     private async void LoginInGithub_OnClick(object? sender, RoutedEventArgs e)
     {
-        var githubClient = new GitHubOAuthManager();
-        await githubClient.LoginAsync();
-        
+        try
+        {
+            var githubClient = new GitHubOAuthManager();
+            await githubClient.LoginAsync();
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine($@"Github 登录发生错误 {exception}");
+            DialogHost.Show(new DialogInfo
+            {
+                Title = "登录失败",
+                Content = "Github 登录过程中发生错误，请检查网络连接后重试。\n若长时间未在浏览器中完成授权，请重新发起登录。",
+                CloseButtonText = "确定"
+            });
+        }
+
         UpdateUi();
+    }
+
+    private void GithubLogoutBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo
+        {
+            Title = "退出 Github 登录",
+            Content = "确定要退出当前登录的 Github 账户吗？\n退出后 Commit 更新通道等需要登录的功能将无法使用。",
+            CloseButtonText = "退出登录",
+            PrimaryButtonText = "取消",
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = () =>
+            {
+                try
+                {
+                    if (File.Exists(PathsList.GithubAccount))
+                        File.Delete(PathsList.GithubAccount);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine($@"删除 Github 授权信息失败: {exception.Message}");
+                }
+
+                // Commit 更新通道依赖 Github 登录，退出后回退到正式版通道
+                if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
+                {
+                    GlobalModel.Config.Data.UpdateType = UpdateType.Release;
+                    GlobalModel.Config.Save();
+                }
+
+                _ = UpdateUi();
+            }
+        });
     }
 }

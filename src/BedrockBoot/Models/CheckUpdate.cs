@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -121,15 +122,26 @@ public class CheckUpdate
                 return null;
             if (string.IsNullOrEmpty(conf.Data.UserToken))
                 return null;
-            
+
             var run = await GetLatestActionRunAsync(conf.Data.UserToken);
             if (run == null)
                 return null;
+
+            // 已应用的提交以本地记录为准：CI 生成的 InformationalVersion 是日期版本号，
+            // 不包含 SHA，直接和 HeadSha 比较永远不相等，会导致同一提交反复提示更新
+            var appliedSha = GetAppliedCommitSha();
+            if (!string.IsNullOrEmpty(appliedSha) &&
+                run.HeadSha.StartsWith(appliedSha, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine($@"当前已是最新提交 {run.HeadSha}，无需更新。");
+                return null;
+            }
 
             var currentSha = Assembly.GetExecutingAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
                 .InformationalVersion;
 
+            // 兼容未来 CI 将 SHA 嵌入 InformationalVersion 的情况
             if (!string.IsNullOrEmpty(currentSha) && run.HeadSha.StartsWith(currentSha))
             {
                 Console.WriteLine($@"当前已是最新提交 {run.HeadSha}，无需更新。");
@@ -152,6 +164,39 @@ public class CheckUpdate
             Source = UpdateSource.Release,
             Release = release
         };
+    }
+
+    private static string CommitRecordPath =>
+        Path.Combine(PathsList.ConfigFolderPath, "update", "last_commit.sha");
+
+    public static string? GetAppliedCommitSha()
+    {
+        try
+        {
+            return File.Exists(CommitRecordPath)
+                ? File.ReadAllText(CommitRecordPath).Trim()
+                : null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"读取已应用提交记录失败: {ex.Message}");
+            return null;
+        }
+    }
+
+    public static void RecordAppliedCommitSha(string sha)
+    {
+        try
+        {
+            var directory = Path.GetDirectoryName(CommitRecordPath);
+            if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
+            File.WriteAllText(CommitRecordPath, sha);
+            Console.WriteLine($@"已记录应用的提交: {sha}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"记录已应用提交失败: {ex.Message}");
+        }
     }
 
     public static UpdateType GetBodyUpdateType()

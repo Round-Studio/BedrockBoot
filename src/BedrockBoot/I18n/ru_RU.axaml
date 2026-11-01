@@ -911,6 +911,7 @@
 
     <x:String x:Key="MainPage.Update.Title">Проверить обновления</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">Обновить {0}</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedLogin">Канал обновлений — Commit. Сначала войдите в аккаунт GitHub.&#x0a;Войдите через Настройки → Аккаунт.</x:String>
     <x:String x:Key="MainPage.Update.Content">Доступно новое обновление:
 
 {0}</x:String>

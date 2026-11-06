@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Avalonia.Media;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Config;
 
@@ -190,6 +191,8 @@ namespace BedrockBoot.Standard.Entity
         [JsonPropertyName("liveBlur")] public bool LiveBlur { get; set; } = false;
         [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Default;
         [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
+        
+        [JsonPropertyName("isBlackTextForegroundColor")] public bool IsBlackTextForegroundColor { get; set; } = true;
 
         [JsonPropertyName("mediaSource")]
         public MediaSourceEnum MediaSource { get; set; } = MediaSourceEnum.PriorityThemePack;

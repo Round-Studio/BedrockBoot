@@ -28,6 +28,7 @@ using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.View;
+using OnePointUI.Avalonia.Utilities;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 {
@@ -90,7 +91,10 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             if (IsEdit)
             {
                 GlobalModel.Config.Data.StyleConfig.AccentColorIndex = ColorsView.SelectedIndex;
-                GlobalModel.Config.Save();
+                GlobalModel.Config.Data.StyleConfig.IsBlackTextForegroundColor =
+                    ReadabilityCheck.BlackTextReadabilityCheck(
+                        Color.Parse(AccentColor.Colors[ColorsView.SelectedIndex]));
+               GlobalModel.Config.Save();
 
                 Models.Global.GlobalModel.MainWindow.UpdateTheme();
             }

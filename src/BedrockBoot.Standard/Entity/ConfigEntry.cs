@@ -191,12 +191,7 @@ namespace BedrockBoot.Standard.Entity
         [JsonPropertyName("liveBlur")] public bool LiveBlur { get; set; } = false;
         [JsonPropertyName("styleType")] public StyleType StyleType { get; set; } = StyleType.Default;
         [JsonPropertyName("accentColorIndex")] public int AccentColorIndex { get; set; } = 36;
-        
-        [JsonPropertyName("isBlackTextForegroundColor")] public bool IsBlackTextForegroundColor { get; set; } = true;
-
-        [JsonPropertyName("mediaSource")]
-        public MediaSourceEnum MediaSource { get; set; } = MediaSourceEnum.PriorityThemePack;
-
+        [JsonPropertyName("mediaSource")] public MediaSourceEnum MediaSource { get; set; } = MediaSourceEnum.PriorityThemePack;
         [JsonPropertyName("mainFont")] public string MainFont { get; set; } = "DINPro";
         [JsonPropertyName("fallbackFont")] public string FallbackFont { get; set; } = "Noto Sans SC";
         [JsonPropertyName("imageQuality")] public ImageQuality ImageQuality { get; set; } = ImageQuality.Medium;

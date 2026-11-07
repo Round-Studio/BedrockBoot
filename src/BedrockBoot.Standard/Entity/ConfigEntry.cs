@@ -201,6 +201,7 @@ namespace BedrockBoot.Standard.Entity
         [JsonPropertyName("fallbackFont")] public string FallbackFont { get; set; } = "Noto Sans SC";
         [JsonPropertyName("imageQuality")] public ImageQuality ImageQuality { get; set; } = ImageQuality.Medium;
         [JsonPropertyName("micaType")] public MicaType MicaType { get; set; } = MicaType.MicaAlt;
+        [JsonPropertyName("isBlackTextForegroundColor")] public bool IsBlackTextForegroundColor { get; set; } = true;
     }
 
     public class HomeConfig

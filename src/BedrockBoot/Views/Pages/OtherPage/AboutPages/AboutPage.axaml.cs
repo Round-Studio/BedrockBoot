@@ -23,7 +23,9 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
+using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Pages.OtherPage.AboutPages;
 
@@ -68,5 +70,12 @@ public partial class AboutPage : ISettingPage
     private void VersionCard_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new UniversalSoftwareUpdate());
+    }
+
+    private void LinkOpener(object? sender, RoutedEventArgs e)
+    {
+        var tag = ((SettingCard)sender).Tag.ToString();
+        if (!string.IsNullOrEmpty(tag))
+            OpenFolderHelper.Open(tag);
     }
 }

@@ -72,6 +72,7 @@
         <AvaloniaResource Include="Assets\Web\LoginFinish.html" />
         <AvaloniaResource Include="Assets\Text\ChangLog.txt" />
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
+        <Folder Include="Assets\Image\Contributors\" />
         <Folder Include="Assets\Svg\"/>
         <AvaloniaXaml Include="I18n\**"/>
         <Folder Include="Entity\" />

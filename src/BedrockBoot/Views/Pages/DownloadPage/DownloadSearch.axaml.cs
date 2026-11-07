@@ -190,11 +190,18 @@ public partial class DownloadSearch : UserControl
         // 2. 带字母后缀：1.0a, 1.0-beta, 1.0.0-rc1
         // 3. 带字母前缀：v1.0, V2.1.3
         // 4. 带特殊分隔符：1_0, 1-0
+        // 5. 小数点结尾 1.21.90.
 
         // 移除常见的版本前缀（如v、V）
         var processedText = text.Trim().ToLower();
         if (processedText.StartsWith("v"))
             processedText = processedText.Substring(1);
+
+        // 移除小数点结尾
+        if (processedText.EndsWith("."))
+            processedText = processedText.Substring(0, processedText.Length - 1);
+
+
 
         // 模式1：基本版本号格式（数字.数字.数字...）
         // 例如：1.2.3, 0.1, 2024.12.31

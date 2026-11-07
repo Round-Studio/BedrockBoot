@@ -152,9 +152,15 @@
                                                   Description="UI 设计与交互体验"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="Chlna6666 (BMCBL)"
+                                                  ImageIcon="avares://BedrockBoot/Assets/Image/Contributors/Chlna6666.jpg"
+                                                  IsFontIcon="False"
+                                                  Classes="People"
                                                   Description="通用协议策划与制定，为部分提供技术支持"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="Tianpao (天跑)"
+                                                  ImageIcon="avares://BedrockBoot/Assets/Image/Contributors/Tianpao.jpg"
+                                                  IsFontIcon="False"
+                                                  Classes="People"
                                                   Description="网络设施技术支持，为 PaperConnect v2 提供技术支持"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="以及所有 BedrockBoot 贡献者"

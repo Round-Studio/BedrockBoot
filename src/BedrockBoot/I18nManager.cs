@@ -195,9 +195,9 @@ public class I18nManager : INotifyPropertyChanged
 
     public static void AddLanguage()
     {
-        LanguageRegister("简体中文（中国大陆）", "zh_CN", "avares://BedrockBoot/I18n/zh_CN.axaml");
-        LanguageRegister("繁體中文（中国台灣）", "zh_TW", "avares://BedrockBoot/I18n/zh_TW.axaml");
-        LanguageRegister("粵語（中國廣東）", "yue_HK", "avares://BedrockBoot/I18n/yue_HK.axaml");
+        LanguageRegister("中文（简体）", "zh_CN", "avares://BedrockBoot/I18n/zh_CN.axaml");
+        LanguageRegister("中文（繁體）", "zh_TW", "avares://BedrockBoot/I18n/zh_TW.axaml");
+        LanguageRegister("中文（粵語）", "yue_HK", "avares://BedrockBoot/I18n/yue_HK.axaml");
         LanguageRegister("English (US)", "en_US", "avares://BedrockBoot/I18n/en_US.axaml");
         LanguageRegister("Japanese", "ja_JP", "avares://BedrockBoot/I18n/ja_JP.axaml");
         LanguageRegister("Русский", "ru_RU", "avares://BedrockBoot/I18n/ru_RU.axaml");

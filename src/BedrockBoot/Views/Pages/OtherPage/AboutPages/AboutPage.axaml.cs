@@ -20,10 +20,10 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Interactivity;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;
-using BedrockBoot.Windows.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
@@ -76,6 +76,6 @@ public partial class AboutPage : ISettingPage
     {
         var tag = ((SettingCard)sender).Tag.ToString();
         if (!string.IsNullOrEmpty(tag))
-            OpenFolderHelper.Open(tag);
+            PlatformCore.OpenFolder?.Open(tag);
     }
 }

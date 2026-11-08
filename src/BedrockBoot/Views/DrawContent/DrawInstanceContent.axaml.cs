@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,8 +34,10 @@ using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.DllMods;
 using BedrockBoot.Models.Pack.Game.Isolation;
 using BedrockBoot.Standard.Core;
+using BedrockBoot.Standard.Interface.Mods;
 using BedrockBoot.Views.Pages.InstanceSubPage.DrawContent;
 using BedrockBoot.Views.TaskItem;
 using BedrockLauncher.Core;
@@ -44,6 +47,8 @@ namespace BedrockBoot.Views.DrawContent;
 
 public partial class DrawInstanceContent : UserControl
 {
+    private List<IModSupport> _supports;
+
     public DrawInstanceContent()
     {
         InitializeComponent();
@@ -75,6 +80,17 @@ public partial class DrawInstanceContent : UserControl
         IsEditMode = false;
         InstanceFrame.NavigateTo(new InstanceInfo(VersionInfo));
 
+        _supports = ModSupports.GetEnableSupports(VersionInfo);
+        _supports.ForEach(support =>
+        {
+            InstanceTabControl.Items.Add(new LeftSelectBarItem()
+            {
+                ItemText = support.SupportName,
+                Glyph = support.Glyph,
+                Tag = support.Tag
+            });
+        });
+
         IsEditMode = true;
     }
 
@@ -97,39 +113,50 @@ public partial class DrawInstanceContent : UserControl
             VersionInfo = GameInfoHelper.GetVersionConfig(VersionInfo.VersionPath);
 
             LaunchBtn.IsVisible = tag != "Info";
+            object? page = null; 
 
             switch (tag)
             {
                 case "Info":
-                    InstanceFrame.NavigateTo(new InstanceInfo(VersionInfo));
+                    page = new InstanceInfo(VersionInfo);
                     break;
                 case "Setting":
-                    InstanceFrame.NavigateTo(new InstanceSetting(VersionInfo));
+                    page = new InstanceSetting(VersionInfo);
                     break;
                 case "Mods":
-                    InstanceFrame.NavigateTo(new InstanceMods(VersionInfo));
+                    page = new InstanceMods(VersionInfo);
                     break;
                 case "Loaders":
-                    InstanceFrame.NavigateTo(new InstanceLoaders(VersionInfo));
+                    page = new InstanceLoaders(VersionInfo);
                     break;
                 case "Pack":
-                    InstanceFrame.NavigateTo(new InstancePack(VersionInfo));
+                    page = new InstancePack(VersionInfo);
                     break;
                 case "Save":
-                    InstanceFrame.NavigateTo(new InstanceSave(VersionInfo));
+                    page = new InstanceSave(VersionInfo);
                     break;
                 case "Screenshots":
-                    InstanceFrame.NavigateTo(new InstanceScreenshots(VersionInfo));
+                    page = new InstanceScreenshots(VersionInfo);
                     break;
                 case "Server":
-                    InstanceFrame.NavigateTo(new InstanceServer(VersionInfo));
+                    page = new InstanceServer(VersionInfo);
                     break;
                 case "Controls":
-                    InstanceFrame.NavigateTo(new InstanceControls(VersionInfo));
+                    page = new InstanceControls(VersionInfo);
                     break;
                 case "Information":
-                    InstanceFrame.NavigateTo(new InstanceInformation(VersionInfo));
+                    page = new InstanceInformation(VersionInfo);
                     break;
+            }
+
+            if (page == null)
+            {
+                page = _supports.Find(x => x.Tag == tag)?.SupportPage;
+            }
+            
+            if (page != null)
+            {
+                InstanceFrame.NavigateTo(page);
             }
         }
     }

@@ -12,10 +12,12 @@
               MinWidth="120"
               RowDefinitions="*,Auto"
               Margin="10,0,0,10">
-            <leftSelectBar:LeftSelectBar Grid.Row="0"
-                                         Name="InstanceTabControl"
-                                         SelectedIndex="0"
-                                         SelectionChanged="InstanceTabControl_OnSelectionChanged">
+            <ScrollViewer Grid.Row="0"
+                          Padding="0,0,10,0"
+                          HorizontalScrollBarVisibility="Hidden">
+                <leftSelectBar:LeftSelectBar Name="InstanceTabControl"
+                                             SelectedIndex="0"
+                                             SelectionChanged="InstanceTabControl_OnSelectionChanged">
                 <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Detail}"
                                                  Glyph="&#xE946;"
                                                  Tag="Info"
@@ -57,6 +59,7 @@
                                                  Tag="Information"
                                                  Name="Information" />
             </leftSelectBar:LeftSelectBar>
+            </ScrollViewer>
 
             <StackPanel Grid.Row="1"
                         Spacing="8"
@@ -166,7 +169,6 @@
         </Grid>
 
         <navigation:NavigationFrame Grid.Column="1"
-                                    Margin="0,0,10,0"
                                     Name="InstanceFrame" />
     </Grid>
 </UserControl>

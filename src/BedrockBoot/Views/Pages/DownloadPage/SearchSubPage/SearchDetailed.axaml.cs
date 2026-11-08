@@ -49,6 +49,11 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         private static SearchResourceType _lastSearchType = SearchResourceType.Unknow;
         private ISearch _currentSearch;
         private bool _isSearching;
+        private SearchInfo? _pendingSearch;
+        private bool _pendingSearchSaveHistory = true;
+        private SearchResultPage? _displayedResult;
+        private int _displayedPage;
+        private int _displayedTotalPages;
         private int _currentPage = 1;
         private int _totalPages;
 
@@ -88,10 +93,19 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             };
         }
 
-        public void OnSearch(SearchInfo info)
+        public void OnSearch(SearchInfo info, bool saveHistory = true)
         {
             SaveSearchType(info.Type);
-            SaveSearchHistory(info);
+            if (saveHistory)
+                SaveSearchHistory(info);
+
+            if (_isSearching)
+            {
+                _pendingSearch = info;
+                _pendingSearchSaveHistory = saveHistory;
+                return;
+            }
+
             _currentPage = 1;
             _totalPages = 1;
             ExecuteSearch(info);
@@ -140,6 +154,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
             _isSearching = true;
             LoadingRing.IsVisible = true;
+            ResultPage.IsVisible = false;
             NoneBox.IsVisible = false;
 
             Task.Run(() => PerformSearchAsync(info));
@@ -160,7 +175,6 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         private void PrepareSearchUI(SearchInfo info)
         {
             IsEdit = false;
-            ResultPage.IsVisible = false;
 
             MinecraftTypePanel.IsVisible = info.Type == SearchResourceType.Minecraft;
             CurseForgeResTypePanel.IsVisible = info.Type == SearchResourceType.ResourcePack;
@@ -197,6 +211,16 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
                 _isSearching = false;
                 IsEdit = true;
 
+                if (_pendingSearch != null)
+                {
+                    var pendingSearch = _pendingSearch;
+                    var saveHistory = _pendingSearchSaveHistory;
+                    _pendingSearch = null;
+                    _pendingSearchSaveHistory = true;
+                    OnSearch(pendingSearch, saveHistory);
+                    return;
+                }
+
                 if (error != null)
                     UpdateUIWithError(error);
                 else if (result != null)
@@ -216,6 +240,18 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
                 return;
             }
 
+            if (ResultsMatch(_displayedResult, result) &&
+                _displayedPage == _currentPage && _displayedTotalPages == _totalPages)
+            {
+                LoadingRing.IsVisible = false;
+                ResultPage.IsVisible = result.Items.Count > 0;
+                NoneBox.IsVisible = result.Items.Count == 0;
+                return;
+            }
+
+            _displayedResult = result;
+            _displayedPage = _currentPage;
+            _displayedTotalPages = _totalPages;
             if (result.Items.Count > 0)
             {
                 ResultPage.Update(CreateResultsView(result.Items), _totalPages, _currentPage);
@@ -228,6 +264,31 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
                 ResultPage.IsVisible = false;
                 NoneBox.IsVisible = true;
             }
+        }
+
+        private static bool ResultsMatch(SearchResultPage? current, SearchResultPage updated)
+        {
+            if (current == null || current.TotalCount != updated.TotalCount ||
+                current.Items.Count != updated.Items.Count)
+                return false;
+
+            for (var i = 0; i < current.Items.Count; i++)
+            {
+                var left = current.Items[i];
+                var right = updated.Items[i];
+                if (left.Id != right.Id || left.Name != right.Name ||
+                    left.Description != right.Description || left.IconUri != right.IconUri ||
+                    left.DownloadCount != right.DownloadCount || left.DateUpdated != right.DateUpdated ||
+                    left.DateCreated != right.DateCreated || left.SourceWebsite != right.SourceWebsite ||
+                    left.ResourceType != right.ResourceType || left.DataType != right.DataType ||
+                    left.JsonData != right.JsonData ||
+                    !left.Authors.SequenceEqual(right.Authors) ||
+                    !left.Labels.SequenceEqual(right.Labels) ||
+                    !(left.Images ?? new List<string>()).SequenceEqual(right.Images ?? new List<string>()))
+                    return false;
+            }
+
+            return true;
         }
 
         private void UpdateUIWithError(Exception ex)

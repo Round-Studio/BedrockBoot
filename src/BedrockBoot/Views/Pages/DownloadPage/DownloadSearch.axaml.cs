@@ -44,6 +44,10 @@ public partial class DownloadSearch : UserControl
     // 保存搜索状态
     private static string _lastSearchKey = string.Empty;
     private static SearchResourceType _lastSearchType = SearchResourceType.Unknow;
+    private readonly DispatcherTimer _versionSearchTimer = new()
+    {
+        Interval = TimeSpan.FromMilliseconds(300)
+    };
 
     public DownloadSearch()
     {
@@ -72,6 +76,31 @@ public partial class DownloadSearch : UserControl
 
             SearchDetailed!.OnSearch(restore);
         });
+
+        _versionSearchTimer.Tick += (_, _) =>
+        {
+            _versionSearchTimer.Stop();
+
+            var key = KeyBox.Text?.Trim() ?? string.Empty;
+            if (!Regex.IsMatch(key, @"^\d+(?:\.\d+)*\.?$") || !EnsureSearchDetailed())
+                return;
+
+            _lastSearchKey = key;
+            _lastSearchType = SearchResourceType.Minecraft;
+            SearchDetailed!.OnSearch(new SearchInfo
+            {
+                Key = key,
+                Type = SearchResourceType.Minecraft
+            }, saveHistory: false);
+        };
+
+        KeyBox.TextChanged += (_, _) =>
+        {
+            _versionSearchTimer.Stop();
+            var key = KeyBox.Text?.Trim() ?? string.Empty;
+            if (Regex.IsMatch(key, @"^\d+(?:\.\d+)*\.?$"))
+                _versionSearchTimer.Start();
+        };
 
         KeyBox.KeyDown += (sender, e) =>
         {
@@ -135,6 +164,7 @@ public partial class DownloadSearch : UserControl
 
     private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        _versionSearchTimer.Stop();
         if (!EnsureSearchDetailed()) return;
 
         var searchKey = KeyBox.Text;

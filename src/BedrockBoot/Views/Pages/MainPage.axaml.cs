@@ -239,8 +239,7 @@ public partial class MainPage : UserControl
         {
             var error = GitHubHelper.HandleException(ex);
 
-            Console.WriteLine($@"更新失败：{ex.Message}");
-
+            Console.WriteLine($@"更新失败：{ex}");
 
             DialogHost.Show(new DialogInfo
             {

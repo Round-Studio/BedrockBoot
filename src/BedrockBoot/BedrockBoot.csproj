@@ -36,6 +36,7 @@
         <TrimmerRootAssembly Include="BedrockBoot.Standard" />
         <TrimmerRootAssembly Include="BedrockBoot.Core" />
         <TrimmerRootAssembly Include="Round.SDK" />
+        <TrimmerRootAssembly Include="Octokit" />
     </ItemGroup>
 
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">

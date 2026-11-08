@@ -154,6 +154,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
             _isSearching = true;
             LoadingRing.IsVisible = true;
+            ResultPage.IsVisible = false;
             NoneBox.IsVisible = false;
 
             Task.Run(() => PerformSearchAsync(info));

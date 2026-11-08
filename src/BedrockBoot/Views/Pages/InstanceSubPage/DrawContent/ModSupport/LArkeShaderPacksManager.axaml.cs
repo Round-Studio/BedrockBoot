@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Avalonia;
@@ -27,6 +28,7 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Models.Pack.DllMods.LeviLamina.Arke;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Mods.Arke;
 using BedrockBoot.Views.Control.Items.Instance.Mods;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -37,6 +39,9 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.ModSupport;
 public partial class LArkeShaderPacksManager : UserControl
 {
     private readonly VersionConfig _instance;
+    private List<ArkeShaderPackInfo> _allPacks = new();
+    private string _searchKeyword = string.Empty;
+
     public ArkeShaderPacksManager ShaderPackManager { get; set; }
 
     public LArkeShaderPacksManager()
@@ -48,7 +53,7 @@ public partial class LArkeShaderPacksManager : UserControl
     {
         _instance = instance;
         ShaderPackManager = new ArkeShaderPacksManager(_instance);
-        
+
         UpdateUi();
     }
 
@@ -57,39 +62,66 @@ public partial class LArkeShaderPacksManager : UserControl
         LoadBox.IsVisible = true;
         NullBox.IsVisible = false;
         ResultBox.IsVisible = false;
-        var pkgs = ShaderPackManager.GetShaderPacks();
-        if(pkgs.Count == 0)
+
+        _allPacks = ShaderPackManager.GetShaderPacks();
+
+        ApplyFilter();
+    }
+
+    private void ApplyFilter()
+    {
+        LoadBox.IsVisible = true;
+        ResultBox.IsVisible = false;
+        NullBox.IsVisible = false;
+
+        var keyword = _searchKeyword?.Trim() ?? string.Empty;
+
+        var filtered = string.IsNullOrEmpty(keyword)
+            ? _allPacks
+            : _allPacks.Where(p =>
+                (!string.IsNullOrEmpty(p.PackName) &&
+                 p.PackName.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+            ).ToList();
+
+        if (filtered.Count == 0)
         {
             NullBox.IsVisible = true;
+            LoadBox.IsVisible = false;
+            return;
         }
-        else
+
+        NullBox.IsVisible = false;
+
+        ResultBox.Children.Clear();
+        foreach (var pkg in filtered)
         {
-            NullBox.IsVisible = false;
-            
-            ResultBox.Children.Clear();
-            pkgs.ForEach(pkg =>
+            ResultBox.Children.Add(new ArkeShaderPackItem(pkg, (pack) =>
             {
-                ResultBox.Children.Add(new ArkeShaderPackItem(pkg, (pack) =>
+                DialogHost.Show(new DialogInfo()
                 {
-                    DialogHost.Show(new DialogInfo()
+                    Title = $"删除 {pkg.PackName}",
+                    Content = "您确定要删除吗？",
+                    CloseButtonText = "确定",
+                    PrimaryButtonText = "取消",
+                    AccountButton = DialogButtons.CloseButton,
+                    CloseAction = () =>
                     {
-                        Title = $"删除 {pkg.PackName}",
-                        Content = "您确定要删除吗？",
-                        CloseButtonText = "确定",
-                        PrimaryButtonText = "取消",
-                        AccountButton = DialogButtons.CloseButton,
-                        CloseAction = () =>
-                        {
-                            File.Delete(pkg.PackPath);
-                            UpdateUi();
-                        }
-                    });
-                }));
-            });
-            
-            ResultBox.IsVisible = true;
+                        File.Delete(pkg.PackPath);
+                        _allPacks = ShaderPackManager.GetShaderPacks();
+                        ApplyFilter();
+                    }
+                });
+            }));
         }
+
+        ResultBox.IsVisible = true;
         LoadBox.IsVisible = false;
+    }
+
+    private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        _searchKeyword = SearchBox.Text ?? string.Empty;
+        ApplyFilter();
     }
 
     private void FolderBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -134,6 +166,7 @@ public partial class LArkeShaderPacksManager : UserControl
             File.Copy(localPath, destPath, true);
         }
 
-        UpdateUi();
+        _allPacks = ShaderPackManager.GetShaderPacks();
+        ApplyFilter();
     }
 }

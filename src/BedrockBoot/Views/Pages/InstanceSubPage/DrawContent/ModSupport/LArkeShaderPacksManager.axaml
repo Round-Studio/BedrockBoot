@@ -22,7 +22,8 @@
                         <TextBox Name="SearchBox"
                                  Watermark="键入关键词以搜索"
                                  HorizontalAlignment="Stretch"
-                                 DockPanel.Dock="Right" />
+                                 DockPanel.Dock="Right"
+                                 TextChanged="SearchBox_OnTextChanged" />
                     </DockPanel>
                 </Grid>
             </items:BorderCard>

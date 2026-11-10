@@ -20,6 +20,7 @@
 [![Bilibili](https://img.shields.io/badge/Bilibili-Dime12022-00A4DB?style=flat-square&logo=bilibili)](https://space.bilibili.com/1527364468)
 [![Group](https://img.shields.io/badge/Group-245839607_(一群)-00A4DB?style=flat-square&logo=tencent-qq)](https://qm.qq.com/q/ax057FTyl)
 [![Group](https://img.shields.io/badge/Group-686090554_(二群)-00A4DB?style=flat-square&logo=tencent-qq)](https://qm.qq.com/q/1VGh2ai5NS)
+[![Group](https://img.shields.io/badge/Group-1131735807_(三群)-00A4DB?style=flat-square&logo=tencent-qq)](https://qm.qq.com/q/WrJFwxfaes)
 
 </div>
 

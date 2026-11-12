@@ -53,10 +53,12 @@ public partial class SettingUniversal : ISettingPage
         // LanguageChoose.SelectedIndex = (int)GlobalModel.Config.Data.Language;
         LaunchBehaviorChoose.SelectedIndex = (int)GlobalModel.Config.Data.LaunchBehavior;
         UseHardwareDecode.IsChecked = GlobalModel.Config.Data.IsUseHardwareDecode;
+        CheckDeveloperModeAtStartup.IsChecked = GlobalModel.Config.Data.IsCheckDeveloperModeAtStartup;
         UseBetaUI.IsChecked = GlobalModel.Config.Data.IsUseBeta;
 
 #if LINUX
         JumpListCard.IsVisible = false;
+        DeveloperModeCheckCard.IsVisible = false;
         HelpInfo.IsVisible = false;
 #endif
 
@@ -127,6 +129,15 @@ public partial class SettingUniversal : ISettingPage
             GlobalModel.Config.Data.IsUseHardwareDecode = (bool)UseHardwareDecode.IsChecked!;
             GlobalModel.Config.Save();
             PlatformCore.CoreInit?.UpdateUseHardwareDecode(GlobalModel.Config.Data.IsUseHardwareDecode);
+        }
+    }
+
+    private void CheckDeveloperModeAtStartup_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.IsCheckDeveloperModeAtStartup = CheckDeveloperModeAtStartup.IsChecked ?? false;
+            GlobalModel.Config.Save();
         }
     }
 

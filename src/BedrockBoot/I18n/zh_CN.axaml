@@ -869,6 +869,8 @@
     <x:String x:Key="Settings.Universal.LaunchBehavior.Exit">启动后退出启动器</x:String>
     <x:String x:Key="Settings.Universal.HardwareDecode.Title">硬件解码</x:String>
     <x:String x:Key="Settings.Universal.HardwareDecode.Desc">设置安装游戏 (GDK) 时是否启用硬件解码，启用后可以提升安装速度，部分型号的 CPU 不支持此功能</x:String>
+    <x:String x:Key="Settings.Universal.DeveloperModeCheck.Title">启动启动器时检查 Windows 开发人员模式</x:String>
+    <x:String x:Key="Settings.Universal.DeveloperModeCheck.Desc">启动 BedrockBoot 时检查 Windows 开发人员模式状态，未开启 Windows 开发人员模式无法安装或启动 UWP 类型构建的 Minecraft</x:String>
     <x:String x:Key="Settings.Universal.BetaUI.Title">Beta 测试项</x:String>
     <x:String x:Key="Settings.Universal.BetaUI.Desc">启用或关闭 BedrockBoot 的 Beta 测试项</x:String>
     <x:String x:Key="Settings.Universal.Update.ReleaseNotes.Title">发行说明</x:String>

@@ -378,9 +378,14 @@ public class CoreInitialize
     private static async Task GetDevelopMode()
     {
 #if WINDOWS
-        var devMod = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
-        if (!devMod)
-            DeveloperModeHelper.ShowNotice();
+        if (!BedrockBoot.Core.Global.GlobalModel.Config.Data.IsCheckDeveloperModeAtStartup)
+            return;
+
+        var devModeCheck = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
+        if (devModeCheck.Status == DeveloperModeHelper.DeveloperModeCheckStatus.Disabled)
+            await DeveloperModeHelper.ShowNotice();
+        else if (devModeCheck.Status == DeveloperModeHelper.DeveloperModeCheckStatus.Failed)
+            await DeveloperModeHelper.ShowNotice(checkFailed: true);
 #endif
     }
 

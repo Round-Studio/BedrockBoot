@@ -65,6 +65,15 @@
                               IsCheckedChanged="UseHardwareDecode_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
 
+            <onePointControls:SettingCard Margin="5, 0"
+                                          Name="DeveloperModeCheckCard"
+                                          Header="{DynamicResource Settings.Universal.DeveloperModeCheck.Title}"
+                                          Description="{DynamicResource Settings.Universal.DeveloperModeCheck.Desc}"
+                                          Glyph="&#xE7EF;">
+                <ToggleSwitch Name="CheckDeveloperModeAtStartup"
+                              IsCheckedChanged="CheckDeveloperModeAtStartup_OnIsCheckedChanged" />
+            </onePointControls:SettingCard>
+
             <TextBlock Margin="5, 0"
                        FontWeight="Bold"
                        FontSize="14"

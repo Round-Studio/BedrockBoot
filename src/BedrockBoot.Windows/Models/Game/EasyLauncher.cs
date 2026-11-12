@@ -111,13 +111,22 @@ public class EasyLauncher : ILauncher
         if (VersionInfo.Info.BuildType == MinecraftBuildTypeVersion.UWP)
         {
             Console.WriteLine(@"当前实例为 UWP 构建类型，需要检测开发者模式。");
-            var devMod = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
+            var devModeCheck = DeveloperModeHelper.IsDeveloperModeViaPowerShell();
 
-            Console.WriteLine(@"开发者模式启用状态: " + devMod);
-            if (!devMod)
+            Console.WriteLine(@"开发者模式检测状态: " + devModeCheck.Status);
+            if (devModeCheck.Status == DeveloperModeHelper.DeveloperModeCheckStatus.Disabled)
+            {
+                var noticeResult = await DeveloperModeHelper.ShowNotice();
+                if (noticeResult != DeveloperModeHelper.DeveloperModeNoticeResult.Ignore)
+                {
+                    LaunchCompleted?.Invoke();
+                    return;
+                }
+            }
+            else if (devModeCheck.Status == DeveloperModeHelper.DeveloperModeCheckStatus.Failed)
             {
                 LaunchCompleted?.Invoke();
-                DeveloperModeHelper.ShowNotice();
+                await DeveloperModeHelper.ShowNotice(checkFailed: true);
                 return;
             }
         }

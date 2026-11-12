@@ -18,15 +18,35 @@
 
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
+using Avalonia;
+using BedrockBoot;
 using Avalonia.Threading;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Windows.Models.Helper;
 
 public class DeveloperModeHelper
 {
-    public static bool IsDeveloperModeViaPowerShell()
+    public enum DeveloperModeCheckStatus
+    {
+        Enabled,
+        Disabled,
+        Failed
+    }
+
+    public enum DeveloperModeNoticeResult
+    {
+        Dismissed,
+        OpenSettings,
+        Ignore
+    }
+
+    public readonly record struct DeveloperModeCheckResult(DeveloperModeCheckStatus Status, int? ExitCode);
+
+    public static DeveloperModeCheckResult IsDeveloperModeViaPowerShell()
     {
         string script = @"
             $paths = @(
@@ -67,40 +87,78 @@ public class DeveloperModeHelper
         {
             using (var process = Process.Start(startInfo))
             {
-                if (process == null) return false;
-                
-                string output = process.StandardOutput.ReadToEnd().Trim();
+                if (process == null)
+                    return new DeveloperModeCheckResult(DeveloperModeCheckStatus.Failed, null);
+
+                var outputTask = process.StandardOutput.ReadToEndAsync();
                 process.WaitForExit();
 
-                var result = output.Equals("true", StringComparison.OrdinalIgnoreCase);
-                Console.WriteLine($@"Pwsh 调用输出：{result}");
-                
-                return result;
+                string output = outputTask.GetAwaiter().GetResult().Trim();
+                int exitCode = process.ExitCode;
+                var status = exitCode == 0 && output.Equals("true", StringComparison.OrdinalIgnoreCase)
+                    ? DeveloperModeCheckStatus.Enabled
+                    : exitCode == 0 && output.Equals("false", StringComparison.OrdinalIgnoreCase)
+                        ? DeveloperModeCheckStatus.Disabled
+                        : DeveloperModeCheckStatus.Failed;
+
+                Console.WriteLine($@"Pwsh 标准输出：{output}");
+                Console.WriteLine($@"Pwsh 退出代码：{exitCode}");
+                Console.WriteLine($@"Pwsh 检测状态：{status}");
+
+                return new DeveloperModeCheckResult(status, exitCode);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"PowerShell 进程调用失败: {ex}");
-            return false;
+            return new DeveloperModeCheckResult(DeveloperModeCheckStatus.Failed, null);
         }
     }
 
-    public static void ShowNotice()
+    public static Task<DeveloperModeNoticeResult> ShowNotice(bool checkFailed = false)
     {
-        Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo
-        {
-            Title = "未开启开发者模式",
-            Content = "当前系统未开启管理员模式，\n" +
-                      "需要前往 系统设置>高级 中开启开发者模式",
-            CloseButtonText = "打开系统高级设置",
-            CloseAction = () =>
+        var completion = new TaskCompletionSource<DeveloperModeNoticeResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+
+        Dispatcher.UIThread.Invoke(() => DialogHost.Show(checkFailed
+            ? new DialogInfo
             {
-                Process.Start(new ProcessStartInfo()
+                Title = "检查 Windows 开发人员模式失败",
+                Content = "无法自动确认 Windows 开发人员模式状态。\n未开启 Windows 开发人员模式无法安装或启动 UWP 类型构建的 Minecraft\n\n请手动检查 Windows 设置中的“开发人员模式”是否开启",
+                SecondaryButtonText = "手动检查",
+                SecondaryAction = () =>
                 {
-                    FileName = "ms-settings:developers",
-                    UseShellExecute = true
-                });
+                    completion.TrySetResult(DeveloperModeNoticeResult.OpenSettings);
+                    OpenDeveloperSettings();
+                },
+                CloseButtonText = "确定",
+                CloseAction = () => completion.TrySetResult(DeveloperModeNoticeResult.Dismissed),
+                AccountButton = DialogButtons.CloseButton
             }
-        }));
+            : new DialogInfo
+            {
+                Title = "未开启开发人员模式",
+                Content = "当前系统未开启开发人员模式，无法安装或启动 UWP 类型构建的 Minecraft。\n\n请前往 Windows 设置中的“开发人员模式”开启。",
+                SecondaryButtonText = "忽略",
+                SecondaryAction = () => completion.TrySetResult(DeveloperModeNoticeResult.Ignore),
+                CloseButtonText = "确定",
+                CloseAction = () =>
+                {
+                    completion.TrySetResult(DeveloperModeNoticeResult.OpenSettings);
+                    OpenDeveloperSettings();
+                },
+                AccountButton = DialogButtons.CloseButton
+            }));
+
+        return completion.Task;
+    }
+
+    private static void OpenDeveloperSettings()
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "ms-settings:developers",
+            UseShellExecute = true
+        });
     }
 }

@@ -31,6 +31,10 @@ jobs:
   win-build:
     runs-on: windows-latest
     needs: version
+    env:
+      CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      API_GITHUB_CLIENT_ID: ${{ secrets.API_GITHUB_CLIENT_ID }}
+      API_GITHUB_SECRET: ${{ secrets.API_GITHUB_SECRET }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,6 +68,10 @@ jobs:
   linux-build:
     runs-on: ubuntu-latest
     needs: version
+    env:
+      CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      API_GITHUB_CLIENT_ID: ${{ secrets.API_GITHUB_CLIENT_ID }}
+      API_GITHUB_SECRET: ${{ secrets.API_GITHUB_SECRET }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

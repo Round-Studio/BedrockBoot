@@ -355,7 +355,7 @@
     <x:String x:Key="Plugin.LeviLamina.NotSupport">该实例版本过低或不兼容，无法安装 LeviLamina。</x:String>
 
     <x:String x:Key="Download.Title">下载</x:String>
-    <x:String x:Key="Download.Tab.Assets">资源包</x:String>
+    <x:String x:Key="Download.Tab.Assets">CurseForge 资源</x:String>
     <x:String x:Key="Download.List.Empty">未找到符合条件的版本</x:String>
 
     <x:String x:Key="Download.Action.GetResource">下载资源</x:String>
@@ -364,6 +364,7 @@
     <x:String x:Key="Download.Game.Type.Release">正式版</x:String>
     <x:String x:Key="Download.Game.Type.Preview">预览版</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta 版</x:String>
+    <x:String x:Key="Download.Game.Type.All">全部</x:String>
 
     <x:String x:Key="Download.Assets.Status.Loading.Title">收集电子中...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">全体电子，列队！</x:String>

@@ -50,8 +50,9 @@
                           SelectedIndex="1"
                           SelectionChanged="GameType_OnSelectionChanged"
                           Name="GameType">
-                    <ComboBoxItem Content="{DynamicResource Download.Game.Type.Preview}" />
+                    <ComboBoxItem Content="{DynamicResource Download.Game.Type.All}" />
                     <ComboBoxItem Content="{DynamicResource Download.Game.Type.Release}" />
+                    <ComboBoxItem Content="{DynamicResource Download.Game.Type.Preview}" />
                     <ComboBoxItem Content="{DynamicResource Download.Game.Type.Beta}" />
                 </ComboBox>
 

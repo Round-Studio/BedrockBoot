@@ -284,6 +284,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
                     left.JsonData != right.JsonData ||
                     !left.Authors.SequenceEqual(right.Authors) ||
                     !left.Labels.SequenceEqual(right.Labels) ||
+                    !left.HeaderLabels.SequenceEqual(right.HeaderLabels) ||
                     !(left.Images ?? new List<string>()).SequenceEqual(right.Images ?? new List<string>()))
                     return false;
             }

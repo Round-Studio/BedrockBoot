@@ -15,6 +15,11 @@
                         Spacing="4">
                 <TextBlock Name="ItemName"
                            Text="ItemName" />
+                <StackPanel Orientation="Horizontal"
+                            Spacing="4"
+                            Name="HeaderLabelsPanel"
+                            VerticalAlignment="Center"
+                            IsVisible="False" />
 
                 <TextBlock Name="Authors"
                            FontSize="11"

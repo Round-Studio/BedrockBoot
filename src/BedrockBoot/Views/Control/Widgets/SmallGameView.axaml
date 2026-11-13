@@ -16,8 +16,16 @@
             <StackPanel Grid.Column="1"
                         Margin="5,-1,0,1"
                         HorizontalAlignment="Stretch">
-                <TextBlock Text="Version"
-                           Name="VersionText" />
+                <StackPanel Orientation="Horizontal"
+                            Spacing="4">
+                    <TextBlock Text="Version"
+                               Name="VersionText"
+                               VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="4"
+                                Name="LabelsPanel"
+                                VerticalAlignment="Center" />
+                </StackPanel>
                 <TextBlock Text="Date"
                            Name="DescriptionText"
                            FontSize="9"

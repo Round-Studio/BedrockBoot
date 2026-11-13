@@ -168,13 +168,15 @@ public partial class SearchDefault : UserControl
                 if (release != null)
                 {
                     ReleaseBtn.Version = release.Name;
-                    ReleaseBtn.Description = $"{release.Id}, {release.DateUpdated}, Release";
+                    ReleaseBtn.Description = $"{release.Id}, {release.DateUpdated:yyyy-MM-dd}";
+                    ReleaseBtn.Labels = release.Labels;
                 }
 
                 if (preview != null)
                 {
                     PreviewBtn.Version = preview.Name;
-                    PreviewBtn.Description = $"{preview.Id}, {preview.DateUpdated}, Preview";
+                    PreviewBtn.Description = $"{preview.Id}, {preview.DateUpdated:yyyy-MM-dd}";
+                    PreviewBtn.Labels = preview.Labels;
                 }
 
                 RecommendationPanel.IsVisible = true;

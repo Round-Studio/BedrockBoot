@@ -20,6 +20,7 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
 namespace BedrockBoot.Views.Control.Widgets;
 
@@ -44,6 +45,16 @@ public partial class SmallGameView : UserControl
     {
         get => DescriptionText.Text ?? "";
         set => DescriptionText.Text = value;
+    }
+
+    public System.Collections.Generic.List<string> Labels
+    {
+        set
+        {
+            LabelsPanel.Children.Clear();
+            foreach (var label in value)
+                LabelsPanel.Children.Add(new LabelBox { Text = label });
+        }
     }
 
     public IImage Icon

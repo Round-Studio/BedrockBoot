@@ -49,8 +49,10 @@ public partial class SearchItem : UserControl
         Authors.Text = string.Join(", ", info.Authors);
 
         if (info.Labels.Count > 0) LabelsPanel.IsVisible = true;
+        if (info.HeaderLabels.Count > 0) HeaderLabelsPanel.IsVisible = true;
 
         info.Labels.ForEach(s => LabelsPanel.Children.Add(new LabelBox { Text = s }));
+        info.HeaderLabels.ForEach(s => HeaderLabelsPanel.Children.Add(new LabelBox { Text = s }));
 
         Update();
     }

@@ -370,6 +370,7 @@
     <x:String x:Key="Download.Game.Type.Release">Релиз</x:String>
     <x:String x:Key="Download.Game.Type.Preview">Предварительный просмотр</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Бета</x:String>
+    <x:String x:Key="Download.Game.Type.All">Все</x:String>
 
     <x:String x:Key="Download.Assets.Status.Loading.Title">Сбор активов...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">Все активы, вливайтесь!</x:String>

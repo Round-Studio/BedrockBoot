@@ -364,6 +364,7 @@
     <x:String x:Key="Download.Game.Type.Release">Release</x:String>
     <x:String x:Key="Download.Game.Type.Preview">Preview</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta</x:String>
+    <x:String x:Key="Download.Game.Type.All">All</x:String>
 
     <x:String x:Key="Download.Assets.Status.Loading.Title">Collecting Assets...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">All assets, fall in!</x:String>

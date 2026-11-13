@@ -48,13 +48,23 @@ public class MinecraftSearch : ISearch
             {
                 Id = release.ID,
                 Name = release.Key,
-                DateUpdated = Convert.ToDateTime(release.Date)
+                DateUpdated = Convert.ToDateTime(release.Date),
+                Labels = new List<string>
+                {
+                    I18nManager.Instance["Download.Game.Type.Release"],
+                    release.BuildType.ToString()
+                }
             },
             new()
             {
                 Id = preview.ID,
                 Name = preview.Key,
-                DateUpdated = Convert.ToDateTime(preview.Date)
+                DateUpdated = Convert.ToDateTime(preview.Date),
+                Labels = new List<string>
+                {
+                    I18nManager.Instance["Download.Game.Type.Preview"],
+                    preview.BuildType.ToString()
+                }
             }
         };
         return list;
@@ -70,8 +80,16 @@ public class MinecraftSearch : ISearch
     {
         return Task.Run(() =>
         {
+            MinecraftGameTypeVersion? selectedType = _selectedGameTypeIndex switch
+            {
+                0 => null,
+                1 => MinecraftGameTypeVersion.Release,
+                2 => MinecraftGameTypeVersion.Preview,
+                3 => MinecraftGameTypeVersion.Beta,
+                _ => null
+            };
             var allVersions = VersionHelper.GetVersions()
-                .Where(x => x.Type == (MinecraftGameTypeVersion)_selectedGameTypeIndex)
+                .Where(x => selectedType == null || x.Type == selectedType)
 #if LINUX
                     .Where(x => x.BuildType == MinecraftBuildTypeVersion.GDK)
 #endif
@@ -105,9 +123,14 @@ public class MinecraftSearch : ISearch
                 return count;
             }
 
-            filteredVersions = filteredVersions
-                .OrderByDescending(x => MatchCount(x.Key))
-                .ToList();
+            filteredVersions = string.IsNullOrWhiteSpace(keyword)
+                ? filteredVersions
+                    .OrderByDescending(x => Convert.ToDateTime(x.Date))
+                    .ToList()
+                : filteredVersions
+                    .OrderByDescending(x => MatchCount(x.Key))
+                    .ThenByDescending(x => Convert.ToDateTime(x.Date))
+                    .ToList();
 
             var currentIndex = (page - 1) * pageSize;
             var currentPageVersions = filteredVersions
@@ -121,7 +144,18 @@ public class MinecraftSearch : ISearch
                 items.Add(new SearchResultItemInfo
                 {
                     Name = i.Key,
-                    Description = $"{i.ID}, {i.BuildType}, {i.Date}",
+                    Description = $"{i.ID}, {Convert.ToDateTime(i.Date):yyyy-MM-dd}",
+                    HeaderLabels = new List<string>
+                    {
+                        I18nManager.Instance[i.Type switch
+                        {
+                            MinecraftGameTypeVersion.Release => "Download.Game.Type.Release",
+                            MinecraftGameTypeVersion.Preview => "Download.Game.Type.Preview",
+                            MinecraftGameTypeVersion.Beta => "Download.Game.Type.Beta",
+                            _ => "Download.Game.Type.Release"
+                        }],
+                        i.BuildType.ToString()
+                    },
                     IconUri = i.Type == MinecraftGameTypeVersion.Release
                         ? "avares://BedrockBoot/Assets/Icon/Logo/Grass.png"
                         : "avares://BedrockBoot/Assets/Icon/Logo/GrassScript.png",

@@ -364,6 +364,7 @@
     <x:String x:Key="Download.Game.Type.Release">正式版</x:String>
     <x:String x:Key="Download.Game.Type.Preview">預覽版</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta 版</x:String>
+    <x:String x:Key="Download.Game.Type.All">全部</x:String>
 
     <x:String x:Key="Download.Assets.Status.Loading.Title">收集緊電子...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">全體電子，排隊！</x:String>

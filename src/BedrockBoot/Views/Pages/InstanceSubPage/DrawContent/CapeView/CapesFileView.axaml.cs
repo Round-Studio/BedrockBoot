@@ -96,9 +96,8 @@ public partial class CapesFileView : UserControl
                     CapeName = dialog.CapeNameStr,
                     Type = dialog.CapeFileType
                 });
+                UpdateContent();
             }
         });
-
-        UpdateContent();
     }
 }

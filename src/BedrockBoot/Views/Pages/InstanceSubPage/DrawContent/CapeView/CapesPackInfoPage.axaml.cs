@@ -106,7 +106,7 @@ public partial class CapesPackInfoPage : UserControl
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "导出披风包",
-            SuggestedFileName = Path.GetFileName(_unit.Folder),
+            SuggestedFileName = _unit.PackDisplayName(),
             DefaultExtension = "mccapes",
             FileTypeChoices = new[] { new FilePickerFileType("McCapes") { Patterns = new[] { "*.mccapes" } } }
         });

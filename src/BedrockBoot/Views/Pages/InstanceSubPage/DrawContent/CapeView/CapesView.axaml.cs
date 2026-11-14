@@ -29,6 +29,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Capes;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Views.Control.Items.Cape;
+using BedrockBoot.Views.DialogContent.Cape;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -99,6 +100,20 @@ public partial class CapesView : UserControl
 
     private void CreateGroupBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        var dialog = new DialogCreateCapePackContent();
+        DialogHost.Show(new DialogInfo
+        {
+            Title = "创建披风包",
+            Content = dialog,
+            CloseButtonText = "取消",
+            PrimaryButtonText = "创建",
+            AccountButton = DialogButtons.PrimaryButton,
+            PrimaryAction = () =>
+            {
+                if (string.IsNullOrWhiteSpace(dialog.PackNameStr)) return;
+                Manager.CreatePack(dialog.PackNameStr, dialog.AuthorStr);
+                UpdateContent();
+            }
+        });
     }
 }

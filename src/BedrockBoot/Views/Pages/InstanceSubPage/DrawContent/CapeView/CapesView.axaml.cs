@@ -60,7 +60,17 @@ public partial class CapesView : UserControl
     {
         CapesPackBox.Children.Clear();
 
+        var keyword = SearchBox.Text?.Trim() ?? string.Empty;
         var packs = Manager.LoadPacks();
+
+        if (!string.IsNullOrEmpty(keyword))
+            packs = packs.Where(pack =>
+            {
+                var folderName = Path.GetFileName(pack.Folder) ?? string.Empty;
+                return pack.PackDisplayName().Contains(keyword, StringComparison.OrdinalIgnoreCase)
+                       || folderName.Contains(keyword, StringComparison.OrdinalIgnoreCase);
+            }).ToList();
+
         NullBox.IsVisible = packs.Count == 0;
 
         foreach (var pack in packs)
@@ -115,5 +125,10 @@ public partial class CapesView : UserControl
                 UpdateContent();
             }
         });
+    }
+
+    private void SearchBox_OnTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        UpdateContent();
     }
 }

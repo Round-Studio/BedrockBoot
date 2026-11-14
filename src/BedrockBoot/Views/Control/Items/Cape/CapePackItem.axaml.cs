@@ -24,6 +24,9 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using BedrockBoot.Models.Pack.Game.Capes;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Control.Items.Cape;
 
@@ -31,6 +34,7 @@ public partial class CapePackItem : UserControl
 {
     private readonly CapesPackUnit _unit;
     public Action? EditAction { get; set; }
+    public Action? DeleteAction { get; set; }
 
     public CapePackItem()
     {
@@ -40,7 +44,7 @@ public partial class CapePackItem : UserControl
     {
         _unit = unit;
         
-        SettingExpander.Header = _unit.SourceManifest?.Data.Header.Name ?? "Local Cape Pack";
+        SettingExpander.Header = _unit.PackDisplayName();
         SettingExpander.Description = $"共 {_unit.LoadCapeFile().Count} 个披风文件";
         if (!string.IsNullOrEmpty(_unit.PackIcon))
         {
@@ -56,5 +60,22 @@ public partial class CapePackItem : UserControl
     private void EditBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         EditAction?.Invoke();
+    }
+
+    private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        DialogHost.Show(new DialogInfo
+        {
+            Title = "删除披风包",
+            Content = $"确定要删除披风包 “{SettingExpander.Header}” 吗？其中的所有披风都会被一并删除，该操作无法撤销。",
+            CloseButtonText = "取消",
+            PrimaryButtonText = "删除",
+            AccountButton = DialogButtons.PrimaryButton,
+            PrimaryAction = () =>
+            {
+                _unit.Delete();
+                DeleteAction?.Invoke();
+            }
+        });
     }
 }

@@ -18,6 +18,12 @@
                                                   Click="EditBtn_OnClick"
                                                   Header="编辑该披风包">
                     </onePointControls:SettingCard>
+                    <onePointControls:SettingCard Name="DeleteBtn"
+                                                  IsClickable="True"
+                                                  Glyph="&#xE74D;"
+                                                  Click="DeleteBtn_OnClick"
+                                                  Header="删除该披风包">
+                    </onePointControls:SettingCard>
                 </StackPanel>
             </StackPanel>
         </onePointControls:SettingExpander>

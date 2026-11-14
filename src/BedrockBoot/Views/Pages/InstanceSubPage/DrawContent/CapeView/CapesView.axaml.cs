@@ -18,6 +18,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -65,14 +66,35 @@ public partial class CapesView : UserControl
         {
             CapesPackBox.Children.Add(new CapePackItem(pack)
             {
-                EditAction = () => EditAction?.Invoke(pack)
+                EditAction = () => EditAction?.Invoke(pack),
+                DeleteAction = UpdateContent
             });
         }
     }
 
-    private void ImportPackBtn_OnClick(object? sender, RoutedEventArgs e)
+    private async void ImportPackBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "选择披风包",
+            AllowMultiple = true,
+            FileTypeFilter = new[] { new FilePickerFileType("披风包") { Patterns = new[] { "*.mccapes" } } }
+        });
+        if (files is not { Count: >= 1 }) return;
+
+        var failed = Manager.ImportPacks(files.Select(f => f.Path.LocalPath).ToList());
+        UpdateContent();
+
+        if (failed.Count > 0)
+            DialogHost.Show(new DialogInfo
+            {
+                Title = "导入披风包",
+                Content = $"以下披风包导入失败（缺少 manifest.json 或文件损坏）：\n{string.Join("\n", failed)}",
+                CloseButtonText = "确定"
+            });
     }
 
     private void CreateGroupBtn_OnClick(object? sender, RoutedEventArgs e)

@@ -13,6 +13,7 @@
             <StackPanel Name="ControlPanel">
                 <onePointControls:SettingCard Name="Delete"
                                               IsClickable="True"
+                                              Glyph="&#xE74D;"
                                               Click="DeleteBtn_OnClick"
                                               Header="删除该披风">
                 </onePointControls:SettingCard>

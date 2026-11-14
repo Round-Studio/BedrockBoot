@@ -50,7 +50,7 @@ public partial class CapesPackInfoPage : UserControl
     {
         _isEdit = false;
 
-        PackNameBox.Text = _unit.SourceManifest?.Data.Header.Name ?? string.Empty;
+        PackNameBox.Text = _unit.PackDisplayName();
         AuthorBox.Text = _unit.SourceManifest?.Data.Metadata?.Authors[0] ?? string.Empty;
 
         _isEdit = true;
@@ -61,8 +61,7 @@ public partial class CapesPackInfoPage : UserControl
         if (!_isEdit) return;
         var name = PackNameBox.Text?.Trim();
         if (string.IsNullOrWhiteSpace(name)) return;
-        _unit.SourceManifest?.Data.Header.Name = name;
-        _unit.SourceManifest?.Save();
+        _unit.SetPackName(name);
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             if (VisualRoot is CapesPackSetting host) host.UpdateUI();

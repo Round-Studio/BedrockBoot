@@ -43,7 +43,7 @@ public partial class CapesPackSetting : UserControl
 
     public void UpdateUI()
     {
-        PackNameLabel.Text = _unit.SourceManifest.Data.Header.Name;
+        PackNameLabel.Text = _unit.PackDisplayName();
         NavigationFrame.NavigateTo(new CapesFileView(_unit));
     }
 

@@ -61,7 +61,10 @@ public partial class CapesFileView : UserControl
 
         foreach (var stableKey in capes)
         {
-            CapesBox.Children.Add(new CapeFileItem(_unit, stableKey));
+            CapesBox.Children.Add(new CapeFileItem(_unit, stableKey)
+            {
+                DeleteAction = UpdateContent
+            });
         }
     }
 

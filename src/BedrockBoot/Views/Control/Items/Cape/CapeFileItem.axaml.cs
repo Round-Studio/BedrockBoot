@@ -25,6 +25,9 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Pack.Game.Capes;
 using BedrockBoot.Standard.Entity.Game.Pack.Capes;
 using BedrockBoot.Standard.Entity.Game.Pack.Capes.Manifest;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Base.Enum;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Control.Items.Cape;
 
@@ -32,6 +35,8 @@ public partial class CapeFileItem : UserControl
 {
     private readonly CapesPackUnit _unit;
     private readonly CapeDefinition _capeDefinition;
+
+    public Action? DeleteAction { get; set; }
 
     public CapeFileItem()
     {
@@ -48,6 +53,18 @@ public partial class CapeFileItem : UserControl
 
     private void DeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        DialogHost.Show(new DialogInfo
+        {
+            Title = "删除披风",
+            Content = $"确定要删除披风 “{SettingExpander.Header}” 吗？该操作无法撤销。",
+            CloseButtonText = "取消",
+            PrimaryButtonText = "删除",
+            AccountButton = DialogButtons.PrimaryButton,
+            PrimaryAction = () =>
+            {
+                _unit.RemoveCape(_capeDefinition);
+                DeleteAction?.Invoke();
+            }
+        });
     }
 }

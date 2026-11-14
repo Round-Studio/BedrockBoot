@@ -43,11 +43,11 @@ public partial class InstanceCape : UserControl
         if (isCapesView)
             NavigationFrame.NavigateTo(new CapesView(VersionInfo)
             {
-                EditAction = info => OnNavigatedTo(false, new CapesPackSetting(VersionInfo, info.FolderName)
+                /*EditAction = info => OnNavigatedTo(false, new CapesPackSetting(VersionInfo, info.FolderName)
                 {
                     BackAction = () =>
                         OnNavigatedTo(true)
-                })
+                })*/
             });
         else
             NavigationFrame.NavigateTo((UserControl)page);

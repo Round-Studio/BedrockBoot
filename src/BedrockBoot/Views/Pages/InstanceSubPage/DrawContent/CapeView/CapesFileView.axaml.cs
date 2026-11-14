@@ -37,17 +37,15 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.CapeView;
 
 public partial class CapesFileView : UserControl
 {
-    private readonly VersionConfig _versionInfo;
-    private readonly string _folderName;
-    
+    private readonly CapesPackUnit _unit;
+
     public CapesFileView()
     {
         InitializeComponent();
     }
-    public CapesFileView(VersionConfig versionInfo, string folderName):this()
+    public CapesFileView(CapesPackUnit unit):this()
     {
-        _versionInfo = versionInfo;
-        _folderName = folderName;
+        _unit = unit;
         UpdateContent();
     }
 
@@ -55,80 +53,13 @@ public partial class CapesFileView : UserControl
     {
         CapesBox.Children.Clear();
 
-        var capes = CapesPackManager.LoadCapeList(_versionInfo.VersionPath, _folderName);
+        var capes = _unit.LoadCapeFile();
         NullBox.IsVisible = capes.Count == 0;
 
         foreach (var stableKey in capes)
         {
-            CapesBox.Children.Add(BuildCapeCard(stableKey));
+            // CapesBox.Children.Add();
         }
-    }
-
-    private SettingCard BuildCapeCard(string stableKey)
-    {
-        var texturePath = CapesPackManager.GetTexturePath(_versionInfo.VersionPath, _folderName, stableKey);
-        var displayName = FindLangName(stableKey) ?? stableKey;
-
-        var card = new SettingCard
-        {
-            Header = displayName,
-            Description = texturePath is null
-                ? "缺少纹理文件"
-                : Path.GetFileName(texturePath),
-        };
-
-        var content = new StackPanel
-        {
-            Orientation = Avalonia.Layout.Orientation.Horizontal,
-            Spacing = 8,
-        };
-
-        if (texturePath is not null && File.Exists(texturePath))
-        {
-            try
-            {
-                content.Children.Add(new Image
-                {
-                    Width = 64,
-                    Height = 32,
-                    Source = new Bitmap(texturePath),
-                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                });
-            }
-            catch
-            {
-            }
-        }
-
-        content.Children.Add(BuildDeleteButton(displayName, stableKey));
-        card.Content = content;
-        return card;
-    }
-
-    private Button BuildDeleteButton(string displayName, string stableKey)
-    {
-        var button = new Button
-        {
-            Content = "删除",
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-        };
-        button.Click += (_, _) =>
-        {
-            DialogHost.Show(new DialogInfo
-            {
-                Title = "删除披风",
-                Content = string.Format("确定要删除披风 “{0}” 吗？", displayName),
-                PrimaryButtonText = "删除",
-                CloseButtonText = "取消",
-                AccountButton = DialogButtons.PrimaryButton,
-                PrimaryAction = () =>
-                {
-                    CapesPackManager.RemoveCape(_versionInfo.VersionPath, _folderName, stableKey);
-                    Dispatcher.UIThread.Invoke(UpdateContent);
-                }
-            });
-        };
-        return button;
     }
 
     private async void AddCapeBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -148,7 +79,7 @@ public partial class CapesFileView : UserControl
         var errors = new List<string>();
         foreach (var file in files)
         {
-            var error = CapesPackManager.AddCape(_versionInfo.VersionPath, _folderName, file.Path.LocalPath);
+            /*var error = CapesPackManager.AddCape(_versionInfo.VersionPath, _folderName, file.Path.LocalPath);
             if (error is null)
             {
                 added++;
@@ -156,7 +87,7 @@ public partial class CapesFileView : UserControl
             else
             {
                 errors.Add($"{file.Name}: {error}");
-            }
+            }*/
         }
 
         UpdateContent();
@@ -179,40 +110,5 @@ public partial class CapesFileView : UserControl
                 NoticeType = NoticeType.Info
             });
         }
-    }
-
-    private string? FindLangName(string stableKey)
-    {
-        try
-        {
-            var packPath = CapesPackManager.GetPackPath(_versionInfo.VersionPath, _folderName);
-            var langPath = Path.Combine(packPath, "texts", "zh_CN.lang");
-            if (!File.Exists(langPath)) return null;
-
-            string? packKey = null;
-            var capeJsonPath = Path.Combine(packPath, "cape.json");
-            if (File.Exists(capeJsonPath) &&
-                JsonNode.Parse(File.ReadAllText(capeJsonPath)) is JsonObject sheet &&
-                sheet["localization_name"] is JsonValue keyValue)
-            {
-                packKey = keyValue.GetValue<string>();
-            }
-            packKey ??= "capepack";
-
-            foreach (var line in File.ReadAllLines(langPath))
-            {
-                var trimmed = line.Trim();
-                var separator = trimmed.IndexOf('=');
-                if (separator <= 0) continue;
-                if (trimmed[..separator].Trim() == $"cape.{packKey}.{stableKey}")
-                {
-                    return trimmed[(separator + 1)..].Trim();
-                }
-            }
-        }
-        catch
-        {
-        }
-        return null;
     }
 }

@@ -32,8 +32,7 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.CapeView;
 
 public partial class CapesPackInfoPage : UserControl
 {
-    private readonly VersionConfig _versionInfo;
-    private readonly string _folderName;
+    private readonly CapesPackUnit _unit;
     private bool _isEdit;
 
     public CapesPackInfoPage()
@@ -41,25 +40,18 @@ public partial class CapesPackInfoPage : UserControl
         InitializeComponent();
     }
 
-    public CapesPackInfoPage(VersionConfig versionInfo, string folderName) : this()
+    public CapesPackInfoPage(CapesPackUnit unit) : this()
     {
-        _versionInfo = versionInfo;
-        _folderName = folderName;
+        _unit = unit;
         UpdateContent();
-    }
-
-    private CapesPackInfo? LoadPack()
-    {
-        return CapesPackManager.LoadPacks(_versionInfo.VersionPath).Find(p => p.FolderName == _folderName);
     }
 
     private void UpdateContent()
     {
         _isEdit = false;
 
-        var pack = LoadPack();
-        PackNameBox.Text = pack?.PackName ?? string.Empty;
-        AuthorBox.Text = pack?.Authors ?? string.Empty;
+        PackNameBox.Text = _unit.SourceManifest?.Data.Header.Name ?? string.Empty;
+        AuthorBox.Text = _unit.SourceManifest?.Data.Metadata?.Authors[0] ?? string.Empty;
 
         _isEdit = true;
     }
@@ -69,7 +61,8 @@ public partial class CapesPackInfoPage : UserControl
         if (!_isEdit) return;
         var name = PackNameBox.Text?.Trim();
         if (string.IsNullOrWhiteSpace(name)) return;
-        CapesPackManager.UpdatePackName(_versionInfo.VersionPath, _folderName, name);
+        _unit.SourceManifest?.Data.Header.Name = name;
+        _unit.SourceManifest?.Save();
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             if (VisualRoot is CapesPackSetting host) host.UpdateUI();
@@ -79,7 +72,9 @@ public partial class CapesPackInfoPage : UserControl
     private void AuthorBox_OnTextChanged(object? sender, TextChangedEventArgs e)
     {
         if (!_isEdit) return;
-        CapesPackManager.SetAuthors(_versionInfo.VersionPath, _folderName, AuthorBox.Text?.Trim() ?? string.Empty);
+        
+        _unit.SourceManifest?.Data.Metadata?.Authors[0] = AuthorBox.Text?.Trim()!;
+        _unit.SourceManifest?.Save();
     }
 
     private async void PickIconBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -95,8 +90,7 @@ public partial class CapesPackInfoPage : UserControl
         });
         if (files is not { Count: >= 1 }) return;
 
-        var bytes = await File.ReadAllBytesAsync(files[0].Path.LocalPath);
-        CapesPackManager.SetIcon(_versionInfo.VersionPath, _folderName, bytes);
+        _unit.SetPackIcon(files[0].Path.LocalPath);
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
             Title = "成功",
@@ -113,18 +107,18 @@ public partial class CapesPackInfoPage : UserControl
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "导出披风包",
-            SuggestedFileName = _folderName,
+            SuggestedFileName = Path.GetFileName(_unit.Folder),
             DefaultExtension = "mccapes",
             FileTypeChoices = new[] { new FilePickerFileType("McCapes") { Patterns = new[] { "*.mccapes" } } }
         });
         if (file is null) return;
 
-        var error = CapesPackManager.ExportPack(_versionInfo.VersionPath, _folderName, file.Path.LocalPath);
+        _unit.ExportPack(file.Path.LocalPath);
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = error is null ? "成功" : "导出失败",
-            Message = error ?? string.Format("披风包已导出到 {0}", file.Path.LocalPath),
-            NoticeType = error is null ? NoticeType.Info : NoticeType.Warning
+            Title = "导出成功",
+            Message = "披风包已导出到 " + file.Path.LocalPath,
+            NoticeType = NoticeType.Info
         });
     }
 }

@@ -30,7 +30,19 @@
 
             <items:BorderCard Grid.Column="1"
                               Margin="0,0,20,10">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <Button Classes="NoBorder"
+                            Name="ImportPackBtn"
+                            Click="ImportPackBtn_OnClick"
+                            Padding="12,8">
+                        <StackPanel Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xE8B5;"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,1,8,0" />
+                            <TextBlock Text="导入包" />
+                        </StackPanel>
+                    </Button>
                     <Button Classes="NoBorder"
                             Name="CreateGroupBtn"
                             Click="CreateGroupBtn_OnClick"
@@ -39,7 +51,7 @@
                             <onePointControls:FontIcon Glyph="&#xE710;"
                                                        VerticalAlignment="Center"
                                                        Margin="0,1,8,0" />
-                            <TextBlock Text="创建组别" />
+                            <TextBlock Text="创建披风包" />
                         </StackPanel>
                     </Button>
                 </StackPanel>

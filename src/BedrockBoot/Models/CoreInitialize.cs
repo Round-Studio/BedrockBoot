@@ -239,7 +239,9 @@ public class CoreInitialize
 #endif
     }
 
-    private static async Task InitBedrockCoreAsync()
+    /// <summary>装配平台框架：账户回调接线 + PlatformCore.InstallAsync + 解码/启动开关。
+    /// -jump 快捷启动等无主窗口场景可在启动游戏前单独调用。</summary>
+    public static async Task InitPlatformAsync()
     {
         try
         {
@@ -324,7 +326,6 @@ public class CoreInitialize
                 MouseLockerType = mouseLockerType,
                 PackageUrlsProvider = packageUrlsProvider
             });
-            PlatformCore.Tray?.Initialize();
             PlatformCore.CoreInit?.UpdateUseHardwareDecode(Core.Global.GlobalModel.Config.Data.IsUseHardwareDecode);
             PlatformCore.CoreInit?.UpdateUseNeoLaunch(Core.Global.GlobalModel.Config.Data.IsUseNeoLaunch);
         }
@@ -341,6 +342,13 @@ public class CoreInitialize
                     CloseAction = () => Environment.Exit(1)
                 }));
         }
+    }
+
+    /// <summary>主窗口路径的完整核心初始化：平台装配 + 托盘图标。</summary>
+    private static async Task InitBedrockCoreAsync()
+    {
+        await InitPlatformAsync();
+        PlatformCore.Tray?.Initialize();
     }
 
     private static void CheckUserAgreement()

@@ -28,6 +28,7 @@ using Avalonia.Threading;
 using System.Diagnostics;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface.Platform.Game;
+using BedrockBoot.Models;
 
 namespace BedrockBoot.Views.Windows.SystemMethod;
 
@@ -180,6 +181,10 @@ public partial class LaunchGameWindow : Window
 
         try
         {
+            // -jump 快捷启动路径没有主窗口，平台框架（PlatformCore）未装配时先装配
+            if (PlatformCore.CoreInit == null)
+                await CoreInitialize.InitPlatformAsync();
+
             var _launcher = PlatformCore.CreateLauncher(_versionInfo);
 
             // 设置进度更新回调

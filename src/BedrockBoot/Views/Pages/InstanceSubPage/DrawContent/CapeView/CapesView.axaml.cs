@@ -27,6 +27,7 @@ using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Capes;
 using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Views.Control.Items.Cape;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -51,17 +52,21 @@ public partial class CapesView : UserControl
     }
 
     public VersionConfig VersionInfo { get; set; }
+    public Action<CapesPackUnit> EditAction { get; set; }
 
     private void UpdateContent()
     {
-        SavesBox.Children.Clear();
+        CapesPackBox.Children.Clear();
 
         var packs = Manager.LoadPacks();
         NullBox.IsVisible = packs.Count == 0;
 
         foreach (var pack in packs)
         {
-            //SavesBox.Children.Add();
+            CapesPackBox.Children.Add(new CapePackItem(pack)
+            {
+                EditAction = () => EditAction?.Invoke(pack)
+            });
         }
     }
 

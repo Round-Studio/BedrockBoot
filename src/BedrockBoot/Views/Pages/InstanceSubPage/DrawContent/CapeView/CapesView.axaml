@@ -61,7 +61,7 @@
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="20,0,20,15"
                         Spacing="8"
-                        Name="SavesBox" />
+                        Name="CapesPackBox" />
         </ScrollViewer>
 
         <notice:InfoCard Grid.Row="1"

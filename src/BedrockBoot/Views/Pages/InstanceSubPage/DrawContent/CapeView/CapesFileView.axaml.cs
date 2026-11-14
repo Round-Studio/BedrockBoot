@@ -28,6 +28,9 @@ using Avalonia.Threading;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Capes;
 using BedrockBoot.Standard.Entity.Game;
+using BedrockBoot.Standard.Entity.Game.Pack.Capes;
+using BedrockBoot.Views.Control.Items.Cape;
+using BedrockBoot.Views.DialogContent.Cape;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -58,7 +61,7 @@ public partial class CapesFileView : UserControl
 
         foreach (var stableKey in capes)
         {
-            // CapesBox.Children.Add();
+            CapesBox.Children.Add(new CapeFileItem(_unit, stableKey));
         }
     }
 
@@ -70,45 +73,29 @@ public partial class CapesFileView : UserControl
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "选择披风纹理",
-            AllowMultiple = true,
+            AllowMultiple = false,
             FileTypeFilter = new[] { new FilePickerFileType("PNG") { Patterns = new[] { "*.png" } } }
         });
         if (files is not { Count: >= 1 }) return;
 
-        var added = 0;
-        var errors = new List<string>();
-        foreach (var file in files)
+        var dialog = new DialogAddCapeFileContent(files[0].Path.LocalPath);
+        DialogHost.Show(new ()
         {
-            /*var error = CapesPackManager.AddCape(_versionInfo.VersionPath, _folderName, file.Path.LocalPath);
-            if (error is null)
+            Title = "添加披风",
+            Content = dialog,
+            CloseButtonText = "添加",
+            PrimaryButtonText = "取消",
+            CloseAction = () =>
             {
-                added++;
+                _unit.AddCape(new ()
+                {
+                    CapeImagePath = files[0].Path.LocalPath,
+                    CapeName = dialog.CapeNameStr,
+                    Type = dialog.CapeFileType
+                });
             }
-            else
-            {
-                errors.Add($"{file.Name}: {error}");
-            }*/
-        }
+        });
 
         UpdateContent();
-
-        if (errors.Count > 0)
-        {
-            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
-            {
-                Title = "添加披风失败",
-                Message = string.Join("\n", errors),
-                NoticeType = NoticeType.Warning
-            });
-        }
-        else if (added > 0)
-        {
-            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
-            {
-                Title = "成功",
-                Message = string.Format("已添加 {0} 件披风", added),
-                NoticeType = NoticeType.Info
-            });
-        }
     }
 }

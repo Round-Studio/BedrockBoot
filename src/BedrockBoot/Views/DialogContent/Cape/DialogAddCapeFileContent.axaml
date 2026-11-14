@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.Cape.DialogAddCapeFileContent">
+    <Grid ColumnDefinitions="Auto,*"
+          ColumnSpacing="8">
+        <StackPanel Grid.Column="0">
+            <Image Width="96"
+                   Height="96"
+                   Name="CapePreview"></Image>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="1"
+                    Spacing="8">
+            <TextBlock Text="披风名"></TextBlock>
+            <TextBox Width="200"
+                     Watermark="披风名"
+                     Name="CapeName"></TextBox>
+            <TextBlock Text="披风品质"></TextBlock>
+            <ComboBox Width="200"
+                      Name="CapeType"
+                      SelectedIndex="0">
+                <ComboBoxItem>普通</ComboBoxItem>
+                <ComboBoxItem>不常见</ComboBoxItem>
+                <ComboBoxItem>稀有</ComboBoxItem>
+                <ComboBoxItem>史诗</ComboBoxItem>
+                <ComboBoxItem>传奇</ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

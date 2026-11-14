@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Game.Pack.Capes;
 using BedrockBoot.Standard.Entity.Game.Pack.Capes.Manifest;
@@ -47,14 +48,15 @@ public class CapesPackUnit
     {
         var uid = Guid.NewGuid().ToString("N").Substring(0, 8);
         var fileName = $"{uid}_{Path.GetFileName(info.CapeImagePath)}";
-        var locCapeFile = Path.Combine(Folder, "textures", fileName);
-        var locCapeIconFile = Path.Combine(Folder, "textures", $"icon_{fileName}");
-        var locCapeElytraFile = Path.Combine(Folder, "textures", $"elytra_{fileName}");
+        var locCapeFile = Path.Combine(Folder!, "textures", fileName);
+        var locCapeIconFile = Path.Combine(Folder!, "textures", $"icon_{fileName}");
+        var locCapeElytraFile = Path.Combine(Folder!, "textures", $"elytra_{fileName}");
         
         File.WriteAllBytes(locCapeFile, File.ReadAllBytes(info.CapeImagePath));
         CapeImageHelper.PatchCapeIcon(locCapeFile, locCapeIconFile);
         CapeImageHelper.PatchCapeElytra(locCapeFile, locCapeElytraFile);
         
+        AddLanguage($"cape.{CapeIndexManifest!.Data.LocalizationName}.{uid}", info.CapeName);
         CapeIndexManifest?.Data.Capes.Add(new CapeDefinition()
         {
             Elytra = $"textures/elytra_{fileName}",
@@ -88,5 +90,34 @@ public class CapesPackUnit
     public void SetPackIcon(string icon)
     {
         File.WriteAllBytes(PackIcon!, File.ReadAllBytes(icon));
+    }
+
+    public void AddLanguage(string key,string content)
+    {
+        var langFile = Path.Combine(Folder!, "texts", "zh_CN.lang");
+        if (File.Exists(langFile))
+        {
+            var lines = File.ReadAllLines(langFile).ToList();
+            lines.Add($"{key}={content}");
+            File.WriteAllLines(langFile, lines);
+        }
+    }
+
+    public string GetLanguage(string key)
+    {
+        var langFile = Path.Combine(Folder!, "texts", "zh_CN.lang");
+        if (File.Exists(langFile))
+        {
+            var lines = File.ReadAllLines(langFile);
+            foreach (var line in lines)
+            {
+                if (line.StartsWith(key))
+                {
+                    return line.Split('=')[1];
+                }
+            }
+        }
+
+        return "Cape";
     }
 }

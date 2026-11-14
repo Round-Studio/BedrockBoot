@@ -25,14 +25,14 @@ namespace BedrockBoot.Views.Control.Items.Xbox.Capes;
 
 public partial class CapeItem : UserControl
 {
-    private readonly Cape _cape;
+    private readonly Models.Pack.Xbox.Cape.Cape _cape;
 
     public CapeItem()
     {
         InitializeComponent();
     }
 
-    public CapeItem(Cape cape) : this()
+    public CapeItem(Models.Pack.Xbox.Cape.Cape cape) : this()
     {
         _cape = cape;
 

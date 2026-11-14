@@ -33,3 +33,32 @@ public enum CapeFileType
     Epic,
     Legendary
 }
+
+public class CapeTypeHelper
+{
+    public static string GetTypeName(CapeFileType type)
+    {
+        return type switch
+        {
+            CapeFileType.Common => "普通",
+            CapeFileType.Uncommon => "不常见",
+            CapeFileType.Rare => "稀有",
+            CapeFileType.Epic => "史诗",
+            CapeFileType.Legendary => "传奇",
+            _ => "未知"
+        };
+    }
+
+    public static CapeFileType GetNameToType(string rarity)
+    {
+        return rarity.ToLower() switch
+        {
+            "common" => CapeFileType.Common,
+            "uncommon" => CapeFileType.Uncommon,
+            "rare" => CapeFileType.Rare,
+            "epic" => CapeFileType.Epic,
+            "legendary" => CapeFileType.Legendary,
+            _ => CapeFileType.Common
+        };
+    }
+}

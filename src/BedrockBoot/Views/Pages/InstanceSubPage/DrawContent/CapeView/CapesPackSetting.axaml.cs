@@ -26,18 +26,16 @@ namespace BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.CapeView;
 
 public partial class CapesPackSetting : UserControl
 {
-    private readonly VersionConfig _versionInfo;
-    private readonly string _folderName;
+    private readonly CapesPackUnit _unit;
 
     public CapesPackSetting()
     {
         InitializeComponent();
     }
 
-    public CapesPackSetting(VersionConfig versionInfo, string folderName) : this()
+    public CapesPackSetting(CapesPackUnit unit) : this()
     {
-        _versionInfo = versionInfo;
-        _folderName = folderName;
+        _unit = unit;
         UpdateUI();
     }
 
@@ -45,10 +43,8 @@ public partial class CapesPackSetting : UserControl
 
     public void UpdateUI()
     {
-        /*var pack = CapesPackManager.LoadPacks(_versionInfo.VersionPath)
-            .Find(p => p.FolderName == _folderName);
-        PackNameLabel.Text = pack?.PackName ?? _folderName;
-        NavigationFrame.NavigateTo(new CapesFileView(_versionInfo, _folderName));*/
+        PackNameLabel.Text = _unit.SourceManifest.Data.Header.Name;
+        NavigationFrame.NavigateTo(new CapesFileView(_unit));
     }
 
     private void BackBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -59,15 +55,14 @@ public partial class CapesPackSetting : UserControl
     private void NavBar_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (NavBar?.SelectedItem is not ListBoxItem item) return;
-        if (_versionInfo == null) return;
         var tag = item.Tag?.ToString();
-        /*object? page = tag switch
+        object? page = tag switch
         {
-            "Capes" => new CapesFileView(_versionInfo, _folderName),
-            "Setting" => new CapesPackInfoPage(_versionInfo, _folderName),
+            "Capes" => new CapesFileView(_unit),
+            "Setting" => new CapesPackInfoPage(_unit),
             _ => null
-        };*/
+        };
 
-        //if (page != null) NavigationFrame.NavigateTo(page);
+        if (page != null) NavigationFrame.NavigateTo(page);
     }
 }

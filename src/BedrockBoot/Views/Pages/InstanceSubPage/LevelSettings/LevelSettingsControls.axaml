@@ -23,7 +23,7 @@
 
         <ScrollViewer Grid.Row="1">
             <StackPanel Margin="20,0"
-                        Spacing="8" >
+                        Spacing="8">
                 <onePointControls:SettingCard IsClickable="True"
                                               Glyph="&#xE74E;"
                                               Header="导出"

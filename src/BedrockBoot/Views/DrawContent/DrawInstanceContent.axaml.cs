@@ -132,6 +132,9 @@ public partial class DrawInstanceContent : UserControl
                 case "Pack":
                     page = new InstancePack(VersionInfo);
                     break;
+                case "Capes":
+                    page = new InstanceCape(VersionInfo);
+                    break;
                 case "Save":
                     page = new InstanceSave(VersionInfo);
                     break;

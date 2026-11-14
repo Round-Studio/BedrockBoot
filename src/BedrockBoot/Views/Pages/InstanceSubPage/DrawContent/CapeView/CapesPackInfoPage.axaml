@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.CapeView.CapesPackInfoPage">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0"
+              Margin="20,0"
+              Height="32">
+            <TextBlock Text="披风群组信息" VerticalAlignment="Center" FontSize="16" />
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right" />
+        </Grid>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="20,10,20,15"
+                        Spacing="8">
+                <onePointControls:SettingCard Glyph="&#xE7B8;"
+                                              Header="披风包名称"
+                                              Description="披风包在更衣室分组导航中显示的名称">
+                    <TextBox Width="200"
+                             TextChanged="PackNameBox_OnTextChanged"
+                             Name="PackNameBox" />
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard Glyph="&#xE77B;"
+                                              Header="作者"
+                                              Description="披风包的作者署名">
+                    <TextBox Width="200"
+                             TextChanged="AuthorBox_OnTextChanged"
+                             Name="AuthorBox" />
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard Glyph="&#xEB9F;"
+                                              Click="PickIconBtn_OnClick"
+                                              IsClickable="True"
+                                              Header="披风包图标"
+                                              Description="作为披风包项的图标">
+                </onePointControls:SettingCard>
+
+                <onePointControls:SettingCard IsClickable="True"
+                                              Glyph="&#xF012;"
+                                              Header="打包导出"
+                                              Description="将披风包导出为 .McCapes 文件"
+                                              Click="ExportBtn_OnClick" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

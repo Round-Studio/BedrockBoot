@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.CapeView.CapesFileView">
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid Grid.Row="0"
+              Margin="20,0"
+              Height="32">
+            <TextBlock Text="管理披风文件" VerticalAlignment="Center" FontSize="16"/>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Classes="Accent"
+                        Name="AddCapeBtn"
+                        Click="AddCapeBtn_OnClick"
+                        Padding="12,8">
+                    <StackPanel Orientation="Horizontal">
+                        <onePointControls:FontIcon Glyph="&#xE710;"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,1,8,0" />
+                        <TextBlock Text="添加披风" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="20,10,20,15"
+                        Spacing="8"
+                        Name="CapesBox" />
+        </ScrollViewer>
+
+        <notice:InfoCard Grid.Row="1"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="NullBox"
+                         IsVisible="False"
+                         BigTitle="暂无披风"
+                         Message="点击右上角「添加披风」导入 PNG 纹理文件" />
+    </Grid>
+</UserControl>

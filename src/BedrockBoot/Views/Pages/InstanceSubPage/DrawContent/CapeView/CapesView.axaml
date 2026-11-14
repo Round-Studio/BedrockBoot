@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.CapeView.CapesView">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto">
+            <items:BorderCard Grid.Column="0"
+                              Margin="20,0,12,10">
+                <Grid ColumnDefinitions="*">
+                    <DockPanel Grid.Column="0"
+                               HorizontalAlignment="Stretch"
+                               LastChildFill="True">
+                        <onePointControls:FontIcon Glyph="&#xE71E;"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="16"
+                                                   Margin="12,5,12,5" />
+                        <TextBox Name="SearchBox"
+                                 Watermark="键入关键词以搜索"
+                                 HorizontalAlignment="Stretch"
+                                 DockPanel.Dock="Right" />
+                    </DockPanel>
+                </Grid>
+            </items:BorderCard>
+
+            <items:BorderCard Grid.Column="1"
+                              Margin="0,0,20,10">
+                <StackPanel Orientation="Horizontal">
+                    <Button Classes="NoBorder"
+                            Name="CreateGroupBtn"
+                            Click="CreateGroupBtn_OnClick"
+                            Padding="12,8">
+                        <StackPanel Orientation="Horizontal">
+                            <onePointControls:FontIcon Glyph="&#xE710;"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,1,8,0" />
+                            <TextBlock Text="创建组别" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </items:BorderCard>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="20,0,20,15"
+                        Spacing="8"
+                        Name="SavesBox" />
+        </ScrollViewer>
+
+        <notice:InfoCard Grid.Row="1"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Name="NullBox"
+                         IsVisible="False"
+                         BigTitle="{DynamicResource Instance.Saves.Empty.Title}"
+                         Message="{DynamicResource Instance.Saves.Empty.Message}" />
+    </Grid>
+</UserControl>

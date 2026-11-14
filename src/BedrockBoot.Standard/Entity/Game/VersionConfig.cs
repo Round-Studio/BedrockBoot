@@ -95,6 +95,7 @@ public class VersionConfig
     public class HttpPatchEntry
     {
         [JsonPropertyName("isEnableServerDiscoveryBlock")] public bool IsEnableServerDiscoveryBlock { get; set; } = false;
+        [JsonPropertyName("isEnableCustomCapePack")] public bool IsEnableCustomCapePack { get; set; } = true;
     }
 
     public class PlayerDataEntry

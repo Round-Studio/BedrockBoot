@@ -38,6 +38,10 @@
                                                  Glyph="&#xE7B8;"
                                                  Tag="Pack"
                                                  Name="Pack" />
+                <leftSelectBar:LeftSelectBarItem ItemText="披风包"
+                                                 Glyph="&#xECAD;"
+                                                 Tag="Capes"
+                                                 Name="Capes" />
                 <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Archive}"
                                                  Glyph="&#xE74E;"
                                                  Tag="Save"

@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.Cape.DialogCreateCapePackContent">
+    <StackPanel Spacing="8">
+        <TextBlock Text="披风包名称" />
+        <TextBox Width="200"
+                 Watermark="披风包名称"
+                 Name="PackName" />
+        <TextBlock Text="作者" />
+        <TextBox Width="200"
+                 Watermark="可选"
+                 Name="Author" />
+        <TextBlock Text="包 ID 与 UUID 将随机生成"
+                   FontSize="12"
+                   Opacity="0.6" />
+    </StackPanel>
+</UserControl>

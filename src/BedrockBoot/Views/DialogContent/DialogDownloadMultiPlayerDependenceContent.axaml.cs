@@ -26,6 +26,8 @@ using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Account.Github;
+using BedrockBoot.Views.Helper;
 using BedrockBoot.Views.Pages.GravityConePage;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.MultiplayerPage;
@@ -64,6 +66,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
 
     public async void Download()
     {
+        var isFetchingReleases = false;
         try
         {
             if (GlobalModel.GravityConeClient != null)
@@ -73,7 +76,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 GlobalModel.CurrentRoomState = null;
             }
 
-            var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+            var github = GitHubApiClient.CreateClient();
 
             if (!Directory.Exists(EasyTierPath))
                 Directory.CreateDirectory(EasyTierPath);
@@ -85,10 +88,12 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 StatusText.Text = "正在获取最新版本信息...";
             });
 
+            isFetchingReleases = true;
             var easyTierTask = github.Repository.Release.GetLatest("EasyTier", "EasyTier");
             var gravityConeTask = github.Repository.Release.GetLatest("Tianpao", "GravityCone");
             
             await Task.WhenAll(easyTierTask, gravityConeTask);
+            isFetchingReleases = false;
 
             var easyTierRelease = await easyTierTask;
             var gravityConeRelease = await gravityConeTask;
@@ -211,6 +216,9 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 StatusText.Foreground = Avalonia.Media.Brushes.Red;
                 DialogHost.Close();
             });
+
+            if (isFetchingReleases)
+                await GitHubErrorDialog.ShowAsync(ex, "依赖下载失败");
         }
     }
 

@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Models.Pack.Plugin.Market;
+using BedrockBoot.Views.Helper;
 using BedrockBoot.Plugin;
 using BedrockBoot.Views.TaskItem.Plugin;
 using Octokit;
@@ -66,7 +68,20 @@ public partial class PluginMarketInfo : UserControl
             PluginNameText.Text = _info.PluginName;
             ImageRender.Update(_info.IconUrl);
 
-            var (repository, releases) = await MarketClient.GetPluginRepositoryFullInfo(_info);
+            (Repository repository, IReadOnlyList<Release> releases) repositoryInfo;
+            try
+            {
+                repositoryInfo = await MarketClient.GetPluginRepositoryFullInfo(_info);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                LoadingCard.IsVisible = false;
+                await GitHubErrorDialog.ShowAsync(ex);
+                return;
+            }
+
+            var (repository, releases) = repositoryInfo;
             
             bool installStatus = releases.FirstOrDefault().Assets.All(x =>
             {
@@ -98,7 +113,17 @@ public partial class PluginMarketInfo : UserControl
             ContentPanel.IsVisible = true;
             LoadingCard.IsVisible = false;
 
-            var html = await MarketClient.GetReadmeHtml(_info.RepositoryOwner, _info.RepositoryName);
+            string? html;
+            try
+            {
+                html = await MarketClient.GetReadmeHtml(_info.RepositoryOwner, _info.RepositoryName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                await GitHubErrorDialog.ShowAsync(ex);
+                return;
+            }
 
             var controls = HtmlToControlConverter.ConvertHtmlToControls(html);
             foreach (var control in controls) BodyPanel.Children.Add(control);

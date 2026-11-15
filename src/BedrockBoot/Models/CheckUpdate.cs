@@ -60,7 +60,7 @@ public class CheckUpdate
 
     public static async Task<Release?> Update()
     {
-        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+        var github = GitHubApiClient.CreateClient();
 
         var releases = await github.Repository.Release.GetAll(Owner, Repo);
 

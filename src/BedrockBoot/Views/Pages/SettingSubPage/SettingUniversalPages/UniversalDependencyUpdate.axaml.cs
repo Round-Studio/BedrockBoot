@@ -23,6 +23,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Views.Helper;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -137,12 +138,7 @@ public partial class UniversalDependencyUpdate : ISettingPage
         catch (Exception ex)
         {
             Console.WriteLine($@"检查依赖更新失败: {ex}");
-            DialogHost.Show(new DialogInfo
-            {
-                Title = "检查更新失败",
-                Content = $"无法从 GitHub 获取版本信息，请检查网络后重试。\n{ex.Message}",
-                CloseButtonText = "确定"
-            });
+            await GitHubErrorDialog.ShowAsync(ex, "检查更新失败");
         }
         finally
         {

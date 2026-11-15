@@ -18,6 +18,7 @@
 
 using BedrockBoot.Standard.Entity.Pack.Market;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Account.Github;
 using Octokit;
 using Octokit.Internal;
 using OnePointUI.Avalonia.Base.Entry;
@@ -27,7 +28,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using BedrockBoot.Models.Helper;
 
 namespace BedrockBoot.Models.Pack.Plugin.Market;
 
@@ -64,7 +64,7 @@ public class MarketClient
         MarketResponse.PluginInfo info)
     {
         Console.WriteLine($@"获取目标插件仓库信息：{info.PluginName}");
-        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+        var github = GitHubApiClient.CreateClient();
         var owner = info.RepositoryOwner;
         var repo = info.RepositoryName;
 
@@ -81,13 +81,6 @@ public class MarketClient
         catch (Exception ex)
         {
             Console.WriteLine($@"获取插件仓库信息失败：{ex}");
-            var error = GitHubHelper.HandleException(ex);
-            DialogHost.Show(new DialogInfo
-            {
-                Title = "网络错误",
-                Content = $"无法从 GitHub 获取信息，请检查网络后重试。\n{error.GetLocalizedMessage()}",
-                CloseButtonText = "确定"
-            });
             throw;
         }
     }
@@ -96,12 +89,16 @@ public class MarketClient
     {
         Console.WriteLine($@"获取仓库 README: {owner}/{repo}");
         using (var httpClient = new HttpClient())
+        using (var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/repos/{owner}/{repo}/readme"))
         {
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.github.html");
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "BedrockBoot");
+            request.Headers.Add("Accept", "application/vnd.github.html");
+            request.Headers.Add("User-Agent", "BedrockBoot");
 
-            var url = $"https://api.github.com/repos/{owner}/{repo}/readme";
-            var response = await httpClient.GetAsync(url);
+            var token = GitHubApiClient.GetUserToken();
+            if (!string.IsNullOrEmpty(token))
+                request.Headers.Authorization = new global::System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var response = await httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {

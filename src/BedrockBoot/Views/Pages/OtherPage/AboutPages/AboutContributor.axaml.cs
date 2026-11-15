@@ -21,9 +21,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Pages.MainSubPage;
+using BedrockBoot.Views.Helper;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -63,7 +65,7 @@ public partial class AboutContributor : ISettingPage
             try
             {
                 // 初始化 GitHub 客户端
-                var githubClient = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+                var githubClient = GitHubApiClient.CreateClient();
 
                 // 获取 Round-Studio/BedrockBoot 仓库的贡献者
                 var contributors = await githubClient.Repository.GetAllContributors("Round-Studio", "BedrockBoot");
@@ -77,22 +79,10 @@ public partial class AboutContributor : ISettingPage
             }
             catch (Exception ex)
             {
-                var error = GitHubHelper.HandleException(ex);
-
                 Console.WriteLine($@"Failed to fetch contributors: {ex.Message}");
 
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    LoadingRing.IsVisible = false;
-
-                    DialogHost.Show(new DialogInfo
-                    {
-                        Title = "网络错误",
-                        Content = $"无法从 GitHub 获取信息，请检查网络后重试。\n{error.GetLocalizedMessage()}",
-                        CloseButtonText = i18n["Shared.Action.Confirm"]
-                    });
-                });
+                await Dispatcher.UIThread.InvokeAsync(() => LoadingRing.IsVisible = false);
+                await GitHubErrorDialog.ShowAsync(ex, "网络错误", i18n["Shared.Action.Confirm"]);
             }
         }));
     }

@@ -88,7 +88,7 @@ public sealed record GitHubError(
                 "Http Request Exception",
 
             GitHubErrorType.RateLimit =>
-                "GitHub API rate limit exceeded for your IP", 
+                "GitHub API rate limit exceeded for your IP\n\n若不理解此错误含义，请优先检查网络连接。\n\n若理解此错误含义并接受，可以在设置 - 账户与档案登录 GitHub 账户解除该限制。",
 
             GitHubErrorType.Unauthorized =>
                 "Unauthorized",

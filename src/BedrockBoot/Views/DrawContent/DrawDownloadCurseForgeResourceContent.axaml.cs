@@ -16,18 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
-using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Pack.Search;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Views.Pages.DownloadSubPage.CurseForge;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
+using System.Threading.Tasks;
+using static BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge.CurseForgeResponse;
 
 namespace BedrockBoot.Views.DrawContent;
 
@@ -65,7 +67,7 @@ public partial class DrawDownloadCurseForgeResourceContent : UserControl
         {
             TypesBox.Children.Add(new LabelBox
             {
-                Text = cat.Name,
+                Text = CurseForgeSearch.TranslateCategory(cat, ModData.ClassId),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(2.5)
             });

@@ -29,6 +29,7 @@ using System.Reflection;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Models.Global;
@@ -40,6 +41,8 @@ namespace BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 public class CurseForgeApiClient : IDisposable
 {
     private static readonly object _lock = new();
+    private static readonly SemaphoreSlim _categoriesSemaphore = new(1, 1);
+    private static List<CurseForgeResponse.Category>? _categories;
     private readonly string _apiKey;
     
     // 使用 volatile 确保多线程可见性
@@ -201,6 +204,8 @@ public class CurseForgeApiClient : IDisposable
 
                 // 读取内容
                 var json = await response.Content.ReadAsStringAsync();
+                //if (operationName == "GetFileDetails")
+                 //   Console.WriteLine($"[{operationName}] Response JSON: {json}");
                 
                 return deserializeFunc(json);
             }
@@ -285,13 +290,40 @@ public class CurseForgeApiClient : IDisposable
         );
     }
 
+    public async Task<List<CurseForgeResponse.Category>> GetCategoriesAsync(int gameId = 78022)
+    {
+        if (_categories != null)
+            return _categories;
+
+        await _categoriesSemaphore.WaitAsync();
+        try
+        {
+            if (_categories != null)
+                return _categories;
+
+            var categories = await ExecuteRequestAsync(
+                client => new HttpRequestMessage(HttpMethod.Get, $"v1/categories?gameId={gameId}"),
+                json => JsonSerializer.Deserialize<CurseForgeResponse.CategoriesResponse>(json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true })?.Data
+                    ?? new List<CurseForgeResponse.Category>(),
+                "GetCategories");
+            _categories = categories;
+            return categories;
+        }
+        finally
+        {
+            _categoriesSemaphore.Release();
+        }
+    }
+
     public async Task<CurseForgeResponse> SearchModsAsync(
         string searchFilter,
         int pageSize = 20,
         string gameVersion = null,
         int? classId = null,
         int? index = null,
-        string modLoader = null)
+        string modLoader = null,
+        int? categoryId = null)
     {
         var queryParams = new StringBuilder();
         queryParams.Append($"?gameId={78022}");
@@ -306,6 +338,9 @@ public class CurseForgeApiClient : IDisposable
 
         if (classId.HasValue)
             queryParams.Append($"&classId={classId.Value}");
+
+        if (categoryId.HasValue)
+            queryParams.Append($"&categoryId={categoryId.Value}");
 
         if (index.HasValue)
             queryParams.Append($"&index={index.Value}");

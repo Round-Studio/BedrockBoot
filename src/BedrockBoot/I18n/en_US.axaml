@@ -365,6 +365,19 @@
     <x:String x:Key="Download.Game.Type.Preview">Preview</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta</x:String>
     <x:String x:Key="Download.Game.Type.All">All</x:String>
+    <x:String x:Key="Download.CurseForge.File.SupportedVersions">Supported Minecraft versions</x:String>
+    <x:String x:Key="Download.CurseForge.Category.All">All categories</x:String>
+    <x:String x:Key="Download.CurseForge.ResourceType.All">All types</x:String>
+    <x:String x:Key="Download.CurseForge.Filter.ResourceType">Resource type</x:String>
+    <x:String x:Key="Download.CurseForge.Filter.Category">Category</x:String>
+    <x:String x:Key="Download.CurseForge.ResourceType.Addons">Addons</x:String>
+    <x:String x:Key="Download.CurseForge.ResourceType.Maps">Maps</x:String>
+    <x:String x:Key="Download.CurseForge.ResourceType.TexturePacks">Texture packs</x:String>
+    <x:String x:Key="Download.CurseForge.ResourceType.Scripts">Scripts</x:String>
+    <x:String x:Key="Download.CurseForge.ResourceType.Skins">Skins</x:String>
+    <x:String x:Key="Download.CurseForge.File.ReleaseType.Alpha">Alpha</x:String>
+    <x:String x:Key="Download.CurseForge.File.DownloadCount">Downloads</x:String>
+    <x:String x:Key="Download.CurseForge.File.FileName">File name</x:String>
 
     <x:String x:Key="Download.Assets.Status.Loading.Title">Collecting Assets...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">All assets, fall in!</x:String>

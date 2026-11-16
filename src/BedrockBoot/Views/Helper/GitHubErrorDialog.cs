@@ -9,14 +9,14 @@ namespace BedrockBoot.Views.Helper;
 
 public static class GitHubErrorDialog
 {
-    public static async Task ShowAsync(Exception exception, string title = "GitHub 请求失败", string closeButtonText = "确定")
+    public static async Task ShowAsync(Exception exception, string? title = null, string? closeButtonText = null)
     {
         var error = GitHubHelper.HandleException(exception);
         var dialog = new DialogInfo
         {
-            Title = title,
-            Content = $"无法从 GitHub 获取信息，请检查网络后重试。\n{error.GetLocalizedMessage()}",
-            CloseButtonText = closeButtonText
+            Title = title ?? I18nManager.Instance["GitHub.Error.Title"],
+            Content = $"{I18nManager.Instance["GitHub.Error.Prefix"]}\n{error.GetLocalizedMessage()}",
+            CloseButtonText = closeButtonText ?? I18nManager.Instance["Shared.Action.Confirm"]
         };
 
         await Dispatcher.UIThread.InvokeAsync(() => DialogHost.Show(dialog));

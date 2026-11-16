@@ -85,7 +85,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
 
             Dispatcher.UIThread.Invoke(() =>
             {
-                StatusText.Text = "正在获取最新版本信息...";
+                StatusText.Text = I18nManager.Instance["Multiplayer.Dep.Status.FetchingReleases"];
             });
 
             isFetchingReleases = true;
@@ -116,15 +116,15 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
             }
 
             if (easyTierAsset == null)
-                throw new Exception($"未找到 EasyTier {os} 版本下载包");
+                throw new Exception(string.Format(I18nManager.Instance["Multiplayer.Dep.Error.AssetNotFound.EasyTier"], os));
             if (gravityConeAsset == null)
-                throw new Exception($"未找到 GravityCone {os} CLI 版本下载包");
+                throw new Exception(string.Format(I18nManager.Instance["Multiplayer.Dep.Error.AssetNotFound.GravityCone"], os));
 
             Dispatcher.UIThread.Invoke(() =>
             {
-                StatusText.Text = "开始并行下载...";
-                EasyTierProgressText.Text = $"下载 EasyTier (0%)";
-                GravityConeProgressText.Text = $"下载 GravityCone (0%)";
+                StatusText.Text = I18nManager.Instance["Multiplayer.Dep.Status.Downloading"];
+                EasyTierProgressText.Text = string.Format(I18nManager.Instance["Multiplayer.Dep.Status.DownloadProgress.EasyTier"], 0d);
+                GravityConeProgressText.Text = string.Format(I18nManager.Instance["Multiplayer.Dep.Status.DownloadProgress.GravityCone"], 0d);
                 EasyTierProgressBar.IsIndeterminate = false;
                 GravityConeProgressBar.IsIndeterminate = false;
                 EasyTierProgressBar.Value = 0;
@@ -144,7 +144,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     EasyTierProgressBar.Value = (int)p.ProgressPercentage;
-                    EasyTierProgressText.Text = $"下载 EasyTier ({p.ProgressPercentage:F1}%)";
+                    EasyTierProgressText.Text = string.Format(I18nManager.Instance["Multiplayer.Dep.Status.DownloadProgress.EasyTier"], p.ProgressPercentage);
                 });
             });
 
@@ -153,7 +153,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     GravityConeProgressBar.Value = (int)p.ProgressPercentage;
-                    GravityConeProgressText.Text = $"下载 GravityCone ({p.ProgressPercentage:F1}%)";
+                    GravityConeProgressText.Text = string.Format(I18nManager.Instance["Multiplayer.Dep.Status.DownloadProgress.GravityCone"], p.ProgressPercentage);
                 });
             });
 
@@ -171,9 +171,9 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
 
             Dispatcher.UIThread.Invoke(() =>
             {
-                StatusText.Text = "下载完成，正在解压...";
-                EasyTierProgressText.Text = "解压 EasyTier...";
-                GravityConeProgressText.Text = "解压 GravityCone...";
+                StatusText.Text = I18nManager.Instance["Multiplayer.Dep.Status.Extracting"];
+                EasyTierProgressText.Text = I18nManager.Instance["Multiplayer.Dep.Status.Extract.EasyTier"];
+                GravityConeProgressText.Text = I18nManager.Instance["Multiplayer.Dep.Status.Extract.GravityCone"];
                 EasyTierProgressBar.IsIndeterminate = true;
                 GravityConeProgressBar.IsIndeterminate = true;
             });
@@ -186,7 +186,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 {
                     EasyTierProgressBar.IsIndeterminate = false;
                     EasyTierProgressBar.Value = 100;
-                    EasyTierProgressText.Text = "EasyTier 安装完成";
+                    EasyTierProgressText.Text = I18nManager.Instance["Multiplayer.Dep.Status.Installed.EasyTier"];
                     _easyTierCompleted = true;
                     CheckAllCompleted();
                 });
@@ -200,7 +200,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 {
                     GravityConeProgressBar.IsIndeterminate = false;
                     GravityConeProgressBar.Value = 100;
-                    GravityConeProgressText.Text = "GravityCone 安装完成";
+                    GravityConeProgressText.Text = I18nManager.Instance["Multiplayer.Dep.Status.Installed.GravityCone"];
                     _gravityConeCompleted = true;
                     CheckAllCompleted();
                 });
@@ -212,13 +212,13 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                StatusText.Text = $"下载失败: {ex.Message}";
+                StatusText.Text = string.Format(I18nManager.Instance["Multiplayer.Dep.Status.DownloadFailed"], ex.Message);
                 StatusText.Foreground = Avalonia.Media.Brushes.Red;
                 DialogHost.Close();
             });
 
             if (isFetchingReleases)
-                await GitHubErrorDialog.ShowAsync(ex, "依赖下载失败");
+                await GitHubErrorDialog.ShowAsync(ex, I18nManager.Instance["GitHub.Error.DependencyDownload"]);
         }
     }
 
@@ -284,7 +284,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
         }
         else if (archivePath.EndsWith(".7z"))
         {
-            throw new Exception("GravityCone 发布包为 7z 格式，当前不支持解压。请添加 7z 支持或联系开发者改用 zip 格式。");
+            throw new Exception(I18nManager.Instance["Multiplayer.Dep.Error.UnsupportedArchive"]);
         }
         else
         {
@@ -310,7 +310,7 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
     {
         if (_easyTierCompleted && _gravityConeCompleted)
         {
-            StatusText.Text = "所有依赖下载安装完成";
+            StatusText.Text = I18nManager.Instance["Multiplayer.Dep.Status.Completed"];
             StatusText.Foreground = Avalonia.Media.Brushes.Green;
             
             Task.Delay(1000).ContinueWith(_ =>

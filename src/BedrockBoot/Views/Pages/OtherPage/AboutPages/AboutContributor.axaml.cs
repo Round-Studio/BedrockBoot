@@ -82,7 +82,7 @@ public partial class AboutContributor : ISettingPage
                 Console.WriteLine($@"Failed to fetch contributors: {ex.Message}");
 
                 await Dispatcher.UIThread.InvokeAsync(() => LoadingRing.IsVisible = false);
-                await GitHubErrorDialog.ShowAsync(ex, "网络错误", i18n["Shared.Action.Confirm"]);
+                await GitHubErrorDialog.ShowAsync(ex, i18n["GitHub.Error.Network"], i18n["Shared.Action.Confirm"]);
             }
         }));
     }

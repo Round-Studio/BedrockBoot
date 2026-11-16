@@ -82,29 +82,18 @@ public sealed record GitHubError(
 {
     public string GetLocalizedMessage()
     {
-        return Type switch
+        var key = Type switch
         {
-            GitHubErrorType.HttpRequestException =>
-                "Http Request Exception",
-
-            GitHubErrorType.RateLimit =>
-                "GitHub API rate limit exceeded for your IP\n\n若不理解此错误含义，请优先检查网络连接。\n\n若理解此错误含义并接受，可以在设置 - 账户与档案登录 GitHub 账户解除该限制。",
-
-            GitHubErrorType.Unauthorized =>
-                "Unauthorized",
-
-            GitHubErrorType.Forbidden =>
-                "Forbidden",
-
-            GitHubErrorType.NotFound =>
-                "Not Found",
-
-            GitHubErrorType.ApiError =>
-                "API Error",
-
-            _ =>
-                "Unknown Error"
+            GitHubErrorType.HttpRequestException => "GitHub.Error.HttpRequest",
+            GitHubErrorType.RateLimit => "GitHub.Error.RateLimit",
+            GitHubErrorType.Unauthorized => "GitHub.Error.Unauthorized",
+            GitHubErrorType.Forbidden => "GitHub.Error.Forbidden",
+            GitHubErrorType.NotFound => "GitHub.Error.NotFound",
+            GitHubErrorType.ApiError => "GitHub.Error.ApiError",
+            _ => "GitHub.Error.Unknown"
         };
+
+        return I18nManager.Instance[key];
     }
 }
 

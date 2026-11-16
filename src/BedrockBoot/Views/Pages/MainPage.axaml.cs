@@ -239,7 +239,7 @@ public partial class MainPage : UserControl
         catch (Exception ex)
         {
             Console.WriteLine($@"更新失败：{ex}");
-            await GitHubErrorDialog.ShowAsync(ex, "检查更新失败", i18n["Shared.Action.Confirm"]);
+            await GitHubErrorDialog.ShowAsync(ex, i18n["GitHub.Error.CheckUpdate"], i18n["Shared.Action.Confirm"]);
         }
     }
 

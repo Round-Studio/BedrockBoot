@@ -18,11 +18,11 @@
 
 using System;
 using System.IO;
-using Avalonia;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using BedrockBoot.Models.Pack.Game.Capes;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -43,17 +43,30 @@ public partial class CapePackItem : UserControl
     public CapePackItem(CapesPackUnit unit):this()
     {
         _unit = unit;
-        
+
         SettingExpander.Header = _unit.PackDisplayName();
         SettingExpander.Description = $"共 {_unit.LoadCapeFile().Count} 个披风文件";
-        if (!string.IsNullOrEmpty(_unit.PackIcon))
+        if (!string.IsNullOrEmpty(_unit.PackIcon) && File.Exists(_unit.PackIcon))
         {
-            if (File.Exists(_unit.PackIcon))
+            // 解码是 CPU 密集操作，放后台线程，批量加载时避免阻塞 UI 线程导致动画卡顿
+            var iconPath = _unit.PackIcon;
+            _ = Task.Run(async () =>
             {
-                var bitmapIcon = new Bitmap(_unit.PackIcon);
-                SettingExpander.IsFontIcon = false;
-                SettingExpander.ImageIcon = bitmapIcon;
-            }
+                try
+                {
+                    await using var stream = File.OpenRead(iconPath);
+                    var bitmapIcon = new Bitmap(stream);
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        if (IsLoaded) SettingExpander.ImageIcon = bitmapIcon;
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"读取披风包图标失败: {ex.Message}");
+                }
+            });
+            SettingExpander.IsFontIcon = false;
         }
     }
 

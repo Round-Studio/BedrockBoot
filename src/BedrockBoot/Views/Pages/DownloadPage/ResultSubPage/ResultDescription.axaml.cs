@@ -18,9 +18,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Markup.Xaml;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Interface.Download;
@@ -31,8 +33,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 public partial class ResultDescription : UserControl
 {
     private readonly IDownloadResult _service;
-    private string? _translatedHtml;
-    private List<Avalonia.Controls.Control>? _originalControls;
+    private bool _loaded;
     public Action? NotFountDescription;
 
     public ResultDescription()
@@ -40,10 +41,9 @@ public partial class ResultDescription : UserControl
         InitializeComponent();
     }
 
-    public ResultDescription(IDownloadResult service, string? translatedHtml = null) : this()
+    public ResultDescription(IDownloadResult service) : this()
     {
         _service = service;
-        _translatedHtml = translatedHtml;
         UpdateUI();
     }
 
@@ -64,32 +64,34 @@ public partial class ResultDescription : UserControl
             return;
         }
 
-        ;
-        _originalControls = controls;
-        DescControls.Children.AddRange(_translatedHtml != null
-            ? HtmlToControlConverter.ConvertHtmlToControls(_translatedHtml)
-            : controls);
+        DescControls.Children.AddRange(controls);
         DescCard.IsVisible = controls.Count > 0;
+        _loaded = true;
     }
 
     /// <summary>
-    /// 切换为译文渲染。若描述仍在加载中，则由加载完成后的渲染流程按此状态呈现。
+    /// 翻译当前控件树里的全部文本。控件结构与样式不动，只改写 Run.Text。
+    /// 还原走 RestoreOriginal 重新渲染原始 HTML（原地改写不可逆）。
     /// </summary>
-    public void ApplyTranslation(string translatedHtml)
+    public async Task<bool> TranslateContentAsync(
+        Func<IReadOnlyList<string>, Task<IReadOnlyList<string>?>> translateBatch,
+        Action<int, int>? progress = null)
     {
-        _translatedHtml = translatedHtml;
-        if (_originalControls == null) return;
+        if (!_loaded || DescControls.Children.Count == 0) return false;
 
-        DescControls.Children.Clear();
-        DescControls.Children.AddRange(HtmlToControlConverter.ConvertHtmlToControls(translatedHtml));
+        return await ControlTextTranslator.TranslateControlsAsync(
+            DescControls.Children.ToList(), translateBatch, progress);
     }
 
-    public void RestoreOriginal()
+    /// <summary>还原为原文渲染：从服务重新取 HTML 重建控件树（翻译是原地改写，无法直接回退）。</summary>
+    public async void RestoreOriginal()
     {
-        _translatedHtml = null;
-        if (_originalControls == null) return;
+        if (!_loaded) return;
 
         DescControls.Children.Clear();
-        DescControls.Children.AddRange(_originalControls);
+        var controls = await _service.DescriptionControls();
+        if (controls == null || controls.Count <= 0) return;
+
+        DescControls.Children.AddRange(controls);
     }
 }

@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,8 +75,7 @@ public partial class ResultRoot : UserControl
     private int _githubErrorShown;
     private bool _isDescriptionTranslated;
     private bool _isTranslating;
-    private string? _translatedDescriptionHtml;
-    private string? _originalDescriptionText;
+    private string? _translatedBrief;
 
     public async Task UpdateAsync()
     {
@@ -215,8 +215,7 @@ public partial class ResultRoot : UserControl
         var tag = (PageSelect.SelectedItem as ListBoxItem)!.Tag!.ToString();
         UserControl page = tag switch
         {
-            "Description" => new ResultDescription(_downloadService,
-                    _isDescriptionTranslated ? _translatedDescriptionHtml : null)
+            "Description" => new ResultDescription(_downloadService)
             {
                 NotFountDescription = () =>
                 {
@@ -254,34 +253,74 @@ public partial class ResultRoot : UserControl
                 var target = BedrockBoot.Core.Global.GlobalModel.Config.Data.Language;
                 var translator = new MicrosoftTranslateService();
 
+                // 批量翻译 + 本地缓存：先查缓存，未命中的才走接口，结果统一回填缓存
+                Func<IReadOnlyList<string>, Task<IReadOnlyList<string>?>> translateBatch = async texts =>
+                {
+                    var cached = TranslationCache.GetOrVisit(texts, target);
+                    var missTexts = new List<string>();
+                    var missIndexes = new List<int>();
+                    for (var i = 0; i < texts.Count; i++)
+                        if (cached[i] == null)
+                        {
+                            missIndexes.Add(i);
+                            missTexts.Add(texts[i]);
+                        }
+
+                    var results = new string[texts.Count];
+                    for (var i = 0; i < texts.Count; i++)
+                        results[i] = cached[i] ?? texts[i];
+
+                    if (missTexts.Count > 0)
+                    {
+                        var fetched = await translator.TranslateTextBatchAsync(missTexts, "auto", target);
+                        if (fetched == null) return null;
+
+                        var fresh = new Dictionary<string, string>();
+                        for (var i = 0; i < missTexts.Count; i++)
+                        {
+                            // 接口对不可译内容原样返回，空结果不入缓存
+                            if (string.IsNullOrWhiteSpace(fetched[i]) ||
+                                string.Equals(fetched[i], missTexts[i], StringComparison.Ordinal))
+                                continue;
+
+                            results[missIndexes[i]] = fetched[i];
+                            fresh[missTexts[i]] = fetched[i];
+                        }
+
+                        TranslationCache.Put(fresh);
+                    }
+
+                    return results;
+                };
+
                 // 页面顶部的简介短文本
                 var brief = SearchResultItemInfo.Description;
-                var translatedBrief = string.IsNullOrEmpty(brief)
-                    ? null
-                    : await translator.TranslateAsync(brief, "auto", target);
-
-                // 描述页内容：按条目逐段翻译，图片/代码等不参与翻译，避免被接口改坏
-                var html = await _downloadService.GetDescriptionHtml();
-                _translatedDescriptionHtml = string.IsNullOrEmpty(html)
-                    ? null
-                    : await HtmlBlockTranslator.TranslateAsync(
-                        html,
-                        fragment => translator.TranslateHtmlAsync(fragment, "auto", target),
-                        (done, total) => Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-                            TranslateBtnText.Text =
-                                string.Format(i18n["Download.Result.Translate.Progress"], done, total)));
-
-                if (!string.IsNullOrEmpty(translatedBrief) &&
-                    !string.Equals(translatedBrief, brief, StringComparison.Ordinal))
+                if (!string.IsNullOrWhiteSpace(brief))
                 {
-                    _originalDescriptionText = brief;
-                    DescriptionText.Text = translatedBrief;
+                    var briefResult = await translateBatch(new[] { brief });
+                    if (briefResult != null && !string.Equals(briefResult[0], brief, StringComparison.Ordinal))
+                        _translatedBrief = briefResult[0];
                 }
 
-                if (_translatedDescriptionHtml != null)
+                var done = false;
+                if (_descriptionPage != null)
+                    done = await _descriptionPage.TranslateContentAsync(translateBatch,
+                        (doneCount, total) =>
+                        {
+                            // 进度只在按钮仍处于「翻译中」时刷新，
+                            // 避免排队的进度回调把完成态的「显示原文」覆盖掉
+                            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                            {
+                                if (_isTranslating)
+                                    TranslateBtnText.Text =
+                                        string.Format(i18n["Download.Result.Translate.Progress"], doneCount, total);
+                            });
+                        });
+
+                if (_translatedBrief != null) DescriptionText.Text = _translatedBrief;
+                if (done)
                 {
                     _isDescriptionTranslated = true;
-                    _descriptionPage?.ApplyTranslation(_translatedDescriptionHtml);
                     TranslateBtnText.Text = i18n["Download.Result.Translate.Restore"];
                 }
                 else
@@ -292,8 +331,7 @@ public partial class ResultRoot : UserControl
             else
             {
                 _isDescriptionTranslated = false;
-                if (_originalDescriptionText != null)
-                    DescriptionText.Text = _originalDescriptionText;
+                DescriptionText.Text = SearchResultItemInfo.Description;
                 _descriptionPage?.RestoreOriginal();
                 TranslateBtnText.Text = i18n["Download.Result.Translate.Action"];
             }

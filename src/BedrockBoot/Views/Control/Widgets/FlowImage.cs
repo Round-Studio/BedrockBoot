@@ -41,12 +41,27 @@ public class FlowImage : Border
     public static readonly StyledProperty<double> MaxDisplayHeightProperty =
         AvaloniaProperty.Register<FlowImage, double>(nameof(MaxDisplayHeight), 380.0);
 
+    /// <summary>显示宽度占容器的百分比上限（0 = 不限制）；对应 HTML 的 width:N% 图片。</summary>
+    public static readonly StyledProperty<double> MaxDisplayWidthPercentProperty =
+        AvaloniaProperty.Register<FlowImage, double>(nameof(MaxDisplayWidthPercent), 0.0);
+
+    /// <summary>保持原始尺寸不放大（窄长装饰条等按新尺寸显示会失真的图）。</summary>
+    public static readonly StyledProperty<bool> KeepNaturalSizeProperty =
+        AvaloniaProperty.Register<FlowImage, bool>(nameof(KeepNaturalSize));
+
+    /// <summary>小图放大的宽度上限；超过此宽度的图不参与放大。避免小图标被撑到与横幅一样大。</summary>
+    public static readonly StyledProperty<double> MaxUpscaleWidthProperty =
+        AvaloniaProperty.Register<FlowImage, double>(nameof(MaxUpscaleWidth), 480.0);
+
     private static readonly FontFamily CodeFontFamily = new("Cascadia Mono, Consolas, Courier New");
 
     private readonly Image _image;
     private readonly FontIcon _placeholder;
     private Bitmap? _bitmap;
     private bool _loadStarted;
+    // 父布局测量时给的可用宽度。此后一律用它做宽度约束：
+    // 若用自身 Bounds，占位图阶段会把约束冻结成几十像素，图片全部显示过小
+    private double _availableWidth;
 
     public FlowImage()
     {
@@ -93,6 +108,24 @@ public class FlowImage : Border
         set => SetValue(MaxDisplayHeightProperty, value);
     }
 
+    public double MaxDisplayWidthPercent
+    {
+        get => GetValue(MaxDisplayWidthPercentProperty);
+        set => SetValue(MaxDisplayWidthPercentProperty, value);
+    }
+
+    public bool KeepNaturalSize
+    {
+        get => GetValue(KeepNaturalSizeProperty);
+        set => SetValue(KeepNaturalSizeProperty, value);
+    }
+
+    public double MaxUpscaleWidth
+    {
+        get => GetValue(MaxUpscaleWidthProperty);
+        set => SetValue(MaxUpscaleWidthProperty, value);
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -111,8 +144,18 @@ public class FlowImage : Border
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
-        // 容器宽度变化时重新套用尺寸约束
-        if (_bitmap != null) ApplyLayout(_bitmap);
+        // 图片已就绪但还没拿到过可用宽度时，借这次布局完成冻结并定尺寸
+        if (_bitmap != null && _availableWidth <= 10)
+            ApplyLayout(_bitmap);
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        // 可用宽度从父布局的测量约束取：这是"容器能给多大"，与自己当前期望尺寸无关。
+        // 用自身 Bounds 会在占位图阶段冻结成几十像素，把所有图都算小
+        if (_availableWidth <= 10 && !double.IsInfinity(availableSize.Width) && availableSize.Width > 10)
+            _availableWidth = availableSize.Width;
+        return base.MeasureOverride(availableSize);
     }
 
     private async Task LoadAsync()
@@ -123,8 +166,9 @@ public class FlowImage : Border
         var url = ImageUrl;
         try
         {
-            var available = Bounds.Width > 10 ? Bounds.Width : 480;
-            var decodeWidth = (int)Math.Ceiling(Math.Min(available, 480) * 2);
+            // 解码宽度按 2x 屏余量取，上限 1200（描述横幅图常是 1920 宽，480 的旧上限会显示过小）
+            var available = _availableWidth > 10 ? _availableWidth : 700;
+            var decodeWidth = (int)Math.Ceiling(Math.Min(available * 2, 1200));
             var bitmap = await ImageLoader.Shared.LoadIconAsync(url!, decodeWidth);
 
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -146,16 +190,30 @@ public class FlowImage : Border
 
     private void ApplyLayout(Bitmap bitmap)
     {
-        // 用 DPI 把像素尺寸换算成 DIP，再在容器宽度 / 高度上限内按比例缩放（只缩小不放大小图）
+        // 用 DPI 把像素尺寸换算成 DIP，再在可用宽度 / 高度上限内按比例缩放
         var dpiScale = bitmap.Dpi.X > 0 ? bitmap.Dpi.X / 96.0 : 1.0;
         var naturalWidth = bitmap.PixelSize.Width / dpiScale;
         var naturalHeight = bitmap.PixelSize.Height / dpiScale;
         if (naturalWidth <= 0 || naturalHeight <= 0) return;
 
-        var maxWidth = Bounds.Width > 10 ? Bounds.Width : 480;
-        var scale = Math.Min(1.0, Math.Min(maxWidth / naturalWidth, MaxDisplayHeight / naturalHeight));
+        // 可用宽度只在首次测量时捕获一次；图片加载早于首次测量时等 OnSizeChanged 再来
+        if (_availableWidth <= 10) return;
 
-        _image.Width = Math.Max(1, Math.Floor(naturalWidth * scale));
-        _image.Height = Math.Max(1, Math.Floor(naturalHeight * scale));
+        var maxWidth = _availableWidth;
+        if (MaxDisplayWidthPercent > 0)
+            maxWidth = Math.Min(maxWidth, maxWidth * MaxDisplayWidthPercent / 100.0);
+
+        // 图片按自身比例适配：大图缩小到可用宽度内，小图放大但有上限
+        // （最多放大到 MaxUpscaleWidth，小图标不至于被撑到与横幅一样大）；
+        // 窄长装饰条等标记了 KeepNaturalSize 的图只缩不放大
+        var upscaleLimit = Math.Min(maxWidth, MaxUpscaleWidth);
+        var scale = maxWidth >= naturalWidth
+            ? Math.Min(upscaleLimit / naturalWidth, MaxDisplayHeight / naturalHeight)   // 放大：取较宽松的上限
+            : Math.Min(maxWidth / naturalWidth, MaxDisplayHeight / naturalHeight);      // 缩小：严格压进约束
+        if (KeepNaturalSize) scale = Math.Min(scale, 1.0);
+
+        // 宽高定死在 Border 上：图片加载完成后尺寸不再随测量变化
+        Width = Math.Max(1, Math.Floor(naturalWidth * scale));
+        Height = Math.Max(1, Math.Floor(naturalHeight * scale));
     }
 }

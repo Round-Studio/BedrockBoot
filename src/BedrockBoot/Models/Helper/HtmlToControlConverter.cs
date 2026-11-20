@@ -91,9 +91,13 @@ public class HtmlToControlConverter
         var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
+        // 依次找语义容器；都没命中时退回 body / html / 根节点，
+        // 保证网站抓取类（完整文档）与 API 片段都能渲染
         var root = doc.DocumentNode.SelectSingleNode("//article") ??
                    doc.DocumentNode.SelectSingleNode("//div[contains(@class,'markdown-body')]") ??
-                   doc.DocumentNode.SelectSingleNode("//div[@class='md']");
+                   doc.DocumentNode.SelectSingleNode("//div[@class='md']") ??
+                   doc.DocumentNode.SelectSingleNode("//body") ??
+                   doc.DocumentNode.SelectSingleNode("//html");
 
         return RenderBlocks((root ?? doc.DocumentNode).ChildNodes);
     }
@@ -132,7 +136,10 @@ public class HtmlToControlConverter
             if (IsIgnoredElement(node) || node.GetAttributeValue("aria-hidden", "") == "true") continue;
 
             var name = node.Name.ToLowerInvariant();
-            if (name == "br" || IsInlineElement(name))
+            if (name == "br" || IsInlineElement(name) ||
+                // 未知标签（含资源作者的自定义元素）：只有包着块级内容才算块，
+                // 否则按行内处理避免把一段连续文本拆成多行
+                (!IsBlockElementName(name) && !HasBlockDescendant(node)))
             {
                 inlineGroup.Add(node);
                 continue;
@@ -149,6 +156,8 @@ public class HtmlToControlConverter
 
     private static Control? RenderBlockElement(HtmlNode node, InlineStyle inlineStyle)
     {
+        // 块级元素自身的 style（text-align / font-size）先合入样式，再交给内容渲染
+        inlineStyle = ApplySpanStyle(node, inlineStyle);
         switch (node.Name.ToLowerInvariant())
         {
             case "p":
@@ -184,8 +193,66 @@ public class HtmlToControlConverter
             case "iframe":
                 return CreateVideoCard(node);
 
+            case "center":
+                // 居中容器：内容递归后整体居中（文本还要设 TextAlignment，否则 Stretch 宽度下不生效）
+                var centered = new StackPanel();
+                centered.Children.AddRange(RenderBlocks(node.ChildNodes, inlineStyle));
+                if (centered.Children.Count == 0) return null;
+                foreach (var child in centered.Children)
+                {
+                    if (child is TextBlock text) text.TextAlignment = TextAlignment.Center;
+                    if (child.HorizontalAlignment == HorizontalAlignment.Stretch)
+                        child.HorizontalAlignment = HorizontalAlignment.Center;
+                }
+                return centered;
+
+            case "figure":
+                // figure = 图片/标题组合；figcaption 渲染为下方小字说明
+                var figure = new StackPanel { Margin = new Thickness(0, 8) };
+                var caption = node.ChildNodes.FirstOrDefault(n =>
+                    n.NodeType == HtmlNodeType.Element && n.Name.ToLowerInvariant() == "figcaption");
+                if (caption != null) caption.Remove();
+
+                var figureBody = RenderBlocks(node.ChildNodes, inlineStyle);
+                if (figureBody.Count == 0 && caption == null) return null;
+                figure.Children.AddRange(figureBody);
+
+                if (caption != null)
+                {
+                    var captionText = new TextBlock
+                    {
+                        FontSize = 12,
+                        Opacity = 0.7,
+                        Margin = new Thickness(0, 4),
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    captionText.Inlines ??= new InlineCollection();
+                    BuildInlines(caption.ChildNodes, captionText.Inlines, default);
+                    TrimInlineEdges(captionText.Inlines);
+                    if (HasVisibleInline(captionText.Inlines)) figure.Children.Add(captionText);
+                }
+
+                return figure.Children.Count > 0 ? figure : null;
+
+            case "details":
+                // 折叠容器：summary 作标题，其余内容作折叠体（默认展开渲染，不引入交互控件）
+                var detailsPanel = new StackPanel { Margin = new Thickness(0, 6) };
+                var summary = node.ChildNodes.FirstOrDefault(n =>
+                    n.NodeType == HtmlNodeType.Element && n.Name.ToLowerInvariant() == "summary");
+                if (summary != null) summary.Remove();
+
+                if (summary != null)
+                {
+                    var heading = CreateHeading(summary, 4);
+                    if (heading != null) detailsPanel.Children.Add(heading);
+                }
+
+                detailsPanel.Children.AddRange(RenderBlocks(node.ChildNodes, inlineStyle));
+                return detailsPanel.Children.Count > 0 ? detailsPanel : null;
+
             default:
-                // div / section / article / details / figure / li 碎片等一律递归内容
+                // div / section / article / 自定义标签等一律递归内容，保证
+                // 完全自定义的 HTML 结构（资源作者的个性化排版）也能完整渲染
                 var panel = new StackPanel();
                 panel.Children.AddRange(RenderBlocks(node.ChildNodes, inlineStyle));
                 return panel.Children.Count > 0 ? panel : null;
@@ -200,9 +267,12 @@ public class HtmlToControlConverter
         var elements = nodeList.Where(n => n.NodeType == HtmlNodeType.Element).ToList();
         if (elements.Count > 0 && elements.All(IsImageishNode))
         {
+            // float:left/right 的图片是网页端装饰元素（侧边装饰条等），桌面端模拟 float
+            // 会把布局挤坏，直接忽略；剩下的图片正常纵排
             var images = new StackPanel { Margin = new Thickness(0, 8), Spacing = 8 };
             foreach (var element in elements)
             {
+                if (GetFloatSide(element) != null) continue;
                 var image = BuildLinkedImage(element);
                 if (image != null) images.Children.Add(image);
             }
@@ -215,6 +285,9 @@ public class HtmlToControlConverter
             TextWrapping = TextWrapping.Wrap,
             Margin = new Thickness(0, 6)
         };
+        // 块级 style 里的 text-align / font-size 下沉到段落
+        if (inlineStyle.Alignment is { } alignment) textBlock.TextAlignment = alignment;
+        if (inlineStyle.FontSize is { } paragraphSize) textBlock.FontSize = paragraphSize;
         textBlock.Inlines ??= new InlineCollection();
         BuildInlines(nodeList, textBlock.Inlines, inlineStyle);
         TrimInlineEdges(textBlock.Inlines);
@@ -231,8 +304,12 @@ public class HtmlToControlConverter
             Margin = new Thickness(0, level <= 2 ? 18 : 14, 0, level <= 2 ? 6 : 4),
             TextWrapping = TextWrapping.Wrap
         };
+        // 标题自身的 style（text-align:center / font-size:40px）覆盖默认值
+        var style = ApplySpanStyle(node, default);
+        if (style.Alignment is { } headingAlignment) textBlock.TextAlignment = headingAlignment;
+        if (style.FontSize is { } headingSize) textBlock.FontSize = headingSize;
         textBlock.Inlines ??= new InlineCollection();
-        BuildInlines(node.ChildNodes, textBlock.Inlines, default);
+        BuildInlines(node.ChildNodes, textBlock.Inlines, style);
         TrimInlineEdges(textBlock.Inlines);
 
         return HasVisibleInline(textBlock.Inlines) ? textBlock : null;
@@ -464,15 +541,15 @@ public class HtmlToControlConverter
         {
             var alt = img.GetAttributeValue("alt", "");
             var href = node.Name.ToLowerInvariant() == "a"
-                ? node.GetAttributeValue("href", "")
-                : src;
+                ? ResolveRelativeLink(node.GetAttributeValue("href", "")) ?? node.GetAttributeValue("href", "")
+                : ResolveRelativeLink(src) ?? src;
             if (string.IsNullOrWhiteSpace(href)) return null;
             return CreateLinkButton(string.IsNullOrWhiteSpace(alt) ? href : alt, href);
         }
 
-        var image = new FlowImage(src);
+        var image = CreateFlowImage(img, src, 380);
         var link = node.Name.ToLowerInvariant() == "a"
-            ? node.GetAttributeValue("href", "")
+            ? ResolveRelativeLink(node.GetAttributeValue("href", "")) ?? node.GetAttributeValue("href", "")
             : GetAncestorLink(node);
         if (!string.IsNullOrWhiteSpace(link) && Uri.TryCreate(link, UriKind.Absolute, out var uri))
             return new HyperlinkButton { Content = image, NavigateUri = uri, Padding = new Thickness(0) };
@@ -487,6 +564,20 @@ public class HtmlToControlConverter
             if (parent.Name.ToLowerInvariant() != "a") continue;
             var href = parent.GetAttributeValue("href", "");
             return string.IsNullOrWhiteSpace(href) ? null : href;
+        }
+
+        return null;
+    }
+
+    /// <summary>读 img 的 float 样式（left/right），含包裹元素传递的值；返回非 null 即视为装饰图不渲染。</summary>
+    private static string? GetFloatSide(HtmlNode node)
+    {
+        for (var current = node; current != null; current = current.ParentNode)
+        {
+            var match = Regex.Match(current.GetAttributeValue("style", ""),
+                @"(?:^|;)\s*float\s*:\s*(left|right)", RegexOptions.IgnoreCase);
+            if (match.Success) return match.Groups[1].Value.ToLowerInvariant();
+            if (current.Name.ToLowerInvariant() == "p") break; // 不越出段落找
         }
 
         return null;
@@ -529,7 +620,9 @@ public class HtmlToControlConverter
         FontStyle? Slant,
         TextDecorationCollection? Decorations,
         IBrush? Foreground,
-        bool IsCode);
+        bool IsCode,
+        double? FontSize = null,
+        TextAlignment? Alignment = null);
 
     private static void BuildInlines(IEnumerable<HtmlNode> nodes, InlineCollection inlines, InlineStyle style)
     {
@@ -589,7 +682,7 @@ public class HtmlToControlConverter
 
             case "sub" or "sup" or "small" or "big" or "mark" or "abbr" or "time" or "bdi" or "bdo"
                 or "label" or "button" or "font" or "span":
-                BuildInlines(node.ChildNodes, inlines, ApplySpanColor(node, style));
+                BuildInlines(node.ChildNodes, inlines, ApplySpanStyle(node, style));
                 break;
 
             default:
@@ -616,6 +709,7 @@ public class HtmlToControlConverter
         if (style.Slant is { } slant) run.FontStyle = slant;
         if (style.Decorations is { } decorations) run.TextDecorations = decorations;
         if (style.Foreground is { } foreground) run.Foreground = foreground;
+        if (style.FontSize is { } fontSize) run.FontSize = fontSize;
 
         if (!style.IsCode) return;
 
@@ -627,12 +721,23 @@ public class HtmlToControlConverter
     private static void AppendLinkInline(HtmlNode node, InlineCollection inlines, InlineStyle style)
     {
         var href = node.GetAttributeValue("href", "");
-        // 页内锚点、空链接或无法解析的相对链接：只渲染文字不渲染可点击链接
-        if (string.IsNullOrWhiteSpace(href) || href.StartsWith("#") ||
-            !Uri.TryCreate(href, UriKind.Absolute, out var uri))
+        // 页内锚点或空链接：只渲染文字不渲染可点击链接
+        if (string.IsNullOrWhiteSpace(href) || href.StartsWith("#"))
         {
             BuildInlines(node.ChildNodes, inlines, style);
             return;
+        }
+
+        // 资源站外链代理（CurseForge /linkout?remoteUrl=...）还原出真实地址；
+        // 其余相对链接挂在站点根上解析
+        if (!Uri.TryCreate(href, UriKind.Absolute, out var uri))
+        {
+            var resolved = ResolveRelativeLink(href);
+            if (resolved == null || !Uri.TryCreate(resolved, UriKind.Absolute, out uri))
+            {
+                BuildInlines(node.ChildNodes, inlines, style);
+                return;
+            }
         }
 
         // 链接内容单独构建 Inlines，保留嵌套的粗体/颜色等格式
@@ -653,35 +758,108 @@ public class HtmlToControlConverter
         inlines.Add(new InlineUIContainer(button));
     }
 
+    /// <summary>还原资源站的外链代理与相对地址（对 absolute 地址直接透传）。</summary>
+    private static string? ResolveRelativeLink(string href)
+    {
+        // /linkout?remoteUrl=<双重 URL 编码的真实地址>
+        var match = Regex.Match(href, @"(?:^|/)linkout\?remoteUrl=([^&]+)", RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            // 剥一层百分号编码后得到可解析的绝对地址
+            var candidate = Uri.UnescapeDataString(match.Groups[1].Value);
+            if (Uri.TryCreate(candidate, UriKind.Absolute, out _)) return candidate;
+            return Uri.UnescapeDataString(candidate);
+        }
+
+        // CurseForge 相对地址统一挂在主站上
+        return href.StartsWith('/') ? $"https://www.curseforge.com{href}" : null;
+    }
+
     private static void AppendImageInline(HtmlNode node, InlineCollection inlines)
     {
+        // float 装饰图统一忽略（桌面端无法还原环绕布局，渲染出来只会挤坏排版）
+        if (GetFloatSide(node) != null) return;
+
         var src = node.GetAttributeValue("src", "");
         if (string.IsNullOrWhiteSpace(src)) return;
 
         if (!IsImageUrl(src))
         {
             var alt = node.GetAttributeValue("alt", "");
-            var link = CreateLinkButton(string.IsNullOrWhiteSpace(alt) ? src : alt, src);
+            var href = ResolveRelativeLink(src) ?? src;
+            var link = CreateLinkButton(string.IsNullOrWhiteSpace(alt) ? href : alt, href);
             if (link != null) inlines.Add(new InlineUIContainer(link));
             return;
         }
 
-        inlines.Add(new InlineUIContainer(new FlowImage(src) { MaxDisplayHeight = 220 }));
+        inlines.Add(new InlineUIContainer(CreateFlowImage(node, src, 220)));
     }
 
-    private static InlineStyle ApplySpanColor(HtmlNode node, InlineStyle style)
+    /// <summary>按 img 的 style="width:N%" 限制图片显示宽度（CurseForge 描述的横幅图常用）。</summary>
+    private static FlowImage CreateFlowImage(HtmlNode node, string src, double maxDisplayHeight)
+    {
+        var image = new FlowImage(src) { MaxDisplayHeight = maxDisplayHeight };
+
+        var styleAttr = node.GetAttributeValue("style", "");
+        var widthMatch = Regex.Match(styleAttr, @"(?:^|;)\s*width\s*:\s*(\d+(?:\.\d+)?)%");
+        if (widthMatch.Success)
+            image.MaxDisplayWidthPercent = double.Parse(widthMatch.Groups[1].Value);
+
+        // HTML 里写了固定 width/height 的窄长图（装饰条、分隔柱）按作者意图保持原始尺寸，
+        // 不参与小图放大，避免被撑到模糊失真
+        var htmlWidth = node.GetAttributeValue("width", "");
+        var htmlHeight = node.GetAttributeValue("height", "");
+        if (int.TryParse(htmlWidth, out var w) && int.TryParse(htmlHeight, out var h) &&
+            Math.Max(w, h) / (double)Math.Max(1, Math.Min(w, h)) > 3)
+            image.KeepNaturalSize = true;
+
+        return image;
+    }
+
+    /// <summary>
+    ///     解析行内样式：颜色、字号、下划线/删除线与块级 text-align 都能叠加。
+    ///     CurseForge 描述大量用 span style 做彩色文字与字号微调。
+    /// </summary>
+    private static InlineStyle ApplySpanStyle(HtmlNode node, InlineStyle style)
     {
         var styleAttr = node.GetAttributeValue("style", "");
-        var colorMatch = Regex.Match(styleAttr, @"(?:^|;)\s*color\s*:\s*(#[0-9a-fA-F]{3,8}|[a-zA-Z]+)");
-        if (colorMatch.Success && TryParseColor(colorMatch.Groups[1].Value, out var color))
-            return style with { Foreground = new SolidColorBrush(color) };
+
+        if (Regex.Match(styleAttr, @"(?:^|;)\s*color\s*:\s*(#[0-9a-fA-F]{3,8}|[a-zA-Z]+)") is { Success: true } colorMatch &&
+            TryParseColor(colorMatch.Groups[1].Value, out var color))
+            style = style with { Foreground = new SolidColorBrush(color) };
+
+        if (Regex.Match(styleAttr, @"(?:^|;)\s*font-size\s*:\s*(\d+(?:\.\d+)?)\s*px") is { Success: true } sizeMatch)
+            style = style with { FontSize = double.Parse(sizeMatch.Groups[1].Value) };
+
+        if (Regex.Match(styleAttr, @"(?:^|;)\s*text-decoration\s*:\s*([a-z-]+)") is { Success: true } decoMatch)
+            style = style with
+            {
+                Decorations = decoMatch.Groups[1].Value switch
+                {
+                    "underline" => TextDecorations.Underline,
+                    "line-through" => TextDecorations.Strikethrough,
+                    _ => style.Decorations
+                }
+            };
+
+        // text-align 只对块级容器有意义，记进样式供块渲染时读取
+        if (Regex.Match(styleAttr, @"(?:^|;)\s*text-align\s*:\s*(\w+)") is { Success: true } alignMatch)
+            style = style with { Alignment = ParseAlignment(alignMatch.Groups[1].Value) };
 
         var colorAttr = node.Attributes["color"]?.Value;
         if (!string.IsNullOrWhiteSpace(colorAttr) && TryParseColor(colorAttr, out var fontColor))
-            return style with { Foreground = new SolidColorBrush(fontColor) };
+            style = style with { Foreground = new SolidColorBrush(fontColor) };
 
         return style;
     }
+
+    private static TextAlignment ParseAlignment(string value) => value switch
+    {
+        "center" => TextAlignment.Center,
+        "right" or "end" => TextAlignment.Right,
+        "justify" => TextAlignment.Justify,
+        _ => TextAlignment.Left
+    };
 
     private static bool TryParseColor(string value, out Color color)
     {
@@ -774,6 +952,27 @@ public class HtmlToControlConverter
             or "bdo" or "label" or "picture" or "source" or "button" => true,
         _ => false
     };
+
+    /// <summary>已知块级标签集合（RenderBlockElement 能给出专门渲染的都算）。</summary>
+    private static bool IsBlockElementName(string name) => name switch
+    {
+        "p" or "h1" or "h2" or "h3" or "h4" or "h5" or "h6" or "ul" or "ol" or "li"
+            or "table" or "thead" or "tbody" or "tfoot" or "tr" or "td" or "th"
+            or "blockquote" or "pre" or "hr" or "div" or "section" or "article" or "aside"
+            or "header" or "footer" or "nav" or "main" or "figure" or "figcaption"
+            or "details" or "summary" or "dl" or "dt" or "dd" or "center"
+            or "form" or "fieldset" or "iframe" or "img" or "body" or "html" => true,
+        _ => false
+    };
+
+    /// <summary>行内元素里包着块级内容（如 a 包 div>img）时，按块处理防止整棵子树进段落。</summary>
+    private static bool HasBlockDescendant(HtmlNode node)
+    {
+        foreach (var d in node.Descendants())
+            if (d.NodeType == HtmlNodeType.Element && IsBlockElementName(d.Name.ToLowerInvariant()))
+                return true;
+        return false;
+    }
 
     private static bool IsIgnoredElement(HtmlNode node)
     {

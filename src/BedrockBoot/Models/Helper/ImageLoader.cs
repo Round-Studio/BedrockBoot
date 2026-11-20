@@ -48,6 +48,9 @@ public class ImageLoader : IDisposable
     // 每个 URL 一个信号量，保证同一张图不会并发下载，但不同图可并行
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _urlLocks = new(StringComparer.Ordinal);
 
+    // 全局并发上限：批量加载时限制同时下载/解码的数量，避免 UI 线程与渲染线程被洪峰打爆
+    private static readonly SemaphoreSlim GlobalGate = new(4, 4);
+
     // 缓存总像素上限（2000 万像素 ≈ 80MB RGBA），超出后按 LRU 淘汰引用
     private const long MaxCachePixels = 20_000_000L;
     private long _currentPixels;
@@ -150,6 +153,7 @@ public class ImageLoader : IDisposable
 
         var urlLock = _urlLocks.GetOrAdd(cacheKey, _ => new SemaphoreSlim(1, 1));
         await urlLock.WaitAsync().ConfigureAwait(false);
+        await GlobalGate.WaitAsync().ConfigureAwait(false);
         try
         {
             if (useCache && TryGetFromCache(cacheKey, out cached)) return cached;
@@ -234,6 +238,7 @@ public class ImageLoader : IDisposable
         }
         finally
         {
+            GlobalGate.Release();
             // 加载过程中控件可能已卸载并 Dispose，此时信号量可能已被释放，忽略即可
             try
             {

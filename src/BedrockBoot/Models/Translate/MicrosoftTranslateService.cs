@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -133,6 +134,81 @@ public class MicrosoftTranslateService : ITranslationService
         }
     }
 
+    /// <summary>
+    /// 批量翻译纯文本，返回结果与入参一一对应。
+    /// 接口支持一次提交多条文本且按提交顺序返回，比逐条请求快得多。
+    /// 失败时返回 null（调用方可整体回退为原文）。
+    /// </summary>
+    public async Task<string[]?> TranslateTextBatchAsync(IReadOnlyList<string> texts, string sourceLanguage, string targetLanguage)
+    {
+        if (texts.Count == 0) return Array.Empty<string>();
+
+        try
+        {
+            // 单批按条数与总长度双重限制，超出则分段请求
+            var results = new string[texts.Count];
+            var index = 0;
+            while (index < texts.Count)
+            {
+                var batchLength = 0;
+                var endIndex = index;
+                while (endIndex < texts.Count &&
+                       endIndex - index < 100 &&
+                       batchLength + texts[endIndex].Length <= 12000)
+                {
+                    batchLength += texts[endIndex].Length;
+                    endIndex++;
+                }
+
+                var requestBody = BuildRequestBody(texts.Skip(index).Take(endIndex - index));
+                var jsonResponse = await CallTranslationApiAsync(requestBody, sourceLanguage, targetLanguage);
+                var batchResults = ParseBatchResponse(jsonResponse, endIndex - index);
+                if (batchResults == null) return null;
+
+                for (var i = index; i < endIndex; i++)
+                    results[i] = batchResults[i - index];
+
+                index = endIndex;
+            }
+
+            return results;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"批量翻译失败: {ex.Message}");
+            return null;
+        }
+    }
+
+    private static string[]? ParseBatchResponse(string json, int expectedCount)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            var results = new string[expectedCount];
+            var i = 0;
+            foreach (var item in doc.RootElement.EnumerateArray())
+            {
+                if (i >= expectedCount) break;
+                if (item.TryGetProperty("translations", out var translations) &&
+                    translations.GetArrayLength() > 0 &&
+                    translations[0].TryGetProperty("text", out var text))
+                    results[i] = text.GetString() ?? string.Empty;
+                else
+                    results[i] = string.Empty;
+                i++;
+            }
+
+            // 响应条数不足时视为失败，避免错位回填
+            return i == expectedCount ? results : null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"解析批量翻译响应失败: {ex.Message}");
+            return null;
+        }
+    }
+
     private static List<string> SplitHtml(string html, int maxLength)
     {
         var chunks = new List<string>();
@@ -225,7 +301,7 @@ public class MicrosoftTranslateService : ITranslationService
         }
     }
 
-    private string BuildRequestBody(List<string> texts)
+    private string BuildRequestBody(IEnumerable<string> texts)
     {
         // translatetext 端点接收纯字符串数组，而非旧 API 的 [{"Text":...}] 对象数组
         var entries = new List<string>();

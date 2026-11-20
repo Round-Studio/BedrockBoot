@@ -696,6 +696,8 @@
     <x:String x:Key="Settings.Game.Group.Accessibility">協助工具</x:String>
     <x:String x:Key="Settings.Game.Overlay.Title">遊戲疊層</x:String>
     <x:String x:Key="Settings.Game.Overlay.Desc">喺遊戲視窗入面撳 Shift+Tab 就可以開啟遊戲疊層</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Title">UWP 相依性偵測</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Desc">喺啟動遊戲之前偵測 UWP 執行階段相依性，欠咗就問你係咪自動補全或者照樣啟動</x:String>
     <x:String x:Key="Settings.Game.Group.Global">全域</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Title">全域設定</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Desc">全域實例嘅遊戲設定 (options.txt) 檔案來源嘅設定</x:String>

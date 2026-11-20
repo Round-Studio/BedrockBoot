@@ -22,13 +22,17 @@ using Avalonia.Markup.Xaml;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Helper;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using System.Diagnostics;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockBoot.Models;
+using BedrockBoot.Models.Helper;
+using BedrockBoot.Views.DialogContent;
 
 namespace BedrockBoot.Views.Windows.SystemMethod;
 
@@ -40,6 +44,8 @@ public partial class LaunchGameWindow : Window
     private readonly TimeSpan _updateThrottle = TimeSpan.FromMilliseconds(100);
     private Process? _gameProcess;
     private bool _gameLaunched;
+    private TaskCompletionSource<bool>? _uwpChoiceTcs;
+    private List<(string Name, string Version)>? _uwpMissingDeps;
 
     public LaunchGameWindow()
     {
@@ -171,6 +177,49 @@ public partial class LaunchGameWindow : Window
         });
     }
 
+    private Task<bool> ShowUwpChoiceAsync(List<(string Name, string Version)> depList)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        _uwpChoiceTcs = tcs;
+        _uwpMissingDeps = depList;
+
+        UpdateUi(() =>
+        {
+            UwpDepsText.Text = "检测到以下 UWP 依赖未安装：\n" +
+                               string.Join("\n", depList.Select(d => d.Name)) +
+                               "\n\n缺失这些依赖可能导致游戏无法启动。";
+            UwpChoicePanel.IsVisible = true;
+        });
+
+        return tcs.Task;
+    }
+
+    private void OnUwpFixClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (_uwpMissingDeps == null) return;
+
+        UpdateUi(() =>
+        {
+            UwpChoicePanel.IsVisible = false;
+            UwpFixHost.IsVisible = true;
+            UwpFixHost.Content = new DialogDownloadUwpDependenceContent(_uwpMissingDeps)
+            {
+                // 补全流程结束后继续启动
+                AllCompleted = () => _uwpChoiceTcs?.TrySetResult(true)
+            };
+        });
+    }
+
+    private void OnUwpLaunchAnywayClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        _uwpChoiceTcs?.TrySetResult(true);
+    }
+
+    private void OnUwpCancelClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        _uwpChoiceTcs?.TrySetResult(false);
+    }
+
     private async Task LaunchAsync()
     {
         if (_versionInfo == null)
@@ -184,6 +233,27 @@ public partial class LaunchGameWindow : Window
             // -jump 快捷启动路径没有主窗口，平台框架（PlatformCore）未装配时先装配
             if (PlatformCore.CoreInit == null)
                 await CoreInitialize.InitPlatformAsync();
+
+#if WINDOWS
+            // 启动游戏前检测一次 UWP 依赖，用户取消则不启动
+            var missingDeps = await UwpDependenceLaunchGuard.GetMissingDepsIfEnabledAsync();
+            if (missingDeps != null)
+            {
+                UpdateUi(() => ProgressBox.Text = "检测 UWP 依赖");
+                var proceed = await ShowUwpChoiceAsync(missingDeps);
+                UpdateUi(() =>
+                {
+                    UwpChoicePanel.IsVisible = false;
+                    UwpFixHost.IsVisible = false;
+                });
+                if (!proceed)
+                {
+                    _isClosing = true;
+                    Close();
+                    return;
+                }
+            }
+#endif
 
             var _launcher = PlatformCore.CreateLauncher(_versionInfo);
 

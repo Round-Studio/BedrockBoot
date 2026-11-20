@@ -27,6 +27,7 @@ using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Linux;
@@ -100,6 +101,15 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                     LaunchProgressBar.IsIndeterminate = false;
                     CancelBtn.IsEnabled = true;
                 });
+
+#if WINDOWS
+                // 启动游戏前检测一次 UWP 依赖，用户取消则结束本任务
+                if (!await UwpDependenceLaunchGuard.CheckBeforeLaunchAsync())
+                {
+                    Dispatcher.UIThread.Post(() => LaunchCompleted?.Invoke());
+                    return;
+                }
+#endif
 
                 var lc = PlatformCore.CreateLauncher(VersionInfo);
 

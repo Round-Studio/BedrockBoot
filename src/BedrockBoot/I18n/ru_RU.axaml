@@ -701,6 +701,8 @@
     <x:String x:Key="Settings.Game.Group.Accessibility">Доступность</x:String>
     <x:String x:Key="Settings.Game.Overlay.Title">Наложение игры</x:String>
     <x:String x:Key="Settings.Game.Overlay.Desc">Нажмите Shift+Tab в окне игры, чтобы открыть оверлей.</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Title">Проверка зависимостей UWP</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Desc">Проверять зависимости среды выполнения UWP перед запуском игры и спрашивать, установить ли недостающие или запустить игру всё равно</x:String>
     <x:String x:Key="Settings.Game.Group.Global">Глобальный</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Title">Глобальные параметры</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Desc">Настройка источника синхронизации options.txt между экземплярами</x:String>

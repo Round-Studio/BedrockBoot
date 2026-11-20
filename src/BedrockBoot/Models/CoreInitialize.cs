@@ -138,7 +138,6 @@ public class CoreInitialize
         Task.Run(() =>
         {
             _ = GetDevelopMode();
-            CheckUwpDependence();
             _ = PreLoadDependencyHelper.CheckAndUpdateAsync();
         });
 
@@ -433,29 +432,6 @@ public class CoreInitialize
                 CloseButtonText = "确定"
             });
         }
-#endif
-    }
-
-    private static void CheckUwpDependence()
-    {
-#if WINDOWS
-        Task.Run(() =>
-        {
-            Thread.Sleep(1000);
-            var depList = UwpDependencyChecker.GetMissingDependencies();
-            if (depList.Count > 0)
-            {
-                Console.WriteLine($@"当前系统未安装对应的 UWP 依赖，共 {depList.Count} 个依赖未安装。");
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    DialogHost.Show(new DialogInfo()
-                    {
-                        Title = "安装 UWP 依赖",
-                        Content = new DialogDownloadUwpDependenceContent(depList)
-                    });
-                });
-            }
-        });
 #endif
     }
 }

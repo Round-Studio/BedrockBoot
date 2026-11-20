@@ -691,6 +691,8 @@
     <x:String x:Key="Settings.Game.Group.Accessibility">Accessibility</x:String>
     <x:String x:Key="Settings.Game.Overlay.Title">Game Overlay</x:String>
     <x:String x:Key="Settings.Game.Overlay.Desc">Press Shift+Tab in game window to open overlay</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Title">UWP Dependency Check</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Desc">Check UWP runtime dependencies before launching the game and ask whether to install missing ones or launch anyway</x:String>
     <x:String x:Key="Settings.Game.Group.Global">Global</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Title">Global Options</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Desc">Configure options.txt synchronization source across instances</x:String>

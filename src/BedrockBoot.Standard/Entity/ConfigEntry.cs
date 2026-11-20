@@ -61,6 +61,9 @@ namespace BedrockBoot.Standard.Entity
         [JsonPropertyName("isCheckDeveloperModeAtStartup")]
         public bool IsCheckDeveloperModeAtStartup { get; set; } = true;
 
+        [JsonPropertyName("isCheckUwpDependenceAtLaunch")]
+        public bool IsCheckUwpDependenceAtLaunch { get; set; } = true;
+
         [JsonPropertyName("isPlayBackgroundMusic")]
         public bool IsPlayBackgroundMusic { get; set; } = true;
 

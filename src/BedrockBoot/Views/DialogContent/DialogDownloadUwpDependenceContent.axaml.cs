@@ -41,6 +41,11 @@ public partial class DialogDownloadUwpDependenceContent : UserControl
     private readonly HashSet<int> _installed = new(); // 记录已安装的包
     private int _completedCount;
 
+    /// <summary>
+    /// 所有依赖下载安装流程结束后的回调（无论单个包是否安装成功）。
+    /// </summary>
+    public Action? AllCompleted;
+
     public DialogDownloadUwpDependenceContent()
     {
         InitializeComponent();
@@ -100,6 +105,8 @@ public partial class DialogDownloadUwpDependenceContent : UserControl
 
         var tasks = validUrls.Select(urlInfo => DownloadOneAsync(urlInfo.Name, urlInfo.Url, urlInfo.Index)).ToArray();
         await Task.WhenAll(tasks);
+
+        AllCompleted?.Invoke();
 
         Dispatcher.UIThread.Invoke(() =>
         {

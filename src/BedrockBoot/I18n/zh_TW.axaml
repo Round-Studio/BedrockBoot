@@ -696,6 +696,8 @@
     <x:String x:Key="Settings.Game.Group.Accessibility">輔助功能</x:String>
     <x:String x:Key="Settings.Game.Overlay.Title">游戲疊層</x:String>
     <x:String x:Key="Settings.Game.Overlay.Desc">在游戲窗口內按下 Shift+Tab 以打開游戲疊層</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Title">UWP 相依性偵測</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Desc">在啟動遊戲前偵測 UWP 執行階段相依性，缺失時詢問是否自動補全或仍要啟動</x:String>
     <x:String x:Key="Settings.Game.Group.Global">全局</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Title">全局配置</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Desc">全局實例的游戲設定 (options.txt) 文件來源的設定</x:String>

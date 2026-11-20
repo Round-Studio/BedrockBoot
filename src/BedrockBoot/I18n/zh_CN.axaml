@@ -696,6 +696,8 @@
     <x:String x:Key="Settings.Game.Group.Accessibility">辅助功能</x:String>
     <x:String x:Key="Settings.Game.Overlay.Title">游戏叠层</x:String>
     <x:String x:Key="Settings.Game.Overlay.Desc">在游戏窗口内按下 Shift+Tab 以打开游戏叠层</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Title">UWP 依赖检测</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Desc">在启动游戏前检测 UWP 运行库依赖，缺失时询问是否自动补全或仍要启动</x:String>
     <x:String x:Key="Settings.Game.Group.Global">全局</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Title">全局配置</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Desc">全局实例的游戏设置 (options.txt) 文件来源的设置</x:String>

@@ -20,8 +20,33 @@
                        Text="启动游戏中..."/>
             <ProgressBar Name="LaunchProgressBar" 
                          IsIndeterminate="True"/>
-            <TextBlock Name="ProgressBox" 
+            <TextBlock Name="ProgressBox"
                        Text="准备中..."/>
+
+            <StackPanel Name="UwpChoicePanel"
+                        IsVisible="False"
+                        Spacing="8">
+                <TextBlock Name="UwpDepsText"
+                           TextWrapping="Wrap"/>
+                <Button Name="UwpFixBtn"
+                        Content="自动补全后启动"
+                        Padding="8"
+                        Classes="Accent"
+                        Click="OnUwpFixClick"/>
+                <Button Name="UwpLaunchAnywayBtn"
+                        Content="仍要启动"
+                        Padding="8"
+                        Click="OnUwpLaunchAnywayClick"/>
+                <Button Name="UwpCancelBtn"
+                        Content="取消启动"
+                        Padding="8"
+                        Classes="NoBorder"
+                        Background="{DynamicResource SystemFillColorCriticalBrush}"
+                        Click="OnUwpCancelClick"/>
+            </StackPanel>
+
+            <ContentControl Name="UwpFixHost" IsVisible="False"/>
+
             <Button Name="KillButton"
                     Content="结束游戏进程"
                     Padding="8"

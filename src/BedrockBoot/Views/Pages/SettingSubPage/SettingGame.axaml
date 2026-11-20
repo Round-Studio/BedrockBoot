@@ -54,6 +54,16 @@
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Margin="5, 0"
+                                          Name="IsCheckUwpDependenceCard"
+                                          Header="{DynamicResource Settings.Game.UwpCheck.Title}"
+                                          Description="{DynamicResource Settings.Game.UwpCheck.Desc}"
+                                          Glyph="&#xE946;">
+                <ToggleSwitch Name="IsCheckUwpDependence"
+                              IsCheckedChanged="IsCheckUwpDependence_OnIsCheckedChanged">
+                </ToggleSwitch>
+            </onePointControls:SettingCard>
+
+            <onePointControls:SettingCard Margin="5, 0"
                                           Header="{DynamicResource Settings.Download.InstancePath.Title}"
                                           Description="{DynamicResource Settings.Download.InstancePath.Desc}"
                                           Name="GameFolderBtn"

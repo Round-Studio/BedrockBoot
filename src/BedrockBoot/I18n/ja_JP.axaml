@@ -696,6 +696,8 @@
     <x:String x:Key="Settings.Game.Group.Accessibility">アクセシビリティ</x:String>
     <x:String x:Key="Settings.Game.Overlay.Title">ゲームオーバーレイ</x:String>
     <x:String x:Key="Settings.Game.Overlay.Desc">ゲームウィンドウ内で Shift+Tab を押してゲームオーバーレイを開きます</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Title">UWP 依存関係のチェック</x:String>
+    <x:String x:Key="Settings.Game.UwpCheck.Desc">ゲーム起動前に UWP ランタイム依存関係を確認し、不足している場合はインストールするか起動するかを選択できます</x:String>
     <x:String x:Key="Settings.Game.Group.Global">グローバル</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Title">グローバル設定</x:String>
     <x:String x:Key="Settings.Game.PublicSync.Desc">グローバルインスタンスのゲーム設定 (options.txt) の参照元を設定します</x:String>

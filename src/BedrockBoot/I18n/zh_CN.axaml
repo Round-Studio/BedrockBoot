@@ -880,6 +880,14 @@
     <x:String x:Key="Settings.Universal.Update.Changelog.Desc">当前版本与上个版本直接的修改日志</x:String>
     <x:String x:Key="Settings.Universal.Update.Dependency.Title">依赖更新</x:String>
     <x:String x:Key="Settings.Universal.Update.Dependency.Desc">检查并更新联机组件（EasyTier / GravityCone）</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.Group">游戏运行组件</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">检查更新</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">已是最新版本</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">未安装</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">检查更新失败，私有仓库需登录 GitHub 账号</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET 组件更新</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Notice.Message">正在下载 PreLoad.NET 组件更新...</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Done">完成，下次启动游戏生效</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">联机依赖组件</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">正在读取版本信息...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">检查更新</x:String>

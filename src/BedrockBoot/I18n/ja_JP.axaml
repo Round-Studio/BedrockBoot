@@ -861,6 +861,14 @@
     <x:String x:Key="Settings.Universal.Update.Changelog.Desc">現在のバージョンと前のバージョンの間の変更履歴</x:String>
     <x:String x:Key="Settings.Universal.Update.Dependency.Title">依存関係の更新</x:String>
     <x:String x:Key="Settings.Universal.Update.Dependency.Desc">マルチプレイコンポーネント（EasyTier / GravityCone）を確認および更新します</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.Group">ゲーム実行コンポーネント</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">更新を確認</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">最新バージョンです</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">未インストール</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">更新の確認に失敗しました。プライベートリポジトリには GitHub ログインが必要です</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET コンポーネントの更新</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Notice.Message">PreLoad.NET コンポーネントの更新をダウンロード中...</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Done">完了。次回のゲーム起動時に有効になります</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">マルチプレイ依存コンポーネント</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">バージョン情報を取得中...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">更新を確認</x:String>

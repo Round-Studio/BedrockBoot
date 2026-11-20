@@ -6,8 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="Dependence\PreLoad.NET.dll" />
-    </ItemGroup>
-
 </Project>

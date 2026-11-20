@@ -856,6 +856,14 @@
     <x:String x:Key="Settings.Universal.Update.Changelog.Desc">Changelog between current and previous versions</x:String>
     <x:String x:Key="Settings.Universal.Update.Dependency.Title">Dependency Updates</x:String>
     <x:String x:Key="Settings.Universal.Update.Dependency.Desc">Check and update multiplayer components (EasyTier / GravityCone)</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.Group">Game Runtime Components</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">Check for Updates</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">Already up to date</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">Not installed</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">Update check failed; sign in to GitHub for private repositories</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET Component Update</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Notice.Message">Downloading PreLoad.NET component update...</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Done">Done, takes effect on next game launch</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Multiplayer Dependencies</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">Reading version info...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">Check Updates</x:String>

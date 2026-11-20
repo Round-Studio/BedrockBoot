@@ -88,7 +88,7 @@ public static class MultiplayerDependencyHelper
         Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath, VersionFileName);
 
     /// <summary>去掉 tag 常见的 v 前缀再比较，避免 v2.4.5 与 2.4.5 被误判为不同版本</summary>
-    private static string? NormalizeVersion(string? version)
+    public static string? NormalizeVersion(string? version)
         => string.IsNullOrWhiteSpace(version) ? null : version.Trim().TrimStart('v', 'V');
 
     /// <summary>读取组件目录下的本地版本记录；文件缺失或损坏时返回 null</summary>

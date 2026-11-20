@@ -139,6 +139,7 @@ public class CoreInitialize
         {
             _ = GetDevelopMode();
             CheckUwpDependence();
+            _ = PreLoadDependencyHelper.CheckAndUpdateAsync();
         });
 
         RegisterService.API.LaunchingEvent.Add(path =>

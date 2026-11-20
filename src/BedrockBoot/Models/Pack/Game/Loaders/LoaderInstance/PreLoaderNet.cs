@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 using BedrockBoot.Standard.Interface.ModLoader;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Views.DialogContent.Loader;
 
 namespace BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
@@ -66,16 +67,17 @@ public class PreLoaderNet : IModsLoader
 
     public string GetInstalledVersion()
     {
-        try
-        {
-            File.WriteAllBytes(Path.Combine(GameInstance.VersionPath!, "PreLoad.NET.dll"),
-                Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreLoad.NET.dll"));
+        if (PreLoadDllStore.HasUpdatedDll())
+            try
+            {
+                File.WriteAllBytes(Path.Combine(GameInstance.VersionPath!, "PreLoad.NET.dll"),
+                    PreLoadDllStore.GetDllBytes());
 
-            Console.WriteLine(@"PreLoad.NET.dll 释放完毕");
-        }
-        catch
-        {
-        }
+                Console.WriteLine(@"PreLoad.NET.dll 释放完毕");
+            }
+            catch
+            {
+            }
 
         return GetAllInstalledVersion();
     }

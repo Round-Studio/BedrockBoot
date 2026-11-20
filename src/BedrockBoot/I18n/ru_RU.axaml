@@ -866,6 +866,14 @@
     <x:String x:Key="Settings.Universal.Update.Changelog.Desc">Журнал изменений между текущей и предыдущей версиями</x:String>
     <x:String x:Key="Settings.Universal.Update.Dependency.Title">Обновления зависимостей</x:String>
     <x:String x:Key="Settings.Universal.Update.Dependency.Desc">Проверьте и обновите компоненты многопользовательской игры (EasyTier/GravityCone)</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.Group">Компоненты запуска игры</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">Проверить обновления</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">Уже последняя версия</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">Не установлено</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">Не удалось проверить обновления; для приватных репозиториев войдите в GitHub</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Title">Обновление компонента PreLoad.NET</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Notice.Message">Скачивание обновления компонента PreLoad.NET...</x:String>
+    <x:String x:Key="Task.PreLoad.Update.Done">Готово, вступит в силу при следующем запуске игры</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Многопользовательские зависимости</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">Чтение информации о версии...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">Проверить обновления</x:String>

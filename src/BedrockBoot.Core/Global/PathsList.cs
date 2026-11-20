@@ -74,6 +74,16 @@ public class PathsList
         Path.Combine(PaperConnectPath, "EasyTier", "easytier-windows-x86_64", "easytier-cli.exe");
 
     public static readonly string PreauthDir = Path.Combine(NeoProtonPath, "winegdk-preauth");
+
+    /// <summary>
+    ///     PreLoad.NET 组件的更新存放目录。
+    ///     启动时从 PreLoad.NET-Release 仓库 Release 静默下载的新版 DLL 落在这里，
+    ///     ModsCore.PreLoad / PreLoaderNet 释放实例文件时优先取用，缺失则回退内嵌资源。
+    /// </summary>
+    public static readonly string PreLoadPath = Path.Combine(RootConfigPath, "BedrockBoot.PreLoad");
+    public static readonly string PreLoadDllPath = Path.Combine(PreLoadPath, "PreLoad.NET.dll");
+    public static readonly string PreLoadVersionFile = Path.Combine(PreLoadPath, "version.json");
+
     public static readonly string DeviceJsonPath = Path.Combine(PreauthDir, "device.json");
     public static readonly string DeviceKeyPath = Path.Combine(PreauthDir, "device-key.pem");
     public static readonly string DeviceIdPath = Path.Combine(PreauthDir, "device-id.txt");

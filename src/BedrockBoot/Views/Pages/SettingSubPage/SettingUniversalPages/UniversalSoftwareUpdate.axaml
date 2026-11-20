@@ -64,6 +64,23 @@
                                               IsClickable="True"
                                               Click="DependencyUpdateBtn_OnClick"
                                               Glyph="&#xE968;" />
+
+                <!-- 游戏运行组件（随启动器启动自动检查更新，此处仅展示与手动检查） -->
+                <TextBlock FontWeight="Bold"
+                           FontSize="14"
+                           Margin="0,8,0,0"
+                           Text="{DynamicResource Settings.Universal.Update.GameComponent.Group}" />
+
+                <onePointControls:SettingCard Glyph="&#xE7F8;"
+                                              Name="PreLoadComponentCard"
+                                              Header="PreLoad.NET"
+                                              Description="PreLoad.NET">
+                    <Button Padding="8"
+                            Height="36" Width="100"
+                            Name="PreLoadCheckBtn"
+                            Content="{DynamicResource Settings.Universal.Update.GameComponent.PreLoad.Check}"
+                            Click="PreLoadCheckBtn_OnClick" />
+                </onePointControls:SettingCard>
             </StackPanel>
 
             <Grid Grid.Row="1"

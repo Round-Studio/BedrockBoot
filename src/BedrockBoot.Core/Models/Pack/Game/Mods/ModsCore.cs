@@ -65,18 +65,22 @@ public class ModsCore
         if (!Directory.Exists(preLoadPath))
             Directory.CreateDirectory(preLoadPath);
 
-        try
-        {
-            if (File.Exists(fullPath)) File.Delete(fullPath);
-            File.WriteAllBytes(fullPath,
-                Dependence.Dependence.GetResource("BedrockBoot.Dependence.Dependence.PreLoad.NET.dll"));
+        var preLoadReady = PreLoadDllStore.HasUpdatedDll();
+        if (!preLoadReady)
+            Console.WriteLine(@"PreLoad.NET.dll 未就绪（尚未下载组件更新），本次启动游戏跳过注入（原版启动）");
 
-            Console.WriteLine(@"PreLoad.NET.dll 释放完毕");
-        }
-        catch (Exception exception)
-        {
-            Console.WriteLine($@"PreLoad.NET.dll 释放失败 {exception}");
-        }
+        if (preLoadReady)
+            try
+            {
+                if (File.Exists(fullPath)) File.Delete(fullPath);
+                File.WriteAllBytes(fullPath, PreLoadDllStore.GetDllBytes());
+
+                Console.WriteLine(@"PreLoad.NET.dll 释放完毕");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($@"PreLoad.NET.dll 释放失败 {exception}");
+            }
 
         // 如果raw文件不存在，直接从body复制创建
         if (!File.Exists(rawBody))
@@ -162,37 +166,38 @@ public class ModsCore
 
         Console.WriteLine(@"预加载文件复制完毕");
 
-        try
-        {
-            if (!FileCheck.IsFileLocked(body))
+        if (preLoadReady)
+            try
             {
-                using (var fs = new FileStream(body, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
-                using (var peFile = new PeFile(fs))
+                if (!FileCheck.IsFileLocked(body))
                 {
-                    peFile.AddImport("PreLoad.NET.dll", "DllMain");
-                    if (VersionInfo.Config.IsConsole && GlobalModel.Config.Data.IsUseBeta)
+                    using (var fs = new FileStream(body, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+                    using (var peFile = new PeFile(fs))
                     {
-                        if (peFile.ImageNtHeaders != null)
+                        peFile.AddImport("PreLoad.NET.dll", "DllMain");
+                        if (VersionInfo.Config.IsConsole && GlobalModel.Config.Data.IsUseBeta)
                         {
-                            peFile.ImageNtHeaders.OptionalHeader.Subsystem = SubsystemType.WindowsCui;
-                            System.Console.WriteLine(@"转换完成！Subsystem 已修改为 WindowsCui (3)");
+                            if (peFile.ImageNtHeaders != null)
+                            {
+                                peFile.ImageNtHeaders.OptionalHeader.Subsystem = SubsystemType.WindowsCui;
+                                System.Console.WriteLine(@"转换完成！Subsystem 已修改为 WindowsCui (3)");
+                            }
                         }
-                    }
 
-                    peFile.Flush();
-                    Console.WriteLine(@"Main EXE 文件修改完毕，已导入 PreLoad.NET.dll");
+                        peFile.Flush();
+                        Console.WriteLine(@"Main EXE 文件修改完毕，已导入 PreLoad.NET.dll");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($@"文件 {body} 被占用，无法修改目标文件");
+                    throw new IOException($"文件 {body} 被锁定，无法修改");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($@"文件 {body} 被占用，无法修改目标文件");
-                throw new IOException($"文件 {body} 被锁定，无法修改");
+                Console.WriteLine($@"修改 PE 文件失败: {ex}");
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($@"修改 PE 文件失败: {ex}");
-        }
     }
 
     /*public void LoadAll(int pid)

@@ -16,17 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.OtherPage;
 using BedrockBoot.Views.Pages.OtherPage.BuildRelease;
+using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using AboutReleaseNotes = BedrockBoot.Views.Pages.OtherPage.AboutPages.AboutReleaseNotes;
@@ -45,6 +49,10 @@ public partial class UniversalSoftwareUpdate : ISettingPage
 
         // 版本描述：直接显示版本号，或拼接“当前版本：”
         VersionCard.Description = Models.Global.GlobalModel.BodyVersion;
+
+        // PreLoad.NET 组件本地版本
+        PreLoadComponentCard.Description = PreLoadDependencyHelper.GetLocalVersion()
+            ?? I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.NotInstalled"];
 
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
@@ -118,5 +126,67 @@ public partial class UniversalSoftwareUpdate : ISettingPage
     private void GitCommitsBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new ChangLogPage());
+    }
+
+    private async void PreLoadCheckBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        PreLoadCheckBtn.IsEnabled = false;
+
+        // 替换为等待状态
+        PreLoadCheckBtn.Content = new ProgressRing
+        {
+            Width = 24,
+            Height = 24,
+            Background = Brushes.Transparent
+        };
+
+        try
+        {
+            var latest = await Task.Run(PreLoadDependencyHelper.GetLatestAssetAsync);
+            var local = PreLoadDependencyHelper.GetLocalVersion();
+            var notInstalled = I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.NotInstalled"];
+
+            if (latest == null)
+            {
+                ShowPreLoadNotice(I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.CheckFailed"]);
+                return;
+            }
+
+            PreLoadComponentCard.Description = $"{local ?? notInstalled} → {latest.Value.Tag}";
+
+            if (string.Equals(MultiplayerDependencyHelper.NormalizeVersion(local),
+                    MultiplayerDependencyHelper.NormalizeVersion(latest.Value.Tag),
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                ShowPreLoadNotice(I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.Latest"]);
+            }
+            else
+            {
+                // 有更新直接走后台下载任务项，与启动时自动检查共用同一入口
+                TaskDownloadPreLoadItem.StartDownload(latest.Value.Asset, latest.Value.Tag);
+            }
+        }
+        catch (Exception ex)
+        {
+            // 私有仓库未登录 GitHub 时会走到这里
+            Console.WriteLine($@"PreLoad.NET 检查更新失败: {ex}");
+            ShowPreLoadNotice(
+                I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.CheckFailed"] + $"\n{ex.Message}");
+        }
+        finally
+        {
+            PreLoadCheckBtn.IsEnabled = true;
+            PreLoadCheckBtn.Content = I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.Check"];
+        }
+    }
+
+    private void ShowPreLoadNotice(string message)
+    {
+        Models.Global.GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
+        {
+            Title = I18nManager.Instance["Task.PreLoad.Update.Title"],
+            Message = message,
+            NoticeType = NoticeType.Info
+        });
     }
 }

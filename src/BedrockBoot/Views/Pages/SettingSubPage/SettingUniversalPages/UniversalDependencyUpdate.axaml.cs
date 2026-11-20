@@ -23,6 +23,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Views.Helper;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -81,10 +82,10 @@ public partial class UniversalDependencyUpdate : ISettingPage
 
     private static string FormatLocal(bool installed, string? version)
     {
-        if (!installed) return "未安装";
+        if (!installed) return I18nManager.Instance["Settings.Universal.Dependency.Status.NotInstalled"];
         return string.IsNullOrEmpty(version)
-            ? "已安装（无版本记录，建议更新一次以补齐记录）"
-            : $"已安装版本：{version}";
+            ? I18nManager.Instance["Settings.Universal.Dependency.Status.MissingVersion"]
+            : string.Format(I18nManager.Instance["Settings.Universal.Dependency.Status.InstalledVersion"], version);
     }
 
     private async void CheckUpdateBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -104,8 +105,8 @@ public partial class UniversalDependencyUpdate : ISettingPage
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                EasyTierLatestText.Text = $"最新：{easyTier.LatestVersion}";
-                GravityConeLatestText.Text = $"最新：{gravityCone.LatestVersion}";
+                EasyTierLatestText.Text = string.Format(I18nManager.Instance["Settings.Universal.Dependency.Status.LatestVersion"], easyTier.LatestVersion);
+                GravityConeLatestText.Text = string.Format(I18nManager.Instance["Settings.Universal.Dependency.Status.LatestVersion"], gravityCone.LatestVersion);
 
                 var anyNotInstalled = !easyTier.IsInstalled || !gravityCone.IsInstalled;
                 var anyUpdate = easyTier.HasUpdate || gravityCone.HasUpdate;
@@ -113,22 +114,22 @@ public partial class UniversalDependencyUpdate : ISettingPage
                 if (anyNotInstalled)
                 {
                     UpdateCard.IsVisible = true;
-                    UpdateCard.Header = "安装依赖";
-                    UpdateCard.Description = "存在未安装的联机组件，点击下载安装最新版本";
+                    UpdateCard.Header = I18nManager.Instance["Settings.Universal.Dependency.Install.Title"];
+                    UpdateCard.Description = I18nManager.Instance["Settings.Universal.Dependency.Install.Desc"];
                 }
                 else if (anyUpdate)
                 {
                     UpdateCard.IsVisible = true;
-                    UpdateCard.Header = "更新依赖";
-                    UpdateCard.Description = "检测到新版本，点击下载并安装（更新期间联机功能将被关闭）";
+                    UpdateCard.Header = I18nManager.Instance["Settings.Universal.Dependency.Update.Title"];
+                    UpdateCard.Description = I18nManager.Instance["Settings.Universal.Dependency.Update.AvailableDesc"];
                 }
                 else
                 {
                     UpdateCard.IsVisible = false;
                     Models.Global.GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
                     {
-                        Title = "依赖更新",
-                        Message = "所有联机组件均为最新版本",
+                        Title = I18nManager.Instance["Settings.Universal.Dependency.Notice.Title"],
+                        Message = I18nManager.Instance["Settings.Universal.Dependency.Notice.Latest"],
                         NoticeType = NoticeType.Success
                     });
                 }
@@ -137,12 +138,7 @@ public partial class UniversalDependencyUpdate : ISettingPage
         catch (Exception ex)
         {
             Console.WriteLine($@"检查依赖更新失败: {ex}");
-            DialogHost.Show(new DialogInfo
-            {
-                Title = "检查更新失败",
-                Content = $"无法从 GitHub 获取版本信息，请检查网络后重试。\n{ex.Message}",
-                CloseButtonText = "确定"
-            });
+            await GitHubErrorDialog.ShowAsync(ex, I18nManager.Instance["GitHub.Error.CheckUpdate"]);
         }
         finally
         {
@@ -162,8 +158,8 @@ public partial class UniversalDependencyUpdate : ISettingPage
                 UpdateCard.IsVisible = false;
                 Models.Global.GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
                 {
-                    Title = "依赖更新",
-                    Message = "联机组件已更新完成",
+                    Title = I18nManager.Instance["Settings.Universal.Dependency.Notice.Title"],
+                    Message = I18nManager.Instance["Settings.Universal.Dependency.Notice.Completed"],
                     NoticeType = NoticeType.Success
                 });
             }
@@ -171,7 +167,7 @@ public partial class UniversalDependencyUpdate : ISettingPage
 
         DialogHost.Show(new DialogInfo
         {
-            Title = "更新联机依赖",
+            Title = I18nManager.Instance["Settings.Universal.Dependency.Update.DialogTitle"],
             Content = dialog
         });
     }

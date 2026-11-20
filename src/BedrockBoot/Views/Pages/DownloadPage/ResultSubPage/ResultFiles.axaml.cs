@@ -27,8 +27,10 @@ using BedrockBoot.Standard.Enum.Search;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Interface.Download;
+using BedrockBoot.Service.Download;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.Control.Items.Download;
+using BedrockBoot.Views.Helper;
 
 namespace BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
 
@@ -51,24 +53,31 @@ public partial class ResultFiles : UserControl
 
     private async Task UpdateUi()
     {
-        var files = await _service.GetFiles();
-        files.ForEach(f =>
+        try
         {
-            if (!string.IsNullOrEmpty(f.VersionGroup))
+            var files = await _service.GetFiles();
+            files.ForEach(f =>
             {
-                if (!_versions.Contains(f.VersionGroup))
+                if (!string.IsNullOrEmpty(f.VersionGroup))
                 {
-                    _versions.Add(f.VersionGroup);
-                    FilesList.Children.Add(new TextBlock()
+                    if (!_versions.Contains(f.VersionGroup))
                     {
-                        Text = f.VersionGroup,
-                        FontSize = 14,
-                        FontWeight = FontWeight.Bold
-                    });
+                        _versions.Add(f.VersionGroup);
+                        FilesList.Children.Add(new TextBlock()
+                        {
+                            Text = f.VersionGroup,
+                            FontSize = 14,
+                            FontWeight = FontWeight.Bold
+                        });
+                    }
                 }
-            }
 
-            FilesList.Children.Add(new ResourceFileItem(f));
-        });
+                FilesList.Children.Add(new ResourceFileItem(f));
+            });
+        }
+        catch (System.Exception ex) when (_service is PluginDownloadResult or LeviLaminaDownloadResult or DllModDownloadResult)
+        {
+            await GitHubErrorDialog.ShowAsync(ex);
+        }
     }
 }

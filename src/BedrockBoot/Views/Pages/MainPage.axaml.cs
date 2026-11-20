@@ -37,6 +37,7 @@ using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.TaskItem;
+using BedrockBoot.Views.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation.SelectBar;
@@ -237,16 +238,8 @@ public partial class MainPage : UserControl
         }
         catch (Exception ex)
         {
-            var error = GitHubHelper.HandleException(ex);
-
             Console.WriteLine($@"更新失败：{ex}");
-
-            DialogHost.Show(new DialogInfo
-            {
-                Title = "检查更新失败",
-                Content = $"无法从 GitHub 获取信息，请检查网络后重试。\n{error.GetLocalizedMessage()}",
-                CloseButtonText = i18n["Shared.Action.Confirm"]
-            });
+            await GitHubErrorDialog.ShowAsync(ex, i18n["GitHub.Error.CheckUpdate"], i18n["Shared.Action.Confirm"]);
         }
     }
 

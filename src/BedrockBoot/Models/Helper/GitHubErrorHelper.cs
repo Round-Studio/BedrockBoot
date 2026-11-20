@@ -82,29 +82,18 @@ public sealed record GitHubError(
 {
     public string GetLocalizedMessage()
     {
-        return Type switch
+        var key = Type switch
         {
-            GitHubErrorType.HttpRequestException =>
-                "Http Request Exception",
-
-            GitHubErrorType.RateLimit =>
-                "GitHub API rate limit exceeded for your IP", 
-
-            GitHubErrorType.Unauthorized =>
-                "Unauthorized",
-
-            GitHubErrorType.Forbidden =>
-                "Forbidden",
-
-            GitHubErrorType.NotFound =>
-                "Not Found",
-
-            GitHubErrorType.ApiError =>
-                "API Error",
-
-            _ =>
-                "Unknown Error"
+            GitHubErrorType.HttpRequestException => "GitHub.Error.HttpRequest",
+            GitHubErrorType.RateLimit => "GitHub.Error.RateLimit",
+            GitHubErrorType.Unauthorized => "GitHub.Error.Unauthorized",
+            GitHubErrorType.Forbidden => "GitHub.Error.Forbidden",
+            GitHubErrorType.NotFound => "GitHub.Error.NotFound",
+            GitHubErrorType.ApiError => "GitHub.Error.ApiError",
+            _ => "GitHub.Error.Unknown"
         };
+
+        return I18nManager.Instance[key];
     }
 }
 

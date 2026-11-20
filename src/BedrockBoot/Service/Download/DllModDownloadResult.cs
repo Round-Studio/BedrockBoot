@@ -25,6 +25,7 @@ using Avalonia.Controls;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Entity.Info.Download;
 using BedrockBoot.Models.Helper;
+using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Pack.Plugin.Market;
 using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Standard.Interface.Download;
@@ -67,7 +68,7 @@ public class DllModDownloadResult : IDownloadResult
 
     private async Task<IReadOnlyList<Release>> GetReleases()
     {
-        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+        var github = GitHubApiClient.CreateClient();
         var owner = SearchInfo.SourceWebsite.Split("/")[^2];
         var repo = SearchInfo.SourceWebsite.Split("/")[^1];
 
@@ -80,13 +81,6 @@ public class DllModDownloadResult : IDownloadResult
         catch (Exception ex)
         {
             Console.WriteLine($@"获取插件仓库信息失败：{ex}");
-            var error = GitHubHelper.HandleException(ex);
-            DialogHost.Show(new DialogInfo
-            {
-                Title = "网络错误",
-                Content = $"无法从 GitHub 获取信息，请检查网络后重试。\n{error.GetLocalizedMessage()}",
-                CloseButtonText = "确定"
-            });
             throw;
         }
     }

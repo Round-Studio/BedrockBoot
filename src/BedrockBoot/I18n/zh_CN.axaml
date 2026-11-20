@@ -888,6 +888,46 @@
     <x:String x:Key="Settings.Universal.Dependency.Update.Title">更新依赖</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Update.Desc">下载并安装最新版本的联机组件（更新期间联机功能将被关闭）</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Update.Action">立即更新</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Status.NotInstalled">未安装</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Status.MissingVersion">已安装（无版本记录，建议更新一次以补齐记录）</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Status.InstalledVersion">已安装版本：{0}</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Status.LatestVersion">最新：{0}</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Install.Title">安装依赖</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Install.Desc">存在未安装的联机组件，点击下载安装最新版本</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.AvailableDesc">检测到新版本，点击下载并安装（更新期间联机功能将被关闭）</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Notice.Title">依赖更新</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Notice.Latest">所有联机组件均为最新版本</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Notice.Completed">联机组件已更新完成</x:String>
+    <x:String x:Key="Settings.Universal.Dependency.Update.DialogTitle">更新联机依赖</x:String>
+    <x:String x:Key="GitHub.Error.Title">GitHub 请求失败</x:String>
+    <x:String x:Key="GitHub.Error.Prefix">无法从 GitHub 获取信息，请检查网络后重试。</x:String>
+    <x:String x:Key="GitHub.Error.CheckUpdate">检查更新失败</x:String>
+    <x:String x:Key="GitHub.Error.DependencyDownload">依赖下载失败</x:String>
+    <x:String x:Key="GitHub.Error.Network">网络错误</x:String>
+	<x:String x:Key="GitHub.Error.RateLimit">GitHub API rate limit exceeded for your IP&#x0a;&#x0a;若不理解此错误含义，请优先检查网络连接。&#x0a;&#x0a;若理解此错误含义并接受，可以在 设置 → 账户与档案 登录 GitHub 账户解除该限制。</x:String>
+	
+    <!--这些在简体中文别翻，毕竟国人网络问题靠自己解决（）-->
+    <x:String x:Key="GitHub.Error.HttpRequest">"Http Request Exception</x:String>
+    <x:String x:Key="GitHub.Error.Unauthorized">Unauthorized</x:String>
+    <x:String x:Key="GitHub.Error.Forbidden">Forbidden</x:String>
+    <x:String x:Key="GitHub.Error.NotFound">Not Found</x:String>
+    <x:String x:Key="GitHub.Error.ApiError">API Error</x:String>
+    <x:String x:Key="GitHub.Error.Unknown">Unknown Error</x:String>
+	
+    <x:String x:Key="Multiplayer.Dep.Status.FetchingReleases">正在获取最新版本信息...</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Downloading">开始并行下载...</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.DownloadProgress.EasyTier">下载 EasyTier ({0:F1}%)</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.DownloadProgress.GravityCone">下载 GravityCone ({0:F1}%)</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Extracting">下载完成，正在解压...</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Extract.EasyTier">解压 EasyTier...</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Extract.GravityCone">解压 GravityCone...</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Installed.EasyTier">EasyTier 安装完成</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Installed.GravityCone">GravityCone 安装完成</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.DownloadFailed">下载失败：{0}</x:String>
+    <x:String x:Key="Multiplayer.Dep.Status.Completed">所有依赖下载安装完成</x:String>
+    <x:String x:Key="Multiplayer.Dep.Error.AssetNotFound.EasyTier">未找到 EasyTier {0} 版本下载包</x:String>
+    <x:String x:Key="Multiplayer.Dep.Error.AssetNotFound.GravityCone">未找到 GravityCone {0} CLI 版本下载包</x:String>
+    <x:String x:Key="Multiplayer.Dep.Error.UnsupportedArchive">GravityCone 发布包为 7z 格式，当前不支持解压。请添加 7z 支持或联系开发者改用 zip 格式。</x:String>
 
     <x:String x:Key="Settings.Plugin.Manager.Title">插件管理</x:String>
     <x:String x:Key="Settings.Plugin.Manager.Desc">管理已安装的插件</x:String>

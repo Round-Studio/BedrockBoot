@@ -22,6 +22,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BedrockBoot.Views.DialogContent;
+using BedrockBoot.Models.Account.Github;
 using Octokit;
 
 namespace BedrockBoot.Models.Helper;
@@ -143,7 +144,7 @@ public static class MultiplayerDependencyHelper
     /// </summary>
     public static async Task<(DependencyStatus EasyTier, DependencyStatus GravityCone)> CheckUpdatesAsync()
     {
-        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+        var github = GitHubApiClient.CreateClient();
 
         var easyTierTask = github.Repository.Release.GetLatest(EasyTierOwner, EasyTierRepo);
         var gravityConeTask = github.Repository.Release.GetLatest(GravityConeOwner, GravityConeRepo);

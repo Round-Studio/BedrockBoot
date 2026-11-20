@@ -18,6 +18,7 @@
 
 using System;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -32,6 +33,7 @@ using BedrockBoot.Models.Translate;
 using BedrockBoot.Service;
 using BedrockBoot.Service.Download;
 using BedrockBoot.Standard.Interface.Download;
+using BedrockBoot.Views.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 
@@ -69,6 +71,7 @@ public partial class ResultRoot : UserControl
     private IDownloadResult _downloadService;
     private ResultDescription? _descriptionPage;
 
+    private int _githubErrorShown;
     private bool _isDescriptionTranslated;
     private bool _isTranslating;
     private string? _translatedDescriptionHtml;
@@ -114,22 +117,36 @@ public partial class ResultRoot : UserControl
 
         _ = Task.Run(async () =>
         {
-            var count = await _downloadService.GetDownloadCount();
-            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            try
             {
-                DownloadCountText.Text = count.ToString("N0");
-                DownloadCountPanel.IsVisible = true;
-            });
+                var count = await _downloadService.GetDownloadCount();
+                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                {
+                    DownloadCountText.Text = count.ToString("N0");
+                    DownloadCountPanel.IsVisible = true;
+                });
+            }
+            catch (Exception ex)
+            {
+                await ShowGitHubErrorOnce(ex);
+            }
         });
 
         _ = Task.Run(async () =>
         {
-            var installed = await _downloadService.IsInstalled();
-            Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+            try
             {
-                InstalledBox.IsVisible = installed;
-                GetResourceBtn.IsVisible = !installed;
-            });
+                var installed = await _downloadService.IsInstalled();
+                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                {
+                    InstalledBox.IsVisible = installed;
+                    GetResourceBtn.IsVisible = !installed;
+                });
+            }
+            catch (Exception ex)
+            {
+                await ShowGitHubErrorOnce(ex);
+            }
         });
 
         // 详情页主图标显示 90x90，按 180 宽解码（兼容 2x）
@@ -142,6 +159,14 @@ public partial class ResultRoot : UserControl
             ResourceIconIcon.IsVisible = false;
             IconFont.IsVisible = false;
         }
+    }
+
+    private async Task ShowGitHubErrorOnce(Exception exception)
+    {
+        if ((SearchResultItemInfo.ResourceType is SearchResourceType.PluginPack or
+             SearchResourceType.LeviLaminaMods or SearchResourceType.DllMods) &&
+            Interlocked.Exchange(ref _githubErrorShown, 1) == 0)
+            await GitHubErrorDialog.ShowAsync(exception);
     }
 
     private void GetResourceBtn_OnClick(object? sender, RoutedEventArgs e)

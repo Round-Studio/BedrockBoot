@@ -50,6 +50,7 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
 
     private Action _removeCallBack = () => { };
     private CancellationTokenSource? _cts;
+    private TaskCompletionSource<bool>? _tcs;
     private double _taskProgress;
     private string _taskStatusText = "";
     private string _taskTitle = "";
@@ -155,6 +156,7 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
                 }
 
                 ReportProgress(100, I18nManager.Instance["Task.PreLoad.Update.Done"]);
+                _tcs?.TrySetResult(true);
 
                 // 让用户看到完成状态再移除任务项
                 await Task.Delay(1500, CancellationToken.None);
@@ -163,21 +165,32 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
             catch (OperationCanceledException) when (token.IsCancellationRequested)
             {
                 Console.WriteLine(@"PreLoad.NET 组件下载任务已取消");
+                _tcs?.TrySetResult(false);
             }
             catch (Exception ex)
             {
                 // 任务异常若不上报会永远停留在列表里无任何提示
                 Console.WriteLine($@"PreLoad.NET 组件下载失败: {ex}");
                 Dispatcher.UIThread.Post(() => ReportProgress(100, $@"失败: {ex.Message}"));
+                _tcs?.TrySetResult(false);
             }
         }, token);
     }
 
     public static void StartDownload(ReleaseAsset asset, string tagName)
     {
+        _ = StartDownloadAndWait(asset, tagName);
+    }
+
+    /// <summary>
+    ///     派发下载任务并等待结果：true = 已下载并替换成功，false = 失败/取消。
+    ///     启动守卫用它阻塞等待组件就绪。
+    /// </summary>
+    public static Task<bool> StartDownloadAndWait(ReleaseAsset asset, string tagName)
+    {
         // 启动时自动检查在后台线程调用本入口，UserControl 必须在 UI 线程构造，
         // 否则样式/动画关键帧归属后台线程，绑定回调时抛跨线程访问异常
-        Dispatcher.UIThread.Invoke(() =>
+        return Dispatcher.UIThread.Invoke(() =>
         {
             GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
             {
@@ -186,10 +199,11 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
                 NoticeType = NoticeType.Info
             });
 
-            var body = new TaskDownloadPreLoadItem(asset, tagName);
+            var body = new TaskDownloadPreLoadItem(asset, tagName) { _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously) };
             var taskId = GlobalModel.TaskManager.AddTask(body);
 
             body.Update(() => GlobalModel.TaskManager.RemoveTask(taskId));
+            return body._tcs!.Task;
         });
     }
 

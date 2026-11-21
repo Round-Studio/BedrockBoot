@@ -24,6 +24,8 @@ using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.TaskItem;
+using OnePointUI.Avalonia.Base.Entry;
+using Round.SDK.Entity;
 using Octokit;
 
 namespace BedrockBoot.Models.Helper;
@@ -96,6 +98,50 @@ public static class PreLoadDependencyHelper
         {
             Console.WriteLine($@"PreLoad.NET 更新检查失败（不影响启动）：{ex.Message}");
         }
+    }
+
+    /// <summary>
+    ///     启动游戏前的强制就绪守卫：组件缺失时阻塞等待下载完成。
+    ///     严格模式——下载不可用（未登录/断网/私有仓库无权限）也返回 false 拦截启动。
+    /// </summary>
+    public static async Task<bool> EnsureComponentReadyAsync()
+    {
+        try
+        {
+            if (PreLoadDllStore.HasUpdatedDll()) return true;
+
+            Console.WriteLine(@"PreLoad.NET 组件缺失，启动前强制下载");
+            WaitForMainWindowOrTimeout();
+
+            var latest = await GetLatestAssetAsync();
+            if (latest == null)
+            {
+                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.FetchFailed"]);
+                return false;
+            }
+
+            var success = await TaskDownloadPreLoadItem.StartDownloadAndWait(latest.Value.Asset, latest.Value.Tag);
+            if (!success)
+                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+
+            return success;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"PreLoad.NET 组件就绪检查失败: {ex}");
+            ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"] + $"\n{ex.Message}");
+            return false;
+        }
+    }
+
+    private static void ShowNotice(string message)
+    {
+        GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
+        {
+            Title = I18nManager.Instance["Task.PreLoad.Update.Title"],
+            Message = message,
+            NoticeType = NoticeType.Warning
+        });
     }
 
     private static void WaitForMainWindowOrTimeout()

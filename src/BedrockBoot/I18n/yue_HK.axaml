@@ -888,6 +888,8 @@
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET 元件更新</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">正在下載 PreLoad.NET 元件更新...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完成，下次啟動遊戲生效</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 元件缺失而且攞唔到版本資訊，已阻止啟動遊戲（請檢查網絡連線）</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET 元件下載失敗，已阻止啟動遊戲</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">連線相依元件</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">讀取緊版本資訊...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">檢查更新</x:String>

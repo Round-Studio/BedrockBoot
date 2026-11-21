@@ -34,6 +34,7 @@ public static class PreLoadDllStore
     public static bool HasUpdatedDll() =>
         File.Exists(PathsList.PreLoadDllPath) && new FileInfo(PathsList.PreLoadDllPath).Length > 0;
 
+
     /// <summary>
     ///     获取应释放到游戏实例的 PreLoad.NET.dll 字节。
     ///     文件缺失时抛出异常，由调用方兜底（跳过注入）。

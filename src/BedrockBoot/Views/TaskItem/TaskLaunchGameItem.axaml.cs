@@ -103,6 +103,14 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                 });
 
 #if WINDOWS
+                // PreLoad.NET 组件缺失时阻塞等待下载完成，不可用则取消启动（严格守卫）
+                ReportProgress(0, "PreLoad.NET...");
+                if (!await PreLoadDependencyHelper.EnsureComponentReadyAsync())
+                {
+                    Dispatcher.UIThread.Post(() => LaunchCompleted?.Invoke());
+                    return;
+                }
+
                 // 启动游戏前检测一次 UWP 依赖，用户取消则结束本任务
                 if (!await UwpDependenceLaunchGuard.CheckBeforeLaunchAsync())
                 {

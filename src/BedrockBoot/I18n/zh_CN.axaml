@@ -890,6 +890,8 @@
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET 组件更新</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">正在下载 PreLoad.NET 组件更新...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完成，下次启动游戏生效</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 组件缺失且无法获取版本信息，已阻止启动游戏（请检查网络连接）</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET 组件下载失败，已阻止启动游戏</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">联机依赖组件</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">正在读取版本信息...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">检查更新</x:String>

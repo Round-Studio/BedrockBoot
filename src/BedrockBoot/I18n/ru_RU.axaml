@@ -876,6 +876,8 @@
     <x:String x:Key="Task.PreLoad.Update.Title">Обновление компонента PreLoad.NET</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">Скачивание обновления компонента PreLoad.NET...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">Готово, вступит в силу при следующем запуске игры</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">Компонент PreLoad.NET отсутствует, данные о версии недоступны; запуск игры заблокирован (проверьте сетевое подключение)</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">Не удалось скачать компонент PreLoad.NET; запуск игры заблокирован</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Многопользовательские зависимости</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">Чтение информации о версии...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">Проверить обновления</x:String>

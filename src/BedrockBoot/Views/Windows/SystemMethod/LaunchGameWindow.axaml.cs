@@ -235,6 +235,15 @@ public partial class LaunchGameWindow : Window
                 await CoreInitialize.InitPlatformAsync();
 
 #if WINDOWS
+            // PreLoad.NET 组件缺失时阻塞等待下载完成，不可用则取消启动（严格守卫）
+            if (!await PreLoadDependencyHelper.EnsureComponentReadyAsync())
+            {
+                _isClosing = true;
+                Close();
+                return;
+            }
+            UpdateUi(() => ProgressBox.Text = "PreLoad.NET 组件就绪");
+
             // 启动游戏前检测一次 UWP 依赖，用户取消则不启动
             var missingDeps = await UwpDependenceLaunchGuard.GetMissingDepsIfEnabledAsync();
             if (missingDeps != null)

@@ -38,6 +38,11 @@ public class CurseForgeResponse
         [JsonPropertyName("sourceUrl")] public string SourceUrl { get; set; }
     }
 
+    public class CategoriesResponse
+    {
+        [JsonPropertyName("data")] public List<Category> Data { get; set; } = new();
+    }
+
     public class Category
     {
         [JsonPropertyName("id")] public int Id { get; set; }

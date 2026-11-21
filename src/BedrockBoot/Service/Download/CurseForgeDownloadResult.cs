@@ -79,7 +79,14 @@ public class CurseForgeDownloadResult : IDownloadResult
         return files.Data.Select(x => new ResourceFileInfo()
         {
             FileName = x.FileName,
+            DisplayName = x.DisplayName,
             Description = x.FileDate.ToString("yyyy-MM-dd HH:mm:ss"),
+            ReleaseType = x.ReleaseType,
+            DownloadCount = x.DownloadCount,
+            GameVersions = x.SortableGameVersions
+                .OrderByDescending(version => version.GameVersionReleaseDate)
+                .Select(version => version.GameVersionName)
+                .ToList(),
             Version = string.Join('.', x.GameVersions),
             FileSize = (uint)x.FileLength,
             IsEnableSaveAs = true,

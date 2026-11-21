@@ -318,7 +318,9 @@ public partial class SearchDefault : UserControl
         BigResourceBtn.DownloadCount = mod.DownloadCount.ToString();
         BigResourceBtn.IconUrl = mod.Logo?.ThumbnailUrl;
         BigResourceBtn.UpdateDate = DateHelper.GetRelativeTime(mod.DateReleased);
-        BigResourceBtn.Labels = mod.Categories.Select(x => x.Name).ToList();
+        BigResourceBtn.Labels = mod.Categories
+            .Select(category => CurseForgeSearch.TranslateCategory(category, mod.ClassId))
+            .ToList();
         BigResourceBtn.Click += (s, e) => NavigateToResult(mod);
     }
 
@@ -337,7 +339,9 @@ public partial class SearchDefault : UserControl
             Name = mod.Name, Id = mod.Id.ToString(), Description = mod.Summary,
             DateUpdated = mod.DateReleased, Authors = mod.Authors.Select(a => a.Name).ToList(),
             DownloadCount = (uint)mod.DownloadCount, IconUri = mod.Logo?.Url,
-            Labels = mod.Categories.Select(c => c.Name).ToList(),
+            Labels = mod.Categories
+                .Select(category => CurseForgeSearch.TranslateCategory(category, mod.ClassId))
+                .ToList(),
             SourceWebsite = mod.Links?.WebsiteUrl, JsonData = JsonSerializer.Serialize(mod),
             ResourceType = SearchResourceType.ResourcePack
         };

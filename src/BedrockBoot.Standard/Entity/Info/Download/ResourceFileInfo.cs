@@ -22,8 +22,12 @@ public class ResourceFileInfo
 {
     public string? VersionGroup { get; set; }
     public string? FileName { get; set; }
+    public string? DisplayName { get; set; }
     public string? Description { get; set; }
     public uint FileSize { get; set; } = 0;
+    public int? ReleaseType { get; set; }
+    public int? DownloadCount { get; set; }
+    public List<string>? GameVersions { get; set; }
     public string? Version { get; set; }
     public Action<string>? OnDownload { get; set; }
     public Action<string>? OnSaveAs { get; set; }

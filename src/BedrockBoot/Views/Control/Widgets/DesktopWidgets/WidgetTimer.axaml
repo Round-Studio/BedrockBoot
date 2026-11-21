@@ -19,7 +19,7 @@
                                      Text="Time"></text:AnimationTextBlock>
             
             <TextBlock Opacity="0.6"
-                       Text="当前时间"></TextBlock>
+                       Text="{DynamicResource Widget.Timer.CurrentTime}"></TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

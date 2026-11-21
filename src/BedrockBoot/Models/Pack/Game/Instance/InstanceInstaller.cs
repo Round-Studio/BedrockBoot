@@ -38,9 +38,9 @@ public class InstanceInstaller
         DialogHost.Show(new DialogInfo()
         {
             Content = dialog,
-            Title = "安装实例",
-            CloseButtonText = "安装",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Pack.Instance.Install.Title"],
+            CloseButtonText = I18nManager.Instance["Dialog.LoaderView.Action.Install"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () => dialog.ExecuteInstallTask()
         });
     }

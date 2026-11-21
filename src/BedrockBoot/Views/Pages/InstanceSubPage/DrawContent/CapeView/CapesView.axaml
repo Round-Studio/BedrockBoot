@@ -21,7 +21,7 @@
                                                    FontSize="16"
                                                    Margin="12,5,12,5" />
                         <TextBox Name="SearchBox"
-                                 Watermark="键入关键词以搜索"
+                                 Watermark="{DynamicResource Shared.Watermark.Search}"
                                  TextChanged="SearchBox_OnTextChanged"
                                  HorizontalAlignment="Stretch"
                                  DockPanel.Dock="Right" />
@@ -41,7 +41,7 @@
                             <onePointControls:FontIcon Glyph="&#xE8B5;"
                                                        VerticalAlignment="Center"
                                                        Margin="0,1,8,0" />
-                            <TextBlock Text="导入包" />
+                            <TextBlock Text="{DynamicResource Cape.View.ImportPack}" />
                         </StackPanel>
                     </Button>
                     <Button Classes="NoBorder"
@@ -52,7 +52,7 @@
                             <onePointControls:FontIcon Glyph="&#xE710;"
                                                        VerticalAlignment="Center"
                                                        Margin="0,1,8,0" />
-                            <TextBlock Text="创建披风包" />
+                            <TextBlock Text="{DynamicResource Cape.View.CreatePack}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>

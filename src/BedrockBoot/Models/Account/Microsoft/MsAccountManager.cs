@@ -81,7 +81,7 @@ public static class MsAccountManager
 
     public static async Task LoginAccount()
     {
-        if (IsLogging) throw new Exception("已有登录任务进行中");
+        if (IsLogging) throw new Exception(I18nManager.Instance["Auth.Login.AlreadyRunning"]);
         IsLogging = true;
 
         _loginCts?.Dispose();
@@ -95,8 +95,8 @@ public static class MsAccountManager
             DialogHost.Show(new()
             {
                 Content = dialog,
-                Title = "关联 XBOX 账户",
-                CloseButtonText = "取消",
+                Title = I18nManager.Instance["Account.Action.LinkXbox"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                 CloseAction = () =>
                 {
                     IsLogging = false;
@@ -125,7 +125,7 @@ public static class MsAccountManager
                     var result = await msal.AcquireTokenInteractiveAsync().ConfigureAwait(false);
 
                     if (result == null || string.IsNullOrEmpty(result.AccessToken))
-                        throw new Exception("登录失败或用户取消");
+                        throw new Exception(I18nManager.Instance["Auth.Login.FailedOrCancelled"]);
 
                     accessToken = result.AccessToken;
                     refreshToken = null;
@@ -156,7 +156,7 @@ public static class MsAccountManager
                             .ConfigureAwait(false);
 
                     if (!success || tokenData == null || string.IsNullOrEmpty(tokenData.AccessToken))
-                        throw new Exception("登录失败或用户取消");
+                        throw new Exception(I18nManager.Instance["Auth.Login.FailedOrCancelled"]);
 
                     accessToken = tokenData.AccessToken;
                     refreshToken = tokenData.RefreshToken;
@@ -170,7 +170,7 @@ public static class MsAccountManager
                     .ConfigureAwait(false);
 
                 if (string.IsNullOrEmpty(xboxUserToken))
-                    throw new NullReferenceException("获取 Xbox 用户凭证失败");
+                    throw new NullReferenceException(I18nManager.Instance["Auth.Login.GetXboxUserCredentialFailed"]);
 
                 Console.WriteLine(@"开始获取 Xbox 用户登录凭证 (XstsToken)");
                 var xstsToken = await xboxClient
@@ -180,7 +180,7 @@ public static class MsAccountManager
                 if (string.IsNullOrEmpty(xstsToken.xstsToken) ||
                     string.IsNullOrEmpty(xstsToken.xuid) ||
                     string.IsNullOrEmpty(xstsToken.userHash))
-                    throw new NullReferenceException("获取 XSTS Token 失败");
+                    throw new NullReferenceException(I18nManager.Instance["Auth.Login.GetXstsTokenFailed"]);
 
                 Console.WriteLine(@"开始获取 Xbox 用户档案");
                 var peopleClient = new PeopleHubClient();
@@ -190,7 +190,7 @@ public static class MsAccountManager
                     .ConfigureAwait(false);
 
                 if (userProfile?.ProfileUsers == null || userProfile.ProfileUsers.Length == 0)
-                    throw new NullReferenceException("获取用户档案失败");
+                    throw new NullReferenceException(I18nManager.Instance["Auth.Login.GetProfileFailed"]);
 
                 var userInfo = userProfile.ProfileUsers[0];
                 var gamertag = userInfo.Settings?.FirstOrDefault(s => s.Id == "Gamertag")?.Value;

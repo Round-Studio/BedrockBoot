@@ -78,7 +78,7 @@ public partial class DialogInstallLeviLaminaModContent : UserControl
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                InstallProgressText.Text = $"安装失败: {ex.Message}";
+                InstallProgressText.Text = string.Format(I18nManager.Instance["UI.Dialog.LeviLamina.InstallFailed"], ex.Message);
                 InstallProgressBar.IsIndeterminate = false;
             });
 

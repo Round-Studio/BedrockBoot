@@ -12,7 +12,7 @@
         <Grid Grid.Row="0"
               Margin="20,0"
               Height="32">
-            <TextBlock Text="管理披风文件" VerticalAlignment="Center" FontSize="16"/>
+            <TextBlock Text="{DynamicResource Cape.FileView.Title}" VerticalAlignment="Center" FontSize="16"/>
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
@@ -24,7 +24,7 @@
                         <onePointControls:FontIcon Glyph="&#xE710;"
                                                    VerticalAlignment="Center"
                                                    Margin="0,1,8,0" />
-                        <TextBlock Text="添加披风" />
+                        <TextBlock Text="{DynamicResource Cape.FileView.Add}" />
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -41,7 +41,7 @@
                          VerticalAlignment="Center"
                          Name="NullBox"
                          IsVisible="False"
-                         BigTitle="暂无披风"
-                         Message="点击右上角「添加披风」导入 PNG 纹理文件" />
+                         BigTitle="{DynamicResource Cape.FileView.Empty.Title}"
+                         Message="{DynamicResource Cape.FileView.Empty.Message}" />
     </Grid>
 </UserControl>

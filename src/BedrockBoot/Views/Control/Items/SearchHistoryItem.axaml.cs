@@ -39,11 +39,11 @@ public partial class SearchHistoryItem : UserControl
         SearchType.Text = info.Type switch
         {
             SearchResourceType.Minecraft => "Minecraft",
-            SearchResourceType.ResourcePack => "资源包",
-            SearchResourceType.PluginPack => "插件",
-            SearchResourceType.LeviLaminaMods => "LeviLamina 模组",
+            SearchResourceType.ResourcePack => I18nManager.Instance["Instance.Packs.Tab.Resource"],
+            SearchResourceType.PluginPack => I18nManager.Instance["Draw.Instance.Tab.Plugins"],
+            SearchResourceType.LeviLaminaMods => I18nManager.Instance["UI.Item.SearchType.LeviLaminaMod"],
             SearchResourceType.DllMods => "DllMods",
-            _ => "未知"
+            _ => I18nManager.Instance["CrashReport.Unknown"]
         };
         SearchKey.Text = info.Key;
     }

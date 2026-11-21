@@ -45,18 +45,18 @@ public partial class GravityConeRoot : UserControl
         var dialog = new DialogMultiplayerLinkRoomContent();
         DialogHost.Show(new()
         {
-            Title = "加入房间",
+            Title = I18nManager.Instance["GravityCone.Dialog.JoinRoom.Title"],
             Content = dialog,
-            CloseButtonText = "加入",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["GravityCone.Dialog.JoinRoom.Action"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 if (string.IsNullOrEmpty(dialog.RoomCode))
                 {
                     GlobalModel.MainWindow.Notice.AddNotice(new()
                     {
-                        Title = "不得为空",
-                        Message = "联机码不得为空",
+                        Title = I18nManager.Instance["GravityCone.Error.EmptyTitle"],
+                        Message = I18nManager.Instance["GravityCone.Error.EmptyRoomCode"],
                         NoticeType = NoticeType.Error
                     });
                     return;

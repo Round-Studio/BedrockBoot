@@ -8,35 +8,35 @@
     <ScrollViewer>
         <StackPanel Spacing="8">
             <TextBlock HorizontalAlignment="Left"
-                       Text="导出类型" />
+                       Text="{DynamicResource Dialog.ExportWorld.Type}" />
             <ComboBox Name="ExportType"
                       HorizontalAlignment="Stretch"
                       SelectionChanged="ExportType_OnSelectionChanged"
                       SelectedIndex="0">
-                <ComboBoxItem Content="普通存档"></ComboBoxItem>
-                <ComboBoxItem Content="世界模版"></ComboBoxItem>
+                <ComboBoxItem Content="{DynamicResource Dialog.ExportWorld.Type.World}"></ComboBoxItem>
+                <ComboBoxItem Content="{DynamicResource Dialog.ExportWorld.Type.Template}"></ComboBoxItem>
             </ComboBox>
 
             <StackPanel Name="TemplateItems"
                         Spacing="8"
                         IsVisible="False">
                 <TextBlock HorizontalAlignment="Left"
-                           Text="模版名称" />
+                           Text="{DynamicResource Dialog.ExportWorld.Template.Name}" />
                 <TextBox Name="NameInputBox" />
                 
                 <TextBlock HorizontalAlignment="Left"
-                           Text="模版介绍" />
+                           Text="{DynamicResource Dialog.ExportWorld.Template.Description}" />
                 <TextBox Name="DescriptionInputBox" />
                 
                 <TextBlock HorizontalAlignment="Left"
-                           Text="模版版本" />
+                           Text="{DynamicResource Dialog.ExportWorld.Template.Version}" />
                 <TextBox Name="VersionInputBox" />
                 
-                <CheckBox Content="使用当前世界设置"
+                <CheckBox Content="{DynamicResource Dialog.ExportWorld.Template.UseWorldSettings}"
                           IsChecked="True"
                           Name="LockTemplateOptions"
                           Margin="0"></CheckBox>
-                <CheckBox Content="随机种子码"
+                <CheckBox Content="{DynamicResource Dialog.ExportWorld.Template.AllowRandomSeed}"
                           Name="AllowRandomSeed"
                           Margin="0"></CheckBox>
             </StackPanel>

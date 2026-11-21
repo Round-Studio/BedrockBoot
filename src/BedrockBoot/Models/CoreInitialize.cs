@@ -67,16 +67,16 @@ public class CoreInitialize
     {
         DesktopWorkspace.WidgetRegister(new()
         {
-            Name = "时钟",
-            Description = "一个非常普通的时间显示组件",
+            Name = I18nManager.Instance["Widget.Clock.Name"],
+            Description = I18nManager.Instance["Widget.Clock.Desc"],
             Type = WidgetType.Timer,
             WidgetTypeof = typeof(WidgetTimer),
             DefaultSize = WidgetSize.Small
         });
         DesktopWorkspace.WidgetRegister(new()
         {
-            Name = "最近游玩",
-            Description = "显示最近游玩的一个游戏实例",
+            Name = I18nManager.Instance["Widget.RecentPlay.Name"],
+            Description = I18nManager.Instance["Widget.RecentPlay.Desc"],
             Type = WidgetType.LeastPlay,
             WidgetTypeof = typeof(WidgetLaunchGame),
             DefaultSize = WidgetSize.Large
@@ -115,7 +115,7 @@ public class CoreInitialize
 
                 try
                 {
-                    GlobalModel.MainWindow.OpenDraw(new DrawGameCrashContent(args), "BedrockBoot 游戏错误追踪器", "\uE81F");
+                    GlobalModel.MainWindow.OpenDraw(new DrawGameCrashContent(args), I18nManager.Instance["CrashReport.Drawer.Title"], "\uE81F");
                 }
                 catch (Exception ex)
                 {
@@ -123,8 +123,8 @@ public class CoreInitialize
                     Console.WriteLine($@"游戏错误追踪器打开失败：{ex}");
                     GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
                     {
-                        Title = "游戏异常退出",
-                        Message = $"退出码 0x{args.ExitCode:X8}，错误追踪界面打开失败：{ex.Message}"
+                        Title = I18nManager.Instance["CrashReport.GameExited.Title"],
+                        Message = string.Format(I18nManager.Instance["CrashReport.Drawer.OpenFailed"], args.ExitCode, ex.Message)
                     });
                 }
             });
@@ -211,13 +211,10 @@ public class CoreInitialize
         {
             DialogHost.Show(new DialogInfo()
             {
-                Content = "当前您正在 Linux 环境下运行本启动器\n" +
-                          "我们需要 ProtonGDK 组件才能正常启动 Minecraft for Windows (GDK)\n" +
-                          "\n" +
-                          "现在我们需要您同意 ProtonGDK 组件的下载",
-                Title = "必要运行时下载",
-                CloseButtonText = "立即下载",
-                PrimaryButtonText = "退出启动器",
+                Content = I18nManager.Instance["Task.Launch.Proton.Content"],
+                Title = I18nManager.Instance["Task.Launch.Proton.Title"],
+                CloseButtonText = I18nManager.Instance["Task.Launch.Proton.Download"],
+                PrimaryButtonText = I18nManager.Instance["Task.Launch.Proton.Exit"],
                 AccountButton = DialogButtons.CloseButton,
                 PrimaryAction = () =>
                 {
@@ -230,7 +227,7 @@ public class CoreInitialize
                     DialogHost.Show(new DialogInfo()
                     {
                         Content = dialog,
-                        Title = "下载游戏运行组件"
+                        Title = I18nManager.Instance["Task.Launch.Proton.DownloadComponent"]
                     });
                     dialog.Download();
                 }
@@ -265,9 +262,9 @@ public class CoreInitialize
                     {
                         DialogHost.Show(new()
                         {
-                            Title = "无账户",
-                            Content = "当前未登录微软账户，请前往账户管理页面登录账户以启动游戏",
-                            CloseButtonText = "确定"
+                            Title = I18nManager.Instance["MainWindow.Account.NoAccount.Title"],
+                            Content = I18nManager.Instance["CoreInit.NoAccount.Content"],
+                            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                         });
                     }
                 }
@@ -404,19 +401,17 @@ public class CoreInitialize
         {
             var dialogInfo = new DialogInfo
             {
-                Title = "未安装 SDK 1.8",
-                Content = "当前系统未检测到完整的 Windows App SDK 1.8 (8000.x) 组件。\n" +
-                          "缺失组件可能包括: Main, Singleton 或 DDLM。\n" +
-                          "这会导致游戏无法启动。",
-                CloseButtonText = "立即安装",
-                PrimaryButtonText = "放任不管",
+                Title = I18nManager.Instance["CoreInit.Sdk.Missing.Title"],
+                Content = I18nManager.Instance["CoreInit.Sdk.Missing.Content"],
+                CloseButtonText = I18nManager.Instance["CoreInit.Sdk.Install"],
+                PrimaryButtonText = I18nManager.Instance["CoreInit.Sdk.Ignore"],
                 AccountButton = DialogButtons.CloseButton,
 
                 CloseAction = () =>
                 {
                     DialogHost.Show(new()
                     {
-                        Title = "下载 SDK",
+                        Title = I18nManager.Instance["CoreInit.Sdk.Download"],
                         Content = new DialogDownloadAppSdkContent()
                     });
                 },
@@ -427,9 +422,9 @@ public class CoreInitialize
         {
             DialogHost.Show(new()
             {
-                Title = "您已安装 SDK 1.8",
-                Content = "您已安装 SDK 1.8，可无需再次安装",
-                CloseButtonText = "确定"
+                Title = I18nManager.Instance["CoreInit.Sdk.Installed.Title"],
+                Content = I18nManager.Instance["CoreInit.Sdk.Installed.Content"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
             });
         }
 #endif

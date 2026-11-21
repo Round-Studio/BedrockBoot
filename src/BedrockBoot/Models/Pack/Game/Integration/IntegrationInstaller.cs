@@ -56,7 +56,7 @@ public class IntegrationInstaller
     public PackInfo? GetPackInfo()
     {
         var packJson = ZipHelper.GetTextFileContent(PackageFile, "pack.json");
-        if (string.IsNullOrEmpty(packJson)) throw new Exception("文件非可用的整合包文件");
+        if (string.IsNullOrEmpty(packJson)) throw new Exception(I18nManager.Instance["Task.IntegrationPack.Error.InvalidFile"]);
 
         return JsonSerializer.Deserialize<PackInfo>(packJson);
     }
@@ -67,13 +67,13 @@ public class IntegrationInstaller
 
         var info = GetPackInfo();
 
-        if (info == null) throw new Exception("无法解析整合包信息");
+        if (info == null) throw new Exception(I18nManager.Instance["Task.IntegrationPack.Error.Parse"]);
 
         var gameVersions = VersionHelper.GetVersions()
             .Find(x => x.ID.Replace(".", "") ==
                        info.VersionInfo.Version.Replace(".", ""));
 
-        if (gameVersions == null) throw new Exception("无法获取整合包目标游戏版本");
+        if (gameVersions == null) throw new Exception(I18nManager.Instance["Task.IntegrationPack.Error.NoVersion"]);
 
         var unZip = 0.00;
         var isComp = false;
@@ -84,7 +84,7 @@ public class IntegrationInstaller
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = p.Percentage,
-                Message = $"{s} ({p.Speed} / s)",
+                Message = string.Format(I18nManager.Instance["Pack.Integration.DownloadStatus"], s, p.Speed),
                 Status = InstallIntegrationProgressType.DownloadingFile
             });
         };
@@ -94,7 +94,7 @@ public class IntegrationInstaller
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = p,
-                Message = "合并文件",
+                Message = I18nManager.Instance["Task.IntegrationPack.Step.Merge"],
                 Status = InstallIntegrationProgressType.DownloadedFile
             });
         };
@@ -107,7 +107,7 @@ public class IntegrationInstaller
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = p,
-                    Message = "解压文件",
+                    Message = I18nManager.Instance["Task.IntegrationPack.Step.Unzip"],
                     Status = InstallIntegrationProgressType.Installing
                 });
             }
@@ -119,7 +119,7 @@ public class IntegrationInstaller
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = p.Percentage,
-                Message = $"安装游戏 {p.State}",
+                Message = string.Format(I18nManager.Instance["Task.IntegrationPack.Status.Format"], p.State),
                 Status = InstallIntegrationProgressType.Installing
             });
         };
@@ -150,7 +150,7 @@ public class IntegrationInstaller
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 100,
-                Message = "实例安装完成",
+                Message = I18nManager.Instance["Task.IntegrationPack.Status.Completed"],
                 Status = InstallIntegrationProgressType.Installed
             });
 
@@ -164,7 +164,7 @@ public class IntegrationInstaller
         IntegrationProgress?.Report(new InstallIntegrationProgress
         {
             Progress = 0,
-            Message = "获取 URL",
+            Message = I18nManager.Instance["Task.IntegrationPack.Step.GetUrl"],
             Status = InstallIntegrationProgressType.GetUrl
         });
 
@@ -198,7 +198,7 @@ public class IntegrationInstaller
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = 0,
-                    Message = "无法获取下载地址",
+                    Message = I18nManager.Instance["Task.IntegrationPack.Error.NoDownloadUrl"],
                     Status = InstallIntegrationProgressType.Failed
                 });
                 return;
@@ -208,7 +208,7 @@ public class IntegrationInstaller
         IntegrationProgress?.Report(new InstallIntegrationProgress
         {
             Progress = 5,
-            Message = "开始下载游戏",
+            Message = I18nManager.Instance["Task.IntegrationPack.Step.Download"],
             Status = InstallIntegrationProgressType.DownloadingFile
         });
 
@@ -222,7 +222,7 @@ public class IntegrationInstaller
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 0,
-                Message = "安装已取消",
+                Message = I18nManager.Instance["Task.IntegrationPack.Status.Cancelled"],
                 Status = InstallIntegrationProgressType.Failed
             });
         }
@@ -231,7 +231,7 @@ public class IntegrationInstaller
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 0,
-                Message = $"下载失败: {ex.Message}",
+                Message = string.Format(I18nManager.Instance["Pack.Integration.Error.DownloadFailed"], ex.Message),
                 Status = InstallIntegrationProgressType.Failed
             });
         }
@@ -250,7 +250,7 @@ public class IntegrationInstaller
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 100,
-                Message = "安装完成",
+                Message = I18nManager.Instance["Task.IntegrationPack.Status.Completed"],
                 Status = InstallIntegrationProgressType.Success
             });
         }
@@ -260,7 +260,7 @@ public class IntegrationInstaller
             IntegrationProgress?.Report(new InstallIntegrationProgress
             {
                 Progress = 0,
-                Message = $"安装整合包内容失败: {ex.Message}",
+                Message = string.Format(I18nManager.Instance["Pack.Integration.Error.InstallContentsFailed"], ex.Message),
                 Status = InstallIntegrationProgressType.Failed
             });
         }
@@ -283,7 +283,7 @@ public class IntegrationInstaller
         IntegrationProgress?.Report(new InstallIntegrationProgress
         {
             Progress = 80,
-            Message = "解压整合包文件",
+            Message = I18nManager.Instance["Task.IntegrationPack.Status.UnzipPack"],
             Status = InstallIntegrationProgressType.Uninstalling
         });
 
@@ -301,7 +301,7 @@ public class IntegrationInstaller
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = (double)count / files.Count * 100.00,
-                    Message = "解压整合包资源包文件",
+                    Message = I18nManager.Instance["Task.IntegrationPack.Status.UnzipResources"],
                     Status = InstallIntegrationProgressType.Uninstalling
                 });
                 packManager.AddRangePacks(new List<string> { file });
@@ -321,7 +321,7 @@ public class IntegrationInstaller
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = (double)count / files.Count * 100.00,
-                    Message = "解压整合包行为包文件",
+                    Message = I18nManager.Instance["Task.IntegrationPack.Status.UnzipBehavior"],
                     Status = InstallIntegrationProgressType.Uninstalling
                 });
                 packManager.AddRangePacks(new List<string> { file });
@@ -343,7 +343,7 @@ public class IntegrationInstaller
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = (double)count / files.Count * 100.00,
-                    Message = "解压整合包皮肤包文件",
+                    Message = I18nManager.Instance["Task.IntegrationPack.Status.UnzipSkins"],
                     Status = InstallIntegrationProgressType.Uninstalling
                 });
                 packManager.AddRangePacks(new List<string> { file });
@@ -362,7 +362,7 @@ public class IntegrationInstaller
                 IntegrationProgress?.Report(new InstallIntegrationProgress
                 {
                     Progress = (double)count / files.Count * 100.00,
-                    Message = "解压整合包存档文件",
+                    Message = I18nManager.Instance["Task.IntegrationPack.Status.UnzipSaves"],
                     Status = InstallIntegrationProgressType.Uninstalling
                 });
                 packManager.ImportWorldPack(file);

@@ -25,7 +25,7 @@
                             Spacing="6">
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                Glyph="&#xE710;"/>
-                    <TextBlock Text="添加此组件"></TextBlock>
+                    <TextBlock Text="{DynamicResource Widget.Previewer.AddWidget}"></TextBlock>
                 </StackPanel>
             </Button>
         </Grid>

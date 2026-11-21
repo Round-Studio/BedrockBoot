@@ -56,7 +56,7 @@ public partial class DialogImportGameContent : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "请选择文件",
+            Title = I18nManager.Instance["UI.Dialog.Picker.SelectFile"],
             AllowMultiple = false
         });
 

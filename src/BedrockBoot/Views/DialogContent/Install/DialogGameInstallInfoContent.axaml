@@ -10,17 +10,17 @@
         <StackPanel Spacing="8">
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="安装信息" />
+                       Text="{DynamicResource Dialog.GameInstallInfo.Title}" />
 
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
-                       Text="实例名称" />
+                       Text="{DynamicResource Dialog.GameInstallInfo.InstanceName}" />
 
             <TextBox Name="InstallName"></TextBox>
 
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
-                       Text="安装目录" />
+                       Text="{DynamicResource Dialog.GameInstallInfo.InstallFolder}" />
 
             <ComboBox Name="InstallFolder"
                       HorizontalAlignment="Stretch"
@@ -29,10 +29,10 @@
 
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="文件源" />
+                       Text="{DynamicResource Dialog.GameInstallInfo.Group.Source}" />
 
             <CheckBox Name="IsUsePackIns"
-                      Content="使用本地缓存"
+                      Content="{DynamicResource Dialog.GameInstallInfo.Option.UseLocalCache}"
                       IsVisible="False"
                       IsCheckedChanged="IsUsePackIns_OnIsCheckedChanged"
                       Margin="0">

@@ -14,7 +14,7 @@
         <Grid Grid.Row="0"
               Margin="20,0"
               Height="32">
-            <TextBlock Text="存档操作" VerticalAlignment="Center" FontSize="16"/>
+            <TextBlock Text="{DynamicResource LevelSettings.SaveActions}" VerticalAlignment="Center" FontSize="16"/>
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
@@ -26,16 +26,16 @@
                         Spacing="8">
                 <onePointControls:SettingCard IsClickable="True"
                                               Glyph="&#xE74E;"
-                                              Header="导出"
-                                              Description="导出基岩版存档包文件及其拓展" 
+                                              Header="{DynamicResource LevelSettings.Export.Title}"
+                                              Description="{DynamicResource LevelSettings.Export.Desc}" 
                                               Name="ExportBtn"
                                               Click="ExportBtn_OnClick"/>
                 
                 <onePointControls:SettingCard Glyph="&#xED39;"
                                               IsClickable="True"
                                               IsShowActionIcon="False"
-                                              Header="启用 RTX"
-                                              Description="为存档启用原版 RTX 光线追踪功能">
+                                              Header="{DynamicResource LevelSettings.Rtx.Title}"
+                                              Description="{DynamicResource LevelSettings.Rtx.Desc}">
                     <ToggleSwitch Name="IsUseRTX"
                                   IsCheckedChanged="IsUseRTX_OnIsCheckedChanged"></ToggleSwitch>
                 </onePointControls:SettingCard>

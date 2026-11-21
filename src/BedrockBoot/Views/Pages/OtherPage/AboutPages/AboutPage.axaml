@@ -38,31 +38,31 @@
                 </StackPanel>
             </Grid>
             
-            <onePointControls:SettingExpander Header="环境信息"
-                                              Description="设备信息，运行环境，操作系统"
+            <onePointControls:SettingExpander Header="{DynamicResource About.Page.EnvironmentInfo}"
+                                              Description="{DynamicResource About.Page.EnvironmentInfo.Desc}"
                                               IsExpanded="True"
                                               Glyph="&#xE946;">
                 <StackPanel>
-                    <onePointControls:SettingCard Header="本体版本"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.BodyVersion}"
                                                   Content="{x:Static global:GlobalModel.BodyVersion}"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="运行环境"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.RuntimeEnv}"
                                                   Content="{x:Static interopServices:RuntimeInformation.OSDescription}"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="运行时"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.Runtime}"
                                                   Content="{x:Static interopServices:RuntimeInformation.FrameworkDescription}"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="工作目录"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.WorkDir}"
                                                   Content="{x:Static sys:Environment.CurrentDirectory}"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="设备名称"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.DeviceName}"
                                                   Content="{x:Static sys:Environment.MachineName}"
                                                   Glyph=""></onePointControls:SettingCard>
                 </StackPanel>
             </onePointControls:SettingExpander>
             
-            <onePointControls:SettingExpander Header="鸣谢"
-                                              Description="感谢以下服务以及项目对 BedrockBoot (本项目) 的支持"
+            <onePointControls:SettingExpander Header="{DynamicResource About.Section.Credits}"
+                                              Description="{DynamicResource About.Page.Credits.Desc}"
                                               Glyph="&#xE7C1;">
                 <StackPanel>
                     <onePointControls:SettingCard Header="McAppx.com"
@@ -84,7 +84,7 @@
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="BMCBL"
-                                                  Description="感谢来自 BMCBL 提供的 MCAPPX 列表源加速站点"
+                                                  Description="{DynamicResource About.Credits.BMCBL}"
                                                   IsClickable="True"
                                                   Tag="https://bmcbl.chlna6666.com/"
                                                   Click="LinkOpener"
@@ -92,18 +92,18 @@
                 </StackPanel>
             </onePointControls:SettingExpander>
             
-            <onePointControls:SettingExpander Header="灵感来源"
-                                              Description="BedrockBoot 的部分灵感来源于以下项目"
+            <onePointControls:SettingExpander Header="{DynamicResource About.Section.Inspiration}"
+                                              Description="{DynamicResource About.Page.Inspiration.Desc}"
                                               Glyph="&#xE734;">
                 <StackPanel>
                     <onePointControls:SettingCard Header="BakaXL"
-                                                  Description="BedrockBoot 内部分功能参考自 BakaXL"
+                                                  Description="{DynamicResource About.Page.BakaXL.Desc}"
                                                   IsClickable="True"
                                                   Tag="https://bakaxl.com/"
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="BMCBL"
-                                                  Description="BedrockBoot 内部分功能参考自 BMCBL"
+                                                  Description="{DynamicResource About.Page.BMCBL.Desc}"
                                                   IsClickable="True"
                                                   Tag="https://bmcbl.chlna6666.com/"
                                                   Click="LinkOpener"
@@ -129,42 +129,42 @@
                 </StackPanel>
             </onePointControls:SettingExpander>
             
-            <onePointControls:SettingExpander Header="开发者"
-                                              Description="BedrockBoot 的开发者以及技术支持"
+            <onePointControls:SettingExpander Header="{DynamicResource About.Section.Developers}"
+                                              Description="{DynamicResource About.Page.Developers.Desc}"
                                               Glyph="&#xEC7A;">
                 <StackPanel>
                     <onePointControls:SettingCard Header="Dime12022"
                                                   ImageIcon="avares://BedrockBoot/Assets/Image/Contributors/Dime12022_ImageIcon.jpg"
                                                   IsFontIcon="False"
                                                   Classes="People"
-                                                  Description="BedrockBoot 本体开发"
+                                                  Description="{DynamicResource About.Page.CoreDev}"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="YoumiHa"
                                                   ImageIcon="avares://BedrockBoot/Assets/Image/Contributors/YoumiHa_ImageIcon.jpg"
                                                   IsFontIcon="False"
                                                   Classes="People"
-                                                  Description="BedrockBoot 本体开发"
+                                                  Description="{DynamicResource About.Page.CoreDev}"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="DrMing (蛆)"
                                                   ImageIcon="avares://BedrockBoot/Assets/Image/Contributors/DrMing_ImageIcon.jpg"
                                                   IsFontIcon="False"
                                                   Classes="People"
-                                                  Description="UI 设计与交互体验"
+                                                  Description="{DynamicResource About.Page.UIDev}"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="Chlna6666 (BMCBL)"
                                                   ImageIcon="avares://BedrockBoot/Assets/Image/Contributors/Chlna6666_ImageIcon.jpg"
                                                   IsFontIcon="False"
                                                   Classes="People"
-                                                  Description="通用协议策划与制定，为部分提供技术支持"
+                                                  Description="{DynamicResource About.Page.ProtocolDev}"
                                                   Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="Tianpao (天跑)"
                                                   ImageIcon="avares://BedrockBoot/Assets/Image/Contributors/Tianpao_ImageIcon.jpg"
                                                   IsFontIcon="False"
                                                   Classes="People"
-                                                  Description="网络设施技术支持，为 PaperConnect v2 提供技术支持"
+                                                  Description="{DynamicResource About.Page.NetworkDev}"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="以及所有 BedrockBoot 贡献者"
-                                                  Description="感谢所有为 BedrockBoot 贡献过代码、文档、设计、测试的开发者"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.AllContributors}"
+                                                  Description="{DynamicResource About.Page.AllContributors.Desc}"
                                                   IsClickable="True"
                                                   Name="ContributorsBtn"
                                                   Click="ContributorsBtn_OnClick"
@@ -172,42 +172,42 @@
                 </StackPanel>
             </onePointControls:SettingExpander>
             
-            <onePointControls:SettingExpander Header="相关地址"
-                                              Description="相关的项目地址、组织地址、问题反馈地址"
+            <onePointControls:SettingExpander Header="{DynamicResource About.Page.Links}"
+                                              Description="{DynamicResource About.Page.Links.Desc}"
                                               Glyph="&#xE8A7;">
                 <StackPanel>
-                    <onePointControls:SettingCard Header="Github 开源"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.GitHub}"
                                                   Description="https://github.com/Round-Studio/BedrockBoot"
                                                   IsClickable="True"
                                                   Tag="https://github.com/Round-Studio/BedrockBoot"
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="问题反馈"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.Issues}"
                                                   Description="https://github.com/Round-Studio/BedrockBoot/issues"
                                                   IsClickable="True"
                                                   Tag="https://github.com/Round-Studio/BedrockBoot/issues"
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="官方网站"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.Website}"
                                                   Description="https://bb.roundstudio.top"
                                                   IsClickable="True"
                                                   Tag="https://bb.roundstudio.top"
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="文档站"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.Docs}"
                                                   Description="https://docs.roundstudio.top/docs/product/bb"
                                                   IsClickable="True"
                                                   Tag="https://docs.roundstudio.top/docs/product/bb"
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="隐私策略与使用条款"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.Privacy}"
                                                   Description="https://bb.roundstudio.top/privacyPolicy"
                                                   IsClickable="True"
                                                   Tag="https://bb.roundstudio.top/privacyPolicy"
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
-                    <onePointControls:SettingCard Header="在爱发电上支持我们"
-                                                  Description="您的支持是我们前进的动力"
+                    <onePointControls:SettingCard Header="{DynamicResource About.Page.Afdian}"
+                                                  Description="{DynamicResource About.Page.Afdian.Desc}"
                                                   IsClickable="True"
                                                   Tag="https://ifdian.net/a/yjq666"
                                                   Click="LinkOpener"

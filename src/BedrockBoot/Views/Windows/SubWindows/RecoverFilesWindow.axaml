@@ -13,7 +13,7 @@
                             CanResize="False"
                             IsMinBtn="False"
                             IsMaxBtn="False"
-                            Title="BedrockBoot 找回文件向导">
+                            Title="{DynamicResource RecoverFiles.Title}">
     <windowFrame:OnePointWindow.TitleBarContent>
         <StackPanel Orientation="Horizontal">
             <onePointControls:LabelBox Text="Beta"

@@ -15,7 +15,7 @@
                                               IsClickable="True"
                                               Glyph="&#xE74D;"
                                               Click="DeleteBtn_OnClick"
-                                              Header="删除该披风">
+                                              Header="{DynamicResource Cape.Item.DeleteFile}">
                 </onePointControls:SettingCard>
             </StackPanel>
         </StackPanel>

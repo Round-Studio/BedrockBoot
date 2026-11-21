@@ -101,7 +101,7 @@
                                           RowDefinitions="Auto,*">
 
                                         <TextBlock Grid.Row="0"
-                                                   Text="音量"
+                                                    Text="{DynamicResource MainWindow.Media.Volume}"
                                                    FontSize="11"
                                                    HorizontalAlignment="Center"
                                                    Margin="0,0,0,4" />
@@ -118,7 +118,7 @@
                                                        Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
-                                                       Text="已静音"
+                                                        Text="{DynamicResource MainWindow.Media.Muted}"
                                                        IsVisible="False" />
                                         </Grid>
                                     </Grid>
@@ -187,8 +187,8 @@
                                                                Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                                                                HorizontalAlignment="Center"
                                                                VerticalAlignment="Center" />
-                                    <TextBlock Text="内部错误"
-                                               Name="ErrorBtnText"
+<TextBlock Text="{DynamicResource MainWindow.Status.InternalError}"
+                                                Name="ErrorBtnText"
                                                Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
                                 </StackPanel>
                             </Button>
@@ -204,7 +204,7 @@
                                                                FontSize="12"
                                                                HorizontalAlignment="Center"
                                                                VerticalAlignment="Center" />
-                                    <TextBlock Text="需要重启" />
+                                    <TextBlock Text="{DynamicResource MainWindow.Status.RebootRequired}" />
                                 </StackPanel>
                             </Button>
                             <Button Classes="NoBorder"
@@ -234,7 +234,7 @@
                                                 Name="AccountHeaderImage"
                                                 CornerRadius="3" />
                                     </Panel>
-                                    <TextBlock Text="档案"
+                                    <TextBlock Text="{DynamicResource MainWindow.Account.Profile}"
                                                VerticalAlignment="Center"
                                                Name="AccountName" />
                                 </StackPanel>
@@ -431,17 +431,17 @@
                                                                FontSize="24" />
                                 </StackPanel>
 
-                                <TextBlock Text="将文件拖拽到此处"
-                                           FontSize="26"
+<TextBlock Text="{DynamicResource MainWindow.DropFile.Title}"
+                                            FontSize="26"
                                            HorizontalAlignment="Center" />
 
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Center"
                                             Opacity="0.8">
 
-                                    <TextBlock Text="支持 " />
+                                    <TextBlock Text="{DynamicResource MainWindow.DropFile.SupportPrefix}" />
                                     <TextBlock Text="{x:Static global1:GlobalKeys.DropOverTypesOfSupportString}" />
-                                    <TextBlock Text=" 等文件" />
+                                    <TextBlock Text="{DynamicResource MainWindow.DropFile.SupportSuffix}" />
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -535,8 +535,8 @@
                                                                    FontSize="12"
                                                                    HorizontalAlignment="Center"
                                                                    VerticalAlignment="Center" />
-                                        <TextBlock Text="当前有 0 项任务"
-                                                   IsVisible="False"
+<TextBlock Text="{DynamicResource MainWindow.Task.CountInfo}"
+                                                    IsVisible="False"
                                                    Name="TaskInfoText" />
                                     </StackPanel>
                                 </Button>
@@ -615,7 +615,7 @@
                           RowSpacing="12">
                         <StackPanel Grid.Row="0"
                                     Orientation="Horizontal">
-                            <TextBlock Text="选择一个账户"
+                            <TextBlock Text="{DynamicResource MainWindow.Account.Choose.Title}"
                                        Foreground="{DynamicResource AccentBackgroundBrush}"
                                        FontWeight="Bold"
                                        FontSize="18" />
@@ -627,7 +627,7 @@
                                     VerticalAlignment="Center">
                             <TextBlock Opacity="0.4"
                                        FontSize="14"
-                                       Text="点击上方空白处可取消启动" />
+                                       Text="{DynamicResource MainWindow.Account.Choose.CancelHint}" />
                         </StackPanel>
 
                         <ScrollViewer Grid.Row="1"

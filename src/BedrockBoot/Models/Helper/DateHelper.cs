@@ -33,37 +33,37 @@ public static class DateHelper
         var span = now - dateTime;
 
         // 如果日期在未来（不应该发生，但处理一下）
-        if (span.TotalSeconds < 0) return "刚刚";
+        if (span.TotalSeconds < 0) return I18nManager.Instance["Common.Time.JustNow"];
 
         // 按时间范围返回不同格式
-        if (span.TotalSeconds < 60) return "刚刚";
+        if (span.TotalSeconds < 60) return I18nManager.Instance["Common.Time.JustNow"];
 
         if (span.TotalMinutes < 60)
         {
             var minutes = (int)span.TotalMinutes;
-            return $"{minutes} 分钟前";
+            return string.Format(I18nManager.Instance["Common.Time.MinutesAgo"], minutes);
         }
 
         if (span.TotalHours < 24)
         {
             var hours = (int)span.TotalHours;
-            return $"{hours} 小时前";
+            return string.Format(I18nManager.Instance["Common.Time.HoursAgo"], hours);
         }
 
         if (span.TotalDays < 30)
         {
             var days = (int)span.TotalDays;
-            return $"{days} 天前";
+            return string.Format(I18nManager.Instance["Common.Time.DaysAgo"], days);
         }
 
         if (span.TotalDays < 365)
         {
             var months = (int)(span.TotalDays / 30);
-            return $"{months} 个月前";
+            return string.Format(I18nManager.Instance["Common.Time.MonthsAgo"], months);
         }
 
         var years = (int)(span.TotalDays / 365);
-        return $"{years} 年前";
+        return string.Format(I18nManager.Instance["Common.Time.YearsAgo"], years);
     }
 
     /// <summary>
@@ -74,16 +74,19 @@ public static class DateHelper
         var now = DateTime.Now;
 
         // 如果是今天
-        if (dateTime.Date == now.Date) return dateTime.ToString("今天 HH:mm");
+        if (dateTime.Date == now.Date)
+            return string.Format(I18nManager.Instance["Common.Time.Detailed.Today"], dateTime.ToString("HH:mm"));
         // 如果是昨天
-        if (dateTime.Date == now.Date.AddDays(-1)) return dateTime.ToString("昨天 HH:mm");
+        if (dateTime.Date == now.Date.AddDays(-1))
+            return string.Format(I18nManager.Instance["Common.Time.Detailed.Yesterday"], dateTime.ToString("HH:mm"));
         // 如果是前天
-        if (dateTime.Date == now.Date.AddDays(-2)) return dateTime.ToString("前天 HH:mm");
+        if (dateTime.Date == now.Date.AddDays(-2))
+            return string.Format(I18nManager.Instance["Common.Time.Detailed.DayBeforeYesterday"], dateTime.ToString("HH:mm"));
         // 一周内
         if (dateTime.Date >= now.Date.AddDays(-7))
         {
             var days = (now.Date - dateTime.Date).Days;
-            return $"{days}天前 {dateTime:HH:mm}";
+            return string.Format(I18nManager.Instance["Common.Time.Detailed.DaysAgo"], days, dateTime.ToString("HH:mm"));
         }
         // 今年内
 
@@ -91,11 +94,11 @@ public static class DateHelper
         {
             var months = now.Month - dateTime.Month;
             if (months <= 0) months += 12;
-            return $"{months}个月前 {dateTime:MM-dd HH:mm}";
+            return string.Format(I18nManager.Instance["Common.Time.Detailed.MonthsAgo"], months, dateTime.ToString("MM-dd HH:mm"));
         }
         // 其他情况
 
         var years = now.Year - dateTime.Year;
-        return $"{years}年前 {dateTime:yyyy-MM-dd}";
+        return string.Format(I18nManager.Instance["Common.Time.Detailed.YearsAgo"], years, dateTime.ToString("yyyy-MM-dd"));
     }
 }

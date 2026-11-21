@@ -83,7 +83,7 @@ public partial class CapesPackInfoPage : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择披风包图标",
+            Title = I18nManager.Instance["Cape.PackInfo.ChooseIcon"],
             AllowMultiple = false,
             FileTypeFilter = new[] { new FilePickerFileType("PNG") { Patterns = new[] { "*.png" } } }
         });
@@ -92,8 +92,8 @@ public partial class CapesPackInfoPage : UserControl
         _unit.SetPackIcon(files[0].Path.LocalPath);
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "成功",
-            Message = "披风包图标已更新",
+            Title = I18nManager.Instance["UI.Page.Cape.Success"],
+            Message = I18nManager.Instance["Cape.PackInfo.IconUpdated"],
             NoticeType = NoticeType.Info
         });
     }
@@ -105,7 +105,7 @@ public partial class CapesPackInfoPage : UserControl
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "导出披风包",
+            Title = I18nManager.Instance["Cape.PackInfo.Export"],
             SuggestedFileName = _unit.PackDisplayName(),
             DefaultExtension = "mccapes",
             FileTypeChoices = new[] { new FilePickerFileType("McCapes") { Patterns = new[] { "*.mccapes" } } }
@@ -115,8 +115,8 @@ public partial class CapesPackInfoPage : UserControl
         _unit.ExportPack(file.Path.LocalPath);
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "导出成功",
-            Message = "披风包已导出到 " + file.Path.LocalPath,
+            Title = I18nManager.Instance["UI.Page.Cape.ExportSuccess"],
+            Message = I18nManager.Instance["Cape.PackInfo.ExportedTo"] + " " + file.Path.LocalPath,
             NoticeType = NoticeType.Info
         });
     }

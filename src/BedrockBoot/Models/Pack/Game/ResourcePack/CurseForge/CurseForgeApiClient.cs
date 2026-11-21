@@ -252,11 +252,11 @@ public class CurseForgeApiClient : IDisposable
             catch (TaskCanceledException ex)
             {
                 Console.WriteLine($@"[{operationName}] 请求超时: {ex.Message}");
-                throw new Exception("请求超时，请检查网络连接或稍后重试", ex);
+                throw new Exception(I18nManager.Instance["Pack.CurseForge.RequestTimeout"], ex);
             }
         }
 
-        throw new HttpRequestException($"[{operationName}] 在重试 {maxRetries} 次后仍然无法建立连接");
+        throw new HttpRequestException(string.Format(I18nManager.Instance["Pack.CurseForge.ConnectFailedAfterRetries"], operationName, maxRetries));
     }
 
     private bool IsRetryableError(HttpRequestException ex)

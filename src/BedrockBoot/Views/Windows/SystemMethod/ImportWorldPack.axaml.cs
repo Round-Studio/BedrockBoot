@@ -157,7 +157,7 @@ public partial class ImportWorldPack : Window
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    LoadingCard.BigTitle = "解析存档失败";
+                    LoadingCard.BigTitle = I18nManager.Instance["Import.Error.ParseWorldFailed"];
                     LoadingCard.Message = ex.Message;
                     ClearUserList();
                 });
@@ -171,8 +171,8 @@ public partial class ImportWorldPack : Window
 
         var targetUser = (string)UserComboBox.SelectedItem;
 
-        LoadingCard.BigTitle = "正在导入";
-        LoadingCard.Message = $"正在导入至用户目录: {targetUser}...";
+        LoadingCard.BigTitle = I18nManager.Instance["Import.Status.Importing"];
+        LoadingCard.Message = string.Format(I18nManager.Instance["Import.Status.ImportingTo"], targetUser);
         LoadingCard.IsVisible = true;
         PacksScrollViewer.IsVisible = false;
         ImportButton.IsEnabled = false;
@@ -191,7 +191,7 @@ public partial class ImportWorldPack : Window
         }
         catch (Exception ex)
         {
-            LoadingCard.BigTitle = "导入出错";
+            LoadingCard.BigTitle = I18nManager.Instance["Import.Error.Failed"];
             LoadingCard.Message = ex.Message;
             ImportButton.IsEnabled = true;
             ConfigPanel.IsEnabled = true;

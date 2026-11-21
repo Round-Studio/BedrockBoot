@@ -210,7 +210,7 @@ public partial class DrawDownloadGameContent : UserControl
 
             if (SourceSelBox.SelectedIndex < 0 || SourceSelBox.SelectedIndex >= Sources.Count)
             {
-                ShowErrorDialogAsync("请选择一个有效的下载源");
+                ShowErrorDialogAsync(I18nManager.Instance["UI.Dialog.Install.NoValidSource"]);
                 return;
             }
 
@@ -218,7 +218,7 @@ public partial class DrawDownloadGameContent : UserControl
             var selectedSource = Sources[SourceSelBox.SelectedIndex];
             if (selectedSource == null || string.IsNullOrEmpty(selectedSource.Url))
             {
-                ShowErrorDialogAsync("选中的下载源无效");
+                ShowErrorDialogAsync(I18nManager.Instance["UI.Dialog.Install.InvalidSource"]);
                 return;
             }
         }
@@ -226,21 +226,21 @@ public partial class DrawDownloadGameContent : UserControl
         // 检查安装目录是否有效
         if (InstallFolder.SelectedIndex < 0 || InstallFolder.SelectedIndex >= InstallFolder.Items.Count)
         {
-            ShowErrorDialogAsync("请选择一个有效的安装目录");
+            ShowErrorDialogAsync(I18nManager.Instance["UI.Dialog.Install.NoValidFolder"]);
             return;
         }
 
         var gameFolders = GlobalModel.Config.Data.GameFolders;
         if (gameFolders == null || InstallFolder.SelectedIndex >= gameFolders.Count)
         {
-            ShowErrorDialogAsync("游戏目录配置无效");
+            ShowErrorDialogAsync(I18nManager.Instance["UI.Dialog.Install.InvalidGameFolder"]);
             return;
         }
 
         var targetFolder = gameFolders[InstallFolder.SelectedIndex];
         if (targetFolder == null || string.IsNullOrEmpty(targetFolder.GameFolderPath))
         {
-            ShowErrorDialogAsync("安装目录路径无效");
+            ShowErrorDialogAsync(I18nManager.Instance["UI.Dialog.Install.InvalidInstallPath"]);
             return;
         }
 
@@ -254,7 +254,7 @@ public partial class DrawDownloadGameContent : UserControl
             }
             catch (Exception ex)
             {
-                ShowErrorDialogAsync($"无法创建安装目录: {ex.Message}");
+                ShowErrorDialogAsync(string.Format(I18nManager.Instance["UI.Dialog.Install.CreateFolderFailed"], ex.Message));
                 return;
             }
         }

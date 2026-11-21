@@ -25,12 +25,12 @@
 
             <TextBlock Opacity="0.7"
                        Text="{DynamicResource Dialog.MakePack.Label.PackName}" />
-            <TextBox Watermark="My Pack"
+            <TextBox Watermark="{DynamicResource UI.Item.WatermarkPackName}"
                      Name="PackName" />
 
             <TextBlock Opacity="0.7"
                        Text="{DynamicResource Dialog.MakePack.Label.PackDescription}" />
-            <TextBox Watermark="My Pack Description"
+            <TextBox Watermark="{DynamicResource UI.Item.WatermarkPackDescription}"
                      Name="PackDescription" />
 
             <TextBlock Opacity="0.7"
@@ -44,7 +44,7 @@
 
             <TextBlock Opacity="0.7"
                        Text="{DynamicResource Dialog.MakePack.Label.AuthorName}" />
-            <TextBox Watermark="Creator"
+            <TextBox Watermark="{DynamicResource UI.Item.WatermarkCreator}"
                      Name="PackAuthorName" />
 
             <TextBlock Opacity="0.7"

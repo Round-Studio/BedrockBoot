@@ -47,7 +47,7 @@ public partial class UniversalLanguage : ISettingPage
             },
             new()
             {
-                ItemName = "语言 / Language"
+                ItemName = I18nManager.Instance["Setting.Language.Title"]
             }
         };
 
@@ -75,15 +75,15 @@ public partial class UniversalLanguage : ISettingPage
 
         var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择语言资源文件",
+            Title = I18nManager.Instance["Setting.Language.DebugTool.Picker.Title"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("Avalonia/XAML/XML 文件")
+                new FilePickerFileType(I18nManager.Instance["Setting.Language.DebugTool.Picker.LanguageFiles"])
                 {
                     Patterns = new[] { "*.axaml", "*.xaml", "*.xml" }
                 },
-                new FilePickerFileType("所有文件")
+                new FilePickerFileType(I18nManager.Instance["Setting.Language.DebugTool.Picker.AllFiles"])
                 {
                     Patterns = new[] { "*" }
                 }

@@ -75,7 +75,7 @@ public partial class CapesFileView : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择披风纹理",
+            Title = I18nManager.Instance["Cape.FileView.ChooseTexture"],
             AllowMultiple = false,
             FileTypeFilter = new[] { new FilePickerFileType("PNG") { Patterns = new[] { "*.png" } } }
         });
@@ -84,10 +84,10 @@ public partial class CapesFileView : UserControl
         var dialog = new DialogAddCapeFileContent(files[0].Path.LocalPath);
         DialogHost.Show(new ()
         {
-            Title = "添加披风",
+            Title = I18nManager.Instance["Cape.FileView.Add"],
             Content = dialog,
-            CloseButtonText = "添加",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Shared.Action.Apply"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 _unit.AddCape(new ()

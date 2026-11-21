@@ -9,14 +9,14 @@
     <Grid RowDefinitions="*,Auto"
           Margin="20,0,20,20">
         <StackPanel Spacing="8">
-            <TextBlock Text="需要转换到的版本 （Java Version.）：" />
+            <TextBlock Text="{DynamicResource Chunker.B2J.TargetVersion}" />
 
             <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Static chunker:Chunker.SupportJava}"
                       SelectedIndex="0"
                       Name="GameVersionChoose" />
 
-            <TextBlock Text="Bedrock 存档" />
+            <TextBlock Text="{DynamicResource Chunker.B2J.BedrockSave}" />
 
             <DockPanel HorizontalSpacing="8">
                 <Button DockPanel.Dock="Right"
@@ -27,7 +27,7 @@
                                 Spacing="4">
                         <onePointControls:FontIcon VerticalAlignment="Center"
                                                    Glyph="&#xE7C3;" />
-                        <TextBlock Text="导入 .mcworld" />
+                        <TextBlock Text="{DynamicResource Chunker.B2J.ImportMcWorld}" />
                     </StackPanel>
                 </Button>
 
@@ -39,11 +39,11 @@
                                 Spacing="4">
                         <onePointControls:FontIcon VerticalAlignment="Center"
                                                    Glyph="&#xE8B7;" />
-                        <TextBlock Text="从实例中选择" />
+                        <TextBlock Text="{DynamicResource Chunker.B2J.ChooseFromInstance}" />
                     </StackPanel>
                 </Button>
 
-                <TextBox Watermark="存档路径（mcworld）"
+                <TextBox Watermark="{DynamicResource Chunker.B2J.SavePathWatermark}"
                          Name="WorldPath" />
             </DockPanel>
         </StackPanel>
@@ -51,7 +51,7 @@
         <TextBlock Grid.Row="1"
                    Opacity="0.8"
                    VerticalAlignment="Center"
-                   Text="使用 Chunker 开源项目，转换存档有风险" />
+                   Text="{DynamicResource Chunker.B2J.Warning}" />
 
         <StackPanel Grid.Row="1"
                     HorizontalAlignment="Right"
@@ -65,7 +65,7 @@
                             Spacing="4">
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                Glyph="&#xE8B7;" />
-                    <TextBlock Text="导出为文件夹" />
+                    <TextBlock Text="{DynamicResource Chunker.B2J.ExportFolder}" />
                 </StackPanel>
             </Button>
 
@@ -78,7 +78,7 @@
                             Spacing="4">
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                Glyph="&#xF012;" />
-                    <TextBlock Text="导出为 .zip" />
+                    <TextBlock Text="{DynamicResource Chunker.B2J.ExportZip}" />
                 </StackPanel>
             </Button>
         </StackPanel>

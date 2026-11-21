@@ -76,7 +76,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon VerticalAlignment="Center"
                                                    Glyph="&#xE8A7;" />
-                        <TextBlock Text="回档至此备份" />
+                        <TextBlock Text="{DynamicResource Archive.Action.RestoreToBackup}" />
                     </StackPanel>
                 </Button>
             </StackPanel>

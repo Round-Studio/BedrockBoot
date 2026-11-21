@@ -39,13 +39,10 @@ public class PreLoaderNet : IModsLoader
     }
 
     public static bool IsInstallModLoader(string path) => true;
-    public string LoaderName { get; } = "原版加载器";
-    public string LoaderDescription { get; } = "BedrockBoot 原版加载器 (PreLoad.NET)";
+    public string LoaderName => I18nManager.Instance["Pack.Loader.PreLoader.Name"];
+    public string LoaderDescription => I18nManager.Instance["Pack.Loader.PreLoader.Desc"];
     public string? LoaderWebsite { get; } = "https://github.com/Round-Studio/BedrockBoot";
-    public string LoaderIntro { get; } =
-        "BedrockBoot 内置的原版模组加载器（PreLoad.NET）。它在游戏进程启动前自动注入由 BedrockBoot " +
-        "托管的预加载模组与注入式模组，为实例提供基础的 Mod 加载能力。" +
-        "该加载器随实例内置，无需单独安装，也无法移除。";
+    public string LoaderIntro => I18nManager.Instance["Pack.Loader.PreLoader.Intro"];
     public bool CanRemove { get; } = false;
     public bool IsAllowDisabling { get; } = false;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png";
@@ -86,12 +83,12 @@ public class PreLoaderNet : IModsLoader
 
     public void Install()
     {
-        throw new Exception("您无法安装此加载器");
+        throw new Exception(I18nManager.Instance["Pack.Loader.PreLoader.CannotInstall"]);
     }
 
     public void Remove()
     {
-        throw new Exception("您无法卸载此加载器");
+        throw new Exception(I18nManager.Instance["Pack.Loader.PreLoader.CannotRemove"]);
     }
 
     public void ViewInfo()

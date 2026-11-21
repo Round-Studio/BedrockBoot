@@ -50,14 +50,14 @@ public class IntegrationPackager
         IntegrationProgress?.Report(new IntegrationProgress
         {
             Progress = 10,
-            Message = "获取版本详细信息"
+            Message = I18nManager.Instance["Task.IntegrationPack.Step.GetVersionInfo"]
         });
 
         var gameVersions = VersionHelper.GetVersions()
             .Find(x => x.ID.Replace(".", "") ==
                        GameInfoHelper.GetVersionConfig(VersionConfig.VersionPath).Info.Version.Replace(".", ""));
 
-        if (gameVersions == null) throw new Exception("无法获取版本详细信息");
+        if (gameVersions == null) throw new Exception(I18nManager.Instance["Task.IntegrationPack.Error.NoVersionInfo"]);
 
         config.VersionInfo = new PackInfo.GameVersionInfo
         {
@@ -110,7 +110,7 @@ public class IntegrationPackager
         IntegrationProgress?.Report(new IntegrationProgress
         {
             Progress = 40,
-            Message = "目录创建完毕"
+            Message = I18nManager.Instance["Task.IntegrationPack.Status.DirCreated"]
         });
 
         if (config.EnableConfig.IsEnableResourcePack)
@@ -131,7 +131,7 @@ public class IntegrationPackager
                 count++;
                 IntegrationProgress?.Report(new IntegrationProgress
                 {
-                    Message = $@"正在处理资源包：{Path.GetFileName(file)}",
+                    Message = string.Format(I18nManager.Instance["Task.IntegrationPack.Status.ProcessingResource"], Path.GetFileName(file)),
                     Progress = (double)count / packFolders.Count * 100
                 });
             });
@@ -155,7 +155,7 @@ public class IntegrationPackager
                 count++;
                 IntegrationProgress?.Report(new IntegrationProgress
                 {
-                    Message = $@"正在处理行为包：{Path.GetFileName(file)}",
+                    Message = string.Format(I18nManager.Instance["Task.IntegrationPack.Status.ProcessingBehavior"], Path.GetFileName(file)),
                     Progress = (double)count / packFolders.Count * 100
                 });
             });
@@ -178,7 +178,7 @@ public class IntegrationPackager
                 count++;
                 IntegrationProgress?.Report(new IntegrationProgress
                 {
-                    Message = $@"正在处理皮肤包：{Path.GetFileName(file)}",
+                    Message = string.Format(I18nManager.Instance["Task.IntegrationPack.Status.ProcessingSkin"], Path.GetFileName(file)),
                     Progress = (double)count / packFolders.Count * 100
                 });
             });
@@ -206,7 +206,7 @@ public class IntegrationPackager
                 count++;
                 IntegrationProgress?.Report(new IntegrationProgress
                 {
-                    Message = $@"正在处理存档：{Path.GetFileName(file)}",
+                    Message = string.Format(I18nManager.Instance["Task.IntegrationPack.Status.ProcessingSave"], Path.GetFileName(file)),
                     Progress = (double)count / packFolders.Count * 100
                 });
             });
@@ -231,7 +231,7 @@ public class IntegrationPackager
                 count++;
                 IntegrationProgress?.Report(new IntegrationProgress
                 {
-                    Message = $@"正在处理 dll 文件：{Path.GetFileName(file)}",
+                    Message = string.Format(I18nManager.Instance["Task.IntegrationPack.Status.ProcessingDll"], Path.GetFileName(file)),
                     Progress = (double)count / modManager.Mods.Count * 100
                 });
                 File.Copy(file, Path.Combine(path, "mods", Path.GetFileName(file)), true);
@@ -247,7 +247,7 @@ public class IntegrationPackager
         IntegrationProgress?.Report(new IntegrationProgress
         {
             Progress = 80,
-            Message = "打包文件中..."
+            Message = I18nManager.Instance["Task.IntegrationPack.Status.Packing"]
         });
 
         ZipHelper.CreateZipFile(path, config.PackSavePath);
@@ -255,7 +255,7 @@ public class IntegrationPackager
         IntegrationProgress?.Report(new IntegrationProgress
         {
             Progress = 100,
-            Message = "整合包打包完毕"
+            Message = I18nManager.Instance["Task.IntegrationPack.Status.PackDone"]
         });
 
         CompleteCallBack?.Invoke();

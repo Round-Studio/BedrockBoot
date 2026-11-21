@@ -34,12 +34,12 @@ public partial class DialogChooseChunkerTypeContent : UserControl
     private void JavaToBedrock_OnClick(object? sender, RoutedEventArgs e)
     {
         DialogHost.Close();
-        GlobalModel.MainWindow.OpenDraw(new DrawChunkerJavaToBedrockContent(), "Java To Bedrock");
+        GlobalModel.MainWindow.OpenDraw(new DrawChunkerJavaToBedrockContent(), I18nManager.Instance["Chunker.ChooseType.J2B.Title"]);
     }
 
     private void BedrockToJava_OnClick(object? sender, RoutedEventArgs e)
     {
         DialogHost.Close();
-        GlobalModel.MainWindow.OpenDraw(new DrawChunkerBedrockToJavaContent(), "Bedrock To Java");
+        GlobalModel.MainWindow.OpenDraw(new DrawChunkerBedrockToJavaContent(), I18nManager.Instance["Chunker.ChooseType.B2J.Title"]);
     }
 }

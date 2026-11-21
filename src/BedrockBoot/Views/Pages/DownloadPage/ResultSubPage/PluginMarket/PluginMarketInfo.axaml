@@ -64,7 +64,7 @@
                         <StackPanel Grid.Column="2"
                                     VerticalAlignment="Top"
                                     HorizontalAlignment="Right">
-                            <HyperlinkButton Content="在 Github 中查看"
+                            <HyperlinkButton Content="{DynamicResource Download.PluginMarket.Action.ViewGitHub}"
                                              Name="RepoBtn"
                                              HorizontalAlignment="Right"></HyperlinkButton>
                         </StackPanel>
@@ -94,7 +94,7 @@
                                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                                Glyph="&#xE72C;"/>
                                     <TextBlock VerticalAlignment="Center"
-                                               Text="重新安装"></TextBlock>
+                                               Text="{DynamicResource Download.Result.Action.Reinstall}"></TextBlock>
                                 </StackPanel>
                             </Button>
                             
@@ -107,7 +107,7 @@
                                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                                Glyph="&#xE896;"/>
                                     <TextBlock VerticalAlignment="Center"
-                                               Text="安装此插件"></TextBlock>
+                                               Text="{DynamicResource Download.PluginMarket.Action.Install}"></TextBlock>
                                 </StackPanel>
                             </Button>
                         </StackPanel>
@@ -122,8 +122,8 @@
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="LoadingCard"
-                         BigTitle="获取中"
-                         Message="正在获取插件信息"/>
+                         BigTitle="{DynamicResource Shared.Status.Fetching}"
+                         Message="{DynamicResource Download.PluginMarket.Status.Loading}"/>
         
         <Grid Grid.Row="1"
               Margin="20,0,20,20">
@@ -133,7 +133,7 @@
                         Spacing="4">
                 <onePointControls:FontIcon VerticalAlignment="Center"
                                            Glyph="&#xE73E;"/>
-                <TextBlock Text="信任的插件"
+                <TextBlock Text="{DynamicResource Download.PluginMarket.TrustedLabel}"
                            VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Grid>

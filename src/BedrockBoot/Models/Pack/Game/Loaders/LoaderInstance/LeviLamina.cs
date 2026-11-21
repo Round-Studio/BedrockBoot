@@ -48,12 +48,9 @@ public class LeviLamina : IModsLoader
     public Action? OnUpdate { get; set; }
     public IModsManager ModsManager { get; set; }
     public string LoaderName { get; } = "LeviLamina";
-    public string LoaderDescription { get; } = "LeviMC 开发的基岩版模组加载器";
+    public string LoaderDescription => I18nManager.Instance["Pack.Loader.LeviLamina.Desc"];
     public string? LoaderWebsite { get; } = "https://levimc.org/";
-    public string LoaderIntro { get; } =
-        "由 LiteLDev 社区开发的基岩版原生模组加载器。它通过 PreLoader 在游戏进程启动前注入游戏，" +
-        "让您可以在基岩版客户端上安装和运行 Native 模组，" +
-        "BedrockBoot 会将该加载器的模组统一托管到实例的模组管理页面中。";
+    public string LoaderIntro => I18nManager.Instance["Pack.Loader.LeviLamina.Intro"];
     public bool CanRemove { get; } = true;
     public bool IsAllowDisabling { get; } = true;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/Other/LeviLauncher.png";
@@ -125,10 +122,10 @@ public class LeviLamina : IModsLoader
                 x.Replace(".", "").Replace("0", "") == GameInstance.Info.Version.Replace(".", "").Replace("0", ""))]);
         DialogHost.Show(new()
         {
-            Title = "选择安装的版本",
+            Title = I18nManager.Instance["Dialog.LeviLamina.ChooseVersion"],
             Content = dialog,
-            CloseButtonText = "安装",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Dialog.LoaderView.Action.Install"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = async () =>
             {
                 var version = dialog.ChooseVersion;
@@ -200,7 +197,7 @@ public class LeviLamina : IModsLoader
 
                     DialogHost.Show(new()
                     {
-                        Title = "下载 LeviLamina",
+                        Title = I18nManager.Instance["Task.LeviLamina.Title"],
                         Content = downloadDialog
                     });
 
@@ -252,11 +249,10 @@ public class LeviLamina : IModsLoader
     {
         DialogHost.Show(new()
         {
-            Title = "删除 LeviLamina",
-            Content = "您确认要删除 LeviLamina 加载器吗？\n" +
-                      "删除后将会连同其 Mods 一同删除。",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["LeviLamina.Delete.Title"],
+            Content = I18nManager.Instance["LeviLamina.Delete.Content"],
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {

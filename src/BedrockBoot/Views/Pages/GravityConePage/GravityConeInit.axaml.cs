@@ -106,9 +106,9 @@ public partial class GravityConeInit : UserControl
                 this.LoadGetPeersBar.Value = 0;
                 DialogHost.Show(new()
                 {
-                    Title = "获取节点失败",
-                    Content = "请尝试更换网络，然后重试",
-                    CloseButtonText = "确定",
+                    Title = I18nManager.Instance["GravityCone.Error.GetPeersFailed"],
+                    Content = I18nManager.Instance["GravityCone.Error.GetPeersFailed.Desc"],
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
                     CloseAction = BackToMain
                 });
             });
@@ -142,9 +142,9 @@ public partial class GravityConeInit : UserControl
                 this.LoadGetPeersBar.Value = 0;
                 DialogHost.Show(new()
                 {
-                    Title = "获取 Xbox 用户失败",
-                    Content = "无法获取 Xbox 用户，请尝试重新登录 Xbox 账户",
-                    CloseButtonText = "确定",
+                    Title = I18nManager.Instance["GravityCone.Error.GetXboxUserFailed"],
+                    Content = I18nManager.Instance["GravityCone.Error.GetXboxUserFailed.Desc"],
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
                     CloseAction = BackToMain
                 });
             });
@@ -172,7 +172,7 @@ public partial class GravityConeInit : UserControl
             await client.StartAsync(
                 Path.Combine(DialogDownloadMultiPlayerDependenceContent.GravityConeExePath,
                     $"gravitycone-cli-{OS.GetSystemType()}-amd64{ext}"),
-                GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", "BedrockBoot 联机房间",
+                GlobalModel.ETPublicServer, $"BedrockBoot {GlobalModel.BodyVersion}", I18nManager.Instance["GravityCone.Room.Motd"],
                 DialogDownloadMultiPlayerDependenceContent.GravityConeExePath);
         }
         catch (Exception ex)
@@ -195,9 +195,9 @@ public partial class GravityConeInit : UserControl
                 LoadInitBar.Value = 0;
                 DialogHost.Show(new()
                 {
-                    Title = "联机组件启动失败",
-                    Content = $"无法启动联机组件，请重试或联系开发者。\n{ex.Message}",
-                    CloseButtonText = "确定",
+                    Title = I18nManager.Instance["GravityCone.Error.StartFailed"],
+                    Content = string.Format(I18nManager.Instance["GravityCone.Error.StartFailed.Desc"], ex.Message),
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
                     CloseAction = BackToMain
                 });
             });
@@ -216,9 +216,9 @@ public partial class GravityConeInit : UserControl
                     MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
-                        Title = "出现错误",
-                        Content = "当前无法与游戏进行通讯，请联系开发者并向开发者提供信息",
-                        CloseButtonText = "确定"
+                        Title = I18nManager.Instance["Shared.Status.Error.Title"],
+                        Content = I18nManager.Instance["GravityCone.Error.NoGameComm"],
+                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                     });
                 }
 
@@ -228,10 +228,9 @@ public partial class GravityConeInit : UserControl
                     MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
-                        Title = "出现错误",
-                        Content = "目标端口被游戏占用，请确保当前后台无游戏运行。\n" +
-                                  "成功进入房间后即可启动游戏",
-                        CloseButtonText = "确定"
+                        Title = I18nManager.Instance["Shared.Status.Error.Title"],
+                        Content = I18nManager.Instance["GravityCone.Error.PortInUse"],
+                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                     });
                 }
 
@@ -244,9 +243,9 @@ public partial class GravityConeInit : UserControl
                     MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
-                        Title = "房间已断开连接",
-                        Content = "当前房间已断开连接，可能房主已关闭房间，也可能您的网络环境有问题。",
-                        CloseButtonText = "确定"
+                        Title = I18nManager.Instance["GravityCone.Error.RoomDisconnected"],
+                        Content = I18nManager.Instance["GravityCone.Error.RoomDisconnected.Desc"],
+                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                     });
                 }
             });
@@ -261,7 +260,7 @@ public partial class GravityConeInit : UserControl
 
                 var message = (eventArgs.Error != null && eventArgs.Error?.Message != null)
                     ? eventArgs.Error?.Message
-                    : "未知错误";
+                    : I18nManager.Instance["GravityCone.Error.Unknown"];
 
                 if (eventArgs.Error.Code == "ROOM_ALREADY_RUNNING")
                 {
@@ -302,7 +301,7 @@ public partial class GravityConeInit : UserControl
 
                 if (eventArgs.Error.Code == "INTERNAL_ERROR")
                 {
-                    message = "未检测到本地 Minecraft 基岩版房间，请尝试重启游戏，并在 Minecraft 中开启局域网游戏。";
+                    message = I18nManager.Instance["GravityCone.Error.NoLocalGame"];
                 }
 
                 Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
@@ -311,9 +310,9 @@ public partial class GravityConeInit : UserControl
                 });
                 DialogHost.Show(new()
                 {
-                    Title = "出现错误",
+                    Title = I18nManager.Instance["Shared.Status.Error.Title"],
                     Content = message,
-                    CloseButtonText = "确定"
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                 });
             });
         };
@@ -330,7 +329,7 @@ public partial class GravityConeInit : UserControl
             {
                 GlobalModel.MainWindow?.Notice?.AddNotice(new()
                 {
-                    Title = "联机组件警告",
+                    Title = I18nManager.Instance["GravityCone.Notice.Warning"],
                     Message = eventArgs.Message,
                     NoticeType = NoticeType.Warning
                 });

@@ -26,6 +26,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
 using BedrockBoot.Core;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
@@ -125,16 +127,14 @@ internal sealed class Program
 #if WINDOWS
         if (!VCRedistDetector.CheckInInstalledList().IsInstalled)
         {
-            var dialog = MessageBox.Show(
-                new StringBuilder()
-                    .AppendLine("当前用户尚未安装 Microsoft Visual C++ 2015-2022 Redistributable 运行库，可能会导致启动器或游戏无法正常运行。")
-                    .AppendLine("")
-                    .AppendLine("[OK] 自动安装 VC 2015-2022")
-                    .AppendLine("[Cancel] 继续运行启动器（忽略运行库问题）")
-                    .AppendLine("")
-                    .AppendLine("详情请参见")
-                    .AppendLine("https://docs.roundstudio.top/docs/product/bb/commonQuestion")
-                    .ToString(), @"BedrockBoot 警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            var language = GlobalModel.Config.Data.Language == "en_US" ? "en_US" : "zh_CN";
+            var languageUri = new Uri($"avares://BedrockBoot/I18n/{language}.axaml");
+            var languageDictionary = (Avalonia.Controls.ResourceDictionary)AvaloniaXamlLoader.Load(languageUri);
+            var warning = string.Format(
+                (string)languageDictionary["Startup.VCRedist.Warning"],
+                "https://docs.roundstudio.top/docs/product/bb/commonQuestion");
+            var title = (string)languageDictionary["Startup.VCRedist.Title"];
+            var dialog = MessageBox.Show(warning, title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 
             if (dialog == DialogResult.OK)
             {

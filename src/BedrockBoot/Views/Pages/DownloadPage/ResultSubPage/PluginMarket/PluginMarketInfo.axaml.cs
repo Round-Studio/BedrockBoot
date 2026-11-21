@@ -139,13 +139,13 @@ public partial class PluginMarketInfo : UserControl
         var timeSince = DateTimeOffset.Now - publishedAt;
     
         if (timeSince.TotalDays >= 1)
-            return $"{(int)timeSince.TotalDays} 天前";
+            return string.Format(I18nManager.Instance["Common.Time.DaysAgo"], (int)timeSince.TotalDays);
         else if (timeSince.TotalHours >= 1)
-            return $"{(int)timeSince.TotalHours} 小时前";
+            return string.Format(I18nManager.Instance["Common.Time.HoursAgo"], (int)timeSince.TotalHours);
         else if (timeSince.TotalMinutes >= 1)
-            return $"{(int)timeSince.TotalMinutes} 分钟前";
+            return string.Format(I18nManager.Instance["Common.Time.MinutesAgo"], (int)timeSince.TotalMinutes);
         else
-            return "刚刚";
+            return I18nManager.Instance["Common.Time.JustNow"];
     }
 
     private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)

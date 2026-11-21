@@ -54,26 +54,26 @@ public partial class LaunchGameWindow : Window
         try
         {
             if (Program.Args == null || !Program.Args.Contains("-jump"))
-                throw new Exception("无效的启动参数");
+                throw new Exception(I18nManager.Instance["LaunchWindow.Error.InvalidArgs"]);
 
             var index = Program.Args.FindIndex(a => a == "-jump");
             if (index + 1 >= Program.Args.Count)
-                throw new Exception("缺少版本路径参数");
+                throw new Exception(I18nManager.Instance["LaunchWindow.Error.MissingPath"]);
 
             var folder = Program.Args[index + 1];
             if (!Directory.Exists(folder))
-                throw new Exception("路径不存在");
+                throw new Exception(I18nManager.Instance["LaunchWindow.Error.PathNotFound"]);
 
             _versionInfo = GameInfoHelper.GetVersionConfig(folder);
             
             if (_versionInfo?.Info?.VersionName != null)
             {
-                GameNameBox.Text = $"启动游戏 {_versionInfo.Info.VersionName}";
+                GameNameBox.Text = string.Format(I18nManager.Instance["LaunchWindow.Status.Launching"], _versionInfo.Info.VersionName);
             }
         }
         catch (Exception ex)
         {
-            ProgressBox.Text = $"错误: {ex.Message}";
+            ProgressBox.Text = string.Format(I18nManager.Instance["LaunchWindow.Error.Format"], ex.Message);
             // 延迟关闭
             Task.Run(async () =>
             {
@@ -132,7 +132,7 @@ public partial class LaunchGameWindow : Window
     {
         if (_gameProcess == null)
         {
-            await ShowMessage("错误", "没有正在运行的游戏进程");
+            await ShowMessage(I18nManager.Instance["Shared.Status.Error.Title"], I18nManager.Instance["LaunchWindow.Error.NoProcess"]);
             return;
         }
 
@@ -144,7 +144,7 @@ public partial class LaunchGameWindow : Window
                 _gameProcess.Kill();
                 await _gameProcess.WaitForExitAsync();
                 
-                ProgressBox.Text = "游戏进程已结束";
+                ProgressBox.Text = I18nManager.Instance["LaunchWindow.Status.ProcessEnded"];
                 ShowButtons(false);
                 
                 // 延迟关闭窗口
@@ -154,13 +154,13 @@ public partial class LaunchGameWindow : Window
             }
             else
             {
-                await ShowMessage("提示", "游戏进程已经结束");
+                await ShowMessage(I18nManager.Instance["LaunchWindow.Notice.Title"], I18nManager.Instance["LaunchWindow.Status.ProcessEnded"]);
                 ShowButtons(false);
             }
         }
         catch (Exception ex)
         {
-            await ShowMessage("错误", $"结束进程失败: {ex.Message}");
+            await ShowMessage(I18nManager.Instance["Shared.Status.Error.Title"], string.Format(I18nManager.Instance["LaunchWindow.Error.KillFailed"], ex.Message));
         }
     }
 
@@ -224,7 +224,7 @@ public partial class LaunchGameWindow : Window
     {
         if (_versionInfo == null)
         {
-            UpdateUi(() => ProgressBox.Text = "版本信息无效");
+            UpdateUi(() => ProgressBox.Text = I18nManager.Instance["LaunchWindow.Error.InvalidVersion"]);
             return;
         }
 
@@ -310,7 +310,7 @@ public partial class LaunchGameWindow : Window
             {
                 UpdateUi(() =>
                 {
-                    ProgressBox.Text = "启动完成";
+                    ProgressBox.Text = I18nManager.Instance["LaunchWindow.Status.Complete"];
                     // 隐藏按钮，因为游戏已经启动完成
                     ShowButtons(false);
                 });
@@ -325,7 +325,7 @@ public partial class LaunchGameWindow : Window
                 Console.WriteLine($@"游戏已启动，进程ID: {process.Id}");
                 UpdateUi(() =>
                 {
-                    ProgressBox.Text = $"游戏已启动 (PID: {process.Id})";
+                    ProgressBox.Text = string.Format(I18nManager.Instance["LaunchWindow.Status.Launched"], process.Id);
                     LaunchProgressBar.IsIndeterminate = false;
                     LaunchProgressBar.Value = 100;
                     
@@ -341,7 +341,7 @@ public partial class LaunchGameWindow : Window
         {
             UpdateUi(() =>
             {
-                ProgressBox.Text = $"启动失败: {ex.Message}";
+                ProgressBox.Text = string.Format(I18nManager.Instance["LaunchWindow.Error.LaunchFailed"], ex.Message);
             });
             
             // 延迟关闭

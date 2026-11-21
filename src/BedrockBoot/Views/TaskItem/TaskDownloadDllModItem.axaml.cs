@@ -46,7 +46,7 @@ public partial class TaskDownloadDllModItem : UserControl, ITaskItem
     {
         _instance = instance;
         _modFile = modFile;
-        CardTitle.Text = $"下载 Mod: {modFile.FileName}";
+        CardTitle.Text = string.Format(I18nManager.Instance["Task.DllMod.Title.Format"], modFile.FileName);
     }
 
     public void Install(Action? onCompleted = null)
@@ -62,7 +62,7 @@ public partial class TaskDownloadDllModItem : UserControl, ITaskItem
             });
 
             Progress = progress.ProgressPercentage;
-            Title = $"下载 Mod: {_modFile.FileName}";
+            Title = string.Format(I18nManager.Instance["Task.DllMod.Title.Format"], _modFile.FileName);
         });
 
         _ = Task.Run(async () =>
@@ -71,7 +71,7 @@ public partial class TaskDownloadDllModItem : UserControl, ITaskItem
             Dispatcher.UIThread.Post(() =>
             {
                 ProgressBar.Value = 100;
-                ProgressText.Text = "下载完成";
+                ProgressText.Text = I18nManager.Instance["Task.DllMod.Status.Completed"];
                 IsCompleted = true;
             });
 
@@ -83,8 +83,8 @@ public partial class TaskDownloadDllModItem : UserControl, ITaskItem
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "已添加至任务列表",
-            Message = "已将 Mod 下载任务添加至任务列表，您可以在任务列表中查看下载进度。",
+            Title = I18nManager.Instance["Task.DllMod.Notice.Title"],
+            Message = I18nManager.Instance["Task.DllMod.Notice.Message"],
             NoticeType = NoticeType.Info
         });
 

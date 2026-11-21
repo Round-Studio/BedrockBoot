@@ -102,7 +102,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 {
                     var asset = SelectPreferredAsset();
                     if (asset == null)
-                        throw new InvalidOperationException("未找到适用于当前平台的更新资源");
+                        throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.NoAsset"]);
 
                     downloadUrl = asset.BrowserDownloadUrl;
                     assetName = asset.Name;
@@ -112,11 +112,11 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                     var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
                     userToken = conf.Data?.UserToken;
                     if (string.IsNullOrEmpty(userToken))
-                        throw new InvalidOperationException("Github 未登录，无法下载提交版更新");
+                        throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.GithubNotLoggedIn"]);
 
                     var artifact = await SelectPreferredArtifactAsync(userToken);
                     if (artifact == null)
-                        throw new InvalidOperationException("未找到适用于当前平台的 Action 产物");
+                        throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.NoActionAsset"]);
 
                     downloadUrl = artifact.ArchiveDownloadUrl;
                     assetName = $"{artifact.Name}.zip";
@@ -167,7 +167,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 await Task.Delay(100, token);
 
                 if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))
-                    throw new FileNotFoundException("无法定位当前程序，不能启动更新引导流程", _currentExecutablePath);
+                    throw new FileNotFoundException(I18nManager.Instance["Task.Update.Error.NoExecutable"], _currentExecutablePath);
 
                 if (Result.Source == UpdateSource.Action)
                 {
@@ -184,7 +184,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                                 : f.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase));
 
                     if (exe == null)
-                        throw new FileNotFoundException("解压后未找到可执行文件", extractDir);
+                        throw new FileNotFoundException(I18nManager.Instance["Task.Update.Error.NoExtractedExe"], extractDir);
 
                     downloadPath = exe;
                 }
@@ -217,7 +217,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
             {
                 // 任务异常若不上报会永远停留在列表里无任何提示
                 Console.WriteLine($@"更新任务失败: {ex}");
-                Dispatcher.UIThread.Post(() => ReportProgress(100, $@"失败: {ex.Message}"));
+                Dispatcher.UIThread.Post(() => ReportProgress(100, string.Format(I18nManager.Instance["Task.Update.Error.FailFormat"], ex.Message)));
             }
         }, token);
     }

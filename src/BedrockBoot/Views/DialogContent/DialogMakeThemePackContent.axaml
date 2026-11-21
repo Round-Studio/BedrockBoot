@@ -6,16 +6,16 @@
              x:Class="BedrockBoot.Views.DialogContent.DialogMakeThemePackContent">
     <StackPanel Width="400" 
                 Spacing="8">
-        <TextBlock Text="主题包名称"/>
+        <TextBlock Text="{DynamicResource Dialog.MakeThemePack.Name}"/>
         <TextBox Name="ThemePackName"/>
             
-        <TextBlock Text="主题包描述"/>
+        <TextBlock Text="{DynamicResource Dialog.MakeThemePack.Description}"/>
         <TextBox Name="ThemePackDescription"/>
             
-        <TextBlock Text="主题包作者"/>
+        <TextBlock Text="{DynamicResource Dialog.MakeThemePack.Author}"/>
         <TextBox Name="ThemePackAuthor"/>
 
-        <TextBlock Text="主题包图标"/>
+        <TextBlock Text="{DynamicResource Dialog.MakeThemePack.Icon}"/>
         <DockPanel HorizontalSpacing="8">
             <Button DockPanel.Dock="Right"
                     Width="32"

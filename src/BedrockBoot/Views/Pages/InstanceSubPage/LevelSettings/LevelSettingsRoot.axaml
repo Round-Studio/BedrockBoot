@@ -38,7 +38,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xEC7A;"
                                                    VerticalAlignment="Center" />
-                        <TextBlock Text="操作"
+                        <TextBlock Text="{DynamicResource LevelSettings.Actions}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>
@@ -58,7 +58,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xF133;"
                                                    VerticalAlignment="Center" />
-                        <TextBlock Text="附加包管理"
+                        <TextBlock Text="{DynamicResource LevelSettings.PackManagement}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>
@@ -79,7 +79,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xE713;"
                                                    VerticalAlignment="Center" />
-                        <TextBlock Text="世界设置"
+                        <TextBlock Text="{DynamicResource LevelSettings.WorldSettings}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>

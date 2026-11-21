@@ -103,7 +103,7 @@ public class ResourcePackManager
     {
         var dir = new DirectoryInfo(sourceDir);
         if (!dir.Exists)
-            throw new DirectoryNotFoundException($"源目录不存在: {dir.FullName}");
+            throw new DirectoryNotFoundException(string.Format(I18nManager.Instance["Pack.ResourcePack.SourceDirNotFound"], dir.FullName));
 
         Directory.CreateDirectory(destinationDir);
         foreach (var file in dir.GetFiles())

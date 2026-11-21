@@ -31,7 +31,7 @@
 
                     <TextBlock FontSize="16"
                                Name="CardTitle"
-                               Text="启动游戏" />
+                               Text="{DynamicResource Task.Launch.Title}" />
                 </StackPanel>
 
                 <StackPanel Margin="0,8,0,0"

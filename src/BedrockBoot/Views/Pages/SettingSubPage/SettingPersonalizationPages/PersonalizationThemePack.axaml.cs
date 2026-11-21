@@ -121,11 +121,11 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "导入主题包",
+                Title = I18nManager.Instance["Settings.Personalization.ThemePackManager.ImportThemePack"],
                 AllowMultiple = false,
                 FileTypeFilter = new[]
                 {
-                    new FilePickerFileType("BedrockBoot 主题包文件")
+                    new FilePickerFileType(I18nManager.Instance["Settings.Personalization.ThemePackManager.ThemePack"])
                     {
                         Patterns = new[] { "*.rskin" }
                     }

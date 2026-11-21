@@ -248,9 +248,9 @@ public class SearchEngine
             "\uEE56", () => new SettingPersonalization(), "Settings.Nav.Personalization.Desc");
         Setting("Settings.Nav.Universal.Title", "通用 universal", "\uE71D", () => new SettingUniversal(),
             "Settings.Nav.Universal.Desc");
-        Add("账户与档案", "账户 档案 账号 xbox 微软 microsoft account profile", "\uE716",
-            "Search.Category.Setting", "XBOX 账户与设置", () => setting(() => new SettingAccount()));
-        Add("辅助功能", "辅助 无障碍 accessibility", "\uE805", "Search.Category.Setting", null,
+        AddI18n("Settings.Nav.Account.Title", "账户 档案 账号 xbox 微软 microsoft account profile", "\uE716",
+            "Search.Category.Setting", () => setting(() => new SettingAccount()), "Settings.Nav.Account.Desc");
+        AddI18n("Settings.Nav.Accessibility.Title", "辅助 无障碍 accessibility", "\uE805", "Search.Category.Setting",
             () => setting(() => new SettingAccessibility()));
         Setting("Settings.Nav.Plugin.Title", "插件 扩展 plugin extension", "\uEA86",
             () => new SettingPlugin(), "Settings.Nav.Plugin.Desc");
@@ -290,7 +290,7 @@ public class SearchEngine
         Setting("Setting.Universal.SoftwareUpdate.Title", "软件更新 升级 update", "\uE71D",
             () => new UniversalSoftwareUpdate());
         Setting("Setting.Universal.Debug.Title", "调试 开发者 debug", "\uE71D", () => new UniversalDebug());
-        Add("语言 / Language", "语言 language", "\uE71D", "Search.Category.Setting", null,
+        AddI18n("Settings.Universal.Language.Title", "语言 lang language", "\uE71D", "Search.Category.Setting",
             () => setting(() => new UniversalLanguage()));
         Setting("Settings.Universal.Update.Dependency.Title", "依赖 运行库 dependency", "\uE71D",
             () => new UniversalDependencyUpdate());
@@ -298,9 +298,9 @@ public class SearchEngine
             () => new UniversalException());
 
         // —— 设置：账户 / 插件 ——
-        Add("Xbox 账户", "xbox 账户 登录 微软 live", "\uE716", "Search.Category.Setting", null,
+        AddI18n("Settings.Account.Xbox.Title", "xbox 账户 登录 微软 live", "\uE716", "Search.Category.Setting",
             () => setting(() => new AccountXbox()));
-        Add("插件管理", "插件 管理 manager plugin", "\uEA86", "Search.Category.Setting", null,
+        AddI18n("Settings.Plugin.Manager.Title", "插件 管理 manager plugin", "\uEA86", "Search.Category.Setting",
             () => setting(() => new PluginManager()));
 
         return list;

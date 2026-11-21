@@ -7,7 +7,7 @@
              x:Class="BedrockBoot.Views.Control.Items.Cape.CapePackItem">
         <onePointControls:SettingExpander Name="SettingExpander"
                                           Header="CapePack"
-                                          Description="共 ? 个披风"
+                                          Description="{DynamicResource Cape.Item.PackCount}"
                                           Glyph="&#xF012;"
                                           IsFontIcon="True">
             <StackPanel>
@@ -16,13 +16,13 @@
                                                   IsClickable="True"
                                                   Glyph="&#xE713;"
                                                   Click="EditBtn_OnClick"
-                                                  Header="编辑该披风包">
+                                                  Header="{DynamicResource Cape.Item.EditPack}">
                     </onePointControls:SettingCard>
                     <onePointControls:SettingCard Name="DeleteBtn"
                                                   IsClickable="True"
                                                   Glyph="&#xE74D;"
                                                   Click="DeleteBtn_OnClick"
-                                                  Header="删除该披风包">
+                                                  Header="{DynamicResource Cape.Item.DeletePack}">
                     </onePointControls:SettingCard>
                 </StackPanel>
             </StackPanel>

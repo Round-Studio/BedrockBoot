@@ -99,10 +99,10 @@ public partial class LArkeShaderPacksManager : UserControl
             {
                 DialogHost.Show(new DialogInfo()
                 {
-                    Title = $"删除 {pkg.PackName}",
-                    Content = "您确定要删除吗？",
-                    CloseButtonText = "确定",
-                    PrimaryButtonText = "取消",
+                    Title = string.Format(I18nManager.Instance["Instance.Mods.DeletePack.Format"], pkg.PackName),
+                    Content = I18nManager.Instance["Instance.Mods.DeleteConfirm"],
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                    PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                     AccountButton = DialogButtons.CloseButton,
                     CloseAction = () =>
                     {
@@ -136,11 +136,11 @@ public partial class LArkeShaderPacksManager : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择光影包文件",
+            Title = I18nManager.Instance["Instance.Mods.ChooseShaderPack"],
             AllowMultiple = true,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("光影包文件")
+                new FilePickerFileType(I18nManager.Instance["Instance.Mods.ShaderPackFileType"])
                 {
                     Patterns = new[] { "*.zip" }
                 }

@@ -231,7 +231,7 @@ public partial class MainWindow : Window
             Dispatcher.UIThread.Invoke(() =>
             {
                 ErrorBtn.IsVisible = true;
-                ErrorBtnText.Text = $"{i} 个内部错误";
+                ErrorBtnText.Text = string.Format(I18n["MainWindow.Status.InternalErrorCount"], i);
             });
         };
     }
@@ -472,8 +472,8 @@ public partial class MainWindow : Window
             {
                 Notice.AddNotice(new NoticeInfo
                 {
-                    Title = "无账户",
-                    Message = "未登录任何账户"
+                    Title = I18n["MainWindow.Account.NoAccount.Title"],
+                    Message = I18n["MainWindow.Account.NoAccount.Message"]
                 });
                 _chooseAccountTcs?.TrySetResult(null);
                 return;
@@ -841,11 +841,10 @@ public partial class MainWindow : Window
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "重启启动器",
-            Content = "当前需要重启。\n" +
-                      "请问是否需要重启启动器？",
-            CloseButtonText = "立即重启",
-            PrimaryButtonText = "稍后重启",
+            Title = I18n["MainWindow.Reboot.Title"],
+            Content = I18n["MainWindow.Reboot.Content"],
+            CloseButtonText = I18n["MainWindow.Reboot.Now"],
+            PrimaryButtonText = I18n["MainWindow.Reboot.Later"],
             CloseAction = () =>
             {
                 var exePath = Process.GetCurrentProcess().MainModule?.FileName
@@ -936,7 +935,7 @@ public partial class MainWindow : Window
 
         panel.Children.Add(new TextBlock
         {
-            Text = $"加载插件发生了错误，共发生 {PluginLoader.PluginLoadExceptions.Count} 个错误：",
+            Text = string.Format(I18n["MainWindow.PluginError.Prefix"], PluginLoader.PluginLoadExceptions.Count),
             TextWrapping = TextWrapping.Wrap,
             Margin = new Thickness(0, 0, 0, 8)
         });
@@ -953,21 +952,21 @@ public partial class MainWindow : Window
 
         panel.Children.Add(new TextBlock
         {
-            Text = "通常您需要检查插件是否与当前启动器版本兼容，或者尝试更新插件。",
+            Text = I18n["MainWindow.PluginError.CheckCompat"],
             TextWrapping = TextWrapping.Wrap
         });
 
         panel.Children.Add(new TextBlock
         {
-            Text = "如还是无效，请尝试联系插件开发者或启动器开发者。",
+            Text = I18n["MainWindow.PluginError.ContactDev"],
             TextWrapping = TextWrapping.Wrap
         });
 
         DialogHost.Show(new DialogInfo
         {
-            Title = $"{PluginLoader.PluginLoadExceptions.Count} 个内部错误",
+            Title = string.Format(I18n["MainWindow.Status.InternalErrorCount"], PluginLoader.PluginLoadExceptions.Count),
             Content = panel,
-            CloseButtonText = "确定"
+            CloseButtonText = I18n["Shared.Action.Confirm"]
         });
     }
 

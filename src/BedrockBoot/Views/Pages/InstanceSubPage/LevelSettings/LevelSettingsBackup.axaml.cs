@@ -49,23 +49,23 @@ public partial class LevelSettingsBackup : UserControl
         DialogHost.Show(new DialogInfo
         {
             Content = dialog,
-            Title = "新建备份",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Dialog.CreateBackup.NameWatermark"],
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
                 var name = dialog.BackupNameInfo;
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "备份存档",
+                    Title = I18nManager.Instance["Dialog.Backup.Title"],
                     Content = new DialogBackupProgressContent(_info, name, () =>
                     {
                         UpdateBackup();
                         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                         {
-                            Title = "存档备份",
-                            Message = $"已成功备份 {name}",
+                            Title = I18nManager.Instance["Backup.Dialog.Title"],
+                            Message = string.Format(I18nManager.Instance["Backup.Dialog.Success"], name),
                             NoticeType = NoticeType.Info
                         });
                     })

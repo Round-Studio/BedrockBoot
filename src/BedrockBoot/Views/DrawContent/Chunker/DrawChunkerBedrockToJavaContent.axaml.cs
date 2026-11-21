@@ -46,11 +46,11 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择 Minecraft 世界文件",
+            Title = I18nManager.Instance["UI.Draw.SelectMinecraftWorldFile"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("Minecraft World Files")
+                new FilePickerFileType(I18nManager.Instance["UI.Draw.FileTypeMinecraftWorld"])
                 {
                     Patterns = new[] { "*.mcworld" }
                 }
@@ -67,9 +67,9 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
             else
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "错误的文件",
-                    Content = "您选择的文件非 zip 文件",
-                    CloseButtonText = "确定"
+                    Title = I18nManager.Instance["UI.Draw.WrongFileTitle"],
+                    Content = I18nManager.Instance["UI.Draw.WrongFileZipContent"],
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                 });
         }
     }
@@ -79,20 +79,20 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
         var insChoose = new DialogChooseGameContent();
         DialogHost.Show(new DialogInfo
         {
-            Title = "选择实例",
+            Title = I18nManager.Instance["UI.Draw.SelectInstance"],
             Content = insChoose,
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
                 var worldsChoose = new DialogChooseGameWorldsContent(insChoose.VersionConfig);
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "选择存档",
+                    Title = I18nManager.Instance["UI.Draw.SelectSave"],
                     Content = worldsChoose,
-                    CloseButtonText = "确定",
-                    PrimaryButtonText = "取消",
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                    PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                     AccountButton = DialogButtons.CloseButton,
                     CloseAction = () =>
                     {
@@ -111,7 +111,7 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
 
         var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
         {
-            Title = "选择导出文件夹"
+            Title = I18nManager.Instance["UI.Draw.SelectExportFolder"]
         });
 
         if (folders.Count > 0)
@@ -119,7 +119,7 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
             var result = folders[0].Path.LocalPath;
             DialogHost.Show(new DialogInfo
             {
-                Title = "转换存档",
+                Title = I18nManager.Instance["UI.Draw.ConvertSave"],
                 Content = new DialogChunkerConversionContent(
                     ChunkerType.BedrockToJava,
                     SaveType.Folder,
@@ -137,11 +137,11 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "保存为 ZIP 文件",
+            Title = I18nManager.Instance["UI.Draw.SaveAsZip"],
             DefaultExtension = "zip",
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("ZIP 压缩文件")
+                new FilePickerFileType(I18nManager.Instance["FileType.Zip"])
                 {
                     Patterns = new[] { "*.zip" }
                 }
@@ -153,7 +153,7 @@ public partial class DrawChunkerBedrockToJavaContent : UserControl
             var result = file.Path.LocalPath;
             DialogHost.Show(new DialogInfo
             {
-                Title = "转换存档",
+                Title = I18nManager.Instance["UI.Draw.ConvertSave"],
                 Content = new DialogChunkerConversionContent(
                     ChunkerType.BedrockToJava,
                     SaveType.File,

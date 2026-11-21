@@ -55,9 +55,9 @@ public partial class GravityConeLoadRoom : UserControl
         {
             DialogHost.Show(new()
             {
-                Title = "出现错误",
-                Content = "Xbox 未登录，请尝试进入游戏后登录 Xbox 账户后重试。",
-                CloseButtonText = "确定",
+                Title = I18nManager.Instance["Shared.Status.Error.Title"],
+                Content = I18nManager.Instance["GravityCone.Error.XboxNotLoggedIn"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
                 CloseAction = () => { MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot()); }
             });
             return;
@@ -70,7 +70,7 @@ public partial class GravityConeLoadRoom : UserControl
             {
                 var client = GlobalModel.GravityConeClient;
                 if (client == null || !client.IsRunning)
-                    throw new InvalidOperationException("联机组件未运行，请返回重新进入联机页面。");
+                    throw new InvalidOperationException(I18nManager.Instance["GravityCone.Error.CoreNotRunning"]);
 
                 GamePortHelper.UpdateAllInstancePortStatus(roomType);
                 if (roomType == RoomType.Host)
@@ -148,9 +148,9 @@ public partial class GravityConeLoadRoom : UserControl
                     MainGravityConePage.NavigationFrame.NavigateTo(new GravityConeRoot());
                     DialogHost.Show(new()
                     {
-                        Title = _roomType == RoomType.Host ? "创建房间失败" : "加入房间失败",
+                        Title = _roomType == RoomType.Host ? I18nManager.Instance["GravityCone.Error.CreateRoomFailed"] : I18nManager.Instance["GravityCone.Error.JoinRoomFailed"],
                         Content = ex.Message,
-                        CloseButtonText = "确定"
+                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                     });
                 });
             }

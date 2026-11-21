@@ -98,7 +98,7 @@ public partial class DialogDownloadUwpDependenceContent : UserControl
         if (validUrls.Length == 0)
         {
             Dispatcher.UIThread.Invoke(() => {
-                StackPanel.Children.Add(new TextBlock { Text = "未找到任何有效的下载地址, 请重启启动器！", Foreground = Avalonia.Media.Brushes.Red });
+                StackPanel.Children.Add(new TextBlock { Text = I18nManager.Instance["UI.Dialog.Uwp.NoValidUrl"], Foreground = Avalonia.Media.Brushes.Red });
             });
             return;
         }

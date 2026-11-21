@@ -54,12 +54,12 @@ public partial class MainHomePage : BedrockBootPage
                     {
                         var randStr = Models.Global.GlobalModel.CustomManifest.RandomStr[
                             (new Random()).Next(0, Models.Global.GlobalModel.CustomManifest.RandomStr.Count)];
-                        if (randStr != "您好，欢迎回来")
+                        if (randStr != I18nManager.Instance["Home.Title"])
                         {
                             LineTextBlock.Text = pageHome.Replace("{{random}}", randStr);
                         }
                     }
-                    else if (pageHome != "{{random}}" && pageHome != "您好，欢迎回来")
+                    else if (pageHome != "{{random}}" && pageHome != I18nManager.Instance["Home.Title"])
                     {
                         LineTextBlock.Text = pageHome;
                     }
@@ -85,7 +85,7 @@ public partial class MainHomePage : BedrockBootPage
                     DesktopWorkspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
                 DesktopWorkspace.AddWidgetCallOn += (sender, args) =>
                 {
-                    Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawAddWidgetContent(), "添加小组件");
+                    Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawAddWidgetContent(), I18nManager.Instance["Widget.Previewer.AddWidget"]);
                 };
                 DesktopWorkspace.LayoutChanged += (sender, args) =>
                 {

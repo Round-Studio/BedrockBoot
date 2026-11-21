@@ -8,7 +8,7 @@
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         x:Class="BedrockBoot.Views.Windows.SystemMethod.LaunchGameWindow"
-        Title="BedrockBoot 快捷启动游戏">
+        Title="{DynamicResource LaunchWindow.Title}">
     <Grid>
         <StackPanel Spacing="8"
                     Width="300"
@@ -17,11 +17,12 @@
                     VerticalAlignment="Center">
             <TextBlock Name="GameNameBox" 
                        FontSize="16" 
-                       Text="启动游戏中..."/>
+                       Text="{DynamicResource LaunchWindow.Status.Launching}"/>
             <ProgressBar Name="LaunchProgressBar" 
                          IsIndeterminate="True"/>
-            <TextBlock Name="ProgressBox"
-                       Text="准备中..."/>
+            <TextBlock Name="ProgressBox" 
+                       Text="{DynamicResource LaunchWindow.Status.Preparing}"/>
+            
 
             <StackPanel Name="UwpChoicePanel"
                         IsVisible="False"
@@ -29,16 +30,16 @@
                 <TextBlock Name="UwpDepsText"
                            TextWrapping="Wrap"/>
                 <Button Name="UwpFixBtn"
-                        Content="自动补全后启动"
+                        Content="{DynamicResource LaunchWindow.Status.UWP.Fix}"
                         Padding="8"
                         Classes="Accent"
                         Click="OnUwpFixClick"/>
                 <Button Name="UwpLaunchAnywayBtn"
-                        Content="仍要启动"
+                        Content="{DynamicResource LaunchWindow.Status.UWP.LaunchAnyway}"
                         Padding="8"
                         Click="OnUwpLaunchAnywayClick"/>
                 <Button Name="UwpCancelBtn"
-                        Content="取消启动"
+                        Content="{DynamicResource LaunchWindow.Status.UWP.Cancel}"
                         Padding="8"
                         Classes="NoBorder"
                         Background="{DynamicResource SystemFillColorCriticalBrush}"
@@ -48,7 +49,7 @@
             <ContentControl Name="UwpFixHost" IsVisible="False"/>
 
             <Button Name="KillButton"
-                    Content="结束游戏进程"
+                    Content="{DynamicResource LaunchWindow.Action.EndProcess}"
                     Padding="8"
                     Background="{DynamicResource SystemFillColorCriticalBrush}"
                     Classes="NoBorder"

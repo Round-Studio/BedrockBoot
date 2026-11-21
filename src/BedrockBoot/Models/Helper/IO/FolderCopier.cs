@@ -45,11 +45,11 @@ public class FolderCopier
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(sourceFolder))
-            throw new ArgumentException("源文件夹路径不能为空", nameof(sourceFolder));
+            throw new ArgumentException(I18nManager.Instance["Helper.FolderCopier.SourcePathEmpty"], nameof(sourceFolder));
         if (string.IsNullOrEmpty(destinationFolder))
-            throw new ArgumentException("目标文件夹路径不能为空", nameof(destinationFolder));
+            throw new ArgumentException(I18nManager.Instance["Helper.FolderCopier.DestPathEmpty"], nameof(destinationFolder));
         if (!Directory.Exists(sourceFolder))
-            throw new DirectoryNotFoundException($"源文件夹不存在: {sourceFolder}");
+            throw new DirectoryNotFoundException(string.Format(I18nManager.Instance["Helper.FolderCopier.SourceNotFound"], sourceFolder));
 
         // 获取所有需要复制的文件
         var files = Directory.GetFiles(sourceFolder, "*",
@@ -109,11 +109,11 @@ public class FolderCopier
         bool copySubDirectories = true)
     {
         if (string.IsNullOrEmpty(sourceFolder))
-            throw new ArgumentException("源文件夹路径不能为空", nameof(sourceFolder));
+            throw new ArgumentException(I18nManager.Instance["Helper.FolderCopier.SourcePathEmpty"], nameof(sourceFolder));
         if (string.IsNullOrEmpty(destinationFolder))
-            throw new ArgumentException("目标文件夹路径不能为空", nameof(destinationFolder));
+            throw new ArgumentException(I18nManager.Instance["Helper.FolderCopier.DestPathEmpty"], nameof(destinationFolder));
         if (!Directory.Exists(sourceFolder))
-            throw new DirectoryNotFoundException($"源文件夹不存在: {sourceFolder}");
+            throw new DirectoryNotFoundException(string.Format(I18nManager.Instance["Helper.FolderCopier.SourceNotFound"], sourceFolder));
 
         var files = Directory.GetFiles(sourceFolder, "*",
             copySubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);

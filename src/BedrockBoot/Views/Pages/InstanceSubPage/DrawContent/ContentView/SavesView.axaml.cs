@@ -195,7 +195,7 @@ public partial class SavesView : UserControl
             DialogHost.Show(new DialogInfo
             {
                 Title = i18n["Instance.Pack.Import.Progress.Title"],
-                Content = "正在导入包..."
+                Content = I18nManager.Instance["Import.Status.Importing"]
             });
 
             var curUser = CurrentUser;

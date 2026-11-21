@@ -8,13 +8,13 @@
         <StackPanel Margin="15"
                     Spacing="8">
             <TextBlock FontSize="16"
-                       Text="更新日志" />
+                       Text="{DynamicResource About.Changelog.Title}" />
 
             <TextBlock Name="EmptyHint"
                        Margin="20,1"
                        Opacity="0.7"
                        IsVisible="False"
-                       Text="暂无更新日志" />
+                       Text="{DynamicResource About.Changelog.Empty}" />
 
             <StackPanel Name="LogList" 
                         Spacing="8"/>

@@ -53,7 +53,7 @@ public partial class ChangLogPage : ISettingPage
             },
             new()
             {
-                ItemName = "修改日志"
+                ItemName = I18nManager.Instance["About.Changelog.Title"]
             }
         };
         BuildLogList();

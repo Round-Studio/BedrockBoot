@@ -44,13 +44,13 @@ public partial class AccountXbox : ISettingPage
         {
             new()
             {
-                ItemName = "账户与档案",
+                ItemName = I18nManager.Instance["Settings.Nav.Account.Title"],
                 ItemClickAction = (i) =>
                     MainSettingPage.NavigateTo(new SettingAccount())
             },
             new()
             {
-                ItemName = "Xbox 账户"
+                ItemName = I18nManager.Instance["Settings.Account.Xbox.Title"]
             }
         };
     }
@@ -63,7 +63,7 @@ public partial class AccountXbox : ISettingPage
         {
             new()
             {
-                ItemName = "账户与档案",
+                ItemName = I18nManager.Instance["Settings.Nav.Account.Title"],
                 ItemClickAction = (i) =>
                     MainSettingPage.NavigateTo(new SettingAccount())
             },
@@ -81,10 +81,10 @@ public partial class AccountXbox : ISettingPage
     {
         DialogHost.Show(new()
         {
-            Title = "您确定要删除账户吗",
-            Content = "删除此账户后，将会丢失该账户的验证凭证，将无法进行第三方服务器的游玩。",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Account.Delete.Confirm.Title"],
+            Content = I18nManager.Instance["Account.Delete.Confirm.Content"],
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 MsAccountManager.AccountConfigEntity!.Data.Accounts.RemoveAt(
@@ -99,6 +99,6 @@ public partial class AccountXbox : ISettingPage
 
     private void UserBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalModel.MainWindow.OpenDraw(new DrawXboxLiveContent(_msUserConfig), $"Xbox Live 账户: {_msUserConfig.UserName}");
+        GlobalModel.MainWindow.OpenDraw(new DrawXboxLiveContent(_msUserConfig), string.Format(I18nManager.Instance["Settings.Account.Xbox.LiveAccount"], _msUserConfig.UserName));
     }
 }

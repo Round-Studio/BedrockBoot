@@ -92,7 +92,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
         _mainProgressText = new TextBlock
         {
             FontSize = 16,
-            Text = "下载 ProtonGDK"
+            Text = I18nManager.Instance["UI.Dialog.Proton.DownloadButton"]
         };
 
         _mainProgressBar = new ProgressBar
@@ -137,7 +137,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
 
             var progressText = new TextBlock
             {
-                Text = "等待中",
+                Text = I18nManager.Instance["Download.Mgr.Status.Waiting"],
                 Margin = new Thickness(8, 0)
             };
 
@@ -163,7 +163,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
                 var totalProgress = (_completedTasks * 100.0) / _totalTasks;
                 _mainProgressBar.IsIndeterminate = false;
                 _mainProgressBar.Value = (int)totalProgress;
-                _mainProgressText.Text = $"总进度 ({totalProgress:F2}%)";
+                _mainProgressText.Text = string.Format(I18nManager.Instance["UI.Dialog.Proton.TotalProgress"], totalProgress);
             }
         });
     }
@@ -202,7 +202,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
                 {
                     if (File.Exists(file.SavePath))
                     {
-                        Dispatcher.UIThread.Invoke(() => { UpdateTaskProgress(file.Name, 100, "已存在"); });
+                        Dispatcher.UIThread.Invoke(() => { UpdateTaskProgress(file.Name, 100, I18nManager.Instance["UI.Dialog.Proton.AlreadyExists"]); });
                         _completedTasks++;
                         UpdateMainProgress();
 
@@ -228,9 +228,9 @@ public partial class DialogDownloadProtonGDKContent : UserControl
                 {
                     DialogHost.Show(new DialogInfo()
                     {
-                        Title = "下载失败",
-                        Content = $"下载过程中出现错误：{ex.Message}",
-                        CloseButtonText = "确定",
+                        Title = I18nManager.Instance["Download.Mgr.DownloadFailed"],
+                        Content = string.Format(I18nManager.Instance["UI.Dialog.Proton.DownloadError"], ex.Message),
+                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
                         CloseAction = () => { Environment.Exit(0); }
                     });
                 });
@@ -244,7 +244,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                UpdateTaskProgress(componentName, 50, "安装中...");
+                UpdateTaskProgress(componentName, 50, I18nManager.Instance["Shared.Status.Install.Title"]);
             });
 
             var filePath = _filePaths[componentName];
@@ -273,7 +273,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
 
             Dispatcher.UIThread.Invoke(() =>
             {
-                UpdateTaskProgress(componentName, 100, "安装完成");
+                UpdateTaskProgress(componentName, 100, I18nManager.Instance["Task.Proton.Status.Completed"]);
             });
         });
     }
@@ -301,7 +301,7 @@ public partial class DialogDownloadProtonGDKContent : UserControl
         bool success = await downloader.DownloadAsync(file.Url, file.SavePath, progress);
         if (!success)
         {
-            throw new Exception($"组件 {file.Name} 下载失败");
+            throw new Exception(string.Format(I18nManager.Instance["UI.Dialog.Proton.ComponentFailed"], file.Name));
         }
 
         _completedTasks++;

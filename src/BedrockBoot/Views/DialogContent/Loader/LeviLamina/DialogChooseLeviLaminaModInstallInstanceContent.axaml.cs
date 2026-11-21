@@ -97,12 +97,12 @@ public partial class DialogChooseLeviLaminaModInstallInstanceContent : UserContr
 
         var options = new FilePickerSaveOptions
         {
-            Title = "保存 ZIP 文件",
+            Title = I18nManager.Instance["UI.Dialog.SaveZipFile"],
             SuggestedFileName = $"{_pkg.Info.Name}-{_versionId}.zip",
             DefaultExtension = "zip",
             FileTypeChoices = new List<FilePickerFileType>
             {
-                new("ZIP 压缩文件")
+                new(I18nManager.Instance["FileType.Zip"])
                 {
                     Patterns = new[] { "*.zip" }
                 }

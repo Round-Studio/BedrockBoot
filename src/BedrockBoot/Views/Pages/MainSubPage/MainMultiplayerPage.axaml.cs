@@ -70,8 +70,8 @@ public partial class MainMultiplayerPage : BedrockBootPage
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "获取节点服务器",
-            Content = "正在获取节点服务器..."
+            Title = I18nManager.Instance["Multiplayer.Init.GetPeers"],
+            Content = I18nManager.Instance["UI.Page.Multiplayer.FetchingPeers"]
         });
         Task.Run(async () =>
         {
@@ -111,8 +111,8 @@ public partial class MainMultiplayerPage : BedrockBootPage
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "获取 Xbox 登录状态",
-            Content = "正在获取本机 Xbox 登录状态..."
+            Title = I18nManager.Instance["UI.Page.Multiplayer.FetchingXboxStatus"],
+            Content = I18nManager.Instance["UI.Page.Multiplayer.FetchingXboxStatus.Message"]
         });
         Task.Run(async () =>
         {
@@ -126,9 +126,9 @@ public partial class MainMultiplayerPage : BedrockBootPage
                 {
                     DialogHost.Show(new DialogInfo
                     {
-                        Title = "Xbox 服务",
-                        Content = "未登录 Xbox，可能会导致无法进行多人游戏",
-                        CloseButtonText = "确定"
+                        Title = I18nManager.Instance["UI.Page.Multiplayer.XboxService"],
+                        Content = I18nManager.Instance["UI.Page.Multiplayer.XboxNotLoggedIn"],
+                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                     });
                 });
                 Dispatcher.UIThread.Invoke(() => MainPage.Instance.SelTag.SelectedIndex = 0);
@@ -140,9 +140,9 @@ public partial class MainMultiplayerPage : BedrockBootPage
                 {
                     DialogHost.Show(new DialogInfo
                     {
-                        Title = "Xbox 服务",
-                        Content = "无法获取 Xbox 登录状态，可能会导致无法进行多人游戏",
-                        CloseButtonText = "确定"
+                        Title = I18nManager.Instance["UI.Page.Multiplayer.XboxService"],
+                        Content = I18nManager.Instance["UI.Page.Multiplayer.XboxStatusUnavailable"],
+                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                     });
                 });
                 Dispatcher.UIThread.Invoke(() => MainPage.Instance.SelTag.SelectedIndex = 0);

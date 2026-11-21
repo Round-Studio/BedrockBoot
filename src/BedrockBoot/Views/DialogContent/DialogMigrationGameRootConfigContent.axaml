@@ -12,9 +12,8 @@
         <StackPanel Margin="12,0,0,0"
                     VerticalAlignment="Center">
             <TextBlock FontSize="16"
-                       Name="MigrationProgressText">
-                迁移中...
-            </TextBlock>
+                       Name="MigrationProgressText"
+                       Text="{DynamicResource Dialog.Migration.RootProgress}" />
             <ProgressBar IsIndeterminate="True"
                          Name="MigrationProgressBar"
                          Margin="0,8,0,0"

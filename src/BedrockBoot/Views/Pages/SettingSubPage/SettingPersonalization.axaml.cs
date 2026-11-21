@@ -137,9 +137,9 @@ public partial class SettingPersonalization : ISettingPage
         DialogHost.Show(new ()
         {
             Content = dialog,
-            Title = "导出主题包",
-            CloseButtonText = "导出",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Settings.Personalization.ExportTheme"],
+            CloseButtonText = I18nManager.Instance["LevelSettings.Export.Action"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = async () =>
             {
@@ -149,7 +149,7 @@ public partial class SettingPersonalization : ISettingPage
                 var storageProvider = TopLevel.GetTopLevel(this).StorageProvider;
                 var options = new FilePickerSaveOptions
                 {
-                    Title = "保存文件",
+                    Title = I18nManager.Instance["Settings.Personalization.SaveFile"],
                     DefaultExtension = ".rskin",
                     FileTypeChoices = new[]
                     {
@@ -165,8 +165,8 @@ public partial class SettingPersonalization : ISettingPage
                     Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
                         Models.Global.GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo()
                         {
-                            Title = "导出完毕",
-                            Message = $"主题包已导出至 {file?.Path.LocalPath}"
+                            Title = I18nManager.Instance["LevelSettings.Export.Done"],
+                            Message = string.Format(I18nManager.Instance["Settings.Personalization.ThemeExportedTo"], file?.Path.LocalPath)
                         }));
                 });
             }

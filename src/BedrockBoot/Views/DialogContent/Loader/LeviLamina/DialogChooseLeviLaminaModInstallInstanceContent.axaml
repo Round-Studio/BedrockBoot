@@ -13,9 +13,9 @@
         <TabControl Grid.Row="0"
                     Name="DownloadType"
                     Margin="0,-6,0,0">
-            <TabItem Header="安装到实例">
+            <TabItem Header="{DynamicResource Dialog.LeviLamina.ModInstall.ToInstance}">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="将 LeviLamina Mod 安装到本地实例中"
+                    <TextBlock Text="{DynamicResource Dialog.LeviLamina.ModInstall.ToInstance.Desc}"
                                TextWrapping="WrapWithOverflow"
                                Opacity="0.6">
                     </TextBlock>
@@ -27,16 +27,16 @@
                     <TextBlock Foreground="Red"
                                Name="NotFound"
                                IsVisible="False"
-                               Text="未在当前游戏目录中找到安装 LeviLamina 加载器的实例">
+                               Text="{DynamicResource Dialog.LeviLamina.ModInstall.NoInstance}">
                     </TextBlock>
 
-                    <TextBlock Text="选择需要安装到的实例，目标实例需要安装 LeviLamina 加载器。未安装加载器的实例将不会显示。"
+                    <TextBlock Text="{DynamicResource Dialog.LeviLamina.ModInstall.ChooseInstance}"
                                TextWrapping="WrapWithOverflow"
                                Opacity="0.6">
                     </TextBlock>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="下载到本地"
+            <TabItem Header="{DynamicResource Dialog.LeviLamina.ModInstall.DownloadLocal}"
                      IsEnabled="False">
                 <items:BorderCard Height="120">
                     <StackPanel HorizontalAlignment="Center"
@@ -45,7 +45,7 @@
                         <onePointControls:FontIcon HorizontalAlignment="Center"
                                                    FontSize="18"
                                                    Glyph="&#xE74E;" />
-                        <Button Content="选择保存位置"
+                        <Button Content="{DynamicResource Dialog.LeviLamina.ModInstall.ChooseSaveLocation}"
                                 Name="SelectFolder"
                                 Click="SelectFolder_OnClick"
                                 Padding="12,8">
@@ -55,7 +55,7 @@
             </TabItem>
         </TabControl>
         <StackPanel Grid.Row="1" Name="DepsList">
-            <TextBlock Text="Mod 依赖："
+            <TextBlock Text="{DynamicResource Dialog.LeviLamina.ModInstall.Dependencies}"
                        Name="ModDeps"
                        TextWrapping="WrapWithOverflow"
                        Opacity="0.6">

@@ -17,7 +17,7 @@
             <StackPanel Orientation="Horizontal"
                         VerticalAlignment="Center"
                         Spacing="8">
-                <TextBlock Text="附加包管理" 
+                <TextBlock Text="{DynamicResource LevelSettings.PackManagement}" 
                            FontSize="16"
                            VerticalAlignment="Center"/>
                 
@@ -39,15 +39,15 @@
                           SelectedIndex="0"
                           SelectionChanged="TypeSelBox_OnSelectionChanged"
                           Name="TypeSelBox">
-                    <ComboBoxItem Content="资源包"
+                    <ComboBoxItem Content="{DynamicResource LevelSettings.Pack.Resource}"
                                   Tag="Resource"></ComboBoxItem>
-                    <ComboBoxItem Content="行为包"
+                    <ComboBoxItem Content="{DynamicResource LevelSettings.Pack.Behavior}"
                                   Tag="Behavior"></ComboBoxItem>
                 </ComboBox>
                 <TextBox Width="200"
                          Name="SearchBox"
                          TextChanged="SearchBox_OnTextChanged"
-                         Watermark="键入关键词以搜索..."></TextBox>
+                         Watermark="{DynamicResource Shared.Watermark.SearchWithEllipsis}"></TextBox>
             </StackPanel>
         </Grid>
         
@@ -59,7 +59,7 @@
                       RowDefinitions="Auto,*"
                       RowSpacing="8">
                     <TextBlock Grid.Row="0"
-                               Text="未激活"
+                               Text="{DynamicResource LevelSettings.Pack.Inactive}"
                                Margin="10,0,0,0"></TextBlock>
                     <ScrollViewer Grid.Row="1"
                                   Margin="10,0,0,0">
@@ -74,7 +74,7 @@
                       RowDefinitions="Auto,*"
                       RowSpacing="8">
                     <TextBlock Grid.Row="0"
-                               Text="已激活"></TextBlock>
+                               Text="{DynamicResource LevelSettings.Pack.Active}"></TextBlock>
                     <ScrollViewer Grid.Row="1"
                                   Margin="0,0,5,0">
                         <StackPanel Name="ActivatedViewer"

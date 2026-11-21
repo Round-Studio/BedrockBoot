@@ -73,7 +73,7 @@ public partial class DialogDeleteGameContent : UserControl
                 if (jd % 200 == 0)
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        DeleteProgressText.Text = $"进度：{jd * 100.0 / files.Length:F2} %";
+                        DeleteProgressText.Text = string.Format(I18nManager.Instance["UI.Dialog.DeleteProgress"], jd * 100.0 / files.Length);
                         DeleteProgressBar.Value = jd;
                     });
             });

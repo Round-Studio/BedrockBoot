@@ -25,11 +25,11 @@
                                          AnimationType="NumberRolling"
                                          FontWeight="SemiBold"
                                          Name="GameNameText"
-                                         Text="游戏"></text:AnimationTextBlock>
+                                         Text="{DynamicResource Widget.LaunchGame.Title}"></text:AnimationTextBlock>
             
                 <TextBlock Opacity="0.6"
                            Name="GameVersionText"
-                           Text="未选择版本"></TextBlock>
+                           Text="{DynamicResource Widget.LaunchGame.NoVersion}"></TextBlock>
             </StackPanel>
             
             <Button Grid.Column="1"

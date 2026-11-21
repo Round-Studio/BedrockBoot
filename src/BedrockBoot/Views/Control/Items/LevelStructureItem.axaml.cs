@@ -55,15 +55,15 @@ public partial class LevelStructureItem : UserControl
     {
         StructureName.Text = _info.StructureId;
         StructurePath.Text = _info.Source == StructureSource.Database
-            ? "世界数据库"
+            ? I18nManager.Instance["UI.Item.Structure.WorldDatabase"]
             : $@"structures/{_info.StructureId.Replace(':', '/')}.mcstructure";
 
         var detail = _info.IsValid
-            ? $@"尺寸 {_info.SizeX}×{_info.SizeY}×{_info.SizeZ}（{_info.BlockCount:N0} 个方块，{_info.PaletteCount} 种方块），{FormatSize(_info.FileSize)}"
-            : $@"无法解析此结构文件，{FormatSize(_info.FileSize)}";
+            ? string.Format(I18nManager.Instance["UI.Item.Structure.Detail"], _info.SizeX, _info.SizeY, _info.SizeZ, _info.BlockCount.ToString("N0"), _info.PaletteCount, FormatSize(_info.FileSize))
+            : string.Format(I18nManager.Instance["UI.Item.Structure.InvalidDetail"], FormatSize(_info.FileSize));
 
         StructureInfo.Text = _info.Source == StructureSource.File
-            ? $@"{detail}，{_info.ModifiedTime:yyyy/MM/dd HH:mm}"
+            ? string.Format(I18nManager.Instance["UI.Item.Structure.WithModified"], detail, _info.ModifiedTime.ToString("yyyy/MM/dd HH:mm"))
             : detail;
     }
 
@@ -87,12 +87,12 @@ public partial class LevelStructureItem : UserControl
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "导出结构",
+            Title = I18nManager.Instance["LevelSettings.Structure.Export"],
             SuggestedFileName = _info.StructureId.Replace(':', '_') + ".mcstructure",
             DefaultExtension = "mcstructure",
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("Minecraft 结构文件 (*.mcstructure)")
+                new FilePickerFileType(I18nManager.Instance["UI.Item.Structure.FileType"])
                 {
                     Patterns = new[] { "*.mcstructure" }
                 }
@@ -107,7 +107,7 @@ public partial class LevelStructureItem : UserControl
             if (_info.Source == StructureSource.Database)
             {
                 var nbt = LevelStructureStore.ReadDatabaseStructure(_archiveInfo, _info.DbKey)
-                          ?? throw new IOException("结构已不存在");
+                          ?? throw new IOException(I18nManager.Instance["LevelSettings.Structure.Gone"]);
                 File.WriteAllBytes(localPath, nbt);
             }
             else
@@ -117,8 +117,8 @@ public partial class LevelStructureItem : UserControl
 
             GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
             {
-                Title = "导出结构",
-                Message = $@"已成功导出 {_info.StructureId}",
+                Title = I18nManager.Instance["LevelSettings.Structure.Export"],
+                Message = string.Format(I18nManager.Instance["LevelSettings.Structure.Exported"], _info.StructureId),
                 NoticeType = NoticeType.Info
             });
         }
@@ -137,10 +137,10 @@ public partial class LevelStructureItem : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除警告",
-            Content = $@"你确定要删除结构 {_info.StructureId} 吗？该操作无法撤销。",
-            CloseButtonText = "确定删除",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Archive.Delete.Warn.Title"],
+            Content = string.Format(I18nManager.Instance["LevelSettings.Structure.DeleteConfirm"], _info.StructureId),
+            CloseButtonText = I18nManager.Instance["Archive.Delete.Warn.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 try

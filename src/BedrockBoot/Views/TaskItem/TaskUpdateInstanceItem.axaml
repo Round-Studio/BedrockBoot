@@ -19,7 +19,7 @@
                         HorizontalAlignment="Stretch">
                 <TextBlock FontSize="16"
                            Name="CardTitle"
-                           Text="更新实例" />
+                           Text="{DynamicResource Task.InstanceUpdate.Title}" />
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch">
                     <ProgressBar IsIndeterminate="True"
@@ -27,22 +27,22 @@
                                  Margin="0,0,0,8"
                                  Name="MainProgressBar" />
                     <DockPanel>
-                        <TextBlock Width="100" Text="删除旧文件" />
+                        <TextBlock Width="100" Text="{DynamicResource Task.InstanceUpdate.Step.DeleteOldFiles}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsDelBar" />
                     </DockPanel>
                     <DockPanel>
-                        <TextBlock Width="100" Text="下载" />
+                        <TextBlock Width="100" Text="{DynamicResource Task.InstanceUpdate.Step.Download}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsDownBar" />
                     </DockPanel>
                     <DockPanel>
-                        <TextBlock Width="100" Text="解压" />
+                        <TextBlock Width="100" Text="{DynamicResource Task.InstanceUpdate.Step.Extract}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsUnZipBar" />
                     </DockPanel>
                     <DockPanel>
-                        <TextBlock Width="100" Text="注册" />
+                        <TextBlock Width="100" Text="{DynamicResource Task.InstanceUpdate.Step.Register}" />
                         <ProgressBar HorizontalAlignment="Stretch"
                                      Name="InsRegBar" />
                     </DockPanel>

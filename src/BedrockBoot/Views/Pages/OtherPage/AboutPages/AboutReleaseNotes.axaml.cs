@@ -39,7 +39,7 @@ public partial class AboutReleaseNotes : ISettingPage
             },
             new()
             {
-                ItemName = "发行说明"
+                ItemName = I18nManager.Instance["Settings.Universal.Update.ReleaseNotes.Title"]
             }
         };
     }

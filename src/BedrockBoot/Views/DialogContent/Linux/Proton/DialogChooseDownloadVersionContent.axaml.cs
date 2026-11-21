@@ -59,9 +59,9 @@ public partial class DialogChooseDownloadVersionContent : UserControl
             DialogHost.Close();
             DialogHost.Show(new DialogInfo()
             {
-                Title = "出现错误",
-                Content = "您的网络连接可能出现错误，我们无法获取到此分支的所有版本。",
-                CloseButtonText = "确定"
+                Title = I18nManager.Instance["UI.Dialog.ErrorOccurred"],
+                Content = I18nManager.Instance["UI.Dialog.NetworkBranchError"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
             });
         }
         

@@ -161,19 +161,22 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
         private async Task<LeviConfig> LoadConfigAsync()
         {
-            string configUrl = $"https://fastly.jsdelivr.net/gh/{toothPath}@v{version}/tooth.json";
+            // 与主程序下载一致的 GitHub 请求方式：走 SourceList 加速源竞速获取 tooth.json，
+            // 取代原先的 jsdelivr 镜像直链
+            string configUrl = $"https://github.com/{toothPath}/raw/v{version}/tooth.json";
+            string tempFile = Path.Combine(Path.GetTempPath(), $"tooth-{Guid.NewGuid():N}.json");
 
             Console.WriteLine($@"加载配置: {configUrl}");
 
             try
             {
-                httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("LipClient");
-                string configJson = await httpClient.GetStringAsync(configUrl);
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                var config = JsonSerializer.Deserialize<LeviConfig>(configJson, options);
+                await _downloader.DownloadAsync(configUrl, tempFile, null, CancellationToken.None);
+
+                var config = JsonSerializer.Deserialize<LeviConfig>(await File.ReadAllTextAsync(tempFile),
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
 
                 if (config == null)
                     throw new Exception("配置解析失败");
@@ -181,9 +184,20 @@ namespace BedrockBoot.Models.Pack.LeviLamina
                 Console.WriteLine($@"配置加载成功: {config.Info?.Name ?? "未知"} v{config.Version}");
                 return config;
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
                 throw new Exception($"无法获取配置文件 (版本 {version}): {ex.Message}");
+            }
+            finally
+            {
+                try
+                {
+                    if (File.Exists(tempFile)) File.Delete(tempFile);
+                }
+                catch
+                {
+                    // 临时文件清理失败不影响安装
+                }
             }
         }
 

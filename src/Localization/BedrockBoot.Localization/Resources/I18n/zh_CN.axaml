@@ -146,6 +146,7 @@
 
     <x:String x:Key="Manager.GameItem.Launch">启动</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">编辑模式</x:String>
+    <x:String x:Key="Manager.GameItem.PlayTime">游玩 {0} 小时</x:String>
 
     <x:String x:Key="Manager.Folder.Empty.Title">空</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">点击下方 添加目录&#x0A;以添加目录</x:String>

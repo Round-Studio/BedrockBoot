@@ -91,6 +91,7 @@
 
     <x:String x:Key="Manager.GameItem.Launch">起動</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">編集モード</x:String>
+    <x:String x:Key="Manager.GameItem.PlayTime">プレイ時間 {0} 時間</x:String>
 
     <x:String x:Key="Manager.Folder.Empty.Title">空</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">下の「ディレクトリ追加」をクリックして&#x0A;ディレクトリを追加してください</x:String>

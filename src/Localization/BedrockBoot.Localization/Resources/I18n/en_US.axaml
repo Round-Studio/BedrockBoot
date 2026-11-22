@@ -146,6 +146,7 @@
 
     <x:String x:Key="Manager.GameItem.Launch">Launch</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">Edit Mode</x:String>
+    <x:String x:Key="Manager.GameItem.PlayTime">Played {0} h</x:String>
 
     <x:String x:Key="Manager.Folder.Empty.Title">Empty</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">Click below to add a directory&#x0A;to add one</x:String>

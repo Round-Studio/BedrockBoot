@@ -22,6 +22,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using BedrockBoot.Standard.Entity.Game;
@@ -62,7 +63,9 @@ public partial class GameItem : UserControl
     public async Task Update()
     {
         VersionName.Text = VersionInfo.Info.VersionName;
-        Card.Description = $"{VersionInfo.Info.VersionType}, {VersionInfo.Info.BuildType}, {VersionInfo.Info.Version}";
+
+        UpdateHeaderLabels();
+        UpdateDescription();
 
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
@@ -75,6 +78,55 @@ public partial class GameItem : UserControl
                 VerticalAlignment = VerticalAlignment.Center,
                 Text = "LeviLamina"
             });
+    }
+
+    /// <summary>
+    ///     实例名后面挂两枚标签：版本类型（正式版/测试版…）与构建类型（UWP/GDK）。
+    ///     构建类型是固定缩写，不参与本地化。
+    /// </summary>
+    private void UpdateHeaderLabels()
+    {
+        HeaderLabelsPanel.Children.Clear();
+
+        HeaderLabelsPanel.Children.Add(new LabelBox
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            Text = GetVersionTypeText(VersionInfo.Info.VersionType),
+             Background = new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80))
+
+        });
+
+        HeaderLabelsPanel.Children.Add(new LabelBox
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            Text = VersionInfo.Info.BuildType.ToString(),
+            // 弱化处理，避免和启动按钮抢主色
+            Background = new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80))
+        });
+
+        HeaderLabelsPanel.IsVisible = true;
+    }
+
+    private static string GetVersionTypeText(MinecraftGameTypeVersion versionType)
+    {
+        return versionType switch
+        {
+            MinecraftGameTypeVersion.Release => I18nManager.Instance["Manager.GameType.Release"],
+            MinecraftGameTypeVersion.Preview => I18nManager.Instance["Manager.GameType.Preview"],
+            // Beta 表示未识别/无效类型，直接显示枚举名
+            _ => versionType.ToString()
+        };
+    }
+
+    /// <summary>说明行：内部版本号 · 游玩时长。</summary>
+    private void UpdateDescription()
+    {
+        var hours = TimeSpan.FromSeconds(VersionInfo.PlayerData?.TotalPlayTime ?? 0).TotalHours;
+        var playTime = string.Format(I18nManager.Instance["Manager.GameItem.PlayTime"], hours.ToString("F2"));
+
+        DescriptionText.Text = string.IsNullOrEmpty(VersionInfo.Info.Version)
+            ? playTime
+            : $"{VersionInfo.Info.Version} · {playTime}";
     }
 
     private void LaunchBtn_OnClick(object? sender, RoutedEventArgs e)

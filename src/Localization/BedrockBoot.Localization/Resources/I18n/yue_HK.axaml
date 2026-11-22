@@ -91,6 +91,7 @@
 
     <x:String x:Key="Manager.GameItem.Launch">啟動</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">編輯模式</x:String>
+    <x:String x:Key="Manager.GameItem.PlayTime">遊玩 {0} 小時</x:String>
 
     <x:String x:Key="Manager.Folder.Empty.Title">空</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">撳下面嘅 新增目錄&#x0A;嚟新增目錄</x:String>

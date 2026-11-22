@@ -92,6 +92,7 @@
 
     <x:String x:Key="Manager.GameItem.Launch">Запуск</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">Режим редактирования</x:String>
+    <x:String x:Key="Manager.GameItem.PlayTime">Наиграно {0} ч</x:String>
 
     <x:String x:Key="Manager.Folder.Empty.Title">Пустой</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">Нажмите ниже, чтобы добавить каталог

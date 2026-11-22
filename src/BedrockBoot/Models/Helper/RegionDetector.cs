@@ -112,6 +112,27 @@ public static class RegionDetector
 
     private static async Task<bool> DetectAsync()
     {
+        // 调试：设置环境变量 BEDROCKBOOT_FORCE_REGION=foreign / china 可强制指定判定结果，
+        // 便于在境内设备上验证境外隐藏路径
+        var forced = Environment.GetEnvironmentVariable("BEDROCKBOOT_FORCE_REGION");
+        if (string.Equals(forced, "foreign", StringComparison.OrdinalIgnoreCase))
+        {
+            IsInChina = false;
+            LastScore = 0;
+            _lastSignals = new List<RegionSignal>();
+            Console.WriteLine("RegionDetector 环境变量强制判定为境外");
+            return false;
+        }
+
+        if (string.Equals(forced, "china", StringComparison.OrdinalIgnoreCase))
+        {
+            IsInChina = true;
+            LastScore = 0;
+            _lastSignals = new List<RegionSignal>();
+            Console.WriteLine("RegionDetector 环境变量强制判定为境内");
+            return true;
+        }
+
         var signals = new List<RegionSignal>();
         var score = 0d;
 

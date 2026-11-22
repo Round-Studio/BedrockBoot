@@ -26,9 +26,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
-using Avalonia.Markup.Xaml;
-using Avalonia.Platform;
 using BedrockBoot.Core;
+using BedrockBoot.Localization;
+using BedrockBoot.Localization.Avalonia;
 using BedrockBoot.Core.Models;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Service.Protocol;
@@ -128,12 +128,11 @@ internal sealed class Program
         if (!VCRedistDetector.CheckInInstalledList().IsInstalled)
         {
             var language = GlobalModel.Config.Data.Language == "en_US" ? "en_US" : "zh_CN";
-            var languageUri = new Uri($"avares://BedrockBoot/I18n/{language}.axaml");
-            var languageDictionary = (Avalonia.Controls.ResourceDictionary)AvaloniaXamlLoader.Load(languageUri);
+            var strings = BuiltinStrings.Load(language) ?? [];
             var warning = string.Format(
-                (string)languageDictionary["Startup.VCRedist.Warning"],
+                strings["Startup.VCRedist.Warning"],
                 "https://docs.roundstudio.top/docs/product/bb/commonQuestion");
-            var title = (string)languageDictionary["Startup.VCRedist.Title"];
+            var title = strings["Startup.VCRedist.Title"];
             var dialog = MessageBox.Show(warning, title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 
             if (dialog == DialogResult.OK)

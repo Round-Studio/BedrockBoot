@@ -289,6 +289,19 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             }
         }
 
+        /// <summary>
+        ///     从详情页返回时重建结果列表：进详情页会让本页脱离视觉树，
+        ///     内部 NavigationFrame 卸载时自毁内容（分页文字保留，列表被清空），
+        ///     这里用缓存的上一页结果原地重建，不重新请求网络。
+        /// </summary>
+        public void RestoreDisplayedResults()
+        {
+            if (_isSearching) return;
+            if (_displayedResult == null || _displayedResult.Items.Count == 0) return;
+
+            ResultPage.Update(CreateResultsView(_displayedResult.Items), _displayedTotalPages, _displayedPage);
+        }
+
         private static bool ResultsMatch(SearchResultPage? current, SearchResultPage updated)
         {
             if (current == null || current.TotalCount != updated.TotalCount ||

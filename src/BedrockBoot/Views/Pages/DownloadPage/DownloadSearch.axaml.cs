@@ -38,9 +38,6 @@ public partial class DownloadSearch : UserControl
     /// <summary>下载页内部页面切换通知（供 DownloadRoot 更新返回按钮）</summary>
     public static Action? InnerPageChanged;
 
-    // 从详情页返回时要恢复的搜索条件（一次性）
-    private static SearchInfo? _pendingRestoreInfo;
-
     // 保存搜索状态
     private static string _lastSearchKey = string.Empty;
     private static SearchResourceType _lastSearchType = SearchResourceType.Unknow;
@@ -49,12 +46,8 @@ public partial class DownloadSearch : UserControl
         Interval = TimeSpan.FromMilliseconds(300)
     };
 
-    // 从详情页返回推荐首页时为 false，不自动恢复上次搜索结果
-    private readonly bool _restoreLastSearch;
-
-    public DownloadSearch(bool restoreLastSearch = true)
+    public DownloadSearch()
     {
-        _restoreLastSearch = restoreLastSearch;
         InitializeComponent();
 
         DownloadSearchView = this;
@@ -68,12 +61,10 @@ public partial class DownloadSearch : UserControl
         {
             NavigateInnerFrame(new SearchDefault());
 
-            // 恢复上次搜索：优先用详情页返回时带过来的条件；无条件时按需回退到保存的关键词（返回推荐首页时不回退）
-            var restore = _pendingRestoreInfo ??
-                          (_restoreLastSearch && !string.IsNullOrEmpty(_lastSearchKey)
-                              ? new SearchInfo { Key = _lastSearchKey, Type = _lastSearchType }
-                              : null);
-            _pendingRestoreInfo = null;
+            // 恢复上次搜索的关键词（详情页返回走实例复用，不经此路径）
+            var restore = string.IsNullOrEmpty(_lastSearchKey)
+                ? null
+                : new SearchInfo { Key = _lastSearchKey, Type = _lastSearchType };
 
             if (restore == null) return;
             if (!EnsureSearchDetailed()) return;
@@ -140,9 +131,6 @@ public partial class DownloadSearch : UserControl
         SearchFrame?.NavigateTo(page);
         InnerPageChanged?.Invoke();
     }
-
-    /// <summary>设置从详情页返回时要恢复的搜索条件</summary>
-    public static void SetPendingRestore(SearchInfo? info) => _pendingRestoreInfo = info;
 
     /// <summary>
     ///     全局搜索（Ctrl+K）入口：切到下载页并按默认分类规则发起聚合搜索。

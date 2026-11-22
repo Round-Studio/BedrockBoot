@@ -4,11 +4,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:bedrockBoot="clr-namespace:BedrockBoot"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalLanguage">
     <ScrollViewer>
         <StackPanel Margin="20,15"
                     Spacing="8">
+            <items:BorderCard Padding="0">
+                <Grid>
+                    <Border HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            ClipToBounds="True"
+                            CornerRadius="6">
+                        <onePointControls:FontIcon FontSize="168"
+                                                   Opacity="0.2"
+                                                   Glyph="&#xE909;"
+                                                   Margin="0,-50,-4,0"></onePointControls:FontIcon>
+                    </Border>
+                    <Grid Margin="24">
+                        <StackPanel>
+                            <TextBlock FontSize="22"
+                                       Text="让"></TextBlock>
+                            <TextBlock FontSize="42"
+                                       FontWeight="DemiBold"
+                                       Text="BedrockBoot"></TextBlock>
+                            <TextBlock FontSize="22"
+                                       Text="走向国际化。"></TextBlock>
+                            
+                            <StackPanel Margin="0,16,0,0"
+                                        Spacing="4">
+                                <TextBlock Text="在社区的共同助力下，BedrockBoot 正在迈向国际化的新篇章。"></TextBlock>
+                                <TextBlock Text="欢迎各位贡献者前来参与本地化贡献，与我们一同完善多语言支持，为 BedrockBoot 更好地服务全球用户的目标添砖加瓦。"></TextBlock>
+                                <TextBlock Text="感谢每一位参与 BedrockBoot 国际化，参与翻译、校对与改进的贡献者！"></TextBlock>
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,8,0,0">
+                                <Button Padding="22,8"
+                                        Content="提交 Pull Request"
+                                        Name="OpenPRBtn"
+                                        Click="OpenPRBtn_OnClick"></Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </items:BorderCard>
+            
             <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="显示语言" />

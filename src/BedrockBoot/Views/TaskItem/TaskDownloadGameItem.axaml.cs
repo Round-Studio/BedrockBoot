@@ -27,6 +27,7 @@ using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockLauncher.Core;
 using BedrockLauncher.Core.CoreOption;
 using OnePointUI.Avalonia.Base.Entry;
@@ -86,6 +87,16 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
     public bool IsUsePack { get; set; }
     public BuildInfo BuildInfo { get; set; }
 
+    /// <summary>
+    ///     本次安装是否真正成功。下载器的 Completed 回调只代表流程走到完成分支
+    ///     （GDK 在解压完成时就触发），因此还要排除已经报过错的场景。
+    ///     InstallAsync 内部会吞掉异常，调用方拿到正常返回并不代表安装成功。
+    /// </summary>
+    public bool IsInstallSucceeded => _installCompleted && !_installFailed;
+
+    private bool _installCompleted;
+    private bool _installFailed;
+
     private void InitializeDownloader()
     {
         _downloader = PlatformCore.CreateDownloader(BuildInfo, IsUsePack, InstallFolder, GameName);
@@ -108,11 +119,21 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
             Dispatcher.UIThread.Invoke(() => HandleInstallState(states));
 
         _downloader.ErrorOccurred = (title, message, ex) =>
-            Dispatcher.UIThread.Invoke(() => ShowErrorDialog(title, message, ex));
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                _installFailed = true;
+                ShowErrorDialog(title, message, ex);
+            });
 
         _downloader.Completed = c =>
             Dispatcher.UIThread.Invoke(() =>
-                MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.Completed"]);
+            {
+                // Completed 在 GDK（Extracted）与非 GDK（Registered）分支都可能触发，
+                // 且 InstallAsync 结束前还会再触发一次，这里只做标记，重复触发无副作用
+                _installCompleted = true;
+                MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.Completed"];
+                ReportProgress(100, I18nManager.Instance["Task.Game.Status.Completed"]);
+            });
     }
 
     private void UpdateMergeProgress(string text, double percentage)
@@ -232,14 +253,50 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
         string gameName,
         Action? installedCallBack = null)
     {
+        // 下载开始提示：任务入队后立刻给一次反馈
+        ShowNotice(
+            string.Format(I18nManager.Instance["Task.Game.Notice.Added"], gameName),
+            NoticeType.Info);
+
         var body = new TaskDownloadGameItem(info, url, isUsePack, dir, gameName);
         var tuid = GlobalModel.TaskManager.AddTask(body);
 
-        body.Install(() =>
+        body.Install(() => Dispatcher.UIThread.Post(() =>
         {
             GlobalModel.TaskManager.RemoveTask(tuid);
+
+            if (body.IsInstallSucceeded)
+            {
+                // 安装完成提示
+                ShowNotice(
+                    string.Format(I18nManager.Instance["Task.Game.Notice.Success"], gameName),
+                    NoticeType.Success);
+
+                // 新版本落盘后立即刷新版本列表，避免要切页才看得到
+                RefreshVersionLists();
+            }
+
             installedCallBack?.Invoke();
+        }));
+    }
+
+    private static void ShowNotice(string message, NoticeType type)
+    {
+        GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
+        {
+            Title = I18nManager.Instance["Task.Game.Notice.Title"],
+            Message = message,
+            NoticeType = type
         });
+    }
+
+    private static void RefreshVersionLists()
+    {
+        // 实例管理页正在显示时由它自己重建列表（其 UpdateGameList 内部会顺带刷新主页版本下拉）；
+        // 页面未显示则不必处理，下次导航会重新创建页面并读取最新数据。
+        if (MainManager.RefreshVersionListIfVisible()) return;
+
+        GlobalModel.MainPageUpdateInstance?.Invoke();
     }
 
     private void CancelButton_OnClick(object? sender, RoutedEventArgs e)

@@ -30,6 +30,9 @@ public partial class DownloadRoot : BedrockBootPage
     // 从搜索结果页进入详情页时记住搜索条件，返回时恢复结果列表
     private SearchInfo? _restoreSearchInfo;
 
+    // 详情页来源：true=搜索结果页（返回时恢复结果列表），false=推荐首页（返回时保持首页）
+    private bool _detailFromSearchResults;
+
     public DownloadRoot()
     {
         InitializeComponent();
@@ -64,18 +67,19 @@ public partial class DownloadRoot : BedrockBootPage
     {
         var current = MainFrame.GetCurrentPage();
 
+        // 记住详情页来源：搜索结果页还是推荐首页，返回时回到对应页面
+        _detailFromSearchResults = page is not DownloadSearch &&
+                                   current is DownloadSearch &&
+                                   DownloadSearch.IsShowingDetailed;
+
         // 从搜索结果页进详情页时记下条件，返回时能回到结果列表；其余情况不需要恢复
-        _restoreSearchInfo = page is not DownloadSearch &&
-                             current is DownloadSearch &&
-                             DownloadSearch.IsShowingDetailed
-            ? SearchDetailed.SearchInfo
-            : null;
+        _restoreSearchInfo = _detailFromSearchResults ? SearchDetailed.SearchInfo : null;
 
         MainFrame.NavigateTo(page);
         UpdateBackBtn();
     }
 
-    /// <summary>返回上一级：搜索结果页 -> 下载首页；详情页 -> 下载页（按需恢复结果列表）</summary>
+    /// <summary>返回上一级：搜索结果页 -> 下载首页；详情页 -> 进入前的页面（搜索结果页或推荐首页）</summary>
     public void GoBack()
     {
         var current = MainFrame.GetCurrentPage();
@@ -88,8 +92,16 @@ public partial class DownloadRoot : BedrockBootPage
 
         if (current != null)
         {
-            DownloadSearch.SetPendingRestore(_restoreSearchInfo);
-            NavigateTo(new DownloadSearch());
+            if (_detailFromSearchResults)
+            {
+                DownloadSearch.SetPendingRestore(_restoreSearchInfo);
+                NavigateTo(new DownloadSearch());
+            }
+            else
+            {
+                // 来源是推荐首页：回下载首页，不自动恢复上次搜索结果
+                NavigateTo(new DownloadSearch(restoreLastSearch: false));
+            }
         }
     }
 

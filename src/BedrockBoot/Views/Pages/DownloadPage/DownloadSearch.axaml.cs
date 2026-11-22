@@ -49,8 +49,12 @@ public partial class DownloadSearch : UserControl
         Interval = TimeSpan.FromMilliseconds(300)
     };
 
-    public DownloadSearch()
+    // 从详情页返回推荐首页时为 false，不自动恢复上次搜索结果
+    private readonly bool _restoreLastSearch;
+
+    public DownloadSearch(bool restoreLastSearch = true)
     {
+        _restoreLastSearch = restoreLastSearch;
         InitializeComponent();
 
         DownloadSearchView = this;
@@ -64,11 +68,11 @@ public partial class DownloadSearch : UserControl
         {
             NavigateInnerFrame(new SearchDefault());
 
-            // 恢复上次搜索：优先用详情页返回时带过来的条件，其次用保存的关键词
+            // 恢复上次搜索：优先用详情页返回时带过来的条件；无条件时按需回退到保存的关键词（返回推荐首页时不回退）
             var restore = _pendingRestoreInfo ??
-                          (string.IsNullOrEmpty(_lastSearchKey)
-                              ? null
-                              : new SearchInfo { Key = _lastSearchKey, Type = _lastSearchType });
+                          (_restoreLastSearch && !string.IsNullOrEmpty(_lastSearchKey)
+                              ? new SearchInfo { Key = _lastSearchKey, Type = _lastSearchType }
+                              : null);
             _pendingRestoreInfo = null;
 
             if (restore == null) return;

@@ -60,9 +60,8 @@ public partial class SearchDefault : UserControl
         LoadSearchHistory();
         _ = FetchLatestVersions();
         _ = LoadFeaturedResourcesAsync();
-        _ = LoadPluginAsync();
         _ = LoadLeviLaminaModsAsync();
-        _ = LoadDllModsAsync();
+        _ = LoadRegionGatedCardsAsync();
     }
 
     private static I18nManager i18n => I18nManager.Instance;
@@ -233,6 +232,23 @@ public partial class SearchDefault : UserControl
         {
             LeviLaminaModCard.IsVisible = false;
         }
+    }
+
+    private async Task LoadRegionGatedCardsAsync()
+    {
+        // 境外设备（不含港澳台）直接隐藏启动器插件与 Dll 模组板块，不发起加载、不弹窗提示
+        if (!await RegionDetector.IsInChinaAsync())
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                PluginCard.IsVisible = false;
+                DllModCard.IsVisible = false;
+            });
+            return;
+        }
+
+        _ = LoadPluginAsync();
+        _ = LoadDllModsAsync();
     }
 
     private async Task LoadDllModsAsync()

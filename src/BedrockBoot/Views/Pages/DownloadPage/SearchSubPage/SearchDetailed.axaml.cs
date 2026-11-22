@@ -27,6 +27,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Enum.Search;
@@ -34,6 +35,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Interface;
@@ -81,6 +83,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             RestoreLastSearchType();
             SetupPaginationActions();
             _ = LoadCurseForgeCategoriesAsync();
+            _ = ApplyRegionGateAsync();
         }
 
         public SearchDetailed(SearchInfo info) : this()
@@ -94,6 +97,27 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         {
             if (ResourceTypeBox != null && _lastSearchType != SearchResourceType.Unknow)
                 ResourceTypeBox.SelectedIndex = (int)_lastSearchType;
+        }
+
+        /// <summary>
+        ///     境外设备（不含港澳台）隐藏"插件"与"Dll 模组"搜索类型选项；
+        ///     通过下拉项 IsVisible 隐藏而非移除，保持 SelectedIndex 与枚举值的对应关系。
+        /// </summary>
+        private async Task ApplyRegionGateAsync()
+        {
+            if (await RegionDetector.IsInChinaAsync()) return;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                PluginTypeItem.IsVisible = false;
+                DllModTypeItem.IsVisible = false;
+
+                if (_lastSearchType is SearchResourceType.PluginPack or SearchResourceType.DllMods)
+                {
+                    _lastSearchType = SearchResourceType.Unknow;
+                    ResourceTypeBox.SelectedIndex = 0;
+                }
+            });
         }
 
         private void SetupPaginationActions()

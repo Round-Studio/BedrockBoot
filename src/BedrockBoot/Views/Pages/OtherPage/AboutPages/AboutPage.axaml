@@ -114,6 +114,12 @@
                                                   Tag="https://corona.studio/lx"
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
+                    <onePointControls:SettingCard Header="PCL CE"
+                                                  Description="BedrockBoot 内部分页面布局参考自 PCL CE"
+                                                  IsClickable="True"
+                                                  Tag="https://github.com/PCL-Community/PCL-CE"
+                                                  Click="LinkOpener"
+                                                  Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="WonderLab"
                                                   Description="{DynamicResource About.Inspiration.WonderLab}"
                                                   IsClickable="True"

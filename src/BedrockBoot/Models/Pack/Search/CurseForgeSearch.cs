@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Enum.Search;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -36,9 +37,40 @@ namespace BedrockBoot.Models.Pack.Search
     public class CurseForgeSearch : ISearch
     {
         private readonly CurseForgeApiClient _apiClient;
-        private int? _selectedClassId;
+        private CurseForgeSearchFilter _filter = new(null, null);
         private bool _enableFuzzySearch;
-        private static readonly int[] CurseForgeClassIds = [4984, 6913, 6929, 6940, 6925];
+
+        public sealed record CurseForgeSearchFilter(int? ClassId, int? CategoryId);
+
+        private static readonly Dictionary<int, string> ClassTranslationContexts = new()
+        {
+            [4984] = "Addons",
+            [6913] = "Maps",
+            [6929] = "TexturePacks",
+            [6940] = "Scripts",
+            [6925] = "Skins"
+        };
+
+        public static string TranslateCategory(CurseForgeResponse.Category category, int? classId = null)
+        {
+            var categoryClassId = category.ClassId > 0 ? category.ClassId : classId;
+            if (categoryClassId == null || !ClassTranslationContexts.TryGetValue(categoryClassId.Value, out var context))
+                return category.Name;
+
+            //if (category.Name.Contains("3D Packs", StringComparison.OrdinalIgnoreCase))
+            //    Console.WriteLine($"[CurseForge] TAG 原始名称: '{category.Name}' (Length={category.Name.Length})");
+
+            var categoryName = category.Name.Trim();
+            var translationName = categoryName.Equals("l 3D Packs", StringComparison.OrdinalIgnoreCase)
+                ? "3D Packs"
+                : categoryName;
+            var key = $"CurseForge.Tag.{context}.{translationName}";
+            if (Avalonia.Application.Current!.Resources.TryGetResource(key, null, out var value) && value is string text)
+                return text;
+
+            Console.WriteLine($"[CurseForge] 未找到 TAG 翻译: classId={categoryClassId}, name='{category.Name}', key='{key}'");
+            return category.Name;
+        }
 
         public async Task<List<SearchResultItemInfo>> GetRecommendAsync(int count = 3)
         {
@@ -47,7 +79,7 @@ namespace BedrockBoot.Models.Pack.Search
             result.Data.Featured.ForEach(i =>
             {
                 var authorNames = i.Authors.Select(a => a.Name).ToList();
-                var categories = i.Categories.Select(a => a.Name).ToList();
+                var categories = i.Categories.Select(category => TranslateCategory(category, i.ClassId)).ToList();
                 var item = new SearchResultItemInfo
                 {
                     Name = i.Name,
@@ -81,19 +113,15 @@ namespace BedrockBoot.Models.Pack.Search
 
         public void SetExtraParameter(object parameter)
         {
-            if (parameter is int classIdIndex)
-            {
-                _selectedClassId = classIdIndex > 0 && classIdIndex <= CurseForgeClassIds.Length
-                    ? CurseForgeClassIds[classIdIndex - 1]
-                    : null;
-            }
+            if (parameter is CurseForgeSearchFilter filter)
+                _filter = filter;
         }
 
         public async Task<SearchResultPage> SearchPageAsync(string keyword, int page, int pageSize)
         {
             var currentIndex = (page - 1) * pageSize;
-            var result =
-                await _apiClient.SearchModsAsync(keyword, pageSize, classId: _selectedClassId, index: currentIndex);
+            var result = await _apiClient.SearchModsAsync(keyword, pageSize,
+                classId: _filter.ClassId, index: currentIndex, categoryId: _filter.CategoryId);
 
             var filteredData = result.Data
                 .Where(mod => IsResourcePackMatch(mod, keyword))
@@ -103,7 +131,7 @@ namespace BedrockBoot.Models.Pack.Search
             filteredData.ForEach(i =>
             {
                 var authorNames = i.Authors.Select(a => a.Name).ToList();
-                var categories = i.Categories.Select(a => a.Name).ToList();
+                var categories = i.Categories.Select(category => TranslateCategory(category, i.ClassId)).ToList();
 
                 var item = new SearchResultItemInfo
                 {

@@ -44,13 +44,41 @@ public partial class ResourceFileItem : UserControl
 
     private void UpdateUI()
     {
-        Card.Header = _info.FileName;
-        SaveBtn.IsVisible = _info.IsEnableSaveAs;
-
         var parts = new List<string>();
         if (!string.IsNullOrEmpty(_info.Description)) parts.Add(_info.Description);
         if (_info.FileSize > 0) parts.Add(ToFileSizeString(_info.FileSize));
-        Card.Description = string.Join(", ", parts);
+
+        if (!_info.ReleaseType.HasValue)
+        {
+            Expander.IsVisible = false;
+            Card.IsVisible = true;
+            Card.Header = _info.FileName;
+            Card.Description = string.Join(", ", parts);
+            SaveBtn.IsVisible = _info.IsEnableSaveAs;
+            return;
+        }
+
+        Card.IsVisible = false;
+        Expander.IsVisible = true;
+        ExpanderSaveBtn.IsVisible = _info.IsEnableSaveAs;
+        FileNameHeader.Text = string.IsNullOrWhiteSpace(_info.DisplayName) ? _info.FileName : _info.DisplayName;
+        FileSummary.Text = string.Join(", ", parts);
+        ReleaseTypeTag.Text = _info.ReleaseType.Value switch
+        {
+            1 => I18nManager.Instance["Download.Game.Type.Release"],
+            2 => I18nManager.Instance["Download.Game.Type.Beta"],
+            3 => I18nManager.Instance["Download.CurseForge.File.ReleaseType.Alpha"],
+            _ => _info.ReleaseType.Value.ToString()
+        };
+        DownloadCountText.Text = $"{_info.DownloadCount:N0}";
+        FileNameText.Text = _info.FileName;
+        VersionsPanel.Children.Clear();
+        foreach (var version in _info.GameVersions ?? new List<string>())
+            VersionsPanel.Children.Add(new OnePointUI.Avalonia.Styling.Controls.OnePointControls.LabelBox
+            {
+                Text = version,
+                Margin = new Thickness(0, 0, 4, 4)
+            });
     }
 
     public static string ToFileSizeString(long bytes)

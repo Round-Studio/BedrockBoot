@@ -25,14 +25,17 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Enum.Search;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Search;
+using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DrawContent;
@@ -56,15 +59,28 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         private int _displayedTotalPages;
         private int _currentPage = 1;
         private int _totalPages;
+        private List<CurseForgeResponse.Category> _curseForgeCategories = new();
+        private bool _isUpdatingCurseForgeFilters = true;
+        private static readonly Dictionary<int, string> CurseForgeClassNames = new()
+        {
+            [4984] = "Download.CurseForge.ResourceType.Addons",
+            [6913] = "Download.CurseForge.ResourceType.Maps",
+            [6929] = "Download.CurseForge.ResourceType.TexturePacks",
+            [6940] = "Download.CurseForge.ResourceType.Scripts",
+            [6925] = "Download.CurseForge.ResourceType.Skins"
+        };
 
         public SearchResourceType ChooseType => (SearchResourceType)ResourceTypeBox.SelectedIndex;
 
         public SearchDetailed()
         {
             InitializeComponent();
+            UpdateCurseForgeCategoryOptions();
+            _isUpdatingCurseForgeFilters = false;
             DownloadSearch.SearchDetailed = this;
             RestoreLastSearchType();
             SetupPaginationActions();
+            _ = LoadCurseForgeCategoriesAsync();
         }
 
         public SearchDetailed(SearchInfo info) : this()
@@ -168,7 +184,11 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             }
             else if (_currentSearch.SearchType == SearchResourceType.ResourcePack)
             {
-                _currentSearch.SetExtraParameter(CurseForgeResTypeBox.SelectedIndex);
+                var selectedClass = (CurseForgeClassBox.SelectedItem as ComboBoxItem)?.Tag as CurseForgeResponse.Category;
+                var selectedCategory = (CurseForgeCategoryBox.SelectedItem as ComboBoxItem)?.Tag as CurseForgeResponse.Category;
+                _currentSearch.SetExtraParameter(new CurseForgeSearch.CurseForgeSearchFilter(
+                    selectedClass?.Id,
+                    selectedCategory?.Id));
             }
         }
 
@@ -186,7 +206,10 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
             if (info.Type != SearchResourceType.ResourcePack)
             {
-                CurseForgeResTypeBox.SelectedIndex = 0;
+                _isUpdatingCurseForgeFilters = true;
+                CurseForgeClassBox.SelectedIndex = 0;
+                UpdateCurseForgeCategoryOptions();
+                _isUpdatingCurseForgeFilters = false;
             }
 
             info.Key ??= "";
@@ -395,18 +418,104 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             CurseForgeResTypePanel.IsVisible = SearchInfo.Type == SearchResourceType.ResourcePack;
 
             if (SearchInfo.Type != SearchResourceType.ResourcePack)
-                CurseForgeResTypeBox.SelectedIndex = 0;
+            {
+                CurseForgeClassBox.SelectedIndex = 0;
+                CurseForgeCategoryBox.SelectedIndex = 0;
+            }
 
             OnSearch(SearchInfo);
         }
 
-        private void CurseForgeResTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        private async Task LoadCurseForgeCategoriesAsync()
         {
-            if (!IsEdit) return;
+            try
+            {
+                var api = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
+                _curseForgeCategories = await api.GetCategoriesAsync();
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    _isUpdatingCurseForgeFilters = true;
+                    foreach (var category in _curseForgeCategories.Where(x => x.IsClass).OrderBy(x => x.Name))
+                        CurseForgeClassBox.Items.Add(new ComboBoxItem
+                        {
+                            Content = GetCurseForgeClassName(category),
+                            Tag = category
+                        });
+                    CurseForgeClassBox.SelectedIndex = 0;
+                    UpdateCurseForgeCategoryOptions();
+                    _isUpdatingCurseForgeFilters = false;
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"加载 CurseForge 分类失败: {ex.Message}");
+            }
+        }
+
+        private static string GetCurseForgeClassName(CurseForgeResponse.Category category)
+        {
+            return CurseForgeClassNames.TryGetValue(category.Id, out var key)
+                ? I18nManager.Instance[key]
+                : category.Name;
+        }
+
+        private void UpdateCurseForgeCategoryOptions()
+        {
+            var selectedClass = CurseForgeClassBox.SelectedIndex > 0
+                ? (CurseForgeClassBox.SelectedItem as ComboBoxItem)?.Tag as CurseForgeResponse.Category
+                : null;
+            CurseForgeCategoryBox.Items.Clear();
+            var hasSelectedType = selectedClass != null;
+            CurseForgeCategoryLabel.IsVisible = hasSelectedType;
+            CurseForgeCategoryBox.IsVisible = hasSelectedType;
+            if (!hasSelectedType)
+            {
+                CurseForgeCategoryBox.IsEnabled = false;
+                CurseForgeCategoryBox.SelectedIndex = -1;
+                return;
+            }
+
+            CurseForgeCategoryBox.Items.Add(new ComboBoxItem { Content = I18nManager.Instance["Download.CurseForge.Category.All"] });
+            foreach (var category in _curseForgeCategories
+                         .Where(x => !x.IsClass && x.ClassId == selectedClass!.Id && x.ParentCategoryId == selectedClass.Id)
+                         .OrderBy(x => x.Name))
+                    CurseForgeCategoryBox.Items.Add(new ComboBoxItem
+                    {
+                        Content = CurseForgeSearch.TranslateCategory(category),
+                        Tag = category
+                    });
+
+            CurseForgeCategoryBox.SelectedIndex = 0;
+            CurseForgeCategoryBox.IsEnabled = CurseForgeCategoryBox.ItemCount > 1;
+        }
+
+        private void SearchCurseForgeWithCurrentFilters()
+        {
+            if (!IsEdit || ResourceTypeBox.SelectedIndex != (int)SearchResourceType.ResourcePack)
+                return;
 
             SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;
-            SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
+            SearchInfo.Type = SearchResourceType.ResourcePack;
             OnSearch(SearchInfo);
+        }
+
+        private void CurseForgeClassBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (_isUpdatingCurseForgeFilters)
+                return;
+
+            _isUpdatingCurseForgeFilters = true;
+            UpdateCurseForgeCategoryOptions();
+            _isUpdatingCurseForgeFilters = false;
+            SearchCurseForgeWithCurrentFilters();
+        }
+
+        private void CurseForgeCategoryBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (_isUpdatingCurseForgeFilters)
+                return;
+
+            SearchCurseForgeWithCurrentFilters();
         }
     }
 }

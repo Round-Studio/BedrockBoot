@@ -74,22 +74,27 @@
                     <onePointControls:FontIcon Glyph="&#xF0E2;"
                                                VerticalAlignment="Center"
                                                FontSize="15" />
-
-                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource Download.Search.Label.Category}" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{DynamicResource Download.CurseForge.Filter.ResourceType}" />
                 </StackPanel>
 
-                <ComboBox Width="120"
-                          Name="CurseForgeResTypeBox"
+                <ComboBox Width="160"
+                          Name="CurseForgeClassBox"
                           SelectedIndex="0"
                           HorizontalAlignment="Stretch"
-                          SelectionChanged="CurseForgeResTypeBox_OnSelectionChanged">
-                    <ComboBoxItem Content="所有资源" />
-                    <ComboBoxItem Content="附加包" />
-                    <ComboBoxItem Content="地图" />
-                    <ComboBoxItem Content="材质包" />
-                    <ComboBoxItem Content="脚本包" />
-                    <ComboBoxItem Content="皮肤包" />
+                          SelectionChanged="CurseForgeClassBox_OnSelectionChanged">
+                    <ComboBoxItem Content="{DynamicResource Download.CurseForge.ResourceType.All}" />
                 </ComboBox>
+                <TextBlock VerticalAlignment="Center"
+                           Text="{DynamicResource Download.CurseForge.Filter.Category}"
+                           Name="CurseForgeCategoryLabel"
+                           IsVisible="False" />
+                <ComboBox Width="180"
+                          Name="CurseForgeCategoryBox"
+                          SelectedIndex="-1"
+                          HorizontalAlignment="Stretch"
+                          SelectionChanged="CurseForgeCategoryBox_OnSelectionChanged"
+                          IsVisible="False" />
             </StackPanel>
         </StackPanel>
 

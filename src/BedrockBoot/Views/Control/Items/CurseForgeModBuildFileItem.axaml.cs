@@ -16,7 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.IO;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -25,6 +27,7 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Views.Control.Items;
@@ -47,10 +50,37 @@ public partial class CurseForgeModBuildFileItem : UserControl
 
     private void UpdateUI()
     {
-        Card.Header = ModFile.DisplayName;
-        Card.Description = $"{ModFile.FileDate.ToString("yyyy/MM/dd HH:mm")}, {ToFileSizeString(ModFile.FileLength)}";
+        FileNameHeader.Text = ModFile.DisplayName;
+        FileSummary.Text = $"{ModFile.FileDate:yyyy/MM/dd HH:mm}, {ToFileSizeString(ModFile.FileLength)}";
+
+        // Release Type
+        ReleaseTypeTag.Text = ModFile.ReleaseType switch
+        {
+            1 => i18n["Download.Game.Type.Release"],
+            2 => i18n["Download.Game.Type.Beta"],
+            3 => i18n["Download.CurseForge.File.ReleaseType.Alpha"],
+            _ => ModFile.ReleaseType.ToString()
+        };
+
+        // 下载次数
+        DownloadCountText.Text = $"{ModFile.DownloadCount:N0}";
+
+        // 文件名称
+        FileNameText.Text = ModFile.FileName;
+
+        // 支持的游戏版本
+        VersionsPanel.Children.Clear();
+
+        foreach (var version in ModFile.GameVersions ?? new List<string>())
+        {
+            VersionsPanel.Children.Add(new LabelBox
+            {
+                Text = version,
+                Margin = new Thickness(0, 0, 4, 4)
+            });
+        }
     }
-    
+
     public static string ToFileSizeString(long bytes)
     {
         string[] sizes = { "B", "KB", "MB", "GB", "TB" };
@@ -63,7 +93,7 @@ public partial class CurseForgeModBuildFileItem : UserControl
         }
         return $"{len:0.##} {sizes[order]}";
     }
-    
+
     /// <summary>
     ///     另存为：手动选择下载位置
     /// </summary>
@@ -79,15 +109,15 @@ public partial class CurseForgeModBuildFileItem : UserControl
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = i18n["Download.CurseForge.SaveAs.Title"],
-            SuggestedFileName = ModFile.FileName,
-            FileTypeChoices = new[]
-            {
-                new FilePickerFileType(i18n["Download.CurseForge.FileType.Bedrock"])
+                SuggestedFileName = ModFile.FileName,
+                FileTypeChoices = new[]
                 {
-                    Patterns = new[] { $"*{extension}" }
+                    new FilePickerFileType(i18n["Download.CurseForge.FileType.Bedrock"])
+                    {
+                        Patterns = new[] { $"*{extension}" }
+                    }
                 }
-            }
-        });
+            });
 
         var localPath = file?.TryGetLocalPath();
         if (!string.IsNullOrEmpty(localPath))
@@ -108,7 +138,7 @@ public partial class CurseForgeModBuildFileItem : UserControl
         {
             Content = dialog,
             Title = i18n["Download.CurseForge.InstallTo.Title"],
-            CloseButtonText = "下载",
+            CloseButtonText = i18n["Shared.Action.Download"],
             SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {

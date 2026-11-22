@@ -91,7 +91,7 @@ public partial class SearchDefault : UserControl
         searchHis.Data.Reverse();
         searchHis.Data.ForEach(his => HistoryList.Items.Add(new SearchHistoryItem(his)
         {
-            SearchAction = info => { DownloadSearch.NavigateInnerFrame(new SearchDetailed(info)); }
+            SearchAction = info => { DownloadSearch.SearchFromHistory(info); }
         }));
         HistoryList.IsVisible = true;
         HistoryListScrollViewer.IsVisible = true;

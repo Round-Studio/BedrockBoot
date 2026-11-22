@@ -10,14 +10,44 @@
         <Grid Grid.Row="0"
               Margin="15,10,15,0"
               ColumnDefinitions="*,Auto">
-            <TextBox Grid.Column="0"
-                     Margin="5"
-                     Name="KeyBox"
-                     Watermark="{DynamicResource Download.Search.Watermark}" />
+            <Grid Grid.Column="0"
+                  Margin="5"
+                  RowDefinitions="Auto,Auto">
+                <!-- 搜索后向上展开的关键词头部（引号包裹），展开时把搜索框推下去 -->
+                <TextBlock Grid.Row="0"
+                           Name="KeywordText"
+                           IsVisible="False"
+                           Height="0"
+                           Opacity="0"
+                           Margin="2,0,2,0"
+                           VerticalAlignment="Top"
+                           ClipToBounds="True"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis">
+                    <TextBlock.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Height"
+                                              Duration="0:0:0.25"
+                                              Easing="ExponentialEaseOut" />
+                            <DoubleTransition Property="Opacity"
+                                              Duration="0:0:0.25"
+                                              Easing="ExponentialEaseOut" />
+                        </Transitions>
+                    </TextBlock.Transitions>
+                </TextBlock>
+
+                <TextBox Grid.Row="1"
+                         Name="KeyBox"
+                         Height="32"
+                         Watermark="{DynamicResource Download.Search.Watermark}" />
+            </Grid>
 
             <Button Grid.Column="1"
                     Width="120"
+                    Height="32"
                     Margin="5"
+                    VerticalAlignment="Bottom"
                     Classes="NoBorder"
                     Name="SearchBtn"
                     Click="SearchBtn_OnClick"

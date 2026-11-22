@@ -31,6 +31,7 @@ public interface IModsLoader
     public bool IsAllowDisabling { get; }
     public string? IconUri { get; }
     public string ModsFolder { get; }
+    public List<AddonEvent> AddonEvents { get; set; }
     public VersionConfig GameInstance { get; set; }
     public void InitLoader(VersionConfig instance);
     public void PreLaunch();
@@ -44,4 +45,12 @@ public interface IModsLoader
     public IModsManager ModsManager { get; set; }
     public bool GetIsEnabled();
     public void SetIsEnabled(bool isEnabled);
+}
+
+public class AddonEvent
+{
+    public string TagHeader { get; set; } = string.Empty;
+    public string TagDescription { get; set; } = string.Empty;
+    public string Glyph { get; set; } = string.Empty;
+    public Action<VersionConfig>? EventCallBack { get; set; }
 }

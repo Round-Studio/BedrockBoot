@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.Control.Items.Instance.PreLoad.NET.FeatureItem">
+    <StackPanel Spacing="4">
+        <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Feature Name"
+                           FontSize="14"
+                           Name="FeatureTitle"></TextBlock>
+                <TextBlock Text="Feature Key"
+                           Name="FeatureKey"
+                           Opacity="0.6"
+                           FontSize="11"></TextBlock>
+            </StackPanel>
+            
+            <ToggleSwitch Grid.Column="1"
+                          VerticalAlignment="Center"
+                          Name="ConfigToggleSwitch"></ToggleSwitch>
+        </Grid>
+        
+        <TextBlock Name="FeatureDesc"
+                   Opacity="0.6"
+                   FontSize="11"
+                   TextWrapping="WrapWithOverflow"></TextBlock>
+    </StackPanel>
+</UserControl>

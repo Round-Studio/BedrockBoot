@@ -25,6 +25,7 @@ using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Standard.Interface.ModLoader;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using NotImplementedException = System.NotImplementedException;
 
 namespace BedrockBoot.Views.Control.Items.Instance;
@@ -91,6 +92,26 @@ public partial class ModLoaderItem : ISetting
             IsEnableToggle.IsChecked = _loader.GetIsEnabled();
             LoadingRing.IsVisible = false;
             InstallBtn.IsVisible = false;
+        }
+
+        if (_loader?.AddonEvents != null)
+        {
+            _loader.AddonEvents.ForEach(eventInfo =>
+            {
+                var settingCard = new SettingCard()
+                {
+                    Header = eventInfo.TagHeader,
+                    Description = eventInfo.TagDescription,
+                    Glyph = eventInfo.Glyph,
+                    IsClickable = true,
+                    IsFontIcon = true
+                };
+                settingCard.Click += (_, __) =>
+                {
+                    eventInfo.EventCallBack?.Invoke(_instance);
+                };
+                EventPanel.Children.Insert(0, settingCard);
+            });
         }
 
         IsEdit = true;

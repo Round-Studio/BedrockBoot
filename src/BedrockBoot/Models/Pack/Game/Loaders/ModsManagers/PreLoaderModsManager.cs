@@ -57,7 +57,7 @@ public class PreLoaderModsManager : IModsManager
             {
                 ModName = Path.GetFileName(x.File),
                 ModDescription = string.Empty,
-                ModLoaderType = typeof(PreLoaderNet),
+                ModLoaderType = typeof(PreLoadNet),
                 ModInjectType = x.IsPreLoad ? ModType.Native : ModType.Inject,
                 InjectDelay = x.InjectDelay,
                 ModPath = x.File,

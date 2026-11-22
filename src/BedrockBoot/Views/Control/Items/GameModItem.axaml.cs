@@ -66,7 +66,7 @@ public partial class GameModItem : ISetting
         SettingModEnable.IsVisible = _modsLoader.ModsManager.IsModCanEnable;
         SettingModEnable.IsChecked = ModInfo.IsEnabled;
 
-        if (_modsLoader.GetType() != typeof(PreLoaderNet)) SettingBtn.IsVisible = false;
+        if (_modsLoader.GetType() != typeof(PreLoadNet)) SettingBtn.IsVisible = false;
         FileName.Text = ModInfo.ModName;
 
         var fileSize = File.Exists(ModInfo.ModPath) ? new FileInfo(ModInfo.ModPath).Length : 0;
@@ -93,7 +93,7 @@ public partial class GameModItem : ISetting
         Card.Description = string.Join(", ", descs);
 
         PreLoadBox.IsVisible =
-            (ModInfo.ModInjectType == ModType.Native && ModInfo.ModLoaderType == typeof(PreLoaderNet));
+            (ModInfo.ModInjectType == ModType.Native && ModInfo.ModLoaderType == typeof(PreLoadNet));
 
         IsEdit = true;
     }
@@ -188,7 +188,7 @@ public partial class GameModItem : ISetting
                             ModInjectType = newModInfo.IsPreLoad ? ModType.Native : ModType.Inject,
                             ModPath = newModInfo.File,
                             ModName = Path.GetFileName(newModInfo.File),
-                            ModLoaderType = typeof(PreLoaderNet)
+                            ModLoaderType = typeof(PreLoadNet)
                         };
                         UpdateUI();
                         UpdateCallBack?.Invoke();

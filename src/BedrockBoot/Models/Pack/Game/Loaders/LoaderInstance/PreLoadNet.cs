@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -25,10 +26,13 @@ using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 using BedrockBoot.Standard.Interface.ModLoader;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Views.DialogContent.Loader;
+using BedrockBoot.Views.DialogContent.Loader.PreLoad.NET;
+using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 
-public class PreLoaderNet : IModsLoader
+public class PreLoadNet : IModsLoader
 {
     public Action? OnUpdate { get; set; }
     public IModsManager ModsManager { get; set; }
@@ -47,6 +51,28 @@ public class PreLoaderNet : IModsLoader
     public bool IsAllowDisabling { get; } = false;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png";
     public string ModsFolder => Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "mods");
+
+    public List<AddonEvent> AddonEvents { get; set; } = new()
+    {
+        new()
+        {
+            TagHeader = I18nManager.Instance["Pack.Loader.PreLoader.Feature.Tag"],
+            TagDescription = I18nManager.Instance["Pack.Loader.PreLoader.Feature.Desc"],
+            Glyph = "\uF196",
+            EventCallBack = instance =>
+            {
+                var dialog = new DialogPreviewFunctionContent(instance);
+                DialogHost.Show(new DialogInfo()
+                {
+                    Title = I18nManager.Instance["Pack.Loader.PreLoader.Feature.Dialog.Title"],
+                    Content = dialog,
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                    PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
+                    CloseAction = () => dialog.Save()
+                });
+            }
+        }
+    };
     public VersionConfig GameInstance { get; set; }
 
     public void InitLoader(VersionConfig instance)

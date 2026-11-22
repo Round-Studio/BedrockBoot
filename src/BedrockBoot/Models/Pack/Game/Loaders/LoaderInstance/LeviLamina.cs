@@ -61,6 +61,8 @@ public class LeviLamina : IModsLoader
     public string ModsFolder =>
         Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2", "levilamina", "ll.mods");
 
+    public List<AddonEvent> AddonEvents { get; set; }
+
     public VersionConfig GameInstance { get; set; }
 
     public void InitLoader(VersionConfig instance)

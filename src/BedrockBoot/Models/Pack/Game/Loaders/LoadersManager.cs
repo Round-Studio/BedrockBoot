@@ -27,7 +27,7 @@ public class LoadersManager
 {
     public static List<Type> ModsLoaders { get; } = new List<Type>
     {
-        typeof(PreLoaderNet),
+        typeof(PreLoadNet),
         typeof(LoaderInstance.LeviLamina)
     };
 }

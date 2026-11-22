@@ -55,7 +55,8 @@ public static class ChangeLogLoader
                 try
                 {
                     var entry = JsonSerializer.Deserialize<ChangeLogEntry>(line);
-                    if (entry != null && entry.Author != "RoundStudio Bot") result.Add(entry);
+                    if (entry != null && entry.Author != "RoundStudio Bot" && !IsBlocked(entry.Message))
+                        result.Add(entry);
                 }
                 catch (JsonException)
                 {
@@ -67,6 +68,13 @@ public static class ChangeLogLoader
         }
 
         return result;
+    }
+
+    private static bool IsBlocked(string message)
+    {
+        // 屏蔽机器人维护提交，不进入修改日志
+        return !string.IsNullOrEmpty(message)
+               && message.StartsWith("chore: normalize license headers", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string ReadEmbeddedText()

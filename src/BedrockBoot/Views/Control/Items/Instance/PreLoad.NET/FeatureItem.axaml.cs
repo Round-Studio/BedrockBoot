@@ -1,0 +1,50 @@
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+using BedrockBoot.Standard.Entity.Game.Pack.Loader.PreLoad.NET;
+
+namespace BedrockBoot.Views.Control.Items.Instance.PreLoad.NET;
+
+public partial class FeatureItem : UserControl
+{
+    private readonly FeatureXml.FeatureDoc _feature;
+    private readonly bool _isEnable;
+
+    public FeatureItem()
+    {
+        InitializeComponent();
+    }
+
+    public FeatureItem(FeatureXml.FeatureDoc feature, bool isEnable) : this()
+    {
+        _feature = feature;
+        _isEnable = isEnable;
+        FeatureDesc.Text = feature.Description;
+        FeatureKey.Text = feature.Name;
+        FeatureTitle.Text = feature.Title;
+        ConfigToggleSwitch.IsChecked = isEnable;
+    }
+
+    public (string, bool) GetEnable()
+    {
+        return ((string, bool))(_feature.Name, ConfigToggleSwitch.IsChecked!);
+    }
+}

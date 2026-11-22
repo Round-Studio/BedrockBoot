@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d"
+             x:Class="BedrockBoot.Views.DialogContent.Loader.PreLoad.NET.DialogPreviewFunctionContent">
+    <Grid Width="420"
+          MinHeight="320">
+        <StackPanel Name="FunctionStackPanel"
+                    Spacing="8"
+                    Background="#01000000">
+                
+        </StackPanel>
+        
+        <notice:InfoCard Name="InfoCard"
+                         BigTitle="{DynamicResource Pack.Loader.PreLoader.Feature.Dialog.Empty.Title}"
+                         Message="{DynamicResource Pack.Loader.PreLoader.Feature.Dialog.Empty.Message}"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

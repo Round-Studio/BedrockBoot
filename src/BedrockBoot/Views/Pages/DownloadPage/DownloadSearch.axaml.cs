@@ -18,6 +18,7 @@
 
 using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -37,9 +38,6 @@ public partial class DownloadSearch : UserControl
 
     /// <summary>下载页内部页面切换通知（供 DownloadRoot 更新返回按钮）</summary>
     public static Action? InnerPageChanged;
-
-    // 从详情页返回时要恢复的搜索条件（一次性）
-    private static SearchInfo? _pendingRestoreInfo;
 
     // 保存搜索状态
     private static string _lastSearchKey = string.Empty;
@@ -64,16 +62,16 @@ public partial class DownloadSearch : UserControl
         {
             NavigateInnerFrame(new SearchDefault());
 
-            // 恢复上次搜索：优先用详情页返回时带过来的条件，其次用保存的关键词
-            var restore = _pendingRestoreInfo ??
-                          (string.IsNullOrEmpty(_lastSearchKey)
-                              ? null
-                              : new SearchInfo { Key = _lastSearchKey, Type = _lastSearchType });
-            _pendingRestoreInfo = null;
+            // 恢复上次搜索的关键词（详情页返回走实例复用，不经此路径）
+            var restore = string.IsNullOrEmpty(_lastSearchKey)
+                ? null
+                : new SearchInfo { Key = _lastSearchKey, Type = _lastSearchType };
 
             if (restore == null) return;
             if (!EnsureSearchDetailed()) return;
 
+            // 直接以关键词头部状态呈现，不播动画（页面刚创建）
+            ActivateKeywordState(restore.Key, animate: false);
             SearchDetailed!.OnSearch(restore);
         });
 
@@ -127,8 +125,76 @@ public partial class DownloadSearch : UserControl
     /// <summary>下载页内部当前是否显示搜索结果页（而非下载首页）</summary>
     public static bool IsShowingDetailed => SearchFrame?.GetCurrentPage() is SearchDetailed;
 
-    /// <summary>下载页内部切回下载首页</summary>
-    public static void ShowSearchDefault() => NavigateInnerFrame(new SearchDefault());
+    /// <summary>下载页内部切回下载首页，同时恢复搜索框（关键词头部复位）</summary>
+    public static void ShowSearchDefault()
+    {
+        DownloadSearchView?.ResetKeywordStateCore();
+        NavigateInnerFrame(new SearchDefault());
+    }
+
+    /// <summary>进入关键词头部状态：搜索框下滑隐藏，引号包裹的关键词上滑入位</summary>
+    public static void ShowKeyword(string? keyword) =>
+        DownloadSearchView?.ActivateKeywordState(keyword);
+
+    /// <summary>从历史记录发起搜索：搜索框与关键词头部同步显示该关键词</summary>
+    public static void SearchFromHistory(SearchInfo info)
+    {
+        if (DownloadSearchView == null) return;
+
+        // 修复：查看历史记录时搜索框不显示关键词
+        DownloadSearchView.KeyBox.Text = info.Key ?? string.Empty;
+        _lastSearchKey = info.Key ?? string.Empty;
+        _lastSearchType = info.Type;
+        DownloadSearchView.ActivateKeywordState(info.Key);
+
+        NavigateInnerFrame(new SearchDetailed(info));
+    }
+
+    private int _keywordStateGen;
+    private const double KeywordHeaderHeight = 42;
+
+    private void ActivateKeywordState(string? keyword, bool animate = true)
+    {
+        var gen = ++_keywordStateGen;
+        KeywordText.Text = $"\"{keyword?.Trim()}\"";
+
+        if (!animate && !string.IsNullOrEmpty(keyword?.Trim()))
+        {
+            KeywordText.Height = KeywordHeaderHeight;
+            KeywordText.Opacity = 1;
+            KeywordText.IsVisible = true;
+            return;
+        }
+        else if (string.IsNullOrEmpty(keyword?.Trim()))
+        {
+            KeywordText.Height = 0;
+            KeywordText.Opacity = 0;
+            KeywordText.IsVisible = false;
+            return;
+        }
+
+        KeywordText.IsVisible = true;
+        // 等一帧让起始状态生效，再由 Transition 播放展开动画
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (gen != _keywordStateGen) return;
+            KeywordText.Height = KeywordHeaderHeight;
+            KeywordText.Opacity = 1;
+        });
+    }
+
+    private async void ResetKeywordStateCore()
+    {
+        var gen = ++_keywordStateGen;
+        if (!KeywordText.IsVisible) return;
+
+        KeywordText.Height = 0;
+        KeywordText.Opacity = 0;
+        try { await Task.Delay(260); } catch { /* 动画等待被中断也无妨 */ }
+        if (gen != _keywordStateGen) return;
+
+        KeywordText.IsVisible = false;
+    }
 
     /// <summary>统一切换下载页内部页面，并通知外部更新返回按钮</summary>
     public static void NavigateInnerFrame(object page)
@@ -136,9 +202,6 @@ public partial class DownloadSearch : UserControl
         SearchFrame?.NavigateTo(page);
         InnerPageChanged?.Invoke();
     }
-
-    /// <summary>设置从详情页返回时要恢复的搜索条件</summary>
-    public static void SetPendingRestore(SearchInfo? info) => _pendingRestoreInfo = info;
 
     /// <summary>
     ///     全局搜索（Ctrl+K）入口：切到下载页并按默认分类规则发起聚合搜索。
@@ -159,6 +222,8 @@ public partial class DownloadSearch : UserControl
 
         if (DownloadSearchView != null) DownloadSearchView.KeyBox.Text = key;
 
+        DownloadSearchView?.ActivateKeywordState(key);
+
         NavigateInnerFrame(new SearchDetailed(new SearchInfo { Key = key, Type = type }));
     }
 
@@ -173,6 +238,9 @@ public partial class DownloadSearch : UserControl
         // 保存搜索状态
         _lastSearchKey = searchKey;
         _lastSearchType = searchType;
+
+        // 搜索框下滑隐藏，关键词头部上滑入位
+        ActivateKeywordState(searchKey);
 
         SearchDetailed!.OnSearch(new SearchInfo
         {

@@ -1506,6 +1506,12 @@
     <x:String x:Key="Instance.Loader.Status.NotApplicable">不适用</x:String>
     <x:String x:Key="Instance.Loader.Action.Details">查看详情</x:String>
     <x:String x:Key="Instance.Loader.Action.Remove">移除该加载器</x:String>
+    <x:String x:Key="Setting.Language.Header.Prefix">让</x:String>
+    <x:String x:Key="Setting.Language.Header.Suffix">走向国际化。</x:String>
+    <x:String x:Key="Setting.Language.Header.Line1">在社区的共同助力下，BedrockBoot 正在迈向国际化的新篇章。</x:String>
+    <x:String x:Key="Setting.Language.Header.Line2">欢迎各位贡献者前来参与本地化贡献，与我们一同完善多语言支持，为 BedrockBoot 更好地服务全球用户的目标添砖加瓦。</x:String>
+    <x:String x:Key="Setting.Language.Header.Line3">感谢每一位参与 BedrockBoot 国际化，参与翻译、校对与改进的贡献者，让 BedrockBoot 因你们更完善！</x:String>
+    <x:String x:Key="Setting.Language.Header.Contribute">提交 Pull Request</x:String>
     <x:String x:Key="Setting.Language.Title">语言 / Language</x:String>
     <x:String x:Key="Setting.Language.Description">BedrockBoot 支持多个地区/国家的语言。</x:String>
     <x:String x:Key="Setting.Language.MissingKey.Title">翻译缺失时的显示</x:String>
@@ -1739,6 +1745,7 @@
     <x:String x:Key="About.Page.DeviceName">设备名称</x:String>
     <x:String x:Key="About.Page.Credits.Desc">感谢以下服务以及项目对 BedrockBoot (本项目) 的支持</x:String>
     <x:String x:Key="About.Page.Inspiration.Desc">BedrockBoot 的部分灵感来源于以下项目</x:String>
+    <x:String x:Key="About.Page.LayoutCredit.Desc">BedrockBoot 内部分页面布局参考自 PCL CE</x:String>
     <x:String x:Key="About.Page.BakaXL.Desc">BedrockBoot 内部分功能参考自 BakaXL</x:String>
     <x:String x:Key="About.Page.BMCBL.Desc">BedrockBoot 内部分功能参考自 BMCBL</x:String>
     <x:String x:Key="About.Page.Developers.Desc">BedrockBoot 的开发者以及技术支持</x:String>
@@ -2146,6 +2153,11 @@
     <x:String x:Key="Pack.Loader.PreLoader.Desc">BedrockBoot 原版加载器 (PreLoad.NET)</x:String>
     <x:String x:Key="Pack.Loader.PreLoader.Intro">BedrockBoot 内置的原版模组加载器（PreLoad.NET）。它在游戏进程启动前自动注入由 BedrockBoot 托管的预加载模组与注入式模组，为实例提供基础的 Mod 加载能力。该加载器随实例内置，无需单独安装，也无法移除。</x:String>
     <x:String x:Key="Pack.Loader.PreLoader.Name">原版加载器</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Tag">新功能前瞻</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Desc">PreLoad.NET 一些前瞻性功能，在此处可提前体验新功能。</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Dialog.Title">PreLoad.NET 新功能预览</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Dialog.Empty.Title">无法加载配置项</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Dialog.Empty.Message">也许是还未启动过游戏？&#10;请尝试启动一次游戏后再进行配置&#10;如依旧无效，请前往启动器更新配置页面&#10;以更新游戏运行组件</x:String>
     <x:String x:Key="Pack.ResourcePack.PackFailedEmptyTemp">打包失败：临时目录为空</x:String>
     <x:String x:Key="Pack.ResourcePack.PackFailedNoOutput">打包失败：输出文件未创建</x:String>
     <x:String x:Key="Pack.ResourcePack.SourceDirNotFound">源目录不存在: {0}</x:String>

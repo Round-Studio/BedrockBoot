@@ -48,7 +48,7 @@
                 </ToggleSwitch>
             </StackPanel>
         </onePointControls:SettingExpander.RightContent>
-        <StackPanel>
+        <StackPanel Name="EventPanel">
             <onePointControls:SettingCard Name="ViewDetailBtn"
                                           Header="{DynamicResource Instance.Loader.Action.Details}"
                                           Glyph="&#xE8A7;"

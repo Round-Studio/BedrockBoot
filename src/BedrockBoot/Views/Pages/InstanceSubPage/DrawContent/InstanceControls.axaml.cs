@@ -20,16 +20,15 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Threading;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
-using IWshRuntimeLibrary;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
@@ -131,10 +130,14 @@ public partial class InstanceControls : ISetting
                 var targetPath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
                 var arguments = $"-jump \"{VersionInfo.VersionPath}\"";
 
-                var success = CreateShortcutInSTAThread(shortcutPath, targetPath, arguments);
+                // 发布版为 full trim + 单文件，COM interop 在裁剪下已损坏（WshShell 会抛
+                // NullReferenceException），因此直接按 MS-SHLLINK 写出 .lnk，不经过 COM
+                ShellLinkFile.Create(shortcutPath, targetPath, arguments,
+                    Path.GetDirectoryName(targetPath) ?? string.Empty,
+                    $"BedrockBoot Quick Launch - {VersionInfo.Info.VersionName}",
+                    targetPath, SourceList.MinecraftIconID);
 
-                if (success)
-                    DialogHost.Show(new DialogInfo
+                DialogHost.Show(new DialogInfo
                     {
                         Title = i18n["Instance.Control.Shortcut.Success.Title"],
                         Content = string.Format(i18n["Instance.Control.Shortcut.Success.Content"],
@@ -163,41 +166,6 @@ public partial class InstanceControls : ISetting
                     CloseButtonText = i18n["MainWindow.Common.Confirm"]
                 });
             }
-    }
-
-    private bool CreateShortcutInSTAThread(string shortcutPath, string targetPath, string arguments)
-    {
-        var success = false;
-        Exception? threadException = null;
-
-        var thread = new Thread(() =>
-        {
-            try
-            {
-                var shell = new WshShell();
-                var shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
-
-                shortcut.TargetPath = targetPath;
-                shortcut.Arguments = arguments;
-                shortcut.WorkingDirectory = Path.GetDirectoryName(targetPath) ?? string.Empty;
-                shortcut.Description = $"BedrockBoot Quick Launch - {VersionInfo.Info.VersionName}";
-                shortcut.IconLocation = $"{targetPath},{SourceList.MinecraftIconID}";
-
-                shortcut.Save();
-                success = true;
-            }
-            catch (Exception ex)
-            {
-                threadException = ex;
-            }
-        });
-
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (threadException != null) throw threadException;
-        return success;
     }
 
     /// <summary>

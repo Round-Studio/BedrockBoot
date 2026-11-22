@@ -27,6 +27,7 @@ using Avalonia.Platform.Storage;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Localization;
 using BedrockBoot.Localization.Avalonia;
+using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
@@ -128,5 +129,10 @@ public partial class UniversalLanguage : ISettingPage
             return;
 
         I18nManager.Instance.DebugLanguage(path);
+    }
+
+    private void OpenPRBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        PlatformCore.OpenFolder.Open("https://github.com/Round-Studio/BedrockBoot/pulls");
     }
 }

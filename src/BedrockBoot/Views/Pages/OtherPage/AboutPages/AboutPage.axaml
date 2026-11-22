@@ -114,6 +114,12 @@
                                                   Tag="https://corona.studio/lx"
                                                   Click="LinkOpener"
                                                   Glyph=""></onePointControls:SettingCard>
+                    <onePointControls:SettingCard Header="PCL CE"
+                                                  Description="{DynamicResource About.Page.LayoutCredit.Desc}"
+                                                  IsClickable="True"
+                                                  Tag="https://github.com/PCL-Community/PCL-CE"
+                                                  Click="LinkOpener"
+                                                  Glyph=""></onePointControls:SettingCard>
                     <onePointControls:SettingCard Header="WonderLab"
                                                   Description="{DynamicResource About.Inspiration.WonderLab}"
                                                   IsClickable="True"

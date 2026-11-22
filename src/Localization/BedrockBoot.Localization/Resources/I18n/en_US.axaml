@@ -1497,6 +1497,12 @@
     <x:String x:Key="Instance.Loader.Status.NotApplicable">Not Applicable</x:String>
     <x:String x:Key="Instance.Loader.Action.Details">View Details</x:String>
     <x:String x:Key="Instance.Loader.Action.Remove">Remove Loader</x:String>
+    <x:String x:Key="Setting.Language.Header.Prefix">Making</x:String>
+    <x:String x:Key="Setting.Language.Header.Suffix">truly global.</x:String>
+    <x:String x:Key="Setting.Language.Header.Line1">With the community's support, BedrockBoot is entering a new chapter of internationalization.</x:String>
+    <x:String x:Key="Setting.Language.Header.Line2">Contributors are welcome to join the localization effort, helping us improve multilingual support so BedrockBoot can better serve users worldwide.</x:String>
+    <x:String x:Key="Setting.Language.Header.Line3">Thanks to everyone who has translated, proofread, or improved BedrockBoot's internationalization—your support makes BedrockBoot better for everyone!</x:String>
+    <x:String x:Key="Setting.Language.Header.Contribute">Submit a Pull Request</x:String>
     <x:String x:Key="Setting.Language.Title">Language / 语言</x:String>
     <x:String x:Key="Setting.Language.Description">BedrockBoot supports languages from multiple regions and countries.</x:String>
     <x:String x:Key="Setting.Language.MissingKey.Title">Untranslated Text Display</x:String>
@@ -1730,6 +1736,7 @@
     <x:String x:Key="About.Page.DeviceName">Device Name</x:String>
     <x:String x:Key="About.Page.Credits.Desc">Thanks to the following services and projects for supporting BedrockBoot</x:String>
     <x:String x:Key="About.Page.Inspiration.Desc">BedrockBoot was partially inspired by the following projects</x:String>
+    <x:String x:Key="About.Page.LayoutCredit.Desc">Some page layouts in BedrockBoot reference PCL CE</x:String>
     <x:String x:Key="About.Page.BakaXL.Desc">Some BedrockBoot features are referenced from BakaXL</x:String>
     <x:String x:Key="About.Page.BMCBL.Desc">Some BedrockBoot features are referenced from BMCBL</x:String>
     <x:String x:Key="About.Page.Developers.Desc">BedrockBoot developers and technical support</x:String>
@@ -2137,6 +2144,11 @@
     <x:String x:Key="Pack.Loader.PreLoader.Desc">BedrockBoot vanilla loader (PreLoad.NET)</x:String>
     <x:String x:Key="Pack.Loader.PreLoader.Intro">BedrockBoot's built-in vanilla mod loader (PreLoad.NET). It automatically injects preload and injection mods managed by BedrockBoot before the game process starts, providing basic mod-loading capability for the instance. This loader is built into every instance, requires no separate installation, and cannot be removed.</x:String>
     <x:String x:Key="Pack.Loader.PreLoader.Name">Vanilla Loader</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Tag">Feature Preview</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Desc">Upcoming PreLoad.NET features you can try out early here.</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Dialog.Title">PreLoad.NET Feature Preview</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Dialog.Empty.Title">Unable to load configuration</x:String>
+    <x:String x:Key="Pack.Loader.PreLoader.Feature.Dialog.Empty.Message">Maybe the game has never been launched?&#10;Try launching the game once, then configure again.&#10;If it still fails, open the loader update page&#10;to refresh the game runtime components.</x:String>
     <x:String x:Key="Pack.ResourcePack.PackFailedEmptyTemp">Packaging failed: temporary directory is empty</x:String>
     <x:String x:Key="Pack.ResourcePack.PackFailedNoOutput">Packaging failed: output file was not created</x:String>
     <x:String x:Key="Pack.ResourcePack.SourceDirNotFound">Source directory does not exist: {0}</x:String>

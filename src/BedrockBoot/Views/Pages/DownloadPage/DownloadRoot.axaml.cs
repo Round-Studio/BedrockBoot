@@ -27,8 +27,8 @@ public partial class DownloadRoot : BedrockBootPage
 {
     private readonly DownloadSearch _searchPage;
 
-    // 从搜索结果页进入详情页时记住搜索条件，返回时恢复结果列表
-    private SearchInfo? _restoreSearchInfo;
+    // 详情页来源：true=搜索结果页（返回时原样恢复分页与结果），false=推荐首页（返回时回首页）
+    private bool _detailFromSearchResults;
 
     public DownloadRoot()
     {
@@ -64,18 +64,16 @@ public partial class DownloadRoot : BedrockBootPage
     {
         var current = MainFrame.GetCurrentPage();
 
-        // 从搜索结果页进详情页时记下条件，返回时能回到结果列表；其余情况不需要恢复
-        _restoreSearchInfo = page is not DownloadSearch &&
-                             current is DownloadSearch &&
-                             DownloadSearch.IsShowingDetailed
-            ? SearchDetailed.SearchInfo
-            : null;
+        // 记住详情页来源：搜索结果页还是推荐首页，返回时回到对应页面
+        _detailFromSearchResults = page is not DownloadSearch &&
+                                   current is DownloadSearch &&
+                                   DownloadSearch.IsShowingDetailed;
 
         MainFrame.NavigateTo(page);
         UpdateBackBtn();
     }
 
-    /// <summary>返回上一级：搜索结果页 -> 下载首页；详情页 -> 下载页（按需恢复结果列表）</summary>
+    /// <summary>返回上一级：搜索结果页 -> 下载首页；详情页 -> 进入前的页面（搜索结果页或推荐首页）</summary>
     public void GoBack()
     {
         var current = MainFrame.GetCurrentPage();
@@ -88,8 +86,20 @@ public partial class DownloadRoot : BedrockBootPage
 
         if (current != null)
         {
-            DownloadSearch.SetPendingRestore(_restoreSearchInfo);
-            NavigateTo(new DownloadSearch());
+            // 复用下载页实例：它在进详情页时只是被脱离视觉树，
+            // 内部 SearchDetailed（分页、筛选、结果列表）仍被静态引用持有，重新挂回即原样恢复
+            var restoreResults = _detailFromSearchResults && DownloadSearch.SearchDetailed != null;
+
+            NavigateTo(_searchPage);
+
+            if (restoreResults)
+            {
+                DownloadSearch.NavigateInnerFrame(DownloadSearch.SearchDetailed);
+                // 重新挂回的只是骨架：卸载时内部列表已被 NavigationFrame 清空，这里用缓存结果重建
+                DownloadSearch.SearchDetailed.RestoreDisplayedResults();
+            }
+            else
+                DownloadSearch.ShowSearchDefault();
         }
     }
 

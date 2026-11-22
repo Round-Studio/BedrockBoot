@@ -4,11 +4,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              xmlns:bedrockBoot="clr-namespace:BedrockBoot"
+             xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalLanguage">
     <ScrollViewer>
         <StackPanel Margin="20,15"
                     Spacing="8">
+            <items:BorderCard Padding="0">
+                <Grid>
+                    <Border HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            ClipToBounds="True"
+                            CornerRadius="6">
+                        <onePointControls:FontIcon FontSize="168"
+                                                   Opacity="0.2"
+                                                   Glyph="&#xE909;"
+                                                   Margin="0,-50,-4,0"></onePointControls:FontIcon>
+                    </Border>
+                    <Grid Margin="24">
+                        <StackPanel>
+                            <TextBlock FontSize="22"
+                                       Text="{DynamicResource Setting.Language.Header.Prefix}"></TextBlock>
+                            <TextBlock FontSize="42"
+                                       FontWeight="DemiBold"
+                                       Text="BedrockBoot"></TextBlock>
+                            <TextBlock FontSize="22"
+                                       Text="{DynamicResource Setting.Language.Header.Suffix}"></TextBlock>
+                            
+                            <StackPanel Margin="0,16,0,0"
+                                        Spacing="4">
+                                <TextBlock Text="{DynamicResource Setting.Language.Header.Line1}"></TextBlock>
+                                <TextBlock Text="{DynamicResource Setting.Language.Header.Line2}"></TextBlock>
+                                <TextBlock Text="{DynamicResource Setting.Language.Header.Line3}"></TextBlock>
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,8,0,0">
+                                <Button Padding="22,8"
+                                        Content="{DynamicResource Setting.Language.Header.Contribute}"
+                                        Name="OpenPRBtn"
+                                        Click="OpenPRBtn_OnClick"></Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </items:BorderCard>
+            
             <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Setting.Language.Title}" />

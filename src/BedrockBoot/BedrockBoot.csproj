@@ -84,7 +84,6 @@
         <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.4"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4"/>
         <PackageReference Include="Avalonia.HarfBuzz" Version="12.1.4"/>
-        <PackageReference Include="Interop.IWshRuntimeLibrary" Version="1.0.1"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.71"/>
         <PackageReference Include="Markdig" Version="1.2.0" />
         <PackageReference Include="NAudio" Version="2.2.1" />

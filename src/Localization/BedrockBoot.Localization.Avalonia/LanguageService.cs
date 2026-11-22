@@ -110,6 +110,26 @@ public sealed class LanguageService
     /// <summary>切换语言；未注册的语言会退回基准语。</summary>
     public void SetCulture(string culture) => _context.SetCulture(culture);
 
+    /// <summary>
+    ///     改变"缺翻译怎么显示"的策略，并立即重建键表让界面刷新。
+    /// </summary>
+    /// <remarks>
+    ///     <see cref="LocalizationOptions" /> 的属性都是 <c>init</c>，改策略必须整体换实例，
+    ///     光赋值不会触发重建——那样设置项看起来生效了、界面却毫无变化。
+    ///     重建走 <see cref="LocalizationContext.SetCulture" />，顺带把 <c>CultureChanged</c>
+    ///     也发一次，绑 <c>{DynamicResource}</c> 的文案会一起刷新。
+    /// </remarks>
+    public void SetMissingKeyStyle(MissingKeyStyle style)
+    {
+        if (_context.Options.MissingKeyStyle == style)
+            return;
+
+        _context.Options = _context.Options.WithMissingKeyStyle(style);
+
+        if (_context.IsReady)
+            _context.SetCulture(_context.Culture);
+    }
+
     /// <summary>查串并格式化。格式化使用当前语言的 <see cref="CultureInfo" />。</summary>
     public string Get(string key, params object?[]? args) => _context.Get(key, args);
 

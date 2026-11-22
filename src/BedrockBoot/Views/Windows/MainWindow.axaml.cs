@@ -1042,7 +1042,7 @@ public partial class MainWindow : Window
                         if (!fileType.HasValue)
                         {
                             fileType = supportInfo.Type;
-                            displayName = supportInfo.Name;
+                            displayName = GlobalKeys.GetFileTypeDisplayName(extension);
                             allowMany = supportInfo.AllowMany;
                             isValid = true;
                         }

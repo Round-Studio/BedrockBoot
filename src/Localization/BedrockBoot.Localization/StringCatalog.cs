@@ -158,7 +158,7 @@ public sealed class StringCatalog
                 translated = false;
             }
 
-            table[key] = !translated && options.MarkMissing ? options.Mark(value) : value;
+            table[key] = options.FormatMissing(key, value, translated);
         }
 
         return table;

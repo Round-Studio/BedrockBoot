@@ -17,6 +17,8 @@
     -->
     <ItemGroup>
         <EmbeddedResource Include="Resources\I18n\**" />
+        <!-- 主页欢迎语：独立目录、独立格式（文本 + 频率），不进主键表，见 WelcomeMessages。 -->
+        <EmbeddedResource Include="Resources\Welcome\**" />
     </ItemGroup>
 
 </Project>

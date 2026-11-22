@@ -36,8 +36,10 @@ public sealed class LocalizationOptions
     public IReadOnlyDictionary<string, string> CultureFallbacks { get; init; } =
         CultureManifest.Builtin.BuildFallbacks();
 
-    /// <summary>为 true 时，未翻译的值会被包裹，便于一眼识别兜底内容。</summary>
-    public bool MarkMissing { get; init; } = true;
+    /// <summary>
+    ///     未翻译（值来自回退链）时的显示策略。默认静默，终端用户不会看到标记。
+    /// </summary>
+    public MissingKeyStyle MissingKeyStyle { get; init; } = MissingKeyStyle.Silent;
 
     /// <summary>未翻译值的左标记。</summary>
     public string MissingPrefix { get; init; } = "\u27E6";
@@ -71,4 +73,34 @@ public sealed class LocalizationOptions
 
     /// <summary>包裹未翻译的值。</summary>
     public string Mark(string value) => $"{MissingPrefix}{value}{MissingSuffix}";
+
+    /// <summary>
+    ///     按 <see cref="MissingKeyStyle" /> 决定一个键最终显示什么。
+    /// </summary>
+    /// <param name="key">键名。</param>
+    /// <param name="value">回退链求值结果；键完全不存在时等于键名。</param>
+    /// <param name="translated">该值是否来自当前语言本身（或调试覆盖层）。</param>
+    public string FormatMissing(string key, string value, bool translated)
+    {
+        if (translated)
+            return value;
+
+        return MissingKeyStyle switch
+        {
+            MissingKeyStyle.MarkValue => Mark(value),
+            MissingKeyStyle.ShowKey => Mark(key),
+            _ => value,
+        };
+    }
+
+    /// <summary>派生一个只改缺失键策略的新实例（init 属性无法就地修改）。</summary>
+    public LocalizationOptions WithMissingKeyStyle(MissingKeyStyle style) => new()
+    {
+        BaselineCulture = BaselineCulture,
+        FallbackCulture = FallbackCulture,
+        CultureFallbacks = CultureFallbacks,
+        MissingKeyStyle = style,
+        MissingPrefix = MissingPrefix,
+        MissingSuffix = MissingSuffix,
+    };
 }

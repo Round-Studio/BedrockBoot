@@ -1508,11 +1508,11 @@
     <x:String x:Key="Instance.Loader.Action.Remove">移除该加载器</x:String>
     <x:String x:Key="Setting.Language.Title">语言 / Language</x:String>
     <x:String x:Key="Setting.Language.Description">BedrockBoot 支持多个地区/国家的语言。</x:String>
-    <x:String x:Key="Setting.Language.MissingKey.Title">缺翻译时的显示</x:String>
-    <x:String x:Key="Setting.Language.MissingKey.Description">某条文案在当前语言里没有译文时会回退到兜底语言。默认静默回退，日常使用看不到任何标记；翻译校对时可切到标记模式，一眼看出哪些还没翻。</x:String>
-    <x:String x:Key="Setting.Language.MissingKey.Silent">静默回退（直接显示兜底文本）</x:String>
-    <x:String x:Key="Setting.Language.MissingKey.MarkValue">标记回退值（⟦兜底文本⟧）</x:String>
-    <x:String x:Key="Setting.Language.MissingKey.ShowKey">显示键名（⟦Core.Example.Key⟧）</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Title">翻译缺失时的显示</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Description">本地化调试时可切到标记模式，标记翻译缺失的文本。</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Silent">回退（兜底文本）</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.MarkValue">标记回退（⟦兜底文本⟧）</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.ShowKey">键名（⟦Core.Example.Key⟧）</x:String>
     <x:String x:Key="Setting.Language.Translator">来源 / 翻译官</x:String>
     <x:String x:Key="Setting.Language.Tools">本地化工具</x:String>
     <x:String x:Key="Setting.Language.DebugTool.Title">本地化调试工具</x:String>

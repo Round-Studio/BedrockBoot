@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Avalonia.Media;
+using BedrockBoot.Localization;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Config;
 
@@ -80,6 +81,11 @@ namespace BedrockBoot.Standard.Entity
         public CatalogStrategyEnum CatalogStrategy { get; set; } = CatalogStrategyEnum.Independence;
 
         [JsonPropertyName("languageKey")] public string Language { get; set; } = "zh_CN";
+
+        /// <summary>当前语言没有译文时的显示策略，见 <see cref="Localization.MissingKeyStyle" />。</summary>
+        [JsonPropertyName("missingKeyStyle")]
+        public MissingKeyStyle MissingKeyStyle { get; set; } = MissingKeyStyle.Silent;
+
         [JsonPropertyName("gatherInfo")] public bool GatherInfo { get; set; } = true;
 
         [JsonPropertyName("isShowConnectPage")]

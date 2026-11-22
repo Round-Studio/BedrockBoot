@@ -25,6 +25,8 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Core.Global;
+using BedrockBoot.Localization;
+using BedrockBoot.Localization.Avalonia;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
@@ -53,7 +55,34 @@ public partial class UniversalLanguage : ISettingPage
 
         LanguageSelectBox.SelectedIndex =
             I18nManager.LanguageDict.Keys.ToList().FindIndex(x => x == GlobalModel.Config.Data.Language);
+
+        // 缺翻译显示策略：选项内容需要按当前语言取，故在代码里填充。
+        // 枚举值直接当下拉框索引用（顺序固定，见 MissingKeyStyle）。
+        MissingKeyStyleBox.Items.Clear();
+        foreach (var style in Enum.GetValues<MissingKeyStyle>())
+            MissingKeyStyleBox.Items.Add(new ComboBoxItem
+            {
+                Content = I18nManager.Instance["Setting.Language.MissingKey." + style]
+            });
+        MissingKeyStyleBox.SelectedIndex = (int)GlobalModel.Config.Data.MissingKeyStyle;
+
         IsEdit = true;
+    }
+
+    private void MissingKeyStyleBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (!IsEdit || MissingKeyStyleBox.SelectedIndex < 0)
+            return;
+
+        var style = (MissingKeyStyle)MissingKeyStyleBox.SelectedIndex;
+        if (GlobalModel.Config.Data.MissingKeyStyle == style)
+            return;
+
+        GlobalModel.Config.Data.MissingKeyStyle = style;
+        GlobalModel.Config.Save();
+
+        // 换策略必须重建键表，否则界面不会变（仅换 Options 实例不会触发重建）。
+        LanguageService.Current.SetMissingKeyStyle(style);
     }
 
     private void LanguageSelectBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

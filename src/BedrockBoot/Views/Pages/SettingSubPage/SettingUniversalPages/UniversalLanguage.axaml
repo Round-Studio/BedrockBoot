@@ -27,6 +27,8 @@
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
                        Text="{DynamicResource Setting.Language.Description}" />
+
+            
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
@@ -54,6 +56,19 @@
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
                        Text="{DynamicResource Setting.Language.DebugTool.HotReloadHint}" />
+
+                       <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Margin="0,8,0,0"
+                       Text="{DynamicResource Setting.Language.MissingKey.Title}" />
+
+            <ComboBox HorizontalAlignment="Stretch"
+                      Name="MissingKeyStyleBox"
+                      SelectionChanged="MissingKeyStyleBox_OnSelectionChanged" />
+
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="{DynamicResource Setting.Language.MissingKey.Description}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

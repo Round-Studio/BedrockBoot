@@ -735,7 +735,7 @@
     <x:String x:Key="Settings.Nav.Tips.Download.Source">In some network environments, the MCAPPX source may not be available.</x:String>
     <x:String x:Key="Settings.Nav.Tips.Download.Thread">For download threads, we recommend using the default 4 threads. If too many threads are used, download speed may decrease.</x:String>
     <x:String x:Key="Settings.Nav.Group.Game">Game</x:String>
-    <x:String x:Key="Settings.Nav.Tips.Game.Path">Please ensure the game directory path does not contain Chinese characters or symbols. If such characters appear, the game may not launch.</x:String>
+    <x:String x:Key="Settings.Nav.Tips.Game.Path">Please ensure the game directory path does not contain Non-ASCII characters. If such characters appear, the game may not launch.</x:String>
     <x:String x:Key="Settings.Nav.Tips.Game.Isolation">For version isolation, we recommend using Hybrid Mode. Using Single Mode might prevent other third-party Bedrock launchers from installing and launching the game properly.</x:String>
     <x:String x:Key="Settings.Nav.Action.FAQ">Launcher FAQ</x:String>
 

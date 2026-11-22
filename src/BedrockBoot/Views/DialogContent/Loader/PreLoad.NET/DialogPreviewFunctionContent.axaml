@@ -3,16 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
              x:Class="BedrockBoot.Views.DialogContent.Loader.PreLoad.NET.DialogPreviewFunctionContent">
-    <Grid Width="320"
-          Height="240">
-        <ScrollViewer>
-            <StackPanel Name="FunctionStackPanel"
-                        Spacing="8">
+    <Grid Width="420"
+          MinHeight="320">
+        <StackPanel Name="FunctionStackPanel"
+                    Spacing="8"
+                    Background="#01000000">
                 
-            </StackPanel>
-        </ScrollViewer>
+        </StackPanel>
         
         <notice:InfoCard Name="InfoCard"
                          BigTitle="无法加载配置项"

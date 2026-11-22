@@ -76,18 +76,18 @@ public partial class NetworkTest : ISettingPage
 
         // Version Sources
         foreach (var src in SourceList.VersionDataSources)
-            _entries.Add(new NetworkTestEntry(version, src.Key, src.Value));
+            _entries.Add(new NetworkTestEntry(version, SourceList.GetSourceDisplayName(src.Key), src.Value));
 
         // CurseForge Sources
         foreach (var src in SourceList.CurseForgeSource)
-            _entries.Add(new NetworkTestEntry(curseForge, src.Key, src.Value));
+            _entries.Add(new NetworkTestEntry(curseForge, SourceList.GetSourceDisplayName(src.Key), src.Value));
 
         // Update Download Sources（含占位符 {url} 的源用统一探针 URL 替换）
         const string probeRouterUrl = "https://github.com/microsoft/vscode/releases";
         foreach (var src in SourceList.UpdateDownloadSources)
         {
             var url = src.Value.Replace("{url}", probeRouterUrl);
-            _entries.Add(new NetworkTestEntry(update, src.Key, url));
+            _entries.Add(new NetworkTestEntry(update, SourceList.GetSourceDisplayName(src.Key), url));
         }
 
         // Game File Download Sources（占位符 {router} 替换为根路径）

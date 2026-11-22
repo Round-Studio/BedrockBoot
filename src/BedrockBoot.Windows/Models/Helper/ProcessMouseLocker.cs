@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using BedrockBoot.Core.Global;
+using BedrockBoot.Localization;
 using BedrockBoot.Standard.Interface.Platform;
 using BedrockBoot.Windows.Models.Helper.Notice;
 
@@ -232,7 +233,7 @@ public class ProcessMouseLocker : IMouseLocker
                         try
                         {
                             // 调用你的通知组件
-                            NoticeHelper.SentNotice("游戏已捕获", "鼠标锁定已就绪 (按 "+ _hotKey.ToString() + " 或 Win 解锁)");
+                            NoticeHelper.SentNotice(Localizer.Get("Windows.MouseLock.Notice.Title"), Localizer.Get("Windows.MouseLock.Notice.Content", _hotKey.ToString()));
                         }
                         catch { }
                         _wasWindowFound = true;

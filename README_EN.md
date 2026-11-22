@@ -7,6 +7,7 @@
 <p align="center">
   <b>Industrial Grade Minecraft Bedrock Edition Launcher for Windows & Linux</b>
   <br/>
+  <b>A Bedrock Edition launcher based on BedrockLauncher.Core</b>
 </p>
 <div align="center">
 
@@ -31,9 +32,9 @@ English | [简体中文](README.md)
 
 **BedrockBoot** is a high-performance Minecraft Bedrock Edition launcher designed for **Windows** and **Linux**.
 
-The project aims to provide users with an efficient and convenient way to launch and manage Minecraft Bedrock Edition.
+The project aims to help users launch and manage Minecraft Bedrock efficiently.
 
-It integrates built-in download access for the **vanilla game** and **CurseForge** resources, making it easier to obtain game versions and community content.
+It integrates built-in download access for the **game** itself and **CurseForge** resources, making it easier to obtain game versions and community content.
 
 The launcher also features **PaperConnect**, an alternative multiplayer solution to traditional Xbox-based multiplayer, providing a more convenient multiplayer experience.
 
@@ -59,7 +60,7 @@ With support for multiple game directories and isolated instances, BedrockBoot m
 | Multiple Account Management        | ✅           | Log in to and switch between Xbox accounts on both Windows and Linux, with support for online game mode                                                       |
 | Cross-Platform Support             | ✅           | Supports Windows and Linux. Linux uses ProtonGDK to run GDK games                                                                                             |
 | Compatibility with Other Launchers | ✅           | Compatible with other third-party Bedrock launchers, such as BMCBL and LeviLauncher (partial support)                                                         |
-| Runtime Dependency Management      | ✅           | Automatically detects the game environment and installs missing runtime components before launching                                                           |
+| Runtime Component Setup            | ✅           | Automatically detects the game environment and installs missing runtime components before launching                                                           |
 | Launcher Plugins                   | ✅           | Download officially published plugins to extend launcher functionality                                                                                        |
 | Extensive Customization            | ✅           | Customize fonts, backgrounds, background music, and even 3D parallax backgrounds. Export your settings as theme packs and share them with others              |
 | LeviLamina                         | ✅           | Install, manage, and load LeviLamina and its mods within game instances                                                                                       |
@@ -74,7 +75,7 @@ With support for multiple game directories and isolated instances, BedrockBoot m
 
 # Download
 
-You can obtain official BedrockBoot releases through the following channels:
+You can obtain BedrockBoot binaries through the following official channels:
 
 | Channel                      | Link                                                                          |
 | ---------------------------- | ----------------------------------------------------------------------------- |
@@ -117,8 +118,8 @@ Download the release package and run `BedrockBoot.AppImage`.
 BedrockBoot is an open-source, community-driven project. Contributions of all kinds are welcome.
 
 - **Bug Reports & Suggestions**: Submit bug reports or feature requests through [GitHub Issues](https://github.com/Round-Studio/BedrockBoot/issues).
-- **Development**: Fork this repository and submit a Pull Request. Please ensure that your code passes basic unit tests before submitting.
-- **Technology Stack**: C# / C++ / .NET / [Avalonia](https://github.com/avaloniaui).
+- **Pull Requests**: Fork this repository and submit a Pull Request. Please ensure that your code passes basic unit tests before submitting.
+- **Tech Stack**: C# / C++ / .NET / [Avalonia](https://github.com/avaloniaui).
 
 # Build From Source
 
@@ -136,7 +137,7 @@ dotnet build -c Release
 
 # Team & Credits
 
-## Core Team
+## Core Developers
 
 - **Lead Developers**: Dime, YoumiHa
 - **UI/UX Design**: Dime, DrMing
@@ -146,7 +147,7 @@ dotnet build -c Release
 
 This program is released under the **GPLv3** open-source license, with the following additional terms:
 
-1. **Branding Modifications**: When distributing modified versions, you must reasonably modify the program name or version number.
+1. **Marking Modified Versions**: When distributing modified versions, you must reasonably modify the program name or version number.
 2. **Copyright Notices**: You must not remove or obscure any copyright notices embedded in the program.
 
 ---

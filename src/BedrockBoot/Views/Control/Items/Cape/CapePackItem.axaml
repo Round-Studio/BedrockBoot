@@ -7,7 +7,6 @@
              x:Class="BedrockBoot.Views.Control.Items.Cape.CapePackItem">
         <onePointControls:SettingExpander Name="SettingExpander"
                                           Header="CapePack"
-                                          Description="{DynamicResource Cape.Item.PackCount}"
                                           Glyph="&#xF012;"
                                           IsFontIcon="True">
             <StackPanel>

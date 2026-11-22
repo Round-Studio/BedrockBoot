@@ -34,6 +34,59 @@
     <x:String x:Key="Common.Action.Irreversible">This action is irreversible.</x:String>
     <x:String x:Key="Common.Unit.Speed">{0}/s</x:String>
 
+    <x:String x:Key="Core.Download.Error.Title">Installation Failed</x:String>
+    <x:String x:Key="Core.Download.Error.GameInstallFailed">Game {0} installation failed</x:String>
+    <x:String x:Key="Core.Download.Error.InvalidPackageTitle">Invalid Package</x:String>
+    <x:String x:Key="Core.Download.Error.InvalidPackage">The downloaded package is invalid, please download again</x:String>
+    <x:String x:Key="Core.Download.Error.MD5Title">MD5 Verification Failed</x:String>
+    <x:String x:Key="Core.Download.Error.MD5Failed">Error verifying file integrity</x:String>
+    <x:String x:Key="Core.Download.Progress.Cache">Using cache</x:String>
+    <x:String x:Key="Core.Download.Progress.Downloading">Downloading game ({0:F2}%)</x:String>
+    <x:String x:Key="Core.Download.Progress.Extracting">Extracting files ({0:F2}%)</x:String>
+    <x:String x:Key="Core.Download.Progress.UsingCache">Using cached package (100%)</x:String>
+    <x:String x:Key="Core.Download.Status.DownloadingPackage">Downloading game package...</x:String>
+    <x:String x:Key="Core.Download.Status.LocalInstalling">Local installation in progress...</x:String>
+    <x:String x:Key="Core.Download.Status.MergeComplete">Merge complete</x:String>
+    <x:String x:Key="Core.Download.Status.UsingCache">Using cached package</x:String>
+    <x:String x:Key="Core.Download.Status.Verifying">Verifying package integrity...</x:String>
+    <x:String x:Key="Core.Download.Status.VerifyingPackage">Verifying package...</x:String>
+    <x:String x:Key="Core.Launch.Status.Format">Status: {0}</x:String>
+    <x:String x:Key="Core.Launch.Status.Launched">Status: game launched, timing started</x:String>
+    <x:String x:Key="Core.Launch.Status.LoggingIn">Signing in</x:String>
+    <x:String x:Key="Core.Launch.Status.PreLaunchCommand">Status: executing pre-launch command</x:String>
+    <x:String x:Key="Core.Launch.Status.PreparingProton">Preparing Proton environment</x:String>
+    <x:String x:Key="Core.Launch.Status.WaitingWindow">Step: launched, waiting for game window</x:String>
+    <x:String x:Key="Core.Launch.Step.Format">Step: {0}</x:String>
+
+    <x:String x:Key="Core.Source.Accelerated">Accelerated source ①</x:String>
+    <x:String x:Key="Core.Source.BedrockBoot">BedrockBoot source ①</x:String>
+    <x:String x:Key="Core.Source.BMCBL">BMCBL source ①</x:String>
+
+    <x:String x:Key="Core.FileType.Mcpack">Bedrock resource pack</x:String>
+    <x:String x:Key="Core.FileType.Mcaddon">Bedrock add-on collection</x:String>
+    <x:String x:Key="Core.FileType.Mcworld">Bedrock world</x:String>
+    <x:String x:Key="Core.FileType.Mctemplate">Bedrock world template</x:String>
+    <x:String x:Key="Core.FileType.Rskin">Round-Studio universal skin pack</x:String>
+    <x:String x:Key="Core.FileType.Rplck">Round-Studio universal add-on pack</x:String>
+    <x:String x:Key="Core.Source.CurseForge">CurseForge official</x:String>
+    <x:String x:Key="Core.Source.McAppx">McAppx source</x:String>
+    <x:String x:Key="Core.Source.MCIM">MCIM source</x:String>
+
+    <x:String x:Key="Windows.DeveloperMode.CheckFailed.Title">Failed to Check Windows Developer Mode</x:String>
+    <x:String x:Key="Windows.DeveloperMode.CheckFailed.Content">Unable to automatically confirm Windows Developer Mode status.&#x0a;Without Developer Mode enabled, UWP builds of Minecraft cannot be installed or launched.&#x0a;&#x0a;Please check manually whether "Developer Mode" is enabled in Windows Settings.</x:String>
+    <x:String x:Key="Windows.DeveloperMode.CheckFailed.ManualCheck">Check Manually</x:String>
+    <x:String x:Key="Windows.DeveloperMode.Disabled.Title">Developer Mode Not Enabled</x:String>
+    <x:String x:Key="Windows.DeveloperMode.Disabled.Content">Developer Mode is not enabled on this system, so UWP builds of Minecraft cannot be installed or launched.&#x0a;&#x0a;Please enable "Developer Mode" in Windows Settings.</x:String>
+    <x:String x:Key="Windows.DeveloperMode.Disabled.Ignore">Ignore</x:String>
+    <x:String x:Key="Windows.GameService.Notice.Title">GameService Component Not Installed</x:String>
+    <x:String x:Key="Windows.GameService.Notice.Content">The GameService component is not installed on this system.&#x0a;Without the GameService component, Minecraft cannot launch.&#x0a;Please install GameService and then launch the game again.</x:String>
+    <x:String x:Key="Windows.GameService.Notice.InstallStore">Click here to install from Microsoft Store</x:String>
+    <x:String x:Key="Windows.GameService.Notice.InstallWeb">Click here to view in Microsoft Store (web)</x:String>
+    <x:String x:Key="Windows.GameService.Notice.Detail">See details:</x:String>
+    <x:String x:Key="Windows.GameService.Notice.DocLink">FAQ - BedrockBoot Docs</x:String>
+    <x:String x:Key="Windows.MouseLock.Notice.Title">Game Captured</x:String>
+    <x:String x:Key="Windows.MouseLock.Notice.Content">Mouse lock ready (press {0} or Win to unlock)</x:String>
+
     <x:String x:Key="MainWindow.Common.Confirm">Confirm</x:String>
     <x:String x:Key="MainWindow.Common.Cancel">Cancel</x:String>
     <x:String x:Key="MainWindow.Common.Delete">Delete</x:String>
@@ -89,7 +142,7 @@
     <x:String x:Key="Manager.GameType.Preview">Preview</x:String>
 
     <x:String x:Key="Manager.Filter.PlayTimeAsc">Play Time ▲</x:String>
-    <x:String x:Key="Manager.Filter.PlayTimeDesc">Play Time降序</x:String>
+    <x:String x:Key="Manager.Filter.PlayTimeDesc">Play Time ▼</x:String>
 
     <x:String x:Key="Manager.GameItem.Launch">Launch</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">Edit Mode</x:String>
@@ -1446,6 +1499,11 @@
     <x:String x:Key="Instance.Loader.Action.Remove">Remove Loader</x:String>
     <x:String x:Key="Setting.Language.Title">Language / 语言</x:String>
     <x:String x:Key="Setting.Language.Description">BedrockBoot supports languages from multiple regions and countries.</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Title">Untranslated Text Display</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Description">When a string has no translation for the current language it falls back to the fallback language. Silent fallback is the default, so nothing is marked during normal use; switch to a marked mode while reviewing translations to spot what is still missing.</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Silent">Silent fallback (show fallback text)</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.MarkValue">Mark fallback value (⟦fallback text⟧)</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.ShowKey">Show key name (⟦Core.Example.Key⟧)</x:String>
     <x:String x:Key="Setting.Language.Translator">Source / Translator</x:String>
     <x:String x:Key="Setting.Language.Tools">Localization Tools</x:String>
     <x:String x:Key="Setting.Language.DebugTool.Title">Localization Debug Tool</x:String>
@@ -1548,6 +1606,7 @@
     <x:String x:Key="Cape.Quality.Rare">Rare</x:String>
     <x:String x:Key="Cape.Quality.Epic">Epic</x:String>
     <x:String x:Key="Cape.Quality.Legendary">Legendary</x:String>
+    <x:String x:Key="Cape.Quality.Unknown">Unknown</x:String>
     <x:String x:Key="Cape.Dialog.CreatePack.Name">Cape Pack Name</x:String>
     <x:String x:Key="Cape.Dialog.CreatePack.Author">Author</x:String>
     <x:String x:Key="Cape.Dialog.CreatePack.AuthorWatermark">Optional</x:String>
@@ -1571,7 +1630,6 @@
     <x:String x:Key="Cape.FileView.Add">Add Cape</x:String>
     <x:String x:Key="Cape.FileView.Empty.Title">No Capes</x:String>
     <x:String x:Key="Cape.FileView.Empty.Message">Click "Add Cape" in the top right to import PNG texture files</x:String>
-    <x:String x:Key="Cape.Item.PackCount">? capes total</x:String>
     <x:String x:Key="Cape.Item.EditPack">Edit Cape Pack</x:String>
     <x:String x:Key="Cape.Item.DeletePack">Delete Cape Pack</x:String>
     <x:String x:Key="Cape.Item.DeleteFile">Delete Cape</x:String>

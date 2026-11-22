@@ -22,6 +22,7 @@ using Windows.Management.Deployment;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
+using BedrockBoot.Localization;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Helper;
@@ -187,7 +188,7 @@ public class EasyLauncher : ILauncher
         var launchCommandConfig = BedrockBoot.Core.Global.GlobalModel.Config.Data.LaunchCommandConfig;
         if (launchCommandConfig.IsEnable && !string.IsNullOrWhiteSpace(launchCommandConfig.PreLaunchCommand))
         {
-            UpdateProgressText?.Invoke("状态：正在执行启动前命令");
+            UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.PreLaunchCommand"));
 
             var exitCode = await LaunchCommandHelper.RunHookAsync(
                 launchCommandConfig.PreLaunchCommand,
@@ -243,17 +244,17 @@ public class EasyLauncher : ILauncher
                         Console.WriteLine($@"registerProcess_percent: {progress.percentage} - {progress.state}");
 
                         // 使用回调更新进度，而不是直接操作 UI
-                        UpdateProgress?.Invoke($"步骤：{progress.state}", progress.percentage);
+                        UpdateProgress?.Invoke(Localizer.Get("Core.Launch.Step.Format", progress.state), progress.percentage);
                     }),
                     Progress = new Progress<LaunchState>(state =>
                     {
                         Console.WriteLine(state);
-                        UpdateProgressText?.Invoke($"状态：{state}");
+                        UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.Format", state));
 
                         // 当游戏启动状态变化时，更新进度文本
                         if (state == LaunchState.Launched)
                         {
-                            UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
+                            UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.Launched"));
                         }
                     }),
                     LaunchArgs = string.IsNullOrEmpty(args) ? null : args
@@ -289,7 +290,7 @@ public class EasyLauncher : ILauncher
                 {
                 }
 
-                UpdateProgressText?.Invoke("状态：游戏启动完成，开始计时");
+                UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.Launched"));
             }
 
             if (MinecraftProcess != null)
@@ -313,7 +314,7 @@ public class EasyLauncher : ILauncher
 
                 Launched?.Invoke(MinecraftProcess);
                 OnGameLaunched?.Invoke(VersionInfo);
-                UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
+                UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.WaitingWindow"));
                 SetProgressIndeterminate?.Invoke(true);
 
                 if (BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLock)

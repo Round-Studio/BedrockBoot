@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using BedrockBoot.Localization;
+
 namespace BedrockBoot.Standard.Entity.Game.Pack.Capes;
 
 public class CapeFileInfo
@@ -40,12 +42,12 @@ public class CapeTypeHelper
     {
         return type switch
         {
-            CapeFileType.Common => "普通",
-            CapeFileType.Uncommon => "不常见",
-            CapeFileType.Rare => "稀有",
-            CapeFileType.Epic => "史诗",
-            CapeFileType.Legendary => "传奇",
-            _ => "未知"
+            CapeFileType.Common => Localizer.Get("Cape.Quality.Common"),
+            CapeFileType.Uncommon => Localizer.Get("Cape.Quality.Uncommon"),
+            CapeFileType.Rare => Localizer.Get("Cape.Quality.Rare"),
+            CapeFileType.Epic => Localizer.Get("Cape.Quality.Epic"),
+            CapeFileType.Legendary => Localizer.Get("Cape.Quality.Legendary"),
+            _ => Localizer.Get("Cape.Quality.Unknown")
         };
     }
 

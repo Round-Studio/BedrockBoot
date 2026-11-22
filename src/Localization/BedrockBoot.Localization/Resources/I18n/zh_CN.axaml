@@ -34,13 +34,66 @@
     <x:String x:Key="Common.Action.Irreversible">此操作将永远无法恢复。</x:String>
     <x:String x:Key="Common.Unit.Speed">{0}/s</x:String>
 
+    <x:String x:Key="Core.Download.Error.Title">安装失败</x:String>
+    <x:String x:Key="Core.Download.Error.GameInstallFailed">游戏 {0} 安装失败</x:String>
+    <x:String x:Key="Core.Download.Error.InvalidPackageTitle">无效包</x:String>
+    <x:String x:Key="Core.Download.Error.InvalidPackage">当前下载的包无效，请重新下载</x:String>
+    <x:String x:Key="Core.Download.Error.MD5Title">MD5 校验失败</x:String>
+    <x:String x:Key="Core.Download.Error.MD5Failed">验证文件完整性时出错</x:String>
+    <x:String x:Key="Core.Download.Progress.Cache">使用缓存</x:String>
+    <x:String x:Key="Core.Download.Progress.Downloading">下载游戏 ({0:F2}%)</x:String>
+    <x:String x:Key="Core.Download.Progress.Extracting">解压文件 ({0:F2}%)</x:String>
+    <x:String x:Key="Core.Download.Progress.UsingCache">使用缓存包 (100%)</x:String>
+    <x:String x:Key="Core.Download.Status.DownloadingPackage">正在下载游戏包...</x:String>
+    <x:String x:Key="Core.Download.Status.LocalInstalling">本地安装中...</x:String>
+    <x:String x:Key="Core.Download.Status.MergeComplete">合并完成</x:String>
+    <x:String x:Key="Core.Download.Status.UsingCache">使用缓存包</x:String>
+    <x:String x:Key="Core.Download.Status.Verifying">正在验证包完整性...</x:String>
+    <x:String x:Key="Core.Download.Status.VerifyingPackage">验证包...</x:String>
+    <x:String x:Key="Core.Launch.Status.Format">状态：{0}</x:String>
+    <x:String x:Key="Core.Launch.Status.Launched">状态：游戏启动完成，开始计时</x:String>
+    <x:String x:Key="Core.Launch.Status.LoggingIn">正在登录账户</x:String>
+    <x:String x:Key="Core.Launch.Status.PreLaunchCommand">状态：正在执行启动前命令</x:String>
+    <x:String x:Key="Core.Launch.Status.PreparingProton">正在准备 Proton 环境</x:String>
+    <x:String x:Key="Core.Launch.Status.WaitingWindow">步骤：已启动，请等待游戏窗口显示</x:String>
+    <x:String x:Key="Core.Launch.Step.Format">步骤：{0}</x:String>
+
+    <x:String x:Key="Core.Source.Accelerated">加速源 ①</x:String>
+    <x:String x:Key="Core.Source.BedrockBoot">BedrockBoot 源 ①</x:String>
+    <x:String x:Key="Core.Source.BMCBL">BMCBL 源 ①</x:String>
+
+    <x:String x:Key="Core.FileType.Mcpack">基岩版资源包</x:String>
+    <x:String x:Key="Core.FileType.Mcaddon">基岩版集合包</x:String>
+    <x:String x:Key="Core.FileType.Mcworld">基岩版存档包</x:String>
+    <x:String x:Key="Core.FileType.Mctemplate">基岩版世界模版</x:String>
+    <x:String x:Key="Core.FileType.Rskin">Round-Studio 通用皮肤包</x:String>
+    <x:String x:Key="Core.FileType.Rplck">Round-Studio 通用插件包</x:String>
+    <x:String x:Key="Core.Source.CurseForge">CurseForge 官方源</x:String>
+    <x:String x:Key="Core.Source.McAppx">McAppx 源</x:String>
+    <x:String x:Key="Core.Source.MCIM">MCIM 源</x:String>
+
+    <x:String x:Key="Windows.DeveloperMode.CheckFailed.Title">检查 Windows 开发人员模式失败</x:String>
+    <x:String x:Key="Windows.DeveloperMode.CheckFailed.Content">无法自动确认 Windows 开发人员模式状态。&#x0a;未开启 Windows 开发人员模式无法安装或启动 UWP 类型构建的 Minecraft&#x0a;&#x0a;请手动检查 Windows 设置中的“开发人员模式”是否开启</x:String>
+    <x:String x:Key="Windows.DeveloperMode.CheckFailed.ManualCheck">手动检查</x:String>
+    <x:String x:Key="Windows.DeveloperMode.Disabled.Title">未开启开发人员模式</x:String>
+    <x:String x:Key="Windows.DeveloperMode.Disabled.Content">当前系统未开启开发人员模式，无法安装或启动 UWP 类型构建的 Minecraft。&#x0a;&#x0a;请前往 Windows 设置中的“开发人员模式”开启。</x:String>
+    <x:String x:Key="Windows.DeveloperMode.Disabled.Ignore">忽略</x:String>
+    <x:String x:Key="Windows.GameService.Notice.Title">未安装 GameService 组件</x:String>
+    <x:String x:Key="Windows.GameService.Notice.Content">当前系统未安装 GameService 组件&#x0a;在未安装 GameService 组件的情况下，Minecraft 将无法启动。&#x0a;请安装 GameService，随后再次启动游戏。</x:String>
+    <x:String x:Key="Windows.GameService.Notice.InstallStore">点击此处前往微软商店安装</x:String>
+    <x:String x:Key="Windows.GameService.Notice.InstallWeb">点击此处前往微软商店 (网页端) 查看</x:String>
+    <x:String x:Key="Windows.GameService.Notice.Detail">详情参见：</x:String>
+    <x:String x:Key="Windows.GameService.Notice.DocLink">常见问题 - BedrockBoot 文档</x:String>
+    <x:String x:Key="Windows.MouseLock.Notice.Title">游戏已捕获</x:String>
+    <x:String x:Key="Windows.MouseLock.Notice.Content">鼠标锁定已就绪 (按 {0} 或 Win 解锁)</x:String>
+
     <x:String x:Key="MainWindow.Common.Confirm">确定</x:String>
     <x:String x:Key="MainWindow.Common.Cancel">取消</x:String>
     <x:String x:Key="MainWindow.Common.Delete">删除</x:String>
     <x:String x:Key="MainWindow.Common.Save">保存设置</x:String>
     <x:String x:Key="MainWindow.Common.Add">新增</x:String>
 
-    <x:String x:Key="Home.Title">你好，欢迎回来</x:String>
+    <x:String x:Key="Home.Title">您好，欢迎回来</x:String>
 
     <x:String x:Key="MainPage.Nav.Home">主页</x:String>
     <x:String x:Key="MainPage.Nav.Manager">实例</x:String>
@@ -1455,6 +1508,11 @@
     <x:String x:Key="Instance.Loader.Action.Remove">移除该加载器</x:String>
     <x:String x:Key="Setting.Language.Title">语言 / Language</x:String>
     <x:String x:Key="Setting.Language.Description">BedrockBoot 支持多个地区/国家的语言。</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Title">缺翻译时的显示</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Description">某条文案在当前语言里没有译文时会回退到兜底语言。默认静默回退，日常使用看不到任何标记；翻译校对时可切到标记模式，一眼看出哪些还没翻。</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.Silent">静默回退（直接显示兜底文本）</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.MarkValue">标记回退值（⟦兜底文本⟧）</x:String>
+    <x:String x:Key="Setting.Language.MissingKey.ShowKey">显示键名（⟦Core.Example.Key⟧）</x:String>
     <x:String x:Key="Setting.Language.Translator">来源 / 翻译官</x:String>
     <x:String x:Key="Setting.Language.Tools">本地化工具</x:String>
     <x:String x:Key="Setting.Language.DebugTool.Title">本地化调试工具</x:String>
@@ -1557,6 +1615,7 @@
     <x:String x:Key="Cape.Quality.Rare">稀有</x:String>
     <x:String x:Key="Cape.Quality.Epic">史诗</x:String>
     <x:String x:Key="Cape.Quality.Legendary">传奇</x:String>
+    <x:String x:Key="Cape.Quality.Unknown">未知</x:String>
     <x:String x:Key="Cape.Dialog.CreatePack.Name">披风包名称</x:String>
     <x:String x:Key="Cape.Dialog.CreatePack.Author">作者</x:String>
     <x:String x:Key="Cape.Dialog.CreatePack.AuthorWatermark">可选</x:String>
@@ -1580,7 +1639,6 @@
     <x:String x:Key="Cape.FileView.Add">添加披风</x:String>
     <x:String x:Key="Cape.FileView.Empty.Title">暂无披风</x:String>
     <x:String x:Key="Cape.FileView.Empty.Message">点击右上角「添加披风」导入 PNG 纹理文件</x:String>
-    <x:String x:Key="Cape.Item.PackCount">共 ? 个披风</x:String>
     <x:String x:Key="Cape.Item.EditPack">编辑该披风包</x:String>
     <x:String x:Key="Cape.Item.DeletePack">删除该披风包</x:String>
     <x:String x:Key="Cape.Item.DeleteFile">删除该披风</x:String>

@@ -49,15 +49,16 @@ public partial class SettingDownload : ISettingPage
         // 加载下载分片数配置
         ChunkCountSlider.Value = GlobalModel.Config.Data.DownloadChunkCount;
 
-        // 动态加载版本下载源 (保持数据源原名)
+        // 动态加载版本下载源（显示名走 i18n，源标识仅作身份）
         SourceBox.Items.Clear();
-        foreach (var s in SourceList.VersionDataSources) SourceBox.Items.Add(new ComboBoxItem { Content = s.Key });
+        foreach (var s in SourceList.VersionDataSources)
+            SourceBox.Items.Add(new ComboBoxItem { Content = SourceList.GetSourceDisplayName(s.Key) });
         SourceBox.SelectedIndex = GlobalModel.Config.Data.VersionSourceIndex;
 
         // 动态加载 CurseForge 下载源
         CurseForgeSourceBox.Items.Clear();
         foreach (var s in SourceList.CurseForgeSource)
-            CurseForgeSourceBox.Items.Add(new ComboBoxItem { Content = s.Key });
+            CurseForgeSourceBox.Items.Add(new ComboBoxItem { Content = SourceList.GetSourceDisplayName(s.Key) });
         CurseForgeSourceBox.SelectedIndex = GlobalModel.Config.Data.CurseForgeSourceIndex;
 
         EnableFuzzySearch.IsChecked = GlobalModel.Config.Data.IsEnableFuzzySearch;

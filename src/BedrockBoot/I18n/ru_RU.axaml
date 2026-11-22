@@ -78,6 +78,9 @@
     <x:String x:Key="MainWindow.TaskView.NoneTitle">Потрясающий!</x:String>
     <x:String x:Key="MainWindow.TaskView.NoneMessage">В списке задач нет задач</x:String>
     <x:String x:Key="MainWindow.Task.CountInfo">{0} Задачи</x:String>
+    <x:String x:Key="MainWindow.Media.NowPlaying">Играет: {0}</x:String>
+    <x:String x:Key="MainWindow.Media.LauncherMuted">Лаунчер без звука</x:String>
+    <x:String x:Key="MainWindow.Media.UnknownApp">Неизвестное приложение</x:String>
 
     <x:String x:Key="Manager.Title">Менеджер экземпляров</x:String>
     <x:String x:Key="Manager.IncludeGame">Импортировать игру</x:String>

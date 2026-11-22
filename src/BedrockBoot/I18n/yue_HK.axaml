@@ -77,6 +77,9 @@
     <x:String x:Key="MainWindow.TaskView.NoneTitle">太正喇！</x:String>
     <x:String x:Key="MainWindow.TaskView.NoneMessage">任務清單入面冇任何一項任務</x:String>
     <x:String x:Key="MainWindow.Task.CountInfo">而家有 {0} 項任務</x:String>
+    <x:String x:Key="MainWindow.Media.NowPlaying">{0} 而家播緊</x:String>
+    <x:String x:Key="MainWindow.Media.LauncherMuted">啟動器已靜音</x:String>
+    <x:String x:Key="MainWindow.Media.UnknownApp">未知程式</x:String>
 
     <x:String x:Key="Manager.Title">實例管理</x:String>
     <x:String x:Key="Manager.IncludeGame">匯入遊戲</x:String>

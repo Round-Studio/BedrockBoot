@@ -90,7 +90,14 @@
                                 </Transitions>
                             </items:BorderCard.Transitions>
                             <Panel>
-                                <Grid>
+                                <Grid Name="MediaVolumePanel">
+                                    <Grid.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Easing="ExponentialEaseOut"
+                                                              Duration="0:0:0.22"
+                                                              Property="Opacity" />
+                                        </Transitions>
+                                    </Grid.Transitions>
                                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                                FontSize="14"
                                                                Glyph="&#xE995;"
@@ -123,6 +130,68 @@
                                         </Grid>
                                     </Grid>
                                 </Grid>
+
+                                <!-- 外部音乐播放中：封面 + 歌名 + 来源程序 -->
+                                <StackPanel Name="MediaTrackPanel"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            VerticalAlignment="Center"
+                                            Opacity="0">
+                                    <StackPanel.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Easing="ExponentialEaseOut"
+                                                              Duration="0:0:0.22"
+                                                              Property="Opacity" />
+                                        </Transitions>
+                                    </StackPanel.Transitions>
+                                    <Border Width="26"
+                                            Height="26"
+                                            CornerRadius="6"
+                                            ClipToBounds="True">
+                                        <Image Name="MediaTrackCover"
+                                               Width="26"
+                                               Height="26"
+                                               Stretch="UniformToFill"
+                                               Source="avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png" />
+                                    </Border>
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center">
+                                        <TextBlock Name="MediaTrackTitle"
+                                                   Text=""
+                                                   FontSize="11"
+                                                   MaxWidth="170"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Name="MediaTrackSubtitle"
+                                                   Text=""
+                                                   FontSize="9"
+                                                   Opacity="0.75"
+                                                   MaxWidth="170"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- 启动器因外部音乐播放而静音 -->
+                                <StackPanel Name="MediaMutePanel"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Opacity="0">
+                                    <StackPanel.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Easing="ExponentialEaseOut"
+                                                              Duration="0:0:0.22"
+                                                              Property="Opacity" />
+                                        </Transitions>
+                                    </StackPanel.Transitions>
+                                    <onePointControls:FontIcon Glyph="&#xE74F;"
+                                                               FontSize="14"
+                                                               VerticalAlignment="Center" />
+                                    <TextBlock Name="MediaMuteText"
+                                               Text=""
+                                               FontSize="11"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
                             </Panel>
                         </items:BorderCard>
                     </Grid>

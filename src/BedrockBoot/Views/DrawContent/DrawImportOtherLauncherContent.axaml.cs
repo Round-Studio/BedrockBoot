@@ -22,7 +22,6 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 

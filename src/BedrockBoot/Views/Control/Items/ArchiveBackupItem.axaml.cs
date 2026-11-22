@@ -24,7 +24,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive.Backup;
 using BedrockBoot.Models.Global;

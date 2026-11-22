@@ -33,7 +33,6 @@ using BedrockBoot.Standard.Enum.Search;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;

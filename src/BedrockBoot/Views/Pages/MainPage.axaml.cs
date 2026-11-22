@@ -47,7 +47,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Core;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;

@@ -26,7 +26,6 @@ using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Helper;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Core;

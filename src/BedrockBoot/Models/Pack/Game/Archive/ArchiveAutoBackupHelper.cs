@@ -21,7 +21,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Models.Global;

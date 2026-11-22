@@ -22,7 +22,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game.Pack.Import;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Models.Global;

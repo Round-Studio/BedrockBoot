@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;

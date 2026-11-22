@@ -28,7 +28,6 @@ using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Entity;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.WindowFrame;
 

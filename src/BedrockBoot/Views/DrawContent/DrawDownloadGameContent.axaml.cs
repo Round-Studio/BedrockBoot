@@ -28,7 +28,6 @@ using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Core.Global;
-using BedrockBoot.I18n;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.TaskItem;

@@ -28,7 +28,6 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Instance;
 using BedrockBoot.Views.DrawContent;

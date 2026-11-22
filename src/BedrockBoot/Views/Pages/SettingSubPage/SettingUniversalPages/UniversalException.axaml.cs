@@ -23,7 +23,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Helper.ExceptionHelper;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;

@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using Avalonia;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;

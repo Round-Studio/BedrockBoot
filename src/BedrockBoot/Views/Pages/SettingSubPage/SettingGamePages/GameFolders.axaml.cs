@@ -21,7 +21,6 @@ using System.IO;
 using Avalonia.Interactivity;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Core.Global;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;

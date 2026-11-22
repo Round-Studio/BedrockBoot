@@ -29,7 +29,6 @@ using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Core.Global;
-using BedrockBoot.I18n;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;

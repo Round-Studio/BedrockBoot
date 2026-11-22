@@ -22,7 +22,6 @@ using System.Threading.Tasks;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Views.Helper;
 using BedrockBoot.Standard.Interface;

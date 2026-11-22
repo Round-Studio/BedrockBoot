@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.SettingSubPage;

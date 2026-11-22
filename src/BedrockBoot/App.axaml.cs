@@ -30,7 +30,6 @@ using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Standard.Helper;
 using BedrockBoot.Entity;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Style;
 using BedrockBoot.Service.Protocol;

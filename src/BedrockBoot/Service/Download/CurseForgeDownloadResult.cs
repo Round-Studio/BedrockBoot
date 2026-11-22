@@ -22,7 +22,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Entity.Info.Download;
 using BedrockBoot.Models.Global;

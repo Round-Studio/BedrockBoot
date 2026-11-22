@@ -29,7 +29,6 @@ using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Search;
 
 namespace BedrockBoot.Views.Control.Widgets.Search;

@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Enum;

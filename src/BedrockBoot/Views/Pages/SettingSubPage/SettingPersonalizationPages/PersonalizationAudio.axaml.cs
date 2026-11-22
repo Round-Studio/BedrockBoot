@@ -26,7 +26,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Media;
 using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Interface;

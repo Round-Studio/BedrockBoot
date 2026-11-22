@@ -17,7 +17,6 @@
  */
 
 using Avalonia.Controls;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game.Pack.Server;
 
 namespace BedrockBoot.Views.DialogContent;

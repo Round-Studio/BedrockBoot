@@ -19,7 +19,6 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Helper;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;

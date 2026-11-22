@@ -25,7 +25,6 @@ using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Game.Pack.Mods;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Models.Pack.Game.Mods;
-using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Loaders.LoaderInstance;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;

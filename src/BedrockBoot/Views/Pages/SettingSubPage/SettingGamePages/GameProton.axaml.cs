@@ -23,7 +23,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using BedrockBoot.I18n;
 using BedrockBoot.Proton;
 using BedrockBoot.Proton.Entry.Info;
 using BedrockBoot.Standard.Interface;

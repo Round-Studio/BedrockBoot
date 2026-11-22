@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Enum.Search;
 using BedrockBoot.Models.Global;

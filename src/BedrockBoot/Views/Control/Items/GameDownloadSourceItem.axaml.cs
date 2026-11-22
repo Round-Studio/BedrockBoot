@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Info;
 
 namespace BedrockBoot.Views.Control.Items;

@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
-             xmlns:bedrockBoot="clr-namespace:BedrockBoot"
+             xmlns:i18N="clr-namespace:BedrockBoot.I18n;assembly=BedrockBoot.I18n"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages.UniversalLanguage">
     <ScrollViewer>
@@ -16,7 +16,7 @@
             <ComboBox HorizontalAlignment="Stretch"
                       Name="LanguageSelectBox"
                       SelectionChanged="LanguageSelectBox_OnSelectionChanged"
-                      ItemsSource="{x:Static bedrockBoot:I18nManager.LanguageDict}">
+                      ItemsSource="{x:Static i18N:I18nManager.LanguageDict}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{ReflectionBinding Value.DisplayName}"/>

@@ -25,6 +25,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game.Pack.Screenshots;
 
 namespace BedrockBoot.Views.Control.Items;

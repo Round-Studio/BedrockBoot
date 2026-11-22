@@ -21,6 +21,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
+using BedrockBoot.I18n;
 using BedrockBoot.Models;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Enum.Config;

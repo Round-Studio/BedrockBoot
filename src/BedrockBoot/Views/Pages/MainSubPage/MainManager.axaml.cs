@@ -31,6 +31,7 @@ using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.I18n;
 using BedrockBoot.Views.Control.Items;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;

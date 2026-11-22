@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.I18n;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.TaskItem;

@@ -24,6 +24,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Interface;

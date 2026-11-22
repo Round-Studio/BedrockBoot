@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Interactivity;
+using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface;

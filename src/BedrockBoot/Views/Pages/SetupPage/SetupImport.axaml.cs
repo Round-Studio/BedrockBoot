@@ -21,6 +21,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Core.Global;
+using BedrockBoot.I18n;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using OnePointUI.Avalonia.Base.Entry;

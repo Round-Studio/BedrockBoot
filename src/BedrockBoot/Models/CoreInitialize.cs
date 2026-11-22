@@ -28,6 +28,7 @@ using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Entity.Manifest;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.I18n;
 using BedrockBoot.Models.Account.Microsoft;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;

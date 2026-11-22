@@ -28,6 +28,7 @@ using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Download;
+using BedrockBoot.I18n;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Pack.Game.Archive;
 using BedrockBoot.Models.Pack.Game.ResourcePack;

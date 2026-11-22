@@ -25,6 +25,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Info;

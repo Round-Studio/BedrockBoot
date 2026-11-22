@@ -23,6 +23,7 @@ using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using System.Collections.Generic;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Interface;
 #if WINDOWS
 using BedrockBoot.Windows.Models.Helper;

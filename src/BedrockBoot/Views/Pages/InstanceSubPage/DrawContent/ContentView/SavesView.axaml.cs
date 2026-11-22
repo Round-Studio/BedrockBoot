@@ -24,6 +24,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Entity.Game.Pack.Archive;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack;

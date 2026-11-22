@@ -26,6 +26,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Core.Global;
+using BedrockBoot.I18n;
 using BedrockBoot.Models.Pack.Plugin;
 using BedrockBoot.Models.Pack.Theme;
 using BedrockBoot.Standard.Interface;

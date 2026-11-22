@@ -19,6 +19,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using BedrockBoot.I18n;
 using Octokit;
 
 namespace BedrockBoot.Models.Helper;

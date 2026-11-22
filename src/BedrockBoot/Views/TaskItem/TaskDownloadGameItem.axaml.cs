@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Entity.Task;

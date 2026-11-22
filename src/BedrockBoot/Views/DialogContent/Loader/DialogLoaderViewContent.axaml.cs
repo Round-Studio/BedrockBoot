@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Interface.ModLoader;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;

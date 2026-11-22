@@ -23,6 +23,7 @@ using Avalonia.Interactivity;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Core.Global;
+using BedrockBoot.I18n;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Views.DialogContent;

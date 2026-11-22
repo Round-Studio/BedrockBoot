@@ -28,6 +28,7 @@ using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.I18n;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;

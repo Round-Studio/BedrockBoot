@@ -35,6 +35,7 @@
         <TrimmerRootAssembly Include="BedrockBoot" />
         <TrimmerRootAssembly Include="BedrockBoot.Standard" />
         <TrimmerRootAssembly Include="BedrockBoot.Core" />
+        <TrimmerRootAssembly Include="BedrockBoot.I18n" />
         <TrimmerRootAssembly Include="Round.SDK" />
         <TrimmerRootAssembly Include="Octokit" />
     </ItemGroup>
@@ -75,8 +76,6 @@
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
         <Folder Include="Assets\Image\Contributors\" />
         <Folder Include="Assets\Svg\"/>
-        <AvaloniaXaml Include="I18n\**"/>
-        <Folder Include="Entity\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -94,6 +93,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AvaMotion\src\AvaMotion\AvaMotion.csproj" />
+        <ProjectReference Include="..\BedrockBoot.I18n\BedrockBoot.I18n.csproj" />
         <ProjectReference Include="..\BedrockBoot.Standard\BedrockBoot.Standard.csproj" />
         <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj"/>

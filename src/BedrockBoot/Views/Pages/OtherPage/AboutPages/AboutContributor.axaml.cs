@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using BedrockBoot.I18n;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Standard.Interface;

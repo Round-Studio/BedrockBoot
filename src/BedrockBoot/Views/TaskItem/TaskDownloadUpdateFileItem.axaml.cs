@@ -29,6 +29,7 @@ using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Progress;
 using BedrockBoot.Standard.Entity.Task;
 using BedrockBoot.Core.Models.Download;
+using BedrockBoot.I18n;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;

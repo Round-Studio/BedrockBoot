@@ -20,6 +20,7 @@ using System;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using BedrockBoot.I18n;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Pack.Game.Server;
 using BedrockBoot.Standard.Interface;

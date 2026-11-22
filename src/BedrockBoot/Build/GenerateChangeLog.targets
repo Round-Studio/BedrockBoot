@@ -151,6 +151,12 @@
                 var date    = parts[2];
                 var hash    = parts[3];
 
+                // 屏蔽机器人维护提交，不写入修改日志
+                if (message.StartsWith("chore: normalize license headers", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 var json = "{\"message\":\"" + JsonEscape(message) + "\","
                          + "\"author\":\"" + JsonEscape(author) + "\","
                          + "\"date\":\"" + JsonEscape(date) + "\","

@@ -153,7 +153,7 @@ jobs:
 
           if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "null" ]; then
             echo "首次正式版发布，显示最近 15 条变更：" >> $GITHUB_OUTPUT
-            git log -15 --oneline --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+            git log -15 --pretty=format:"- %s (%h)" | grep -vE "^- (ci|style|chore):" >> $GITHUB_OUTPUT || true
           else
             echo "自上一正式版 [$PREV_TAG] ($PREV_TIME) 以来的更新内容：" >> $GITHUB_OUTPUT
             
@@ -161,7 +161,7 @@ jobs:
             # 使用 --no-merges 让正式版的 Changelog 看起来更简洁
             # 过滤掉 CI 相关的琐碎提交，只保留功能和修复
             CHANGES=$(git log --since="$PREV_TIME" --no-merges --pretty=format:"- %s (%h)" | \
-              grep -vE "^- ci:|^ - style:|^ - chore:" || echo "")
+              grep -vE "^- (ci|style|chore):" || echo "")
             
             if [ -z "$CHANGES" ]; then
               echo "- 包含性能优化与稳定性提升" >> $GITHUB_OUTPUT

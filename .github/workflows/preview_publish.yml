@@ -129,7 +129,7 @@ jobs:
 
           if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "null" ]; then
             echo "首次构建，显示最近 10 条提交：" >> $GITHUB_OUTPUT
-            git log -10 --oneline --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+            git log -10 --pretty=format:"- %s (%h)" | grep -vE "^- (ci|style|chore):" >> $GITHUB_OUTPUT || true
           else
             echo "自上一个测试版 [$PREV_TAG] ($PREV_TIME) 以来进入分支的变更：" >> $GITHUB_OUTPUT
             
@@ -137,7 +137,7 @@ jobs:
             # --since 使用发布时间作为过滤基准
             # --no-merges 过滤掉合并提交
             # 使用 --reverse 让日志按时间顺序排列（可选）
-            git log --since="$PREV_TIME" --no-merges --pretty=format:"- %s (%h)" >> $GITHUB_OUTPUT
+            git log --since="$PREV_TIME" --no-merges --pretty=format:"- %s (%h)" | grep -vE "^- (ci|style|chore):" >> $GITHUB_OUTPUT || true
           fi
 
           echo "" >> $GITHUB_OUTPUT

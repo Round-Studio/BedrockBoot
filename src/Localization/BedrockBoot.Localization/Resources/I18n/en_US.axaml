@@ -132,6 +132,9 @@
     <x:String x:Key="MainWindow.TaskView.NoneTitle">Awesome!</x:String>
     <x:String x:Key="MainWindow.TaskView.NoneMessage">There are no tasks in the task list</x:String>
     <x:String x:Key="MainWindow.Task.CountInfo">{0} Tasks</x:String>
+    <x:String x:Key="MainWindow.Media.NowPlaying">{0} is playing</x:String>
+    <x:String x:Key="MainWindow.Media.LauncherMuted">Launcher muted</x:String>
+    <x:String x:Key="MainWindow.Media.UnknownApp">Unknown app</x:String>
 
     <x:String x:Key="Manager.Title">Instance Manager</x:String>
     <x:String x:Key="Manager.IncludeGame">Import Game</x:String>

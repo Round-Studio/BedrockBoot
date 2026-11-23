@@ -89,9 +89,24 @@ public partial class MainWindow : Window
 
     private bool _ctrlPressed = false;
     public int DrawMarginLR = 10;
-    private DispatcherTimer _volumeControlTimer;
+    private DispatcherTimer _capsuleHideTimer;
     private DispatcherTimer _configRefreshDebounce;
     private DispatcherTimer _configSaveDebounce;
+
+    // 胶囊当前显示的内容模式（音量 / 曲目 / 静音提示）
+    private CapsuleContent _capsuleContent = CapsuleContent.Volume;
+    private CancellationTokenSource? _capsuleSequenceCts;
+    private int _trackCapsuleSeq;
+
+    private static readonly Bitmap MediaCoverPlaceholder =
+        new(Avalonia.Platform.AssetLoader.Open(new Uri("avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png")));
+
+    private enum CapsuleContent
+    {
+        Volume,
+        Track,
+        Muted
+    }
 
     private WindowState _lastWindowState;
     private bool? _lastUseSystemWindow;
@@ -157,6 +172,11 @@ public partial class MainWindow : Window
         GlobalModel.TaskManager.OnChanged = () => Dispatcher.UIThread.Invoke(UpdateTaskUI);
         ILauncher.LaunchedBehavior = () => Dispatcher.UIThread.Invoke(RunBehavior);
 
+        // SMTC 后台监视：启动时检测外部音乐播放并静音启动器音频，运行期间切歌时弹胶囊通知
+        MediaMonitor.Instance.ExternalPlaybackStarted += ShowStartupMediaCapsule;
+        MediaMonitor.Instance.TrackChanged += ShowTrackCapsule;
+        MediaMonitor.Instance.Start();
+
         SetupDynamicHotkey();
         _ = InitializeAsync();
         _ = UpdateAccount();
@@ -175,11 +195,11 @@ public partial class MainWindow : Window
         AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Tunnel);
         Frame.NavigateTo("");
 
-        _volumeControlTimer = new DispatcherTimer
+        _capsuleHideTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1.8)
         };
-        _volumeControlTimer.Tick += VolumeControlTimer_Tick;
+        _capsuleHideTimer.Tick += CapsuleHideTimer_Tick;
 
         PropertyChanged += OnSelfPropertyChanged;
         Core.Global.GlobalModel.Config.AfterSave += OnConfigAfterSave;
@@ -392,11 +412,148 @@ public partial class MainWindow : Window
     {
         Dispatcher.UIThread.Post(() =>
         {
-            _volumeControlTimer.Stop();
-            MediaVolumeCard.Margin = new Thickness(0, 19, 0, 0);
+            CancelCapsuleSequence();
+            ShowCapsuleContent(CapsuleContent.Volume);
+            SlideInCapsule();
 
-            _volumeControlTimer.Start();
+            _capsuleHideTimer.Start();
         });
+    }
+
+    /// <summary>
+    /// 启动检测：外部音乐正在播放。胶囊先显示"谁在播放"，
+    /// 再在同一胶囊内动画过渡到"启动器已静音"提示。
+    /// </summary>
+    private async void ShowStartupMediaCapsule(MediaSong? song)
+    {
+        UpdateTrackCapsule(song, nowPlaying: true);
+
+        CancelCapsuleSequence();
+        _capsuleSequenceCts = new CancellationTokenSource();
+        var ct = _capsuleSequenceCts.Token;
+
+        ShowCapsuleContent(CapsuleContent.Track);
+        SlideInCapsule();
+
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2.6), ct);
+            ShowCapsuleContent(CapsuleContent.Muted);
+            await Task.Delay(TimeSpan.FromSeconds(2.6), ct);
+            SlideOutCapsule();
+        }
+        catch (TaskCanceledException)
+        {
+            // 被新的胶囊通知或用户调音量打断，交给后续流程接管
+        }
+    }
+
+    /// <summary>
+    /// 切歌通知：胶囊弹出当前曲目的封面、歌名与来源，随后自动收回
+    /// </summary>
+    private async void ShowTrackCapsule(MediaSong? song)
+    {
+        if (song == null) return;
+
+        UpdateTrackCapsule(song, nowPlaying: false);
+
+        CancelCapsuleSequence();
+        _capsuleSequenceCts = new CancellationTokenSource();
+        var ct = _capsuleSequenceCts.Token;
+
+        ShowCapsuleContent(CapsuleContent.Track);
+        SlideInCapsule();
+
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2.8), ct);
+            SlideOutCapsule();
+        }
+        catch (TaskCanceledException)
+        {
+            // 同上
+        }
+    }
+
+    private void ShowCapsuleContent(CapsuleContent content)
+    {
+        _capsuleContent = content;
+        MediaVolumePanel.Opacity = content == CapsuleContent.Volume ? 1 : 0;
+        MediaTrackPanel.Opacity = content == CapsuleContent.Track ? 1 : 0;
+        MediaMutePanel.Opacity = content == CapsuleContent.Muted ? 1 : 0;
+
+        switch (content)
+        {
+            case CapsuleContent.Track:
+                MediaVolumeCard.Width = 240;
+                break;
+            case CapsuleContent.Muted:
+                MediaMuteText.Text = I18n["MainWindow.Media.LauncherMuted"];
+                MediaVolumeCard.Width = 150;
+                break;
+            case CapsuleContent.Volume:
+                MediaVolumeCard.Width = MediaVolume.Value == 0 ? 150 : 170;
+                break;
+        }
+    }
+
+    private void SlideInCapsule()
+    {
+        _capsuleHideTimer.Stop();
+        MediaVolumeCard.Margin = new Thickness(0, 19, 0, 0);
+    }
+
+    private void SlideOutCapsule()
+    {
+        MediaVolumeCard.Margin = new Thickness(0, -76, 0, 0);
+    }
+
+    private void CancelCapsuleSequence()
+    {
+        _capsuleSequenceCts?.Cancel();
+        _capsuleSequenceCts = null;
+    }
+
+    private async void UpdateTrackCapsule(MediaSong? song, bool nowPlaying)
+    {
+        if (song == null) return;
+
+        MediaTrackTitle.Text = song.Title;
+
+        var app = string.IsNullOrWhiteSpace(song.AppName)
+            ? I18n["MainWindow.Media.UnknownApp"]
+            : song.AppName!;
+        MediaTrackSubtitle.Text = nowPlaying
+            ? string.Format(I18n["MainWindow.Media.NowPlaying"], app)
+            : string.IsNullOrWhiteSpace(song.Artist) ? app : $@"{song.Artist} · {app}";
+
+        // 封面在后台线程解码，避免 UI 卡顿；序号防旧任务回写覆盖新曲目的封面
+        var seq = ++_trackCapsuleSeq;
+        var bytes = song.CoverBytes;
+        Bitmap? cover = null;
+        try
+        {
+            cover = await Task.Run(() =>
+            {
+                try
+                {
+                    if (bytes is not { Length: > 0 }) return null;
+                    using var ms = new MemoryStream(bytes);
+                    return Bitmap.DecodeToWidth(ms, 48);
+                }
+                catch
+                {
+                    return null;
+                }
+            });
+        }
+        catch
+        {
+            // 解码失败时保持占位图
+        }
+
+        if (seq != _trackCapsuleSeq) return;
+        MediaTrackCover.Source = cover ?? MediaCoverPlaceholder;
     }
 
     public void UpdateWindowBorder()
@@ -717,10 +874,10 @@ public partial class MainWindow : Window
         _lastIsBlurStyle = isBlurStyle;
     }
 
-    private void VolumeControlTimer_Tick(object? sender, EventArgs e)
+    private void CapsuleHideTimer_Tick(object? sender, EventArgs e)
     {
-        MediaVolumeCard.Margin = new Thickness(0, -76, 0, 0);
-        _volumeControlTimer.Stop();
+        SlideOutCapsule();
+        _capsuleHideTimer.Stop();
     }
 
     private void OnKeyDown(object sender, KeyEventArgs e)

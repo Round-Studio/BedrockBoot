@@ -27,6 +27,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Info;
 using BedrockBoot.Standard.Entity.Game.Pack.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Enum.Search;
@@ -34,6 +35,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Models.Pack.Game.ResourcePack.CurseForge;
 using BedrockBoot.Standard.Interface;
@@ -61,6 +63,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         private int _totalPages;
         private List<CurseForgeResponse.Category> _curseForgeCategories = new();
         private bool _isUpdatingCurseForgeFilters = true;
+        private bool _isRebuildingTypeItems;
         private static readonly Dictionary<int, string> CurseForgeClassNames = new()
         {
             [4984] = "Download.CurseForge.ResourceType.Addons",
@@ -70,7 +73,25 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             [6925] = "Download.CurseForge.ResourceType.Skins"
         };
 
-        public SearchResourceType ChooseType => (SearchResourceType)ResourceTypeBox.SelectedIndex;
+        /// <summary>
+        ///     类型下拉框当前展示的类型集合，顺序即下拉顺序。
+        ///     境外设备会移除"插件"与"Dll 模组"，SelectedIndex 与枚举值的映射随本集合适配。
+        /// </summary>
+        private List<SearchResourceType> _visibleTypes = new()
+        {
+            SearchResourceType.Minecraft,
+            SearchResourceType.ResourcePack,
+            SearchResourceType.PluginPack,
+            SearchResourceType.LeviLaminaMods,
+            SearchResourceType.DllMods
+        };
+
+        private SearchResourceType IndexToType(int index) =>
+            index >= 0 && index < _visibleTypes.Count ? _visibleTypes[index] : SearchResourceType.Unknow;
+
+        private int TypeToIndex(SearchResourceType type) => _visibleTypes.IndexOf(type);
+
+        public SearchResourceType ChooseType => IndexToType(ResourceTypeBox.SelectedIndex);
 
         public SearchDetailed()
         {
@@ -81,6 +102,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             RestoreLastSearchType();
             SetupPaginationActions();
             _ = LoadCurseForgeCategoriesAsync();
+            _ = ApplyRegionGateAsync();
         }
 
         public SearchDetailed(SearchInfo info) : this()
@@ -92,8 +114,75 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
         private void RestoreLastSearchType()
         {
-            if (ResourceTypeBox != null && _lastSearchType != SearchResourceType.Unknow)
-                ResourceTypeBox.SelectedIndex = (int)_lastSearchType;
+            if (ResourceTypeBox == null || _lastSearchType == SearchResourceType.Unknow) return;
+
+            var index = TypeToIndex(_lastSearchType);
+            if (index >= 0) ResourceTypeBox.SelectedIndex = index;
+        }
+
+        /// <summary>
+        ///     境外设备（不含港澳台）从类型下拉框中移除"插件"与"Dll 模组"，
+        ///     重建下拉项并适配 SelectedIndex 与枚举的映射（_visibleTypes）。
+        /// </summary>
+        private async Task ApplyRegionGateAsync()
+        {
+            if (await RegionDetector.IsInChinaAsync()) return;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                _visibleTypes.Remove(SearchResourceType.PluginPack);
+                _visibleTypes.Remove(SearchResourceType.DllMods);
+                RebuildTypeItems();
+            });
+        }
+
+        private void RebuildTypeItems()
+        {
+            if (ResourceTypeBox == null) return;
+
+            _isRebuildingTypeItems = true;
+            try
+            {
+                // 记住当前选中的类型；若它被移除则回落到第一项
+                var selected = IndexToType(ResourceTypeBox.SelectedIndex);
+
+                ResourceTypeBox.Items.Clear();
+                foreach (var type in _visibleTypes)
+                    ResourceTypeBox.Items.Add(MakeTypeItem(type));
+
+                var index = TypeToIndex(selected);
+                ResourceTypeBox.SelectedIndex = index >= 0 ? index : 0;
+            }
+            finally
+            {
+                _isRebuildingTypeItems = false;
+            }
+        }
+
+        private static ComboBoxItem MakeTypeItem(SearchResourceType type)
+        {
+            var item = new ComboBoxItem();
+            switch (type)
+            {
+                case SearchResourceType.ResourcePack:
+                    item.Bind(ContentProperty,
+                        Application.Current!.Resources.GetResourceObservable("Download.Tab.Assets"));
+                    break;
+                case SearchResourceType.PluginPack:
+                    item.Content = "插件";
+                    break;
+                case SearchResourceType.LeviLaminaMods:
+                    item.Content = "LeviLamina 模组";
+                    break;
+                case SearchResourceType.DllMods:
+                    item.Content = "Dll 模组";
+                    break;
+                default:
+                    item.Content = "Minecraft";
+                    break;
+            }
+
+            return item;
         }
 
         private void SetupPaginationActions()
@@ -132,8 +221,9 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             if (type != SearchResourceType.Unknow)
             {
                 _lastSearchType = type;
-                if (ResourceTypeBox != null && ResourceTypeBox.SelectedIndex != (int)type)
-                    ResourceTypeBox.SelectedIndex = (int)type;
+                var index = TypeToIndex(type);
+                if (ResourceTypeBox != null && index >= 0 && ResourceTypeBox.SelectedIndex != index)
+                    ResourceTypeBox.SelectedIndex = index;
             }
         }
 
@@ -200,9 +290,12 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             CurseForgeResTypePanel.IsVisible = info.Type == SearchResourceType.ResourcePack;
 
             if (info.Type != SearchResourceType.Unknow)
-                ResourceTypeBox.SelectedIndex = (int)info.Type;
+            {
+                var index = TypeToIndex(info.Type);
+                if (index >= 0) ResourceTypeBox.SelectedIndex = index;
+            }
             else
-                info.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
+                info.Type = IndexToType(ResourceTypeBox.SelectedIndex);
 
             if (info.Type != SearchResourceType.ResourcePack)
             {
@@ -412,7 +505,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
             if (!IsEdit) return;
 
             SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;
-            SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
+            SearchInfo.Type = IndexToType(ResourceTypeBox.SelectedIndex);
             _lastSearchType = SearchInfo.Type;
 
             OnSearch(SearchInfo);
@@ -420,10 +513,10 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
         private void ResourceTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
-            if (!IsEdit) return;
+            if (!IsEdit || _isRebuildingTypeItems) return;
 
             SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;
-            SearchInfo.Type = (SearchResourceType)ResourceTypeBox.SelectedIndex;
+            SearchInfo.Type = IndexToType(ResourceTypeBox.SelectedIndex);
             _lastSearchType = SearchInfo.Type;
 
             MinecraftTypePanel.IsVisible = SearchInfo.Type == SearchResourceType.Minecraft;
@@ -503,7 +596,7 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
 
         private void SearchCurseForgeWithCurrentFilters()
         {
-            if (!IsEdit || ResourceTypeBox.SelectedIndex != (int)SearchResourceType.ResourcePack)
+            if (!IsEdit || ResourceTypeBox.SelectedIndex != TypeToIndex(SearchResourceType.ResourcePack))
                 return;
 
             SearchInfo.Key = DownloadSearch.DownloadSearchView.SearchKey;

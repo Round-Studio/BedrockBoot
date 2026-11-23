@@ -77,6 +77,9 @@
     <x:String x:Key="MainWindow.TaskView.NoneTitle">素晴らしい！</x:String>
     <x:String x:Key="MainWindow.TaskView.NoneMessage">タスクリストには何もありません</x:String>
     <x:String x:Key="MainWindow.Task.CountInfo">現在 {0} 件のタスクがあります</x:String>
+    <x:String x:Key="MainWindow.Media.NowPlaying">{0} が再生中</x:String>
+    <x:String x:Key="MainWindow.Media.LauncherMuted">ランチャーはミュート中</x:String>
+    <x:String x:Key="MainWindow.Media.UnknownApp">不明なアプリ</x:String>
 
     <x:String x:Key="Manager.Title">インスタンス管理</x:String>
     <x:String x:Key="Manager.IncludeGame">ゲームをインポート</x:String>

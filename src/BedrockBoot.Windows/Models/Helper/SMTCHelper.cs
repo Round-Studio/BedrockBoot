@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Runtime.InteropServices.WindowsRuntime;
+using BedrockBoot.Standard.Entity;
 using Windows.Media.Control;
 using WindowsMediaController;
 
@@ -32,11 +34,26 @@ public static class SMTCHelper
     public static bool IsStarted => _isStarted;
 
     /// <summary>
-    /// 初始化并启动 MediaManager（建议在程序启动时调用一次）
+    /// 任一会话的曲目信息发生变化（含切歌）
+    /// </summary>
+    public static event Action? MediaTrackChanged;
+
+    /// <summary>
+    /// 任一会话的播放状态发生变化（播放/暂停/停止）
+    /// </summary>
+    public static event Action? PlaybackStateChanged;
+
+    /// <summary>
+    /// 初始化并启动 MediaManager（建议在程序启动时调用一次，幂等）
     /// </summary>
     public static void Initialize()
     {
+        if (_isStarted) return;
+
         _mediaManager = new MediaManager();
+        _mediaManager.OnAnyMediaPropertyChanged += OnAnyMediaPropertyChanged;
+        _mediaManager.OnAnyPlaybackStateChanged += OnAnyPlaybackStateChanged;
+        _mediaManager.OnFocusedSessionChanged += OnFocusedSessionChanged;
         _mediaManager.Start();
         _isStarted = true;
     }
@@ -48,10 +65,29 @@ public static class SMTCHelper
     {
         if (_mediaManager != null)
         {
+            _mediaManager.OnAnyMediaPropertyChanged -= OnAnyMediaPropertyChanged;
+            _mediaManager.OnAnyPlaybackStateChanged -= OnAnyPlaybackStateChanged;
+            _mediaManager.OnFocusedSessionChanged -= OnFocusedSessionChanged;
             _mediaManager.Dispose();
             _mediaManager = null;
         }
         _isStarted = false;
+    }
+
+    private static void OnAnyMediaPropertyChanged(MediaManager.MediaSession sender, GlobalSystemMediaTransportControlsSessionMediaProperties args)
+    {
+        MediaTrackChanged?.Invoke();
+    }
+
+    private static void OnAnyPlaybackStateChanged(MediaManager.MediaSession sender, GlobalSystemMediaTransportControlsSessionPlaybackInfo args)
+    {
+        PlaybackStateChanged?.Invoke();
+    }
+
+    private static void OnFocusedSessionChanged(MediaManager.MediaSession sender)
+    {
+        // 焦点会话切换意味着"正在播放的程序"可能变了，按播放状态变化处理
+        PlaybackStateChanged?.Invoke();
     }
 
     /// <summary>
@@ -66,19 +102,50 @@ public static class SMTCHelper
     }
 
     /// <summary>
-    /// 获取当前媒体属性（标题、歌手、专辑等）
+    /// 获取当前正在播放的歌曲（标题、歌手、来源程序、封面字节）
     /// </summary>
-    public static async Task<(string? Title, string? Artist, string? Album)?> GetMediaPropertiesAsync()
+    public static async Task<MediaSong?> GetCurrentSongAsync()
     {
         var session = GetCurrentSession();
-
-        if (session == null)
+        if (session?.ControlSession == null)
             return null;
 
         try
         {
             var props = await session.ControlSession.TryGetMediaPropertiesAsync();
-            return (props.Title, props.Artist, props.AlbumTitle);
+            if (props == null) return null;
+
+            var appName = GetSourceAppName();
+            if (appName != null && appName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                appName = appName[..^4];
+
+            return new MediaSong
+            {
+                Title = props.Title,
+                Artist = props.Artist,
+                AppName = string.IsNullOrWhiteSpace(appName) ? "未知程序" : appName,
+                CoverBytes = await GetCoverBytesAsync(props)
+            };
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// 读取当前曲目的封面字节（后台线程调用安全）
+    /// </summary>
+    private static async Task<byte[]?> GetCoverBytesAsync(GlobalSystemMediaTransportControlsSessionMediaProperties props)
+    {
+        try
+        {
+            if (props.Thumbnail == null) return null;
+
+            using var stream = (await props.Thumbnail.OpenReadAsync()).AsStreamForRead();
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            return ms.ToArray();
         }
         catch
         {
@@ -131,7 +198,7 @@ public static class SMTCHelper
         {
             // 使用 Windows 原生的 SourceAppUserModelId 代替不存在的 SourceAppInfo
             var aumid = session.ControlSession.SourceAppUserModelId;
-            
+
             if (string.IsNullOrEmpty(aumid))
                 return "未知程序";
 

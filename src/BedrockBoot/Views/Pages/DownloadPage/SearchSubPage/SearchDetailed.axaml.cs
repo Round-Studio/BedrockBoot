@@ -121,12 +121,12 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         }
 
         /// <summary>
-        ///     境外设备（不含港澳台）从类型下拉框中移除"插件"与"Dll 模组"，
+        ///     中国大陆以外的设备从类型下拉框中移除"插件"与"Dll 模组"，
         ///     重建下拉项并适配 SelectedIndex 与枚举的映射（_visibleTypes）。
         /// </summary>
         private async Task ApplyRegionGateAsync()
         {
-            if (await RegionDetector.IsInChinaAsync()) return;
+            if (await RegionDetector.IsInMainlandChinaAsync()) return;
 
             Dispatcher.UIThread.Post(() =>
             {

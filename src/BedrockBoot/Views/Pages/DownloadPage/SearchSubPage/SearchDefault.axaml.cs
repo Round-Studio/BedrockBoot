@@ -236,8 +236,8 @@ public partial class SearchDefault : UserControl
 
     private async Task LoadRegionGatedCardsAsync()
     {
-        // 境外设备（不含港澳台）直接隐藏启动器插件与 Dll 模组板块，不发起加载、不弹窗提示
-        if (!await RegionDetector.IsInChinaAsync())
+        // 中国大陆以外的设备直接隐藏启动器插件与 Dll 模组板块，不发起加载、不弹窗提示
+        if (!await RegionDetector.IsInMainlandChinaAsync())
         {
             Dispatcher.UIThread.Post(() =>
             {

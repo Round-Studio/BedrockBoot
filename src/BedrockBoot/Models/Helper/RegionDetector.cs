@@ -52,15 +52,15 @@ public static class RegionDetector
     };
 
     // 各信号权重：IP 归属地占绝对主导，其余信号在离线或 IP 查询失败时兜底
-    private const double ScoreIpInMainlandChina = 100;
+    private const double ScoreIpInMainlandChina = 200;
     private const double ScoreIpNoMainlandChina = -100;
-    private const double ScoreTimezoneInMainlandChina = 25;
+    private const double ScoreTimezoneInMainlandChina = 200;
     private const double ScoreTimezoneNoMainlandChina = -15;
-    private const double ScoreSystemRegionInMainlandChina = 20;
+    private const double ScoreSystemRegionInMainlandChina = 200;
     private const double ScoreSystemRegionNoMainlandChina = -15;
-    private const double ScoreSystemLanguageInMainlandChina = 10;
+    private const double ScoreSystemLanguageInMainlandChina = 200;
     private const double ScoreSystemLanguageNoMainlandChina = -10;
-    private const double ScoreLauncherLanguageInMainlandChina = 10;
+    private const double ScoreLauncherLanguageInMainlandChina = 200;
     private const double ScoreLauncherLanguageNoMainlandChina = -10;
 
     /// <summary>综合得分达到该阈值判定为中国大陆；全零（完全未知）时保守判定为非中国大陆</summary>

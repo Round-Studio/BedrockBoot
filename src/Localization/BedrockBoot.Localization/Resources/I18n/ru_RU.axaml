@@ -883,6 +883,8 @@
     <x:String x:Key="Task.PreLoad.Update.Done">Готово, вступит в силу при следующем запуске игры</x:String>
     <x:String x:Key="Task.PreLoad.Guard.FetchFailed">Компонент PreLoad.NET отсутствует, данные о версии недоступны; запуск игры заблокирован (проверьте сетевое подключение)</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">Не удалось скачать компонент PreLoad.NET; запуск игры заблокирован</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET — компонент, от которого зависит лаунчер; если вовремя не обновить его, игра может работать некорректно.</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">Не удалось обновить компонент PreLoad.NET, обновление лаунчера прервано. Проверьте сеть и повторите попытку.</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Многопользовательские зависимости</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">Чтение информации о версии...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">Проверить обновления</x:String>

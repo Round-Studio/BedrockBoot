@@ -21,11 +21,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using BedrockBoot.Core.Models.Helper;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using Round.SDK.Entity;
 using Octokit;
 
@@ -48,22 +50,27 @@ namespace BedrockBoot.Models.Helper;
 ///     API 因限流、断网或权限失败时退回 <see cref="LatestDownloadUrl"/> 直链，
 ///     该通道是普通网页请求，不消耗 api.github.com 的 Rate Limit 配额。
 ///     </para>
+///
+///     <para>
+///     启动器自身更新落地前还有一道强制检查（<see cref="CheckBeforeLauncherUpdateAsync"/>）：
+///     该环节没有开关、不读配置，组件更新失败会直接中止启动器更新。
+///     版本号、镜像与更新内容的来源统一走 <see cref="PreLoadReleaseSource"/>。
+///     </para>
 /// </summary>
 public static class PreLoadDependencyHelper
 {
     /// <summary>PreLoad.NET 发布仓库（独立仓库，由 PreLoad.NET 的手动 workflow 发布）</summary>
-    public const string Owner = "Round-Studio";
-    public const string Repo = "PreLoad.NET-Release";
+    public const string Owner = PreLoadReleaseSource.Owner;
+    public const string Repo = PreLoadReleaseSource.Repo;
 
     /// <summary>Release 中唯一的资产名，与发布 workflow 的产物命名保持一致</summary>
-    private const string AssetName = "PreLoad.NET.dll";
+    private const string AssetName = PreLoadReleaseSource.AssetName;
 
     /// <summary>
     ///     Release 页的 latest 直链：由 GitHub 服务端 302 到当前最新 Tag 的资产地址。
     ///     与 api.github.com 无关，因此不受 Rate Limit 影响，也不需要登录。
     /// </summary>
-    public static string LatestDownloadUrl =>
-        $"https://github.com/{Owner}/{Repo}/releases/latest/download/{AssetName}";
+    public static string LatestDownloadUrl => PreLoadReleaseSource.LatestDownloadUrl;
 
     /// <summary>守卫是阻塞启动的关键路径，API 通道最多等这么久就转直链</summary>
     private static readonly TimeSpan GuardApiTimeout = TimeSpan.FromSeconds(8);
@@ -148,26 +155,10 @@ public static class PreLoadDependencyHelper
             // API 通道不可用：直接打 latest 直链，不让 API 的限流把启动彻底卡死
             Console.WriteLine($@"PreLoad.NET 版本信息获取失败，改用直链下载：{LatestDownloadUrl}");
 
-            // 直链第一跳的 Location 里带着 Tag，但解析它不参与下载，
-            // 因此与下载并行发起，避免 github.com 不通时白等一轮超时
-            var tagTask = TryResolveLatestTagAsync();
-
-            var directSuccess = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(LatestDownloadUrl);
-            if (!directSuccess)
+            if (!await DownloadByDirectLinkAsync(null))
             {
                 ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
                 return false;
-            }
-
-            // 能解析出 Tag 就补写版本记录，避免下次启动重复下载；解析不到只影响设置页的版本显示
-            if (await tagTask is { } tag)
-            {
-                Console.WriteLine($@"PreLoad.NET 直链下载完成，版本记录补写为 {tag}");
-                MultiplayerDependencyHelper.WriteLocalVersion(PathsList.PreLoadVersionFile, "PreLoad.NET", tag);
-            }
-            else
-            {
-                Console.WriteLine(@"PreLoad.NET 直链下载完成，但未解析到版本号，跳过版本记录");
             }
 
             return true;
@@ -178,6 +169,143 @@ public static class PreLoadDependencyHelper
             ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"] + $"\n{ex.Message}");
             return false;
         }
+    }
+
+    /// <summary>
+    ///     启动器更新落地前的组件强制检查。
+    ///     <para>
+    ///     PreLoad.NET 是启动器依赖的组件，新版本启动器跑在旧组件上容易出异常，
+    ///     因此这一环是强制的：没有开关，也不读任何配置项。返回 false 表示组件没能更新，
+    ///     调用方必须中止启动器更新。
+    ///     </para>
+    ///     <para>
+    ///     版本号优先走 GitHub API（顺带拿到资产对象，可带授权头下载）；API 不可用时退回
+    ///     <see cref="PreLoadReleaseSource" /> 的版本文件通道（预留接口，不消耗 API 配额）；
+    ///     两条都拿不到就直接按 latest 直链强制下载。
+    ///     </para>
+    /// </summary>
+    public static async Task<bool> CheckBeforeLauncherUpdateAsync()
+    {
+        try
+        {
+            var latest = await TryGetLatestAssetAsync();
+            if (latest != null)
+            {
+                var localVersion = GetLocalVersion();
+                if (IsUpToDate(localVersion, latest.Value.Tag))
+                {
+                    Console.WriteLine($@"更新启动器前检查：PreLoad.NET 已是最新版本 {localVersion}");
+                    return true;
+                }
+
+                Console.WriteLine(
+                    $@"更新启动器前检查：PreLoad.NET 需要更新 {localVersion ?? "无记录"} → {latest.Value.Tag}");
+
+                if (await TaskDownloadPreLoadItem.StartDownloadAndWait(latest.Value.Asset, latest.Value.Tag))
+                    return true;
+
+                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+                return false;
+            }
+
+            // API 不可用：改用版本号来源（预留接口，普通网页请求，不消耗 API 配额）
+            var remote = await PreLoadReleaseSource.TryGetLatestAsync(PreLoadReleaseChannel.Stable);
+            if (remote != null)
+            {
+                var localVersion = GetLocalVersion();
+                if (IsUpToDate(localVersion, remote.Tag))
+                {
+                    Console.WriteLine($@"更新启动器前检查：PreLoad.NET 已是最新版本 {localVersion}");
+                    return true;
+                }
+
+                Console.WriteLine(
+                    $@"更新启动器前检查：PreLoad.NET 需要更新 {localVersion ?? "无记录"} → {remote.Tag}（版本号来源）");
+
+                if (await DownloadByDirectLinkAsync(remote.Tag)) return true;
+
+                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+                return false;
+            }
+
+            // 两条版本号通道都不可用：按 latest 直链强制下载，至少保证组件是当前最新产物
+            Console.WriteLine(
+                $@"更新启动器前检查：无法获取 PreLoad.NET 版本信息，按 latest 直链强制下载 {PreLoadReleaseSource.LatestDownloadUrl}");
+
+            if (await DownloadByDirectLinkAsync(null)) return true;
+
+            ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"更新启动器前检查 PreLoad.NET 失败（将中止启动器更新）：{ex}");
+            ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"] + $"\n{ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    ///     组件更新失败、需要阻断启动器更新时的弹窗。
+    ///     只负责把弹窗投递到 UI 线程，不等待用户关闭——调用方随后自己中止流程。
+    /// </summary>
+    public static void ShowBlockedDialog()
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            try
+            {
+                DialogHost.Show(new DialogInfo
+                {
+                    Title = I18nManager.Instance["Task.PreLoad.Update.Title"],
+                    Content = I18nManager.Instance["Task.PreLoad.BeforeUpdate.Blocked"] + "\n\n" +
+                              I18nManager.Instance["Task.PreLoad.BeforeUpdate.DependencyWarning"],
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"PreLoad.NET 阻断提示弹窗显示失败：{ex.Message}");
+            }
+        });
+    }
+
+    /// <summary>本地版本与远端 Tag 是否一致；本地无记录视为不一致（需要下载）</summary>
+    private static bool IsUpToDate(string? localVersion, string? remoteTag)
+    {
+        if (string.IsNullOrWhiteSpace(localVersion) || string.IsNullOrWhiteSpace(remoteTag)) return false;
+
+        return string.Equals(MultiplayerDependencyHelper.NormalizeVersion(localVersion),
+            MultiplayerDependencyHelper.NormalizeVersion(remoteTag), StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    ///     按直链下载并落地组件。<paramref name="knownTag" /> 已知时直接用它写版本记录，
+    ///     未知时从 302 的 Location 里解析；解析不到只影响版本记录，不影响下载结果。
+    ///     具体取哪个地址由 <see cref="PreLoadReleaseSource.GetDownloadUrl" /> 决定
+    ///     （版本文件里的号不一定等于 Release Tag，会退回 latest 直链）。
+    /// </summary>
+    private static async Task<bool> DownloadByDirectLinkAsync(string? knownTag)
+    {
+        // 解析 Tag 不参与下载，因此与下载并行发起，避免 github.com 不通时白等一轮超时
+        Task<string?> tagTask = knownTag != null ? Task.FromResult<string?>(knownTag) : TryResolveLatestTagAsync();
+
+        var url = PreLoadReleaseSource.GetDownloadUrl(knownTag);
+        var success = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(url);
+        if (!success) return false;
+
+        // 能拿到 Tag 就补写版本记录，避免下次启动/更新重复下载；拿不到只影响设置页的版本显示
+        if (await tagTask is { } tag)
+        {
+            Console.WriteLine($@"PreLoad.NET 直链下载完成，版本记录补写为 {tag}");
+            MultiplayerDependencyHelper.WriteLocalVersion(PathsList.PreLoadVersionFile, "PreLoad.NET", tag);
+        }
+        else
+        {
+            Console.WriteLine(@"PreLoad.NET 直链下载完成，但未解析到版本号，跳过版本记录");
+        }
+
+        return true;
     }
 
     /// <summary>

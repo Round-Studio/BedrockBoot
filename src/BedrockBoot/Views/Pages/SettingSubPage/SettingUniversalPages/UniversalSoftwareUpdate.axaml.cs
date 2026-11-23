@@ -33,6 +33,7 @@ using BedrockBoot.Views.Pages.OtherPage.BuildRelease;
 using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using AboutReleaseNotes = BedrockBoot.Views.Pages.OtherPage.AboutPages.AboutReleaseNotes;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage.SettingUniversalPages;

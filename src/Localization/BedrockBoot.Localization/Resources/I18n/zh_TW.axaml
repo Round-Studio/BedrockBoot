@@ -895,6 +895,8 @@
     <x:String x:Key="Task.PreLoad.Update.Done">完成，下次啟動遊戲生效</x:String>
     <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 元件缺失且無法取得版本資訊，已阻止啟動遊戲（請檢查網路連線）</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET 元件下載失敗，已阻止啟動遊戲</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET 是啟動器依賴的元件，若未及時更新，遊戲可能出現異常。</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">PreLoad.NET 元件更新失敗，已中止啟動器更新。請檢查網路後重試。</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">連線依賴組件</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">正在讀取版本資訊...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">檢查更新</x:String>

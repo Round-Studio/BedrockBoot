@@ -32,6 +32,7 @@ using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using Round.SDK.Entity;
@@ -218,6 +219,14 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 // 不记录会导致更新完成后同一提交依然反复提示更新
                 if (isAction && !string.IsNullOrEmpty(Result?.WorkflowRun?.HeadSha))
                     CheckUpdate.RecordAppliedCommitSha(Result.WorkflowRun.HeadSha);
+
+                // PreLoad.NET 是启动器依赖的组件：更新启动器前必须把它补到最新（没有开关可关），
+                // 组件没更新成功就中止本次更新，避免新版本启动器跑在旧组件上
+                if (!await PreLoadDependencyHelper.CheckBeforeLauncherUpdateAsync())
+                {
+                    PreLoadDependencyHelper.ShowBlockedDialog();
+                    throw new InvalidOperationException(I18nManager.Instance["Task.PreLoad.BeforeUpdate.Blocked"]);
+                }
 
                 var startInfo = new ProcessStartInfo
                 {

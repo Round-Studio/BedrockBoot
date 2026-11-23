@@ -1078,6 +1078,8 @@
     <x:String x:Key="Task.PreLoad.Update.Done">Done, takes effect on next game launch</x:String>
     <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET component missing and version info unavailable; game launch blocked (check your network connection)</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET component download failed; game launch blocked</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET is a component the launcher depends on; games may misbehave if it is not updated in time.</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">Failed to update the PreLoad.NET component, so the launcher update was aborted. Check your network and try again.</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Multiplayer Dependencies</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">Reading version info...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">Check Updates</x:String>

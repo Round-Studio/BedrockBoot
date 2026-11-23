@@ -18,6 +18,7 @@
 
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Core.Models.Helper;
@@ -41,6 +42,12 @@ namespace BedrockBoot.Models.Helper;
 ///     <see cref="PathsList.PreLoadDllPath"/>，下次启动游戏生效。
 ///     任何失败只写 Console，不影响启动流程。
 ///     </para>
+///
+///     <para>
+///     启动游戏的守卫分两条通道：优先 GitHub API（能拿到 Tag，可写版本记录）；
+///     API 因限流、断网或权限失败时退回 <see cref="LatestDownloadUrl"/> 直链，
+///     该通道是普通网页请求，不消耗 api.github.com 的 Rate Limit 配额。
+///     </para>
 /// </summary>
 public static class PreLoadDependencyHelper
 {
@@ -50,6 +57,16 @@ public static class PreLoadDependencyHelper
 
     /// <summary>Release 中唯一的资产名，与发布 workflow 的产物命名保持一致</summary>
     private const string AssetName = "PreLoad.NET.dll";
+
+    /// <summary>
+    ///     Release 页的 latest 直链：由 GitHub 服务端 302 到当前最新 Tag 的资产地址。
+    ///     与 api.github.com 无关，因此不受 Rate Limit 影响，也不需要登录。
+    /// </summary>
+    public static string LatestDownloadUrl =>
+        $"https://github.com/{Owner}/{Repo}/releases/latest/download/{AssetName}";
+
+    /// <summary>守卫是阻塞启动的关键路径，API 通道最多等这么久就转直链</summary>
+    private static readonly TimeSpan GuardApiTimeout = TimeSpan.FromSeconds(8);
 
     /// <summary>读取本地已安装的 PreLoad.NET 版本（version.json 记录，即 Release Tag）</summary>
     public static string? GetLocalVersion() =>
@@ -102,7 +119,12 @@ public static class PreLoadDependencyHelper
 
     /// <summary>
     ///     启动游戏前的强制就绪守卫：组件缺失时阻塞等待下载完成。
-    ///     严格模式——下载不可用（未登录/断网/私有仓库无权限）也返回 false 拦截启动。
+    ///     严格模式——两条通道都拿不到文件时返回 false 拦截启动。
+    ///     <para>
+    ///     API 查得到 Release 时走 API（能拿到 Tag 写入版本记录）；
+    ///     API 失败（限流/断网/私有仓库无权限）则退回 latest 直链，
+    ///     直链不经过 api.github.com，不会被 Rate Limit 拦住。
+    ///     </para>
     /// </summary>
     public static async Task<bool> EnsureComponentReadyAsync()
     {
@@ -113,24 +135,119 @@ public static class PreLoadDependencyHelper
             Console.WriteLine(@"PreLoad.NET 组件缺失，启动前强制下载");
             WaitForMainWindowOrTimeout();
 
-            var latest = await GetLatestAssetAsync();
-            if (latest == null)
+            var latest = await TryGetLatestAssetAsync();
+            if (latest != null)
             {
-                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.FetchFailed"]);
+                var success = await TaskDownloadPreLoadItem.StartDownloadAndWait(latest.Value.Asset, latest.Value.Tag);
+                if (!success)
+                    ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+
+                return success;
+            }
+
+            // API 通道不可用：直接打 latest 直链，不让 API 的限流把启动彻底卡死
+            Console.WriteLine($@"PreLoad.NET 版本信息获取失败，改用直链下载：{LatestDownloadUrl}");
+
+            // 直链第一跳的 Location 里带着 Tag，但解析它不参与下载，
+            // 因此与下载并行发起，避免 github.com 不通时白等一轮超时
+            var tagTask = TryResolveLatestTagAsync();
+
+            var directSuccess = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(LatestDownloadUrl);
+            if (!directSuccess)
+            {
+                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
                 return false;
             }
 
-            var success = await TaskDownloadPreLoadItem.StartDownloadAndWait(latest.Value.Asset, latest.Value.Tag);
-            if (!success)
-                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+            // 能解析出 Tag 就补写版本记录，避免下次启动重复下载；解析不到只影响设置页的版本显示
+            if (await tagTask is { } tag)
+            {
+                Console.WriteLine($@"PreLoad.NET 直链下载完成，版本记录补写为 {tag}");
+                MultiplayerDependencyHelper.WriteLocalVersion(PathsList.PreLoadVersionFile, "PreLoad.NET", tag);
+            }
+            else
+            {
+                Console.WriteLine(@"PreLoad.NET 直链下载完成，但未解析到版本号，跳过版本记录");
+            }
 
-            return success;
+            return true;
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"PreLoad.NET 组件就绪检查失败: {ex}");
             ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"] + $"\n{ex.Message}");
             return false;
+        }
+    }
+
+    /// <summary>
+    ///     API 查询的容错包装：限流、断网、私有仓库未登录或超时都返回 null 而不是抛异常，
+    ///     由调用方决定是否走直链兜底。
+    ///     <para>
+    ///     Octokit 默认连接超时长达 100 秒，而守卫处在阻塞启动的路径上，
+    ///     所以这里限时等待，超时即放弃 API 通道。
+    ///     </para>
+    /// </summary>
+    private static async Task<(string Tag, ReleaseAsset Asset)?> TryGetLatestAssetAsync()
+    {
+        var apiTask = GetLatestAssetAsync();
+        try
+        {
+            if (await Task.WhenAny(apiTask, Task.Delay(GuardApiTimeout)) != apiTask)
+            {
+                // 放弃等待，但仍挂一个续延观察异常，避免未处理的任务异常
+                _ = apiTask.ContinueWith(t => { _ = t.Exception; },
+                    CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted,
+                    TaskScheduler.Default);
+
+                Console.WriteLine($@"PreLoad.NET 版本信息查询超时（{GuardApiTimeout.TotalSeconds:F0} 秒），转用直链");
+                return null;
+            }
+
+            return await apiTask;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"PreLoad.NET 版本信息获取失败：{ex.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    ///     通过 latest 直链的 302 跳转解析最新 Release Tag，用于补写版本记录。
+    ///     纯网页请求，不消耗 API 配额；解析不到返回 null。
+    /// </summary>
+    public static async Task<string?> TryResolveLatestTagAsync()
+    {
+        try
+        {
+            // 关闭自动跳转：只看第一跳的 Location，不真正去拉资产
+            using var handler = new HttpClientHandler { AllowAutoRedirect = false };
+            using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
+            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "BedrockBoot");
+
+            using var response = await client.SendAsync(
+                new HttpRequestMessage(HttpMethod.Head, LatestDownloadUrl),
+                HttpCompletionOption.ResponseHeadersRead);
+
+            var location = response.Headers.Location?.ToString();
+            if (string.IsNullOrEmpty(location)) return null;
+
+            // https://github.com/{owner}/{repo}/releases/download/{tag}/{asset}
+            const string marker = "/releases/download/";
+            var index = location.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+            if (index < 0) return null;
+
+            var rest = location[(index + marker.Length)..];
+            var slash = rest.IndexOf('/');
+            if (slash <= 0) return null;
+
+            return Uri.UnescapeDataString(rest[..slash]);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"PreLoad.NET 版本号解析失败（不影响直链下载）：{ex.Message}");
+            return null;
         }
     }
 

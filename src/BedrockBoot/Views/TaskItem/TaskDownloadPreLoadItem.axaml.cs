@@ -45,7 +45,8 @@ namespace BedrockBoot.Views.TaskItem;
 /// </summary>
 public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
 {
-    private readonly ReleaseAsset _asset;
+    private readonly ReleaseAsset? _asset;
+    private readonly string? _directUrl;
     private readonly string _tagName;
 
     private Action _removeCallBack = () => { };
@@ -86,6 +87,17 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
         _taskTitle = I18nManager.Instance["Task.PreLoad.Update.Title"];
     }
 
+    /// <summary>
+    ///     直链兜底构造：不依赖 ReleaseAsset，用于 GitHub API 不可用时按 latest 直链下载。
+    ///     直链本身不带版本号，版本记录由调用方解析后另写。
+    /// </summary>
+    public TaskDownloadPreLoadItem(string directUrl) : this()
+    {
+        _directUrl = directUrl;
+        _tagName = "";
+        _taskTitle = I18nManager.Instance["Task.PreLoad.Update.Title"];
+    }
+
     public void Update(Action removeCallBack)
     {
         _removeCallBack = removeCallBack;
@@ -98,7 +110,8 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
         {
             try
             {
-                var downloadPath = Path.Combine(PathsList.TempPath, $"PreLoad.NET.{_tagName}.dll.download");
+                var suffix = string.IsNullOrEmpty(_tagName) ? "latest" : _tagName;
+                var downloadPath = Path.Combine(PathsList.TempPath, $"PreLoad.NET.{suffix}.dll.download");
                 if (Directory.Exists(PathsList.TempPath) is false) Directory.CreateDirectory(PathsList.TempPath);
 
                 var progressHandler = new Progress<DownloadProgress>(progress =>
@@ -119,12 +132,20 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
 
                 var userToken = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false).Data?.UserToken;
 
-                if (string.IsNullOrEmpty(userToken))
+                if (_directUrl != null)
+                {
+                    // API 不可用时的兜底通道：直链是普通网页地址，不带鉴权头，
+                    // 因此可以照常走加速源探测；公开仓库匿名即可下载
+                    var directDownload = new GithubFilesDownloader(
+                        BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                    await directDownload.DownloadAsync(_directUrl, downloadPath, progressHandler, token);
+                }
+                else if (string.IsNullOrEmpty(userToken))
                 {
                     // 未登录只能走免鉴权的浏览器直连（公开仓库可用）
                     var download = new GithubFilesDownloader(
                         BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
-                    await download.DownloadAsync(_asset.BrowserDownloadUrl, downloadPath, progressHandler, token);
+                    await download.DownloadAsync(_asset!.BrowserDownloadUrl, downloadPath, progressHandler, token);
                 }
                 else
                 {
@@ -138,14 +159,15 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
                         { "Accept", "application/octet-stream" }
                     };
 
-                    await downloader.DownloadAsync(_asset.Url, downloadPath, progressHandler, token);
+                    await downloader.DownloadAsync(_asset!.Url, downloadPath, progressHandler, token);
                 }
 
                 await Task.Delay(100, token);
 
                 PreLoadDllStore.ReplaceDll(await File.ReadAllBytesAsync(downloadPath));
-                MultiplayerDependencyHelper.WriteLocalVersion(PathsList.PreLoadVersionFile,
-                    "PreLoad.NET", _tagName);
+                if (!string.IsNullOrEmpty(_tagName))
+                    MultiplayerDependencyHelper.WriteLocalVersion(PathsList.PreLoadVersionFile,
+                        "PreLoad.NET", _tagName);
 
                 try
                 {
@@ -186,7 +208,17 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
     ///     派发下载任务并等待结果：true = 已下载并替换成功，false = 失败/取消。
     ///     启动守卫用它阻塞等待组件就绪。
     /// </summary>
-    public static Task<bool> StartDownloadAndWait(ReleaseAsset asset, string tagName)
+    public static Task<bool> StartDownloadAndWait(ReleaseAsset asset, string tagName) =>
+        StartTaskAndWait(() => new TaskDownloadPreLoadItem(asset, tagName));
+
+    /// <summary>
+    ///     直链兜底入口：GitHub API 不可用时按 latest 直链下载并等待结果。
+    ///     如需写版本记录，由调用方另外解析 Tag 后补写。
+    /// </summary>
+    public static Task<bool> StartDirectDownloadAndWait(string directUrl) =>
+        StartTaskAndWait(() => new TaskDownloadPreLoadItem(directUrl));
+
+    private static Task<bool> StartTaskAndWait(Func<TaskDownloadPreLoadItem> factory)
     {
         // 启动时自动检查在后台线程调用本入口，UserControl 必须在 UI 线程构造，
         // 否则样式/动画关键帧归属后台线程，绑定回调时抛跨线程访问异常
@@ -199,7 +231,8 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
                 NoticeType = NoticeType.Info
             });
 
-            var body = new TaskDownloadPreLoadItem(asset, tagName) { _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously) };
+            var body = factory();
+            body._tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
             var taskId = GlobalModel.TaskManager.AddTask(body);
 
             body.Update(() => GlobalModel.TaskManager.RemoveTask(taskId));

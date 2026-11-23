@@ -30,45 +30,41 @@ namespace BedrockBoot.Models.Helper;
 
 /// <summary>
 ///     地区判定器：综合公网 IP 归属地、系统时区、系统地区、系统语言与启动器语言
-///     五路信号加权打分，判断当前设备是否位于中国境内（含中国香港、澳门、台湾）。
+///     五路信号加权打分，判断当前设备是否位于中国大陆。
 ///     结果进程内缓存，只判定一次。
 /// </summary>
 public static class RegionDetector
 {
-    /// <summary>中国境内地区码（含港澳台）</summary>
-    private static readonly HashSet<string> ChinaRegions = new(StringComparer.OrdinalIgnoreCase)
-        { "CN", "HK", "MO", "TW" };
+    /// <summary>中国大陆地区码</summary>
+    private static readonly HashSet<string> MainlandChinaRegions = new(StringComparer.OrdinalIgnoreCase)
+        { "CN" };
 
-    /// <summary>启动器语言键（I18nManager 注册键）中属于境内的取值</summary>
-    private static readonly HashSet<string> ChinaLauncherLanguages = new(StringComparer.OrdinalIgnoreCase)
-        { "zh_CN", "zh_TW", "yue_HK" };
+    /// <summary>启动器语言键（I18nManager 注册键）中属于中国大陆的取值</summary>
+    private static readonly HashSet<string> MainlandChinaLauncherLanguages = new(StringComparer.OrdinalIgnoreCase)
+        { "zh_CN" };
 
-    /// <summary>Windows / IANA 时区 ID 到境内地区码的映射</summary>
-    private static readonly Dictionary<string, string> ChinaTimezones = new(StringComparer.OrdinalIgnoreCase)
+    /// <summary>Windows / IANA 时区 ID 到中国大陆地区码的映射</summary>
+    private static readonly Dictionary<string, string> MainlandChinaTimezones = new(StringComparer.OrdinalIgnoreCase)
     {
         ["China Standard Time"] = "CN",
-        ["Taipei Standard Time"] = "TW",
         ["Asia/Shanghai"] = "CN",
-        ["Asia/Urumqi"] = "CN",
-        ["Asia/Hong_Kong"] = "HK",
-        ["Asia/Macau"] = "MO",
-        ["Asia/Taipei"] = "TW"
+        ["Asia/Urumqi"] = "CN"
     };
 
     // 各信号权重：IP 归属地占绝对主导，其余信号在离线或 IP 查询失败时兜底
-    private const double ScoreIpInChina = 100;
-    private const double ScoreIpForeign = -100;
-    private const double ScoreTimezoneInChina = 25;
-    private const double ScoreTimezoneForeign = -15;
-    private const double ScoreSystemRegionInChina = 20;
-    private const double ScoreSystemRegionForeign = -15;
-    private const double ScoreSystemLanguageInChina = 10;
-    private const double ScoreSystemLanguageForeign = -10;
-    private const double ScoreLauncherLanguageInChina = 10;
-    private const double ScoreLauncherLanguageForeign = -10;
+    private const double ScoreIpInMainlandChina = 100;
+    private const double ScoreIpNoMainlandChina = -100;
+    private const double ScoreTimezoneInMainlandChina = 25;
+    private const double ScoreTimezoneNoMainlandChina = -15;
+    private const double ScoreSystemRegionInMainlandChina = 20;
+    private const double ScoreSystemRegionNoMainlandChina = -15;
+    private const double ScoreSystemLanguageInMainlandChina = 10;
+    private const double ScoreSystemLanguageNoMainlandChina = -10;
+    private const double ScoreLauncherLanguageInMainlandChina = 10;
+    private const double ScoreLauncherLanguageNoMainlandChina = -10;
 
-    /// <summary>综合得分达到该阈值判定为境内；全零（完全未知）时保守判定为境外</summary>
-    private const double InChinaThreshold = 40;
+    /// <summary>综合得分达到该阈值判定为中国大陆；全零（完全未知）时保守判定为非中国大陆</summary>
+    private const double MainlandChinaThreshold = 40;
 
     private const int IpQueryTimeoutSeconds = 6;
 
@@ -94,16 +90,16 @@ public static class RegionDetector
     public static bool IsDetected => _detectionTask is { IsCompleted: true };
 
     /// <summary>
-    ///     判定结果同步读取。判定完成前默认按境内处理（境外场景由检测完成后回调隐藏）。
+    ///     判定结果同步读取。判定完成前默认按中国大陆处理（非中国大陆场景由检测完成后回调隐藏）。
     /// </summary>
-    public static bool IsInChina { get; private set; } = true;
+    public static bool IsInMainlandChina { get; private set; } = true;
 
     private static Task<bool>? _detectionTask;
 
     /// <summary>
-    ///     判定当前设备是否位于中国境内（含港澳台）。结果进程内缓存，只判定一次。
+    ///     判定当前设备是否位于中国大陆。结果进程内缓存，只判定一次。
     /// </summary>
-    public static Task<bool> IsInChinaAsync()
+    public static Task<bool> IsInMainlandChinaAsync()
     {
         if (_detectionTask != null) return _detectionTask;
         _detectionTask = DetectAsync();
@@ -112,24 +108,24 @@ public static class RegionDetector
 
     private static async Task<bool> DetectAsync()
     {
-        // 调试：设置环境变量 BEDROCKBOOT_FORCE_REGION=foreign / china 可强制指定判定结果，
-        // 便于在境内设备上验证境外隐藏路径
+        // 调试：设置环境变量 BEDROCKBOOT_FORCE_REGION=noMainlandChina / mainlandChina 可强制指定判定结果，
+        // 便于在中国大陆设备上验证非中国大陆隐藏路径
         var forced = Environment.GetEnvironmentVariable("BEDROCKBOOT_FORCE_REGION");
-        if (string.Equals(forced, "foreign", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(forced, "noMainlandChina", StringComparison.OrdinalIgnoreCase))
         {
-            IsInChina = false;
+            IsInMainlandChina = false;
             LastScore = 0;
             _lastSignals = new List<RegionSignal>();
-            Console.WriteLine("RegionDetector 环境变量强制判定为境外");
+            Console.WriteLine("RegionDetector 环境变量强制判定为中国大陆外");
             return false;
         }
 
-        if (string.Equals(forced, "china", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(forced, "mainlandChina", StringComparison.OrdinalIgnoreCase))
         {
-            IsInChina = true;
+            IsInMainlandChina = true;
             LastScore = 0;
             _lastSignals = new List<RegionSignal>();
-            Console.WriteLine("RegionDetector 环境变量强制判定为境内");
+            Console.WriteLine("RegionDetector 环境变量强制判定为中国大陆内");
             return true;
         }
 
@@ -140,7 +136,7 @@ public static class RegionDetector
         var ipRegion = await QueryIpRegionAsync();
         if (ipRegion != null)
         {
-            var s = ChinaRegions.Contains(ipRegion) ? ScoreIpInChina : ScoreIpForeign;
+            var s = MainlandChinaRegions.Contains(ipRegion) ? ScoreIpInMainlandChina : ScoreIpNoMainlandChina;
             score += s;
             signals.Add(new RegionSignal { Name = "IP", Value = ipRegion, Score = s });
         }
@@ -149,7 +145,7 @@ public static class RegionDetector
         var tzRegion = GetTimezoneRegion();
         if (tzRegion != null)
         {
-            var s = ChinaRegions.Contains(tzRegion) ? ScoreTimezoneInChina : ScoreTimezoneForeign;
+            var s = MainlandChinaRegions.Contains(tzRegion) ? ScoreTimezoneInMainlandChina : ScoreTimezoneNoMainlandChina;
             score += s;
             signals.Add(new RegionSignal { Name = "Timezone", Value = tzRegion, Score = s });
         }
@@ -158,7 +154,7 @@ public static class RegionDetector
         var sysRegion = GetSystemRegion();
         if (sysRegion != null)
         {
-            var s = ChinaRegions.Contains(sysRegion) ? ScoreSystemRegionInChina : ScoreSystemRegionForeign;
+            var s = MainlandChinaRegions.Contains(sysRegion) ? ScoreSystemRegionInMainlandChina : ScoreSystemRegionNoMainlandChina;
             score += s;
             signals.Add(new RegionSignal { Name = "SystemRegion", Value = sysRegion, Score = s });
         }
@@ -167,7 +163,7 @@ public static class RegionDetector
         var sysLang = GetSystemLanguageRegion();
         if (sysLang != null)
         {
-            var s = ChinaRegions.Contains(sysLang) ? ScoreSystemLanguageInChina : ScoreSystemLanguageForeign;
+            var s = MainlandChinaRegions.Contains(sysLang) ? ScoreSystemLanguageInMainlandChina : ScoreSystemLanguageNoMainlandChina;
             score += s;
             signals.Add(new RegionSignal { Name = "SystemLanguage", Value = sysLang, Score = s });
         }
@@ -176,20 +172,20 @@ public static class RegionDetector
         var launcherLang = GetLauncherLanguage();
         if (launcherLang != null)
         {
-            var s = ChinaLauncherLanguages.Contains(launcherLang)
-                ? ScoreLauncherLanguageInChina
-                : ScoreLauncherLanguageForeign;
+            var s = MainlandChinaLauncherLanguages.Contains(launcherLang)
+                ? ScoreLauncherLanguageInMainlandChina
+                : ScoreLauncherLanguageNoMainlandChina;
             score += s;
             signals.Add(new RegionSignal { Name = "LauncherLanguage", Value = launcherLang, Score = s });
         }
 
-        var inChina = score >= InChinaThreshold;
+        var inMainlandChina = score >= MainlandChinaThreshold;
         LastScore = score;
         _lastSignals = signals;
-        IsInChina = inChina;
-        Console.WriteLine($"RegionDetector 综合得分 {score:+0;-0} → {(inChina ? "境内" : "境外")} " +
+        IsInMainlandChina = inMainlandChina;
+        Console.WriteLine($"RegionDetector 综合得分 {score:+0;-0} → {(inMainlandChina ? "中国大陆" : "非中国大陆")} " +
                           $"[{string.Join(", ", signals)}]");
-        return inChina;
+        return inMainlandChina;
     }
 
     // --- 各信号采集 ---
@@ -254,14 +250,14 @@ public static class RegionDetector
         return null;
     }
 
-    /// <summary>系统时区映射到地区码；命中境内映射返回地区码，可识别的非境内时区返回原 ID 记负分，无法识别返回 null</summary>
+    /// <summary>系统时区映射到地区码；命中中国大陆映射返回地区码，可识别的非中国大陆时区返回原 ID 记负分，无法识别返回 null</summary>
     private static string? GetTimezoneRegion()
     {
         try
         {
             var id = TimeZoneInfo.Local.Id;
             if (string.IsNullOrEmpty(id)) return null;
-            return ChinaTimezones.TryGetValue(id, out var region) ? region : id;
+            return MainlandChinaTimezones.TryGetValue(id, out var region) ? region : id;
         }
         catch
         {
@@ -287,7 +283,7 @@ public static class RegionDetector
         }
     }
 
-    /// <summary>系统 UI 语言的地区后缀；中性语言 zh 视作 CN，其余中性语言返回原语言名记负分</summary>
+    /// <summary>系统 UI 语言的地区后缀；无法确定地区的中性语言 zh 不计分，其余中性语言返回原语言名记负分</summary>
     private static string? GetSystemLanguageRegion()
     {
         try
@@ -298,8 +294,8 @@ public static class RegionDetector
             var separator = name.IndexOfAny(['-', '_']);
             if (separator > 0) return name[(separator + 1)..];
 
-            // 中性语言（如 "zh"、"en"）
-            return name.Equals("zh", StringComparison.OrdinalIgnoreCase) ? "CN" : name;
+            // 中性语言（如 "zh"、"en"）；zh 无法区分中国大陆与其他地区，因此不计分
+            return name.Equals("zh", StringComparison.OrdinalIgnoreCase) ? null : name;
         }
         catch
         {

@@ -490,6 +490,7 @@
     <x:String x:Key="Task.Update.Title.Format">Загрузка обновления: {0}</x:String>
     <x:String x:Key="Task.Update.Notice.Message">Загрузка файла обновления...</x:String>
     <x:String x:Key="Task.Update.Source.Prefix">Источник: {0}</x:String>
+    <x:String x:Key="Task.Update.Error.BadPayload">Скачанный файл повреждён (возможно, зеркало вернуло страницу ошибки); обновление прервано</x:String>
 
     <x:String x:Key="Task.ImportPack.Title">Импорт пакета...</x:String>
     <x:String x:Key="Task.ImportPack.Status.Preparing">Шаг: Подготовка импорта...</x:String>
@@ -934,6 +935,8 @@
 {0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">Обновить сейчас</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">Уже в последней версии</x:String>
+    <x:String x:Key="MainPage.Update.DirectDownload">Принудительно скачать последнюю версию</x:String>
+    <x:String x:Key="MainPage.Update.DirectDisplayName">Последняя версия</x:String>
 
     <x:String x:Key="Tools.Title">Ящик для инструментов</x:String>
     <x:String x:Key="Tools.Group.Help">Помощь</x:String>

@@ -43,6 +43,7 @@ namespace BedrockBoot.Views.TaskItem;
 public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 {
     private readonly string _currentExecutablePath = GetCurrentLauncherPath();
+    private readonly string? _directUrl;
 
     private Action _cancelCallBack = () => { };
     private CancellationTokenSource? _cts;
@@ -80,6 +81,15 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         _taskTitle = string.Format(I18nManager.Instance["Task.Update.Title.Format"], result.DisplayName);
     }
 
+    /// <summary>
+    ///     强制下载构造：API 不可用时按直链拉取，没有 <see cref="UpdateCheckResult" />。
+    /// </summary>
+    public TaskDownloadUpdateFileItem(string directUrl, string displayName) : this()
+    {
+        _directUrl = directUrl;
+        _taskTitle = string.Format(I18nManager.Instance["Task.Update.Title.Format"], displayName);
+    }
+
     public UpdateCheckResult Result { get; set; } = null!;
 
     public void Update(Action cancelCallBack)
@@ -98,7 +108,15 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 string assetName;
                 string? userToken = null;
 
-                if (Result.Source == UpdateSource.Release)
+                // 直链模式下没有 UpdateCheckResult，所有按 Source 分支的逻辑都必须先排除它
+                var isAction = _directUrl == null && Result is { Source: UpdateSource.Action };
+
+                if (_directUrl != null)
+                {
+                    downloadUrl = _directUrl;
+                    assetName = Path.GetFileName(new Uri(_directUrl).AbsolutePath);
+                }
+                else if (Result.Source == UpdateSource.Release)
                 {
                     var asset = SelectPreferredAsset();
                     if (asset == null)
@@ -143,7 +161,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
                 // Action 产物位于 api.github.com 且必须携带授权头，加速代理不覆盖该接口，
                 // 也不能走无鉴权的 GithubFilesDownloader，只能带 Token 直连下载
-                if (Result.Source == UpdateSource.Action)
+                if (isAction)
                 {
                     using var downloader =
                         new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
@@ -166,10 +184,15 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
                 await Task.Delay(100, token);
 
+                // 直链走的是加速源探测，可能拿到 200 状态的 HTML 错误页；
+                // 启动器体积远超 1MB，用它兜底，避免把错误页面当成新版本写回去
+                if (_directUrl != null && new FileInfo(downloadPath).Length < 1024 * 1024)
+                    throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.BadPayload"]);
+
                 if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))
                     throw new FileNotFoundException(I18nManager.Instance["Task.Update.Error.NoExecutable"], _currentExecutablePath);
 
-                if (Result.Source == UpdateSource.Action)
+                if (isAction)
                 {
                     var extractDir = Path.Combine(PathsList.UpdatePath, "extracted");
                     if (Directory.Exists(extractDir))
@@ -193,7 +216,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
                 // 记录已应用的提交 SHA：InformationalVersion 是日期版本号无法和 HeadSha 比较，
                 // 不记录会导致更新完成后同一提交依然反复提示更新
-                if (Result.Source == UpdateSource.Action && !string.IsNullOrEmpty(Result.WorkflowRun?.HeadSha))
+                if (isAction && !string.IsNullOrEmpty(Result?.WorkflowRun?.HeadSha))
                     CheckUpdate.RecordAppliedCommitSha(Result.WorkflowRun.HeadSha);
 
                 var startInfo = new ProcessStartInfo
@@ -232,6 +255,25 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         });
 
         var body = new TaskDownloadUpdateFileItem(result);
+        var taskId = Models.Global.GlobalModel.TaskManager.AddTask(body);
+
+        body.Update(() => Models.Global.GlobalModel.TaskManager.RemoveTask(taskId));
+    }
+
+    /// <summary>
+    ///     强制下载最新版：查不到版本信息时按直链直接下载并走同一套替换重启流程。
+    /// </summary>
+    public static void ForceUpdate(string directUrl)
+    {
+        Models.Global.GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+        {
+            Title = I18nManager.Instance["Task.Update.Notice.Title"],
+            Message = I18nManager.Instance["Task.Update.Notice.Message"],
+            NoticeType = NoticeType.Info
+        });
+
+        var body = new TaskDownloadUpdateFileItem(directUrl,
+            I18nManager.Instance["MainPage.Update.DirectDisplayName"]);
         var taskId = Models.Global.GlobalModel.TaskManager.AddTask(body);
 
         body.Update(() => Models.Global.GlobalModel.TaskManager.RemoveTask(taskId));

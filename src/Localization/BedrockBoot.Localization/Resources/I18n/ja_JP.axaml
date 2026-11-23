@@ -487,6 +487,7 @@
     <x:String x:Key="Task.Update.Title.Format">更新ファイルをダウンロード：{0}</x:String>
     <x:String x:Key="Task.Update.Notice.Message">更新ファイルをダウンロードしています...</x:String>
     <x:String x:Key="Task.Update.Source.Prefix">ダウンロード元：{0}</x:String>
+    <x:String x:Key="Task.Update.Error.BadPayload">ダウンロード内容が異常です（ミラーがエラーページを返した可能性があります）。更新を中止しました</x:String>
 
     <x:String x:Key="Task.ImportPack.Title">ゲームパックをインポート...</x:String>
     <x:String x:Key="Task.ImportPack.Status.Preparing">ステップ：インポート準備中...</x:String>
@@ -927,6 +928,8 @@
     <x:String x:Key="MainPage.Update.Content">新しいアップデートがあります：\n\n{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">今すぐアップデート</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">現在最新バージョンです</x:String>
+    <x:String x:Key="MainPage.Update.DirectDownload">最新版を強制ダウンロード</x:String>
+    <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
 
     <x:String x:Key="Tools.Title">ツールボックス</x:String>
     <x:String x:Key="Tools.Group.Help">ヘルプ</x:String>

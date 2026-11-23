@@ -239,7 +239,19 @@ public partial class MainPage : UserControl
         catch (Exception ex)
         {
             Console.WriteLine($@"更新失败：{ex}");
-            await GitHubErrorDialog.ShowAsync(ex, i18n["GitHub.Error.CheckUpdate"], i18n["Shared.Action.Confirm"]);
+
+            // 查不到版本信息只说明 API 不可用，正式版还有 latest 直链可走：
+            // 给用户留一条「强制下载最新版」的退路，而不是只能干等 API 恢复
+            var directUrl = LauncherDirectDownloadHelper.GetUrl(GlobalModel.Config.Data.UpdateType);
+            if (directUrl == null)
+            {
+                await GitHubErrorDialog.ShowAsync(ex, i18n["GitHub.Error.CheckUpdate"], i18n["Shared.Action.Confirm"]);
+                return;
+            }
+
+            await GitHubErrorDialog.ShowAsync(ex, i18n["GitHub.Error.CheckUpdate"], i18n["Shared.Action.Confirm"],
+                i18n["MainPage.Update.DirectDownload"],
+                () => TaskDownloadUpdateFileItem.ForceUpdate(directUrl));
         }
     }
 

@@ -1191,6 +1191,8 @@
     <x:String x:Key="MainPage.Update.Content">我们有新的更新：\n\n{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">现在更新</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">当前已是最新版本</x:String>
+    <x:String x:Key="MainPage.Update.DirectDownload">强制下载最新版</x:String>
+    <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
 
     <x:String x:Key="Tools.Title">工具箱</x:String>
     <x:String x:Key="Tools.Group.Help">帮助</x:String>
@@ -1848,6 +1850,7 @@
     <x:String x:Key="Task.Update.Error.NoActionAsset">未找到适用于当前平台的 Action 产物</x:String>
     <x:String x:Key="Task.Update.Error.NoExecutable">无法定位当前程序，不能启动更新引导流程</x:String>
     <x:String x:Key="Task.Update.Error.NoExtractedExe">解压后未找到可执行文件</x:String>
+    <x:String x:Key="Task.Update.Error.BadPayload">下载内容异常（加速源可能返回了错误页面），已中止更新</x:String>
     <x:String x:Key="Task.Update.Error.FailFormat">失败: {0}</x:String>
     <x:String x:Key="CrashReport.NoDumpFile">未生成转储文件</x:String>
     <x:String x:Key="CrashReport.NoExceptionReport">未捕获异常报告</x:String>

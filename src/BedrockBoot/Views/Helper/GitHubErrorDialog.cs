@@ -27,7 +27,13 @@ namespace BedrockBoot.Views.Helper;
 
 public static class GitHubErrorDialog
 {
-    public static async Task ShowAsync(Exception exception, string? title = null, string? closeButtonText = null)
+    /// <summary>
+    ///     展示 GitHub 相关错误的统一弹窗。
+    ///     <paramref name="secondaryButtonText" /> 与 <paramref name="secondaryAction" />
+    ///     都提供时会出现第二个按钮，用于「报错但还有一条退路」的场景（如强制下载）。
+    /// </summary>
+    public static async Task ShowAsync(Exception exception, string? title = null, string? closeButtonText = null,
+        string? secondaryButtonText = null, Action? secondaryAction = null)
     {
         var error = GitHubHelper.HandleException(exception);
         var dialog = new DialogInfo
@@ -36,6 +42,12 @@ public static class GitHubErrorDialog
             Content = $"{I18nManager.Instance["GitHub.Error.Prefix"]}\n{error.GetLocalizedMessage()}",
             CloseButtonText = closeButtonText ?? I18nManager.Instance["Shared.Action.Confirm"]
         };
+
+        if (!string.IsNullOrEmpty(secondaryButtonText) && secondaryAction != null)
+        {
+            dialog.SecondaryButtonText = secondaryButtonText;
+            dialog.SecondaryAction = secondaryAction;
+        }
 
         await Dispatcher.UIThread.InvokeAsync(() => DialogHost.Show(dialog));
     }

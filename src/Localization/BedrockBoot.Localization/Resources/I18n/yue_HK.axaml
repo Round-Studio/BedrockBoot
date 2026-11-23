@@ -487,6 +487,7 @@
     <x:String x:Key="Task.Update.Title.Format">下載更新檔案：{0}</x:String>
     <x:String x:Key="Task.Update.Notice.Message">下載緊更新檔案...</x:String>
     <x:String x:Key="Task.Update.Source.Prefix">下載來源：{0}</x:String>
+    <x:String x:Key="Task.Update.Error.BadPayload">下載內容有問題（加速源可能回咗錯誤頁面），已經中止更新</x:String>
 
     <x:String x:Key="Task.ImportPack.Title">匯入遊戲包...</x:String>
     <x:String x:Key="Task.ImportPack.Status.Preparing">步驟：準備匯入中...</x:String>
@@ -944,6 +945,8 @@
     <x:String x:Key="MainPage.Update.Content">我哋有新嘅更新：\n\n{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">而家更新</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">目前已經係最新版本</x:String>
+    <x:String x:Key="MainPage.Update.DirectDownload">強制下載最新版</x:String>
+    <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
 
     <x:String x:Key="Tools.Title">工具箱</x:String>
     <x:String x:Key="Tools.Group.Help">說明</x:String>

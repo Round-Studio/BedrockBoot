@@ -45,13 +45,13 @@ public partial class UniversalLanguage : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
+                ItemName = "Setting.Universal.Breadcrumb.Root",
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Language.Title"]
+                ItemName = "Setting.Language.Title"
             }
         };
 

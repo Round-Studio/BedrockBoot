@@ -38,13 +38,13 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             {
                 new()
                 {
-                    ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"],
+                    ItemName = "Setting.Personalization.Breadcrumb.Root",
                     ItemClickAction = info =>
                         MainSettingPage.NavigateTo(new SettingPersonalization())
                 },
                 new()
                 {
-                    ItemName = I18nManager.Instance["Setting.Personalization.Home.Title"]
+                    ItemName = "Setting.Personalization.Home.Title"
                 }
             };
             Update();

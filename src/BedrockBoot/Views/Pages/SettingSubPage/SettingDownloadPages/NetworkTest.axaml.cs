@@ -47,12 +47,12 @@ public partial class NetworkTest : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Download.Breadcrumb.Root"],
+                ItemName = "Setting.Download.Breadcrumb.Root",
                 ItemClickAction = _ => MainSettingPage.NavigateTo(new SettingDownload())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Download.NetworkTest.Title"]
+                ItemName = "Settings.Download.NetworkTest.Title"
             }
         };
 

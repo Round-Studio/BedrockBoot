@@ -40,12 +40,12 @@ public partial class GameBackup : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Game.Breadcrumb.Root"],
+                ItemName = "Setting.Game.Breadcrumb.Root",
                 ItemClickAction = s => MainSettingPage.NavigateTo(new SettingGame())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Game.Backup.Title"]
+                ItemName = "Settings.Game.Backup.Title"
             }
         };
 

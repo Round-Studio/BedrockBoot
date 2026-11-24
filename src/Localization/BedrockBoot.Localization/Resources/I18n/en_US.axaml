@@ -2156,7 +2156,7 @@
     <x:String x:Key="Pack.ResourcePack.PackFailedEmptyTemp">Packaging failed: temporary directory is empty</x:String>
     <x:String x:Key="Pack.ResourcePack.PackFailedNoOutput">Packaging failed: output file was not created</x:String>
     <x:String x:Key="Pack.ResourcePack.SourceDirNotFound">Source directory does not exist: {0}</x:String>
-    <x:String x:Key="UI.Dialog.DeleteProgress">Progress: {0} %</x:String>
+    <x:String x:Key="UI.Dialog.DeleteProgress">Progress: {0:F2} %</x:String>
     <x:String x:Key="UI.Dialog.ErrorOccurred">An error occurred</x:String>
     <x:String x:Key="UI.Dialog.Install.CreateFolderFailed">Unable to create install directory: {0}</x:String>
     <x:String x:Key="UI.Dialog.Install.InvalidGameFolder">Invalid game directory configuration</x:String>

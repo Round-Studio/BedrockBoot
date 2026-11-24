@@ -293,10 +293,8 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
     private static void RefreshVersionLists()
     {
         // 实例管理页正在显示时由它自己重建列表（其 UpdateGameList 内部会顺带刷新主页版本下拉）；
-        // 页面未显示则不必处理，下次导航会重新创建页面并读取最新数据。
-        if (MainManager.RefreshVersionListIfVisible()) return;
-
-        GlobalModel.MainPageUpdateInstance?.Invoke();
+        // 页面未显示则刷新主页版本下拉。逻辑集中在 MainManager，删除实例等场景共用。
+        MainManager.RefreshVersionLists();
     }
 
     private void CancelButton_OnClick(object? sender, RoutedEventArgs e)

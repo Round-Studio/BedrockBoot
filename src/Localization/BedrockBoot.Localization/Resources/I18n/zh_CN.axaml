@@ -2165,7 +2165,7 @@
     <x:String x:Key="Pack.ResourcePack.PackFailedEmptyTemp">打包失败：临时目录为空</x:String>
     <x:String x:Key="Pack.ResourcePack.PackFailedNoOutput">打包失败：输出文件未创建</x:String>
     <x:String x:Key="Pack.ResourcePack.SourceDirNotFound">源目录不存在: {0}</x:String>
-    <x:String x:Key="UI.Dialog.DeleteProgress">进度：{0} %</x:String>
+    <x:String x:Key="UI.Dialog.DeleteProgress">进度：{0:F2} %</x:String>
     <x:String x:Key="UI.Dialog.ErrorOccurred">出现错误</x:String>
     <x:String x:Key="UI.Dialog.Install.CreateFolderFailed">无法创建安装目录: {0}</x:String>
     <x:String x:Key="UI.Dialog.Install.InvalidGameFolder">游戏目录配置无效</x:String>

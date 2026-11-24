@@ -70,6 +70,11 @@ public class I18nManager : INotifyPropertyChanged
         var culture = !string.IsNullOrEmpty(key) && LanguageDict.ContainsKey(key) ? key : DefaultCulture;
         var service = LanguageService.Current;
 
+        // 切到常规语言就意味着退出调试预览：覆盖层的优先级高于所有来源，
+        // 不清掉的话选完语言界面还是预览文件里的旧文案。
+        if (service.IsDebugging)
+            service.StopDebugLanguage();
+
         if (!service.Cultures.Contains(culture))
         {
             var displayName = LanguageDict.TryGetValue(culture, out var item) ? item.DisplayName : culture;

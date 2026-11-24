@@ -611,8 +611,10 @@
     <x:String x:Key="Task.Game.Notice.Added">Game version {0} added to download queue.</x:String>
     <x:String x:Key="Task.Game.Notice.Success">Game {0} installed successfully!</x:String>
     <x:String x:Key="Task.Game.Notice.Failed">Game {0} installation failed</x:String>
+    <x:String x:Key="Task.Game.Notice.Cancelled">Installation of game {0} was cancelled</x:String>
     <x:String x:Key="Task.Game.Title.Format">Downloading Game {0} [{1}]</x:String>
     <x:String x:Key="Task.Game.Status.Completed">Download Complete</x:String>
+    <x:String x:Key="Task.Game.Status.Cancelling">Cancelling...</x:String>
     <x:String x:Key="Task.Game.Status.LocalInstalling">Local installation in progress...</x:String>
     <x:String x:Key="Task.Game.Error.Detail">Error Details: {0}</x:String>
 

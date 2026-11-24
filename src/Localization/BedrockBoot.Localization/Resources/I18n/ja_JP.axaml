@@ -476,8 +476,10 @@
     <x:String x:Key="Task.Game.Notice.Added">ゲームバージョン {0} をダウンロードキューに追加しました。</x:String>
     <x:String x:Key="Task.Game.Notice.Success">ゲーム {0} のインストールに成功しました！</x:String>
     <x:String x:Key="Task.Game.Notice.Failed">ゲーム {0} のインストールに失敗しました</x:String>
+    <x:String x:Key="Task.Game.Notice.Cancelled">ゲーム {0} のインストールをキャンセルしました</x:String>
     <x:String x:Key="Task.Game.Title.Format">ゲーム {0} をダウンロード [{1}]</x:String>
     <x:String x:Key="Task.Game.Status.Completed">ダウンロード完了</x:String>
+    <x:String x:Key="Task.Game.Status.Cancelling">キャンセル中...</x:String>
     <x:String x:Key="Task.Game.Status.LocalInstalling">ローカルにインストール中...</x:String>
     <x:String x:Key="Task.Game.Error.Detail">エラー詳細：{0}</x:String>
 

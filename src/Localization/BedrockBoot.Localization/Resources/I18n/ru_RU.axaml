@@ -479,8 +479,10 @@
     <x:String x:Key="Task.Game.Notice.Added">Версия игры {0} добавлена в очередь загрузки.</x:String>
     <x:String x:Key="Task.Game.Notice.Success">Игра {0} успешно установлена!</x:String>
     <x:String x:Key="Task.Game.Notice.Failed">Не удалось установить игру {0}.</x:String>
+    <x:String x:Key="Task.Game.Notice.Cancelled">Установка игры {0} отменена.</x:String>
     <x:String x:Key="Task.Game.Title.Format">Загрузка игры</x:String>
     <x:String x:Key="Task.Game.Status.Completed">Загрузка завершена</x:String>
+    <x:String x:Key="Task.Game.Status.Cancelling">Отмена...</x:String>
     <x:String x:Key="Task.Game.Status.LocalInstalling">Выполняется локальная установка...</x:String>
     <x:String x:Key="Task.Game.Error.Detail">Подробности ошибки: {0}</x:String>
 

@@ -617,8 +617,10 @@
     <x:String x:Key="Task.Game.Notice.Added">游戏版本 {0} 已添加至下载队列。</x:String>
     <x:String x:Key="Task.Game.Notice.Success">游戏 {0} 安装成功！</x:String>
     <x:String x:Key="Task.Game.Notice.Failed">游戏 {0} 安装失败</x:String>
+    <x:String x:Key="Task.Game.Notice.Cancelled">已取消游戏 {0} 的安装</x:String>
     <x:String x:Key="Task.Game.Title.Format">下载游戏 {0} [{1}]</x:String>
     <x:String x:Key="Task.Game.Status.Completed">下载完成</x:String>
+    <x:String x:Key="Task.Game.Status.Cancelling">正在取消...</x:String>
     <x:String x:Key="Task.Game.Status.LocalInstalling">本地安装中...</x:String>
     <x:String x:Key="Task.Game.Error.Detail">错误详情：{0}</x:String>
 

@@ -115,46 +115,41 @@ public static class GameInfoHelper
     /// </summary>
     public static VersionConfig GetVersionConfig(string gamePath, bool isDebug = false)
     {
+        // 目录不存在（例如实例已被删除、解压目录还没落地）时直接放弃，
+        // 后面的 EnumerateFiles 会抛 DirectoryNotFoundException
+        if (string.IsNullOrEmpty(gamePath) || !Directory.Exists(gamePath)) return null;
+
         var configDir = Path.Combine(gamePath, ConfigSubPath);
         var configJsonPath = Path.Combine(configDir, ConfigFileName);
 
-        ConfigEntity<VersionConfig> configEntity;
+        // isSave: false —— 读取阶段一律不落盘。
+        // 旧实现在这里会先写一份「默认配置」再去解析清单，一旦解析失败就会在磁盘上
+        // 留下没有 info 段的 config.json，之后每次读取都在取 data.Info.* 时抛 NRE。
+        var configEntity = new ConfigEntity<VersionConfig>(configJsonPath, false);
+        var needSave = !File.Exists(configJsonPath);
 
-        // 检查配置文件是否存在
-        if (!File.Exists(configJsonPath))
+        var data = configEntity.Data ??= new VersionConfig();
+
+        // JSON 里显式的 "config": null 会把属性初始化器建的默认值覆盖成 null
+        data.Config ??= new VersionConfig.VersionConfigEntry();
+        data.PlayerData ??= new VersionConfig.PlayerDataEntry();
+        data.VersionStatus ??= new VersionConfig.VersionStatusEntry();
+
+        // info 缺失（配置被写坏 / 手写配置）时尝试用清单重建；
+        // 重建不出来说明这个目录还不是有效实例（多半是解压到一半），交给下次刷新
+        if (IsVersionInfoIncomplete(data.Info))
         {
-            var manifestPath = Path.Combine(gamePath, "appxmanifest.xml");
-            if (!File.Exists(manifestPath)) return null;
+            var rebuilt = TryCreateVersionInfo(gamePath);
+            if (rebuilt == null) return null;
 
-            // 初始化新配置
-            Directory.CreateDirectory(configDir);
-            configEntity = new ConfigEntity<VersionConfig>(configJsonPath);
-            configEntity.Load();
-
-            var manifest = PackageIdentity.ParseFromXml(File.ReadAllText(manifestPath));
-
-            configEntity.Data.Info = new VersionConfig.VersionInfo
-            {
-                Version = manifest.Version,
-                VersionName = Path.GetFileName(gamePath),
-                BuildType = File.Exists(Path.Combine(gamePath, "MicrosoftGame.Config"))
-                    ? MinecraftBuildTypeVersion.GDK
-                    : MinecraftBuildTypeVersion.UWP,
-                VersionType = GetVersionTypeWithPackName(manifest.Name)
-            };
-            configEntity.Save();
-        }
-        else
-        {
-            configEntity = new ConfigEntity<VersionConfig>(configJsonPath, false);
-            configEntity.Load();
+            data.Info = rebuilt;
+            needSave = true;
         }
 
         // 绑定运行时路径
         var bodyFile = GetBodyFile(gamePath);
         if (string.IsNullOrEmpty(bodyFile) && !isDebug) return null;
 
-        var data = configEntity.Data;
         data.VersionPath = gamePath;
         data.VersionsRootPath = Path.GetFullPath(Path.Combine(gamePath, @"..\.."));
         data.BodyFile = bodyFile;
@@ -162,7 +157,7 @@ public static class GameInfoHelper
         if (data.Config.IsVersionIsolated && OperatingSystem.IsLinux())
         {
             data.Config.IsVersionIsolated = false;
-            SaveVersionConfig(data);
+            needSave = true;
         }
 
         data.GameTags = new()
@@ -174,7 +169,67 @@ public static class GameInfoHelper
         if (IsInstallModLoader(gamePath))
             data.GameTags.Add("LeviLamina");
 
+        if (needSave) SaveVersionConfig(data);
+
         return data;
+    }
+
+    /// <summary>
+    /// info 是否不可用。Version / VersionName 是实例列表、启动参数、标签的基础字段，
+    /// 任一为空都算不完整，不能拿去拼字符串。
+    /// </summary>
+    private static bool IsVersionInfoIncomplete(VersionConfig.VersionInfo? info)
+    {
+        return info == null ||
+               string.IsNullOrEmpty(info.Version) ||
+               string.IsNullOrEmpty(info.VersionName);
+    }
+
+    /// <summary>
+    /// 从安装目录重建 info：
+    /// UWP 走 appxmanifest.xml；GDK 包没有清单，退化用文件夹名当版本号（与下载器写入的规则一致）。
+    /// 任何读取/解析异常都返回 null —— 解压过程中清单可能只写了一半，不能把异常往上抛，
+    /// 更不能留下残缺配置。
+    /// </summary>
+    private static VersionConfig.VersionInfo? TryCreateVersionInfo(string gamePath)
+    {
+        var isGdk = File.Exists(Path.Combine(gamePath, "MicrosoftGame.Config"));
+        var manifestPath = Path.Combine(gamePath, "appxmanifest.xml");
+
+        if (File.Exists(manifestPath))
+        {
+            try
+            {
+                var manifest = PackageIdentity.ParseFromXml(File.ReadAllText(manifestPath));
+                if (manifest != null && !string.IsNullOrEmpty(manifest.Version))
+                    return new VersionConfig.VersionInfo
+                    {
+                        Version = manifest.Version,
+                        VersionName = Path.GetFileName(gamePath),
+                        BuildType = isGdk ? MinecraftBuildTypeVersion.GDK : MinecraftBuildTypeVersion.UWP,
+                        VersionType = GetVersionTypeWithPackName(manifest.Name)
+                    };
+
+                Console.WriteLine($@"清单缺少 Identity 节点：{manifestPath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"解析清单失败：{manifestPath} - {ex.Message}");
+            }
+        }
+
+        if (!isGdk) return null;
+
+        var folderName = Path.GetFileName(gamePath);
+        if (string.IsNullOrEmpty(folderName)) return null;
+
+        return new VersionConfig.VersionInfo
+        {
+            Version = folderName,
+            VersionName = folderName,
+            BuildType = MinecraftBuildTypeVersion.GDK,
+            VersionType = GetVersionTypeWithPackName(folderName)
+        };
     }
 
     private static bool IsInstallModLoader(string path)
@@ -219,7 +274,7 @@ public static class GameInfoHelper
 
     public static void SaveVersionConfig(VersionConfig config)
     {
-        if (config == null) return;
+        if (config == null || string.IsNullOrEmpty(config.VersionPath)) return;
 
         var configDir = Path.Combine(config.VersionPath, ConfigSubPath);
         var configJsonPath = Path.Combine(configDir, ConfigFileName);
@@ -227,7 +282,11 @@ public static class GameInfoHelper
         if (!Directory.Exists(configDir))
             Directory.CreateDirectory(configDir);
 
-        var cfg = new ConfigEntity<VersionConfig>(configJsonPath) { Data = config };
+        // isSave: false 让构造阶段的 Load 只准备内存对象；
+        // 否则构造时就会先写一份没有 info 的默认配置（DefaultIgnoreCondition=WhenWritingNull
+        // 会把 null 的 info 整个丢掉），主线程之外的读取方一旦抢在这中间读盘就会 NRE。
+        var cfg = new ConfigEntity<VersionConfig>(configJsonPath, false) { Data = config };
+        cfg.IsSave = true;
         cfg.Save();
     }
 

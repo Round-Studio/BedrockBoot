@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -57,17 +58,45 @@ public partial class UniversalLanguage : ISettingPage
         LanguageSelectBox.SelectedIndex =
             I18nManager.LanguageDict.Keys.ToList().FindIndex(x => x == GlobalModel.Config.Data.Language);
 
-        // 缺翻译显示策略：选项内容需要按当前语言取，故在代码里填充。
-        // 枚举值直接当下拉框索引用（顺序固定，见 MissingKeyStyle）。
+        // 缺翻译显示策略：选项内容是普通字符串（不是 DynamicResource），
+        // 因此切语言后要自己重建，否则页面上其它文案都变了、这几项还是旧语言。
+        RefreshMissingKeyStyleItems();
+
+        IsEdit = true;
+
+        Loaded += (_, _) =>
+        {
+            I18nManager.Instance.PropertyChanged -= OnI18nPropertyChanged;
+            I18nManager.Instance.PropertyChanged += OnI18nPropertyChanged;
+        };
+
+        Unloaded += (_, _) => I18nManager.Instance.PropertyChanged -= OnI18nPropertyChanged;
+    }
+
+    private void OnI18nPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // 与 MainHomePage 一致：I18nManager 只在切语言/重建键表时发 "Item[]"。
+        if (e.PropertyName is null or "Item[]")
+            RefreshMissingKeyStyleItems();
+    }
+
+    /// <summary>按当前语言重建"缺翻译显示"下拉项，并保持原有选中值。</summary>
+    private void RefreshMissingKeyStyleItems()
+    {
+        var isEdit = IsEdit;
+        IsEdit = false;
+
         MissingKeyStyleBox.Items.Clear();
         foreach (var style in Enum.GetValues<MissingKeyStyle>())
             MissingKeyStyleBox.Items.Add(new ComboBoxItem
             {
                 Content = I18nManager.Instance["Setting.Language.MissingKey." + style]
             });
+
+        // 枚举值直接当下拉框索引用（顺序固定，见 MissingKeyStyle）。
         MissingKeyStyleBox.SelectedIndex = (int)GlobalModel.Config.Data.MissingKeyStyle;
 
-        IsEdit = true;
+        IsEdit = isEdit;
     }
 
     private void MissingKeyStyleBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

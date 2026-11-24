@@ -37,6 +37,13 @@ public sealed class StringCatalog
     private readonly object _sync = new();
     private readonly List<IStringSource> _sources = new();
 
+    /// <summary>来源集合的代次：<see cref="Add" /> / <see cref="Invalidate" /> 时 +1。</summary>
+    /// <remarks>
+    ///     用来防止"加载期间新增了来源，却把旧合并结果写进缓存"——那份结果缺新来源的串，
+    ///     一旦进缓存就会一直漏，直到下一次清缓存。
+    /// </remarks>
+    private int _version;
+
     /// <summary>已注册的来源，按注册顺序（后者覆盖前者）。</summary>
     public IReadOnlyList<IStringSource> Sources
     {
@@ -57,6 +64,7 @@ public sealed class StringCatalog
         lock (_sync)
         {
             _sources.Add(source);
+            _version++;
             _cache.Clear();
         }
     }
@@ -78,6 +86,7 @@ public sealed class StringCatalog
     {
         lock (_sync)
         {
+            _version++;
             _cache.Clear();
         }
     }
@@ -87,14 +96,20 @@ public sealed class StringCatalog
     /// </summary>
     public IReadOnlyDictionary<string, string> Get(string culture)
     {
+        int version;
         lock (_sync)
         {
             if (_cache.TryGetValue(culture, out var cached))
                 return cached;
+
+            version = _version;
         }
 
+        // 先快照：加载期间可能有新来源注册（例如插件加载完成）。
+        var sources = Sources;
+
         var merged = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var source in Sources)
+        foreach (var source in sources)
         {
             IReadOnlyDictionary<string, string>? loaded;
             try
@@ -116,7 +131,10 @@ public sealed class StringCatalog
 
         lock (_sync)
         {
-            _cache[culture] = merged;
+            // 加载期间来源集合变了（Add 刚清过缓存）：这份合并结果不含新来源的串，
+            // 存进去会让后续查表一直漏串，因此只返回、不缓存。
+            if (_version == version)
+                _cache[culture] = merged;
         }
 
         return merged;

@@ -42,6 +42,12 @@ public sealed class LanguageService
     private string? _watchedPath;
     private bool _started;
 
+    /// <summary>
+    ///     调试会话代次：每次开始或结束调试都 +1。
+    ///     热重载回调可能晚于"换文件/退出调试"才落地，靠它判断手里的结果是否还属于当前会话。
+    /// </summary>
+    private int _overlayGeneration;
+
     public LanguageService()
     {
         _context.Changed += OnTableChanged;
@@ -136,6 +142,21 @@ public sealed class LanguageService
     /// <summary>列出当前语言需要回退的键（尚未翻译）。</summary>
     public IReadOnlyList<string> GetMissingKeys() => _context.GetMissingKeys();
 
+    /// <summary>是否正在预览本地语言文件（覆盖层已生效，或热重载已启用）。</summary>
+    public bool IsDebugging
+    {
+        get
+        {
+            if (_context.Overlay is not null)
+                return true;
+
+            lock (_watcherSync)
+            {
+                return _watcher is not null;
+            }
+        }
+    }
+
     /// <summary>用本地语言文件覆盖当前语言，并开启热重载。</summary>
     public void DebugLanguage(string path)
     {
@@ -146,6 +167,9 @@ public sealed class LanguageService
         if (!File.Exists(fullPath))
             throw new FileNotFoundException("语言文件不存在", fullPath);
 
+        // 开启新会话：上一轮排队中的热重载结果就此作废。
+        Interlocked.Increment(ref _overlayGeneration);
+
         _context.SetOverlay(LoadOverlay(fullPath));
         StartWatcher(fullPath);
     }
@@ -153,6 +177,8 @@ public sealed class LanguageService
     /// <summary>结束调试语言，恢复常规语言。</summary>
     public void StopDebugLanguage()
     {
+        // 先换代、再停 watcher：排队中的热重载回调会因此失效，不会把旧文件内容推回来。
+        Interlocked.Increment(ref _overlayGeneration);
         StopWatcher();
         _context.SetOverlay(null);
     }
@@ -230,6 +256,9 @@ public sealed class LanguageService
 
         lock (_watcherSync)
         {
+            // 记下这一轮读文件所属的会话；投递到 UI 线程时可能已经换了文件或退出调试。
+            var generation = Volatile.Read(ref _overlayGeneration);
+
             for (var attempt = 0; attempt < 5; attempt++)
             {
                 try
@@ -242,9 +271,9 @@ public sealed class LanguageService
                     }
 
                     if (Dispatcher.UIThread.CheckAccess())
-                        _context.SetOverlay(overlay);
+                        ApplyOverlay(generation, overlay);
                     else
-                        Dispatcher.UIThread.Post(() => _context.SetOverlay(overlay));
+                        Dispatcher.UIThread.Post(() => ApplyOverlay(generation, overlay));
 
                     return;
                 }
@@ -261,5 +290,17 @@ public sealed class LanguageService
 
             LocalizationLog.Warn("热重载失败：文件被占用");
         }
+    }
+
+    /// <summary>落地一次热重载结果；会话已经换代时直接丢弃。</summary>
+    private void ApplyOverlay(int generation, IReadOnlyDictionary<string, string>? overlay)
+    {
+        if (Volatile.Read(ref _overlayGeneration) != generation)
+        {
+            LocalizationLog.Info("丢弃过期的热重载结果：调试会话已切换或已结束");
+            return;
+        }
+
+        _context.SetOverlay(overlay);
     }
 }

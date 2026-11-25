@@ -19,6 +19,16 @@
                     <ComboBoxItem Content="{DynamicResource Setting.Personalization.Home.Type.Widgets}" />
                 </ComboBox>
             </onePointControls:SettingCard>
+
+            <!-- 只在主页类型为"小部件"时出现：点一下回主页并把添加面板打开 -->
+            <onePointControls:SettingCard Name="AddWidgetCard"
+                                          Margin="5"
+                                          IsVisible="False"
+                                          IsClickable="True"
+                                          Glyph="&#xE710;"
+                                          Header="{DynamicResource Settings.Personalization.Home.AddWidget.Title}"
+                                          Description="{DynamicResource Settings.Personalization.Home.AddWidget.Desc}"
+                                          Click="AddWidgetCard_OnClick" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

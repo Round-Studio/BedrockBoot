@@ -814,6 +814,8 @@
     <x:String x:Key="Settings.Personalization.Home.Type.Desc">启动器主页显示的类型</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.None">无</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.News">新闻主页</x:String>
+    <x:String x:Key="Settings.Personalization.Home.AddWidget.Title">添加小部件</x:String>
+    <x:String x:Key="Settings.Personalization.Home.AddWidget.Desc">回到主页并打开小部件面板</x:String>
     <x:String x:Key="Settings.Personalization.Group.Window">窗口</x:String>
     <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">使用系统标题栏</x:String>
     <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">使用系统自带的标题栏，并隐藏控制按钮</x:String>
@@ -1512,6 +1514,14 @@
     <x:String x:Key="Account.Panel.ChooseProfile">选择档案</x:String>
     <x:String x:Key="Widget.LaunchGame.Title">游戏</x:String>
     <x:String x:Key="Widget.LaunchGame.NoVersion">未选择版本</x:String>
+    <x:String x:Key="Widget.LaunchGame.ChooseVersion">选择游戏版本</x:String>
+    <x:String x:Key="Widget.LaunchGame.VersionMissing">指定的实例不存在</x:String>
+    <x:String x:Key="Widget.LaunchGame.Drawer.Hint">选择后，该组件会固定显示并启动这个实例；也可以让它继续跟随当前选中的实例。</x:String>
+    <x:String x:Key="Widget.LaunchGame.Drawer.Hint.Add">选择后立即添加组件，并固定显示这个实例；也可以选择跟随当前选中的实例。</x:String>
+    <x:String x:Key="Widget.LaunchGame.FollowCurrent">跟随当前实例</x:String>
+    <x:String x:Key="Widget.LaunchGame.FollowCurrent.Desc">显示实例列表中当前选中的版本</x:String>
+    <x:String x:Key="Widget.LaunchGame.Drawer.Empty.Title">没有可用的实例</x:String>
+    <x:String x:Key="Widget.LaunchGame.Drawer.Empty.Message">请先在实例管理中添加一个游戏实例</x:String>
     <x:String x:Key="Widget.Timer.CurrentTime">当前时间</x:String>
     <x:String x:Key="Instance.Loader.Description">加载器描述</x:String>
     <x:String x:Key="Instance.Loader.Status.NotInstalled">未安装</x:String>
@@ -1992,8 +2002,8 @@
 
     <x:String x:Key="Widget.Clock.Name">时钟</x:String>
     <x:String x:Key="Widget.Clock.Desc">一个非常普通的时间显示组件</x:String>
-    <x:String x:Key="Widget.RecentPlay.Name">最近游玩</x:String>
-    <x:String x:Key="Widget.RecentPlay.Desc">显示最近游玩的一个游戏实例</x:String>
+    <x:String x:Key="Widget.RecentPlay.Name">游戏版本</x:String>
+    <x:String x:Key="Widget.RecentPlay.Desc">固定显示并启动指定的一个游戏实例，可随时切换</x:String>
     <x:String x:Key="CrashReport.Drawer.Title">BedrockBoot 游戏错误追踪器</x:String>
     <x:String x:Key="CrashReport.GameExited.Title">游戏异常退出</x:String>
     <x:String x:Key="CrashReport.Drawer.OpenFailed">退出码 0x{0:X8}，错误追踪界面打开失败：{1}</x:String>

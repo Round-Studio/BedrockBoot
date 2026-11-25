@@ -20,6 +20,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using BedrockBoot.Localization;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Standard.Entity;
@@ -146,25 +147,50 @@ public partial class MainHomePage : BedrockBootPage
         switch (GlobalModel.Config.Data.HomeConfig.HomeType)
         {
             case HomeType.None:
+                PendingOpenAddWidgetDrawer = false;
                 break;
             case HomeType.News:
+                PendingOpenAddWidgetDrawer = false;
                 MainGrid.Children.Add(new GameUpdateNewsWidget());
                 break;
             case HomeType.Widgets:
-                DesktopWorkspace = new DesktopWorkspace();
+                // 局部变量固定住这一份工作区：切页后字段会指向新实例，
+                // 事件回调里再用字段就可能把别的页面的布局写进配置文件。
+                var workspace = new DesktopWorkspace();
+                DesktopWorkspace = workspace;
+
                 if (File.Exists(PathsList.WidgetsConfigPath))
-                    DesktopWorkspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
-                DesktopWorkspace.AddWidgetCallOn += (sender, args) =>
+                    workspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
+
+                workspace.AddWidgetCallOn += (sender, args) => OpenAddWidgetDrawer();
+                workspace.LayoutChanged += (sender, args) =>
                 {
-                    Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawAddWidgetContent(), I18nManager.Instance["Widget.Previewer.AddWidget"]);
-                };
-                DesktopWorkspace.LayoutChanged += (sender, args) =>
-                {
-                    var json = DesktopWorkspace.ExportLayout();
+                    var json = workspace.ExportLayout();
                     File.WriteAllText(PathsList.WidgetsConfigPath, json);
                 };
-                MainGrid.Children.Add(DesktopWorkspace);
+                MainGrid.Children.Add(workspace);
+
+                // 从"设置 - 个性化 - 主页"跳过来时，把添加面板一并打开
+                if (PendingOpenAddWidgetDrawer)
+                {
+                    PendingOpenAddWidgetDrawer = false;
+                    Dispatcher.UIThread.Post(OpenAddWidgetDrawer, DispatcherPriority.Background);
+                }
+
                 break;
         }
+    }
+
+    /// <summary>
+    ///     设置页要求"跳回主页并打开添加面板"时置位；主页加载后消费掉。
+    /// </summary>
+    public static bool PendingOpenAddWidgetDrawer { get; set; }
+
+    /// <summary>打开"添加小部件"抽屉。</summary>
+    public static void OpenAddWidgetDrawer()
+    {
+        Models.Global.GlobalModel.MainWindow.OpenDraw(
+            new DrawAddWidgetContent(),
+            I18nManager.Instance["Widget.Previewer.AddWidget"]);
     }
 }

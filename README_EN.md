@@ -58,6 +58,7 @@ With support for multiple game directories and isolated instances, BedrockBoot m
 | Multiplayer                        | ✅           | Built-in multiplayer component that works with BMCBL without requiring Xbox multiplayer                                                                       |
 | Version Isolation                  | ✅ (Windows) | Isolate game resources between different instances, similar to version isolation in Minecraft Java Edition                                                    |
 | Multiple Account Management        | ✅           | Log in to and switch between Xbox accounts on both Windows and Linux, with support for online game mode                                                       |
+| Ways to Quick Launch               | ✅️           | Create shortcuts for individual versions, pin them to your home screen as widgets, or launch a version via the right-click on the Start menu or taskbar.      |
 | Cross-Platform Support             | ✅           | Supports Windows and Linux. Linux uses ProtonGDK to run GDK games                                                                                             |
 | Compatibility with Other Launchers | ✅           | Compatible with other third-party Bedrock launchers, such as BMCBL and LeviLauncher (partial support)                                                         |
 | Runtime Component Setup            | ✅           | Automatically detects the game environment and installs missing runtime components before launching                                                           |

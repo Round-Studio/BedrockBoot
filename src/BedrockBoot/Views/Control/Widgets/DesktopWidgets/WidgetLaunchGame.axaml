@@ -6,6 +6,30 @@
              xmlns:text="clr-namespace:AvaMotion.Controls.Text;assembly=AvaMotion"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="180"
              x:Class="BedrockBoot.Views.Control.Widgets.DesktopWidgets.WidgetLaunchGame">
+    <UserControl.Styles>
+        <!-- 复用主页欢迎语（LineTextBlock）的悬停效果：静止时只有一条强调色下划线，
+             悬停时下划线铺满整块、光晕跟进、文字转白，暗示这里可以点。
+             高度由代码按 NameHoverHost 的实际高度驱动（选择器 + 绑定的写法在运行时不生效）。 -->
+        <Style Selector="Border#PATH_NameLineBorder">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Height"
+                                      Duration="0:0:0.2"
+                                      Easing="ExponentialEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Border#PATH_NameHaloBorder">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Height"
+                                      Duration="0:0:0.2"
+                                      Easing="ExponentialEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
     <Grid RowDefinitions="Auto,*,Auto">
         <Border Grid.Row="0"
                 CornerRadius="6"
@@ -21,13 +45,34 @@
         <Grid Grid.Row="2"
               ColumnDefinitions="*,Auto">
             <StackPanel Grid.Column="0">
-                <text:AnimationTextBlock FontSize="36"
-                                         AnimationType="NumberRolling"
-                                         FontWeight="SemiBold"
-                                         Name="GameNameText"
-                                         Text="{DynamicResource Widget.LaunchGame.Title}"></text:AnimationTextBlock>
-            
+                <!-- 实例名就是可点区域：悬停出现下划线铺满的提示，点开版本选择面板 -->
+                <Grid Name="NameHoverHost"
+                      Cursor="Hand"
+                      HorizontalAlignment="Left"
+                      Background="Transparent">
+                    <Border Name="PATH_NameLineBorder"
+                            Background="{DynamicResource AccentBorderBrush}"
+                            CornerRadius="4"
+                            Height="8"
+                            VerticalAlignment="Bottom" />
+
+                    <text:AnimationTextBlock FontSize="36"
+                                             AnimationType="NumberRolling"
+                                             FontWeight="SemiBold"
+                                             Name="GameNameText"
+                                             Text="{DynamicResource Widget.LaunchGame.Title}"></text:AnimationTextBlock>
+
+                    <!-- 光晕和主页欢迎语一样叠在文字之上 -->
+                    <Border Name="PATH_NameHaloBorder"
+                            Height="6"
+                            VerticalAlignment="Bottom">
+                        <onePointControls:PointHalo CornerRadius="3" />
+                    </Border>
+                </Grid>
+
                 <TextBlock Opacity="0.6"
+                           FontSize="14"
+                           Margin="0,2,0,0"
                            Name="GameVersionText"
                            Text="{DynamicResource Widget.LaunchGame.NoVersion}"></TextBlock>
             </StackPanel>

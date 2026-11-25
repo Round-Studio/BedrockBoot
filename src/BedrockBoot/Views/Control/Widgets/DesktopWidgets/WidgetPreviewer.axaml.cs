@@ -20,7 +20,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Entity.Info;
+using BedrockBoot.Standard.Enum.Type;
+using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets;
@@ -45,7 +48,30 @@ public partial class WidgetPreviewer : UserControl
 
     private void AddBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        // "游戏版本"组件是要固定某个实例的：先选版本，选完再落地，
+        // 否则加进来只会得到一个跟着主页当前选中走的空壳。
+        if (_wid.Type == WidgetType.LeastPlay)
+        {
+            OpenVersionPickerThenAdd();
+            return;
+        }
+
         GlobalModel.MainWindow.CloseDraw();
-        DesktopWorkspace.Instance.AddWidget(_wid.Type);
+        DesktopWorkspace.Instance?.AddWidget(_wid.Type);
+    }
+
+    private void OpenVersionPickerThenAdd()
+    {
+        // 在同一个抽屉里换页：先关再开会有两次滑入动画，视觉上很跳
+        GlobalModel.MainWindow.SwitchDraw(
+            new DrawSelectGameVersionContent((gameFolderPath, versionFolder) =>
+            {
+                DesktopWorkspace.Instance?.AddWidget(WidgetType.LeastPlay, layout =>
+                {
+                    layout.GameFolderPath = gameFolderPath;
+                    layout.GameVersionFolder = versionFolder;
+                });
+            }),
+            I18nManager.Instance["Widget.LaunchGame.ChooseVersion"]);
     }
 }

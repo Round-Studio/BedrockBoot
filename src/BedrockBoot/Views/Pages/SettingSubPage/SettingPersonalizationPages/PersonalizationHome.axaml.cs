@@ -18,10 +18,12 @@
 
 using System.Collections.Generic;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Interface;
+using BedrockBoot.Views.Pages;
 using BedrockBoot.Views.Pages.MainSubPage;
 using OnePointUI.Avalonia.Base.Entry;
 
@@ -58,6 +60,9 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
 
             HomeTypeBox.SelectedIndex = (int)GlobalModel.Config.Data.HomeConfig.HomeType;
 
+            // 只有主页是小部件时才谈得上"添加小部件"
+            AddWidgetCard.IsVisible = GlobalModel.Config.Data.HomeConfig.HomeType == HomeType.Widgets;
+
             switch (GlobalModel.Config.Data.HomeConfig.HomeType)
             {
                 case HomeType.None:
@@ -68,6 +73,16 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             }
 
             IsEdit = true;
+        }
+
+        /// <summary>回主页并打开"添加小部件"面板。</summary>
+        private void AddWidgetCard_OnClick(object? sender, RoutedEventArgs e)
+        {
+            if (GlobalModel.Config.Data.HomeConfig.HomeType != HomeType.Widgets) return;
+
+            // 主页是每次切标签重新实例化的，所以用标记让新的主页加载完后自己把面板弹出来
+            MainHomePage.PendingOpenAddWidgetDrawer = true;
+            MainPage.Instance?.SelectTagPage("main:home");
         }
 
         private void HomeTypeBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

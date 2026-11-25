@@ -59,6 +59,12 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
         private ContextMenu? _emptyContextMenu;
         private DesktopWidgetTemplated? _contextMenuWidget;
 
+        /// <summary>拖拽时用来把组件顶到最上层的 ZIndex 计数。</summary>
+        private int _topZIndex;
+
+        /// <summary>是否挂在可视树上：脱离后的旧工作区不许再写布局文件。</summary>
+        private bool _isAttached;
+
         public event EventHandler<WidgetLayoutChangedEventArgs>? LayoutChanged;
         public event EventHandler<WidgetDeletedEventArgs>? WidgetDeleted;
         public event EventHandler<WidgetAddedEventArgs>? WidgetAdded;
@@ -84,15 +90,6 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
         private void InitializeContextMenus()
         {
-            _widgetContextMenu = new ContextMenu();
-            var deleteItem = new MenuItem
-            {
-                Header = I18nManager.Instance["Widget.Workspace.Delete"],
-                Background = new SolidColorBrush(Colors.Transparent)
-            };
-            deleteItem.Click += OnDeleteWidgetClick;
-            _widgetContextMenu.Items.Add(deleteItem);
-
             _emptyContextMenu = new ContextMenu();
             var addItem = new MenuItem
             {
@@ -157,6 +154,8 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
         private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
         {
+            _isAttached = true;
+
             if (_scrollViewer != null)
             {
                 _scrollViewer.PropertyChanged += OnScrollViewerPropertyChanged;
@@ -165,6 +164,8 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
         private void OnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
         {
+            _isAttached = false;
+
             if (_scrollViewer != null)
             {
                 _scrollViewer.PropertyChanged -= OnScrollViewerPropertyChanged;
@@ -179,11 +180,22 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             }
         }
 
-        public void AddWidget(WidgetType type)
+        public void AddWidget(WidgetType type, Action<WidgetLayoutData>? configure = null)
         {
             if (_canvas == null) return;
 
-            var widget = CreateWidgetFromType(type);
+            var registerInfo = RegistedWidgets.Find(x => x.Type == type);
+            if (registerInfo == null) return;
+
+            // 组件的"出生配置"：例如"固定版本"组件在添加前就选好了要显示的实例
+            var layout = new WidgetLayoutData
+            {
+                WidgetType = type,
+                Size = registerInfo.DefaultSize
+            };
+            configure?.Invoke(layout);
+
+            var widget = CreateWidgetFromType(type, layout);
             if (widget == null) return;
 
             var startPos = FindNearestFreeGridPosition(new Point(0, 0), widget);
@@ -191,6 +203,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
             _canvas.Children.Add(widget);
             _allWidgets.Add(widget);
+            widget.ZIndex = ++_topZIndex;
 
             widget.PointerPressed += OnWidgetPointerPressed;
             widget.PointerReleased += OnWidgetPointerReleased;
@@ -204,12 +217,35 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
         private void OnWidgetRightButtonDown(object? sender, PointerPressedEventArgs e)
         {
-            if (sender is DesktopWidgetTemplated widget)
+            if (sender is not DesktopWidgetTemplated widget) return;
+
+            _contextMenuWidget = widget;
+
+            // 每次重建菜单：不同组件可能带自己的配置项，重建也能避免改动已经弹开的菜单
+            _widgetContextMenu = new ContextMenu();
+
+            // 组件自带配置项时先列出来（例如「游戏版本」组件可以选择固定版本）
+            if (widget.WidgetContent is IWidgetConfigurable { HasSettings: true } configurable)
             {
-                _contextMenuWidget = widget;
-                _widgetContextMenu?.Open(widget);
-                e.Handled = true;
+                var settingsItem = new MenuItem
+                {
+                    Header = configurable.SettingsText,
+                    Background = new SolidColorBrush(Colors.Transparent)
+                };
+                settingsItem.Click += (_, _) => configurable.ShowSettings();
+                _widgetContextMenu.Items.Add(settingsItem);
             }
+
+            var deleteItem = new MenuItem
+            {
+                Header = I18nManager.Instance["Widget.Workspace.Delete"],
+                Background = new SolidColorBrush(Colors.Transparent)
+            };
+            deleteItem.Click += OnDeleteWidgetClick;
+            _widgetContextMenu.Items.Add(deleteItem);
+
+            _widgetContextMenu.Open(widget);
+            e.Handled = true;
         }
 
         public string ExportLayout()
@@ -221,13 +257,10 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
                 var gridPos = GetWidgetGridPosition(widget);
                 var size = GetWidgetSize(widget);
 
-                var data = new WidgetLayoutData
-                {
-                    GridX = (int)gridPos.X,
-                    GridY = (int)gridPos.Y,
-                    Size = size,
-                    WidgetType = widget.WidgetConfig.WidgetType
-                };
+                var data = widget.WidgetConfig.Clone();
+                data.GridX = (int)gridPos.X;
+                data.GridY = (int)gridPos.Y;
+                data.Size = size;
                 layoutData.Add(data);
             }
 
@@ -249,7 +282,8 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
             foreach (var data in layoutData)
             {
-                var widget = CreateWidgetFromType(data.WidgetType);
+                // 把读到的配置整体交给组件，组件才能恢复自己绑定的实例等自定义设置
+                var widget = CreateWidgetFromType(data.WidgetType, data);
                 if (widget == null) continue;
 
                 SetWidgetSize(widget, data.Size);
@@ -259,6 +293,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
 
                 _canvas.Children.Add(widget);
                 _allWidgets.Add(widget);
+                widget.ZIndex = ++_topZIndex;
 
                 widget.PointerPressed += OnWidgetPointerPressed;
                 widget.PointerReleased += OnWidgetPointerReleased;
@@ -286,23 +321,27 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             _occupiedGridCells.Clear();
         }
 
-        public static DesktopWidgetTemplated? CreateWidgetFromType(WidgetType type)
+        public static DesktopWidgetTemplated? CreateWidgetFromType(WidgetType type, WidgetLayoutData? layout = null)
         {
-            var config = new WidgetLayoutData()
+            var registerInfo = RegistedWidgets.Find(x => x.Type == type);
+            if (registerInfo == null) return null;
+
+            var config = layout ?? new WidgetLayoutData
             {
                 WidgetType = type,
-                Size = RegistedWidgets.Find(x => x.Type == type).DefaultSize
+                Size = registerInfo.DefaultSize
             };
-            if (config == null) return null;
 
             var widget = new DesktopWidgetTemplated();
 
-            var content = Activator.CreateInstance(RegistedWidgets.Find(x=>x.Type == config.WidgetType).WidgetTypeof);
+            var content = Activator.CreateInstance(registerInfo.WidgetTypeof);
 
             if (content == null) return null;
 
-            widget.WidgetContent = (IWidgetTemplated)content;
+            // 先落配置再挂内容：组件构造/首次刷新时就能读到自己的绑定设置
             widget.WidgetConfig = config;
+            widget.WidgetContent = (IWidgetTemplated)content;
+            widget.WidgetContent.LoadWidgetConfig(config);
             SetWidgetSize(widget, config.Size);
 
             return widget;
@@ -382,8 +421,10 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             ClearWidgetOccupancy(widget);
             CreateGhostPlaceholder(widget);
 
-            _canvas?.Children.Remove(widget);
-            _canvas?.Children.Add(widget);
+            // 只提 ZIndex，不把组件从 Canvas 上摘下来再放回去：
+            // 摘下来会触发一次卸载/重新挂载，组件（尤其带自定义状态的）会被迫重建界面，
+            // 之前"左键点一下，固定版本就没了"就是这么来的。
+            widget.ZIndex = ++_topZIndex;
 
             e.Pointer.Capture(widget);
         }
@@ -623,17 +664,39 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             _canvas.Height = Math.Max(viewportHeight, maxHeight) - 2 * Padding;
         }
 
-        private void OnLayoutChanged(DesktopWidgetTemplated widget)
+        private void OnLayoutChanged(DesktopWidgetTemplated? widget)
         {
+            // 已经脱离可视树的旧工作区（切页后残留的实例）不再往外发事件：
+            // 它的widget状态可能是旧的，写盘会把用户刚选的配置覆盖回去。
+            if (!_isAttached) return;
+
             LayoutChanged?.Invoke(this, new WidgetLayoutChangedEventArgs(widget));
+        }
+
+        /// <summary>
+        ///     立刻把当前布局写回磁盘。组件改了自己的配置（例如固定版本）后直接调用，
+        ///     不必等下一次拖拽或尺寸变化。
+        /// </summary>
+        public void SaveLayoutNow()
+        {
+            OnLayoutChanged(null);
+        }
+
+        /// <summary>
+        ///     组件自身的配置发生变化（例如把「游戏版本」组件固定到另一个实例）时调用，
+        ///     让外部把最新布局写回磁盘。
+        /// </summary>
+        public void NotifyWidgetConfigChanged(DesktopWidgetTemplated? widget = null)
+        {
+            OnLayoutChanged(widget);
         }
     }
 
     public class WidgetLayoutChangedEventArgs : EventArgs
     {
-        public DesktopWidgetTemplated Widget { get; }
+        public DesktopWidgetTemplated? Widget { get; }
 
-        public WidgetLayoutChangedEventArgs(DesktopWidgetTemplated widget)
+        public WidgetLayoutChangedEventArgs(DesktopWidgetTemplated? widget)
         {
             Widget = widget;
         }

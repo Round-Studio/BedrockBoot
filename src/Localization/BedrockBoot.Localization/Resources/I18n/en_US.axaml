@@ -505,6 +505,13 @@
 	<x:String x:Key="CurseForge.Tag.TexturePacks.x32">x32</x:String>
 	<x:String x:Key="CurseForge.Tag.TexturePacks.x64">x64</x:String>
 
+    <x:String x:Key="CurseForge.Tag.Scripts.Scripts">Scripts</x:String>
+    <x:String x:Key="CurseForge.Tag.Scripts.Utility">Utility</x:String>
+
+    <x:String x:Key="CurseForge.Tag.Skins.Mobs">Mobs</x:String>
+    <x:String x:Key="CurseForge.Tag.Skins.Players">Players</x:String>
+    <x:String x:Key="CurseForge.Tag.Skins.Skin Packs">Skin Packs</x:String>
+
     <x:String x:Key="Download.Assets.Status.Loading.Title">Collecting Assets...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">All assets, fall in!</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Title">Huh...?</x:String>
@@ -1078,6 +1085,7 @@
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET Component Update</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">Downloading PreLoad.NET component update...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">Done, takes effect on next game launch</x:String>
+    <x:String x:Key="Task.PreLoad.Update.InvalidPackage">PreLoad.NET.dll content is invalid ({0} bytes); the local update file was not replaced</x:String>
     <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET component missing and version info unavailable; game launch blocked (check your network connection)</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET component download failed; game launch blocked</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Multiplayer Dependencies</x:String>
@@ -1485,6 +1493,11 @@
 	<x:String x:Key="LaunchWindow.Status.UWP.Fix">Fix and Launch</x:String>
 	<x:String x:Key="LaunchWindow.Status.UWP.LaunchAnyway">Launch Anyway</x:String>
 	<x:String x:Key="LaunchWindow.Status.UWP.Cancel">Cancel Launch</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Checking">Checking UWP dependencies</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Missing.Title">UWP Dependencies Missing</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Missing.Content">The following UWP dependencies are not installed:&#x0a;{0}&#x0a;&#x0a;Missing these dependencies may prevent the game from launching.</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Download.Title">Download UWP Dependencies</x:String>
+    <x:String x:Key="LaunchWindow.Status.PreLoad.Ready">PreLoad.NET component ready</x:String>
     <x:String x:Key="LaunchWindow.Action.EndProcess">End Game Process</x:String>
     <x:String x:Key="Task.InstanceUpdate.Title">Updating Instance</x:String>
     <x:String x:Key="Task.InstanceUpdate.Step.DeleteOldFiles">Delete Old Files</x:String>

@@ -86,13 +86,13 @@ public static class UwpDependenceLaunchGuard
             {
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "未安装 UWP 依赖",
-                    Content = "检测到以下 UWP 依赖未安装：\n" +
-                              string.Join("\n", depList.Select(d => d.Name)) +
-                              "\n\n缺失这些依赖可能导致游戏无法启动。",
-                    PrimaryButtonText = "自动补全后启动",
-                    SecondaryButtonText = "仍要启动",
-                    CloseButtonText = "取消",
+                    Title = I18nManager.Instance["LaunchWindow.Status.UWP.Missing.Title"],
+                    Content = string.Format(
+                        I18nManager.Instance["LaunchWindow.Status.UWP.Missing.Content"],
+                        string.Join("\n", depList.Select(d => d.Name))),
+                    PrimaryButtonText = I18nManager.Instance["LaunchWindow.Status.UWP.Fix"],
+                    SecondaryButtonText = I18nManager.Instance["LaunchWindow.Status.UWP.LaunchAnyway"],
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                     AccountButton = DialogButtons.PrimaryButton,
                     PrimaryAction = () =>
                     {
@@ -100,7 +100,7 @@ public static class UwpDependenceLaunchGuard
                         content.AllCompleted = () => tcs.TrySetResult(true);
                         DialogHost.Show(new DialogInfo
                         {
-                            Title = "下载 UWP 依赖",
+                            Title = I18nManager.Instance["LaunchWindow.Status.UWP.Download.Title"],
                             Content = content
                         });
                     },

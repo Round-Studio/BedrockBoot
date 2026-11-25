@@ -1101,6 +1101,7 @@
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET 组件更新</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">正在下载 PreLoad.NET 组件更新...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完成，下次启动游戏生效</x:String>
+    <x:String x:Key="Task.PreLoad.Update.InvalidPackage">PreLoad.NET.dll 内容异常（{0} 字节），已拒绝替换本地更新文件</x:String>
     <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 组件缺失且无法获取版本信息，已阻止启动游戏（请检查网络连接）</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET 组件下载失败，已阻止启动游戏</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">联机依赖组件</x:String>
@@ -1494,6 +1495,11 @@
     <x:String x:Key="LaunchWindow.Status.UWP.Fix">自动补全后启动</x:String>
     <x:String x:Key="LaunchWindow.Status.UWP.LaunchAnyway">仍要启动</x:String>
     <x:String x:Key="LaunchWindow.Status.UWP.Cancel">取消启动</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Checking">检测 UWP 依赖</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Missing.Title">未安装 UWP 依赖</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Missing.Content">检测到以下 UWP 依赖未安装：&#x0a;{0}&#x0a;&#x0a;缺失这些依赖可能导致游戏无法启动。</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Download.Title">下载 UWP 依赖</x:String>
+    <x:String x:Key="LaunchWindow.Status.PreLoad.Ready">PreLoad.NET 组件就绪</x:String>
     <x:String x:Key="LaunchWindow.Action.EndProcess">结束游戏进程</x:String>
     <x:String x:Key="Task.InstanceUpdate.Title">更新实例</x:String>
     <x:String x:Key="Task.InstanceUpdate.Step.DeleteOldFiles">删除旧文件</x:String>

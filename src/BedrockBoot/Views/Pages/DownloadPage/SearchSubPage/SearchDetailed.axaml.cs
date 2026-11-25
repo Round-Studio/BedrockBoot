@@ -169,13 +169,17 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
                         Application.Current!.Resources.GetResourceObservable("Download.Tab.Assets"));
                     break;
                 case SearchResourceType.PluginPack:
-                    item.Content = "插件";
+                    item.Bind(ContentProperty,
+                        Application.Current!.Resources.GetResourceObservable("Download.Search.ResourceType.Plugin"));
                     break;
                 case SearchResourceType.LeviLaminaMods:
-                    item.Content = "LeviLamina 模组";
+                    item.Bind(ContentProperty,
+                        Application.Current!.Resources.GetResourceObservable(
+                            "Download.Search.ResourceType.LeviLaminaMod"));
                     break;
                 case SearchResourceType.DllMods:
-                    item.Content = "Dll 模组";
+                    item.Bind(ContentProperty,
+                        Application.Current!.Resources.GetResourceObservable("Download.Search.ResourceType.DllMod"));
                     break;
                 default:
                     item.Content = "Minecraft";

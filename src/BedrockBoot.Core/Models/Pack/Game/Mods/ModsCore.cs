@@ -60,8 +60,8 @@ public class ModsCore
         var preLoadPath = Path.Combine(VersionInfo.VersionPath, "preload");
         var fullPath = Path.Combine(VersionInfo.VersionPath, "PreLoad.NET.dll");
 
-        if (!Directory.Exists(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row")))
-            Directory.CreateDirectory(Path.Combine(VersionInfo.VersionPath, "config", "BedrockBoot2", "row"));
+        var rawBodyDirectory = Path.GetDirectoryName(rawBody);
+        if (!string.IsNullOrEmpty(rawBodyDirectory)) Directory.CreateDirectory(rawBodyDirectory);
         if (!Directory.Exists(preLoadPath))
             Directory.CreateDirectory(preLoadPath);
 

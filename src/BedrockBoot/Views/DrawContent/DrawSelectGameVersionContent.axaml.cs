@@ -22,6 +22,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
@@ -222,16 +223,16 @@ public partial class DrawSelectGameVersionContent : UserControl
 
     private Avalonia.Controls.Control CreateSelectedBadge()
     {
-        var badge = new TextBlock
+        // 用 FontIcon 的 Fluent 字形（E73E = CheckMark）而不是直接塞 "√" 字符串：
+        var badge = new FontIcon
         {
-            Text = "\u2713",
-            FontSize = 16,
-            FontWeight = FontWeight.Bold,
+            Glyph = "\uE73E",
+            FontSize = 14,
             VerticalAlignment = VerticalAlignment.Center
         };
 
         if (this.TryFindResource("AccentBackgroundBrush", out var brush) && brush is IBrush accent)
-            badge.Foreground = accent;
+            TextElement.SetForeground(badge, accent);
 
         return badge;
     }

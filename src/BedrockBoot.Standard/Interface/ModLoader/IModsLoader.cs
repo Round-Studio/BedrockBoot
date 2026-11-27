@@ -41,6 +41,14 @@ public interface IModsLoader
     public void Install();
     public void Remove();
     public void ViewInfo();
+    /// <summary>是否支持升级加载器。默认不支持，由加载器按需覆写。</summary>
+    public bool CanUpgrade => false;
+    /// <summary>可升级到的目标版本；null 表示当前无可升级。</summary>
+    public Task<string?> GetUpgradeTargetAsync() => Task.FromResult<string?>(null);
+    /// <summary>执行升级。由 CanUpgrade 与目标版本门控后由 UI 调用。</summary>
+    public void Upgrade()
+    {
+    }
     public Action? OnUpdate { get; set; }
     public IModsManager ModsManager { get; set; }
     public bool GetIsEnabled();

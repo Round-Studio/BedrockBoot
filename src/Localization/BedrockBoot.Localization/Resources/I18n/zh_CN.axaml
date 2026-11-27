@@ -1518,6 +1518,7 @@
     <x:String x:Key="Instance.Loader.Status.NotApplicable">不适用</x:String>
     <x:String x:Key="Instance.Loader.Action.Details">查看详情</x:String>
     <x:String x:Key="Instance.Loader.Action.Remove">移除该加载器</x:String>
+    <x:String x:Key="Instance.Loader.Upgrade.Target">升级到 v{0}</x:String>
     <x:String x:Key="Setting.Language.Header.Prefix">让</x:String>
     <x:String x:Key="Setting.Language.Header.Suffix">走向国际化。</x:String>
     <x:String x:Key="Setting.Language.Header.Line1">在社区的共同助力下，BedrockBoot 正在迈向国际化的新篇章。</x:String>
@@ -2083,6 +2084,9 @@
     <x:String x:Key="Server.Error.Timeout">请求超时</x:String>
     <x:String x:Key="Server.Error.QueryFailed">查询失败: {0}</x:String>
     <x:String x:Key="Dialog.LeviLamina.ChooseVersion">选择安装的版本</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Title">升级 LeviLamina</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Content">将从 v{0} 升级到 v{1}。&#10;将重新安装 LeviLamina、PreLoader 与运行时数据，已安装的 Mod 文件会全部保留。</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Latest">当前已是最新版本</x:String>
     <x:String x:Key="LeviLamina.Delete.Title">删除 LeviLamina</x:String>
     <x:String x:Key="LeviLamina.Delete.Content">您确认要删除 LeviLamina 加载器吗？&#x0a;删除后将会连同其 Mods 一同删除。</x:String>
     <x:String x:Key="FilePicker.ChooseZip">选择 ZIP 文件</x:String>

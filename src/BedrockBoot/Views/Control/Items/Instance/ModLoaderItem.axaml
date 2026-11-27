@@ -52,6 +52,12 @@
                                           Glyph="&#xE8A7;"
                                           IsClickable="True">
             </onePointControls:SettingCard>
+            <onePointControls:SettingCard Name="UpgradeBtn"
+                                          Glyph="&#xE895;"
+                                          IsClickable="True"
+                                          IsVisible="False"
+                                          Click="UpgradeBtn_OnClick">
+            </onePointControls:SettingCard>
             <onePointControls:SettingCard Name="DeleteBtn"
                                           Header="{DynamicResource Instance.Loader.Action.Remove}"
                                           Glyph="&#xE74D;"

@@ -130,145 +130,157 @@ public class LeviLamina : IModsLoader
             Content = dialog,
             CloseButtonText = I18nManager.Instance["Dialog.LoaderView.Action.Install"],
             PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
-            CloseAction = async () =>
-            {
-                var version = dialog.ChooseVersion;
-                Console.WriteLine($@"将要安装的 LeviLamina 版本：{version}");
-                var releaseUrl =
-                    $"https://github.com/LiteLDev/LeviLamina/releases/download/v{version}/levilamina-v{version}-client-release-windows-x64.zip";
-
-                // 拉取清单期间显示加载框，避免长时间无响应
-                var loadingText = new TextBlock
-                {
-                    FontSize = 16,
-                    Text = $"正在获取 LeviLamina v{version} 清单…"
-                };
-                var loadingRing = new OnePointUI.Avalonia.Styling.Controls.OnePointControls.ProgressRing
-                {
-                    Width = 36,
-                    Height = 36,
-                    Background = Avalonia.Media.Brushes.Transparent
-                };
-                var loadingPanel = new StackPanel
-                {
-                    Orientation = Avalonia.Layout.Orientation.Horizontal,
-                    Children = { loadingRing, loadingText }
-                };
-                loadingText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
-                loadingText.Margin = new Avalonia.Thickness(12, 0, 0, 0);
-
-                Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo
-                {
-                    Title = "正在安装 LeviLamina",
-                    Content = loadingPanel
-                }));
-
-                // 清单走启动器的 GitHub 加速源下载（与主程序下载一致），不使用 jsdelivr 直链；
-                // lip.toml（新格式）与 tooth.json（旧格式）并行竞速，先成功者胜出
-                var tooth = await FetchToothJsonAsync(version);
-
-                Dispatcher.UIThread.Invoke(DialogHost.Close);
-
-                if (tooth != null)
-                {
-                    // 新 lip.toml：变体共用空 label，靠 side = "client" 区分；旧 tooth.json：label = "client"
-                    var clientDepens = tooth.Variants.First(x =>
-                        (x.Side == "client" || x.Label == "client") && x.Platform == "win-x64");
-                    var preLoad = clientDepens.Dependencies["github.com/LiteLDev/PreLoader"];
-                    var bedrockRuntime = clientDepens.Dependencies["github.com/LiteLDev/bedrock-runtime-data"];
-
-                    var preLoadUrl =
-                        $"https://github.com/LiteLDev/PreLoader/releases/download/v{preLoad}/preloader-v{preLoad}-windows-x64.zip";
-                    var bedrockRuntimeUrl =
-                        $"https://github.com/LiteLDev/bedrock-runtime-data/releases/download/v{bedrockRuntime}/bedrock-runtime-data-v{bedrockRuntime}-windows-x64.zip";
-
-                    Console.WriteLine(releaseUrl);
-                    Console.WriteLine(preLoadUrl);
-                    Console.WriteLine(bedrockRuntimeUrl);
-
-                    var downloadDialog = new DialogDownloadManagerContent();
-
-                    var filesToDownload = new List<DownloadFileTask>
-                    {
-                        new()
-                        {
-                            Name = "LeviLamina",
-                            Url = releaseUrl,
-                            SavePath = Path.Combine(PathsList.TempPath,
-                                $"levilamina-v{version}-client-release-windows-x64.zip"),
-                            OnComplete = (path) =>
-                            {
-                                var llModsFolder = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2",
-                                    "levilamina", "ll.mods");
-                                ZipHelper.ExtractZipFile(path, llModsFolder, true);
-                            }
-                        },
-                        new()
-                        {
-                            Name = "PreLoader",
-                            Url = preLoadUrl,
-                            SavePath = Path.Combine(PathsList.TempPath, $"preloader-v{preLoad}-windows-x64.zip"),
-                            OnComplete = (path) =>
-                            {
-                                ZipHelper.ExtractZipFile(path, Path.Combine(GameInstance.VersionPath!, "config",
-                                    "BedrockBoot2",
-                                    "levilamina",
-                                    "preloader"), true);
-                            }
-                        },
-                        new()
-                        {
-                            Name = "BedrockRuntime",
-                            Url = bedrockRuntimeUrl,
-                            SavePath = Path.Combine(PathsList.TempPath,
-                                $"bedrock-runtime-data-v{bedrockRuntime}-windows-x64.zip"),
-                            OnComplete = (path) =>
-                            {
-                                ZipHelper.ExtractZipFile(path, Path.Combine(GameInstance.VersionPath!, "config",
-                                    "BedrockBoot2",
-                                    "levilamina"), true);
-                            }
-                        }
-                    };
-
-                    DialogHost.Show(new()
-                    {
-                        Title = I18nManager.Instance["Task.LeviLamina.Title"],
-                        Content = downloadDialog
-                    });
-
-                    await downloadDialog.StartDownloadAsync(
-                        filesToDownload,
-                        async (url, savePath, progress) =>
-                        {
-                            var downloader = new GithubFilesDownloader();
-                            return await downloader.DownloadAsync(url, savePath, progress);
-                        },
-                        (downloadedFiles) =>
-                        {
-                            Console.WriteLine(@"所有文件下载完成!");
-                            Dispatcher.UIThread.Invoke(() =>
-                            {
-                                OnUpdate?.Invoke();
-                                DialogHost.Close();
-                            });
-                        }
-                    );
-                    OnUpdate?.Invoke();
-                }
-                else
-                {
-                    // lip.toml 与 tooth.json 均获取失败
-                    DialogHost.Show(new()
-                    {
-                        Title = "安装失败",
-                        Content = $"无法获取 LeviLamina v{version} 的清单文件（lip.toml / tooth.json 均不可达），请检查网络后重试。",
-                        CloseButtonText = "确定",
-                        AccountButton = DialogButtons.CloseButton
-                    });
-                }
-            }
+            CloseAction = async () => await InstallVersionAsync(dialog.ChooseVersion)
         });
+    }
+
+    // 按指定版本安装三件套（LeviLamina 本体 + PreLoader + bedrock-runtime-data），Install 与 Upgrade 共用。
+    // 解压 LeviLamina 本体 zip 前只清空其自身的 LeviLamina 目录，ll.mods 下其余 mod 文件一律保留
+    private async Task InstallVersionAsync(string version)
+    {
+        Console.WriteLine($@"将要安装的 LeviLamina 版本：{version}");
+        var releaseUrl =
+            $"https://github.com/LiteLDev/LeviLamina/releases/download/v{version}/levilamina-v{version}-client-release-windows-x64.zip";
+
+        // 拉取清单期间显示加载框，避免长时间无响应
+        var loadingText = new TextBlock
+        {
+            FontSize = 16,
+            Text = $"正在获取 LeviLamina v{version} 清单…"
+        };
+        var loadingRing = new OnePointUI.Avalonia.Styling.Controls.OnePointControls.ProgressRing
+        {
+            Width = 36,
+            Height = 36,
+            Background = Avalonia.Media.Brushes.Transparent
+        };
+        var loadingPanel = new StackPanel
+        {
+            Orientation = Avalonia.Layout.Orientation.Horizontal,
+            Children = { loadingRing, loadingText }
+        };
+        loadingText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+        loadingText.Margin = new Avalonia.Thickness(12, 0, 0, 0);
+
+        Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo
+        {
+            Title = "正在安装 LeviLamina",
+            Content = loadingPanel
+        }));
+
+        // 清单走启动器的 GitHub 加速源下载（与主程序下载一致），不使用 jsdelivr 直链；
+        // lip.toml（新格式）与 tooth.json（旧格式）并行竞速，先成功者胜出
+        var tooth = await FetchToothJsonAsync(version);
+
+        Dispatcher.UIThread.Invoke(DialogHost.Close);
+
+        if (tooth != null)
+        {
+            // 新 lip.toml：变体共用空 label，靠 side = "client" 区分；旧 tooth.json：label = "client"
+            var clientDepens = tooth.Variants.First(x =>
+                (x.Side == "client" || x.Label == "client") && x.Platform == "win-x64");
+            var preLoad = clientDepens.Dependencies["github.com/LiteLDev/PreLoader"];
+            var bedrockRuntime = clientDepens.Dependencies["github.com/LiteLDev/bedrock-runtime-data"];
+
+            var preLoadUrl =
+                $"https://github.com/LiteLDev/PreLoader/releases/download/v{preLoad}/preloader-v{preLoad}-windows-x64.zip";
+            var bedrockRuntimeUrl =
+                $"https://github.com/LiteLDev/bedrock-runtime-data/releases/download/v{bedrockRuntime}/bedrock-runtime-data-v{bedrockRuntime}-windows-x64.zip";
+
+            Console.WriteLine(releaseUrl);
+            Console.WriteLine(preLoadUrl);
+            Console.WriteLine(bedrockRuntimeUrl);
+
+            var downloadDialog = new DialogDownloadManagerContent();
+
+            var filesToDownload = new List<DownloadFileTask>
+            {
+                new()
+                {
+                    Name = "LeviLamina",
+                    Url = releaseUrl,
+                    SavePath = Path.Combine(PathsList.TempPath,
+                        $"levilamina-v{version}-client-release-windows-x64.zip"),
+                    OnComplete = (path) =>
+                    {
+                        var llModsFolder = Path.Combine(GameInstance.VersionPath!, "config", "BedrockBoot2",
+                            "levilamina", "ll.mods");
+                        // 升级/重装前仅清空 LeviLamina 自身目录，保留 ll.mods 下其余 mod 文件
+                        var llCoreDir = Path.Combine(llModsFolder, "LeviLamina");
+                        try
+                        {
+                            if (Directory.Exists(llCoreDir)) Directory.Delete(llCoreDir, true);
+                        }
+                        catch
+                        {
+                        }
+                        ZipHelper.ExtractZipFile(path, llModsFolder, true);
+                    }
+                },
+                new()
+                {
+                    Name = "PreLoader",
+                    Url = preLoadUrl,
+                    SavePath = Path.Combine(PathsList.TempPath, $"preloader-v{preLoad}-windows-x64.zip"),
+                    OnComplete = (path) =>
+                    {
+                        ZipHelper.ExtractZipFile(path, Path.Combine(GameInstance.VersionPath!, "config",
+                            "BedrockBoot2",
+                            "levilamina",
+                            "preloader"), true);
+                    }
+                },
+                new()
+                {
+                    Name = "BedrockRuntime",
+                    Url = bedrockRuntimeUrl,
+                    SavePath = Path.Combine(PathsList.TempPath,
+                        $"bedrock-runtime-data-v{bedrockRuntime}-windows-x64.zip"),
+                    OnComplete = (path) =>
+                    {
+                        ZipHelper.ExtractZipFile(path, Path.Combine(GameInstance.VersionPath!, "config",
+                            "BedrockBoot2",
+                            "levilamina"), true);
+                    }
+                }
+            };
+
+            DialogHost.Show(new()
+            {
+                Title = I18nManager.Instance["Task.LeviLamina.Title"],
+                Content = downloadDialog
+            });
+
+            await downloadDialog.StartDownloadAsync(
+                filesToDownload,
+                async (url, savePath, progress) =>
+                {
+                    var downloader = new GithubFilesDownloader();
+                    return await downloader.DownloadAsync(url, savePath, progress);
+                },
+                (downloadedFiles) =>
+                {
+                    Console.WriteLine(@"所有文件下载完成!");
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        OnUpdate?.Invoke();
+                        DialogHost.Close();
+                    });
+                }
+            );
+            OnUpdate?.Invoke();
+        }
+        else
+        {
+            // lip.toml 与 tooth.json 均获取失败
+            DialogHost.Show(new()
+            {
+                Title = "安装失败",
+                Content = $"无法获取 LeviLamina v{version} 的清单文件（lip.toml / tooth.json 均不可达），请检查网络后重试。",
+                CloseButtonText = "确定",
+                AccountButton = DialogButtons.CloseButton
+            });
+        }
     }
 
     // 拉取 LeviLamina 清单并解析：lip.toml（新格式）与 tooth.json（旧格式）并行竞速，先成功者胜出。
@@ -423,6 +435,115 @@ public class LeviLamina : IModsLoader
                 OnUpdate?.Invoke();
             }
         });
+    }
+
+    public bool CanUpgrade => true;
+
+    public async Task<string?> GetUpgradeTargetAsync()
+    {
+        if (!IsInstalled()) return null;
+
+        var installed = GetInstalledVersion();
+        if (string.IsNullOrEmpty(installed)) return null;
+
+        var latest = await GetLatestCompatibleVersionAsync();
+        if (string.IsNullOrEmpty(latest)) return null;
+
+        return CompareVersions(latest, installed) > 0 ? latest : null;
+    }
+
+    public void Upgrade()
+    {
+        if (!IsInstalled() || !CanUpgrade) return;
+
+        var installed = GetInstalledVersion();
+        if (string.IsNullOrEmpty(installed)) return;
+
+        var versionDb = LeviLaminaVersionDb.Fetch();
+        var latest = versionDb?.Versions == null ? null : GetLatestCompatibleVersion(versionDb);
+
+        // 版本库不可用、无适配版本或已是最新时只提示，不再进入安装流程
+        if (string.IsNullOrEmpty(latest) || CompareVersions(latest, installed) <= 0)
+        {
+            DialogHost.Show(new()
+            {
+                Title = I18nManager.Instance["Dialog.LeviLamina.Upgrade.Title"],
+                Content = I18nManager.Instance["Dialog.LeviLamina.Upgrade.Latest"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                AccountButton = DialogButtons.CloseButton
+            });
+            return;
+        }
+
+        DialogHost.Show(new()
+        {
+            Title = I18nManager.Instance["Dialog.LeviLamina.Upgrade.Title"],
+            Content = string.Format(I18nManager.Instance["Dialog.LeviLamina.Upgrade.Content"], installed, latest),
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = async () => await InstallVersionAsync(latest)
+        });
+    }
+
+    // 取当前实例适配的最新 LeviLamina 版本；版本库不可用或无适配项时返回 null
+    private async Task<string?> GetLatestCompatibleVersionAsync()
+    {
+        var versionDb = await LeviLaminaVersionDb.FetchAsync();
+        return versionDb?.Versions == null ? null : GetLatestCompatibleVersion(versionDb);
+    }
+
+    private string? GetLatestCompatibleVersion(LeviLaminaVersionDb versionDb)
+    {
+        // 与 ApplicableInstance/Install 一致的归一化匹配实例对应的 bedrock 版本键
+        var key = versionDb.Versions.Keys.FirstOrDefault(x =>
+            NormalizeBedrockVersion(x) == NormalizeBedrockVersion(GameInstance.Info.Version));
+        return key == null ? null : versionDb.GetLatestLeviLaminaVersion(key);
+    }
+
+    private static string NormalizeBedrockVersion(string version) =>
+        version.Replace(".", "").Replace("0", "");
+
+    // 版本比较：与 LipClient.GetLatestVersion 的解析规则一致（剥 v 前缀与 -预发布/+构建 后缀，按段数值比较）。
+    // 返回 >0 表示 a 更新，<0 表示 b 更新；数值相同时 stable（无预发布后缀）视为更新
+    private static int CompareVersions(string a, string b)
+    {
+        var (coreA, preA) = SplitPrerelease(a);
+        var (coreB, preB) = SplitPrerelease(b);
+
+        var segA = ParseCoreSegments(coreA);
+        var segB = ParseCoreSegments(coreB);
+
+        for (var i = 0; i < Math.Max(segA.Count, segB.Count); i++)
+        {
+            var x = i < segA.Count ? segA[i] : 0;
+            var y = i < segB.Count ? segB[i] : 0;
+            if (x != y) return x.CompareTo(y);
+        }
+
+        return (preA.Length > 0, preB.Length > 0) switch
+        {
+            (false, true) => 1,
+            (true, false) => -1,
+            _ => 0
+        };
+    }
+
+    private static (string Core, string Pre) SplitPrerelease(string version)
+    {
+        version = version.Trim().TrimStart('v', 'V');
+        var plus = version.IndexOf('+');
+        if (plus >= 0) version = version[..plus];
+        var dash = version.IndexOf('-');
+        return dash < 0 ? (version, string.Empty) : (version[..dash], version[(dash + 1)..]);
+    }
+
+    private static List<int> ParseCoreSegments(string core)
+    {
+        var segments = new List<int>();
+        foreach (var part in core.Split('.'))
+            segments.Add(int.TryParse(part, out var value) ? value : 0);
+        return segments;
     }
 
     public void ViewInfo()

@@ -142,7 +142,8 @@ public partial class UniversalSoftwareUpdate : ISettingPage
 
         try
         {
-            // 与启动检查、启动器更新前检查共用同一条通道顺序：CNB → GitHub API → GitHub version 文件
+            // 与启动检查、启动器更新前检查共用同一套逻辑：版本号走 GitHub API → version 文件，
+            // 下载走 CNB → GitHub
             var remote = await Task.Run(() => PreLoadDependencyHelper.GetRemoteVersionAsync());
             var local = PreLoadDependencyHelper.GetLocalVersion();
             var notInstalled = I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.NotInstalled"];

@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Models.Global;
@@ -51,9 +50,15 @@ public sealed record PreLoadReleaseInfo(string Tag, PreLoadReleaseChannel Channe
 ///     </para>
 ///
 ///     <para>
-///     现状：正式版在 GitHub API 可用时仍以 API 为准（能同时拿到资产对象，可带授权头下载）；
-///     本类提供的是 API 不可用时的兜底通道——直接读仓库 main 分支上的纯文本版本文件，
-///     属于普通网页请求，不消耗 api.github.com 的 Rate Limit 配额。
+///     职责划分：本类只管“版本号从哪读”和“资产地址怎么拼”，不管下载顺序。
+///     版本号通道由 <see cref="PreLoadDependencyHelper" /> 负责（GitHub API 优先，
+///     失败退回本类提供的 main 分支纯文本版本文件）；下载顺序也由它负责
+///     （CNB 优先，失败退回 GitHub）。这样两条链路可以各自替换，不会互相绑死。
+///     </para>
+///
+///     <para>
+///     版本号文件是普通网页请求，不消耗 api.github.com 的 Rate Limit 配额；
+///     内容形如 <c>26.11.27.1741</c>（不带 v 前缀），与 Release Tag <c>v26.11.27.1741</c> 对应。
 ///     预览版版本号、专用镜像、更新内容目前只有接口与占位地址，等上游确定后填上即可生效。
 ///     </para>
 /// </summary>
@@ -105,56 +110,23 @@ public static class PreLoadReleaseSource
 
     /// <summary>
     ///     CNB 上的镜像仓库：发布流水线会同步推一份 Release 到这里。
-    ///     国内可以直连，也不经过 GitHub，因此排在所有 GitHub 通道之前作为首选来源。
+    ///     国内可以直连，也不经过 GitHub，因此下载时排在 GitHub 之前。
+    ///     <para>
+    ///     CNB 没有可匿名访问的 Releases API（api.cnb.cool 需要登录），页面抓取又只有
+    ///     最新一条 tag 可用、且要多拉一次约 170 KB 的 HTML，所以这里只做下载源，
+    ///     不参与版本号判定——版本号始终以 GitHub 为准。
+    ///     </para>
     /// </summary>
     public const string CnbOwner = "RoundStudio_cnb";
 
     public const string CnbRepo = "preload.net-build";
 
-    /// <summary>CNB 的 Releases 页面：页面里第一条 tag 链接就是最新版本</summary>
-    public static string CnbReleasesUrl => $"https://cnb.cool/{CnbOwner}/{CnbRepo}/-/releases";
-
-    /// <summary>CNB 的 latest 直链：服务端 302 到当前最新资产（与 GitHub 的 latest 直链同形）</summary>
+    /// <summary>
+    ///     CNB 的 latest 直链：服务端 302 到当前最新资产（与 GitHub 的 latest 直链同形）。
+    ///     不需要知道 Tag，因此版本号查不到时也能直接下载。
+    /// </summary>
     public static string CnbLatestDownloadUrl =>
         $"https://cnb.cool/{CnbOwner}/{CnbRepo}/-/releases/latest/download/{AssetName}";
-
-    /// <summary>CNB 通道的预算：守卫处在阻塞路径上，给得比 GitHub 通道更短</summary>
-    private static readonly TimeSpan CnbFetchTimeout = TimeSpan.FromSeconds(8);
-
-    /// <summary>从发布页 HTML 里抓 tag：形如 <c>/-/releases/tag/v26.11.27.1741</c></summary>
-    private static readonly Regex CnbTagPattern = new(
-        @"/-/releases/tag/([A-Za-z0-9][A-Za-z0-9._\-]{0,63})",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-    /// <summary>
-    ///     从 CNB 的 Releases 页面读出最新 Tag。
-    ///     <para>
-    ///     CNB 没有可匿名访问的 Releases API（api.cnb.cool 需要登录），只能解析服务端渲染的
-    ///     页面链接；解析不到可用版本号就返回 null，由调用方继续走 GitHub 通道。
-    ///     </para>
-    /// </summary>
-    public static async Task<string?> TryGetCnbLatestTagAsync(CancellationToken cancellationToken = default)
-    {
-        var html = await TryGetTextAsync(new[] { CnbReleasesUrl }, CnbFetchTimeout, "CNB 发布页", cancellationToken);
-        if (html == null) return null;
-
-        var match = CnbTagPattern.Match(html);
-        if (!match.Success)
-        {
-            Console.WriteLine(@"CNB 发布页里没有解析到版本号，改用 GitHub 通道");
-            return null;
-        }
-
-        var tag = match.Groups[1].Value.Trim();
-        if (tag.Length == 0 || tag.Contains('<'))
-        {
-            Console.WriteLine(@"CNB 发布页返回的版本号异常，改用 GitHub 通道");
-            return null;
-        }
-
-        Console.WriteLine($@"PreLoad.NET 版本号来源返回 {tag}（通道：CNB）");
-        return tag;
-    }
 
     /// <summary>版本号请求的总预算，超时即判定该通道不可用（调用方处在阻塞路径上）</summary>
     private static readonly TimeSpan TextFetchTimeout = TimeSpan.FromSeconds(15);

@@ -35,7 +35,7 @@ public partial class MainSettingPage : BedrockBootPage
     private const string RootItemKey = "MainPage.Nav.Setting";
 
     private static NavigationFrame NavigationFrame;
-    private static BreadcrumbBar SettingBreadcrumbBar;
+    public static BreadcrumbBar SettingBreadcrumbBar;
 
     /// <summary>当前显示的子页面；切语言时靠它重放面包屑。</summary>
     private static ISettingPage? CurrentPage;
@@ -68,6 +68,10 @@ public partial class MainSettingPage : BedrockBootPage
         };
         Unloaded += (_, _) => LocalizationContext.Current.Changed -= OnTableChanged;
 
+        // 顶部导航每次切到设置页都会新建本页实例，但 CurrentPage 是静态的、
+        // 跨实例存活：不清掉的话，初始 RefreshBreadcrumb 会把上一个实例
+        // 留在二级页时的条目又画回来（内容已是分类列表、面包屑却还是旧子页）。
+        CurrentPage = null;
         SettingFrame.NavigateTo(new SettingNavigation());
         RefreshBreadcrumb();
     }

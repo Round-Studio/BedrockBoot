@@ -17,6 +17,8 @@
  */
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using BedrockBoot.Standard.Enum.Config;
 
 namespace BedrockBoot.Models.Helper;
@@ -26,7 +28,9 @@ namespace BedrockBoot.Models.Helper;
 ///     <para>
 ///     这条通道不经过 api.github.com，因此查不到版本信息（限流、断网）时依然可用。
 ///     正式版使用 <c>releases/latest/download</c>，GitHub 会 302 到最新的非预发布 Release；
-///     但 latest 永远不指向预发布版本，所以预览版必须带具体 Tag，见 <see cref="PreviewTag" />。
+///     但 latest 永远不指向预发布版本，所以预览版必须带具体 Tag——Tag 由 version 分支上的
+///     <c>info/preview</c> 版本号拼出（见 <see cref="LauncherReleaseSource" />），
+///     不需要再手动维护。
 ///     </para>
 /// </summary>
 public static class LauncherDirectDownloadHelper
@@ -34,12 +38,8 @@ public static class LauncherDirectDownloadHelper
     private const string Owner = "Round-Studio";
     private const string Repo = "BedrockBoot";
 
-    /// <summary>
-    ///     预览版强制下载使用的 Tag，手动维护：
-    ///     每次发布预览版后把它改成对应的 Tag（如 <c>v26.11.22.0308</c>）。
-    ///     留空表示暂不支持预览版强制下载，界面上不会出现该按钮。
-    /// </summary>
-    public const string PreviewTag = "";
+    /// <summary>Release 产物只覆盖 Windows 与 Linux，其它平台不提供自更新</summary>
+    public static bool IsSupported => OperatingSystem.IsWindows() || OperatingSystem.IsLinux();
 
     /// <summary>与发布 workflow 的产物重命名保持一致</summary>
     public static string AssetName => OperatingSystem.IsLinux()
@@ -50,24 +50,31 @@ public static class LauncherDirectDownloadHelper
     public static string ReleaseUrl =>
         $"https://github.com/{Owner}/{Repo}/releases/latest/download/{AssetName}";
 
-    /// <summary>预览版直链：GitHub 不支持预发布的 latest，必须写死 Tag</summary>
-    public static string PreviewUrl =>
-        $"https://github.com/{Owner}/{Repo}/releases/download/{PreviewTag}/{AssetName}";
+    /// <summary>指定 Tag 的直链：预览版用它，GitHub 不支持预发布的 latest</summary>
+    public static string GetUrlForTag(string tag) =>
+        $"https://github.com/{Owner}/{Repo}/releases/download/{tag}/{AssetName}";
 
     /// <summary>
     ///     当前更新通道可用的强制下载地址；该通道没有直链时返回 null。
+    ///     <para>
+    ///     正式版优先用 version 分支上的版本号拼精确 Tag（与展示的更新日志一致），
+    ///     读不到就退回 latest 直链；预览版的 latest 不含预发布，必须依赖版本号。
     ///     Commit 通道的产物挂在 Actions Artifact 上，只能带 Token 走 API，故不提供。
+    ///     </para>
     /// </summary>
-    public static string? GetUrl(UpdateType updateType)
+    public static async Task<string?> ResolveUrlAsync(UpdateType updateType,
+        CancellationToken cancellationToken = default)
     {
-        if (!OperatingSystem.IsWindows() && !OperatingSystem.IsLinux())
+        if (!IsSupported)
             return null;
 
-        return updateType switch
-        {
-            UpdateType.Release => ReleaseUrl,
-            UpdateType.Preview => string.IsNullOrWhiteSpace(PreviewTag) ? null : PreviewUrl,
-            _ => null
-        };
+        if (updateType is not (UpdateType.Release or UpdateType.Preview))
+            return null;
+
+        var version = await LauncherReleaseSource.TryGetVersionAsync(updateType, cancellationToken);
+        if (version != null) return LauncherReleaseSource.GetDownloadUrl(version);
+
+        // 正式版还有 latest 这条不看版本号的退路；预览版没有，读不到版本号就只能如实返回
+        return updateType == UpdateType.Release ? ReleaseUrl : null;
     }
 }

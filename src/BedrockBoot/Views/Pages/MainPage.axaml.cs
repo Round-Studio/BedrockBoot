@@ -206,7 +206,7 @@ public partial class MainPage : UserControl
                 var panel = new StackPanel();
 
                 var body = result.Source == UpdateSource.Release
-                    ? result.Release?.Body
+                    ? result.Release?.Body ?? result.FallbackBody
                     : result.WorkflowRun?.HeadCommit?.Message;
 
                 var controls = HtmlToControlConverter.ConvertHtmlToControls(body);
@@ -240,9 +240,9 @@ public partial class MainPage : UserControl
         {
             Console.WriteLine($@"更新失败：{ex}");
 
-            // 查不到版本信息只说明 API 不可用，正式版还有 latest 直链可走：
-            // 给用户留一条「强制下载最新版」的退路，而不是只能干等 API 恢复
-            var directUrl = LauncherDirectDownloadHelper.GetUrl(GlobalModel.Config.Data.UpdateType);
+            // 查不到版本信息只说明 API 不可用，正式版还有 latest 直链、预览版还能从 version 分支
+            // 读到版本号拼 Tag：给用户留一条「强制下载最新版」的退路，而不是只能干等 API 恢复
+            var directUrl = await LauncherDirectDownloadHelper.ResolveUrlAsync(GlobalModel.Config.Data.UpdateType);
             if (directUrl == null)
             {
                 await GitHubErrorDialog.ShowAsync(ex, i18n["GitHub.Error.CheckUpdate"], i18n["Shared.Action.Confirm"]);

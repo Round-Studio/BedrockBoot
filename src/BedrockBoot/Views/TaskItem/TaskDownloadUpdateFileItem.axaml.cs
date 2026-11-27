@@ -109,13 +109,15 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 string assetName;
                 string? userToken = null;
 
-                // 直链模式下没有 UpdateCheckResult，所有按 Source 分支的逻辑都必须先排除它
-                var isAction = _directUrl == null && Result is { Source: UpdateSource.Action };
+                // 直链来源有二：强制下载构造传入的地址，或 API 不可用时由 version 分支版本号拼出的地址。
+                // 两者都没有 Release 对象，所有按 Source 分支的逻辑都必须先排除它们
+                var directUrl = _directUrl ?? Result?.DirectDownloadUrl;
+                var isAction = directUrl == null && Result is { Source: UpdateSource.Action };
 
-                if (_directUrl != null)
+                if (directUrl != null)
                 {
-                    downloadUrl = _directUrl;
-                    assetName = Path.GetFileName(new Uri(_directUrl).AbsolutePath);
+                    downloadUrl = directUrl;
+                    assetName = Path.GetFileName(new Uri(directUrl).AbsolutePath);
                 }
                 else if (Result.Source == UpdateSource.Release)
                 {
@@ -187,7 +189,7 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
                 // 直链走的是加速源探测，可能拿到 200 状态的 HTML 错误页；
                 // 启动器体积远超 1MB，用它兜底，避免把错误页面当成新版本写回去
-                if (_directUrl != null && new FileInfo(downloadPath).Length < 1024 * 1024)
+                if (directUrl != null && new FileInfo(downloadPath).Length < 1024 * 1024)
                     throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.BadPayload"]);
 
                 if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))

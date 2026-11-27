@@ -414,6 +414,23 @@ public class GlobalModel
                      Path.GetFileName(versionsDirectory).Equals("bedrock_versions", StringComparison.OrdinalIgnoreCase)))
                     return Path.GetDirectoryName(versionsDirectory);
 
+                // 配置可能直接指向某个版本目录（例如 ...\extracted\<版本>）。
+                // 这时要注册它所属的数据根目录，否则会把版本目录当成数据根、扫描不到任何实例。
+                if (LooksLikeGameInstance(normalized))
+                {
+                    var parent = Path.GetDirectoryName(normalized);
+                    if (parent != null &&
+                        Path.GetFileName(parent).Equals("extracted", StringComparison.OrdinalIgnoreCase))
+                        parent = Path.GetDirectoryName(parent);
+
+                    if (parent != null &&
+                        (Path.GetFileName(parent).Equals("versions", StringComparison.OrdinalIgnoreCase) ||
+                         Path.GetFileName(parent).Equals("bedrock_versions", StringComparison.OrdinalIgnoreCase)))
+                        return Path.GetDirectoryName(parent);
+
+                    return normalized;
+                }
+
                 return HasVersionDirectories(normalized) ? normalized : null;
             }
             catch (Exception ex)
@@ -748,20 +765,16 @@ public class GlobalModel
 
         private static bool HasRealVersionDirectories(string path)
         {
-            try
+            // 只有子目录里真的存在游戏文件/清单，才算可识别的版本；
+            // 否则随便一个空目录都能通过导入校验。
+            return EnumerateLocalDirectories(path).Any(dir =>
             {
-                return Directory.EnumerateDirectories(path).Any(dir =>
-                {
-                    var name = Path.GetFileName(dir);
-                    return !name.Equals("cache", StringComparison.OrdinalIgnoreCase) &&
-                           !name.Equals("loaders", StringComparison.OrdinalIgnoreCase) &&
-                           !name.Equals("extracted", StringComparison.OrdinalIgnoreCase);
-                });
-            }
-            catch
-            {
-                return false;
-            }
+                var name = Path.GetFileName(dir);
+                return !name.Equals("cache", StringComparison.OrdinalIgnoreCase) &&
+                       !name.Equals("loaders", StringComparison.OrdinalIgnoreCase) &&
+                       !name.Equals("extracted", StringComparison.OrdinalIgnoreCase) &&
+                       LooksLikeGameInstance(dir);
+            });
         }
 
         private static bool HasVersionDirectories(string path)
@@ -966,6 +979,29 @@ public class GlobalModel
             root.StartsWith("\\\\", StringComparison.Ordinal) ||
             root.StartsWith("//", StringComparison.Ordinal) ||
             root.StartsWith(@"\\?\", StringComparison.Ordinal) ||
-            root.StartsWith(@"\??\", StringComparison.Ordinal);
+            root.StartsWith(@"\??\", StringComparison.Ordinal) ||
+            IsMappedNetworkDrive(root);
+
+        /// <summary>
+        /// 判断驱动器根目录是否为网络映射盘（例如 net use 的 Z:\）。
+        /// 这类路径的根既不是 UNC 也不是设备路径，但探测时同样会向共享发送 SMB 认证。
+        /// </summary>
+        private static bool IsMappedNetworkDrive(string root)
+        {
+            if (!OperatingSystem.IsWindows()) return false;
+
+            try
+            {
+                var driveRoot = Path.GetPathRoot(root);
+                if (string.IsNullOrEmpty(driveRoot) || driveRoot.Length < 2 || driveRoot[1] != ':')
+                    return false;
+
+                return new DriveInfo(driveRoot).DriveType == DriveType.Network;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

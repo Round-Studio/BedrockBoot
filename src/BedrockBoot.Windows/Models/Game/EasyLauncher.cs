@@ -279,7 +279,8 @@ public class EasyLauncher : ILauncher
                     var process = launchCore.LaunchAndInjectAsync(
                         Path.Combine(VersionInfo.VersionPath, VersionInfo.BodyFile),
                         null,
-                        VersionInfo.VersionPath,
+                        // PCLSE 解压版本的可执行文件可能位于 inner 下，工作目录要跟着可执行文件走。
+                        GameInfoHelper.GetGameWorkingDirectory(VersionInfo),
                         auth,
                         TimeSpan.FromSeconds(60)).Result;
                     MinecraftProcess = Process.GetProcessById((int)process.ProcessId);

@@ -233,9 +233,16 @@ public class InstanceUpdater
         _versionConfig.Info.VersionType = buildInfo.Type;
         GameInfoHelper.SaveVersionConfig(_versionConfig);
 
-        File.Copy(Path.Combine(_versionConfig.VersionPath, _versionConfig.BodyFile),
-            Path.Combine(_versionConfig.VersionPath, "config", "BedrockBoot2", "row",
-                Path.GetFileName(_versionConfig.BodyFile)), true);
+        // 备份路径必须与 ModsCore.PreLoad 读取的路径一致：config\BedrockBoot2\row\<BodyFile 相对路径>。
+        // 嵌套安装的 BodyFile 形如 inner\Minecraft.Windows.exe，只取文件名会让备份落到错误位置，
+        // 下次启动时旧备份会覆盖刚更新好的可执行文件。
+        var updatedBodyPath = Path.Combine(_versionConfig.VersionPath!, _versionConfig.BodyFile!);
+        var rawBodyPath = Path.Combine(_versionConfig.VersionPath!, "config", "BedrockBoot2", "row",
+            _versionConfig.BodyFile!);
+        var rawBodyDirectory = Path.GetDirectoryName(rawBodyPath);
+        if (!string.IsNullOrEmpty(rawBodyDirectory)) Directory.CreateDirectory(rawBodyDirectory);
+
+        File.Copy(updatedBodyPath, rawBodyPath, true);
 
         Console.WriteLine(@I18nManager.Instance["Task.InstanceUpdate.Status.Completed"]);
     }

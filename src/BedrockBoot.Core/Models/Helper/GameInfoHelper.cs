@@ -69,9 +69,9 @@ public static class GameInfoHelper
         if (!Directory.Exists(bedrockVersionsPath))
             return new List<VersionConfig>();
 
-        // 使用 EnumerateDirectories 提高大目录下的性能。
-        // 物化目录列表：保留原始顺序作为索引
-        var dirs = Directory.EnumerateDirectories(bedrockVersionsPath).ToList();
+        // 枚举目录时容错：单个目录不可访问或在扫描期间被删除，不应让整轮扫描失败；
+        // 同时跳过指向远程位置的重解析点，避免探测时触发 SMB 访问。
+        var dirs = EnumerateLocalDirectories(bedrockVersionsPath);
         if (isPclSe)
         {
             var extractedPath = dirs.FirstOrDefault(dir =>
@@ -79,9 +79,13 @@ public static class GameInfoHelper
             if (extractedPath != null)
             {
                 dirs.Remove(extractedPath);
-                dirs.AddRange(Directory.EnumerateDirectories(extractedPath));
+                dirs.AddRange(EnumerateLocalDirectories(extractedPath));
             }
         }
+
+        // 注册的目录本身可能就是单个版本（例如 PCLSE 配置直接指向 extracted\<版本>）。
+        if (string.IsNullOrEmpty(rootName) && LooksLikeGameInstance(bedrockVersionsPath))
+            dirs.Insert(0, bedrockVersionsPath);
 
         // 预分配按原始顺序的槽位数组：每个并行任务写入自己的 index，
         // 最终按顺序遍历即可保证与目录枚举顺序一致
@@ -228,11 +232,16 @@ public static class GameInfoHelper
     private static VersionConfig.VersionInfo? TryCreateVersionInfo(string gamePath)
     {
         // PCLSE 的解压版本会把清单放在 inner 子目录里，外层与 inner 都要尝试。
+        // inner 可能是指向远程共享的联接点，探测前先拒绝。
         var manifestPath = Path.Combine(gamePath, "appxmanifest.xml");
         if (!File.Exists(manifestPath))
         {
-            var innerManifestPath = Path.Combine(gamePath, "inner", "appxmanifest.xml");
-            if (File.Exists(innerManifestPath)) manifestPath = innerManifestPath;
+            var innerDirectory = Path.Combine(gamePath, "inner");
+            if (!IsRemoteLinkedPath(innerDirectory))
+            {
+                var innerManifestPath = Path.Combine(innerDirectory, "appxmanifest.xml");
+                if (File.Exists(innerManifestPath)) manifestPath = innerManifestPath;
+            }
         }
 
         var manifestDirectory = Path.GetDirectoryName(manifestPath) ?? gamePath;
@@ -300,7 +309,7 @@ public static class GameInfoHelper
         if (exeFile == null && GetVersionRootFolderType(gamePath) == GameFolderType.PCLSE)
         {
             var innerPath = Path.Combine(gamePath, "inner");
-            if (Directory.Exists(innerPath))
+            if (!IsRemoteLinkedPath(innerPath) && Directory.Exists(innerPath))
                 exeFile = Directory.EnumerateFiles(innerPath, "Minecraft*.exe").FirstOrDefault();
         }
 
@@ -397,6 +406,18 @@ public static class GameInfoHelper
     /// </summary>
     private static string GetVersionsRootPath(string gamePath, string? gameFolder = null)
     {
+        var fullPath = Path.GetFullPath(gamePath);
+        var parent = Path.GetDirectoryName(fullPath);
+
+        // PCLSE 解压实例位于 <versions>\extracted\<名字>：下载器会用
+        // GetGameFolderRootName(VersionsRootPath) + 目录名 定位安装位置，
+        // 因此这里必须返回 extracted 目录本身，更新才会装回所选实例。
+        if (!string.IsNullOrEmpty(parent) &&
+            string.Equals(Path.GetFileName(parent), "extracted", StringComparison.OrdinalIgnoreCase) &&
+            (GetVersionRootFolderType(parent) == GameFolderType.PCLSE ||
+             (!string.IsNullOrEmpty(gameFolder) && IsPclSeDataRoot(gameFolder))))
+            return parent;
+
         var folder = FindGameFolder(gamePath);
         if (folder != null && !string.IsNullOrEmpty(folder.GameFolderPath) && IsPclSeFolder(folder))
             return Path.GetFullPath(folder.GameFolderPath);
@@ -469,16 +490,143 @@ public static class GameInfoHelper
                File.Exists(Path.Combine(innerPath, "MicrosoftGame.Config"));
     }
 
+    /// <summary>
+    /// 枚举子目录：跳过指向远程位置（UNC、网络映射盘）的重解析点，并吞掉枚举异常，
+    /// 避免单个坏目录让整轮版本扫描失败。
+    /// </summary>
+    private static List<string> EnumerateLocalDirectories(string path)
+    {
+        var result = new List<string>();
+        try
+        {
+            foreach (var directory in Directory.EnumerateDirectories(path))
+            {
+                if (IsRemoteLinkedPath(directory))
+                {
+                    Console.WriteLine($@"忽略指向远程位置的目录：{directory}");
+                    continue;
+                }
+
+                result.Add(directory);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"枚举目录失败（{path}）：{ex.Message}");
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 判断路径是否是指向远程位置的重解析点（符号链接/联接点）。
+    /// 只读取本地重解析数据，不访问目标。
+    /// </summary>
+    private static bool IsRemoteLinkedPath(string path)
+    {
+        try
+        {
+            var attributes = File.GetAttributes(path);
+            if ((attributes & FileAttributes.ReparsePoint) == 0) return false;
+
+            var target = Directory.ResolveLinkTarget(path, false) ?? File.ResolveLinkTarget(path, false);
+            if (target == null) return false;
+
+            var root = Path.GetPathRoot(target.FullName);
+            return string.IsNullOrEmpty(root) || IsRemoteRoot(root);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool IsRemoteRoot(string root) =>
+        root.StartsWith("\\\\", StringComparison.Ordinal) ||
+        root.StartsWith("//", StringComparison.Ordinal) ||
+        root.StartsWith(@"\\?\", StringComparison.Ordinal) ||
+        root.StartsWith(@"\??\", StringComparison.Ordinal) ||
+        IsMappedNetworkDrive(root);
+
+    /// <summary>
+    /// 判断驱动器根目录是否为网络映射盘（例如 net use 的 Z:\）。
+    /// 探测这类路径会向共享发送 SMB 认证。
+    /// </summary>
+    private static bool IsMappedNetworkDrive(string root)
+    {
+        if (!OperatingSystem.IsWindows()) return false;
+
+        try
+        {
+            var driveRoot = Path.GetPathRoot(root);
+            if (string.IsNullOrEmpty(driveRoot) || driveRoot.Length < 2 || driveRoot[1] != ':') return false;
+            return new DriveInfo(driveRoot).DriveType == DriveType.Network;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 判断目录是否像一个游戏实例（清单、GDK 配置或可执行文件）。
+    /// </summary>
+    private static bool LooksLikeGameInstance(string path)
+    {
+        try
+        {
+            if (File.Exists(Path.Combine(path, "appxmanifest.xml"))) return true;
+            if (File.Exists(Path.Combine(path, "MicrosoftGame.Config"))) return true;
+            if (Directory.EnumerateFiles(path, "Minecraft*.exe").Any()) return true;
+
+            var innerPath = Path.Combine(path, "inner");
+            if (IsRemoteLinkedPath(innerPath) || !Directory.Exists(innerPath)) return false;
+
+            if (File.Exists(Path.Combine(innerPath, "appxmanifest.xml"))) return true;
+            if (File.Exists(Path.Combine(innerPath, "MicrosoftGame.Config"))) return true;
+            return Directory.EnumerateFiles(innerPath, "Minecraft*.exe").Any();
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool HasVersionInstances(string versionsRoot)
+    {
+        try
+        {
+            if (!Directory.Exists(versionsRoot)) return false;
+            if (EnumerateLocalDirectories(versionsRoot).Any(LooksLikeGameInstance)) return true;
+
+            var extractedPath = Path.Combine(versionsRoot, "extracted");
+            return Directory.Exists(extractedPath) &&
+                   EnumerateLocalDirectories(extractedPath).Any(LooksLikeGameInstance);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private static string GetPclSeRootName(string gameFolder)
     {
         var fullPath = Path.GetFullPath(gameFolder)
             .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         var leaf = Path.GetFileName(fullPath);
         if (string.Equals(leaf, "versions", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(leaf, "bedrock_versions", StringComparison.OrdinalIgnoreCase))
+            string.Equals(leaf, "bedrock_versions", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(leaf, "extracted", StringComparison.OrdinalIgnoreCase))
             return string.Empty;
 
-        foreach (var rootName in new[] { "versions", "bedrock_versions" })
+        // versions 与 bedrock_versions 可能同时存在：优先选择真正包含实例的布局，
+        // 否则会扫到空目录，另一套布局里的实例就“消失”了。
+        var rootNames = new[] { "versions", "bedrock_versions" };
+        foreach (var rootName in rootNames)
+            if (HasVersionInstances(Path.Combine(fullPath, rootName)))
+                return rootName;
+
+        foreach (var rootName in rootNames)
             if (Directory.Exists(Path.Combine(fullPath, rootName)))
                 return rootName;
 

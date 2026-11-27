@@ -13,7 +13,7 @@
                     VerticalAlignment="Center">
             <TextBlock FontSize="16"
                        Name="MigrationProgressText"
-                       Text="迁移中..." />
+                       Text="{DynamicResource Dialog.Migration.Progress}" />
             <ProgressBar IsIndeterminate="True"
                          Name="MigrationProgressBar"
                          Margin="0,8,0,0"

@@ -22,11 +22,11 @@
                                                  Glyph="&#xE946;"
                                                  Tag="Info"
                                                  Name="Info" />
-                <leftSelectBar:LeftSelectBarItem ItemText="实例设置"
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Settings}"
                                                  Glyph="&#xE713;"
                                                  Tag="Setting"
                                                  Name="Setting" />
-                <leftSelectBar:LeftSelectBarItem ItemText="加载器"
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Loaders}"
                                                  Glyph="&#xEA86;"
                                                  Tag="Loaders"
                                                  Name="Loaders" />
@@ -34,11 +34,11 @@
                                                  Glyph="&#xE74C;"
                                                  Tag="Mods"
                                                  Name="Mods" />
-                <leftSelectBar:LeftSelectBarItem ItemText="包管理"
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Packs}"
                                                  Glyph="&#xE7B8;"
                                                  Tag="Pack"
                                                  Name="Pack" />
-                <leftSelectBar:LeftSelectBarItem ItemText="披风包"
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Capes}"
                                                  Glyph="&#xECAD;"
                                                  Tag="Capes"
                                                  Name="Capes" />
@@ -58,7 +58,7 @@
                                                  Glyph="&#xE805;"
                                                  Tag="Controls"
                                                  Name="GameControls" />
-                <leftSelectBar:LeftSelectBarItem ItemText="统计数据"
+                <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource Draw.Instance.Tab.Statistics}"
                                                  Glyph="&#xE9D2;"
                                                  Tag="Information"
                                                  Name="Information" />
@@ -75,12 +75,12 @@
                                 Spacing="12">
                         <onePointControls:FontIcon FontSize="16"
                                                    Glyph="&#xE8B7;" />
-                        <TextBlock Text="浏览目录"></TextBlock>
+                        <TextBlock Text="{DynamicResource Draw.Instance.Folder.Browse}"></TextBlock>
                     </StackPanel>
 
                     <Button.Flyout>
                         <MenuFlyout>
-                            <MenuItem Header="皮肤包目录（开发）"
+                            <MenuItem Header="{DynamicResource Draw.Instance.Folder.SkinDev}"
                                       Name="MenuOpenSkinDevFolder"
                                       Click="MenuOpenSkinDevFolder_OnClick">
                                 <MenuItem.Icon>
@@ -89,7 +89,7 @@
                                     </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="行为包目录（开发）"
+                            <MenuItem Header="{DynamicResource Draw.Instance.Folder.BehaviorDev}"
                                       Name="MenuOpenBehaviorDevFolder"
                                       Click="MenuOpenBehaviorDevFolder_OnClick">
                                 <MenuItem.Icon>
@@ -98,7 +98,7 @@
                                     </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="资源包目录（开发）"
+                            <MenuItem Header="{DynamicResource Draw.Instance.Folder.ResourceDev}"
                                       Name="MenuOpenResourceDevFolder"
                                       Click="MenuOpenResourceDevFolder_OnClick">
                                 <MenuItem.Icon>
@@ -107,7 +107,7 @@
                                     </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="皮肤包目录"
+                            <MenuItem Header="{DynamicResource Draw.Instance.Folder.Skin}"
                                       Name="MenuOpenSkinFolder"
                                       Click="MenuOpenSkinFolder_OnClick">
                                 <MenuItem.Icon>
@@ -116,7 +116,7 @@
                                     </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="行为包目录"
+                            <MenuItem Header="{DynamicResource Draw.Instance.Folder.Behavior}"
                                       Name="MenuOpenBehaviorFolder"
                                       Click="MenuOpenBehaviorFolder_OnClick">
                                 <MenuItem.Icon>
@@ -125,7 +125,7 @@
                                     </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="资源包目录"
+                            <MenuItem Header="{DynamicResource Draw.Instance.Folder.Resource}"
                                       Name="MenuOpenResourceFolder"
                                       Click="MenuOpenResourceFolder_OnClick">
                                 <MenuItem.Icon>
@@ -134,7 +134,7 @@
                                     </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="运行文件夹"
+                            <MenuItem Header="{DynamicResource Draw.Instance.Folder.Run}"
                                       Name="MenuOpenRunFolder"
                                       Click="MenuOpenFolder_OnClick">
                                 <MenuItem.Icon>
@@ -143,7 +143,7 @@
                                     </onePointControls:FontIcon>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="配置文件夹"
+                            <MenuItem Header="{DynamicResource Draw.Instance.Folder.Config}"
                                       Name="MenuOpenConfigFolder"
                                       Click="MenuOpenConfigFolder_OnClick">
                                 <MenuItem.Icon>
@@ -166,7 +166,7 @@
                                 Spacing="12">
                         <onePointControls:FontIcon FontSize="16"
                                                    Glyph="&#xE768;" />
-                        <TextBlock Text="启动该实例"></TextBlock>
+                        <TextBlock Text="{DynamicResource Draw.Instance.Action.Launch}"></TextBlock>
                     </StackPanel>
                 </Button>
             </StackPanel>

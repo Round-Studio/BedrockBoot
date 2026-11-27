@@ -45,8 +45,7 @@ public partial class CapePackItem : UserControl
         _unit = unit;
 
         SettingExpander.Header = _unit.PackDisplayName();
-        SettingExpander.Description = $"共 {_unit.LoadCapeFile().Count} 个披风文件";
-        if (!string.IsNullOrEmpty(_unit.PackIcon) && File.Exists(_unit.PackIcon))
+        SettingExpander.Description = string.Format(I18nManager.Instance["Cape.Item.PackFileCount"], _unit.LoadCapeFile().Count);   if (!string.IsNullOrEmpty(_unit.PackIcon) && File.Exists(_unit.PackIcon))
         {
             // 解码是 CPU 密集操作，放后台线程，批量加载时避免阻塞 UI 线程导致动画卡顿
             var iconPath = _unit.PackIcon;
@@ -79,10 +78,10 @@ public partial class CapePackItem : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除披风包",
-            Content = $"确定要删除披风包 “{SettingExpander.Header}” 吗？其中的所有披风都会被一并删除，该操作无法撤销。",
-            CloseButtonText = "取消",
-            PrimaryButtonText = "删除",
+            Title = I18nManager.Instance["Cape.Item.DeletePack"],
+            Content = string.Format(I18nManager.Instance["Cape.Item.DeletePack.Confirm"], SettingExpander.Header),
+            CloseButtonText = I18nManager.Instance["Shared.Action.Cancel"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Delete"],
             AccountButton = DialogButtons.PrimaryButton,
             PrimaryAction = () =>
             {

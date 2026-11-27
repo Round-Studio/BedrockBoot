@@ -237,11 +237,11 @@ public partial class InstanceInfo : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择图片文件",
+            Title = I18nManager.Instance["Setting.Personalization.Background.Dialog.Import.Title"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("图片文件")
+                new FilePickerFileType(I18nManager.Instance["UI.Page.Instance.ImageFileType"])
                 {
                     Patterns = new[] { "*.jpg", "*.jpeg", "*.png" }
                 }
@@ -274,11 +274,11 @@ public partial class InstanceInfo : UserControl
     {
         var files = await TopLevel.GetTopLevel(this).StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择图片",
+            Title = I18nManager.Instance["UI.Page.Instance.ChooseImage"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("图片文件")
+                new FilePickerFileType(I18nManager.Instance["UI.Page.Instance.ImageFileType"])
                 {
                     Patterns = new[] { "*.png", "*.jpg", "*.jpeg", "*.bmp" }
                 }

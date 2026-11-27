@@ -26,17 +26,17 @@
             </StackPanel>
         </onePointControls:SettingExpander.Header>
         <StackPanel>
-            <onePointControls:SettingCard Header="打开目录"
+            <onePointControls:SettingCard Header="{DynamicResource GameFolderItem.OpenFolder}"
                                           Glyph="&#xE8B7;"
                                           Name="OpenFolderBtn"
                                           IsClickable="True"
                                           Click="OpenFolderBtn_OnClick"></onePointControls:SettingCard>
-            <onePointControls:SettingCard Header="设置目录"
+            <onePointControls:SettingCard Header="{DynamicResource GameFolderItem.SetFolder}"
                                           Glyph="&#xE713;"
                                           IsClickable="True"
                                           Name="SettingBtn"
                                           Click="SettingBtn_OnClick"></onePointControls:SettingCard>
-            <onePointControls:SettingCard Header="删除目录"
+            <onePointControls:SettingCard Header="{DynamicResource GameFolderItem.DeleteFolder}"
                                           Glyph="&#xE74D;"
                                           IsClickable="True"
                                           Name="DeleteFolderBtn"

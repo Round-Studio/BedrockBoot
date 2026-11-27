@@ -11,10 +11,10 @@
                     Spacing="8">
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="XBOX 账户" />
+                       Text="{DynamicResource Settings.Account.Group.Xbox}" />
 
-            <onePointControls:SettingCard Header="关联 XBOX 账户"
-                                          Description="关联一个新的 XBOX 账户以使用启动器的账户功能"
+            <onePointControls:SettingCard Header="{DynamicResource Account.Action.LinkXbox}"
+                                          Description="{DynamicResource Settings.Account.Xbox.Link.Desc}"
                                           Name="AddAccountBtn"
                                           Click="AddAccountBtn_OnClick"
                                           IsClickable="True"
@@ -28,30 +28,30 @@
                                  VerticalAlignment="Center"
                                  Name="NullCard"
                                  Margin="0,60"
-                                 Message="还没登录账户"
-                                 BigTitle="空"/>
+Message="{DynamicResource Account.Empty.Message}"
+                                  BigTitle="{DynamicResource Account.Empty.Title}"/>
             </Grid>
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="Github 账户" />
+                       Text="{DynamicResource Settings.Account.Group.GitHub}" />
 
             <onePointControls:SettingExpander Name="GithubExpander"
                                               Glyph="&#xE77B;"
-                                              Description="登录 Github 以使用 Commit 更新通道等功能">
+                                              Description="{DynamicResource Settings.Account.GitHub.Description}">
                 <onePointControls:SettingExpander.Header>
                     <TextBlock Name="GithubHeaderText"
-                               Text="Github 账户" />
+                               Text="{DynamicResource Settings.Account.Group.GitHub}" />
                 </onePointControls:SettingExpander.Header>
                 <StackPanel>
-                    <onePointControls:SettingCard Header="登录 Github"
-                                                  Description="通过浏览器授权登录 Github 账户"
+                    <onePointControls:SettingCard Header="{DynamicResource Settings.Account.GitHub.Login.Title}"
+                                                  Description="{DynamicResource Settings.Account.GitHub.Login.Desc}"
                                                   Name="LoginInGithub"
                                                   Click="LoginInGithub_OnClick"
                                                   IsClickable="True"
                                                   Glyph="&#xE8FA;" />
-                    <onePointControls:SettingCard Header="退出登录"
-                                                  Description="移除本地保存的 Github 授权信息"
+                    <onePointControls:SettingCard Header="{DynamicResource Settings.Account.GitHub.Logout.Title}"
+                                                  Description="{DynamicResource Settings.Account.GitHub.Logout.Desc}"
                                                   Name="GithubLogoutBtn"
                                                   Click="GithubLogoutBtn_OnClick"
                                                   IsClickable="True"
@@ -62,11 +62,11 @@
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="高级设置" />
+                       Text="{DynamicResource Settings.Account.Group.Advanced}" />
 
             <onePointControls:SettingCard Name="IsAskMeBeforeLaunchCard"
-                                          Header="在启动游戏前选择账户"
-                                          Description="在启动器启动游戏前询问我以选择需要使用的账户"
+                                          Header="{DynamicResource Account.Option.AskBeforeLaunch.Title}"
+                                          Description="{DynamicResource Account.Option.AskBeforeLaunch.Desc}"
                                           Glyph="&#xE8B0;">
                 <ToggleSwitch Name="IsAskMeBeforeLaunch"
                               IsCheckedChanged="IsAskMeBeforeLaunch_OnIsCheckedChanged">
@@ -83,8 +83,8 @@
             </onePointControls:SettingCard>
 
             <onePointControls:SettingCard Name="IsUseMSALAccountCard"
-                                          Header="MSAL 验证"
-                                          Description="在 Windows 下使用 MSAL 验证流程进行账户验证"
+                                          Header="{DynamicResource Settings.Account.MSAL.Title}"
+                                          Description="{DynamicResource Settings.Account.MSAL.Desc}"
                                           Glyph="&#xF32A;">
                 <ToggleSwitch Name="IsUseMSALAccount"
                               IsCheckedChanged="IsUseMSALAccount_OnIsCheckedChanged">

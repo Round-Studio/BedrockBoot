@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Avalonia;
 using BedrockBoot;
+using BedrockBoot.Localization;
 using Avalonia.Threading;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -123,25 +124,25 @@ public class DeveloperModeHelper
         Dispatcher.UIThread.Invoke(() => DialogHost.Show(checkFailed
             ? new DialogInfo
             {
-                Title = "检查 Windows 开发人员模式失败",
-                Content = "无法自动确认 Windows 开发人员模式状态。\n未开启 Windows 开发人员模式无法安装或启动 UWP 类型构建的 Minecraft\n\n请手动检查 Windows 设置中的“开发人员模式”是否开启",
-                SecondaryButtonText = "手动检查",
+                Title = Localizer.Get("Windows.DeveloperMode.CheckFailed.Title"),
+                Content = Localizer.Get("Windows.DeveloperMode.CheckFailed.Content"),
+                SecondaryButtonText = Localizer.Get("Windows.DeveloperMode.CheckFailed.ManualCheck"),
                 SecondaryAction = () =>
                 {
                     completion.TrySetResult(DeveloperModeNoticeResult.OpenSettings);
                     OpenDeveloperSettings();
                 },
-                CloseButtonText = "确定",
+                CloseButtonText = Localizer.Get("Shared.Action.Confirm"),
                 CloseAction = () => completion.TrySetResult(DeveloperModeNoticeResult.Dismissed),
                 AccountButton = DialogButtons.CloseButton
             }
             : new DialogInfo
             {
-                Title = "未开启开发人员模式",
-                Content = "当前系统未开启开发人员模式，无法安装或启动 UWP 类型构建的 Minecraft。\n\n请前往 Windows 设置中的“开发人员模式”开启。",
-                SecondaryButtonText = "忽略",
+                Title = Localizer.Get("Windows.DeveloperMode.Disabled.Title"),
+                Content = Localizer.Get("Windows.DeveloperMode.Disabled.Content"),
+                SecondaryButtonText = Localizer.Get("Windows.DeveloperMode.Disabled.Ignore"),
                 SecondaryAction = () => completion.TrySetResult(DeveloperModeNoticeResult.Ignore),
-                CloseButtonText = "确定",
+                CloseButtonText = Localizer.Get("Shared.Action.Confirm"),
                 CloseAction = () =>
                 {
                     completion.TrySetResult(DeveloperModeNoticeResult.OpenSettings);

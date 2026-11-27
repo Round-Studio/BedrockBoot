@@ -68,7 +68,7 @@
                     Spacing="4">
             <onePointControls:FontIcon Glyph="&#xE716;"
                                        VerticalAlignment="Center" />
-            <TextBlock Text="选择档案" />
+            <TextBlock Text="{DynamicResource Account.Panel.ChooseProfile}" />
         </StackPanel>
 
         <Border Grid.Row="1"
@@ -90,8 +90,8 @@
                          VerticalAlignment="Center"
                          Name="NullCard"
                          Margin="0,40"
-                         Message="还没登录账户"
-                         BigTitle="空"/>
+                         Message="{DynamicResource Account.Empty.Message}"
+                         BigTitle="{DynamicResource Account.Empty.Title}"/>
 
         <Border Grid.Row="3"
                 Background="{DynamicResource PrimaryForegroundBrush}"
@@ -110,7 +110,7 @@
                         Spacing="4">
                 <onePointControls:FontIcon Glyph="&#xE8A7;"
                                            VerticalAlignment="Center" />
-                <TextBlock Text="账户与档案" />
+                <TextBlock Text="{DynamicResource Account.Panel.Title}" />
             </StackPanel>
         </Button>
     </Grid>

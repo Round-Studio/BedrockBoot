@@ -77,11 +77,11 @@ public class LeviLaminaModsManager : IModsManager
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择 ZIP 文件",
+            Title = I18nManager.Instance["FilePicker.ChooseZip"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("ZIP 文件")
+                new FilePickerFileType(I18nManager.Instance["FileType.Zip"])
                 {
                     Patterns = new[] { "*.zip" },
                     MimeTypes = new[] { "application/zip" }

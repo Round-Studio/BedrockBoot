@@ -42,7 +42,7 @@ public partial class DrawDropFileContent : UserControl
 
     public void UpdateUi()
     {
-        FileCount.Text = $"已接收 {_storageItems.Length} 个文件";
+        FileCount.Text = string.Format(I18nManager.Instance["DropFile.Received"], _storageItems.Length);
         FilesPanel.Children.Clear();
         FilesPanel.Children.AddRange(_storageItems.Select(file => new DropFileItem(file)));
     }

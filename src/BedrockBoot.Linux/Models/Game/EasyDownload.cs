@@ -20,6 +20,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Core.Models.Helper;
+using BedrockBoot.Localization;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Entity.Game;
@@ -78,7 +79,7 @@ public class EasyDownload : IDownload
             var packagePath = await DownloadPackageAsync(url, token);
             token.ThrowIfCancellationRequested();
 
-            MergeProgress?.Invoke("验证包...", 80);
+            MergeProgress?.Invoke(Localizer.Get("Core.Download.Status.VerifyingPackage"), 80);
 
             // 3. 验证包完整性
             if (!await ValidatePackageAsync(packagePath, token)) return;
@@ -114,7 +115,8 @@ public class EasyDownload : IDownload
         }
         catch (Exception ex)
         {
-            ErrorOccurred?.Invoke("安装失败", $"游戏 {GameName} 安装失败", ex);
+            ErrorOccurred?.Invoke(Localizer.Get("Core.Download.Error.Title"),
+                Localizer.Get("Core.Download.Error.GameInstallFailed", GameName), ex);
         }
     }
 
@@ -152,7 +154,7 @@ public class EasyDownload : IDownload
         if (string.IsNullOrEmpty(url))
             throw new Exception("没有可用的缓存包，且未提供下载地址");
 
-        StatusText?.Invoke("正在下载游戏包...");
+        StatusText?.Invoke(Localizer.Get("Core.Download.Status.DownloadingPackage"));
         var downloadCount = BedrockBoot.Core.Global.GlobalModel.Config == null ? 4 : BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount;
         var downloader = new MultiThreadDownloader(downloadCount, 1024);
         var speedCalculator = new DownloadSpeedCalculator();
@@ -172,7 +174,7 @@ public class EasyDownload : IDownload
             );
 
             // 更新整合的下载进度
-            DownloadProgress?.Invoke($"下载游戏 ({progress.ProgressPercentage:F2}%)", progressInfo);
+            DownloadProgress?.Invoke(Localizer.Get("Core.Download.Progress.Downloading", progress.ProgressPercentage), progressInfo);
         }), token);
 
         return packagePath;
@@ -181,22 +183,23 @@ public class EasyDownload : IDownload
     /// <summary>上报"使用缓存包"的进度状态</summary>
     private void ReportCacheUsed()
     {
-        StatusText?.Invoke("使用缓存包");
+        StatusText?.Invoke(Localizer.Get("Core.Download.Status.UsingCache"));
 
         // 使用缓存时，报告100%进度
-        var progressInfo = new DownloadProgressInfo(100, "使用缓存", 0, 0);
-        DownloadProgress?.Invoke("使用缓存包 (100%)", progressInfo);
+        var progressInfo = new DownloadProgressInfo(100, Localizer.Get("Core.Download.Progress.Cache"), 0, 0);
+        DownloadProgress?.Invoke(Localizer.Get("Core.Download.Progress.UsingCache"), progressInfo);
 
         OnMergeComplete(); // 使用缓存时也触发合并完成
     }
 
     private async Task<bool> ValidatePackageAsync(string packagePath, CancellationToken token)
     {
-        StatusText?.Invoke("正在验证包完整性...");
+        StatusText?.Invoke(Localizer.Get("Core.Download.Status.Verifying"));
 
         if (!await CheckMD5(packagePath, token))
         {
-            ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
+            ErrorOccurred?.Invoke(Localizer.Get("Core.Download.Error.InvalidPackageTitle"),
+                Localizer.Get("Core.Download.Error.InvalidPackage"), null);
             return false;
         }
 
@@ -206,8 +209,8 @@ public class EasyDownload : IDownload
     private void OnMergeComplete()
     {
         // 合并完成回调
-        MergeProgress?.Invoke("合并完成", 100);
-        StatusText?.Invoke("本地安装中...");
+        MergeProgress?.Invoke(Localizer.Get("Core.Download.Status.MergeComplete"), 100);
+        StatusText?.Invoke(Localizer.Get("Core.Download.Status.LocalInstalling"));
     }
 
     private async Task InstallPackageAsync(string packagePath, CancellationToken token)
@@ -224,7 +227,7 @@ public class EasyDownload : IDownload
             UseHardwareDecode = PlatformCore.CoreInit!.IsUseHardwareDecode,
             ExtractionProgress = new Progress<DecompressProgress>(progress =>
             {
-                ExtractionProgress?.Invoke($"解压文件 ({progress.Percentage:F2}%)",
+                ExtractionProgress?.Invoke(Localizer.Get("Core.Download.Progress.Extracting", progress.Percentage),
                     progress.Percentage);
             }),
             InstallStates = new Progress<InstallStates>(states =>
@@ -300,7 +303,8 @@ public class EasyDownload : IDownload
                     return true;
 
             if (showError)
-                ErrorOccurred?.Invoke("无效包", "当前下载的包无效，请重新下载", null);
+                ErrorOccurred?.Invoke(Localizer.Get("Core.Download.Error.InvalidPackageTitle"),
+                    Localizer.Get("Core.Download.Error.InvalidPackage"), null);
 
             return false;
         }
@@ -310,7 +314,8 @@ public class EasyDownload : IDownload
         }
         catch (Exception ex)
         {
-            ErrorOccurred?.Invoke("MD5校验失败", "验证文件完整性时出错", ex);
+            ErrorOccurred?.Invoke(Localizer.Get("Core.Download.Error.MD5Title"),
+                Localizer.Get("Core.Download.Error.MD5Failed"), ex);
             return false;
         }
     }

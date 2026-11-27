@@ -234,11 +234,11 @@
 
                     <StackPanel VerticalAlignment="Center"
                                 Margin="0,-2,0,2">
-                        <TextBlock Text="未安装游戏"
+                        <TextBlock Text="{DynamicResource MainPage.NoGame.Title}"
                                    HorizontalAlignment="Left"
                                    FontSize="18">
                         </TextBlock>
-                        <TextBlock Text="请前往下载页面安装游戏实例"
+                        <TextBlock Text="{DynamicResource MainPage.NoGame.Message}"
                                    HorizontalAlignment="Left"
                                    FontSize="9">
                         </TextBlock>

@@ -148,8 +148,8 @@ public partial class WidgetLaunchGame : IWidgetTemplated
 
     private void SetEmptyState()
     {
-        GameNameText.Text = "游戏";
-        GameVersionText.Text = "未选择版本";
+        GameNameText.Text = I18nManager.Instance["Widget.LaunchGame.Title"];
+        GameVersionText.Text = I18nManager.Instance["Widget.LaunchGame.NoVersion"];
         GameIcon.Source = GetImage("avares://BedrockBoot/Assets/Icon/Logo/Grass.png");
         LaunchButton.IsEnabled = false;
         _hasValidGame = false;

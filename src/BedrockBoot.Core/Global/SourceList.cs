@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using BedrockBoot.Localization;
 using BedrockBoot.Standard.Entity.Info;
 
 namespace BedrockBoot.Models.Global;
@@ -28,10 +29,24 @@ public class SourceList
     public static int PackIconID => 1;
     public static int BodyIconID => 0;
 
+    /// <summary>
+    ///     获取下载源在当前语言下的显示名；对应语言没有该源的键时回退到源标识本身
+    ///     （域名类源的标识就是域名，直接展示即可）。
+    /// </summary>
+    public static string GetSourceDisplayName(string sourceKey)
+    {
+        // 域名类源（如 gh.tianpao.top）的标识就是域名，本来就不需要译文；
+        // 顺带避免拼出带点号的键名，破坏 Area.Subarea.Name 的约定。
+        if (string.IsNullOrEmpty(sourceKey) || sourceKey.Contains('.'))
+            return sourceKey;
+
+        return Localizer.Current.Table.TryGetValue("Core.Source." + sourceKey, out var name) ? name : sourceKey;
+    }
+
     public static Dictionary<string, string> UpdateDownloadSources { get; set; } = new()
     {
         { "Github", "{url}" },
-        { "加速源 ①", "https://github1.roundstudio.top/{url}" },
+        { "Accelerated", "https://github1.roundstudio.top/{url}" },
         { "gh.tianpao.top", "https://gh.tianpao.top/{url}" },
         { "gh.tiouo.cc", "https://gh.tiouo.cc/{route}" },
         { "gh-proxy.com", "https://gh-proxy.com/{url}" },
@@ -43,18 +58,18 @@ public class SourceList
 
     public static Dictionary<string, string> VersionDataSources { get; set; } = new()
     {
-        { "McAppx 源", "https://data.mcappx.com/v2/bedrock.json" },
+        { "McAppx", "https://data.mcappx.com/v2/bedrock.json" },
         {
-            "BedrockBoot 源 ①",
+            "BedrockBoot",
             "https://raw.giteeusercontent.com/minecraftyjq/bedrock-version-db/raw/main/data/bedrock.json"
         },
-        { "BMCBL 源 ①", "https://api.chlna6666.com/api/v1/bedrock/mcappx" }
+        { "BMCBL", "https://api.chlna6666.com/api/v1/bedrock/mcappx" }
     };
 
     public static Dictionary<string, string> CurseForgeSource { get; set; } = new()
     {
-        { "CurseForge 官方源", "https://api.curseforge.com/" },
-        { "MCIM 源", "https://mod.mcimirror.top/curseforge/" }
+        { "CurseForge", "https://api.curseforge.com/" },
+        { "MCIM", "https://mod.mcimirror.top/curseforge/" }
     };
 
     public static List<GameDownloadUrlInfo> GameFileDownloadSource { get; set; } = new()

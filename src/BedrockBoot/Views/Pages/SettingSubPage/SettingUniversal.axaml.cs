@@ -43,7 +43,7 @@ public partial class SettingUniversal : ISettingPage
             new()
             {
                 // 使用国际化 Key，当语言切换时，Breadcrumb 通常需要重新加载或使用绑定
-                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"]
+                ItemName = "Setting.Universal.Breadcrumb.Root"
             }
         };
 
@@ -98,9 +98,8 @@ public partial class SettingUniversal : ISettingPage
             // 执行语言切换核心逻辑
             I18nManager.Instance.SystemLanguage(selectedLanguage);
 
-            // 提示：由于 BreadcrumbItem 是在构造函数赋值的，
-            // 如果需要立即更新面包屑文字，可以在此处重新赋值：
-            BreadcrumbItem[0].ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"];
+            // 面包屑无需手动刷新：条目里存的是本地化键，
+            // MainSettingPage 会在切语言后统一重新解析（见 MainSettingPage.RefreshBreadcrumb）。
         }
     }*/
 

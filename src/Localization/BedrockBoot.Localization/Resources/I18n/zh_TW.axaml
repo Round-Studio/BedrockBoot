@@ -94,6 +94,7 @@
 
     <x:String x:Key="Manager.GameItem.Launch">啟動</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">編輯模式</x:String>
+    <x:String x:Key="Manager.GameItem.PlayTime">遊玩 {0} 小時</x:String>
 
     <x:String x:Key="Manager.Folder.Empty.Title">空</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">點擊下方 添加目錄&#x0A;以添加目錄</x:String>
@@ -475,8 +476,10 @@
     <x:String x:Key="Task.Game.Notice.Added">游戲版本 {0} 已添加至下載隊列。</x:String>
     <x:String x:Key="Task.Game.Notice.Success">游戲 {0} 安裝成功！</x:String>
     <x:String x:Key="Task.Game.Notice.Failed">游戲 {0} 安裝失敗</x:String>
+    <x:String x:Key="Task.Game.Notice.Cancelled">已取消游戲 {0} 的安裝</x:String>
     <x:String x:Key="Task.Game.Title.Format">下載游戲 {0} [{1}]</x:String>
     <x:String x:Key="Task.Game.Status.Completed">下載完成</x:String>
+    <x:String x:Key="Task.Game.Status.Cancelling">正在取消...</x:String>
     <x:String x:Key="Task.Game.Status.LocalInstalling">本地安裝中...</x:String>
     <x:String x:Key="Task.Game.Error.Detail">錯誤詳情：{0}</x:String>
 

@@ -9,7 +9,7 @@
                   Name="ComboBox">
         </ComboBox>
 
-        <TextBlock Text="选择一个需要的 Mod 版本以进行下一步"
+        <TextBlock Text="{DynamicResource Dialog.LeviLamina.ChooseModVersion.Desc}"
                    Opacity="0.6">
         </TextBlock>
     </StackPanel>

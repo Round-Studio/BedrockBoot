@@ -90,9 +90,9 @@ public partial class CapesView : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择披风包",
+            Title = I18nManager.Instance["Cape.View.ChoosePack"],
             AllowMultiple = true,
-            FileTypeFilter = new[] { new FilePickerFileType("披风包") { Patterns = new[] { "*.mccapes" } } }
+            FileTypeFilter = new[] { new FilePickerFileType(I18nManager.Instance["Cape.View.Pack"]) { Patterns = new[] { "*.mccapes" } } }
         });
         if (files is not { Count: >= 1 }) return;
 
@@ -102,9 +102,9 @@ public partial class CapesView : UserControl
         if (failed.Count > 0)
             DialogHost.Show(new DialogInfo
             {
-                Title = "导入披风包",
-                Content = $"以下披风包导入失败（缺少 manifest.json 或文件损坏）：\n{string.Join("\n", failed)}",
-                CloseButtonText = "确定"
+                Title = I18nManager.Instance["Cape.View.ImportPack"],
+                Content = string.Format(I18nManager.Instance["UI.Page.Cape.ImportFailed"], string.Join("\n", failed)),
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
             });
     }
 
@@ -113,10 +113,10 @@ public partial class CapesView : UserControl
         var dialog = new DialogCreateCapePackContent();
         DialogHost.Show(new DialogInfo
         {
-            Title = "创建披风包",
+            Title = I18nManager.Instance["Cape.View.CreatePack"],
             Content = dialog,
-            CloseButtonText = "取消",
-            PrimaryButtonText = "创建",
+            CloseButtonText = I18nManager.Instance["Shared.Action.Cancel"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Apply"],
             AccountButton = DialogButtons.PrimaryButton,
             PrimaryAction = () =>
             {

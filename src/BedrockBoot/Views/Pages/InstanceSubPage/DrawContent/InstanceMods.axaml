@@ -35,7 +35,7 @@
                                                    FontSize="16"
                                                    Margin="5,5,12,5" />
                         <TextBox Name="SearchBox"
-                                 Watermark="键入关键词以搜索"
+                                 Watermark="{DynamicResource Shared.Watermark.Search}"
                                  HorizontalAlignment="Stretch"
                                  TextChanged="SearchBox_OnTextChanged"
                                  DockPanel.Dock="Right" />
@@ -84,7 +84,7 @@
             <StackPanel Orientation="Horizontal"
                         Grid.Row="1"
                         Spacing="8">
-                <TextBlock Text="当前模组加载器已被禁用，如需加载其 Mods 请将其启用。"
+                <TextBlock Text="{DynamicResource Instance.Mods.LoaderDisabled}"
                            IsVisible="False"
                            Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                            Name="IsNotEnableText" />

@@ -76,7 +76,7 @@ public class ServerChecker
                     if (!IPAddress.TryParse(ip, out var parsedAddress))
                     {
                         response.Status = "offline";
-                        response.PureMOTD = $"无法解析主机名: {ip}";
+                        response.PureMOTD = string.Format(I18nManager.Instance["Server.Error.ResolveHost"], ip);
                         return response;
                     }
 
@@ -86,7 +86,7 @@ public class ServerChecker
                 if (addresses.Length == 0)
                 {
                     response.Status = "offline";
-                    response.PureMOTD = $"无法解析主机名: {ip}";
+                    response.PureMOTD = string.Format(I18nManager.Instance["Server.Error.ResolveHost"], ip);
                     return response;
                 }
 
@@ -127,19 +127,19 @@ public class ServerChecker
                 else
                 {
                     response.Status = "offline";
-                    response.PureMOTD = "无法解析服务器响应";
+                    response.PureMOTD = I18nManager.Instance["Server.Error.ParseResponse"];
                 }
             }
         }
         catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
         {
             response.Status = "offline";
-            response.PureMOTD = "请求超时";
+            response.PureMOTD = I18nManager.Instance["Server.Error.Timeout"];
         }
         catch (Exception ex)
         {
             response.Status = "offline";
-            response.PureMOTD = $"查询失败: {ex.Message}";
+            response.PureMOTD = string.Format(I18nManager.Instance["Server.Error.QueryFailed"], ex.Message);
         }
 
         return response;

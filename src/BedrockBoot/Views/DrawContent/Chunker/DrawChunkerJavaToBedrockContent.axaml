@@ -9,14 +9,14 @@
     <Grid RowDefinitions="*,Auto"
           Margin="20,0,20,20">
         <StackPanel Spacing="8">
-            <TextBlock Text="需要转换到的版本 （Bedrock Version.）：" />
+            <TextBlock Text="{DynamicResource Chunker.J2B.TargetVersion}" />
 
             <ComboBox HorizontalAlignment="Stretch"
                       ItemsSource="{x:Static chunker:Chunker.SupportBedrock}"
                       Name="GameVersionChoose"
                       SelectedIndex="0" />
 
-            <TextBlock Text="Java 存档" />
+            <TextBlock Text="{DynamicResource Chunker.J2B.JavaSave}" />
 
             <DockPanel HorizontalSpacing="8">
                 <Button DockPanel.Dock="Right"
@@ -26,11 +26,11 @@
                                 Spacing="4">
                         <onePointControls:FontIcon VerticalAlignment="Center"
                                                    Glyph="&#xF012;" />
-                        <TextBlock Text="导入压缩包" />
+                        <TextBlock Text="{DynamicResource Chunker.J2B.ImportZip}" />
                     </StackPanel>
                 </Button>
 
-                <TextBox Watermark="存档路径（zip）"
+                <TextBox Watermark="{DynamicResource Chunker.J2B.SavePathWatermark}"
                          Name="WorldPath" />
             </DockPanel>
         </StackPanel>
@@ -38,7 +38,7 @@
         <TextBlock Grid.Row="1"
                    Opacity="0.8"
                    VerticalAlignment="Center"
-                   Text="使用 Chunker 开源项目，转换存档有风险" />
+                   Text="{DynamicResource Chunker.J2B.Warning}" />
 
         <StackPanel Grid.Row="1"
                     HorizontalAlignment="Right"
@@ -52,7 +52,7 @@
                             Spacing="4">
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                Glyph="&#xE74E;" />
-                    <TextBlock Text="导出为 .mcworld" />
+                    <TextBlock Text="{DynamicResource Chunker.J2B.ExportMcWorld}" />
                 </StackPanel>
             </Button>
 
@@ -65,7 +65,7 @@
                             Spacing="4">
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                Glyph="&#xE74E;" />
-                    <TextBlock Text="导出到实例" />
+                    <TextBlock Text="{DynamicResource Chunker.J2B.ExportToInstance}" />
                 </StackPanel>
             </Button>
         </StackPanel>

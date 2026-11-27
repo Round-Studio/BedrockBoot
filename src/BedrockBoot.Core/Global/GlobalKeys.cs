@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using BedrockBoot.Core;
+using BedrockBoot.Localization;
 using BedrockBoot.Standard.Enum.Type;
 
 namespace BedrockBoot.Models.Global;
@@ -29,20 +30,33 @@ public class GlobalKeys
 
     public static string CurseForgeApiKey { get; } = Keys.CurseForgeApiKey;
 
-    public static Dictionary<string, (SupportedFileType Type, bool AllowMany, string Name)> DropOverTypesOfSupport { get; } = new()
+    public static Dictionary<string, (SupportedFileType Type, bool AllowMany, string NameKey)> DropOverTypesOfSupport { get; } = new()
     {
-        { ".mcpack", (SupportedFileType.Mcpack, true, "基岩版资源包") },
-        { ".mcaddon", (SupportedFileType.Mcaddon, true, "基岩版集合包") },
-        { ".mcworld", (SupportedFileType.Mcworld, true, "基岩版存档包") },
-        { ".mctemplate", (SupportedFileType.Mctemplate, false, "基岩版世界模版") },
-        /*{ ".mcpint", (SupportedFileType.Mcpint, false, "BedrockBoot 整合包文件") },*/
-        { ".rskin", (SupportedFileType.Rskin, true, "Round-Studio 通用皮肤包") },
-        { ".rplck", (SupportedFileType.Rplck, true, "Round-Studio 通用插件包") },
-        /*{ ".dll", (SupportedFileType.Dll, false, "DLL 文件") },*/ // 这个还没想好逻辑，等以后想好再加
-        /*{ ".zip", (SupportedFileType.Zip,true, "ZIP 文件") },
-        { ".appx", (SupportedFileType.Appx, false, "Microsoft 安装包文件 (APPX)") },
-        { ".msixvc", (SupportedFileType.Msixvc, false, "Microsoft 安装包文件 (MSIXVC)") }*/
+        { ".mcpack", (SupportedFileType.Mcpack, true, "Core.FileType.Mcpack") },
+        { ".mcaddon", (SupportedFileType.Mcaddon, true, "Core.FileType.Mcaddon") },
+        { ".mcworld", (SupportedFileType.Mcworld, true, "Core.FileType.Mcworld") },
+        { ".mctemplate", (SupportedFileType.Mctemplate, false, "Core.FileType.Mctemplate") },
+        /*{ ".mcpint", (SupportedFileType.Mcpint, false, "Core.FileType.Mcpint") },*/
+        { ".rskin", (SupportedFileType.Rskin, true, "Core.FileType.Rskin") },
+        { ".rplck", (SupportedFileType.Rplck, true, "Core.FileType.Rplck") },
+        /*{ ".dll", (SupportedFileType.Dll, false, "Core.FileType.Dll") },*/ // 这个还没想好逻辑，等以后想好再加
+        /*{ ".zip", (SupportedFileType.Zip,true, "Core.FileType.Zip") },
+        { ".appx", (SupportedFileType.Appx, false, "Core.FileType.Appx") },
+        { ".msixvc", (SupportedFileType.Msixvc, false, "Core.FileType.Msixvc") }*/
     };
+
+    /// <summary>
+    ///     取某个扩展名的可读类型名（已本地化）。不支持的扩展名原样返回扩展名。
+    /// </summary>
+    public static string GetFileTypeDisplayName(string extension)
+    {
+        if (string.IsNullOrEmpty(extension) ||
+            !DropOverTypesOfSupport.TryGetValue(extension, out var info))
+            return extension;
+
+        var name = Localizer.Get(info.NameKey);
+        return string.IsNullOrEmpty(name) ? info.NameKey : name;
+    }
     
     public static string DropOverTypesOfSupportString => string.Join(", ", DropOverTypesOfSupport.Keys);
 }

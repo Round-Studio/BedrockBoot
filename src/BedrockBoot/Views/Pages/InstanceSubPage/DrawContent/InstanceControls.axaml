@@ -36,25 +36,25 @@
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
-                           Text="升级" />
+                           Text="{DynamicResource Instance.Controls.Group.Update}" />
 
                 <onePointControls:SettingCard IsClickable="True"
                                               Glyph="&#xE822;"
                                               Name="UpdateBtn"
                                               Click="UpdateBtn_OnClick"
-                                              Header="更新版本"
-                                              Description="将此实例更新到其他版本的 Minecraft" />
+                                              Header="{DynamicResource Instance.Controls.Update.Title}"
+                                              Description="{DynamicResource Instance.Controls.Update.Desc}" />
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14"
-                           Text="同步" />
+                           Text="{DynamicResource Instance.Controls.Group.Sync}" />
 
                 <onePointControls:SettingCard IsClickable="True"
                                               Glyph="&#xECAF;"
                                               Name="PublicSyncBtn"
                                               Click="PublicSyncBtn_OnClick"
-                                              Header="设置为全局配置"
-                                              Description="将当前实例的游戏设置 (options.txt) 文件设置为所有实例的同步源配置" />
+                                              Header="{DynamicResource Instance.Controls.Sync.Title}"
+                                              Description="{DynamicResource Instance.Controls.Sync.Desc}" />
 
                 <TextBlock FontWeight="Bold"
                            FontSize="14"

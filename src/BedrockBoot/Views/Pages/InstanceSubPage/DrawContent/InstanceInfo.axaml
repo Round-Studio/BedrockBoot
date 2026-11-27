@@ -129,19 +129,19 @@
                                       Width="200"
                                       SelectionChanged="GameIconSel_OnSelectionChanged"
                                       SelectedIndex="1">
-                                <ComboBoxItem Content="自定义" />
-                                <ComboBoxItem Content="默认" />
-                                <ComboBoxItem Content="草方块" />
-                                <ComboBoxItem Content="草经" />
-                                <ComboBoxItem Content="工作台" />
-                                <ComboBoxItem Content="圆石" />
-                                <ComboBoxItem Content="末地石" />
+                                <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Custom}" />
+                                <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Default}" />
+                                <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Grass}" />
+                                <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.GrassPath}" />
+                                <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Crafting}" />
+                                <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.Cobblestone}" />
+                                <ComboBoxItem Content="{DynamicResource Instance.Info.Icon.EndStone}" />
                             </ComboBox>
                         
                             <DockPanel HorizontalSpacing="8"
                                        Name="CustomizationBox">
                                 <Button DockPanel.Dock="Right"
-                                        Content="选择"
+                                        Content="{DynamicResource Instance.Info.Icon.Choose}"
                                         Padding="8"
                                         Name="IconPathChooseBtn"
                                         Click="IconPathChooseBtn_OnClick"></Button>

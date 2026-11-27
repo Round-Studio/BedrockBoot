@@ -109,7 +109,7 @@ namespace BedrockBoot.Models.Pack.LeviLamina
         private void ParseInstallString(string installString)
         {
             if (string.IsNullOrEmpty(installString))
-                throw new ArgumentException("安装字符串不能为空");
+                throw new ArgumentException(I18nManager.Instance["Pack.Lip.EmptyInstallString"]);
 
             string toothPart = installString;
             string versionPart = null;
@@ -123,7 +123,7 @@ namespace BedrockBoot.Models.Pack.LeviLamina
             }
             else
             {
-                throw new ArgumentException($"安装字符串缺少版本号: {installString}");
+                throw new ArgumentException(string.Format(I18nManager.Instance["Pack.Lip.MissingVersion"], installString));
             }
 
             int hashIndex = toothPart.LastIndexOf('#');
@@ -137,7 +137,7 @@ namespace BedrockBoot.Models.Pack.LeviLamina
                 throw new ArgumentException($"安装字符串缺少仓库地址: {installString}");
 
             if (string.IsNullOrEmpty(versionPart))
-                throw new ArgumentException($"安装字符串缺少版本号: {installString}");
+                throw new ArgumentException(string.Format(I18nManager.Instance["Pack.Lip.MissingVersion"], installString));
 
             tooth = toothPart;
             version = versionPart;

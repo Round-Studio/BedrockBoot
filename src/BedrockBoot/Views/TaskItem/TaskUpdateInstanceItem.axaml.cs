@@ -69,7 +69,7 @@ public partial class TaskUpdateInstanceItem : UserControl, ITaskItem
         _versionConfig = versionConfig;
         _buildInfo = buildInfo;
         _selectedUrl = selectedUrl;
-        _taskTitle = $"更新 {_versionConfig.Info.VersionName} 到 {_buildInfo.ID}";
+        _taskTitle = string.Format(I18nManager.Instance["Task.InstanceUpdate.Title.Format"], _versionConfig.Info.VersionName, _buildInfo.ID);
     }
 
     public void Start(Action completed)
@@ -95,7 +95,7 @@ public partial class TaskUpdateInstanceItem : UserControl, ITaskItem
                 await updater.UpdateAsync(_buildInfo);
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    MainText.Text = "更新完成";
+                    MainText.Text = I18nManager.Instance["Task.InstanceUpdate.Status.Completed"];
                     MainSpeedText.Text = "";
                     MainProgressBar.IsIndeterminate = false;
                     MainProgressBar.Value = 100;
@@ -106,13 +106,13 @@ public partial class TaskUpdateInstanceItem : UserControl, ITaskItem
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    MainText.Text = $"更新失败: {ex.Message}";
+                    MainText.Text = string.Format(I18nManager.Instance["Task.InstanceUpdate.Error.Format"], ex.Message);
                 });
                 DialogHost.Show(new DialogInfo()
                 {
-                    Title = "更新失败",
+                    Title = I18nManager.Instance["Task.InstanceUpdate.Error.Title"],
                     Content = ex,
-                    CloseButtonText = "确定"
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                 });
                 completed?.Invoke();
             }

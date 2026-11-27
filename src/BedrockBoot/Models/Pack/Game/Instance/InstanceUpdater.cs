@@ -76,7 +76,7 @@ public class InstanceUpdater
 
             Progress?.Report(new()
             {
-                Message = "删除旧版本文件",
+                Message = I18nManager.Instance["Task.InstanceUpdate.Step.DeleteOldFiles"],
                 Progress = 0,
                 Step = InstanceUpdateStep.DeleteOld
             });
@@ -110,7 +110,7 @@ public class InstanceUpdater
                     int progressPercent = totalCount > 0 ? (int)((double)deletedCount / totalCount * 100) : 100;
                     Progress?.Report(new()
                     {
-                        Message = $"正在删除文件 ({deletedCount}/{totalCount})",
+                        Message = string.Format(I18nManager.Instance["Task.InstanceUpdate.DeletingFile"], deletedCount, totalCount),
                         Progress = progressPercent,
                         Step = InstanceUpdateStep.DeleteOld
                     });
@@ -136,7 +136,7 @@ public class InstanceUpdater
                     int progressPercent = totalCount > 0 ? (int)((double)deletedCount / totalCount * 100) : 100;
                     Progress?.Report(new()
                     {
-                        Message = $"正在删除目录 ({deletedCount}/{totalCount})",
+                        Message = string.Format(I18nManager.Instance["Task.InstanceUpdate.DeletingDir"], deletedCount, totalCount),
                         Progress = progressPercent,
                         Step = InstanceUpdateStep.DeleteOld
                     });
@@ -145,7 +145,7 @@ public class InstanceUpdater
 
             Progress?.Report(new()
             {
-                Message = "旧版本文件删除完成",
+                Message = I18nManager.Instance["Task.InstanceUpdate.DeleteDone"],
                 Progress = 100,
                 Step = InstanceUpdateStep.DeleteOld
             });
@@ -162,7 +162,7 @@ public class InstanceUpdater
                     Step = InstanceUpdateStep.Download,
                     Progress = progressInfo.Percentage,
                     Message = message,
-                    Detailed = $"速度: {progressInfo.Speed}"
+                    Detailed = string.Format(I18nManager.Instance["Common.Unit.Speed"], progressInfo.Speed)
                 });
             };
 
@@ -173,7 +173,7 @@ public class InstanceUpdater
                     Step = InstanceUpdateStep.Download,
                     Progress = progress,
                     Message = message,
-                    Detailed = "合并文件中..."
+                    Detailed = I18nManager.Instance["Task.InstanceUpdate.Step.Merge"]
                 });
             };
 
@@ -184,7 +184,7 @@ public class InstanceUpdater
                     Step = InstanceUpdateStep.UnZip,
                     Progress = progress,
                     Message = message,
-                    Detailed = "解压文件中..."
+                    Detailed = I18nManager.Instance["Task.InstanceUpdate.Step.Extract"]
                 });
             };
 
@@ -195,7 +195,7 @@ public class InstanceUpdater
                     Step = InstanceUpdateStep.UWPRegistering,
                     Progress = progress.Percentage,
                     Message = message,
-                    Detailed = "注册应用中..."
+                    Detailed = I18nManager.Instance["Task.InstanceUpdate.Step.Register"]
                 });
             };
 
@@ -205,7 +205,7 @@ public class InstanceUpdater
                 {
                     Step = InstanceUpdateStep.UpdateFinish,
                     Progress = 100,
-                    Message = "更新完成",
+                    Message = I18nManager.Instance["Task.InstanceUpdate.Status.Completed"],
                     Detailed = ""
                 });
             };
@@ -237,7 +237,7 @@ public class InstanceUpdater
             Path.Combine(_versionConfig.VersionPath, "config", "BedrockBoot2", "row",
                 Path.GetFileName(_versionConfig.BodyFile)), true);
 
-        Console.WriteLine(@"更新完成");
+        Console.WriteLine(@I18nManager.Instance["Task.InstanceUpdate.Status.Completed"]);
     }
 
     private void CollectFilesAndDirectoriesToDelete(DirectoryInfo directory, List<string> protectedPaths,

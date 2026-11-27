@@ -22,22 +22,22 @@
                        FontSize="28"
                        FontWeight="Heavy"></TextBlock>
             
-            <TextBlock Text="当前运行的版本"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.CurrentVersion}"
                        Margin="0,0,0,8"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="正式发布的版本"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.ReleasedVersion}"
                        Margin="0,8,0,0"
                        FontSize="16"
                        FontWeight="Bold"></TextBlock>
             
-            <TextBlock Text="感谢您使用 BedrockBoot 2.0，当前 BedrockBoot 2.0 为 LTS 长期维护版本。"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.LTSNotice}"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="以下将 BedrockBoot 2.0 简称为 BedrockBoot。"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.AbbrevNotice}"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="跨平台版本支持"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.CrossPlatform}"
                        Margin="0,8,0,0"
                        FontSize="16"
                        FontWeight="Bold"></TextBlock>
@@ -54,35 +54,35 @@
                 </Border>
             </items:BorderCard>
             
-            <TextBlock Text="得益于强大的 Avalonia 框架，现在 BedrockBoot 可以在更多操作系统上运行。"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.AvaloniaDesc}"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="您现在可以在绝大多数 x64 架构下的 Windows, Linux 两大操作系统下使用 BedrockBoot 来游玩 Minecraft Bedrock。"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.PlatformSupport}"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="目前 Linux 平台受游戏框架限制，仅支持 GDK 构建类型的 Minecraft Bedrock。"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.LinuxLimit}"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="在 Linux 平台，现已支持在启动器内登录账户，并直接在游戏内访问此账户，进行在线游戏。"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.LinuxLogin}"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="全新联机支持"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.Multiplayer}"
                        Margin="0,8,0,0"
                        FontSize="16"
                        FontWeight="Bold"></TextBlock>
             
-            <TextBlock Text="重构通信逻辑，诞生 PaperConnect v2 联机协议，并由 GravityCone 联机模块强力支持。"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.PaperConnect}"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="更多独一无二的功能"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.MoreFeatures}"
                        Margin="0,8,0,0"
                        FontSize="16"
                        FontWeight="Bold"></TextBlock>
             
-            <TextBlock Text="目前，您可以在启动器的工具箱页面体验到许多功能。例如：存档转换，资源包转换。这些内置工具可以帮助您转换游戏资源，将 Java 与 基岩版 的资源互相转换。"
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.ToolsDesc}"
                        Opacity="0.8"></TextBlock>
             
-            <TextBlock Text="甚至可以管理游戏内的多种资源，例如：资源包、行为包、皮肤包、存档以及世界模版等..."
+            <TextBlock Text="{DynamicResource About.ReleaseNotes.ResourceMgmt}"
                        Opacity="0.8"></TextBlock>
         </StackPanel>
     </ScrollViewer>

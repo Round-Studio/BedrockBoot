@@ -57,38 +57,38 @@ public partial class NewsItem : UserControl
     string GetSmartDiff(string dateString)
     {
         if (!DateTime.TryParse(dateString, out DateTime targetDate))
-            return "无效日期";
+            return I18nManager.Instance["UI.Item.News.InvalidDate"];
 
         TimeSpan diff = DateTime.Now - targetDate;
     
         if (diff.TotalSeconds < 0)
-            return "未来日期";
+            return I18nManager.Instance["UI.Item.News.FutureDate"];
 
         if (diff.TotalDays >= 365)
         {
             double years = diff.TotalDays / 365.2425;
-            return $"{years:F0}年前";
+            return string.Format(I18nManager.Instance["Common.Time.YearsAgo"], years.ToString("F0"));
         }
         else if (diff.TotalDays >= 30)
         {
             double months = diff.TotalDays / 30.436875;
-            return $"{months:F0}月前";
+            return string.Format(I18nManager.Instance["Common.Time.MonthsAgo"], months.ToString("F0"));
         }
         else if (diff.TotalDays >= 1)
         {
-            return $"{(int)diff.TotalDays}天前";
+            return string.Format(I18nManager.Instance["Common.Time.DaysAgo"], (int)diff.TotalDays);
         }
         else if (diff.TotalHours >= 1)
         {
-            return $"{(int)diff.TotalHours}小时前";
+            return string.Format(I18nManager.Instance["Common.Time.HoursAgo"], (int)diff.TotalHours);
         }
         else if (diff.TotalMinutes >= 1)
         {
-            return $"{(int)diff.TotalMinutes}分钟前";
+            return string.Format(I18nManager.Instance["Common.Time.MinutesAgo"], (int)diff.TotalMinutes);
         }
         else
         {
-            return $"{(int)diff.TotalSeconds}秒前";
+            return string.Format(I18nManager.Instance["UI.Item.News.SecondsAgo"], (int)diff.TotalSeconds);
         }
     }
 }

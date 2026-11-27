@@ -10,7 +10,7 @@
             <onePointControls:FontIcon Glyph="&#xf164;"
                                        HorizontalAlignment="Center"
                                        FontSize="32" />
-            <TextBlock Text="登录微软账户"
+            <TextBlock Text="{DynamicResource Dialog.LoginMicrosoft.Title}"
                        HorizontalAlignment="Center"
                        FontSize="16">
             </TextBlock>
@@ -22,25 +22,25 @@
                     IsEnabled="False"
                     Click="CodeCopyBtn_OnClick"
                     Name="CodeCopyBtn"
-                    Content="加载中">
+                    Content="{DynamicResource Dialog.LoginMicrosoft.Status.Loading}">
             </Button>
 
             <StackPanel Name="LinkBox"
                         Spacing="8"
                         IsVisible="False">
-                <TextBlock Text="点击上方按钮以复制，黏贴至浏览器中完成登录流程"
+                <TextBlock Text="{DynamicResource Dialog.LoginMicrosoft.CopyHint}"
                            FontSize="11"
                            Opacity="0.6"
                            HorizontalAlignment="Center">
                 </TextBlock>
 
                 <DockPanel HorizontalAlignment="Center">
-                    <TextBlock Text="网页未自动打开？"
+                    <TextBlock Text="{DynamicResource Dialog.LoginMicrosoft.BrowserNotOpened}"
                                FontSize="11"
                                Opacity="0.6"
                                HorizontalAlignment="Center">
                     </TextBlock>
-                    <HyperlinkButton Content="点击手动打开网页"
+                    <HyperlinkButton Content="{DynamicResource Dialog.LoginMicrosoft.Action.OpenBrowser}"
                                      Name="LinkBtn"
                                      FontSize="11">
                     </HyperlinkButton>

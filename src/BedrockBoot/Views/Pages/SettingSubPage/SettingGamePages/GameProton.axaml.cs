@@ -55,7 +55,7 @@ public partial class GameProton : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Game.Breadcrumb.Root"],
+                ItemName = "Setting.Game.Breadcrumb.Root",
                 ItemClickAction = s => MainSettingPage.NavigateTo(new SettingGame())
             },
             new()

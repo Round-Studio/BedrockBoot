@@ -25,8 +25,10 @@
 </div>
 
 ---
+[English](README_EN.md) | 简体中文
+---
 
-# 简介 | Introduction
+# 简介
 
 **BedrockBoot** 是一款为 **Windows** 与 **Linux** 构建的 Minecraft 基岩版高性能启动器。项目旨在帮助用户高效启动 Minecraft Bedrock。  
 启动器内集成 **游戏** 与 **CurseForge** 资源下载入口，为用户提供快捷体验  
@@ -66,7 +68,7 @@
 * **文档**：[BedrockBoot 帮助文档](https://docs.roundstudio.top/docs/product/bb)
 * **隐私策略**：[BedrockBoot 隐私策略](https://docs.roundstudio.top/docs/product/bb/privacyPolicy)
 
-# 下载 | Download
+# 下载
 
 你可以从以下官方渠道获取 BedrockBoot 的编译产物：
 
@@ -75,7 +77,7 @@
 | **官方下载门户** | [Round Studio Download](https://roundstudio.top/bedrockboot) |
 | **GitHub Releases** | [GitHub Release Assets](https://github.com/Round-Studio/BedrockBoot/releases) |
 
-# 快速开始 | Quick Start
+# 快速开始
 
 ## Windows
 
@@ -102,7 +104,7 @@ paru -S bedrockboot
 2. **版本调度**：进入“下载”模块，下载所需的基岩版版本或资源包。
 3. **启动执行**：配置实例参数后，点击启动即可进入游戏。
 
-# 参与贡献 | Contribution
+# 参与贡献
 
 BedrockBoot 是一个开源且社区驱动的项目，欢迎任何形式的贡献：
 
@@ -110,7 +112,7 @@ BedrockBoot 是一个开源且社区驱动的项目，欢迎任何形式的贡�
 * **贡献**：Fork 本仓库并提交 Pull Request。请在提交前确保代码通过基础单元测试。
 * **技术栈**：C# / C++ / .NET / [Avalonia](https://github.com/avaloniaui/avalonia)。
 
-# 构建项目 | Build From Source
+# 构建项目
 
 如果您希望自行编译或调试项目：
 
@@ -123,14 +125,14 @@ BedrockBoot 是一个开源且社区驱动的项目，欢迎任何形式的贡�
    dotnet build -c Release
    ```
 
-# 团队与致谢 | Team & Credits
+# 团队与致谢
 
 ## 核心开发者
 - **Lead Developers**: Dime, YoumiHa
 - **UI/UX Design**: Dime, DrMing
 - **Core Architecture**: YoumiHa
 
-# 开源协议 | License
+# 开源协议
 
 该程序基于 **GPLv3** 开源协议发布，并包含以下附加条款：
 1. **标识修改**：分发修改版本时，必须以合理方式修改程序名称或版本号。

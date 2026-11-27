@@ -47,7 +47,7 @@ public partial class CapeFileItem : UserControl
         _unit = unit;
         _capeDefinition = capeDefinition;
         SettingExpander.Header = unit.GetLanguage(capeDefinition.LocalizationName);
-        SettingExpander.Description = $"品质：{CapeTypeHelper.GetTypeName(CapeTypeHelper.GetNameToType(capeDefinition.Rarity!))}";
+        SettingExpander.Description = string.Format(I18nManager.Instance["UI.Item.Cape.Quality"], CapeTypeHelper.GetTypeName(CapeTypeHelper.GetNameToType(capeDefinition.Rarity!)));
         SettingExpander.ImageIcon = CapeImageHelper.PatchCapeIcon(Path.Combine(_unit.Folder!, capeDefinition.Texture));
     }
 
@@ -55,10 +55,10 @@ public partial class CapeFileItem : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除披风",
-            Content = $"确定要删除披风 “{SettingExpander.Header}” 吗？该操作无法撤销。",
-            CloseButtonText = "取消",
-            PrimaryButtonText = "删除",
+            Title = I18nManager.Instance["Cape.Item.DeleteFile"],
+            Content = string.Format(I18nManager.Instance["Cape.Item.DeleteFile.Confirm"], SettingExpander.Header),
+            CloseButtonText = I18nManager.Instance["Shared.Action.Cancel"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Delete"],
             AccountButton = DialogButtons.PrimaryButton,
             PrimaryAction = () =>
             {

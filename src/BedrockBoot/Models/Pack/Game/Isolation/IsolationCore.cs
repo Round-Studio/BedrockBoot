@@ -115,7 +115,7 @@ public class IsolationCore
             );
         }
 
-        throw new NotSupportedException($"不支持的 Minecraft 构建类型: {versionConfig.Info.BuildType}");
+        throw new NotSupportedException(string.Format(I18nManager.Instance["Pack.Isolation.UnsupportedBuildType"], versionConfig.Info.BuildType));
     }
 
     public static string GetInstanceFolderPath(VersionConfig versionConfig,
@@ -192,7 +192,7 @@ public class IsolationCore
             }
         }
 
-        throw new NotSupportedException($"不支持的 Minecraft 构建类型: {versionConfig.Info.BuildType}");
+        throw new NotSupportedException(string.Format(I18nManager.Instance["Pack.Isolation.UnsupportedBuildType"], versionConfig.Info.BuildType));
     }
 
     #endregion

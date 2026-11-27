@@ -34,11 +34,11 @@ public class XboxAuthToXUserConverter
 
         string? xboxUserToken = await _authClient.GetXboxUserTokenAsync(authResult.AccessToken);
         if (string.IsNullOrEmpty(xboxUserToken))
-            throw new Exception("获取 Xbox User Token 失败");
+            throw new Exception(I18nManager.Instance["Auth.Login.GetXboxUserTokenFailed"]);
 
         var (xstsToken, userHash, xuid) = await _authClient.GetXstsTokenAsync(xboxUserToken);
         if (string.IsNullOrEmpty(xstsToken))
-            throw new Exception("获取 XSTS Token 失败");
+            throw new Exception(I18nManager.Instance["Auth.Login.GetXstsTokenFailed"]);
 
         string token = BuildXUserToken(xboxUserToken, xstsToken, userHash, xuid);
 

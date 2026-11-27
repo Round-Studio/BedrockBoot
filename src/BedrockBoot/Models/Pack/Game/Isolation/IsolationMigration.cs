@@ -73,7 +73,7 @@ public class IsolationMigration
         {
             FileCountTotal = filesCount,
             CurrentFile = 0,
-            Status = "开始迁移",
+            Status = I18nManager.Instance["Isolation.Migration.Start"],
             CurrentType = ""
         });
 
@@ -91,7 +91,7 @@ public class IsolationMigration
                 {
                     FileCountTotal = filesCount,
                     CurrentFile = processedFiles,
-                    Status = $"跳过：{currentType}（源目录不存在）",
+                    Status = string.Format(I18nManager.Instance["Isolation.Migration.SkipNoSource"], currentType),
                     CurrentType = currentType
                 });
                 continue;
@@ -107,7 +107,7 @@ public class IsolationMigration
             {
                 FileCountTotal = filesCount,
                 CurrentFile = processedFiles,
-                Status = $"开始迁移 {currentType} ({allFiles.Length} 个文件)",
+                Status = string.Format(I18nManager.Instance["Isolation.Migration.StartType"], currentType, allFiles.Length),
                 CurrentType = currentType
             });
 
@@ -139,7 +139,7 @@ public class IsolationMigration
                                 {
                                     FileCountTotal = filesCount,
                                     CurrentFile = processedFiles,
-                                    Status = $"正在迁移 {currentType}: {Path.GetFileName(file)}",
+                                    Status = string.Format(I18nManager.Instance["Isolation.Migration.MigratingFile"], currentType, Path.GetFileName(file)),
                                     CurrentType = currentType,
                                     Percentage = (filesCount > 0 ? (double)processedFiles / filesCount * 100 : 100)
                                 });
@@ -156,7 +156,7 @@ public class IsolationMigration
             {
                 FileCountTotal = filesCount,
                 CurrentFile = processedFiles,
-                Status = $"{currentType} 迁移完成",
+                Status = string.Format(I18nManager.Instance["Isolation.Migration.TypeDone"], currentType),
                 CurrentType = currentType,
                 Percentage = (filesCount > 0 ? (double)processedFiles / filesCount * 100 : 100)
             });
@@ -167,7 +167,7 @@ public class IsolationMigration
         {
             FileCountTotal = filesCount,
             CurrentFile = processedFiles,
-            Status = "所有迁移完成",
+            Status = I18nManager.Instance["Isolation.Migration.AllDone"],
             IsCompleted = true,
             Percentage = 100
         });
@@ -175,10 +175,10 @@ public class IsolationMigration
 
     private string GetMigrationTypeFromPath(string path)
     {
-        if (path.Contains("minecraftWorlds")) return "存档";
-        if (path.Contains("minecraftpe")) return "配置";
-        if (path.Contains("resource_packs")) return "资源包";
-        if (path.Contains("behavior_packs")) return "行为包";
-        return "其他";
+        if (path.Contains("minecraftWorlds")) return I18nManager.Instance["Isolation.Migration.Type.Saves"];
+        if (path.Contains("minecraftpe")) return I18nManager.Instance["Isolation.Migration.Type.Config"];
+        if (path.Contains("resource_packs")) return I18nManager.Instance["Isolation.Migration.Type.Resources"];
+        if (path.Contains("behavior_packs")) return I18nManager.Instance["Isolation.Migration.Type.Behavior"];
+        return I18nManager.Instance["Isolation.Migration.Type.Other"];
     }
 }

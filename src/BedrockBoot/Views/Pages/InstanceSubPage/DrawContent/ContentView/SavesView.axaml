@@ -24,7 +24,7 @@
                             <onePointControls:FontIcon Glyph="&#xE74E;"
                                                        VerticalAlignment="Center"
                                                        FontSize="16" />
-                            <TextBlock Margin="8,4,0,4" Text="存档" />
+                            <TextBlock Margin="8,4,0,4" Text="{DynamicResource SavesView.Saves}" />
                         </StackPanel>
                     </ListBoxItem>
                     <ListBoxItem Classes="Segmented"
@@ -33,7 +33,7 @@
                             <onePointControls:FontIcon Glyph="&#xF012;"
                                                        VerticalAlignment="Center"
                                                        FontSize="16" />
-                            <TextBlock Margin="8,4,0,4" Text="模版" />
+                            <TextBlock Margin="8,4,0,4" Text="{DynamicResource SavesView.Templates}" />
                         </StackPanel>
                     </ListBoxItem>
                 </ListBox>
@@ -69,7 +69,7 @@
                                                    FontSize="16"
                                                    Margin="12,5,12,5" />
                         <TextBox Name="SearchBox"
-                                 Watermark="键入关键词以搜索"
+                                 Watermark="{DynamicResource Shared.Watermark.Search}"
                                  TextChanged="SearchBox_OnTextChanged"
                                  HorizontalAlignment="Stretch"
                                  DockPanel.Dock="Right" />
@@ -88,7 +88,7 @@
                             <onePointControls:FontIcon Glyph="&#xE710;"
                                                        VerticalAlignment="Center"
                                                        Margin="0,1,8,0" />
-                            <TextBlock Text="导入包" />
+                            <TextBlock Text="{DynamicResource SavesView.ImportPack}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>

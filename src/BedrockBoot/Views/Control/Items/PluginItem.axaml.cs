@@ -66,11 +66,11 @@ public partial class PluginItem : UserControl
         {
             DialogHost.Show(new DialogInfo
             {
-                Title = "删除插件",
-                Content = "您确定要删除此插件吗？\n" +
-                          $"插件：{info.PackName}",
-                CloseButtonText = "确定",
-                PrimaryButtonText = "取消",
+                Title = I18nManager.Instance["Settings.Plugin.Manager.Delete"],
+                Content = I18nManager.Instance["UI.Item.Plugin.DeleteConfirm"] + "\n" +
+                          string.Format(I18nManager.Instance["Settings.Plugin.Manager.Delete.Plugin"], info.PackName),
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                 AccountButton = DialogButtons.CloseButton,
                 CloseAction = () =>
                 {

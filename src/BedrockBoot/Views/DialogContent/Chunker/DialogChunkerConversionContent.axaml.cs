@@ -53,7 +53,7 @@ public partial class DialogChunkerConversionContent : UserControl
                 {
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        ProgressText.Text = $"转换中... ({p:F2} %)";
+                        ProgressText.Text = string.Format(I18nManager.Instance["Chunker.Dialog.ConvertingProgress"], p);
                         ProgressBar.Value = p;
                     });
                 }));

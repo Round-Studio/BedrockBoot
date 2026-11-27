@@ -41,19 +41,19 @@ public partial class UniversalException : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
+                ItemName = "Setting.Universal.Breadcrumb.Root",
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Debug.Title"],
+                ItemName = "Setting.Universal.Debug.Title",
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new UniversalDebug())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Exception.Title"]
+                ItemName = "Setting.Universal.Exception.Title"
             }
         };
 

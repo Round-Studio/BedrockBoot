@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using BedrockBoot.Core.Global;
+using BedrockBoot.Localization;
 using BedrockBoot.Standard.Interface.Platform;
 using BedrockBoot.Windows.Models.Helper.Notice;
 
@@ -114,6 +115,7 @@ public class ProcessMouseLocker : IMouseLocker
     private bool _isManuallyUnlocked = false;
     private bool _isMouseCurrentlyLocked;
     private bool _wasWindowFound = false; // 用于控制通知只发一次
+    private bool _wasNoticeSent = false; // 但是上一个逻辑搞不定，算了我摆烂了
     private Thread _monitorHotkeyThread;
     private Thread _monitorForegroundThread;
     private HotKey _hotKey = HotKey.Parse(GlobalModel.Config.Data.MouseLockHotkey);
@@ -232,9 +234,12 @@ public class ProcessMouseLocker : IMouseLocker
                         try
                         {
                             // 调用你的通知组件
-                            NoticeHelper.SentNotice("游戏已捕获", "鼠标锁定已就绪 (按 "+ _hotKey.ToString() + " 或 Win 解锁)");
+                            //NoticeHelper.SentNotice(Localizer.Get("Windows.MouseLock.Notice.Title"), Localizer.Get("Windows.MouseLock.Notice.Content", _hotKey.ToString()));
+
                         }
-                        catch { }
+                        catch {
+
+                        }
                         _wasWindowFound = true;
                     }
                 }
@@ -323,6 +328,12 @@ public class ProcessMouseLocker : IMouseLocker
             if (_lastClipRect.HasValue && _lastClipRect.Value.Equals(rect) && !BedrockBoot.Core.Global.GlobalModel.Config.Data.IsMouseLockReserve) return;
 
             Console.WriteLine($@"鼠标已锁定为: Left={rect.Left}, Top={rect.Top}, Right={rect.Right}, Bottom={rect.Bottom}");
+            if (!_wasNoticeSent)
+            {
+                NoticeHelper.SentNotice(Localizer.Get("Windows.MouseLock.Notice.Title"), Localizer.Get("Windows.MouseLock.Notice.Content", _hotKey.ToString()));
+                _wasNoticeSent = true;
+            }   
+
             ClipCursor(ref rect);
             _lastClipRect = rect;
 

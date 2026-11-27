@@ -46,7 +46,7 @@ public partial class InstalledProtonItem : UserControl
 
     public void UpdateUI()
     {
-        Card.Description = $"{_info.Version}, 来自 {_info.Branch}";
+        Card.Description = string.Format(I18nManager.Instance["UI.Item.Proton.Description"], _info.Version, _info.Branch);
         ProtonName.Text = _info.Name;
         IsDefault.IsVisible = _info.IsDefault;
         // DeleteProtonBtn.IsVisible = !_info.IsDefault;

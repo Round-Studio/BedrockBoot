@@ -12,9 +12,8 @@
         <StackPanel Margin="12,0,0,0"
                     VerticalAlignment="Center">
             <TextBlock FontSize="16"
-                       Name="ProgressText">
-                转换包...
-            </TextBlock>
+                       Name="ProgressText"
+                       Text="{DynamicResource Dialog.JeToBe.Converting}" />
             <ProgressBar Name="ProgressBar"
                          Margin="0,8,0,0"
                          MinWidth="200" />

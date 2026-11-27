@@ -92,7 +92,7 @@ public partial class DialogDownloadManagerContent : UserControl
         _mainProgressText = new TextBlock
         {
             FontSize = 16,
-            Text = "准备下载..."
+            Text = I18nManager.Instance["Download.Mgr.Status.Preparing"]
         };
 
         _mainProgressBar = new ProgressBar
@@ -107,7 +107,7 @@ public partial class DialogDownloadManagerContent : UserControl
             FontSize = 12,
             Foreground = Avalonia.Media.Brushes.Gray,
             Margin = new Thickness(0, 4, 0, 0),
-            Text = "初始化..."
+            Text = I18nManager.Instance["Download.Mgr.Status.Initializing"]
         };
 
         textStack.Children.Add(_mainProgressText);
@@ -144,7 +144,7 @@ public partial class DialogDownloadManagerContent : UserControl
 
         var progressText = new TextBlock
         {
-            Text = "等待中",
+            Text = I18nManager.Instance["Download.Mgr.Status.Waiting"],
             Width = 80,
             Margin = new Thickness(8, 0),
             VerticalAlignment = VerticalAlignment.Center,
@@ -197,7 +197,7 @@ public partial class DialogDownloadManagerContent : UserControl
 
             if (_progressTexts.TryGetValue(taskName, out var text))
             {
-                text.Text = "完成";
+                text.Text = I18nManager.Instance["Download.Mgr.Status.Finished"];
             }
 
             _downloadedFiles.Add(filePath);
@@ -206,8 +206,9 @@ public partial class DialogDownloadManagerContent : UserControl
         });
     }
 
-    public void SetTaskFailed(string taskName, string error = "失败")
+    public void SetTaskFailed(string taskName, string? error = null)
     {
+        error ??= I18nManager.Instance["Download.Mgr.Status.Failed"];
         Dispatcher.UIThread.Invoke(() =>
         {
             if (_progressTexts.TryGetValue(taskName, out var text))
@@ -237,14 +238,14 @@ public partial class DialogDownloadManagerContent : UserControl
                 var totalProgress = (_completedTasks * 100.0) / _totalTasks;
                 _mainProgressBar.IsIndeterminate = false;
                 _mainProgressBar.Value = totalProgress;
-                _mainProgressText.Text = $"总进度 ({totalProgress:F1}%)";
+                _mainProgressText.Text = string.Format(I18nManager.Instance["Download.Mgr.TotalProgress"], totalProgress);
             }
 
             if (_completedTasks >= _totalTasks && _totalTasks > 0)
             {
                 _isCompleted = true;
-                _statusText.Text = _failedFiles.Count > 0 ? $"完成，{_failedFiles.Count} 个任务失败" : "所有任务已完成";
-                _mainProgressText.Text = _failedFiles.Count > 0 ? "下载完成（有失败）" : "下载完成";
+                _statusText.Text = _failedFiles.Count > 0 ? string.Format(I18nManager.Instance["Download.Mgr.CompletedWithFailures"], _failedFiles.Count) : I18nManager.Instance["Download.Mgr.AllCompleted"];
+                _mainProgressText.Text = _failedFiles.Count > 0 ? I18nManager.Instance["Download.Mgr.DoneWithFailures"] : I18nManager.Instance["Download.Mgr.Done"];
                 _onAllComplete?.Invoke(_downloadedFiles);
             }
         });
@@ -275,8 +276,8 @@ public partial class DialogDownloadManagerContent : UserControl
         {
             _mainProgressBar.IsIndeterminate = false;
             _mainProgressBar.Value = 0;
-            _mainProgressText.Text = $"共 {_totalTasks} 个任务";
-            _statusText.Text = "开始下载...";
+            _mainProgressText.Text = string.Format(I18nManager.Instance["Download.Mgr.TaskCount"], _totalTasks);
+            _statusText.Text = I18nManager.Instance["Download.Mgr.StartDownloading"];
         });
 
         await Task.Run(async () =>
@@ -295,7 +296,7 @@ public partial class DialogDownloadManagerContent : UserControl
                             Directory.CreateDirectory(dir);
                         }
 
-                        SetStatus($"正在下载 {file.Name}...");
+                        SetStatus(string.Format(I18nManager.Instance["Download.Mgr.DownloadingFile"], file.Name));
 
                         var progress = new Progress<DownloadProgress>(p =>
                         {
@@ -311,7 +312,7 @@ public partial class DialogDownloadManagerContent : UserControl
                         }
                         else
                         {
-                            SetTaskFailed(file.Name, "下载失败");
+                            SetTaskFailed(file.Name, I18nManager.Instance["Download.Mgr.DownloadFailed"]);
                         }
                     }
                     catch (Exception ex)

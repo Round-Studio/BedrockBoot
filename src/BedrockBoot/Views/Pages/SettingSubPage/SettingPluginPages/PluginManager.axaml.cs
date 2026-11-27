@@ -39,13 +39,13 @@ public partial class PluginManager : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Nav.Plugin.Title"],
+                ItemName = "Settings.Nav.Plugin.Title",
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingPlugin())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Plugin.Manager.Breadcrumb"]
+                ItemName = "Settings.Plugin.Manager.Breadcrumb"
             }
         };
     }

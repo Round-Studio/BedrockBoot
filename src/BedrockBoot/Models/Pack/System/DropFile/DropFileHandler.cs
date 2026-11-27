@@ -73,10 +73,10 @@ public class DropFileHandler
         var ins = new DialogChooseGameContent(true);
         DialogHost.Show(new()
         {
-            Title = "选择实例与用户以导入模版包",
+            Title = I18nManager.Instance["DropFile.ChooseTemplate"],
             Content = ins,
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = async () =>
             {
@@ -96,8 +96,8 @@ public class DropFileHandler
                     DialogHost.Close();
                     GlobalModel.MainWindow.Notice.AddNotice(new()
                     {
-                        Title = "模版已导入",
-                        Message = "所有模版已导入目标游戏实例用户中"
+                        Title = I18nManager.Instance["DropFile.Template.Imported"],
+                        Message = I18nManager.Instance["DropFile.Template.ImportedDesc"]
                     });
                 });
             }
@@ -121,10 +121,10 @@ public class DropFileHandler
                 var ins = new DialogChooseGameContent();
                 DialogHost.Show(new()
                 {
-                    Title = "选择实例以导入资源包",
+                    Title = I18nManager.Instance["DropFile.ChooseResource"],
                     Content = ins,
-                    CloseButtonText = "确定",
-                    PrimaryButtonText = "取消",
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                    PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                     AccountButton = DialogButtons.CloseButton,
                     CloseAction = async () =>
                     {
@@ -156,10 +156,10 @@ public class DropFileHandler
         var ins = new DialogChooseGameContent();
         DialogHost.Show(new()
         {
-            Title = "选择实例以导入存档包",
+            Title = I18nManager.Instance["DropFile.ChooseSave"],
             Content = ins,
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = async () =>
             {
@@ -179,8 +179,8 @@ public class DropFileHandler
                     DialogHost.Close();
                     GlobalModel.MainWindow.Notice.AddNotice(new ()
                     {
-                        Title = "存档已导入",
-                        Message = "所有存档已导入目标游戏实例中"
+                        Title = I18nManager.Instance["DropFile.Save.Imported"],
+                        Message = I18nManager.Instance["DropFile.Save.ImportedDesc"]
                     });
                 });
             }
@@ -197,11 +197,11 @@ public class DropFileHandler
         
         DialogHost.Show(new()
         {
-            Title = "插件包导入完毕",
-            Content = "Round Studio 通用插件包导入完毕。\n" +
-                      $"本次导入 {_files.Count} 个插件。\n" +
-                      $"可前往 启动器设置>插件>管理 中管理已安装的插件",
-            CloseButtonText = "确定",
+            Title = I18nManager.Instance["DropFile.Plugin.Imported"],
+            Content = I18nManager.Instance["DropFile.Plugin.ImportedDesc"] +
+                      string.Format(I18nManager.Instance["DropFile.Plugin.Count"], _files.Count) +
+                      I18nManager.Instance["DropFile.Plugin.ManageHint"],
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
             AccountButton = DialogButtons.CloseButton
         });
     }
@@ -218,11 +218,11 @@ public class DropFileHandler
         
         DialogHost.Show(new()
         {
-            Title = "主题包导入完毕",
-            Content = "Round Studio 通用主题包导入完毕。\n" +
-                      $"本次导入 {_files.Count} 个主题。\n" +
-                      $"可前往 启动器设置>个性化>主题包 中管理已安装的主题",
-            CloseButtonText = "确定",
+            Title = I18nManager.Instance["DropFile.Theme.Imported"],
+            Content = I18nManager.Instance["DropFile.Theme.ImportedDesc"] +
+                      string.Format(I18nManager.Instance["DropFile.Theme.Count"], _files.Count) +
+                      I18nManager.Instance["DropFile.Theme.ManageHint"],
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
             AccountButton = DialogButtons.CloseButton
         });
     }

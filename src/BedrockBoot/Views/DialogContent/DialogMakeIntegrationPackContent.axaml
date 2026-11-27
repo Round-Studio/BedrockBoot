@@ -14,9 +14,8 @@
                     VerticalAlignment="Center">
             <TextBlock FontSize="16"
                        Name="ProgressText"
-                       TextTrimming="CharacterEllipsis">
-                打包中...
-            </TextBlock>
+                       TextTrimming="CharacterEllipsis"
+                       Text="{DynamicResource Dialog.MakeIntegrationPack.Packing}" />
             <ProgressBar IsIndeterminate="True"
                          Name="ProgressBar"
                          Margin="0,8,0,0"

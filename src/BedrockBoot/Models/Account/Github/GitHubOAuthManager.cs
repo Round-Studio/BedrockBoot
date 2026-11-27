@@ -66,7 +66,7 @@ public class GitHubOAuthManager
         }
 
         if (!listener.IsListening)
-            throw new InvalidOperationException("无法启动本地 OAuth 回调监听，所有候选端口均被占用。");
+            throw new InvalidOperationException(I18nManager.Instance["Auth.OAuth.ListenerStartFailed"]);
 
         var redirectUri = $"http://127.0.0.1:{port}{CallbackPath}";
         var state = Guid.NewGuid().ToString("N");

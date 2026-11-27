@@ -38,7 +38,7 @@ public partial class AboutPage : ISettingPage
         // 设置面包屑导航
         BreadcrumbItem = new List<BreadcrumbItemInfo>
         {
-            new() { ItemName = i18n["AboutPage.Title"] }
+            new() { ItemName = "AboutPage.Title" }
         };
 
         // 设置版本卡片描述
@@ -48,8 +48,6 @@ public partial class AboutPage : ISettingPage
         var avaloniaVersion = typeof(AppBuilder).Assembly.GetName().Version;
         PowerByTextBlock.Text = $"Power By: Avalonia {avaloniaVersion}";
     }
-
-    private static I18nManager i18n => I18nManager.Instance;
 
     /// <summary>
     ///     导航至开源组件页面

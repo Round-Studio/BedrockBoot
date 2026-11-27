@@ -36,12 +36,12 @@ public partial class AboutOpenSource : ISettingPage
         {
             new()
             {
-                ItemName = i18n["AboutPage.Title"], // "关于我们"
+                ItemName = "AboutPage.Title", // "关于我们"
                 ItemClickAction = _ => MainSettingPage.NavigateTo(new AboutPage())
             },
             new()
             {
-                ItemName = i18n["AboutPage.OpenSource.Title"] // "第三方组件库"
+                ItemName = "AboutPage.OpenSource.Title" // "第三方组件库"
             }
         };
 

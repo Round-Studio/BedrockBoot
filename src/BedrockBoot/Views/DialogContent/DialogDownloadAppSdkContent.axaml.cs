@@ -50,10 +50,10 @@ public partial class DialogDownloadAppSdkContent : UserControl
         {
             DialogHost.Show(new DialogInfo()
             {
-                Content = "选择下载方式，我们推荐 方式 2",
-                Title = "下载 SDK 1.8",
-                PrimaryButtonText = "方式 1",
-                CloseButtonText = "方式 2",
+                Content = I18nManager.Instance["Sdk.Dialog.SelectMethod"],
+                Title = I18nManager.Instance["Sdk.Dialog.Title"],
+                PrimaryButtonText = I18nManager.Instance["Sdk.Dialog.Method1"],
+                CloseButtonText = I18nManager.Instance["Sdk.Dialog.Method2"],
                 AccountButton = DialogButtons.CloseButton,
                 PrimaryAction = new(async () =>
                 {
@@ -79,7 +79,7 @@ public partial class DialogDownloadAppSdkContent : UserControl
                                     ProgressBar.IsIndeterminate = false;
 
                                 ProgressBar.Value = p.ProgressPercentage;
-                                ProgressText.Text = $"下载依赖 {p.ProgressPercentage:F2} %";
+                                ProgressText.Text = string.Format(I18nManager.Instance["Sdk.Dialog.DownloadDependency"], p.ProgressPercentage);
                             });
                         }));
 
@@ -104,7 +104,7 @@ public partial class DialogDownloadAppSdkContent : UserControl
                                 ProgressBar.IsIndeterminate = false;
 
                             ProgressBar.Value = p.ProgressPercentage;
-                            ProgressText.Text = $"下载依赖 {p.ProgressPercentage:F2} %";
+                            ProgressText.Text = string.Format(I18nManager.Instance["Sdk.Dialog.DownloadDependency"], p.ProgressPercentage);
                         });
                     }));
 
@@ -122,9 +122,9 @@ public partial class DialogDownloadAppSdkContent : UserControl
             DialogHost.Close();
             DialogHost.Show(new()
             {
-                Title = "下载失败",
+                Title = I18nManager.Instance["Download.Mgr.DownloadFailed"],
                 Content = ex.Message,
-                CloseButtonText = "确定"
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
             });
         }
     }

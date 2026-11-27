@@ -132,8 +132,8 @@ public class CopyService
 
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "剪切板",
-            Message = $"成功读取 {fileList.Count} 个文件，准备导入..."
+            Title = I18nManager.Instance["Clipboard.Title"],
+            Message = string.Format(I18nManager.Instance["CopyService.ReadFiles"], fileList.Count)
         });
 
         await Task.CompletedTask;
@@ -143,8 +143,8 @@ public class CopyService
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "剪切板",
-            Message = $"识别到 {type} 资源 ID: {id}"
+            Title = I18nManager.Instance["Clipboard.Title"],
+            Message = string.Format(I18nManager.Instance["CopyService.RecognizedId"], type, id)
         });
 
         switch (type)
@@ -158,8 +158,8 @@ public class CopyService
                 {
                     GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                     {
-                        Title = "剪切板",
-                        Message = $"无法解析 CurseForge 数字 ID: {id}"
+                        Title = I18nManager.Instance["Clipboard.Title"],
+                        Message = string.Format(I18nManager.Instance["CopyService.ParseCurseForgeFailed"], id)
                     });
                 }
 
@@ -219,16 +219,16 @@ public class CopyService
 
     private static async Task FetchCurseForgeInfo(int id)
     {
-        DialogHost.Show(new DialogInfo { Content = "正在等待 CurseForge 响应...", Title = "获取模组信息" });
+        DialogHost.Show(new DialogInfo { Content = I18nManager.Instance["CopyService.WaitingCurseForge"], Title = I18nManager.Instance["CopyService.GetModInfo"] });
         try
         {
             var apiClient = new CurseForgeApiClient(GlobalKeys.CurseForgeApiKey);
             var info = await apiClient.GetModDetailsAsync(id);
-            GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(info), $"下载资源 {info.Name}");
+            GlobalModel.MainWindow.OpenDraw(new DrawDownloadCurseForgeResourceContent(info), string.Format(I18nManager.Instance["CopyService.DownloadResource"], info.Name));
         }
         catch (Exception ex)
         {
-            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo { Title = "获取失败", Message = ex.Message });
+            GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo { Title = I18nManager.Instance["CopyService.GetFailed"], Message = ex.Message });
         }
         finally
         {

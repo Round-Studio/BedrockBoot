@@ -9,13 +9,19 @@
                                   Name="Card"
                                   Glyph="&#xE7FC;"
                                   IsFontIcon="False"
-                                  IsShowActionIcon="False"
-                                  Description="Release Version">
+                                  IsShowActionIcon="False">
         <onePointControls:SettingCard.Header>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <TextBlock Name="VersionName"
                            Text="GameName" />
+
+                <!-- 版本类型（正式版/测试版等）与构建类型（UWP/GDK），由代码填充 -->
+                <StackPanel Orientation="Horizontal"
+                            Spacing="4"
+                            Name="HeaderLabelsPanel"
+                            VerticalAlignment="Center"
+                            IsVisible="False" />
 
                 <StackPanel Orientation="Horizontal"
                             Spacing="8"
@@ -30,6 +36,15 @@
                                            VerticalAlignment="Center" />
             </StackPanel>
         </onePointControls:SettingCard.Header>
+
+        <!-- 内部版本号与游玩时长 -->
+        <onePointControls:SettingCard.Description>
+            <TextBlock Name="DescriptionText"
+                       Margin="0,2,0,0"
+                       TextTrimming="CharacterEllipsis"
+                       Text="1.21.0.0" />
+        </onePointControls:SettingCard.Description>
+
         <StackPanel Orientation="Horizontal">
             <Button Width="32" Height="32"
                     Classes="NoBorder"

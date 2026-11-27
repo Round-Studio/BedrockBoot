@@ -49,7 +49,7 @@
                                 Text="Resource" />
 
                             <HyperlinkButton
-                                Content="在其官方页面中查看"
+                                Content="{DynamicResource Download.Result.Action.ViewOfficialPage}"
                                 FontSize="9"
                                 Margin="0,4,0,0"
                                 Name="HyperlinkButton" />
@@ -149,7 +149,7 @@
                                     Name="ReInstallBtn">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <onePointControls:FontIcon Glyph="&#xE72C;" VerticalAlignment="Center" />
-                                        <TextBlock Text="重新安装" />
+                                        <TextBlock Text="{DynamicResource Download.Result.Action.Reinstall}" />
                                     </StackPanel>
                                 </Button>
                             </DockPanel>
@@ -214,7 +214,7 @@
                                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                                Glyph="&#xF22C;">
                                     </onePointControls:FontIcon>
-                                    <TextBlock Text="描述"></TextBlock>
+                                    <TextBlock Text="{DynamicResource Download.Result.Tab.Description}"></TextBlock>
                                 </StackPanel>
                             </ListBoxItem>
                             <ListBoxItem Classes="Segmented"
@@ -225,7 +225,7 @@
                                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                                Glyph="&#xE7C3;">
                                     </onePointControls:FontIcon>
-                                    <TextBlock Text="文件"></TextBlock>
+                                    <TextBlock Text="{DynamicResource Download.Result.Tab.Files}"></TextBlock>
                                 </StackPanel>
                             </ListBoxItem>
                         </ListBox>
@@ -330,7 +330,7 @@
                         <HyperlinkButton Grid.Row="1"
                                          HorizontalAlignment="Right"
                                          Name="HyperlinkButton2"
-                                         Content="在其官方页面中查看" />
+                                         Content="{DynamicResource Download.Result.Action.ViewOfficialPage}" />
                     </Grid>
                 </Grid>
             </Grid>

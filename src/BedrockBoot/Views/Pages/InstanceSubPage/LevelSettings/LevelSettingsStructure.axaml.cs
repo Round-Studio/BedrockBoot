@@ -170,10 +170,10 @@ public partial class LevelSettingsStructure : UserControl
         {
             DialogHost.Show(new DialogInfo
             {
-                Title = "覆盖确认",
-                Content = "以下结构已存在，继续导入将会覆盖：\n" + string.Join("\n", conflicts),
-                CloseButtonText = "覆盖导入",
-                PrimaryButtonText = "取消",
+                Title = I18nManager.Instance["LevelSettings.Structure.Overwrite.Title"],
+                Content = I18nManager.Instance["LevelSettings.Structure.Overwrite.Content"] + string.Join("\n", conflicts),
+                CloseButtonText = I18nManager.Instance["LevelSettings.Structure.Overwrite.Confirm"],
+                PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                 CloseAction = () => ImportTargets(targets)
             });
         }

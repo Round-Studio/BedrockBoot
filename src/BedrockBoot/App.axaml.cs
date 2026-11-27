@@ -25,6 +25,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using BedrockBoot.Localization.Avalonia;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Standard.Enum.Type;
@@ -61,6 +62,10 @@ public class App : Application
 
         ThemeManager.Initialize(this);
         AvaloniaXamlLoader.Load(this);
+
+        // 缺翻译的显示策略必须在第一次建表之前灌进去，否则启动瞬间的表用默认值生成、之后不再重建。
+        LanguageService.Current.Options = LanguageService.Current.Options
+            .WithMissingKeyStyle(GlobalModel.Config.Data.MissingKeyStyle);
 
         I18nManager.AddLanguage();
         I18nManager.Instance.SystemLanguage(GlobalModel.Config.Data.Language);

@@ -41,7 +41,7 @@ public class WebServer
     public WebServer(params string[] prefixes)
     {
         if (!HttpListener.IsSupported)
-            throw new NotSupportedException("需要 Windows XP SP2 或 Server 2003 以上系统。");
+            throw new NotSupportedException(I18nManager.Instance["WebServer.HttpListenerNotSupported"]);
         _prefixes = prefixes;
 
         _listener = new HttpListener();

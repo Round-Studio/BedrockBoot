@@ -151,7 +151,9 @@ public partial class LevelSettingsEditor : UserControl
     private void OnLevelNameChanged(object? sender, TextChangedEventArgs e)
     {
         if (_isInternalUpdating) return;
-        _info.LevelWorldData.LevelName = string.IsNullOrWhiteSpace(LevelNameText.Text) ? "我的世界" : LevelNameText.Text;
+        _info.LevelWorldData.LevelName = string.IsNullOrWhiteSpace(LevelNameText.Text)
+            ? I18nManager.Instance["UI.Page.LevelSettings.DefaultWorldName"]
+            : LevelNameText.Text;
     }
 
     /// <summary>

@@ -78,13 +78,13 @@ public partial class PersonalizationBackground : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"],
+                ItemName = "Setting.Personalization.Breadcrumb.Root",
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingPersonalization())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Personalization.Background.Title"]
+                ItemName = "Setting.Personalization.Background.Title"
             }
         };
 

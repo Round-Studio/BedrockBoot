@@ -131,10 +131,10 @@
                                     Click="SearchPlugin_OnClick" Padding="6,4">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
-                                    <TextBlock Text="搜索插件" />
+                                    <TextBlock Text="{DynamicResource Download.Search.Action.SearchPlugin}" />
                                 </StackPanel>
                             </Button>
-                            <TextBlock DockPanel.Dock="Left" Text="插件"
+                            <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.ResourceType.Plugin}"
                                        VerticalAlignment="Center" />
                         </DockPanel>
 
@@ -163,10 +163,10 @@
                                     Click="SearchLeviLaminaMod_OnClick" Padding="6,4">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
-                                    <TextBlock Text="搜索模组" />
+                                    <TextBlock Text="{DynamicResource Download.Search.Action.SearchMod}" />
                                 </StackPanel>
                             </Button>
-                            <TextBlock DockPanel.Dock="Left" Text="LeviLamina 模组"
+                            <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.ResourceType.LeviLaminaMod}"
                                        VerticalAlignment="Center" />
                         </DockPanel>
 
@@ -195,10 +195,10 @@
                                     Click="SearchDllMod_OnClick" Padding="6,4">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <onePointControls:FontIcon VerticalAlignment="Center" Glyph="&#xE721;" />
-                                    <TextBlock Text="搜索模组" />
+                                    <TextBlock Text="{DynamicResource Download.Search.Action.SearchMod}" />
                                 </StackPanel>
                             </Button>
-                            <TextBlock DockPanel.Dock="Left" Text="Dll 模组"
+                            <TextBlock DockPanel.Dock="Left" Text="{DynamicResource Download.Search.ResourceType.DllMod}"
                                        VerticalAlignment="Center" />
                         </DockPanel>
 

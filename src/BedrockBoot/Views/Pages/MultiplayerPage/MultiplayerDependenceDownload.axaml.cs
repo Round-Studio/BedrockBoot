@@ -35,13 +35,10 @@ public partial class MultiplayerDependenceDownload : UserControl
     private void DownloadBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var dialog = new DialogDownloadMultiPlayerDependenceContent();
-        var title = (Application.Current?.TryFindResource("Multiplayer.Dep.Dialog.Title", out var res) == true && res is string str)
-            ? str
-            : "下载联机依赖文件";
 
         DialogHost.Show(new DialogInfo
         {
-            Title = title,
+            Title = I18nManager.Instance["Multiplayer.Dep.Dialog.Title"],
             Content = dialog
         });
     }

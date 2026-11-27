@@ -44,7 +44,7 @@
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="BedrockBoot"
                                    Opacity="0.8" />
-                        <TextBlock Text="游戏叠层"
+                        <TextBlock Text="{DynamicResource Overlay.Title}"
                                    FontSize="18" />
                     </StackPanel>
                 </StackPanel>

@@ -43,13 +43,10 @@ public class PreLoadNet : IModsLoader
     }
 
     public static bool IsInstallModLoader(string path) => true;
-    public string LoaderName { get; } = "原版加载器";
-    public string LoaderDescription { get; } = "BedrockBoot 原版加载器 (PreLoad.NET)";
+    public string LoaderName => I18nManager.Instance["Pack.Loader.PreLoader.Name"];
+    public string LoaderDescription => I18nManager.Instance["Pack.Loader.PreLoader.Desc"];
     public string? LoaderWebsite { get; } = "https://github.com/Round-Studio/BedrockBoot";
-    public string LoaderIntro { get; } =
-        "BedrockBoot 内置的原版模组加载器（PreLoad.NET）。它在游戏进程启动前自动注入由 BedrockBoot " +
-        "托管的预加载模组与注入式模组，为实例提供基础的 Mod 加载能力。" +
-        "该加载器随实例内置，无需单独安装，也无法移除。";
+    public string LoaderIntro => I18nManager.Instance["Pack.Loader.PreLoader.Intro"];
     public bool CanRemove { get; } = false;
     public bool IsAllowDisabling { get; } = false;
     public string? IconUri { get; } = "avares://BedrockBoot/Assets/Icon/BedrockBoot.Icon.256x.png";
@@ -59,18 +56,18 @@ public class PreLoadNet : IModsLoader
     {
         new()
         {
-            TagHeader = "新功能前瞻",
-            TagDescription = "PreLoad.NET 一些前瞻性功能，在此处可提前体验新功能。",
+            TagHeader = I18nManager.Instance["Pack.Loader.PreLoader.Feature.Tag"],
+            TagDescription = I18nManager.Instance["Pack.Loader.PreLoader.Feature.Desc"],
             Glyph = "\uF196",
             EventCallBack = instance =>
             {
                 var dialog = new DialogPreviewFunctionContent(instance);
                 DialogHost.Show(new DialogInfo()
                 {
-                    Title = "PreLoad.NET 新功能预览",
+                    Title = I18nManager.Instance["Pack.Loader.PreLoader.Feature.Dialog.Title"],
                     Content = dialog,
-                    CloseButtonText = "确定",
-                    PrimaryButtonText = "取消",
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                    PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                     CloseAction = () => dialog.Save()
                 });
             }
@@ -112,12 +109,12 @@ public class PreLoadNet : IModsLoader
 
     public void Install()
     {
-        throw new Exception("您无法安装此加载器");
+        throw new Exception(I18nManager.Instance["Pack.Loader.PreLoader.CannotInstall"]);
     }
 
     public void Remove()
     {
-        throw new Exception("您无法卸载此加载器");
+        throw new Exception(I18nManager.Instance["Pack.Loader.PreLoader.CannotRemove"]);
     }
 
     public void ViewInfo()

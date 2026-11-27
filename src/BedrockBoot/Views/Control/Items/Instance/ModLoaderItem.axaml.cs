@@ -67,7 +67,7 @@ public partial class ModLoaderItem : ISetting
         if (_loader.IsInstalled())
         {
             var version = _loader.GetInstalledVersion();
-            LoaderInstallStatus.Text = !_loader.IsInstalled() ? "未安装" : version;
+            LoaderInstallStatus.Text = !_loader.IsInstalled() ? I18nManager.Instance["Instance.Loader.Status.NotInstalled"] : version;
             LoaderInstallStatus.IsVisible = !string.IsNullOrEmpty(version);
         }
         if (!string.IsNullOrEmpty(_loader.IconUri))

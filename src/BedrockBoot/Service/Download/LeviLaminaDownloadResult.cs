@@ -107,10 +107,10 @@ public class LeviLaminaDownloadResult : IDownloadResult
                     chooseModVersion, info.Value.Variants["client"].Versions[chooseModVersion]);
                 DialogHost.Show(new()
                 {
-                    Title = $"安装 {SearchInfo.Name} {chooseModVersion}",
+                    Title = string.Format(I18nManager.Instance["LeviLamina.Search.Install"], SearchInfo.Name, chooseModVersion),
                     Content = chooseInstanceDialog,
-                    CloseButtonText = "确定",
-                    PrimaryButtonText = "取消",
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                    PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                     AccountButton = DialogButtons.CloseButton,
                     CloseAction = () =>
                     {

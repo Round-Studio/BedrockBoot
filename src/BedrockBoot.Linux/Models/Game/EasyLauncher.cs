@@ -23,6 +23,7 @@ using BedrockBoot.Linux.Models.Helper;
 using BedrockBoot.Linux.Models.Pack.GDK;
 using BedrockBoot.Linux.Models.Pack.Wine;
 using BedrockBoot.Linux.Models.Pack.Xbox;
+using BedrockBoot.Localization;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Proton;
 using BedrockBoot.Standard.Core;
@@ -199,7 +200,7 @@ public class EasyLauncher : ILauncher
 
                     Launched?.Invoke(MinecraftProcess);
                     OnGameLaunched?.Invoke(VersionInfo);
-                    UpdateProgressText?.Invoke("步骤：已启动，请等待游戏窗口显示");
+                    UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.WaitingWindow"));
                     SetProgressIndeterminate?.Invoke(true);
 
                     // 鼠标锁定处理
@@ -418,12 +419,12 @@ public class EasyLauncher : ILauncher
 
         var account = PlatformCore.OnRefreshAccount?.Invoke(accountOld).Result;
 
-        UpdateProgressText?.Invoke("正在登录账户");
+        UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.LoggingIn"));
         var xbl = new XblAuth();
         if (!xbl.RunPreauth(account.AuthResult.AccessToken))
             Console.WriteLine("Xbox Live pre-auth failed");
 
-        UpdateProgressText?.Invoke("正在准备 Proton 环境");
+        UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.PreparingProton"));
 
         try
         {
@@ -614,7 +615,7 @@ public class EasyLauncher : ILauncher
         if (!launchCommandConfig.IsEnable || string.IsNullOrWhiteSpace(launchCommandConfig.PreLaunchCommand))
             return true;
 
-        UpdateProgressText?.Invoke("状态：正在执行启动前命令");
+        UpdateProgressText?.Invoke(Localizer.Get("Core.Launch.Status.PreLaunchCommand"));
 
         var exitCode = await LaunchCommandHelper.RunHookAsync(
             launchCommandConfig.PreLaunchCommand,

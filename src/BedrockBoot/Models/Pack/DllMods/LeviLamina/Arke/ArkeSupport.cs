@@ -30,7 +30,7 @@ public class ArkeSupport : IModSupport
 {
     public string ModName { get; } = "Arke";
     public string Tag => "LeviLamina.Arke";
-    public string SupportName { get; } = "Arke 光影包";
+    public string SupportName => I18nManager.Instance["Pack.Arke.SupportName"];
     public string ModType { get; } = "LeviLamina";
     public object? SupportPage => new LArkeShaderPacksManager(Instance);
     public string Glyph { get; } = "\uF08C";

@@ -52,6 +52,10 @@
   <Folder Name="/Linux/">
     <Project Path="src/BedrockBoot.Proton/BedrockBoot.Proton.csproj" />
   </Folder>
+  <Folder Name="/Localization/">
+    <Project Path="src/Localization/BedrockBoot.Localization/BedrockBoot.Localization.csproj" />
+    <Project Path="src/Localization/BedrockBoot.Localization.Avalonia/BedrockBoot.Localization.Avalonia.csproj" />
+  </Folder>
   <Folder Name="/Platform.Core/">
     <Project Path="src/BedrockBoot.Linux/BedrockBoot.Linux.csproj" />
     <Project Path="src/BedrockBoot.Windows/BedrockBoot.Windows.csproj" />

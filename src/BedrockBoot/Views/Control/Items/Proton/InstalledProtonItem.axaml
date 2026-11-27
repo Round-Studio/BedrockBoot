@@ -16,7 +16,7 @@
                         Spacing="8">
                 <TextBlock Text="ProtonName"
                            Name="ProtonName"></TextBlock>
-                <onePointControls:LabelBox Text="默认"
+                <onePointControls:LabelBox Text="{DynamicResource Instance.Info.Icon.Default}"
                                            VerticalAlignment="Center"
                                            Name="IsDefault"></onePointControls:LabelBox>
             </StackPanel>

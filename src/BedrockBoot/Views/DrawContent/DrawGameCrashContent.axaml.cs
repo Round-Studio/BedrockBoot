@@ -61,7 +61,7 @@ public partial class DrawGameCrashContent : UserControl
     {
         var report = _args.Report;
 
-        GameInstance.Text = string.IsNullOrEmpty(_args.GameName) ? "未知实例" : _args.GameName;
+        GameInstance.Text = string.IsNullOrEmpty(_args.GameName) ? I18nManager.Instance["CrashReport.Unknown.Instance"] : _args.GameName;
 
         VersionConfig? conf = null;
         try
@@ -74,26 +74,26 @@ public partial class DrawGameCrashContent : UserControl
             Console.WriteLine($@"读取实例配置失败：{ex.Message}");
         }
 
-        GameVersion.Text = conf?.Info?.Version ?? "未知";
+        GameVersion.Text = conf?.Info?.Version ?? I18nManager.Instance["CrashReport.Unknown"];
         GameCorePath.Text = conf != null
             ? Path.Combine(conf.VersionPath, conf.BodyFile ?? string.Empty)
             : string.IsNullOrEmpty(_args.InstanceFolder)
-                ? "未知"
+                ? I18nManager.Instance["CrashReport.Unknown"]
                 : _args.InstanceFolder;
 
-        DumpFilePath.Text = File.Exists(_args.DumpFilePath) ? _args.DumpFilePath : "未生成转储文件";
+        DumpFilePath.Text = File.Exists(_args.DumpFilePath) ? _args.DumpFilePath : I18nManager.Instance["CrashReport.NoDumpFile"];
 
-        ExceptionName.Text = report?.ExceptionCodeName ?? "未捕获异常报告";
+        ExceptionName.Text = report?.ExceptionCodeName ?? I18nManager.Instance["CrashReport.NoExceptionReport"];
         ExceptionDesc.Text = report?.ExceptionDescription ?? "-";
-        SourceFile.Text = FirstNonEmpty(report?.ExceptionModulePath, report?.Owner, "未知");
+        SourceFile.Text = FirstNonEmpty(report?.ExceptionModulePath, report?.Owner, I18nManager.Instance["CrashReport.Unknown"]);
         ExceptionAddress.Text = report is { ExceptionAddress: > 0 } ? $"0x{report.ExceptionAddress:X}" : "-";
         ExitCode.Text = $"0x{_args.ExitCode:X8} ({_args.ExitCode})";
         PreLoadVersion.Text = GetFileVersion(Path.Combine(_args.InstanceFolder, "PreLoad.NET.dll"));
         Phase.Text = report?.Phase switch
         {
-            "veh" => "VEH 向量异常捕获",
-            "seh" => "SEH 顶层过滤捕获",
-            "manual" => "手动捕获",
+            "veh" => I18nManager.Instance["CrashReport.Phase.VEH"],
+            "seh" => I18nManager.Instance["CrashReport.Phase.SEH"],
+            "manual" => I18nManager.Instance["CrashReport.Phase.Manual"],
             null or "" => "-",
             var phase => phase
         };
@@ -104,7 +104,7 @@ public partial class DrawGameCrashContent : UserControl
         NoReportTip.IsVisible = report == null;
 
         Stack.Text = report is not { StackTrace.Count: > 0 }
-            ? "未能获取调用堆栈"
+            ? I18nManager.Instance["CrashReport.NoStackTrace"]
             : string.Join(Environment.NewLine, report.StackTrace.Select(FormatFrame));
 
         AnalysisText.Text = BuildAnalysis(report, _args.InstanceFolder);
@@ -123,12 +123,12 @@ public partial class DrawGameCrashContent : UserControl
     {
         try
         {
-            return File.Exists(path) ? FileVersionInfo.GetVersionInfo(path).FileVersion ?? "-" : "未知";
+            return File.Exists(path) ? FileVersionInfo.GetVersionInfo(path).FileVersion ?? "-" : I18nManager.Instance["CrashReport.Unknown"];
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"读取文件版本信息失败：{ex.Message}");
-            return "未知";
+            return I18nManager.Instance["CrashReport.Unknown"];
         }
     }
 
@@ -140,27 +140,26 @@ public partial class DrawGameCrashContent : UserControl
     private static string BuildAnalysis(GameDumpAnalysis? report, string instanceFolder)
     {
         if (report == null)
-            return "本次异常退出没有生成崩溃报告，无法进一步分析。\n" +
-                   "若需要捕获原生异常，请在实例设置中开启“原生异常捕获”，再复现一次即可获得完整分析。";
+            return I18nManager.Instance["CrashReport.Analysis.NoReport"];
 
         var lines = new List<string>();
 
         switch (report.ExceptionCode)
         {
             case 0xC0000005 or 0xC0000006 when report.AccessViolationTarget is 0 or < 0x10000:
-                lines.Add("访问的目标地址接近 0，大概率是空指针引用，常见于资源未加载完成或模组与当前游戏版本不兼容。");
+                lines.Add(I18nManager.Instance["CrashReport.Analysis.NullPointer"]);
                 break;
             case 0xC0000005 or 0xC0000006:
-                lines.Add("发生了非法内存访问。请结合调用堆栈中游戏本体之外的模块（模组、注入运行库、驱动等）排查。");
+                lines.Add(I18nManager.Instance["CrashReport.Analysis.IllegalAccess"]);
                 break;
             case 0xC00000FD:
-                lines.Add("线程栈空间耗尽，常见于无限递归或栈上分配超大对象，可能与异常模组有关。");
+                lines.Add(I18nManager.Instance["CrashReport.Analysis.StackOverflow"]);
                 break;
             case 0xC0000409 or 0xC0000602:
-                lines.Add("运行库快速失败：检测到不可恢复的内部错误，常见于注入运行库与游戏版本不匹配。");
+                lines.Add(I18nManager.Instance["CrashReport.Analysis.FastFail"]);
                 break;
             case 0x80000003:
-                lines.Add("触发断点指令，可能是游戏内部的调试断言。");
+                lines.Add(I18nManager.Instance["CrashReport.Analysis.Breakpoint"]);
                 break;
         }
 
@@ -175,14 +174,13 @@ public partial class DrawGameCrashContent : UserControl
 
         if (modFile != null)
         {
-            lines.Add($"崩溃源 {Path.GetFileName(modFile)} 是本实例模组目录下的模组 DLL，本次崩溃大概率由该模组引起。");
-            lines.Add("建议先在实例的模组管理中禁用该模组并复现验证；确认后检查它是否适配当前游戏版本，" +
-                      "或向模组作者反馈并附上导出的崩溃报告。");
+            lines.Add(string.Format(I18nManager.Instance["CrashReport.Analysis.ModCrash"], Path.GetFileName(modFile)));
+            lines.Add(I18nManager.Instance["CrashReport.Analysis.ModCrash.Suggestion2"]);
         }
         else
         {
-            lines.Add($"调用堆栈中出现了第三方模块 {report.Owner}，优先排查与它相关的模组或运行库。");
-            lines.Add("请优先尝试根据上方分析进行自修复；如无法解决，可点击右上角“导出崩溃报告”打包向他人求助。");
+            lines.Add(string.Format(I18nManager.Instance["CrashReport.Analysis.ThirdParty"], report.Owner));
+            lines.Add(I18nManager.Instance["CrashReport.Analysis.Suggestion"]);
         }
 
         return string.Join(Environment.NewLine, lines);
@@ -252,20 +250,20 @@ public partial class DrawGameCrashContent : UserControl
             {
                 GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
                 {
-                    Title = "没有可导出的文件",
-                    Message = "本次崩溃没有可用的报告或转储文件"
+                    Title = I18nManager.Instance["CrashReport.Export.Empty.Title"],
+                    Message = I18nManager.Instance["CrashReport.Export.Empty.Message"]
                 });
                 return;
             }
 
             var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
-                Title = "导出崩溃报告",
+                Title = I18nManager.Instance["CrashReport.Export.Title"],
                 SuggestedFileName = (string.IsNullOrEmpty(reportPath)
                     ? $"crash-{_args.LaunchId}"
                     : Path.GetFileNameWithoutExtension(reportPath)) + ".zip",
                 DefaultExtension = "zip",
-                FileTypeChoices = [new FilePickerFileType("压缩包") { Patterns = ["*.zip"] }]
+                FileTypeChoices = [new FilePickerFileType(I18nManager.Instance["CrashReport.Export.FileType"]) { Patterns = ["*.zip"] }]
             });
             if (file == null) return;
 
@@ -274,15 +272,15 @@ public partial class DrawGameCrashContent : UserControl
 
             GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
             {
-                Title = "崩溃报告已导出",
-                Message = $"已打包 {exported} 个文件：{file.Name}"
+                Title = I18nManager.Instance["CrashReport.Export.Success.Title"],
+                Message = string.Format(I18nManager.Instance["CrashReport.Export.Success.Message"], exported, file.Name)
             });
         }
         catch (Exception ex)
         {
             GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
             {
-                Title = "导出失败",
+                Title = I18nManager.Instance["CrashReport.Export.Failed.Title"],
                 Message = ex.Message
             });
         }

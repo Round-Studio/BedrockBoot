@@ -69,7 +69,7 @@ public partial class ArchiveBackupItem : UserControl
 
         // 时间转换与格式化
         var lastPlayedTime = UnixTimeConverter.UnixTimeStampToDateTime(BackupInfo.BackupTime);
-        BackupLastPlayed.Text = $"备份时间: {lastPlayedTime.ToString("yyyy/MM/dd HH:mm")}";
+        BackupLastPlayed.Text = string.Format(I18nManager.Instance["UI.Item.BackupLastPlayed"], lastPlayedTime.ToString("yyyy/MM/dd HH:mm"));
 
         // 异步或流式加载图标，防止文件占用
         LoadBackupIcon(ArchiveCheck.GetInfo(Path.Combine(_manifest.BackupFolder, BackupInfo.FolderID),
@@ -155,11 +155,10 @@ public partial class ArchiveBackupItem : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "回档警告",
-            Content = "切换到此备份将会删除现有的所有内容！\n" +
-                      "回档前请先备份。",
-            CloseButtonText = "确定回档",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Archive.Restore.Warn.Title"],
+            Content = I18nManager.Instance["Archive.Restore.Warn.Content"],
+            CloseButtonText = I18nManager.Instance["Archive.Restore.Warn.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () => { GlobalModel.ArchiveBackup.RollbackArchiveBackup(_archiveInfo, BackupInfo.FolderID); }
         });
     }
@@ -168,10 +167,10 @@ public partial class ArchiveBackupItem : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除警告",
-            Content = "你确定要删除此备份吗，这将会失去很久...",
-            CloseButtonText = "确定删除",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Archive.Delete.Warn.Title"],
+            Content = I18nManager.Instance["Archive.Delete.Warn.Content.Backup"],
+            CloseButtonText = I18nManager.Instance["Archive.Delete.Warn.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 if (BackupInfo != null)

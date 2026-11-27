@@ -68,10 +68,10 @@ public partial class LevelSettingsControls : UserControl
         var dialog = new DialogExportWorldPackContent(_info);
         DialogHost.Show(new()
         {
-            Title = "导出存档",
+            Title = I18nManager.Instance["LevelSettings.Export.Title"],
             Content = dialog,
-            CloseButtonText = "导出",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["LevelSettings.Export.Action"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = async () =>
             {
                 var conf = new ExportConfig()
@@ -92,12 +92,12 @@ public partial class LevelSettingsControls : UserControl
 
                 var options = new FilePickerSaveOptions
                 {
-                    Title = "导出存档文件",
+                    Title = I18nManager.Instance["LevelSettings.Export.FileTitle"],
                     SuggestedFileName = $"{_info.Name}.{extension}",
                     DefaultExtension = extension,
                     FileTypeChoices = new[]
                     {
-                        new FilePickerFileType("Minecraft 支持文件") { Patterns = new[] { $"*.{extension}" } }
+                        new FilePickerFileType(I18nManager.Instance["FileType.MinecraftSupport"]) { Patterns = new[] { $"*.{extension}" } }
                     }
                 };
 
@@ -111,8 +111,8 @@ public partial class LevelSettingsControls : UserControl
                     {
                         DialogHost.Show(new()
                         {
-                            Title = "导出中...",
-                            Content = "正在导出存档包"
+                            Title = I18nManager.Instance["LevelSettings.Export.InProgress"],
+                            Content = I18nManager.Instance["LevelSettings.Export.ExportingSave"]
                         });
 
                         exp.Export(filePath);
@@ -121,9 +121,9 @@ public partial class LevelSettingsControls : UserControl
 
                         DialogHost.Show(new()
                         {
-                            Title = "导出完毕",
-                            Content = $"存档已导出至 {filePath}",
-                            CloseButtonText = "确定"
+                            Title = I18nManager.Instance["LevelSettings.Export.Done"],
+                            Content = string.Format(I18nManager.Instance["LevelSettings.Export.SavedTo"], filePath),
+                            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                         });
                     });
                 }

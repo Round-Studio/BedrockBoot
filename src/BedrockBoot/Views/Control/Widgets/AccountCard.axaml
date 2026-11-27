@@ -8,14 +8,14 @@
     <onePointControls:SettingExpander Name="Expander"
                                       IsFontIcon="False">
         <StackPanel>
-            <onePointControls:SettingCard Header="管理此账户"
-                                          Description="查看并管理此账户的档案信息"
+            <onePointControls:SettingCard Header="{DynamicResource Account.Card.Manage}"
+                                          Description="{DynamicResource Account.Card.Manage.Desc}"
                                           Glyph="&#xE713;"
                                           IsClickable="True"
                                           Click="ManageBtn_OnClick" />
 
-            <onePointControls:SettingCard Header="删除此档案"
-                                          Description="在启动器中删除此账户档案"
+            <onePointControls:SettingCard Header="{DynamicResource Account.Card.DeleteProfile}"
+                                          Description="{DynamicResource Account.Card.DeleteProfile.Desc}"
                                           Glyph="&#xE74D;"
                                           IsClickable="True"
                                           Click="DeleteBtn_OnClick" />

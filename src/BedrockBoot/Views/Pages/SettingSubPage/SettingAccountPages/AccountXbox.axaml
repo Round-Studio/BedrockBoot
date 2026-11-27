@@ -28,17 +28,17 @@
                                Text="AccountName"
                                Margin="6,0"
                                FontSize="28"></TextBlock>
-                    <TextBlock Text="Xbox 账户"
+                    <TextBlock Text="{DynamicResource Settings.Account.Xbox.Title}"
                                Margin="6,0"></TextBlock>
                 </StackPanel>
             </StackPanel>
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="基本" />
+                       Text="{DynamicResource Settings.Account.Xbox.Basic}" />
 
-            <onePointControls:SettingCard Header="删除此档案"
-                                          Description="在启动器中删除此账户档案"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Account.Xbox.DeleteProfile}"
+                                          Description="{DynamicResource Settings.Account.Xbox.DeleteProfile.Desc}"
                                           Name="DeleteAccountBtn"
                                           Click="DeleteAccountBtn_OnClick"
                                           IsClickable="True"

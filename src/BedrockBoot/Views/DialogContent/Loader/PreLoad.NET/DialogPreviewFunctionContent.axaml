@@ -14,8 +14,8 @@
         </StackPanel>
         
         <notice:InfoCard Name="InfoCard"
-                         BigTitle="无法加载配置项"
-                         Message="也许是还未启动过游戏？&#10;请尝试启动一次游戏后再进行配置&#10;如依旧无效，请前往启动器更新配置页面&#10;以更新游戏运行组件"
+                         BigTitle="{DynamicResource Pack.Loader.PreLoader.Feature.Dialog.Empty.Title}"
+                         Message="{DynamicResource Pack.Loader.PreLoader.Feature.Dialog.Empty.Message}"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"/>
     </Grid>

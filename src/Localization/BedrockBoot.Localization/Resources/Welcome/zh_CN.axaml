@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    主页欢迎语（简体中文）。
+
+    格式：每条一个 <Message>，正文就是上屏文本，Weight 是出现权重（缺省 1，越大越常出现）。
+    想让某条临时下线又不删掉，把 Weight 改成 0 即可。
+    其它语言没有自己的欢迎语文件时会按回退链兜底到这里，因此本文件的条目可以写得随性一些，
+    但不要塞入只有中文语境才成立的梗。
+-->
+<WelcomeMessages>
+    <Message Weight="8">您好，欢迎回来</Message>
+    <Message Weight="1">您好，欢迎使用 BugsBoot</Message>
+</WelcomeMessages>

@@ -257,17 +257,17 @@ public partial class InstanceControls : ISetting
     {
         DialogHost.Show(new()
         {
-            Title = "升级提示",
+            Title = I18nManager.Instance["Instance.Upgrade.Warn.Title"],
             Content = new StringBuilder()
-                .AppendLine("此升级为强制升级，确认升级后将无法取消！")
-                .AppendLine("强制升级游戏版本可能导致部分资源包，地图等不兼容。")
-                .AppendLine("请问您确定要升级吗？"),
+                .AppendLine(I18nManager.Instance["Instance.Upgrade.Warn.Line1"])
+                .AppendLine(I18nManager.Instance["Instance.Upgrade.Warn.Line2"])
+                .AppendLine(I18nManager.Instance["Instance.Upgrade.Warn.Line3"]),
             CloseButtonText = i18n["MainWindow.Common.Confirm"],
             PrimaryButtonText = i18n["MainWindow.Common.Cancel"],
             CloseAction = () =>
             {
                 GlobalModel.MainWindow.OpenDraw(new DrawUpdateInstanceContent(VersionInfo),
-                    $"升级实例向导 - {VersionInfo.Info.VersionName} ({VersionInfo.Info.Version})");
+                    string.Format(I18nManager.Instance["Instance.Upgrade.WizardTitle"], VersionInfo.Info.VersionName, VersionInfo.Info.Version));
             }
         });
     }
@@ -277,7 +277,7 @@ public partial class InstanceControls : ISetting
         var dialog = new DialogChooseInstanceUserContent(VersionInfo);
         DialogHost.Show(new()
         {
-            Title = "选择用户配置",
+            Title = I18nManager.Instance["Instance.Upgrade.ChooseUser"],
             Content = dialog,
             CloseButtonText = i18n["MainWindow.Common.Confirm"],
             PrimaryButtonText = i18n["MainWindow.Common.Cancel"],

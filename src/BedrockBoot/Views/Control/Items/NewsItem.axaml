@@ -70,7 +70,7 @@
                         <onePointControls:FontIcon Glyph="&#xE8A7;"
                                                    Foreground="{DynamicResource AccentBackgroundBrush}"
                                                    VerticalAlignment="Center"/>
-                        <TextBlock Text="阅读更多"
+                        <TextBlock Text="{DynamicResource NewsItem.ReadMore}"
                                    Foreground="{DynamicResource AccentBackgroundBrush}"
                                    TextTrimming="CharacterEllipsis"/>
                     </StackPanel>

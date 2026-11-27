@@ -80,7 +80,7 @@ public class ArchivePackManager
             type == ResourcePackType.WorldTemplate ||
             type == ResourcePackType.Unknown)
         {
-            throw new Exception("不支持的资源类型");
+            throw new Exception(I18nManager.Instance["Pack.Archive.UnsupportedResourceType"]);
         }
 
         if (ActivatedPacks == null) Refresh();
@@ -94,7 +94,7 @@ public class ArchivePackManager
             type == ResourcePackType.WorldTemplate ||
             type == ResourcePackType.Unknown)
         {
-            throw new Exception("不支持的资源类型");
+            throw new Exception(I18nManager.Instance["Pack.Archive.UnsupportedResourceType"]);
         }
 
         if (UnActivatedPacks == null) Refresh();

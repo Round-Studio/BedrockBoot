@@ -25,6 +25,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using BedrockBoot.Core.Global;
 using BedrockBoot.Localization;
 using BedrockBoot.Localization.Avalonia;
@@ -76,8 +77,12 @@ public partial class UniversalLanguage : ISettingPage
     private void OnI18nPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         // 与 MainHomePage 一致：I18nManager 只在切语言/重建键表时发 "Item[]"。
+        // 这里不能同步重建：切换"缺翻译显示"策略时，本方法会在
+        // MissingKeyStyleBox 自己的 SelectionChanged 还在提交途中被调到，
+        // 同步 Clear() 会让选中模型按旧索引回读已被清空的源集合而越界崩溃，
+        // 所以丢进 Dispatcher 队列，等本次选择操作收尾后再重建。
         if (e.PropertyName is null or "Item[]")
-            RefreshMissingKeyStyleItems();
+            Dispatcher.UIThread.Post(RefreshMissingKeyStyleItems);
     }
 
     /// <summary>按当前语言重建"缺翻译显示"下拉项，并保持原有选中值。</summary>

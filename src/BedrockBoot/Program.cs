@@ -127,12 +127,10 @@ internal sealed class Program
 #if WINDOWS
         if (!VCRedistDetector.CheckInInstalledList().IsInstalled)
         {
-            var language = GlobalModel.Config.Data.Language == "en_US" ? "en_US" : "zh_CN";
-            var strings = BuiltinStrings.Load(language) ?? [];
             var warning = string.Format(
-                strings["Startup.VCRedist.Warning"],
+                GetStartupString("Startup.VCRedist.Warning", GlobalModel.Config.Data.Language),
                 "https://docs.roundstudio.top/docs/product/bb/commonQuestion");
-            var title = strings["Startup.VCRedist.Title"];
+            var title = GetStartupString("Startup.VCRedist.Title", GlobalModel.Config.Data.Language);
             var dialog = MessageBox.Show(warning, title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 
             if (dialog == DialogResult.OK)
@@ -233,6 +231,26 @@ internal sealed class Program
 #endif
 		var appArgs = BedrockbootUrlProtocol.FilterStartupArgs(args).ToArray();
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(appArgs);
+    }
+
+    /// <summary>
+    ///     启动早期取一条文案：沿所选语言的回退链查找，全都缺失时退回键名。
+    /// </summary>
+    /// <remarks>
+    ///     这些提示出现在语言服务启动之前，只能直接读内置语言文件；
+    ///     这里不能抛异常，否则"缺一条翻译"会变成"启动即崩"。
+    /// </remarks>
+    private static string GetStartupString(string key, string culture)
+    {
+        foreach (var candidate in LocalizationContext.Current.Options.ResolveChain(culture))
+        {
+            var strings = BuiltinStrings.Load(candidate);
+            if (strings is not null && strings.TryGetValue(key, out var value))
+                return value;
+        }
+
+        LocalizationLog.Warn($"启动提示 {key} 在 {culture} 及其回退链上都没有译文，显示键名");
+        return key;
     }
 
     private static bool ArgsAnalytical(List<string> args)

@@ -89,13 +89,21 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
 
     /// <summary>
     ///     本次安装是否真正成功。下载器的 Completed 回调只代表流程走到完成分支
-    ///     （GDK 在解压完成时就触发），因此还要排除已经报过错的场景。
+    ///     （GDK 在解压完成时就触发），因此还要排除已经报过错的场景，
+    ///     以及「回调已触发、但注册阶段被用户取消」的场景。
     ///     InstallAsync 内部会吞掉异常，调用方拿到正常返回并不代表安装成功。
     /// </summary>
-    public bool IsInstallSucceeded => _installCompleted && !_installFailed;
+    public bool IsInstallSucceeded => _installCompleted && !_installFailed && !_installCanceled;
+
+    /// <summary>
+    ///     本次安装是否被用户取消。取消后即使 Completed 已经触发过，也不能算成功：
+    ///     GDK 的解压完成会先触发 Completed，随后的注册（Registered）阶段才是真正的终点。
+    /// </summary>
+    public bool IsInstallCanceled => _installCanceled;
 
     private bool _installCompleted;
     private bool _installFailed;
+    private bool _installCanceled;
 
     private void InitializeDownloader()
     {
@@ -131,6 +139,11 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
                 // Completed 在 GDK（Extracted）与非 GDK（Registered）分支都可能触发，
                 // 且 InstallAsync 结束前还会再触发一次，这里只做标记，重复触发无副作用
                 _installCompleted = true;
+
+                // 取消之后才到的完成回调（GDK 解压完成即 Completed，注册阶段才被取消）
+                // 不能把界面刷成"已完成"——真正结束与否由 IsInstallSucceeded 判定
+                if (_installCanceled) return;
+
                 MainSpeedText.Text = I18nManager.Instance["Task.Game.Status.Completed"];
                 ReportProgress(100, I18nManager.Instance["Task.Game.Status.Completed"]);
             });
@@ -160,12 +173,23 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
             try
             {
                 await _downloader.InstallAsync(Url, token);
-                installed?.Invoke();
             }
             catch (OperationCanceledException)
             {
-                // Handle cancellation
+                // 下载器内部一般已经把取消吞掉了，这里只是兜底
+                _installCanceled = true;
             }
+            finally
+            {
+                // 取消状态以令牌为准，而不是以 Completed 为准：
+                // GDK 在解压完成（Extracted）时就触发 Completed，之后还有注册阶段，
+                // 这段时间里取消，InstallAsync 会捕获取消并正常返回，
+                // 只有这里才能把"已取消"和"已完成"区分开
+                if (token.IsCancellationRequested) _installCanceled = true;
+            }
+
+            // 无论成功、失败还是取消都要回调，由调用方按 IsInstallSucceeded 决定后续动作
+            installed?.Invoke();
         });
     }
 
@@ -275,6 +299,13 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
                 // 新版本落盘后立即刷新版本列表，避免要切页才看得到
                 RefreshVersionLists();
             }
+            else if (body.IsInstallCanceled)
+            {
+                // 用户取消：既不是成功也不是失败，别再刷"安装成功"，也不刷新列表
+                ShowNotice(
+                    string.Format(I18nManager.Instance["Task.Game.Notice.Cancelled"], gameName),
+                    NoticeType.Info);
+            }
 
             installedCallBack?.Invoke();
         }));
@@ -293,14 +324,22 @@ public partial class TaskDownloadGameItem : UserControl, ITaskItem
     private static void RefreshVersionLists()
     {
         // 实例管理页正在显示时由它自己重建列表（其 UpdateGameList 内部会顺带刷新主页版本下拉）；
-        // 页面未显示则不必处理，下次导航会重新创建页面并读取最新数据。
-        if (MainManager.RefreshVersionListIfVisible()) return;
-
-        GlobalModel.MainPageUpdateInstance?.Invoke();
+        // 页面未显示则刷新主页版本下拉。逻辑集中在 MainManager，删除实例等场景共用。
+        MainManager.RefreshVersionLists();
     }
 
     private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        _cancellationTokenSource?.Cancel();
+        // 取消是"请求"不是"结果"：真正停下来要等 InstallAsync 抛令牌，可能还有一小段延迟，
+        // 所以点下去先立刻给个反馈，并把按钮禁掉避免重复点
+        if (_cancellationTokenSource == null || _cancellationTokenSource.IsCancellationRequested) return;
+
+        if (sender is Button button) button.IsEnabled = false;
+
+        var cancelling = I18nManager.Instance["Task.Game.Status.Cancelling"];
+        MainText.Text = cancelling;
+        ReportProgress(_taskProgress, cancelling, _taskIsIndeterminate);
+
+        _cancellationTokenSource.Cancel();
     }
 }

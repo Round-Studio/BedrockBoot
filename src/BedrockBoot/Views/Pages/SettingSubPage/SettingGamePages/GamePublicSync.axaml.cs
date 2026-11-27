@@ -38,12 +38,12 @@ public partial class GamePublicSync : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Game.Breadcrumb.Root"],
+                ItemName = "Setting.Game.Breadcrumb.Root",
                 ItemClickAction = s => MainSettingPage.NavigateTo(new SettingGame())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Game.PublicSync.Title"]
+                ItemName = "Settings.Game.PublicSync.Title"
             }
         };
     }

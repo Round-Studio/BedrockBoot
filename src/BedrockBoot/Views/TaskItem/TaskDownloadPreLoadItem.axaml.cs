@@ -193,7 +193,8 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
             {
                 // 任务异常若不上报会永远停留在列表里无任何提示
                 Console.WriteLine($@"PreLoad.NET 组件下载失败: {ex}");
-                Dispatcher.UIThread.Post(() => ReportProgress(100, $@"失败: {ex.Message}"));
+                Dispatcher.UIThread.Post(() => ReportProgress(100,
+                    string.Format(I18nManager.Instance["Task.Update.Error.FailFormat"], ex.Message)));
                 _tcs?.TrySetResult(false);
             }
         }, token);

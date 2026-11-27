@@ -18,6 +18,7 @@
 
 using System;
 using System.IO;
+using BedrockBoot.Localization;
 using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Core.Models.Helper;
@@ -49,7 +50,7 @@ public static class PreLoadDllStore
     {
         if (bytes == null || bytes.Length < 1024 * 1024)
             throw new InvalidOperationException(
-                $"PreLoad.NET.dll 内容异常（{bytes?.Length ?? 0} 字节），拒绝替换本地更新文件");
+                string.Format(Localizer.Get("Task.PreLoad.Update.InvalidPackage"), bytes?.Length ?? 0));
 
         Directory.CreateDirectory(PathsList.PreLoadPath);
 

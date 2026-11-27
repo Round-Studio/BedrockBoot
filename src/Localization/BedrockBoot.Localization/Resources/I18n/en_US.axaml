@@ -505,6 +505,13 @@
 	<x:String x:Key="CurseForge.Tag.TexturePacks.x32">x32</x:String>
 	<x:String x:Key="CurseForge.Tag.TexturePacks.x64">x64</x:String>
 
+    <x:String x:Key="CurseForge.Tag.Scripts.Scripts">Scripts</x:String>
+    <x:String x:Key="CurseForge.Tag.Scripts.Utility">Utility</x:String>
+
+    <x:String x:Key="CurseForge.Tag.Skins.Mobs">Mobs</x:String>
+    <x:String x:Key="CurseForge.Tag.Skins.Players">Players</x:String>
+    <x:String x:Key="CurseForge.Tag.Skins.Skin Packs">Skin Packs</x:String>
+
     <x:String x:Key="Download.Assets.Status.Loading.Title">Collecting Assets...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">All assets, fall in!</x:String>
     <x:String x:Key="Download.Assets.Status.Empty.Title">Huh...?</x:String>
@@ -611,8 +618,10 @@
     <x:String x:Key="Task.Game.Notice.Added">Game version {0} added to download queue.</x:String>
     <x:String x:Key="Task.Game.Notice.Success">Game {0} installed successfully!</x:String>
     <x:String x:Key="Task.Game.Notice.Failed">Game {0} installation failed</x:String>
+    <x:String x:Key="Task.Game.Notice.Cancelled">Installation of game {0} was cancelled</x:String>
     <x:String x:Key="Task.Game.Title.Format">Downloading Game {0} [{1}]</x:String>
     <x:String x:Key="Task.Game.Status.Completed">Download Complete</x:String>
+    <x:String x:Key="Task.Game.Status.Cancelling">Cancelling...</x:String>
     <x:String x:Key="Task.Game.Status.LocalInstalling">Local installation in progress...</x:String>
     <x:String x:Key="Task.Game.Error.Detail">Error Details: {0}</x:String>
 
@@ -806,6 +815,8 @@
     <x:String x:Key="Settings.Personalization.Home.Type.Desc">Type displayed on the launcher homepage</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.None">None</x:String>
     <x:String x:Key="Settings.Personalization.Home.Type.News">News Homepage</x:String>
+    <x:String x:Key="Settings.Personalization.Home.AddWidget.Title">Add Widget</x:String>
+    <x:String x:Key="Settings.Personalization.Home.AddWidget.Desc">Go back to the homepage and open the widget panel</x:String>
     <x:String x:Key="Settings.Personalization.Group.Window">Window</x:String>
     <x:String x:Key="Settings.Personalization.SystemTitleBar.Title">Use System Title Bar</x:String>
     <x:String x:Key="Settings.Personalization.SystemTitleBar.Desc">Use the system title bar and hide the control buttons</x:String>
@@ -1076,6 +1087,7 @@
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET Component Update</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">Downloading PreLoad.NET component update...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">Done, takes effect on next game launch</x:String>
+    <x:String x:Key="Task.PreLoad.Update.InvalidPackage">PreLoad.NET.dll content is invalid ({0} bytes); the local update file was not replaced</x:String>
     <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET component missing and version info unavailable; game launch blocked (check your network connection)</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET component download failed; game launch blocked</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET is a component the launcher depends on; games may misbehave if it is not updated in time.</x:String>
@@ -1487,6 +1499,11 @@
 	<x:String x:Key="LaunchWindow.Status.UWP.Fix">Fix and Launch</x:String>
 	<x:String x:Key="LaunchWindow.Status.UWP.LaunchAnyway">Launch Anyway</x:String>
 	<x:String x:Key="LaunchWindow.Status.UWP.Cancel">Cancel Launch</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Checking">Checking UWP dependencies</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Missing.Title">UWP Dependencies Missing</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Missing.Content">The following UWP dependencies are not installed:&#x0a;{0}&#x0a;&#x0a;Missing these dependencies may prevent the game from launching.</x:String>
+    <x:String x:Key="LaunchWindow.Status.UWP.Download.Title">Download UWP Dependencies</x:String>
+    <x:String x:Key="LaunchWindow.Status.PreLoad.Ready">PreLoad.NET component ready</x:String>
     <x:String x:Key="LaunchWindow.Action.EndProcess">End Game Process</x:String>
     <x:String x:Key="Task.InstanceUpdate.Title">Updating Instance</x:String>
     <x:String x:Key="Task.InstanceUpdate.Step.DeleteOldFiles">Delete Old Files</x:String>
@@ -1499,6 +1516,14 @@
     <x:String x:Key="Account.Panel.ChooseProfile">Choose Profile</x:String>
     <x:String x:Key="Widget.LaunchGame.Title">Game</x:String>
     <x:String x:Key="Widget.LaunchGame.NoVersion">No Version Selected</x:String>
+    <x:String x:Key="Widget.LaunchGame.ChooseVersion">Choose Game Version</x:String>
+    <x:String x:Key="Widget.LaunchGame.VersionMissing">Pinned instance not found</x:String>
+    <x:String x:Key="Widget.LaunchGame.Drawer.Hint">Pick an instance and this widget will always show and launch it. You can also keep following the currently selected instance.</x:String>
+    <x:String x:Key="Widget.LaunchGame.Drawer.Hint.Add">Pick an instance to add the widget right away and pin it to that instance. You can also keep following the currently selected instance.</x:String>
+    <x:String x:Key="Widget.LaunchGame.FollowCurrent">Follow Current Instance</x:String>
+    <x:String x:Key="Widget.LaunchGame.FollowCurrent.Desc">Show whichever version is selected in the instance list</x:String>
+    <x:String x:Key="Widget.LaunchGame.Drawer.Empty.Title">No Instances Available</x:String>
+    <x:String x:Key="Widget.LaunchGame.Drawer.Empty.Message">Add a game instance in instance management first</x:String>
     <x:String x:Key="Widget.Timer.CurrentTime">Current Time</x:String>
     <x:String x:Key="Instance.Loader.Description">Loader description</x:String>
     <x:String x:Key="Instance.Loader.Status.NotInstalled">Not Installed</x:String>
@@ -1980,8 +2005,8 @@
 
     <x:String x:Key="Widget.Clock.Name">Clock</x:String>
     <x:String x:Key="Widget.Clock.Desc">A very ordinary time display widget</x:String>
-    <x:String x:Key="Widget.RecentPlay.Name">Recently Played</x:String>
-    <x:String x:Key="Widget.RecentPlay.Desc">Shows a recently played game instance</x:String>
+    <x:String x:Key="Widget.RecentPlay.Name">Game Version</x:String>
+    <x:String x:Key="Widget.RecentPlay.Desc">Pins one game instance and launches it, switchable anytime</x:String>
     <x:String x:Key="CrashReport.Drawer.Title">BedrockBoot Game Error Tracker</x:String>
     <x:String x:Key="CrashReport.GameExited.Title">Game Exited Abnormally</x:String>
     <x:String x:Key="CrashReport.Drawer.OpenFailed">Exit code 0x{0:X8}. Failed to open the error tracker: {1}</x:String>
@@ -2161,7 +2186,7 @@
     <x:String x:Key="Pack.ResourcePack.PackFailedEmptyTemp">Packaging failed: temporary directory is empty</x:String>
     <x:String x:Key="Pack.ResourcePack.PackFailedNoOutput">Packaging failed: output file was not created</x:String>
     <x:String x:Key="Pack.ResourcePack.SourceDirNotFound">Source directory does not exist: {0}</x:String>
-    <x:String x:Key="UI.Dialog.DeleteProgress">Progress: {0} %</x:String>
+    <x:String x:Key="UI.Dialog.DeleteProgress">Progress: {0:F2} %</x:String>
     <x:String x:Key="UI.Dialog.ErrorOccurred">An error occurred</x:String>
     <x:String x:Key="UI.Dialog.Install.CreateFolderFailed">Unable to create install directory: {0}</x:String>
     <x:String x:Key="UI.Dialog.Install.InvalidGameFolder">Invalid game directory configuration</x:String>

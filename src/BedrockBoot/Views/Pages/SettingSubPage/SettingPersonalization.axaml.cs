@@ -47,7 +47,7 @@ public partial class SettingPersonalization : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"]
+                ItemName = "Setting.Personalization.Breadcrumb.Root"
             }
         };
         UpdateUI();

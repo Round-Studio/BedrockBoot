@@ -87,6 +87,17 @@ public partial class MainManager : BedrockBootPage
     }
 
     /// <summary>
+    ///     版本目录内容变化（安装完成、删除实例、导入版本等）后统一走这里：
+    ///     实例管理页正在显示则由它重建列表，否则刷新主页的版本下拉。
+    /// </summary>
+    public static void RefreshVersionLists()
+    {
+        if (RefreshVersionListIfVisible()) return;
+
+        Models.Global.GlobalModel.MainPageUpdateInstance?.Invoke();
+    }
+
+    /// <summary>
     ///     UpdateGameList 会读磁盘，异常若在 Dispatcher 回调里抛出就是未处理异常，
     ///     这里吞掉并记录，避免因为刷新失败把整个外壳带崩。
     /// </summary>

@@ -98,51 +98,71 @@ public partial class MainToolsBoxPage : BedrockBootPage
     {
         void OpenDialog()
         {
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
-                if (Chunker.Chunker.DefaultJvmInfo == null)
+                try
                 {
-                    Dispatcher.UIThread.Invoke(() =>
-                    {
-                        DialogHost.Show(new DialogInfo
-                        {
-                            Title = I18nManager.Instance["Tools.SaveConvert"],
-                            Content = I18nManager.Instance["Tools.Jvm.Fetching"]
-                        });
-                    });
-
-                    var jvms = await JavaUtil.GetJavaListAsync();
-                    jvms.ForEach(j => Console.WriteLine($@"Find Jvm: {j.JavaPath}"));
-                    var jvm = jvms.Find(j => j.MajorVersion >= 17);
-
-                    Dispatcher.UIThread.Invoke(DialogHost.Close);
-
-                    if (jvm == null)
+                    if (Chunker.Chunker.DefaultJvmInfo == null)
                     {
                         Dispatcher.UIThread.Invoke(() =>
                         {
                             DialogHost.Show(new DialogInfo
                             {
-                                Title = I18nManager.Instance["Tools.Jvm.Error"],
-                                Content = I18nManager.Instance["Tools.Jvm.NotFound"],
-                                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
+                                Title = I18nManager.Instance["Tools.SaveConvert"],
+                                Content = I18nManager.Instance["Tools.Jvm.Fetching"]
                             });
                         });
-                        return;
+
+                        var jvms = await JavaUtil.GetJavaListAsync();
+                        jvms.ForEach(j => Console.WriteLine($@"Find Jvm: {j.JavaPath}"));
+                        var jvm = jvms.Find(j => j.MajorVersion >= 17);
+
+                        Dispatcher.UIThread.Invoke(DialogHost.Close);
+
+                        if (jvm == null)
+                        {
+                            Dispatcher.UIThread.Invoke(() =>
+                            {
+                                DialogHost.Show(new DialogInfo
+                                {
+                                    Title = I18nManager.Instance["Tools.Jvm.Error"],
+                                    Content = I18nManager.Instance["Tools.Jvm.NotFound"],
+                                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
+                                });
+                            });
+                            return;
+                        }
+
+                        Chunker.Chunker.DefaultJvmInfo = jvm;
                     }
 
-                    Chunker.Chunker.DefaultJvmInfo = jvm;
-                }
-
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    DialogHost.Show(new DialogInfo
+                    Dispatcher.UIThread.Invoke(() =>
                     {
-                        Title = I18nManager.Instance["Tools.SaveConvert"],
-                        Content = new DialogChooseChunkerTypeContent(),
-                        CloseButtonText = I18nManager.Instance["Shared.Action.Cancel"]
+                        DialogHost.Show(new DialogInfo
+                        {
+                            Title = I18nManager.Instance["Tools.SaveConvert"],
+                            Content = new DialogChooseChunkerTypeContent(),
+                            CloseButtonText = I18nManager.Instance["Shared.Action.Cancel"]
+                        });
                     });
-                });
+                }
+                catch (Exception ex)
+                {
+                    // 后台任务必须自行兜住异常，否则会成为未观测异常（由终结器线程重抛），
+                    // 同时 "正在获取 Jvm" 的对话框会一直挂着不关闭
+                    Console.WriteLine($@"获取 Jvm 失败: {ex}");
+
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        DialogHost.Close();
+                        DialogHost.Show(new DialogInfo
+                        {
+                            Title = I18nManager.Instance["Tools.Jvm.Error"],
+                            Content = I18nManager.Instance["Tools.Jvm.NotFound"],
+                            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
+                        });
+                    });
+                }
             });
         }
 

@@ -42,7 +42,7 @@ public partial class SettingDownload : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Download.Breadcrumb.Root"]
+                ItemName = "Setting.Download.Breadcrumb.Root"
             }
         };
 

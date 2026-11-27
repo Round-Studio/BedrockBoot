@@ -41,7 +41,7 @@ public partial class SettingAccessibility : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Instance.Controls.Group.Accessibility"]
+                ItemName = "Instance.Controls.Group.Accessibility"
             }
         };
 

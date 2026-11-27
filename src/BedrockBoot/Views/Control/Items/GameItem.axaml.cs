@@ -25,6 +25,8 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
+using BedrockBoot.Localization;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
@@ -43,12 +45,42 @@ public partial class GameItem : UserControl
     public GameItem()
     {
         InitializeComponent();
+
+        // 版本类型、游玩时长都是普通字符串属性（不是 {DynamicResource}），
+        // 卡片创建后不会自己变，键表一变（切语言 / 调试预览换文件）就要重建一次。
+        Loaded += (_, _) =>
+        {
+            LocalizationContext.Current.Changed -= OnTableChanged;
+            LocalizationContext.Current.Changed += OnTableChanged;
+        };
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
     {
         base.OnUnloaded(e);
+        LocalizationContext.Current.Changed -= OnTableChanged;
         _imageLoader.Dispose();
+    }
+
+    private void OnTableChanged(object? sender, LocalizationChangedEventArgs e)
+    {
+        if (VersionInfo is null)
+            return;
+
+        if (Dispatcher.UIThread.CheckAccess())
+            RefreshLabels();
+        else
+            Dispatcher.UIThread.Post(RefreshLabels);
+    }
+
+    /// <summary>
+    ///     只重建文字标签，不重跑 <see cref="Update" />：那条路径会重新加载图标，
+    ///     而图标加载器在卡片卸载时已经释放，切语言时代不一定还能用。
+    /// </summary>
+    private void RefreshLabels()
+    {
+        UpdateHeaderLabels();
+        UpdateDescription();
     }
 
     public GameItem(VersionConfig info) : this()
@@ -64,8 +96,7 @@ public partial class GameItem : UserControl
     {
         VersionName.Text = VersionInfo.Info.VersionName;
 
-        UpdateHeaderLabels();
-        UpdateDescription();
+        RefreshLabels();
 
         if (VersionInfo.Config.IsEditModel)
             EditModule.IsVisible = true;
@@ -92,7 +123,7 @@ public partial class GameItem : UserControl
         {
             VerticalAlignment = VerticalAlignment.Center,
             Text = GetVersionTypeText(VersionInfo.Info.VersionType),
-             Background = new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80))
+             Background = GetResourceBrush("AccentSubtleBrush", new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80)))
 
         });
 
@@ -101,12 +132,19 @@ public partial class GameItem : UserControl
             VerticalAlignment = VerticalAlignment.Center,
             Text = VersionInfo.Info.BuildType.ToString(),
             // 弱化处理，避免和启动按钮抢主色
-            Background = new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80))
+            Background = GetResourceBrush("AccentSubtleBrush", new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80)))
         });
 
         HeaderLabelsPanel.IsVisible = true;
     }
-
+    private IBrush GetResourceBrush(string resourceKey, IBrush fallback)
+    {
+        if (this.TryFindResource(resourceKey, out var res) && res is IBrush brush)
+        {
+            return brush;
+        }
+        return fallback;
+    }
     private static string GetVersionTypeText(MinecraftGameTypeVersion versionType)
     {
         return versionType switch

@@ -43,12 +43,12 @@ public partial class GameFolders : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Game.Breadcrumb.Root"],
+                ItemName = "Setting.Game.Breadcrumb.Root",
                 ItemClickAction = s => MainSettingPage.NavigateTo(new SettingGame())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Game.Folders.Title"]
+                ItemName = "Setting.Game.Folders.Title"
             }
         };
 

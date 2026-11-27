@@ -44,13 +44,13 @@ public partial class AccountXbox : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Nav.Account.Title"],
+                ItemName = "Settings.Nav.Account.Title",
                 ItemClickAction = (i) =>
                     MainSettingPage.NavigateTo(new SettingAccount())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Account.Xbox.Title"]
+                ItemName = "Settings.Account.Xbox.Title"
             }
         };
     }
@@ -63,7 +63,7 @@ public partial class AccountXbox : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Nav.Account.Title"],
+                ItemName = "Settings.Nav.Account.Title",
                 ItemClickAction = (i) =>
                     MainSettingPage.NavigateTo(new SettingAccount())
             },

@@ -17,6 +17,7 @@
  */
 
 using Avalonia.Controls;
+using BedrockBoot.Standard.Entity.Config;
 using BedrockBoot.Standard.Enum.Type;
 
 namespace BedrockBoot.Standard.Interface;
@@ -30,4 +31,11 @@ public class IWidgetTemplated : UserControl
         WidgetSize.Medium,
         WidgetSize.Small
     };
+
+    /// <summary>
+    ///     下发该组件实例的布局配置。创建后立即调用一次，组件可据此恢复自定义设置。
+    /// </summary>
+    public virtual void LoadWidgetConfig(WidgetLayoutData config)
+    {
+    }
 }

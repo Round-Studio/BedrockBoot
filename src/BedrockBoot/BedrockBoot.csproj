@@ -89,6 +89,7 @@
         <PackageReference Include="NAudio" Version="2.2.1" />
         <PackageReference Include="Octokit" Version="14.0.0"/>
         <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.15" />
+        <PackageReference Include="Tomlyn" Version="0.20.0" />
     </ItemGroup>
 
     <ItemGroup>

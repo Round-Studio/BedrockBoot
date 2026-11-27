@@ -20,6 +20,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using BedrockBoot.Localization;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Standard.Entity;
@@ -41,6 +42,18 @@ namespace BedrockBoot.Views.Pages.MainSubPage;
 public partial class MainHomePage : BedrockBootPage
 {
     public DesktopWorkspace DesktopWorkspace;
+
+    /// <summary>清单里代表"随机欢迎语"的令牌。</summary>
+    private const string RandomToken = "{{random}}";
+
+    /// <summary>
+    ///     旧版清单里写死的默认主页标题。
+    /// </summary>
+    /// <remarks>
+    ///     这些值是"默认欢迎语"的历史形态，不是用户的自定义文案，
+    ///     因此要按默认处理，否则老清单会永远卡在中文。
+    /// </remarks>
+    private static readonly string[] LegacyDefaultTitles = ["您好，欢迎回来", "你好，欢迎回来"];
 
     public MainHomePage()
     {
@@ -77,38 +90,54 @@ public partial class MainHomePage : BedrockBootPage
     ///         <item>含 <c>{{random}}</c> 但用户没写 → 用当前语言的内置欢迎语（<see cref="WelcomeMessages" />，带频率）。</item>
     ///         <item>不含令牌 → 视为用户自定义的整句标题，原样显示。</item>
     ///     </list>
-    ///     情形 2 拿不到欢迎语时<b>不设值</b>，让 <c>{DynamicResource Home.Title}</c> 生效——
-    ///     这样"默认欢迎语"始终只有一条本地化来源，不再靠字面判等区分默认与自定义。
+    ///     空白与<b>历史默认标题</b>（旧版清单里写死的中文默认值）都按情形 2 处理。
+    ///     两条路都拿不到欢迎语时回落到 <c>Home.Title</c> 键。
     /// </remarks>
     private void ApplyHomeTitle()
     {
         var manifest = Models.Global.GlobalModel.CustomManifest;
         var pageHome = manifest?.PageTitles?.PageHome;
-        if (string.IsNullOrWhiteSpace(pageHome))
-            return;
 
-        var title = pageHome.Contains("{{random}}", StringComparison.Ordinal)
-            ? ResolveRandomTitle(manifest!, pageHome)
-            : pageHome;
+        // 旧清单把默认欢迎语写成了中文字面量；不识别它就会被当成"用户自定义标题"，
+        // 于是无论切到哪门语言都一直显示中文。
+        // 旧清单的 randomStr 同样是一整串中文，因此这里连自定义列表一起忽略，
+        // 否则识别了 pageHome 还是会把中文随机回来。
+        var isLegacyDefault = IsLegacyDefaultTitle(pageHome);
+        if (isLegacyDefault)
+            pageHome = RandomToken;
 
-        if (title is null)
-            return;
+        var title = string.IsNullOrWhiteSpace(pageHome)
+            ? null
+            : pageHome.Contains(RandomToken, StringComparison.Ordinal)
+                ? ResolveRandomTitle(manifest, pageHome, isLegacyDefault)
+                : pageHome;
 
-        LineTextBlock.Text = title;
+        // 没有可用标题时必须显式回落到 Home.Title：
+        // Text 一旦被赋过本地值，XAML 上那个 {DynamicResource} 就已经被替换，
+        // 清掉本地值也回不来（只会变成空标题），所以这里主动取当前语言的 Home.Title。
+        // 切语言时本方法会重算，不会停在旧语言上。
+        LineTextBlock.Text = title ?? I18nManager.Instance["Home.Title"];
     }
 
+    /// <summary>旧版清单里写死的默认主页标题。</summary>
+    private static bool IsLegacyDefaultTitle(string? pageHome) =>
+        pageHome is not null && Array.IndexOf(LegacyDefaultTitles, pageHome) >= 0;
+
     /// <summary>把 <c>{{random}}</c> 替换成欢迎语；拿不到欢迎语时返回 <c>null</c>。</summary>
-    private static string? ResolveRandomTitle(CustomManifest manifest, string pageHome)
+    /// <param name="manifest">用户清单，可能为 <c>null</c>。</param>
+    /// <param name="pageHome">含 <c>{{random}}</c> 的模板。</param>
+    /// <param name="ignoreCustom">为 <c>true</c> 时不使用清单里的自定义欢迎语（旧版默认清单）。</param>
+    private static string? ResolveRandomTitle(CustomManifest? manifest, string pageHome, bool ignoreCustom)
     {
         // 用户自定义的欢迎语原样使用：那是用户自己的文案，不该被翻译。
-        var custom = manifest.RandomStr;
-        if (custom is { Count: > 0 })
-            return pageHome.Replace("{{random}}", custom[Random.Shared.Next(custom.Count)]);
+        var custom = manifest?.RandomStr;
+        if (!ignoreCustom && custom is { Count: > 0 })
+            return pageHome.Replace(RandomToken, custom[Random.Shared.Next(custom.Count)]);
 
         // 没有专属欢迎语集合的语言（ja_JP / ru_RU / zh_TW …）交给 Home.Title 键：
         // 那条键各语言本来就有译文，硬塞英文欢迎语反而更差。
         var welcome = WelcomeMessages.Pick(Localizer.Culture);
-        return welcome is null ? null : pageHome.Replace("{{random}}", welcome);
+        return welcome is null ? null : pageHome.Replace(RandomToken, welcome);
     }
 
     public void UpdateHome()
@@ -118,25 +147,50 @@ public partial class MainHomePage : BedrockBootPage
         switch (GlobalModel.Config.Data.HomeConfig.HomeType)
         {
             case HomeType.None:
+                PendingOpenAddWidgetDrawer = false;
                 break;
             case HomeType.News:
+                PendingOpenAddWidgetDrawer = false;
                 MainGrid.Children.Add(new GameUpdateNewsWidget());
                 break;
             case HomeType.Widgets:
-                DesktopWorkspace = new DesktopWorkspace();
+                // 局部变量固定住这一份工作区：切页后字段会指向新实例，
+                // 事件回调里再用字段就可能把别的页面的布局写进配置文件。
+                var workspace = new DesktopWorkspace();
+                DesktopWorkspace = workspace;
+
                 if (File.Exists(PathsList.WidgetsConfigPath))
-                    DesktopWorkspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
-                DesktopWorkspace.AddWidgetCallOn += (sender, args) =>
+                    workspace.ImportLayout(File.ReadAllText(PathsList.WidgetsConfigPath));
+
+                workspace.AddWidgetCallOn += (sender, args) => OpenAddWidgetDrawer();
+                workspace.LayoutChanged += (sender, args) =>
                 {
-                    Models.Global.GlobalModel.MainWindow.OpenDraw(new DrawAddWidgetContent(), I18nManager.Instance["Widget.Previewer.AddWidget"]);
-                };
-                DesktopWorkspace.LayoutChanged += (sender, args) =>
-                {
-                    var json = DesktopWorkspace.ExportLayout();
+                    var json = workspace.ExportLayout();
                     File.WriteAllText(PathsList.WidgetsConfigPath, json);
                 };
-                MainGrid.Children.Add(DesktopWorkspace);
+                MainGrid.Children.Add(workspace);
+
+                // 从"设置 - 个性化 - 主页"跳过来时，把添加面板一并打开
+                if (PendingOpenAddWidgetDrawer)
+                {
+                    PendingOpenAddWidgetDrawer = false;
+                    Dispatcher.UIThread.Post(OpenAddWidgetDrawer, DispatcherPriority.Background);
+                }
+
                 break;
         }
+    }
+
+    /// <summary>
+    ///     设置页要求"跳回主页并打开添加面板"时置位；主页加载后消费掉。
+    /// </summary>
+    public static bool PendingOpenAddWidgetDrawer { get; set; }
+
+    /// <summary>打开"添加小部件"抽屉。</summary>
+    public static void OpenAddWidgetDrawer()
+    {
+        Models.Global.GlobalModel.MainWindow.OpenDraw(
+            new DrawAddWidgetContent(),
+            I18nManager.Instance["Widget.Previewer.AddWidget"]);
     }
 }

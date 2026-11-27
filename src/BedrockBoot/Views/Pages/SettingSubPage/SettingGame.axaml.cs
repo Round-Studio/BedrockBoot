@@ -42,7 +42,7 @@ public partial class SettingGame : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Game.Breadcrumb.Root"]
+                ItemName = "Setting.Game.Breadcrumb.Root"
             }
         };
 

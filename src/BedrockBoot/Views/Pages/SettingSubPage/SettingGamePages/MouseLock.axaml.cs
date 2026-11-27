@@ -41,12 +41,12 @@ public partial class MouseLock : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Game.Breadcrumb.Root"],
+                ItemName = "Setting.Game.Breadcrumb.Root",
                 ItemClickAction = s => MainSettingPage.NavigateTo(new SettingGame())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Game.MouseLock.Title"]
+                ItemName = "Settings.Game.MouseLock.Title"
             }
         };
         MouseLockMainSwitch.IsChecked = GlobalModel.Config.Data.IsMouseLock;

@@ -28,6 +28,7 @@ namespace BedrockBoot.Localization.Avalonia;
 ///     写入走 <see cref="ResourceDictionary.SetItems" />：批量 upsert 只触发一次
 ///     <c>ResourcesChanged</c>，界面不会闪烁，也不会出现键缺失的中间状态。
 ///     逐键赋值会触发同等数量的通知（实测 2000 键 = 2000 次），因此禁止那样写。
+///     键集合收缩（只有调试覆盖层才会造成）时再逐键移除，数量极少。
 /// </remarks>
 internal sealed class ResourceDictionaryBridge
 {
@@ -45,7 +46,13 @@ internal sealed class ResourceDictionaryBridge
         application.Resources.MergedDictionaries.Add(_dictionary);
     }
 
-    /// <summary>用新表覆盖当前字典（只通知一次）。</summary>
+    /// <summary>用新表覆盖当前字典：批量 upsert 之后，再清掉新表里不存在的键。</summary>
+    /// <remarks>
+    ///     <see cref="ResourceDictionary.SetItems" /> 是 upsert，不会删除未列出的键。
+    ///     常规切语言时键集合不变，因此没有多余键；但调试覆盖层（本地语言文件）可以带来
+    ///     任意额外的键，覆盖层被替换或撤销后那些键会留在字典里，
+    ///     Avalonia 仍会命中旧的调试值——所以这里必须补一次清理。
+    /// </remarks>
     public void Apply(IReadOnlyDictionary<string, string> table)
     {
         ArgumentNullException.ThrowIfNull(table);
@@ -58,16 +65,10 @@ internal sealed class ResourceDictionaryBridge
         foreach (var pair in table)
             pairs[index++] = new KeyValuePair<object, object?>(pair.Key, pair.Value);
 
-        // SetItems 语义是 upsert：不会删除未列出的键，漏传的键会保留旧值而不是变空。
         _dictionary.SetItems(pairs);
-    }
 
-    /// <summary>移除多出来的键（仅键集合收缩时需要）。</summary>
-    public void RemoveMissing(IReadOnlyDictionary<string, string> table)
-    {
-        if (_dictionary is null)
-            return;
-
+        // 每个 Remove 都会单独发通知，但多出来的键只可能是"覆盖层里有、当前表里没有"
+        // 的那几个；键集合没收缩时这里一次都不会进入。
         var stale = new List<object>();
         foreach (var key in _dictionary.Keys)
         {

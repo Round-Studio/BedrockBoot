@@ -46,7 +46,7 @@ public partial class SettingAccount : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Account.Panel.Title"]
+                ItemName = "Account.Panel.Title"
             }
         };
 

@@ -591,6 +591,29 @@ public partial class MainWindow : Window
         Frame.NavigateTo(page);
     }
 
+    /// <summary>
+    ///     抽屉已经打开时直接换掉里面的内容，不重播滑入动画。
+    /// </summary>
+    /// <remarks>
+    ///     用于"同一个抽屉里的下一步"（例如添加组件 → 选版本）。
+    ///     先 CloseDraw 再 OpenDraw 是不行的：CloseDraw 延迟 800ms 还会把 Frame 清空，
+    ///     正好会把新内容一起清掉。
+    /// </remarks>
+    public void SwitchDraw(object? page, string title, string iconGlyph = null)
+    {
+        BorderTitle.Text = title;
+        BorderIcon.IsVisible = false;
+        if (!string.IsNullOrEmpty(iconGlyph))
+        {
+            BorderIcon.IsVisible = true;
+            BorderIcon.Glyph = iconGlyph;
+        }
+
+        BorderGrid.IsVisible = true;
+        BorderBackground.Opacity = 0.3;
+        Frame.NavigateTo(page);
+    }
+
     public void SetBlurState(bool state)
     {
         ContentView.Effect = new BlurEffect { Radius = state ? 50 : 0 };

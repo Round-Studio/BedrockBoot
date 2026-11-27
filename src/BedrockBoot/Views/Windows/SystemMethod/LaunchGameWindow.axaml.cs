@@ -185,9 +185,9 @@ public partial class LaunchGameWindow : Window
 
         UpdateUi(() =>
         {
-            UwpDepsText.Text = "检测到以下 UWP 依赖未安装：\n" +
-                               string.Join("\n", depList.Select(d => d.Name)) +
-                               "\n\n缺失这些依赖可能导致游戏无法启动。";
+            UwpDepsText.Text = string.Format(
+                I18nManager.Instance["LaunchWindow.Status.UWP.Missing.Content"],
+                string.Join("\n", depList.Select(d => d.Name)));
             UwpChoicePanel.IsVisible = true;
         });
 
@@ -242,13 +242,13 @@ public partial class LaunchGameWindow : Window
                 Close();
                 return;
             }
-            UpdateUi(() => ProgressBox.Text = "PreLoad.NET 组件就绪");
+            UpdateUi(() => ProgressBox.Text = I18nManager.Instance["LaunchWindow.Status.PreLoad.Ready"]);
 
             // 启动游戏前检测一次 UWP 依赖，用户取消则不启动
             var missingDeps = await UwpDependenceLaunchGuard.GetMissingDepsIfEnabledAsync();
             if (missingDeps != null)
             {
-                UpdateUi(() => ProgressBox.Text = "检测 UWP 依赖");
+                UpdateUi(() => ProgressBox.Text = I18nManager.Instance["LaunchWindow.Status.UWP.Checking"]);
                 var proceed = await ShowUwpChoiceAsync(missingDeps);
                 UpdateUi(() =>
                 {

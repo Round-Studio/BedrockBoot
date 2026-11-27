@@ -45,7 +45,7 @@ public partial class SettingPlugin : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Nav.Plugin.Title"]
+                ItemName = "Settings.Nav.Plugin.Title"
             }
         };
 

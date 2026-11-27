@@ -30,7 +30,6 @@ using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
 using BedrockBoot.Views.Pages.OtherPage;
 using BedrockBoot.Views.Pages.OtherPage.BuildRelease;
-using BedrockBoot.Views.TaskItem;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -143,20 +142,21 @@ public partial class UniversalSoftwareUpdate : ISettingPage
 
         try
         {
-            var latest = await Task.Run(PreLoadDependencyHelper.GetLatestAssetAsync);
+            // 与启动检查、启动器更新前检查共用同一条通道顺序：CNB → GitHub API → GitHub version 文件
+            var remote = await Task.Run(() => PreLoadDependencyHelper.GetRemoteVersionAsync());
             var local = PreLoadDependencyHelper.GetLocalVersion();
             var notInstalled = I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.NotInstalled"];
 
-            if (latest == null)
+            if (remote == null)
             {
                 ShowPreLoadNotice(I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.CheckFailed"]);
                 return;
             }
 
-            PreLoadComponentCard.Description = $"{local ?? notInstalled} → {latest.Value.Tag}";
+            PreLoadComponentCard.Description = $"{local ?? notInstalled} → {remote.Tag}";
 
             if (string.Equals(MultiplayerDependencyHelper.NormalizeVersion(local),
-                    MultiplayerDependencyHelper.NormalizeVersion(latest.Value.Tag),
+                    MultiplayerDependencyHelper.NormalizeVersion(remote.Tag),
                     StringComparison.OrdinalIgnoreCase))
             {
                 ShowPreLoadNotice(I18nManager.Instance["Settings.Universal.Update.GameComponent.PreLoad.Latest"]);
@@ -164,7 +164,7 @@ public partial class UniversalSoftwareUpdate : ISettingPage
             else
             {
                 // 有更新直接走后台下载任务项，与启动时自动检查共用同一入口
-                TaskDownloadPreLoadItem.StartDownload(latest.Value.Asset, latest.Value.Tag);
+                PreLoadDependencyHelper.StartDownloadInBackground(remote);
             }
         }
         catch (Exception ex)

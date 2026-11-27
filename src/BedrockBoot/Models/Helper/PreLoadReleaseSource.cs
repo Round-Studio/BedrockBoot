@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Models.Global;
@@ -102,6 +103,59 @@ public static class PreLoadReleaseSource
     public static string LatestDownloadUrl =>
         $"https://github.com/{Owner}/{Repo}/releases/latest/download/{AssetName}";
 
+    /// <summary>
+    ///     CNB 上的镜像仓库：发布流水线会同步推一份 Release 到这里。
+    ///     国内可以直连，也不经过 GitHub，因此排在所有 GitHub 通道之前作为首选来源。
+    /// </summary>
+    public const string CnbOwner = "RoundStudio_cnb";
+
+    public const string CnbRepo = "preload.net-build";
+
+    /// <summary>CNB 的 Releases 页面：页面里第一条 tag 链接就是最新版本</summary>
+    public static string CnbReleasesUrl => $"https://cnb.cool/{CnbOwner}/{CnbRepo}/-/releases";
+
+    /// <summary>CNB 的 latest 直链：服务端 302 到当前最新资产（与 GitHub 的 latest 直链同形）</summary>
+    public static string CnbLatestDownloadUrl =>
+        $"https://cnb.cool/{CnbOwner}/{CnbRepo}/-/releases/latest/download/{AssetName}";
+
+    /// <summary>CNB 通道的预算：守卫处在阻塞路径上，给得比 GitHub 通道更短</summary>
+    private static readonly TimeSpan CnbFetchTimeout = TimeSpan.FromSeconds(8);
+
+    /// <summary>从发布页 HTML 里抓 tag：形如 <c>/-/releases/tag/v26.11.27.1741</c></summary>
+    private static readonly Regex CnbTagPattern = new(
+        @"/-/releases/tag/([A-Za-z0-9][A-Za-z0-9._\-]{0,63})",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    /// <summary>
+    ///     从 CNB 的 Releases 页面读出最新 Tag。
+    ///     <para>
+    ///     CNB 没有可匿名访问的 Releases API（api.cnb.cool 需要登录），只能解析服务端渲染的
+    ///     页面链接；解析不到可用版本号就返回 null，由调用方继续走 GitHub 通道。
+    ///     </para>
+    /// </summary>
+    public static async Task<string?> TryGetCnbLatestTagAsync(CancellationToken cancellationToken = default)
+    {
+        var html = await TryGetTextAsync(new[] { CnbReleasesUrl }, CnbFetchTimeout, "CNB 发布页", cancellationToken);
+        if (html == null) return null;
+
+        var match = CnbTagPattern.Match(html);
+        if (!match.Success)
+        {
+            Console.WriteLine(@"CNB 发布页里没有解析到版本号，改用 GitHub 通道");
+            return null;
+        }
+
+        var tag = match.Groups[1].Value.Trim();
+        if (tag.Length == 0 || tag.Contains('<'))
+        {
+            Console.WriteLine(@"CNB 发布页返回的版本号异常，改用 GitHub 通道");
+            return null;
+        }
+
+        Console.WriteLine($@"PreLoad.NET 版本号来源返回 {tag}（通道：CNB）");
+        return tag;
+    }
+
     /// <summary>版本号请求的总预算，超时即判定该通道不可用（调用方处在阻塞路径上）</summary>
     private static readonly TimeSpan TextFetchTimeout = TimeSpan.FromSeconds(15);
 
@@ -162,7 +216,7 @@ public static class PreLoadReleaseSource
         PreLoadReleaseChannel channel = PreLoadReleaseChannel.Stable,
         CancellationToken cancellationToken = default)
     {
-        var text = await TryGetTextAsync(GetVersionUrls(channel), cancellationToken);
+        var text = await TryGetTextAsync(GetVersionUrls(channel), TextFetchTimeout, "版本号", cancellationToken);
         if (text == null) return null;
 
         var tag = text.Trim().Trim('"', '\'', ' ');
@@ -197,10 +251,11 @@ public static class PreLoadReleaseSource
         $"https://github.com/{Owner}/{Repo}/releases/download/{Uri.EscapeDataString(tag)}/{AssetName}";
 
     /// <summary>依次尝试候选地址，返回第一个成功且非空的响应文本</summary>
-    private static async Task<string?> TryGetTextAsync(IReadOnlyList<string> urls, CancellationToken cancellationToken)
+    private static async Task<string?> TryGetTextAsync(IReadOnlyList<string> urls, TimeSpan timeoutBudget,
+        string label, CancellationToken cancellationToken)
     {
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        timeout.CancelAfter(TextFetchTimeout);
+        timeout.CancelAfter(timeoutBudget);
 
         using var client = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
         client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "BedrockBoot");
@@ -212,7 +267,7 @@ public static class PreLoadReleaseSource
                 using var response = await client.GetAsync(url, timeout.Token);
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($@"PreLoad.NET 版本号地址不可用（{url}）：HTTP {(int)response.StatusCode}");
+                    Console.WriteLine($@"PreLoad.NET {label}地址不可用（{url}）：HTTP {(int)response.StatusCode}");
                     continue;
                 }
 
@@ -221,12 +276,12 @@ public static class PreLoadReleaseSource
             }
             catch (OperationCanceledException) when (timeout.IsCancellationRequested)
             {
-                Console.WriteLine($@"PreLoad.NET 版本号获取超时（{TextFetchTimeout.TotalSeconds:F0} 秒），放弃该通道");
+                Console.WriteLine($@"PreLoad.NET {label}获取超时（{timeoutBudget.TotalSeconds:F0} 秒），放弃该通道");
                 return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($@"PreLoad.NET 版本号地址请求失败（{url}）：{ex.Message}");
+                Console.WriteLine($@"PreLoad.NET {label}地址请求失败（{url}）：{ex.Message}");
             }
         }
 

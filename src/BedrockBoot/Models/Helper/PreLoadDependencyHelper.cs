@@ -52,6 +52,12 @@ namespace BedrockBoot.Models.Helper;
 ///     </para>
 ///
 ///     <para>
+///     所有入口共用一条通道顺序：CNB 镜像（国内直连，不经过 GitHub）→ GitHub API（能拿到
+///     可带授权的资产地址）→ GitHub 的 main 分支 version 文件（普通网页请求，不消耗 API 配额）
+///     → GitHub latest 直链。任一条可用即用，因此 GitHub 被限流或连不上时仍能拿到组件。
+///     </para>
+///
+///     <para>
 ///     启动器自身更新落地前还有一道强制检查（<see cref="CheckBeforeLauncherUpdateAsync"/>）：
 ///     该环节没有开关、不读配置，组件更新失败会直接中止启动器更新。
 ///     版本号、镜像与更新内容的来源统一走 <see cref="PreLoadReleaseSource"/>。
@@ -95,28 +101,27 @@ public static class PreLoadDependencyHelper
     {
         try
         {
-            var latest = await GetLatestAssetAsync();
-            if (latest == null)
+            var remote = await GetRemoteVersionAsync();
+            if (remote == null)
             {
-                Console.WriteLine(@"PreLoad.NET 更新检查：最新 Release 中未找到 PreLoad.NET.dll，跳过");
+                Console.WriteLine(@"PreLoad.NET 更新检查：所有通道都没拿到版本信息，跳过");
                 return;
             }
 
             var localVersion = GetLocalVersion();
-            if (string.Equals(MultiplayerDependencyHelper.NormalizeVersion(localVersion),
-                    MultiplayerDependencyHelper.NormalizeVersion(latest.Value.Tag),
-                    StringComparison.OrdinalIgnoreCase))
+            if (IsUpToDate(localVersion, remote.Tag))
             {
                 Console.WriteLine($@"PreLoad.NET 已是最新版本：{localVersion}");
                 return;
             }
 
-            Console.WriteLine($@"PreLoad.NET 发现新版本 {latest.Value.Tag}（本地：{localVersion ?? "无记录"}），加入下载任务");
+            Console.WriteLine(
+                $@"PreLoad.NET 发现新版本 {remote.Tag}（本地：{localVersion ?? "无记录"}，通道：{remote.Channel}），加入下载任务");
 
             // 任务列表 UI 依赖主窗口，等它就绪再派发（超时则放弃，不影响启动）
             WaitForMainWindowOrTimeout();
 
-            TaskDownloadPreLoadItem.StartDownload(latest.Value.Asset, latest.Value.Tag);
+            StartDownloadInBackground(remote);
         }
         catch (Exception ex)
         {
@@ -126,11 +131,10 @@ public static class PreLoadDependencyHelper
 
     /// <summary>
     ///     启动游戏前的强制就绪守卫：组件缺失时阻塞等待下载完成。
-    ///     严格模式——两条通道都拿不到文件时返回 false 拦截启动。
+    ///     严格模式——所有通道都拿不到文件时返回 false 拦截启动。
     ///     <para>
-    ///     API 查得到 Release 时走 API（能拿到 Tag 写入版本记录）；
-    ///     API 失败（限流/断网/私有仓库无权限）则退回 latest 直链，
-    ///     直链不经过 api.github.com，不会被 Rate Limit 拦住。
+    ///     先按通道顺序找最新版本（CNB → GitHub API → GitHub version 文件），
+    ///     都失败时再打 GitHub latest 直链，尽量不让用户因为网络卡在启动这一步。
     ///     </para>
     /// </summary>
     public static async Task<bool> EnsureComponentReadyAsync()
@@ -142,26 +146,19 @@ public static class PreLoadDependencyHelper
             Console.WriteLine(@"PreLoad.NET 组件缺失，启动前强制下载");
             WaitForMainWindowOrTimeout();
 
-            var latest = await TryGetLatestAssetAsync();
-            if (latest != null)
-            {
-                var success = await TaskDownloadPreLoadItem.StartDownloadAndWait(latest.Value.Asset, latest.Value.Tag);
-                if (!success)
-                    ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+            var remote = await GetRemoteVersionAsync();
+            if (remote != null && await DownloadRemoteAsync(remote)) return true;
 
-                return success;
+            // 版本号拿不到，或那条通道下载失败：退到 GitHub latest 直链
+            // （若刚才就是 GitHub latest 通道，同一个地址不再重复尝试）
+            if (remote?.Channel != PreLoadDownloadChannel.GitHubLatest)
+            {
+                Console.WriteLine($@"PreLoad.NET 改走 latest 直链：{LatestDownloadUrl}");
+                if (await DownloadByDirectLinkAsync(null)) return true;
             }
 
-            // API 通道不可用：直接打 latest 直链，不让 API 的限流把启动彻底卡死
-            Console.WriteLine($@"PreLoad.NET 版本信息获取失败，改用直链下载：{LatestDownloadUrl}");
-
-            if (!await DownloadByDirectLinkAsync(null))
-            {
-                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
-                return false;
-            }
-
-            return true;
+            ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+            return false;
         }
         catch (Exception ex)
         {
@@ -179,58 +176,39 @@ public static class PreLoadDependencyHelper
     ///     调用方必须中止启动器更新。
     ///     </para>
     ///     <para>
-    ///     版本号优先走 GitHub API（顺带拿到资产对象，可带授权头下载）；API 不可用时退回
-    ///     <see cref="PreLoadReleaseSource" /> 的版本文件通道（main 分支的 version 文件，不消耗 API 配额）；
-    ///     两条都拿不到就直接按 latest 直链强制下载。
+    ///     版本号按通道顺序解析：CNB（国内直连，不碰 GitHub）→ GitHub API（顺带拿到资产对象，
+    ///     可带授权头下载）→ GitHub 的 version 文件。CNB 下载失败时会再走一遍 GitHub 通道；
+    ///     全部通道都失败才按 GitHub latest 直链强下，仍失败即中止启动器更新。
     ///     </para>
     /// </summary>
     public static async Task<bool> CheckBeforeLauncherUpdateAsync()
     {
         try
         {
-            var latest = await TryGetLatestAssetAsync();
-            if (latest != null)
+            var localVersion = GetLocalVersion();
+
+            // 先 CNB、再 GitHub：两轮各自「比版本 → 落后就下载」，任一成功即放行
+            foreach (var includeCnb in new[] { true, false })
             {
-                var localVersion = GetLocalVersion();
-                if (IsUpToDate(localVersion, latest.Value.Tag))
-                {
-                    Console.WriteLine($@"更新启动器前检查：PreLoad.NET 已是最新版本 {localVersion}");
-                    return true;
-                }
+                var remote = await GetRemoteVersionAsync(includeCnb);
+                if (remote == null) continue;
 
-                Console.WriteLine(
-                    $@"更新启动器前检查：PreLoad.NET 需要更新 {localVersion ?? "无记录"} → {latest.Value.Tag}");
-
-                if (await TaskDownloadPreLoadItem.StartDownloadAndWait(latest.Value.Asset, latest.Value.Tag))
-                    return true;
-
-                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
-                return false;
-            }
-
-            // API 不可用：读 main 分支的 version 文件拿版本号（普通网页请求，不消耗 API 配额）
-            var remote = await PreLoadReleaseSource.TryGetLatestAsync(PreLoadReleaseChannel.Stable);
-            if (remote != null)
-            {
-                var localVersion = GetLocalVersion();
                 if (IsUpToDate(localVersion, remote.Tag))
                 {
-                    Console.WriteLine($@"更新启动器前检查：PreLoad.NET 已是最新版本 {localVersion}");
+                    Console.WriteLine(
+                        $@"更新启动器前检查：PreLoad.NET 已是最新版本 {localVersion}（通道：{remote.Channel}）");
                     return true;
                 }
 
                 Console.WriteLine(
-                    $@"更新启动器前检查：PreLoad.NET 需要更新 {localVersion ?? "无记录"} → {remote.Tag}（版本号来源）");
+                    $@"更新启动器前检查：PreLoad.NET 需要更新 {localVersion ?? "无记录"} → {remote.Tag}（通道：{remote.Channel}）");
 
-                if (await DownloadByDirectLinkAsync(remote.Tag)) return true;
-
-                ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
-                return false;
+                if (await DownloadRemoteAsync(remote)) return true;
             }
 
-            // 两条版本号通道都不可用：按 latest 直链强制下载，至少保证组件是当前最新产物
+            // 所有通道都拿不到版本号，或拿到的通道都下载失败：按 GitHub latest 直链强下
             Console.WriteLine(
-                $@"更新启动器前检查：无法获取 PreLoad.NET 版本信息，按 latest 直链强制下载 {PreLoadReleaseSource.LatestDownloadUrl}");
+                $@"更新启动器前检查：无法从各通道完成更新，改走 latest 直链强制下载 {PreLoadReleaseSource.LatestDownloadUrl}");
 
             if (await DownloadByDirectLinkAsync(null)) return true;
 
@@ -277,6 +255,108 @@ public static class PreLoadDependencyHelper
 
         return string.Equals(MultiplayerDependencyHelper.NormalizeVersion(localVersion),
             MultiplayerDependencyHelper.NormalizeVersion(remoteTag), StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>PreLoad.NET 的下载通道，数值即优先级（越小越先试）</summary>
+    public enum PreLoadDownloadChannel
+    {
+        /// <summary>CNB 镜像：国内直连，完全不经过 GitHub</summary>
+        Cnb = 0,
+
+        /// <summary>GitHub API：能拿到资产对象，私有仓库可带授权头</summary>
+        GitHubRelease = 1,
+
+        /// <summary>GitHub latest 直链：不消耗 api.github.com 的配额</summary>
+        GitHubLatest = 2
+    }
+
+    /// <summary>远端最新版本，以及该版本能用的下载方式</summary>
+    /// <param name="Tag">远端版本号（可能不带 v 前缀）</param>
+    /// <param name="Channel">下载通道</param>
+    /// <param name="Asset">仅 GitHub API 通道有；其余通道为 null，按直链下载</param>
+    public sealed record PreLoadRemoteVersion(string Tag, PreLoadDownloadChannel Channel, ReleaseAsset? Asset);
+
+    /// <summary>
+    ///     解析远端最新版本：CNB → GitHub API → GitHub 的 version 文件，取第一个可用的。
+    ///     <paramref name="includeCnb" /> 为 false 时跳过 CNB，用于 CNB 下载失败后的 GitHub 重试。
+    ///     全部失败返回 null。
+    /// </summary>
+    public static async Task<PreLoadRemoteVersion?> GetRemoteVersionAsync(bool includeCnb = true)
+    {
+        // 1) CNB 优先：国内直连，也不消耗 GitHub 的任何配额
+        if (includeCnb)
+        {
+            var cnbTag = await PreLoadReleaseSource.TryGetCnbLatestTagAsync();
+            if (cnbTag != null) return new PreLoadRemoteVersion(cnbTag, PreLoadDownloadChannel.Cnb, null);
+        }
+
+        // 2) GitHub API（限流/断网/无权限时返回 null）
+        var latest = await TryGetLatestAssetAsync();
+        if (latest != null)
+            return new PreLoadRemoteVersion(latest.Value.Tag, PreLoadDownloadChannel.GitHubRelease, latest.Value.Asset);
+
+        // 3) GitHub main 分支的 version 文件
+        var remote = await PreLoadReleaseSource.TryGetLatestAsync(PreLoadReleaseChannel.Stable);
+        return remote == null ? null : new PreLoadRemoteVersion(remote.Tag, PreLoadDownloadChannel.GitHubLatest, null);
+    }
+
+    /// <summary>按解析结果的通道下载并落地组件；失败返回 false，不抛异常</summary>
+    public static async Task<bool> DownloadRemoteAsync(PreLoadRemoteVersion remote)
+    {
+        try
+        {
+            return remote.Channel switch
+            {
+                PreLoadDownloadChannel.Cnb => await DownloadFromCnbAsync(remote.Tag),
+                PreLoadDownloadChannel.GitHubRelease => await TaskDownloadPreLoadItem.StartDownloadAndWait(
+                    remote.Asset!, remote.Tag),
+                _ => await DownloadByDirectLinkAsync(remote.Tag)
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"PreLoad.NET 组件下载失败（通道：{remote.Channel}）：{ex}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    ///     从 CNB 的 latest 直链下载。该地址固定、国内可直连，不需要走 GitHub 加速源探测。
+    /// </summary>
+    private static async Task<bool> DownloadFromCnbAsync(string? tag)
+    {
+        Console.WriteLine($@"使用 CNB 通道下载 PreLoad.NET：{PreLoadReleaseSource.CnbLatestDownloadUrl}");
+
+        var success = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(
+            PreLoadReleaseSource.CnbLatestDownloadUrl, tag);
+
+        if (!success) Console.WriteLine(@"CNB 通道下载 PreLoad.NET 失败");
+        return success;
+    }
+
+    /// <summary>
+    ///     后台下载：CNB 失败时再走一遍 GitHub 通道，避免国内镜像单点故障；
+    ///     异常在这里吞掉，不让未观察任务冒到上层。设置页的手动检查也用它。
+    /// </summary>
+    public static void StartDownloadInBackground(PreLoadRemoteVersion remote)
+    {
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                if (await DownloadRemoteAsync(remote)) return;
+
+                if (remote.Channel != PreLoadDownloadChannel.Cnb) return;
+
+                Console.WriteLine(@"CNB 通道下载失败，改用 GitHub 通道重试");
+                var github = await GetRemoteVersionAsync(includeCnb: false);
+                if (github != null) await DownloadRemoteAsync(github);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"PreLoad.NET 后台下载失败：{ex.Message}");
+            }
+        });
     }
 
     /// <summary>

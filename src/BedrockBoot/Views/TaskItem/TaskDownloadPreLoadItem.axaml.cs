@@ -88,13 +88,13 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
     }
 
     /// <summary>
-    ///     直链兜底构造：不依赖 ReleaseAsset，用于 GitHub API 不可用时按 latest 直链下载。
-    ///     直链本身不带版本号，版本记录由调用方解析后另写。
+    ///     直链构造：不依赖 ReleaseAsset，用于 API 不可用时的 latest 直链（GitHub / CNB）。
+    ///     <paramref name="tagName" /> 已知时用它写版本记录，未知则只落地文件。
     /// </summary>
-    public TaskDownloadPreLoadItem(string directUrl) : this()
+    public TaskDownloadPreLoadItem(string directUrl, string? tagName = null) : this()
     {
         _directUrl = directUrl;
-        _tagName = "";
+        _tagName = tagName ?? "";
         _taskTitle = I18nManager.Instance["Task.PreLoad.Update.Title"];
     }
 
@@ -134,11 +134,20 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
 
                 if (_directUrl != null)
                 {
-                    // API 不可用时的兜底通道：直链是普通网页地址，不带鉴权头，
-                    // 因此可以照常走加速源探测；公开仓库匿名即可下载
-                    var directDownload = new GithubFilesDownloader(
-                        BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
-                    await directDownload.DownloadAsync(_directUrl, downloadPath, progressHandler, token);
+                    // 直链是普通网页地址，不带鉴权头。GitHub 的直链要走加速源测速；
+                    // 其它源（CNB 等）本身国内可直连，镜像前缀套上去只会变慢甚至失效。
+                    if (IsGitHubUrl(_directUrl))
+                    {
+                        var directDownload = new GithubFilesDownloader(
+                            BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                        await directDownload.DownloadAsync(_directUrl, downloadPath, progressHandler, token);
+                    }
+                    else
+                    {
+                        using var directDownloader = new MultiThreadDownloader(
+                            BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                        await directDownloader.DownloadAsync(_directUrl, downloadPath, progressHandler, token);
+                    }
                 }
                 else if (string.IsNullOrEmpty(userToken))
                 {
@@ -213,11 +222,18 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
         StartTaskAndWait(() => new TaskDownloadPreLoadItem(asset, tagName));
 
     /// <summary>
-    ///     直链兜底入口：GitHub API 不可用时按 latest 直链下载并等待结果。
-    ///     如需写版本记录，由调用方另外解析 Tag 后补写。
+    ///     直链入口：API 不可用时按 latest 直链下载并等待结果。
+    ///     <paramref name="tagName" /> 已知时顺带写版本记录。
     /// </summary>
-    public static Task<bool> StartDirectDownloadAndWait(string directUrl) =>
-        StartTaskAndWait(() => new TaskDownloadPreLoadItem(directUrl));
+    public static Task<bool> StartDirectDownloadAndWait(string directUrl, string? tagName = null) =>
+        StartTaskAndWait(() => new TaskDownloadPreLoadItem(directUrl, tagName));
+
+    /// <summary>直链是否属于 GitHub（决定要不要套加速源）</summary>
+    private static bool IsGitHubUrl(string url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+        (uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase) ||
+         uri.Host.EndsWith(".github.com", StringComparison.OrdinalIgnoreCase) ||
+         uri.Host.EndsWith(".githubusercontent.com", StringComparison.OrdinalIgnoreCase));
 
     private static Task<bool> StartTaskAndWait(Func<TaskDownloadPreLoadItem> factory)
     {

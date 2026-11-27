@@ -10,7 +10,7 @@
 ## 一、为什么改
 
 1. 上游要求**更新启动器前必须先把 PreLoad.NET 补到最新**，且不允许用户配置绕过。
-2. `api.github.com` 会按 IP 限流，国内还经常连不上；组件更新一旦卡在 API 上，用户既更新不了组件也更新不了启动器。
+2. `api.github.com` 会按 IP 限流，国内还经常连不上，并且无法用 GitHub 镜像源加速；组件更新一旦卡在 API 上，用户既更新不了组件也更新不了启动器。
 3. PreLoad.NET 已经同步发布到 CNB（`RoundStudio_cnb/preload.net-build`），国内可直连，但 CNB 没有可匿名访问的 Releases API，抓页面既慢又不稳。
 4. 启动器自身的版本号、更新日志此前只有 API 一条路，API 一挂就只剩「网络错误」弹窗。
 

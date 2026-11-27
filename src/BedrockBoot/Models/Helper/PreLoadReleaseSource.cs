@@ -159,27 +159,8 @@ public static class PreLoadReleaseSource
     }
 
     /// <summary>把地址展开成“原始地址 + 统一加速源 + 预留专用镜像”的候选列表（去重保序）</summary>
-    public static IReadOnlyList<string> GetMirroredUrls(string url)
-    {
-        var urls = new List<string> { url };
-
-        void Add(string candidate)
-        {
-            if (!string.IsNullOrWhiteSpace(candidate) && !urls.Contains(candidate)) urls.Add(candidate);
-        }
-
-        // 先按上游指定的专用镜像，再用启动器统一的加速源表兜底
-        foreach (var prefix in MirrorPrefixes) Add(prefix.Replace("{url}", url));
-
-        foreach (var source in SourceList.UpdateDownloadSources.Values)
-        {
-            // {route} 形式的模板是给同域名拼接用的，套不了完整 URL
-            if (source.Contains("{route}", StringComparison.Ordinal)) continue;
-            Add(source.Replace("{url}", url));
-        }
-
-        return urls;
-    }
+    public static IReadOnlyList<string> GetMirroredUrls(string url) =>
+        GithubMirrorUrls.Expand(url, MirrorPrefixes);
 
     /// <summary>
     ///     按约定读取版本号。所有候选地址都失败、内容为空或明显是错误页面时返回 null。

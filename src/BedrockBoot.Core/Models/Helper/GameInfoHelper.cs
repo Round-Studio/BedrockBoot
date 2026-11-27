@@ -347,6 +347,43 @@ public static class GameInfoHelper
     public static string GetGameWorkingDirectory(VersionConfig? config) =>
         config == null ? string.Empty : GetGameWorkingDirectory(config.VersionPath, config.BodyFile);
 
+    /// <summary>
+    /// 获取用于启动/注册的游戏包目录。
+    /// PCLSE 解压版本可能把清单（appxmanifest.xml / MicrosoftGame.Config）放在 inner 下，
+    /// 外层版本目录里没有清单，UWP 注册会失败，因此需要指向真正包含清单的目录。
+    /// 版本数据本身仍使用外层 VersionPath。
+    /// </summary>
+    public static string GetGamePackageDirectory(string? versionPath)
+    {
+        if (string.IsNullOrEmpty(versionPath)) return string.Empty;
+
+        try
+        {
+            if (HasPackageManifest(versionPath)) return versionPath;
+
+            var innerPath = Path.Combine(versionPath, "inner");
+            if (Directory.Exists(innerPath) && !IsRemoteLinkedPath(innerPath) && HasPackageManifest(innerPath))
+                return innerPath;
+
+            return versionPath;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"获取游戏包目录失败（{versionPath}）：{ex.Message}");
+            return versionPath;
+        }
+    }
+
+    /// <summary>
+    /// 获取用于启动/注册的游戏包目录。
+    /// </summary>
+    public static string GetGamePackageDirectory(VersionConfig? config) =>
+        config == null ? string.Empty : GetGamePackageDirectory(config.VersionPath);
+
+    private static bool HasPackageManifest(string path) =>
+        File.Exists(Path.Combine(path, "appxmanifest.xml")) ||
+        File.Exists(Path.Combine(path, "MicrosoftGame.Config"));
+
     public static MinecraftGameTypeVersion GetVersionTypeWithPackName(string packName)
     {
         if (string.IsNullOrEmpty(packName)) return MinecraftGameTypeVersion.Release;

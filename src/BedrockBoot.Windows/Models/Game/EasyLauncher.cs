@@ -234,7 +234,8 @@ public class EasyLauncher : ILauncher
             {
                 MinecraftProcess = await CoreGlobal.BedrockCore.LaunchGameAsync(new LaunchOptions
                 {
-                    GameFolder = VersionInfo.VersionPath,
+                    // 嵌套安装的清单位于 inner，注册/启动需要的是真正包含清单的包目录。
+                    GameFolder = GameInfoHelper.GetGamePackageDirectory(VersionInfo),
                     GameType = VersionInfo.Info.VersionType,
                     MinecraftBuildType = VersionInfo.Info.BuildType,
                     RunAsAdministrator = VersionInfo.Config.SysWindowsConfig.IsUseAdminRun &&

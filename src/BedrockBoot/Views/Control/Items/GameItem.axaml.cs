@@ -123,7 +123,7 @@ public partial class GameItem : UserControl
         {
             VerticalAlignment = VerticalAlignment.Center,
             Text = GetVersionTypeText(VersionInfo.Info.VersionType),
-             Background = new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80))
+             Background = GetResourceBrush("AccentSubtleBrush", new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80)))
 
         });
 
@@ -132,12 +132,19 @@ public partial class GameItem : UserControl
             VerticalAlignment = VerticalAlignment.Center,
             Text = VersionInfo.Info.BuildType.ToString(),
             // 弱化处理，避免和启动按钮抢主色
-            Background = new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80))
+            Background = GetResourceBrush("AccentSubtleBrush", new SolidColorBrush(Color.FromArgb(0x33, 0x80, 0x80, 0x80)))
         });
 
         HeaderLabelsPanel.IsVisible = true;
     }
-
+    private IBrush GetResourceBrush(string resourceKey, IBrush fallback)
+    {
+        if (this.TryFindResource(resourceKey, out var res) && res is IBrush brush)
+        {
+            return brush;
+        }
+        return fallback;
+    }
     private static string GetVersionTypeText(MinecraftGameTypeVersion versionType)
     {
         return versionType switch

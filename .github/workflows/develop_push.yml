@@ -124,3 +124,35 @@ jobs:
           name: linux-artifact
           path: ./artifacts
           retention-days: 1
+
+  # 推送 CI 提交版版本号到 version 分支（info/commit）
+  push-commit-info:
+    runs-on: ubuntu-latest
+    needs: [win-build, linux-build]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Push commit version to version branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git ls-remote --heads origin version | grep -q 'refs/heads/version'; then
+            git fetch origin version --depth=1 2>/dev/null || true
+            git checkout -B version FETCH_HEAD
+          else
+            # version 分支不存在：以孤儿分支初始化
+            git checkout --orphan version
+            git rm -rf . 2>/dev/null || true
+          fi
+
+          # CI 提交版版本号
+          V="${{ needs.version.outputs.v }}"
+          mkdir -p info
+          printf '%s' "$V" > info/commit
+          git add info/commit
+
+          git commit -m "chore: 更新 CI 提交版信息到 $V [skip ci]" || echo "无变更提交"
+          git push origin version

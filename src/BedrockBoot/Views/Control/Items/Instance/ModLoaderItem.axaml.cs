@@ -70,6 +70,11 @@ public partial class ModLoaderItem : ISetting
             LoaderInstallStatus.Text = !_loader.IsInstalled() ? I18nManager.Instance["Instance.Loader.Status.NotInstalled"] : version;
             LoaderInstallStatus.IsVisible = !string.IsNullOrEmpty(version);
         }
+        else
+        {
+            LoaderInstallStatus.Text = I18nManager.Instance["Instance.Loader.Status.NotInstalled"];
+        }
+
         if (!string.IsNullOrEmpty(_loader.IconUri))
         {
             LoaderCard.IsFontIcon = false;

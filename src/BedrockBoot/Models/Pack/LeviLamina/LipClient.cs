@@ -161,32 +161,72 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
         private async Task<LeviConfig> LoadConfigAsync()
         {
-            // 与主程序下载一致的 GitHub 请求方式：走 SourceList 加速源竞速获取 tooth.json，
-            // 取代原先的 jsdelivr 镜像直链
-            string configUrl = $"https://github.com/{toothPath}/raw/v{version}/tooth.json";
-            string tempFile = Path.Combine(Path.GetTempPath(), $"tooth-{Guid.NewGuid():N}.json");
-
-            Console.WriteLine($@"加载配置: {configUrl}");
-
+            // 与主程序下载一致的 GitHub 请求方式：走 SourceList 加速源竞速获取清单。
+            // LiteLDev 正在把 tooth.json 迁移为 lip.toml（format = 4），两种格式并存：
+            // 同时对 lip.toml 和 tooth.json 发起下载解析竞速，哪个先成功就用哪个；
+            // 新旧仓库、代理把 404 包成错误页等情况全部覆盖。
             try
             {
-                await _downloader.DownloadAsync(configUrl, tempFile, null, CancellationToken.None);
+                var fetchTasks = GetConfigUrls().Select(FetchAndParseConfigAsync).ToList();
 
-                var config = JsonSerializer.Deserialize<LeviConfig>(await File.ReadAllTextAsync(tempFile),
-                    new JsonSerializerOptions
+                // 竞速：任一候选成功即用；全失败则抛最后一个异常
+                while (fetchTasks.Count > 0)
+                {
+                    var completed = await Task.WhenAny(fetchTasks);
+
+                    try
                     {
-                        PropertyNameCaseInsensitive = true
-                    });
+                        var config = await completed;
 
-                if (config == null)
-                    throw new Exception("配置解析失败");
+                        Console.WriteLine($@"配置加载成功: {config.Info?.Name ?? "未知"} v{config.Version}");
+                        return config;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($@"清单候选失败，等待其余候选: {ex.Message}");
+                        fetchTasks.Remove(completed);
+                    }
+                }
 
-                Console.WriteLine($@"配置加载成功: {config.Info?.Name ?? "未知"} v{config.Version}");
-                return config;
+                throw new Exception("所有清单候选均不可用");
             }
             catch (Exception ex)
             {
                 throw new Exception($"无法获取配置文件 (版本 {version}): {ex.Message}");
+            }
+        }
+
+        // 清单候选地址：lip.toml 与 tooth.json 并行竞速（沿用 tag = v+版本 约定）
+        private IEnumerable<string> GetConfigUrls()
+        {
+            yield return $"https://github.com/{toothPath}/raw/v{version}/lip.toml";
+            yield return $"https://github.com/{toothPath}/raw/v{version}/tooth.json";
+        }
+
+        // 单个清单候选：下载 → 先 TOML 后 JSON 双解析，任一环节失败抛异常（竞速中被忽略）
+        private async Task<LeviConfig> FetchAndParseConfigAsync(string configUrl)
+        {
+            string tempFile = Path.Combine(Path.GetTempPath(), $"tooth-{Guid.NewGuid():N}.json");
+
+            try
+            {
+                Console.WriteLine($@"加载配置: {configUrl}");
+
+                await _downloader.DownloadAsync(configUrl, tempFile, null, CancellationToken.None);
+
+                var text = await File.ReadAllTextAsync(tempFile);
+
+                // lip.toml（新）优先；TOML 解析不成立（含 JSON 文本）再按 tooth.json（旧）反序列化
+                var config = LipToml.Parse(text)
+                             ?? JsonSerializer.Deserialize<LeviConfig>(text, new JsonSerializerOptions
+                             {
+                                 PropertyNameCaseInsensitive = true
+                             });
+
+                if (config?.Variants == null || config.Variants.Count == 0)
+                    throw new Exception("配置解析失败或无可用变体");
+
+                return config;
             }
             finally
             {
@@ -205,7 +245,11 @@ namespace BedrockBoot.Models.Pack.LeviLamina
         {
             if (isClientMode)
             {
-                var clientVariant = config.Variants.FirstOrDefault(v => v.Label == "client");
+                // 新 lip.toml：没有 "client" label，两个变体共用空 label，按 side 字段区分；
+                // 旧 tooth.json：客户端变体自带 label = "client"
+                var clientVariant = config.Variants.FirstOrDefault(v =>
+                    string.Equals(v.Side, "client", StringComparison.OrdinalIgnoreCase) ||
+                    v.Label == "client");
                 if (clientVariant != null)
                 {
                     Console.WriteLine(@"使用客户端变体");
@@ -428,13 +472,24 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
         private async Task DownloadAndExtractMainAssetAsync(LeviConfig config, Variant variant)
         {
-            var asset = variant.Assets.FirstOrDefault();
+            // type = "self" 的清单（如 levilamina-loc）没有 urls，只有放置规则
+            var asset = variant.Assets?.FirstOrDefault(a => a.Urls is { Count: > 0 });
             if (asset == null)
-                throw new Exception("未找到可用的资源文件");
+            {
+                if (variant.Assets is { Count: > 0 })
+                {
+                    Console.WriteLine(@"资源无下载地址（self 类型），直接执行放置规则");
+                    await ExtractAndPlaceFilesAsync(null, variant);
+                    return;
+                }
 
-            var url = asset.Urls.First()
-                .Replace("{{tooth}}", tooth)
-                .Replace("{{version}}", version);
+                throw new Exception("未找到可用的资源文件");
+            }
+
+            var url = asset.Urls.FirstOrDefault(u => !string.IsNullOrWhiteSpace(u))
+                ?.Replace("{{tooth}}", tooth)
+                ?.Replace("{{id}}", tooth)
+                ?.Replace("{{version}}", version);
 
             Console.WriteLine($@"下载主程序: {url}");
 
@@ -462,8 +517,8 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
                 Console.WriteLine($@"下载完成");
 
-                // 优先使用包内自带的 tooth.json，其放置规则与压缩包实际结构一致；
-                // 仓库 tag 里的 tooth.json 可能与发布包不同步，导致放置源目录找不到。
+                // 优先使用包内自带的清单（lip.toml / tooth.json），其放置规则与压缩包实际结构一致；
+                // 仓库 tag 里的清单可能与发布包不同步，导致放置源目录找不到。
                 var effectiveVariant = await TryLoadEmbeddedVariantAsync(filePath) ?? variant;
 
                 await ExtractAndPlaceFilesAsync(filePath, effectiveVariant);
@@ -477,33 +532,35 @@ namespace BedrockBoot.Models.Pack.LeviLamina
             }
         }
 
-        // 读取发布包根目录下的 tooth.json（如果存在），用于获取与压缩包结构一致的变体与放置规则
+        // 读取发布包根目录下的清单（lip.toml 优先，回落 tooth.json），用于获取与压缩包结构一致的变体与放置规则
         private async Task<Variant> TryLoadEmbeddedVariantAsync(string zipPath)
         {
             try
             {
                 using var archive = ZipFile.OpenRead(zipPath);
                 var entry = archive.Entries.FirstOrDefault(e =>
+                    string.Equals(e.FullName.TrimStart('.', '/'), "lip.toml", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(e.FullName.TrimStart('.', '/'), "tooth.json", StringComparison.OrdinalIgnoreCase));
                 if (entry == null) return null;
 
                 using var stream = entry.Open();
                 using var reader = new StreamReader(stream);
-                var json = await reader.ReadToEndAsync();
+                var text = await reader.ReadToEndAsync();
 
-                var embedded = JsonSerializer.Deserialize<LeviConfig>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var embedded = LipToml.Parse(text)
+                               ?? JsonSerializer.Deserialize<LeviConfig>(text, new JsonSerializerOptions
+                               {
+                                   PropertyNameCaseInsensitive = true
+                               });
 
                 if (embedded?.Variants == null || embedded.Variants.Count == 0) return null;
 
-                Console.WriteLine(@"使用包内 tooth.json 的放置规则");
+                Console.WriteLine($@"使用包内 {entry.Name} 的放置规则");
                 return SelectVariant(embedded);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($@"读取包内 tooth.json 失败，将使用仓库配置: {ex.Message}");
+                Console.WriteLine($@"读取包内清单失败，将使用仓库配置: {ex.Message}");
                 return null;
             }
         }
@@ -512,13 +569,22 @@ namespace BedrockBoot.Models.Pack.LeviLamina
         {
             Console.WriteLine(@"解压并放置文件");
 
-            string tempExtractDir = Path.Combine(installDir, $"temp_extract_{Guid.NewGuid():N}");
-            Directory.CreateDirectory(tempExtractDir);
+            string tempExtractDir = null;
 
             try
             {
-                ZipFile.ExtractToDirectory(zipPath, tempExtractDir);
-                Console.WriteLine($@"解压到临时目录: {tempExtractDir}");
+                if (zipPath != null)
+                {
+                    tempExtractDir = Path.Combine(installDir, $"temp_extract_{Guid.NewGuid():N}");
+                    Directory.CreateDirectory(tempExtractDir);
+                    ZipFile.ExtractToDirectory(zipPath, tempExtractDir);
+                    Console.WriteLine($@"解压到临时目录: {tempExtractDir}");
+                }
+                else
+                {
+                    // type = "self"：资源即安装目录本身，放置源直接取 installDir
+                    tempExtractDir = installDir;
+                }
 
                 foreach (var placement in variant.Assets.First().Placements)
                 {
@@ -566,7 +632,8 @@ namespace BedrockBoot.Models.Pack.LeviLamina
             }
             finally
             {
-                if (Directory.Exists(tempExtractDir))
+                // self 类型时 tempExtractDir 即 installDir，绝不能删
+                if (tempExtractDir != null && tempExtractDir != installDir && Directory.Exists(tempExtractDir))
                 {
                     try
                     {
@@ -860,6 +927,9 @@ namespace BedrockBoot.Models.Pack.LeviLamina
     public class Variant
     {
         [JsonPropertyName("label")] public string Label { get; set; }
+
+        // lip.toml（format = 4）新增：区分 client / server，替代旧的 label = "client" 约定
+        [JsonPropertyName("side")] public string Side { get; set; }
 
         [JsonPropertyName("platform")] public string Platform { get; set; }
 

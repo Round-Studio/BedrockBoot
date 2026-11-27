@@ -20,14 +20,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Pack.LeviLamina;
 using BedrockBoot.Models.Pack.Game.Loaders.LeviLamina;
 using BedrockBoot.Models.Pack.Game.Loaders.ModsManagers;
 using BedrockBoot.Standard.Interface.ModLoader;
@@ -137,12 +139,44 @@ public class LeviLamina : IModsLoader
                 Console.WriteLine($@"将要安装的 LeviLamina 版本：{version}");
                 var releaseUrl =
                     $"https://github.com/LiteLDev/LeviLamina/releases/download/v{version}/levilamina-v{version}-client-release-windows-x64.zip";
-                var toothUrl = $"https://fastly.jsdelivr.net/gh/LiteLDev/LeviLamina@v{version}/tooth.json";
 
-                var tooth = await FetchToothJsonAsync(toothUrl);
+                // 拉取清单期间显示加载框，避免长时间无响应
+                var loadingText = new TextBlock
+                {
+                    FontSize = 16,
+                    Text = $"正在获取 LeviLamina v{version} 清单…"
+                };
+                var loadingRing = new OnePointUI.Avalonia.Styling.Controls.OnePointControls.ProgressRing
+                {
+                    Width = 36,
+                    Height = 36,
+                    Background = Avalonia.Media.Brushes.Transparent
+                };
+                var loadingPanel = new StackPanel
+                {
+                    Orientation = Avalonia.Layout.Orientation.Horizontal,
+                    Children = { loadingRing, loadingText }
+                };
+                loadingText.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+                loadingText.Margin = new Avalonia.Thickness(12, 0, 0, 0);
+
+                Dispatcher.UIThread.Invoke(() => DialogHost.Show(new DialogInfo
+                {
+                    Title = "正在安装 LeviLamina",
+                    Content = loadingPanel
+                }));
+
+                // 清单走启动器的 GitHub 加速源下载（与主程序下载一致），不使用 jsdelivr 直链；
+                // lip.toml（新格式）与 tooth.json（旧格式）并行竞速，先成功者胜出
+                var tooth = await FetchToothJsonAsync(version);
+
+                Dispatcher.UIThread.Invoke(DialogHost.Close);
+
                 if (tooth != null)
                 {
-                    var clientDepens = tooth.Variants.First(x => x.Label == "client" && x.Platform == "win-x64");
+                    // 新 lip.toml：变体共用空 label，靠 side = "client" 区分；旧 tooth.json：label = "client"
+                    var clientDepens = tooth.Variants.First(x =>
+                        (x.Side == "client" || x.Label == "client") && x.Platform == "win-x64");
                     var preLoad = clientDepens.Dependencies["github.com/LiteLDev/PreLoader"];
                     var bedrockRuntime = clientDepens.Dependencies["github.com/LiteLDev/bedrock-runtime-data"];
 
@@ -225,29 +259,138 @@ public class LeviLamina : IModsLoader
                     );
                     OnUpdate?.Invoke();
                 }
+                else
+                {
+                    // lip.toml 与 tooth.json 均获取失败
+                    DialogHost.Show(new()
+                    {
+                        Title = "安装失败",
+                        Content = $"无法获取 LeviLamina v{version} 的清单文件（lip.toml / tooth.json 均不可达），请检查网络后重试。",
+                        CloseButtonText = "确定",
+                        AccountButton = DialogButtons.CloseButton
+                    });
+                }
             }
         });
     }
 
-    private async Task<ToothJson?> FetchToothJsonAsync(string url)
+    // 拉取 LeviLamina 清单并解析：lip.toml（新格式）与 tooth.json（旧格式）并行竞速，先成功者胜出。
+    // 下载统一走 GithubFilesDownloader（SourceList 加速源竞速），不使用 jsdelivr 直链
+    private static async Task<ToothJson> FetchToothJsonAsync(string version)
     {
         try
         {
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", $"BedrockBoot/{Global.GlobalModel.BodyVersion}");
-            var response = await client.GetAsync(url);
-            if (!response.IsSuccessStatusCode) return null;
+            var downloader = new GithubFilesDownloader();
 
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<ToothJson>(json, new JsonSerializerOptions
+            var fetchTasks = new[] { "lip.toml", "tooth.json" }
+                .Select(fileName => FetchManifestTextAsync(downloader, version, fileName))
+                .ToList();
+
+            // 竞速：任一候选成功即用；全失败则返回 null
+            while (fetchTasks.Count > 0)
             {
-                PropertyNameCaseInsensitive = true
-            });
+                var completed = await Task.WhenAny(fetchTasks);
+
+                try
+                {
+                    var text = await completed;
+                    if (string.IsNullOrWhiteSpace(text)) throw new Exception("清单内容为空");
+
+                    // lip.toml（新）解析失败（含 JSON 文本）就地回落 tooth.json（旧）反序列化
+                    var tooth = ToToothJson(LipToml.Parse(text))
+                                ?? JsonSerializer.Deserialize<ToothJson>(text, new JsonSerializerOptions
+                                {
+                                    PropertyNameCaseInsensitive = true
+                                });
+
+                    if (tooth?.Variants is { Length: > 0 }) return tooth;
+
+                    throw new Exception("清单解析失败或无可用变体");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"清单候选失败，等待其余候选: {ex.Message}");
+                    fetchTasks.Remove(completed);
+                }
+            }
+
+            return null;
         }
         catch
         {
             return null;
         }
+    }
+
+    // 下载单个清单文件内容（临时文件即取即删）
+    private static async Task<string> FetchManifestTextAsync(
+        GithubFilesDownloader downloader, string version, string fileName)
+    {
+        var tempFile = Path.Combine(PathsList.TempPath, $"levilamina-manifest-{Guid.NewGuid():N}-{fileName}");
+        try
+        {
+            var url = $"https://github.com/LiteLDev/LeviLamina/raw/v{version}/{fileName}";
+            await downloader.DownloadAsync(url, tempFile, null, CancellationToken.None);
+            return await File.ReadAllTextAsync(tempFile);
+        }
+        finally
+        {
+            try
+            {
+                if (File.Exists(tempFile)) File.Delete(tempFile);
+            }
+            catch
+            {
+            }
+        }
+    }
+
+    // LipToml.Parse 产出 LeviConfig，这里转成本文件使用的 ToothJson 模型
+    private static ToothJson ToToothJson(LeviConfig config)
+    {
+        if (config == null) return null;
+
+        return new ToothJson
+        {
+            FormatVersion = config.FormatVersion,
+            Tooth = config.Tooth,
+            Version = config.Version,
+            Info = config.Info == null
+                ? null
+                : new ToothInfo
+                {
+                    Name = config.Info.Name,
+                    Description = config.Info.Description,
+                    Tags = config.Info.Tags?.ToArray(),
+                    AvatarUrl = config.Info.AvatarUrl
+                },
+            Variants = config.Variants?.Select(v => new ToothVariant
+            {
+                Label = v.Label,
+                Side = v.Side,
+                Platform = v.Platform,
+                Dependencies = v.Dependencies,
+                Assets = v.Assets?.Select(a => new ToothAsset
+                {
+                    Type = a.Type,
+                    Urls = a.Urls?.ToArray(),
+                    Placements = a.Placements?.Select(p => new ToothPlacement
+                    {
+                        Type = p.Type,
+                        Src = p.Src,
+                        Dest = p.Dest
+                    }).ToArray()
+                }).ToArray(),
+                RemoveFiles = v.RemoveFiles?.ToArray(),
+                Scripts = v.Scripts == null
+                    ? null
+                    : new ToothScripts
+                    {
+                        PostInstall = v.Scripts.PostInstall?.ToArray(),
+                        PostUninstall = v.Scripts.PostUninstall?.ToArray()
+                    }
+            }).ToArray()
+        };
     }
 
     public void Remove()
@@ -350,6 +493,10 @@ public class ToothInfo
 public class ToothVariant
 {
     [JsonPropertyName("label")] public string? Label { get; set; }
+
+    // lip.toml（format = 4）新增：区分 client / server，替代旧的 label = "client" 约定
+    [JsonPropertyName("side")] public string? Side { get; set; }
+
     [JsonPropertyName("platform")] public string Platform { get; set; }
     [JsonPropertyName("dependencies")] public Dictionary<string, string> Dependencies { get; set; }
     [JsonPropertyName("assets")] public ToothAsset[] Assets { get; set; }

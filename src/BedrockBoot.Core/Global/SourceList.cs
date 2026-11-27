@@ -117,7 +117,4 @@ public class SourceList
     public static string MarketApiHost { get; } = "https://market-api.roundstudio.top";
     public static string PluginApi { get; } = $"{MarketApiHost}/api/plugins";
     public static string DllModsApi { get; } = "https://pkg.roundstudio.top/index.json";
-
-    public static string LeviLaminaVersionDb =>
-        "https://fastly.jsdelivr.net/gh/LiteLDev/levilamina-client-version-db@main/v2/version-db.json";
 }

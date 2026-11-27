@@ -147,8 +147,9 @@ public static class PreLoadDependencyHelper
             var remote = await GetRemoteVersionAsync();
             if (remote != null && await DownloadRemoteAsync(remote)) return true;
 
-            // 版本号拿不到，或那条通道下载失败：按 latest 直链再试一轮（CNB → GitHub）
-            if (await DownloadLatestDirectAsync()) return true;
+            // 版本号拿不到，或上面两条通道都失败：按 latest 直链再试一轮。
+            // 刚才已经试过 CNB 就不再重复，避免同一个源白等一次超时
+            if (await DownloadLatestDirectAsync(includeCnb: remote == null)) return true;
 
             ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
             return false;
@@ -170,8 +171,8 @@ public static class PreLoadDependencyHelper
     ///     </para>
     ///     <para>
     ///     先解析版本号（GitHub API → GitHub version 文件）；落后就按下载顺序更新（CNB → GitHub）。
-    ///     版本号全部拿不到、或拿到的通道都下载失败时，再按 latest 直链强下（CNB → GitHub）；
-    ///     仍失败即中止启动器更新。
+    ///     版本号拿不到时按 latest 直链强下（CNB → GitHub）；拿到了但两条通道都下载失败，
+    ///     只再试一次 GitHub latest（CNB 已经试过，不必重复）。仍失败即中止启动器更新。
     ///     </para>
     /// </summary>
     public static async Task<bool> CheckBeforeLauncherUpdateAsync()
@@ -196,10 +197,11 @@ public static class PreLoadDependencyHelper
                 if (await DownloadRemoteAsync(remote)) return true;
             }
 
-            // 所有通道都拿不到版本号，或拿到的通道都下载失败：按 latest 直链强下（CNB → GitHub）
+            // 所有通道都拿不到版本号，或拿到的通道都下载失败：按 latest 直链强下。
+            // remote 非空说明 CNB 与 GitHub 都已经试过，这里只打 GitHub latest 即可
             Console.WriteLine(@"更新启动器前检查：无法从版本号通道完成更新，改走 latest 直链强制下载");
 
-            if (await DownloadLatestDirectAsync()) return true;
+            if (await DownloadLatestDirectAsync(includeCnb: remote == null)) return true;
 
             ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
             return false;
@@ -283,17 +285,18 @@ public static class PreLoadDependencyHelper
 
     /// <summary>
     ///     按解析到的版本下载并落地组件：下载优先 CNB，失败再走 GitHub。
-    ///     不抛异常，失败返回 false。
+    ///     <paramref name="includeCnb" /> 为 false 时只走 GitHub——CNB 刚刚已经失败过，
+    ///     兜底时再试一遍只会白等一轮超时。不抛异常，失败返回 false。
     /// </summary>
-    public static async Task<bool> DownloadRemoteAsync(PreLoadRemoteVersion remote)
+    public static async Task<bool> DownloadRemoteAsync(PreLoadRemoteVersion remote, bool includeCnb = true)
     {
         try
         {
             // 1) CNB 优先：国内直连，不经过 GitHub，也不吃限流
-            if (await DownloadFromCnbAsync(remote.Tag)) return true;
+            if (includeCnb && await DownloadFromCnbAsync(remote.Tag)) return true;
 
             // 2) GitHub：API 通道拿得到资产对象就按资产下载（可带授权头），否则走 latest 直链
-            Console.WriteLine($@"CNB 通道下载失败，改用 GitHub 通道（{remote.Source}）");
+            if (includeCnb) Console.WriteLine($@"CNB 通道下载失败，改用 GitHub 通道（{remote.Source}）");
 
             return remote.Asset != null
                 ? await TaskDownloadPreLoadItem.StartDownloadAndWait(remote.Asset, remote.Tag)
@@ -307,28 +310,27 @@ public static class PreLoadDependencyHelper
     }
 
     /// <summary>
-    ///     版本号完全拿不到时的强制下载：同样先 CNB、再 GitHub。
-    ///     两条都是 latest 直链，不依赖版本号，因此限流或断网时仍可能成功。
+    ///     版本号完全拿不到时的强制下载：按 latest 直链重试，先 CNB、再 GitHub。
+    ///     两条都不依赖版本号，因此限流或断网时仍可能成功。
     /// </summary>
-    private static async Task<bool> DownloadLatestDirectAsync()
+    private static async Task<bool> DownloadLatestDirectAsync(bool includeCnb = true)
     {
-        if (await DownloadFromCnbAsync(null)) return true;
+        if (includeCnb && await DownloadFromCnbAsync(null)) return true;
 
         Console.WriteLine($@"改走 GitHub latest 直链：{PreLoadReleaseSource.LatestDownloadUrl}");
         return await DownloadByDirectLinkAsync(null);
     }
 
     /// <summary>
-    ///     从 CNB 的 latest 直链下载。该地址固定、国内可直连，不需要走 GitHub 加速源探测。
-    ///     <paramref name="tag" /> 只用于写版本记录（取的是 GitHub 判定出的版本号，
-    ///     与实际落地的 CNB 产物可能有几个构建的偏差，下次版本号追上来自动校正）。
+    ///     从 CNB 下载。已知版本号时按 Tag 取资产，保证落地的文件与版本记录一致；
+    ///     版本号未知时才用 latest 直链（此时也不写版本记录，不影响下次检查）。
     /// </summary>
     private static async Task<bool> DownloadFromCnbAsync(string? tag)
     {
-        Console.WriteLine($@"使用 CNB 通道下载 PreLoad.NET：{PreLoadReleaseSource.CnbLatestDownloadUrl}");
+        var url = PreLoadReleaseSource.GetCnbDownloadUrl(tag);
+        Console.WriteLine($@"使用 CNB 通道下载 PreLoad.NET：{url}");
 
-        var success = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(
-            PreLoadReleaseSource.CnbLatestDownloadUrl, tag);
+        var success = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(url, tag);
 
         if (!success) Console.WriteLine(@"CNB 通道下载 PreLoad.NET 失败");
         return success;

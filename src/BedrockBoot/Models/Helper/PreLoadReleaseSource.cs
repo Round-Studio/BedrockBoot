@@ -128,8 +128,30 @@ public static class PreLoadReleaseSource
     public static string CnbLatestDownloadUrl =>
         $"https://cnb.cool/{CnbOwner}/{CnbRepo}/-/releases/latest/download/{AssetName}";
 
+    /// <summary>
+    ///     按 Tag 取 CNB 上的资产。<paramref name="tag" /> 为空时退回 latest 直链。
+    ///     <para>
+    ///     已知版本号时要走这个地址而不是 latest：CNB 的同步可能比 GitHub 慢一步，
+    ///     用 latest 会下到上一个构建，再被记成新版本号，之后就永久停在旧组件上。
+    ///     版本文件里的号可能不带 <c>v</c>，这里统一补上再拼地址。
+    ///     </para>
+    /// </summary>
+    public static string GetCnbDownloadUrl(string? tag)
+    {
+        if (string.IsNullOrWhiteSpace(tag)) return CnbLatestDownloadUrl;
+
+        var normalized = tag.Trim();
+        if (!normalized.StartsWith("v", StringComparison.OrdinalIgnoreCase)) normalized = "v" + normalized;
+
+        return $"https://cnb.cool/{CnbOwner}/{CnbRepo}/-/releases/download/" +
+               $"{Uri.EscapeDataString(normalized)}/{AssetName}";
+    }
+
     /// <summary>版本号请求的总预算，超时即判定该通道不可用（调用方处在阻塞路径上）</summary>
     private static readonly TimeSpan TextFetchTimeout = TimeSpan.FromSeconds(15);
+
+    /// <summary>单个候选地址（含镜像）的预算：文件只有几十字节，超时立刻换源</summary>
+    private static readonly TimeSpan PerRequestTimeout = TimeSpan.FromSeconds(5);
 
     /// <summary>取版本号文件的地址，按通道区分</summary>
     public static string GetVersionUrl(PreLoadReleaseChannel channel) =>
@@ -164,23 +186,32 @@ public static class PreLoadReleaseSource
 
     /// <summary>
     ///     按约定读取版本号。所有候选地址都失败、内容为空或明显是错误页面时返回 null。
+    ///     <para>
+    ///     加速源把错误页以 200 返回是常见现象，因此逐个候选校验内容：
+    ///     不合格就换下一个源，而不是拿第一个非空正文就收工。
+    ///     </para>
     /// </summary>
     public static async Task<PreLoadReleaseInfo?> TryGetLatestAsync(
         PreLoadReleaseChannel channel = PreLoadReleaseChannel.Stable,
         CancellationToken cancellationToken = default)
     {
-        var text = await TryGetTextAsync(GetVersionUrls(channel), TextFetchTimeout, "版本号", cancellationToken);
+        var text = await TryGetTextAsync(GetVersionUrls(channel), TextFetchTimeout, "版本号",
+            IsVersionText, cancellationToken);
         if (text == null) return null;
 
         var tag = text.Trim().Trim('"', '\'', ' ');
-        if (tag.Length == 0 || tag.Length > 64 || tag.Contains('<'))
-        {
-            Console.WriteLine($@"PreLoad.NET 版本号内容异常，按不可用处理：{Truncate(text)}");
-            return null;
-        }
-
         Console.WriteLine($@"PreLoad.NET 版本号来源返回 {tag}（通道：{channel}）");
         return new PreLoadReleaseInfo(tag, channel);
+    }
+
+    /// <summary>版本号正文的校验：短、单行、不含 HTML 标记</summary>
+    private static bool IsVersionText(string text)
+    {
+        var tag = text.Trim().Trim('"', '\'', ' ');
+        return tag.Length is > 0 and <= 64 &&
+               !tag.Contains('<') &&
+               !tag.Contains('\n') &&
+               !tag.Contains(' ');
     }
 
     /// <summary>
@@ -203,9 +234,12 @@ public static class PreLoadReleaseSource
     private static string BuildReleaseAssetUrl(string tag) =>
         $"https://github.com/{Owner}/{Repo}/releases/download/{Uri.EscapeDataString(tag)}/{AssetName}";
 
-    /// <summary>依次尝试候选地址，返回第一个成功且非空的响应文本</summary>
+    /// <summary>
+    ///     依次尝试候选地址，返回第一个通过 <paramref name="isValid" /> 的正文；
+    ///     内容不合格（错误页）也继续换源。整体预算耗尽即放弃。
+    /// </summary>
     private static async Task<string?> TryGetTextAsync(IReadOnlyList<string> urls, TimeSpan timeoutBudget,
-        string label, CancellationToken cancellationToken)
+        string label, Func<string, bool> isValid, CancellationToken cancellationToken)
     {
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(timeoutBudget);
@@ -215,22 +249,41 @@ public static class PreLoadReleaseSource
 
         foreach (var url in urls)
         {
+            if (timeout.IsCancellationRequested)
+            {
+                Console.WriteLine($@"PreLoad.NET {label}获取超时（{timeoutBudget.TotalSeconds:F0} 秒），放弃剩余源");
+                return null;
+            }
+
             try
             {
-                using var response = await client.GetAsync(url, timeout.Token);
+                // 每个源单独限时：GitHub 直连被墙时往往不是报错而是干等，
+                // 共用一份预算会让后面的镜像根本没机会出手
+                using var request = CancellationTokenSource.CreateLinkedTokenSource(timeout.Token);
+                request.CancelAfter(PerRequestTimeout);
+
+                using var response = await client.GetAsync(url, request.Token);
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($@"PreLoad.NET {label}地址不可用（{url}）：HTTP {(int)response.StatusCode}");
                     continue;
                 }
 
-                var text = await response.Content.ReadAsStringAsync(timeout.Token);
-                if (!string.IsNullOrWhiteSpace(text)) return text;
+                var text = await response.Content.ReadAsStringAsync(request.Token);
+                if (string.IsNullOrWhiteSpace(text)) continue;
+                if (isValid(text)) return text;
+
+                Console.WriteLine($@"PreLoad.NET {label}内容不可用，换下一个源：{url}（{Truncate(text)}）");
             }
             catch (OperationCanceledException) when (timeout.IsCancellationRequested)
             {
                 Console.WriteLine($@"PreLoad.NET {label}获取超时（{timeoutBudget.TotalSeconds:F0} 秒），放弃该通道");
                 return null;
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine(
+                    $@"PreLoad.NET {label}地址超时（{PerRequestTimeout.TotalSeconds:F0} 秒），换下一个源：{url}");
             }
             catch (Exception ex)
             {

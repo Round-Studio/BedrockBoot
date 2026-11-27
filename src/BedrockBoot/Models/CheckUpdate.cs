@@ -98,16 +98,31 @@ public class CheckUpdate
     }
 
     /// <summary>
-    ///     远端 Tag 是否就是当前运行的版本。CI 生成的版本号里前导 0 会被省略
-    ///     （<c>26.11.27.0308</c> 与 <c>26.11.27.308</c>），比较前统一去掉 0。
+    ///     远端 Tag 是否就是当前运行的版本。CI 生成的版本号会省略前导 0
+    ///     （<c>v2.1.11.0308</c> 与 <c>2.1.11.308</c>），逐段按数字比较；
+    ///     Tag 段数比程序集版本少时按尾部对齐（例如 <c>v2.1.11</c> 对 <c>2.1.11.0</c>）。
+    ///     <para>
+    ///     不能像以前那样整体去掉字符 <c>0</c> 再 EndsWith：<c>102</c> 与 <c>120</c>
+    ///     都会被削成 <c>12</c>，把「落后一个构建」误判成「已是最新」。
+    ///     </para>
     /// </summary>
     private static bool IsCurrentVersion(string? tagName)
     {
         if (string.IsNullOrWhiteSpace(tagName)) return false;
 
-        var current = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
-        return tagName.Replace("0", "").EndsWith(current.Replace("0", ""), StringComparison.Ordinal);
+        var current = SplitVersion(Assembly.GetExecutingAssembly().GetName().Version!.ToString());
+        var remote = SplitVersion(tagName);
+        if (remote.Length == 0 || remote.Length > current.Length) return false;
+
+        return current[(current.Length - remote.Length)..].SequenceEqual(remote);
     }
+
+    /// <summary>把 <c>v2.1.11.0308</c> 拆成去前导 0 的段；非数字段原样保留</summary>
+    private static string[] SplitVersion(string version) =>
+        version.Trim().TrimStart('v', 'V')
+            .Split('.', StringSplitOptions.RemoveEmptyEntries)
+            .Select(part => int.TryParse(part.Trim(), out var number) ? number.ToString() : part.Trim())
+            .ToArray();
 
     /// <summary>
     ///     API 不可用时的兜底：从仓库 <c>version</c> 分支读版本号与更新日志

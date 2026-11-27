@@ -941,6 +941,7 @@
     <x:String x:Key="MainPage.Update.Action.Latest">Уже в последней версии</x:String>
     <x:String x:Key="MainPage.Update.DirectDownload">Принудительно скачать последнюю версию</x:String>
     <x:String x:Key="MainPage.Update.DirectDisplayName">Последняя версия</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">Не удалось получить список изменений. Проверьте подключение к сети.</x:String>
 
     <x:String x:Key="Tools.Title">Ящик для инструментов</x:String>
     <x:String x:Key="Tools.Group.Help">Помощь</x:String>

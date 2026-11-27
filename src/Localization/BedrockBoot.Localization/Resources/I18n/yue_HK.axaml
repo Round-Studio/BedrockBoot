@@ -951,6 +951,7 @@
     <x:String x:Key="MainPage.Update.Action.Latest">目前已經係最新版本</x:String>
     <x:String x:Key="MainPage.Update.DirectDownload">強制下載最新版</x:String>
     <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">更新日誌攞唔到，請檢查網絡連線。</x:String>
 
     <x:String x:Key="Tools.Title">工具箱</x:String>
     <x:String x:Key="Tools.Group.Help">說明</x:String>

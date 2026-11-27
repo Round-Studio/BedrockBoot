@@ -1181,6 +1181,7 @@
     <x:String x:Key="MainPage.Update.Action.Latest">Already on the latest version</x:String>
     <x:String x:Key="MainPage.Update.DirectDownload">Force download latest</x:String>
     <x:String x:Key="MainPage.Update.DirectDisplayName">Latest version</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">Failed to fetch the release notes. Please check your network connection.</x:String>
 
     <x:String x:Key="Tools.Title">Toolbox</x:String>
     <x:String x:Key="Tools.Group.Help">Help</x:String>

@@ -209,6 +209,11 @@ public partial class MainPage : UserControl
                     ? result.Release?.Body ?? result.FallbackBody
                     : result.WorkflowRun?.HeadCommit?.Message;
 
+                // API 没给 Release Body、兜底通道也没读到 changelog 时，弹窗里只剩标题和按钮，
+                // 看起来像界面坏了；用一句提示把“没有内容”和“读失败”区分开
+                if (string.IsNullOrWhiteSpace(body))
+                    body = i18n["MainPage.Update.ChangelogUnavailable"];
+
                 var controls = HtmlToControlConverter.ConvertHtmlToControls(body);
                 foreach (var control in controls) panel.Children.Add(control);
 

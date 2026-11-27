@@ -934,6 +934,7 @@
     <x:String x:Key="MainPage.Update.Action.Latest">現在最新バージョンです</x:String>
     <x:String x:Key="MainPage.Update.DirectDownload">最新版を強制ダウンロード</x:String>
     <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">更新履歴を取得できませんでした。ネットワーク接続を確認してください。</x:String>
 
     <x:String x:Key="Tools.Title">ツールボックス</x:String>
     <x:String x:Key="Tools.Group.Help">ヘルプ</x:String>

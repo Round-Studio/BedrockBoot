@@ -1135,7 +1135,7 @@
 	<x:String x:Key="GitHub.Error.RateLimit">GitHub API rate limit exceeded for your IP&#x0a;&#x0a;若不理解此错误含义，请优先检查网络连接。&#x0a;&#x0a;若理解此错误含义并接受，可以在 设置 → 账户与档案 登录 GitHub 账户解除该限制。</x:String>
 	
     <!--这些在简体中文别翻，毕竟国人网络问题靠自己解决（）-->
-    <x:String x:Key="GitHub.Error.HttpRequest">"Http Request Exception</x:String>
+    <x:String x:Key="GitHub.Error.HttpRequest">Http Request Exception</x:String>
     <x:String x:Key="GitHub.Error.Unauthorized">Unauthorized</x:String>
     <x:String x:Key="GitHub.Error.Forbidden">Forbidden</x:String>
     <x:String x:Key="GitHub.Error.NotFound">Not Found</x:String>
@@ -1200,6 +1200,7 @@
     <x:String x:Key="MainPage.Update.Action.Latest">当前已是最新版本</x:String>
     <x:String x:Key="MainPage.Update.DirectDownload">强制下载最新版</x:String>
     <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">更新日志获取失败，请检查网络连接。</x:String>
 
     <x:String x:Key="Tools.Title">工具箱</x:String>
     <x:String x:Key="Tools.Group.Help">帮助</x:String>

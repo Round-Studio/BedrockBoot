@@ -67,9 +67,14 @@ public partial class ModLoaderItem : ISetting
         if (_loader.IsInstalled())
         {
             var version = _loader.GetInstalledVersion();
-            LoaderInstallStatus.Text = !_loader.IsInstalled() ? "未安装" : version;
+            LoaderInstallStatus.Text = !_loader.IsInstalled() ? I18nManager.Instance["Instance.Loader.Status.NotInstalled"] : version;
             LoaderInstallStatus.IsVisible = !string.IsNullOrEmpty(version);
         }
+        else
+        {
+            LoaderInstallStatus.Text = I18nManager.Instance["Instance.Loader.Status.NotInstalled"];
+        }
+
         if (!string.IsNullOrEmpty(_loader.IconUri))
         {
             LoaderCard.IsFontIcon = false;
@@ -93,6 +98,8 @@ public partial class ModLoaderItem : ISetting
             LoadingRing.IsVisible = false;
             InstallBtn.IsVisible = false;
         }
+
+        await UpdateUpgradeButton();
 
         if (_loader?.AddonEvents != null)
         {
@@ -120,6 +127,27 @@ public partial class ModLoaderItem : ISetting
     private void LoaderCard_OnClick(object? sender, RoutedEventArgs e)
     {
         _loader.ViewInfo();
+    }
+
+    // 升级入口：仅支持的加载器且存在更高适配版本时显示。
+    // Header 含目标版本号，只能在这里代码赋值——不要用 DynamicResource（键表重建会覆盖代码赋值）
+    private async Task UpdateUpgradeButton()
+    {
+        UpgradeBtn.IsVisible = false;
+
+        if (!_loader.IsInstalled() || !_loader.CanUpgrade) return;
+
+        var target = await _loader.GetUpgradeTargetAsync();
+        if (string.IsNullOrEmpty(target)) return;
+
+        UpgradeBtn.Header = string.Format(i18n["Instance.Loader.Upgrade.Target"], target);
+        UpgradeBtn.IsVisible = true;
+    }
+
+    private void UpgradeBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (_loader.IsInstalled() && _loader.CanUpgrade)
+            _loader.Upgrade();
     }
 
     private void InstallBtn_OnClick(object? sender, RoutedEventArgs e)

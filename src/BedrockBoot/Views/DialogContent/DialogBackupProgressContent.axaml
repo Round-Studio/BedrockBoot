@@ -13,7 +13,7 @@
                     VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <TextBlock FontSize="16"
-                           Text="备份存档" />
+                           Text="{DynamicResource Dialog.Backup.Title}" />
                 <TextBlock FontSize="16"
                            Name="ProgressText"
                            Text="0 %" />

@@ -81,11 +81,11 @@ public class GlobalModel
 
                 var options = new FilePickerOpenOptions
                 {
-                    Title = "选择 BMCBL 本体",
+                    Title = I18nManager.Instance["Global.ChooseBmcbl"],
                     AllowMultiple = false,
                     FileTypeFilter = new[]
                     {
-                        new FilePickerFileType("EXE 可执行文件")
+                        new FilePickerFileType(I18nManager.Instance["FileType.Exe"])
                         {
                             Patterns = new[] { "*.exe" }
                         }
@@ -120,9 +120,9 @@ public class GlobalModel
                         MainWindow?.CloseDraw();
                         DialogHost.Show(new DialogInfo
                         {
-                            Title = "导入成功",
-                            Content = "导入 BMCBL 启动器的配置成功",
-                            CloseButtonText = "确定"
+                            Title = I18nManager.Instance["Global.Import.Success.Title"],
+                            Content = I18nManager.Instance["Global.Import.Bmcbl.Success"],
+                            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                         });
                     }
                 }
@@ -156,9 +156,9 @@ public class GlobalModel
                 GlobalModel.MainWindow.CloseDraw();
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "导入成功",
-                    Content = "导入 LeviLauncher 启动器的配置成功",
-                    CloseButtonText = "确定"
+                    Title = I18nManager.Instance["Global.Import.Success.Title"],
+                    Content = I18nManager.Instance["Global.Import.Levi.Success"],
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                 });
             }
         },

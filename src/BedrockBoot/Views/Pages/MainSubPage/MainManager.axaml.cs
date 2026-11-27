@@ -68,6 +68,51 @@ public partial class MainManager : BedrockBootPage
     public bool IsEditMode { get; set; }
     public static MainManager Instance { get; private set; }
 
+    /// <summary>
+    ///     版本目录发生变化（如游戏安装完成）时由后台流程调用：页面正在显示则立即重建版本列表。
+    ///     页面未显示时直接跳过——下次导航会通过 Activator 重新创建页面并读取最新数据。
+    /// </summary>
+    /// <returns>是否执行了刷新（页面不在显示中则为 false，调用方可转而刷新其它入口）。</returns>
+    public static bool RefreshVersionListIfVisible()
+    {
+        var instance = Instance;
+        if (instance == null || instance.VisualRoot == null) return false;
+
+        if (Dispatcher.UIThread.CheckAccess())
+            SafeUpdateGameList(instance);
+        else
+            Dispatcher.UIThread.Post(() => SafeUpdateGameList(instance));
+
+        return true;
+    }
+
+    /// <summary>
+    ///     版本目录内容变化（安装完成、删除实例、导入版本等）后统一走这里：
+    ///     实例管理页正在显示则由它重建列表，否则刷新主页的版本下拉。
+    /// </summary>
+    public static void RefreshVersionLists()
+    {
+        if (RefreshVersionListIfVisible()) return;
+
+        Models.Global.GlobalModel.MainPageUpdateInstance?.Invoke();
+    }
+
+    /// <summary>
+    ///     UpdateGameList 会读磁盘，异常若在 Dispatcher 回调里抛出就是未处理异常，
+    ///     这里吞掉并记录，避免因为刷新失败把整个外壳带崩。
+    /// </summary>
+    private static void SafeUpdateGameList(MainManager instance)
+    {
+        try
+        {
+            instance.UpdateGameList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"刷新实例列表失败: {ex.Message}");
+        }
+    }
+
     private void InitializeConfigWatcher()
     {
         CleanupConfigWatcher();
@@ -91,6 +136,9 @@ public partial class MainManager : BedrockBootPage
             };
 
             _configWatcher.Changed += OnConfigFileChanged;
+            // 新装/导入的版本是「新建」config.json，只监听 Changed 会漏掉
+            _configWatcher.Created += OnConfigFileChanged;
+            _configWatcher.Renamed += OnConfigFileChanged;
             _configWatcher.Deleted += OnConfigFileChanged;
             _configWatcher.EnableRaisingEvents = true;
         }
@@ -106,6 +154,8 @@ public partial class MainManager : BedrockBootPage
         {
             _configWatcher.EnableRaisingEvents = false;
             _configWatcher.Changed -= OnConfigFileChanged;
+            _configWatcher.Created -= OnConfigFileChanged;
+            _configWatcher.Renamed -= OnConfigFileChanged;
             _configWatcher.Deleted -= OnConfigFileChanged;
             _configWatcher.Dispose();
             _configWatcher = null;

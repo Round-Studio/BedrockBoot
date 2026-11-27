@@ -13,7 +13,7 @@
                     Margin="20,0"
                     Spacing="8"
                     Orientation="Horizontal">
-            <TextBlock Text="拥有的披风"
+            <TextBlock Text="{DynamicResource Xbox.Capes.Owned.Title}"
                        Name="PageTitle"
                        VerticalAlignment="Center"
                        FontSize="16" />
@@ -33,7 +33,7 @@
                          VerticalAlignment="Center"
                          HorizontalAlignment="Center"
                          Name="LoadingCard"
-                         BigTitle="加载中"
-                         Message="正在获取账户披风数据" />
+                         BigTitle="{DynamicResource Xbox.Capes.Owned.Loading}"
+                         Message="{DynamicResource Xbox.Capes.Owned.Fetching}" />
     </Grid>
 </UserControl>

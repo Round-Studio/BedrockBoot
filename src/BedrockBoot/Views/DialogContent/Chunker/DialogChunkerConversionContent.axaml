@@ -14,9 +14,8 @@
                     VerticalAlignment="Center">
             <TextBlock FontSize="16"
                        Name="ProgressText"
-                       TextTrimming="CharacterEllipsis">
-                转换存档中...
-            </TextBlock>
+                       TextTrimming="CharacterEllipsis"
+                       Text="{DynamicResource Chunker.Dialog.Converting}" />
             <ProgressBar Name="ProgressBar"
                          Margin="0,8,0,0"
                          MinWidth="200" />

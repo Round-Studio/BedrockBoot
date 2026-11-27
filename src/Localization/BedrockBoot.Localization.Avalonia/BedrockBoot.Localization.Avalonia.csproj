@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <RootNamespace>BedrockBoot.Localization.Avalonia</RootNamespace>
+        <AssemblyName>BedrockBoot.Localization.Avalonia</AssemblyName>
+        <Description>Avalonia 集成：把语言文件桥接成 Application.Resources 中的完整键表。</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="12.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BedrockBoot.Localization\BedrockBoot.Localization.csproj" />
+    </ItemGroup>
+
+</Project>

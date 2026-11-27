@@ -134,8 +134,8 @@ public partial class ImportTemplatePack : Window
                 {
                     if (manifests == null || manifests.Count == 0)
                     {
-                        LoadingCard.BigTitle = "未找到资源";
-                        LoadingCard.Message = "所选文件不是有效的资源包。";
+                        LoadingCard.BigTitle = I18nManager.Instance["Import.Error.NotFound"];
+                        LoadingCard.Message = I18nManager.Instance["Import.Error.NotResourcePack"];
                         return;
                     }
 
@@ -153,7 +153,7 @@ public partial class ImportTemplatePack : Window
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
-                    LoadingCard.BigTitle = "解析失败";
+                    LoadingCard.BigTitle = I18nManager.Instance["Import.Error.ParseFailed"];
                     LoadingCard.Message = ex.Message;
                 });
             }
@@ -166,8 +166,8 @@ public partial class ImportTemplatePack : Window
 
         var targetUser = (string)UserComboBox.SelectedItem;
 
-        LoadingCard.BigTitle = "正在导入";
-        LoadingCard.Message = $"正在导入至用户目录: {targetUser}...";
+        LoadingCard.BigTitle = I18nManager.Instance["Import.Status.Importing"];
+        LoadingCard.Message = string.Format(I18nManager.Instance["Import.Status.ImportingTo"], targetUser);
         LoadingCard.IsVisible = true;
         PacksScrollViewer.IsVisible = false;
         ImportButton.IsEnabled = false;
@@ -186,7 +186,7 @@ public partial class ImportTemplatePack : Window
         }
         catch (Exception ex)
         {
-            LoadingCard.BigTitle = "导入出错";
+            LoadingCard.BigTitle = I18nManager.Instance["Import.Error.Failed"];
             LoadingCard.Message = ex.Message;
             ImportButton.IsEnabled = true;
             ConfigPanel.IsEnabled = true;

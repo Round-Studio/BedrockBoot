@@ -30,7 +30,7 @@
                        Text="{DynamicResource Settings.Universal.Language.Title}" />
 
             <onePointControls:SettingCard Margin="5, 0"
-                                          Header="语言 / Language"
+                                          Header="{DynamicResource Setting.Language.Title}"
                                           Description="{DynamicResource Settings.Universal.Language.Desc}"
                                           IsClickable="True"
                                           Name="Language"

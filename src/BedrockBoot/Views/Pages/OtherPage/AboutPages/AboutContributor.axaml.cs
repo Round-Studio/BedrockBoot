@@ -43,12 +43,12 @@ public partial class AboutContributor : ISettingPage
         {
             new()
             {
-                ItemName = i18n["AboutPage.Title"], // "关于我们"
+                ItemName = "AboutPage.Title", // "关于我们"
                 ItemClickAction = _ => MainSettingPage.NavigateTo(new AboutPage())
             },
             new()
             {
-                ItemName = i18n["AboutPage.Contributor.Title"] // "贡献者"
+                ItemName = "AboutPage.Contributor.Title" // "贡献者"
             }
         };
 

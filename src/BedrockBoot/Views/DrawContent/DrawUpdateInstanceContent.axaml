@@ -24,8 +24,8 @@
                          VerticalAlignment="Center"
                          Name="InfoCard"
                          IsVisible="False"
-                         Message="当前实例为最新版"
-                         BigTitle="无可用更新"/>
+                         Message="{DynamicResource UI.Draw.NoUpdateMessage}"
+                         BigTitle="{DynamicResource UI.Draw.NoUpdateTitle}"/>
         
         <StackPanel Grid.Row="1"
                     Margin="15,0"
@@ -40,7 +40,7 @@
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                Glyph="&#xE760;"
                                                FontSize="16"/>
-                    <TextBlock Text="上一步"></TextBlock>
+                    <TextBlock Text="{DynamicResource Setup.Root.Action.Previous}"></TextBlock>
                 </StackPanel>
             </Button>
             <Button Padding="12,8"
@@ -52,7 +52,7 @@
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                Glyph="&#xE761;"
                                                FontSize="16"/>
-                    <TextBlock Text="下一步"></TextBlock>
+                    <TextBlock Text="{DynamicResource Setup.Root.Action.Next}"></TextBlock>
                 </StackPanel>
             </Button>
         </StackPanel>

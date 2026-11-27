@@ -71,7 +71,7 @@ public partial class TaskDownloadProtonItem : UserControl, ITaskItem
     {
         _info = info;
         _installInfo = installInfo;
-        _taskTitle = "下载 Proton";
+        _taskTitle = I18nManager.Instance["Task.Proton.Title"];
     }
 
     public void Install()
@@ -89,7 +89,7 @@ public partial class TaskDownloadProtonItem : UserControl, ITaskItem
                 });
             }));
 
-            ReportProgress(100, "安装完成");
+            ReportProgress(100, I18nManager.Instance["Task.Proton.Status.Completed"]);
             Dispatcher.UIThread.Invoke(CallBack!);
         });
     }
@@ -103,8 +103,8 @@ public partial class TaskDownloadProtonItem : UserControl, ITaskItem
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "下载 Proton",
-            Message = "已添加下载任务至任务列表",
+            Title = I18nManager.Instance["Task.Proton.Title"],
+            Message = I18nManager.Instance["Task.Proton.Notice.Message"],
             NoticeType = NoticeType.Info
         });
 

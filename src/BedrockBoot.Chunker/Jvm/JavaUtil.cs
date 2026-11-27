@@ -30,46 +30,100 @@ namespace BedrockBoot.Chunker.Jvm;
 
 public static partial class JavaUtil
 {
-    public static async Task<JavaInfo> GetJavaInfoAsync(string javaPath, CancellationToken cancellationToken = default)
+    /// <summary>
+    ///     探测指定 java.exe 的版本信息。
+    ///     任何探测失败（文件损坏、代理壳、无输出、版本号无法解析）都返回 null，交由调用方跳过，
+    ///     绝不能因为单个无效的 java.exe 中断整个扫描流程。
+    /// </summary>
+    public static async Task<JavaInfo?> GetJavaInfoAsync(string javaPath,
+        CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(javaPath) || !File.Exists(javaPath))
+        if (string.IsNullOrWhiteSpace(javaPath) || !File.Exists(javaPath))
         {
             return null;
         }
 
-        using var process = Process.Start(new ProcessStartInfo(javaPath)
+        Process? process;
+
+        try
         {
-            Arguments = "-version",
-            CreateNoWindow = true,
-            UseShellExecute = false,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true
-        });
-
-        string text = process.StandardError.ReadToEnd();
-        if (string.IsNullOrEmpty(text))
-            ArgumentException.ThrowIfNullOrWhiteSpace(text);
-
-        bool is64bit = text.Contains("64-bit", StringComparison.OrdinalIgnoreCase);
-        string javaVersion = JavaVersionRegex().Match(text).Groups["version"].Value;
-
-        string javaType = text.Contains("java(tm)", StringComparison.OrdinalIgnoreCase)
-            ? "Java"
-            : text.Contains("zulu")
-                ? "ZuluJDK"
-                : "OpenJDK";
-
-        await process.WaitForExitAsync(cancellationToken);
-
-        var versionParts = javaVersion.Split(".");
-        return new JavaInfo
+            process = Process.Start(new ProcessStartInfo(javaPath)
+            {
+                Arguments = "-version",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
+            });
+        }
+        catch (Exception)
         {
-            Is64bit = is64bit,
-            JavaPath = javaPath,
-            JavaType = javaType,
-            JavaVersion = javaVersion,
-            MajorVersion = (int.Parse(versionParts[0]) == 1) ? int.Parse(versionParts[1]) : int.Parse(versionParts[0]),
-        };
+            // Oracle javapath 之类的转发壳、被卸载后残留的 java.exe、权限不足等
+            // 都会在这里抛 Win32Exception，直接视为无效候选
+            return null;
+        }
+
+        if (process is null)
+        {
+            return null;
+        }
+
+        using (process)
+        {
+            // 两个流必须同时消费，否则缓冲区写满会导致 java 进程阻塞、WaitForExitAsync 永远等不到
+            var errorTask = process.StandardError.ReadToEndAsync(cancellationToken);
+            var outputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
+
+            await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+
+            // 规范实现把 -version 写到 stderr，但部分发行版/包装脚本会写 stdout，两者都取
+            string text =
+                await errorTask.ConfigureAwait(false) + await outputTask.ConfigureAwait(false);
+
+            // 残缺的 java.exe 可能启动后一个字符都不输出，此时它是无效候选而非异常
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+
+            var versionMatch = JavaVersionRegex().Match(text);
+            if (!versionMatch.Success)
+            {
+                return null;
+            }
+
+            string javaVersion = versionMatch.Groups["version"].Value;
+            string[] versionParts = javaVersion.Split('.');
+
+            // 1.8.0_392 -> 8；17.0.1 / 21.0.1+12 -> 主版本号
+            int majorVersion;
+            if (versionParts[0] == "1")
+            {
+                if (versionParts.Length < 2 || !int.TryParse(versionParts[1], out majorVersion))
+                    return null;
+            }
+            else if (!int.TryParse(versionParts[0], out majorVersion))
+            {
+                return null;
+            }
+
+            bool is64bit = text.Contains("64-bit", StringComparison.OrdinalIgnoreCase);
+
+            string javaType = text.Contains("java(tm)", StringComparison.OrdinalIgnoreCase)
+                ? "Java"
+                : text.Contains("zulu")
+                    ? "ZuluJDK"
+                    : "OpenJDK";
+
+            return new JavaInfo
+            {
+                Is64bit = is64bit,
+                JavaPath = javaPath,
+                JavaType = javaType,
+                JavaVersion = javaVersion,
+                MajorVersion = majorVersion
+            };
+        }
     }
 
     public static async Task<List<JavaInfo>> GetJavaListAsync(CancellationToken cancellationToken = default)
@@ -80,13 +134,24 @@ public static partial class JavaUtil
         {
             foreach (var java in GetJavasForWindows())
             {
-                if (File.Exists(java))
+                cancellationToken.ThrowIfCancellationRequested();
+
+                try
                 {
+                    // 单个候选异常不应影响其它候选的探测结果
                     var javaInfo = await GetJavaInfoAsync(java, cancellationToken);
                     if (javaInfo != null)
                     {
                         javaList.Add(javaInfo);
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($@"Skip invalid java '{java}': {ex.Message}");
                 }
             }
 
@@ -109,30 +174,32 @@ public static partial class JavaUtil
         if (process == null)
             return javaList;
 
-        do
+        // 直接把 stdout 读完再按行切分，避免用 HasExited 轮询造成的丢行/空转
+        string stdout = await process.StandardOutput.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
+        await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+
+        foreach (var line in stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var line = process.StandardOutput.ReadLine();
-            if (string.IsNullOrEmpty(line) || !File.Exists(line))
+            if (!File.Exists(line))
                 continue;
 
-            var javaInfo = await GetJavaInfoAsync(line, cancellationToken);
-            if (javaInfo != null)
+            try
             {
-                javaList.Add(javaInfo);
+                var javaInfo = await GetJavaInfoAsync(line, cancellationToken);
+                if (javaInfo != null)
+                {
+                    javaList.Add(javaInfo);
+                }
             }
-        } while (!process.HasExited);
-
-        await process.WaitForExitAsync(cancellationToken);
-        var lastLine = await process.StandardOutput.ReadLineAsync(cancellationToken);
-
-        if (!string.IsNullOrEmpty(lastLine) && File.Exists(lastLine))
-        {
-            var javaInfo = await GetJavaInfoAsync(lastLine, cancellationToken);
-            if (javaInfo != null)
+            catch (OperationCanceledException)
             {
-                javaList.Add(javaInfo);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"Skip invalid java '{line}': {ex.Message}");
             }
         }
 
@@ -165,30 +232,43 @@ public static partial class JavaUtil
             EnableRaisingEvents = true,
         };
 
+        var output = new List<string>();
+
+        // 事件必须在 Start / BeginOutputReadLine 之前挂上，否则最早输出的几行会丢失，
+        // 极端情况下 "where java" 的全部结果都收不到
+        process.OutputDataReceived += (_, e) =>
+        {
+            if (!string.IsNullOrEmpty(e.Data))
+                lock (output)
+                {
+                    output.Add(e.Data);
+                }
+        };
+        process.ErrorDataReceived += (_, e) =>
+        {
+            if (!string.IsNullOrEmpty(e.Data))
+                lock (output)
+                {
+                    output.Add(e.Data);
+                }
+        };
+
         process.Start();
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
-
-        var output = new List<string>();
-
-        process.OutputDataReceived += (sender, e) =>
-        {
-            if (!string.IsNullOrEmpty(e.Data))
-                output.Add(e.Data);
-        };
-        process.ErrorDataReceived += (sender, e) =>
-        {
-            if (!string.IsNullOrEmpty(e.Data))
-                output.Add(e.Data);
-        };
 
         process.StandardInput.WriteLine("where java");
         process.StandardInput.WriteLine("exit");
         process.WaitForExit();
 
-        IEnumerable<string> javaPaths =
-            output.Where(x => !string.IsNullOrEmpty(x) && x.EndsWith("java.exe") && File.Exists(x)
-            )!; // null checked in the where clause
+        IEnumerable<string> javaPaths;
+        lock (output)
+        {
+            javaPaths = output
+                .Where(x => !string.IsNullOrWhiteSpace(x) && x.EndsWith("java.exe") && File.Exists(x))
+                .ToList();
+        }
+
         result.AddRange(javaPaths);
 
         #endregion

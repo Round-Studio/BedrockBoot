@@ -18,13 +18,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using BedrockBoot.Core.Global;
+using BedrockBoot.Localization;
+using BedrockBoot.Localization.Avalonia;
 using BedrockBoot.Standard.Core;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Pages.MainSubPage;
@@ -42,19 +46,78 @@ public partial class UniversalLanguage : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
+                ItemName = "Setting.Universal.Breadcrumb.Root",
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = "语言 / Language"
+                ItemName = "Setting.Language.Title"
             }
         };
 
         LanguageSelectBox.SelectedIndex =
             I18nManager.LanguageDict.Keys.ToList().FindIndex(x => x == GlobalModel.Config.Data.Language);
+
+        // 缺翻译显示策略：选项内容是普通字符串（不是 DynamicResource），
+        // 因此切语言后要自己重建，否则页面上其它文案都变了、这几项还是旧语言。
+        RefreshMissingKeyStyleItems();
+
         IsEdit = true;
+
+        Loaded += (_, _) =>
+        {
+            I18nManager.Instance.PropertyChanged -= OnI18nPropertyChanged;
+            I18nManager.Instance.PropertyChanged += OnI18nPropertyChanged;
+        };
+
+        Unloaded += (_, _) => I18nManager.Instance.PropertyChanged -= OnI18nPropertyChanged;
+    }
+
+    private void OnI18nPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // 与 MainHomePage 一致：I18nManager 只在切语言/重建键表时发 "Item[]"。
+        // 这里不能同步重建：切换"缺翻译显示"策略时，本方法会在
+        // MissingKeyStyleBox 自己的 SelectionChanged 还在提交途中被调到，
+        // 同步 Clear() 会让选中模型按旧索引回读已被清空的源集合而越界崩溃，
+        // 所以丢进 Dispatcher 队列，等本次选择操作收尾后再重建。
+        if (e.PropertyName is null or "Item[]")
+            Dispatcher.UIThread.Post(RefreshMissingKeyStyleItems);
+    }
+
+    /// <summary>按当前语言重建"缺翻译显示"下拉项，并保持原有选中值。</summary>
+    private void RefreshMissingKeyStyleItems()
+    {
+        var isEdit = IsEdit;
+        IsEdit = false;
+
+        MissingKeyStyleBox.Items.Clear();
+        foreach (var style in Enum.GetValues<MissingKeyStyle>())
+            MissingKeyStyleBox.Items.Add(new ComboBoxItem
+            {
+                Content = I18nManager.Instance["Setting.Language.MissingKey." + style]
+            });
+
+        // 枚举值直接当下拉框索引用（顺序固定，见 MissingKeyStyle）。
+        MissingKeyStyleBox.SelectedIndex = (int)GlobalModel.Config.Data.MissingKeyStyle;
+
+        IsEdit = isEdit;
+    }
+
+    private void MissingKeyStyleBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (!IsEdit || MissingKeyStyleBox.SelectedIndex < 0)
+            return;
+
+        var style = (MissingKeyStyle)MissingKeyStyleBox.SelectedIndex;
+        if (GlobalModel.Config.Data.MissingKeyStyle == style)
+            return;
+
+        GlobalModel.Config.Data.MissingKeyStyle = style;
+        GlobalModel.Config.Save();
+
+        // 换策略必须重建键表，否则界面不会变（仅换 Options 实例不会触发重建）。
+        LanguageService.Current.SetMissingKeyStyle(style);
     }
 
     private void LanguageSelectBox_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -76,15 +139,15 @@ public partial class UniversalLanguage : ISettingPage
 
         var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择语言资源文件",
+            Title = I18nManager.Instance["Setting.Language.DebugTool.Picker.Title"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("Avalonia/XAML/XML 文件")
+                new FilePickerFileType(I18nManager.Instance["Setting.Language.DebugTool.Picker.LanguageFiles"])
                 {
                     Patterns = new[] { "*.axaml", "*.xaml", "*.xml" }
                 },
-                new FilePickerFileType("所有文件")
+                new FilePickerFileType(I18nManager.Instance["Setting.Language.DebugTool.Picker.AllFiles"])
                 {
                     Patterns = new[] { "*" }
                 }

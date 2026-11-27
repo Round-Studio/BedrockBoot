@@ -86,7 +86,7 @@ public partial class GameResourcePackItem : UserControl
         ViewBtn.IsVisible = ResourcePackManifest.PackType == ResourcePackType.Skin;
         PackName.MinecraftText = ResourcePackManifest.Header.Name;
         PackDescription.MinecraftText = string.IsNullOrEmpty(ResourcePackManifest.Header.Description)
-            ? "该包还没有介绍..."
+            ? I18nManager.Instance["UI.Item.Pack.NoDescription"]
             : ResourcePackManifest.Header.Description;
         if (!string.IsNullOrEmpty(ResourcePackManifest.Header.Version))
             PackVersion.Text = ResourcePackManifest.Header.Version;
@@ -150,9 +150,9 @@ public partial class GameResourcePackItem : UserControl
     {
         DialogHost.Show(new()
         {
-            Title = "预览皮肤包",
+            Title = I18nManager.Instance["Pack.Preview.Skin"],
             Content = new DialogSkinPackViewerContent(ResourcePackManifest.PackRootPath),
-            CloseButtonText = "完成"
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
         });
     }
 
@@ -161,10 +161,10 @@ public partial class GameResourcePackItem : UserControl
         var dialog = new DialogSettingResourcePackContent(ResourcePackManifest);
         DialogHost.Show(new()
         {
-            Title = "编辑行为包",
+            Title = I18nManager.Instance["Pack.Edit.Behavior"],
             Content = dialog,
-            CloseButtonText = "确定修改并保存",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Pack.Edit.Save"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = dialog.OnSave
         });
     }

@@ -1,0 +1,12 @@
+{
+  "baseline": "zh_CN",
+  "fallback": "en_US",
+  "cultures": [
+    { "code": "zh_CN", "displayName": "中文（简体）" },
+    { "code": "zh_TW", "displayName": "中文（繁體）", "parent": "zh_CN" },
+    { "code": "yue_HK", "displayName": "中文（粵語）", "parent": "zh_CN" },
+    { "code": "en_US", "displayName": "English (US)" },
+    { "code": "ja_JP", "displayName": "日本語" },
+    { "code": "ru_RU", "displayName": "Русский" }
+  ]
+}

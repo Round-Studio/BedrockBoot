@@ -24,24 +24,24 @@
                     <Grid Margin="24">
                         <StackPanel>
                             <TextBlock FontSize="22"
-                                       Text="让"></TextBlock>
+                                       Text="{DynamicResource Setting.Language.Header.Prefix}"></TextBlock>
                             <TextBlock FontSize="42"
                                        FontWeight="DemiBold"
                                        Text="BedrockBoot"></TextBlock>
                             <TextBlock FontSize="22"
-                                       Text="走向国际化。"></TextBlock>
+                                       Text="{DynamicResource Setting.Language.Header.Suffix}"></TextBlock>
                             
                             <StackPanel Margin="0,16,0,0"
                                         Spacing="4">
-                                <TextBlock Text="在社区的共同助力下，BedrockBoot 正在迈向国际化的新篇章。"></TextBlock>
-                                <TextBlock Text="欢迎各位贡献者前来参与本地化贡献，与我们一同完善多语言支持，为 BedrockBoot 更好地服务全球用户的目标添砖加瓦。"></TextBlock>
-                                <TextBlock Text="感谢每一位参与 BedrockBoot 国际化，参与翻译、校对与改进的贡献者！"></TextBlock>
+                                <TextBlock Text="{DynamicResource Setting.Language.Header.Line1}"></TextBlock>
+                                <TextBlock Text="{DynamicResource Setting.Language.Header.Line2}"></TextBlock>
+                                <TextBlock Text="{DynamicResource Setting.Language.Header.Line3}"></TextBlock>
                             </StackPanel>
                             
                             <StackPanel Orientation="Horizontal"
                                         Margin="0,8,0,0">
                                 <Button Padding="22,8"
-                                        Content="提交 Pull Request"
+                                        Content="{DynamicResource Setting.Language.Header.Contribute}"
                                         Name="OpenPRBtn"
                                         Click="OpenPRBtn_OnClick"></Button>
                             </StackPanel>
@@ -52,7 +52,7 @@
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="显示语言" />
+                       Text="{DynamicResource Setting.Language.Title}" />
 
             <ComboBox HorizontalAlignment="Stretch"
                       Name="LanguageSelectBox"
@@ -67,11 +67,13 @@
             
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
-                       Text="BedrockBoot 支持多个地区/国家的语言。" />
+                       Text="{DynamicResource Setting.Language.Description}" />
+
+            
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="来源 / 翻译官" />
+                       Text="{DynamicResource Setting.Language.Translator}" />
             
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
@@ -79,10 +81,10 @@
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"
-                       Text="本地化工具" />
+                       Text="{DynamicResource Setting.Language.Tools}" />
             
-            <onePointControls:SettingCard Header="本地化调试工具"
-                                          Description="临时挂载本地化文件"
+            <onePointControls:SettingCard Header="{DynamicResource Setting.Language.DebugTool.Title}"
+                                          Description="{DynamicResource Setting.Language.DebugTool.Description}"
                                           Glyph="&#xF196;"
                                           Name="LocalFileBtn"
                                           Click="LocalFileBtn_OnClick"
@@ -90,11 +92,24 @@
             
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
-                       Text="在本次运行时使用本地的语言文件替换所选的语言。" />
+                       Text="{DynamicResource Setting.Language.DebugTool.ReplaceHint}" />
             
             <TextBlock Opacity="0.8"
                        TextWrapping="WrapWithOverflow"
-                       Text="该调试工具支持语言文件热重载。" />
+                       Text="{DynamicResource Setting.Language.DebugTool.HotReloadHint}" />
+
+                       <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Margin="0,8,0,0"
+                       Text="{DynamicResource Setting.Language.MissingKey.Title}" />
+
+            <ComboBox HorizontalAlignment="Stretch"
+                      Name="MissingKeyStyleBox"
+                      SelectionChanged="MissingKeyStyleBox_OnSelectionChanged" />
+
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="{DynamicResource Setting.Language.MissingKey.Description}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -20,7 +20,7 @@
                                                    FontSize="16"
                                                    Margin="5,5,12,5" />
                         <TextBox Name="SearchBox"
-                                 Watermark="键入关键词以搜索"
+                                 Watermark="{DynamicResource Shared.Watermark.Search}"
                                  HorizontalAlignment="Stretch"
                                  DockPanel.Dock="Right"
                                  TextChanged="SearchBox_OnTextChanged" />

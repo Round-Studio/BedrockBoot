@@ -12,17 +12,17 @@
     </UserControl.Styles>
     <StackPanel Spacing="8">
         <DockPanel LastChildFill="True">
-            <TextBlock Text="行为包名称"></TextBlock>
+            <TextBlock Text="{DynamicResource Dialog.SettingResourcePack.Name}"></TextBlock>
             <TextBox Name="PackName" TextWrapping="Wrap"></TextBox>
         </DockPanel>
         <DockPanel LastChildFill="True">
-            <TextBlock Text="行为包简介" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Text="{DynamicResource Dialog.SettingResourcePack.Description}" VerticalAlignment="Center"></TextBlock>
             <TextBox Name="PackDescription"
                      TextWrapping="Wrap"
                      AcceptsReturn="True"></TextBox>
         </DockPanel>
         <DockPanel LastChildFill="True">
-            <TextBlock Text="允许成就（成就友好）"></TextBlock>
+            <TextBlock Text="{DynamicResource Dialog.SettingResourcePack.AllowAchievements}"></TextBlock>
             <ToggleSwitch Name="AllowAchievement"></ToggleSwitch>
         </DockPanel>
     </StackPanel>

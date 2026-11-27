@@ -41,7 +41,7 @@ public partial class SettingAccessibility : ISettingPage
         {
             new()
             {
-                ItemName = "辅助功能"
+                ItemName = "Instance.Controls.Group.Accessibility"
             }
         };
 

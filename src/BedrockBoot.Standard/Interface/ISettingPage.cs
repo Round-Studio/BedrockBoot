@@ -22,6 +22,16 @@ namespace BedrockBoot.Standard.Interface;
 
 public class ISettingPage : ISetting
 {
+    /// <summary>
+    ///     面包屑条目。
+    /// </summary>
+    /// <remarks>
+    ///     <see cref="BreadcrumbItemInfo.ItemName" /> 存的是<b>本地化键</b>（如
+    ///     <c>"Setting.Language.Title"</c>），不是当前语言下的文案——页面构造时并不知道
+    ///     用户之后会不会切语言，只有存键才能由 <c>MainSettingPage</c> 在每次渲染（含切语言）时
+    ///     重新解析。少数非文案的条目（用户名、产品名）直接写原样字符串即可：
+    ///     键表里没有这个键，查串会原样返回。
+    /// </remarks>
     public List<BreadcrumbItemInfo> BreadcrumbItem { get; set; } = new();
     public bool IsEdit { get; set; } = false;
 }

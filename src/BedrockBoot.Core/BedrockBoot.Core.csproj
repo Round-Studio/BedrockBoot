@@ -22,6 +22,8 @@
     <ItemGroup>
       <ProjectReference Include="..\BedrockBoot.Standard\BedrockBoot.Standard.csproj" />
       <ProjectReference Include="..\PeNet\src\PeNet\PeNet.csproj" />
+      <!-- 查串入口：Localizer.Get("Core.*")，不依赖 Avalonia -->
+      <ProjectReference Include="..\Localization\BedrockBoot.Localization\BedrockBoot.Localization.csproj" />
     </ItemGroup>
 
     <ItemGroup>

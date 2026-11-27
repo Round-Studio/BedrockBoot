@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home page welcome messages (English).
+
+    Format: one <Message> per line, the element text is what gets displayed, Weight is the
+    relative frequency (default 1, larger appears more often). Set Weight to 0 to retire an
+    entry without deleting it.
+-->
+<WelcomeMessages>
+    <Message Weight="8">Hello, welcome back</Message>
+    <Message Weight="1">Hello, welcome to BugsBoot</Message>
+</WelcomeMessages>

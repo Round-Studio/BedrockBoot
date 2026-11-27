@@ -56,7 +56,7 @@ public partial class XboxUserInfoWidget : UserControl
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         BoxContent.IsVisible = true;
-                        PlayerName.Text = "无法获取";
+                        PlayerName.Text = I18nManager.Instance["Widget.Xbox.CannotGet"];
                     });
                 }
 

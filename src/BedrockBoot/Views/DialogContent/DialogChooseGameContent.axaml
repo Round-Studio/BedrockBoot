@@ -25,7 +25,7 @@
                     IsVisible="False">
             <TextBlock
                 HorizontalAlignment="Left"
-                Text="用户" />
+                Text="{DynamicResource Dialog.ChooseGame.User}" />
             <ComboBox Width="320"
                       Name="InstanceUsers" />
         </StackPanel>

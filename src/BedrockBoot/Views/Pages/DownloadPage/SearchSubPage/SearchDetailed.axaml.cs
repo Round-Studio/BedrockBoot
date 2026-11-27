@@ -121,12 +121,12 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         }
 
         /// <summary>
-        ///     境外设备（不含港澳台）从类型下拉框中移除"插件"与"Dll 模组"，
+        ///     中国大陆以外的设备从类型下拉框中移除"插件"与"Dll 模组"，
         ///     重建下拉项并适配 SelectedIndex 与枚举的映射（_visibleTypes）。
         /// </summary>
         private async Task ApplyRegionGateAsync()
         {
-            if (await RegionDetector.IsInChinaAsync()) return;
+            if (await RegionDetector.IsInMainlandChinaAsync()) return;
 
             Dispatcher.UIThread.Post(() =>
             {
@@ -169,13 +169,17 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
                         Application.Current!.Resources.GetResourceObservable("Download.Tab.Assets"));
                     break;
                 case SearchResourceType.PluginPack:
-                    item.Content = "插件";
+                    item.Bind(ContentProperty,
+                        Application.Current!.Resources.GetResourceObservable("Download.Search.ResourceType.Plugin"));
                     break;
                 case SearchResourceType.LeviLaminaMods:
-                    item.Content = "LeviLamina 模组";
+                    item.Bind(ContentProperty,
+                        Application.Current!.Resources.GetResourceObservable(
+                            "Download.Search.ResourceType.LeviLaminaMod"));
                     break;
                 case SearchResourceType.DllMods:
-                    item.Content = "Dll 模组";
+                    item.Bind(ContentProperty,
+                        Application.Current!.Resources.GetResourceObservable("Download.Search.ResourceType.DllMod"));
                     break;
                 default:
                     item.Content = "Minecraft";
@@ -494,9 +498,8 @@ namespace BedrockBoot.Views.Pages.DownloadPage.SearchSubPage
         {
             DialogHost.Show(new DialogInfo
             {
-                Title = "找不到想要的版本？",
-                Content =
-                    "1. 请确保正式版、预览版、Beta 版选择正确。注意预览版和 Beta 版是两个不同的版本类型\n2. Windows 和 Android 的内部版本号格式不一致。\n   例如在 Android 上的 1.26.30.5 对应 Windows 上的 1.26.3005\n   请以游戏主屏幕右下角的版本号为准，例如上述版本的版本号为 26.30",
+                Title = I18nManager.Instance["Download.Search.Help.VersionNotFound"],
+                Content = I18nManager.Instance["UI.Page.Download.Help.VersionNotFound.Content"],
                 CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
             });
         }

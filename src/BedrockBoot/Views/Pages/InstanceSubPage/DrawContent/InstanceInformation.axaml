@@ -8,7 +8,7 @@
              x:Class="BedrockBoot.Views.Pages.InstanceSubPage.DrawContent.InstanceInformation">
     <Grid Margin="0,0,0,10" RowDefinitions="Auto,*">
         <StackPanel Grid.Row="0" Margin="20,0" Spacing="8" Orientation="Horizontal">
-            <TextBlock Text="统计数据" VerticalAlignment="Center" FontSize="16" />
+            <TextBlock Text="{DynamicResource Draw.Instance.Tab.Statistics}" VerticalAlignment="Center" FontSize="16" />
         </StackPanel>
         <StackPanel Grid.Row="0" Margin="20,0" Spacing="8" Orientation="Horizontal"
                     HorizontalAlignment="Right">
@@ -22,7 +22,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xE74E;"
                                                    VerticalAlignment="Center" />
-                        <TextBlock Text="磁盘占用"
+                        <TextBlock Text="{DynamicResource Draw.Instance.Information.DiskUsage}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>
@@ -33,7 +33,7 @@
                                 Spacing="6">
                         <onePointControls:FontIcon Glyph="&#xE916;"
                                                    VerticalAlignment="Center" />
-                        <TextBlock Text="游玩时长"
+                        <TextBlock Text="{DynamicResource Draw.Instance.Information.PlayTime}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </ListBoxItem>

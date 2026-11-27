@@ -11,11 +11,11 @@
         MinWidth="600" MinHeight="450"
         Icon="/Assets/Icon/BedrockBoot.Icon.256x.ico"
         Padding="12"
-        Title="导入世界模版">
+        Title="{DynamicResource Import.TemplatePack.Title}">
     <Grid RowDefinitions="Auto,*,Auto,Auto"
           RowSpacing="8">
         <TextBlock Grid.Row="0"
-                   Text="模版与需导入的资源总览"
+                   Text="{DynamicResource Import.Preview.TemplatePack}"
                    FontSize="16"
                    FontWeight="Bold" />
 
@@ -27,8 +27,8 @@
             <notice:LoadCard x:Name="LoadingCard"
                              HorizontalAlignment="Center"
                              VerticalAlignment="Center"
-                             BigTitle="加载中"
-                             Message="正在加载包信息..." />
+                             BigTitle="{DynamicResource Shared.Status.Loading}"
+                             Message="{DynamicResource Import.Status.LoadingPackageInfo}" />
         </Grid>
 
         <StackPanel Grid.Row="2"
@@ -36,7 +36,7 @@
                     Margin="0,0,0,0"
                     Name="ConfigPanel">
             <DockPanel>
-                <TextBlock Text="目标目录"
+                <TextBlock Text="{DynamicResource Import.Label.TargetFolder}"
                            Width="60"
                            VerticalAlignment="Center" />
                 <ComboBox x:Name="FolderComboBox"
@@ -44,7 +44,7 @@
                           SelectionChanged="FolderComboBox_SelectionChanged" />
             </DockPanel>
             <DockPanel>
-                <TextBlock Text="目标实例"
+                <TextBlock Text="{DynamicResource Import.Label.TargetInstance}"
                            Width="60"
                            VerticalAlignment="Center" />
                 <ComboBox x:Name="InstanceComboBox"
@@ -53,7 +53,7 @@
             </DockPanel>
 
             <DockPanel>
-                <TextBlock Text="导入用户"
+                <TextBlock Text="{DynamicResource Import.Label.TargetUser}"
                            Width="60"
                            VerticalAlignment="Center" />
                 <ComboBox x:Name="UserComboBox"
@@ -74,7 +74,7 @@
                     <onePointControls:FontIcon VerticalAlignment="Center"
                                                FontSize="15"
                                                Glyph="&#xE74E;" />
-                    <TextBlock Text="开始导入" />
+                    <TextBlock Text="{DynamicResource Import.Action.Start}" />
                 </StackPanel>
             </Button>
         </StackPanel>

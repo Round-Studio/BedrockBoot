@@ -81,7 +81,7 @@ public partial class GameArchivePackItem : UserControl
 
         PackName.MinecraftText = info.Header.Name;
         PackDescription.MinecraftText = string.IsNullOrEmpty(info.Header.Description)
-            ? "该包还没有介绍..."
+            ? I18nManager.Instance["UI.Item.Pack.NoDescription"]
             : info.Header.Description;
         if (!string.IsNullOrEmpty(info.Header.Version))
             PackVersion.Text = info.Header.Version;

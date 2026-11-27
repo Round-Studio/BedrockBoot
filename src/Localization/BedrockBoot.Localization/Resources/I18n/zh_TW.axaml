@@ -94,6 +94,7 @@
 
     <x:String x:Key="Manager.GameItem.Launch">啟動</x:String>
     <x:String x:Key="Manager.GameItem.EditModel">編輯模式</x:String>
+    <x:String x:Key="Manager.GameItem.PlayTime">遊玩 {0} 小時</x:String>
 
     <x:String x:Key="Manager.Folder.Empty.Title">空</x:String>
     <x:String x:Key="Manager.Folder.Empty.Message">點擊下方 添加目錄&#x0A;以添加目錄</x:String>
@@ -448,6 +449,10 @@
     <x:String x:Key="Task.LeviLamina.Notice.Added">已將其安裝任務添加至任務列表。</x:String>
     <x:String x:Key="Task.LeviLamina.Notice.Success">LeviLamina 安裝完成</x:String>
     <x:String x:Key="Task.LeviLamina.Notice.Failed">LeviLamina 安裝失敗</x:String>
+    <x:String x:Key="Instance.Loader.Upgrade.Target">升級到 v{0}</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Title">升級 LeviLamina</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Content">將從 v{0} 升級到 v{1}。&#10;將重新安裝 LeviLamina、PreLoader 與執行階段資料，已安裝的 Mod 檔案會全部保留。</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Latest">目前已是最新版本</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadSource">正在下載資源清單...</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadLLM">正在下載 LeviLamina 本體...</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadLogger">正在下載錯誤日志器...</x:String>
@@ -475,8 +480,10 @@
     <x:String x:Key="Task.Game.Notice.Added">游戲版本 {0} 已添加至下載隊列。</x:String>
     <x:String x:Key="Task.Game.Notice.Success">游戲 {0} 安裝成功！</x:String>
     <x:String x:Key="Task.Game.Notice.Failed">游戲 {0} 安裝失敗</x:String>
+    <x:String x:Key="Task.Game.Notice.Cancelled">已取消游戲 {0} 的安裝</x:String>
     <x:String x:Key="Task.Game.Title.Format">下載游戲 {0} [{1}]</x:String>
     <x:String x:Key="Task.Game.Status.Completed">下載完成</x:String>
+    <x:String x:Key="Task.Game.Status.Cancelling">正在取消...</x:String>
     <x:String x:Key="Task.Game.Status.LocalInstalling">本地安裝中...</x:String>
     <x:String x:Key="Task.Game.Error.Detail">錯誤詳情：{0}</x:String>
 

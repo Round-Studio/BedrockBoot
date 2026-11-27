@@ -98,51 +98,71 @@ public partial class MainToolsBoxPage : BedrockBootPage
     {
         void OpenDialog()
         {
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
-                if (Chunker.Chunker.DefaultJvmInfo == null)
+                try
                 {
-                    Dispatcher.UIThread.Invoke(() =>
-                    {
-                        DialogHost.Show(new DialogInfo
-                        {
-                            Title = "存档转换",
-                            Content = "正在获取适合的 Jvm 运行器..."
-                        });
-                    });
-
-                    var jvms = await JavaUtil.GetJavaListAsync();
-                    jvms.ForEach(j => Console.WriteLine($@"Find Jvm: {j.JavaPath}"));
-                    var jvm = jvms.Find(j => j.MajorVersion >= 17);
-
-                    Dispatcher.UIThread.Invoke(DialogHost.Close);
-
-                    if (jvm == null)
+                    if (Chunker.Chunker.DefaultJvmInfo == null)
                     {
                         Dispatcher.UIThread.Invoke(() =>
                         {
                             DialogHost.Show(new DialogInfo
                             {
-                                Title = "Jvm 错误",
-                                Content = "未找到合适的 Jvm 运行器",
-                                CloseButtonText = "确定"
+                                Title = I18nManager.Instance["Tools.SaveConvert"],
+                                Content = I18nManager.Instance["Tools.Jvm.Fetching"]
                             });
                         });
-                        return;
+
+                        var jvms = await JavaUtil.GetJavaListAsync();
+                        jvms.ForEach(j => Console.WriteLine($@"Find Jvm: {j.JavaPath}"));
+                        var jvm = jvms.Find(j => j.MajorVersion >= 17);
+
+                        Dispatcher.UIThread.Invoke(DialogHost.Close);
+
+                        if (jvm == null)
+                        {
+                            Dispatcher.UIThread.Invoke(() =>
+                            {
+                                DialogHost.Show(new DialogInfo
+                                {
+                                    Title = I18nManager.Instance["Tools.Jvm.Error"],
+                                    Content = I18nManager.Instance["Tools.Jvm.NotFound"],
+                                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
+                                });
+                            });
+                            return;
+                        }
+
+                        Chunker.Chunker.DefaultJvmInfo = jvm;
                     }
 
-                    Chunker.Chunker.DefaultJvmInfo = jvm;
-                }
-
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    DialogHost.Show(new DialogInfo
+                    Dispatcher.UIThread.Invoke(() =>
                     {
-                        Title = "存档转换",
-                        Content = new DialogChooseChunkerTypeContent(),
-                        CloseButtonText = "取消"
+                        DialogHost.Show(new DialogInfo
+                        {
+                            Title = I18nManager.Instance["Tools.SaveConvert"],
+                            Content = new DialogChooseChunkerTypeContent(),
+                            CloseButtonText = I18nManager.Instance["Shared.Action.Cancel"]
+                        });
                     });
-                });
+                }
+                catch (Exception ex)
+                {
+                    // 后台任务必须自行兜住异常，否则会成为未观测异常（由终结器线程重抛），
+                    // 同时 "正在获取 Jvm" 的对话框会一直挂着不关闭
+                    Console.WriteLine($@"获取 Jvm 失败: {ex}");
+
+                    Dispatcher.UIThread.Invoke(() =>
+                    {
+                        DialogHost.Close();
+                        DialogHost.Show(new DialogInfo
+                        {
+                            Title = I18nManager.Instance["Tools.Jvm.Error"],
+                            Content = I18nManager.Instance["Tools.Jvm.NotFound"],
+                            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
+                        });
+                    });
+                }
             });
         }
 
@@ -151,7 +171,7 @@ public partial class MainToolsBoxPage : BedrockBootPage
             var dialog = new DialogDownloadChunkerContent();
             DialogHost.Show(new DialogInfo
             {
-                Title = "下载依赖",
+                Title = I18nManager.Instance["Tools.DownloadDependency"],
                 Content = dialog
             });
 
@@ -170,11 +190,11 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "导入需要翻译的基岩版资源包",
+            Title = I18nManager.Instance["Tools.Translate.ImportPack"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("基岩版资源包/行为包")
+                new FilePickerFileType(I18nManager.Instance["Tools.Translate.PackFileType"])
                 {
                     Patterns = new[] { "*.mcpack", "*.mcaddon" }
                 }
@@ -187,11 +207,11 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
             var saveFile = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
-                Title = "保存为基岩版支持包文件",
+                Title = I18nManager.Instance["Tools.Translate.SaveAs"],
                 DefaultExtension = Path.GetExtension(selectedFile),
                 FileTypeChoices = new[]
                 {
-                    new FilePickerFileType("Minecraft 基岩版支持文件")
+                    new FilePickerFileType(I18nManager.Instance["FileType.MinecraftSupport"])
                     {
                         Patterns = new[] { Path.GetExtension(selectedFile) }
                     }
@@ -205,7 +225,7 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "翻译包",
+                    Title = I18nManager.Instance["Tools.Translate.Title"],
                     Content = new DialogTranslateResourcePackContent(inputFile, saveFilePath)
                 });
             }
@@ -216,13 +236,13 @@ public partial class MainToolsBoxPage : BedrockBootPage
     {
         DialogHost.Show(new DialogInfo()
         {
-            Title = "警告",
-            Content = "当前资源包转换功能处于测试功能，\n" +
-                      "并不能完美的将 Java 版的资源包转换为基岩版所支持的包。\n" +
+            Title = I18nManager.Instance["Shared.Label.Notice"],
+            Content = I18nManager.Instance["Tools.Translate.Warn.Line1"] +
+                      I18nManager.Instance["Tools.Translate.Warn.Line2"] +
                       "\n" +
-                      "有些包甚至会导致游戏崩溃.jpg",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+                      I18nManager.Instance["Tools.Translate.Warn.Line3"],
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = async () =>
             {
                 var topLevel = TopLevel.GetTopLevel(GlobalModel.MainWindow);
@@ -230,11 +250,11 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
                 var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
                 {
-                    Title = "导入需要转换的 Java 版材质包",
+                    Title = I18nManager.Instance["Tools.Convert.ImportPack"],
                     AllowMultiple = false,
                     FileTypeFilter = new[]
                     {
-                        new FilePickerFileType("Java 版材质包")
+                        new FilePickerFileType(I18nManager.Instance["Tools.Convert.JavaPackFileType"])
                         {
                             Patterns = new[] { "*.zip" }
                         }
@@ -247,11 +267,11 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
                     var saveFile = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                     {
-                        Title = "保存为基岩版资源包",
+                        Title = I18nManager.Instance["Tools.Convert.SaveAs"],
                         DefaultExtension = "mcpack",
                         FileTypeChoices = new[]
                         {
-                            new FilePickerFileType("Minecraft 基岩版资源包")
+                            new FilePickerFileType(I18nManager.Instance["FileType.MinecraftBedrockResource"])
                             {
                                 Patterns = new[] { "*.mcpack" }
                             }
@@ -265,7 +285,7 @@ public partial class MainToolsBoxPage : BedrockBootPage
 
                         DialogHost.Show(new DialogInfo
                         {
-                            Title = "转换包",
+                            Title = I18nManager.Instance["Tools.Convert.Title"],
                             Content = new DialogJeToBeResourcePackContent(inputFile, saveFilePath)
                         });
                     }

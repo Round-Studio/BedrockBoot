@@ -5,15 +5,15 @@
              mc:Ignorable="d"
              x:Class="BedrockBoot.Views.DialogContent.Cape.DialogCreateCapePackContent">
     <StackPanel Spacing="8">
-        <TextBlock Text="披风包名称" />
+        <TextBlock Text="{DynamicResource Cape.Dialog.CreatePack.Name}" />
         <TextBox Width="200"
-                 Watermark="披风包名称"
+                 Watermark="{DynamicResource Cape.Dialog.CreatePack.Name}"
                  Name="PackName" />
-        <TextBlock Text="作者" />
+        <TextBlock Text="{DynamicResource Cape.Dialog.CreatePack.Author}" />
         <TextBox Width="200"
-                 Watermark="可选"
+                 Watermark="{DynamicResource Cape.Dialog.CreatePack.AuthorWatermark}"
                  Name="Author" />
-        <TextBlock Text="包 ID 与 UUID 将随机生成"
+        <TextBlock Text="{DynamicResource Cape.Dialog.CreatePack.IdHint}"
                    FontSize="12"
                    Opacity="0.6" />
     </StackPanel>

@@ -138,8 +138,8 @@ public partial class GravityConeRoom : UserControl
             clipboard.SetTextAsync(roomCode);
             GlobalModel.MainWindow.Notice.AddNotice(new ()
             {
-                Title = "剪切板",
-                Message = "已将联机码复制至剪切板",
+                Title = I18nManager.Instance["Clipboard.Title"],
+                Message = I18nManager.Instance["GravityCone.Notice.RoomCodeCopied"],
                 NoticeType = NoticeType.Info
             });
         }

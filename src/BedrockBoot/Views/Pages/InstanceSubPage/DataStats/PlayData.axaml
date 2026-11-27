@@ -18,7 +18,7 @@
                         Padding="10">
                     <Grid RowDefinitions="Auto,*">
                         <TextBlock Grid.Row="0"
-                                   Text="本周每日游玩时长"
+                                   Text="{DynamicResource Draw.Instance.Information.WeeklyChart}"
                                    FontSize="14"
                                    FontWeight="Bold"
                                    Margin="0,0,0,8"/>
@@ -46,7 +46,7 @@
                                   Margin="14,0,14,8"
                                   RowDefinitions="Auto,Auto,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0"
-                                           Text="会话数"
+                                           Text="{DynamicResource Draw.Instance.Information.Sessions}"
                                            Opacity="0.8"
                                            VerticalAlignment="Center"/>
                                 <TextBlock Grid.Row="0" Grid.Column="1"
@@ -55,7 +55,7 @@
                                            Text="0"/>
 
                                 <TextBlock Grid.Row="1" Grid.Column="0"
-                                           Text="活跃日"
+                                           Text="{DynamicResource Draw.Instance.Information.ActiveDays}"
                                            Opacity="0.8"
                                            VerticalAlignment="Center"/>
                                 <TextBlock Grid.Row="1" Grid.Column="1"
@@ -64,7 +64,7 @@
                                            Text="0"/>
 
                                 <TextBlock Grid.Row="2" Grid.Column="0"
-                                           Text="总小时"
+                                           Text="{DynamicResource Draw.Instance.Information.TotalHours}"
                                            Opacity="0.8"
                                            VerticalAlignment="Center"/>
                                 <TextBlock Grid.Row="2" Grid.Column="1"
@@ -81,7 +81,7 @@
                             <StackPanel VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         Spacing="8">
-                                <TextBlock Text="游玩排名"
+                                <TextBlock Text="{DynamicResource Draw.Instance.Information.Rank}"
                                            HorizontalAlignment="Center"></TextBlock>
                                 <onePointControls:LabelBox Name="TotalPlayRankingLabel"
                                                            Padding="8,2"

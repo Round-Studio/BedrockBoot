@@ -38,7 +38,7 @@
                          Height="32"
                          Name="SearchBox"
                          TextChanged="SearchBox_OnTextChanged"
-                         Watermark="键入关键词以搜索..." />
+                         Watermark="{DynamicResource Shared.Watermark.SearchWithEllipsis}" />
 
                 <Button Classes="Accent"
                         Name="ImportBtn"

@@ -35,8 +35,8 @@
                                               Glyph="&#xE7FC;" />
 
                 <onePointControls:SettingCard Margin="5, 0"
-                                              Header="账户与档案"
-                                              Description="XBOX 账户与设置"
+                                              Header="{DynamicResource Settings.Nav.Account.Title}"
+                                              Description="{DynamicResource Settings.Nav.Account.Desc}"
                                               Name="Account"
                                               Click="Account_OnClick"
                                               IsClickable="True"
@@ -51,8 +51,8 @@
                                               Glyph="&#xE71D;" />
 
                 <onePointControls:SettingCard Margin="5, 0"
-                                              Header="辅助功能"
-                                              Description="启动器辅助功能设置"
+                                              Header="{DynamicResource Settings.Nav.Accessibility.Title}"
+                                              Description="{DynamicResource Settings.Nav.Accessibility.Desc}"
                                               Name="Accessibility"
                                               Click="Accessibility_OnClick"
                                               IsClickable="True"

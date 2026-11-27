@@ -87,7 +87,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             _widgetContextMenu = new ContextMenu();
             var deleteItem = new MenuItem
             {
-                Header = "删除组件",
+                Header = I18nManager.Instance["Widget.Workspace.Delete"],
                 Background = new SolidColorBrush(Colors.Transparent)
             };
             deleteItem.Click += OnDeleteWidgetClick;
@@ -96,7 +96,7 @@ namespace BedrockBoot.Views.Control.Widgets.DesktopWidgets
             _emptyContextMenu = new ContextMenu();
             var addItem = new MenuItem
             {
-                Header = "添加组件",
+                Header = I18nManager.Instance["Widget.Workspace.Add"],
                 Background = new SolidColorBrush(Colors.Transparent)
             };
             addItem.Click += ((sender, args) =>

@@ -9,7 +9,7 @@
                   Name="ComboBox">
         </ComboBox>
 
-        <TextBlock Text="选择一个适合该实例版本的 LeviLamina 版本以进行安装"
+        <TextBlock Text="{DynamicResource Dialog.LeviLamina.ChooseInstallVersion.Desc}"
                    Opacity="0.6">
         </TextBlock>
     </StackPanel>

@@ -114,9 +114,9 @@ public class DllModDownloadResult : IDownloadResult
                             DialogHost.Show(new()
                             {
                                 Content = chooseInstanceDialog,
-                                Title = "选择安装实例",
-                                CloseButtonText = "下载",
-                                SecondaryButtonText = "取消",
+                                Title = I18nManager.Instance["Download.DllMod.ChooseInstance"],
+                                CloseButtonText = I18nManager.Instance["Shared.Action.Download"],
+                                SecondaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                                 CloseAction = () =>
                                 {
                                     var conf = chooseInstanceDialog.VersionConfig;

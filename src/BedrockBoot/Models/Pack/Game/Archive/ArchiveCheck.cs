@@ -79,7 +79,7 @@ public class ArchiveCheck
     public List<ArchiveInfo> CheckUser(string user)
     {
         var result = new List<ArchiveInfo>();
-        if (VersionConfig == null) throw new NullReferenceException("实例配置为空");
+        if (VersionConfig == null) throw new NullReferenceException(I18nManager.Instance["Pack.Archive.NullConfig"]);
 
         var paths = GetInstanceWorldPackPath();
         if (!paths.TryGetValue(user, out var folder) || !Directory.Exists(folder)) return result;
@@ -100,7 +100,7 @@ public class ArchiveCheck
     public ArchiveManifest Check()
     {
         if (VersionConfig == null)
-            throw new NullReferenceException("实例配置为空");
+            throw new NullReferenceException(I18nManager.Instance["Pack.Archive.NullConfig"]);
 
         var path = GetInstanceWorldPackPath();
         var result = new ArchiveManifest();

@@ -212,16 +212,16 @@ public class MsaDeviceCodeClient
             IProgress<string>? progress = null,
             CancellationToken cancellationToken = default)
     {
-        progress?.Report("正在请求设备代码...");
+        progress?.Report(I18nManager.Instance["Auth.Msa.RequestingDeviceCode"]);
         var dc = RequestDeviceCode();
         if (dc == null)
         {
-            progress?.Report("请求设备代码失败");
+            progress?.Report(I18nManager.Instance["Auth.Msa.RequestDeviceCodeFailed"]);
             return (false, null, null, null);
         }
 
-        progress?.Report($"请在浏览器中打开: {dc.VerificationUri}");
-        progress?.Report($"输入代码: {dc.UserCode}");
+        progress?.Report(string.Format(I18nManager.Instance["Auth.Msa.OpenBrowser"], dc.VerificationUri));
+        progress?.Report(string.Format(I18nManager.Instance["Auth.Msa.EnterCode"], dc.UserCode));
 
         OnLoginCallback?.Invoke(dc.VerificationUri, dc.UserCode);
 
@@ -237,20 +237,21 @@ public class MsaDeviceCodeClient
             if (tr.Error == "authorization_pending")
             {
                 progress?.Report(
-                    $"等待用户授权... (剩余 {Math.Max(0, deadline - DateTimeOffset.UtcNow.ToUnixTimeSeconds())} 秒)");
+                    string.Format(I18nManager.Instance["Auth.Msa.WaitingAuthorization"],
+                        Math.Max(0, deadline - DateTimeOffset.UtcNow.ToUnixTimeSeconds())));
                 continue;
             }
 
             if (tr.Error == "slow_down")
             {
                 interval += 5;
-                progress?.Report("请求过于频繁，减慢轮询速度");
+                progress?.Report(I18nManager.Instance["Auth.Msa.SlowDown"]);
                 continue;
             }
 
             if (tr.Error != null)
             {
-                progress?.Report($"登录失败: {tr.ErrorDescription ?? tr.Error}");
+                progress?.Report(string.Format(I18nManager.Instance["Auth.Msa.LoginFailed"], tr.ErrorDescription ?? tr.Error));
                 return (false, null, dc.UserCode, dc.VerificationUri);
             }
 
@@ -263,12 +264,12 @@ public class MsaDeviceCodeClient
                     ExpiresIn = tr.ExpiresIn,
                     SavedAt = DateTimeOffset.UtcNow.ToString("o"),
                 };
-                progress?.Report("登录成功！");
+                progress?.Report(I18nManager.Instance["Auth.Msa.LoginSuccess"]);
                 return (true, tokenData, dc.UserCode, dc.VerificationUri);
             }
         }
 
-        progress?.Report("登录超时");
+        progress?.Report(I18nManager.Instance["Auth.Msa.LoginTimeout"]);
         return (false, null, dc.UserCode, dc.VerificationUri);
     }
 

@@ -45,13 +45,13 @@ namespace BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages
             {
                 new()
                 {
-                    ItemName = I18nManager.Instance["Setting.Personalization.Breadcrumb.Root"],
+                    ItemName = "Setting.Personalization.Breadcrumb.Root",
                     ItemClickAction = info =>
                         MainSettingPage.NavigateTo(new SettingPersonalization())
                 },
                 new()
                 {
-                    ItemName = I18nManager.Instance["Setting.Personalization.Color.Title"]
+                    ItemName = "Setting.Personalization.Color.Title"
                 }
             };
 

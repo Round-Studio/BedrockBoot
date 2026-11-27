@@ -35,7 +35,7 @@
         <StackPanel>
             <onePointControls:SettingCard Classes="NoBorder"
                                           Click="SettingBtn_OnClick"
-                                          Header="模组加载配置"
+                                          Header="{DynamicResource GameModItem.LoadConfig}"
                                           IsClickable="True"
                                           ToolTip.Tip="{DynamicResource Shared.Action.Settings}"
                                           Glyph="&#xE713;"
@@ -43,7 +43,7 @@
             </onePointControls:SettingCard>
             <onePointControls:SettingCard Classes="NoBorder"
                                           Click="DeleteBtn_OnClick"
-                                          Header="删除模组"
+                                          Header="{DynamicResource GameModItem.Delete}"
                                           IsClickable="True"
                                           ToolTip.Tip="{DynamicResource Shared.Action.Delete}"
                                           Glyph="&#xE74D;"

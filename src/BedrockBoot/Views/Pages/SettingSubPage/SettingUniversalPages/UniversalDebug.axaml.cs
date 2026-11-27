@@ -36,13 +36,13 @@ public partial class UniversalDebug : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
+                ItemName = "Setting.Universal.Breadcrumb.Root",
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Debug.Title"]
+                ItemName = "Setting.Universal.Debug.Title"
             }
         };
 

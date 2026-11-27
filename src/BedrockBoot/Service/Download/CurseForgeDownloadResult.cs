@@ -98,7 +98,7 @@ public class CurseForgeDownloadResult : IDownloadResult
                 {
                     Content = dialog,
                     Title = i18n["Download.CurseForge.InstallTo.Title"],
-                    CloseButtonText = "下载",
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Download"],
                     SecondaryButtonText = i18n["MainWindow.Common.Cancel"],
                     CloseAction = () =>
                     {

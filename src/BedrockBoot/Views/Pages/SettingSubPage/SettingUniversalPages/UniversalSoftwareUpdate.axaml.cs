@@ -58,13 +58,13 @@ public partial class UniversalSoftwareUpdate : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
+                ItemName = "Setting.Universal.Breadcrumb.Root",
                 ItemClickAction = info =>
                     MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.SoftwareUpdate.Title"]
+                ItemName = "Setting.Universal.SoftwareUpdate.Title"
             }
         };
 

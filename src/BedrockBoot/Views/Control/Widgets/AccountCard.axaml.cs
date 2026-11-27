@@ -49,7 +49,7 @@ public partial class AccountCard : UserControl
     private async void UpdateUi()
     {
         Expander.Header = _user.UserName;
-        Expander.Description = _user.IsDefault ? "Xbox 账户 · 默认" : "Xbox 账户";
+        Expander.Description = _user.IsDefault ? I18nManager.Instance["UI.Item.Account.Default"] : I18nManager.Instance["Settings.Account.Xbox.Title"];
         Expander.ImageIcon = await new ImageLoader().LoadIconAsync(_user.UserIconUrl, 128);
     }
 
@@ -62,10 +62,10 @@ public partial class AccountCard : UserControl
     {
         DialogHost.Show(new()
         {
-            Title = "您确定要删除账户吗",
-            Content = "删除此账户后，将会丢失该账户的验证凭证，将无法进行第三方服务器的游玩。",
-            CloseButtonText = "确定",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Account.Delete.Confirm.Title"],
+            Content = I18nManager.Instance["Account.Delete.Confirm.Content"],
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 MsAccountManager.AccountConfigEntity!.Data.Accounts.RemoveAt(

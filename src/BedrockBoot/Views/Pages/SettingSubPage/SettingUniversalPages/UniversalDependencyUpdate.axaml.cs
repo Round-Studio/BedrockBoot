@@ -48,17 +48,17 @@ public partial class UniversalDependencyUpdate : ISettingPage
         {
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.Breadcrumb.Root"],
+                ItemName = "Setting.Universal.Breadcrumb.Root",
                 ItemClickAction = info => MainSettingPage.NavigateTo(new SettingUniversal())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Setting.Universal.SoftwareUpdate.Title"],
+                ItemName = "Setting.Universal.SoftwareUpdate.Title",
                 ItemClickAction = info => MainSettingPage.NavigateTo(new UniversalSoftwareUpdate())
             },
             new()
             {
-                ItemName = I18nManager.Instance["Settings.Universal.Update.Dependency.Title"]
+                ItemName = "Settings.Universal.Update.Dependency.Title"
             }
         };
 

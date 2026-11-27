@@ -41,7 +41,7 @@
                             <onePointControls:FontIcon Glyph="&#xE805;"
                                                        VerticalAlignment="Center"
                                                        FontSize="16" />
-                            <TextBlock Margin="8,4,0,4" Text="皮肤包" />
+                            <TextBlock Margin="8,4,0,4" Text="{DynamicResource Instance.Packs.Tab.Skin}" />
                         </StackPanel>
                     </ListBoxItem>
                 </ListBox>
@@ -56,7 +56,7 @@
                                                    FontSize="16"
                                                    Margin="5,5,12,5" />
                         <TextBox Name="SearchBox"
-                                 Watermark="键入关键词以搜索"
+                                 Watermark="{DynamicResource Instance.Packs.Search.Placeholder}"
                                  HorizontalAlignment="Stretch"
                                  TextChanged="SearchBox_OnTextChanged"
                                  DockPanel.Dock="Right" />

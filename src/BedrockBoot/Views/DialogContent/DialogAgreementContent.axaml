@@ -8,8 +8,8 @@
         <TextBlock Text="{DynamicResource MainWindow.Dialog.Agreement.Content}" />
         <StackPanel Orientation="Horizontal"
                     Spacing="4">
-            <TextBlock Text="其他：" />
-            <HyperlinkButton Content="隐私策略与详细的使用条款"
+            <TextBlock Text="{DynamicResource Dialog.Agreement.Other}" />
+            <HyperlinkButton Content="{DynamicResource Dialog.Agreement.PrivacyLink}"
                              NavigateUri="https://bb.roundstudio.top/privacyPolicy" />
         </StackPanel>
     </StackPanel>

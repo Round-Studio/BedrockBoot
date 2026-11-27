@@ -43,8 +43,8 @@ public partial class MultiplayerRoot : UserControl
         {
             GlobalModel.MainWindow.Notice.AddNotice(new()
             {
-                Title = "Xbox 未登录",
-                Message = "无法获取 Xbox 用户，请登录 Xbox 账户后重试",
+                Title = I18nManager.Instance["Multiplayer.Error.XboxNotLoggedIn"],
+                Message = I18nManager.Instance["Multiplayer.Error.XboxNotLoggedIn.Desc"],
                 NoticeType = NoticeType.Error
             });
             return;
@@ -67,8 +67,8 @@ public partial class MultiplayerRoot : UserControl
         {
             GlobalModel.MainWindow.Notice.AddNotice(new()
             {
-                Title = "Xbox 未登录",
-                Message = "无法获取 Xbox 用户，请登录 Xbox 账户后重试",
+                Title = I18nManager.Instance["Multiplayer.Error.XboxNotLoggedIn"],
+                Message = I18nManager.Instance["Multiplayer.Error.XboxNotLoggedIn.Desc"],
                 NoticeType = NoticeType.Error
             });
             return;
@@ -77,10 +77,10 @@ public partial class MultiplayerRoot : UserControl
         var dialog = new DialogMultiplayerLinkRoomContent();
         DialogHost.Show(new DialogInfo
         {
-            Title = "连接房间",
+            Title = I18nManager.Instance["Multiplayer.Dialog.Connect.Title"],
             Content = dialog,
-            CloseButtonText = "加入",
-            PrimaryButtonText = "取消",
+            CloseButtonText = I18nManager.Instance["Multiplayer.Dialog.Connect.Action"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 var roomCode = dialog.RoomCode;
@@ -89,8 +89,8 @@ public partial class MultiplayerRoot : UserControl
                 {
                     GlobalModel.MainWindow.Notice.AddNotice(new()
                     {
-                        Title = "不得为空",
-                        Message = "联机码不得为空",
+                        Title = I18nManager.Instance["GravityCone.Error.EmptyTitle"],
+                        Message = I18nManager.Instance["GravityCone.Error.EmptyRoomCode"],
                         NoticeType = NoticeType.Error
                     });
                     return;
@@ -124,7 +124,7 @@ public partial class MultiplayerRoot : UserControl
                             MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoot());
                             GlobalModel.MainWindow.Notice.AddNotice(new()
                             {
-                                Title = "连接房间失败",
+                                Title = I18nManager.Instance["Multiplayer.Error.ConnectFailed"],
                                 Message = ex.Message,
                                 NoticeType = NoticeType.Error
                             });
@@ -135,8 +135,8 @@ public partial class MultiplayerRoot : UserControl
                     MainMultiplayerPage.NavigationFrame.NavigateTo(new MultiplayerRoomGuest()));
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "连接房间中...",
-                    Content = "正在连接房间..."
+                    Title = I18nManager.Instance["Multiplayer.Dialog.Connecting.Title"],
+                    Content = I18nManager.Instance["Multiplayer.Dialog.Connecting.Content"]
                 });
             }
         });

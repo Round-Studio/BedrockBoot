@@ -165,13 +165,10 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                 {
                     DialogHost.Show(new DialogInfo()
                     {
-                        Content = "当前您正在 Linux 环境下运行本启动器\n" +
-                                  "我们需要 ProtonGDK 组件才能正常启动 Minecraft for Windows (GDK)\n" +
-                                  "\n" +
-                                  "现在我们需要您同意 ProtonGDK 组件的下载",
-                        Title = "必要运行时下载",
-                        CloseButtonText = "立即下载",
-                        PrimaryButtonText = "退出启动器",
+                        Content = I18nManager.Instance["Task.Launch.Proton.Content"],
+                        Title = I18nManager.Instance["Task.Launch.Proton.Title"],
+                        CloseButtonText = I18nManager.Instance["Task.Launch.Proton.Download"],
+                        PrimaryButtonText = I18nManager.Instance["Task.Launch.Proton.Exit"],
                         AccountButton = DialogButtons.CloseButton,
                         PrimaryAction = () =>
                         {
@@ -184,7 +181,7 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                             DialogHost.Show(new DialogInfo()
                             {
                                 Content = dialog,
-                                Title = "下载游戏运行组件"
+                                Title = I18nManager.Instance["Task.Launch.Proton.DownloadComponent"]
                             });
                             dialog.Download();
                         }
@@ -208,7 +205,7 @@ public partial class TaskLaunchGameItem : UserControl, ITaskItem
                     {
                         LaunchCompleted?.Invoke();
                         if (!GlobalModel.MainWindow.IsWindowActive)
-                            PlatformCore.Notice!.SentNotice("游戏退出", $"游戏 {VersionInfo.Info.VersionName} 已退出。");
+                            PlatformCore.Notice!.SentNotice(I18nManager.Instance["Task.Launch.GameExited.Title"], string.Format(I18nManager.Instance["Task.Launch.GameExited.Message"], VersionInfo.Info.VersionName));
                     });
                 };
 

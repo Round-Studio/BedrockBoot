@@ -59,7 +59,7 @@ public class ResourcePackTranslate
         if (string.IsNullOrEmpty(targetLanguage))
             throw new ArgumentException("Target language cannot be null or empty", nameof(targetLanguage));
 
-        progressCallback?.Invoke(0, "开始分析资源包...");
+        progressCallback?.Invoke(0, I18nManager.Instance["Translate.Status.Analyzing"]);
 
         var analysis = new ResourcePackAnalysis(packagePath);
         var packInfo = analysis.GetPackInfo();
@@ -76,7 +76,7 @@ public class ResourcePackTranslate
 
             // 查找所有lang文件
             var langFiles = Directory.GetFiles(tempPath, "*.lang", SearchOption.AllDirectories);
-            progressCallback?.Invoke(10, "正在查找语言文件...");
+            progressCallback?.Invoke(10, I18nManager.Instance["Translate.Status.FindingLang"]);
 
             // 翻译主包语言文件
             await TranslateLangFilesInDirectory(tempPath, targetLanguage, progressCallback);
@@ -90,18 +90,18 @@ public class ResourcePackTranslate
                 {
                     var subPackagePath = subPackages[i];
                     progressCallback?.Invoke(20 + i * 50.0 / subPackageCount,
-                        $"正在翻译子包 {i + 1}/{subPackageCount}: {Path.GetFileName(subPackagePath)}");
+                        string.Format(I18nManager.Instance["Translate.Status.TranslatingSub"], i + 1, subPackageCount, Path.GetFileName(subPackagePath)));
 
                     // 递归翻译子包
                     await TranslateLangFilesInDirectory(subPackagePath, targetLanguage, progressCallback);
                 }
             }
 
-            progressCallback?.Invoke(80, "正在更新语言列表...");
+            progressCallback?.Invoke(80, I18nManager.Instance["Translate.Status.UpdatingLangList"]);
             // 更新languages.json（如果存在）
             UpdateLanguagesJson(tempPath, targetLanguage);
 
-            progressCallback?.Invoke(95, "正在重新打包...");
+            progressCallback?.Invoke(95, I18nManager.Instance["Translate.Status.Repacking"]);
 
             // 重新打包前确保临时目录存在且不为空
             if (Directory.Exists(tempPath) && Directory.GetFiles(tempPath, "*", SearchOption.AllDirectories).Any())
@@ -113,18 +113,18 @@ public class ResourcePackTranslate
 
                 // 验证文件是否创建成功
                 if (File.Exists(finalOutputPath))
-                    progressCallback?.Invoke(100, $"翻译完成！文件已保存到：{finalOutputPath}");
+                    progressCallback?.Invoke(100, string.Format(I18nManager.Instance["Translate.Status.Completed"], finalOutputPath));
                 else
-                    throw new Exception("打包失败：输出文件未创建");
+                    throw new Exception(I18nManager.Instance["Pack.ResourcePack.PackFailedNoOutput"]);
             }
             else
             {
-                throw new Exception("打包失败：临时目录为空");
+                throw new Exception(I18nManager.Instance["Pack.ResourcePack.PackFailedEmptyTemp"]);
             }
         }
         catch (Exception ex)
         {
-            progressCallback?.Invoke(-1, $"翻译失败：{ex.Message}");
+            progressCallback?.Invoke(-1, string.Format(I18nManager.Instance["Translate.Status.Failed"], ex.Message));
             throw;
         }
         finally
@@ -164,7 +164,7 @@ public class ResourcePackTranslate
         if (string.IsNullOrEmpty(targetLanguage))
             throw new ArgumentException("Target language cannot be null or empty", nameof(targetLanguage));
 
-        progressCallback?.Invoke(0, "开始分析资源包...");
+        progressCallback?.Invoke(0, I18nManager.Instance["Translate.Status.Analyzing"]);
 
         var analysis = new ResourcePackAnalysis(packagePath);
         var packInfo = analysis.GetPackInfo();
@@ -191,7 +191,7 @@ public class ResourcePackTranslate
                 {
                     var subPackagePath = subPackages[i];
                     progressCallback?.Invoke(20 + i * 50.0 / subPackageCount,
-                        $"正在翻译子包 {i + 1}/{subPackageCount}: {Path.GetFileName(subPackagePath)}");
+                        string.Format(I18nManager.Instance["Translate.Status.TranslatingSub"], i + 1, subPackageCount, Path.GetFileName(subPackagePath)));
 
                     // 递归翻译子包
                     await TranslateLangFilesInDirectory(subPackagePath, targetLanguage, sourceLanguage,
@@ -199,11 +199,11 @@ public class ResourcePackTranslate
                 }
             }
 
-            progressCallback?.Invoke(80, "正在更新语言列表...");
+            progressCallback?.Invoke(80, I18nManager.Instance["Translate.Status.UpdatingLangList"]);
             // 更新languages.json（如果存在）
             UpdateLanguagesJson(tempPath, targetLanguage);
 
-            progressCallback?.Invoke(95, "正在重新打包...");
+            progressCallback?.Invoke(95, I18nManager.Instance["Translate.Status.Repacking"]);
 
             // 重新打包前确保临时目录存在且不为空
             if (Directory.Exists(tempPath) && Directory.GetFiles(tempPath, "*", SearchOption.AllDirectories).Any())
@@ -215,18 +215,18 @@ public class ResourcePackTranslate
 
                 // 验证文件是否创建成功
                 if (File.Exists(finalOutputPath))
-                    progressCallback?.Invoke(100, $"翻译完成！文件已保存到：{finalOutputPath}");
+                    progressCallback?.Invoke(100, string.Format(I18nManager.Instance["Translate.Status.Completed"], finalOutputPath));
                 else
-                    throw new Exception("打包失败：输出文件未创建");
+                    throw new Exception(I18nManager.Instance["Pack.ResourcePack.PackFailedNoOutput"]);
             }
             else
             {
-                throw new Exception("打包失败：临时目录为空");
+                throw new Exception(I18nManager.Instance["Pack.ResourcePack.PackFailedEmptyTemp"]);
             }
         }
         catch (Exception ex)
         {
-            progressCallback?.Invoke(-1, $"翻译失败：{ex.Message}");
+            progressCallback?.Invoke(-1, string.Format(I18nManager.Instance["Translate.Status.Failed"], ex.Message));
             throw;
         }
         finally
@@ -470,7 +470,7 @@ public class ResourcePackTranslate
         var totalEntries = entries.Count;
         if (totalEntries == 0)
         {
-            progressCallback?.Invoke(100, "无需翻译任何条目");
+            progressCallback?.Invoke(100, I18nManager.Instance["Translate.Status.NoEntries"]);
             return translatedEntries;
         }
 
@@ -478,7 +478,7 @@ public class ResourcePackTranslate
         var sourceLangCode = "en";
         var targetLangCode = GetLanguageCodeFromFullCode(targetLanguage);
 
-        progressCallback?.Invoke(30, $"开始翻译 {totalEntries} 个条目，从 {sourceLangCode} 到 {targetLangCode}...");
+        progressCallback?.Invoke(30, string.Format(I18nManager.Instance["Translate.Status.StartEntries"], totalEntries, sourceLangCode, targetLangCode));
 
         var processedCount = 0;
         var batchSize = MaxConcurrentTranslations; // 每批处理的数量等于最大并发数
@@ -503,7 +503,7 @@ public class ResourcePackTranslate
 
                         var currentProgress = Interlocked.Increment(ref processedCount);
                         var progress = 30 + (double)currentProgress / totalEntries * 50;
-                        progressCallback?.Invoke(progress, $"跳过占位符条目 ({currentProgress}/{totalEntries})");
+                        progressCallback?.Invoke(progress, string.Format(I18nManager.Instance["Translate.Status.SkipPlaceholder"], currentProgress, totalEntries));
                         return;
                     }
 
@@ -530,7 +530,7 @@ public class ResourcePackTranslate
                     {
                         var currentProgress = Interlocked.Increment(ref processedCount);
                         var progress = 30 + (double)currentProgress / totalEntries * 50;
-                        progressCallback?.Invoke(progress, $"正在翻译 ({currentProgress}/{totalEntries})");
+                        progressCallback?.Invoke(progress, string.Format(I18nManager.Instance["Translate.Status.Progress"], currentProgress, totalEntries));
                     }
                 }));
 
@@ -539,7 +539,7 @@ public class ResourcePackTranslate
         }
 
         var translatedCount = translatedEntries.Count(kv => kv.Value != entries[kv.Key]);
-        progressCallback?.Invoke(80, $"翻译完成，成功翻译 {translatedCount}/{totalEntries} 个条目");
+        progressCallback?.Invoke(80, string.Format(I18nManager.Instance["Translate.Status.DoneEntries"], translatedCount, totalEntries));
 
         return translatedEntries;
     }

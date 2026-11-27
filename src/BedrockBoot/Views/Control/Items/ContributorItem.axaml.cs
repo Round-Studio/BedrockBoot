@@ -44,8 +44,8 @@ public partial class ContributorItem : UserControl
                 DialogHost.Show(new()
                 {
                     Title = "magijj",
-                    Content = "?! 蛆蛆 !?",
-                    CloseButtonText = "蛆"
+                    Content = I18nManager.Instance["UI.Item.Contributor.EasterEggContent"],
+                    CloseButtonText = I18nManager.Instance["UI.Item.Contributor.EasterEggButton"]
                 });
             };
         }

@@ -25,10 +25,11 @@ namespace BedrockBoot.Models.Pack.System.DropFile;
 public class DropFileCheck
 {
     /// <summary>
-    /// 获取对应类型文件的名字
+    /// 获取对应类型文件的名字（已本地化）
     /// </summary>
-    /// <param name="type">类型</param>
-    /// <returns></returns>
-    public static string GetFileTypeName(string file) => GlobalKeys.DropOverTypesOfSupport[Path.GetExtension(file)].Name;
+    /// <param name="file">文件路径或文件名</param>
+    /// <returns>类型显示名；不支持的扩展名返回扩展名本身</returns>
+    public static string GetFileTypeName(string file) =>
+        GlobalKeys.GetFileTypeDisplayName(Path.GetExtension(file));
     public static SupportedFileType GetFileType(string file) => GlobalKeys.DropOverTypesOfSupport[Path.GetExtension(file)].Type;
 }

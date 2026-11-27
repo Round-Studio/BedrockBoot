@@ -27,14 +27,14 @@ namespace BedrockBoot.Views.Pages.SetupPage;
 
 public class NewSetupStepItem
 {
-    public string Title { get; set; } = "我们需要进行一些配置";
+    public string TitleKey { get; set; } = "Setup.Root.Title";
     public Type? Content { get; set; }
     public bool IsAutoShowNextBtn { get; set; } = true;
     public bool IsAutoShowLastBtn { get; set; } = true;
-    public string SmallTitle { get; set; } = "欢迎使用 BedrockBoot";
-    public string SmallMessage { get; set; } = "单击 “下一步” 以继续";
-    public string NextBtnText { get; set; } = "下一步";
-    public string LastBtnText { get; set; } = "上一步";
+    public string SmallTitleKey { get; set; } = "Setup.Root.WelcomeTitle";
+    public string SmallMessageKey { get; set; } = "Setup.Root.WelcomeMessage";
+    public string NextBtnKey { get; set; } = "Setup.Root.Action.Next";
+    public string LastBtnKey { get; set; } = "Setup.Root.Action.Previous";
     public bool IsNodeRoot { get; set; } = false;
     public List<NewSetupStepItem>? Nodes;
     public NewSetupStepItem? Parent;
@@ -50,7 +50,7 @@ public partial class SetupRoot : UserControl
 
     public static NewSetupStepItem StepRoot { get; } = new()
     {
-        Title = "初次使用向导",
+        TitleKey = "Setup.Root.Title",
         Content = typeof(SetupWelcome),
         IsAutoShowLastBtn = false,
         IsAutoShowNextBtn = false,
@@ -62,32 +62,32 @@ public partial class SetupRoot : UserControl
                 Content = typeof(SetupStyle),
                 IsAutoShowNextBtn = true,
                 IsAutoShowLastBtn = false,
-                SmallTitle = "个性化",
-                SmallMessage = "选择您心仪的个性化选项"
+                SmallTitleKey = "Setup.Step.Style.Title",
+                SmallMessageKey = "Setup.Step.Style.Message"
             },
             new()
             {
                 Content = typeof(SetupLayout),
                 IsAutoShowNextBtn = true,
                 IsAutoShowLastBtn = true,
-                SmallTitle = "选择布局",
-                SmallMessage = "选择一个启动器页面布局"
+                SmallTitleKey = "Setup.Step.Layout.Title",
+                SmallMessageKey = "Setup.Step.Layout.Message"
             },
             new()
             {
                 Content = typeof(SetupImport),
                 IsAutoShowNextBtn = true,
                 IsAutoShowLastBtn = true,
-                SmallTitle = "导入目录",
-                SmallMessage = "导入属于您的游戏目录，或导入其他启动器的目录"
+                SmallTitleKey = "Setup.Step.Import.Title",
+                SmallMessageKey = "Setup.Step.Import.Message"
             },
             new()
             {
                 Content = typeof(SetupCompleted),
                 IsAutoShowNextBtn = false,
                 IsAutoShowLastBtn = true,
-                SmallTitle = "完成！",
-                SmallMessage = "单击屏幕中间的 “开始使用” 进入主屏幕"
+                SmallTitleKey = "Setup.Step.Completed.Title",
+                SmallMessageKey = "Setup.Step.Completed.Message"
             }
         }
     };
@@ -119,11 +119,11 @@ public partial class SetupRoot : UserControl
 
         NextBtn.IsVisible = item.IsAutoShowNextBtn;
         LastBtn.IsVisible = item.IsAutoShowLastBtn;
-        NextBtn.Content = item.NextBtnText;
-        LastBtn.Content = item.LastBtnText;
-        BigTitle.Text = item.Title;
-        SmallTitle.Text = item.SmallTitle;
-        SmallMessage.Text = $"/ {item.SmallMessage}";
+        NextBtn.Content = I18nManager.Instance[item.NextBtnKey];
+        LastBtn.Content = I18nManager.Instance[item.LastBtnKey];
+        BigTitle.Text = I18nManager.Instance[item.TitleKey];
+        SmallTitle.Text = I18nManager.Instance[item.SmallTitleKey];
+        SmallMessage.Text = $"/ {I18nManager.Instance[item.SmallMessageKey]}";
 
         if (item.Content != null)
         {
@@ -275,7 +275,7 @@ public partial class SetupRoot : UserControl
 
         while (current != null)
         {
-            crumbs.Insert(0, current.Title);
+            crumbs.Insert(0, I18nManager.Instance[current.TitleKey]);
             current = current.Parent;
         }
 

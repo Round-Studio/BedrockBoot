@@ -28,9 +28,9 @@
                       Name="ResourceTypeBox">
                 <ComboBoxItem Content="Minecraft" />
                 <ComboBoxItem Content="{DynamicResource Download.Tab.Assets}" />
-                <ComboBoxItem Content="插件" />
-                <ComboBoxItem Content="LeviLamina 模组" />
-                <ComboBoxItem Content="Dll 模组" />
+                <ComboBoxItem Content="{DynamicResource Download.Search.ResourceType.Plugin}" />
+                <ComboBoxItem Content="{DynamicResource Download.Search.ResourceType.LeviLaminaMod}" />
+                <ComboBoxItem Content="{DynamicResource Download.Search.ResourceType.DllMod}" />
             </ComboBox>
 
             <StackPanel Orientation="Horizontal"
@@ -60,7 +60,7 @@
                                            VerticalAlignment="Center"
                                            FontSize="15" />
                 <HyperlinkButton HorizontalAlignment="Right"
-                                 Content="找不到想要的版本？"
+                                 Content="{DynamicResource Download.Search.Help.VersionNotFound}"
                                  Click="HelpBtn_OnClick">
                 </HyperlinkButton>
             </StackPanel>

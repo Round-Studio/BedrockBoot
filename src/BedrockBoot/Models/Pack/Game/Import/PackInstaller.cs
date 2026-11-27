@@ -51,10 +51,10 @@ public class PackInstaller
 
     public async Task Install(string dir, string gameName, CancellationToken token = default)
     {
-        ImportProgress.Report(new PackImportProgress { Progress = 10, StatusMessage = "判断文件类型..." });
+        ImportProgress.Report(new PackImportProgress { Progress = 10, StatusMessage = I18nManager.Instance["PackInstaller.DetectType"] });
         GameBuildType = PackAnalysis.GetPackBuildTypeWithFileHeader(PackFile);
 
-        ImportProgress.Report(new PackImportProgress { Progress = 20, StatusMessage = "判断文件类型..." });
+        ImportProgress.Report(new PackImportProgress { Progress = 20, StatusMessage = I18nManager.Instance["PackInstaller.DetectType"] });
 
         if (GameBuildType == MinecraftBuildTypeVersion.GDK)
             await InstallWithGDK(dir, gameName, token);
@@ -86,7 +86,7 @@ public class PackInstaller
                 ImportProgress.Report(new PackImportProgress
                 {
                     Progress = s.Percentage,
-                    StatusMessage = $"解压文件中... ({s.Percentage:F2} %)"
+                    StatusMessage = string.Format(I18nManager.Instance["PackInstaller.Extracting"], s.Percentage)
                 });
             }),
             CancellationToken = token
@@ -315,7 +315,7 @@ public class PackInstaller
                     await Task.Delay(500);
                 }
 
-            throw new IOException($"无法创建文件副本: {originalFilePath}");
+            throw new IOException(string.Format(I18nManager.Instance["Pack.Install.CopyFailed"], originalFilePath));
         }
         catch (Exception ex)
         {
@@ -366,12 +366,12 @@ public class PackInstaller
                 gameTypeVersion = await TryParseGDKGameType();
 
                 // 如果还是未知，尝试检测
-                if (gameTypeVersion == MinecraftGameTypeVersion.Beta) throw new Exception("该包无效");
+                if (gameTypeVersion == MinecraftGameTypeVersion.Beta) throw new Exception(I18nManager.Instance["PackInstaller.InvalidPack"]);
             }
 
             Console.WriteLine($@"最终确定的版本类型: {gameTypeVersion}");
 
-            ImportProgress.Report(new PackImportProgress { Progress = 100, StatusMessage = "文件判断完毕" });
+            ImportProgress.Report(new PackImportProgress { Progress = 100, StatusMessage = I18nManager.Instance["PackInstaller.DetectDone"] });
 
             var jd = 0.00;
             // 使用临时文件进行安装
@@ -390,7 +390,7 @@ public class PackInstaller
                         ImportProgress.Report(new PackImportProgress
                         {
                             Progress = progress.Percentage,
-                            StatusMessage = $"解压文件中... ({progress.Percentage:F2}%)"
+                            StatusMessage = string.Format(I18nManager.Instance["PackInstaller.Extracting"], progress.Percentage)
                         });
                     }
                 }),
@@ -410,7 +410,7 @@ public class PackInstaller
 
             // 如果是文件占用错误，给出更明确的提示
             if (ex is IOException && ex.Message.Contains("being used by another process"))
-                throw new IOException($"文件被其他程序占用，请关闭可能使用该文件的程序后重试: {PackFile}", ex);
+                throw new IOException(string.Format(I18nManager.Instance["Pack.Install.FileInUse"], PackFile), ex);
 
             throw;
         }
@@ -429,7 +429,7 @@ public class PackInstaller
         // 等待文件出现（最多5秒）
         for (var i = 0; i < 10 && !File.Exists(manifestPath); i++) await Task.Delay(500);
 
-        if (!File.Exists(manifestPath)) throw new FileNotFoundException("安装完成但未找到 manifest 文件", manifestPath);
+        if (!File.Exists(manifestPath)) throw new FileNotFoundException(I18nManager.Instance["PackInstaller.NoManifest"], manifestPath);
 
         var manifestContent = await File.ReadAllTextAsync(manifestPath);
         var manifest = PackageIdentity.ParseFromXml(manifestContent);

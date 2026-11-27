@@ -14,7 +14,7 @@
         </onePointControls:SettingExpander.Header>
         <StackPanel>
             <onePointControls:SettingCard IsClickable="True"
-                                          Header="删除包"
+                                          Header="{DynamicResource Instance.Mods.DeletePack}"
                                           Glyph=""
                                           Click="SettingCard_OnClick"></onePointControls:SettingCard>
         </StackPanel>

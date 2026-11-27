@@ -53,11 +53,11 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择 Java Edition 存档压缩包",
+            Title = I18nManager.Instance["UI.Draw.SelectJavaWorldArchive"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("压缩文件")
+                new FilePickerFileType(I18nManager.Instance["FileType.Zip"])
                 {
                     Patterns = new[] { "*.zip" }
                 }
@@ -74,9 +74,9 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
             else
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "错误的文件",
-                    Content = "您选择的文件非 zip 文件",
-                    CloseButtonText = "确定"
+                    Title = I18nManager.Instance["UI.Draw.WrongFileTitle"],
+                    Content = I18nManager.Instance["UI.Draw.WrongFileZipContent"],
+                    CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
                 });
         }
     }
@@ -88,11 +88,11 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "保存为 McWorld 文件",
+            Title = I18nManager.Instance["UI.Draw.SaveAsMcWorld"],
             DefaultExtension = "mcworld",
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("Minecraft 基岩版存档文件")
+                new FilePickerFileType(I18nManager.Instance["UI.Draw.FileTypeBedrockWorld"])
                 {
                     Patterns = new[] { "*.mcworld" }
                 }
@@ -104,7 +104,7 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
             var result = file.Path.LocalPath;
             DialogHost.Show(new DialogInfo
             {
-                Title = "转换存档",
+                Title = I18nManager.Instance["UI.Draw.ConvertSave"],
                 Content = new DialogChunkerConversionContent(
                     ChunkerType.JavaToBedrock,
                     SaveType.File,
@@ -120,16 +120,16 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
         var ins = new DialogChooseGameContent();
         DialogHost.Show(new DialogInfo
         {
-            Title = "选择实例",
+            Title = I18nManager.Instance["UI.Draw.SelectInstance"],
             Content = ins,
-            CloseButtonText = "确定",
+            CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
             CloseAction = () =>
             {
                 var insInfo = ins.VersionConfig;
 
                 DialogHost.Show(new DialogInfo
                 {
-                    Title = "转换存档",
+                    Title = I18nManager.Instance["UI.Draw.ConvertSave"],
                     Content = new DialogChunkerConversionContent(
                         ChunkerType.JavaToBedrock,
                         SaveType.File,
@@ -149,15 +149,15 @@ public partial class DrawChunkerJavaToBedrockContent : UserControl
                                 {
                                     GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
                                     {
-                                        Title = "导入完成",
-                                        Message = "已完成转换并导入"
+                                        Title = I18nManager.Instance["Task.ImportPack.Status.Completed"],
+                                        Message = I18nManager.Instance["UI.Draw.ConversionImportCompleted"]
                                     });
                                 });
                             });
                         })
                 });
             },
-            PrimaryButtonText = "取消",
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton
         });
     }

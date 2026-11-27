@@ -110,7 +110,7 @@ public partial class DrawUpdateInstanceContent : UserControl
             var selectedVersion = currentPage?.SelectedBuildInfo;
             if (selectedVersion == null)
             {
-                await ShowErrorAsync("请选择一个版本");
+                await ShowErrorAsync(I18nManager.Instance["UI.Draw.SelectVersion"]);
                 return;
             }
 
@@ -136,7 +136,7 @@ public partial class DrawUpdateInstanceContent : UserControl
 
             if (_sources == null || _sources.Count == 0)
             {
-                await ShowErrorAsync("获取下载地址失败，请重试");
+                await ShowErrorAsync(I18nManager.Instance["UI.Draw.GetUrlFailed"]);
                 return;
             }
 

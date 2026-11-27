@@ -31,14 +31,14 @@
             <onePointControls:SettingCard Name="ExportBtn"
                                           Glyph="&#xE74E;"
                                           IsClickable="True"
-                                          Header="导出结构"
+                                          Header="{DynamicResource LevelSettings.Structure.Export}"
                                           Click="ExportBtn_OnClick">
             </onePointControls:SettingCard>
             <onePointControls:SettingCard Name="DeleteBtn"
                                           IsClickable="True"
                                           Click="DeleteBtn_OnClick" 
                                           Glyph="&#xE74D;"
-                                          Header="删除结构">
+                                          Header="{DynamicResource LevelSettings.Structure.Delete}">
             </onePointControls:SettingCard>
         </StackPanel>
     </onePointControls:SettingExpander>

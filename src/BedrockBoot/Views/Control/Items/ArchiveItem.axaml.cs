@@ -174,10 +174,10 @@ public partial class ArchiveItem : UserControl
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "删除警告",
-            Content = "你确定要删除此存档吗，这将会失去很久...",
-            CloseButtonText = "确定删除",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Archive.Delete.Warn.Title"],
+            Content = I18nManager.Instance["Archive.Delete.Warn.Content.Save"],
+            CloseButtonText = I18nManager.Instance["Archive.Delete.Warn.Confirm"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             CloseAction = () =>
             {
                 ArchiveInfo.Delete();

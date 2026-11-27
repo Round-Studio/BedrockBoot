@@ -75,7 +75,7 @@ public partial class TaskDownloadPluginItem : UserControl, ITaskItem
     {
         _release = release;
         _pluginInfo = pluginInfo;
-        _taskTitle = $"下载 {_pluginInfo.Username}.{_pluginInfo.PluginName}";
+        _taskTitle = string.Format(I18nManager.Instance["Task.Plugin.Title.Format"], _pluginInfo.Username, _pluginInfo.PluginName);
     }
 
     private void CancelButton_OnClick(object? sender, RoutedEventArgs e)
@@ -125,8 +125,8 @@ public partial class TaskDownloadPluginItem : UserControl, ITaskItem
     {
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "下载插件包",
-            Message = "插件包已开始下载",
+            Title = I18nManager.Instance["Task.Plugin.Notice.Title"],
+            Message = I18nManager.Instance["Task.Plugin.Notice.Message"],
             NoticeType = NoticeType.Info
         });
 

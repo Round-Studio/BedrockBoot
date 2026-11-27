@@ -18,6 +18,7 @@
 
 using System.Diagnostics;
 using Avalonia.Threading;
+using BedrockBoot.Localization;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
@@ -164,12 +165,10 @@ public class AppSdkChecker
         {
             var dialogInfo = new DialogInfo
             {
-                Title = "未安装 SDK 1.8",
-                Content = "当前系统未检测到完整的 Windows App SDK 1.8 (8000.x) 组件。\n" +
-                          "缺失组件可能包括: Main, Singleton 或 DDLM。\n" +
-                          "这会导致游戏无法启动。",
-                CloseButtonText = "立即安装",
-                PrimaryButtonText = "放任不管",
+                Title = Localizer.Get("CoreInit.Sdk.Missing.Title"),
+                Content = Localizer.Get("CoreInit.Sdk.Missing.Content"),
+                CloseButtonText = Localizer.Get("CoreInit.Sdk.Install"),
+                PrimaryButtonText = Localizer.Get("CoreInit.Sdk.Ignore"),
                 AccountButton = DialogButtons.CloseButton,
                 
                 CloseAction = () =>

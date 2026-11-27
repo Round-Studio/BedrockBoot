@@ -120,7 +120,7 @@ public class CapesPackUnit
     public void ExportPack(string savePath)
     {
         if (string.IsNullOrWhiteSpace(Folder) || !Directory.Exists(Folder))
-            throw new DirectoryNotFoundException($"披风包目录不存在: {Folder}");
+            throw new DirectoryNotFoundException(string.Format(I18nManager.Instance["Pack.Cape.PackDirNotFound"], Folder));
 
         if (File.Exists(savePath))
             File.Delete(savePath);

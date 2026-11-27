@@ -25,7 +25,6 @@ namespace BedrockBoot.Views.Pages.OtherPage.AboutPages;
 
 public partial class AboutReleaseNotes : ISettingPage
 {
-    public static I18nManager i18n => I18nManager.Instance;
     public AboutReleaseNotes()
     {
         InitializeComponent();
@@ -34,12 +33,12 @@ public partial class AboutReleaseNotes : ISettingPage
         {
             new()
             {
-                ItemName = i18n["AboutPage.Title"], // "关于我们"
+                ItemName = "AboutPage.Title", // "关于我们"
                 ItemClickAction = _ => MainSettingPage.NavigateTo(new AboutPage())
             },
             new()
             {
-                ItemName = "发行说明"
+                ItemName = "Settings.Universal.Update.ReleaseNotes.Title"
             }
         };
     }

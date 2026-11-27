@@ -37,7 +37,7 @@ public class CapeImageHelper
     {
         using var sourceBitmap = SKBitmap.Decode(source);
         if (sourceBitmap is null)
-            throw new InvalidOperationException($"无法解码图片: {source}");
+            throw new InvalidOperationException(string.Format(I18nManager.Instance["Pack.Cape.DecodeFailed"], source));
 
         var sourceRect = new SKRect(1, 1, 11, 17);
 
@@ -82,11 +82,11 @@ public class CapeImageHelper
     {
         using var bitmap = SKBitmap.Decode(source);
         if (bitmap is null)
-            throw new InvalidOperationException($"无法解码图片: {source}");
+            throw new InvalidOperationException(string.Format(I18nManager.Instance["Pack.Cape.DecodeFailed"], source));
 
         using var mutable = bitmap.Copy(SKColorType.Bgra8888);
         if (mutable is null)
-            throw new InvalidOperationException("无法创建可变位图");
+            throw new InvalidOperationException(I18nManager.Instance["Pack.Cape.MutableBitmapFailed"]);
 
         using (var canvas = new SKCanvas(mutable))
         using (var paint = new SKPaint

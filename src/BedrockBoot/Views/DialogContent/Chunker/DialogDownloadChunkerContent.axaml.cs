@@ -42,7 +42,7 @@ public partial class DialogDownloadChunkerContent : UserControl
                 {
                     Dispatcher.UIThread.Invoke(() =>
                     {
-                        ProgressText.Text = $"下载 Chunker ({pro.Percentage:F2} %)";
+                        ProgressText.Text = string.Format(I18nManager.Instance["Chunker.Dialog.DownloadProgress"], pro.Percentage);
                         ProgressBar.Value = pro.Percentage;
                     });
                 }));

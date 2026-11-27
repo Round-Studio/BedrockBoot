@@ -14,19 +14,19 @@
         
         <StackPanel Grid.Column="1"
                     Spacing="8">
-            <TextBlock Text="披风名"></TextBlock>
+            <TextBlock Text="{DynamicResource Cape.Dialog.AddFile.Name}"></TextBlock>
             <TextBox Width="200"
-                     Watermark="披风名"
+                     Watermark="{DynamicResource Cape.Dialog.AddFile.Name}"
                      Name="CapeName"></TextBox>
-            <TextBlock Text="披风品质"></TextBlock>
+            <TextBlock Text="{DynamicResource Cape.Dialog.AddFile.Quality}"></TextBlock>
             <ComboBox Width="200"
                       Name="CapeType"
                       SelectedIndex="0">
-                <ComboBoxItem>普通</ComboBoxItem>
-                <ComboBoxItem>不常见</ComboBoxItem>
-                <ComboBoxItem>稀有</ComboBoxItem>
-                <ComboBoxItem>史诗</ComboBoxItem>
-                <ComboBoxItem>传奇</ComboBoxItem>
+                <ComboBoxItem Content="{DynamicResource Cape.Quality.Common}" />
+                <ComboBoxItem Content="{DynamicResource Cape.Quality.Uncommon}" />
+                <ComboBoxItem Content="{DynamicResource Cape.Quality.Rare}" />
+                <ComboBoxItem Content="{DynamicResource Cape.Quality.Epic}" />
+                <ComboBoxItem Content="{DynamicResource Cape.Quality.Legendary}" />
             </ComboBox>
         </StackPanel>
     </Grid>

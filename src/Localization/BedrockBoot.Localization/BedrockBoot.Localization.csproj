@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <RootNamespace>BedrockBoot.Localization</RootNamespace>
+        <AssemblyName>BedrockBoot.Localization</AssemblyName>
+        <Description>UI 框架无关的本地化核心：多来源合并、回退链、完整键表生成，并持有内置语言文件。</Description>
+    </PropertyGroup>
+
+    <!--
+        内置文案：全部语言文件集中在本程序集，按 EmbeddedResource 原样打包，
+        由 ResourceStringModule 直接解析 XML。不要改成 AvaloniaResource / AvaloniaXaml，
+        否则会退回依赖 avares 程序集解析的老问题。
+    -->
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\I18n\**" />
+        <!-- 主页欢迎语：独立目录、独立格式（文本 + 频率），不进主键表，见 WelcomeMessages。 -->
+        <EmbeddedResource Include="Resources\Welcome\**" />
+    </ItemGroup>
+
+</Project>

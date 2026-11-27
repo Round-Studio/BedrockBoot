@@ -117,10 +117,10 @@ namespace BedrockBoot.Models.Pack.Search
                             .ToList());
                     DialogHost.Show(new()
                     {
-                        Title = $"选择 {packageInfo.Name} 版本",
+                        Title = string.Format(I18nManager.Instance["LeviLamina.Search.ChooseVersion"], packageInfo.Name),
                         Content = chooseVersionDialog,
-                        CloseButtonText = "确定",
-                        PrimaryButtonText = "取消",
+                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                        PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                         AccountButton = DialogButtons.CloseButton,
                         CloseAction = () =>
                         {
@@ -129,10 +129,10 @@ namespace BedrockBoot.Models.Pack.Search
                                 chooseModVersion, pkg.Value.Variants["client"].Versions[chooseModVersion]);
                             DialogHost.Show(new()
                             {
-                                Title = $"安装 {packageInfo.Name} {chooseVersionDialog.ChooseVersion}",
+                                Title = string.Format(I18nManager.Instance["LeviLamina.Search.Install"], packageInfo.Name, chooseVersionDialog.ChooseVersion),
                                 Content = chooseInstanceDialog,
-                                CloseButtonText = "确定",
-                                PrimaryButtonText = "取消",
+                                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
+                                PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
                                 AccountButton = DialogButtons.CloseButton,
                                 CloseAction = () =>
                                 {

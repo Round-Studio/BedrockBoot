@@ -18,10 +18,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Models.Pack.Game.Loaders.LeviLamina;
@@ -32,7 +34,6 @@ public class LeviLaminaVersionDb
 
     [JsonPropertyName("versions")] public Dictionary<string, List<string>> Versions { get; set; }
 
-    private static readonly HttpClient _httpClient = new HttpClient();
     private static LeviLaminaVersionDb _cache;
     private static DateTime _cacheTime;
     private static readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(30);
@@ -47,7 +48,22 @@ public class LeviLaminaVersionDb
 
         try
         {
-            string json = await _httpClient.GetStringAsync(SourceList.LeviLaminaVersionDb);
+            // 与主程序 GitHub 下载一致的加速源竞速方式，取代 jsdelivr 直链
+            string tempFile = Path.Combine(Path.GetTempPath(), $"levilamina-versiondb-{Guid.NewGuid():N}.json");
+            var downloader = new GithubFilesDownloader();
+            await downloader.DownloadAsync(
+                "https://github.com/LiteLDev/levilamina-client-version-db/raw/main/v2/version-db.json",
+                tempFile, null, CancellationToken.None);
+
+            string json = await File.ReadAllTextAsync(tempFile);
+            try
+            {
+                File.Delete(tempFile);
+            }
+            catch
+            {
+            }
+
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true

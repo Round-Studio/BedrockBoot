@@ -53,7 +53,7 @@ public partial class DialogMakeThemePackContent : UserControl
 
         var files = await window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "选择图片文件",
+            Title = I18nManager.Instance["Setting.Personalization.Background.Dialog.Import.Title"],
             FileTypeFilter = fileTypes,
             AllowMultiple = false
         });

@@ -19,7 +19,7 @@
                                              Name="TabControl"
                                              SelectionChanged="TabControl_OnSelectionChanged"
                                              SelectedIndex="0">
-                    <leftSelectBar:LeftSelectBarItem ItemText="已获取披风"
+                    <leftSelectBar:LeftSelectBarItem ItemText="{DynamicResource UI.Draw.CapesTab}"
                                                      Glyph="&#xE724;"
                                                      Tag="Capes"
                                                      Name="Capes" />
@@ -34,7 +34,7 @@
         <notice:LoadCard HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Name="LoadCard"
-                         BigTitle="登录中"
-                         Message="正在刷新登录令牌" />
+                         BigTitle="{DynamicResource UI.Draw.LoginInProgress}"
+                         Message="{DynamicResource UI.Draw.RefreshingToken}" />
     </Grid>
 </UserControl>

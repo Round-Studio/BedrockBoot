@@ -36,7 +36,7 @@
                                               IsClickable="True" />
 
                 <onePointControls:SettingCard Header="{DynamicResource Setup.Import.Other.Header}"
-                                              Description="导入第三方启动器目录"
+                                              Description="{DynamicResource Setup.Import.Other.Description}"
                                               Glyph="&#xE835;"
                                               Name="ImportOtherLauncherBtn"
                                               Click="ImportOtherLauncherBtn_OnClick"

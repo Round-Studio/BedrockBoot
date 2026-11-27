@@ -6,8 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.Instance.ModLoaderItem">
     <onePointControls:SettingExpander Name="LoaderCard"
-                                      Glyph="&#xEA86;"
-                                      Description="Loader Description">
+                                      Glyph="&#xEA86;">
         <onePointControls:SettingExpander.Header>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
@@ -16,15 +15,14 @@
                 </TextBlock>
 
                 <onePointControls:LabelBox Name="LoaderInstallStatus"
-                                           VerticalAlignment="Center"
-                                           Text="未安装">
+                                           VerticalAlignment="Center">
                 </onePointControls:LabelBox>
             </StackPanel>
         </onePointControls:SettingExpander.Header>
         <onePointControls:SettingExpander.RightContent>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
-                <onePointControls:LabelBox Text="不适用"
+                <onePointControls:LabelBox Text="{DynamicResource Instance.Loader.Status.NotApplicable}"
                                            FontSize="14"
                                            Background="DarkRed"
                                            Name="NotApplicableLabel"
@@ -50,12 +48,18 @@
         </onePointControls:SettingExpander.RightContent>
         <StackPanel Name="EventPanel">
             <onePointControls:SettingCard Name="ViewDetailBtn"
-                                          Header="查看详情"
+                                          Header="{DynamicResource Instance.Loader.Action.Details}"
                                           Glyph="&#xE8A7;"
                                           IsClickable="True">
             </onePointControls:SettingCard>
+            <onePointControls:SettingCard Name="UpgradeBtn"
+                                          Glyph="&#xE895;"
+                                          IsClickable="True"
+                                          IsVisible="False"
+                                          Click="UpgradeBtn_OnClick">
+            </onePointControls:SettingCard>
             <onePointControls:SettingCard Name="DeleteBtn"
-                                          Header="移除该加载器"
+                                          Header="{DynamicResource Instance.Loader.Action.Remove}"
                                           Glyph="&#xE74D;"
                                           IsClickable="True"
                                           IsVisible="False">

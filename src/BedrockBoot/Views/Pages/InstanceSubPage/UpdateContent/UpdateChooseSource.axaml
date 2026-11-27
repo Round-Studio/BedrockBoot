@@ -10,7 +10,7 @@
             <TextBlock Margin="15,5"
                        FontWeight="Bold"
                        FontSize="14"
-                       Text="选择下载源" />
+                       Text="{DynamicResource Instance.Update.ChooseSource}" />
             <ListBox HorizontalAlignment="Stretch"
                      Margin="15,5"
                      Name="SourceSelBox" />

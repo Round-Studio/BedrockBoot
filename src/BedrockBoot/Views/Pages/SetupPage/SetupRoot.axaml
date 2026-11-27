@@ -19,7 +19,7 @@
                     Orientation="Horizontal"
                     Margin="22,0,0,0">
             <text:AnimationTextBlock AnimationType="NumberRolling"
-                                     Text="初次使用向导"
+                                     Text="{DynamicResource Setup.Root.Title}"
                                      Name="BigTitle"
                                      VerticalAlignment="Center"
                                      FontSize="28"
@@ -36,11 +36,11 @@
             <StackPanel HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Spacing="2">
-                <text:AnimationTextBlock Text="欢迎使用 BedrockBoot"
-                                         Name="SmallTitle"
+<text:AnimationTextBlock Text="{DynamicResource Setup.Root.WelcomeTitle}"
+                                          Name="SmallTitle"
                                          FontSize="16">
                 </text:AnimationTextBlock>
-                <text:AnimationTextBlock Text="单击 “下一步” 以继续"
+                <text:AnimationTextBlock Text="{DynamicResource Setup.Root.WelcomeMessage}"
                                          Name="SmallMessage"
                                          FontSize="11"
                                          Opacity="0.6">
@@ -49,7 +49,7 @@
 
             <StackPanel HorizontalAlignment="Right"
                         Orientation="Horizontal">
-                <Button Content="上一步"
+                <Button Content="{DynamicResource Setup.Root.Action.Previous}"
                         Name="LastBtn"
                         Classes="NoBorder"
                         Margin="0,1"
@@ -58,7 +58,7 @@
                         Click="OnLastBtnClick"
                         VerticalAlignment="Stretch">
                 </Button>
-                <Button Content="下一步"
+                <Button Content="{DynamicResource Setup.Root.Action.Next}"
                         Name="NextBtn"
                         Background="{DynamicResource AccentBackgroundBrush}"
                         Margin="0,1"

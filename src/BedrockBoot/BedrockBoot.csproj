@@ -75,25 +75,26 @@
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
         <Folder Include="Assets\Image\Contributors\" />
         <Folder Include="Assets\Svg\"/>
-        <AvaloniaXaml Include="I18n\**"/>
         <Folder Include="Entity\" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.1.4"/>
-        <PackageReference Include="Avalonia.Desktop" Version="12.1.4"/>
-        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.4"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4"/>
-        <PackageReference Include="Avalonia.HarfBuzz" Version="12.1.4"/>
+        <PackageReference Include="Avalonia" Version="12.2.0"/>
+        <PackageReference Include="Avalonia.Desktop" Version="12.2.0"/>
+        <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.2.0"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.2.0"/>
+        <PackageReference Include="Avalonia.HarfBuzz" Version="12.2.0"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.11.71"/>
         <PackageReference Include="Markdig" Version="1.2.0" />
         <PackageReference Include="NAudio" Version="2.2.1" />
         <PackageReference Include="Octokit" Version="14.0.0"/>
         <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.15" />
+        <PackageReference Include="Tomlyn" Version="0.20.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\AvaMotion\src\AvaMotion\AvaMotion.csproj" />
+        <ProjectReference Include="..\Localization\BedrockBoot.Localization.Avalonia\BedrockBoot.Localization.Avalonia.csproj" />
         <ProjectReference Include="..\BedrockBoot.Standard\BedrockBoot.Standard.csproj" />
         <ProjectReference Include="..\BedrockBoot.Chunker\BedrockBoot.Chunker.csproj"/>
         <ProjectReference Include="..\BedrockBoot.Core\BedrockBoot.Core.csproj"/>

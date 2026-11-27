@@ -54,11 +54,11 @@ public partial class DialogImportModContent : UserControl
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "请选择 DLL 文件",
+            Title = I18nManager.Instance["UI.Dialog.Picker.SelectDllFile"],
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("DLL 文件")
+                new FilePickerFileType(I18nManager.Instance["UI.Dialog.Picker.DllFileType"])
                 {
                     Patterns = new[] { "*.dll" }
                 }

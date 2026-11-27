@@ -53,8 +53,8 @@ public partial class MultiplayerRoomHost : UserControl
         TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(GlobalModel.PaperConnectCore.RoomCode);
         GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
         {
-            Title = "联机大厅",
-            Message = "联机码已复制到剪切板"
+            Title = I18nManager.Instance["Multiplayer.Lobby.Title"],
+            Message = I18nManager.Instance["Multiplayer.Lobby.RoomCodeCopied"]
         });
     }
 

@@ -19,7 +19,7 @@
                         HorizontalAlignment="Stretch">
                 <TextBlock FontSize="16"
                            Name="CardTitle"
-                           Text="下载 GDKProton" />
+                           Text="{DynamicResource Task.Proton.Title}" />
 
                 <StackPanel Margin="0,8,0,0"
                             HorizontalAlignment="Stretch"

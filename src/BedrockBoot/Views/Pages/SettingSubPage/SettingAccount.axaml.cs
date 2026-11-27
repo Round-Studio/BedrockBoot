@@ -46,7 +46,7 @@ public partial class SettingAccount : ISettingPage
         {
             new()
             {
-                ItemName = "账户与档案"
+                ItemName = "Account.Panel.Title"
             }
         };
 
@@ -79,7 +79,7 @@ public partial class SettingAccount : ISettingPage
         if (githubLoggedIn)
         {
             GithubHeaderText.Text = string.IsNullOrEmpty(githubConf.Data.UserName)
-                ? "Github 账户"
+                ? I18nManager.Instance["Settings.Account.Github"]
                 : githubConf.Data.UserName;
 
             GithubExpander.IsFontIcon = false;
@@ -87,7 +87,7 @@ public partial class SettingAccount : ISettingPage
         }
         else
         {
-            GithubHeaderText.Text = "Github 账户";
+            GithubHeaderText.Text = I18nManager.Instance["Settings.Account.Github"];
             GithubExpander.IsFontIcon = true;
         }
 
@@ -135,9 +135,9 @@ public partial class SettingAccount : ISettingPage
             Console.WriteLine($@"登录发生错误 {exception}");
             DialogHost.Show(new()
             {
-                Title = "发生错误",
-                Content = "登录过程中发生错误，请检查网络连接并重试。",
-                CloseButtonText = "确定"
+                Title = I18nManager.Instance["Shared.Status.Error.Title"],
+                Content = I18nManager.Instance["Account.Login.Error"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
             });
         }
         UpdateUi();
@@ -156,9 +156,9 @@ public partial class SettingAccount : ISettingPage
             Console.WriteLine($@"Github 登录发生错误 {exception}");
             DialogHost.Show(new DialogInfo
             {
-                Title = "登录失败",
-                Content = "Github 登录过程中发生错误，请检查网络连接后重试。\n若长时间未在浏览器中完成授权，请重新发起登录。",
-                CloseButtonText = "确定"
+                Title = I18nManager.Instance["Shared.Status.Error.Title"],
+                Content = I18nManager.Instance["Settings.Account.Github.LoginError"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
             });
         }
 
@@ -169,10 +169,10 @@ public partial class SettingAccount : ISettingPage
     {
         DialogHost.Show(new DialogInfo
         {
-            Title = "退出 Github 登录",
-            Content = "确定要退出当前登录的 Github 账户吗？\n退出后 Commit 更新通道等需要登录的功能将无法使用。",
-            CloseButtonText = "退出登录",
-            PrimaryButtonText = "取消",
+            Title = I18nManager.Instance["Settings.Account.Github.Logout"],
+            Content = I18nManager.Instance["Settings.Account.Github.LogoutConfirm"],
+            CloseButtonText = I18nManager.Instance["Settings.Account.Github.LogoutAction"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {

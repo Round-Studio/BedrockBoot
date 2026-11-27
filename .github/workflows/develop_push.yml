@@ -128,7 +128,9 @@ jobs:
   # 推送 CI 提交版版本号到 version 分支（info/commit）
   push-commit-info:
     runs-on: ubuntu-latest
-    needs: [win-build, linux-build]
+    # version 必须显式列入 needs：needs context 只含直接依赖的 outputs，
+    # 跨级引用 needs.version.outputs.v 会得到空串（曾因此写入空文件）
+    needs: [version, win-build, linux-build]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -150,6 +152,10 @@ jobs:
 
           # CI 提交版版本号
           V="${{ needs.version.outputs.v }}"
+          if [ -z "$V" ]; then
+            echo "版本号输出为空，拒绝写入空文件" >&2
+            exit 1
+          fi
           mkdir -p info
           printf '%s' "$V" > info/commit
           git add info/commit

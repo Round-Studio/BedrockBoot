@@ -244,6 +244,10 @@ jobs:
 
           # 本次正式版信息：info/release 存版本号；changelog/<版本号>.md 存修改日志
           V="${{ needs.version.outputs.v }}"
+          if [ -z "$V" ]; then
+            echo "版本号输出为空，拒绝写入空文件" >&2
+            exit 1
+          fi
           mkdir -p info changelog
           printf '%s' "$V" > info/release
           cp ./version-changelog.md "changelog/$V.md"

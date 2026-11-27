@@ -180,7 +180,7 @@ public static class PreLoadDependencyHelper
     ///     </para>
     ///     <para>
     ///     版本号优先走 GitHub API（顺带拿到资产对象，可带授权头下载）；API 不可用时退回
-    ///     <see cref="PreLoadReleaseSource" /> 的版本文件通道（预留接口，不消耗 API 配额）；
+    ///     <see cref="PreLoadReleaseSource" /> 的版本文件通道（main 分支的 version 文件，不消耗 API 配额）；
     ///     两条都拿不到就直接按 latest 直链强制下载。
     ///     </para>
     /// </summary>
@@ -208,7 +208,7 @@ public static class PreLoadDependencyHelper
                 return false;
             }
 
-            // API 不可用：改用版本号来源（预留接口，普通网页请求，不消耗 API 配额）
+            // API 不可用：读 main 分支的 version 文件拿版本号（普通网页请求，不消耗 API 配额）
             var remote = await PreLoadReleaseSource.TryGetLatestAsync(PreLoadReleaseChannel.Stable);
             if (remote != null)
             {

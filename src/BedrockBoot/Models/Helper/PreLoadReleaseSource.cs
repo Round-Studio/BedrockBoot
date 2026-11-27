@@ -51,7 +51,7 @@ public sealed record PreLoadReleaseInfo(string Tag, PreLoadReleaseChannel Channe
 ///
 ///     <para>
 ///     现状：正式版在 GitHub API 可用时仍以 API 为准（能同时拿到资产对象，可带授权头下载）；
-///     本类提供的是 API 不可用时的兜底通道——直接读版本分支上的纯文本版本文件，
+///     本类提供的是 API 不可用时的兜底通道——直接读仓库 main 分支上的纯文本版本文件，
 ///     属于普通网页请求，不消耗 api.github.com 的 Rate Limit 配额。
 ///     预览版版本号、专用镜像、更新内容目前只有接口与占位地址，等上游确定后填上即可生效。
 ///     </para>
@@ -67,22 +67,25 @@ public static class PreLoadReleaseSource
     public const string AssetName = "PreLoad.NET.dll";
 
     /// <summary>
-    ///     版本号文件所在的约定：与启动器一致，版本分支（默认 version）下的同名纯文本文件。
-    ///     参考启动器的 <c>https://raw.githubusercontent.com/Round-Studio/BedrockBoot/refs/heads/version/version</c>。
+    ///     版本号文件所在的分支：PreLoad.NET-Release 仓库的 main，根目录下的纯文本文件。
+    ///     内容形如 <c>26.11.27.1705</c>（不带 v 前缀），与 Release Tag <c>v26.11.27.1705</c> 对应。
     /// </summary>
-    private const string StableVersionBranch = "version";
+    private const string VersionBranch = "main";
 
-    /// <summary>TODO(上游)：预览版版本分支名确定后替换</summary>
-    private const string PreviewVersionBranch = "version-preview";
+    /// <summary>正式版版本号文件名</summary>
+    private const string StableVersionFile = "version";
 
-    /// <summary>正式版版本号文件地址</summary>
-    public static string StableVersionUrl => VersionFileUrl("version", StableVersionBranch);
+    /// <summary>TODO(上游)：预览版版本号的文件名确定后替换</summary>
+    private const string PreviewVersionFile = "version-preview";
+
+    /// <summary>正式版版本号文件地址：GitHub API 不可用时的兜底来源</summary>
+    public static string StableVersionUrl => VersionFileUrl(StableVersionFile, VersionBranch);
 
     /// <summary>预览版版本号文件地址（占位，待上游提供）</summary>
-    public static string PreviewVersionUrl => VersionFileUrl("version", PreviewVersionBranch);
+    public static string PreviewVersionUrl => VersionFileUrl(PreviewVersionFile, VersionBranch);
 
     /// <summary>TODO(上游)：更新内容（Release Notes）来源确定后替换</summary>
-    public static string ReleaseNotesUrl => VersionFileUrl("changelog.md", StableVersionBranch);
+    public static string ReleaseNotesUrl => VersionFileUrl("changelog.md", VersionBranch);
 
     /// <summary>
     ///     额外的镜像前缀（<c>{url}</c> 为 GitHub 原始地址），按优先级排列。
@@ -116,8 +119,8 @@ public static class PreLoadReleaseSource
     /// <summary>
     ///     取某个版本对应的资产地址。
     ///     <para>
-    ///     版本文件里的号通常不带前缀（对照启动器是 <c>2.1.11</c>），而 Release Tag 带
-    ///     <c>v</c>（如 <c>v26.11.22.0308</c>）；不带前缀时无法确认它就是 Tag，
+    ///     版本文件里的号不带前缀（<c>26.11.27.1705</c>），而 Release Tag 带
+    ///     <c>v</c>（<c>v26.11.27.1705</c>）；拿到的号不能确认就是 Tag，
     ///     此时退回 latest 直链（永远指向当前最新产物），避免拼出 404 地址。
     ///     </para>
     /// </summary>

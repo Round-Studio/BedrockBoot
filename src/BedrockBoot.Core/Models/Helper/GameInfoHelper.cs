@@ -42,9 +42,24 @@ public static class GameInfoHelper
     {
         var type = GlobalModel.Config.Data.GameFolders.Find(x => x.GameFolderPath == gameFolder)?.GameFolderType ??
                    GameFolderType.BedrockBoot;
-        var bedrockVersionsPath = type == GameFolderType.BedrockBoot
-            ? "bedrock_versions"
-            : "versions";
+        if (type == GameFolderType.BedrockBoot) return "bedrock_versions";
+
+        // PCLSE normally stores versions below <data-root>\versions, while its
+        // external-folder setting points directly at the versions directory.
+        // Returning an empty suffix lets both layouts be imported unchanged.
+        if (type == GameFolderType.PCLSE)
+        {
+            if (Directory.Exists(Path.Combine(gameFolder, "versions"))) return "versions";
+            if (Directory.Exists(Path.Combine(gameFolder, "bedrock_versions"))) return "bedrock_versions";
+
+            // 兼容旧版 PCLSE 已登记的 .minecraft\\bedrock 根目录，
+            // 旧版本目录可能位于同级的 .minecraft\\bedrock_versions。
+            var siblingLegacy = Path.Combine(gameFolder, "..", "bedrock_versions");
+            if (Directory.Exists(siblingLegacy)) return Path.Combine("..", "bedrock_versions");
+            return string.Empty;
+        }
+
+        var bedrockVersionsPath = "versions";
 
         return bedrockVersionsPath;
     }
@@ -59,9 +74,14 @@ public static class GameInfoHelper
         if (!Directory.Exists(bedrockVersionsPath))
             return new List<VersionConfig>();
 
-        // 使用 EnumerateDirectories 提高大目录下的性能
-        // 物化目录列表：保留原始顺序作为索引
-        var dirs = Directory.EnumerateDirectories(bedrockVersionsPath).ToList();
+        // 使用 EnumerateDirectories 提高大目录下的性能。
+        // PCLSE 的已解包版本位于 versions\extracted\<版本号>，一并加入扫描列表。
+        var dirs = Directory.EnumerateDirectories(bedrockVersionsPath)
+            .Where(dir => !string.Equals(Path.GetFileName(dir), "extracted", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var extractedPath = Path.Combine(bedrockVersionsPath, "extracted");
+        if (Directory.Exists(extractedPath))
+            dirs.AddRange(Directory.EnumerateDirectories(extractedPath));
 
         // 预分配按原始顺序的槽位数组：每个并行任务写入自己的 index，
         // 最终按顺序遍历即可保证与目录枚举顺序一致
@@ -124,7 +144,13 @@ public static class GameInfoHelper
         if (!File.Exists(configJsonPath))
         {
             var manifestPath = Path.Combine(gamePath, "appxmanifest.xml");
-            if (!File.Exists(manifestPath)) return null;
+            if (!File.Exists(manifestPath))
+            {
+                // PCLSE 解包的安装包会多一层 inner 目录。
+                var innerManifestPath = Path.Combine(gamePath, "inner", "appxmanifest.xml");
+                if (File.Exists(innerManifestPath)) manifestPath = innerManifestPath;
+                else return null;
+            }
 
             // 初始化新配置
             Directory.CreateDirectory(configDir);
@@ -194,13 +220,18 @@ public static class GameInfoHelper
     /// </summary>
     public static string GetBodyFile(string gamePath)
     {
-        // 仅搜索顶级目录，避免递归产生的性能消耗
-        // 用 FirstOrDefault 提前终止，无需物化为 List
+        // 优先搜索顶级目录；PCLSE 的解包目录可能把文件放在 inner 中。
         var exeFile = Directory.EnumerateFiles(gamePath, "Minecraft*.exe").FirstOrDefault();
+        if (exeFile == null)
+        {
+            var innerPath = Path.Combine(gamePath, "inner");
+            if (Directory.Exists(innerPath))
+                exeFile = Directory.EnumerateFiles(innerPath, "Minecraft*.exe").FirstOrDefault();
+        }
 
         if (exeFile == null) return string.Empty;
 
-        return Path.GetFileName(exeFile);
+        return Path.GetRelativePath(gamePath, exeFile);
     }
 
     public static MinecraftGameTypeVersion GetVersionTypeWithPackName(string packName)

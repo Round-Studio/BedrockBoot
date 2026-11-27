@@ -23,5 +23,6 @@ public enum GameFolderType
     Other,
     BedrockBoot,
     BMCBL,
-    LeviLauncher
+    LeviLauncher,
+    PCLSE
 }

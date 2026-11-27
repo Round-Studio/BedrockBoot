@@ -449,6 +449,10 @@
     <x:String x:Key="Task.LeviLamina.Notice.Added">インストールタスクをタスクリストに追加しました。</x:String>
     <x:String x:Key="Task.LeviLamina.Notice.Success">LeviLamina のインストールが完了しました</x:String>
     <x:String x:Key="Task.LeviLamina.Notice.Failed">LeviLamina のインストールに失敗しました</x:String>
+    <x:String x:Key="Instance.Loader.Upgrade.Target">v{0} にアップグレード</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Title">LeviLamina をアップグレード</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Content">v{0} から v{1} にアップグレードします。&#10;LeviLamina、PreLoader、ランタイムデータを再インストールします。インストール済みの Mod ファイルはすべて保持されます。</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Latest">既に最新バージョンです</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadSource">リソースマニフェストをダウンロードしています...</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadLLM">LeviLamina 本体をダウンロードしています...</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadLogger">エラーロガーをダウンロードしています...</x:String>

@@ -449,6 +449,10 @@
     <x:String x:Key="Task.LeviLamina.Notice.Added">已經將安裝任務加入任務清單。</x:String>
     <x:String x:Key="Task.LeviLamina.Notice.Success">LeviLamina 安裝完成</x:String>
     <x:String x:Key="Task.LeviLamina.Notice.Failed">LeviLamina 安裝失敗</x:String>
+    <x:String x:Key="Instance.Loader.Upgrade.Target">升級到 v{0}</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Title">升級 LeviLamina</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Content">會由 v{0} 升級到 v{1}。&#10;會重新安裝 LeviLamina、PreLoader 同執行階段資料，已經裝咗嘅 Mod 檔案會全部保留。</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Latest">而家已經係最新版本</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadSource">下載緊資源清單...</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadLLM">下載緊 LeviLamina 本體...</x:String>
     <x:String x:Key="Task.LeviLamina.Status.DownloadLogger">下載緊錯誤日誌器...</x:String>

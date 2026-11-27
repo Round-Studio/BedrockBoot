@@ -457,6 +457,10 @@
     <x:String x:Key="Task.LeviLamina.Notice.Added">Задача установки добавлена в список.</x:String>
     <x:String x:Key="Task.LeviLamina.Notice.Success">ЛевиЛамина успешно установлена</x:String>
     <x:String x:Key="Task.LeviLamina.Notice.Failed">Установка LeviLamina не удалась.</x:String>
+    <x:String x:Key="Instance.Loader.Upgrade.Target">Обновить до v{0}</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Title">Обновление LeviLamina</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Content">Обновление с v{0} до v{1}.&#10;LeviLamina, PreLoader и данные среды выполнения будут переустановлены; все установленные файлы модов сохранятся.</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Latest">Уже установлена последняя версия</x:String>
 
     <x:String x:Key="Task.CurseForge.Title">Скачать ресурсы</x:String>
     <x:String x:Key="Task.CurseForge.Step.File">Загрузка файла</x:String>

@@ -19,6 +19,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using BedrockBoot.Models.Account.Github;
 using Octokit;
 
 namespace BedrockBoot.Models.Helper;
@@ -27,6 +28,14 @@ public static class GitHubHelper
 {
     public static GitHubError HandleException(Exception exception)
     {
+        // 刷新凭证被撤销/过期：本地令牌已清空，只能重新授权
+        if (exception is GitHubReauthRequiredException reauthRequired)
+        {
+            return new GitHubError(
+                GitHubErrorType.ReauthRequired,
+                reauthRequired.Message);
+        }
+
         if (exception is ApiException apiException)
         {
             if (apiException.StatusCode is
@@ -86,6 +95,7 @@ public sealed record GitHubError(
         {
             GitHubErrorType.HttpRequestException => "GitHub.Error.HttpRequest",
             GitHubErrorType.RateLimit => "GitHub.Error.RateLimit",
+            GitHubErrorType.ReauthRequired => "GitHub.Error.ReauthRequired",
             GitHubErrorType.Unauthorized => "GitHub.Error.Unauthorized",
             GitHubErrorType.Forbidden => "GitHub.Error.Forbidden",
             GitHubErrorType.NotFound => "GitHub.Error.NotFound",
@@ -102,6 +112,7 @@ public enum GitHubErrorType
     RateLimit,
     Forbidden,
     Unauthorized,
+    ReauthRequired,
     NotFound,
     HttpRequestException,
     ApiError,

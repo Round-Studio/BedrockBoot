@@ -70,10 +70,13 @@ public class GitHubOAuthManager
 
         var redirectUri = $"http://127.0.0.1:{port}{CallbackPath}";
         var state = Guid.NewGuid().ToString("N");
+        // offline_access：签发短效 access_token（8 小时）+ refresh_token（6 个月），由 GitHubTokenManager 续期。
+        // repo：Actions 产物下载与私有仓库读取都要求 OAuth 令牌带 repo 权限，
+        //       只有 user:email 时下载产物会被 403 拒绝（"You must have the actions scope..."）。
         var authUrl = $"https://github.com/login/oauth/authorize" +
                       $"?client_id={_clientId}" +
                       $"&redirect_uri={Uri.EscapeDataString(redirectUri)}" +
-                      $"&scope={Uri.EscapeDataString("user:email")}" +
+                      $"&scope={Uri.EscapeDataString("user:email repo offline_access")}" +
                       $"&state={state}";
 
         Process.Start(new ProcessStartInfo(authUrl) { UseShellExecute = true });
@@ -106,9 +109,9 @@ public class GitHubOAuthManager
             listener.Stop();
         }
 
-        var token = await ExchangeCodeForTokenAsync(code, redirectUri);
+        var tokens = await ExchangeCodeForTokenAsync(code, redirectUri);
         var client = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
-        client.Credentials = new Credentials(token);
+        client.Credentials = new Credentials(tokens.AccessToken);
 
         var user = await client.User.Current();
         var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
@@ -117,7 +120,10 @@ public class GitHubOAuthManager
             UserImage = user.AvatarUrl,
             // GitHub 允许用户不设置公开昵称，Name 可能为 null，此时回退到登录名
             UserName = string.IsNullOrWhiteSpace(user.Name) ? user.Login : user.Name,
-            UserToken = token
+            UserToken = tokens.AccessToken,
+            RefreshToken = tokens.RefreshToken,
+            ExpiresAt = tokens.ExpiresAt,
+            RefreshTokenExpiresAt = tokens.RefreshTokenExpiresAt
         };
         conf.Save();
 
@@ -165,7 +171,7 @@ public class GitHubOAuthManager
         }
     }
 
-    private async Task<string> ExchangeCodeForTokenAsync(string code, string redirectUri)
+    private async Task<GitHubTokenSet> ExchangeCodeForTokenAsync(string code, string redirectUri)
     {
         using var http = new System.Net.Http.HttpClient();
         var body = new System.Net.Http.FormUrlEncodedContent(new[]
@@ -180,11 +186,10 @@ public class GitHubOAuthManager
         var resp = await http.PostAsync("https://github.com/login/oauth/access_token", body);
         var json = await resp.Content.ReadAsStringAsync();
 
-        using var doc = System.Text.Json.JsonDocument.Parse(json);
-        if (doc.RootElement.TryGetProperty("access_token", out var token))
-            return token.GetString();
-
-        throw new InvalidOperationException($"Token exchange failed: {json}");
+        // 开启短效令牌后响应里会多出 expires_in / refresh_token / refresh_token_expires_in，
+        // 必须一并保存，否则 8 小时后只能让用户重新授权
+        return GitHubTokenManager.TryParseTokenSet(json)
+               ?? throw new InvalidOperationException($"Token exchange failed: {json}");
     }
 
     private ColorValues GetColors()
@@ -283,7 +288,19 @@ internal class ColorValues
 
 public class GithubAccountInfo
 {
-    [JsonPropertyName("userToken")] public string UserToken { get; set; }
-    [JsonPropertyName("userName")] public string UserName { get; set; }
-    [JsonPropertyName("userImage")] public string UserImage { get; set; }
+    [JsonPropertyName("userToken")] public string UserToken { get; set; } = string.Empty;
+    [JsonPropertyName("userName")] public string UserName { get; set; } = string.Empty;
+    [JsonPropertyName("userImage")] public string UserImage { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     刷新凭证。OAuth App 开启短效令牌后由 GitHub 一并下发，一次性使用；
+    ///     旧版本保存的长期令牌没有这个字段（为 null），此时不会尝试刷新。
+    /// </summary>
+    [JsonPropertyName("refreshToken")] public string? RefreshToken { get; set; }
+
+    /// <summary>access_token 的绝对过期时间（UTC）；null 表示长期令牌</summary>
+    [JsonPropertyName("expiresAt")] public DateTimeOffset? ExpiresAt { get; set; }
+
+    /// <summary>refresh_token 的绝对过期时间（UTC）；null 表示长期有效</summary>
+    [JsonPropertyName("refreshTokenExpiresAt")] public DateTimeOffset? RefreshTokenExpiresAt { get; set; }
 }

@@ -36,10 +36,16 @@ public static class GitHubErrorDialog
         string? secondaryButtonText = null, Action? secondaryAction = null)
     {
         var error = GitHubHelper.HandleException(exception);
+
+        // 认证类错误的提示本身已经说明了该做什么，再叠一句"请检查网络"只会误导
+        var isAuthIssue = error.Type is GitHubErrorType.Unauthorized or GitHubErrorType.ReauthRequired;
+
         var dialog = new DialogInfo
         {
             Title = title ?? I18nManager.Instance["GitHub.Error.Title"],
-            Content = $"{I18nManager.Instance["GitHub.Error.Prefix"]}\n{error.GetLocalizedMessage()}",
+            Content = isAuthIssue
+                ? error.GetLocalizedMessage()
+                : $"{I18nManager.Instance["GitHub.Error.Prefix"]}\n{error.GetLocalizedMessage()}",
             CloseButtonText = closeButtonText ?? I18nManager.Instance["Shared.Action.Confirm"]
         };
 

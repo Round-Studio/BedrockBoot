@@ -685,6 +685,7 @@
     <x:String x:Key="Settings.Account.Xbox.Link.Desc">关联一个新的 XBOX 账户以使用启动器的账户功能</x:String>
     <x:String x:Key="Settings.Account.Group.GitHub">GitHub 账户</x:String>
     <x:String x:Key="Settings.Account.GitHub.Description">登录 GitHub 以使用 Commit 更新通道等功能</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Expired">GitHub 登录已过期，请重新登录</x:String>
     <x:String x:Key="Settings.Account.GitHub.Login.Title">登录 GitHub</x:String>
     <x:String x:Key="Settings.Account.GitHub.Login.Desc">通过浏览器授权登录 GitHub 账户</x:String>
     <x:String x:Key="Settings.Account.GitHub.Logout.Title">退出登录</x:String>
@@ -1099,12 +1100,14 @@
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">检查更新</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">已是最新版本</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">未安装</x:String>
-    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">检查更新失败，私有仓库需登录 GitHub 账号</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">检查更新失败</x:String>
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET 组件更新</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.StartupFailedTitle">启动失败</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.CheckFailedTitle">检查更新失败</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">正在下载 PreLoad.NET 组件更新...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完成，下次启动游戏生效</x:String>
     <x:String x:Key="Task.PreLoad.Update.InvalidPackage">PreLoad.NET.dll 内容异常（{0} 字节），已拒绝替换本地更新文件</x:String>
-    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 组件缺失且无法获取版本信息，已阻止启动游戏（请检查网络连接）</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 组件缺失且无法获取版本信息，已阻止启动游戏</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET 组件下载失败，已阻止启动游戏</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET 是启动器依赖的组件，若不及时更新，游戏可能出现异常。</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">PreLoad.NET 组件更新失败，已中止启动器更新。请检查网络后重试。</x:String>
@@ -1136,7 +1139,8 @@
 	
     <!--这些在简体中文别翻，毕竟国人网络问题靠自己解决（）-->
     <x:String x:Key="GitHub.Error.HttpRequest">Http Request Exception</x:String>
-    <x:String x:Key="GitHub.Error.Unauthorized">Unauthorized</x:String>
+    <x:String x:Key="GitHub.Error.Unauthorized">GitHub 认证失败，令牌可能已失效。请到 设置 → 账户与档案 → GitHub 重新登录。</x:String>
+    <x:String x:Key="GitHub.Error.ReauthRequired">GitHub 登录已过期或授权已被撤销，且无法自动续期。请到 设置 → 账户与档案 → GitHub 重新登录。</x:String>
     <x:String x:Key="GitHub.Error.Forbidden">Forbidden</x:String>
     <x:String x:Key="GitHub.Error.NotFound">Not Found</x:String>
     <x:String x:Key="GitHub.Error.ApiError">API Error</x:String>
@@ -1873,6 +1877,7 @@
     <x:String x:Key="Task.Update.Error.NoExecutable">无法定位当前程序，不能启动更新引导流程</x:String>
     <x:String x:Key="Task.Update.Error.NoExtractedExe">解压后未找到可执行文件</x:String>
     <x:String x:Key="Task.Update.Error.BadPayload">下载内容异常（加速源可能返回了错误页面），已中止更新</x:String>
+    <x:String x:Key="Task.Update.Error.ArtifactScope">当前 GitHub 授权没有读取 Actions 产物的权限。请到 设置 → 账户与档案 → GitHub 退出登录后重新登录，并在授权页同意新的权限。</x:String>
     <x:String x:Key="Task.Update.Error.FailFormat">失败: {0}</x:String>
     <x:String x:Key="CrashReport.NoDumpFile">未生成转储文件</x:String>
     <x:String x:Key="CrashReport.NoExceptionReport">未捕获异常报告</x:String>

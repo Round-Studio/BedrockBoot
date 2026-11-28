@@ -6,6 +6,12 @@
              xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.TaskItem.TaskDownloadPreLoadItem">
+    <UserControl.Styles>
+        <!-- 失败文案与右侧关闭按钮同色：都用主题里的 Critical 画刷，不写死颜色 -->
+        <Style Selector="TextBlock.critical">
+            <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+        </Style>
+    </UserControl.Styles>
     <items:BorderCard>
         <Grid ColumnDefinitions="Auto,*,Auto">
             <onePointControls:FontIcon Grid.Column="0"
@@ -27,6 +33,7 @@
                     <DockPanel>
                         <TextBlock Text="0%"
                                    MinWidth="80"
+                                   TextWrapping="Wrap"
                                    Name="ProgressText" />
 
                         <ProgressBar Name="ProgressBar"

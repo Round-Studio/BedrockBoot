@@ -28,7 +28,6 @@ using BedrockBoot.Models.Global;
 using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Enum.Config;
 using Octokit;
-using Round.SDK.Entity;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Models;
@@ -73,9 +72,8 @@ public class CheckUpdate
 
     public static async Task<Release?> Update()
     {
-        var github = GitHubApiClient.CreateClient();
-
-        var releases = await github.Repository.Release.GetAll(Owner, Repo);
+        // 统一入口：令牌快过期会先续期，401 会刷新后重试一次
+        var releases = await GitHubApiClient.ExecuteAsync(c => c.Repository.Release.GetAll(Owner, Repo));
 
         var latest =
             releases.FirstOrDefault(x => x.Prerelease == (GlobalModel.Config.Data.UpdateType == UpdateType.Preview));
@@ -162,14 +160,9 @@ public class CheckUpdate
         });
     }
 
-    public static async Task<WorkflowRun?> GetLatestActionRunAsync(string dataUserToken)
+    public static async Task<WorkflowRun?> GetLatestActionRunAsync()
     {
-        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
-
-        if (!string.IsNullOrEmpty(dataUserToken))
-            github.Credentials = new Credentials(dataUserToken);
-
-        var runs = await github.Actions.Workflows.Runs.List(Owner, Repo);
+        var runs = await GitHubApiClient.ExecuteAsync(c => c.Actions.Workflows.Runs.List(Owner, Repo));
 
         var latest = runs.WorkflowRuns
             .Where(r => r.Status == WorkflowRunStatus.Completed
@@ -194,13 +187,12 @@ public class CheckUpdate
     {
         if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
         {
-            var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
-            if (conf.Data == null)
-                return null;
-            if (string.IsNullOrEmpty(conf.Data.UserToken))
+            // Commit 通道依赖 GitHub 登录；登录过期且无法自动续期时按未登录处理，
+            // 界面会提示重新登录，而不是抛 401
+            if (!GitHubTokenManager.IsLoggedIn)
                 return null;
 
-            var run = await GetLatestActionRunAsync(conf.Data.UserToken);
+            var run = await GetLatestActionRunAsync();
             if (run == null)
                 return null;
 

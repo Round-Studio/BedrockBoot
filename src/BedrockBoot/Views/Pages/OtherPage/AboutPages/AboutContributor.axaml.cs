@@ -64,11 +64,9 @@ public partial class AboutContributor : ISettingPage
         {
             try
             {
-                // 初始化 GitHub 客户端
-                var githubClient = GitHubApiClient.CreateClient();
-
-                // 获取 Round-Studio/BedrockBoot 仓库的贡献者
-                var contributors = await githubClient.Repository.GetAllContributors("Round-Studio", "BedrockBoot");
+                // 获取 Round-Studio/BedrockBoot 仓库的贡献者（令牌失效时会自动续期/重试）
+                var contributors = await GitHubApiClient.ExecuteAsync(
+                    c => c.Repository.GetAllContributors("Round-Studio", "BedrockBoot"));
 
                 Dispatcher.UIThread.Invoke(() =>
                 {

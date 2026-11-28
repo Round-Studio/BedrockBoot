@@ -89,8 +89,7 @@ public static class PreLoadDependencyHelper
     /// </summary>
     public static async Task<(string Tag, ReleaseAsset Asset)?> GetLatestAssetAsync()
     {
-        var github = GitHubApiClient.CreateClient();
-        var release = await github.Repository.Release.GetLatest(Owner, Repo);
+        var release = await GitHubApiClient.ExecuteAsync(c => c.Repository.Release.GetLatest(Owner, Repo));
         var asset = release.Assets.FirstOrDefault(x => x.Name == AssetName);
         return asset == null ? null : (release.TagName, asset);
     }
@@ -145,19 +144,27 @@ public static class PreLoadDependencyHelper
             WaitForMainWindowOrTimeout();
 
             var remote = await GetRemoteVersionAsync();
-            if (remote != null && await DownloadRemoteAsync(remote)) return true;
+            if (remote != null && await DownloadRemoteAsync(remote, trigger: PreLoadDownloadTrigger.Startup))
+                return true;
 
             // 版本号拿不到，或上面两条通道都失败：按 latest 直链再试一轮。
             // 刚才已经试过 CNB 就不再重复，避免同一个源白等一次超时
-            if (await DownloadLatestDirectAsync(includeCnb: remote == null)) return true;
+            if (await DownloadLatestDirectAsync(includeCnb: remote == null,
+                    trigger: PreLoadDownloadTrigger.Startup)) return true;
 
-            ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+            // remote 为 null 说明连版本号都没拿到，问题在"取不到版本信息"而不是下载本身
+            ShowNotice(I18nManager.Instance[remote == null
+                    ? "Task.PreLoad.Guard.FetchFailed"
+                    : "Task.PreLoad.Guard.DownloadFailed"],
+                "Task.PreLoad.Notice.StartupFailedTitle");
             return false;
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"PreLoad.NET 组件就绪检查失败: {ex}");
-            ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"] + $"\n{ex.Message}");
+            // 有异常就把原文带上，不替用户猜原因
+            ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"] + $"\n{ex.Message}",
+                "Task.PreLoad.Notice.StartupFailedTitle");
             return false;
         }
     }
@@ -194,6 +201,7 @@ public static class PreLoadDependencyHelper
                 Console.WriteLine(
                     $@"更新启动器前检查：PreLoad.NET 需要更新 {localVersion ?? "无记录"} → {remote.Tag}（版本号来源：{remote.Source}）");
 
+                // 这一步属于"更新启动器前的组件检查"，失败提示仍归到检查更新，而不是启动失败
                 if (await DownloadRemoteAsync(remote)) return true;
             }
 
@@ -203,12 +211,15 @@ public static class PreLoadDependencyHelper
 
             if (await DownloadLatestDirectAsync(includeCnb: remote == null)) return true;
 
-            ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"]);
+            ShowNotice(I18nManager.Instance[remote == null
+                ? "Task.PreLoad.Guard.FetchFailed"
+                : "Task.PreLoad.Guard.DownloadFailed"]);
             return false;
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"更新启动器前检查 PreLoad.NET 失败（将中止启动器更新）：{ex}");
+            // 有异常就带上原文，不再替用户猜原因
             ShowNotice(I18nManager.Instance["Task.PreLoad.Guard.DownloadFailed"] + $"\n{ex.Message}");
             return false;
         }
@@ -288,19 +299,21 @@ public static class PreLoadDependencyHelper
     ///     <paramref name="includeCnb" /> 为 false 时只走 GitHub——CNB 刚刚已经失败过，
     ///     兜底时再试一遍只会白等一轮超时。不抛异常，失败返回 false。
     /// </summary>
-    public static async Task<bool> DownloadRemoteAsync(PreLoadRemoteVersion remote, bool includeCnb = true)
+    /// <param name="trigger">下载触发场景，只影响失败提示的标题（启动失败 / 检查更新失败）</param>
+    public static async Task<bool> DownloadRemoteAsync(PreLoadRemoteVersion remote, bool includeCnb = true,
+        PreLoadDownloadTrigger trigger = PreLoadDownloadTrigger.CheckUpdate)
     {
         try
         {
             // 1) CNB 优先：国内直连，不经过 GitHub，也不吃限流
-            if (includeCnb && await DownloadFromCnbAsync(remote.Tag)) return true;
+            if (includeCnb && await DownloadFromCnbAsync(remote.Tag, trigger)) return true;
 
             // 2) GitHub：API 通道拿得到资产对象就按资产下载（可带授权头），否则走 latest 直链
             if (includeCnb) Console.WriteLine($@"CNB 通道下载失败，改用 GitHub 通道（{remote.Source}）");
 
             return remote.Asset != null
-                ? await TaskDownloadPreLoadItem.StartDownloadAndWait(remote.Asset, remote.Tag)
-                : await DownloadByDirectLinkAsync(remote.Tag);
+                ? await TaskDownloadPreLoadItem.StartDownloadAndWait(remote.Asset, remote.Tag, trigger)
+                : await DownloadByDirectLinkAsync(remote.Tag, trigger);
         }
         catch (Exception ex)
         {
@@ -313,24 +326,26 @@ public static class PreLoadDependencyHelper
     ///     版本号完全拿不到时的强制下载：按 latest 直链重试，先 CNB、再 GitHub。
     ///     两条都不依赖版本号，因此限流或断网时仍可能成功。
     /// </summary>
-    private static async Task<bool> DownloadLatestDirectAsync(bool includeCnb = true)
+    private static async Task<bool> DownloadLatestDirectAsync(bool includeCnb = true,
+        PreLoadDownloadTrigger trigger = PreLoadDownloadTrigger.CheckUpdate)
     {
-        if (includeCnb && await DownloadFromCnbAsync(null)) return true;
+        if (includeCnb && await DownloadFromCnbAsync(null, trigger)) return true;
 
         Console.WriteLine($@"改走 GitHub latest 直链：{PreLoadReleaseSource.LatestDownloadUrl}");
-        return await DownloadByDirectLinkAsync(null);
+        return await DownloadByDirectLinkAsync(null, trigger);
     }
 
     /// <summary>
     ///     从 CNB 下载。已知版本号时按 Tag 取资产，保证落地的文件与版本记录一致；
     ///     版本号未知时才用 latest 直链（此时也不写版本记录，不影响下次检查）。
     /// </summary>
-    private static async Task<bool> DownloadFromCnbAsync(string? tag)
+    private static async Task<bool> DownloadFromCnbAsync(string? tag,
+        PreLoadDownloadTrigger trigger = PreLoadDownloadTrigger.CheckUpdate)
     {
         var url = PreLoadReleaseSource.GetCnbDownloadUrl(tag);
         Console.WriteLine($@"使用 CNB 通道下载 PreLoad.NET：{url}");
 
-        var success = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(url, tag);
+        var success = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(url, tag, trigger);
 
         if (!success) Console.WriteLine(@"CNB 通道下载 PreLoad.NET 失败");
         return success;
@@ -361,13 +376,14 @@ public static class PreLoadDependencyHelper
     ///     具体取哪个地址由 <see cref="PreLoadReleaseSource.GetDownloadUrl" /> 决定
     ///     （版本文件里的号不一定等于 Release Tag，会退回 latest 直链）。
     /// </summary>
-    private static async Task<bool> DownloadByDirectLinkAsync(string? knownTag)
+    private static async Task<bool> DownloadByDirectLinkAsync(string? knownTag,
+        PreLoadDownloadTrigger trigger = PreLoadDownloadTrigger.CheckUpdate)
     {
         // 解析 Tag 不参与下载，因此与下载并行发起，避免 github.com 不通时白等一轮超时
         Task<string?> tagTask = knownTag != null ? Task.FromResult<string?>(knownTag) : TryResolveLatestTagAsync();
 
         var url = PreLoadReleaseSource.GetDownloadUrl(knownTag);
-        var success = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(url);
+        var success = await TaskDownloadPreLoadItem.StartDirectDownloadAndWait(url, null, trigger);
         if (!success) return false;
 
         // 能拿到 Tag 就补写版本记录，避免下次启动/更新重复下载；拿不到只影响设置页的版本显示
@@ -455,11 +471,12 @@ public static class PreLoadDependencyHelper
         }
     }
 
-    private static void ShowNotice(string message)
+    private static void ShowNotice(string message,
+        string titleKey = "Task.PreLoad.Notice.CheckFailedTitle")
     {
         GlobalModel.MainWindow?.Notice.AddNotice(new NoticeInfo
         {
-            Title = I18nManager.Instance["Task.PreLoad.Update.Title"],
+            Title = I18nManager.Instance[titleKey],
             Message = message,
             NoticeType = NoticeType.Warning
         });

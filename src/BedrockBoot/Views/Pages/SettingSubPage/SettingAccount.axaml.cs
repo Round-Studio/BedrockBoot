@@ -69,25 +69,29 @@ public partial class SettingAccount : ISettingPage
         IsUseMSALAccount.IsChecked = GlobalModel.Config.Data.IsUseMSALAccount;
         IsAskMeBeforeLaunch.IsChecked = GlobalModel.Config.Data.IsChooseAccountBeforeLaunch;
         
-        var githubConf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
-        var githubToken = githubConf.Data?.UserToken;
-        var githubLoggedIn = !string.IsNullOrEmpty(githubToken);
+        // 登录态以令牌管理器为准：短效令牌过期但还能自动续期时仍算已登录，
+        // 续期失败（refresh_token 也被撤销/过期）则回到未登录状态并提示重新登录
+        var githubAccount = GitHubTokenManager.ReadAccount();
+        var githubLoggedIn = GitHubTokenManager.IsLoggedIn;
+        var githubExpired = !githubLoggedIn && GitHubTokenManager.HasCredential(githubAccount);
 
         LoginInGithub.IsVisible = !githubLoggedIn;
         GithubLogoutBtn.IsVisible = githubLoggedIn;
 
         if (githubLoggedIn)
         {
-            GithubHeaderText.Text = string.IsNullOrEmpty(githubConf.Data.UserName)
+            GithubHeaderText.Text = string.IsNullOrEmpty(githubAccount?.UserName)
                 ? I18nManager.Instance["Settings.Account.Github"]
-                : githubConf.Data.UserName;
+                : githubAccount.UserName;
 
             GithubExpander.IsFontIcon = false;
-            GithubExpander.ImageIcon = await (new ImageLoader()).LoadIconAsync(githubConf.Data.UserImage);
+            GithubExpander.ImageIcon = await (new ImageLoader()).LoadIconAsync(githubAccount?.UserImage);
         }
         else
         {
-            GithubHeaderText.Text = I18nManager.Instance["Settings.Account.Github"];
+            GithubHeaderText.Text = githubExpired
+                ? I18nManager.Instance["Settings.Account.GitHub.Expired"]
+                : I18nManager.Instance["Settings.Account.Github"];
             GithubExpander.IsFontIcon = true;
         }
 

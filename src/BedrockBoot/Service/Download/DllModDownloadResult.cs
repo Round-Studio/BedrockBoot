@@ -68,15 +68,12 @@ public class DllModDownloadResult : IDownloadResult
 
     private async Task<IReadOnlyList<Release>> GetReleases()
     {
-        var github = GitHubApiClient.CreateClient();
         var owner = SearchInfo.SourceWebsite.Split("/")[^2];
         var repo = SearchInfo.SourceWebsite.Split("/")[^1];
 
-        var releasesTask = github.Repository.Release.GetAll(owner, repo);
-
         try
         {
-            return (await releasesTask);
+            return await GitHubApiClient.ExecuteAsync(c => c.Repository.Release.GetAll(owner, repo));
         }
         catch (Exception ex)
         {

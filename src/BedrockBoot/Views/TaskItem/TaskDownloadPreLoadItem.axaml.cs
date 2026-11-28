@@ -40,6 +40,19 @@ using GlobalModel = BedrockBoot.Models.Global.GlobalModel;
 namespace BedrockBoot.Views.TaskItem;
 
 /// <summary>
+///     PreLoad.NET 组件下载的触发场景，只用来区分失败提示的标题：
+///     启动阶段失败要说明「启动失败」，后台/手动检查失败则属于「检查更新失败」。
+/// </summary>
+public enum PreLoadDownloadTrigger
+{
+    /// <summary>启动器启动时的后台静默检查、设置页手动检查、启动器更新前的组件检查</summary>
+    CheckUpdate,
+
+    /// <summary>启动游戏前的强制守卫：组件缺失会直接拦截启动</summary>
+    Startup
+}
+
+/// <summary>
 ///     PreLoad.NET 组件更新的后台下载任务项。
 ///     下载完成后替换本地组件文件并写入版本记录，下次启动游戏生效。
 /// </summary>
@@ -48,6 +61,7 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
     private readonly ReleaseAsset? _asset;
     private readonly string? _directUrl;
     private readonly string _tagName;
+    private readonly PreLoadDownloadTrigger _trigger;
 
     private Action _removeCallBack = () => { };
     private CancellationTokenSource? _cts;
@@ -80,10 +94,12 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
         InitializeComponent();
     }
 
-    public TaskDownloadPreLoadItem(ReleaseAsset asset, string tagName) : this()
+    public TaskDownloadPreLoadItem(ReleaseAsset asset, string tagName,
+        PreLoadDownloadTrigger trigger = PreLoadDownloadTrigger.CheckUpdate) : this()
     {
         _asset = asset;
         _tagName = tagName;
+        _trigger = trigger;
         _taskTitle = I18nManager.Instance["Task.PreLoad.Update.Title"];
     }
 
@@ -91,10 +107,12 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
     ///     直链构造：不依赖 ReleaseAsset，用于 API 不可用时的 latest 直链（GitHub / CNB）。
     ///     <paramref name="tagName" /> 已知时用它写版本记录，未知则只落地文件。
     /// </summary>
-    public TaskDownloadPreLoadItem(string directUrl, string? tagName = null) : this()
+    public TaskDownloadPreLoadItem(string directUrl, string? tagName = null,
+        PreLoadDownloadTrigger trigger = PreLoadDownloadTrigger.CheckUpdate) : this()
     {
         _directUrl = directUrl;
         _tagName = tagName ?? "";
+        _trigger = trigger;
         _taskTitle = I18nManager.Instance["Task.PreLoad.Update.Title"];
     }
 
@@ -130,7 +148,16 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
                     });
                 });
 
-                var userToken = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false).Data?.UserToken;
+                // 私有仓库需要授权头；令牌过期且无法续期时退回免鉴权下载（公开仓库仍可用）
+                string? userToken = null;
+                try
+                {
+                    userToken = await GitHubTokenManager.GetValidTokenAsync();
+                }
+                catch (GitHubReauthRequiredException ex)
+                {
+                    Console.WriteLine($@"PreLoad.NET 下载未使用授权头：{ex.Message}");
+                }
 
                 if (_directUrl != null)
                 {
@@ -200,13 +227,45 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
             }
             catch (Exception ex)
             {
-                // 任务异常若不上报会永远停留在列表里无任何提示
+                // 同上：只改属性不改控件，界面上看不到失败
                 Console.WriteLine($@"PreLoad.NET 组件下载失败: {ex}");
-                Dispatcher.UIThread.Post(() => ReportProgress(100,
-                    string.Format(I18nManager.Instance["Task.Update.Error.FailFormat"], ex.Message)));
+                ShowFailure(string.Format(I18nManager.Instance["Task.Update.Error.FailFormat"], ex.Message));
                 _tcs?.TrySetResult(false);
             }
         }, token);
+    }
+
+    /// <summary>切到失败状态：停止进度动画并把错误文案写到卡片上</summary>
+    private void ShowFailure(string message)
+    {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => ShowFailure(message));
+            return;
+        }
+
+        _taskProgress = 100;
+        _taskStatusText = message;
+        _taskIsCompleted = true;
+        _taskIsIndeterminate = false;
+
+        ProgressBar.IsIndeterminate = false;
+        ProgressBar.IsVisible = false;
+        ProgressText.Text = message;
+        if (!ProgressText.Classes.Contains("critical"))
+            ProgressText.Classes.Add("critical");
+
+        ProgressUpdated?.Invoke(this);
+
+        GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
+        {
+            // 启动游戏前的守卫失败要说"启动失败"，后台静默检查/设置页手动检查失败则是"检查更新失败"
+            Title = I18nManager.Instance[_trigger == PreLoadDownloadTrigger.Startup
+                ? "Task.PreLoad.Notice.StartupFailedTitle"
+                : "Task.PreLoad.Notice.CheckFailedTitle"],
+            Message = message,
+            NoticeType = NoticeType.Error
+        });
     }
 
     public static void StartDownload(ReleaseAsset asset, string tagName)
@@ -218,15 +277,17 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
     ///     派发下载任务并等待结果：true = 已下载并替换成功，false = 失败/取消。
     ///     启动守卫用它阻塞等待组件就绪。
     /// </summary>
-    public static Task<bool> StartDownloadAndWait(ReleaseAsset asset, string tagName) =>
-        StartTaskAndWait(() => new TaskDownloadPreLoadItem(asset, tagName));
+    public static Task<bool> StartDownloadAndWait(ReleaseAsset asset, string tagName,
+        PreLoadDownloadTrigger trigger = PreLoadDownloadTrigger.CheckUpdate) =>
+        StartTaskAndWait(() => new TaskDownloadPreLoadItem(asset, tagName, trigger));
 
     /// <summary>
     ///     直链入口：API 不可用时按 latest 直链下载并等待结果。
     ///     <paramref name="tagName" /> 已知时顺带写版本记录。
     /// </summary>
-    public static Task<bool> StartDirectDownloadAndWait(string directUrl, string? tagName = null) =>
-        StartTaskAndWait(() => new TaskDownloadPreLoadItem(directUrl, tagName));
+    public static Task<bool> StartDirectDownloadAndWait(string directUrl, string? tagName = null,
+        PreLoadDownloadTrigger trigger = PreLoadDownloadTrigger.CheckUpdate) =>
+        StartTaskAndWait(() => new TaskDownloadPreLoadItem(directUrl, tagName, trigger));
 
     /// <summary>直链是否属于 GitHub（决定要不要套加速源）</summary>
     private static bool IsGitHubUrl(string url) =>

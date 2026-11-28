@@ -878,11 +878,13 @@
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">更新を確認</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">最新バージョンです</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">未インストール</x:String>
-    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">更新の確認に失敗しました。プライベートリポジトリには GitHub ログインが必要です</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">更新の確認に失敗しました</x:String>
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET コンポーネントの更新</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.StartupFailedTitle">起動に失敗しました</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.CheckFailedTitle">更新の確認に失敗しました</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">PreLoad.NET コンポーネントの更新をダウンロード中...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完了。次回のゲーム起動時に有効になります</x:String>
-    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET コンポーネントが不足しておりバージョン情報を取得できません。ゲームの起動をブロックしました（ネットワーク接続を確認してください）</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET コンポーネントが不足しておりバージョン情報を取得できません。ゲームの起動をブロックしました</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET コンポーネントのダウンロードに失敗しました。ゲームの起動をブロックしました</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET はランチャーが依存するコンポーネントです。適切に更新されないとゲームで不具合が発生する可能性があります。</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">PreLoad.NET コンポーネントの更新に失敗したため、ランチャーの更新を中止しました。ネットワークを確認して再試行してください。</x:String>

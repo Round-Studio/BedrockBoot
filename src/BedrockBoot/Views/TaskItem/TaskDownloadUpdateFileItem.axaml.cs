@@ -130,12 +130,20 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 }
                 else
                 {
-                    var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
-                    userToken = conf.Data?.UserToken;
+                    // Action 产物必须登录才能读，令牌过期时先续期（401 由 ExecuteAsync 兜底重试）
+                    try
+                    {
+                        userToken = await GitHubTokenManager.GetValidTokenAsync();
+                    }
+                    catch (GitHubReauthRequiredException)
+                    {
+                        userToken = null;
+                    }
+
                     if (string.IsNullOrEmpty(userToken))
                         throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.GithubNotLoggedIn"]);
 
-                    var artifact = await SelectPreferredArtifactAsync(userToken);
+                    var artifact = await SelectPreferredArtifactAsync();
                     if (artifact == null)
                         throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.NoActionAsset"]);
 
@@ -162,19 +170,16 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                     });
                 });
 
-                // Action 产物位于 api.github.com 且必须携带授权头，加速代理不覆盖该接口，
-                // 也不能走无鉴权的 GithubFilesDownloader，只能带 Token 直连下载
+                // Action 产物位于 api.github.com，必须带令牌换签名地址；签名地址只认签名，
+                // 下载时不能再带 Authorization（带了会被 Azure 判成认证失败，回 403）
                 if (isAction)
                 {
+                    var signedUrl = await GitHubApiClient.ResolveArtifactDownloadUrlAsync(downloadUrl, token);
+
                     using var downloader =
                         new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
-                    downloader.AdditionalHeaders = new Dictionary<string, string>
-                    {
-                        { "Authorization", $"Bearer {userToken}" },
-                        { "Accept", "application/vnd.github+json" }
-                    };
 
-                    await downloader.DownloadAsync(downloadUrl, downloadPath, progressHandler, token);
+                    await downloader.DownloadAsync(signedUrl, downloadPath, progressHandler, token);
                 }
                 else
                 {
@@ -249,11 +254,44 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
             }
             catch (Exception ex)
             {
-                // 任务异常若不上报会永远停留在列表里无任何提示
+                // 任务异常若不上报会永远停留在列表里、进度条一直转，看不出已经失败
                 Console.WriteLine($@"更新任务失败: {ex}");
-                Dispatcher.UIThread.Post(() => ReportProgress(100, string.Format(I18nManager.Instance["Task.Update.Error.FailFormat"], ex.Message)));
+                ShowFailure(string.Format(I18nManager.Instance["Task.Update.Error.FailFormat"], ex.Message));
             }
         }, token);
+    }
+
+    /// <summary>
+    ///     把任务切到失败状态：停掉不确定进度的动画、进度条隐藏、错误文案直接写在卡片上。
+    ///     只改属性不碰控件的话界面不会有任何变化（<see cref="ProgressUpdated" /> 只用来算总进度）。
+    /// </summary>
+    private void ShowFailure(string message)
+    {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => ShowFailure(message));
+            return;
+        }
+
+        _taskProgress = 100;
+        _taskStatusText = message;
+        _taskIsCompleted = true;
+        _taskIsIndeterminate = false;
+
+        ProgressBar.IsIndeterminate = false;
+        ProgressBar.IsVisible = false;
+        ProgressText.Text = message;
+        if (!ProgressText.Classes.Contains("critical"))
+            ProgressText.Classes.Add("critical");
+
+        ProgressUpdated?.Invoke(this);
+
+        Models.Global.GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
+        {
+            Title = I18nManager.Instance["Task.Update.Notice.Title"],
+            Message = message,
+            NoticeType = NoticeType.Error
+        });
     }
 
     public static void Update(UpdateCheckResult result)
@@ -319,19 +357,14 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         return null;
     }
 
-    private async Task<Artifact?> SelectPreferredArtifactAsync(string? userToken = null)
+    private async Task<Artifact?> SelectPreferredArtifactAsync()
     {
         var run = Result.WorkflowRun;
         if (run == null)
             return null;
 
-        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
-
-        if (!string.IsNullOrEmpty(userToken))
-            github.Credentials = new Credentials(userToken);
-
-        var artifacts = await github.Actions.Artifacts.ListWorkflowArtifacts(
-            "Round-Studio", "BedrockBoot", run.Id);
+        var artifacts = await GitHubApiClient.ExecuteAsync(
+            github => github.Actions.Artifacts.ListWorkflowArtifacts("Round-Studio", "BedrockBoot", run.Id));
 
         var list = artifacts.Artifacts.ToList();
         if (list.Count == 0)

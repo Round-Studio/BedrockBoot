@@ -895,11 +895,13 @@
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">檢查更新</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">已係最新版本</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">未安裝</x:String>
-    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">檢查更新失敗，私有倉庫需要登入 GitHub 帳號</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">檢查更新失敗</x:String>
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET 元件更新</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.StartupFailedTitle">啟動失敗</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.CheckFailedTitle">檢查更新失敗</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">正在下載 PreLoad.NET 元件更新...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完成，下次啟動遊戲生效</x:String>
-    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 元件缺失而且攞唔到版本資訊，已阻止啟動遊戲（請檢查網絡連線）</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 元件缺失而且攞唔到版本資訊，已阻止啟動遊戲</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET 元件下載失敗，已阻止啟動遊戲</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET 係啟動器依賴嘅元件，如果唔及時更新，遊戲可能會出問題。</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">PreLoad.NET 元件更新失敗，已經中止啟動器更新。請檢查網絡再試過。</x:String>

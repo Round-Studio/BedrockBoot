@@ -686,6 +686,7 @@
     <x:String x:Key="Settings.Account.Xbox.Link.Desc">Link a new Xbox account to use launcher account features</x:String>
     <x:String x:Key="Settings.Account.Group.GitHub">GitHub Account</x:String>
     <x:String x:Key="Settings.Account.GitHub.Description">Sign in to GitHub to use features such as the Commit update channel</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Expired">GitHub sign-in expired, please sign in again</x:String>
     <x:String x:Key="Settings.Account.GitHub.Login.Title">Sign in to GitHub</x:String>
     <x:String x:Key="Settings.Account.GitHub.Login.Desc">Authorize your GitHub account in a browser</x:String>
     <x:String x:Key="Settings.Account.GitHub.Logout.Title">Sign Out</x:String>
@@ -1083,12 +1084,14 @@
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">Check for Updates</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">Already up to date</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">Not installed</x:String>
-    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">Update check failed; sign in to GitHub for private repositories</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">Update check failed</x:String>
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET Component Update</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.StartupFailedTitle">Launch failed</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.CheckFailedTitle">Update check failed</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">Downloading PreLoad.NET component update...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">Done, takes effect on next game launch</x:String>
     <x:String x:Key="Task.PreLoad.Update.InvalidPackage">PreLoad.NET.dll content is invalid ({0} bytes); the local update file was not replaced</x:String>
-    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET component missing and version info unavailable; game launch blocked (check your network connection)</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET component is missing and its version information is unavailable; game launch blocked</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET component download failed; game launch blocked</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET is a component the launcher depends on; games may misbehave if it is not updated in time.</x:String>
     <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">Failed to update the PreLoad.NET component, so the launcher update was aborted. Check your network and try again.</x:String>
@@ -1118,7 +1121,8 @@
     <x:String x:Key="GitHub.Error.Network">Network Error</x:String>
     <x:String x:Key="GitHub.Error.HttpRequest">HTTP Request Failed</x:String>
     <x:String x:Key="GitHub.Error.RateLimit">The GitHub API request limit has been reached for your IP.&#x0a;&#x0a; Going to Settings → Account &amp; Profile to sign in can increase the API limit.</x:String>
-    <x:String x:Key="GitHub.Error.Unauthorized">GitHub authentication failed.</x:String>
+    <x:String x:Key="GitHub.Error.Unauthorized">GitHub authentication failed, the token may have been revoked. Please sign in again from Settings → Account &amp; Profile → GitHub.</x:String>
+    <x:String x:Key="GitHub.Error.ReauthRequired">Your GitHub sign-in expired or the authorization was revoked and cannot be renewed automatically. Please sign in again from Settings → Account &amp; Profile → GitHub.</x:String>
     <x:String x:Key="GitHub.Error.Forbidden">GitHub denied this request.</x:String>
     <x:String x:Key="GitHub.Error.NotFound">The requested GitHub resource was not found.</x:String>
     <x:String x:Key="GitHub.Error.ApiError">The GitHub API request failed.</x:String>
@@ -1871,6 +1875,7 @@
     <x:String x:Key="Task.Update.Error.NoExecutable">Cannot locate the current program; unable to start the update bootstrap flow</x:String>
     <x:String x:Key="Task.Update.Error.NoExtractedExe">No executable found after extraction</x:String>
     <x:String x:Key="Task.Update.Error.BadPayload">The downloaded file looks invalid (a download mirror may have returned an error page); update aborted</x:String>
+    <x:String x:Key="Task.Update.Error.ArtifactScope">Your GitHub authorization cannot read Actions artifacts. Please sign out and sign in again from Settings → Account &amp; Profile → GitHub, and approve the requested permissions.</x:String>
     <x:String x:Key="Task.Update.Error.FailFormat">Failed: {0}</x:String>
     <x:String x:Key="CrashReport.NoDumpFile">No dump file generated</x:String>
     <x:String x:Key="CrashReport.NoExceptionReport">No exception report captured</x:String>

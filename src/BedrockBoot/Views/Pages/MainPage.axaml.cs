@@ -187,8 +187,8 @@ public partial class MainPage : UserControl
             // Commit 通道依赖 Github 登录，未登录时明确提示，而不是被 CheckAsync 判空后误报“已是最新”
             if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
             {
-                var githubConf = new Round.SDK.Entity.ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
-                if (string.IsNullOrEmpty(githubConf.Data?.UserToken))
+                // 短效令牌过期但还能续期时仍算已登录；续期失败才算未登录
+                if (!GitHubTokenManager.IsLoggedIn)
                 {
                     DialogHost.Show(new DialogInfo
                     {

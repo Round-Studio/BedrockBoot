@@ -119,8 +119,7 @@ public class GitHubOAuthManager
         client.Credentials = new Credentials(tokens.AccessToken);
 
         var user = await client.User.Current();
-        var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
-        conf.Data = new GithubAccountInfo()
+        var account = new GithubAccountInfo()
         {
             UserImage = user.AvatarUrl,
             // GitHub 允许用户不设置公开昵称，Name 可能为 null，此时回退到登录名
@@ -132,9 +131,11 @@ public class GitHubOAuthManager
             // 正常情况下 GitHub 会回传实际授予的 scope；个别情况（如 GHES）不回传时按申请值记录
             Scope = tokens.Scope ?? (fullAccess ? "user:email,repo" : "user:email")
         };
-        conf.Save();
 
-        return conf.Data;
+        // 凭证字段落盘时加密（Windows DPAPI），内存中的 account 仍是明文
+        GitHubTokenManager.SaveAccount(account);
+
+        return account;
     }
 
     /// <summary>

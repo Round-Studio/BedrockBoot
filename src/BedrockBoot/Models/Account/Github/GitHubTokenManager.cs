@@ -24,6 +24,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using Round.SDK.Entity;
 
 namespace BedrockBoot.Models.Account.Github;
@@ -66,20 +67,79 @@ public static class GitHubTokenManager
     /// <summary>refresh_token 一次性，所有刷新排同一把锁串行执行</summary>
     private static readonly SemaphoreSlim RefreshLock = new(1, 1);
 
+    /// <summary>明文配置 → 密文的迁移每个进程只尝试一次</summary>
+    private static int _migrationAttempted;
+
     /// <summary>提前 5 分钟续期，避免请求真正发出时令牌刚好过期</summary>
     private static readonly TimeSpan ExpiryLeeway = TimeSpan.FromMinutes(5);
 
-    /// <summary>只读本地授权信息，不触发刷新、不创建文件</summary>
+    /// <summary>只读本地授权信息，不触发刷新、不创建文件。凭证字段在内存里始终是明文。</summary>
     public static GithubAccountInfo? ReadAccount()
     {
         try
         {
-            return new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false).Data;
+            var data = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false).Data;
+            if (data is null) return null;
+
+            // 旧版本配置里是明文，先记住"需要迁移"，再统一还原成明文供调用方使用
+            var needsMigration = HasPlaintextCredential(data);
+
+            data.UserToken = SecretProtector.Unprotect(data.UserToken) ?? string.Empty;
+            data.RefreshToken = SecretProtector.Unprotect(data.RefreshToken);
+
+            if (needsMigration) MigrateToProtected(data);
+
+            return data;
         }
         catch (Exception ex)
         {
             Console.WriteLine($@"读取 GitHub 授权信息失败：{ex.Message}");
             return null;
+        }
+    }
+
+    /// <summary>写入账户信息（登录成功后调用）：只加密两个凭证字段，其余照常可读</summary>
+    public static void SaveAccount(GithubAccountInfo account)
+    {
+        var config = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
+        config.Data = new GithubAccountInfo
+        {
+            UserImage = account.UserImage,
+            UserName = account.UserName,
+            UserToken = SecretProtector.Protect(account.UserToken) ?? string.Empty,
+            RefreshToken = SecretProtector.Protect(account.RefreshToken),
+            ExpiresAt = account.ExpiresAt,
+            RefreshTokenExpiresAt = account.RefreshTokenExpiresAt,
+            Scope = account.Scope
+        };
+        config.Save();
+    }
+
+    /// <summary>是否还有明文凭证需要改写成密文（只在当前环境真的能加密时为 true）</summary>
+    private static bool HasPlaintextCredential(GithubAccountInfo data)
+    {
+        if (!SecretProtector.IsAvailable) return false;
+
+        return (!string.IsNullOrEmpty(data.UserToken) && !SecretProtector.IsProtected(data.UserToken)) ||
+               (!string.IsNullOrEmpty(data.RefreshToken) && !SecretProtector.IsProtected(data.RefreshToken));
+    }
+
+    /// <summary>
+    ///     把旧版本的明文配置改写为密文。每个进程只做一次，失败只记日志，
+    ///     读出来的明文照样能用，下次保存还会再试。
+    /// </summary>
+    private static void MigrateToProtected(GithubAccountInfo plainAccount)
+    {
+        if (Interlocked.Exchange(ref _migrationAttempted, 1) == 1) return;
+
+        try
+        {
+            SaveAccount(plainAccount);
+            Console.WriteLine(@"GitHub 凭证已改为加密保存");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"GitHub 凭证加密迁移失败（继续使用明文配置）：{ex.Message}");
         }
     }
 
@@ -285,7 +345,7 @@ public static class GitHubTokenManager
         {
             if (!File.Exists(PathsList.GithubAccount)) return;
 
-            var config = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
+            var config = LoadForWrite();
             if (config.Data is null || !HasCredential(config.Data)) return;
 
             config.Data.UserToken = tokens.AccessToken;
@@ -297,7 +357,7 @@ public static class GitHubTokenManager
             if (!string.IsNullOrEmpty(tokens.Scope))
                 config.Data.Scope = tokens.Scope;
 
-            config.Save();
+            SaveProtected(config);
         }
         catch (Exception ex)
         {
@@ -312,7 +372,7 @@ public static class GitHubTokenManager
         {
             if (!File.Exists(PathsList.GithubAccount)) return;
 
-            var config = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
+            var config = LoadForWrite();
             if (config.Data is null) return;
 
             config.Data.UserToken = string.Empty;
@@ -320,7 +380,7 @@ public static class GitHubTokenManager
             config.Data.ExpiresAt = null;
             config.Data.RefreshTokenExpiresAt = null;
             config.Data.Scope = null;
-            config.Save();
+            SaveProtected(config);
 
             Console.WriteLine(@"GitHub 凭证已失效，已清空本地令牌，需要重新登录");
         }
@@ -328,6 +388,31 @@ public static class GitHubTokenManager
         {
             Console.WriteLine($@"清空 GitHub 令牌失败：{ex.Message}");
         }
+    }
+
+    /// <summary>读盘并把凭证还原成明文，供"读-改-写"流程使用（直接改密文会导致再次加密）</summary>
+    private static ConfigEntity<GithubAccountInfo> LoadForWrite()
+    {
+        var config = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
+        if (config.Data is not null)
+        {
+            config.Data.UserToken = SecretProtector.Unprotect(config.Data.UserToken) ?? string.Empty;
+            config.Data.RefreshToken = SecretProtector.Unprotect(config.Data.RefreshToken);
+        }
+
+        return config;
+    }
+
+    /// <summary>加密凭证字段后落盘；其余字段保持明文，方便排查</summary>
+    private static void SaveProtected(ConfigEntity<GithubAccountInfo> config)
+    {
+        if (config.Data is not null)
+        {
+            config.Data.UserToken = SecretProtector.Protect(config.Data.UserToken) ?? string.Empty;
+            config.Data.RefreshToken = SecretProtector.Protect(config.Data.RefreshToken);
+        }
+
+        config.Save();
     }
 
     private static string? ReadString(JsonElement root, string name) =>

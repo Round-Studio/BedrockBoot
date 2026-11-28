@@ -25,7 +25,7 @@
 </div>
 
 ---
-English | [简体中文](README.md)
+English | [简体中文](README.md) | [Türkçe](README_TR.md)
 ---
 
 # Introduction

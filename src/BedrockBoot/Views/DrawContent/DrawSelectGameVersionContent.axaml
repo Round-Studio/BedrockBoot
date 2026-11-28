@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             xmlns:notice="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.DrawContent.DrawSelectGameVersionContent">
+    <Grid>
+        <ScrollViewer Margin="5,0">
+            <StackPanel Margin="15,10,15,20"
+                        Spacing="8">
+                <TextBlock Name="HintText"
+                           Text="{DynamicResource Widget.LaunchGame.Drawer.Hint}"
+                           Opacity="0.6"
+                           TextWrapping="Wrap"
+                           Margin="4,0,4,6" />
+
+                <StackPanel Name="VersionList"
+                            Spacing="8" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <onePointControls:ProgressRing Name="LoadRing"
+                                       Width="48"
+                                       Height="48"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+
+        <notice:InfoCard Name="EmptyBox"
+                         IsVisible="False"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         BigTitle="{DynamicResource Widget.LaunchGame.Drawer.Empty.Title}"
+                         Message="{DynamicResource Widget.LaunchGame.Drawer.Empty.Message}" />
+    </Grid>
+</UserControl>

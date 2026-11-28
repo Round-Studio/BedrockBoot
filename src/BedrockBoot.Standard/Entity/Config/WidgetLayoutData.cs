@@ -33,4 +33,32 @@ public class WidgetLayoutData
         
     [JsonPropertyName("size")]
     public WidgetSize Size { get; set; }
+
+    /// <summary>
+    ///     组件绑定的游戏目录（绝对路径）。为空表示跟随实例列表中当前选中的目录。
+    /// </summary>
+    [JsonPropertyName("gameFolderPath")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? GameFolderPath { get; set; }
+
+    /// <summary>
+    ///     组件绑定的实例目录名，与 <see cref="GameFolderPath" /> 一起指向一个固定版本。
+    ///     为空表示跟随实例列表中当前选中的版本。
+    /// </summary>
+    [JsonPropertyName("gameVersionFolder")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? GameVersionFolder { get; set; }
+
+    /// <summary>
+    ///     复制布局数据，避免导出时把可变对象直接交给序列化之外的代码。
+    /// </summary>
+    public WidgetLayoutData Clone() => new()
+    {
+        GridX = GridX,
+        GridY = GridY,
+        WidgetType = WidgetType,
+        Size = Size,
+        GameFolderPath = GameFolderPath,
+        GameVersionFolder = GameVersionFolder
+    };
 }

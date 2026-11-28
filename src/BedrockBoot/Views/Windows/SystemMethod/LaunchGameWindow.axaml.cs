@@ -356,51 +356,21 @@ public partial class LaunchGameWindow : Window
 
     protected override void OnClosing(WindowClosingEventArgs e)
     {
-        // 如果游戏还在运行，询问用户是否要结束
-        if (_gameProcess != null && !_gameProcess.HasExited && _gameLaunched)
-        {
-            // 由于 Avalonia 没有内置的 MessageBox，这里使用简单方式
-            // 或者使用 MessageBox.Avalonia
-            e.Cancel = true;
-            
-            // 显示确认对话框
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                // 使用 MessageBox.Avalonia
-                // var result = await MessageBoxManager.GetMessageBoxStandardWindow(
-                //     "确认关闭",
-                //     "游戏正在运行，确定要关闭窗口吗？游戏将继续在后台运行。",
-                //     ButtonEnum.YesNo,
-                //     Icon.Question).Show();
-                // 
-                // if (result == ButtonResult.Yes)
-                // {
-                //     _isClosing = true;
-                //     Close();
-                // }
-                
-                // 临时方案：直接关闭，不结束游戏
-                _isClosing = true;
-                Close();
-            });
-        }
-        else
-        {
-            _isClosing = true;
-            base.OnClosing(e);
-        }
+        // 游戏运行中也直接关闭窗口（不结束游戏）。
+        // 旧实现先 e.Cancel = true 再 post 一次 Close()，而 OnClosing 没有检查 _isClosing，
+        // 第二次 Close 会再次触发取消 → 无限重入，UI 线程被调度任务占满直接卡死。
+        _isClosing = true;
+        base.OnClosing(e);
     }
 
     // 添加资源清理
     protected override void OnClosed(EventArgs e)
     {
-        // 如果游戏还在运行，不结束进程（让用户选择是否结束）
-        if (_gameProcess != null && !_gameProcess.HasExited)
-        {
-            // 可以选择是否结束进程
-            // _gameProcess.Kill();
-        }
-        
+        // 不结束游戏进程，游戏继续在后台运行
         base.OnClosed(e);
+
+        // -jump 快捷启动没有其他窗口，本窗口关闭即应用生命周期结束；
+        // 显式退出进程，与主窗口的退出行为保持一致（内存监视线程等常驻线程不应拖住进程）
+        Environment.Exit(0);
     }
 }

@@ -426,7 +426,7 @@ public partial class MainWindow : Window
     /// </summary>
     private async void ShowStartupMediaCapsule(MediaSong? song)
     {
-        UpdateTrackCapsule(song, nowPlaying: true);
+        UpdateTrackCapsule(song, true);
 
         CancelCapsuleSequence();
         _capsuleSequenceCts = new CancellationTokenSource();
@@ -455,7 +455,7 @@ public partial class MainWindow : Window
     {
         if (song == null) return;
 
-        UpdateTrackCapsule(song, nowPlaying: false);
+        UpdateTrackCapsule(song, false);
 
         CancelCapsuleSequence();
         _capsuleSequenceCts = new CancellationTokenSource();
@@ -525,7 +525,9 @@ public partial class MainWindow : Window
             : song.AppName!;
         MediaTrackSubtitle.Text = nowPlaying
             ? string.Format(I18n["MainWindow.Media.NowPlaying"], app)
-            : string.IsNullOrWhiteSpace(song.Artist) ? app : $@"{song.Artist} · {app}";
+            : string.IsNullOrWhiteSpace(song.Artist)
+                ? app
+                : $@"{song.Artist} · {app}";
 
         // 封面在后台线程解码，避免 UI 卡顿；序号防旧任务回写覆盖新曲目的封面
         var seq = ++_trackCapsuleSeq;
@@ -586,6 +588,7 @@ public partial class MainWindow : Window
             BorderIcon.IsVisible = true;
             BorderIcon.Glyph = iconGlyph;
         }
+
         await SetBorderState(true);
 
         Frame.NavigateTo(page);
@@ -593,8 +596,8 @@ public partial class MainWindow : Window
 
     public void SetBlurState(bool state)
     {
-        ContentView.Effect = new BlurEffect { Radius = state ? 50 : 0 };
-        BackgroundGroupBox.Effect = new BlurEffect { Radius = state ? 50 : 0 };
+        ContentView.Effect = state ? new BlurEffect { Radius = 50 } : null;
+        BackgroundGroupBox.Effect = state ? new BlurEffect { Radius = 50 } : null;
         BackgroundGroupBox.Margin = new Thickness(state ? -50 : 0);
     }
 
@@ -963,7 +966,10 @@ public partial class MainWindow : Window
             }
     }
 
-    private void SearchBtn_OnClick(object? sender, RoutedEventArgs e) => ToggleSearchOverlay();
+    private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        ToggleSearchOverlay();
+    }
 
     /// <summary>打开/关闭全局搜索浮层（Ctrl+K 或右上角搜索按钮）</summary>
     public void ToggleSearchOverlay()
@@ -975,7 +981,10 @@ public partial class MainWindow : Window
     }
 
     /// <summary>打开全局搜索浮层，可携带预填关键词</summary>
-    public void OpenSearchOverlay(string? prefill = null) => SearchOverlay.Open(prefill);
+    public void OpenSearchOverlay(string? prefill = null)
+    {
+        SearchOverlay.Open(prefill);
+    }
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {
@@ -1121,7 +1130,8 @@ public partial class MainWindow : Window
 
         DialogHost.Show(new DialogInfo
         {
-            Title = string.Format(I18n["MainWindow.Status.InternalErrorCount"], PluginLoader.PluginLoadExceptions.Count),
+            Title =
+                string.Format(I18n["MainWindow.Status.InternalErrorCount"], PluginLoader.PluginLoadExceptions.Count),
             Content = panel,
             CloseButtonText = I18n["Shared.Action.Confirm"]
         });

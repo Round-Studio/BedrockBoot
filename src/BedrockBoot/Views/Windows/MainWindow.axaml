@@ -108,7 +108,7 @@
                                           RowDefinitions="Auto,*">
 
                                         <TextBlock Grid.Row="0"
-                                                    Text="{DynamicResource MainWindow.Media.Volume}"
+                                                   Text="{DynamicResource MainWindow.Media.Volume}"
                                                    FontSize="11"
                                                    HorizontalAlignment="Center"
                                                    Margin="0,0,0,4" />
@@ -125,7 +125,7 @@
                                                        Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
-                                                        Text="{DynamicResource MainWindow.Media.Muted}"
+                                                       Text="{DynamicResource MainWindow.Media.Muted}"
                                                        IsVisible="False" />
                                         </Grid>
                                     </Grid>
@@ -204,9 +204,6 @@
                           Opacity="0.0001" />
 
                     <Grid Name="ContentView">
-                        <Grid.Effect>
-                            <BlurEffect Radius="0" />
-                        </Grid.Effect>
                         <Grid.Transitions>
                             <Transitions>
                                 <EffectTransition Property="Effect"
@@ -256,8 +253,8 @@
                                                                Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                                                                HorizontalAlignment="Center"
                                                                VerticalAlignment="Center" />
-<TextBlock Text="{DynamicResource MainWindow.Status.InternalError}"
-                                                Name="ErrorBtnText"
+                                    <TextBlock Text="{DynamicResource MainWindow.Status.InternalError}"
+                                               Name="ErrorBtnText"
                                                Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
                                 </StackPanel>
                             </Button>
@@ -381,8 +378,7 @@
                                     BorderThickness="1,1,1,0"
                                     BorderBrush="{DynamicResource PrimaryBorderBrush}"
                                     Margin="10,0,10,0"
-                                    Name="BottomBorder"
-                                    Background="{DynamicResource BackgroundBrush}">
+                                    Name="BottomBorder">
                                 <Border.Transitions>
                                     <Transitions>
                                         <ThicknessTransition Duration="0:0:0.7"
@@ -391,39 +387,45 @@
                                     </Transitions>
                                 </Border.Transitions>
 
-                                <Grid Grid.RowDefinitions="Auto,*">
-                                    <Button CornerRadius="8"
-                                            Width="36"
-                                            Height="36"
-                                            HorizontalAlignment="Right" VerticalAlignment="Top"
-                                            Margin="12"
-                                            Name="CloseBorderBtn"
-                                            Click="CloseBorderBtn_OnClick"
-                                            Classes="NoBorder">
-                                        <onePointControls:FontIcon Glyph="&#xE8BB;"
-                                                                   FontSize="12" />
-                                    </Button>
+                                <Grid >
+                                    <items:BlurBorder CornerRadius="16,16,0,0"></items:BlurBorder>
+                                    <Border Background="{DynamicResource BackgroundBrush}"
+                                            CornerRadius="16,16,0,0"
+                                            Opacity="0.9"></Border>
                                     
-                                    <StackPanel Orientation="Horizontal"
-                                                Grid.Row="0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Spacing="12"
-                                                Margin="18,18,12,12">
-                                        <onePointControls:FontIcon Name="BorderIcon"
-                                                                   FontSize="20"
-                                                                   Foreground="{DynamicResource AccentBackgroundBrush}"
-                                                                   VerticalAlignment="Center">
-                                        </onePointControls:FontIcon>
-                                        <TextBlock Foreground="{DynamicResource AccentBackgroundBrush}"
-                                                   FontWeight="Bold"
-                                                   FontSize="18"
-                                                   Name="BorderTitle"
-                                                   Text="Title" />
-                                    </StackPanel>
+                                    <Grid Grid.RowDefinitions="Auto,*">
+                                        <Button CornerRadius="8"
+                                                Width="36"
+                                                Height="36"
+                                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                Margin="12"
+                                                Name="CloseBorderBtn"
+                                                Click="CloseBorderBtn_OnClick"
+                                                Classes="NoBorder">
+                                            <onePointControls:FontIcon Glyph="&#xE8BB;"
+                                                                       FontSize="12" />
+                                        </Button>
 
-                                    <navigation:NavigationFrame Grid.Row="1"
-                                                                Name="Frame" />
+                                        <StackPanel Orientation="Horizontal"
+                                                    Grid.Row="0"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Top"
+                                                    Spacing="12"
+                                                    Margin="18,18,12,12">
+                                            <onePointControls:FontIcon Name="BorderIcon"
+                                                                       FontSize="20"
+                                                                       Foreground="{DynamicResource AccentBackgroundBrush}"
+                                                                       VerticalAlignment="Center" />
+                                            <TextBlock Foreground="{DynamicResource AccentBackgroundBrush}"
+                                                       FontWeight="Bold"
+                                                       FontSize="18"
+                                                       Name="BorderTitle"
+                                                       Text="Title" />
+                                        </StackPanel>
+
+                                        <navigation:NavigationFrame Grid.Row="1"
+                                                                    Name="Frame" />
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </Grid>
@@ -500,8 +502,8 @@
                                                                FontSize="24" />
                                 </StackPanel>
 
-<TextBlock Text="{DynamicResource MainWindow.DropFile.Title}"
-                                            FontSize="26"
+                                <TextBlock Text="{DynamicResource MainWindow.DropFile.Title}"
+                                           FontSize="26"
                                            HorizontalAlignment="Center" />
 
                                 <StackPanel Orientation="Horizontal"
@@ -592,7 +594,7 @@
                                     Margin="0,0,22,0"
                                     Spacing="8">
                             <StackPanel Orientation="Horizontal"
-                                    Spacing="8">
+                                        Spacing="8">
                                 <Button Classes="NoBorder"
                                         Height="32"
                                         Padding="10,0"
@@ -604,8 +606,8 @@
                                                                    FontSize="12"
                                                                    HorizontalAlignment="Center"
                                                                    VerticalAlignment="Center" />
-<TextBlock Text="{DynamicResource MainWindow.Task.CountInfo}"
-                                                    IsVisible="False"
+                                        <TextBlock Text="{DynamicResource MainWindow.Task.CountInfo}"
+                                                   IsVisible="False"
                                                    Name="TaskInfoText" />
                                     </StackPanel>
                                 </Button>

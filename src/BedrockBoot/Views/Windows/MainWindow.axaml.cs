@@ -60,18 +60,21 @@ using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Service.Protocol.Routes;
 using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface.Page;
 using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockBoot.Style.Controls;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages;
+using BedrockBoot.Views.Pages.FullScreenPage;
 using BedrockBoot.Views.Pages.SetupPage;
 using BedrockBoot.Views.Windows.SubWindows;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Notice.Info;
 using Round.SDK.Helper;
 using Wallpaper.Avalonia.Controls;
@@ -307,6 +310,8 @@ public partial class MainWindow : Window
 
     public void UpdateTheme()
     {
+        BlurBorder.SetGlobal(Core.Global.GlobalModel.Config.Data.StyleConfig.IsUseBlurBackdrop,
+            Core.Global.GlobalModel.Config.Data.StyleConfig.BlurBackdropRadius);
         GetFontFamily(Core.Global.GlobalModel.Config.Data.StyleConfig.MainFont,
             Core.Global.GlobalModel.Config.Data.StyleConfig.FallbackFont);
         MediaManager.Instance.Enabled = Core.Global.GlobalModel.Config.Data.IsPlayBackgroundMusic;
@@ -428,7 +433,7 @@ public partial class MainWindow : Window
     /// </summary>
     private async void ShowStartupMediaCapsule(MediaSong? song)
     {
-        UpdateTrackCapsule(song, nowPlaying: true);
+        UpdateTrackCapsule(song, true);
 
         CancelCapsuleSequence();
         _capsuleSequenceCts = new CancellationTokenSource();
@@ -457,7 +462,7 @@ public partial class MainWindow : Window
     {
         if (song == null) return;
 
-        UpdateTrackCapsule(song, nowPlaying: false);
+        UpdateTrackCapsule(song, false);
 
         CancelCapsuleSequence();
         _capsuleSequenceCts = new CancellationTokenSource();
@@ -527,7 +532,9 @@ public partial class MainWindow : Window
             : song.AppName!;
         MediaTrackSubtitle.Text = nowPlaying
             ? string.Format(I18n["MainWindow.Media.NowPlaying"], app)
-            : string.IsNullOrWhiteSpace(song.Artist) ? app : $@"{song.Artist} · {app}";
+            : string.IsNullOrWhiteSpace(song.Artist)
+                ? app
+                : $@"{song.Artist} · {app}";
 
         // 封面在后台线程解码，避免 UI 卡顿；序号防旧任务回写覆盖新曲目的封面
         var seq = ++_trackCapsuleSeq;
@@ -588,6 +595,7 @@ public partial class MainWindow : Window
             BorderIcon.IsVisible = true;
             BorderIcon.Glyph = iconGlyph;
         }
+
         await SetBorderState(true);
 
         Frame.NavigateTo(page);
@@ -618,9 +626,21 @@ public partial class MainWindow : Window
 
     public void SetBlurState(bool state)
     {
-        ContentView.Effect = new BlurEffect { Radius = state ? 50 : 0 };
-        BackgroundGroupBox.Effect = new BlurEffect { Radius = state ? 50 : 0 };
-        BackgroundGroupBox.Margin = new Thickness(state ? -50 : 0);
+        if (Core.Global.GlobalModel.Config.Data.StyleConfig.IsUseBlurBackdrop)
+        {
+            // 已开启全局背景模糊时,任务视图不自行模糊,改用半透明黑色覆盖层压暗内容
+            ContentView.Effect = null;
+            BackgroundGroupBox.Effect = null;
+            BackgroundGroupBox.Margin = new Thickness(0);
+            TaskDimView.Opacity = state ? 1 : 0;
+        }
+        else
+        {
+            ContentView.Effect = state ? new BlurEffect { Radius = 50 } : null;
+            BackgroundGroupBox.Effect = state ? new BlurEffect { Radius = 50 } : null;
+            BackgroundGroupBox.Margin = new Thickness(state ? -50 : 0);
+            TaskDimView.Opacity = 0;
+        }
     }
 
     public async void OpenTaskCard()
@@ -991,7 +1011,10 @@ public partial class MainWindow : Window
             }
     }
 
-    private void SearchBtn_OnClick(object? sender, RoutedEventArgs e) => ToggleSearchOverlay();
+    private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        ToggleSearchOverlay();
+    }
 
     /// <summary>打开/关闭全局搜索浮层（Ctrl+K 或右上角搜索按钮）</summary>
     public void ToggleSearchOverlay()
@@ -1003,7 +1026,10 @@ public partial class MainWindow : Window
     }
 
     /// <summary>打开全局搜索浮层，可携带预填关键词</summary>
-    public void OpenSearchOverlay(string? prefill = null) => SearchOverlay.Open(prefill);
+    public void OpenSearchOverlay(string? prefill = null)
+    {
+        SearchOverlay.Open(prefill);
+    }
 
     private void Window_OnClosing(object? sender, WindowClosingEventArgs e)
     {
@@ -1149,7 +1175,8 @@ public partial class MainWindow : Window
 
         DialogHost.Show(new DialogInfo
         {
-            Title = string.Format(I18n["MainWindow.Status.InternalErrorCount"], PluginLoader.PluginLoadExceptions.Count),
+            Title =
+                string.Format(I18n["MainWindow.Status.InternalErrorCount"], PluginLoader.PluginLoadExceptions.Count),
             Content = panel,
             CloseButtonText = I18n["Shared.Action.Confirm"]
         });
@@ -1320,6 +1347,8 @@ public partial class MainWindow : Window
     {
         if (state)
         {
+            // 与任务视图同规则:开启全局背景模糊时露出 BlurBorder,洗色层 0.9;关闭时洗色层不透明盖住模糊层
+            BorderWash.Opacity = Core.Global.GlobalModel.Config.Data.StyleConfig.IsUseBlurBackdrop ? 0.9 : 1;
             BottomBorder.Margin = new Thickness(DrawMarginLR, Height, DrawMarginLR, -Height);
             await Task.Delay(100);
             BorderGrid.IsVisible = true;
@@ -1425,6 +1454,31 @@ public partial class MainWindow : Window
                     AccountPanel.IsVisible = false;
             });
         }, token);
+    }
+
+    #endregion
+
+    #region 全屏页面接口
+
+    public async Task FullScreenNavigateTo(IFullScreen page)
+    {
+        MainFrame.Opacity = 0;
+        FullScreenFrame.NavigateTo(new MainFullScreen(page));
+        await Task.Delay(380);
+        
+        MainFrame.IsVisible = false;
+        FullScreenFrame.IsVisible = true;
+        FullScreenFrame.Opacity = 1;
+    }
+
+    public async Task FullScreenBack()
+    {
+        FullScreenFrame.Opacity = 0;
+        await Task.Delay(380);
+
+        MainFrame.IsVisible = true;
+        FullScreenFrame.IsVisible = false;
+        MainFrame.Opacity = 1;
     }
 
     #endregion

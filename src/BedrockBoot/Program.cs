@@ -227,6 +227,9 @@ internal sealed class Program
 			}
 		}));
 		primemthrd.Name = "PriMemeWorkingSetMonitor";
+		// 必须是后台线程：Main 返回后若还有前台线程（本线程 while(true) 永不退出），
+		// 进程会一直残留不退出（-jump 快捷启动关窗后卡进程的根因）
+		primemthrd.IsBackground = true;
 		primemthrd.Start();
 #endif
 		var appArgs = BedrockbootUrlProtocol.FilterStartupArgs(args).ToArray();

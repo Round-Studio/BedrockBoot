@@ -20,8 +20,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using BedrockBoot.Standard.Entity.Game.Pack.Server;
 
@@ -31,6 +34,35 @@ public class ServerChecker
 {
     private const int DEFAULT_PORT = 19132;
     private const int TIMEOUT_MS = 3000;
+
+    // 传输协议标识
+    private const string TRANSPORT_RAKNET = "RakNet";
+    private const string TRANSPORT_NETHERNET = "NetherNet";
+
+    // NetherNet 状态查询端点：基岩客户端在建立 NetherNet 连接前会先请求该端点获取服务器信息
+    private const string NETHERNET_JOIN_PATH = "/v1/join";
+    private const string NETHERNET_USER_AGENT = "libhttpclient/1.0.0.0";
+
+    /// <summary>
+    ///     查询服务器状态：RakNet 与 NetherNet 并存，并行探测，任一协议先返回在线即采用
+    /// </summary>
+    public async Task<ServerStatusResponse> GetServerStatusAsync(ServerItemInfo info)
+    {
+        var rakNetTask = PingViaRakNetAsync(info);
+        var netherNetTask = PingViaNetherNetAsync(info);
+
+        while (true)
+        {
+            var finished = await Task.WhenAny(rakNetTask, netherNetTask);
+
+            if ("online".Equals(finished.Result.Status, StringComparison.OrdinalIgnoreCase))
+                return finished.Result;
+
+            // 两个协议均失败：沿用 RakNet 的失败信息展示
+            if (rakNetTask.IsCompleted && netherNetTask.IsCompleted)
+                return rakNetTask.Result;
+        }
+    }
 
     // RakNet Magic值
     private static readonly byte[] RAKNET_MAGIC = new byte[]
@@ -44,7 +76,7 @@ public class ServerChecker
     /// <summary>
     ///     使用RakNet协议查询服务器，返回minebbs格式的数据
     /// </summary>
-    public async Task<ServerStatusResponse> GetServerStatusAsync(ServerItemInfo info)
+    public async Task<ServerStatusResponse> PingViaRakNetAsync(ServerItemInfo info)
     {
         var ip = info.ServerAddress;
         var portNum = info.ServerPort;
@@ -123,6 +155,7 @@ public class ServerChecker
                     response.Protocol = version;
                     response.LevelName = "Unknown"; // RakNet协议中可能没有这个字段
                     response.Cached = false;
+                    response.Transport = TRANSPORT_RAKNET;
                 }
                 else
                 {
@@ -143,6 +176,202 @@ public class ServerChecker
         }
 
         return response;
+    }
+
+    /// <summary>
+    ///     使用NetherNet协议查询服务器：请求 HTTP(S) 的 /v1/join 端点，返回minebbs格式的数据
+    /// </summary>
+    private async Task<ServerStatusResponse> PingViaNetherNetAsync(ServerItemInfo info)
+    {
+        var ip = info.ServerAddress;
+        var portNum = info.ServerPort;
+
+        var response = new ServerStatusResponse
+        {
+            Host = $"{ip}:{portNum}",
+            Type = "Bedrock"
+        };
+
+        try
+        {
+            var (body, delayMs) = await QueryNetherNetJoinAsync(ip, portNum);
+
+            if (!TryParseNetherNetJoin(body, out var motd, out var version, out var level, out var players,
+                    out var maxPlayers, out var gameType, out var protocol))
+            {
+                response.Status = "offline";
+                response.PureMOTD = I18nManager.Instance["Server.Error.ParseResponse"];
+                return response;
+            }
+
+            response.Status = "online";
+            response.MOTD = motd;
+            response.PureMOTD = StripFormatCodes(motd);
+            response.Version = string.IsNullOrEmpty(version) ? "Unknown" : version;
+            response.Players = new ServerStatusResponse.PlayersData
+            {
+                Online = players.ToString(),
+                Max = maxPlayers.ToString()
+            };
+            response.Gamemode = MapGameType(gameType);
+            response.Delay = (int)delayMs;
+            response.Protocol = protocol >= 0 ? protocol.ToString() : version;
+            response.LevelName = string.IsNullOrEmpty(level) ? "Unknown" : level;
+            response.Cached = false;
+            response.Transport = TRANSPORT_NETHERNET;
+        }
+        catch (OperationCanceledException)
+        {
+            response.Status = "offline";
+            response.PureMOTD = I18nManager.Instance["Server.Error.Timeout"];
+        }
+        catch (Exception ex)
+        {
+            response.Status = "offline";
+            response.PureMOTD = string.Format(I18nManager.Instance["Server.Error.QueryFailed"], ex.Message);
+        }
+
+        return response;
+    }
+
+    /// <summary>
+    ///     请求 NetherNet 的 /v1/join 端点：先 HTTPS，TLS/连接层失败退回 HTTP
+    /// </summary>
+    private async Task<(string Body, long DelayMs)> QueryNetherNetJoinAsync(string host, int port)
+    {
+        try
+        {
+            return await SendNetherNetJoinAsync(host, port, "https");
+        }
+        catch (HttpRequestException)
+        {
+            // HTTPS 握手或连接失败（证书/协议/EOF），按基岩客户端行为退回 HTTP 端点
+            return await SendNetherNetJoinAsync(host, port, "http");
+        }
+    }
+
+    // NetherNet 查询共用单例 HttpClient：每条服务器各建 handler 会在调用线程上触发
+    // 系统/首次请求的同步初始化（WinHTTP 代理解析等），在 UI 线程上会造成卡死
+    private static readonly HttpClient NetherNetHttpClient = CreateNetherNetClient();
+
+    private static HttpClient CreateNetherNetClient()
+    {
+        var handler = new SocketsHttpHandler
+        {
+            // NetherNet 端点普遍使用自签名证书；此处仅为状态查询且不发送任何凭据，故不校验证书链
+            SslOptions = { RemoteCertificateValidationCallback = (_, _, _, _) => true },
+            AllowAutoRedirect = false,
+            // 与 RakNet UDP 一致走直连：绕开系统代理的同步解析路径
+            UseProxy = false,
+            PooledConnectionLifetime = TimeSpan.FromSeconds(30),
+            ConnectTimeout = TimeSpan.FromMilliseconds(TIMEOUT_MS)
+        };
+
+        return new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
+    }
+
+    private static async Task<(string Body, long DelayMs)> SendNetherNetJoinAsync(string host, int port, string scheme)
+    {
+        // IPv6 字面量需要方括号才能构成合法 URI
+        var uriHost = Uri.CheckHostName(host) == UriHostNameType.IPv6 ? $"[{host}]" : host;
+
+        var stopwatch = Stopwatch.StartNew();
+        using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromMilliseconds(TIMEOUT_MS)))
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get,
+                       $"{scheme}://{uriHost}:{port}{NETHERNET_JOIN_PATH}"))
+            {
+                request.Headers.UserAgent.ParseAdd(NETHERNET_USER_AGENT);
+                request.Headers.Connection.Add("Keep-Alive");
+
+                using (var response =
+                           await NetherNetHttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead,
+                               timeoutCts.Token))
+                {
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        throw new HttpRequestException(
+                            $"Unexpected response code: {(int)response.StatusCode}");
+
+                    var body = await response.Content.ReadAsStringAsync(timeoutCts.Token);
+                    stopwatch.Stop();
+                    return (body, stopwatch.ElapsedMilliseconds);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    ///     解析 NetherNet /v1/join 的 JSON 响应
+    /// </summary>
+    private static bool TryParseNetherNetJoin(string body, out string motd, out string version, out string level,
+        out int players, out int maxPlayers, out int gameType, out int protocol)
+    {
+        motd = "";
+        version = "";
+        level = "";
+        players = 0;
+        maxPlayers = 0;
+        gameType = -1;
+        protocol = -1;
+
+        try
+        {
+            using (var doc = JsonDocument.Parse(body))
+            {
+                var root = doc.RootElement;
+
+                // 至少要有 name 字段才算有效的 NetherNet 应答，避免把端点上的其他 HTTP 服务误判为在线
+                if (root.ValueKind != JsonValueKind.Object ||
+                    !root.TryGetProperty("name", out var nameEl) ||
+                    nameEl.ValueKind != JsonValueKind.String)
+                    return false;
+
+                motd = nameEl.GetString() ?? "";
+                version = GetNetherNetString(root, "version") ?? "";
+                level = GetNetherNetString(root, "level") ?? "";
+                players = GetNetherNetInt(root, "players", 0);
+                maxPlayers = GetNetherNetInt(root, "maxPlayers", 0);
+                gameType = GetNetherNetInt(root, "gameType", -1);
+                protocol = GetNetherNetInt(root, "protocol", -1);
+                return true;
+            }
+        }
+        catch
+        {
+            // 解析失败
+        }
+
+        return false;
+    }
+
+    private static string GetNetherNetString(JsonElement root, string name)
+    {
+        return root.TryGetProperty(name, out var el) && el.ValueKind == JsonValueKind.String
+            ? el.GetString()
+            : null;
+    }
+
+    private static int GetNetherNetInt(JsonElement root, string name, int fallback)
+    {
+        return root.TryGetProperty(name, out var el) && el.ValueKind == JsonValueKind.Number &&
+               el.TryGetInt32(out var value)
+            ? value
+            : fallback;
+    }
+
+    /// <summary>
+    ///     将 NetherNet 响应中的 gameType 数值映射为游戏模式名称
+    /// </summary>
+    private static string MapGameType(int gameType)
+    {
+        return gameType switch
+        {
+            0 => "Survival",
+            1 => "Creative",
+            2 => "Adventure",
+            3 => "Spectator",
+            _ => "Unknown"
+        };
     }
 
     /// <summary>

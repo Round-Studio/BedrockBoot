@@ -181,23 +181,13 @@ namespace BedrockBoot.Standard.Entity
     public class StyleConfig
     {
         [JsonPropertyName("isUseThemePack")] public bool IsUseThemePack { get; set; } = false;
-
-        [JsonPropertyName("selectThemePackHash")]
-        public string SelectThemePackHash { get; set; } = string.Empty;
-
+        [JsonPropertyName("selectThemePackHash")] public string SelectThemePackHash { get; set; } = string.Empty;
         [JsonPropertyName("lightThemeType")] public ThemeModelEnum LightThemeType { get; set; } = ThemeModelEnum.Dark;
         [JsonPropertyName("backgroundMusic")] public string BackgroundMusic { get; set; } = string.Empty;
         [JsonPropertyName("backgroundImage")] public string BackgroundImage { get; set; } = string.Empty;
-
-        [JsonPropertyName("backgroundImageOpacity")]
-        public int BackgroundImageOpacity { get; set; } = 100;
-
-        [JsonPropertyName("backgroundImageBlur")]
-        public int BackgroundImageBlur { get; set; } = 1;
-
-        [JsonPropertyName("backgroundAnimation")]
-        public bool BackgroundAnimation { get; set; } = false;
-
+        [JsonPropertyName("backgroundImageOpacity")] public int BackgroundImageOpacity { get; set; } = 100;
+        [JsonPropertyName("backgroundImageBlur")] public int BackgroundImageBlur { get; set; } = 1;
+        [JsonPropertyName("backgroundAnimation")] public bool BackgroundAnimation { get; set; } = false;
         [JsonPropertyName("background3d")] public bool Background3D { get; set; } = false;
         [JsonPropertyName("liveOpacity")] public int LiveOpacity { get; set; } = 40;
         [JsonPropertyName("liveBlur")] public bool LiveBlur { get; set; } = false;
@@ -209,6 +199,8 @@ namespace BedrockBoot.Standard.Entity
         [JsonPropertyName("imageQuality")] public ImageQuality ImageQuality { get; set; } = ImageQuality.Medium;
         [JsonPropertyName("micaType")] public MicaType MicaType { get; set; } = MicaType.MicaAlt;
         [JsonPropertyName("isBlackTextForegroundColor")] public bool IsBlackTextForegroundColor { get; set; } = true;
+        [JsonPropertyName("isUseBlurBackdrop")] public bool IsUseBlurBackdrop { get; set; } = true;
+        [JsonPropertyName("blurBackdropRadius")] public int BlurBackdropRadius { get; set; } = 20;
     }
 
     public class HomeConfig

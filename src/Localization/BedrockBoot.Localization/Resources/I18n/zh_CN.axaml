@@ -434,6 +434,10 @@
     <x:String x:Key="Download.Game.Type.Preview">预览版</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta 版</x:String>
     <x:String x:Key="Download.Game.Type.All">全部</x:String>
+    <x:String x:Key="Download.Result.Group.Unknown">未知版本</x:String>
+    <x:String x:Key="Download.Result.Prerelease">预发布</x:String>
+    <x:String x:Key="Download.Result.Group.All">所有游戏版本</x:String>
+    <x:String x:Key="Download.Result.VersionGroup.Count">{0} 个版本</x:String>
     <x:String x:Key="Download.CurseForge.File.ReleaseType.Alpha">Alpha 版</x:String>
     <x:String x:Key="Download.CurseForge.File.DownloadCount">下载次数</x:String>
     <x:String x:Key="Download.CurseForge.File.FileName">文件名</x:String>

@@ -52,7 +52,7 @@ public partial class ResourceFileItem : UserControl
         {
             Expander.IsVisible = false;
             Card.IsVisible = true;
-            Card.Header = _info.FileName;
+            Card.Header = _info.IsPrerelease ? MakePrereleaseHeader() : _info.FileName;
             Card.Description = string.Join(", ", parts);
             SaveBtn.IsVisible = _info.IsEnableSaveAs;
             return;
@@ -79,6 +79,28 @@ public partial class ResourceFileItem : UserControl
                 Text = version,
                 Margin = new Thickness(0, 0, 4, 4)
             });
+    }
+
+    // 预发布角标：动态文本，代码赋值（Header 是 object，可塞控件栈）
+    private StackPanel MakePrereleaseHeader()
+    {
+        return new StackPanel
+        {
+            Orientation = Avalonia.Layout.Orientation.Horizontal,
+            Spacing = 6,
+            Children =
+            {
+                new OnePointUI.Avalonia.Styling.Controls.OnePointControls.LabelBox
+                {
+                    Text = I18nManager.Instance["Download.Result.Prerelease"]
+                },
+                new TextBlock
+                {
+                    Text = _info.FileName,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+                }
+            }
+        };
     }
 
     public static string ToFileSizeString(long bytes)

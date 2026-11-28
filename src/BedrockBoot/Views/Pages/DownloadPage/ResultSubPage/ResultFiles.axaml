@@ -3,9 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:items="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.DownloadPage.ResultSubPage.ResultFiles">
-    <StackPanel Name="FilesList"
+    <StackPanel Name="RootPanel"
                 Spacing="8">
+        <WrapPanel Name="PillsPanel"
+                   IsVisible="False" />
+        <StackPanel Name="FilesList"
+                    Spacing="8">
+        </StackPanel>
     </StackPanel>
 </UserControl>

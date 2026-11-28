@@ -8,7 +8,7 @@
     <Grid>
         <onePointControls:SettingCard IsClickable="True"
                                       Name="Card"
-                                      Glyph="&#xE7C3;"
+                                      Glyph=""
                                       IsShowActionIcon="False"
                                       Header="Name">
             <StackPanel Orientation="Horizontal"
@@ -43,7 +43,8 @@
                                           IsVisible="False">
             <onePointControls:SettingExpander.Header>
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <onePointControls:LabelBox Name="ReleaseTypeTag" />
+                    <onePointControls:LabelBox Name="ReleaseTypeTag" 
+                                               VerticalAlignment="Center"/>
                     <TextBlock Name="FileNameHeader" VerticalAlignment="Center" />
                 </StackPanel>
             </onePointControls:SettingExpander.Header>

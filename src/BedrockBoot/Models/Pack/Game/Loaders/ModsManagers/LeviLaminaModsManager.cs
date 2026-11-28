@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -28,6 +29,7 @@ using BedrockBoot.Standard.Entity.Game;
 using BedrockBoot.Standard.Enum.Type;
 using BedrockBoot.Models.Global;
 using BedrockBoot.Standard.Interface.ModLoader;
+using ICSharpCode.SharpZipLib.Zip;
 using Round.SDK.Entity;
 using Round.SDK.Helper;
 
@@ -90,9 +92,79 @@ public class LeviLaminaModsManager : IModsManager
         });
 
         var file = files?.FirstOrDefault()?.TryGetLocalPath();
-        ZipHelper.ExtractZipFile(file,
-            Path.Combine(_versionConfig.VersionPath!, "config", "BedrockBoot2", "levilamina", "ll.mods"), true);
+        if (string.IsNullOrEmpty(file)) return;
+
+        var modsFolder = Path.Combine(_versionConfig.VersionPath!, "config", "BedrockBoot2", "levilamina", "ll.mods");
+
+        // 包内没自带一层文件夹时先建目录再解压，避免文件直接泼进 ll.mods 根目录
+        ZipHelper.ExtractZipFile(file, ResolveExtractTarget(file, modsFolder), true);
         OnRefresh?.Invoke();
+    }
+
+    /// <summary>
+    ///     决定模组包的解压目标。zip 内容已收在唯一一个顶层目录里时原地解压；
+    ///     否则（根目录散放文件/多个顶层目录）按包内 manifest.json 的 name（其次 zip 文件名）建目录再解压，
+    ///     保证 ll.mods 下仍是「一个模组一个文件夹」的布局（GetAllMods 按 manifest.json 扫描）。
+    /// </summary>
+    private static string ResolveExtractTarget(string zipPath, string modsFolder)
+    {
+        try
+        {
+            using var zip = new ZipFile(zipPath);
+
+            var topSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var hasRootFile = false;
+            foreach (ZipEntry entry in zip)
+            {
+                if (entry.IsDirectory) continue;
+
+                var name = entry.Name.Replace('\\', '/').TrimStart('/');
+                var slashIndex = name.IndexOf('/');
+                if (slashIndex < 0)
+                    hasRootFile = true;
+                else
+                    topSegments.Add(name.Substring(0, slashIndex));
+            }
+
+            if (!hasRootFile && topSegments.Count == 1)
+                return modsFolder;
+
+            var folderName = ReadRootManifestName(zip)
+                             ?? SanitizeFolderName(Path.GetFileNameWithoutExtension(zipPath));
+
+            return Path.Combine(modsFolder, folderName);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"解析模组包结构失败，按原目录解压: {ex.Message}");
+            return modsFolder;
+        }
+    }
+
+    private static string ReadRootManifestName(ZipFile zip)
+    {
+        var entry = zip.Cast<ZipEntry>()
+            .FirstOrDefault(e => !e.IsDirectory && string.Equals(
+                e.Name.Replace('\\', '/').TrimStart('/'), "manifest.json", StringComparison.OrdinalIgnoreCase));
+        if (entry == null) return null;
+
+        try
+        {
+            using var stream = zip.GetInputStream(entry);
+            using var reader = new StreamReader(stream);
+            var manifest = JsonSerializer.Deserialize<LocalManifest>(reader.ReadToEnd());
+            return string.IsNullOrWhiteSpace(manifest?.Name) ? null : SanitizeFolderName(manifest.Name);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static string SanitizeFolderName(string name)
+    {
+        var clean = string.Concat(name.Split(Path.GetInvalidFileNameChars())).Trim();
+        return string.IsNullOrEmpty(clean) ? "ImportedMod" : clean;
     }
 
     public void Remove(ModItemInfo info)

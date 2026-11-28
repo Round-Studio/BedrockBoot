@@ -27,10 +27,9 @@ namespace BedrockBoot.Views.DialogContent.Loader.LeviLamina;
 
 public partial class DialogInstallLeviLaminaModContent : UserControl
 {
-    private readonly string _versionId;
+    private readonly string _installString;
     private readonly string _savePath;
-    private readonly string _key;
-    private readonly bool _isOnlyDownload;
+    private readonly string _manifestUrl;
     private LipClient _client;
 
     public DialogInstallLeviLaminaModContent()
@@ -38,13 +37,12 @@ public partial class DialogInstallLeviLaminaModContent : UserControl
         InitializeComponent();
     }
 
-    public DialogInstallLeviLaminaModContent(string versionId, string savePath, string key, bool isOnlyDownload = false)
+    public DialogInstallLeviLaminaModContent(string installString, string savePath, string manifestUrl)
         : this()
     {
-        _versionId = versionId;
+        _installString = installString;
         _savePath = savePath;
-        _key = key;
-        _isOnlyDownload = isOnlyDownload;
+        _manifestUrl = manifestUrl;
 
         Install();
     }
@@ -53,8 +51,7 @@ public partial class DialogInstallLeviLaminaModContent : UserControl
     {
         try
         {
-            var toothKey = $"{_key}#client@{_versionId}";
-            _client = new LipClient(_savePath);
+            _client = new LipClient(_savePath) { ManifestUrl = _manifestUrl };
 
             _client.ProgressChanged += (sender, progress) =>
             {
@@ -72,7 +69,7 @@ public partial class DialogInstallLeviLaminaModContent : UserControl
                 });
             };
 
-            await _client.InstallAsync(toothKey);
+            await _client.InstallAsync(_installString);
         }
         catch (Exception ex)
         {

@@ -434,6 +434,10 @@
     <x:String x:Key="Download.Game.Type.Preview">Preview</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Beta</x:String>
     <x:String x:Key="Download.Game.Type.All">All</x:String>
+    <x:String x:Key="Download.Result.Group.Unknown">Unknown</x:String>
+    <x:String x:Key="Download.Result.Prerelease">Pre-release</x:String>
+    <x:String x:Key="Download.Result.Group.All">All game versions</x:String>
+    <x:String x:Key="Download.Result.VersionGroup.Count">{0} versions</x:String>
     <x:String x:Key="Download.CurseForge.File.SupportedVersions">Supported Minecraft versions</x:String>
     <x:String x:Key="Download.CurseForge.Category.All">All categories</x:String>
     <x:String x:Key="Download.CurseForge.ResourceType.All">All types</x:String>

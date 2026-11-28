@@ -375,6 +375,10 @@
     <x:String x:Key="Download.Game.Type.Preview">Предварительный просмотр</x:String>
     <x:String x:Key="Download.Game.Type.Beta">Бета</x:String>
     <x:String x:Key="Download.Game.Type.All">Все</x:String>
+    <x:String x:Key="Download.Result.Group.Unknown">Неизвестная версия</x:String>
+    <x:String x:Key="Download.Result.Prerelease">Предрелиз</x:String>
+    <x:String x:Key="Download.Result.Group.All">Все версии игры</x:String>
+    <x:String x:Key="Download.Result.VersionGroup.Count">{0} верс.</x:String>
 
     <x:String x:Key="Download.Assets.Status.Loading.Title">Сбор активов...</x:String>
     <x:String x:Key="Download.Assets.Status.Loading.Message">Все активы, вливайтесь!</x:String>

@@ -18,37 +18,47 @@
 
 using System;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using BedrockBoot.Models.Global;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DialogContent.Loader.LeviLamina;
 using OnePointUI.Avalonia.Base.Entry;
+using BedrockBoot.Models.Pack.LeviLamina;
 
 namespace BedrockBoot.Models.Pack.LeviLamina;
 
 public class LeviLaminaModsInstaller
 {
-    private readonly PackageInfo _pkg;
-    private readonly string _key;
+    private readonly LeviModEntry _entry;
+    private readonly LeviModVersion _version;
+    private readonly string _label;
 
-    public LeviLaminaModsInstaller(PackageInfo pkg, string key)
+    public LeviLaminaModsInstaller(LeviModEntry entry, LeviModVersion version, string label)
     {
-        _pkg = pkg;
-        _key = key;
+        _entry = entry;
+        _version = version;
+        _label = label;
     }
 
-    public async Task Install(string versionId, string savePath, bool isOnlyDownload = false)
+    public async Task Install(string savePath)
     {
-        if (!isOnlyDownload)
-        {
-            var dialogContent = new DialogInstallLeviLaminaModContent(versionId, savePath, _key, isOnlyDownload);
+        var dialogContent = new DialogInstallLeviLaminaModContent(BuildInstallString(), savePath, _version?.ManifestUrl);
 
-            DialogHost.Show(new DialogInfo
-            {
-                Title = string.Format(I18nManager.Instance["Pack.LeviLamina.InstallMod.Title"], _pkg?.Info?.Name ?? _key, versionId),
-                Content = dialogContent
-            });
-        }
+        DialogHost.Show(new DialogInfo
+        {
+            Title = string.Format(I18nManager.Instance["Pack.LeviLamina.InstallMod.Title"],
+                _entry?.Name ?? _entry?.Id ?? "", _version?.Version ?? ""),
+            Content = dialogContent
+        });
+    }
+
+    // 变体标签即 tooth 标签：client / client_lua / client_quickjs…；空标签（如 LeviLamina 本体）不带 # 后缀
+    private string BuildInstallString()
+    {
+        var id = _entry?.Id ?? "";
+        var version = _version?.Version ?? "";
+
+        return string.IsNullOrEmpty(_label)
+            ? $"{id}@{version}"
+            : $"{id}#{_label}@{version}";
     }
 }

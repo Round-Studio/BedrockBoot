@@ -37,7 +37,7 @@ namespace BedrockBoot.Models.Pack.LeviLamina
         private readonly HttpClient httpClient = new HttpClient();
         private readonly GithubFilesDownloader _downloader;
         private string installDir;
-        private bool isClientMode = false;
+        private string label;
         private string version;
         private string tooth;
         private string toothPath;
@@ -46,6 +46,9 @@ namespace BedrockBoot.Models.Pack.LeviLamina
         public int TotalProgress { get; private set; }
         public event EventHandler<int> ProgressChanged;
         public string InstallDirectory { get; set; } = Environment.CurrentDirectory;
+
+        // levimc.org API 提供的权威清单地址（GitHub blob 页面 URL，下载前转 raw）
+        public string ManifestUrl { get; set; }
 
         public LipClient()
         {
@@ -75,7 +78,7 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
                 Console.WriteLine($@"安装目标: {tooth}");
                 Console.WriteLine($@"版本: {version}");
-                Console.WriteLine($@"模式: {(isClientMode ? "客户端" : "服务端")}");
+                Console.WriteLine($@"变体: {(string.IsNullOrEmpty(label) ? "默认" : label)}");
                 Console.WriteLine($@"安装目录: {installDir}");
 
                 UpdateProgress(5);
@@ -141,16 +144,14 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
             tooth = toothPart;
             version = versionPart;
+            label = labelPart;
 
-            if (!string.IsNullOrEmpty(labelPart) && labelPart == "client")
-                isClientMode = true;
-
-            if (tooth.StartsWith("github.com/"))
+            if (!string.IsNullOrEmpty(tooth) && tooth.StartsWith("github.com/"))
                 toothPath = tooth.Substring(11);
             else
                 toothPath = tooth;
 
-            Console.WriteLine($@"解析结果: tooth={tooth}, version={version}, client={isClientMode}");
+            Console.WriteLine($@"解析结果: tooth={tooth}, version={version}, label={label ?? "默认"}");
         }
 
         private void UpdateProgress(int progress)
@@ -196,9 +197,12 @@ namespace BedrockBoot.Models.Pack.LeviLamina
             }
         }
 
-        // 清单候选地址：lip.toml 与 tooth.json 并行竞速（沿用 tag = v+版本 约定）
+        // 清单候选地址：API 给出的权威清单优先，lip.toml 与 tooth.json 按 tag 约定兜底竞速
         private IEnumerable<string> GetConfigUrls()
         {
+            if (!string.IsNullOrEmpty(ManifestUrl))
+                yield return ManifestUrl.Replace("/blob/", "/raw/");
+
             yield return $"https://github.com/{toothPath}/raw/v{version}/lip.toml";
             yield return $"https://github.com/{toothPath}/raw/v{version}/tooth.json";
         }
@@ -243,27 +247,32 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
         private Variant SelectVariant(LeviConfig config)
         {
-            if (isClientMode)
-            {
-                // 新 lip.toml：没有 "client" label，两个变体共用空 label，按 side 字段区分；
-                // 旧 tooth.json：客户端变体自带 label = "client"
-                var clientVariant = config.Variants.FirstOrDefault(v =>
-                    string.Equals(v.Side, "client", StringComparison.OrdinalIgnoreCase) ||
-                    v.Label == "client");
-                if (clientVariant != null)
-                {
-                    Console.WriteLine(@"使用客户端变体");
-                    return clientVariant;
-                }
+            var pool = config.Variants ?? new List<Variant>();
 
-                Console.WriteLine(@"未找到客户端变体，使用默认变体");
+            // 安装串带标签时优先精确匹配该变体（client / client_lua / client_quickjs…）
+            if (!string.IsNullOrEmpty(label))
+            {
+                var labeled = pool
+                    .Where(v => string.Equals(v.Label, label, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                if (labeled.Count > 0) pool = labeled;
             }
 
-            if (config.Variants.Count > 0)
+            // 启动器只做客户端侧安装：优先 client 变体（side 字段或旧 label 约定）
+            var clientVariant = pool.FirstOrDefault(v =>
+                string.Equals(v.Side, "client", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(v.Label, "client", StringComparison.OrdinalIgnoreCase));
+            if (clientVariant != null)
+            {
+                Console.WriteLine(@"使用客户端变体");
+                return clientVariant;
+            }
+
+            if (pool.Count > 0)
             {
                 Console.WriteLine(
-                    $@"使用变体索引 0 {(config.Variants[0].Label != null ? $"({config.Variants[0].Label})" : "")}");
-                return config.Variants[0];
+                    $@"使用变体索引 0 {(pool[0].Label != null ? $"({pool[0].Label})" : "")}");
+                return pool[0];
             }
 
             throw new Exception("未找到可用的安装变体");
@@ -284,49 +293,53 @@ namespace BedrockBoot.Models.Pack.LeviLamina
             {
                 try
                 {
-                    string depName = dep.Key;
-                    string depVersionSpec = dep.Value;
-
-                    if (depName == mainTooth || depName == mainTooth + "#client")
+                    // 依赖键可携带变体标签：github.com/Owner/Repo#client_lua
+                    var depKey = dep.Key;
+                    var depTooth = depKey;
+                    var depLabel = "";
+                    var hashIndex = depKey.LastIndexOf('#');
+                    if (hashIndex > 0)
                     {
-                        Console.WriteLine($@"跳过自身依赖: {depName} ({depVersionSpec})");
+                        depTooth = depKey.Substring(0, hashIndex);
+                        depLabel = depKey.Substring(hashIndex + 1);
+                    }
+
+                    // 自身引用：同变体跳过，防止递归死循环；
+                    // 不同变体的自引用（如聚合变体引用 #client_quickjs）是真实依赖，照常安装
+                    if (depTooth == mainTooth &&
+                        (depLabel.Length == 0 || depLabel == (label ?? "")))
+                    {
+                        Console.WriteLine($@"跳过自身依赖: {depKey} ({dep.Value})");
                         depIndex++;
                         continue;
                     }
 
-                    string depLabel = "";
-                    if (isClientMode && depName.Contains("#client"))
-                    {
-                        depLabel = "#client";
-                        depName = depName.Replace("#client", "");
-                    }
-
-                    Console.WriteLine($@"安装依赖 [{depIndex + 1}/{dependencies.Count}]: {depName} ({depVersionSpec})");
-
-                    if (depName == "github.com/LiteLDev/LeviLamina")
+                    // LeviLamina 本体由启动器随实例安装，模组依赖一律跳过
+                    if (string.Equals(depTooth, "github.com/LiteLDev/LeviLamina", StringComparison.OrdinalIgnoreCase))
                     {
                         Console.WriteLine(@"依赖为 LeviLamina 本体，跳过安装");
+                        depIndex++;
                         continue;
                     }
 
-                    string resolvedVersion = await ResolveDependencyVersionAsync(depName, depVersionSpec);
+                    Console.WriteLine($@"安装依赖 [{depIndex + 1}/{dependencies.Count}]: {depKey} ({dep.Value})");
+
+                    string resolvedVersion = await ResolveDependencyVersionAsync(depTooth, dep.Value);
 
                     if (string.IsNullOrEmpty(resolvedVersion))
                     {
-                        Console.WriteLine($@"警告: 无法解析版本 {depVersionSpec}，跳过依赖 {depName}");
+                        Console.WriteLine($@"警告: 无法解析版本 {dep.Value}，跳过依赖 {depKey}");
                         depIndex++;
                         continue;
                     }
 
-                    string depKey = $"{depName}@{resolvedVersion}";
-                    if (installedDependencies.Contains(depKey))
+                    string depInstallString = $"{depKey}@{resolvedVersion}";
+                    if (installedDependencies.Contains(depInstallString))
                     {
-                        Console.WriteLine($@"依赖已安装: {depKey}");
+                        Console.WriteLine($@"依赖已安装: {depInstallString}");
                         depIndex++;
                         continue;
                     }
-
-                    string depInstallString = $"{depName}{depLabel}@{resolvedVersion}";
 
                     var depInstaller = new LipClient(installDir);
                     depInstaller.ProgressChanged += (s, p) =>
@@ -339,7 +352,7 @@ namespace BedrockBoot.Models.Pack.LeviLamina
                     };
 
                     await depInstaller.InstallAsync(depInstallString);
-                    installedDependencies.Add(depKey);
+                    installedDependencies.Add(depInstallString);
                     depIndex++;
                 }
                 catch (Exception ex)
@@ -352,10 +365,33 @@ namespace BedrockBoot.Models.Pack.LeviLamina
 
         private async Task<string> ResolveDependencyVersionAsync(string depName, string versionSpec)
         {
-            if (!versionSpec.Contains('*'))
+            if (string.IsNullOrWhiteSpace(versionSpec))
                 return versionSpec;
 
             Console.WriteLine($@"解析版本: {versionSpec}");
+
+            // 优先 levimc.org API：全量版本表支持区间约束（>x <y），且覆盖非 GitHub 托管的依赖
+            try
+            {
+                var detail = await LeviModsSource.GetModDetailAsync(depName);
+                var resolved = LeviVersionSpec.SelectBest(
+                    detail?.Versions?.Where(v => !string.IsNullOrEmpty(v.Version)).Select(v => v.Version),
+                    versionSpec);
+
+                if (!string.IsNullOrEmpty(resolved))
+                {
+                    Console.WriteLine($@"匹配到版本: {resolved} (levimc.org)");
+                    return resolved;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"levimc.org 版本解析失败，回落 GitHub: {ex.Message}");
+            }
+
+            // 精确版本号：按清单声明直接使用
+            if (!versionSpec.Contains('*'))
+                return versionSpec;
 
             string pattern = "^" + Regex.Escape(versionSpec).Replace("\\*", ".*") + "$";
             var regex = new Regex(pattern);

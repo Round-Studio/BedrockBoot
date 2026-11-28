@@ -32,9 +32,9 @@ namespace BedrockBoot.Views.DialogContent.Loader.LeviLamina;
 
 public partial class DialogChooseLeviLaminaModInstallInstanceContent : UserControl
 {
-    private readonly PackageInfo _pkg;
-    private readonly string _versionId;
-    private readonly VersionInfo _version;
+    private readonly LeviModEntry _entry;
+    private readonly LeviModVersion _version;
+    private readonly string _label;
     public bool IsOnlyDownload => DownloadType.SelectedIndex == 1;
 
     public string? SavePath => IsOnlyDownload ? _selectPath :
@@ -48,22 +48,24 @@ public partial class DialogChooseLeviLaminaModInstallInstanceContent : UserContr
         InitializeComponent();
     }
 
-    public DialogChooseLeviLaminaModInstallInstanceContent(PackageInfo pkg, string versionId, VersionInfo version) :
+    public DialogChooseLeviLaminaModInstallInstanceContent(LeviModEntry entry, LeviModVersion version, string label) :
         this()
     {
-        _pkg = pkg;
-        _versionId = versionId;
+        _entry = entry;
         _version = version;
+        _label = label;
         UpdateUi();
     }
 
     public void UpdateUi()
     {
-        DepsList.IsVisible = _version.Dependencies.Count > 0;
-        _version.Dependencies.ToList().ForEach(dep =>
+        var deps = LeviModsSource.GetVariantAsset(_version, _label)?.Deps ?? new Dictionary<string, string>();
+        DepsList.IsVisible = deps.Count > 0;
+        deps.ToList().ForEach(dep =>
         {
-            DepsList.Children.Add(new TextBlock() { Text = $"{dep.Key.Split("/")[2]} {dep.Value}" });
+            DepsList.Children.Add(new TextBlock() { Text = $"{FormatDepName(dep.Key)} {dep.Value}" });
         });
+
         var nowChooseFolder = GlobalModel.Config.Data.GameFolders[GlobalModel.Config.Data.GameFolderSelIndex]
             .GameFolderPath;
         var instances = GameInfoHelper.GetVersionConfigs(nowChooseFolder);
@@ -87,6 +89,14 @@ public partial class DialogChooseLeviLaminaModInstallInstanceContent : UserContr
         }
     }
 
+    // 依赖键形如 github.com/LiteLDev/LeviLamina#client，展示时去掉主机前缀与变体标签
+    private static string FormatDepName(string depKey)
+    {
+        var name = depKey?.Split('/').Last() ?? string.Empty;
+        var hashIndex = name.IndexOf('#');
+        return hashIndex > 0 ? name.Substring(0, hashIndex) : name;
+    }
+
     private async void SelectFolder_OnClick(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(Models.Global.GlobalModel.MainWindow);
@@ -98,7 +108,7 @@ public partial class DialogChooseLeviLaminaModInstallInstanceContent : UserContr
         var options = new FilePickerSaveOptions
         {
             Title = I18nManager.Instance["UI.Dialog.SaveZipFile"],
-            SuggestedFileName = $"{_pkg.Info.Name}-{_versionId}.zip",
+            SuggestedFileName = $"{_entry?.Name}-{_version?.Version}.zip",
             DefaultExtension = "zip",
             FileTypeChoices = new List<FilePickerFileType>
             {

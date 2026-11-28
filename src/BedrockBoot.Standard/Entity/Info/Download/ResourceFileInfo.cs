@@ -21,6 +21,15 @@ namespace BedrockBoot.Standard.Entity.Info.Download;
 public class ResourceFileInfo
 {
     public string? VersionGroup { get; set; }
+
+    // 结构化分组（优先于 VersionGroup）：GroupKey 是分组唯一键，Title/Subtitle 是分组标题两行
+    public string? GroupKey { get; set; }
+    public string? GroupTitle { get; set; }
+    public string? GroupSubtitle { get; set; }
+
+    // 预发布角标（与 CurseForge 的 ReleaseType 数值语义无关）
+    public bool IsPrerelease { get; set; } = false;
+
     public string? FileName { get; set; }
     public string? DisplayName { get; set; }
     public string? Description { get; set; }

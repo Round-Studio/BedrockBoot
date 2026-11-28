@@ -27,11 +27,8 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Models.Pack.LeviLamina;
 using BedrockBoot.Models.Pack.Search;
 using BedrockBoot.Standard.Interface;
-using BedrockBoot.Views.DialogContent.Loader.LeviLamina;
 using BedrockBoot.Views.Pages.DownloadPage;
 using BedrockBoot.Views.Pages.DownloadPage.ResultSubPage;
-using OnePointUI.Avalonia.Base.Enum;
-using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
 
 namespace BedrockBoot.Models.Pack.Search
 {
@@ -73,94 +70,76 @@ namespace BedrockBoot.Models.Pack.Search
 
         public async Task<SearchResultPage> SearchPageAsync(string keyword, int page, int pageSize)
         {
-            var liprData = await LiprSource.GetDataAsync();
+            var index = await LeviModsSource.GetDataAsync();
 
-            var filteredPackages = liprData.Packages
-                .Where(pkg => IsLeviLaminaModMatch(pkg.Key, pkg.Value, keyword))
+            // 启动器面向客户端实例安装，只保留带 client 端侧的模组
+            var clientMods = (index?.Mods ?? new List<LeviModEntry>())
+                .Where(mod => mod.Side?.Contains("client") == true)
                 .ToList();
 
+            var filteredMods = clientMods
+                .Where(mod => IsLeviLaminaModMatch(mod, keyword))
+                .ToList();
+
+            // 命中名称的排前面，其余保持接口返回的相关性顺序
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                var keywordLower = keyword.ToLower();
+                filteredMods = filteredMods
+                    .OrderBy(mod => (mod.Name ?? "").ToLower().Contains(keywordLower) ? 0 : 1)
+                    .ThenBy(mod => mod.Id, StringComparer.Ordinal)
+                    .ToList();
+            }
+
             var currentIndex = (page - 1) * pageSize;
-            var currentPagePackages = filteredPackages
+            var currentPageMods = filteredMods
                 .Skip(currentIndex)
                 .Take(pageSize)
                 .ToList();
 
             var items = new List<SearchResultItemInfo>();
-            currentPagePackages.ForEach(pkg =>
+            foreach (var mod in currentPageMods)
             {
-                var packageInfo = pkg.Value.Info;
                 var item = new SearchResultItemInfo
                 {
-                    Name = packageInfo.Name ?? pkg.Key,
-                    Id = $"{pkg.Key.Split('/')[1]}.{pkg.Key.Split('/')[2]}",
-                    Description = packageInfo.Description ?? string.Empty,
-                    Authors = new List<string>() { pkg.Key.Split('/')[1] },
-                    DownloadCount = 0,
-                    IconUri = !string.IsNullOrEmpty(packageInfo.AvatarUrl)
-                        ? packageInfo.AvatarUrl
+                    Name = string.IsNullOrEmpty(mod.Name) ? mod.Id : mod.Name,
+                    Id = mod.Id,
+                    Description = mod.Description ?? string.Empty,
+                    Authors = new List<string> { mod.Owner ?? mod.Id },
+                    DownloadCount = (uint)Math.Max(0, mod.Downloads),
+                    IconUri = !string.IsNullOrWhiteSpace(mod.Logo)
+                        ? mod.Logo
                         : "avares://BedrockBoot/Assets/Icon/Files/NoneIcon.png",
-                    Labels = packageInfo.Tags ?? new List<string>(),
+                    Labels = mod.Tags ?? new List<string>(),
                     Images = null,
-                    SourceWebsite = $"https://{pkg.Key}",
-                    JsonData = JsonSerializer.Serialize(pkg),
-                    DateUpdated = pkg.Value.UpdatedAt,
+                    SourceWebsite = mod.Url,
+                    JsonData = JsonSerializer.Serialize(mod),
+                    DateUpdated = mod.Updated,
                     ResourceType = SearchResourceType.LeviLaminaMods
                 };
 
                 item.OnClick = s =>
                 {
                     DownloadRoot.Instance.NavigateTo(new ResultRoot(item));
-
-                    return;
-                    var chooseVersionDialog =
-                        new DialogChooseLeviLaminaModVersionContent(pkg.Value.Variants["client"].Versions.Keys
-                            .ToList());
-                    DialogHost.Show(new()
-                    {
-                        Title = string.Format(I18nManager.Instance["LeviLamina.Search.ChooseVersion"], packageInfo.Name),
-                        Content = chooseVersionDialog,
-                        CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
-                        PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
-                        AccountButton = DialogButtons.CloseButton,
-                        CloseAction = () =>
-                        {
-                            var chooseModVersion = chooseVersionDialog.ChooseVersion;
-                            var chooseInstanceDialog = new DialogChooseLeviLaminaModInstallInstanceContent(pkg.Value,
-                                chooseModVersion, pkg.Value.Variants["client"].Versions[chooseModVersion]);
-                            DialogHost.Show(new()
-                            {
-                                Title = string.Format(I18nManager.Instance["LeviLamina.Search.Install"], packageInfo.Name, chooseVersionDialog.ChooseVersion),
-                                Content = chooseInstanceDialog,
-                                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"],
-                                PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
-                                AccountButton = DialogButtons.CloseButton,
-                                CloseAction = () =>
-                                {
-                                    var installer = new LeviLaminaModsInstaller(pkg.Value, pkg.Key);
-                                    installer.Install(chooseModVersion, chooseInstanceDialog.SavePath);
-                                }
-                            });
-                        }
-                    });
                 };
                 items.Add(item);
-            });
+            }
 
             return new SearchResultPage
             {
                 Items = items,
-                TotalCount = filteredPackages.Count
+                TotalCount = filteredMods.Count
             };
         }
 
-        private bool IsLeviLaminaModMatch(string packageKey, PackageInfo package, string keyword)
+        private bool IsLeviLaminaModMatch(LeviModEntry mod, string keyword)
         {
             if (string.IsNullOrEmpty(keyword)) return true;
 
-            var packageName = package.Info?.Name ?? packageKey;
-            var packageDescription = package.Info?.Description ?? string.Empty;
-            var packageTags = package.Info?.Tags != null ? string.Join(" ", package.Info.Tags) : string.Empty;
-            var combinedText = $"{packageName} {packageDescription} {packageTags} {packageKey}".ToLower();
+            var modName = string.IsNullOrEmpty(mod.Name) ? mod.Id : mod.Name;
+            var modDescription = mod.Description ?? string.Empty;
+            var modTags = mod.Tags != null ? string.Join(" ", mod.Tags) : string.Empty;
+            var combinedText = $"{modName} {modDescription} {modTags} {mod.Id} {mod.Owner}".ToLower();
 
             if (!_enableFuzzySearch)
             {
@@ -171,17 +150,17 @@ namespace BedrockBoot.Models.Pack.Search
 
             if (combinedText.Contains(keywordLower)) return true;
 
-            if (FuzzyMatchHelper.IsFuzzyMatch(packageName.ToLower(), keywordLower, 0.7)) return true;
-            if (FuzzyMatchHelper.IsFuzzyMatch(packageDescription.ToLower(), keywordLower, 0.6)) return true;
-            if (FuzzyMatchHelper.IsFuzzyMatch(packageKey.ToLower(), keywordLower, 0.7)) return true;
+            if (FuzzyMatchHelper.IsFuzzyMatch(modName.ToLower(), keywordLower, 0.7)) return true;
+            if (FuzzyMatchHelper.IsFuzzyMatch(modDescription.ToLower(), keywordLower, 0.6)) return true;
+            if (FuzzyMatchHelper.IsFuzzyMatch(mod.Id.ToLower(), keywordLower, 0.7)) return true;
 
-            if (package.Info?.Tags != null)
+            if (mod.Tags != null)
             {
-                foreach (var tag in package.Info.Tags)
+                foreach (var tag in mod.Tags)
                 {
                     var tagName = tag?.ToLower() ?? string.Empty;
-                    if (FuzzyMatchHelper.IsFuzzyMatch(tagName, keywordLower, 0.7)) return true;
                     if (tagName.Contains(keywordLower)) return true;
+                    if (FuzzyMatchHelper.IsFuzzyMatch(tagName, keywordLower, 0.7)) return true;
                 }
             }
 

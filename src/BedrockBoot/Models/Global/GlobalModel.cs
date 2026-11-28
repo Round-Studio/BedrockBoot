@@ -19,7 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Standard.Entity;
@@ -160,8 +162,888 @@ public class GlobalModel
                 });
             }
         },
+        new OtherLauncherInfo() // PCLSE
+        {
+            Name = "PCLSE",
+            IconUrl = "avares://BedrockBoot/Assets/Icon/Other/PCLSE.png",
+            ConfigFile = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "PCLSE",
+                "config.v1.json"),
+            IsExists = false,
+            OnImport = async _ =>
+            {
+                try
+                {
+                    await ImportPclSeAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"导入 PCLSE 配置失败：{ex}");
+                    DialogHost.Show(new DialogInfo
+                    {
+                        Title = "导入失败",
+                        Content = $"读取 PCLSE 配置时发生错误：{ex.Message}",
+                        CloseButtonText = "确定"
+                    });
+                }
+            }
+        },
         new OtherLauncherInfo() // Portal
         {
         }
     };
+
+    /// <summary>
+    /// 导入 PCLSE 的基岩版目录。异常由 OnImport 捕获并提示，不能从 async void 中逸出。
+    /// 只负责“第三方启动器导入入口”：把 PCLSE 的目录用符号链接适配成 BedrockBoot 已有的
+    /// versions 布局，不修改 BedrockBoot 的版本扫描、启动与更新逻辑。
+    /// </summary>
+    private static async System.Threading.Tasks.Task ImportPclSeAsync()
+    {
+        var storageProvider = TopLevel.GetTopLevel(MainWindow);
+        if (storageProvider == null)
+        {
+            Console.WriteLine(@"无法获取主窗口的顶层存储提供程序");
+            return;
+        }
+
+        var files = await storageProvider.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "选择 PCLSE 本体",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+                new FilePickerFileType("PCLSE 可执行文件")
+                {
+                    Patterns = new[] { "*.exe" }
+                }
+            }
+        });
+        if (files.Count == 0) return;
+
+        var launcherPath = files[0].Path.LocalPath;
+        var launcherRoot = Path.GetDirectoryName(launcherPath);
+        if (string.IsNullOrWhiteSpace(launcherRoot)) return;
+
+        // PCLSE 的 exe 可能位于 launcher、PCL 或发布包子目录中；逐级尝试。
+        var sources = PclSeHelper.GetRoots(launcherRoot)
+            .SelectMany(PclSeHelper.ReadDirectories)
+            .ToList();
+        var candidates = new List<string>();
+        foreach (var source in sources)
+        {
+            var folder = PclSeHelper.PrepareFolder(source);
+            if (!string.IsNullOrEmpty(folder) &&
+                !candidates.Contains(folder, StringComparer.OrdinalIgnoreCase))
+                candidates.Add(folder);
+        }
+
+        // 已经导入过的目录也加入候选，重复点击时不再误报失败。
+        var registeredFolders = BedrockBoot.Core.Global.GlobalModel.Config.Data.GameFolders;
+        foreach (var folder in registeredFolders.Where(PclSeHelper.IsPclSeRegistration))
+        {
+            if (PclSeHelper.TryNormalizeLocalPath(folder.GameFolderPath, null, out var normalized) &&
+                !candidates.Any(candidate => PclSeHelper.PathsEqual(candidate, normalized)))
+                candidates.Add(normalized);
+        }
+
+        var additions = new List<GameFolderInfo>();
+        var updates = new List<(GameFolderInfo Folder, string Name, GameFolderType Type)>();
+        var ensureLinks = new List<string>();
+        var validExisting = false;
+
+        foreach (var candidate in candidates)
+        {
+            // 解析链接后的真实路径；指向 UNC 共享等远程位置的候选会被拒绝，避免触发 SMB 访问。
+            if (!PclSeHelper.TryNormalizeLocalPath(candidate, null, out var normalized) ||
+                !Directory.Exists(normalized))
+                continue;
+
+            // 空目录或不包含可识别游戏实例的目录不能算作导入成功。
+            if (!PclSeHelper.IsUsableFolder(normalized)) continue;
+
+            ensureLinks.Add(normalized);
+
+            var existing = registeredFolders.FirstOrDefault(folder =>
+                PclSeHelper.PathsEqual(folder.GameFolderPath, normalized));
+            if (existing == null)
+            {
+                if (additions.Any(folder => PclSeHelper.PathsEqual(folder.GameFolderPath, normalized)))
+                    continue;
+
+                additions.Add(new GameFolderInfo
+                {
+                    GameFolderName = "PCLSE",
+                    GameFolderPath = normalized,
+                    GameFolderType = GameFolderType.PCLSE
+                });
+                continue;
+            }
+
+            if (existing.GameFolderType == GameFolderType.PCLSE &&
+                string.Equals(existing.GameFolderName, "PCLSE", StringComparison.OrdinalIgnoreCase))
+            {
+                validExisting = true;
+                continue;
+            }
+
+            // 手动添加的目录保留默认的 BedrockBoot 类型，扫描器会去找 bedrock_versions；
+            // 命中同一路径时把名称和类型修正为 PCLSE，扫描才会使用 versions 目录。
+            if (updates.Any(change => ReferenceEquals(change.Folder, existing))) continue;
+
+            updates.Add((existing, existing.GameFolderName, existing.GameFolderType));
+            existing.GameFolderName = "PCLSE";
+            existing.GameFolderType = GameFolderType.PCLSE;
+        }
+
+        if (additions.Count == 0 && updates.Count == 0 && !validExisting)
+        {
+            DialogHost.Show(new DialogInfo
+            {
+                Title = "导入失败",
+                Content = "没有找到 PCLSE 的基岩版版本目录，目录为空或其中没有可识别的游戏版本",
+                CloseButtonText = "确定"
+            });
+            return;
+        }
+
+        var createdLinks = new List<string>();
+        try
+        {
+            // 用符号链接把 PCLSE 实际的版本目录映射成 BedrockBoot 认识的 versions 目录，
+            // 之后完全由 BedrockBoot 原有逻辑扫描/启动/更新，不再需要任何定制。
+            foreach (var folder in ensureLinks)
+                if (PclSeHelper.TryCreateVersionsView(folder, out var link) && !string.IsNullOrEmpty(link))
+                    createdLinks.Add(link!);
+
+            // 先写盘再提示：保存失败时回滚内存中的修改与刚创建的链接。
+            registeredFolders.AddRange(additions);
+            BedrockBoot.Core.Global.GlobalModel.Config.Save();
+        }
+        catch
+        {
+            foreach (var folder in additions) registeredFolders.Remove(folder);
+            foreach (var (folder, name, type) in updates)
+            {
+                folder.GameFolderName = name;
+                folder.GameFolderType = type;
+            }
+
+            foreach (var link in createdLinks) PclSeHelper.TryDeleteLink(link);
+
+            throw;
+        }
+
+        var messages = new List<string>();
+        if (additions.Count > 0) messages.Add($"已导入 PCLSE 的 {additions.Count} 个基岩版目录");
+        if (updates.Count > 0) messages.Add($"已将 {updates.Count} 个已有目录修正为 PCLSE 类型");
+
+        MainWindow?.CloseDraw();
+        DialogHost.Show(new DialogInfo
+        {
+            Title = messages.Count > 0 ? "导入成功" : "目录已存在",
+            Content = messages.Count > 0
+                ? string.Join("；", messages)
+                : "PCLSE 的基岩版目录已经导入，无需重复添加",
+            CloseButtonText = "确定"
+        });
+    }
+
+    /// <summary>
+    /// PCLSE 导入入口的辅助逻辑：受限的 YAML 读取、路径校验，以及用符号链接
+    /// 把 PCLSE 的目录布局适配成 BedrockBoot 原有的 versions 布局。
+    /// 与界面无关，也不依赖 BedrockBoot 的其它模块。
+    /// </summary>
+    private static class PclSeHelper
+    {
+        // 配置文件与解析结果都设上限：PCLSE 配置由外部程序写入，不能假定其体积和条目数量可控。
+        private const long MaxConfigFileBytes = 512 * 1024;
+        private const int MaxConfigLines = 4096;
+        private const int MaxConfigLineLength = 2048;
+        private const int MaxConfigEntries = 256;
+        private const int MaxConfigValueLength = 1024;
+        private const int MaxDirectoryScan = 256;
+        private const int MaxReparsePointHops = 32;
+
+        private static readonly string[] ConfigKeys = { "BedrockFolder", "BedrockExternalFolders" };
+
+        public static bool IsPclSeRegistration(GameFolderInfo? folder) =>
+            folder != null &&
+            (folder.GameFolderType == GameFolderType.PCLSE ||
+             string.Equals(folder.GameFolderName, "PCLSE", StringComparison.OrdinalIgnoreCase));
+
+        /// <summary>
+        /// 从启动器目录逐级向上查找包含 PCL\config.v1.yml 的目录。
+        /// </summary>
+        public static IEnumerable<string> GetRoots(string launcherRoot)
+        {
+            if (!TryNormalizeLocalPath(launcherRoot, null, out var current)) yield break;
+
+            for (var i = 0; i < 5 && !string.IsNullOrWhiteSpace(current); i++)
+            {
+                if (LocalFileExists(Path.Combine(current, "PCL", "config.v1.yml"))) yield return current;
+
+                string? parent;
+                try
+                {
+                    parent = Directory.GetParent(current)?.FullName;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"查找 PCLSE 上级目录失败（{current}）：{ex.Message}");
+                    yield break;
+                }
+
+                if (string.IsNullOrEmpty(parent) ||
+                    string.Equals(parent, current, StringComparison.OrdinalIgnoreCase))
+                    break;
+
+                current = parent;
+            }
+        }
+
+        /// <summary>
+        /// 把 PCLSE 配置里的目录适配成 BedrockBoot 使用的数据根目录。
+        /// </summary>
+        public static string? PrepareFolder(string source)
+        {
+            try
+            {
+                if (!TryNormalizeLocalPath(source, null, out var normalized) || !Directory.Exists(normalized))
+                    return null;
+
+                var leafName = Path.GetFileName(normalized);
+                if (leafName.Equals("versions", StringComparison.OrdinalIgnoreCase) ||
+                    leafName.Equals("bedrock_versions", StringComparison.OrdinalIgnoreCase))
+                    return Path.GetDirectoryName(normalized);
+
+                if (LocalDirectoryExists(Path.Combine(normalized, "versions")) ||
+                    LocalDirectoryExists(Path.Combine(normalized, "bedrock_versions")))
+                    return normalized;
+
+                if (leafName.Equals("extracted", StringComparison.OrdinalIgnoreCase) &&
+                    Path.GetDirectoryName(normalized) is { } versionsDirectory &&
+                    (Path.GetFileName(versionsDirectory).Equals("versions", StringComparison.OrdinalIgnoreCase) ||
+                     Path.GetFileName(versionsDirectory).Equals("bedrock_versions", StringComparison.OrdinalIgnoreCase)))
+                    return Path.GetDirectoryName(versionsDirectory);
+
+                // 配置可能直接指向某个版本目录，此时要注册它所属的数据根目录。
+                if (LooksLikeGameInstance(normalized))
+                {
+                    var parent = Path.GetDirectoryName(normalized);
+                    if (parent != null &&
+                        Path.GetFileName(parent).Equals("extracted", StringComparison.OrdinalIgnoreCase))
+                        parent = Path.GetDirectoryName(parent);
+
+                    if (parent != null &&
+                        (Path.GetFileName(parent).Equals("versions", StringComparison.OrdinalIgnoreCase) ||
+                         Path.GetFileName(parent).Equals("bedrock_versions", StringComparison.OrdinalIgnoreCase)))
+                        return Path.GetDirectoryName(parent);
+
+                    return normalized;
+                }
+
+                return ContainsGameInstance(normalized) ? normalized : null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"适配 PCLSE 目录失败（{source}）：{ex.Message}");
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 找出 PCLSE 数据根目录里真正的版本目录：versions、bedrock_versions，
+        /// 或者数据根目录本身（版本是它的直接子目录）。
+        /// </summary>
+        public static string? GetVersionsDirectory(string root)
+        {
+            if (LocalDirectoryExists(Path.Combine(root, "versions"))) return Path.Combine(root, "versions");
+            if (LocalDirectoryExists(Path.Combine(root, "bedrock_versions"))) return Path.Combine(root, "bedrock_versions");
+            return root;
+        }
+
+        /// <summary>
+        /// 判断目录是否真的包含可被 BedrockBoot 发现的游戏实例。
+        /// </summary>
+        public static bool IsUsableFolder(string folder)
+        {
+            try
+            {
+                if (!TryNormalizeLocalPath(folder, null, out var normalized) || !Directory.Exists(normalized))
+                    return false;
+
+                var versionsDirectory = GetVersionsDirectory(normalized);
+                return versionsDirectory != null && HasGameInstances(versionsDirectory);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"检查 PCLSE 目录失败（{folder}）：{ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 为 PCLSE 数据根目录准备 BedrockBoot 认识的 versions 目录：
+        /// 已经是 versions 布局就不处理，否则用符号链接（或目录联接）指向真实版本目录。
+        /// </summary>
+        public static bool TryCreateVersionsView(string root, out string? createdLink)
+        {
+            createdLink = null;
+
+            var view = Path.Combine(root, "versions");
+            if (LocalDirectoryExists(view)) return true;
+
+            var realDirectory = GetVersionsDirectory(root);
+            if (realDirectory == null || PathsEqual(realDirectory, view)) return true;
+
+            if (!TryCreateDirectoryLink(view, realDirectory)) return false;
+
+            createdLink = view;
+            return true;
+        }
+
+        /// <summary>
+        /// 创建目录链接。优先用符号链接；未开启开发者模式没有权限时退回普通用户可创建的目录联接。
+        /// </summary>
+        private static bool TryCreateDirectoryLink(string linkPath, string targetPath)
+        {
+            try
+            {
+                Directory.CreateSymbolicLink(linkPath, targetPath);
+                if (Directory.Exists(linkPath)) return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"创建符号链接失败（{linkPath} → {targetPath}）：{ex.Message}");
+            }
+
+            try
+            {
+                var startInfo = new System.Diagnostics.ProcessStartInfo("cmd.exe",
+                    $"/c mklink /J \"{linkPath}\" \"{targetPath}\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var process = System.Diagnostics.Process.Start(startInfo);
+                process?.WaitForExit(10000);
+                return Directory.Exists(linkPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"创建目录联接失败（{linkPath} → {targetPath}）：{ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 删除导入时创建的链接（只删重解析点，不碰真实目录）。
+        /// </summary>
+        public static void TryDeleteLink(string path)
+        {
+            try
+            {
+                var info = new DirectoryInfo(path);
+                if (info.Exists && (info.Attributes & FileAttributes.ReparsePoint) != 0)
+                    info.Delete();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"回滚目录链接失败（{path}）：{ex.Message}");
+            }
+        }
+
+        public static List<string> ReadDirectories(string launcherRoot)
+        {
+            var result = new List<string>();
+            if (!TryNormalizeLocalPath(Path.Combine(launcherRoot, "PCL", "config.v1.yml"), null, out var configPath) ||
+                !File.Exists(configPath))
+                return result;
+
+            var values = ReadConfig(configPath);
+
+            void Add(string? path)
+            {
+                if (string.IsNullOrWhiteSpace(path)) return;
+                if (!TryNormalizeLocalPath(path, launcherRoot, out var fullPath))
+                {
+                    Console.WriteLine($"忽略远程或无效的 PCLSE 基岩目录：{path}");
+                    return;
+                }
+
+                if (!result.Any(existing => PathsEqual(existing, fullPath))) result.Add(fullPath);
+            }
+
+            if (values.TryGetValue("BedrockFolder", out var folders) && folders.Count > 0)
+                Add(folders[0]);
+            else
+            {
+                // PCLSE 现在默认使用 .minecraft\\bedrock，旧版本则使用
+                // .minecraft\\bedrock_versions 或启动器根目录下的 bedrock_versions。
+                Add(Path.Combine(launcherRoot, ".minecraft", "bedrock"));
+                Add(Path.Combine(launcherRoot, ".minecraft", "bedrock_versions"));
+                Add(Path.Combine(launcherRoot, "bedrock_versions"));
+            }
+
+            // BedrockExternalFolders 既可能写成 YAML 序列，也可能写成以分号分隔的标量。
+            if (values.TryGetValue("BedrockExternalFolders", out var externalFolders))
+                foreach (var externalValue in externalFolders)
+                    foreach (var external in externalValue.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                        Add(external.Trim());
+
+            return result;
+        }
+
+        /// <summary>
+        /// 只解析 PCLSE 的基岩目录相关键，并限制读取的行数、条目数与单个值的长度。
+        /// </summary>
+        private static Dictionary<string, List<string>> ReadConfig(string path)
+        {
+            var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var key in ConfigKeys) result[key] = new List<string>();
+
+            string? sequenceKey = null;
+            foreach (var line in ReadBoundedLines(path))
+            {
+                var trimmed = line.Trim();
+                if (trimmed.Length == 0 || trimmed.StartsWith('#')) continue;
+
+                // YAML 序列项归属到上一个取值为空的键（例如 BedrockExternalFolders）。
+                if (trimmed == "-") continue;
+                if (trimmed.Length > 1 && trimmed[0] == '-' && char.IsWhiteSpace(trimmed[1]))
+                {
+                    if (sequenceKey != null)
+                        AddBoundedValue(result[sequenceKey], ParseValue(StripComment(trimmed[1..].Trim())));
+                    continue;
+                }
+
+                var separator = trimmed.IndexOf(':');
+                if (separator <= 0)
+                {
+                    sequenceKey = null;
+                    continue;
+                }
+
+                var key = trimmed[..separator].Trim();
+                if (!result.TryGetValue(key, out var values))
+                {
+                    // 不需要的键直接跳过，避免把整份配置读进内存。
+                    sequenceKey = null;
+                    continue;
+                }
+
+                var value = StripComment(trimmed[(separator + 1)..].Trim());
+                sequenceKey = value.Length == 0 ? key : null;
+
+                if (value.StartsWith("[") && value.EndsWith("]"))
+                {
+                    foreach (var item in SplitFlowSequence(value[1..^1]))
+                        AddBoundedValue(values, ParseValue(item));
+                }
+                else if (value.Length > 0)
+                {
+                    AddBoundedValue(values, ParseValue(value));
+                }
+            }
+
+            return result;
+        }
+
+        private static IEnumerable<string> ReadBoundedLines(string path)
+        {
+            long length;
+            try
+            {
+                length = new FileInfo(path).Length;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"读取 PCLSE 配置失败（{path}）：{ex.Message}");
+                yield break;
+            }
+
+            if (length > MaxConfigFileBytes)
+            {
+                Console.WriteLine($"忽略过大的 PCLSE 配置文件（{length} 字节）：{path}");
+                yield break;
+            }
+
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(stream, Encoding.UTF8, true);
+
+            for (var i = 0; i < MaxConfigLines; i++)
+            {
+                var line = reader.ReadLine();
+                if (line == null) yield break;
+                if (line.Length > MaxConfigLineLength) continue;
+                yield return line;
+            }
+        }
+
+        private static void AddBoundedValue(List<string> values, string value)
+        {
+            if (values.Count >= MaxConfigEntries) return;
+
+            var trimmed = value.Trim();
+            if (trimmed.Length == 0) return;
+            if (trimmed.Length > MaxConfigValueLength) trimmed = trimmed[..MaxConfigValueLength];
+            values.Add(trimmed);
+        }
+
+        private static string ParseValue(string value)
+        {
+            if (value.Length >= 2 && value[0] == '"' && value[^1] == '"')
+                return value[1..^1].Replace("\\\\", "\\").Replace("\\\"", "\"");
+            if (value.Length >= 2 && value[0] == '\'' && value[^1] == '\'')
+                return value[1..^1].Replace("''", "'");
+            return value;
+        }
+
+        private static string StripComment(string value)
+        {
+            if (value.Length == 0) return value;
+
+            char quote = '\0';
+            for (var i = 0; i < value.Length; i++)
+            {
+                var ch = value[i];
+                if (quote != '\0')
+                {
+                    if (ch == quote) quote = '\0';
+                    continue;
+                }
+
+                if (ch == '"' || ch == '\'')
+                {
+                    quote = ch;
+                    continue;
+                }
+
+                if (ch == '#' && (i == 0 || char.IsWhiteSpace(value[i - 1])))
+                    return value[..i].TrimEnd();
+            }
+
+            return value;
+        }
+
+        private static IEnumerable<string> SplitFlowSequence(string value)
+        {
+            var items = new List<string>();
+            if (value.Length == 0) return items;
+
+            var buffer = new StringBuilder();
+            char quote = '\0';
+            foreach (var ch in value)
+            {
+                if (quote != '\0')
+                {
+                    buffer.Append(ch);
+                    if (ch == quote) quote = '\0';
+                    continue;
+                }
+
+                if (ch == '"' || ch == '\'')
+                {
+                    quote = ch;
+                    buffer.Append(ch);
+                    continue;
+                }
+
+                if (ch == ',')
+                {
+                    if (buffer.Length > 0) items.Add(buffer.ToString().Trim());
+                    buffer.Clear();
+                    continue;
+                }
+
+                buffer.Append(ch);
+            }
+
+            if (buffer.Length > 0) items.Add(buffer.ToString().Trim());
+            return items;
+        }
+
+        private static bool ContainsGameInstance(string folder)
+        {
+            foreach (var directory in EnumerateLocalDirectories(folder))
+                if (LooksLikeGameInstance(directory))
+                    return true;
+
+            return false;
+        }
+
+        private static bool HasGameInstances(string versionsDirectory)
+        {
+            foreach (var directory in EnumerateLocalDirectories(versionsDirectory))
+            {
+                var name = Path.GetFileName(directory);
+                if (name.Equals("cache", StringComparison.OrdinalIgnoreCase) ||
+                    name.Equals("loaders", StringComparison.OrdinalIgnoreCase) ||
+                    name.Equals("extracted", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (LooksLikeGameInstance(directory)) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 枚举子目录时先解析链接：子目录也可能是指向远程共享的联接点，
+        /// 直接探测会触发 SMB 访问并泄露凭据。
+        /// </summary>
+        private static List<string> EnumerateLocalDirectories(string folder)
+        {
+            string[] directories;
+            try
+            {
+                directories = Directory.EnumerateDirectories(folder).Take(MaxDirectoryScan).ToArray();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"枚举目录失败（{folder}）：{ex.Message}");
+                return new List<string>();
+            }
+
+            var result = new List<string>(directories.Length);
+            foreach (var directory in directories)
+                if (TryNormalizeLocalPath(directory, null, out var normalized))
+                    result.Add(normalized);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 判断目录是否能被 BedrockBoot 现有扫描逻辑识别为实例：
+        /// 顶层要有 Minecraft*.exe，并且有清单或 GDK 配置（否则重建不出 info）。
+        /// 这里刻意不检查 inner，因为不修改 BB 逻辑时它无法发现嵌套的可执行文件。
+        /// </summary>
+        private static bool LooksLikeGameInstance(string folder)
+        {
+            try
+            {
+                if (!Directory.EnumerateFiles(folder, "Minecraft*.exe").Any()) return false;
+
+                return File.Exists(Path.Combine(folder, "appxmanifest.xml")) ||
+                       File.Exists(Path.Combine(folder, "MicrosoftGame.Config"));
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool LocalFileExists(string path) =>
+            TryNormalizeLocalPath(path, null, out var normalized) && File.Exists(normalized);
+
+        private static bool LocalDirectoryExists(string path) =>
+            TryNormalizeLocalPath(path, null, out var normalized) && Directory.Exists(normalized);
+
+        /// <summary>
+        /// 把路径规范化为真实的本地路径。解析符号链接和联接点后，
+        /// 目标为远程位置（UNC 共享等）的路径会被拒绝，后续探测才不会触发 SMB 访问。
+        /// </summary>
+        public static bool TryNormalizeLocalPath(string? path, string? basePath, out string normalized)
+        {
+            normalized = string.Empty;
+            var value = path?.Trim() ?? string.Empty;
+            if (value.Length == 0 || value.StartsWith("\\\\") || value.StartsWith("//") ||
+                value.StartsWith(@"\\?\") || value.Contains("://", StringComparison.Ordinal))
+                return false;
+
+            try
+            {
+                var fullPath = string.IsNullOrEmpty(basePath)
+                    ? Path.GetFullPath(value)
+                    : Path.GetFullPath(value, basePath);
+
+                if (!TryResolveLocalTarget(fullPath, out var resolved)) return false;
+
+                var root = Path.GetPathRoot(resolved);
+                if (string.IsNullOrEmpty(root) || IsRemoteRoot(root)) return false;
+
+                normalized = string.Equals(resolved, root, StringComparison.OrdinalIgnoreCase)
+                    ? resolved
+                    : resolved.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                return true;
+            }
+            catch
+            {
+                normalized = string.Empty;
+                return false;
+            }
+        }
+
+        public static bool PathsEqual(string? left, string? right)
+        {
+            if (!TryNormalizeLocalPath(left, null, out var normalizedLeft) ||
+                !TryNormalizeLocalPath(right, null, out var normalizedRight))
+                return string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(normalizedLeft, normalizedRight, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// 逐级解析符号链接与联接点，返回最终的真实本地路径。
+        /// </summary>
+        private static bool TryResolveLocalTarget(string fullPath, out string resolved)
+        {
+            resolved = fullPath;
+
+            var root = Path.GetPathRoot(fullPath);
+            if (string.IsNullOrEmpty(root) || IsRemoteRoot(root)) return false;
+
+            var current = root;
+            var pending = new Queue<string>(SplitSegments(fullPath[root.Length..]));
+            var hops = 0;
+
+            while (pending.Count > 0)
+            {
+                var segment = pending.Dequeue();
+                var next = Path.Combine(current, segment);
+
+                if (!TryGetAttributes(next, out var attributes))
+                {
+                    // 不存在的路径不可能包含链接，直接拼出剩余部分。
+                    current = pending.Count == 0
+                        ? next
+                        : Path.Combine(next, string.Join(Path.DirectorySeparatorChar, pending));
+                    pending.Clear();
+                    break;
+                }
+
+                if ((attributes & FileAttributes.ReparsePoint) == 0)
+                {
+                    current = next;
+                    continue;
+                }
+
+                if (++hops > MaxReparsePointHops) return false;
+
+                // 非链接的重解析点（例如 OneDrive 占位文件）解析不出目标，按普通路径处理。
+                if (!TryResolveImmediateLink(next, out var target))
+                {
+                    current = next;
+                    continue;
+                }
+
+                var targetRoot = Path.GetPathRoot(target);
+                if (string.IsNullOrEmpty(targetRoot) || IsRemoteRoot(targetRoot)) return false;
+
+                // 目标自身可能仍是链接：把它拆成路径段重新入队，继续逐级解析。
+                // 只解析直接目标，因为 returnFinalTarget 会跟随整条链接链并访问远程目标。
+                var remaining = pending.ToArray();
+                pending.Clear();
+                foreach (var item in SplitSegments(target[targetRoot.Length..])) pending.Enqueue(item);
+                foreach (var item in remaining) pending.Enqueue(item);
+
+                current = targetRoot;
+            }
+
+            resolved = current;
+            return true;
+        }
+
+        private static string[] SplitSegments(string path) =>
+            path.Split(
+                new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                StringSplitOptions.RemoveEmptyEntries);
+
+        /// <summary>
+        /// 解析链接的<b>直接</b>目标。注意不能使用 returnFinalTarget：
+        /// 它会沿链接链继续解析，访问远程目标时实测会阻塞数十秒并触发 SMB 连接。
+        /// </summary>
+        private static bool TryResolveImmediateLink(string path, out string target)
+        {
+            target = string.Empty;
+
+            var resolved = ResolveDirectoryLink(path) ?? ResolveFileLink(path);
+            if (string.IsNullOrEmpty(resolved)) return false;
+
+            // 目标可能带 \\?\ 前缀，去掉后才能与常规路径比较。
+            if (resolved.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase))
+            {
+                target = resolved;
+                return true;
+            }
+
+            if (resolved.StartsWith(@"\\?\", StringComparison.Ordinal) ||
+                resolved.StartsWith(@"\??\", StringComparison.Ordinal))
+                resolved = resolved[4..];
+
+            target = resolved.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (string.Equals(resolved, Path.GetPathRoot(resolved), StringComparison.OrdinalIgnoreCase))
+                target = resolved;
+            return target.Length > 0;
+        }
+
+        private static string? ResolveDirectoryLink(string path)
+        {
+            try
+            {
+                return Directory.ResolveLinkTarget(path, false)?.FullName;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string? ResolveFileLink(string path)
+        {
+            try
+            {
+                return File.ResolveLinkTarget(path, false)?.FullName;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static bool TryGetAttributes(string path, out FileAttributes attributes)
+        {
+            try
+            {
+                attributes = File.GetAttributes(path);
+                return true;
+            }
+            catch
+            {
+                attributes = default;
+                return false;
+            }
+        }
+
+        private static bool IsRemoteRoot(string root) =>
+            root.StartsWith("\\\\", StringComparison.Ordinal) ||
+            root.StartsWith("//", StringComparison.Ordinal) ||
+            root.StartsWith(@"\\?\", StringComparison.Ordinal) ||
+            root.StartsWith(@"\??\", StringComparison.Ordinal) ||
+            IsMappedNetworkDrive(root);
+
+        /// <summary>
+        /// 判断驱动器根目录是否为网络映射盘（例如 net use 的 Z:\）。
+        /// 这类路径的根既不是 UNC 也不是设备路径，但探测时同样会向共享发送 SMB 认证。
+        /// </summary>
+        private static bool IsMappedNetworkDrive(string root)
+        {
+            if (!OperatingSystem.IsWindows()) return false;
+
+            try
+            {
+                var driveRoot = Path.GetPathRoot(root);
+                if (string.IsNullOrEmpty(driveRoot) || driveRoot.Length < 2 || driveRoot[1] != ':')
+                    return false;
+
+                return new DriveInfo(driveRoot).DriveType == DriveType.Network;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
 }

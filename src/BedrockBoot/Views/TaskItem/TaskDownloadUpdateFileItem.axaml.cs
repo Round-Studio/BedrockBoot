@@ -222,11 +222,6 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
                 AppUpdater.EnsureExecutableForCurrentPlatform(downloadPath);
 
-                // 记录已应用的提交 SHA：InformationalVersion 是日期版本号无法和 HeadSha 比较，
-                // 不记录会导致更新完成后同一提交依然反复提示更新
-                if (isAction && !string.IsNullOrEmpty(Result?.WorkflowRun?.HeadSha))
-                    CheckUpdate.RecordAppliedCommitSha(Result.WorkflowRun.HeadSha);
-
                 // PreLoad.NET 是启动器依赖的组件：更新启动器前必须把它补到最新（没有开关可关），
                 // 组件没更新成功就中止本次更新，避免新版本启动器跑在旧组件上
                 if (!await PreLoadDependencyHelper.CheckBeforeLauncherUpdateAsync())
@@ -244,6 +239,13 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 startInfo.ArgumentList.Add(downloadPath);
 
                 Process.Start(startInfo);
+
+                // 记录已应用的提交 SHA：InformationalVersion 是日期版本号无法和 HeadSha 比较，
+                // 不记录会导致更新完成后同一提交依然反复提示更新。
+                // 必须放在 PreLoad 检查通过、更新程序进程成功启动之后——提前记录的话，
+                // 后续任一步失败都会让这个提交在下次检查时被当成"已应用"而从界面消失
+                if (isAction && !string.IsNullOrEmpty(Result?.WorkflowRun?.HeadSha))
+                    CheckUpdate.RecordAppliedCommitSha(Result.WorkflowRun.HeadSha);
 
                 await Task.Delay(100, token);
                 Environment.Exit(0);

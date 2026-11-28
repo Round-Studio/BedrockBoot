@@ -193,9 +193,17 @@ public static class PreLoadDependencyHelper
             {
                 if (IsUpToDate(localVersion, remote.Tag))
                 {
+                    // 版本记录一致不等于组件就绪：DLL 可能被用户或杀软删掉。
+                    // 文件不在就当作缺失继续走下载，否则启动器更新会跑在缺组件的环境上
+                    if (PreLoadDllStore.HasUpdatedDll())
+                    {
+                        Console.WriteLine(
+                            $@"更新启动器前检查：PreLoad.NET 已是最新版本 {localVersion}（版本号来源：{remote.Source}）");
+                        return true;
+                    }
+
                     Console.WriteLine(
-                        $@"更新启动器前检查：PreLoad.NET 已是最新版本 {localVersion}（版本号来源：{remote.Source}）");
-                    return true;
+                        @"更新启动器前检查：版本记录已是最新，但 PreLoad.NET 组件文件缺失，重新下载");
                 }
 
                 Console.WriteLine(
@@ -288,10 +296,10 @@ public static class PreLoadDependencyHelper
                 latest.Value.Asset);
 
         // 2) GitHub main 分支的 version 文件
-        var remote = await PreLoadReleaseSource.TryGetLatestAsync(PreLoadReleaseChannel.Stable);
-        return remote == null
+        var tag = await PreLoadReleaseSource.TryGetLatestAsync();
+        return tag == null
             ? null
-            : new PreLoadRemoteVersion(remote.Tag, PreLoadVersionSource.GitHubRaw, null);
+            : new PreLoadRemoteVersion(tag, PreLoadVersionSource.GitHubRaw, null);
     }
 
     /// <summary>

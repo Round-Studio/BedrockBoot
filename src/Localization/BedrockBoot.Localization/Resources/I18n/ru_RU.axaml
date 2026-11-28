@@ -965,6 +965,7 @@
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">Повторно авторизуйтесь в режиме «Только вход» и отзовите право repo</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">После отзыва потребуется повторная авторизация в браузере, и обновления Commit нельзя будет скачивать автоматически. Продолжить?</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">Отозвать</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">Не удалось отозвать: GitHub не подтвердил удаление авторизации (нет сети или токен уже недействителен). Локальные данные не изменены, повторите позже.</x:String>
     <x:String x:Key="MainPage.Update.Content">Доступно новое обновление:&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">Обновить сейчас</x:String>
     <x:String x:Key="MainPage.Update.Action.ManualDownload">Скачать вручную</x:String>

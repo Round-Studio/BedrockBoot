@@ -25,21 +25,6 @@ using BedrockBoot.Models.Global;
 
 namespace BedrockBoot.Models.Helper;
 
-/// <summary>PreLoad.NET 的发布通道</summary>
-public enum PreLoadReleaseChannel
-{
-    /// <summary>正式版（Releases 中的 latest）</summary>
-    Stable = 0,
-
-    /// <summary>预览版（预发布通道，待上游提供版本号来源）</summary>
-    Preview = 1
-}
-
-/// <summary>版本号查询结果</summary>
-/// <param name="Tag">Release Tag，例如 v26.11.22.0308</param>
-/// <param name="Channel">该版本号所属通道</param>
-public sealed record PreLoadReleaseInfo(string Tag, PreLoadReleaseChannel Channel);
-
 /// <summary>
 ///     PreLoad.NET 的版本号、镜像与更新内容来源。
 ///
@@ -59,7 +44,7 @@ public sealed record PreLoadReleaseInfo(string Tag, PreLoadReleaseChannel Channe
 ///     <para>
 ///     版本号文件是普通网页请求，不消耗 api.github.com 的 Rate Limit 配额；
 ///     内容形如 <c>26.11.27.1741</c>（不带 v 前缀），与 Release Tag <c>v26.11.27.1741</c> 对应。
-///     预览版版本号、专用镜像、更新内容目前只有接口与占位地址，等上游确定后填上即可生效。
+///     PreLoad.NET 只有正式版一个通道，没有预发布。
 ///     </para>
 /// </summary>
 public static class PreLoadReleaseSource
@@ -78,17 +63,11 @@ public static class PreLoadReleaseSource
     /// </summary>
     private const string VersionBranch = "main";
 
-    /// <summary>正式版版本号文件名</summary>
-    private const string StableVersionFile = "version";
+    /// <summary>版本号文件名（main 分支根目录下的纯文本文件）</summary>
+    private const string VersionFile = "version";
 
-    /// <summary>TODO(上游)：预览版版本号的文件名确定后替换</summary>
-    private const string PreviewVersionFile = "version-preview";
-
-    /// <summary>正式版版本号文件地址：GitHub API 不可用时的兜底来源</summary>
-    public static string StableVersionUrl => VersionFileUrl(StableVersionFile, VersionBranch);
-
-    /// <summary>预览版版本号文件地址（占位，待上游提供）</summary>
-    public static string PreviewVersionUrl => VersionFileUrl(PreviewVersionFile, VersionBranch);
+    /// <summary>版本号文件地址：GitHub API 不可用时的兜底来源</summary>
+    public static string VersionUrl => VersionFileUrl(VersionFile, VersionBranch);
 
     /// <summary>TODO(上游)：更新内容（Release Notes）来源确定后替换</summary>
     public static string ReleaseNotesUrl => VersionFileUrl("changelog.md", VersionBranch);
@@ -153,13 +132,8 @@ public static class PreLoadReleaseSource
     /// <summary>单个候选地址（含镜像）的预算：文件只有几十字节，超时立刻换源</summary>
     private static readonly TimeSpan PerRequestTimeout = TimeSpan.FromSeconds(5);
 
-    /// <summary>取版本号文件的地址，按通道区分</summary>
-    public static string GetVersionUrl(PreLoadReleaseChannel channel) =>
-        channel == PreLoadReleaseChannel.Preview ? PreviewVersionUrl : StableVersionUrl;
-
     /// <summary>取版本号文件的候选地址（原始地址 + 镜像），按优先级排列</summary>
-    public static IReadOnlyList<string> GetVersionUrls(PreLoadReleaseChannel channel) =>
-        GetMirroredUrls(GetVersionUrl(channel));
+    public static IReadOnlyList<string> GetVersionUrls() => GetMirroredUrls(VersionUrl);
 
     /// <summary>取更新内容的候选地址（原始地址 + 镜像）</summary>
     public static IReadOnlyList<string> GetReleaseNotesUrls() => GetMirroredUrls(ReleaseNotesUrl);
@@ -185,33 +159,35 @@ public static class PreLoadReleaseSource
         GithubMirrorUrls.Expand(url, MirrorPrefixes);
 
     /// <summary>
-    ///     按约定读取版本号。所有候选地址都失败、内容为空或明显是错误页面时返回 null。
+    ///     按约定读取最新版本号（Release Tag，不带 v 前缀）。所有候选地址都失败、
+    ///     内容为空或明显是错误页面时返回 null。
     ///     <para>
     ///     加速源把错误页以 200 返回是常见现象，因此逐个候选校验内容：
     ///     不合格就换下一个源，而不是拿第一个非空正文就收工。
     ///     </para>
     /// </summary>
-    public static async Task<PreLoadReleaseInfo?> TryGetLatestAsync(
-        PreLoadReleaseChannel channel = PreLoadReleaseChannel.Stable,
+    public static async Task<string?> TryGetLatestAsync(
         CancellationToken cancellationToken = default)
     {
-        var text = await TryGetTextAsync(GetVersionUrls(channel), TextFetchTimeout, "版本号",
+        var text = await TryGetTextAsync(GetVersionUrls(), TextFetchTimeout, "版本号",
             IsVersionText, cancellationToken);
         if (text == null) return null;
 
         var tag = text.Trim().Trim('"', '\'', ' ');
-        Console.WriteLine($@"PreLoad.NET 版本号来源返回 {tag}（通道：{channel}）");
-        return new PreLoadReleaseInfo(tag, channel);
+        Console.WriteLine($@"PreLoad.NET 版本号来源返回 {tag}");
+        return tag;
     }
 
-    /// <summary>版本号正文的校验：短、单行、不含 HTML 标记</summary>
+    /// <summary>
+    ///     版本号正文的校验：必须是 <c>26.11.27.1741</c> 这类数字分段格式（可带 v 前缀）。
+    ///     加速源会把 404/NotFound 之类的错误正文以 200 返回，只检查"短、单行、无 HTML"
+    ///     会把它们当成版本号存进本地记录，导致后续更新判断全部错乱。
+    /// </summary>
     private static bool IsVersionText(string text)
     {
         var tag = text.Trim().Trim('"', '\'', ' ');
         return tag.Length is > 0 and <= 64 &&
-               !tag.Contains('<') &&
-               !tag.Contains('\n') &&
-               !tag.Contains(' ');
+               System.Text.RegularExpressions.Regex.IsMatch(tag, @"^[vV]?\d{1,4}(\.\d{1,4}){1,5}$");
     }
 
     /// <summary>

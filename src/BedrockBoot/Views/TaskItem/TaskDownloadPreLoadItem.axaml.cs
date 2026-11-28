@@ -63,6 +63,9 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
     private readonly string _tagName;
     private readonly PreLoadDownloadTrigger _trigger;
 
+    /// <summary>PreLoad 下载/替换共用同一落盘路径与目标 DLL，重叠任务必须串行执行</summary>
+    private static readonly SemaphoreSlim DownloadGate = new(1, 1);
+
     private Action _removeCallBack = () => { };
     private CancellationTokenSource? _cts;
     private TaskCompletionSource<bool>? _tcs;
@@ -148,73 +151,86 @@ public partial class TaskDownloadPreLoadItem : UserControl, ITaskItem
                     });
                 });
 
-                // 私有仓库需要授权头；令牌过期且无法续期时退回免鉴权下载（公开仓库仍可用）
-                string? userToken = null;
+                // 下载与替换共用同一落盘路径和目标 DLL：两个任务重叠时，
+                // 后到的任务可能截断前者的文件、或旧版本的慢任务把新 DLL 覆盖回去，必须串行
+                await DownloadGate.WaitAsync(token);
                 try
                 {
-                    userToken = await GitHubTokenManager.GetValidTokenAsync();
-                }
-                catch (GitHubReauthRequiredException ex)
-                {
-                    Console.WriteLine($@"PreLoad.NET 下载未使用授权头：{ex.Message}");
-                }
-
-                if (_directUrl != null)
-                {
-                    // 直链是普通网页地址，不带鉴权头。GitHub 的直链要走加速源测速；
-                    // 其它源（CNB 等）本身国内可直连，镜像前缀套上去只会变慢甚至失效。
-                    if (IsGitHubUrl(_directUrl))
+                    if (_directUrl != null)
                     {
-                        var directDownload = new GithubFilesDownloader(
-                            BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
-                        await directDownload.DownloadAsync(_directUrl, downloadPath, progressHandler, token);
+                        // 直链是普通网页地址，不需要也不应该先取令牌——令牌刷新失败（网络抖动等）
+                        // 不能阻断这条本可匿名完成的下载路径
+                        if (IsGitHubUrl(_directUrl))
+                        {
+                            var directDownload = new GithubFilesDownloader(
+                                BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                            await directDownload.DownloadAsync(_directUrl, downloadPath, progressHandler, token);
+                        }
+                        else
+                        {
+                            using var directDownloader = new MultiThreadDownloader(
+                                BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                            await directDownloader.DownloadAsync(_directUrl, downloadPath, progressHandler, token);
+                        }
                     }
                     else
                     {
-                        using var directDownloader = new MultiThreadDownloader(
-                            BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
-                        await directDownloader.DownloadAsync(_directUrl, downloadPath, progressHandler, token);
+                        // 私有仓库需要授权头；令牌过期且无法续期时退回免鉴权下载（公开仓库仍可用）
+                        string? userToken = null;
+                        try
+                        {
+                            userToken = await GitHubTokenManager.GetValidTokenAsync();
+                        }
+                        catch (GitHubReauthRequiredException ex)
+                        {
+                            Console.WriteLine($@"PreLoad.NET 下载未使用授权头：{ex.Message}");
+                        }
+
+                        if (string.IsNullOrEmpty(userToken))
+                        {
+                            // 未登录只能走免鉴权的浏览器直连（公开仓库可用）
+                            var download = new GithubFilesDownloader(
+                                BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                            await download.DownloadAsync(_asset!.BrowserDownloadUrl, downloadPath, progressHandler, token);
+                        }
+                        else
+                        {
+                            // 私有仓库的资产必须带授权头直连 api.github.com，
+                            // 加速代理不覆盖该接口，也不能走无鉴权的 GithubFilesDownloader
+                            using var downloader = new MultiThreadDownloader(
+                                BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
+                            downloader.AdditionalHeaders = new Dictionary<string, string>
+                            {
+                                { "Authorization", $"Bearer {userToken}" },
+                                { "Accept", "application/octet-stream" }
+                            };
+
+                            await downloader.DownloadAsync(_asset!.Url, downloadPath, progressHandler, token);
+                        }
                     }
-                }
-                else if (string.IsNullOrEmpty(userToken))
-                {
-                    // 未登录只能走免鉴权的浏览器直连（公开仓库可用）
-                    var download = new GithubFilesDownloader(
-                        BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
-                    await download.DownloadAsync(_asset!.BrowserDownloadUrl, downloadPath, progressHandler, token);
-                }
-                else
-                {
-                    // 私有仓库的资产必须带授权头直连 api.github.com，
-                    // 加速代理不覆盖该接口，也不能走无鉴权的 GithubFilesDownloader
-                    using var downloader = new MultiThreadDownloader(
-                        BedrockBoot.Core.Global.GlobalModel.Config.Data.DownloadChunkCount, 1024);
-                    downloader.AdditionalHeaders = new Dictionary<string, string>
+
+                    await Task.Delay(100, token);
+
+                    PreLoadDllStore.ReplaceDll(await File.ReadAllBytesAsync(downloadPath));
+                    if (!string.IsNullOrEmpty(_tagName))
+                        MultiplayerDependencyHelper.WriteLocalVersion(PathsList.PreLoadVersionFile,
+                            "PreLoad.NET", _tagName);
+
+                    try
                     {
-                        { "Authorization", $"Bearer {userToken}" },
-                        { "Accept", "application/octet-stream" }
-                    };
+                        if (File.Exists(downloadPath)) File.Delete(downloadPath);
+                    }
+                    catch
+                    {
+                    }
 
-                    await downloader.DownloadAsync(_asset!.Url, downloadPath, progressHandler, token);
+                    ReportProgress(100, I18nManager.Instance["Task.PreLoad.Update.Done"]);
+                    _tcs?.TrySetResult(true);
                 }
-
-                await Task.Delay(100, token);
-
-                PreLoadDllStore.ReplaceDll(await File.ReadAllBytesAsync(downloadPath));
-                if (!string.IsNullOrEmpty(_tagName))
-                    MultiplayerDependencyHelper.WriteLocalVersion(PathsList.PreLoadVersionFile,
-                        "PreLoad.NET", _tagName);
-
-                try
+                finally
                 {
-                    if (File.Exists(downloadPath)) File.Delete(downloadPath);
+                    DownloadGate.Release();
                 }
-                catch
-                {
-                }
-
-                ReportProgress(100, I18nManager.Instance["Task.PreLoad.Update.Done"]);
-                _tcs?.TrySetResult(true);
 
                 // 让用户看到完成状态再移除任务项
                 await Task.Delay(1500, CancellationToken.None);

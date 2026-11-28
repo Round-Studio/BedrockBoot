@@ -240,7 +240,18 @@ public partial class SettingAccount : ISettingPage
     {
         var token = GitHubTokenManager.ReadAccount()?.UserToken;
 
-        await GitHubOAuthManager.RevokeAsync(token);
+        // 撤销失败就到此为止：GitHub 上整条授权还在，这时删本地凭证、重走"仅登录"授权
+        // 会让界面显示已降级、实际仍持有 repo 权限
+        if (!await GitHubOAuthManager.RevokeAsync(token))
+        {
+            DialogHost.Show(new DialogInfo
+            {
+                Title = I18nManager.Instance["Settings.Account.GitHub.RevokeFullAccess.Title"],
+                Content = I18nManager.Instance["Settings.Account.GitHub.RevokeFullAccess.Failed"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
+            });
+            return;
+        }
 
         try
         {

@@ -961,6 +961,7 @@
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">「ログインのみ」で再認可し、repo 権限を外します</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">取り消すとブラウザで再認可が必要になり、Commit 版の更新は自動ダウンロードできなくなります。続行しますか？</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">取り消す</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">取り消しに失敗しました：GitHub が認可の削除を確認できませんでした（ネットワーク不通、またはトークンが失効している可能性があります）。ローカルの資格情報は変更していません。後でもう一度お試しください。</x:String>
     <x:String x:Key="MainPage.Update.Content">新しいアップデートがあります：&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">今すぐアップデート</x:String>
     <x:String x:Key="MainPage.Update.Action.ManualDownload">手動でダウンロード</x:String>

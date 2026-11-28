@@ -57,10 +57,24 @@ public static class GitHubApiClient
     /// <summary>
     ///     执行一次 GitHub API 调用，令牌过期时自动续期；服务端返回 401（令牌被提前撤销等）
     ///     时强制刷新一次并重试，第二次仍失败则把异常抛给调用方。
+    ///     <para>
+    ///     本地令牌取不到可用值（过期且续期失败、被撤销等）时按匿名继续执行：
+    ///     检查更新、贡献者列表这类公开端点不依赖登录，不应被本机凭证问题拦住；
+    ///     私有数据会让请求本身报 404/403，由调用方按原有错误路径提示。
+    ///     </para>
     /// </summary>
     public static async Task<T> ExecuteAsync<T>(Func<GitHubClient, Task<T>> action)
     {
-        var token = await GitHubTokenManager.GetValidTokenAsync();
+        string? token = null;
+        try
+        {
+            token = await GitHubTokenManager.GetValidTokenAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"GitHub 令牌不可用，本次请求按匿名执行：{ex.Message}");
+        }
+
         var client = CreateClient(token);
 
         try

@@ -267,7 +267,7 @@ public static class GitHubTokenManager
                 // 继续留着只会让界面显示"已登录"却什么都读不到，直接清掉引导重新登录
                 if (forceRefresh || IsAccessTokenExpired(account))
                 {
-                    ClearCredential();
+                    ClearCredential(account);
                     throw new GitHubReauthRequiredException("GitHub 登录已过期，且没有可用的刷新凭证，需要重新授权。");
                 }
 
@@ -277,7 +277,23 @@ public static class GitHubTokenManager
             try
             {
                 var tokens = await RequestRefreshAsync(refreshToken).ConfigureAwait(false);
-                SaveTokens(tokens);
+                var saved = SaveTokens(tokens, refreshToken);
+
+                // 刷新期间用户退出登录并换了账户：这份结果属于上一个账户，绝不能写进去，
+                // 也不能拿去发请求——直接改读当前账户的凭证
+                if (saved == SaveTokenResult.AccountChanged)
+                {
+                    Console.WriteLine(@"刷新完成时账户已切换，丢弃本次刷新结果");
+                    var current = ReadAccount();
+                    return current is not null && !IsAccessTokenExpired(current) ? current.UserToken : null;
+                }
+
+                // 写盘失败时仍然把新令牌交给本次调用：它本身能用 8 小时，
+                // 立刻抛错只会让当前会话所有请求一起失败；代价是这次续期能力丢了，
+                // 到期后需要重新登录，日志里已明确说明
+                if (saved == SaveTokenResult.WriteFailed)
+                    Console.WriteLine(@"刷新结果未能写入配置，本次继续使用新令牌，下次续期可能需要重新登录");
+
                 Console.WriteLine(
                     $@"GitHub 令牌已刷新，新令牌有效期至 {tokens.ExpiresAt?.ToLocalTime():yyyy-MM-dd HH:mm:ss}");
                 return tokens.AccessToken;
@@ -285,7 +301,7 @@ public static class GitHubTokenManager
             catch (GitHubReauthRequiredException)
             {
                 // refresh_token 被撤销或过期，本地凭证已经没有意义，清掉让界面回到登录入口
-                ClearCredential();
+                ClearCredential(account);
                 throw;
             }
             catch (Exception ex)
@@ -338,15 +354,37 @@ public static class GitHubTokenManager
             $"GitHub 令牌刷新失败（HTTP {(int)response.StatusCode}）：{json}");
     }
 
-    /// <summary>把刷新结果写回配置；刷新期间用户退出登录时什么都不做</summary>
-    private static void SaveTokens(GitHubTokenSet tokens)
+    /// <summary>把刷新结果写回配置时的结果</summary>
+    private enum SaveTokenResult
+    {
+        /// <summary>已写入磁盘</summary>
+        Saved,
+
+        /// <summary>磁盘上的账户/refresh_token 已不是发起刷新时那个（用户退出或换了账户），结果作废</summary>
+        AccountChanged,
+
+        /// <summary>写盘失败（磁盘异常等）：令牌本身可用，但下次刷新会需要重新登录</summary>
+        WriteFailed
+    }
+
+    /// <summary>
+    ///     把刷新结果写回配置。
+    ///     <para>
+    ///     refresh_token 是一次性的：写盘前必须确认磁盘上那个仍是"发起本次刷新时用的"，
+    ///     否则用户在这期间换了账户，旧账户的令牌会覆盖掉新账户的凭证。
+    ///     </para>
+    /// </summary>
+    private static SaveTokenResult SaveTokens(GitHubTokenSet tokens, string expectedRefreshToken)
     {
         try
         {
-            if (!File.Exists(PathsList.GithubAccount)) return;
+            if (!File.Exists(PathsList.GithubAccount)) return SaveTokenResult.AccountChanged;
 
             var config = LoadForWrite();
-            if (config.Data is null || !HasCredential(config.Data)) return;
+            if (config.Data is null || !HasCredential(config.Data)) return SaveTokenResult.AccountChanged;
+
+            if (!string.Equals(config.Data.RefreshToken, expectedRefreshToken, StringComparison.Ordinal))
+                return SaveTokenResult.AccountChanged;
 
             config.Data.UserToken = tokens.AccessToken;
             if (!string.IsNullOrEmpty(tokens.RefreshToken))
@@ -358,15 +396,23 @@ public static class GitHubTokenManager
                 config.Data.Scope = tokens.Scope;
 
             SaveProtected(config);
+            return SaveTokenResult.Saved;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"保存 GitHub 令牌失败：{ex.Message}");
+            // 旧的 refresh_token 已经被 GitHub 用掉，这次写不进去就等于丢了续期能力：
+            // 当前令牌还能用 8 小时，之后只能重新授权，所以必须留一条明确的日志
+            Console.WriteLine($@"保存 GitHub 令牌失败（下次刷新可能需要重新登录）：{ex.Message}");
+            return SaveTokenResult.WriteFailed;
         }
     }
 
-    /// <summary>清空令牌但保留昵称头像，账户页据此回到未登录状态</summary>
-    private static void ClearCredential()
+    /// <summary>
+    ///     清空令牌但保留昵称头像，账户页据此回到未登录状态。
+    ///     <paramref name="expected" /> 非空时，只有磁盘上仍是同一个账户才会清空——
+    ///     避免刷新失败的回调把用户刚登录的新账户一起清掉。
+    /// </summary>
+    private static void ClearCredential(GithubAccountInfo? expected = null)
     {
         try
         {
@@ -374,6 +420,15 @@ public static class GitHubTokenManager
 
             var config = LoadForWrite();
             if (config.Data is null) return;
+
+            // access / refresh 任一与快照相同就认为还是同一个账户；两边都变了说明用户换号了
+            if (expected is not null &&
+                !string.Equals(config.Data.UserToken, expected.UserToken, StringComparison.Ordinal) &&
+                !string.Equals(config.Data.RefreshToken, expected.RefreshToken, StringComparison.Ordinal))
+            {
+                Console.WriteLine(@"清空令牌已跳过：本地账户已不是发起请求时的那个");
+                return;
+            }
 
             config.Data.UserToken = string.Empty;
             config.Data.RefreshToken = null;

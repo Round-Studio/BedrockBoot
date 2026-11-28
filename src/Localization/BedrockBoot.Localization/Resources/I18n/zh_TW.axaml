@@ -978,6 +978,7 @@
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">重新以「僅登入」方式授權，撤銷後不再擁有 repo 權限</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">撤銷後需要在瀏覽器中重新授權，且將無法自動下載 Commit 版本更新。是否繼續？</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">撤銷</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">撤銷失敗：GitHub 沒有確認刪除授權（可能是網路不通，或該權杖已失效）。本機憑證未做任何改動，可以稍後再試。</x:String>
     <x:String x:Key="MainPage.Update.Content">我們有新的更新：&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">現在更新</x:String>
     <x:String x:Key="MainPage.Update.Action.ManualDownload">手動前往下載</x:String>

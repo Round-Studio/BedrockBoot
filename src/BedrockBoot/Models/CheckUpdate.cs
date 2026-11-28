@@ -70,10 +70,26 @@ public class CheckUpdate
     private const string Owner = "Round-Studio";
     private const string Repo = "BedrockBoot";
 
+    /// <summary>
+    ///     API 检查的时限。Octokit 默认超时过长，api.github.com 无声卡住时用户要干等；
+    ///     超时抛 TimeoutException，正式版/预览版会进 version 分支的回退流程。
+    /// </summary>
+    private static readonly TimeSpan ApiCheckTimeout = TimeSpan.FromSeconds(30);
+
+    /// <summary>给 API 调用加上限时，超时抛 <see cref="TimeoutException" /> 而不是无限等待</summary>
+    private static async Task<T> WithTimeout<T>(Task<T> task, string what)
+    {
+        var completed = await Task.WhenAny(task, Task.Delay(ApiCheckTimeout)).ConfigureAwait(false);
+        if (completed != task)
+            throw new TimeoutException($@"{what}超过 {ApiCheckTimeout.TotalSeconds} 秒未响应");
+        return await task.ConfigureAwait(false);
+    }
+
     public static async Task<Release?> Update()
     {
         // 统一入口：令牌快过期会先续期，401 会刷新后重试一次
-        var releases = await GitHubApiClient.ExecuteAsync(c => c.Repository.Release.GetAll(Owner, Repo));
+        var releases = await WithTimeout(
+            GitHubApiClient.ExecuteAsync(c => c.Repository.Release.GetAll(Owner, Repo)), @"Release 检查");
 
         var latest =
             releases.FirstOrDefault(x => x.Prerelease == (GlobalModel.Config.Data.UpdateType == UpdateType.Preview));
@@ -162,7 +178,9 @@ public class CheckUpdate
 
     public static async Task<WorkflowRun?> GetLatestActionRunAsync()
     {
-        var runs = await GitHubApiClient.ExecuteAsync(c => c.Actions.Workflows.Runs.List(Owner, Repo));
+        // 同样加时限：Commit 通道没有 version 分支兜底，卡住时宁可快速报错让用户重试
+        var runs = await WithTimeout(
+            GitHubApiClient.ExecuteAsync(c => c.Actions.Workflows.Runs.List(Owner, Repo)), @"Commit 检查");
 
         var latest = runs.WorkflowRuns
             .Where(r => r.Status == WorkflowRunStatus.Completed

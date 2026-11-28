@@ -1219,6 +1219,7 @@
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">重新以「仅登录」方式授权，撤销后不再拥有 repo 权限</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">撤销后需要在浏览器中重新授权，且将无法自动下载 Commit 版本更新。是否继续？</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">撤销</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">撤销失败：GitHub 没有确认删除授权（可能是网络不通，或该令牌已失效）。本地凭证未做任何改动，可以稍后重试。</x:String>
     <x:String x:Key="MainPage.Update.Content">我们有新的更新：&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">现在更新</x:String>
     <x:String x:Key="MainPage.Update.Action.ManualDownload">手动前往下载</x:String>

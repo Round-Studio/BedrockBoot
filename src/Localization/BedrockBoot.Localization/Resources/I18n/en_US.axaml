@@ -1200,6 +1200,7 @@
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">Re-authorize with "Sign in only" and drop the repo scope</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">Revoking requires authorizing again in the browser, and Commit updates can no longer be downloaded automatically. Continue?</x:String>
     <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">Revoke</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">Revoke failed: GitHub did not confirm deleting the authorization (network issue, or the token is no longer valid). Local credentials were left unchanged; try again later.</x:String>
     <x:String x:Key="MainPage.Update.Content">A new update is available:&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">Update Now</x:String>
     <x:String x:Key="MainPage.Update.Action.ManualDownload">Download Manually</x:String>

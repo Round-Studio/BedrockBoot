@@ -141,11 +141,11 @@ public class GitHubOAuthManager
     /// <summary>
     ///     退出登录时远程吊销令牌，避免本地删掉后凭证仍在服务端有效。
     ///     先吊销 access_token，再删除整个应用授权（这一步才会让 refresh_token 一起失效）。
-    ///     纯尽力而为：网络失败只写日志，不阻塞本地清理。
     /// </summary>
-    public static async Task RevokeAsync(string? accessToken)
+    /// <returns>应用授权（grant）是否已删除。只有它为 true 时 refresh_token 才真正失效。</returns>
+    public static async Task<bool> RevokeAsync(string? accessToken)
     {
-        if (string.IsNullOrEmpty(accessToken)) return;
+        if (string.IsNullOrEmpty(accessToken)) return false;
 
         var clientId = BedrockBoot.Core.Keys.GithubClientId;
         var clientSecret = BedrockBoot.Core.Keys.GithubSecret;
@@ -171,24 +171,32 @@ public class GitHubOAuthManager
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"吊销 GitHub 令牌失败（不影响本地退出）：{ex.Message}");
+            Console.WriteLine($@"吊销 GitHub 令牌失败：{ex.Message}");
         }
 
         try
         {
-            // 只吊销 access_token 不会让 refresh_token 失效，删掉整条授权才算真正退出
+            // 只吊销 access_token 不会让 refresh_token 失效，删掉整条授权才算真正退出。
+            // 这个端点必须带 access_token 请求体，否则 GitHub 会以 422 拒绝（授权原封不动）
             using var request = new HttpRequestMessage(HttpMethod.Delete,
-                $"https://api.github.com/applications/{clientId}/grant");
+                $"https://api.github.com/applications/{clientId}/grant")
+            {
+                Content = new StringContent(
+                    System.Text.Json.JsonSerializer.Serialize(new { access_token = accessToken }),
+                    Encoding.UTF8, "application/json")
+            };
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", basic);
             request.Headers.TryAddWithoutValidation("Accept", "application/vnd.github+json");
             request.Headers.TryAddWithoutValidation("User-Agent", "BedrockBoot");
 
             using var response = await http.SendAsync(request);
             Console.WriteLine($@"删除 GitHub 应用授权：HTTP {(int)response.StatusCode}");
+            return response.IsSuccessStatusCode;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($@"删除 GitHub 应用授权失败（不影响本地退出）：{ex.Message}");
+            Console.WriteLine($@"删除 GitHub 应用授权失败：{ex.Message}");
+            return false;
         }
     }
 

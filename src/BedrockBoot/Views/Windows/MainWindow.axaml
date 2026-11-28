@@ -329,15 +329,10 @@
                                 IsVisible="False"
                                 Opacity="0"
                                 RenderTransformOrigin="{Binding $self.Width, Converter={StaticResource WidthToRightTopOriginConverter}}"
-                                PointerEntered="AccountPanel_OnPointerEntered"
-                                PointerExited="AccountPanel_OnPointerExited"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top">
-                            <Border.Margin>
-                                <MultiBinding Converter="{StaticResource TaskPanelWidthToMarginConverter}">
-                                    <Binding Path="Bounds.Width" ElementName="RightControlPanel" />
-                                </MultiBinding>
-                            </Border.Margin>
+                            <!-- 位置在 ShowAccountPanelAsync 里按账户按钮实测坐标计算：
+                                 右侧贴按钮右边缘，纵向落在按钮下方 8px -->
                             <Border.RenderTransform>
                                 <ScaleTransform ScaleX="0" ScaleY="0" />
                             </Border.RenderTransform>

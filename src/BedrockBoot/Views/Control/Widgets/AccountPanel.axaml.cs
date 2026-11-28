@@ -72,11 +72,17 @@ public partial class AccountPanel : UserControl
             MsAccountManager.AccountConfigEntity?.Save();
 
             await Models.Global.GlobalModel.MainWindow.UpdateAccount(true);
+
+            // 面板不再随鼠标移开自动收起，选完账户就手动关掉，避免挡着主界面
+            Models.Global.GlobalModel.MainWindow.CloseAccountPanel();
         }
     }
 
     private void GoToAccountPage_OnClick(object? sender, RoutedEventArgs e)
     {
+        // 面板在窗口层级，跳转前先收起，否则会盖在新打开的设置页上
+        Models.Global.GlobalModel.MainWindow.CloseAccountPanel();
+
         MainPage.Instance.SelectTagPage("main:setting");
         MainSettingPage.NavigateTo(new SettingAccount());
     }

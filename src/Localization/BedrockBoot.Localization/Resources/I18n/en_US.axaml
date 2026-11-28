@@ -1192,7 +1192,7 @@
     <x:String x:Key="Settings.Account.GitHub.Scope.Acknowledge">I have read and agree: full access is used only to download Commit updates</x:String>
     <x:String x:Key="Settings.Account.GitHub.Description.Manage">Manage the signed-in GitHub account</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">Current access: full access (Commit updates can be downloaded)</x:String>
-    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">Current access: sign-in only (update info can be read, Commit updates cannot be downloaded)</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">Current access: sign-in only (bypasses the GitHub API anonymous rate limit, but Commit updates cannot be downloaded)</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">Current access: unknown (legacy sign-in; please sign in again)</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">Grant full access</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">Re-authorize GitHub and approve the repo scope to enable Commit update downloads</x:String>

@@ -953,7 +953,7 @@
     <x:String x:Key="Settings.Account.Github.LoggedInAs">GitHub アカウント：{0}</x:String>
     <x:String x:Key="Settings.Account.GitHub.Logout.Desc">ローカルに保存された GitHub の認可情報を削除し、その認可を取り消します</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">現在の権限：完全なアクセス（Commit 版の更新をダウンロードできます）</x:String>
-    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">現在の権限：ログインのみ（更新情報は読めますが、Commit 版の更新はダウンロードできません）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">現在の権限：ログインのみ（GitHub API の匿名アクセス制限を回避できますが、Commit 版の更新はダウンロードできません）</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">現在の権限：不明（古いログイン情報です。再ログインを推奨します）</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">完全なアクセス権を付与</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">GitHub を再認可して repo 権限に同意すると、Commit 版の更新をダウンロードできます</x:String>

@@ -1207,11 +1207,11 @@
     <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Title">完整授权</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Desc">授予 repo 权限：可读取更新信息，并能下载 Commit 版本的更新产物。&#x0a;&#x0a;BedrockBoot 承诺该权限只用于下载 Commit 版本更新，绝不会读取、修改或删除你的其他仓库内容。</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Title">仅登录</x:String>
-    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Desc">只授予 user:email：可以读取绕过 GitHub API 匿名访问次数限制，但无法自动下载 Commit 版本更新。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Desc">只授予 user:email：可以绕过 GitHub API 匿名访问次数限制，但无法自动下载 Commit 版本更新。</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Acknowledge">我已阅读并同意授予完整访问权限</x:String>
     <x:String x:Key="Settings.Account.GitHub.Description.Manage">管理登录的 GitHub 账号</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">当前权限：完整访问（可下载 Commit 版本更新）</x:String>
-    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">当前权限：仅登录（可读取更新信息，不能下载 Commit 版本更新）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">当前权限：仅登录（可绕过 GitHub API 匿名访问次数限制，不能下载 Commit 版本更新）</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">当前权限：未知（旧登录记录，建议重新登录）</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">授予完整访问权限</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">需要重新授权 GitHub 并同意 repo 权限，之后才能下载 Commit 版本更新</x:String>

@@ -970,7 +970,7 @@
     <x:String x:Key="Settings.Account.Github.LoggedInAs">GitHub 帳號：{0}</x:String>
     <x:String x:Key="Settings.Account.GitHub.Logout.Desc">移除本機儲存的 GitHub 授權資訊並撤銷該授權資訊</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">目前權限：完整存取（可下載 Commit 版本更新）</x:String>
-    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">目前權限：僅登入（可讀取更新資訊，不能下載 Commit 版本更新）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">目前權限：僅登入（可避開 GitHub API 匿名存取次數限制，不能下載 Commit 版本更新）</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">目前權限：未知（舊登入記錄，建議重新登入）</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">授予完整存取權限</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">需要重新授權 GitHub 並同意 repo 權限，之後才能下載 Commit 版本更新</x:String>

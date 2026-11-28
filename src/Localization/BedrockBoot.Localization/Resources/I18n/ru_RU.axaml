@@ -957,7 +957,7 @@
     <x:String x:Key="Settings.Account.Github.LoggedInAs">Аккаунт GitHub: {0}</x:String>
     <x:String x:Key="Settings.Account.GitHub.Logout.Desc">Удалить сохранённую локально авторизацию GitHub и отозвать её</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">Текущий доступ: полный (обновления Commit можно скачивать)</x:String>
-    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">Текущий доступ: только вход (информацию читать можно, обновления Commit скачать нельзя)</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">Текущий доступ: только вход (обходит ограничение анонимных запросов GitHub API, но обновления Commit скачать нельзя)</x:String>
     <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">Текущий доступ: неизвестен (старая запись, рекомендуется войти снова)</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">Предоставить полный доступ</x:String>
     <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">Повторно авторизуйте GitHub и разрешите право repo, чтобы скачивать обновления Commit</x:String>

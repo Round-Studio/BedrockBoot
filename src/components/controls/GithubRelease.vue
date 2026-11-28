@@ -21,6 +21,14 @@ interface Release {
 const release = ref<Release | null>(null)
 const loading = ref(true)
 const error = ref(false)
+const fallbackVersion = ref<string | null>(null)
+
+const RELEASE_VERSION_URL =
+  'https://raw.githubusercontent.com/Round-Studio/BedrockBoot/refs/heads/version/info/release'
+const PREVIEW_VERSION_URL =
+  'https://raw.githubusercontent.com/Round-Studio/BedrockBoot/refs/heads/version/info/preview'
+// 代理镜像：仅用于获取版本号，不要用于下载链接（避免消耗镜像流量）
+const VERSION_PROXY_BASE = 'https://github1.roundstudio.top/'
 
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr)
@@ -37,9 +45,16 @@ const formatSize = (bytes: number) => {
   return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
 }
 
+const fetchWithTimeout = (url: string, timeoutMs = 10000): Promise<Response> => {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer))
+}
+
 onMounted(async () => {
+  fallbackVersion.value = null
   try {
-    const response = await fetch('https://api.github.com/repos/Round-Studio/BedrockBoot/releases')
+    const response = await fetchWithTimeout('https://api.github.com/repos/Round-Studio/BedrockBoot/releases')
     if (!response.ok) throw new Error()
     const data = await response.json()
 
@@ -54,8 +69,32 @@ onMounted(async () => {
     release.value = filtered[0] || null
     loading.value = false
   } catch {
-    error.value = true
-    loading.value = false
+    // GitHub API 访问失败（网络错误、超时等）时，回退到 raw 版本号文件获取版本号
+    const versionUrl = props.prerelease ? PREVIEW_VERSION_URL : RELEASE_VERSION_URL
+    // 依次尝试：raw 直连 → 代理镜像（仅用于版本号，不用于下载）
+    const candidates = [versionUrl, VERSION_PROXY_BASE + versionUrl]
+    try {
+      let version = ''
+      for (const candidate of candidates) {
+        try {
+          const response = await fetchWithTimeout(candidate)
+          if (!response.ok) throw new Error()
+
+          version = (await response.text()).trim()
+          if (version) break
+          throw new Error()
+        } catch {
+          // 尝试下一个来源
+        }
+      }
+      if (!version) throw new Error()
+
+      fallbackVersion.value = version
+      loading.value = false
+    } catch {
+      error.value = true
+      loading.value = false
+    }
   }
 })
 </script>
@@ -70,6 +109,43 @@ onMounted(async () => {
     <div v-else-if="error" class="release-error">
       <p>获取版本信息失败</p>
       <button @click="onMounted">重试</button>
+    </div>
+
+    <div v-else-if="fallbackVersion" class="release-item">
+      <div class="release-header">
+        <div class="release-title">
+          <h2>v{{ fallbackVersion }}</h2>
+          <span class="release-tag">v{{ fallbackVersion }}</span>
+        </div>
+      </div>
+
+      <div class="release-assets">
+        <h3>下载</h3>
+        <div class="asset-list">
+          <a
+              :href="`https://github.com/Round-Studio/BedrockBoot/releases/download/v${fallbackVersion}/BedrockBoot-x86_64-linux.AppImage`"
+              class="asset-item"
+              download
+          >
+            <span class="asset-name">BedrockBoot-x86_64-linux.AppImage</span>
+          </a>
+          <a
+              :href="`https://github.com/Round-Studio/BedrockBoot/releases/download/v${fallbackVersion}/BedrockBoot-x86_64-win.exe`"
+              class="asset-item"
+              download
+          >
+            <span class="asset-name">BedrockBoot-x86_64-win.exe</span>
+          </a>
+        </div>
+      </div>
+
+      <a
+          :href="`https://github.com/Round-Studio/BedrockBoot/releases/tag/v${fallbackVersion}`"
+          target="_blank"
+          class="release-link"
+      >
+        查看完整发布说明
+      </a>
     </div>
 
     <div v-else-if="!release" class="release-empty">

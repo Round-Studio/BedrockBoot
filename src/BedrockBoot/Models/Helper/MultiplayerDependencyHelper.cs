@@ -144,18 +144,21 @@ public static class MultiplayerDependencyHelper
     /// </summary>
     public static async Task<(DependencyStatus EasyTier, DependencyStatus GravityCone)> CheckUpdatesAsync()
     {
-        var github = GitHubApiClient.CreateClient();
+        var (easyTierRelease, gravityConeRelease) = await GitHubApiClient.ExecuteAsync(async github =>
+        {
+            var easyTierTask = github.Repository.Release.GetLatest(EasyTierOwner, EasyTierRepo);
+            var gravityConeTask = github.Repository.Release.GetLatest(GravityConeOwner, GravityConeRepo);
 
-        var easyTierTask = github.Repository.Release.GetLatest(EasyTierOwner, EasyTierRepo);
-        var gravityConeTask = github.Repository.Release.GetLatest(GravityConeOwner, GravityConeRepo);
+            await Task.WhenAll(easyTierTask, gravityConeTask);
 
-        await Task.WhenAll(easyTierTask, gravityConeTask);
+            return (await easyTierTask, await gravityConeTask);
+        });
 
         var easyTier = new DependencyStatus
         {
             Name = "EasyTier",
             LocalVersion = GetLocalVersion(EasyTierVersionFile),
-            LatestVersion = easyTierTask.Result.TagName,
+            LatestVersion = easyTierRelease.TagName,
             IsInstalled = IsEasyTierInstalled()
         };
 
@@ -163,7 +166,7 @@ public static class MultiplayerDependencyHelper
         {
             Name = "GravityCone",
             LocalVersion = GetLocalVersion(GravityConeVersionFile),
-            LatestVersion = gravityConeTask.Result.TagName,
+            LatestVersion = gravityConeRelease.TagName,
             IsInstalled = IsGravityConeInstalled()
         };
 

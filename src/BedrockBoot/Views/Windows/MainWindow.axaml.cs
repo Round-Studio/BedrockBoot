@@ -38,6 +38,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Media.Transformation;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using BedrockBoot.Standard.Entity;
 using BedrockBoot.Standard.Entity.Account.Microsoft;
 using BedrockBoot.Standard.Entity.Manifest;
@@ -194,6 +195,7 @@ public partial class MainWindow : Window
         MediaManager.Instance.Volume = (float)Math.Clamp(Core.Global.GlobalModel.Config.Data.MediaVolume, 0.0, 1.0);
         AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
         AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
+        AddHandler(PointerPressedEvent, OnGlobalPointerPressed, RoutingStrategies.Tunnel);
         Deactivated += OnWindowDeactivated;
         AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Tunnel);
         Frame.NavigateTo("");
@@ -936,6 +938,9 @@ public partial class MainWindow : Window
     private void OnWindowDeactivated(object sender, EventArgs e)
     {
         _ctrlPressed = false;
+
+        // 切到别的窗口时顺手收起，避免面板一直悬在界面上
+        CloseAccountPanel();
     }
 
     private void OnPointerWheelChanged(object sender, PointerWheelEventArgs e)
@@ -1190,26 +1195,24 @@ public partial class MainWindow : Window
         await ShowAccountPanelAsync();
     }
 
-    private void AccountPanel_OnPointerEntered(object? sender, PointerEventArgs e)
+    /// <summary>收起账户面板。面板改成点击外部才关，鼠标移开不再自动收回。</summary>
+    public void CloseAccountPanel()
     {
-        _accountPanelCloseCts?.Cancel();
+        if (AccountPanel.IsVisible && AccountPanel.Opacity > 0) HideAccountPanel();
     }
 
-    private async void AccountPanel_OnPointerExited(object? sender, PointerEventArgs e)
+    /// <summary>
+    ///     点面板和账户按钮之外的地方才收起。用 tunnel 挂，避免被子控件（按钮等）把事件标记为已处理。
+    /// </summary>
+    private void OnGlobalPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        _accountPanelCloseCts?.Cancel();
-        _accountPanelCloseCts = new CancellationTokenSource();
+        if (!AccountPanel.IsVisible || AccountPanel.Opacity <= 0) return;
+        if (e.Source is not Visual source) return;
 
-        try
-        {
-            await Task.Delay(120, _accountPanelCloseCts.Token);
-        }
-        catch (TaskCanceledException)
-        {
-            return;
-        }
+        // 点面板内部不关；点账户按钮交给它自己 toggle，否则会先关后开
+        if (AccountPanel.IsVisualAncestorOf(source) || AccountBtn.IsVisualAncestorOf(source)) return;
 
-        if (!AccountPanel.IsPointerOver && !AccountBtn.IsPointerOver) HideAccountPanel();
+        HideAccountPanel();
     }
 
     #endregion
@@ -1392,10 +1395,33 @@ public partial class MainWindow : Window
         _chooseAccountTcs?.TrySetResult(null!);
     }
 
+    /// <summary>
+    ///     按账户按钮的实测位置摆放面板：右边缘与按钮右边缘对齐，纵向落在按钮下方 8px。
+    ///     工具栏会随右侧任务面板宽度整体左右移动，写死边距在不同布局下会错位。
+    /// </summary>
+    private void PositionAccountPanel()
+    {
+        if (AccountPanel.Parent is not Visual host) return;
+
+        var corner = AccountBtn.TranslatePoint(
+            new Avalonia.Point(AccountBtn.Bounds.Width, AccountBtn.Bounds.Height), host);
+        if (corner is not { } br)
+        {
+            // 还没完成布局（正常点击时不会发生）：退回工具栏默认留白，至少不会贴着左上角
+            AccountPanel.Margin = new Thickness(0, 62, 30, 0);
+            return;
+        }
+
+        var hostWidth = (host as Avalonia.Controls.Control)?.Bounds.Width ?? Bounds.Width;
+        AccountPanel.Margin = new Thickness(0, br.Y + 8, Math.Max(0, hostWidth - br.X), 0);
+    }
+
     private async Task ShowAccountPanelAsync()
     {
         if (_accountPanelAnimating) return;
         _accountPanelAnimating = true;
+
+        PositionAccountPanel();
 
         AccountPanel.RenderTransform = TransformOperations.Parse("scale(0)");
         AccountPanel.Opacity = 0;

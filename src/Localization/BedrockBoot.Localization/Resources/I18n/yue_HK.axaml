@@ -493,6 +493,7 @@
     <x:String x:Key="Task.Update.Title.Format">下載更新檔案：{0}</x:String>
     <x:String x:Key="Task.Update.Notice.Message">下載緊更新檔案...</x:String>
     <x:String x:Key="Task.Update.Source.Prefix">下載來源：{0}</x:String>
+    <x:String x:Key="Task.Update.Error.BadPayload">下載內容有問題（加速源可能回咗錯誤頁面），已經中止更新</x:String>
 
     <x:String x:Key="Task.ImportPack.Title">匯入遊戲包...</x:String>
     <x:String x:Key="Task.ImportPack.Status.Preparing">步驟：準備匯入中...</x:String>
@@ -524,7 +525,7 @@
     <x:String x:Key="Task.Launch.Notice.Added">遊戲 {0} 已經將啟動任務加入任務清單。</x:String>
     <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
     <x:String x:Key="Task.Launch.Migration.Title">遷移通知</x:String>
-    <x:String x:Key="Task.Launch.Migration.Content">呢個版本需要遷移\n請問係咪即刻開始遷移？</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">呢個版本需要遷移&#x0a;請問係咪即刻開始遷移？</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Start">開始遷移</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Later">唔使喇</x:String>
     <x:String x:Key="Task.Launch.Migration.View.Title">遷移版本</x:String>
@@ -894,12 +895,16 @@
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">檢查更新</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">已係最新版本</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">未安裝</x:String>
-    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">檢查更新失敗，私有倉庫需要登入 GitHub 帳號</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">檢查更新失敗</x:String>
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET 元件更新</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.StartupFailedTitle">啟動失敗</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.CheckFailedTitle">檢查更新失敗</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">正在下載 PreLoad.NET 元件更新...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完成，下次啟動遊戲生效</x:String>
-    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 元件缺失而且攞唔到版本資訊，已阻止啟動遊戲（請檢查網絡連線）</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 元件缺失而且攞唔到版本資訊，已阻止啟動遊戲</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET 元件下載失敗，已阻止啟動遊戲</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET 係啟動器依賴嘅元件，如果唔及時更新，遊戲可能會出問題。</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">PreLoad.NET 元件更新失敗，已經中止啟動器更新。請檢查網絡再試過。</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">連線相依元件</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">讀取緊版本資訊...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">檢查更新</x:String>
@@ -947,9 +952,40 @@
     <x:String x:Key="MainPage.Update.Title">檢查更新</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">更新 {0}</x:String>
     <x:String x:Key="MainPage.Update.CommitNeedLogin">而家更新頻道係 Commit（提交版），需要先登入 Github 帳戶。&#x0a;請去 設定 → 帳戶與檔案 嗰度登入 Github。</x:String>
-    <x:String x:Key="MainPage.Update.Content">我哋有新嘅更新：\n\n{0}</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedLoginHint">去 設定 → 帳戶與檔案 登入 GitHub 並授予完整存取權限</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedScopeHint">去 設定 → 帳戶與檔案 授予 GitHub 帳號完整存取權限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Title">GitHub 授權範圍</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Intro">登入之前請揀授權範圍。兩種方式都避得開 GitHub API 嘅匿名存取次數限制，分別就在於下唔下載得到 Commit 版本更新。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Title">完整授權</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Desc">畀 repo 權限：讀得到更新資訊，亦下載得到 Commit 版本嘅更新產物。我哋承諾呢個權限淨係用嚟下載 Commit 版本更新，唔會讀、改或者刪你其他倉庫嘅內容。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Title">淨係登入</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Desc">淨係畀 user:email：讀得到更新資訊（唔受匿名次數限制），但下載唔到 Commit 版本更新。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Acknowledge">我睇過亦同意：完整存取權限淨係用嚟下載 Commit 版本更新</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description.Manage">管理登入咗嘅 GitHub 帳號</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description">登入 GitHub 先用得 Commit 更新頻道等功能</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Expired">GitHub 登入過咗期，請再登入一次</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Login.Title">登入 GitHub</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Login.Desc">用瀏覽器授權登入 GitHub 帳號</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Title">登出</x:String>
+    <x:String x:Key="Settings.Account.Github.LoggedInAs">GitHub 帳號：{0}</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Desc">移除本機儲存嘅 GitHub 授權資料，並且撤銷埋呢個授權</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">而家嘅權限：完整存取（下載得到 Commit 版本更新）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">而家嘅權限：淨係登入（避得開 GitHub API 匿名存取次數限制，但下載唔到 Commit 版本更新）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">而家嘅權限：未知（舊登入記錄，建議重新登入）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">授予完整存取權限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">要重新授權 GitHub 同同意 repo 權限，之後先下載得到 Commit 版本更新</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Title">撤銷完整存取權限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">重新用「淨係登入」授權，撤銷之後就冇 repo 權限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">撤銷之後要喺瀏覽器重新授權，而且下載唔到 Commit 版本更新。繼續？</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">撤銷</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">撤銷唔成功：GitHub 冇確認刪除授權（可能係網絡唔通，或者個憑證已經失效）。本機憑證冇改過，可以遲啲再試。</x:String>
+    <x:String x:Key="MainPage.Update.Content">我哋有新嘅更新：&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">而家更新</x:String>
+    <x:String x:Key="MainPage.Update.Action.ManualDownload">自己手動去下載</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">目前已經係最新版本</x:String>
+    <x:String x:Key="MainPage.Update.DirectDownload">強制下載最新版</x:String>
+    <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">更新日誌攞唔到，請檢查網絡連線。</x:String>
 
     <x:String x:Key="Tools.Title">工具箱</x:String>
     <x:String x:Key="Tools.Group.Help">說明</x:String>
@@ -1194,5 +1230,10 @@
     <x:String x:Key="Multiplayer.Init.GetPeers">攞節點伺服器</x:String>
     <x:String x:Key="Multiplayer.Init.GetXboxUser">攞本機帳戶名</x:String>
     <x:String x:Key="Multiplayer.Init.InitCore">初始化連線核心</x:String>
+    <x:String x:Key="Settings.Account.Github">GitHub 帳號</x:String>
+    <x:String x:Key="Settings.Account.Github.LoginError">Github 登入過程出咗錯，請檢查網絡連線再試。&#x0a;如果隔咗好耐都未喺瀏覽器度完成授權，請再發起一次登入。</x:String>
+    <x:String x:Key="Settings.Account.Github.Logout">登出 Github 帳號</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutConfirm">你確定要登出而家登入緊嘅 Github 帳號？&#x0a;登出之後，下載 Commit 版本更新等要登入嘅功能就用唔到。</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutAction">登出</x:String>
 
 </ResourceDictionary>

@@ -32,6 +32,7 @@ using BedrockBoot.Core.Models.Download;
 using BedrockBoot.Models;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using Round.SDK.Entity;
@@ -43,6 +44,7 @@ namespace BedrockBoot.Views.TaskItem;
 public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 {
     private readonly string _currentExecutablePath = GetCurrentLauncherPath();
+    private readonly string? _directUrl;
 
     private Action _cancelCallBack = () => { };
     private CancellationTokenSource? _cts;
@@ -80,6 +82,15 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         _taskTitle = string.Format(I18nManager.Instance["Task.Update.Title.Format"], result.DisplayName);
     }
 
+    /// <summary>
+    ///     强制下载构造：API 不可用时按直链拉取，没有 <see cref="UpdateCheckResult" />。
+    /// </summary>
+    public TaskDownloadUpdateFileItem(string directUrl, string displayName) : this()
+    {
+        _directUrl = directUrl;
+        _taskTitle = string.Format(I18nManager.Instance["Task.Update.Title.Format"], displayName);
+    }
+
     public UpdateCheckResult Result { get; set; } = null!;
 
     public void Update(Action cancelCallBack)
@@ -98,7 +109,17 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 string assetName;
                 string? userToken = null;
 
-                if (Result.Source == UpdateSource.Release)
+                // 直链来源有二：强制下载构造传入的地址，或 API 不可用时由 version 分支版本号拼出的地址。
+                // 两者都没有 Release 对象，所有按 Source 分支的逻辑都必须先排除它们
+                var directUrl = _directUrl ?? Result?.DirectDownloadUrl;
+                var isAction = directUrl == null && Result is { Source: UpdateSource.Action };
+
+                if (directUrl != null)
+                {
+                    downloadUrl = directUrl;
+                    assetName = Path.GetFileName(new Uri(directUrl).AbsolutePath);
+                }
+                else if (Result.Source == UpdateSource.Release)
                 {
                     var asset = SelectPreferredAsset();
                     if (asset == null)
@@ -109,12 +130,20 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                 }
                 else
                 {
-                    var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
-                    userToken = conf.Data?.UserToken;
+                    // Action 产物必须登录才能读，令牌过期时先续期（401 由 ExecuteAsync 兜底重试）
+                    try
+                    {
+                        userToken = await GitHubTokenManager.GetValidTokenAsync();
+                    }
+                    catch (GitHubReauthRequiredException)
+                    {
+                        userToken = null;
+                    }
+
                     if (string.IsNullOrEmpty(userToken))
                         throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.GithubNotLoggedIn"]);
 
-                    var artifact = await SelectPreferredArtifactAsync(userToken);
+                    var artifact = await SelectPreferredArtifactAsync();
                     if (artifact == null)
                         throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.NoActionAsset"]);
 
@@ -141,19 +170,16 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
                     });
                 });
 
-                // Action 产物位于 api.github.com 且必须携带授权头，加速代理不覆盖该接口，
-                // 也不能走无鉴权的 GithubFilesDownloader，只能带 Token 直连下载
-                if (Result.Source == UpdateSource.Action)
+                // Action 产物位于 api.github.com，必须带令牌换签名地址；签名地址只认签名，
+                // 下载时不能再带 Authorization（带了会被 Azure 判成认证失败，回 403）
+                if (isAction)
                 {
+                    var signedUrl = await GitHubApiClient.ResolveArtifactDownloadUrlAsync(downloadUrl, token);
+
                     using var downloader =
                         new MultiThreadDownloader(GlobalModel.Config.Data.DownloadChunkCount, 1024);
-                    downloader.AdditionalHeaders = new Dictionary<string, string>
-                    {
-                        { "Authorization", $"Bearer {userToken}" },
-                        { "Accept", "application/vnd.github+json" }
-                    };
 
-                    await downloader.DownloadAsync(downloadUrl, downloadPath, progressHandler, token);
+                    await downloader.DownloadAsync(signedUrl, downloadPath, progressHandler, token);
                 }
                 else
                 {
@@ -166,10 +192,15 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
                 await Task.Delay(100, token);
 
+                // 直链走的是加速源探测，可能拿到 200 状态的 HTML 错误页；
+                // 启动器体积远超 1MB，用它兜底，避免把错误页面当成新版本写回去
+                if (directUrl != null && new FileInfo(downloadPath).Length < 1024 * 1024)
+                    throw new InvalidOperationException(I18nManager.Instance["Task.Update.Error.BadPayload"]);
+
                 if (string.IsNullOrWhiteSpace(_currentExecutablePath) || !File.Exists(_currentExecutablePath))
                     throw new FileNotFoundException(I18nManager.Instance["Task.Update.Error.NoExecutable"], _currentExecutablePath);
 
-                if (Result.Source == UpdateSource.Action)
+                if (isAction)
                 {
                     var extractDir = Path.Combine(PathsList.UpdatePath, "extracted");
                     if (Directory.Exists(extractDir))
@@ -191,10 +222,13 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
                 AppUpdater.EnsureExecutableForCurrentPlatform(downloadPath);
 
-                // 记录已应用的提交 SHA：InformationalVersion 是日期版本号无法和 HeadSha 比较，
-                // 不记录会导致更新完成后同一提交依然反复提示更新
-                if (Result.Source == UpdateSource.Action && !string.IsNullOrEmpty(Result.WorkflowRun?.HeadSha))
-                    CheckUpdate.RecordAppliedCommitSha(Result.WorkflowRun.HeadSha);
+                // PreLoad.NET 是启动器依赖的组件：更新启动器前必须把它补到最新（没有开关可关），
+                // 组件没更新成功就中止本次更新，避免新版本启动器跑在旧组件上
+                if (!await PreLoadDependencyHelper.CheckBeforeLauncherUpdateAsync())
+                {
+                    PreLoadDependencyHelper.ShowBlockedDialog();
+                    throw new InvalidOperationException(I18nManager.Instance["Task.PreLoad.BeforeUpdate.Blocked"]);
+                }
 
                 var startInfo = new ProcessStartInfo
                 {
@@ -206,6 +240,13 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
 
                 Process.Start(startInfo);
 
+                // 记录已应用的提交 SHA：InformationalVersion 是日期版本号无法和 HeadSha 比较，
+                // 不记录会导致更新完成后同一提交依然反复提示更新。
+                // 必须放在 PreLoad 检查通过、更新程序进程成功启动之后——提前记录的话，
+                // 后续任一步失败都会让这个提交在下次检查时被当成"已应用"而从界面消失
+                if (isAction && !string.IsNullOrEmpty(Result?.WorkflowRun?.HeadSha))
+                    CheckUpdate.RecordAppliedCommitSha(Result.WorkflowRun.HeadSha);
+
                 await Task.Delay(100, token);
                 Environment.Exit(0);
             }
@@ -215,11 +256,44 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
             }
             catch (Exception ex)
             {
-                // 任务异常若不上报会永远停留在列表里无任何提示
+                // 任务异常若不上报会永远停留在列表里、进度条一直转，看不出已经失败
                 Console.WriteLine($@"更新任务失败: {ex}");
-                Dispatcher.UIThread.Post(() => ReportProgress(100, string.Format(I18nManager.Instance["Task.Update.Error.FailFormat"], ex.Message)));
+                ShowFailure(string.Format(I18nManager.Instance["Task.Update.Error.FailFormat"], ex.Message));
             }
         }, token);
+    }
+
+    /// <summary>
+    ///     把任务切到失败状态：停掉不确定进度的动画、进度条隐藏、错误文案直接写在卡片上。
+    ///     只改属性不碰控件的话界面不会有任何变化（<see cref="ProgressUpdated" /> 只用来算总进度）。
+    /// </summary>
+    private void ShowFailure(string message)
+    {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => ShowFailure(message));
+            return;
+        }
+
+        _taskProgress = 100;
+        _taskStatusText = message;
+        _taskIsCompleted = true;
+        _taskIsIndeterminate = false;
+
+        ProgressBar.IsIndeterminate = false;
+        ProgressBar.IsVisible = false;
+        ProgressText.Text = message;
+        if (!ProgressText.Classes.Contains("critical"))
+            ProgressText.Classes.Add("critical");
+
+        ProgressUpdated?.Invoke(this);
+
+        Models.Global.GlobalModel.MainWindow?.Notice?.AddNotice(new NoticeInfo
+        {
+            Title = I18nManager.Instance["Task.Update.Notice.Title"],
+            Message = message,
+            NoticeType = NoticeType.Error
+        });
     }
 
     public static void Update(UpdateCheckResult result)
@@ -232,6 +306,25 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         });
 
         var body = new TaskDownloadUpdateFileItem(result);
+        var taskId = Models.Global.GlobalModel.TaskManager.AddTask(body);
+
+        body.Update(() => Models.Global.GlobalModel.TaskManager.RemoveTask(taskId));
+    }
+
+    /// <summary>
+    ///     强制下载最新版：查不到版本信息时按直链直接下载并走同一套替换重启流程。
+    /// </summary>
+    public static void ForceUpdate(string directUrl)
+    {
+        Models.Global.GlobalModel.MainWindow.Notice.AddNotice(new NoticeInfo
+        {
+            Title = I18nManager.Instance["Task.Update.Notice.Title"],
+            Message = I18nManager.Instance["Task.Update.Notice.Message"],
+            NoticeType = NoticeType.Info
+        });
+
+        var body = new TaskDownloadUpdateFileItem(directUrl,
+            I18nManager.Instance["MainPage.Update.DirectDisplayName"]);
         var taskId = Models.Global.GlobalModel.TaskManager.AddTask(body);
 
         body.Update(() => Models.Global.GlobalModel.TaskManager.RemoveTask(taskId));
@@ -266,19 +359,14 @@ public partial class TaskDownloadUpdateFileItem : UserControl, ITaskItem
         return null;
     }
 
-    private async Task<Artifact?> SelectPreferredArtifactAsync(string? userToken = null)
+    private async Task<Artifact?> SelectPreferredArtifactAsync()
     {
         var run = Result.WorkflowRun;
         if (run == null)
             return null;
 
-        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
-
-        if (!string.IsNullOrEmpty(userToken))
-            github.Credentials = new Credentials(userToken);
-
-        var artifacts = await github.Actions.Artifacts.ListWorkflowArtifacts(
-            "Round-Studio", "BedrockBoot", run.Id);
+        var artifacts = await GitHubApiClient.ExecuteAsync(
+            github => github.Actions.Artifacts.ListWorkflowArtifacts("Round-Studio", "BedrockBoot", run.Id));
 
         var list = artifacts.Artifacts.ToList();
         if (list.Count == 0)

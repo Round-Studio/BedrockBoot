@@ -661,7 +661,7 @@
     <x:String x:Key="Task.Launch.Notice.Added">游戏 {0} 已将其启动任务添加至任务列表。</x:String>
     <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
     <x:String x:Key="Task.Launch.Migration.Title">迁移通知</x:String>
-    <x:String x:Key="Task.Launch.Migration.Content">该版本需要迁移\n请问是否立即启动迁移？</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">该版本需要迁移&#x0a;请问是否立即启动迁移？</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Start">启动迁移</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Later">不了</x:String>
     <x:String x:Key="Task.Launch.Migration.View.Title">迁移版本</x:String>
@@ -685,10 +685,12 @@
     <x:String x:Key="Settings.Account.Xbox.Link.Desc">关联一个新的 XBOX 账户以使用启动器的账户功能</x:String>
     <x:String x:Key="Settings.Account.Group.GitHub">GitHub 账户</x:String>
     <x:String x:Key="Settings.Account.GitHub.Description">登录 GitHub 以使用 Commit 更新通道等功能</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Expired">GitHub 登录已过期，请重新登录</x:String>
     <x:String x:Key="Settings.Account.GitHub.Login.Title">登录 GitHub</x:String>
     <x:String x:Key="Settings.Account.GitHub.Login.Desc">通过浏览器授权登录 GitHub 账户</x:String>
     <x:String x:Key="Settings.Account.GitHub.Logout.Title">退出登录</x:String>
-    <x:String x:Key="Settings.Account.GitHub.Logout.Desc">移除本地保存的 GitHub 授权信息</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Desc">移除本地保存的 GitHub 授权信息并吊销该授权信息</x:String>
+    <x:String x:Key="Settings.Account.Github.LoggedInAs">GitHub 账户：{0}</x:String>
     <x:String x:Key="Settings.Account.Group.Advanced">高级设置</x:String>
     <x:String x:Key="Account.Option.AskBeforeLaunch.Title">在启动游戏前选择账户</x:String>
     <x:String x:Key="Account.Option.AskBeforeLaunch.Desc">在启动器启动游戏前询问我以选择需要使用的账户</x:String>
@@ -1099,13 +1101,17 @@
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">检查更新</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">已是最新版本</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">未安装</x:String>
-    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">检查更新失败，私有仓库需登录 GitHub 账号</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">检查更新失败</x:String>
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET 组件更新</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.StartupFailedTitle">启动失败</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.CheckFailedTitle">检查更新失败</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">正在下载 PreLoad.NET 组件更新...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完成，下次启动游戏生效</x:String>
     <x:String x:Key="Task.PreLoad.Update.InvalidPackage">PreLoad.NET.dll 内容异常（{0} 字节），已拒绝替换本地更新文件</x:String>
-    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 组件缺失且无法获取版本信息，已阻止启动游戏（请检查网络连接）</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET 组件缺失且无法获取版本信息，已阻止启动游戏</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET 组件下载失败，已阻止启动游戏</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET 是启动器依赖的组件，若不及时更新，游戏可能出现异常。</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">PreLoad.NET 组件更新失败，已中止启动器更新。请检查网络后重试。</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">联机依赖组件</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">正在读取版本信息...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">检查更新</x:String>
@@ -1133,8 +1139,9 @@
 	<x:String x:Key="GitHub.Error.RateLimit">GitHub API rate limit exceeded for your IP&#x0a;&#x0a;若不理解此错误含义，请优先检查网络连接。&#x0a;&#x0a;若理解此错误含义并接受，可以在 设置 → 账户与档案 登录 GitHub 账户解除该限制。</x:String>
 	
     <!--这些在简体中文别翻，毕竟国人网络问题靠自己解决（）-->
-    <x:String x:Key="GitHub.Error.HttpRequest">"Http Request Exception</x:String>
-    <x:String x:Key="GitHub.Error.Unauthorized">Unauthorized</x:String>
+    <x:String x:Key="GitHub.Error.HttpRequest">Http Request Exception</x:String>
+    <x:String x:Key="GitHub.Error.Unauthorized">GitHub 认证失败，令牌可能已失效。请到 设置 → 账户与档案 → GitHub 重新登录。</x:String>
+    <x:String x:Key="GitHub.Error.ReauthRequired">GitHub 登录已过期或授权已被撤销，且无法自动续期。请到 设置 → 账户与档案 → GitHub 重新登录。</x:String>
     <x:String x:Key="GitHub.Error.Forbidden">Forbidden</x:String>
     <x:String x:Key="GitHub.Error.NotFound">Not Found</x:String>
     <x:String x:Key="GitHub.Error.ApiError">API Error</x:String>
@@ -1193,9 +1200,33 @@
     <x:String x:Key="MainPage.Update.Title">检查更新</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">更新 {0}</x:String>
     <x:String x:Key="MainPage.Update.CommitNeedLogin">当前更新通道为 Commit（提交版），需要先登录 Github 账户。&#x0a;请前往 设置 → 账户与档案 中登录 Github。</x:String>
-    <x:String x:Key="MainPage.Update.Content">我们有新的更新：\n\n{0}</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedLoginHint">当前更新通道为 Commit（提交版），需要先登录 Github 账户并授予完整访问权限才能使用自动更新。&#x0a;前往 设置 → 账户与档案 登录 GitHub 并授予完整访问权限</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedScopeHint">当前更新通道为 Commit（提交版），需要先登录 Github 账户并授予完整访问权限才能使用自动更新。&#x0a;前往 设置 → 账户与档案 授予 GitHub 账户完整访问权限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Title">GitHub 授权范围</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Intro">登录前请选择授权范围。两种方式都能避开 GitHub API 的匿名访问次数限制，区别在于能否下载 Commit 版本更新。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Title">完整授权</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Desc">授予 repo 权限：可读取更新信息，并能下载 Commit 版本的更新产物。&#x0a;&#x0a;BedrockBoot 承诺该权限只用于下载 Commit 版本更新，绝不会读取、修改或删除你的其他仓库内容。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Title">仅登录</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Desc">只授予 user:email：可以绕过 GitHub API 匿名访问次数限制，但无法自动下载 Commit 版本更新。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Acknowledge">我已阅读并同意授予完整访问权限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description.Manage">管理登录的 GitHub 账号</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">当前权限：完整访问（可下载 Commit 版本更新）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">当前权限：仅登录（可绕过 GitHub API 匿名访问次数限制，不能下载 Commit 版本更新）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">当前权限：未知（旧登录记录，建议重新登录）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">授予完整访问权限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">需要重新授权 GitHub 并同意 repo 权限，之后才能下载 Commit 版本更新</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Title">撤销完整访问权限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">重新以「仅登录」方式授权，撤销后不再拥有 repo 权限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">撤销后需要在浏览器中重新授权，且将无法自动下载 Commit 版本更新。是否继续？</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">撤销</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">撤销失败：GitHub 没有确认删除授权（可能是网络不通，或该令牌已失效）。本地凭证未做任何改动，可以稍后重试。</x:String>
+    <x:String x:Key="MainPage.Update.Content">我们有新的更新：&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">现在更新</x:String>
+    <x:String x:Key="MainPage.Update.Action.ManualDownload">手动前往下载</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">当前已是最新版本</x:String>
+    <x:String x:Key="MainPage.Update.DirectDownload">强制下载最新版</x:String>
+    <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">更新日志获取失败，请检查网络连接。</x:String>
 
     <x:String x:Key="Tools.Title">工具箱</x:String>
     <x:String x:Key="Tools.Group.Help">帮助</x:String>
@@ -1867,6 +1898,8 @@
     <x:String x:Key="Task.Update.Error.NoActionAsset">未找到适用于当前平台的 Action 产物</x:String>
     <x:String x:Key="Task.Update.Error.NoExecutable">无法定位当前程序，不能启动更新引导流程</x:String>
     <x:String x:Key="Task.Update.Error.NoExtractedExe">解压后未找到可执行文件</x:String>
+    <x:String x:Key="Task.Update.Error.BadPayload">下载内容异常（加速源可能返回了错误页面），已中止更新</x:String>
+    <x:String x:Key="Task.Update.Error.ArtifactScope">当前 GitHub 授权没有读取 Actions 产物的权限。请到 设置 → 账户与档案 → GitHub 退出登录后重新登录，并在授权页同意新的权限。</x:String>
     <x:String x:Key="Task.Update.Error.FailFormat">失败: {0}</x:String>
     <x:String x:Key="CrashReport.NoDumpFile">未生成转储文件</x:String>
     <x:String x:Key="CrashReport.NoExceptionReport">未捕获异常报告</x:String>
@@ -1968,7 +2001,7 @@
     <x:String x:Key="Settings.Account.Github">Github 账户</x:String>
     <x:String x:Key="Settings.Account.Github.LoginError">Github 登录过程中发生错误，请检查网络连接后重试。&#x0a;若长时间未在浏览器中完成授权，请重新发起登录。</x:String>
     <x:String x:Key="Settings.Account.Github.Logout">退出 Github 登录</x:String>
-    <x:String x:Key="Settings.Account.Github.LogoutConfirm">确定要退出当前登录的 Github 账户吗？&#x0a;退出后 Commit 更新通道等需要登录的功能将无法使用。</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutConfirm">确定要退出当前登录的 Github 账户吗？&#x0a;退出后 Commit 版本更新等需要登录的功能将无法使用。</x:String>
     <x:String x:Key="Settings.Account.Github.LogoutAction">退出登录</x:String>
     <x:String x:Key="Cape.FileView.ChooseTexture">选择披风纹理</x:String>
     <x:String x:Key="Cape.PackInfo.ChooseIcon">选择披风包图标</x:String>

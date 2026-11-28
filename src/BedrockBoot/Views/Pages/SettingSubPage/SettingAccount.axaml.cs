@@ -28,6 +28,7 @@ using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Enum.Config;
 using BedrockBoot.Standard.Interface;
 using BedrockBoot.Views.Control.Widgets;
+using BedrockBoot.Views.DialogContent;
 using Octokit;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
@@ -56,6 +57,65 @@ public partial class SettingAccount : ISettingPage
 #endif
 
         UpdateUi();
+
+        // 页面被缓存复用或从别处返回时，登录态可能已经变了（令牌过期、授权范围被改），
+        // 每次挂到可视树都按当前状态重新判断一遍
+        AttachedToVisualTree += (_, _) => UpdateGitHubState();
+    }
+
+    /// <summary>
+    ///     按当前登录态刷新 GitHub 区块的文案与可见性。
+    ///     纯同步、可重复调用，不包含头像加载。
+    /// </summary>
+    private void UpdateGitHubState()
+    {
+        var githubAccount = GitHubTokenManager.ReadAccount();
+        var githubLoggedIn = GitHubTokenManager.IsLoggedIn;
+        var githubExpired = !githubLoggedIn && GitHubTokenManager.HasCredential(githubAccount);
+
+        LoginInGithub.IsVisible = !githubLoggedIn;
+        GithubLogoutBtn.IsVisible = githubLoggedIn;
+
+        // 已登录时说明文字改成"管理登录的 GitHub 账号"，并展示当前授权范围
+        GithubExpander.Description = I18nManager.Instance[githubLoggedIn
+            ? "Settings.Account.GitHub.Description.Manage"
+            : "Settings.Account.GitHub.Description"];
+
+        GithubScopeText.IsVisible = githubLoggedIn;
+        GithubScopeActionBtn.IsVisible = githubLoggedIn;
+        GithubExpander.IsFontIcon = !githubLoggedIn;
+
+        if (githubLoggedIn)
+        {
+            // 已登录时标题带上用户名，比只有一个昵称更容易看出这是 GitHub 账户
+            GithubHeaderText.Text = string.IsNullOrEmpty(githubAccount?.UserName)
+                ? I18nManager.Instance["Settings.Account.Github"]
+                : string.Format(I18nManager.Instance["Settings.Account.Github.LoggedInAs"],
+                    githubAccount.UserName);
+
+            var hasRepoScope = githubAccount?.HasRepoScope;
+            GithubScopeText.Text = I18nManager.Instance[hasRepoScope switch
+            {
+                true => "Settings.Account.GitHub.Scope.Status.Full",
+                false => "Settings.Account.GitHub.Scope.Status.LoginOnly",
+                _ => "Settings.Account.GitHub.Scope.Status.Unknown"
+            }];
+
+            // 没有 repo 权限就给"授予"，已有则给"撤销"（撤销会重新授权为仅登录）
+            var canGrant = hasRepoScope != true;
+            GithubScopeActionBtn.Header = I18nManager.Instance[canGrant
+                ? "Settings.Account.GitHub.GrantFullAccess.Title"
+                : "Settings.Account.GitHub.RevokeFullAccess.Title"];
+            GithubScopeActionBtn.Description = I18nManager.Instance[canGrant
+                ? "Settings.Account.GitHub.GrantFullAccess.Desc"
+                : "Settings.Account.GitHub.RevokeFullAccess.Desc"];
+        }
+        else
+        {
+            GithubHeaderText.Text = githubExpired
+                ? I18nManager.Instance["Settings.Account.GitHub.Expired"]
+                : I18nManager.Instance["Settings.Account.Github"];
+        }
     }
 
     private async Task UpdateUi()
@@ -69,27 +129,14 @@ public partial class SettingAccount : ISettingPage
         IsUseMSALAccount.IsChecked = GlobalModel.Config.Data.IsUseMSALAccount;
         IsAskMeBeforeLaunch.IsChecked = GlobalModel.Config.Data.IsChooseAccountBeforeLaunch;
         
-        var githubConf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount, false);
-        var githubToken = githubConf.Data?.UserToken;
-        var githubLoggedIn = !string.IsNullOrEmpty(githubToken);
+        // 登录态以令牌管理器为准：短效令牌过期但还能自动续期时仍算已登录，
+        // 续期失败（refresh_token 也被撤销/过期）则回到未登录状态并提示重新登录
+        UpdateGitHubState();
 
-        LoginInGithub.IsVisible = !githubLoggedIn;
-        GithubLogoutBtn.IsVisible = githubLoggedIn;
-
-        if (githubLoggedIn)
-        {
-            GithubHeaderText.Text = string.IsNullOrEmpty(githubConf.Data.UserName)
-                ? I18nManager.Instance["Settings.Account.Github"]
-                : githubConf.Data.UserName;
-
-            GithubExpander.IsFontIcon = false;
-            GithubExpander.ImageIcon = await (new ImageLoader()).LoadIconAsync(githubConf.Data.UserImage);
-        }
-        else
-        {
-            GithubHeaderText.Text = I18nManager.Instance["Settings.Account.Github"];
-            GithubExpander.IsFontIcon = true;
-        }
+        // 头像要异步加载，只能放在同步状态刷新之后
+        if (GitHubTokenManager.IsLoggedIn)
+            GithubExpander.ImageIcon = await (new ImageLoader()).LoadIconAsync(
+                GitHubTokenManager.ReadAccount()?.UserImage);
 
         IsEdit = true;
     }
@@ -144,12 +191,87 @@ public partial class SettingAccount : ISettingPage
         Models.Global.GlobalModel.MainWindow.UpdateAccount();
     }
 
-    private async void LoginInGithub_OnClick(object? sender, RoutedEventArgs e)
+    private void LoginInGithub_OnClick(object? sender, RoutedEventArgs e)
+    {
+        ShowScopeDialog();
+    }
+
+    /// <summary>弹出授权范围选择：完整授权（repo）或仅登录（user:email）</summary>
+    private void ShowScopeDialog()
+    {
+        // 先让用户选授权范围：repo 权限是下载 Commit 产物的前提，不该在浏览器授权页才第一次看到
+        var content = new DialogGitHubLoginScopeContent();
+        content.Confirmed += fullAccess => _ = LoginWithScopeAsync(fullAccess);
+
+        DialogHost.Show(new DialogInfo
+        {
+            Title = I18nManager.Instance["Settings.Account.GitHub.Scope.Title"],
+            Content = content
+        });
+    }
+
+    private void GithubScopeActionBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var hasRepoScope = GitHubTokenManager.ReadAccount()?.HasRepoScope;
+
+        if (hasRepoScope != true)
+        {
+            // 授予：复用同一个授权范围弹窗，勾选承诺后走完整授权
+            ShowScopeDialog();
+            return;
+        }
+
+        DialogHost.Show(new DialogInfo
+        {
+            Title = I18nManager.Instance["Settings.Account.GitHub.RevokeFullAccess.Title"],
+            Content = I18nManager.Instance["Settings.Account.GitHub.RevokeFullAccess.Confirm"],
+            CloseButtonText = I18nManager.Instance["Settings.Account.GitHub.RevokeFullAccess.Action"],
+            PrimaryButtonText = I18nManager.Instance["Shared.Action.Cancel"],
+            AccountButton = DialogButtons.CloseButton,
+            CloseAction = () => _ = RevokeFullAccessAsync()
+        });
+    }
+
+    /// <summary>
+    ///     撤销 repo 权限：GitHub 不支持把已签发的令牌降级，只能作废旧授权后重新走一次
+    ///     仅登录（user:email）授权，否则旧令牌里的 repo 权限会一直留到过期。
+    /// </summary>
+    private async Task RevokeFullAccessAsync()
+    {
+        var token = GitHubTokenManager.ReadAccount()?.UserToken;
+
+        // 撤销失败就到此为止：GitHub 上整条授权还在，这时删本地凭证、重走"仅登录"授权
+        // 会让界面显示已降级、实际仍持有 repo 权限
+        if (!await GitHubOAuthManager.RevokeAsync(token))
+        {
+            DialogHost.Show(new DialogInfo
+            {
+                Title = I18nManager.Instance["Settings.Account.GitHub.RevokeFullAccess.Title"],
+                Content = I18nManager.Instance["Settings.Account.GitHub.RevokeFullAccess.Failed"],
+                CloseButtonText = I18nManager.Instance["Shared.Action.Confirm"]
+            });
+            return;
+        }
+
+        try
+        {
+            if (File.Exists(PathsList.GithubAccount))
+                File.Delete(PathsList.GithubAccount);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine($@"删除 Github 授权信息失败: {exception.Message}");
+        }
+
+        await LoginWithScopeAsync(false);
+    }
+
+    private async Task LoginWithScopeAsync(bool fullAccess)
     {
         try
         {
             var githubClient = new GitHubOAuthManager();
-            await githubClient.LoginAsync();
+            await githubClient.LoginAsync(fullAccess);
         }
         catch (Exception exception)
         {
@@ -176,6 +298,10 @@ public partial class SettingAccount : ISettingPage
             AccountButton = DialogButtons.CloseButton,
             CloseAction = () =>
             {
+                // 删除本地文件前先记下令牌，交给后台远程吊销（refresh_token 有 6 个月有效期，
+                // 只删本地等于凭证还活着）
+                var token = GitHubTokenManager.ReadAccount()?.UserToken;
+
                 try
                 {
                     if (File.Exists(PathsList.GithubAccount))
@@ -186,13 +312,11 @@ public partial class SettingAccount : ISettingPage
                     Console.WriteLine($@"删除 Github 授权信息失败: {exception.Message}");
                 }
 
-                // Commit 更新通道依赖 Github 登录，退出后回退到正式版通道
-                if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
-                {
-                    GlobalModel.Config.Data.UpdateType = UpdateType.Release;
-                    GlobalModel.Config.Save();
-                }
+                if (!string.IsNullOrEmpty(token))
+                    _ = GitHubOAuthManager.RevokeAsync(token);
 
+                // 退出登录不改更新通道：Commit 通道的更新检查是匿名的，照样能查；
+                // 只有下载产物时才需要授权，届时会明确提示重新登录
                 _ = UpdateUi();
             }
         });

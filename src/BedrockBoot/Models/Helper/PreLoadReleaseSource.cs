@@ -1,0 +1,275 @@
+/*
+ * BedrockBoot - A launcher for Minecraft Bedrock Edition.
+ * Copyright (C) 2025-2026 Round-Studio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using BedrockBoot.Models.Global;
+
+namespace BedrockBoot.Models.Helper;
+
+/// <summary>
+///     PreLoad.NET 的版本号、镜像与更新内容来源。
+///
+///     <para>
+///     “怎么拿版本号、走哪些镜像、更新内容从哪读”统一收敛在本类：启动守卫、启动器更新前
+///     检查、设置页的手动检查都只依赖这里的接口。上游后续补完信息时，通常只需要改本类的
+///     几个 URL 常量与 <see cref="MirrorPrefixes" />，调用方不用动。
+///     </para>
+///
+///     <para>
+///     职责划分：本类只管“版本号从哪读”和“资产地址怎么拼”，不管下载顺序。
+///     版本号通道由 <see cref="PreLoadDependencyHelper" /> 负责（GitHub API 优先，
+///     失败退回本类提供的 main 分支纯文本版本文件）；下载顺序也由它负责
+///     （CNB 优先，失败退回 GitHub）。这样两条链路可以各自替换，不会互相绑死。
+///     </para>
+///
+///     <para>
+///     版本号文件是普通网页请求，不消耗 api.github.com 的 Rate Limit 配额；
+///     内容形如 <c>26.11.27.1741</c>（不带 v 前缀），与 Release Tag <c>v26.11.27.1741</c> 对应。
+///     PreLoad.NET 只有正式版一个通道，没有预发布。
+///     </para>
+/// </summary>
+public static class PreLoadReleaseSource
+{
+    /// <summary>PreLoad.NET 发布仓库（独立仓库，由 PreLoad.NET 的 workflow 发布）</summary>
+    public const string Owner = "Round-Studio";
+
+    public const string Repo = "PreLoad.NET-Release";
+
+    /// <summary>Release 中唯一的资产名，与发布 workflow 的产物命名保持一致</summary>
+    public const string AssetName = "PreLoad.NET.dll";
+
+    /// <summary>
+    ///     版本号文件所在的分支：PreLoad.NET-Release 仓库的 main，根目录下的纯文本文件。
+    ///     内容形如 <c>26.11.27.1705</c>（不带 v 前缀），与 Release Tag <c>v26.11.27.1705</c> 对应。
+    /// </summary>
+    private const string VersionBranch = "main";
+
+    /// <summary>版本号文件名（main 分支根目录下的纯文本文件）</summary>
+    private const string VersionFile = "version";
+
+    /// <summary>版本号文件地址：GitHub API 不可用时的兜底来源</summary>
+    public static string VersionUrl => VersionFileUrl(VersionFile, VersionBranch);
+
+    /// <summary>TODO(上游)：更新内容（Release Notes）来源确定后替换</summary>
+    public static string ReleaseNotesUrl => VersionFileUrl("changelog.md", VersionBranch);
+
+    /// <summary>
+    ///     额外的镜像前缀（<c>{url}</c> 为 GitHub 原始地址），按优先级排列。
+    ///     <para>
+    ///     默认空：下载走 <c>GithubFilesDownloader</c>，它本身会在
+    ///     <see cref="SourceList.UpdateDownloadSources" /> 里测速选源；
+    ///     这里只影响不经下载器的纯文本请求（版本号、更新内容）。
+    ///     TODO(上游)：指定专用镜像后填入，例如 <c>https://gh-proxy.com/{url}</c>。
+    ///     </para>
+    /// </summary>
+    public static IReadOnlyList<string> MirrorPrefixes { get; } = Array.Empty<string>();
+
+    /// <summary>Release 页的 latest 直链：GitHub 服务端 302 到当前最新 Tag 的资产地址</summary>
+    public static string LatestDownloadUrl =>
+        $"https://github.com/{Owner}/{Repo}/releases/latest/download/{AssetName}";
+
+    /// <summary>
+    ///     CNB 上的镜像仓库：发布流水线会同步推一份 Release 到这里。
+    ///     国内可以直连，也不经过 GitHub，因此下载时排在 GitHub 之前。
+    ///     <para>
+    ///     CNB 没有可匿名访问的 Releases API（api.cnb.cool 需要登录），页面抓取又只有
+    ///     最新一条 tag 可用、且要多拉一次约 170 KB 的 HTML，所以这里只做下载源，
+    ///     不参与版本号判定——版本号始终以 GitHub 为准。
+    ///     </para>
+    /// </summary>
+    public const string CnbOwner = "RoundStudio_cnb";
+
+    public const string CnbRepo = "preload.net-build";
+
+    /// <summary>
+    ///     CNB 的 latest 直链：服务端 302 到当前最新资产（与 GitHub 的 latest 直链同形）。
+    ///     不需要知道 Tag，因此版本号查不到时也能直接下载。
+    /// </summary>
+    public static string CnbLatestDownloadUrl =>
+        $"https://cnb.cool/{CnbOwner}/{CnbRepo}/-/releases/latest/download/{AssetName}";
+
+    /// <summary>
+    ///     按 Tag 取 CNB 上的资产。<paramref name="tag" /> 为空时退回 latest 直链。
+    ///     <para>
+    ///     已知版本号时要走这个地址而不是 latest：CNB 的同步可能比 GitHub 慢一步，
+    ///     用 latest 会下到上一个构建，再被记成新版本号，之后就永久停在旧组件上。
+    ///     版本文件里的号可能不带 <c>v</c>，这里统一补上再拼地址。
+    ///     </para>
+    /// </summary>
+    public static string GetCnbDownloadUrl(string? tag)
+    {
+        if (string.IsNullOrWhiteSpace(tag)) return CnbLatestDownloadUrl;
+
+        var normalized = tag.Trim();
+        if (!normalized.StartsWith("v", StringComparison.OrdinalIgnoreCase)) normalized = "v" + normalized;
+
+        return $"https://cnb.cool/{CnbOwner}/{CnbRepo}/-/releases/download/" +
+               $"{Uri.EscapeDataString(normalized)}/{AssetName}";
+    }
+
+    /// <summary>版本号请求的总预算，超时即判定该通道不可用（调用方处在阻塞路径上）</summary>
+    private static readonly TimeSpan TextFetchTimeout = TimeSpan.FromSeconds(15);
+
+    /// <summary>单个候选地址（含镜像）的预算：文件只有几十字节，超时立刻换源</summary>
+    private static readonly TimeSpan PerRequestTimeout = TimeSpan.FromSeconds(5);
+
+    /// <summary>取版本号文件的候选地址（原始地址 + 镜像），按优先级排列</summary>
+    public static IReadOnlyList<string> GetVersionUrls() => GetMirroredUrls(VersionUrl);
+
+    /// <summary>取更新内容的候选地址（原始地址 + 镜像）</summary>
+    public static IReadOnlyList<string> GetReleaseNotesUrls() => GetMirroredUrls(ReleaseNotesUrl);
+
+    /// <summary>
+    ///     取某个版本对应的资产地址。
+    ///     <para>
+    ///     版本文件里的号不带前缀（<c>26.11.27.1705</c>），而 Release Tag 带
+    ///     <c>v</c>（<c>v26.11.27.1705</c>）；拿到的号不能确认就是 Tag，
+    ///     此时退回 latest 直链（永远指向当前最新产物），避免拼出 404 地址。
+    ///     </para>
+    /// </summary>
+    public static string GetDownloadUrl(string? tag)
+    {
+        if (string.IsNullOrWhiteSpace(tag) || !tag.StartsWith("v", StringComparison.OrdinalIgnoreCase))
+            return LatestDownloadUrl;
+
+        return BuildReleaseAssetUrl(tag);
+    }
+
+    /// <summary>把地址展开成“原始地址 + 统一加速源 + 预留专用镜像”的候选列表（去重保序）</summary>
+    public static IReadOnlyList<string> GetMirroredUrls(string url) =>
+        GithubMirrorUrls.Expand(url, MirrorPrefixes);
+
+    /// <summary>
+    ///     按约定读取最新版本号（Release Tag，不带 v 前缀）。所有候选地址都失败、
+    ///     内容为空或明显是错误页面时返回 null。
+    ///     <para>
+    ///     加速源把错误页以 200 返回是常见现象，因此逐个候选校验内容：
+    ///     不合格就换下一个源，而不是拿第一个非空正文就收工。
+    ///     </para>
+    /// </summary>
+    public static async Task<string?> TryGetLatestAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var text = await TryGetTextAsync(GetVersionUrls(), TextFetchTimeout, "版本号",
+            IsVersionText, cancellationToken);
+        if (text == null) return null;
+
+        var tag = text.Trim().Trim('"', '\'', ' ');
+        Console.WriteLine($@"PreLoad.NET 版本号来源返回 {tag}");
+        return tag;
+    }
+
+    /// <summary>
+    ///     版本号正文的校验：必须是 <c>26.11.27.1741</c> 这类数字分段格式（可带 v 前缀）。
+    ///     加速源会把 404/NotFound 之类的错误正文以 200 返回，只检查"短、单行、无 HTML"
+    ///     会把它们当成版本号存进本地记录，导致后续更新判断全部错乱。
+    /// </summary>
+    private static bool IsVersionText(string text)
+    {
+        var tag = text.Trim().Trim('"', '\'', ' ');
+        return tag.Length is > 0 and <= 64 &&
+               System.Text.RegularExpressions.Regex.IsMatch(tag, @"^[vV]?\d{1,4}(\.\d{1,4}){1,5}$");
+    }
+
+    /// <summary>
+    ///     取某个版本的更新内容，供更新提示展示。
+    ///     TODO(上游)：更新内容格式确定后实现（读 <see cref="ReleaseNotesUrl" /> 或 Release Body）。
+    ///     当前返回 null，调用方应按“没有更新内容”处理。
+    /// </summary>
+    public static Task<string?> TryGetReleaseNotesAsync(
+        string? tag,
+        CancellationToken cancellationToken = default)
+    {
+        _ = tag;
+        _ = cancellationToken;
+        return Task.FromResult<string?>(null);
+    }
+
+    private static string VersionFileUrl(string file, string branch) =>
+        $"https://raw.githubusercontent.com/{Owner}/{Repo}/refs/heads/{branch}/{file}";
+
+    private static string BuildReleaseAssetUrl(string tag) =>
+        $"https://github.com/{Owner}/{Repo}/releases/download/{Uri.EscapeDataString(tag)}/{AssetName}";
+
+    /// <summary>
+    ///     依次尝试候选地址，返回第一个通过 <paramref name="isValid" /> 的正文；
+    ///     内容不合格（错误页）也继续换源。整体预算耗尽即放弃。
+    /// </summary>
+    private static async Task<string?> TryGetTextAsync(IReadOnlyList<string> urls, TimeSpan timeoutBudget,
+        string label, Func<string, bool> isValid, CancellationToken cancellationToken)
+    {
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(timeoutBudget);
+
+        using var client = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
+        client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "BedrockBoot");
+
+        foreach (var url in urls)
+        {
+            if (timeout.IsCancellationRequested)
+            {
+                Console.WriteLine($@"PreLoad.NET {label}获取超时（{timeoutBudget.TotalSeconds:F0} 秒），放弃剩余源");
+                return null;
+            }
+
+            try
+            {
+                // 每个源单独限时：GitHub 直连被墙时往往不是报错而是干等，
+                // 共用一份预算会让后面的镜像根本没机会出手
+                using var request = CancellationTokenSource.CreateLinkedTokenSource(timeout.Token);
+                request.CancelAfter(PerRequestTimeout);
+
+                using var response = await client.GetAsync(url, request.Token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($@"PreLoad.NET {label}地址不可用（{url}）：HTTP {(int)response.StatusCode}");
+                    continue;
+                }
+
+                var text = await response.Content.ReadAsStringAsync(request.Token);
+                if (string.IsNullOrWhiteSpace(text)) continue;
+                if (isValid(text)) return text;
+
+                Console.WriteLine($@"PreLoad.NET {label}内容不可用，换下一个源：{url}（{Truncate(text)}）");
+            }
+            catch (OperationCanceledException) when (timeout.IsCancellationRequested)
+            {
+                Console.WriteLine($@"PreLoad.NET {label}获取超时（{timeoutBudget.TotalSeconds:F0} 秒），放弃该通道");
+                return null;
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine(
+                    $@"PreLoad.NET {label}地址超时（{PerRequestTimeout.TotalSeconds:F0} 秒），换下一个源：{url}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($@"PreLoad.NET {label}地址请求失败（{url}）：{ex.Message}");
+            }
+        }
+
+        return null;
+    }
+
+    private static string Truncate(string text) =>
+        text.Length <= 80 ? text.ReplaceLineEndings(" ") : text[..80].ReplaceLineEndings(" ") + "…";
+}

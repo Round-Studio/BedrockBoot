@@ -496,6 +496,7 @@
     <x:String x:Key="Task.Update.Title.Format">Загрузка обновления: {0}</x:String>
     <x:String x:Key="Task.Update.Notice.Message">Загрузка файла обновления...</x:String>
     <x:String x:Key="Task.Update.Source.Prefix">Источник: {0}</x:String>
+    <x:String x:Key="Task.Update.Error.BadPayload">Скачанный файл повреждён (возможно, зеркало вернуло страницу ошибки); обновление прервано</x:String>
 
     <x:String x:Key="Task.ImportPack.Title">Импорт пакета...</x:String>
     <x:String x:Key="Task.ImportPack.Status.Preparing">Шаг: Подготовка импорта...</x:String>
@@ -527,8 +528,7 @@
     <x:String x:Key="Task.Launch.Notice.Added">В список добавлена ​​задача запуска игры {0}.</x:String>
     <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
     <x:String x:Key="Task.Launch.Migration.Title">Уведомление о миграции</x:String>
-    <x:String x:Key="Task.Launch.Migration.Content">Эта версия требует миграции.
-Хотите начать миграцию сейчас?</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">Эта версия требует миграции.&#x0a;Хотите начать миграцию сейчас?</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Start">Начать миграцию</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Later">Не сейчас</x:String>
     <x:String x:Key="Task.Launch.Migration.View.Title">Перенести версию</x:String>
@@ -882,12 +882,16 @@
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">Проверить обновления</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">Уже последняя версия</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">Не установлено</x:String>
-    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">Не удалось проверить обновления; для приватных репозиториев войдите в GitHub</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">Не удалось проверить обновления</x:String>
     <x:String x:Key="Task.PreLoad.Update.Title">Обновление компонента PreLoad.NET</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.StartupFailedTitle">Не удалось запустить</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.CheckFailedTitle">Не удалось проверить обновления</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">Скачивание обновления компонента PreLoad.NET...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">Готово, вступит в силу при следующем запуске игры</x:String>
-    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">Компонент PreLoad.NET отсутствует, данные о версии недоступны; запуск игры заблокирован (проверьте сетевое подключение)</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">Компонент PreLoad.NET отсутствует, данные о версии недоступны; запуск игры заблокирован</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">Не удалось скачать компонент PreLoad.NET; запуск игры заблокирован</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET — компонент, от которого зависит лаунчер; если вовремя не обновить его, игра может работать некорректно.</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">Не удалось обновить компонент PreLoad.NET, обновление лаунчера прервано. Проверьте сеть и повторите попытку.</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">Многопользовательские зависимости</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">Чтение информации о версии...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">Проверить обновления</x:String>
@@ -935,11 +939,40 @@
     <x:String x:Key="MainPage.Update.Title">Проверить обновления</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">Обновить {0}</x:String>
     <x:String x:Key="MainPage.Update.CommitNeedLogin">Канал обновлений — Commit. Сначала войдите в аккаунт GitHub.&#x0a;Войдите через Настройки → Аккаунт.</x:String>
-    <x:String x:Key="MainPage.Update.Content">Доступно новое обновление:
-
-{0}</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedLoginHint">Перейдите в Настройки → Аккаунт и профиль и войдите в GitHub с полным доступом</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedScopeHint">Перейдите в Настройки → Аккаунт и профиль и предоставьте аккаунту GitHub полный доступ</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Title">Объём доступа GitHub</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Intro">Выберите объём доступа перед входом. Оба варианта снимают ограничение анонимных запросов к API GitHub; разница в том, можно ли скачивать обновления Commit.</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Title">Полный доступ</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Desc">Даёт право repo: чтение информации об обновлениях и скачивание артефактов обновлений Commit. Мы обещаем использовать это право только для скачивания обновлений Commit и никогда не читать, не изменять и не удалять другие ваши репозитории.</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Title">Только вход</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Desc">Даёт только user:email: информацию об обновлениях можно читать без ограничения анонимных запросов, но скачивать обновления Commit нельзя.</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Acknowledge">Я прочитал и согласен: полный доступ используется только для скачивания обновлений Commit</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description.Manage">Управление аккаунтом GitHub</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description">Войдите в GitHub, чтобы использовать канал обновлений Commit и другие функции</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Expired">Сеанс GitHub истёк, войдите снова</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Login.Title">Войти в GitHub</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Login.Desc">Авторизуйте аккаунт GitHub в браузере</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Title">Выйти</x:String>
+    <x:String x:Key="Settings.Account.Github.LoggedInAs">Аккаунт GitHub: {0}</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Desc">Удалить сохранённую локально авторизацию GitHub и отозвать её</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">Текущий доступ: полный (обновления Commit можно скачивать)</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">Текущий доступ: только вход (обходит ограничение анонимных запросов GitHub API, но обновления Commit скачать нельзя)</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">Текущий доступ: неизвестен (старая запись, рекомендуется войти снова)</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">Предоставить полный доступ</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">Повторно авторизуйте GitHub и разрешите право repo, чтобы скачивать обновления Commit</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Title">Отозвать полный доступ</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">Повторно авторизуйтесь в режиме «Только вход» и отзовите право repo</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">После отзыва потребуется повторная авторизация в браузере, и обновления Commit нельзя будет скачивать автоматически. Продолжить?</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">Отозвать</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">Не удалось отозвать: GitHub не подтвердил удаление авторизации (нет сети или токен уже недействителен). Локальные данные не изменены, повторите позже.</x:String>
+    <x:String x:Key="MainPage.Update.Content">Доступно новое обновление:&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">Обновить сейчас</x:String>
+    <x:String x:Key="MainPage.Update.Action.ManualDownload">Скачать вручную</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">Уже в последней версии</x:String>
+    <x:String x:Key="MainPage.Update.DirectDownload">Принудительно скачать последнюю версию</x:String>
+    <x:String x:Key="MainPage.Update.DirectDisplayName">Последняя версия</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">Не удалось получить список изменений. Проверьте подключение к сети.</x:String>
 
     <x:String x:Key="Tools.Title">Ящик для инструментов</x:String>
     <x:String x:Key="Tools.Group.Help">Помощь</x:String>
@@ -1223,4 +1256,9 @@
     <x:String x:Key="Multiplayer.Init.GetPeers">Получение одноранговых серверов</x:String>
     <x:String x:Key="Multiplayer.Init.GetXboxUser">Получение локальной учетной записи</x:String>
     <x:String x:Key="Multiplayer.Init.InitCore">Инициализация многопользовательского ядра</x:String>
+    <x:String x:Key="Settings.Account.Github">Аккаунт GitHub</x:String>
+    <x:String x:Key="Settings.Account.Github.LoginError">При входе в Github произошла ошибка. Проверьте подключение к сети и повторите попытку.&#x0a;Если авторизация в браузере не завершилась за долгое время, начните вход заново.</x:String>
+    <x:String x:Key="Settings.Account.Github.Logout">Выйти из Github</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutConfirm">Выйти из текущего аккаунта Github?&#x0a;После выхода функции, требующие входа (например, скачивание обновлений Commit), станут недоступны.</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutAction">Выйти</x:String>
 </ResourceDictionary>

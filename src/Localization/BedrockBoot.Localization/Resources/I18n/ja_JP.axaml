@@ -493,6 +493,7 @@
     <x:String x:Key="Task.Update.Title.Format">更新ファイルをダウンロード：{0}</x:String>
     <x:String x:Key="Task.Update.Notice.Message">更新ファイルをダウンロードしています...</x:String>
     <x:String x:Key="Task.Update.Source.Prefix">ダウンロード元：{0}</x:String>
+    <x:String x:Key="Task.Update.Error.BadPayload">ダウンロード内容が異常です（ミラーがエラーページを返した可能性があります）。更新を中止しました</x:String>
 
     <x:String x:Key="Task.ImportPack.Title">ゲームパックをインポート...</x:String>
     <x:String x:Key="Task.ImportPack.Status.Preparing">ステップ：インポート準備中...</x:String>
@@ -524,7 +525,7 @@
     <x:String x:Key="Task.Launch.Notice.Added">ゲーム {0} の起動タスクをタスクリストに追加しました。</x:String>
     <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
     <x:String x:Key="Task.Launch.Migration.Title">移行のお知らせ</x:String>
-    <x:String x:Key="Task.Launch.Migration.Content">このバージョンは移行が必要です。\n今すぐ移行を開始しますか？</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">このバージョンは移行が必要です。&#x0a;今すぐ移行を開始しますか？</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Start">移行を開始</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Later">後で</x:String>
     <x:String x:Key="Task.Launch.Migration.View.Title">バージョンを移行</x:String>
@@ -877,12 +878,16 @@
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Check">更新を確認</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.Latest">最新バージョンです</x:String>
     <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.NotInstalled">未インストール</x:String>
-    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">更新の確認に失敗しました。プライベートリポジトリには GitHub ログインが必要です</x:String>
+    <x:String x:Key="Settings.Universal.Update.GameComponent.PreLoad.CheckFailed">更新の確認に失敗しました</x:String>
     <x:String x:Key="Task.PreLoad.Update.Title">PreLoad.NET コンポーネントの更新</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.StartupFailedTitle">起動に失敗しました</x:String>
+    <x:String x:Key="Task.PreLoad.Notice.CheckFailedTitle">更新の確認に失敗しました</x:String>
     <x:String x:Key="Task.PreLoad.Update.Notice.Message">PreLoad.NET コンポーネントの更新をダウンロード中...</x:String>
     <x:String x:Key="Task.PreLoad.Update.Done">完了。次回のゲーム起動時に有効になります</x:String>
-    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET コンポーネントが不足しておりバージョン情報を取得できません。ゲームの起動をブロックしました（ネットワーク接続を確認してください）</x:String>
+    <x:String x:Key="Task.PreLoad.Guard.FetchFailed">PreLoad.NET コンポーネントが不足しておりバージョン情報を取得できません。ゲームの起動をブロックしました</x:String>
     <x:String x:Key="Task.PreLoad.Guard.DownloadFailed">PreLoad.NET コンポーネントのダウンロードに失敗しました。ゲームの起動をブロックしました</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.DependencyWarning">PreLoad.NET はランチャーが依存するコンポーネントです。適切に更新されないとゲームで不具合が発生する可能性があります。</x:String>
+    <x:String x:Key="Task.PreLoad.BeforeUpdate.Blocked">PreLoad.NET コンポーネントの更新に失敗したため、ランチャーの更新を中止しました。ネットワークを確認して再試行してください。</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Group.Dependencies">マルチプレイ依存コンポーネント</x:String>
     <x:String x:Key="Settings.Universal.Dependency.ReadingVersion">バージョン情報を取得中...</x:String>
     <x:String x:Key="Settings.Universal.Dependency.Check.Title">更新を確認</x:String>
@@ -930,9 +935,40 @@
     <x:String x:Key="MainPage.Update.Title">アップデートを確認</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">{0} にアップデート</x:String>
     <x:String x:Key="MainPage.Update.CommitNeedLogin">更新チャンネルが Commit（提出版）に設定されています。先に GitHub アカウントにログインしてください。&#x0a;設定 → アカウント からログインできます。</x:String>
-    <x:String x:Key="MainPage.Update.Content">新しいアップデートがあります：\n\n{0}</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedLoginHint">設定 → アカウントとプロフィール から GitHub にログインし、完全な認可を付与してください</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedScopeHint">設定 → アカウントとプロフィール から GitHub アカウントに完全な認可を付与してください</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Title">GitHub の認可範囲</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Intro">ログイン前に認可範囲を選択してください。どちらも GitHub API の匿名アクセス制限を回避できますが、Commit 版の更新をダウンロードできるかどうかが異なります。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Title">完全な認可</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Desc">repo 権限を付与します。更新情報の取得に加え、Commit 版の更新物をダウンロードできます。この権限は Commit 版の更新のダウンロードにのみ使用し、他のリポジトリの内容を読み取ったり変更・削除したりすることはありません。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Title">ログインのみ</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Desc">user:email のみを付与します。更新情報は匿名制限なしで取得できますが、Commit 版の更新は自動ダウンロードできません。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Acknowledge">理解しました：完全な認可は Commit 版の更新のダウンロードにのみ使用されます</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description.Manage">ログイン中の GitHub アカウントを管理</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description">Commit 更新チャンネルなどの機能を使うには GitHub にログインしてください</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Expired">GitHub のログインが期限切れです。再度ログインしてください</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Login.Title">GitHub にログイン</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Login.Desc">ブラウザで GitHub アカウントを認可してログインします</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Title">ログアウト</x:String>
+    <x:String x:Key="Settings.Account.Github.LoggedInAs">GitHub アカウント：{0}</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Desc">ローカルに保存された GitHub の認可情報を削除し、その認可を取り消します</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">現在の権限：完全なアクセス（Commit 版の更新をダウンロードできます）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">現在の権限：ログインのみ（GitHub API の匿名アクセス制限を回避できますが、Commit 版の更新はダウンロードできません）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">現在の権限：不明（古いログイン情報です。再ログインを推奨します）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">完全なアクセス権を付与</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">GitHub を再認可して repo 権限に同意すると、Commit 版の更新をダウンロードできます</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Title">完全なアクセス権を取り消す</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">「ログインのみ」で再認可し、repo 権限を外します</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">取り消すとブラウザで再認可が必要になり、Commit 版の更新は自動ダウンロードできなくなります。続行しますか？</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">取り消す</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Failed">取り消しに失敗しました：GitHub が認可の削除を確認できませんでした（ネットワーク不通、またはトークンが失効している可能性があります）。ローカルの資格情報は変更していません。後でもう一度お試しください。</x:String>
+    <x:String x:Key="MainPage.Update.Content">新しいアップデートがあります：&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">今すぐアップデート</x:String>
+    <x:String x:Key="MainPage.Update.Action.ManualDownload">手動でダウンロード</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">現在最新バージョンです</x:String>
+    <x:String x:Key="MainPage.Update.DirectDownload">最新版を強制ダウンロード</x:String>
+    <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
+    <x:String x:Key="MainPage.Update.ChangelogUnavailable">更新履歴を取得できませんでした。ネットワーク接続を確認してください。</x:String>
 
     <x:String x:Key="Tools.Title">ツールボックス</x:String>
     <x:String x:Key="Tools.Group.Help">ヘルプ</x:String>
@@ -1195,4 +1231,9 @@
     <x:String x:Key="Multiplayer.Init.GetPeers">ノードサーバーを取得中</x:String>
     <x:String x:Key="Multiplayer.Init.GetXboxUser">ローカルアカウント名を取得中</x:String>
     <x:String x:Key="Multiplayer.Init.InitCore">マルチプレイコアを初期化中</x:String>
+    <x:String x:Key="Settings.Account.Github">GitHub アカウント</x:String>
+    <x:String x:Key="Settings.Account.Github.LoginError">Github へのログイン中にエラーが発生しました。ネットワーク接続を確認して再試行してください。&#x0a;ブラウザでの認可が長時間完了しない場合は、ログインをやり直してください。</x:String>
+    <x:String x:Key="Settings.Account.Github.Logout">Github からログアウト</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutConfirm">現在ログインしている Github アカウントからログアウトしますか？&#x0a;ログアウトすると、Commit 版の更新のダウンロードなど、ログインが必要な機能は使用できなくなります。</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutAction">ログアウト</x:String>
 </ResourceDictionary>

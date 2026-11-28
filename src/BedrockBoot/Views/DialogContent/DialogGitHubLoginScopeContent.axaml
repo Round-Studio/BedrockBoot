@@ -1,0 +1,57 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="520"
+             x:Class="BedrockBoot.Views.DialogContent.DialogGitHubLoginScopeContent">
+    <StackPanel Spacing="12" MaxWidth="480">
+        <TextBlock TextWrapping="Wrap"
+                   Text="{DynamicResource Settings.Account.GitHub.Scope.Intro}" />
+
+        <StackPanel Spacing="4">
+            <TextBlock FontWeight="Bold"
+                       TextWrapping="Wrap"
+                       Text="{DynamicResource Settings.Account.GitHub.Scope.FullAccess.Title}" />
+            <TextBlock TextWrapping="Wrap"
+                       Opacity="0.85"
+                       Text="{DynamicResource Settings.Account.GitHub.Scope.FullAccess.Desc}" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock FontWeight="Bold"
+                       TextWrapping="Wrap"
+                       Text="{DynamicResource Settings.Account.GitHub.Scope.LoginOnly.Title}" />
+            <TextBlock TextWrapping="Wrap"
+                       Opacity="0.85"
+                       Text="{DynamicResource Settings.Account.GitHub.Scope.LoginOnly.Desc}" />
+        </StackPanel>
+
+        <CheckBox Name="AckCheck"
+                  Margin="0,4,0,0"
+                  IsCheckedChanged="AckCheck_OnIsCheckedChanged">
+            <TextBlock TextWrapping="Wrap"
+                       Text="{DynamicResource Settings.Account.GitHub.Scope.Acknowledge}" />
+        </CheckBox>
+
+        <!-- 副按钮（仅登录）在左，主按钮（完整授权）在右；未勾选承诺前主按钮不可用 -->
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,4,0,0">
+            <Button Name="LoginOnlyBtn"
+                    Classes="NoBorder"
+                    Height="32"
+                    Padding="18,2"
+                    Click="LoginOnlyBtn_OnClick"
+                    Content="{DynamicResource Settings.Account.GitHub.Scope.LoginOnly.Title}" />
+            <Button Name="FullAccessBtn"
+                    Classes="NoBorder"
+                    Height="32"
+                    Padding="18,2"
+                    IsEnabled="False"
+                    Background="{DynamicResource AccentBackgroundBrush}"
+                    Click="FullAccessBtn_OnClick"
+                    Content="{DynamicResource Settings.Account.GitHub.Scope.FullAccess.Title}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

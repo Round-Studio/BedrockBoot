@@ -76,8 +76,6 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
                 GlobalModel.CurrentRoomState = null;
             }
 
-            var github = GitHubApiClient.CreateClient();
-
             if (!Directory.Exists(EasyTierPath))
                 Directory.CreateDirectory(EasyTierPath);
             if (!Directory.Exists(GravityConeExePath))
@@ -89,14 +87,16 @@ public partial class DialogDownloadMultiPlayerDependenceContent : UserControl
             });
 
             isFetchingReleases = true;
-            var easyTierTask = github.Repository.Release.GetLatest("EasyTier", "EasyTier");
-            var gravityConeTask = github.Repository.Release.GetLatest("Tianpao", "GravityCone");
-            
-            await Task.WhenAll(easyTierTask, gravityConeTask);
-            isFetchingReleases = false;
+            var (easyTierRelease, gravityConeRelease) = await GitHubApiClient.ExecuteAsync(async github =>
+            {
+                var easyTierTask = github.Repository.Release.GetLatest("EasyTier", "EasyTier");
+                var gravityConeTask = github.Repository.Release.GetLatest("Tianpao", "GravityCone");
 
-            var easyTierRelease = await easyTierTask;
-            var gravityConeRelease = await gravityConeTask;
+                await Task.WhenAll(easyTierTask, gravityConeTask);
+
+                return (await easyTierTask, await gravityConeTask);
+            });
+            isFetchingReleases = false;
 
             var os = GetSystemType();
 

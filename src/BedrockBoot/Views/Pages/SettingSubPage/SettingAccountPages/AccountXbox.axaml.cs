@@ -89,7 +89,7 @@ public partial class AccountXbox : ISettingPage
             {
                 MsAccountManager.AccountConfigEntity!.Data.Accounts.RemoveAt(
                     MsAccountManager.Accounts!.Accounts.FindIndex(x => x.BUID == _msUserConfig.BUID));
-                MsAccountManager.AccountConfigEntity!.Save();
+                MsAccountManager.SaveAccounts();
                 MainSettingPage.NavigateTo(new SettingAccount());
                 Models.Global.GlobalModel.MainWindow.UpdateAccount();
             },

@@ -25,9 +25,9 @@ using System.Threading.Tasks;
 using BedrockBoot.Standard.Enum;
 using BedrockBoot.Models.Account.Github;
 using BedrockBoot.Models.Global;
+using BedrockBoot.Models.Helper;
 using BedrockBoot.Standard.Enum.Config;
 using Octokit;
-using Round.SDK.Entity;
 using GlobalModel = BedrockBoot.Core.Global.GlobalModel;
 
 namespace BedrockBoot.Models;
@@ -44,8 +44,20 @@ public class UpdateCheckResult
     public Release? Release { get; init; }
     public WorkflowRun? WorkflowRun { get; init; }
 
+    /// <summary>
+    ///     API 不可用时从 <c>version</c> 分支读到的版本号（带 v，与 Release Tag 同形）。
+    /// 此时 <see cref="Release" /> 为 null，但下载、展示都不需要它。
+    /// </summary>
+    public string? FallbackTag { get; init; }
+
+    /// <summary>API 不可用时从 <c>version</c> 分支读到的更新日志（Markdown）</summary>
+    public string? FallbackBody { get; init; }
+
+    /// <summary>API 不可用时的资产直链：不依赖 Release 对象也能下到同一个构建</summary>
+    public string? DirectDownloadUrl { get; init; }
+
     public string DisplayName => Source == UpdateSource.Release
-        ? Release?.TagName ?? ""
+        ? Release?.TagName ?? FallbackTag ?? ""
         : $"{WorkflowRun?.Name} #{WorkflowRun?.RunNumber}";
 
     public string CommitSha => Source == UpdateSource.Release
@@ -58,11 +70,26 @@ public class CheckUpdate
     private const string Owner = "Round-Studio";
     private const string Repo = "BedrockBoot";
 
+    /// <summary>
+    ///     API 检查的时限。Octokit 默认超时过长，api.github.com 无声卡住时用户要干等；
+    ///     超时抛 TimeoutException，正式版/预览版会进 version 分支的回退流程。
+    /// </summary>
+    private static readonly TimeSpan ApiCheckTimeout = TimeSpan.FromSeconds(30);
+
+    /// <summary>给 API 调用加上限时，超时抛 <see cref="TimeoutException" /> 而不是无限等待</summary>
+    private static async Task<T> WithTimeout<T>(Task<T> task, string what)
+    {
+        var completed = await Task.WhenAny(task, Task.Delay(ApiCheckTimeout)).ConfigureAwait(false);
+        if (completed != task)
+            throw new TimeoutException($@"{what}超过 {ApiCheckTimeout.TotalSeconds} 秒未响应");
+        return await task.ConfigureAwait(false);
+    }
+
     public static async Task<Release?> Update()
     {
-        var github = GitHubApiClient.CreateClient();
-
-        var releases = await github.Repository.Release.GetAll(Owner, Repo);
+        // 统一入口：令牌快过期会先续期，401 会刷新后重试一次
+        var releases = await WithTimeout(
+            GitHubApiClient.ExecuteAsync(c => c.Repository.Release.GetAll(Owner, Repo)), @"Release 检查");
 
         var latest =
             releases.FirstOrDefault(x => x.Prerelease == (GlobalModel.Config.Data.UpdateType == UpdateType.Preview));
@@ -76,8 +103,7 @@ public class CheckUpdate
 
         Console.WriteLine($@"最新版本: {latest.TagName}");
 
-        if (!latest.TagName.Replace("0", "")
-                .EndsWith(Assembly.GetExecutingAssembly().GetName().Version!.ToString().Replace("0", "")))
+        if (!IsCurrentVersion(latest.TagName))
             return latest;
 
         Console.WriteLine($@"当前为最新版本 {latest.TagName}，无需启动更新。");
@@ -85,14 +111,76 @@ public class CheckUpdate
         return null;
     }
 
-    public static async Task<WorkflowRun?> GetLatestActionRunAsync(string dataUserToken)
+    /// <summary>
+    ///     远端 Tag 是否就是当前运行的版本。CI 生成的版本号会省略前导 0
+    ///     （<c>v2.1.11.0308</c> 与 <c>2.1.11.308</c>），逐段按数字比较；
+    ///     Tag 段数比程序集版本少时按尾部对齐（例如 <c>v2.1.11</c> 对 <c>2.1.11.0</c>）。
+    ///     <para>
+    ///     不能像以前那样整体去掉字符 <c>0</c> 再 EndsWith：<c>102</c> 与 <c>120</c>
+    ///     都会被削成 <c>12</c>，把「落后一个构建」误判成「已是最新」。
+    ///     </para>
+    /// </summary>
+    private static bool IsCurrentVersion(string? tagName)
     {
-        var github = new GitHubClient(new ProductHeaderValue("BedrockBoot"));
+        if (string.IsNullOrWhiteSpace(tagName)) return false;
 
-        if (!string.IsNullOrEmpty(dataUserToken))
-            github.Credentials = new Credentials(dataUserToken);
+        var current = SplitVersion(Assembly.GetExecutingAssembly().GetName().Version!.ToString());
+        var remote = SplitVersion(tagName);
+        if (remote.Length == 0 || remote.Length > current.Length) return false;
 
-        var runs = await github.Actions.Workflows.Runs.List(Owner, Repo);
+        return current[(current.Length - remote.Length)..].SequenceEqual(remote);
+    }
+
+    /// <summary>把 <c>v2.1.11.0308</c> 拆成去前导 0 的段；非数字段原样保留</summary>
+    private static string[] SplitVersion(string version) =>
+        version.Trim().TrimStart('v', 'V')
+            .Split('.', StringSplitOptions.RemoveEmptyEntries)
+            .Select(part => int.TryParse(part.Trim(), out var number) ? number.ToString() : part.Trim())
+            .ToArray();
+
+    /// <summary>
+    ///     API 不可用时的兜底：从仓库 <c>version</c> 分支读版本号与更新日志
+    ///     （<c>info/release</c> / <c>info/preview</c>、<c>changelog/&lt;版本号&gt;.md</c>）。
+    ///     <para>
+    ///     <c>Available = false</c> 表示这个通道也读不到，调用方应继续抛错；
+    ///     <c>Available = true</c> 且 <c>Result = null</c> 表示已经是最新版本。
+    ///     </para>
+    /// </summary>
+    private static async Task<(bool Available, UpdateCheckResult? Result)> TryGetFallbackAsync(
+        UpdateType updateType)
+    {
+        var version = await LauncherReleaseSource.TryGetVersionAsync(updateType);
+        if (version == null)
+        {
+            Console.WriteLine(@"启动器版本号兜底通道也不可用");
+            return (false, null);
+        }
+
+        var tag = LauncherReleaseSource.ToTag(version);
+        if (IsCurrentVersion(tag))
+        {
+            Console.WriteLine($@"当前为最新版本 {tag}（兜底通道），无需启动更新。");
+            return (true, null);
+        }
+
+        var body = await LauncherReleaseSource.TryGetChangelogAsync(version);
+        return (true, new UpdateCheckResult
+        {
+            Source = UpdateSource.Release,
+            FallbackTag = tag,
+            FallbackBody = body,
+            // 只在支持自更新的平台上给直链，避免在其它平台把 Windows 产物当成更新包
+            DirectDownloadUrl = LauncherDirectDownloadHelper.IsSupported
+                ? LauncherReleaseSource.GetDownloadUrl(version)
+                : null
+        });
+    }
+
+    public static async Task<WorkflowRun?> GetLatestActionRunAsync()
+    {
+        // 同样加时限：Commit 通道没有 version 分支兜底，卡住时宁可快速报错让用户重试
+        var runs = await WithTimeout(
+            GitHubApiClient.ExecuteAsync(c => c.Actions.Workflows.Runs.List(Owner, Repo)), @"Commit 检查");
 
         var latest = runs.WorkflowRuns
             .Where(r => r.Status == WorkflowRunStatus.Completed
@@ -117,13 +205,9 @@ public class CheckUpdate
     {
         if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
         {
-            var conf = new ConfigEntity<GithubAccountInfo>(PathsList.GithubAccount);
-            if (conf.Data == null)
-                return null;
-            if (string.IsNullOrEmpty(conf.Data.UserToken))
-                return null;
-
-            var run = await GetLatestActionRunAsync(conf.Data.UserToken);
+            // 公开仓库的 Actions 接口允许匿名读取，未登录也能拿到最新提交与更新日志；
+            // 只有下载产物需要登录并授予 repo 权限，那一步会自己提示
+            var run = await GetLatestActionRunAsync();
             if (run == null)
                 return null;
 
@@ -155,15 +239,41 @@ public class CheckUpdate
             };
         }
 
-        var release = await Update();
-        if (release == null)
-            return null;
+        return await CheckReleaseAsync();
+    }
 
-        return new UpdateCheckResult
+    /// <summary>
+    ///     正式版/预览版的检查入口：GitHub API 优先，API 不可用时退回 version 分支的
+    ///     版本号 + 更新日志（普通网页请求，不消耗 API 配额）。
+    ///     <para>
+    ///     两条通道都拿不到 version 分支文件时，把 API 的异常继续抛给调用方——
+    ///     由界面弹网络错误并提供“强制下载最新版”，而不是误报“已是最新”。
+    ///     </para>
+    /// </summary>
+    private static async Task<UpdateCheckResult?> CheckReleaseAsync()
+    {
+        var updateType = GlobalModel.Config.Data.UpdateType;
+
+        try
         {
-            Source = UpdateSource.Release,
-            Release = release
-        };
+            var release = await Update();
+            return release == null
+                ? null
+                : new UpdateCheckResult { Source = UpdateSource.Release, Release = release };
+        }
+        catch (Exception ex) when (updateType is UpdateType.Release or UpdateType.Preview)
+        {
+            Console.WriteLine($@"GitHub API 检查更新失败：{ex.Message}；改从 version 分支读取版本信息");
+
+            var (available, result) = await TryGetFallbackAsync(updateType);
+            if (!available)
+            {
+                Console.WriteLine(@"version 分支同样不可用，按更新检查失败处理");
+                throw;
+            }
+
+            return result;
+        }
     }
 
     private static string CommitRecordPath =>

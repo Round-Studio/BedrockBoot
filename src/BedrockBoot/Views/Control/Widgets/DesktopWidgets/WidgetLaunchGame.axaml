@@ -24,12 +24,10 @@
                 <text:AnimationTextBlock FontSize="36"
                                          AnimationType="NumberRolling"
                                          FontWeight="SemiBold"
-                                         Name="GameNameText"
-                                         Text="{DynamicResource Widget.LaunchGame.Title}"></text:AnimationTextBlock>
+                                         Name="GameNameText"></text:AnimationTextBlock>
             
                 <TextBlock Opacity="0.6"
-                           Name="GameVersionText"
-                           Text="{DynamicResource Widget.LaunchGame.NoVersion}"></TextBlock>
+                           Name="GameVersionText"></TextBlock>
             </StackPanel>
             
             <Button Grid.Column="1"

@@ -216,9 +216,31 @@
                         </Grid.Transitions>
 
                         <Panel>
-                            <navigation:NavigationFrame Name="MainFrame"
+                            <Panel.Styles>
+                                <Style Selector="navigation|NavigationFrame">
+                                    <Setter Property="Transitions">
+                                        <Transitions>
+                                            <DoubleTransition Property="Opacity"
+                                                              Easing="ExponentialEaseOut"
+                                                              Duration="0:0:0.38" />
+                                        </Transitions>
+                                    </Setter>
+                                </Style>
+                            </Panel.Styles>
+                            <navigation:NavigationFrame Name="FullScreenFrame"
+                                                        AnimationType="FadeThrough"
                                                         HorizontalAlignment="Stretch"
                                                         VerticalAlignment="Stretch"
+                                                        Opacity="0"
+                                                        IsVisible="False"
+                                                        Margin="0" />
+                            
+                            <navigation:NavigationFrame Name="MainFrame"
+                                                        AnimationType="FadeThrough"
+                                                        HorizontalAlignment="Stretch"
+                                                        VerticalAlignment="Stretch"
+                                                        Opacity="1"
+                                                        IsVisible="True"
                                                         Margin="0" />
                         </Panel>
 

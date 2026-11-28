@@ -59,12 +59,14 @@ using BedrockBoot.Service;
 using BedrockBoot.Service.Protocol;
 using BedrockBoot.Service.Protocol.Routes;
 using BedrockBoot.Standard.Enum.Config;
+using BedrockBoot.Standard.Interface.Page;
 using BedrockBoot.Standard.Interface.Platform.Game;
 using BedrockBoot.Style.Controls;
 using BedrockBoot.Views.Control.Widgets;
 using BedrockBoot.Views.DialogContent;
 using BedrockBoot.Views.DrawContent;
 using BedrockBoot.Views.Pages;
+using BedrockBoot.Views.Pages.FullScreenPage;
 using BedrockBoot.Views.Pages.SetupPage;
 using BedrockBoot.Views.Windows.SubWindows;
 using OnePointUI.Avalonia.Base.Entry;
@@ -1426,6 +1428,31 @@ public partial class MainWindow : Window
                     AccountPanel.IsVisible = false;
             });
         }, token);
+    }
+
+    #endregion
+
+    #region 全屏页面接口
+
+    public async Task FullScreenNavigateTo(IFullScreen page)
+    {
+        MainFrame.Opacity = 0;
+        FullScreenFrame.NavigateTo(new MainFullScreen(page));
+        await Task.Delay(380);
+        
+        MainFrame.IsVisible = false;
+        FullScreenFrame.IsVisible = true;
+        FullScreenFrame.Opacity = 1;
+    }
+
+    public async Task FullScreenBack()
+    {
+        FullScreenFrame.Opacity = 0;
+        await Task.Delay(380);
+
+        MainFrame.IsVisible = true;
+        FullScreenFrame.IsVisible = false;
+        MainFrame.Opacity = 1;
     }
 
     #endregion

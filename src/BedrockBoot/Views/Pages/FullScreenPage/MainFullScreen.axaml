@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:navigation="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls.Navigation;assembly=OnePointUI.Avalonia"
+             xmlns:onePointControls="clr-namespace:OnePointUI.Avalonia.Styling.Controls.OnePointControls;assembly=OnePointUI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BedrockBoot.Views.Pages.FullScreenPage.MainFullScreen">
+    <Grid RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    Spacing="6"
+                    Margin="12,12,0,0">
+            <Button Classes="NoBorder"
+                    Name="BackHomeBtn"
+                    Click="BackHomeBtn_OnClick"
+                    CornerRadius="24"
+                    VerticalAlignment="Center"
+                    Padding="0"
+                    Width="48" Height="48">
+                <onePointControls:FontIcon Glyph="&#xE80F;"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontSize="28"/>
+            </Button>
+            
+            <navigation:NavigationFrame Name="HeaderContent"
+                                        Height="48"
+                                        NavigationFrameDirection="Right"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Stretch" />
+        </StackPanel>
+        
+        <navigation:NavigationFrame Grid.Row="1"
+                                    Name="FullScreenNavigationFrame"></navigation:NavigationFrame>
+    </Grid>
+</UserControl>

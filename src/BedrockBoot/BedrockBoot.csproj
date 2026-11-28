@@ -75,7 +75,6 @@
         <AvaloniaResource Include="Manifest\DefaultCustomManifest.json" />
         <Folder Include="Assets\Image\Contributors\" />
         <Folder Include="Assets\Svg\"/>
-        <Folder Include="Entity\" />
     </ItemGroup>
 
     <ItemGroup>

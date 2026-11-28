@@ -70,7 +70,7 @@ public partial class AccountCard : UserControl
             {
                 MsAccountManager.AccountConfigEntity!.Data.Accounts.RemoveAt(
                     MsAccountManager.Accounts!.Accounts.FindIndex(x => x.BUID == _user.BUID));
-                MsAccountManager.AccountConfigEntity!.Save();
+                MsAccountManager.SaveAccounts();
                 MainSettingPage.NavigateTo(new SettingAccount());
                 Models.Global.GlobalModel.MainWindow.UpdateAccount();
             },

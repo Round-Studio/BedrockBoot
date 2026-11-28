@@ -69,7 +69,7 @@ public partial class AccountPanel : UserControl
         {
             MsAccountManager.AccountConfigEntity?.Data.SelectUserBUID =
                 MsAccountManager.Accounts?.Accounts[AccountList.SelectedIndex].BUID;
-            MsAccountManager.AccountConfigEntity?.Save();
+            MsAccountManager.SaveAccounts();
 
             await Models.Global.GlobalModel.MainWindow.UpdateAccount(true);
 

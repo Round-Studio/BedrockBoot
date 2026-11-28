@@ -40,6 +40,9 @@ public static class MsAccountManager
 
     public static bool IsLogging { get; private set; } = false;
 
+    /// <summary>保存期间会把内存数据临时换成密文，必须串行</summary>
+    private static readonly object SaveLock = new();
+
     private static CancellationTokenSource? _loginCts;
 
     public static void CancelLogin()
@@ -64,6 +67,11 @@ public static class MsAccountManager
         AccountConfigEntity = new ConfigEntity<MsUserConfigRoot>(PathsList.MsAccountPath);
         AccountConfigEntity.Load();
 
+        // 凭证字段落盘时是密文：先还原成明文供全局使用，旧版本的明文配置顺便迁移一次
+        var needsMigration = MsAccountSecret.HasPlaintextCredential(AccountConfigEntity.Data);
+        MsAccountSecret.UnprotectInPlace(AccountConfigEntity.Data);
+        if (needsMigration) SaveAccounts();
+
         AccountConfigEntity.AfterSave += (_, _) =>
         {
             if (AccountConfigEntity.Data.SelectUserBUID != null &&
@@ -73,10 +81,40 @@ public static class MsAccountManager
                 if (!buids.Contains(AccountConfigEntity.Data.SelectUserBUID))
                 {
                     AccountConfigEntity.Data.SelectUserBUID = buids.ToArray()[0];
-                    AccountConfigEntity.Save();
+                    SaveAccounts();
                 }
             }
         };
+    }
+
+    /// <summary>
+    ///     保存账户配置。凭证字段只在写盘那一刻是密文：写入前替换、写完立刻还原，
+    ///     因此内存里的 <c>AuthResult</c> 始终是明文，其它业务代码不需要感知加密。
+    ///     <para>
+    ///     必须串行：两次保存交错时，后一次的"还原"会把前一次尚未写盘的明文重新暴露出来。
+    ///     </para>
+    /// </summary>
+    public static void SaveAccounts()
+    {
+        lock (SaveLock)
+        {
+            var data = AccountConfigEntity?.Data;
+            if (data is null)
+            {
+                AccountConfigEntity?.Save();
+                return;
+            }
+
+            try
+            {
+                MsAccountSecret.ProtectInPlace(data);
+                AccountConfigEntity!.Save();
+            }
+            finally
+            {
+                MsAccountSecret.UnprotectInPlace(data);
+            }
+        }
     }
 
     public static async Task LoginAccount()
@@ -218,7 +256,7 @@ public static class MsAccountManager
                     if (string.IsNullOrEmpty(AccountConfigEntity?.Data.SelectUserBUID))
                         AccountConfigEntity!.Data.SelectUserBUID = config.BUID;
 
-                    AccountConfigEntity?.Save();
+                    SaveAccounts();
                 }).ConfigureAwait(false);
 
                 Console.WriteLine($@"登录成功！用户: {gamertag}");
@@ -273,7 +311,7 @@ public static class MsAccountManager
 
             if (anyRefreshed)
             {
-                await OnUI(() => AccountConfigEntity?.Save()).ConfigureAwait(false);
+                await OnUI(SaveAccounts).ConfigureAwait(false);
             }
 
             return anyRefreshed;
@@ -290,7 +328,7 @@ public static class MsAccountManager
         if (newToken == null) return null;
 
         ApplyToken(account, newToken);
-        await OnUI(() => AccountConfigEntity?.Save()).ConfigureAwait(false);
+        await OnUI(SaveAccounts).ConfigureAwait(false);
         return account;
     }
 

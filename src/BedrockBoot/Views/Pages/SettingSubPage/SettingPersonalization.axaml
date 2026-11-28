@@ -6,15 +6,13 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalization">
     <ScrollViewer>
-        <StackPanel Margin="15"
+        <StackPanel Margin="20,15"
                     Spacing="8">
-            <TextBlock Margin="5, 0"
-                       FontWeight="Bold"
+            <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Settings.Personalization.Group.ThemePack}" />
 
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.UseThemePack.Title}"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.UseThemePack.Title}"
                                           Description="{DynamicResource Settings.Personalization.UseThemePack.Desc}"
                                           IsClickable="True"
                                           IsShowActionIcon="False"
@@ -23,8 +21,7 @@
                               IsCheckedChanged="IsUseThemePack_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
 
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.ExportThemePack.Title}"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.ExportThemePack.Title}"
                                           Description="{DynamicResource Settings.Personalization.ExportThemePack.Desc}"
                                           Name="SaveThemePack"
                                           Click="SaveThemePack_OnClick"
@@ -32,72 +29,90 @@
                                           Glyph="&#xE74E;" />
 
             <TextBlock Opacity="0.8"
-                       Margin="5,0"
                        TextWrapping="WrapWithOverflow"
                        Text="{DynamicResource Settings.Personalization.ExportThemePack.Tip}" />
 
             <TextBlock Opacity="0.8"
-                       Margin="5,0"
                        TextWrapping="WrapWithOverflow"
                        Text="{DynamicResource Settings.Personalization.ThemePack.Desc}" />
             
-            <TextBlock Margin="5, 0"
-                       FontWeight="Bold"
+            <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Settings.Personalization.Group.Base}" />
 
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.ThemePackManager.Title}"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.ThemePackManager.Title}"
                                           Description="{DynamicResource Settings.Personalization.ThemePackManager.Desc}"
                                           Name="ThemePackManager"
                                           Click="ThemePackManager_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xF133;" />
 
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.Background.Title}"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Background.Title}"
                                           Description="{DynamicResource Settings.Personalization.Background.Desc}"
                                           Name="SetBackground"
                                           Click="SetBackground_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE91B;" />
 
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.Color.Title}"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Color.Title}"
                                           Description="{DynamicResource Settings.Personalization.Color.Desc}"
                                           Name="SetColor"
                                           Click="SetColor_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE790;" />
 
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.Audio.Title}"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Audio.Title}"
                                           Description="{DynamicResource Settings.Personalization.Audio.Desc}"
                                           Name="SetAudio"
                                           Click="SetAudio_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE8D6;" />
 
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.Font.Title}"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Font.Title}"
                                           Description="{DynamicResource Settings.Personalization.Font.Desc}"
                                           Name="SetFont"
                                           Click="SetFont_OnClick"
                                           IsClickable="True"
                                           Glyph="&#xE8D2;" />
             
-            <TextBlock Margin="5, 0"
-                       FontWeight="Bold"
+            <TextBlock FontWeight="Bold"
+                       FontSize="14"
+                       Text="材质" />
+
+            <onePointControls:SettingExpander Header="模糊材质"
+                                          Description="为控件启用模糊的背景材质"
+                                          Glyph="&#xF5EF;">
+	            <onePointControls:SettingExpander.RightContent>
+		            <ToggleSwitch Name="IsUseBlurBackdrop"
+		                          IsCheckedChanged="IsUseBlurBackdrop_OnIsCheckedChanged" />
+	            </onePointControls:SettingExpander.RightContent>
+	            
+	            <StackPanel>
+		            <onePointControls:SettingCard Glyph=""
+		                                          Header="模糊半径">
+			            <Slider Width="200"
+			                    Classes="Number"
+			                    ValueChanged="BackdropBlurRadius_OnValueChanged"
+			                    Maximum="200"
+			                    Minimum="20"
+			                    Name="BackdropBlurRadius"></Slider>
+		            </onePointControls:SettingCard>
+	            </StackPanel>
+            </onePointControls:SettingExpander>
+
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="由于上游框架 Avalonia 的 Bug，导致我们无法做到完全将模糊材质覆盖到每一处..." />
+            
+            <TextBlock FontWeight="Bold"
                        FontSize="14"
                        Text="{DynamicResource Settings.Personalization.Group.Window}" />
 
             <TextBlock Opacity="0.8"
-                       Margin="5,0"
                        TextWrapping="WrapWithOverflow"
                        Text="{DynamicResource Settings.Personalization.WindowBehavior.Desc}" />
 
-            <onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.SystemTitleBar.Title}"
+            <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.SystemTitleBar.Title}"
                                           Description="{DynamicResource Settings.Personalization.SystemTitleBar.Desc}"
                                           IsClickable="True"
                                           IsShowActionIcon="False"
@@ -106,8 +121,7 @@
                               IsCheckedChanged="IsUseSystemWindow_OnIsCheckedChanged" />
             </onePointControls:SettingCard>
 
-			<onePointControls:SettingCard Margin="5, 0"
-                                          Header="{DynamicResource Settings.Personalization.LaunchBtnPosition.Title}"
+			<onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.LaunchBtnPosition.Title}"
                                           Description="{DynamicResource Settings.Personalization.LaunchBtnPosition.Desc}"
                                           IsClickable="True"
                                           IsShowActionIcon="False"
@@ -122,13 +136,11 @@
 
             <StackPanel Name="HomePanel"
                         Spacing="8">
-                <TextBlock Margin="5, 0"
-                           FontWeight="Bold"
+                <TextBlock FontWeight="Bold"
                            FontSize="14"
                            Text="{DynamicResource Settings.Personalization.Group.Home}" />
 
-                <onePointControls:SettingCard Margin="5, 0"
-                                              Header="{DynamicResource Settings.Personalization.Home.Title}"
+                <onePointControls:SettingCard Header="{DynamicResource Settings.Personalization.Home.Title}"
                                               Description="{DynamicResource Settings.Personalization.Home.Desc}"
                                               Name="SetHome"
                                               Click="SetHome_OnClick"

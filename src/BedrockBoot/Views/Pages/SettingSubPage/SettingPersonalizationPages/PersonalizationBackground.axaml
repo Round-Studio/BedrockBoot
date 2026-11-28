@@ -58,8 +58,7 @@
                                           IsCheckedChanged="AnimationToggle_OnIsCheckedChanged" />
                         </onePointControls:SettingCard>
 
-                        <StackPanel Name="DefImageSetting"
-                                    Spacing="8">
+                        <StackPanel Name="DefImageSetting">
                             <onePointControls:SettingCard
                                 Header="{DynamicResource Settings.Background.Image.Parallax.Title}"
                                 Description="{DynamicResource Settings.Background.Image.Parallax.Desc}"

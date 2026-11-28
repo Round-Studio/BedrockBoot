@@ -1526,6 +1526,7 @@
     <x:String x:Key="Instance.Loader.Status.NotApplicable">Not Applicable</x:String>
     <x:String x:Key="Instance.Loader.Action.Details">View Details</x:String>
     <x:String x:Key="Instance.Loader.Action.Remove">Remove Loader</x:String>
+    <x:String x:Key="Instance.Loader.Upgrade.Target">Upgrade to v{0}</x:String>
     <x:String x:Key="Setting.Language.Header.Prefix">Making</x:String>
     <x:String x:Key="Setting.Language.Header.Suffix">truly global.</x:String>
     <x:String x:Key="Setting.Language.Header.Line1">With the community's support, BedrockBoot is entering a new chapter of internationalization.</x:String>
@@ -2091,6 +2092,9 @@
     <x:String x:Key="Server.Error.Timeout">Request timed out</x:String>
     <x:String x:Key="Server.Error.QueryFailed">Query failed: {0}</x:String>
     <x:String x:Key="Dialog.LeviLamina.ChooseVersion">Select Version to Install</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Title">Upgrade LeviLamina</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Content">LeviLamina will be upgraded from v{0} to v{1}.&#10;LeviLamina, PreLoader and the runtime data will be reinstalled; all installed Mod files are preserved.</x:String>
+    <x:String x:Key="Dialog.LeviLamina.Upgrade.Latest">Already up to date</x:String>
     <x:String x:Key="LeviLamina.Delete.Title">Delete LeviLamina</x:String>
     <x:String x:Key="LeviLamina.Delete.Content">Are you sure you want to delete the LeviLamina loader?&#x0a;Its mods will be deleted along with it.</x:String>
     <x:String x:Key="FilePicker.ChooseZip">Choose ZIP File</x:String>

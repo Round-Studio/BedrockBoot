@@ -57,8 +57,8 @@ public partial class GameServerItem : UserControl
         var checker = new ServerChecker();
         try
         {
-            // 使用 await 替代 .Result 避免阻塞
-            var sta = await checker.GetServerStatusAsync(ServerItemInfo);
+            // ping 全程下放线程池：HttpClient 首次请求等初始化在调用线程上同步执行，避免卡 UI
+            var sta = await Task.Run(() => checker.GetServerStatusAsync(ServerItemInfo));
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

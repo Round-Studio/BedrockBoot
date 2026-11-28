@@ -59,8 +59,7 @@
                     <text:AnimationTextBlock FontSize="36"
                                              AnimationType="NumberRolling"
                                              FontWeight="SemiBold"
-                                             Name="GameNameText"
-                                             Text="{DynamicResource Widget.LaunchGame.Title}"></text:AnimationTextBlock>
+                                             Name="GameNameText"></text:AnimationTextBlock>
 
                     <!-- 光晕和主页欢迎语一样叠在文字之上 -->
                     <Border Name="PATH_NameHaloBorder"
@@ -73,8 +72,7 @@
                 <TextBlock Opacity="0.6"
                            FontSize="14"
                            Margin="0,2,0,0"
-                           Name="GameVersionText"
-                           Text="{DynamicResource Widget.LaunchGame.NoVersion}"></TextBlock>
+                           Name="GameVersionText"></TextBlock>
             </StackPanel>
             
             <Button Grid.Column="1"

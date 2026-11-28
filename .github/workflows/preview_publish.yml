@@ -115,6 +115,12 @@ jobs:
         id: commits
         shell: bash
         run: |
+          # w()：把内容同时写入 GITHUB_OUTPUT 和落盘的 body 文件，
+          # 供后续步骤直接拿文件组装 changelog/<版本号>.md（避免把提交内容二次注入 bash）
+          BODY_FILE=./version-changelog-body.md
+          : > "$BODY_FILE"
+          w() { tee -a "$BODY_FILE" >> $GITHUB_OUTPUT; }
+
           # 1. 获取上一个 Pre-release 的发布时间
           # 取最近一个非当前的 tag 的发布时间 (publishedAt)
           PREV_RELEASE_DATA=$(gh release list --limit 20 --json tagName,isPrerelease,publishedAt | \
@@ -128,20 +134,31 @@ jobs:
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
 
           if [ -z "$PREV_TAG" ] || [ "$PREV_TAG" = "null" ]; then
-            echo "首次构建，显示最近 10 条提交：" >> $GITHUB_OUTPUT
-            git log -10 --pretty=format:"- %s (%h)" | grep -vE "^- (ci|style|chore):" >> $GITHUB_OUTPUT || true
+            echo "首次构建，显示最近 10 条提交：" | w
+            git log -10 --pretty=format:"- %s (%h)" | grep -vE "^- (ci|style|chore):" | w || true
           else
-            echo "自上一个测试版 [$PREV_TAG] ($PREV_TIME) 以来进入分支的变更：" >> $GITHUB_OUTPUT
-            
+            echo "自上一个测试版 [$PREV_TAG] ($PREV_TIME) 以来进入分支的变更：" | w
+
             # 2. 获取自 PREV_TIME 之后的所有提交
             # --since 使用发布时间作为过滤基准
             # --no-merges 过滤掉合并提交
             # 使用 --reverse 让日志按时间顺序排列（可选）
-            git log --since="$PREV_TIME" --no-merges --pretty=format:"- %s (%h)" | grep -vE "^- (ci|style|chore):" >> $GITHUB_OUTPUT || true
+            git log --since="$PREV_TIME" --no-merges --pretty=format:"- %s (%h)" | grep -vE "^- (ci|style|chore):" | w || true
           fi
 
-          echo "" >> $GITHUB_OUTPUT
+          echo "" | w
           echo "EOF" >> $GITHUB_OUTPUT
+
+          # 组装 version 分支用的完整修改日志文件
+          {
+            echo "# BedrockBoot ${{ needs.version.outputs.tag }} 预览版"
+            echo ""
+            echo "- 构建时间: ${{ needs.version.outputs.time }}"
+            echo "- 提交 Hash: ${{ github.sha }}"
+            echo ""
+            cat "$BODY_FILE"
+          } > ./version-changelog.md
+          rm -f "$BODY_FILE"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -166,3 +183,32 @@ jobs:
             ./dist/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 推送预览版信息到 version 分支
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git ls-remote --heads origin version | grep -q 'refs/heads/version'; then
+            git fetch origin version --depth=1 2>/dev/null || true
+            git checkout -B version FETCH_HEAD
+          else
+            # version 分支不存在：以孤儿分支初始化
+            git checkout --orphan version
+            git rm -rf . 2>/dev/null || true
+          fi
+
+          # 本次预览版信息：info/preview 存版本号；changelog/<版本号>.md 存修改日志
+          V="${{ needs.version.outputs.v }}"
+          if [ -z "$V" ]; then
+            echo "版本号输出为空，拒绝写入空文件" >&2
+            exit 1
+          fi
+          mkdir -p info changelog
+          printf '%s' "$V" > info/preview
+          cp ./version-changelog.md "changelog/$V.md"
+          git add info changelog
+
+          git commit -m "chore: 更新预览版信息到 $V [skip ci]" || echo "无变更提交"
+          git push origin version

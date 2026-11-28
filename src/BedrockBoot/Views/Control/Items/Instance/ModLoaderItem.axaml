@@ -6,8 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800"
              x:Class="BedrockBoot.Views.Control.Items.Instance.ModLoaderItem">
     <onePointControls:SettingExpander Name="LoaderCard"
-                                      Glyph="&#xEA86;"
-                                      Description="{DynamicResource Instance.Loader.Description}">
+                                      Glyph="&#xEA86;">
         <onePointControls:SettingExpander.Header>
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
@@ -16,8 +15,7 @@
                 </TextBlock>
 
                 <onePointControls:LabelBox Name="LoaderInstallStatus"
-                                           VerticalAlignment="Center"
-                                           Text="{DynamicResource Instance.Loader.Status.NotInstalled}">
+                                           VerticalAlignment="Center">
                 </onePointControls:LabelBox>
             </StackPanel>
         </onePointControls:SettingExpander.Header>
@@ -53,6 +51,12 @@
                                           Header="{DynamicResource Instance.Loader.Action.Details}"
                                           Glyph="&#xE8A7;"
                                           IsClickable="True">
+            </onePointControls:SettingCard>
+            <onePointControls:SettingCard Name="UpgradeBtn"
+                                          Glyph="&#xE895;"
+                                          IsClickable="True"
+                                          IsVisible="False"
+                                          Click="UpgradeBtn_OnClick">
             </onePointControls:SettingCard>
             <onePointControls:SettingCard Name="DeleteBtn"
                                           Header="{DynamicResource Instance.Loader.Action.Remove}"

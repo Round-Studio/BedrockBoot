@@ -99,6 +99,10 @@
 		            </onePointControls:SettingCard>
 	            </StackPanel>
             </onePointControls:SettingExpander>
+
+            <TextBlock Opacity="0.8"
+                       TextWrapping="WrapWithOverflow"
+                       Text="由于上游框架 Avalonia 的 Bug，导致我们无法做到完全将模糊材质覆盖到每一处..." />
             
             <TextBlock FontWeight="Bold"
                        FontSize="14"

@@ -187,11 +187,8 @@ public class CheckUpdate
     {
         if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
         {
-            // Commit 通道依赖 GitHub 登录；登录过期且无法自动续期时按未登录处理，
-            // 界面会提示重新登录，而不是抛 401
-            if (!GitHubTokenManager.IsLoggedIn)
-                return null;
-
+            // 公开仓库的 Actions 接口允许匿名读取，未登录也能拿到最新提交与更新日志；
+            // 只有下载产物需要登录并授予 repo 权限，那一步会自己提示
             var run = await GetLatestActionRunAsync();
             if (run == null)
                 return null;

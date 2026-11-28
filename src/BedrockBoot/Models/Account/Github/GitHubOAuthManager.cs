@@ -18,7 +18,9 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -43,7 +45,7 @@ public class GitHubOAuthManager
     private const string CallbackPath = "/auth/github/callback";
     private static readonly Random _portRandom = new();
 
-    public async Task<GithubAccountInfo> LoginAsync()
+    public async Task<GithubAccountInfo> LoginAsync(bool fullAccess = true)
     {
         using var listener = new HttpListener();
 
@@ -71,12 +73,15 @@ public class GitHubOAuthManager
         var redirectUri = $"http://127.0.0.1:{port}{CallbackPath}";
         var state = Guid.NewGuid().ToString("N");
         // offline_access：签发短效 access_token（8 小时）+ refresh_token（6 个月），由 GitHubTokenManager 续期。
-        // repo：Actions 产物下载与私有仓库读取都要求 OAuth 令牌带 repo 权限，
-        //       只有 user:email 时下载产物会被 403 拒绝（"You must have the actions scope..."）。
+        // repo：只有它才能下载 Actions 产物，所以仅在用户选择「完整授权」时才申请；
+        // 选择「仅登录」只申请 user:email，能绕过 API 匿名限流，但下载产物会被 403 拒绝。
+        var scope = fullAccess
+            ? "user:email repo offline_access"
+            : "user:email offline_access";
         var authUrl = $"https://github.com/login/oauth/authorize" +
                       $"?client_id={_clientId}" +
                       $"&redirect_uri={Uri.EscapeDataString(redirectUri)}" +
-                      $"&scope={Uri.EscapeDataString("user:email repo offline_access")}" +
+                      $"&scope={Uri.EscapeDataString(scope)}" +
                       $"&state={state}";
 
         Process.Start(new ProcessStartInfo(authUrl) { UseShellExecute = true });
@@ -123,11 +128,67 @@ public class GitHubOAuthManager
             UserToken = tokens.AccessToken,
             RefreshToken = tokens.RefreshToken,
             ExpiresAt = tokens.ExpiresAt,
-            RefreshTokenExpiresAt = tokens.RefreshTokenExpiresAt
+            RefreshTokenExpiresAt = tokens.RefreshTokenExpiresAt,
+            // 正常情况下 GitHub 会回传实际授予的 scope；个别情况（如 GHES）不回传时按申请值记录
+            Scope = tokens.Scope ?? (fullAccess ? "user:email,repo" : "user:email")
         };
         conf.Save();
 
         return conf.Data;
+    }
+
+    /// <summary>
+    ///     退出登录时远程吊销令牌，避免本地删掉后凭证仍在服务端有效。
+    ///     先吊销 access_token，再删除整个应用授权（这一步才会让 refresh_token 一起失效）。
+    ///     纯尽力而为：网络失败只写日志，不阻塞本地清理。
+    /// </summary>
+    public static async Task RevokeAsync(string? accessToken)
+    {
+        if (string.IsNullOrEmpty(accessToken)) return;
+
+        var clientId = BedrockBoot.Core.Keys.GithubClientId;
+        var clientSecret = BedrockBoot.Core.Keys.GithubSecret;
+        var basic = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}"));
+
+        using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Delete,
+                $"https://api.github.com/applications/{clientId}/token")
+            {
+                Content = new StringContent(
+                    System.Text.Json.JsonSerializer.Serialize(new { access_token = accessToken }),
+                    Encoding.UTF8, "application/json")
+            };
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", basic);
+            request.Headers.TryAddWithoutValidation("Accept", "application/vnd.github+json");
+            request.Headers.TryAddWithoutValidation("User-Agent", "BedrockBoot");
+
+            using var response = await http.SendAsync(request);
+            Console.WriteLine($@"吊销 GitHub 令牌：HTTP {(int)response.StatusCode}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"吊销 GitHub 令牌失败（不影响本地退出）：{ex.Message}");
+        }
+
+        try
+        {
+            // 只吊销 access_token 不会让 refresh_token 失效，删掉整条授权才算真正退出
+            using var request = new HttpRequestMessage(HttpMethod.Delete,
+                $"https://api.github.com/applications/{clientId}/grant");
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", basic);
+            request.Headers.TryAddWithoutValidation("Accept", "application/vnd.github+json");
+            request.Headers.TryAddWithoutValidation("User-Agent", "BedrockBoot");
+
+            using var response = await http.SendAsync(request);
+            Console.WriteLine($@"删除 GitHub 应用授权：HTTP {(int)response.StatusCode}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"删除 GitHub 应用授权失败（不影响本地退出）：{ex.Message}");
+        }
     }
 
     private static async Task<string> WaitForCallbackAsync(
@@ -303,4 +364,17 @@ public class GithubAccountInfo
 
     /// <summary>refresh_token 的绝对过期时间（UTC）；null 表示长期有效</summary>
     [JsonPropertyName("refreshTokenExpiresAt")] public DateTimeOffset? RefreshTokenExpiresAt { get; set; }
+
+    /// <summary>
+    ///     GitHub 返回的实际授权范围（逗号分隔，例如 <c>repo,user:email</c>）。
+    ///     旧版本保存的账户没有这个字段（为 null），此时权限未知。
+    /// </summary>
+    [JsonPropertyName("scope")] public string? Scope { get; set; }
+
+    /// <summary>是否拿到 repo 权限；null 表示旧账户，无从判断</summary>
+    [JsonIgnore]
+    public bool? HasRepoScope => Scope is null
+        ? null
+        : Scope.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+            .Contains("repo", StringComparer.Ordinal);
 }

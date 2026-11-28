@@ -36,7 +36,8 @@ public sealed record GitHubTokenSet(
     string AccessToken,
     string? RefreshToken,
     DateTimeOffset? ExpiresAt,
-    DateTimeOffset? RefreshTokenExpiresAt);
+    DateTimeOffset? RefreshTokenExpiresAt,
+    string? Scope);
 
 /// <summary>
 ///     没有可用的刷新凭证，或 refresh_token 已被撤销/过期，只能让用户重新授权。
@@ -152,7 +153,8 @@ public static class GitHubTokenManager
             token,
             ReadString(root, "refresh_token"),
             ReadExpiry(root, "expires_in"),
-            ReadExpiry(root, "refresh_token_expires_in"));
+            ReadExpiry(root, "refresh_token_expires_in"),
+            ReadString(root, "scope"));
     }
 
     /// <summary>响应里的错误码（<c>bad_refresh_token</c> 等），没有则返回 <c>null</c></summary>
@@ -292,6 +294,8 @@ public static class GitHubTokenManager
             config.Data.ExpiresAt = tokens.ExpiresAt;
             if (tokens.RefreshTokenExpiresAt is not null)
                 config.Data.RefreshTokenExpiresAt = tokens.RefreshTokenExpiresAt;
+            if (!string.IsNullOrEmpty(tokens.Scope))
+                config.Data.Scope = tokens.Scope;
 
             config.Save();
         }
@@ -315,6 +319,7 @@ public static class GitHubTokenManager
             config.Data.RefreshToken = null;
             config.Data.ExpiresAt = null;
             config.Data.RefreshTokenExpiresAt = null;
+            config.Data.Scope = null;
             config.Save();
 
             Console.WriteLine(@"GitHub 凭证已失效，已清空本地令牌，需要重新登录");

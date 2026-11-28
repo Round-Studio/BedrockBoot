@@ -36,20 +36,31 @@ Message="{DynamicResource Account.Empty.Message}"
                        FontSize="14"
                        Text="{DynamicResource Settings.Account.Group.GitHub}" />
 
+            <!-- Description 由代码按登录态设置：登录后是「管理登录的 GitHub 账号」，未登录是登录引导文案。
+                 这里不能再绑 DynamicResource，否则挂到可视树时会把代码设的值覆盖回默认文案 -->
             <onePointControls:SettingExpander Name="GithubExpander"
-                                              Glyph="&#xE77B;"
-                                              Description="{DynamicResource Settings.Account.GitHub.Description}">
+                                              Glyph="&#xE77B;">
                 <onePointControls:SettingExpander.Header>
                     <TextBlock Name="GithubHeaderText"
                                Text="{DynamicResource Settings.Account.Group.GitHub}" />
                 </onePointControls:SettingExpander.Header>
                 <StackPanel>
+                    <TextBlock Name="GithubScopeText"
+                               Margin="4,0,4,6"
+                               TextWrapping="Wrap"
+                               Opacity="0.85"
+                               IsVisible="False" />
                     <onePointControls:SettingCard Header="{DynamicResource Settings.Account.GitHub.Login.Title}"
                                                   Description="{DynamicResource Settings.Account.GitHub.Login.Desc}"
                                                   Name="LoginInGithub"
                                                   Click="LoginInGithub_OnClick"
                                                   IsClickable="True"
                                                   Glyph="&#xE8FA;" />
+                    <onePointControls:SettingCard Name="GithubScopeActionBtn"
+                                                  IsVisible="False"
+                                                  Click="GithubScopeActionBtn_OnClick"
+                                                  IsClickable="True"
+                                                  Glyph="&#xE72E;" />
                     <onePointControls:SettingCard Header="{DynamicResource Settings.Account.GitHub.Logout.Title}"
                                                   Description="{DynamicResource Settings.Account.GitHub.Logout.Desc}"
                                                   Name="GithubLogoutBtn"

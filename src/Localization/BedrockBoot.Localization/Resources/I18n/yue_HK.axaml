@@ -525,7 +525,7 @@
     <x:String x:Key="Task.Launch.Notice.Added">遊戲 {0} 已經將啟動任務加入任務清單。</x:String>
     <x:String x:Key="Task.Launch.Status.Progress">({0:F2}%) {1}</x:String>
     <x:String x:Key="Task.Launch.Migration.Title">遷移通知</x:String>
-    <x:String x:Key="Task.Launch.Migration.Content">呢個版本需要遷移\n請問係咪即刻開始遷移？</x:String>
+    <x:String x:Key="Task.Launch.Migration.Content">呢個版本需要遷移&#x0a;請問係咪即刻開始遷移？</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Start">開始遷移</x:String>
     <x:String x:Key="Task.Launch.Migration.Action.Later">唔使喇</x:String>
     <x:String x:Key="Task.Launch.Migration.View.Title">遷移版本</x:String>
@@ -952,8 +952,35 @@
     <x:String x:Key="MainPage.Update.Title">檢查更新</x:String>
     <x:String x:Key="MainPage.Update.NewVersion">更新 {0}</x:String>
     <x:String x:Key="MainPage.Update.CommitNeedLogin">而家更新頻道係 Commit（提交版），需要先登入 Github 帳戶。&#x0a;請去 設定 → 帳戶與檔案 嗰度登入 Github。</x:String>
-    <x:String x:Key="MainPage.Update.Content">我哋有新嘅更新：\n\n{0}</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedLoginHint">去 設定 → 帳戶與檔案 登入 GitHub 並授予完整存取權限</x:String>
+    <x:String x:Key="MainPage.Update.CommitNeedScopeHint">去 設定 → 帳戶與檔案 授予 GitHub 帳號完整存取權限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Title">GitHub 授權範圍</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Intro">登入之前請揀授權範圍。兩種方式都避得開 GitHub API 嘅匿名存取次數限制，分別就在於下唔下載得到 Commit 版本更新。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Title">完整授權</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.FullAccess.Desc">畀 repo 權限：讀得到更新資訊，亦下載得到 Commit 版本嘅更新產物。我哋承諾呢個權限淨係用嚟下載 Commit 版本更新，唔會讀、改或者刪你其他倉庫嘅內容。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Title">淨係登入</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.LoginOnly.Desc">淨係畀 user:email：讀得到更新資訊（唔受匿名次數限制），但下載唔到 Commit 版本更新。</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Acknowledge">我睇過亦同意：完整存取權限淨係用嚟下載 Commit 版本更新</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description.Manage">管理登入咗嘅 GitHub 帳號</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Description">登入 GitHub 先用得 Commit 更新頻道等功能</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Expired">GitHub 登入過咗期，請再登入一次</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Login.Title">登入 GitHub</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Login.Desc">用瀏覽器授權登入 GitHub 帳號</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Title">登出</x:String>
+    <x:String x:Key="Settings.Account.Github.LoggedInAs">GitHub 帳號：{0}</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Logout.Desc">移除本機儲存嘅 GitHub 授權資料，並且撤銷埋呢個授權</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Full">而家嘅權限：完整存取（下載得到 Commit 版本更新）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.LoginOnly">而家嘅權限：淨係登入（讀得到更新資訊，下載唔到 Commit 版本更新）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.Scope.Status.Unknown">而家嘅權限：未知（舊登入記錄，建議重新登入）</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Title">授予完整存取權限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.GrantFullAccess.Desc">要重新授權 GitHub 同同意 repo 權限，之後先下載得到 Commit 版本更新</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Title">撤銷完整存取權限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Desc">重新用「淨係登入」授權，撤銷之後就冇 repo 權限</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Confirm">撤銷之後要喺瀏覽器重新授權，而且下載唔到 Commit 版本更新。繼續？</x:String>
+    <x:String x:Key="Settings.Account.GitHub.RevokeFullAccess.Action">撤銷</x:String>
+    <x:String x:Key="MainPage.Update.Content">我哋有新嘅更新：&#x0a;&#x0a;{0}</x:String>
     <x:String x:Key="MainPage.Update.Action.Now">而家更新</x:String>
+    <x:String x:Key="MainPage.Update.Action.ManualDownload">自己手動去下載</x:String>
     <x:String x:Key="MainPage.Update.Action.Latest">目前已經係最新版本</x:String>
     <x:String x:Key="MainPage.Update.DirectDownload">強制下載最新版</x:String>
     <x:String x:Key="MainPage.Update.DirectDisplayName">最新版</x:String>
@@ -1202,5 +1229,10 @@
     <x:String x:Key="Multiplayer.Init.GetPeers">攞節點伺服器</x:String>
     <x:String x:Key="Multiplayer.Init.GetXboxUser">攞本機帳戶名</x:String>
     <x:String x:Key="Multiplayer.Init.InitCore">初始化連線核心</x:String>
+    <x:String x:Key="Settings.Account.Github">GitHub 帳號</x:String>
+    <x:String x:Key="Settings.Account.Github.LoginError">Github 登入過程出咗錯，請檢查網絡連線再試。&#x0a;如果隔咗好耐都未喺瀏覽器度完成授權，請再發起一次登入。</x:String>
+    <x:String x:Key="Settings.Account.Github.Logout">登出 Github 帳號</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutConfirm">你確定要登出而家登入緊嘅 Github 帳號？&#x0a;登出之後，下載 Commit 版本更新等要登入嘅功能就用唔到。</x:String>
+    <x:String x:Key="Settings.Account.Github.LogoutAction">登出</x:String>
 
 </ResourceDictionary>

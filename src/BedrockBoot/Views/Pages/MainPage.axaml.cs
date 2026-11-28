@@ -45,6 +45,7 @@ using Round.SDK.Entry.BedrockBoot;
 using Round.SDK.Plugin.BedrockBoot.Register;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using BedrockBoot.Models.Global;
@@ -180,26 +181,36 @@ public partial class MainPage : UserControl
 
     public Dictionary<string, TopBarItemInfo> TopBarItem { get; } = new();
 
+    /// <summary>拿不到具体构建页时的兜底跳转：仓库的提交列表</summary>
+    private const string CommitsPageUrl =
+        "https://github.com/Round-Studio/BedrockBoot/commits/2.0-develop/";
+
+    /// <summary>用系统默认浏览器打开链接；失败只记日志，不打断更新流程</summary>
+    private static void OpenInBrowser(string url)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($@"打开浏览器失败（{url}）：{ex.Message}");
+        }
+    }
+
+    /// <summary>能否直接下载 Commit 产物：已登录，且没有明确选择过「仅登录」</summary>
+    private static bool CanDownloadCommitUpdate()
+    {
+        if (!GitHubTokenManager.IsLoggedIn) return false;
+
+        // HasRepoScope 为 null 是旧版本保存的账户，权限未知，按有权限处理，避免无谓提示
+        return GitHubTokenManager.ReadAccount()?.HasRepoScope != false;
+    }
+
     public static async Task Update(bool isShowNeo = false)
     {
         try
         {
-            // Commit 通道依赖 Github 登录，未登录时明确提示，而不是被 CheckAsync 判空后误报“已是最新”
-            if (GlobalModel.Config.Data.UpdateType == UpdateType.Commit)
-            {
-                // 短效令牌过期但还能续期时仍算已登录；续期失败才算未登录
-                if (!GitHubTokenManager.IsLoggedIn)
-                {
-                    DialogHost.Show(new DialogInfo
-                    {
-                        Title = i18n["MainPage.Update.Title"],
-                        Content = i18n["MainPage.Update.CommitNeedLogin"],
-                        CloseButtonText = i18n["Shared.Action.Confirm"]
-                    });
-                    return;
-                }
-            }
-
             var result = await CheckUpdate.CheckAsync();
             if (result != null)
             {
@@ -214,6 +225,22 @@ public partial class MainPage : UserControl
                 if (string.IsNullOrWhiteSpace(body))
                     body = i18n["MainPage.Update.ChangelogUnavailable"];
 
+                // Commit 通道允许未登录查看更新内容，但下载产物必须登录并授予 repo 权限：
+                // 未登录提示去登录，已登录但只有 user:email 则提示去补授权
+                string? manualUrl = null;
+                if (result.Source == UpdateSource.Action && !CanDownloadCommitUpdate())
+                {
+                    var githubLoggedIn = GitHubTokenManager.IsLoggedIn;
+                    body = i18n[githubLoggedIn
+                        ? "MainPage.Update.CommitNeedScopeHint"
+                        : "MainPage.Update.CommitNeedLoginHint"] + "\n\n" + body;
+
+                    // 拿不到本次构建页地址时退到提交列表页，总比让用户自己去翻
+                    manualUrl = string.IsNullOrEmpty(result.WorkflowRun?.HtmlUrl)
+                        ? CommitsPageUrl
+                        : result.WorkflowRun.HtmlUrl;
+                }
+
                 var controls = HtmlToControlConverter.ConvertHtmlToControls(body);
                 foreach (var control in controls) panel.Children.Add(control);
 
@@ -226,9 +253,21 @@ public partial class MainPage : UserControl
                         HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden
                     },
                     Title = string.Format(i18n["MainPage.Update.NewVersion"], result.DisplayName),
-                    CloseButtonText = i18n["MainPage.Update.Action.Now"],
+                    // 没有下载权限时不再给一个必然失败的"现在更新"，改为把人送到构建页手动下载
+                    CloseButtonText = manualUrl == null
+                        ? i18n["MainPage.Update.Action.Now"]
+                        : i18n["MainPage.Update.Action.ManualDownload"],
                     PrimaryButtonText = i18n["Shared.Action.Cancel"],
-                    CloseAction = () => { TaskDownloadUpdateFileItem.Update(result); }
+                    CloseAction = () =>
+                    {
+                        if (manualUrl != null)
+                        {
+                            OpenInBrowser(manualUrl);
+                            return;
+                        }
+
+                        TaskDownloadUpdateFileItem.Update(result);
+                    }
                 });
             }
             else if (isShowNeo)

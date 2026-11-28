@@ -47,6 +47,9 @@ public class ServerStatusResponse
 
     [JsonPropertyName("cached")] public bool Cached { get; set; }
 
+    // 产出该结果的传输协议：RakNet / NetherNet
+    [JsonPropertyName("transport")] public string Transport { get; set; }
+
     public class PlayersData
     {
         [JsonPropertyName("online")] public string Online { get; set; }

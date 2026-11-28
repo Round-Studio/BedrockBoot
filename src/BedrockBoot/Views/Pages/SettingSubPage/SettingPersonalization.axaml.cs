@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using BedrockBoot.Standard.Enum;
@@ -33,6 +34,7 @@ using BedrockBoot.Views.Pages.SettingSubPage.SettingPersonalizationPages;
 using OnePointUI.Avalonia.Base.Entry;
 using OnePointUI.Avalonia.Base.Enum;
 using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Dialog;
+using OnePointUI.Avalonia.Styling.Controls.OnePointControls.Items;
 
 namespace BedrockBoot.Views.Pages.SettingSubPage;
 
@@ -74,6 +76,9 @@ public partial class SettingPersonalization : ISettingPage
                                   GlobalModel.Config.Data.StyleConfig.StyleType == StyleType.Image &&
                                   !string.IsNullOrEmpty(GlobalModel.Config.Data.StyleConfig.BackgroundImage);
         ThemePackManager.IsVisible = GlobalModel.Config.Data.StyleConfig.IsUseThemePack;
+
+        IsUseBlurBackdrop.IsChecked = GlobalModel.Config.Data.StyleConfig.IsUseBlurBackdrop;
+        BackdropBlurRadius.Value = GlobalModel.Config.Data.StyleConfig.BlurBackdropRadius;
 
         IsEdit = true;
     }
@@ -181,5 +186,27 @@ public partial class SettingPersonalization : ISettingPage
     private void SetFont_OnClick(object? sender, RoutedEventArgs e)
     {
         MainSettingPage.NavigateTo(new PersonalizationFont());
+    }
+
+    private void IsUseBlurBackdrop_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.StyleConfig.IsUseBlurBackdrop = IsUseBlurBackdrop.IsChecked ?? false;
+            GlobalModel.Config.Save();
+
+            BlurBorder.SetGlobal(GlobalModel.Config.Data.StyleConfig.IsUseBlurBackdrop, GlobalModel.Config.Data.StyleConfig.BlurBackdropRadius);
+        }
+    }
+
+    private void BackdropBlurRadius_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    {
+        if (IsEdit)
+        {
+            GlobalModel.Config.Data.StyleConfig.BlurBackdropRadius = (int)BackdropBlurRadius.Value;
+            GlobalModel.Config.Save();
+
+            BlurBorder.SetGlobal(GlobalModel.Config.Data.StyleConfig.IsUseBlurBackdrop, GlobalModel.Config.Data.StyleConfig.BlurBackdropRadius);
+        }
     }
 }

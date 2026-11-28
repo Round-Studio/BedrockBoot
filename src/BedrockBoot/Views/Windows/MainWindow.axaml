@@ -391,6 +391,7 @@
                                     <items:BlurBorder CornerRadius="16,16,0,0"></items:BlurBorder>
                                     <Border Background="{DynamicResource BackgroundBrush}"
                                             CornerRadius="16,16,0,0"
+                                            Name="BorderWash"
                                             Opacity="0.9"></Border>
                                     
                                     <Grid Grid.RowDefinitions="Auto,*">
@@ -439,6 +440,21 @@
                                           Margin="0,0,0,68" />
 
                         <dialog:DialogHost Name="DialogHost" />
+                    </Grid>
+
+                    <Grid Name="TaskDimView"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          Background="#66000000"
+                          Opacity="0"
+                          IsHitTestVisible="False">
+                        <Grid.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity"
+                                                  Easing="ExponentialEaseOut"
+                                                  Duration="0:0:0.58" />
+                            </Transitions>
+                        </Grid.Transitions>
                     </Grid>
 
                     <Grid HorizontalAlignment="Stretch"
